@@ -1,0 +1,35 @@
+{
+  "name": "plugin-notary",
+  "version": "0.1.0",
+  "description": "Pre-install supply-chain review and admission for agent plugins.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@11.3.0",
+  "bin": {
+    "plugin-notary": "dist/src/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "dist/src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "scan:self": "pnpm run build && node dist/src/cli.js scan . --fail-on block",
+    "test": "pnpm run build && node --test dist/test/*.test.js"
+  },
+  "devDependencies": {
+    "@types/node": "26.2.0",
+    "typescript": "7.0.2"
+  }
+}
