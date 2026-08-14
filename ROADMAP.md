@@ -11,9 +11,12 @@
 
 ## Milestone 1 — exact published artifacts
 
-- [ ] Accept npm specs, Git commits, tarballs and local directories.
-- [ ] Download into a disposable quarantine without lifecycle scripts.
-- [ ] Verify npm registry signatures and provenance.
+- [x] Accept exact npm specs and local directories.
+- [x] Download npm tarballs without lifecycle scripts and parse them under archive safety budgets.
+- [x] Verify npm tarball integrity and ECDSA registry signatures.
+- [x] Verify npm provenance through the official npm CLI in deep mode.
+- [x] Resolve a deep-mode graph, compute its digest and summarize npm advisories.
+- [ ] Accept Git commits and standalone tarball inputs.
 - [ ] Generate CycloneDX SBOMs from the resolved graph.
 - [ ] Query vulnerability and malicious-package intelligence.
 - [ ] Compare npm tarballs with the declared source commit.

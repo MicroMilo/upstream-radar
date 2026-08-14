@@ -11,7 +11,7 @@ The project deliberately separates two questions:
 
 ## Status
 
-Early prototype. The current CLI performs a bounded, read-only static scan of a local package directory. It never imports plugin code, runs lifecycle scripts, or contacts remote services.
+Early prototype. The CLI can inspect a local directory or fetch an exact public npm release. It never imports plugin code or runs package lifecycle scripts. Deep npm review resolves dependencies in a temporary project with scripts disabled and delegates cryptographic attestation verification to the official npm CLI.
 
 Implemented evidence includes:
 
@@ -26,24 +26,36 @@ Implemented evidence includes:
 - DSH bundle manifest recognition;
 - explicit coverage gaps in every report.
 
-Provenance verification, source-to-tarball comparison, dependency resolution, sandbox detonation, signed review receipts, and DSH admission integration are planned rather than implied.
+Exact npm inspection additionally provides:
+
+- registry tarball integrity verification;
+- npm ECDSA registry-signature verification;
+- safe in-memory tar parsing before materialization;
+- SLSA provenance verification and source identity extraction in deep mode;
+- resolved dependency-graph digest and npm advisory summary in deep mode.
+
+Source-to-tarball rebuilding, sandbox detonation, signed review receipts, and DSH admission integration are planned rather than implied.
 
 ## Quick start
 
-Requirements: Node.js 22 or newer and pnpm 11.3.0.
+Requirements: Node.js 22 or newer and pnpm 11.3.0. Deep inspection also invokes the locally installed npm CLI; a current npm release is recommended so attestation details can be returned.
 
 ```bash
 pnpm install --frozen-lockfile
 pnpm test
 pnpm build
 node dist/src/cli.js scan /path/to/dsh-plugin
+node dist/src/cli.js inspect npm:dsh-cloudflare-browser-run@0.1.1 --deep
 ```
 
 JSON output for CI or another admission client:
 
 ```bash
 node dist/src/cli.js scan /path/to/dsh-plugin --json
+node dist/src/cli.js inspect npm:dsh-cloudflare-browser-run@0.1.1 --deep --json
 ```
+
+Run the complete live and deterministic demonstration with `pnpm showcase`. See [the showcase guide](docs/showcase.md).
 
 The default command exits with code `2` when the admission verdict is `review` or `block`. Change the threshold with `--fail-on warn|review|block|never`.
 
@@ -53,7 +65,7 @@ The report carries three separate decisions:
 - `coverageVerdict`: whether the required supply-chain review is complete;
 - `verdict`: the stricter admission result across risk and coverage.
 
-Because v0.1 does not yet verify provenance, compare source with a published artifact, or run sandbox detonation, its coverage is always `incomplete` and it cannot issue an admission `allow`. A clean static scan therefore means `riskVerdict: allow`, `verdict: review`.
+Version 0.2 can verify npm integrity, registry signatures, provenance and the currently resolved dependency graph. It does not yet rebuild the declared source or run isolated install/load detonation, so overall coverage remains `incomplete` and it cannot issue an admission `allow`. A clean implemented scan therefore means `riskVerdict: allow`, `verdict: review`.
 
 ## Verdicts
 
@@ -65,6 +77,8 @@ Because v0.1 does not yet verify provenance, compare source with a published art
 | `block` | Default policy rejects the exact artifact. |
 
 Reports distinguish findings from scan coverage. `not-checked` and `not-run` never mean passed.
+
+`staticSource: complete` means every in-scope file was hashed and all currently implemented static checks ran within budget. It does not mean the source was proved non-malicious; that gap remains visible in the overall coverage and admission verdict.
 
 ## Intended DSH flow
 
@@ -84,6 +98,7 @@ Plugin Notary must eventually integrate before pnpm executes, not merely after D
 ## Project documents
 
 - [Chinese product vision](docs/vision.zh-CN.md)
+- [Chinese check matrix](docs/checks.zh-CN.md)
 - [Threat model](docs/threat-model.md)
 - [Architecture](docs/architecture.md)
 - [Roadmap](ROADMAP.md)

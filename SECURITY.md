@@ -18,3 +18,5 @@ High-priority issues include:
 ## Scanner claims
 
 A report is bounded evidence, not a guarantee that an artifact is safe. Coverage fields are security-relevant and must remain explicit. An unavailable check must report `not-checked`, `not-run`, `incomplete`, or an error; it must never become a pass.
+
+Deep npm inspection invokes the local npm CLI in a fresh temporary project with lifecycle scripts disabled, a scrubbed environment, and controlled npm/Git configuration. It is not a hardened sandbox: run it on public artifacts only until disposable worker isolation lands. Registry authentication is not supported in the prototype, and registry URLs containing credentials, query strings, or fragments are rejected to keep secrets out of reports.

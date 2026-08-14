@@ -32,6 +32,21 @@ DSH profile boot -------------------------------------------+-> verify -> load
 
 The prototype keeps these concepts in one package until boundaries are proven by use.
 
+## Implemented v0.2 path
+
+```text
+exact npm spec
+  -> registry metadata
+  -> bounded tarball download
+  -> integrity + registry signature
+  -> bounded tar parser (no links materialized)
+  -> static package evidence
+  -> optional dependency resolution with scripts disabled
+  -> npm signature/provenance verification + advisory audit
+  -> risk verdict + coverage verdict
+  -> admission decision (at least REVIEW while required coverage is missing)
+```
+
 ## Admission transaction
 
 1. Snapshot the current DSH profile manifest and lockfile.

@@ -1,0 +1,24 @@
+Plugin Notary 0.2.0
+Target: showcase-review-install-script@1.0.0
+Artifact: sha256:f330c76f420fb7dfc8d3e576434cb511c25a67d26bef9e794260e8f9b534a8d8
+DSH bundle: no
+Admission verdict: REVIEW
+Risk verdict: REVIEW
+Coverage verdict: INCOMPLETE
+
+Coverage:
+  static source: complete
+  artifact integrity: locally-hashed
+  registry signature: not-checked
+  dependency resolution: manifest-only
+  provenance: not-checked
+  source/artifact match: not-checked
+  sandbox detonation: not-run
+
+Evidence: 2 files, 334 bytes, 0 dependency declarations
+
+Findings (1):
+  [HIGH] lifecycle-script-present: Lifecycle script prepare executes during installation
+    Lifecycle scripts run before a plugin is admitted into DSH and therefore require review.
+
+This is a bounded evidence report, not a guarantee that the plugin is safe.

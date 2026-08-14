@@ -1,0 +1,8 @@
+{
+  "name": "showcase-review-install-script",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "prepare": "node scripts/build.js"
+  }
+}

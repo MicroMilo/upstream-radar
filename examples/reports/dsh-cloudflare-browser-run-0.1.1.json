@@ -1,0 +1,113 @@
+{
+  "schema": "plugin-notary.scan/v1alpha1",
+  "tool": {
+    "name": "plugin-notary",
+    "version": "0.2.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "dsh-cloudflare-browser-run",
+    "version": "0.1.1",
+    "artifactDigest": "sha256:27fe660b2fe40b15b70a206310b883ca15722d8ffaacab63232b71128d28701f",
+    "treeDigest": "sha256:1c462502fe19c4d6a23dd5ae954a5bdfac4c4b81776718747c8279c4d51eb1ba",
+    "spec": "npm:dsh-cloudflare-browser-run@0.1.1"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 9,
+    "bytesHashed": 19493,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "dependency",
+        "spec": "^4.0.1"
+      },
+      {
+        "name": "@deepseek-ai/dsh-tools",
+        "scope": "dependency",
+        "spec": "^0.0.1-rc.1"
+      },
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "dependency",
+        "spec": "^3.18.0"
+      },
+      {
+        "name": "@types/node",
+        "scope": "devDependency",
+        "spec": "^22.0.0"
+      },
+      {
+        "name": "tsx",
+        "scope": "devDependency",
+        "spec": "^4.19.0"
+      },
+      {
+        "name": "typescript",
+        "scope": "devDependency",
+        "spec": "^5.5.0"
+      }
+    ],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/dsh-cloudflare-browser-run/-/dsh-cloudflare-browser-run-0.1.1.tgz",
+      "compressedBytes": 7670,
+      "unpackedBytes": 19493,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "vzY/zZzuhUwHayPln78jXfZIT+uIhwFjndLIzEzFxWgHp+nZYTtZBm6XqtH2Rv4z+0B7YPoQRLtxHAv2giZxUA==",
+        "actual": "vzY/zZzuhUwHayPln78jXfZIT+uIhwFjndLIzEzFxWgHp+nZYTtZBm6XqtH2Rv4z+0B7YPoQRLtxHAv2giZxUA=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "verified",
+        "predicateType": "https://slsa.dev/provenance/v1",
+        "sourceRepository": "https://github.com/RealAlexandreAI/dsh-cloudflare-browser-run",
+        "sourceRef": "refs/tags/v0.1.1",
+        "sourceCommit": "f85ec677f77665640315d89aebe876b4877995bd",
+        "workflow": ".github/workflows/publish.yml",
+        "builder": "https://github.com/actions/runner/github-hosted"
+      },
+      "dependencyAudit": {
+        "status": "verified",
+        "packages": 18,
+        "graphDigest": "sha256:b03562d76bbef1cac2c6df0123092031a9dd813c45d139a4768260a2cb1717e5",
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "verified",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [],
+  "riskVerdict": "allow",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

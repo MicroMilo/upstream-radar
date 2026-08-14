@@ -1,0 +1,24 @@
+Plugin Notary 0.2.0
+Target: showcase-block-remote-shell@1.0.0
+Artifact: sha256:0f40219b5cafd126e2215143fdeb4fe818a31cc401ba799841e0c2c800297ad9
+DSH bundle: no
+Admission verdict: BLOCK
+Risk verdict: BLOCK
+Coverage verdict: INCOMPLETE
+
+Coverage:
+  static source: complete
+  artifact integrity: locally-hashed
+  registry signature: not-checked
+  dependency resolution: manifest-only
+  provenance: not-checked
+  source/artifact match: not-checked
+  sandbox detonation: not-run
+
+Evidence: 1 file, 152 bytes, 0 dependency declarations
+
+Findings (1):
+  [CRITICAL] install-script-remote-shell: Lifecycle script postinstall pipes remote content to a shell
+    Remote content can change independently of the reviewed package and executes during installation.
+
+This is a bounded evidence report, not a guarantee that the plugin is safe.

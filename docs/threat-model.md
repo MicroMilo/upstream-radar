@@ -51,4 +51,4 @@ Plugin Notary protects one decision: whether an exact agent-extension artifact m
 
 ## Current prototype limitations
 
-The v0.1 scanner only inspects a local directory. It does not yet resolve a dependency graph, verify registry signatures or provenance, compare source with a published artifact, run sandbox detonation, sign receipts, consume revocations, or integrate with DSH installation and boot.
+Version 0.2 can inspect a local directory or an exact public npm artifact. Deep mode resolves a fresh dependency graph with lifecycle scripts disabled and uses npm's verifier for signatures and provenance. The npm CLI and host network stack are still used outside a hardened worker, so this is not detonation or a complete isolation boundary. The prototype does not yet rebuild source, prove source/artifact equality, sign receipts, consume revocations, or integrate with DSH installation and boot.

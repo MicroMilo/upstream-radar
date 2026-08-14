@@ -37,6 +37,18 @@ describe('directory scanner', () => {
     assert.match(report.target.artifactDigest, /^sha256:[0-9a-f]{64}$/)
   })
 
+  it('requires review when a declared DSH patch is not a regular file', async () => {
+    const root = await fixture({
+      name: 'missing-patch',
+      version: '1.0.0',
+      dsh: { bundle: { patch: 'missing.patch.yml' } },
+    })
+
+    const report = await scanDirectory(root)
+    assert.equal(report.riskVerdict, 'review')
+    assert.ok(report.findings.some(item => item.code === 'dsh-patch-not-regular-file'))
+  })
+
   it('requires review for lifecycle scripts', async () => {
     const root = await fixture({
       name: 'builds-on-install',
@@ -82,5 +94,14 @@ describe('directory scanner', () => {
     const report = await scanDirectory(root)
     assert.equal(report.verdict, 'block')
     assert.ok(report.findings.some(item => item.code === 'symlink-escapes-package'))
+  })
+
+  it('counts symlinks and directories against the scan entry budget', async () => {
+    const root = await fixture({ name: 'entry-budget', version: '1.0.0' })
+    await symlink('package.json', join(root, 'one-link'))
+
+    const report = await scanDirectory(root, { maxFiles: 1 })
+    assert.equal(report.coverage.staticSource, 'incomplete')
+    assert.ok(report.findings.some(item => item.code === 'scan-budget-exceeded'))
   })
 })

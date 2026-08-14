@@ -16,8 +16,8 @@ import {
   type ScanReport,
   type Severity,
 } from './types.js'
+import { TOOL_VERSION } from './version.js'
 
-const TOOL_VERSION = '0.1.0'
 const MAX_FILES = 10_000
 const MAX_TOTAL_BYTES = 64 * 1024 * 1024
 const MAX_MANIFEST_BYTES = 1024 * 1024
@@ -57,6 +57,7 @@ interface WalkResult {
 export interface ScanOptions {
   maxFiles?: number
   maxTotalBytes?: number
+  dependencyGraphResolved?: boolean
 }
 
 function addFinding(
@@ -98,6 +99,7 @@ async function walkPackage(root: string, options: ScanOptions, findings: Finding
   const maxTotalBytes = options.maxTotalBytes ?? MAX_TOTAL_BYTES
   const files: ScannedFile[] = []
   let bytesHashed = 0
+  let entriesVisited = 0
   let incomplete = false
 
   async function visit(directory: string): Promise<void> {
@@ -108,6 +110,21 @@ async function walkPackage(root: string, options: ScanOptions, findings: Finding
     for (const entry of entries) {
       if (incomplete) return
       if (entry.isDirectory() && EXCLUDED_DIRECTORIES.has(entry.name)) continue
+
+      entriesVisited += 1
+      if (entriesVisited > maxFiles) {
+        incomplete = true
+        addFinding(
+          findings,
+          'scan-budget-exceeded',
+          'high',
+          'Static scan coverage is incomplete',
+          'The package exceeded the configured filesystem-entry budget, so not every entry was inspected.',
+          { entriesVisited, filesScanned: files.length, bytesHashed, maxFiles, maxTotalBytes },
+          'Increase the scan budget in an isolated worker or reduce the artifact size.',
+        )
+        return
+      }
 
       const absolutePath = resolve(directory, entry.name)
       const relativePath = relative(root, absolutePath).split(sep).join('/')
@@ -139,7 +156,7 @@ async function walkPackage(root: string, options: ScanOptions, findings: Finding
       }
       if (!stats.isFile()) continue
 
-      if (files.length >= maxFiles || bytesHashed + stats.size > maxTotalBytes) {
+      if (bytesHashed + stats.size > maxTotalBytes) {
         incomplete = true
         addFinding(
           findings,
@@ -165,7 +182,7 @@ async function walkPackage(root: string, options: ScanOptions, findings: Finding
 
 function artifactDigest(files: readonly ScannedFile[]): string {
   const aggregate = createHash('sha256')
-  for (const file of [...files].sort((left, right) => left.path.localeCompare(right.path))) {
+  for (const file of [...files].sort((left, right) => left.path < right.path ? -1 : left.path > right.path ? 1 : 0)) {
     aggregate.update(file.path)
     aggregate.update('\0')
     aggregate.update(file.digest)
@@ -250,10 +267,11 @@ function inspectLifecycleScripts(scripts: readonly LifecycleScriptEvidence[], fi
 function inspectDependencySpecs(
   dependencies: readonly DependencyEvidence[],
   hasLockfile: boolean,
+  dependencyGraphResolved: boolean,
   findings: Finding[],
 ): void {
   const runtimeDependencies = dependencies.filter(dependency => dependency.scope !== 'devDependency')
-  if (!hasLockfile && runtimeDependencies.length > 0) {
+  if (!hasLockfile && !dependencyGraphResolved && runtimeDependencies.length > 0) {
     addFinding(
       findings,
       'dependency-graph-unlocked',
@@ -378,7 +396,13 @@ function inspectNpmrc(root: string, files: readonly ScannedFile[], findings: Fin
   })
 }
 
-function extractDshEvidence(manifest: PackageManifest, root: string, findings: Finding[]): DshEvidence {
+function extractDshEvidence(
+  manifest: PackageManifest,
+  root: string,
+  files: readonly ScannedFile[],
+  scanIncomplete: boolean,
+  findings: Finding[],
+): DshEvidence {
   const dsh = asRecord(manifest.dsh)
   const bundle = asRecord(dsh?.bundle)
   const patch = asString(bundle?.patch)
@@ -395,6 +419,20 @@ function extractDshEvidence(manifest: PackageManifest, root: string, findings: F
       { patch },
       'Keep the bundle patch inside the published package.',
     )
+  } else if (!scanIncomplete) {
+    const patchRelative = relative(root, patchPath).split(sep).join('/')
+    const patchEntry = files.find(file => file.path === patchRelative)
+    if (patchEntry === undefined || patchEntry.symlinkTarget !== undefined) {
+      addFinding(
+        findings,
+        'dsh-patch-not-regular-file',
+        'high',
+        'DSH bundle patch is missing or not a regular file',
+        'The published package does not contain the declared patch as a reviewed regular file.',
+        { patch },
+        'Publish the declared patch inside the package as a regular file.',
+      )
+    }
   }
   return { isBundle: true, patch }
 }
@@ -425,15 +463,15 @@ export async function scanDirectory(input: string, options: ScanOptions = {}): P
   const dependencies = collectDependencies(manifest)
 
   inspectLifecycleScripts(lifecycleScripts, findings)
-  inspectDependencySpecs(dependencies, lockfiles.length > 0, findings)
+  inspectDependencySpecs(dependencies, lockfiles.length > 0, options.dependencyGraphResolved ?? false, findings)
   inspectBundledDependencies(manifest, findings)
   inspectFiles(root, walk.files, findings)
   await inspectNpmrc(root, walk.files, findings)
-  const dsh = extractDshEvidence(manifest, root, findings)
+  const dsh = extractDshEvidence(manifest, root, walk.files, walk.incomplete, findings)
 
   findings.sort((left, right) => {
     const order: Record<Severity, number> = { critical: 0, high: 1, medium: 2, low: 3, info: 4 }
-    return order[left.severity] - order[right.severity] || left.code.localeCompare(right.code)
+    return order[left.severity] - order[right.severity] || (left.code < right.code ? -1 : left.code > right.code ? 1 : 0)
   })
 
   const riskVerdict = decideVerdict(findings)
@@ -459,7 +497,9 @@ export async function scanDirectory(input: string, options: ScanOptions = {}): P
     },
     coverage: {
       staticSource: walk.incomplete ? 'incomplete' : 'complete',
-      dependencyResolution: 'manifest-only',
+      artifactIntegrity: 'locally-hashed',
+      registrySignature: 'not-checked',
+      dependencyResolution: options.dependencyGraphResolved === true ? 'resolved' : 'manifest-only',
       provenance: 'not-checked',
       sourceArtifactMatch: 'not-checked',
       sandboxDetonation: 'not-run',
