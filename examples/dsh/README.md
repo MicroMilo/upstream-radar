@@ -8,6 +8,8 @@ pnpm run try:dsh
 
 The showcase uses the current published `@deepseek-ai/dsh@0.1.0-rc.6`. It boots the real DSH Agent, Session, Cordis loader, profile stack, and DeepSeek adapter. A local deterministic DeepSeek-compatible HTTP stub replaces only the paid model endpoint, so no API key is required.
 
+The smoke-test overlay disables DSH's unrelated local subprocess provider and the four shell/search adapters that wait for it. Radar delivery does not need a PTY, and this keeps the test portable when a CI runner does not have a compatible `node-pty` native build. Normal DSH profiles keep their own subprocess and tool configuration.
+
 To include live OSV and npm polling before DSH delivery, run:
 
 ```bash

@@ -11,6 +11,7 @@ const WRITE_REPORT = process.argv.includes('--write-report')
 const LIVE_FEEDS = process.argv.includes('--live-feeds')
 const REPORT_PATH = join(ROOT, 'examples/dsh/reports/headless-smoke.json')
 const MAX_OUTPUT_BYTES = 2 * 1024 * 1024
+const LIVE_STARTUP_WINDOW_MS = 30_000
 
 function run(command, args, options = {}) {
   return new Promise((resolveRun, rejectRun) => {
@@ -56,9 +57,18 @@ function run(command, args, options = {}) {
   })
 }
 
-function sse(response, text, delayMs, initialDelayMs = 0) {
+async function sse(response, text, delayMs, initialDelayMs = 0) {
   response.writeHead(200, { 'content-type': 'text/event-stream' })
   response.write(': upstream-radar-showcase\n\n')
+  let heartbeat
+  if (initialDelayMs > 0) {
+    heartbeat = setInterval(() => response.write(': waiting-for-live-radar\n\n'), 2_000)
+    try {
+      await new Promise(resolveWait => setTimeout(resolveWait, initialDelayMs))
+    } finally {
+      clearInterval(heartbeat)
+    }
+  }
   const events = [
     { choices: [{ delta: { role: 'assistant', content: null, reasoning_content: '' } }] },
     { choices: [{ delta: { content: text } }] },
@@ -78,7 +88,7 @@ function sse(response, text, delayMs, initialDelayMs = 0) {
     index += 1
     setTimeout(send, delayMs)
   }
-  setTimeout(send, initialDelayMs)
+  send()
 }
 
 async function startModelStub() {
@@ -104,12 +114,12 @@ async function startModelStub() {
       }
       requests.push(parsed)
       const sawRadar = JSON.stringify(parsed).includes('[UPSTREAM RADAR ANALYSIS TASK]')
-      sse(
+      void sse(
         response,
         sawRadar ? finalAnalysis : 'Waiting for the Upstream Radar follow-up.',
         75,
-        sawRadar || !LIVE_FEEDS ? 0 : 8_000,
-      )
+        sawRadar || !LIVE_FEEDS ? 0 : LIVE_STARTUP_WINDOW_MS,
+      ).catch(error => response.destroy(error))
     })
   })
   await new Promise((resolveListen, rejectListen) => {
@@ -152,10 +162,10 @@ async function readSessionFile(file) {
 
 async function main() {
   const scratch = await mkdtemp(join(tmpdir(), 'upstream-radar-dsh-'))
+  const dshHome = join(scratch, 'dsh-home')
+  const stateFile = join(scratch, 'radar-state.json')
   const model = await startModelStub()
   try {
-    const dshHome = join(scratch, 'dsh-home')
-    const stateFile = join(scratch, 'radar-state.json')
     const overlayFile = join(scratch, 'smoke.patch.yml')
     const packDirectory = join(scratch, 'package')
     await mkdir(packDirectory)
@@ -184,6 +194,21 @@ async function main() {
     if (!bundleInstalled) throw new Error('DSH profile did not register the upstream-radar bundle')
 
     const overlay = [
+      '- id: subprocess',
+      "  name: '@deepseek-ai/dsh-subprocess-local'",
+      '  disabled: true',
+      '- id: bash-sandbox',
+      "  name: '@deepseek-ai/dsh-bash-sandbox'",
+      '  disabled: true',
+      '- id: permission',
+      "  name: '@deepseek-ai/dsh-permission-presets'",
+      '  disabled: true',
+      '- id: tool-bash',
+      "  name: '@deepseek-ai/dsh-tool-bash'",
+      '  disabled: true',
+      '- id: tool-fs-search',
+      "  name: '@deepseek-ai/dsh-tool-fs-search'",
+      '  disabled: true',
       '- id: llm-deepseek',
       "  name: '@deepseek-ai/dsh-llm-deepseek'",
       '  config:',
