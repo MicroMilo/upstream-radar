@@ -1,7 +1,7 @@
 {
   "name": "upstream-radar",
   "version": "0.4.0",
-  "description": "Always-on vulnerability and breaking-change impact monitoring for coding-agent projects.",
+  "description": "Always-on vulnerability and breaking-change impact monitoring for DeepSeek Harness plugins.",
   "type": "module",
   "license": "Apache-2.0",
   "author": "MicroMilo",
@@ -15,7 +15,8 @@
   },
   "keywords": [
     "deepseek-harness",
-    "coding-agent",
+    "dsh-plugin",
+    "cordis",
     "dependency-security",
     "vulnerability-monitoring",
     "breaking-changes",
@@ -25,6 +26,9 @@
     "node": ">=22"
   },
   "packageManager": "pnpm@11.3.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "upstream-radar": "dist/src/cli.js"
   },
@@ -45,7 +49,10 @@
     "dist/src",
     "schemas",
     "cordis.patch.yml",
+    "docs/assets/upstream-radar-hero.jpg",
+    "docs/assets/upstream-radar-hero-mobile.jpg",
     "README.md",
+    "README.zh-CN.md",
     "LICENSE"
   ],
   "scripts": {
@@ -59,6 +66,10 @@
     "showcase:admission:reports": "pnpm run build && node scripts/showcase.mjs --write-reports",
     "showcase:radar": "pnpm run build && node scripts/radar-showcase.mjs",
     "showcase:radar:reports": "pnpm run build && node scripts/radar-showcase.mjs --write-reports",
+    "try:dsh": "pnpm run build && node scripts/dsh-headless-showcase.mjs",
+    "try:dsh:live": "pnpm run build && node scripts/dsh-headless-showcase.mjs --live-feeds",
+    "try:dsh:report": "pnpm run build && node scripts/dsh-headless-showcase.mjs --write-report",
+    "prepublishOnly": "pnpm test",
     "test": "pnpm run build && node --test dist/test/*.test.js"
   },
   "dsh": {

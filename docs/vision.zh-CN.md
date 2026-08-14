@@ -2,7 +2,7 @@
 
 ## 一句话
 
-Upstream Radar 持续监控 DSH 插件及其全部依赖；漏洞、恶意包或可能不兼容的升级出现后，它准确找到受影响的项目，再交给 DSH、Codex、Claude Code 或其他 coding agent 阅读项目代码并产出可执行结论。
+Upstream Radar 持续监控 DSH 插件及其全部依赖；漏洞、恶意包或可能不兼容的升级出现后，它准确找到受影响的项目，再由同一个 DSH 运行时里的 Agent 阅读项目代码并产出可执行结论。
 
 ## 用户真正购买的结果
 
@@ -49,7 +49,7 @@ parser@2.9.0 是否受到该公告影响
 插件声明的 DSH 范围是否包含候选版本
 ```
 
-Coding agent 负责必须结合项目才能回答的问题：
+DSH Agent 负责必须结合项目才能回答的问题：
 
 ```text
 漏洞功能是否真的被调用
@@ -61,19 +61,21 @@ Coding agent 负责必须结合项目才能回答的问题：
 
 模型不是漏洞数据库，也不是版本比较器。
 
-## 为什么 DSH 原生、核心保持中立
+## 为什么必须做成 DSH 原生插件
 
-DSH 的插件让 Agent 获得文件、网络、Shell、浏览器和外部系统能力，因此 DSH 是首个原生集成。检测核心和 analysis task 不绑定模型厂商，同一任务也可通过通用 outbox 交给 Codex、Claude Code 或其他 agent：
+DSH 采用 Everything is a Plugin 的组合方式。Radar 本身应该成为 profile 中的一层：和 Agent 共用 Cordis 生命周期、Session、项目目录与权限边界，而不是从飞书或另一个远程入口遥控电脑。
 
 ```text
 DSH 安装插件
   -> Radar 保存插件依赖图
   -> Radar 长期监听上游变化
   -> 命中后生成一个受约束任务
-  -> DSH 原生接收，或由通用 CLI 交给其他 coding agent
-  -> Agent 在项目上下文中调查
+  -> 通过 ctx.agents 向在线 DSH Agent 发送 plugin notice
+  -> DSH Agent 在项目上下文和只读权限中调查
   -> 结果回到项目负责人
 ```
+
+检测核心仍然保持确定性，task 也可以导出为文本或 JSON 以便调试；但当前产品只对 DSH 原生闭环负责，CLI 不是另一条产品集成路线。
 
 这不是给漏洞条目加一段 AI 摘要，而是让 Agent 带着真实项目上下文处理一个已经确认命中的事件。
 
@@ -89,7 +91,7 @@ DSH 安装插件
 
 ## 产品演进
 
-第一阶段完成“发现 → 精确路径 → 项目路由 → coding-agent 分析”；DSH 原生投递与通用 CLI outbox 均已具备。
+第一阶段完成“发现 → 精确路径 → DSH 原生投递 → Agent 分析”，并用真实 DSH headless profile 验证 bundle、Session 和 follow-up 链路。
 
 第二阶段接入飞书、Slack 和项目会话，让结论抵达负责人并被确认。
 

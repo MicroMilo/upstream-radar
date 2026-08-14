@@ -12,7 +12,7 @@
 | 项目路由 | 哪个项目、插件、负责人受影响 | 依赖图反查项目登记 | project、owner、channel |
 | 插件新版本 | npm `latest` 是否出现新候选 | 只读 packument，不安装候选 | 兼容性事件或无变化 |
 | Breaking signals | 新版本是否跨兼容边界或改变关键声明 | 比较版本、入口、exports、Node、DSH bundle 和 peer 范围 | confirmed/strong/needs-analysis |
-| Agent 分析入口 | 如何避免“新闻”直接指挥 coding agent | 将所有来源文字标记为不可信数据，要求只读和项目证据 | 可由 DSH 原生投递或通用 CLI 导出的持久 analysis task |
+| DSH 分析入口 | 如何避免“新闻”直接指挥 Agent | 将所有来源文字标记为不可信数据，要求只读和项目证据 | 由 DSH 原生投递；CLI 只用于检查持久 analysis task |
 | 去重与恢复 | 重启、重复轮询是否丢失、刷屏或投递过期任务 | 保存活跃漏洞、活跃兼容性问题和待分析任务；同一 incident 的新任务替换旧任务，resolved 会撤销旧任务 | 至少一次投递，不变不重复，不过期投递 |
 
 ## 支持性的安装前检查

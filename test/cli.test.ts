@@ -27,7 +27,7 @@ describe('CLI option parsing', () => {
     assert.match(result.stderr, /--fail-on requires a value/)
   })
 
-  it('lists, renders and acknowledges a pending task for external coding agents', async () => {
+  it('lists, renders and acknowledges a pending DSH analysis task', async () => {
     const root = await mkdtemp(join(tmpdir(), 'upstream-radar-cli-'))
     const stateFile = join(root, 'radar-state.json')
     try {

@@ -8,8 +8,8 @@ Report vulnerabilities through GitHub's **Security → Report a vulnerability** 
 
 - a known affected exact package version is not matched because of graph or source parsing;
 - paths from one plugin/project are attributed to another;
-- advisory or release text escapes its data boundary and becomes coding-agent instruction;
-- a pending event is deleted before a coding agent accepts it;
+- advisory or release text escapes its data boundary and becomes DSH Agent instruction;
+- a pending event is deleted before a DSH Agent accepts it;
 - malformed state is silently reset, hiding active alerts;
 - unchanged events produce an unbounded alert or model-call loop;
 - a compatibility heuristic is promoted to a confirmed break without evidence;
@@ -24,6 +24,6 @@ An exact OSV result and dependency path establish that an installed package vers
 
 A compatibility signal establishes a manifest/version difference or definite range exclusion. It does not prove that every project will fail after upgrading.
 
-Coding-agent analysis is model-generated reasoning. It must cite project evidence and preserve uncertainty; it is not a replacement for deterministic matching or tests.
+DSH Agent analysis is model-generated reasoning. It must cite project evidence and preserve uncertainty; it is not a replacement for deterministic matching or tests.
 
 Deep npm collection runs in a fresh temporary project with lifecycle scripts disabled, a scrubbed environment, and controlled npm/Git configuration. It is not a hardened sandbox and should process public artifacts only until disposable worker isolation lands.

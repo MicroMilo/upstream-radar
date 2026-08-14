@@ -7,3 +7,5 @@
         configFile: !!js process.env.UPSTREAM_RADAR_CONFIG
         stateFile: !!js process.env.UPSTREAM_RADAR_STATE
         intervalSeconds: !!js Number(process.env.UPSTREAM_RADAR_INTERVAL_SECONDS || 1800)
+        osvBaseUrl: !!js process.env.UPSTREAM_RADAR_OSV_BASE_URL
+        runOnStart: !!js process.env.UPSTREAM_RADAR_RUN_ON_START !== 'false'
