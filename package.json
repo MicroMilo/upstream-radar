@@ -26,6 +26,9 @@
     "node": ">=22"
   },
   "packageManager": "pnpm@11.3.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "upstream-radar": "dist/src/cli.js"
   },
@@ -46,7 +49,9 @@
     "dist/src",
     "schemas",
     "cordis.patch.yml",
+    "docs/assets/upstream-radar-hero.jpg",
     "README.md",
+    "README.zh-CN.md",
     "LICENSE"
   ],
   "scripts": {
@@ -63,6 +68,7 @@
     "try:dsh": "pnpm run build && node scripts/dsh-headless-showcase.mjs",
     "try:dsh:live": "pnpm run build && node scripts/dsh-headless-showcase.mjs --live-feeds",
     "try:dsh:report": "pnpm run build && node scripts/dsh-headless-showcase.mjs --write-report",
+    "prepublishOnly": "pnpm test",
     "test": "pnpm run build && node --test dist/test/*.test.js"
   },
   "dsh": {

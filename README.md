@@ -1,46 +1,43 @@
-<div align="center">
+<p align="center">
+  <img src="docs/assets/upstream-radar-hero.jpg" alt="Upstream Radar watches a dependency graph, highlights one affected path, and routes one signal to a DSH Agent." width="100%">
+</p>
 
-# Upstream Radar
+<h1 align="center">Upstream Radar</h1>
 
-### The upstream safety loop for DeepSeek Harness
+<p align="center"><strong>Dependency changes that wake your DSH Agent only when your project is actually affected.</strong></p>
 
-**Wake a DSH Agent only when an upstream vulnerability or breaking release actually reaches its plugin graph.**
+<p align="center">
+  English · <a href="README.zh-CN.md">简体中文</a>
+</p>
 
-[![CI](https://github.com/MicroMilo/upstream-radar/actions/workflows/ci.yml/badge.svg)](https://github.com/MicroMilo/upstream-radar/actions/workflows/ci.yml)
-[![Tested with DSH](https://img.shields.io/badge/tested_with_DSH-0.1.0--rc.6-5b5bd6.svg)](examples/dsh/README.md)
-[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Node.js 22+](https://img.shields.io/badge/node-%3E%3D22-339933.svg)](package.json)
-[![Status: alpha](https://img.shields.io/badge/status-alpha-orange.svg)](ROADMAP.md)
+<p align="center">
+  <a href="https://www.npmjs.com/package/upstream-radar"><img alt="npm version" src="https://img.shields.io/npm/v/upstream-radar?style=flat-square&color=2563eb"></a>
+  <a href="https://github.com/MicroMilo/upstream-radar/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/MicroMilo/upstream-radar/ci.yml?branch=main&style=flat-square&label=CI"></a>
+  <a href="examples/dsh/README.md"><img alt="Tested with DSH 0.1.0-rc.6" src="https://img.shields.io/badge/tested_with_DSH-0.1.0--rc.6-5b5bd6?style=flat-square"></a>
+  <a href="https://github.com/MicroMilo/upstream-radar/releases"><img alt="GitHub release" src="https://img.shields.io/github/v/release/MicroMilo/upstream-radar?style=flat-square"></a>
+  <a href="LICENSE"><img alt="Apache-2.0 license" src="https://img.shields.io/badge/license-Apache--2.0-0f766e?style=flat-square"></a>
+</p>
 
-A native DSH bundle that watches OSV and npm, preserves the exact dependency path, creates durable incidents, and hands bounded project analysis to a live DeepSeek Harness Agent.
-
-</div>
+<p align="center">
+  <a href="#run-the-proof">Run the proof</a> ·
+  <a href="#install-in-dsh">Install in DSH</a> ·
+  <a href="#how-the-loop-works">How it works</a> ·
+  <a href="ROADMAP.md">Roadmap</a>
+</p>
 
 ---
 
-[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) is built around **Everything is a Plugin**. That makes it easy to grow an Agent, but it also means every profile inherits a moving graph of plugins, transitive packages, DSH services, and Cordis boundaries.
+A vulnerability feed can tell you that a package is affected. It usually cannot tell you which DSH plugin brought that exact version into your profile, whether the vulnerable path reaches your project, or whether the available upgrade breaks DSH on the way out.
 
-An upstream advisory alone does not answer the questions a DSH user actually has:
+Upstream Radar closes that loop inside [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness):
 
-- Which installed plugin brought this package into my profile?
-- Which exact version and dependency path are affected?
-- Does the vulnerable feature reach this workspace?
-- Will the available fix break Node.js, a DSH peer range, an export, or the bundle patch?
-- Can the Agent investigate without treating advisory prose as trusted instructions?
+- **Exact path, not a package-name guess.** It preserves physical dependency nodes, duplicate versions, and the root-to-package path that actually matched.
+- **An incident, not alert spam.** It stores `new`, `updated`, and `resolved` state and keeps only the current task for each incident.
+- **Program facts before model judgment.** Version matching and compatibility boundaries stay deterministic; the DSH Agent investigates only project-specific reachability and migration impact.
 
-Upstream Radar is the missing loop between DSH's plugin graph and DSH's Agent runtime.
+## Run the proof
 
-```mermaid
-flowchart LR
-    profile_inventory["DSH project inventory<br/>plugins + dependency graph"] --> radar["Upstream Radar<br/>Cordis bundle"]
-    osv_feed["OSV advisories<br/>exact name@version"] --> radar
-    npm_feed["npm release stream"] --> radar
-    radar --> incidents["Durable incidents<br/>new · updated · resolved"]
-    incidents --> followup["ctx.agents follow-up<br/>source.kind = plugin"]
-    followup --> dsh_agent["Live DSH Agent<br/>read-only project analysis"]
-```
-
-## Try it inside real DSH
+Boot a real DSH `headless` profile with the packed Upstream Radar bundle installed:
 
 ```bash
 git clone https://github.com/MicroMilo/upstream-radar.git
@@ -50,11 +47,9 @@ pnpm install --frozen-lockfile
 pnpm run try:dsh
 ```
 
-This is an executable integration test, not an import check. It installs the packed bundle into a fresh `@deepseek-ai/dsh@0.1.0-rc.6` `headless` profile and boots the real Cordis loader, DSH Agent, Session, DeepSeek adapter, and persistence stack.
+No DeepSeek API key is required. The paid model endpoint is replaced by a deterministic local DeepSeek-compatible stub; the Cordis loader, DSH Agent, Session, persistence stack, bundle installation, and plugin delivery are real.
 
-The same deterministic DSH run is part of CI on Node.js 22.
-
-Only the paid model endpoint is replaced with a local deterministic DeepSeek-compatible stub, so the trial needs no API key. The run fails unless DSH actually receives the Radar task and preserves its plugin identity:
+The command fails unless DSH proves all four facts:
 
 ```json
 {
@@ -65,55 +60,58 @@ Only the paid model endpoint is replaced with a local deterministic DeepSeek-com
 }
 ```
 
-See the [DSH showcase contract](examples/dsh/README.md) and its checked-in [result](examples/dsh/reports/headless-smoke.json).
+This proof runs in CI on Node.js 22. See the executable [showcase contract](examples/dsh/README.md) and its checked-in [result](examples/dsh/reports/headless-smoke.json).
 
-To exercise the native startup poll against current OSV and npm data before the DSH handoff:
+To include a current OSV and npm poll before the DSH handoff:
 
 ```bash
 pnpm run try:dsh:live
 ```
 
-## Why this is a DSH plugin
+## Install in DSH
 
-| DSH seam | Upstream Radar behavior |
-| --- | --- |
-| Bundle installation | Ships `dsh.bundle` plus `cordis.patch.yml`; [`dsh plugin add`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md) appends it to the selected profile |
-| Cordis lifecycle | Runs one bounded startup check and a serialized timer loop; teardown waits for in-flight state writes |
-| Agent delivery | Uses `ctx.agents.roots()[0].followup(...)`, not a separate bot or remote-control channel |
-| Message identity | Marks every handoff as `source.kind = plugin`, `plugin = upstream-radar`, `form = notice` |
-| Offline behavior | Persists the incident and analysis task before attempting Agent delivery |
-| Agent startup | Retries queued delivery on DSH's `agent/created` event |
-| DSH compatibility | Watches `@deepseek-ai/dsh-*`, `@deepseek-ai/cordis`, Node engines, peer ranges, entrypoints, exports, and bundle changes |
-
-No inventory means no polling: the installed bundle stays dormant until `UPSTREAM_RADAR_CONFIG` is set.
-
-## Run it in an always-on DSH profile
-
-Build a project inventory shaped like [examples/radar/config.json](examples/radar/config.json), then install the bundle into the DSH profile that should own the loop:
+Upstream Radar is an npm-published DSH bundle, so no install-time build permission is required:
 
 ```bash
-pnpm build
-pnpm pack --pack-destination /tmp
+dsh plugin --profile web add upstream-radar@0.4.0
+```
 
+Point the bundle at an explicit project inventory, choose a durable state file, then boot the profile:
+
+```bash
 export UPSTREAM_RADAR_CONFIG=/absolute/path/radar-config.json
 export UPSTREAM_RADAR_STATE=/absolute/path/radar-state.json
 export UPSTREAM_RADAR_INTERVAL_SECONDS=1800
 
-dsh plugin --profile web add /tmp/upstream-radar-0.4.0.tgz
 dsh --profile web --dump-config
 dsh --profile web
 ```
 
-While the profile is running, Upstream Radar:
+Start from [the example inventory](examples/radar/config.json). If `UPSTREAM_RADAR_CONFIG` is not set, the bundle stays dormant and performs no polling.
 
-1. queries OSV for every exact installed npm `name@version`;
-2. checks npm releases for each installed plugin and DSH/Cordis package;
-3. records only meaningful `new`, `updated`, and `resolved` incident transitions;
-4. keeps one current analysis task per incident;
-5. delivers it to the first live root DSH Agent;
-6. leaves it on disk when no Agent is live.
+## How the loop works
 
-## Exact dependency paths, not package-name guesses
+1. Read the project inventory and exact installed npm graph.
+2. Query OSV with every installed `name@version` pair.
+3. Watch npm releases for the installed plugin and DSH/Cordis packages.
+4. Create or update one durable incident with the exact dependency path.
+5. Persist a constrained analysis task before delivery.
+6. Send a plugin-originated follow-up to the first live root DSH Agent.
+7. Keep the task on disk when no Agent is available; cancel it when the incident resolves.
+
+The handoff uses `ctx.agents.roots()[0].followup(...)` with:
+
+```json
+{
+  "kind": "plugin",
+  "plugin": "upstream-radar",
+  "form": "notice"
+}
+```
+
+It is a native DSH lifecycle integration—not a chat bridge or a remote-control bot.
+
+## One vulnerable path, not a false-positive package name
 
 Given this installed graph:
 
@@ -137,24 +135,24 @@ Path: plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
 Fixed versions: 3.0.0
 ```
 
-The unaffected `parser@3.2.1` node stays distinct. Duplicate versions and every bounded root-to-package path are preserved.
+The unaffected `parser@3.2.1` remains a distinct node.
 
-## DSH breaking-change radar
+## Vulnerabilities are only half the upstream problem
 
-Vulnerability alerts are only half of the problem. DSH is a developer preview and its plugin contracts are moving quickly, so Upstream Radar also detects candidate releases that:
+Upstream Radar also watches candidate releases for compatibility boundaries that matter to DSH plugins:
 
-- exclude the project's Node.js version;
-- exclude an installed `@deepseek-ai/dsh-*` or `@deepseek-ai/cordis` peer version;
-- change `main`, `exports`, or a DSH bundle patch path;
-- remove dependencies the installed release declared;
-- cross a major or pre-1.0 breaking version boundary;
-- explicitly declare a breaking change in supplied release notes.
+- Node.js engine exclusions;
+- incompatible `@deepseek-ai/dsh-*` or `@deepseek-ai/cordis` peer ranges;
+- changed `main`, `exports`, or DSH bundle patch paths;
+- removed dependencies;
+- major and pre-1.0 breaking version boundaries;
+- publisher-declared breaking changes in supplied release notes.
 
-These are compatibility signals, not claims that the project is already broken. The DSH Agent still has to inspect the workspace and cite project evidence.
+These are signals for project analysis, not automatic claims that an upgrade is broken.
 
-## Program facts vs. DSH Agent judgment
+## The model gets judgment, not control of the facts
 
-Upstream Radar determines facts that must not be guessed by a model:
+Upstream Radar determines facts that a model must not guess:
 
 ```text
 parser@2.9.0 is reported as affected
@@ -164,7 +162,7 @@ the candidate requires Node.js >=24
 the installed DSH peer is outside the candidate range
 ```
 
-The DSH Agent handles the repository-specific questions:
+The DSH Agent answers the repository-specific questions:
 
 ```text
 is the vulnerable feature reachable here?
@@ -173,50 +171,49 @@ which API or Cordis configuration would the upgrade disturb?
 what is the least disruptive project-specific action?
 ```
 
-Advisory text, release notes, links, package names, and repository strings stay inside an explicitly untrusted `event_json` boundary. The generated follow-up requires read-only analysis, project evidence, preserved uncertainty, and a fixed [result schema](schemas/analysis-result.schema.json). Model reasoning cannot rewrite the deterministic match.
+Advisories, release notes, links, package names, and repository strings remain untrusted data. The generated task requires read-only analysis, project evidence, explicit uncertainty, and a fixed [result schema](schemas/analysis-result.schema.json).
 
 ## What works today
 
-- npm lockfile graphs with physical nodes, duplicate versions, and bounded paths;
+- npm lockfile graphs with duplicate versions and bounded dependency paths;
 - exact-version OSV vulnerability and malicious-package matching;
-- npm release monitoring for installed plugins and DSH/Cordis packages;
-- durable incident state and current-task replacement;
-- native DSH bundle installation, startup polling, `agent/created` delivery, and plugin-source attribution;
-- manifest-level compatibility signals for Node.js, peers, exports, entrypoints, bundle paths, dependencies, and version boundaries;
-- a network-free Radar showcase via `pnpm run showcase:radar`;
-- a real DSH runtime showcase via `pnpm run try:dsh`.
+- npm release monitoring for plugins and DSH/Cordis packages;
+- durable incident state with current-task replacement and resolution;
+- native DSH bundle installation, startup polling, `agent/created` retry, and plugin-source attribution;
+- compatibility signals for Node.js, peers, exports, entrypoints, bundle paths, dependencies, and version boundaries;
+- network-free Radar and real DSH runtime showcases.
 
-The original bounded pre-install scanner remains available as a supporting collector:
+The bounded pre-install scanner remains available as a supporting collector:
 
 ```bash
-node dist/src/cli.js scan /path/to/dsh-plugin
-node dist/src/cli.js inspect npm:dsh-cloudflare-browser-run@0.1.1 --deep
+upstream-radar scan /path/to/dsh-plugin
+upstream-radar inspect npm:dsh-cloudflare-browser-run@0.1.1 --deep
 ```
 
 ## Current boundaries
 
-- Project inventory is currently explicit JSON; automatic discovery from the active DSH profile is not implemented yet.
+- Project inventory is explicit JSON; active DSH profile discovery is not implemented yet.
 - npm lock graphs are supported; pnpm and Yarn graph adapters are not implemented.
 - OSV and npm `latest` are the live sources; GitHub release and migration-guide ingestion are deferred.
-- DSH currently routes to the first live root Agent rather than a project-specific session.
-- The Agent's final analysis remains in its DSH Session; Radar does not yet ingest it back into incident state.
-- Source/API diffing and disposable compatibility execution are intentionally deferred.
+- Delivery currently targets the first live root Agent rather than a project-specific session.
+- Agent conclusions stay in the DSH Session; Radar does not ingest them back into incident state yet.
 - No Issue, branch, Pull Request, dependency override, or merge is created automatically.
 
-The task-export CLI is retained as a debugging boundary, but native DeepSeek Harness operation is the product focus.
-
-Upstream Radar is alpha software built against the developer-preview DSH ecosystem. Event schemas and adapter boundaries can still change.
+Upstream Radar is alpha software built for the developer-preview DSH ecosystem. Event schemas and adapter boundaries can change.
 
 ## Project guide
 
-- [DSH headless showcase](examples/dsh/README.md)
 - [Architecture](docs/architecture.md)
+- [DSH headless showcase](examples/dsh/README.md)
 - [Radar showcase walkthrough](docs/showcase.md)
 - [Product vision（中文）](docs/vision.zh-CN.md)
 - [Checks and evidence（中文）](docs/checks.zh-CN.md)
 - [Threat model](docs/threat-model.md)
 - [Roadmap](ROADMAP.md)
+- [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 - [Security policy](SECURITY.md)
 
-Apache-2.0 licensed.
+If DSH plugins are part of your stack, star the repository to follow the upstream safety loop as it grows. Questions and design feedback are welcome in [GitHub Discussions](https://github.com/MicroMilo/upstream-radar/discussions).
+
+<sub>Community project for DeepSeek Harness. Not an official DeepSeek product. Apache-2.0 licensed.</sub>
