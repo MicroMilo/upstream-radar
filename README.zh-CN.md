@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="docs/assets/upstream-radar-hero.jpg" alt="Upstream Radar 监控依赖图，只高亮真正受影响的路径，并把一个信号交给 DSH Agent。" width="100%">
+  <picture>
+    <source media="(max-width: 600px)" srcset="docs/assets/upstream-radar-hero-mobile.jpg">
+    <img src="docs/assets/upstream-radar-hero.jpg" alt="Upstream Radar 监控依赖图，只高亮真正受影响的路径，并把一个信号交给 DSH Agent。" width="100%">
+  </picture>
 </p>
 
 <h1 align="center">Upstream Radar</h1>
