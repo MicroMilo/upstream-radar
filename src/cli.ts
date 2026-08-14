@@ -43,7 +43,7 @@ Commands:
   scan     bounded, read-only inspection of a local package directory
   inspect  fetch and verify the exact npm artifact before inspecting its contents
   radar    monitor vulnerability changes or assess a candidate compatibility change
-  task     expose the durable analysis outbox to any coding agent
+  task     inspect or acknowledge the durable DSH analysis outbox
 
 Options:
   --deep               resolve the dependency graph with scripts disabled and ask npm to verify signatures/provenance
@@ -176,7 +176,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
     if (statePath !== ':memory:') await saveRadarState(stateFile, result.state)
     process.stdout.write(json
       ? `${JSON.stringify(result, null, 2)}\n`
-      : `${renderRadarEvents(result.events)}${result.sourceErrors.map(error => `Source warning (${error.source}): ${safeErrorMessage(error.message)}\n`).join('')}Prepared ${result.analysisTasks.length} coding-agent analysis task(s); queried ${result.packagesQueried} exact package versions and ${result.releasePackagesQueried} release streams.\n`)
+      : `${renderRadarEvents(result.events)}${result.sourceErrors.map(error => `Source warning (${error.source}): ${safeErrorMessage(error.message)}\n`).join('')}Prepared ${result.analysisTasks.length} DSH analysis task(s); queried ${result.packagesQueried} exact package versions and ${result.releasePackagesQueried} release streams.\n`)
     return 0
   }
 
@@ -198,7 +198,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
   const analysisTasks = events.map(createAnalysisTask)
   process.stdout.write(json
     ? `${JSON.stringify({ detectedAt, events, analysisTasks }, null, 2)}\n`
-    : `${renderRadarEvents(events)}Prepared ${analysisTasks.length} coding-agent compatibility analysis task(s).\n`)
+    : `${renderRadarEvents(events)}Prepared ${analysisTasks.length} DSH compatibility analysis task(s).\n`)
   return 0
 }
 

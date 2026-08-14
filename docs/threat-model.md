@@ -45,7 +45,7 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 2. Distinct physical dependency nodes are preserved even when names match.
 3. Every alert names the project, installed plugin, affected package, and bounded path.
 4. Feed and release prose is framed as untrusted data, never instructions.
-5. Every coding-agent analysis defaults to read-only and requires project evidence.
+5. Every DSH Agent analysis defaults to read-only and requires project evidence.
 6. New tasks are persisted before synchronous Agent admission.
 7. Unchanged matches do not emit another event.
 8. Missing, malformed, or failed source/state checks cannot silently become clean.

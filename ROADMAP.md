@@ -7,9 +7,10 @@
 - [x] Emit only new, materially updated, and resolved vulnerability events.
 - [x] Recognize malicious-package records.
 - [x] Route every event to a project, owner, and configured channel.
-- [x] Persist pending coding-agent analysis tasks before delivery.
+- [x] Persist pending DSH Agent analysis tasks before delivery.
 - [x] Ship an installable DSH bundle with a bounded fixed polling interval.
 - [x] Provide a deterministic vulnerability and breaking-change showcase.
+- [x] Prove bundle installation, plugin-source attribution, Session persistence, and Agent delivery in a real DSH headless profile.
 
 ## Milestone 1 — compatibility radar
 
@@ -18,16 +19,16 @@
 - [x] Separate compatibility facts from model conclusions.
 - [x] Track compatibility incidents through new, updated, and resolved states.
 - [x] Replace stale queued analysis when an incident changes and cancel it when resolved.
-- [x] Expose a vendor-neutral task outbox for Codex, Claude Code, and stdin-capable agents.
+- [x] Keep a text/JSON task export as a debugging surface for the DSH outbox.
 - [ ] Read GitHub releases, changelogs, comparison diffs, and migration guides.
 - [ ] Track DSH package families as one coordinated release rather than unrelated npm packages.
 - [ ] Resolve the lowest clean plugin upgrade, not merely the latest release.
+- [ ] Discover the active DSH profile and its installed lock graph automatically.
 - [ ] Run plugin load and representative compatibility probes in a disposable DSH profile.
 - [ ] Record `compatible`, `incompatible`, and `unknown` against an explicit DSH version matrix.
 
 ## Milestone 2 — reliable project routing
 
-- [ ] Discover actual DSH profiles and installed lock graphs automatically.
 - [ ] Add pnpm and Yarn lock graph adapters.
 - [ ] Maintain one durable project registry across multiple machines.
 - [ ] Deliver to the correct DSH project session instead of one security-inbox Agent.

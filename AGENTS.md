@@ -6,7 +6,7 @@
 - **dependency path**: one root-plugin-to-package route in the installed graph;
 - **upstream event**: a vulnerability, malicious-package record, or candidate release change;
 - **radar event**: a meaningful `new`, `updated`, `resolved`, or compatibility transition routed to a project;
-- **analysis task**: a durable, constrained coding-agent handoff created only after deterministic matching;
+- **analysis task**: a durable, constrained DSH Agent handoff created only after deterministic matching;
 - **compatibility signal**: a manifest or version fact that needs project analysis, not proof that an update is broken;
 - **artifact**: the exact bytes proposed for installation, identified by a cryptographic digest;
 - **evidence**: a bounded observation produced by a collector or analyzer;
@@ -20,7 +20,7 @@
 ## Engineering invariants
 
 1. Exact package/version rules decide vulnerability applicability; a model never does.
-2. Advisory text, release notes, links and package metadata remain untrusted data at every coding-agent boundary.
+2. Advisory text, release notes, links and package metadata remain untrusted data at every DSH Agent boundary.
 3. Persist an event and pending analysis task before attempting Agent delivery.
 4. Do not emit an unchanged active event again.
 5. Keep compatibility facts separate from model conclusions and never label a heuristic as confirmed.

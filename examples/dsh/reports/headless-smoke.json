@@ -1,0 +1,22 @@
+{
+  "dshPackage": "@deepseek-ai/dsh@0.1.0-rc.6",
+  "profile": "headless",
+  "model": "local deterministic DeepSeek-compatible stub",
+  "feedMode": "checked-in deterministic event",
+  "bundleInstalled": true,
+  "radarTaskReachedModel": true,
+  "pluginSourcePreserved": true,
+  "pendingTasksAfterDelivery": 0,
+  "activeVulnerabilities": 1,
+  "modelRequests": 3,
+  "finalAssistant": {
+    "project_exposure": "unknown",
+    "confidence": "low",
+    "evidence": [
+      "examples/radar/project/src/import-logs.ts"
+    ],
+    "recommended_action": "Repeat this DSH profile run with a configured DeepSeek model for semantic reachability analysis.",
+    "urgency": "within_24_hours",
+    "reasoning_summary": "The real DSH Agent received the plugin-originated Radar task. This deterministic local model verifies delivery plumbing, not vulnerability applicability."
+  }
+}

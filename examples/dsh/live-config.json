@@ -1,0 +1,46 @@
+{
+  "schema": "upstream-radar.radar-config/v1alpha1",
+  "projects": [
+    {
+      "schema": "upstream-radar.inventory/v1alpha1",
+      "project": {
+        "id": "dsh-live-smoke",
+        "name": "DSH Live Smoke Workspace",
+        "workspace": "examples/radar/project",
+        "owner": "dsh-plugin-maintainer",
+        "channels": [
+          "dsh:headless"
+        ]
+      },
+      "environment": {
+        "nodeVersion": "22.18.0"
+      },
+      "plugins": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "lodash",
+            "version": "4.17.20"
+          },
+          "manifest": {
+            "name": "lodash",
+            "version": "4.17.20",
+            "main": "lodash.js"
+          },
+          "graph": {
+            "schema": "upstream-radar.dependency-graph/v1alpha1",
+            "rootNodeId": "lodash",
+            "nodes": [
+              {
+                "id": "lodash",
+                "name": "lodash",
+                "version": "4.17.20"
+              }
+            ],
+            "edges": []
+          }
+        }
+      ]
+    }
+  ]
+}

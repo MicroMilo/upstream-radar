@@ -18,7 +18,7 @@ The model never decides whether a version range matches.
  OSV exact-version results ────┤                         │
  npm candidate manifests ─────┘                         │
                                                          v
-                  coding-agent analysis plane
+                     DSH Agent analysis plane
 
              advisory/release material (untrusted data)
                               + project workspace
@@ -54,7 +54,7 @@ The npm deep collector resolves in a temporary project with lifecycle scripts di
 4. Match each result back to physical graph nodes and paths.
 5. Compare the current match set with durable state.
 6. Emit `new`, `updated`, or `resolved` only when state changes.
-7. Add new and updated events to the durable coding-agent outbox.
+7. Add new and updated events to the durable DSH analysis outbox.
 
 The active-match key binds project, plugin version, affected package version, and advisory id. An unchanged advisory does not create another event.
 
@@ -74,9 +74,9 @@ These are signals for project analysis. Only an explicit publisher statement or 
 
 Compatibility findings use the same lifecycle as vulnerabilities. A stable `incidentId` identifies the project, installed plugin, and changed package while individual event ids identify each `new`, `updated`, or `resolved` transition. A newer candidate replaces the queued analysis for the same incident; when the project catches up or the signal disappears, the unresolved task is removed.
 
-## Coding-agent handoff
+## DSH Agent handoff
 
-An analysis task includes the deterministic event, project location, route, and a fixed output contract. Its prompt says that every advisory, release note, link, package name, and repository string is untrusted data. It requests read-only investigation and requires file, symbol, configuration, or runtime evidence. The task is vendor-neutral; DSH consumes it natively, while other coding agents consume it through the outbox CLI.
+An analysis task includes the deterministic event, project location, route, and a fixed output contract. Its prompt says that every advisory, release note, link, package name, and repository string is untrusted data. It requests read-only investigation and requires file, symbol, configuration, or runtime evidence. DSH consumes it natively as a plugin-originated notice. Text and JSON export remain debugging surfaces, not a second product integration.
 
 The DSH bundle performs this transaction:
 

@@ -6,7 +6,7 @@ Run the deterministic, network-free product demonstration:
 pnpm run showcase:radar
 ```
 
-Write the JSON events and exact coding-agent task prompts under `examples/radar/reports/`:
+Write the JSON events and exact DSH Agent task prompts under `examples/radar/reports/`:
 
 ```bash
 pnpm run showcase:radar:reports

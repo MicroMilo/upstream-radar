@@ -31,7 +31,7 @@ export function createAnalysisTask(event: RadarEvent): AnalysisTask {
   }
 }
 
-/** Render one event as a vendor-neutral, constrained coding-agent turn. */
+/** Render one event as a constrained DSH Agent follow-up. */
 export function renderAgentAnalysisPrompt(task: AnalysisTask): string {
   const focus = task.event.kind === 'compatibility'
     ? '判断这个候选升级会不会破坏当前项目，定位受影响的 API、配置或运行环境，并给出最小迁移与验证方案。'
