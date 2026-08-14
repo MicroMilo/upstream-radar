@@ -1,0 +1,202 @@
+import assert from 'node:assert/strict'
+import { describe, it } from 'node:test'
+import { emptyRadarState, pollRadar, type AdvisorySource, type ReleaseSource } from '../src/radar.js'
+import type { AdvisoryMatch, ProjectInventory } from '../src/radar-types.js'
+
+const inventory: ProjectInventory = {
+  schema: 'upstream-radar.inventory/v1alpha1',
+  project: {
+    id: 'payments-api',
+    name: 'Payments API',
+    repository: 'https://github.com/acme/payments-api',
+    owner: 'payments-platform',
+    channels: ['feishu:payments-security'],
+  },
+  environment: { nodeVersion: '22.18.0' },
+  plugins: [{
+    package: { ecosystem: 'npm', name: 'plugin', version: '1.0.0' },
+    graph: {
+      schema: 'upstream-radar.dependency-graph/v1alpha1',
+      rootNodeId: 'plugin',
+      nodes: [
+        { id: 'plugin', name: 'plugin', version: '1.0.0' },
+        { id: 'logger', name: 'logger', version: '4.0.2' },
+        { id: 'parser-old', name: 'parser', version: '2.9.0' },
+      ],
+      edges: [
+        { from: 'plugin', to: 'logger', kind: 'runtime' },
+        { from: 'logger', to: 'parser-old', kind: 'runtime' },
+      ],
+    },
+  }],
+}
+
+function source(modified: string, active = true): AdvisorySource {
+  return {
+    async query(packages): Promise<Map<string, AdvisoryMatch[]>> {
+      const results = new Map<string, AdvisoryMatch[]>()
+      for (const item of packages) results.set(`${item.ecosystem}:${item.name}@${item.version}`, [])
+      if (active) {
+        results.set('npm:parser@2.9.0', [{
+          package: { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+          advisory: {
+            id: 'GHSA-demo',
+            aliases: ['CVE-2026-1234'],
+            summary: 'Unsafe parser input handling',
+            details: 'Attackers may trigger an unsafe parser path.',
+            severity: 'high',
+            published: '2026-08-14T00:00:00.000Z',
+            modified,
+            fixedVersions: ['3.0.0'],
+            references: ['https://example.test/GHSA-demo'],
+          },
+        }])
+      }
+      return results
+    },
+  }
+}
+
+describe('radar polling', () => {
+  it('emits only meaningful new, updated and resolved transitions', async () => {
+    const first = await pollRadar([inventory], emptyRadarState(), source('2026-08-14T01:00:00.000Z'), new Date('2026-08-14T01:01:00.000Z'))
+    assert.equal(first.events.length, 1)
+    assert.equal(first.events[0]?.change, 'new')
+    assert.equal(first.analysisTasks.length, 1)
+    const firstEvent = first.events[0]
+    assert.ok(firstEvent !== undefined && firstEvent.kind !== 'compatibility')
+    assert.deepEqual(firstEvent.paths[0]?.map(item => `${item.name}@${item.version}`), [
+      'plugin@1.0.0',
+      'logger@4.0.2',
+      'parser@2.9.0',
+    ])
+
+    const unchanged = await pollRadar([inventory], first.state, source('2026-08-14T01:00:00.000Z'), new Date('2026-08-14T01:31:00.000Z'))
+    assert.equal(unchanged.events.length, 0)
+
+    const updated = await pollRadar([inventory], unchanged.state, source('2026-08-14T02:00:00.000Z'), new Date('2026-08-14T02:01:00.000Z'))
+    assert.equal(updated.events[0]?.change, 'updated')
+    assert.equal(updated.events[0]?.incidentId, first.events[0]?.incidentId)
+    assert.equal(updated.state.pendingAnalysisTasks.length, 1)
+    assert.equal(updated.state.pendingAnalysisTasks[0]?.event.change, 'updated')
+
+    const resolved = await pollRadar([inventory], updated.state, source('2026-08-14T02:00:00.000Z', false), new Date('2026-08-14T03:01:00.000Z'))
+    assert.equal(resolved.events[0]?.change, 'resolved')
+    assert.equal(resolved.analysisTasks.length, 0)
+    assert.equal(resolved.state.pendingAnalysisTasks.length, 0)
+  })
+
+  it('emits one compatibility task when npm observes a new candidate release', async () => {
+    const releases: ReleaseSource = {
+      async query(packages) {
+        const installed = packages.find(item => item.name === 'plugin')
+        assert.ok(installed)
+        return new Map([['npm:plugin@1.0.0', {
+          installed,
+          latestVersion: '2.0.0',
+          previous: { name: 'plugin', version: '1.0.0', main: './old.js' },
+          candidate: { name: 'plugin', version: '2.0.0', main: './new.js' },
+        }]])
+      },
+    }
+    const noVulnerabilities = source('2026-08-14T01:00:00.000Z', false)
+    const first = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      noVulnerabilities,
+      new Date('2026-08-14T04:00:00.000Z'),
+      releases,
+    )
+    assert.equal(first.events.length, 1)
+    assert.equal(first.events[0]?.kind, 'compatibility')
+    const unchanged = await pollRadar(
+      [inventory],
+      first.state,
+      noVulnerabilities,
+      new Date('2026-08-14T04:30:00.000Z'),
+      releases,
+    )
+    assert.equal(unchanged.events.length, 0)
+
+    const nextRelease: ReleaseSource = {
+      async query(packages) {
+        const installed = packages.find(item => item.name === 'plugin')
+        assert.ok(installed)
+        return new Map([['npm:plugin@1.0.0', {
+          installed,
+          latestVersion: '3.0.0',
+          previous: { name: 'plugin', version: '1.0.0', main: './old.js' },
+          candidate: { name: 'plugin', version: '3.0.0', main: './next.js' },
+        }]])
+      },
+    }
+    const updated = await pollRadar(
+      [inventory],
+      unchanged.state,
+      noVulnerabilities,
+      new Date('2026-08-14T05:00:00.000Z'),
+      nextRelease,
+    )
+    assert.equal(updated.events[0]?.kind, 'compatibility')
+    assert.equal(updated.events[0]?.change, 'updated')
+    assert.equal(updated.state.pendingAnalysisTasks.length, 1)
+
+    const caughtUp: ReleaseSource = {
+      async query(packages) {
+        const installed = packages.find(item => item.name === 'plugin')
+        assert.ok(installed)
+        return new Map([['npm:plugin@1.0.0', {
+          installed,
+          latestVersion: '1.0.0',
+          previous: { name: 'plugin', version: '1.0.0', main: './old.js' },
+          candidate: { name: 'plugin', version: '1.0.0', main: './old.js' },
+        }]])
+      },
+    }
+    const resolved = await pollRadar(
+      [inventory],
+      updated.state,
+      noVulnerabilities,
+      new Date('2026-08-14T05:30:00.000Z'),
+      caughtUp,
+    )
+    assert.equal(resolved.events[0]?.kind, 'compatibility')
+    assert.equal(resolved.events[0]?.change, 'resolved')
+    assert.equal(resolved.analysisTasks.length, 0)
+    assert.equal(resolved.state.pendingAnalysisTasks.length, 0)
+  })
+
+  it('does not lose a vulnerability event when the independent release source is unavailable', async () => {
+    const activeRelease: ReleaseSource = {
+      async query(packages) {
+        const installed = packages.find(item => item.name === 'plugin')
+        assert.ok(installed)
+        return new Map([['npm:plugin@1.0.0', {
+          installed,
+          latestVersion: '2.0.0',
+          previous: { name: 'plugin', version: '1.0.0', main: './old.js' },
+          candidate: { name: 'plugin', version: '2.0.0', main: './new.js' },
+        }]])
+      },
+    }
+    const warm = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      source('2026-08-14T01:00:00.000Z', false),
+      new Date('2026-08-14T04:30:00.000Z'),
+      activeRelease,
+    )
+    const unavailable: ReleaseSource = { async query() { throw new Error('registry unavailable') } }
+    const result = await pollRadar(
+      [inventory],
+      warm.state,
+      source('2026-08-14T01:00:00.000Z'),
+      new Date('2026-08-14T05:00:00.000Z'),
+      unavailable,
+    )
+    assert.equal(result.events.some(event => event.kind === 'vulnerability'), true)
+    assert.equal(result.events.some(event => event.kind === 'compatibility' && event.change === 'resolved'), false)
+    assert.equal(Object.keys(result.state.activeCompatibility).length, 1)
+    assert.deepEqual(result.sourceErrors, [{ source: 'npm-releases', message: 'registry unavailable' }])
+  })
+})

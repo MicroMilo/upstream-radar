@@ -9,7 +9,7 @@ function display(value: string, maxLength = 512): string {
 
 export function renderTextReport(report: ScanReport): string {
   const lines = [
-    `Plugin Notary ${report.tool.version}`,
+    `Upstream Radar ${report.tool.version}`,
     `Target: ${display(report.target.name)}${report.target.version === null ? '' : `@${display(report.target.version)}`}`,
     `Artifact: ${report.target.artifactDigest}`,
     `DSH bundle: ${report.dsh.isBundle ? `yes (${display(report.dsh.patch ?? 'patch unspecified')})` : 'no'}`,
@@ -45,6 +45,9 @@ export function renderTextReport(report: ScanReport): string {
     if (npm.provenance.sourceCommit !== undefined) lines.push(`  source commit: ${display(npm.provenance.sourceCommit)}`)
     if (npm.provenance.workflow !== undefined) lines.push(`  build workflow: ${display(npm.provenance.workflow)}`)
     if (npm.dependencyAudit.graphDigest !== undefined) lines.push(`  graph digest: ${npm.dependencyAudit.graphDigest}`)
+    if (npm.dependencyAudit.graph?.unresolved !== undefined) {
+      lines.push(`  unresolved dependency edges: ${npm.dependencyAudit.graph.unresolved.length}`)
+    }
     if (npm.dependencyAudit.vulnerabilities !== null) {
       const vulnerabilities = npm.dependencyAudit.vulnerabilities
       lines.push(`  known vulnerabilities: ${vulnerabilities.total} total (${vulnerabilities.critical} critical, ${vulnerabilities.high} high)`)

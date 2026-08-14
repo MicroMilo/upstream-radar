@@ -1,0 +1,16 @@
+{
+  "name": "plugin",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-agent": "^0.1.0-rc.5"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

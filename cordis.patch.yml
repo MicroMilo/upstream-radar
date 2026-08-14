@@ -1,0 +1,9 @@
+# Upstream Radar stays dormant until an inventory file is configured. This keeps
+# installation side-effect free while letting one DSH profile opt into polling.
+- insert:
+    - id: upstream-radar
+      name: 'upstream-radar/dsh'
+      config:
+        configFile: !!js process.env.UPSTREAM_RADAR_CONFIG
+        stateFile: !!js process.env.UPSTREAM_RADAR_STATE
+        intervalSeconds: !!js Number(process.env.UPSTREAM_RADAR_INTERVAL_SECONDS || 1800)

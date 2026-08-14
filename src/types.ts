@@ -1,4 +1,6 @@
-export const REPORT_SCHEMA = 'plugin-notary.scan/v1alpha1' as const
+import type { DependencyGraph } from './radar-types.js'
+
+export const REPORT_SCHEMA = 'upstream-radar.scan/v1alpha1' as const
 
 export type Severity = 'info' | 'low' | 'medium' | 'high' | 'critical'
 
@@ -82,6 +84,7 @@ export interface NpmEvidence {
     status: 'not-run' | 'verified' | 'findings' | 'failed'
     packages: number | null
     graphDigest?: string
+    graph?: DependencyGraph
     invalidSignatures: string[]
     missingSignatures: string[]
     vulnerabilities: VulnerabilitySummary | null
@@ -92,7 +95,7 @@ export interface NpmEvidence {
 export interface ScanReport {
   schema: typeof REPORT_SCHEMA
   tool: {
-    name: 'plugin-notary'
+    name: 'upstream-radar'
     version: string
   }
   target: {

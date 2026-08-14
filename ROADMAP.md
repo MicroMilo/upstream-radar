@@ -1,50 +1,59 @@
 # Roadmap
 
-## Milestone 0 — local evidence prototype
+## Milestone 0 — first vertical slice
 
-- [x] Initialize a zero-runtime-dependency TypeScript CLI.
-- [x] Hash a bounded local package tree deterministically.
-- [x] Inspect lifecycle scripts, dependency specifications, native artifacts, package-manager hooks and symlinks.
-- [x] Recognize a DSH bundle declaration.
-- [x] Separate findings, coverage and policy verdict.
-- [ ] Validate the prototype against a first corpus of public DSH plugins.
+- [x] Preserve exact dependency nodes, edges, duplicate versions, and root-to-node paths.
+- [x] Query OSV for exact installed npm versions.
+- [x] Emit only new, materially updated, and resolved vulnerability events.
+- [x] Recognize malicious-package records.
+- [x] Route every event to a project, owner, and configured channel.
+- [x] Persist pending coding-agent analysis tasks before delivery.
+- [x] Ship an installable DSH bundle with a bounded fixed polling interval.
+- [x] Provide a deterministic vulnerability and breaking-change showcase.
 
-## Milestone 1 — exact published artifacts
+## Milestone 1 — compatibility radar
 
-- [x] Accept exact npm specs and local directories.
-- [x] Download npm tarballs without lifecycle scripts and parse them under archive safety budgets.
-- [x] Verify npm tarball integrity and ECDSA registry signatures.
-- [x] Verify npm provenance through the official npm CLI in deep mode.
-- [x] Resolve a deep-mode graph, compute its digest and summarize npm advisories.
-- [ ] Accept Git commits and standalone tarball inputs.
-- [ ] Generate CycloneDX SBOMs from the resolved graph.
-- [ ] Query vulnerability and malicious-package intelligence.
-- [ ] Compare npm tarballs with the declared source commit.
-- [ ] Emit SARIF and a canonical JSON evidence bundle.
+- [x] Monitor npm `latest` for installed plugin releases and DSH packages.
+- [x] Detect Node.js, entrypoint, export-map, bundle, peer-range, and pre-1.0 DSH changes.
+- [x] Separate compatibility facts from model conclusions.
+- [x] Track compatibility incidents through new, updated, and resolved states.
+- [x] Replace stale queued analysis when an incident changes and cancel it when resolved.
+- [x] Expose a vendor-neutral task outbox for Codex, Claude Code, and stdin-capable agents.
+- [ ] Read GitHub releases, changelogs, comparison diffs, and migration guides.
+- [ ] Track DSH package families as one coordinated release rather than unrelated npm packages.
+- [ ] Resolve the lowest clean plugin upgrade, not merely the latest release.
+- [ ] Run plugin load and representative compatibility probes in a disposable DSH profile.
+- [ ] Record `compatible`, `incompatible`, and `unknown` against an explicit DSH version matrix.
 
-## Milestone 2 — DSH admission
+## Milestone 2 — reliable project routing
 
-- [ ] Resolve candidate DSH profile mutations in quarantine.
-- [ ] Scan only new and changed artifacts from the candidate lock graph.
-- [ ] Install the exact reviewed bytes with lifecycle scripts denied by default.
-- [ ] Record `dsh-trust.lock` receipts atomically.
-- [ ] Verify installed bytes before DSH profile load.
-- [ ] Propose an upstream provider interface for third-party admission engines.
+- [ ] Discover actual DSH profiles and installed lock graphs automatically.
+- [ ] Add pnpm and Yarn lock graph adapters.
+- [ ] Maintain one durable project registry across multiple machines.
+- [ ] Deliver to the correct DSH project session instead of one security-inbox Agent.
+- [ ] Add Feishu, Slack, email, and generic webhook delivery with acknowledgement state.
+- [ ] Add suppression, ownership, maintenance-window, and dev-only rules.
+- [ ] Keep event history for new, updated, acknowledged, fixed, withdrawn, and ignored states.
 
-## Milestone 3 — isolation and receipts
+## Milestone 3 — richer vulnerability intelligence
 
-- [ ] Run install/load detonation in disposable workers with canary files and controlled egress.
-- [ ] Add source-to-build reproducibility evidence.
-- [ ] Sign receipts through Sigstore-compatible identities.
-- [ ] Support receipt expiry, transparency and revocation.
-- [ ] Add policy-as-code and attributable exceptions.
+- [ ] Ingest GitHub Security Advisories incrementally as a second source.
+- [ ] Enrich matched CVEs with CISA KEV and EPSS.
+- [ ] Deduplicate OSV, GHSA, CVE, and malicious-package aliases.
+- [ ] Detect when a previously unavailable fixed version is published.
+- [ ] Calculate whether a top-level plugin update actually removes every affected path.
+- [ ] Add source reliability and conflict handling without asking the model to decide version applicability.
 
-## Milestone 4 — ecosystem service
+## Milestone 4 — GitHub execution arm
 
-- [ ] Continuously index public DSH plugins and releases.
-- [ ] Publish exact-version reports with honest coverage labels.
-- [ ] Add analyst review and coordinated disclosure workflow.
-- [ ] Monitor maintainer, workflow, dependency and artifact anomalies.
-- [ ] Generalize adapters for MCP servers, skills and other agent extensions.
+- [ ] Re-check the installed and proposed graph in GitHub Actions.
+- [ ] Attach project evidence to a GitHub Issue only after routing policy permits it.
+- [ ] Generate an upgrade branch or Pull Request behind explicit approval.
+- [ ] Run tests against the old and candidate DSH/plugin combinations.
+- [ ] Report residual paths and avoid claiming a partial upgrade fixed the alert.
 
-Plugin quality benchmarks remain an independent concern throughout these milestones.
+## Supporting work
+
+The pre-install scanner remains useful for collecting manifests and exact graphs. Signature, provenance, artifact identity, isolated detonation, and admission receipts are secondary tracks; they must not delay continuous vulnerability and compatibility monitoring.
+
+Plugin usefulness benchmarks remain out of scope.

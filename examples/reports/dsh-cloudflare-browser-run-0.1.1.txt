@@ -1,4 +1,4 @@
-Plugin Notary 0.2.0
+Upstream Radar 0.4.0
 Target: dsh-cloudflare-browser-run@0.1.1
 Artifact: sha256:27fe660b2fe40b15b70a206310b883ca15722d8ffaacab63232b71128d28701f
 DSH bundle: yes (./cordis.patch.yml)
@@ -27,7 +27,8 @@ npm chain of custody:
   source repository: https://github.com/RealAlexandreAI/dsh-cloudflare-browser-run
   source commit: f85ec677f77665640315d89aebe876b4877995bd
   build workflow: .github/workflows/publish.yml
-  graph digest: sha256:b03562d76bbef1cac2c6df0123092031a9dd813c45d139a4768260a2cb1717e5
+  graph digest: sha256:420420ef4411ce7be791126c356b3d4923a5e96739e4e65e443a3c9f26b2f678
+  unresolved dependency edges: 2
   known vulnerabilities: 0 total (0 critical, 0 high)
 
 No findings in the implemented static checks.

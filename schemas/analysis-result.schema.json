@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MicroMilo/upstream-radar/blob/main/schemas/analysis-result.schema.json",
+  "title": "Upstream Radar project analysis result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "project_exposure",
+    "confidence",
+    "evidence",
+    "recommended_action",
+    "urgency",
+    "reasoning_summary"
+  ],
+  "properties": {
+    "project_exposure": {
+      "enum": ["exposed", "likely_exposed", "not_exposed", "unknown"]
+    },
+    "confidence": {
+      "enum": ["high", "medium", "low"]
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string" },
+      "maxItems": 100
+    },
+    "recommended_action": {
+      "type": "string",
+      "maxLength": 8192
+    },
+    "urgency": {
+      "enum": ["immediate", "within_24_hours", "planned", "monitor"]
+    },
+    "reasoning_summary": {
+      "type": "string",
+      "maxLength": 8192
+    }
+  }
+}

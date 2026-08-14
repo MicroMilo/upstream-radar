@@ -1,0 +1,119 @@
+{
+  "schema": "upstream-radar.radar-config/v1alpha1",
+  "projects": [
+    {
+      "schema": "upstream-radar.inventory/v1alpha1",
+      "project": {
+        "id": "payments-api",
+        "name": "Payments API",
+        "repository": "https://github.com/acme/payments-api",
+        "workspace": "examples/radar/project",
+        "owner": "payments-platform",
+        "channels": [
+          "feishu:payments-security"
+        ]
+      },
+      "environment": {
+        "nodeVersion": "22.18.0"
+      },
+      "plugins": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "plugin",
+            "version": "1.0.0"
+          },
+          "manifest": {
+            "name": "plugin",
+            "version": "1.0.0",
+            "main": "./dist/index.js",
+            "engines": {
+              "node": ">=22"
+            },
+            "peerDependencies": {
+              "@deepseek-ai/dsh-agent": "^0.1.0-rc.5"
+            },
+            "dsh": {
+              "bundle": {
+                "patch": "./cordis.patch.yml"
+              }
+            }
+          },
+          "graph": {
+            "schema": "upstream-radar.dependency-graph/v1alpha1",
+            "rootNodeId": "plugin",
+            "nodes": [
+              {
+                "id": "plugin",
+                "name": "plugin",
+                "version": "1.0.0"
+              },
+              {
+                "id": "framework",
+                "name": "framework",
+                "version": "2.4.7"
+              },
+              {
+                "id": "framework-parser",
+                "name": "parser",
+                "version": "3.2.1"
+              },
+              {
+                "id": "archive",
+                "name": "archive",
+                "version": "1.8.0"
+              },
+              {
+                "id": "logger",
+                "name": "logger",
+                "version": "4.0.2"
+              },
+              {
+                "id": "logger-parser",
+                "name": "parser",
+                "version": "2.9.0"
+              },
+              {
+                "id": "dsh-agent",
+                "name": "@deepseek-ai/dsh-agent",
+                "version": "0.1.0-rc.5"
+              }
+            ],
+            "edges": [
+              {
+                "from": "plugin",
+                "to": "framework",
+                "kind": "runtime"
+              },
+              {
+                "from": "framework",
+                "to": "framework-parser",
+                "kind": "runtime"
+              },
+              {
+                "from": "framework",
+                "to": "archive",
+                "kind": "runtime"
+              },
+              {
+                "from": "plugin",
+                "to": "logger",
+                "kind": "runtime"
+              },
+              {
+                "from": "logger",
+                "to": "logger-parser",
+                "kind": "runtime"
+              },
+              {
+                "from": "plugin",
+                "to": "dsh-agent",
+                "kind": "peer"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

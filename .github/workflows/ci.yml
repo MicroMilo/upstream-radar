@@ -26,3 +26,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - run: pnpm test
+      - if: matrix.node == 22
+        run: pnpm run showcase:radar
+      - if: matrix.node == 22
+        run: pnpm pack --pack-destination /tmp

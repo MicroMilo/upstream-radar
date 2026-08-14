@@ -10,6 +10,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join, resolve, sep } from 'node:path'
 import process from 'node:process'
 import { decideVerdict, stricterVerdict } from './policy.js'
+import { parseNpmLockGraph } from './graph.js'
 import { scanDirectory } from './scan.js'
 import { parseNpmTarball, type ParsedNpmTarball } from './tar.js'
 import {
@@ -173,7 +174,7 @@ async function fetchBuffer(fetcher: FetchLike, url: string, maxBytes: number, ti
   const response = await fetcher(parsed, {
     headers: {
       accept,
-      'user-agent': `plugin-notary/${TOOL_VERSION}`,
+      'user-agent': `upstream-radar/${TOOL_VERSION}`,
     },
     redirect: 'follow',
     signal: AbortSignal.timeout(timeoutMs),
@@ -344,7 +345,7 @@ export function verifyRegistrySignatures(
 }
 
 async function materializeTarball(archive: ParsedNpmTarball): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'plugin-notary-artifact-'))
+  const root = await mkdtemp(join(tmpdir(), 'upstream-radar-artifact-'))
   try {
     for (const entry of archive.entries) {
       if (entry.type !== 'file' || entry.contents === undefined) continue
@@ -461,31 +462,6 @@ function packageLabels(value: unknown): string[] {
   })
 }
 
-function graphEvidence(lockfile: unknown): { packages: number; graphDigest: string } {
-  const root = asRecord(lockfile)
-  const packages = asRecord(root?.packages) ?? {}
-  const hash = createHash('sha256')
-  let count = 0
-  for (const path of Object.keys(packages).sort()) {
-    if (path === '') continue
-    const item = asRecord(packages[path])
-    const name = asString(item?.name) ?? path.replace(/^node_modules\//, '')
-    const version = asString(item?.version) ?? ''
-    const integrity = asString(item?.integrity) ?? ''
-    const resolved = asString(item?.resolved) ?? ''
-    hash.update(path)
-    hash.update('\0')
-    hash.update(`${name}@${version}`)
-    hash.update('\0')
-    hash.update(integrity)
-    hash.update('\0')
-    hash.update(resolved)
-    hash.update('\n')
-    count += 1
-  }
-  return { packages: count, graphDigest: `sha256:${hash.digest('hex')}` }
-}
-
 function vulnerabilitySummary(audit: unknown): VulnerabilitySummary | null {
   const root = asRecord(audit)
   const metadata = asRecord(root?.metadata)
@@ -561,7 +537,7 @@ async function deepAuditNpmPackage(
   provenanceDeclared: boolean,
   timeoutMs: number,
 ): Promise<DeepAuditResult> {
-  const root = await mkdtemp(join(tmpdir(), 'plugin-notary-npm-audit-'))
+  const root = await mkdtemp(join(tmpdir(), 'upstream-radar-npm-audit-'))
   const failed = (error: string): DeepAuditResult => ({
     dependencyAudit: {
       status: 'failed',
@@ -576,7 +552,7 @@ async function deepAuditNpmPackage(
 
   try {
     await writeFile(join(root, 'package.json'), `${JSON.stringify({
-      name: 'plugin-notary-quarantine',
+      name: 'upstream-radar-quarantine',
       version: '0.0.0',
       private: true,
       dependencies: { [spec.name]: spec.version },
@@ -601,7 +577,9 @@ async function deepAuditNpmPackage(
     }
 
     const lockfile = JSON.parse(await readFile(join(root, 'package-lock.json'), 'utf8')) as unknown
-    const graph = graphEvidence(lockfile)
+    const dependencyGraph = parseNpmLockGraph(lockfile, spec)
+    const graphDigest = dependencyGraph.digest
+    if (graphDigest === undefined) throw new Error('resolved dependency graph has no digest')
     let signatures = await runProcess(npm, [
       'audit', 'signatures', '--json', '--include-attestations', '--registry', registry,
     ], root, environment, timeoutMs)
@@ -626,8 +604,9 @@ async function deepAuditNpmPackage(
       return {
         dependencyAudit: {
           status: 'failed',
-          packages: graph.packages,
-          graphDigest: graph.graphDigest,
+          packages: dependencyGraph.nodes.length,
+          graphDigest,
+          graph: dependencyGraph,
           invalidSignatures,
           missingSignatures,
           vulnerabilities: null,
@@ -642,8 +621,9 @@ async function deepAuditNpmPackage(
       return {
         dependencyAudit: {
           status: 'failed',
-          packages: graph.packages,
-          graphDigest: graph.graphDigest,
+          packages: dependencyGraph.nodes.length,
+          graphDigest,
+          graph: dependencyGraph,
           invalidSignatures,
           missingSignatures,
           vulnerabilities: null,
@@ -657,8 +637,9 @@ async function deepAuditNpmPackage(
       return {
         dependencyAudit: {
           status: 'failed',
-          packages: graph.packages,
-          graphDigest: graph.graphDigest,
+          packages: dependencyGraph.nodes.length,
+          graphDigest,
+          graph: dependencyGraph,
           invalidSignatures,
           missingSignatures,
           vulnerabilities: null,
@@ -674,8 +655,9 @@ async function deepAuditNpmPackage(
     return {
       dependencyAudit: {
         status,
-        packages: graph.packages,
-        graphDigest: graph.graphDigest,
+        packages: dependencyGraph.nodes.length,
+        graphDigest,
+        graph: dependencyGraph,
         invalidSignatures,
         missingSignatures,
         vulnerabilities,
@@ -709,7 +691,7 @@ function failedArtifactReport(
   const riskVerdict = decideVerdict(findings)
   return {
     schema: REPORT_SCHEMA,
-    tool: { name: 'plugin-notary', version: TOOL_VERSION },
+    tool: { name: 'upstream-radar', version: TOOL_VERSION },
     target: { kind: 'npm', name: spec.name, version: spec.version, artifactDigest, spec: spec.canonical },
     dsh: { isBundle: false },
     evidence: {

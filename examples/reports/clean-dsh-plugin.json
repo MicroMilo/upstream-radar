@@ -1,8 +1,8 @@
 {
-  "schema": "plugin-notary.scan/v1alpha1",
+  "schema": "upstream-radar.scan/v1alpha1",
   "tool": {
-    "name": "plugin-notary",
-    "version": "0.2.0"
+    "name": "upstream-radar",
+    "version": "0.4.0"
   },
   "target": {
     "kind": "directory",

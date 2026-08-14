@@ -1,0 +1,2 @@
+BREAKING CHANGE: plugin@2 requires the new DSH agent API and Node.js 24.
+The bundle entry moved from cordis.patch.yml to next.patch.yml.

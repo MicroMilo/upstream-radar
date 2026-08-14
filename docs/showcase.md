@@ -1,66 +1,102 @@
-# Showcase
+# Upstream Radar Showcase
 
-The showcase demonstrates four distinct outcomes without ever executing fixture plugin code.
-
-```bash
-pnpm showcase
-```
-
-Generate committed-ready JSON and text evidence under `examples/reports/` with:
+Run the deterministic, network-free product demonstration:
 
 ```bash
-pnpm showcase:reports
+pnpm run showcase:radar
 ```
 
-The first case uses the immutable public release `dsh-cloudflare-browser-run@0.1.1`. Plugin Notary:
+Write the JSON events and exact coding-agent task prompts under `examples/radar/reports/`:
 
-1. resolves the exact npm version;
-2. downloads the registry-declared tarball;
-3. verifies its SHA-512 subresource integrity;
-4. verifies the npm ECDSA registry signature;
-5. parses the tar archive under file, byte and path budgets;
-6. recognizes its DSH bundle manifest;
-7. resolves dependencies with lifecycle scripts disabled;
-8. asks the official npm verifier to validate registry signatures and SLSA provenance;
-9. extracts the signed source repository, commit and build workflow;
-10. computes a digest for the resolved graph and reports known vulnerabilities.
+```bash
+pnpm run showcase:radar:reports
+```
 
-Expected chain-of-custody evidence:
+## Scene 1 — clean baseline
+
+The project uses this graph:
 
 ```text
-Target: dsh-cloudflare-browser-run@0.1.1
-Artifact: sha256:27fe660b2fe40b15b70a206310b883ca15722d8ffaacab63232b71128d28701f
-DSH bundle: yes (./cordis.patch.yml)
-Admission verdict: REVIEW
-Risk verdict: ALLOW
-Coverage verdict: INCOMPLETE
-
-npm chain of custody:
-  tarball integrity: verified (sha512)
-  registry signature: verified
-  provenance: verified
-  dependency audit: verified
-  resolved packages: 18
-  source repository: https://github.com/RealAlexandreAI/dsh-cloudflare-browser-run
-  source commit: f85ec677f77665640315d89aebe876b4877995bd
-  build workflow: .github/workflows/publish.yml
-  known vulnerabilities: 0 total (0 critical, 0 high)
+plugin@1.0.0
+├── framework@2.4.7
+│   ├── parser@3.2.1
+│   └── archive@1.8.0
+└── logger@4.0.2
+    └── parser@2.9.0
 ```
 
-The final admission result deliberately remains `REVIEW`: source-to-artifact rebuilding and isolated install/load detonation have not run. A clean implemented check is not silently promoted into complete coverage.
+The first feed snapshot contains no match. Radar stores a clean baseline and emits no alert.
 
-The tarball digest and signed source identity are fixed for this exact release. The dependency graph is resolved at demonstration time; its digest can change if a declared dependency range later selects different transitive bytes. The report records that graph so the observation remains explicit.
+## Scene 2 — a new vulnerability arrives
 
-The remaining cases are deterministic local fixtures:
+The simulated OSV update affects exactly `parser@2.9.0`. Radar does not flag `parser@3.2.1`; it emits:
 
-- `clean-dsh-plugin`: `riskVerdict=allow`, but incomplete evidence keeps admission at `review`;
-- `review-install-script`: a `prepare` script makes `riskVerdict=review`;
-- `block-remote-shell`: `curl ... | sh` makes both risk and admission `block`.
+```text
+[HIGH][NEW] Dependency vulnerability
+Project: Payments API (payments-api)
+Plugin: plugin@1.0.0
+Affected: parser@2.9.0
+Paths:
+  plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
+Fixed versions: 3.0.0
+Route: payments-platform via feishu:payments-security
+```
 
-For a network-free demonstration:
+Running the same unchanged feed again produces no event. A changed advisory produces `updated`; removing the match produces `resolved`.
+
+## Scene 3 — wake DSH
+
+Radar creates a plugin-originated task containing:
+
+- the exact project and workspace;
+- the affected plugin and dependency path;
+- the advisory as explicitly untrusted data;
+- a read-only instruction to inspect reachability and input flow;
+- a fixed JSON output contract with confidence and project evidence.
+
+The example project deliberately calls the affected feature from `examples/radar/project/src/import-logs.ts`, giving a live DSH Agent concrete evidence to find.
+
+## Scene 4 — breaking-change risk
+
+The candidate `plugin@2.0.0` changes:
+
+- major version;
+- package entrypoint;
+- DSH bundle patch;
+- Node requirement from 22 to 24;
+- DSH Agent peer requirement from `^0.1.0-rc.5` to `^0.2.0`;
+- release notes that explicitly say `BREAKING CHANGE`.
+
+Radar identifies the mathematically incompatible environment and peer range, labels structural changes as needing analysis, and creates a separate DSH compatibility task.
+
+## Scene 5 — one current task per incident
+
+The always-on state machine then observes three transitions for the same stable `incidentId`:
+
+```text
+NEW: 2.0.0; queued tasks for incident: 1
+UPDATED: 3.0.0; queued tasks for incident: 1
+RESOLVED: project caught up; queued tasks for incident: 0
+```
+
+The update replaces the older offline task instead of accumulating two analyses. Resolution removes the task before DSH can receive stale work. The exact transition evidence is saved as `examples/radar/reports/06-incident-lifecycle.json`.
+
+## Live sources
+
+The fixture isolates behavior from network timing. Production cycles use:
+
+- OSV `querybatch` plus full advisory records for exact installed versions;
+- npm packuments for the latest plugin and DSH package manifests.
+
+Release notes and GitHub diffs are currently accepted by the offline comparison command; automatic GitHub release ingestion is on the roadmap.
+
+## Legacy admission showcase
+
+The original artifact-oriented demonstration remains available:
 
 ```bash
-pnpm showcase -- --offline
+pnpm run build
+node scripts/showcase.mjs
 ```
 
-The deep npm path uses a fresh temporary project, a scrubbed environment, controlled npm/Git configuration and `ignore-scripts=true`. It is an evidence collector, not yet the stronger microVM detonation planned for a later milestone.
+It verifies npm artifact integrity, signatures, provenance, static risks, and bounded archive handling. It is supporting evidence collection rather than the main product demonstration.

@@ -1,21 +1,21 @@
 {
-  "schema": "plugin-notary.scan/v1alpha1",
+  "schema": "upstream-radar.scan/v1alpha1",
   "tool": {
-    "name": "plugin-notary",
-    "version": "0.2.0"
+    "name": "upstream-radar",
+    "version": "0.4.0"
   },
   "target": {
     "kind": "directory",
     "name": "showcase-review-install-script",
     "version": "1.0.0",
-    "artifactDigest": "sha256:f330c76f420fb7dfc8d3e576434cb511c25a67d26bef9e794260e8f9b534a8d8"
+    "artifactDigest": "sha256:fc43ac3189873f3fc3c207ce834b8670a8d74cc0121452a2e4400c4501d9f217"
   },
   "dsh": {
     "isBundle": false
   },
   "evidence": {
     "filesScanned": 2,
-    "bytesHashed": 334,
+    "bytesHashed": 335,
     "lockfiles": [],
     "packageManager": null,
     "lifecycleScripts": [

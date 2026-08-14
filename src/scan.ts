@@ -479,7 +479,7 @@ export async function scanDirectory(input: string, options: ScanOptions = {}): P
 
   return {
     schema: REPORT_SCHEMA,
-    tool: { name: 'plugin-notary', version: TOOL_VERSION },
+    tool: { name: 'upstream-radar', version: TOOL_VERSION },
     target: {
       kind: 'directory',
       name: asString(manifest.name) ?? '(unnamed)',

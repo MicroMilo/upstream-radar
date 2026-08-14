@@ -1,6 +1,21 @@
-# 第一版检查项与方法
+# 检查项与方法
 
-Plugin Notary 只回答供应链风险，不评价插件效果。所有结论都绑定到精确产物摘要；没有运行的检查必须显示为缺口。
+当前产品主线是持续监控“精确依赖版本发生了什么变化”。原有安装前供应链检查保留为依赖清单和辅助证据收集器。两条线都不评价插件效果。
+
+## Radar 已实现
+
+| 层次 | 检查什么 | 如何检查 | 输出 |
+| --- | --- | --- | --- |
+| 依赖实图 | 项目实际装了哪些版本、从哪个插件进入 | 解析 npm lock 的物理节点与父子边，重复版本不合并 | 完整节点、边和路径 |
+| 漏洞变化 | 当前精确版本是否被 OSV 报告为受影响 | 批量查询 `name@version`，命中后再读取完整公告 | `new/updated/resolved` |
+| 恶意包 | 当前版本是否命中 `MAL-*` 记录 | 与普通漏洞共用准确版本查询 | `critical` 事件 |
+| 项目路由 | 哪个项目、插件、负责人受影响 | 依赖图反查项目登记 | project、owner、channel |
+| 插件新版本 | npm `latest` 是否出现新候选 | 只读 packument，不安装候选 | 兼容性事件或无变化 |
+| Breaking signals | 新版本是否跨兼容边界或改变关键声明 | 比较版本、入口、exports、Node、DSH bundle 和 peer 范围 | confirmed/strong/needs-analysis |
+| Agent 分析入口 | 如何避免“新闻”直接指挥 coding agent | 将所有来源文字标记为不可信数据，要求只读和项目证据 | 可由 DSH 原生投递或通用 CLI 导出的持久 analysis task |
+| 去重与恢复 | 重启、重复轮询是否丢失、刷屏或投递过期任务 | 保存活跃漏洞、活跃兼容性问题和待分析任务；同一 incident 的新任务替换旧任务，resolved 会撤销旧任务 | 至少一次投递，不变不重复，不过期投递 |
+
+## 支持性的安装前检查
 
 ## 已实现
 
@@ -32,8 +47,8 @@ Plugin Notary 只回答供应链风险，不评价插件效果。所有结论都
 ## 运行展示
 
 ```bash
-pnpm showcase
-pnpm showcase:reports
+pnpm run showcase:radar
+pnpm run showcase:radar:reports
 ```
 
-展示包含一个真实、精确版本的 DSH npm 插件，以及 clean、review、block 三个离线固定样例。目标插件代码和 lifecycle scripts 都不会被执行。
+主展示包含漏洞源更新、精确依赖路径、项目路由、DSH 分析任务和 breaking-change 候选。旧的 clean、review、block 安装前样例仍可通过 `node scripts/showcase.mjs` 运行。目标插件代码和 lifecycle scripts 都不会被执行。

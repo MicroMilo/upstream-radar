@@ -1,4 +1,4 @@
-Plugin Notary 0.2.0
+Upstream Radar 0.4.0
 Target: showcase-block-remote-shell@1.0.0
 Artifact: sha256:0f40219b5cafd126e2215143fdeb4fe818a31cc401ba799841e0c2c800297ad9
 DSH bundle: no

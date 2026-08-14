@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-08-14T00:30:00.000Z",
+  "packagesQueried": 7,
+  "releasePackagesQueried": 0,
+  "events": [],
+  "analysisTasks": [],
+  "sourceErrors": [],
+  "state": {
+    "schema": "upstream-radar.radar-state/v1alpha1",
+    "activeVulnerabilities": {},
+    "activeCompatibility": {},
+    "pendingAnalysisTasks": []
+  }
+}

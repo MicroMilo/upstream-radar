@@ -1,0 +1,25 @@
+name: Feature proposal
+description: Propose a source, graph adapter, routing adapter, or incident behavior.
+title: "feature: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: What decision cannot be made with the current product?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Deterministic evidence
+      description: Which facts should program code establish before an agent is involved?
+    validations:
+      required: true
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: False-positive and safety boundaries
+    validations:
+      required: true

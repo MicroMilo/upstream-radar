@@ -1,81 +1,113 @@
 # Architecture
 
-## Components
+## Product boundary
+
+Upstream Radar has three responsibilities:
+
+1. determine which exact installed package versions are affected by an upstream fact;
+2. create a bounded, project-specific analysis task;
+3. route the resulting decision to the project that can act on it.
+
+The model never decides whether a version range matches.
 
 ```text
-                         Public review service
-                         +-------------------+
-                         | index + monitors  |
-                         | isolated workers  |
-                         | human review      |
-                         | signed receipts   |
-                         +---------+---------+
-                                   |
-                                   v
-User -> admission CLI -> evidence cache -> policy engine -> exact install
-              |                                      |
-              +-> local quarantine scanner           +-> trust lock
-                                                            |
-DSH profile boot -------------------------------------------+-> verify -> load
+                  deterministic plane
+
+ npm lock graph ───────────────┐
+                               ├─> match + paths ─> durable event/outbox
+ OSV exact-version results ────┤                         │
+ npm candidate manifests ─────┘                         │
+                                                         v
+                  coding-agent analysis plane
+
+             advisory/release material (untrusted data)
+                              + project workspace
+                                        │
+                                        v
+                          exposure / migration analysis
+                                        │
+                                        v
+                         owner + configured channel
 ```
 
-## Core packages envisioned
+## Dependency graph
 
-- `core`: schemas, canonicalization, artifact identity and digest handling;
-- `collectors`: npm, Git, filesystem and future extension-format adapters;
-- `analyzers`: provenance, dependency, lifecycle, archive, binary and malware evidence;
-- `policy`: deterministic evidence-to-decision rules;
-- `receipt`: signing, verification, expiry and revocation;
-- `adapters/dsh`: profile resolution, candidate lock graph, installation and boot verification;
-- `cli`: local user and CI interface;
-- `service`: public index, scheduling and analyst workflow.
-
-The prototype keeps these concepts in one package until boundaries are proven by use.
-
-## Implemented v0.2 path
+Every physical package location is a node. Two copies of `parser` with different versions remain separate:
 
 ```text
-exact npm spec
-  -> registry metadata
-  -> bounded tarball download
-  -> integrity + registry signature
-  -> bounded tar parser (no links materialized)
-  -> static package evidence
-  -> optional dependency resolution with scripts disabled
-  -> npm signature/provenance verification + advisory audit
-  -> risk verdict + coverage verdict
-  -> admission decision (at least REVIEW while required coverage is missing)
+plugin@1.0.0
+├── framework@2.4.7
+│   └── parser@3.2.1
+└── logger@4.0.2
+    └── parser@2.9.0
 ```
 
-## Admission transaction
+Edges retain whether they are runtime, development, optional, or peer dependencies. A vulnerability event contains every bounded root-to-node path, so the alert explains which plugin introduced the package.
 
-1. Snapshot the current DSH profile manifest and lockfile.
-2. Resolve the requested mutation in an isolated temporary profile.
-3. Identify every new or changed artifact by digest.
-4. Reuse valid signed receipts when possible.
-5. Scan unresolved artifacts without lifecycle scripts.
-6. Detonate artifacts requiring installation or load observation in an isolated worker.
-7. Evaluate evidence under the selected policy.
-8. If allowed, install the already-reviewed bytes under a frozen graph.
-9. Verify the materialized graph and write an atomic trust lock.
-10. At profile boot, verify the graph and revocation state before loading plugin code.
+The npm deep collector resolves in a temporary project with lifecycle scripts disabled and parses `package-lock.json`. An unresolved edge stays explicit; it is never silently counted as checked.
 
-## Evidence versus policy
+## Vulnerability cycle
 
-Evidence collectors must report bounded facts such as `signature valid`, `prepare script present`, or `source-artifact comparison incomplete`. They do not decide that a package is safe.
+1. Deduplicate all installed npm `name@version` pairs.
+2. Submit them to OSV `querybatch`.
+3. Fetch full details only for returned advisory ids.
+4. Match each result back to physical graph nodes and paths.
+5. Compare the current match set with durable state.
+6. Emit `new`, `updated`, or `resolved` only when state changes.
+7. Add new and updated events to the durable coding-agent outbox.
 
-Policy maps evidence to `allow`, `warn`, `review`, or `block`. Organizations may use different policies over identical evidence. Signed receipts bind both the evidence and the policy decision so consumers can independently re-evaluate the evidence under another policy.
+The active-match key binds project, plugin version, affected package version, and advisory id. An unchanged advisory does not create another event.
 
-## Review receipt identity
+## Compatibility cycle
 
-A future receipt must bind at least:
+The release source reads npm metadata; it does not install the candidate. The current and candidate manifests are compared for:
 
-- top-level artifact digest;
-- complete dependency-graph digest;
-- source and build provenance identities;
-- scanner and rule-set versions;
-- scan coverage and environment;
-- findings and human approvals;
-- policy identity and decision;
-- issue, expiry and revocation information;
-- reviewer signature.
+- a major compatibility boundary, or a minor boundary while below 1.0;
+- package entrypoint and export-map changes;
+- DSH bundle declaration changes;
+- Node.js engine changes and definite runtime exclusion;
+- DSH/Cordis peer-range changes and definite installed-version exclusion;
+- pre-1.0 DSH package updates;
+- publisher-declared breaking language when release notes are supplied.
+
+These are signals for project analysis. Only an explicit publisher statement or a mathematically incompatible version range is treated as confirmed/strong evidence. Other changes remain `needs-analysis`.
+
+Compatibility findings use the same lifecycle as vulnerabilities. A stable `incidentId` identifies the project, installed plugin, and changed package while individual event ids identify each `new`, `updated`, or `resolved` transition. A newer candidate replaces the queued analysis for the same incident; when the project catches up or the signal disappears, the unresolved task is removed.
+
+## Coding-agent handoff
+
+An analysis task includes the deterministic event, project location, route, and a fixed output contract. Its prompt says that every advisory, release note, link, package name, and repository string is untrusted data. It requests read-only investigation and requires file, symbol, configuration, or runtime evidence. The task is vendor-neutral; DSH consumes it natively, while other coding agents consume it through the outbox CLI.
+
+The DSH bundle performs this transaction:
+
+```text
+poll sources
+  -> calculate state changes
+  -> replace stale tasks and cancel resolved incidents
+  -> atomically save active matches and pending tasks
+  -> select a live root Agent
+  -> submit plugin-originated follow-up
+  -> atomically remove synchronously accepted tasks from the outbox
+```
+
+The delivery boundary is intentionally at-least-once. A crash after follow-up admission but before the second state write can repeat a task; it cannot silently erase it. Event and task ids allow later delivery adapters to deduplicate.
+
+## Failure isolation
+
+- Target plugin code is never imported to build a graph.
+- npm lifecycle scripts remain disabled during dependency resolution.
+- Network responses have byte, item, and timeout limits.
+- Invalid state/configuration fails visibly instead of resetting history.
+- Feed prose cannot become model instructions.
+- A DSH process without a configured inventory is dormant.
+- A process without a live Agent retains pending tasks on disk.
+
+## Current DSH boundary
+
+The adapter uses only the small Cordis surface needed for lifecycle cleanup, root-Agent discovery, and `followup`. It intentionally does not depend on the session-local Schedule plugin. A local timer performs fixed polling while the DSH process is alive; durable state provides restart recovery.
+
+Today, the first live root Agent acts as a security inbox. A later adapter will select or create the project-specific session named by each event.
+
+## Supporting pre-install collector
+
+The original artifact scanner still verifies exact npm bytes, signatures, provenance, static package risks, and bounded archive parsing. Its dependency resolution now produces the graph consumed by Radar. Admission receipts and artifact fingerprints are supporting evidence, not the primary product surface.

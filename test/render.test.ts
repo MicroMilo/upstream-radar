@@ -8,7 +8,7 @@ import { join } from 'node:path'
 
 describe('text report rendering', () => {
   it('escapes terminal control characters from package metadata', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'plugin-notary-render-'))
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-render-'))
     await writeFile(join(root, 'package.json'), '{"name":"demo\\n\\u001b[31mred","version":"1.0.0"}')
 
     const rendered = renderTextReport(await scanDirectory(root))

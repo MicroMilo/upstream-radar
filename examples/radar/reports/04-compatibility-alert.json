@@ -1,0 +1,96 @@
+{
+  "schema": "upstream-radar.event/v1alpha1",
+  "id": "event-5e22d61b7dcf91633def9849",
+  "incidentId": "incident-91561562bfad62fc5df20036",
+  "kind": "compatibility",
+  "change": "new",
+  "detectedAt": "2026-08-14T02:00:00.000Z",
+  "project": {
+    "id": "payments-api",
+    "name": "Payments API",
+    "repository": "https://github.com/acme/payments-api",
+    "workspace": "examples/radar/project",
+    "owner": "payments-platform",
+    "channels": [
+      "feishu:payments-security"
+    ]
+  },
+  "route": {
+    "owner": "payments-platform",
+    "channels": [
+      "feishu:payments-security"
+    ]
+  },
+  "plugin": {
+    "ecosystem": "npm",
+    "name": "plugin",
+    "version": "1.0.0"
+  },
+  "installed": {
+    "ecosystem": "npm",
+    "name": "plugin",
+    "version": "1.0.0"
+  },
+  "candidate": {
+    "ecosystem": "npm",
+    "name": "plugin",
+    "version": "2.0.0"
+  },
+  "signals": [
+    {
+      "code": "breaking-version-boundary",
+      "confidence": "strong",
+      "summary": "Version 1.0.0 to 2.0.0 crosses a semantic-version compatibility boundary.",
+      "before": "1.0.0",
+      "after": "2.0.0"
+    },
+    {
+      "code": "publisher-declared-breaking-change",
+      "confidence": "confirmed",
+      "summary": "The publisher explicitly describes this release as breaking."
+    },
+    {
+      "code": "package-entrypoint-changed",
+      "confidence": "needs-analysis",
+      "summary": "The package entrypoint or export map changed.",
+      "before": "{\"exports\":undefined,\"main\":\"./dist/index.js\",\"type\":undefined}",
+      "after": "{\"exports\":undefined,\"main\":\"./dist/plugin.js\",\"type\":undefined}"
+    },
+    {
+      "code": "dsh-bundle-changed",
+      "confidence": "needs-analysis",
+      "summary": "The DSH bundle declaration changed.",
+      "before": "{\"bundle\":{\"patch\":\"./cordis.patch.yml\"}}",
+      "after": "{\"bundle\":{\"patch\":\"./next.patch.yml\"}}"
+    },
+    {
+      "code": "node-engine-requirement-changed",
+      "confidence": "needs-analysis",
+      "summary": "The supported Node.js range changed.",
+      "before": ">=22",
+      "after": ">=24"
+    },
+    {
+      "code": "node-runtime-incompatible",
+      "confidence": "strong",
+      "summary": "The project runs Node.js 22.18.0, outside the candidate requirement >=24.",
+      "before": "22.18.0",
+      "after": ">=24"
+    },
+    {
+      "code": "dsh-peer-incompatible",
+      "confidence": "strong",
+      "summary": "@deepseek-ai/dsh-agent@0.1.0-rc.5 does not satisfy the candidate peer requirement ^0.2.0.",
+      "before": "0.1.0-rc.5",
+      "after": "^0.2.0"
+    },
+    {
+      "code": "dsh-peer-range-changed",
+      "confidence": "needs-analysis",
+      "summary": "The declared compatibility range for @deepseek-ai/dsh-agent changed.",
+      "before": "^0.1.0-rc.5",
+      "after": "^0.2.0"
+    }
+  ],
+  "releaseNotes": "BREAKING CHANGE: plugin@2 requires the new DSH agent API and Node.js 24.\nThe bundle entry moved from cordis.patch.yml to next.patch.yml.\n"
+}

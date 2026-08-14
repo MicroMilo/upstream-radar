@@ -1,22 +1,29 @@
 # Security policy
 
-Plugin Notary is security-sensitive software. Please do not publish exploit details for a vulnerability that could let a scanned artifact escape isolation, forge evidence, bypass policy, or reuse a receipt for different bytes.
+Upstream Radar is security-sensitive software. Please avoid publishing exploit details for a vulnerability that could cause it to miss, misroute, erase, or unsafely analyze an upstream security event.
 
-Until a private reporting channel is configured, open a minimal GitHub issue that asks the maintainers for a private contact path and omit sensitive details. This file will be updated before the repository is published.
+Report vulnerabilities through GitHub's **Security → Report a vulnerability** flow. Do not open a public issue containing exploit details, secrets, proprietary source, or sensitive paths.
 
-## Report scope
+## High-priority report scope
 
-High-priority issues include:
+- a known affected exact package version is not matched because of graph or source parsing;
+- paths from one plugin/project are attributed to another;
+- advisory or release text escapes its data boundary and becomes coding-agent instruction;
+- a pending event is deleted before a coding agent accepts it;
+- malformed state is silently reset, hiding active alerts;
+- unchanged events produce an unbounded alert or model-call loop;
+- a compatibility heuristic is promoted to a confirmed break without evidence;
+- target package code executes during graph or static collection;
+- archive/path/symlink escape in the supporting scanner;
+- credentials, proprietary source, or local paths leak into an unintended report or destination;
+- configured bounds can be bypassed to exhaust disk, memory, network, or model quota.
 
-- execution of target-controlled code during a supposedly static scan;
-- filesystem traversal or symlink escape;
-- scan/install digest mismatch or other time-of-check/time-of-use gaps;
-- receipt signature, canonicalization, expiry or revocation bypass;
-- secrets included in public reports or logs;
-- fail-open behavior after scanner or policy errors.
+## Claims
 
-## Scanner claims
+An exact OSV result and dependency path establish that an installed package version is reported as affected. They do not prove that the vulnerable behavior is reachable in a particular project.
 
-A report is bounded evidence, not a guarantee that an artifact is safe. Coverage fields are security-relevant and must remain explicit. An unavailable check must report `not-checked`, `not-run`, `incomplete`, or an error; it must never become a pass.
+A compatibility signal establishes a manifest/version difference or definite range exclusion. It does not prove that every project will fail after upgrading.
 
-Deep npm inspection invokes the local npm CLI in a fresh temporary project with lifecycle scripts disabled, a scrubbed environment, and controlled npm/Git configuration. It is not a hardened sandbox: run it on public artifacts only until disposable worker isolation lands. Registry authentication is not supported in the prototype, and registry URLs containing credentials, query strings, or fragments are rejected to keep secrets out of reports.
+Coding-agent analysis is model-generated reasoning. It must cite project evidence and preserve uncertainty; it is not a replacement for deterministic matching or tests.
+
+Deep npm collection runs in a fresh temporary project with lifecycle scripts disabled, a scrubbed environment, and controlled npm/Git configuration. It is not a hardened sandbox and should process public artifacts only until disposable worker isolation lands.

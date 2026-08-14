@@ -1,6 +1,6 @@
-Plugin Notary 0.2.0
+Upstream Radar 0.4.0
 Target: showcase-review-install-script@1.0.0
-Artifact: sha256:f330c76f420fb7dfc8d3e576434cb511c25a67d26bef9e794260e8f9b534a8d8
+Artifact: sha256:fc43ac3189873f3fc3c207ce834b8670a8d74cc0121452a2e4400c4501d9f217
 DSH bundle: no
 Admission verdict: REVIEW
 Risk verdict: REVIEW
@@ -15,7 +15,7 @@ Coverage:
   source/artifact match: not-checked
   sandbox detonation: not-run
 
-Evidence: 2 files, 334 bytes, 0 dependency declarations
+Evidence: 2 files, 335 bytes, 0 dependency declarations
 
 Findings (1):
   [HIGH] lifecycle-script-present: Lifecycle script prepare executes during installation

@@ -1,54 +1,77 @@
 # Threat model
 
-## Protected decision
+## Protected outcomes
 
-Plugin Notary protects one decision: whether an exact agent-extension artifact may be installed and loaded under a stated policy.
+Upstream Radar protects two connected outcomes:
+
+1. an upstream vulnerability or release change is matched to the correct installed package, dependency path, project, and owner without being lost or repeated indefinitely;
+2. DSH receives the upstream material as untrusted data and produces a project-specific analysis without obeying instructions embedded in that material.
+
+The supporting pre-install scanner additionally protects exact-artifact evidence collection.
 
 ## Assets
 
-- developer credentials, source trees, sessions, and local files;
-- DSH profiles and their dependency graphs;
-- integrity of review evidence and signed receipts;
-- reviewer signing identities and revocation state;
-- availability of the installation and loading workflow.
+- project source, credentials, sessions, local files, and DSH tool authority;
+- project/plugin inventories and exact dependency paths;
+- active vulnerability state, active compatibility incidents, and pending analysis tasks;
+- correctness of new, updated, resolved, and compatibility transitions;
+- availability and cost of the monitoring and model-analysis loop;
+- legacy artifact evidence and policy decisions.
 
 ## Adversaries and failure modes
 
-1. A malicious package author publishes intentionally harmful code.
-2. A legitimate maintainer or registry account is compromised.
-3. A repository tag, branch, release asset, or transitive dependency changes after review.
-4. Published files differ from the declared source commit or build recipe.
-5. Lifecycle scripts execute before an admission decision.
-6. A dependency resolver selects different bytes between scan and install.
-7. A user or another process bypasses the installer and modifies an installed plugin.
-8. An artifact attempts to escape the scanner through symlinks, oversized inputs, parser abuse, native code, or network callbacks.
-9. The review service, signing key, policy, or revocation feed is compromised.
+1. A vulnerability advisory, release note, package description, repository file, or linked page contains prompt injection.
+2. A malicious registry or compromised maintainer serves oversized, malformed, conflicting, or deceptive metadata.
+3. The graph collector silently omits a dependency or merges two distinct installed versions.
+4. A matcher treats package names, version ranges, or advisory aliases incorrectly and misses or misroutes an event.
+5. An unchanged event is emitted on every poll and trains users to ignore alerts.
+6. A crash occurs after a match but before state or Agent delivery, losing the alert.
+7. A crash occurs after Agent delivery but before acknowledgement, duplicating work.
+8. A compatibility heuristic is presented as proof that an update is broken.
+9. A model analysis modifies the repository, installs the candidate, runs advisory-supplied commands, or leaks project data.
+10. A flood of advisories, dependency nodes, package releases, or pending tasks exhausts memory, disk, network, model quota, or user attention.
+11. A malicious package attacks the supporting static scanner through archives, paths, links, parsers, lifecycle scripts, or native code.
 
 ## Trust boundaries
 
-- **Untrusted:** package source, tarballs, Git repositories, lockfiles supplied by the target, lifecycle scripts, native binaries, and network destinations.
-- **Conditionally trusted:** registries, source hosts, CI builders, provenance issuers, and vulnerability feeds. Their evidence must be verified rather than accepted by name.
-- **Trusted computing base:** the local verifier, policy evaluator, isolated scan worker, receipt verification key set, and the DSH admission integration.
+- **Untrusted data:** advisories, release notes, references, registry metadata, package manifests, plugin source, project repository content, lockfiles, and every string derived from them.
+- **Deterministic trusted plane:** bounded parsers, exact-version queries, graph traversal, state-transition calculation, and atomic state writer.
+- **Model analysis plane:** DSH and its tools. It may interpret project context but may not redefine the deterministic match.
+- **Operator configuration:** project locations, owners, channels, polling interval, and alternate OSV endpoint. Configuration errors fail visibly.
 
 ## Security invariants
 
-1. Unknown plugin code is never executed in the reviewer host context.
-2. Resolution, scanning and installation remain bound to cryptographic digests.
-3. A receipt identifies the complete resolved graph, scanner version, policy version, coverage and expiry.
-4. Missing or failed checks cannot be represented as passed.
-5. Loading verifies current bytes even when installation was bypassed.
-6. Review credentials and user secrets are never mounted into a detonation environment.
-7. Public reports redact local paths, credentials and proprietary source.
-8. High-risk allow decisions require attributable human approval.
+1. A model never decides whether an exact version is affected.
+2. Distinct physical dependency nodes are preserved even when names match.
+3. Every alert names the project, installed plugin, affected package, and bounded path.
+4. Feed and release prose is framed as untrusted data, never instructions.
+5. Every coding-agent analysis defaults to read-only and requires project evidence.
+6. New tasks are persisted before synchronous Agent admission.
+7. Unchanged matches do not emit another event.
+8. Missing, malformed, or failed source/state checks cannot silently become clean.
+9. Compatibility heuristics retain their confidence class.
+10. Network bodies, graph sizes, path counts, state size, text length, and time are bounded.
+11. Target-controlled package code and lifecycle scripts are not executed during collection.
+
+## Delivery semantics
+
+Delivery is at-least-once. The state/outbox write happens before `Agent.followup`. After synchronous admission, the task is removed with a second atomic write. A crash in that narrow interval can duplicate the task; stable event/task ids allow future adapters to suppress duplicates. The design prefers a duplicate over a silently lost security event.
 
 ## Out of scope
 
-- plugin usefulness, task success, latency, cost, and model/tool selection;
-- proving that an artifact contains no malicious behavior;
-- vulnerabilities in DSH itself unless they invalidate the admission boundary;
-- runtime authorization of each tool call after an admitted plugin is loaded;
-- protecting users who explicitly disable or bypass all enforcement points.
+- proving that a package or project contains no exploitable behavior;
+- plugin usefulness, task success, cost, or benchmark quality;
+- automatically granting write authority to a model;
+- preventing a user from deleting state or disabling the plugin;
+- exactly-once delivery across all future external notification systems;
+- automatically merging a generated security fix.
 
-## Current prototype limitations
+## Current v0.4 limitations
 
-Version 0.2 can inspect a local directory or an exact public npm artifact. Deep mode resolves a fresh dependency graph with lifecycle scripts disabled and uses npm's verifier for signatures and provenance. The npm CLI and host network stack are still used outside a hardened worker, so this is not detonation or a complete isolation boundary. The prototype does not yet rebuild source, prove source/artifact equality, sign receipts, consume revocations, or integrate with DSH installation and boot.
+- The graph collector currently parses npm lock graphs; pnpm and Yarn adapters are absent.
+- OSV is the only live vulnerability source and npm `latest` is the only automatic release source.
+- Release notes and GitHub diffs are not fetched automatically.
+- One live root DSH Agent acts as the security inbox; project-session selection is not implemented.
+- The prompt establishes a read-only contract, but enforcement still depends on the DSH Agent's configured tools and permission policy.
+- Feed failures are reported by the cycle; independent per-source retry and health alerts need further hardening.
+- The scanner uses the host npm CLI with scripts disabled; it is not a microVM detonation boundary.

@@ -6,7 +6,7 @@ import { describe, it } from 'node:test'
 import { scanDirectory } from '../src/scan.js'
 
 async function fixture(manifest: Record<string, unknown>, files: Record<string, string> = {}): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'plugin-notary-'))
+  const root = await mkdtemp(join(tmpdir(), 'upstream-radar-'))
   await writeFile(join(root, 'package.json'), `${JSON.stringify(manifest, null, 2)}\n`)
   for (const [path, contents] of Object.entries(files)) {
     const fullPath = join(root, path)

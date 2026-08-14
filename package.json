@@ -1,34 +1,70 @@
 {
-  "name": "plugin-notary",
-  "version": "0.2.0",
-  "description": "Pre-install supply-chain review and admission for agent plugins.",
+  "name": "upstream-radar",
+  "version": "0.4.0",
+  "description": "Always-on vulnerability and breaking-change impact monitoring for coding-agent projects.",
   "type": "module",
   "license": "Apache-2.0",
+  "author": "MicroMilo",
+  "homepage": "https://github.com/MicroMilo/upstream-radar#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MicroMilo/upstream-radar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MicroMilo/upstream-radar/issues"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "coding-agent",
+    "dependency-security",
+    "vulnerability-monitoring",
+    "breaking-changes",
+    "supply-chain"
+  ],
   "engines": {
     "node": ">=22"
   },
   "packageManager": "pnpm@11.3.0",
   "bin": {
-    "plugin-notary": "dist/src/cli.js"
+    "upstream-radar": "dist/src/cli.js"
   },
   "exports": {
     ".": {
       "types": "./dist/src/index.d.ts",
       "import": "./dist/src/index.js"
+    },
+    "./dsh": {
+      "types": "./dist/src/dsh-plugin.d.ts",
+      "import": "./dist/src/dsh-plugin.js"
+    },
+    "./cordis.patch.yml": {
+      "default": "./cordis.patch.yml"
     }
   },
   "files": [
     "dist/src",
+    "schemas",
+    "cordis.patch.yml",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "cli": "node dist/src/cli.js",
     "check": "tsc -p tsconfig.json --noEmit",
     "scan:self": "pnpm run build && node dist/src/cli.js scan . --fail-on block",
-    "showcase": "pnpm run build && node scripts/showcase.mjs",
-    "showcase:reports": "pnpm run build && node scripts/showcase.mjs --write-reports",
+    "showcase": "pnpm run build && node scripts/radar-showcase.mjs",
+    "showcase:reports": "pnpm run build && node scripts/radar-showcase.mjs --write-reports",
+    "showcase:admission": "pnpm run build && node scripts/showcase.mjs",
+    "showcase:admission:reports": "pnpm run build && node scripts/showcase.mjs --write-reports",
+    "showcase:radar": "pnpm run build && node scripts/radar-showcase.mjs",
+    "showcase:radar:reports": "pnpm run build && node scripts/radar-showcase.mjs --write-reports",
     "test": "pnpm run build && node --test dist/test/*.test.js"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
   },
   "devDependencies": {
     "@types/node": "26.2.0",

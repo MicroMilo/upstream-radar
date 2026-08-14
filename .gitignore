@@ -4,4 +4,4 @@ coverage/
 *.log
 .DS_Store
 *.tgz
-.plugin-notary/
+.upstream-radar/

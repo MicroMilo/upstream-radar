@@ -1,0 +1,35 @@
+name: Bug report
+description: Report incorrect matching, state transitions, delivery, or scanner behavior.
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include secrets, proprietary source, or weaponized payloads. Use SECURITY.md for sensitive reports.
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Observed behavior
+      description: What did Upstream Radar report or fail to report?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include sanitized config, state, commands, and versions when possible.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Upstream Radar version
+      placeholder: 0.4.0
+    validations:
+      required: true
