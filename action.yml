@@ -5,6 +5,11 @@ branding:
   icon: shield
   color: blue
 
+outputs:
+  probe-result:
+    description: 'Optional DSH load-matrix result: compatible, incompatible, or unknown.'
+    value: ${{ steps.dsh-load-matrix.outputs.result }}
+
 inputs:
   config:
     description: Reviewed Upstream Radar config path, relative to the working directory.
@@ -25,7 +30,7 @@ inputs:
   version:
     description: Exact upstream-radar npm version to execute.
     required: false
-    default: 0.26.0
+    default: 0.27.0
   node-version:
     description: Node.js version used to run the CLI.
     required: false
@@ -34,6 +39,18 @@ inputs:
     description: Directory containing the reviewed config and project checkout.
     required: false
     default: .
+  probe-package:
+    description: 'Optional exact npm package spec (name@version) to pack and probe across DSH versions.'
+    required: false
+    default: ''
+  probe-dsh-versions:
+    description: 'Comma-separated exact DSH versions for the optional load matrix; use at least two.'
+    required: false
+    default: ''
+  probe-timeout:
+    description: 'Per-version timeout in seconds for the optional DSH load matrix (30-600).'
+    required: false
+    default: '120'
 
 runs:
   using: composite
@@ -64,3 +81,45 @@ runs:
         --fail-on "$RADAR_FAIL_ON"
         --fail-on-compatibility "$RADAR_FAIL_ON_COMPATIBILITY"
         --json
+    - name: Probe published plugin across DSH versions
+      if: inputs.probe-package != ''
+      id: dsh-load-matrix
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        RADAR_VERSION: ${{ inputs.version }}
+        RADAR_PROBE_PACKAGE: ${{ inputs.probe-package }}
+        RADAR_PROBE_DSH_VERSIONS: ${{ inputs.probe-dsh-versions }}
+        RADAR_PROBE_TIMEOUT: ${{ inputs.probe-timeout }}
+      run: |
+        set -euo pipefail
+        exact_package='^(@[^/@[:space:]]+/[^@/[:space:]]+|[^@/[:space:]]+)@[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'
+        if [[ ! "$RADAR_PROBE_PACKAGE" =~ $exact_package ]]; then
+          echo 'probe-package must be an exact npm package spec such as dsh-cloudflare-browser-run@0.1.1' >&2
+          exit 1
+        fi
+        if [[ -z "$RADAR_PROBE_DSH_VERSIONS" ]]; then
+          echo 'probe-dsh-versions is required when probe-package is set' >&2
+          exit 1
+        fi
+        probe_dir="$RUNNER_TEMP/upstream-radar-dsh-probe"
+        mkdir -p "$probe_dir"
+        npm pack --ignore-scripts --pack-destination "$probe_dir" "$RADAR_PROBE_PACKAGE" >/dev/null
+        shopt -s nullglob
+        probe_tarballs=("$probe_dir"/*.tgz)
+        if (( ${#probe_tarballs[@]} != 1 )); then
+          echo "expected exactly one npm tarball, found ${#probe_tarballs[@]}" >&2
+          exit 1
+        fi
+        report_file="$probe_dir/report.json"
+        set +e
+        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar \
+          probe dsh-matrix "${probe_tarballs[0]}" \
+          --dsh-version "$RADAR_PROBE_DSH_VERSIONS" \
+          --timeout "$RADAR_PROBE_TIMEOUT" \
+          --json | tee "$report_file"
+        probe_exit=${PIPESTATUS[0]}
+        set -e
+        probe_result="$(REPORT_FILE="$report_file" node --input-type=module -e 'import { readFileSync } from "node:fs"; const report = JSON.parse(readFileSync(process.env.REPORT_FILE, "utf8")); process.stdout.write(report.result)' 2>/dev/null || printf 'unknown')"
+        printf 'result=%s\n' "$probe_result" >> "$GITHUB_OUTPUT"
+        exit "$probe_exit"
