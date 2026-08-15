@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { crossesBreakingVersionBoundary, satisfiesSemverRange } from './semver.js'
+import { compareSemverValues, crossesBreakingVersionBoundary, satisfiesSemverRange } from './semver.js'
 import {
   RADAR_EVENT_SCHEMA,
   type CompatibilityEvent,
@@ -63,6 +63,8 @@ export function assessCompatibilityChanges(
 ): CompatibilityEvent[] {
   if (change.previous.name !== change.candidate.name) throw new Error('compatibility comparison requires the same package name')
   if (!Number.isFinite(Date.parse(change.detectedAt))) throw new Error('compatibility change has an invalid detection time')
+  const versionOrder = compareSemverValues(change.candidate.version, change.previous.version)
+  if (versionOrder !== undefined && versionOrder <= 0) return []
   const installations = inventory.plugins.filter(plugin => plugin.graph.nodes.some(node => (
     node.name === change.previous.name && node.version === change.previous.version
   )))

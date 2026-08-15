@@ -25,5 +25,19 @@ describe('npm release source', () => {
     assert.equal(change?.candidate.version, '2.0.0')
     assert.equal(change?.publishedAt, '2026-08-14T02:00:00.000Z')
     assert.equal(change?.repository, 'git+https://github.com/acme/plugin.git')
+    assert.equal(change?.candidateStatus, 'newer')
+  })
+
+  it('marks a regressed npm latest tag as older instead of an upgrade', async () => {
+    const fetcher = async (): Promise<Response> => Response.json({
+      'dist-tags': { latest: '0.0.1-rc.1' },
+      versions: {
+        '0.0.1-rc.1': { name: '@deepseek-ai/dsh-agent', version: '0.0.1-rc.1' },
+        '0.1.0-rc.6': { name: '@deepseek-ai/dsh-agent', version: '0.1.0-rc.6' },
+      },
+    })
+    const client = new NpmReleaseClient({ fetch: fetcher })
+    const result = await client.query([{ ecosystem: 'npm', name: '@deepseek-ai/dsh-agent', version: '0.1.0-rc.6' }])
+    assert.equal(result.get('npm:@deepseek-ai/dsh-agent@0.1.0-rc.6')?.candidateStatus, 'older')
   })
 })

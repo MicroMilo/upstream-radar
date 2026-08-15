@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promis
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, it } from 'node:test'
-import { createRadarConfigFromDshProfile, discoverDshProfiles, refreshRadarConfigFromDshProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from '../src/init.js'
+import { createRadarConfigFromDshProfile, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, refreshRadarConfigFromDshProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from '../src/init.js'
 
 const graph = {
   schema: 'upstream-radar.dependency-graph/v1alpha1' as const,
@@ -220,6 +220,18 @@ describe('DSH profile initialization', () => {
     } finally {
       await rm(root, { recursive: true, force: true })
     }
+  })
+
+  it('keeps hand-written inventories static when no DSH profile metadata is present', async () => {
+    const config = {
+      schema: 'upstream-radar.radar-config/v1alpha1' as const,
+      projects: [{
+        schema: 'upstream-radar.inventory/v1alpha1' as const,
+        project: { id: 'demo', name: 'Demo' },
+        plugins: [],
+      }],
+    }
+    assert.equal(await refreshRadarConfigFromConfiguredProfile(config, '/does-not-exist'), config)
   })
 
   it('does not follow a bundle path outside the profile', async () => {

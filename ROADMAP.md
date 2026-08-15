@@ -30,6 +30,7 @@
 - [x] Auto-select the only DSH profile with third-party bundles when `--profile` is omitted.
 - [x] Use the selected profile's installed `node_modules` tree as the source of truth, including unresolved-edge visibility.
 - [x] Refresh generated native DSH inventories from the current installed profile before each poll.
+- [x] Keep CLI `radar check/watch` aligned with the refreshed native DSH profile path.
 - [ ] Parse the native pnpm lockfile for pre-install and CI inspection.
 - [ ] Run plugin load and representative compatibility probes in a disposable DSH profile.
 - [ ] Record `compatible`, `incompatible`, and `unknown` against an explicit DSH version matrix.

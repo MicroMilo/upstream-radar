@@ -65,7 +65,7 @@ The active-match key binds project, plugin version, affected package version, an
 
 ## Compatibility cycle
 
-The release source reads npm metadata; it does not install the candidate. When the candidate manifest points to a public `github.com` repository, a second read-only source looks up the exact `v<version>` or `<version>` GitHub Release tag. Its body and link are untrusted evidence. The current and candidate manifests are compared for:
+The release source reads npm metadata; it does not install the candidate. A `latest` dist-tag that points to the same or an older exact version is not treated as an upgrade; an older tag also does not resolve an already active compatibility incident because a registry tag rollback is not evidence that the project changed. When the candidate manifest points to a public `github.com` repository, a second read-only source looks up the exact `v<version>` or `<version>` GitHub Release tag. Its body and link are untrusted evidence. The current and candidate manifests are compared for:
 
 - a major compatibility boundary, or a minor boundary while below 1.0;
 - package entrypoint and export-map changes;
@@ -95,7 +95,7 @@ poll sources
   -> atomically remove synchronously accepted tasks from the outbox
 ```
 
-When the generated overlay is used, the cycle first rebuilds the installed graph from the selected DSH profile. This refresh is manifest-only and never executes plugin code. A failed refresh aborts that cycle before state replacement, so an unreadable or half-updated profile cannot be reported as clean.
+When a generated inventory is used, the native DSH adapter and CLI `radar check/watch` first rebuild the installed graph from the selected DSH profile. This refresh is manifest-only and never executes plugin code. A failed refresh aborts that cycle before state replacement, so an unreadable or half-updated profile cannot be reported as clean. Read-only `status` and explicit-file `compare` do not refresh.
 
 The delivery boundary is intentionally at-least-once. A crash after follow-up admission but before the second state write can repeat a task; it cannot silently erase it. Event and task ids allow later delivery adapters to deduplicate.
 

@@ -255,6 +255,16 @@ export async function refreshRadarConfigFromDshProfile(
   return next
 }
 
+/** Refresh a generated inventory when it carries profile metadata; static configs stay unchanged. */
+export async function refreshRadarConfigFromConfiguredProfile(
+  config: RadarConfig,
+  dshHome?: string,
+): Promise<RadarConfig> {
+  const profile = config.dshProfile?.name
+  if (profile === undefined) return config
+  return refreshRadarConfigFromDshProfile(config, profile, dshHome)
+}
+
 export async function writeRadarConfig(config: RadarConfig, options: WriteRadarConfigOptions): Promise<string> {
   const output = resolve(options.output)
   if (!options.force) {

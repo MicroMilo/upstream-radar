@@ -12,7 +12,7 @@ export { renderTextReport } from './render.js'
 export { dependencyGraphDigest, findDependencyPaths, parseNpmLockGraph } from './graph.js'
 export { parseInstalledNodeModulesGraph } from './installed-graph.js'
 export { OsvClient, packageKey, type OsvClientOptions } from './osv.js'
-export { NpmReleaseClient, type NpmReleaseClientOptions, type NpmReleaseObservation } from './npm-release.js'
+export { NpmReleaseClient, type NpmReleaseCandidateStatus, type NpmReleaseClientOptions, type NpmReleaseObservation } from './npm-release.js'
 export { GitHubReleaseClient, type GitHubReleaseClientOptions, type ReleaseNotes, type ReleaseNotesSource } from './github-release.js'
 export { emptyRadarState, pollRadar, type AdvisorySource, type RadarPollResult, type ReleaseSource } from './radar.js'
 export { assessCompatibilityChange, assessCompatibilityChanges, type CompatibilityChangeInput } from './compatibility.js'
@@ -21,6 +21,7 @@ export { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 export {
   createRadarConfigFromDshProfile,
   discoverDshProfiles,
+  refreshRadarConfigFromConfiguredProfile,
   refreshRadarConfigFromDshProfile,
   resolveDshProfileDirectory,
   writeDshPatch,
@@ -43,7 +44,7 @@ export {
   type RadarStatusSource,
 } from './radar-status.js'
 export { renderRadarEvent, renderRadarEvents } from './radar-render.js'
-export { crossesBreakingVersionBoundary, parseSemver, satisfiesSemverRange } from './semver.js'
+export { compareSemverValues, crossesBreakingVersionBoundary, parseSemver, satisfiesSemverRange } from './semver.js'
 export { scanDirectory, type ScanOptions } from './scan.js'
 export { parseNpmTarball, type ParsedNpmTarball, type TarEntry, type TarOptions } from './tar.js'
 export { TOOL_VERSION } from './version.js'

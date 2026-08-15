@@ -53,6 +53,24 @@ describe('GitHub release notes source', () => {
     assert.equal(calls, 0)
   })
 
+  it('does not fetch release notes for a regressed latest tag', async () => {
+    let calls = 0
+    const client = new GitHubReleaseClient({
+      fetch: async () => {
+        calls += 1
+        return Response.json({})
+      },
+    })
+    const result = await client.query([{
+      ...observation,
+      latestVersion: '0.0.1',
+      candidate: { name: 'plugin', version: '0.0.1' },
+      candidateStatus: 'older',
+    }])
+    assert.equal(result.size, 0)
+    assert.equal(calls, 0)
+  })
+
   it('surfaces non-not-found failures so the radar can report a source warning', async () => {
     const client = new GitHubReleaseClient({
       fetch: async () => new Response(null, { status: 503 }),
