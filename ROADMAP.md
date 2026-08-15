@@ -25,6 +25,7 @@
 - [x] Keep a text/JSON task export as a debugging surface for the DSH outbox.
 - [x] Read the exact public GitHub Release notes for a candidate version; changelogs, comparison diffs, and migration guides remain deferred.
 - [ ] Track DSH package families as one coordinated release rather than unrelated npm packages.
+- [x] Group pending same-project DSH runtime compatibility tasks into one native Agent notice without merging state incidents.
 - [ ] Resolve the lowest clean plugin upgrade, not merely the latest release.
 - [x] Discover a named DSH profile's installed third-party bundles and generate a reviewable inventory.
 - [x] Auto-select the only DSH profile with third-party bundles when `--profile` is omitted.

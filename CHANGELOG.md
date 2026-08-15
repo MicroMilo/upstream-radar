@@ -2,6 +2,14 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.16.0] - 2026-08-16
+
+### Changed
+
+- Group pending same-project DSH runtime compatibility tasks into one native Agent notice.
+- Keep each package's compatibility incident and evidence independent in durable state.
+- Add a deterministic showcase for the grouped DSH runtime handoff.
+
 ## [0.15.0] - 2026-08-16
 
 ### Changed
@@ -186,6 +194,7 @@ All notable changes to Upstream Radar are documented here.
 - Version matching and compatibility facts are calculated outside the model.
 - Agent analysis is read-only and requires project evidence and explicit uncertainty.
 
+[0.16.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.16.0
 [0.15.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.15.0
 [0.14.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.14.0
 [0.13.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.13.0

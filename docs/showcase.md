@@ -69,7 +69,18 @@ The candidate `plugin@2.0.0` changes:
 
 Radar identifies the mathematically incompatible environment and peer range, labels structural changes as needing analysis, and creates a separate DSH compatibility task.
 
-## Scene 5 — one current task per incident
+## Scene 5 — one DSH runtime change, one Agent notice
+
+If one DSH runtime release changes several `@deepseek-ai/dsh-*` packages, Radar keeps the package-level incidents separate in durable state but groups the pending native DSH delivery:
+
+```text
+Deterministic compatibility incidents kept in state: 2
+DSH Agent notices: 1
+```
+
+The Agent receives one project-level upgrade question containing both package facts. If one package later resolves while another remains risky, their state and follow-up lifecycle still remain independent.
+
+## Scene 6 — one current task per incident
 
 The always-on state machine then observes three transitions for the same stable `incidentId`:
 
@@ -81,11 +92,11 @@ RESOLVED: project caught up; queued tasks for incident: 0
 
 The update replaces the older offline task instead of accumulating two analyses. Resolution removes the task before DSH can receive stale work. The exact transition evidence is saved as `examples/radar/reports/06-incident-lifecycle.json`.
 
-## Scene 6 — a source outage is not a clean result
+## Scene 7 — a source outage is not a clean result
 
 The showcase then simulates an OSV timeout. Radar emits no new or resolved vulnerability event, keeps the previously confirmed match, keeps the pending DSH task, and returns a visible `sourceErrors: osv` warning. The evidence is saved as `examples/radar/reports/07-source-outage.json`.
 
-## Scene 7 — repeated failures become one source-health notice
+## Scene 8 — repeated failures become one source-health notice
 
 After three consecutive failed OSV checks, Radar creates one project-routed `source-health` incident and sends it through the same durable DSH outbox. When OSV recovers, the source-health incident resolves and its pending task is removed. The lifecycle is saved as `examples/radar/reports/08-source-health-lifecycle.json`.
 

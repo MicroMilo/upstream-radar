@@ -233,6 +233,8 @@ which API or Cordis configuration would the upgrade disturb?
 what is the least disruptive project-specific action?
 ```
 
+When one DSH runtime release changes several `@deepseek-ai/dsh-*` packages, Radar keeps each package as an independent state record but combines the same project's notices into one Agent analysis. You get one coherent upgrade question without losing the exact package evidence needed for later resolution.
+
 Advisories, release notes, links, package names, and repository strings remain untrusted data. The generated task requires read-only analysis, project evidence, explicit uncertainty, and a fixed [result schema](schemas/analysis-result.schema.json).
 
 ## What works today
