@@ -2,6 +2,20 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.25.0] - 2026-08-16
+
+### Added
+
+- Add `probe dsh-load <package.tgz>` to load a reviewed DSH bundle in a disposable `headless` profile against one exact DSH version.
+- Return explicit `compatible`, `incompatible`, or `unknown` results with artifact, registration, and profile-load stages.
+- Refuse lifecycle scripts during probe preflight and keep the probe limited to bundle loading; it does not run plugin business actions or prove package safety.
+- Add a deterministic three-case DSH load-probe showcase covering a loadable bundle, a rejected bundle patch, and an artifact that remains unknown because it declares `postinstall`.
+
+### Safety
+
+- The probe uses a temporary `DSH_HOME`, disables telemetry and install scripts, and removes the profile unless `--keep-profile` is requested.
+- A successful load is compatibility evidence for the selected DSH version only, not a security admission or capability benchmark.
+
 ## [0.24.0] - 2026-08-16
 
 ### Added

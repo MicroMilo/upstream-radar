@@ -176,7 +176,7 @@ This is intentionally different from resolving the same package in a fresh npm p
 For a runner that does not have DSH installed, commit the generated config after review and run one frozen check:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.24.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.25.0 upstream-radar radar check \
   ./upstream-radar.config.json \
   --frozen --state :memory: --fail-on high --json
 ```
@@ -190,7 +190,7 @@ The published Action packages the same frozen check so a DSH plugin project does
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.24.0
+  - uses: MicroMilo/upstream-radar@v0.25.0
     with:
       config: upstream-radar.config.json
       fail-on: high
@@ -213,7 +213,7 @@ with:
 The package includes a no-network compatibility benchmark for the deterministic gate itself:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.24.0 upstream-radar benchmark compatibility
+pnpm dlx --package=upstream-radar@0.25.0 upstream-radar benchmark compatibility
 ```
 
 It covers a safe patch, analysis-only structural change, DSH peer exclusion, explicit publisher breaking language, a vulnerable candidate dependency, and incomplete candidate coverage. A passing benchmark means the rule contract has not regressed; it does not mean a real plugin is runtime-compatible. The real DSH consumer workflow below remains the integration proof.
@@ -221,6 +221,26 @@ It covers a safe patch, analysis-only structural change, DSH peer exclusion, exp
 ## Scene 16 — verify the consumer path with a real DSH plugin
 
 The repository also carries a copyable consumer smoke under [`examples/github-actions/consumer`](../examples/github-actions/consumer/README.md). Its snapshot is built from the published `dsh-cloudflare-browser-run@0.1.1` package and its resolved graph, so the first-run path exercises real npm manifests and real DSH package names. A project should regenerate this snapshot with `radar init` after reviewing its own DSH profile.
+
+## Scene 17 — load a DSH bundle without starting a user's profile
+
+The `probe dsh-load` command gives the compatibility question its own bounded surface. It takes one exact `.tgz`, uses one exact DSH version, and creates a disposable `headless` profile:
+
+```bash
+pnpm dlx --package=upstream-radar@0.25.0 upstream-radar probe dsh-load \
+  ./dsh-plugin-1.2.3.tgz \
+  --dsh-version 0.1.0-rc.6 --json
+```
+
+The stages are visible in the JSON report: artifact preflight, DSH startup, bundle installation, profile registration, and configuration loading. `compatible` means only that the last stage passed; `incompatible` means DSH rejected the installed bundle; `unknown` means the probe could not establish a reliable result. Lifecycle scripts are refused before DSH is opened, and the temporary profile is deleted unless `--keep-profile` is requested.
+
+The checked-in showcase runs all three outcomes with local fixtures:
+
+```bash
+pnpm run showcase:dsh-probe
+```
+
+This is a runtime compatibility proof for one DSH version, not a package-security admission, a plugin capability benchmark, or a test of business actions.
 
 ## Live sources
 

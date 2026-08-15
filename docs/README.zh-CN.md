@@ -181,10 +181,41 @@ pnpm run try:dsh
 在把项目接入兼容性门禁前，可以先运行离线规则 benchmark：
 
 ```bash
-pnpm dlx --package=upstream-radar@0.24.0 upstream-radar benchmark compatibility
+pnpm dlx --package=upstream-radar@0.25.0 upstream-radar benchmark compatibility
 ```
 
 它覆盖六类契约：安全补丁、只需要项目分析的变化、不兼容的 DSH peer、发布者明确声明 breaking、候选传递依赖漏洞，以及候选依赖图不完整。这个命令不会联网、安装包、加载插件或启动 DSH；它验证的是 Radar 的确定性规则以及 `breaking`/`any` 门禁行为，不是运行时兼容性证明。
+
+## 实测一个 DSH bundle 能否加载
+
+如果手上已经有一个精确的插件发布物，想知道某个精确 DSH 版本能不能加载它，可以运行一次性探针：
+
+```bash
+# 打包精确版本，并明确不运行它的 lifecycle script。
+npm pack --ignore-scripts dsh-plugin@1.2.3
+
+pnpm dlx --package=upstream-radar@0.25.0 upstream-radar probe dsh-load \
+  ./dsh-plugin-1.2.3.tgz \
+  --dsh-version 0.1.0-rc.6
+```
+
+探针先读取 tarball，要求包内存在 `dsh.bundle.patch`，并拒绝声明了 lifecycle script 的包。然后它会创建一次性的 DSH `headless` profile，安装这个精确 tarball，确认 DSH 已登记 bundle，再运行 `--dump-config`。除非传入 `--keep-profile`，临时 profile 会在结束时删除。
+
+结果故意只有三种：
+
+| 结果 | 白话含义 | 退出码 |
+| --- | --- | ---: |
+| `compatible` | 这个 DSH 版本登记了 bundle，并成功加载了它的配置。 | `0` |
+| `incompatible` | DSH 接受了安装，但登记或加载配置时拒绝了它。 | `2` |
+| `unknown` | 预检查、DSH 启动、安装或超时让我们无法可靠下结论。 | `1` |
+
+这只是“能不能加载”的兼容性检查：它不会执行插件业务动作，不测试模型效果，也不能证明包及其依赖安全。仓库里有一个可重复的三案例子：
+
+```bash
+pnpm run showcase:dsh-probe
+```
+
+它会展示一个能加载的 bundle、一个被 DSH 拒绝的 bundle，以及一个因为声明了 `postinstall` 而只能得到 `unknown` 的包。
 
 ## 在 GitHub Actions 中运行
 
@@ -193,7 +224,7 @@ pnpm dlx --package=upstream-radar@0.24.0 upstream-radar benchmark compatibility
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.24.0
+  - uses: MicroMilo/upstream-radar@v0.25.0
     with:
       config: upstream-radar.config.json
       fail-on: high
@@ -201,12 +232,12 @@ steps:
       fail-on-compatibility: breaking
 ```
 
-这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --fail-on-compatibility breaking --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。每次运行彼此独立；发现达到阈值的漏洞或选择的兼容性变化时返回 `2`，运行或漏洞源出错时返回 `1`。`breaking` 只拦截有 confirmed/strong 信号的兼容性事件，`any` 会拦截所有活动兼容性事件，默认值是 `never`。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.24.0` 的发布标签，并根据团队策略固定 checkout Action。
+这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --fail-on-compatibility breaking --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。每次运行彼此独立；发现达到阈值的漏洞或选择的兼容性变化时返回 `2`，运行或漏洞源出错时返回 `1`。`breaking` 只拦截有 confirmed/strong 信号的兼容性事件，`any` 会拦截所有活动兼容性事件，默认值是 `never`。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.25.0` 的发布标签，并根据团队策略固定 checkout Action。
 
 调用方需要先 checkout 仓库。这个 Action 不会安装项目依赖，也不会执行项目的 lifecycle script；它只读取提交到仓库的依赖图并查询配置中的上游漏洞源。如果需要完全显式的底层命令，等价写法是：
 
 ```bash
-pnpm dlx --package=upstream-radar@0.24.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.25.0 upstream-radar radar check \
   ./upstream-radar.config.json --frozen --state :memory: --fail-on high \
   --fail-on-compatibility breaking --json
 ```
@@ -289,11 +320,15 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 已经支持：DSH profile 实际安装树和 npm lock 依赖图、重复版本路径、未解析依赖的覆盖提示、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace、把审查过的图接入 CI 的可复用 GitHub Action、可选的 breaking/any 兼容性门禁、离线的 `benchmark compatibility` 规则契约检查，以及基于真实 DSH 插件的 consumer smoke。
 
+此外支持一次性的 `probe dsh-load`：在临时 DSH profile 中针对一个精确 DSH 版本加载一个精确 tarball，并返回 `compatible`、`incompatible` 或 `unknown`。它是加载兼容性证据，不是安全准入，也不是插件能力 benchmark。
+
 `init` 在省略 `--profile` 时可以自动选择唯一一个含第三方 bundle 的 DSH profile；多个候选仍要求显式指定。默认读取实际安装树，因此 pnpm override 和本地解析选择会被纳入；原生解析 pnpm lockfile 以支持安装前/CI 检查仍未实现。加上 `--dsh-patch <path>` 可以生成不依赖环境变量的 DSH overlay。`radar status` 提供离线的首次运行检查、活动事件摘要和下一步提示，但不会替你刷新漏洞源，也不会自动升级插件。暂未支持 Yarn 图适配、changelog/比较 diff/迁移文档源、项目级 Session 精确路由、把 Agent 结论写回事件，以及自动创建 Issue 或 PR。
 
 `radar watch` 是 CLI 监控入口，本身不会把任务投递给 DSH；需要 Agent 分析时应使用原生 DSH bundle。
 
 `doctor` 只检查本地接线，不能证明 DSH 进程已经把任务交给模型，也不能证明漏洞源当前可用。
+
+`probe dsh-load` 只证明选定 DSH 版本是否登记并加载了 bundle 配置；即使结果是 `compatible`，也不代表插件安全、业务动作可用或模型效果合格。要评估依赖漏洞，仍然使用 Radar 的依赖图和 OSV 监控。
 
 候选依赖图默认只覆盖按版本排序的有限前缀，后续未查询版本会在事件中显示为未完整检查。遇到 registry 或 OSV 不可用时，Radar 保留不确定性并发出告警，不会生成“已安全”的结论。
 
