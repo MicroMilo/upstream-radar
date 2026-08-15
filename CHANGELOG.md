@@ -2,6 +2,13 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.5.2] - 2026-08-15
+
+### Fixed
+
+- Keep the English `README.md` as the npm landing page; move the Chinese README under `docs/` so npm no longer selects it as the package readme.
+- Repair relative links and hero assets in the moved Chinese documentation.
+
 ## [0.5.1] - 2026-08-15
 
 ### Changed
@@ -56,3 +63,4 @@ All notable changes to Upstream Radar are documented here.
 [0.4.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.4.0
 [0.5.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.0
 [0.5.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.1
+[0.5.2]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.2
