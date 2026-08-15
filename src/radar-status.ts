@@ -48,6 +48,8 @@ export interface RadarStatusReport {
   unresolvedDependencies: number
   requiredUnresolvedDependencies: number
   optionalDependenciesNotInstalled: number
+  /** Required DSH/Cordis peers that were not visible in the captured host plane. */
+  dshHostDependenciesNotObserved: number
   dshHostRuntimePackages: number
   lastCheckedAt?: string
   sources: RadarStatusSource[]
@@ -97,6 +99,12 @@ function sourceLabel(source: RadarSource): string {
   if (source === 'npm-releases') return 'npm releases'
   if (source === 'npm-candidate-graphs') return 'npm candidate dependency graphs'
   return 'GitHub releases'
+}
+
+function isDshHostDependency(name: string): boolean {
+  return name === '@deepseek-ai/cordis'
+    || name.startsWith('@deepseek-ai/cordis-plugin-')
+    || name.startsWith('@deepseek-ai/dsh-')
 }
 
 function analysisNextStep(state: RadarState, incidentId: string, fallback: string): string {
@@ -215,6 +223,12 @@ export function createRadarStatus(
     0,
   )
   const optionalDependenciesNotInstalled = unresolvedDependencies - requiredUnresolvedDependencies
+  const dshHostDependenciesNotObserved = config.projects.reduce(
+    (total, project) => total + project.plugins.reduce((count, plugin) => (
+      count + (plugin.graph.unresolved?.filter(item => item.kind !== 'optional' && isDshHostDependency(item.name)).length ?? 0)
+    ), 0),
+    0,
+  )
   const dshHostRuntimePackages = config.projects.reduce(
     (total, project) => total + project.plugins.reduce((count, plugin) => (
       count + (plugin.graph.hostRuntime?.resolvedNodes ?? 0)
@@ -234,6 +248,7 @@ export function createRadarStatus(
     unresolvedDependencies,
     requiredUnresolvedDependencies,
     optionalDependenciesNotInstalled,
+    dshHostDependenciesNotObserved,
     dshHostRuntimePackages,
     ...(lastCheckedAt === undefined ? {} : { lastCheckedAt }),
     sources,
@@ -261,11 +276,15 @@ function plural(value: number, singular: string, multiple = `${singular}s`): str
 
 /** Render the status snapshot for a human checking the first run. */
 export function renderRadarStatus(report: RadarStatusReport): string {
-  const coverageDetail = report.coverage === 'incomplete'
-    ? ` (${plural(report.requiredUnresolvedDependencies, 'required dependency gap')})`
-    : report.optionalDependenciesNotInstalled === 0
-      ? ''
-      : ` (${plural(report.optionalDependenciesNotInstalled, 'optional dependency', 'optional dependencies')} not installed)`
+  const coverageParts: string[] = []
+  if (report.coverage === 'incomplete') coverageParts.push(plural(report.requiredUnresolvedDependencies, 'required dependency gap'))
+  if (report.optionalDependenciesNotInstalled > 0) {
+    coverageParts.push(`${plural(report.optionalDependenciesNotInstalled, 'optional dependency', 'optional dependencies')} not installed`)
+  }
+  if (report.dshHostDependenciesNotObserved > 0) {
+    coverageParts.push(`${plural(report.dshHostDependenciesNotObserved, 'DSH host dependency', 'DSH host dependencies')} not observed`)
+  }
+  const coverageDetail = coverageParts.length === 0 ? '' : ` (${coverageParts.join('; ')})`
   const lines = [
     'Upstream Radar status',
     `Monitoring: ${report.monitoring.replace('-', ' ')}`,

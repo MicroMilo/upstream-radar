@@ -47,6 +47,23 @@ function stringRecord(value: unknown, label: string): Record<string, string> | u
   ]))
 }
 
+function peerDependenciesMeta(value: unknown, label: string): Record<string, { optional?: boolean }> | undefined {
+  if (value === undefined) return undefined
+  const source = record(value, label)
+  if (Object.keys(source).length > 10_000) throw new Error(`${label} has too many entries`)
+  const result: Record<string, { optional?: boolean }> = {}
+  for (const [key, item] of Object.entries(source)) {
+    const meta = record(item, `${label}.${key}`)
+    if (meta.optional !== undefined && typeof meta.optional !== 'boolean') {
+      throw new Error(`${label}.${key}.optional must be a boolean`)
+    }
+    result[string(key, `${label} key`, 512)] = meta.optional === undefined
+      ? {}
+      : { optional: meta.optional }
+  }
+  return result
+}
+
 function coordinate(value: unknown, label: string): PackageCoordinate {
   const source = record(value, label)
   if (source.ecosystem !== 'npm') throw new Error(`${label}.ecosystem must be npm`)
@@ -66,6 +83,7 @@ function manifest(value: unknown, label: string): PackageManifestSnapshot | unde
   const dependencies = stringRecord(source.dependencies, `${label}.dependencies`)
   const optionalDependencies = stringRecord(source.optionalDependencies, `${label}.optionalDependencies`)
   const peerDependencies = stringRecord(source.peerDependencies, `${label}.peerDependencies`)
+  const peerMeta = peerDependenciesMeta(source.peerDependenciesMeta, `${label}.peerDependenciesMeta`)
   return {
     name: string(source.name, `${label}.name`, 512),
     version: string(source.version, `${label}.version`, 512),
@@ -76,6 +94,7 @@ function manifest(value: unknown, label: string): PackageManifestSnapshot | unde
     ...(dependencies === undefined ? {} : { dependencies }),
     ...(optionalDependencies === undefined ? {} : { optionalDependencies }),
     ...(peerDependencies === undefined ? {} : { peerDependencies }),
+    ...(peerMeta === undefined ? {} : { peerDependenciesMeta: peerMeta }),
     ...(source.dsh === undefined ? {} : { dsh: structuredClone(source.dsh) }),
   }
 }

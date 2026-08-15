@@ -29,6 +29,20 @@ describe('radar inventory parsing', () => {
     assert.equal(parsed.projects[0]?.plugins[0]?.graph.nodes[1]?.version, '2.9.0')
   })
 
+  it('preserves npm optional peer metadata in manifests', () => {
+    const candidate = structuredClone(valid)
+    candidate.projects[0]!.plugins[0]!.manifest = {
+      name: 'plugin',
+      version: '1.0.0',
+      peerDependencies: { 'optional-host': '^1.0.0' },
+      peerDependenciesMeta: { 'optional-host': { optional: true } },
+    }
+    const parsed = parseRadarConfig(candidate)
+    assert.deepEqual(parsed.projects[0]?.plugins[0]?.manifest?.peerDependenciesMeta, {
+      'optional-host': { optional: true },
+    })
+  })
+
   it('preserves the generated DSH profile reference used for native refresh', () => {
     const candidate = structuredClone(valid)
     candidate.dshProfile = { name: 'web' }

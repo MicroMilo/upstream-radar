@@ -27,6 +27,14 @@ function asStringRecord(value: unknown): Record<string, string> {
   return result
 }
 
+function optionalPeerNames(value: unknown): Set<string> {
+  const record = asRecord(value)
+  if (record === undefined) return new Set()
+  return new Set(Object.entries(record)
+    .filter(([, item]) => asRecord(item)?.optional === true)
+    .map(([name]) => name))
+}
+
 function packageNameFromPath(path: string): string | undefined {
   const marker = 'node_modules/'
   const offset = path.lastIndexOf(marker)
@@ -54,12 +62,15 @@ function candidateDependencyPaths(parentPath: string, dependencyName: string): s
 
 function dependencyEntries(item: Record<string, unknown>): Array<{ name: string; spec: string; kind: DependencyKind }> {
   const selected = new Map<string, { spec: string; kind: DependencyKind }>()
-  const add = (value: unknown, kind: DependencyKind): void => {
-    for (const [name, spec] of Object.entries(asStringRecord(value))) selected.set(name, { spec, kind })
+  const add = (value: unknown, kind: DependencyKind, selectKind?: (name: string) => DependencyKind): void => {
+    for (const [name, spec] of Object.entries(asStringRecord(value))) {
+      selected.set(name, { spec, kind: selectKind?.(name) ?? kind })
+    }
   }
   add(item.devDependencies, 'development')
   add(item.dependencies, 'runtime')
-  add(item.peerDependencies, 'peer')
+  const optionalPeers = optionalPeerNames(item.peerDependenciesMeta)
+  add(item.peerDependencies, 'peer', name => optionalPeers.has(name) ? 'optional' : 'peer')
   add(item.optionalDependencies, 'optional')
   return [...selected.entries()].map(([name, value]) => ({ name, ...value }))
 }
