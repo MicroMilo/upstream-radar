@@ -2,6 +2,19 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.20.0] - 2026-08-16
+
+### Added
+
+- Add `radar check/status/watch --fail-on <severity>` for a machine-enforced active-vulnerability threshold; malware is treated as critical.
+- Add `radar check/watch --frozen` so CI can use a reviewed config graph without requiring a local DSH profile.
+- Add a copyable GitHub Actions workflow using a memory-only state file and an explicit high-severity gate.
+
+### Safety
+
+- `--frozen` does not claim the checked-in graph is current; it makes the graph source explicit and still queries the configured upstream sources.
+- `--fail-on` changes only the exit code and report policy; it never upgrades packages, runs plugin code, or creates a branch.
+
 ## [0.19.4] - 2026-08-16
 
 ### Added

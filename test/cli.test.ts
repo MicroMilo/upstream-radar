@@ -22,6 +22,8 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /radar watch <config\.json>/)
     assert.match(help.stdout, /radar status <config\.json>/)
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
+    assert.match(help.stdout, /--frozen\s+radar check\/watch: use the reviewed graph/)
+    assert.match(help.stdout, /--fail-on <value>\s+scan\/inspect verdict or radar severity/)
     assert.match(help.stdout, /--dsh-patch <path>\s+write a self-contained DSH --patch overlay/)
 
     const blockedDoctor = spawnSync(process.execPath, [cli, 'doctor', resolve(tmpdir(), `upstream-radar-missing-${process.pid}.json`)], { encoding: 'utf8' })
@@ -52,6 +54,19 @@ describe('CLI option parsing', () => {
     assert.equal(report.schema, 'upstream-radar.radar-status/v1alpha1')
     assert.equal(report.stateExists, false)
     assert.equal(report.monitoring, 'not-started')
+
+    const gated = spawnSync(process.execPath, [cli, 'radar', 'status', config, '--state', missingState, '--fail-on', 'high', '--json'], { encoding: 'utf8' })
+    assert.equal(gated.status, 0)
+    const gatedReport = JSON.parse(gated.stdout) as { policy: { threshold: string; status: string } }
+    assert.deepEqual(gatedReport.policy, { threshold: 'high', status: 'pass', matches: [] })
+
+    const invalidThreshold = spawnSync(process.execPath, [cli, 'radar', 'status', config, '--fail-on', 'severe'], { encoding: 'utf8' })
+    assert.equal(invalidThreshold.status, 1)
+    assert.match(invalidThreshold.stderr, /invalid radar --fail-on value: severe/)
+
+    const longRunningGate = spawnSync(process.execPath, [cli, 'radar', 'watch', config, '--fail-on', 'high'], { encoding: 'utf8' })
+    assert.equal(longRunningGate.status, 1)
+    assert.match(longRunningGate.stderr, /requires --once when --fail-on is used/)
   })
 
   it('prints the local doctor command before the long-running DSH start command', async () => {

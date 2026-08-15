@@ -20,6 +20,7 @@
   <a href="#see-one-incident">See one incident</a> ·
   <a href="#install-in-dsh">Install in DSH</a> ·
   <a href="#run-the-proof">Run the proof</a> ·
+  <a href="#run-it-in-github-actions">Run in GitHub Actions</a> ·
   <a href="#how-the-loop-works">How it works</a> ·
   <a href="ROADMAP.md">Roadmap</a>
 </p>
@@ -189,6 +190,21 @@ The command fails unless DSH proves all four facts:
 
 This proof runs in CI on Node.js 22. See the executable [showcase contract](examples/dsh/README.md) and its checked-in [result](examples/dsh/reports/headless-smoke.json). Run `pnpm run try:dsh:live` to include a current OSV and npm poll before the DSH handoff.
 
+## Run it in GitHub Actions
+
+If your team wants a scheduled CI gate before wiring a machine to a live DSH profile, commit the reviewed `upstream-radar.config.json` and copy [the example workflow](examples/github-actions/upstream-radar.yml). It runs the same exact dependency and OSV checks without needing DSH installed in the runner:
+
+```yaml
+run: >-
+  pnpm dlx --package=upstream-radar@0.20.0 upstream-radar
+  radar check ./upstream-radar.config.json
+  --frozen --state :memory: --fail-on high --json
+```
+
+`--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. `--state :memory:` makes each run independent. The command exits `2` when an active vulnerability meets the threshold, and exits `1` for an operational or source error. It does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path.
+
+For a local or self-hosted DSH machine, omit `--frozen` so Radar refreshes the selected profile before each cycle. Use `--fail-on` only with `radar check`, `radar status`, or `radar watch --once`; a long-running watch should continue routing incidents instead of terminating on the first one.
+
 ## How the loop works
 
 1. Read the project inventory and exact installed npm graph.
@@ -205,7 +221,7 @@ For a local process or a scheduled runner, the same loop is available as:
 pnpm dlx --package=upstream-radar@latest upstream-radar radar watch ./upstream-radar.config.json --interval 1800
 ```
 
-Use `--once --json` for a machine-readable CI check. The command persists the same state file and emits only new, changed, or resolved incidents.
+Use `radar check --frozen --state :memory: --fail-on high --json` for a machine-enforced CI check against a reviewed graph. The local DSH path continues to use `radar watch`, which refreshes the selected profile before each cycle.
 
 The handoff uses `ctx.agents.roots()[0].followup(...)` with:
 
@@ -299,6 +315,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 - `init` discovers the only DSH profile with third-party bundles when `--profile` is omitted; multiple candidates still require an explicit profile. By default it follows the installed DSH `node_modules` tree, so pnpm overrides and local resolution choices are included. `--dsh-patch <path>` writes an explicit DSH overlay so first startup needs no environment variables and preserves an explicitly selected registry. A native pnpm lockfile parser for pre-install/CI inspection is still deferred.
 - A graph with unresolved required dependency declarations is marked as incomplete coverage; optional packages that are not installed for the current platform remain visible but do not create a false required-dependency alert.
 - Candidate upgrade graphs are resolved only for a bounded earliest prefix. A candidate with an incomplete or unavailable graph is not recommended; later unqueried candidates remain visibly unchecked. Pass `--no-deep-candidates` to opt out of this extra registry work.
+- `radar check/watch --frozen` intentionally uses the graph committed in the config for CI; it does not prove that the installed DSH profile has not changed. Without `--frozen`, native DSH and CLI polling refresh the selected profile first.
 - `radar status` is a local snapshot only: it does not refresh OSV/npm/GitHub data, and it cannot prove that a source is current until a check has completed. Its next steps are guidance, not an automatic upgrade or safety decision.
 - `doctor` checks local wiring only; it cannot prove that a running DSH process has delivered a task to a model or that upstream feeds are current.
 - npm lock graphs are supported; pnpm and Yarn graph adapters are not implemented.

@@ -178,6 +178,21 @@ pnpm run try:dsh
 
 运行 `pnpm run try:dsh:live`，可以在 DSH 投递前加入一次当前 OSV 与 npm 数据轮询。
 
+## 在 GitHub Actions 中运行
+
+如果团队想先用定时 CI 检查，而不是马上在 runner 里安装 DSH，可以把审查过的 `upstream-radar.config.json` 提交到仓库，然后复制[示例 workflow](../examples/github-actions/upstream-radar.yml)：
+
+```yaml
+run: >-
+  pnpm dlx --package=upstream-radar@0.20.0 upstream-radar
+  radar check ./upstream-radar.config.json
+  --frozen --state :memory: --fail-on high --json
+```
+
+`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。`--state :memory:` 让每次运行彼此独立。达到阈值时返回 `2`；运行或漏洞源出错时返回 `1`。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。
+
+在本地或自托管 DSH 机器上不要加 `--frozen`，这样 Radar 会在每轮检查前刷新选中的 profile。`--fail-on` 适用于一次性 `radar check`、`radar status` 或 `radar watch --once`；长期运行的 watch 不应该因为第一次告警就退出。
+
 ## 闭环如何工作
 
 1. 读取项目清单和实际安装的 npm 依赖图。
@@ -194,7 +209,7 @@ pnpm run try:dsh
 pnpm dlx --package=upstream-radar@latest upstream-radar radar watch ./upstream-radar.config.json --interval 1800
 ```
 
-CI 中使用 `--once --json`。它复用同一个状态文件，只输出新建、变化和恢复的事件。
+CI 中可以使用 `radar check --frozen --state :memory: --fail-on high --json`，直接检查提交到仓库的审查过的图；本地持续监控仍使用 `radar watch`，并让 DSH profile 自动刷新。
 
 投递消息保留明确的插件身份：
 
@@ -253,6 +268,8 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 `doctor` 只检查本地接线，不能证明 DSH 进程已经把任务交给模型，也不能证明漏洞源当前可用。
 
 候选依赖图默认只覆盖按版本排序的有限前缀，后续未查询版本会在事件中显示为未完整检查。遇到 registry 或 OSV 不可用时，Radar 保留不确定性并发出告警，不会生成“已安全”的结论。
+
+`radar check/watch --frozen` 会有意使用提交到仓库的配置图，适合 CI，但不能证明 DSH profile 的实际安装树没有变化；不加 `--frozen` 时，原生 DSH 和 CLI 轮询会先刷新选中的 profile。
 
 Upstream Radar 目前是面向 DSH developer preview 生态的 alpha 软件，事件结构和适配边界仍可能变化。
 

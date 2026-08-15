@@ -171,6 +171,18 @@ For a profile containing `dsh-cloudflare-browser-run@0.1.1`, initialization repo
 
 This is intentionally different from resolving the same package in a fresh npm project. A DSH profile may provide peer packages from its host, apply overrides, or leave a declaration unresolved; Radar keeps that difference visible instead of silently replacing it with a registry-generated graph.
 
+## Scene 13 — make the reviewed graph a CI gate
+
+For a runner that does not have DSH installed, commit the generated config after review and run one frozen check:
+
+```bash
+pnpm dlx --package=upstream-radar@0.20.0 upstream-radar radar check \
+  ./upstream-radar.config.json \
+  --frozen --state :memory: --fail-on high --json
+```
+
+`--frozen` prevents the command from looking for a local DSH profile. `--fail-on high` returns exit code `2` when the committed graph has an active high or critical vulnerability (malware is critical), while source or operational failures return `1`. This is a CI gate for deterministic evidence; it does not replace the native DSH Agent analysis or create an upgrade.
+
 ## Live sources
 
 The fixture isolates behavior from network timing. Production cycles use:
