@@ -26,12 +26,17 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /--fail-on <value>\s+scan\/inspect verdict or radar severity/)
     assert.match(help.stdout, /--fail-on-compatibility <value>\s+CI gate: never\|breaking\|any/)
     assert.match(help.stdout, /--dsh-patch <path>\s+write a self-contained DSH --patch overlay/)
+    assert.match(help.stdout, /probe dsh-load <package\.tgz>/)
 
     const benchmark = spawnSync(process.execPath, [cli, 'benchmark', 'compatibility', '--json'], { encoding: 'utf8' })
     assert.equal(benchmark.status, 0)
     const benchmarkReport = JSON.parse(benchmark.stdout) as { mode: string; summary: { total: number; failed: number } }
     assert.equal(benchmarkReport.mode, 'offline-rules')
     assert.deepEqual(benchmarkReport.summary, { total: 6, passed: 6, failed: 0 })
+
+    const invalidProbeVersion = spawnSync(process.execPath, [cli, 'probe', 'dsh-load', 'missing.tgz', '--dsh-version', 'latest'], { encoding: 'utf8' })
+    assert.equal(invalidProbeVersion.status, 1)
+    assert.match(invalidProbeVersion.stderr, /DSH version must be an exact semantic version/)
 
     const blockedDoctor = spawnSync(process.execPath, [cli, 'doctor', resolve(tmpdir(), `upstream-radar-missing-${process.pid}.json`)], { encoding: 'utf8' })
     assert.equal(blockedDoctor.status, 1)

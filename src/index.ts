@@ -27,6 +27,17 @@ export {
 } from './radar.js'
 export { assessCompatibilityChange, assessCompatibilityChanges, type CompatibilityChangeInput } from './compatibility.js'
 export {
+  DSH_LOAD_PROBE_SCHEMA,
+  inspectDshLoadArtifact,
+  probeDshLoad,
+  renderDshLoadProbe,
+  type DshLoadProbeArtifact,
+  type DshLoadProbeOptions,
+  type DshLoadProbeReport,
+  type DshLoadProbeResult,
+  type DshProbeStage,
+} from './dsh-probe.js'
+export {
   COMPATIBILITY_BENCHMARK_SCHEMA,
   renderCompatibilityBenchmark,
   runCompatibilityBenchmark,

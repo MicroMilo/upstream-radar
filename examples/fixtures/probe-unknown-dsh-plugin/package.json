@@ -1,0 +1,13 @@
+{
+  "name": "probe-unknown-dsh-plugin",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "postinstall": "node ./index.js"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
