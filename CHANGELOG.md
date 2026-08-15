@@ -4,6 +4,8 @@ All notable changes to Upstream Radar are documented here.
 
 ## [Unreleased]
 
+## [0.33.0] - 2026-08-16
+
 ### Validation
 
 - Add a real DSH host-runtime showcase that refreshes a plugin's graph from the running process, matches a deterministic local OSV advisory against `@deepseek-ai/cordis`, and proves `dsh-host` event persistence plus Agent writeback.

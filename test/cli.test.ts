@@ -9,6 +9,7 @@ import { createAnalysisTask } from '../src/dsh-analysis.js'
 import { emptyRadarState } from '../src/radar.js'
 import { loadRadarState, saveRadarState } from '../src/radar-state.js'
 import type { VulnerabilityEvent } from '../src/radar-types.js'
+import { TOOL_VERSION } from '../src/version.js'
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const cli = resolve(repository, 'dist/src/cli.js')
@@ -183,11 +184,11 @@ describe('CLI option parsing', () => {
         },
       })
       assert.equal(result.status, 0)
-      assert.match(result.stdout, /Installing upstream-radar@0\.32\.0 into DSH profile web/)
+      assert.ok(result.stdout.includes(`Installing upstream-radar@${TOOL_VERSION} into DSH profile web`))
       assert.match(result.stdout, /Local wiring check:/)
       assert.match(result.stdout, /Status: READY WITH WARNINGS/)
       assert.match(result.stdout, /Created .*upstream-radar\.dsh\.yml/)
-      assert.match(await readFile(dshLog, 'utf8'), /plugin --profile web add upstream-radar@0\.32\.0/)
+      assert.ok((await readFile(dshLog, 'utf8')).includes(`plugin --profile web add upstream-radar@${TOOL_VERSION}`))
       assert.equal(JSON.parse(await readFile(config, 'utf8')).dshProfile.name, 'web')
       assert.match(await readFile(join(root, 'upstream-radar.dsh.yml'), 'utf8'), /name: 'upstream-radar\/dsh'/)
     } finally {
