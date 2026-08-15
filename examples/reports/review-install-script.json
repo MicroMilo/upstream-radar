@@ -2,7 +2,7 @@
   "schema": "upstream-radar.scan/v1alpha1",
   "tool": {
     "name": "upstream-radar",
-    "version": "0.4.0"
+    "version": "0.4.1"
   },
   "target": {
     "kind": "directory",

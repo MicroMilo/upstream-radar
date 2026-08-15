@@ -7,7 +7,7 @@
 
 <h1 align="center">Upstream Radar</h1>
 
-<p align="center"><strong>只有当上游变化真正命中项目时，才唤醒你的 DSH Agent。</strong></p>
+<p align="center"><strong>面向 DeepSeek Harness 插件的常驻漏洞与破坏性更新雷达。</strong></p>
 
 <p align="center">
   <a href="README.md">English</a> · 简体中文
@@ -15,20 +15,71 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/upstream-radar"><img alt="npm 版本" src="https://img.shields.io/npm/v/upstream-radar?style=flat-square&color=2563eb"></a>
+  <a href="https://github.com/MicroMilo/upstream-radar/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/MicroMilo/upstream-radar?style=flat-square&color=f59e0b"></a>
   <a href="https://github.com/MicroMilo/upstream-radar/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/MicroMilo/upstream-radar/ci.yml?branch=main&style=flat-square&label=CI"></a>
   <a href="examples/dsh/README.md"><img alt="已使用 DSH 0.1.0-rc.6 验证" src="https://img.shields.io/badge/tested_with_DSH-0.1.0--rc.6-5b5bd6?style=flat-square"></a>
+  <a href="https://github.com/MicroMilo/upstream-radar/releases"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/MicroMilo/upstream-radar?style=flat-square"></a>
   <a href="LICENSE"><img alt="Apache-2.0 许可证" src="https://img.shields.io/badge/license-Apache--2.0-0f766e?style=flat-square"></a>
 </p>
 
 ---
 
-普通漏洞源只能告诉你“某个包有问题”。它通常无法回答：这个精确版本是被哪个 DSH 插件带进来的、真实依赖路径是什么、项目是否会触发漏洞，以及升级时会不会顺手破坏 DSH 兼容性。
+普通漏洞源到“某个包有问题”就结束了。Upstream Radar 会继续找到实际安装的依赖路径，维护一个可持续更新的事件，再把带有项目证据的调查任务交给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent。
 
-Upstream Radar 把这条链路闭合在 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 内部：
+```text
+OSV 漏洞公告或 npm 新版本
+  -> 真正命中的插件依赖路径
+  -> new / updated / resolved 事件
+  -> 面向具体项目的 DSH Agent 分析任务
+```
 
-- **看精确路径，不按包名猜。** 保留物理依赖节点、重复版本和真正命中的完整路径。
-- **维护事件状态，不制造告警洪水。** 记录 `new`、`updated`、`resolved`，同一事件只保留当前任务。
-- **程序先确定事实，模型只做判断。** 版本命中和兼容边界由程序计算；DSH Agent 只调查项目可达性和迁移影响。
+**没有命中实际安装路径，就不会唤醒 Agent。** 版本匹配和兼容性事实由程序计算；模型只负责结合仓库做判断。
+
+## 先看一个真实事件
+
+同一个插件里安装了两个 `parser` 版本，而公告只影响其中一个时，Radar 会报告真正命中的路径：
+
+```text
+[HIGH][NEW] Dependency vulnerability
+Project: Payments API (payments-api)
+Plugin: plugin@1.0.0
+Affected: parser@2.9.0
+Advisory: GHSA-demo-2026-parser / CVE-2026-1234
+Paths:
+  plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
+Fixed versions: 3.0.0
+Route: payments-platform via feishu:payments-security
+```
+
+这个事件会成为带有插件身份的 DSH notice，而不是被复制进一段泛泛的聊天提示词。
+
+| 上游信号 | Radar 用程序确定 | DSH Agent 结合项目调查 |
+| --- | --- | --- |
+| 漏洞或恶意软件包 | 受影响的精确版本、每条安装路径、修复版本和事件状态 | 项目是否调用、攻击者输入能否到达、代价最低的修复办法 |
+| npm 候选版本 | 版本边界，以及 Node、peer、exports、入口、bundle 和依赖变化 | 哪些 API 或 Cordis 配置会受影响、应该如何迁移 |
+
+## 安装到 DSH
+
+Upstream Radar 发布的是已经构建好的 npm bundle，不需要开放安装期构建权限：
+
+```bash
+dsh plugin --profile web add upstream-radar@latest
+```
+
+指定项目清单和持久化状态文件后启动 profile：
+
+```bash
+export UPSTREAM_RADAR_CONFIG=/absolute/path/radar-config.json
+export UPSTREAM_RADAR_STATE=/absolute/path/radar-state.json
+export UPSTREAM_RADAR_INTERVAL_SECONDS=1800
+
+dsh --profile web --dump-config
+dsh --profile web
+```
+
+可以从[示例清单](examples/radar/config.json)开始。如果没有设置 `UPSTREAM_RADAR_CONFIG`，插件会保持休眠，不发起轮询。
+
+启动后，Radar 会轮询 OSV 与 npm，先把事件状态持久化，再把有变化的事件交给第一个在线的根 DSH Agent。
 
 ## 在真实 DSH 中运行证明
 
@@ -53,32 +104,7 @@ pnpm run try:dsh
 }
 ```
 
-要把当前 OSV 和 npm 数据也加入启动轮询：
-
-```bash
-pnpm run try:dsh:live
-```
-
-## 安装到 DSH
-
-Upstream Radar 发布的是已经构建好的 npm bundle，不需要开放安装期构建权限：
-
-```bash
-dsh plugin --profile web add upstream-radar@0.4.0
-```
-
-指定项目清单和持久化状态文件后启动 profile：
-
-```bash
-export UPSTREAM_RADAR_CONFIG=/absolute/path/radar-config.json
-export UPSTREAM_RADAR_STATE=/absolute/path/radar-state.json
-export UPSTREAM_RADAR_INTERVAL_SECONDS=1800
-
-dsh --profile web --dump-config
-dsh --profile web
-```
-
-可以从[示例清单](examples/radar/config.json)开始。如果没有设置 `UPSTREAM_RADAR_CONFIG`，插件会保持休眠，不发起轮询。
+运行 `pnpm run try:dsh:live`，可以在 DSH 投递前加入一次当前 OSV 与 npm 数据轮询。
 
 ## 闭环如何工作
 
@@ -102,7 +128,7 @@ dsh --profile web
 
 这是 DSH 原生生命周期集成，不是聊天机器人，也不是远程控制入口。
 
-## 一个真实命中的路径
+## 为什么只按包名告警不够
 
 ```text
 plugin@1.0.0
@@ -113,18 +139,7 @@ plugin@1.0.0
     └── parser@2.9.0
 ```
 
-如果公告只影响 `parser@2.9.0`，Radar 输出的是：
-
-```text
-[HIGH][NEW] Dependency vulnerability
-Project: Payments API (payments-api)
-Plugin: plugin@1.0.0
-Affected: parser@2.9.0
-Path: plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
-Fixed versions: 3.0.0
-```
-
-不受影响的 `parser@3.2.1` 仍然是独立节点。
+如果公告只影响 `parser@2.9.0`，它只会命中 `plugin -> logger -> parser` 这条分支。不受影响的 `parser@3.2.1` 仍然是独立的物理节点，不会变成按包名产生的误报。
 
 ## 不只监控漏洞，也监控 breaking changes
 
@@ -162,6 +177,7 @@ Upstream Radar 目前是面向 DSH developer preview 生态的 alpha 软件，�
 - [威胁模型](docs/threat-model.md)
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)
+- [发布流程](docs/releasing.md)
 - [贡献指南](CONTRIBUTING.md)
 - [安全策略](SECURITY.md)
 
