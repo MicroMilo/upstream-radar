@@ -131,7 +131,15 @@ After DSH has started, the read-only status command reads the same config and du
 pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-radar.config.json
 ```
 
-It reports whether monitoring has started, the last successful check for OSV/npm/GitHub Releases, active vulnerability and compatibility incidents, source-health incidents, and pending DSH analysis tasks. It does not poll any upstream source, so it is safe to use for a quick local diagnosis.
+It reports whether monitoring has started, the last successful check for OSV/npm/GitHub Releases, active vulnerability and compatibility incidents, source-health incidents, and pending DSH analysis tasks. When an incident is active, it also shows the exact affected path or candidate signal and one suggested next step:
+
+```text
+Attention:
+  [HIGH] Payments API: parser@2.9.0 is affected by GHSA-demo-2026-parser via plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
+    Next: Review parser fixed version(s) 3.0.0 with the DSH Agent before changing the plugin.
+```
+
+It does not poll any upstream source, so it is safe to use for a quick local diagnosis. The next step is guidance; it is not an automatic upgrade or a safety verdict.
 
 The status output also shows `Coverage: incomplete` when the installed profile contains a dependency declaration that DSH cannot currently resolve. That is a configuration gap, not a clean result.
 
