@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, it } from 'node:test'
@@ -143,6 +143,34 @@ describe('DSH profile initialization', () => {
     }
   })
 
+  it('uses the installed profile tree by default', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-init-installed-'))
+    const profile = join(root, 'profiles', 'web')
+    try {
+      await mkdir(join(profile, 'node_modules', 'demo-plugin'), { recursive: true })
+      await writeFile(join(profile, 'package.json'), JSON.stringify({
+        name: 'dsh-profile-web',
+        dsh: { profile: { bundles: ['demo-plugin'] } },
+      }))
+      await writeFile(join(profile, 'node_modules', 'demo-plugin', 'package.json'), JSON.stringify({
+        name: 'demo-plugin',
+        version: '1.2.3',
+        dependencies: { parser: '2.9.0' },
+      }))
+      await mkdir(join(profile, 'node_modules', 'parser'), { recursive: true })
+      await writeFile(join(profile, 'node_modules', 'parser', 'package.json'), JSON.stringify({
+        name: 'parser',
+        version: '2.9.0',
+      }))
+
+      const config = await createRadarConfigFromDshProfile({ profileDirectory: profile })
+      assert.equal(config.projects[0]?.plugins[0]?.graph.source, 'installed-node-modules')
+      assert.equal(config.projects[0]?.plugins[0]?.graph.nodes.length, 2)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
   it('does not follow a bundle path outside the profile', async () => {
     const root = await mkdtemp(join(tmpdir(), 'upstream-radar-init-'))
     const profile = join(root, 'profiles', 'web')
@@ -158,6 +186,28 @@ describe('DSH profile initialization', () => {
       )
     } finally {
       await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('does not read a symlinked bundle manifest outside the profile', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-init-symlink-'))
+    const outside = await mkdtemp(join(tmpdir(), 'upstream-radar-init-outside-'))
+    const profile = join(root, 'profiles', 'web')
+    try {
+      await mkdir(join(profile, 'node_modules'), { recursive: true })
+      await writeFile(join(profile, 'package.json'), JSON.stringify({
+        name: 'dsh-profile-web',
+        dsh: { profile: { bundles: ['demo-plugin'] } },
+      }))
+      await writeFile(join(outside, 'package.json'), JSON.stringify({ name: 'demo-plugin', version: '1.0.0' }))
+      await symlink(outside, join(profile, 'node_modules', 'demo-plugin'), 'junction')
+      await assert.rejects(
+        createRadarConfigFromDshProfile({ profileDirectory: profile }),
+        /manifest escapes the DSH profile/,
+      )
+    } finally {
+      await rm(root, { recursive: true, force: true })
+      await rm(outside, { recursive: true, force: true })
     }
   })
 })

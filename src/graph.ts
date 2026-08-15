@@ -64,7 +64,7 @@ function dependencyEntries(item: Record<string, unknown>): Array<{ name: string;
   return [...selected.entries()].map(([name, value]) => ({ name, ...value }))
 }
 
-function graphDigest(nodes: readonly DependencyNode[], edges: readonly DependencyEdge[]): string {
+export function dependencyGraphDigest(nodes: readonly DependencyNode[], edges: readonly DependencyEdge[]): string {
   const hash = createHash('sha256')
   for (const node of [...nodes].sort((left, right) => left.id.localeCompare(right.id))) {
     hash.update(`node\0${node.id}\0${node.name}\0${node.version}\n`)
@@ -153,7 +153,8 @@ export function parseNpmLockGraph(lockfile: unknown, rootPackage: RootPackage): 
     rootNodeId: rootNode.id,
     nodes,
     edges,
-    digest: graphDigest(nodes, edges),
+    source: 'npm-lock',
+    digest: dependencyGraphDigest(nodes, edges),
     ...(reachableUnresolved.length === 0 ? {} : { unresolved: reachableUnresolved }),
   }
 }

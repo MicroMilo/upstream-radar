@@ -9,7 +9,8 @@ export {
   type ParsedNpmSpec,
 } from './npm.js'
 export { renderTextReport } from './render.js'
-export { findDependencyPaths, parseNpmLockGraph } from './graph.js'
+export { dependencyGraphDigest, findDependencyPaths, parseNpmLockGraph } from './graph.js'
+export { parseInstalledNodeModulesGraph } from './installed-graph.js'
 export { OsvClient, packageKey, type OsvClientOptions } from './osv.js'
 export { NpmReleaseClient, type NpmReleaseClientOptions, type NpmReleaseObservation } from './npm-release.js'
 export { GitHubReleaseClient, type GitHubReleaseClientOptions, type ReleaseNotes, type ReleaseNotesSource } from './github-release.js'
@@ -35,6 +36,7 @@ export {
   RADAR_STATUS_SCHEMA,
   type CreateRadarStatusOptions,
   type RadarMonitoringStatus,
+  type RadarCoverageStatus,
   type RadarSourceStatus,
   type RadarStatusReport,
   type RadarStatusSource,

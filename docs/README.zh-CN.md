@@ -101,7 +101,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar init \
   --dsh-patch ./upstream-radar.dsh.yml
 ```
 
-初始化命令会读取 profile 中实际安装的第三方 bundle，用禁用 lifecycle scripts 的方式解析每个精确 npm artifact，然后写出可审查的配置和自包含 DSH overlay。它不会自行启动 DSH，也不会自行开启轮询。检查生成文件后，直接运行：
+初始化命令会读取 profile 中实际安装的第三方 bundle，并沿着该 profile 暴露的 `node_modules` 目录构建依赖图，包括重复版本、override 和本地 package-manager 选择。它只读取 manifest，不会导入插件代码、运行 lifecycle scripts、启动 DSH 或开启轮询。检查生成文件后，直接运行：
 
 ```bash
 dsh --profile web --patch ./upstream-radar.dsh.yml --dump-config
@@ -109,9 +109,9 @@ dsh --profile web --patch ./upstream-radar.dsh.yml
 pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-radar.config.json
 ```
 
-`radar status` 只读取本地配置和状态，不会刷新 OSV/npm/GitHub；它会告诉你是否已经完成检查、哪个数据源异常、当前事件和待处理的 DSH 任务。如果不使用 `--dsh-patch`，仍可以使用原来的 `UPSTREAM_RADAR_CONFIG`、`UPSTREAM_RADAR_STATE` 和 `UPSTREAM_RADAR_INTERVAL_SECONDS` 环境变量方式。
+`radar status` 只读取本地配置和状态，不会刷新 OSV/npm/GitHub；它会告诉你是否已经完成检查、依赖覆盖是否完整、哪个数据源异常、当前事件和待处理的 DSH 任务。如果不使用 `--dsh-patch`，仍可以使用原来的 `UPSTREAM_RADAR_CONFIG`、`UPSTREAM_RADAR_STATE` 和 `UPSTREAM_RADAR_INTERVAL_SECONDS` 环境变量方式。
 
-生成的依赖图对应已安装 bundle 版本的精确公共 npm artifact。如果你的 DSH profile 使用了 package-manager override、patch 或特殊的 peer 解析规则，开启持续监控前仍需要人工检查这些差异。
+生成的依赖图对应 profile 当前实际安装的树。如果依赖声明存在但 profile 中无法解析，它会保留为“覆盖不完整”，不会被当成安全或不存在。显式传入 `--registry <url>` 才会使用公共 npm artifact 图，适合和 registry 解析结果做比较，但不是默认路径。
 
 如果需要手写配置或制作 CI fixture，可以参考[示例清单](../examples/radar/config.json)。如果既没有 `--patch` overlay，也没有设置 `UPSTREAM_RADAR_CONFIG`，插件会保持休眠，不发起轮询。
 
@@ -206,9 +206,9 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 ## 当前能力与边界
 
-已经支持：npm lock 依赖图、重复版本路径、OSV 精确版本匹配、恶意包记录、npm release 监听、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查。
+已经支持：DSH profile 实际安装树和 npm lock 依赖图、重复版本路径、未解析依赖的覆盖提示、OSV 精确版本匹配、恶意包记录、npm release 监听、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查。
 
-`init` 在省略 `--profile` 时可以自动选择唯一一个含第三方 bundle 的 DSH profile；多个候选仍要求显式指定。加上 `--dsh-patch <path>` 可以生成不依赖环境变量的 DSH overlay。`radar status` 提供离线的首次运行检查，但不会替你刷新漏洞源。暂未支持原生解析 pnpm override/peer 规则、Yarn 图适配、changelog/比较 diff/迁移文档源、项目级 Session 精确路由、把 Agent 结论写回事件，以及自动创建 Issue 或 PR。
+`init` 在省略 `--profile` 时可以自动选择唯一一个含第三方 bundle 的 DSH profile；多个候选仍要求显式指定。默认读取实际安装树，因此 pnpm override 和本地解析选择会被纳入；原生解析 pnpm lockfile 以支持安装前/CI 检查仍未实现。加上 `--dsh-patch <path>` 可以生成不依赖环境变量的 DSH overlay。`radar status` 提供离线的首次运行检查，但不会替你刷新漏洞源。暂未支持 Yarn 图适配、changelog/比较 diff/迁移文档源、项目级 Session 精确路由、把 Agent 结论写回事件，以及自动创建 Issue 或 PR。
 
 `radar watch` 是 CLI 监控入口，本身不会把任务投递给 DSH；需要 Agent 分析时应使用原生 DSH bundle。
 

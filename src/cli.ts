@@ -53,12 +53,12 @@ Commands:
   init     discover third-party bundles in a DSH profile and write a reviewable inventory
   scan     bounded, read-only inspection of a local package directory
   inspect  fetch and verify the exact npm artifact before inspecting its contents
-  radar    monitor vulnerability changes, watch continuously, or assess a candidate compatibility change
+  radar    monitor vulnerability changes, watch continuously, inspect status, or assess a candidate compatibility change
   task     inspect or acknowledge the durable DSH analysis outbox
 
 Options:
   --deep               resolve the dependency graph with scripts disabled and ask npm to verify signatures/provenance
-  --registry <url>     HTTPS npm registry (default: https://registry.npmjs.org/)
+  --registry <url>     HTTPS npm registry for inspect or explicit public-graph init
   --state <path>       persistent radar state (default: <config.json>.state.json)
   --osv-base-url <url> alternate HTTPS OSV API base URL
   --interval <seconds> watch interval from 300 to 86400 seconds (default: 1800)
@@ -224,7 +224,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
       stateExists,
     })
     process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderRadarStatus(report))
-    return report.monitoring === 'degraded' ? 1 : 0
+    return report.monitoring === 'degraded' || report.coverage === 'incomplete' ? 1 : 0
   }
   const osv = new OsvClient({
     ...(osvBaseUrl === undefined ? {} : { baseUrl: osvBaseUrl }),
@@ -411,11 +411,16 @@ async function runInit(args: readonly string[]): Promise<number> {
       version: plugin.package.version,
       nodes: plugin.graph.nodes.length,
       edges: plugin.graph.edges.length,
+      ...(plugin.graph.source === undefined ? {} : { source: plugin.graph.source }),
+      ...(plugin.graph.unresolved === undefined ? {} : { unresolved: plugin.graph.unresolved.length }),
     })), state: statePath, ...(patchPath === undefined ? {} : { patch: patchPath }) }, null, 2)}\n`)
   } else {
     if (autoSelected) process.stdout.write(`Auto-selected DSH profile: ${resolvedProfile}\n`)
     process.stdout.write(`Created ${outputPath}\nDiscovered ${plugins.length} DSH plugin bundle(s):\n`)
-    for (const plugin of plugins) process.stdout.write(`  ${plugin.package.name}@${plugin.package.version} (${plugin.graph.nodes.length} dependency nodes)\n`)
+    for (const plugin of plugins) {
+      const unresolved = plugin.graph.unresolved?.length ?? 0
+      process.stdout.write(`  ${plugin.package.name}@${plugin.package.version} (${plugin.graph.nodes.length} dependency nodes${plugin.graph.source === undefined ? '' : `, ${plugin.graph.source}`}${unresolved === 0 ? '' : `, ${unresolved} unresolved`})\n`)
+    }
     if (patchPath === undefined) {
       process.stdout.write(`\nReview the generated inventory, then run:\n  export UPSTREAM_RADAR_CONFIG=${shellQuote(outputPath)}\n  export UPSTREAM_RADAR_STATE=${shellQuote(statePath)}\n  dsh --profile ${shellQuote(resolvedProfile)}\n`)
     } else {
