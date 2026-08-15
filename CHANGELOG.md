@@ -2,6 +2,22 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.32.0] - 2026-08-16
+
+### Added
+
+- Discover the exact DSH runtime dependency plane from the running CLI entrypoint using bounded, read-only manifest checks.
+- Include packages resolved from that process plane in refreshed plugin graphs as `dsh-host` nodes and query their exact versions for upstream vulnerabilities.
+- Show whether the captured DSH host plane came from the running process or the profile fallback in `radar status`.
+
+### Safety
+
+- Runtime discovery never imports DSH, loads plugin code, or runs lifecycle scripts; it only verifies the exact `@deepseek-ai/dsh` manifest and reads package manifests through the existing graph collector.
+
+### Validation
+
+- Add discovery, explicit host-plane refresh, graph provenance, status, and full real-DSH showcase coverage.
+
 ## [0.31.0] - 2026-08-16
 
 ### Changed

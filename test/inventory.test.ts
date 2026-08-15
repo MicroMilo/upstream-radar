@@ -64,6 +64,19 @@ describe('radar inventory parsing', () => {
     assert.deepEqual(parsed.projects[0]?.plugins[0]?.graph.unresolved, candidate.projects[0]!.plugins[0]!.graph.unresolved)
   })
 
+  it('accepts an exact DSH process host-runtime evidence source', () => {
+    const candidate = structuredClone(valid)
+    candidate.projects[0]!.plugins[0]!.graph.hostRuntime = {
+      source: 'dsh-process',
+      resolvedNodes: 3,
+    }
+    const parsed = parseRadarConfig(candidate)
+    assert.deepEqual(parsed.projects[0]?.plugins[0]?.graph.hostRuntime, {
+      source: 'dsh-process',
+      resolvedNodes: 3,
+    })
+  })
+
   it('rejects edges to missing nodes', () => {
     const broken = structuredClone(valid)
     broken.projects[0]!.plugins[0]!.graph.edges[0]!.to = 'missing'

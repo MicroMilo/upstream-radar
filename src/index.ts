@@ -13,6 +13,7 @@ export {
 export { renderTextReport } from './render.js'
 export { dependencyGraphDigest, findDependencyPaths, parseNpmLockGraph } from './graph.js'
 export { parseInstalledNodeModulesGraph } from './installed-graph.js'
+export { discoverDshRuntimeNodeModulesDirectory } from './dsh-runtime.js'
 export { OsvClient, packageKey, type OsvClientOptions } from './osv.js'
 export { NpmReleaseClient, type NpmReleaseCandidateStatus, type NpmReleaseClientOptions, type NpmReleaseObservation } from './npm-release.js'
 export { MAX_CANDIDATE_GRAPHS, NpmCandidateGraphClient, type NpmCandidateGraphClientOptions } from './npm-candidate.js'
@@ -148,6 +149,7 @@ export {
   type CompatibilityVulnerabilityStatus,
   type CompatibilitySignal,
   type DependencyEdge,
+  type DependencyHostRuntimeSource,
   type DependencyGraph,
   type DependencyKind,
   type DependencyNode,

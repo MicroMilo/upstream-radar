@@ -5,6 +5,7 @@ import type {
   RadarSeverity,
   RadarSource,
   RadarState,
+  DependencyHostRuntimeSource,
   SourceHealthEvent,
   SourceHealthStatus,
   VulnerabilityEvent,
@@ -50,7 +51,11 @@ export interface RadarStatusReport {
   optionalDependenciesNotInstalled: number
   /** Required DSH/Cordis peers that were not visible in the captured host plane. */
   dshHostDependenciesNotObserved: number
+  /** Number of plugin graphs that included a DSH host dependency plane. */
+  dshHostRuntimePlanes: number
   dshHostRuntimePackages: number
+  /** Distinct evidence sources used for the captured DSH host planes. */
+  dshHostRuntimeSources: DependencyHostRuntimeSource[]
   lastCheckedAt?: string
   sources: RadarStatusSource[]
   activeVulnerabilities: number
@@ -235,6 +240,10 @@ export function createRadarStatus(
     ), 0),
     0,
   )
+  const dshHostRuntimeGraphs = config.projects.flatMap(project => project.plugins.map(plugin => plugin.graph.hostRuntime)).filter(
+    (hostRuntime): hostRuntime is NonNullable<typeof hostRuntime> => hostRuntime !== undefined,
+  )
+  const dshHostRuntimeSources = [...new Set(dshHostRuntimeGraphs.map(hostRuntime => hostRuntime.source))].sort()
   const activeSummary = activeIncidentSummary(state)
   return {
     schema: RADAR_STATUS_SCHEMA,
@@ -249,7 +258,9 @@ export function createRadarStatus(
     requiredUnresolvedDependencies,
     optionalDependenciesNotInstalled,
     dshHostDependenciesNotObserved,
+    dshHostRuntimePlanes: dshHostRuntimeGraphs.length,
     dshHostRuntimePackages,
+    dshHostRuntimeSources,
     ...(lastCheckedAt === undefined ? {} : { lastCheckedAt }),
     sources,
     activeVulnerabilities: Object.keys(state.activeVulnerabilities).length,
@@ -274,6 +285,10 @@ function plural(value: number, singular: string, multiple = `${singular}s`): str
   return `${value} ${value === 1 ? singular : multiple}`
 }
 
+function hostRuntimeSourceLabel(source: DependencyHostRuntimeSource): string {
+  return source === 'dsh-process' ? 'running DSH process' : 'profile fallback'
+}
+
 /** Render the status snapshot for a human checking the first run. */
 export function renderRadarStatus(report: RadarStatusReport): string {
   const coverageParts: string[] = []
@@ -291,7 +306,9 @@ export function renderRadarStatus(report: RadarStatusReport): string {
     `Config: ${display(report.configFile)} (${plural(report.projects, 'project')}, ${plural(report.pluginBundles, 'DSH plugin bundle')})`,
     `State: ${display(report.stateFile)}${report.stateExists ? '' : ' (not created yet)'}`,
     `Coverage: ${report.coverage}${coverageDetail}`,
-    `DSH host runtime: ${report.dshHostRuntimePackages === 0 ? 'not included' : plural(report.dshHostRuntimePackages, 'package')}`,
+    `DSH host runtime: ${report.dshHostRuntimePlanes === 0
+      ? 'not included'
+      : `${plural(report.dshHostRuntimePackages, 'package')} observed (${report.dshHostRuntimeSources.map(hostRuntimeSourceLabel).join(', ')})`}`,
     `Last check: ${report.lastCheckedAt === undefined ? 'never' : display(report.lastCheckedAt)}`,
     '',
     'Sources:',

@@ -173,12 +173,14 @@ For a profile containing `dsh-cloudflare-browser-run@0.1.1`, initialization repo
 
 This is intentionally different from resolving the same package in a fresh npm project. A DSH profile may provide peer packages from its host, apply overrides, or leave a declaration unresolved; Radar keeps that difference visible instead of silently replacing it with a registry-generated graph. It also reads npm's optional-peer declaration: a platform package that is absent is shown as optional, while an absent `@deepseek-ai/dsh-*` or Cordis peer is called out as an unobserved DSH host dependency. The latter keeps coverage incomplete because Radar has no exact host version to query.
 
+When the native DSH adapter is running, it additionally verifies the exact `@deepseek-ai/dsh` CLI entrypoint and discovers the process's usable `node_modules` plane with read-only manifest checks. The resulting `dsh-host` nodes carry exact versions into OSV matching, and `radar status` reports `running DSH process` when that evidence is available. This is runtime dependency evidence, not a package capability or sandbox guarantee.
+
 ## Scene 13 — make the reviewed graph a CI gate
 
 For a runner that does not have DSH installed, commit the generated config after review and run one frozen check:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.31.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.32.0 upstream-radar radar check \
   ./upstream-radar.config.json \
   --frozen --state :memory: --fail-on high --json
 ```
@@ -192,7 +194,7 @@ The published Action packages the same frozen check so a DSH plugin project does
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.31.0
+  - uses: MicroMilo/upstream-radar@v0.32.0
     with:
       config: upstream-radar.config.json
       fail-on: high
@@ -225,7 +227,7 @@ It packs without lifecycle scripts, runs one temporary DSH profile per version, 
 The package includes a no-network compatibility benchmark for the deterministic gate itself:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.31.0 upstream-radar benchmark compatibility
+pnpm dlx --package=upstream-radar@0.32.0 upstream-radar benchmark compatibility
 ```
 
 It covers a safe patch, analysis-only structural change, DSH peer exclusion, explicit publisher breaking language, a vulnerable candidate dependency, and incomplete candidate coverage. A passing benchmark means the rule contract has not regressed; it does not mean a real plugin is runtime-compatible. The real DSH consumer workflow below remains the integration proof.
@@ -239,7 +241,7 @@ The repository also carries a copyable consumer smoke under [`examples/github-ac
 The `probe dsh-load` command gives the compatibility question its own bounded surface. It takes one exact `.tgz`, uses one exact DSH version, and creates a disposable `headless` profile:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.31.0 upstream-radar probe dsh-load \
+pnpm dlx --package=upstream-radar@0.32.0 upstream-radar probe dsh-load \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.6 --json
 ```

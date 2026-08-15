@@ -8,6 +8,7 @@ import {
   INVENTORY_SCHEMA,
   RADAR_CONFIG_SCHEMA,
   type DependencyGraph,
+  type DependencyHostRuntimeSource,
   type PackageManifestSnapshot,
   type PluginInstallation,
   type RadarConfig,
@@ -36,6 +37,9 @@ export interface DshInitOptions {
   channels?: string[]
   registry?: string
   inspect?: InitInspector
+  /** Optional DSH process dependency plane discovered without importing DSH code. */
+  hostNodeModulesDirectory?: string
+  hostRuntimeSource?: DependencyHostRuntimeSource
 }
 
 export interface WriteRadarConfigOptions {
@@ -177,6 +181,8 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
   const projectId = options.projectId ?? defaultProjectId(workspace)
   const projectName = options.projectName ?? defaultProjectName(workspace)
   const inspect = options.inspect ?? inspectNpmPackage
+  const hostNodeModulesDirectory = options.hostNodeModulesDirectory ?? join(dirname(profileDirectory), 'node_modules')
+  const hostRuntimeSource = options.hostRuntimeSource ?? 'dsh-profile-fallback'
   const plugins: PluginInstallation[] = []
   for (const packageName of bundles) {
     if (isDshInfrastructure(packageName)) continue
@@ -196,7 +202,8 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
           // DSH makes this shared flat directory so in-box runtime packages can
           // satisfy third-party plugin peer dependencies without being copied
           // into every profile.
-          hostNodeModulesDirectory: join(dirname(profileDirectory), 'node_modules'),
+          hostNodeModulesDirectory,
+          hostRuntimeSource,
         })
     if (graph === undefined) throw new Error(`could not resolve the exact dependency graph for ${manifest.name}@${manifest.version}`)
     plugins.push({
@@ -234,6 +241,7 @@ export async function refreshRadarConfigFromDshProfile(
   config: RadarConfig,
   profile: string,
   dshHome?: string,
+  options: Pick<DshInitOptions, 'hostNodeModulesDirectory' | 'hostRuntimeSource'> = {},
 ): Promise<RadarConfig> {
   if (config.dshProfile?.name !== profile) return config
   if (config.projects.length !== 1) throw new Error('DSH profile refresh requires exactly one configured project')
@@ -246,6 +254,7 @@ export async function refreshRadarConfigFromDshProfile(
     ...(project.project.repository === undefined ? {} : { repository: project.project.repository }),
     ...(project.project.workspace === undefined ? {} : { workspace: project.project.workspace }),
     ...(project.project.channels === undefined ? {} : { channels: project.project.channels }),
+    ...options,
   })
   const refreshedProject = refreshed.projects[0]
   if (refreshedProject === undefined) throw new Error('DSH profile refresh produced no project')

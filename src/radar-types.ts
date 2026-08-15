@@ -17,6 +17,7 @@ export interface PackageCoordinate {
 
 export type DependencyKind = 'runtime' | 'development' | 'optional' | 'peer'
 export type DependencySource = 'profile' | 'dsh-host'
+export type DependencyHostRuntimeSource = 'dsh-profile-fallback' | 'dsh-process'
 
 /** One physical package location. Duplicate name/version pairs remain distinct nodes. */
 export interface DependencyNode {
@@ -42,7 +43,7 @@ export interface DependencyGraph {
   source?: 'npm-lock' | 'installed-node-modules'
   /** Evidence that DSH's shared host dependency plane was included. */
   hostRuntime?: {
-    source: 'dsh-profile-fallback'
+    source: DependencyHostRuntimeSource
     resolvedNodes: number
   }
   digest?: string

@@ -138,7 +138,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.
 
 生成的 overlay 会记录选中的 profile；如果初始化时传入了 `--registry <url>`，它也会被带入 DSH 运行时，避免后续 release 和候选依赖检查悄悄切回公共 npm。原生 DSH 每次轮询前，以及 CLI 的 `radar check/watch` 每次轮询前，都会重新读取这个 profile 的实际依赖图，因此之后安装、升级、卸载插件，或 DSH 宿主运行时发生变化时，不会继续悄悄监控旧快照；如果重读失败，本轮会停止，不会替换最后一次持久化状态。`radar status` 仍然只读取本地配置和状态，不会刷新 OSV/npm/GitHub；它还会列出最重要的活动事件、精确依赖路径或候选信号，以及建议的下一步。`radar compare` 也只比较你明确提供的文件。如果不使用 `--dsh-patch`，仍可以使用 `UPSTREAM_RADAR_CONFIG`、`UPSTREAM_RADAR_STATE`、`UPSTREAM_RADAR_INTERVAL_SECONDS`、`UPSTREAM_RADAR_REGISTRY` 和 `UPSTREAM_RADAR_DEEP_CANDIDATES` 环境变量方式。
 
-生成的依赖图对应 profile 当前实际安装的树。DSH 还会在 `profiles/node_modules` 维护一层共享的宿主运行时依赖；Radar 会把从这里解析到的包纳入漏洞查询，并明确标成 `dsh-host`，不会和插件自己带的依赖混在一起。如果一个必需依赖在 profile 和宿主依赖平面中都找不到，它会保留为“覆盖不完整”，不会被当成安全或不存在。当前平台没有安装的可选原生包仍会记录，但不会制造“必需依赖缺失”的假警报。对于 `@deepseek-ai/dsh-*`、Cordis 这类宿主 peer，如果 profile 没有暴露准确版本，`doctor` 和 `radar status` 会单独写明“DSH 宿主依赖未观察到”，而不是把它和普通缺失依赖混成一个数字。这意味着漏洞查询没有覆盖该宿主边界，结果不能当作完整安全结论。显式传入 `--registry <url>` 才会使用公共 npm artifact 图，适合和 registry 解析结果做比较，但不是默认路径。
+生成的依赖图对应 profile 当前实际安装的树。原生 DSH 运行时，Radar 还会从确切的 DSH CLI 入口（`@deepseek-ai/dsh/lib/bin.js`）找到这个 DSH 进程实际使用的 `node_modules` 宿主依赖平面。这个过程只做有边界的 manifest 读取，不 import DSH、不加载插件代码，也不运行安装脚本。宿主平面中被实际解析到的包会纳入漏洞查询，并明确标成 `dsh-host`，不会和插件自己带的依赖混在一起；`radar status` 还会显示宿主图来自“正在运行的 DSH”还是 profile fallback。如果一个必需依赖在 profile 和宿主依赖平面中都找不到，它会保留为“覆盖不完整”，不会被当成安全或不存在。当前平台没有安装的可选原生包仍会记录，但不会制造“必需依赖缺失”的假警报。对于 `@deepseek-ai/dsh-*`、Cordis 这类宿主 peer，如果 profile 没有暴露准确版本，`doctor` 和 `radar status` 会单独写明“DSH 宿主依赖未观察到”，而不是把它和普通缺失依赖混成一个数字。这意味着漏洞查询没有覆盖该宿主边界，结果不能当作完整安全结论。显式传入 `--registry <url>` 才会使用公共 npm artifact 图，适合和 registry 解析结果做比较，但不是默认路径。
 
 如果需要手写配置或制作 CI fixture，可以参考[示例清单](../examples/radar/config.json)。如果既没有 `--patch` overlay，也没有设置 `UPSTREAM_RADAR_CONFIG`，插件会保持休眠，不发起轮询。
 
@@ -173,7 +173,9 @@ pnpm run try:dsh
   "radarTaskReachedModel": true,
   "pluginSourcePreserved": true,
   "pendingTasksAfterDelivery": 0,
-  "analysisResults": 1
+  "analysisResults": 1,
+  "dshEntrypointObserved": true,
+  "dshHostRuntimePlaneDiscovered": true
 }
 ```
 
@@ -184,7 +186,7 @@ pnpm run try:dsh
 在把项目接入兼容性门禁前，可以先运行离线规则 benchmark：
 
 ```bash
-pnpm dlx --package=upstream-radar@0.31.0 upstream-radar benchmark compatibility
+pnpm dlx --package=upstream-radar@0.32.0 upstream-radar benchmark compatibility
 ```
 
 它覆盖六类契约：安全补丁、只需要项目分析的变化、不兼容的 DSH peer、发布者明确声明 breaking、候选传递依赖漏洞，以及候选依赖图不完整。这个命令不会联网、安装包、加载插件或启动 DSH；它验证的是 Radar 的确定性规则以及 `breaking`/`any` 门禁行为，不是运行时兼容性证明。
@@ -197,7 +199,7 @@ pnpm dlx --package=upstream-radar@0.31.0 upstream-radar benchmark compatibility
 # 打包精确版本，并明确不运行它的 lifecycle script。
 npm pack --ignore-scripts dsh-plugin@1.2.3
 
-pnpm dlx --package=upstream-radar@0.31.0 upstream-radar probe dsh-load \
+pnpm dlx --package=upstream-radar@0.32.0 upstream-radar probe dsh-load \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.6
 ```
@@ -223,7 +225,7 @@ pnpm run showcase:dsh-probe
 如果要比较多个 DSH 版本，可以使用矩阵入口：
 
 ```bash
-pnpm dlx --package=upstream-radar@0.31.0 upstream-radar probe dsh-matrix \
+pnpm dlx --package=upstream-radar@0.32.0 upstream-radar probe dsh-matrix \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.3 \
   --dsh-version 0.1.0-rc.6 \
@@ -241,7 +243,7 @@ JSON 结果结构见[矩阵结果 schema](../schemas/dsh-load-matrix.schema.json
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.31.0
+  - uses: MicroMilo/upstream-radar@v0.32.0
     with:
       config: upstream-radar.config.json
       fail-on: high
@@ -249,12 +251,12 @@ steps:
       fail-on-compatibility: breaking
 ```
 
-这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --fail-on-compatibility breaking --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。每次运行彼此独立；发现达到阈值的漏洞或选择的兼容性变化时返回 `2`，运行或漏洞源出错时返回 `1`。`breaking` 只拦截有 confirmed/strong 信号的兼容性事件，`any` 会拦截所有活动兼容性事件，默认值是 `never`。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.31.0` 的发布标签，并根据团队策略固定 checkout Action。
+这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --fail-on-compatibility breaking --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。每次运行彼此独立；发现达到阈值的漏洞或选择的兼容性变化时返回 `2`，运行或漏洞源出错时返回 `1`。`breaking` 只拦截有 confirmed/strong 信号的兼容性事件，`any` 会拦截所有活动兼容性事件，默认值是 `never`。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.32.0` 的发布标签，并根据团队策略固定 checkout Action。
 
 调用方需要先 checkout 仓库。这个 Action 不会安装项目依赖，也不会执行项目的 lifecycle script；它只读取提交到仓库的依赖图并查询配置中的上游漏洞源。如果需要完全显式的底层命令，等价写法是：
 
 ```bash
-pnpm dlx --package=upstream-radar@0.31.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.32.0 upstream-radar radar check \
   ./upstream-radar.config.json --frozen --state :memory: --fail-on high \
   --fail-on-compatibility breaking --json
 ```
@@ -262,7 +264,7 @@ pnpm dlx --package=upstream-radar@0.31.0 upstream-radar radar check \
 如果还要检查一个已发布插件能否跨多个 DSH 版本加载，可以增加三个 input：
 
 ```yaml
-- uses: MicroMilo/upstream-radar@v0.31.0
+- uses: MicroMilo/upstream-radar@v0.32.0
   id: radar
   with:
     config: upstream-radar.config.json
@@ -349,11 +351,11 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 ## 当前能力与边界
 
-已经支持：DSH profile 实际安装树和 npm lock 依赖图、重复版本路径、未解析依赖的覆盖提示、可选 peer 与 DSH 宿主 peer 的区分、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、按项目 workspace 精确路由到 DSH Agent、严格绑定消息/会话/task/event 的 DSH 结果写回、以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace、把审查过的图接入 CI 的可复用 GitHub Action、可选的 breaking/any 兼容性门禁、可选的 DSH 版本加载矩阵、离线的 `benchmark compatibility` 规则契约检查，以及基于真实 DSH 插件的 consumer smoke。
+已经支持：DSH profile 实际安装树和 npm lock 依赖图、重复版本路径、未解析依赖的覆盖提示、可选 peer 与 DSH 宿主 peer 的区分、从正在运行的 DSH 进程发现真实宿主依赖平面、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、按项目 workspace 精确路由到 DSH Agent、严格绑定消息/会话/task/event 的 DSH 结果写回、以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace、把审查过的图接入 CI 的可复用 GitHub Action、可选的 breaking/any 兼容性门禁、可选的 DSH 版本加载矩阵、离线的 `benchmark compatibility` 规则契约检查，以及基于真实 DSH 插件的 consumer smoke。
 
 此外支持一次性的 `probe dsh-load` 和有界的 `probe dsh-matrix`：在临时 DSH profile 中针对一个或多个精确 DSH 版本加载一个精确 tarball，并返回 `compatible`、`incompatible` 或 `unknown`。它是加载兼容性证据，不是安全准入，也不是插件能力 benchmark。
 
-`init` 在省略 `--profile` 时可以自动选择唯一一个含第三方 bundle 的 DSH profile；多个候选仍要求显式指定。默认读取实际安装树，因此 pnpm override 和本地解析选择会被纳入；原生解析 pnpm lockfile 以支持安装前/CI 检查仍未实现。加上 `--dsh-patch <path>` 可以生成不依赖环境变量的 DSH overlay。`radar status` 提供离线的首次运行检查、活动事件摘要、等待中的投递和已验证结论，但不会替你刷新漏洞源，也不会自动升级插件。暂未支持 Yarn 图适配、changelog/比较 diff/迁移文档源，以及自动创建 Issue 或 PR。多 root Agent 场景下，只有 `project.workspace` 与 DSH 会话的 `cwd` 精确一致才会投递；无法确认时任务会留在队列中。
+`init` 在省略 `--profile` 时可以自动选择唯一一个含第三方 bundle 的 DSH profile；多个候选仍要求显式指定。默认读取实际安装树，因此 pnpm override 和本地解析选择会被纳入；原生解析 pnpm lockfile 以支持安装前/CI 检查仍未实现。加上 `--dsh-patch <path>` 可以生成不依赖环境变量的 DSH overlay。`radar status` 提供离线的首次运行检查、活动事件摘要、等待中的投递和已验证结论，还会显示宿主依赖图是否来自正在运行的 DSH 进程；但不会替你刷新漏洞源，也不会自动升级插件。暂未支持 Yarn 图适配、changelog/比较 diff/迁移文档源，以及自动创建 Issue 或 PR。多 root Agent 场景下，只有 `project.workspace` 与 DSH 会话的 `cwd` 精确一致才会投递；无法确认时任务会留在队列中。
 
 `radar watch` 是 CLI 监控入口，本身不会把任务投递给 DSH；需要 Agent 分析时应使用原生 DSH bundle。
 
