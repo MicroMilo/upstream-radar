@@ -221,8 +221,9 @@ async function runRadar(args: readonly string[]): Promise<number> {
     if (positional.length > 0 || notesPath !== undefined || once || intervalProvided) {
       throw new Error('radar check received an option meant for watch or compare')
     }
-    writeCheckResult(await runCheck())
-    return 0
+    const result = await runCheck()
+    writeCheckResult(result)
+    return result.sourceErrors.length === 0 ? 0 : 1
   }
 
   if (subcommand === 'watch') {
@@ -240,7 +241,9 @@ async function runRadar(args: readonly string[]): Promise<number> {
     try {
       do {
         try {
-          writeCheckResult(await runCheck(), true)
+          const result = await runCheck()
+          writeCheckResult(result, true)
+          if (once && result.sourceErrors.length > 0) return 1
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : String(error)
           process.stderr.write(`upstream-radar: watch cycle failed: ${safeErrorMessage(message)}\n`)

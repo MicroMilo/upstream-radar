@@ -81,6 +81,10 @@ RESOLVED: project caught up; queued tasks for incident: 0
 
 The update replaces the older offline task instead of accumulating two analyses. Resolution removes the task before DSH can receive stale work. The exact transition evidence is saved as `examples/radar/reports/06-incident-lifecycle.json`.
 
+## Scene 6 — a source outage is not a clean result
+
+The showcase then simulates an OSV timeout. Radar emits no new or resolved vulnerability event, keeps the previously confirmed match, keeps the pending DSH task, and returns a visible `sourceErrors: osv` warning. The evidence is saved as `examples/radar/reports/07-source-outage.json`.
+
 ## Live sources
 
 The fixture isolates behavior from network timing. Production cycles use:
@@ -88,6 +92,7 @@ The fixture isolates behavior from network timing. Production cycles use:
 - OSV `querybatch` plus full advisory records for exact installed versions;
 - npm packuments for the latest plugin and DSH package manifests;
 - public GitHub Release notes for the exact candidate tag when the package metadata points to GitHub.
+- a failed OSV check preserves the last confirmed matches instead of producing false `resolved` events.
 
 The showcase uses a deterministic fake release-notes source, while production cycles use the bounded public GitHub Releases adapter. GitHub comparison diffs, changelogs, and migration guides remain on the roadmap.
 

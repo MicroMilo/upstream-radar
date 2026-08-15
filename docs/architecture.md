@@ -57,6 +57,8 @@ The npm deep collector resolves in a temporary project with lifecycle scripts di
 6. Emit `new`, `updated`, or `resolved` only when state changes.
 7. Add new and updated events to the durable DSH analysis outbox.
 
+If OSV is unavailable, the cycle records a source warning, keeps the last confirmed vulnerability matches, emits no false `resolved` events, and still proceeds to deliver already-persisted DSH tasks. A failed source is never treated as a clean result.
+
 The active-match key binds project, plugin version, affected package version, and advisory id. An unchanged advisory does not create another event.
 
 ## Compatibility cycle

@@ -34,7 +34,7 @@ export interface RadarPollResult {
   releasePackagesQueried: number
   events: RadarEvent[]
   analysisTasks: AnalysisTask[]
-  sourceErrors: Array<{ source: 'npm-releases' | 'github-releases'; message: string }>
+  sourceErrors: Array<{ source: 'osv' | 'npm-releases' | 'github-releases'; message: string }>
   state: RadarState
 }
 
@@ -102,6 +102,7 @@ export async function pollRadar(
   if (previousState.schema !== RADAR_STATE_SCHEMA) throw new Error('unsupported radar state schema')
   if (!Number.isFinite(now.getTime())) throw new Error('radar check time is invalid')
   const checkedAt = now.toISOString()
+  const sourceErrors: RadarPollResult['sourceErrors'] = []
 
   const uniquePackages = new Map<string, PackageCoordinate>()
   for (const inventory of inventories) {
@@ -112,54 +113,69 @@ export async function pollRadar(
       }
     }
   }
-  const matches = await source.query([...uniquePackages.values()])
+  let matches = new Map<string, AdvisoryMatch[]>()
+  let vulnerabilityCheckSucceeded = true
+  try {
+    matches = await source.query([...uniquePackages.values()])
+  } catch (error: unknown) {
+    const raw = error instanceof Error ? error.message : String(error)
+    sourceErrors.push({
+      source: 'osv',
+      message: raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048),
+    })
+    vulnerabilityCheckSucceeded = false
+  }
 
-  const current = new Map<string, StoredVulnerabilityMatch>()
-  for (const inventory of inventories) {
-    for (const plugin of inventory.plugins) {
-      const groupedPaths = new Map<string, PackageCoordinate[][]>()
-      const groupedMatch = new Map<string, AdvisoryMatch>()
-      for (const node of plugin.graph.nodes) {
-        const affected = coordinate(node.name, node.version)
-        for (const match of matches.get(packageKey(affected)) ?? []) {
-          const key = matchKey(inventory, plugin.package, affected, match.advisory.id)
-          const paths = findDependencyPaths(plugin.graph, node.id).map(path => (
-            path.map(item => coordinate(item.name, item.version))
-          ))
-          if (paths.length === 0) continue
-          const existing = groupedPaths.get(key) ?? []
-          const known = new Set(existing.map(path => JSON.stringify(path)))
-          for (const path of paths) {
-            const serialized = JSON.stringify(path)
-            if (!known.has(serialized)) {
-              existing.push(path)
-              known.add(serialized)
+  const current = vulnerabilityCheckSucceeded
+    ? new Map<string, StoredVulnerabilityMatch>()
+    : new Map(Object.entries(previousState.activeVulnerabilities))
+  if (vulnerabilityCheckSucceeded) {
+    for (const inventory of inventories) {
+      for (const plugin of inventory.plugins) {
+        const groupedPaths = new Map<string, PackageCoordinate[][]>()
+        const groupedMatch = new Map<string, AdvisoryMatch>()
+        for (const node of plugin.graph.nodes) {
+          const affected = coordinate(node.name, node.version)
+          for (const match of matches.get(packageKey(affected)) ?? []) {
+            const key = matchKey(inventory, plugin.package, affected, match.advisory.id)
+            const paths = findDependencyPaths(plugin.graph, node.id).map(path => (
+              path.map(item => coordinate(item.name, item.version))
+            ))
+            if (paths.length === 0) continue
+            const existing = groupedPaths.get(key) ?? []
+            const known = new Set(existing.map(path => JSON.stringify(path)))
+            for (const path of paths) {
+              const serialized = JSON.stringify(path)
+              if (!known.has(serialized)) {
+                existing.push(path)
+                known.add(serialized)
+              }
             }
+            groupedPaths.set(key, existing)
+            groupedMatch.set(key, match)
           }
-          groupedPaths.set(key, existing)
-          groupedMatch.set(key, match)
         }
-      }
 
-      for (const [key, paths] of groupedPaths) {
-        const match = groupedMatch.get(key)
-        if (match === undefined) continue
-        paths.sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right)))
-        const event: VulnerabilityEvent = {
-          schema: RADAR_EVENT_SCHEMA,
-          id: eventId(key, 'new', checkedAt, match.advisory.modified),
-          incidentId: `incident-${hash(key)}`,
-          kind: match.advisory.id.startsWith('MAL-') ? 'malware' : 'vulnerability',
-          change: 'new',
-          detectedAt: checkedAt,
-          project: { ...inventory.project },
-          route: route(inventory),
-          plugin: { ...plugin.package },
-          affected: { ...match.package },
-          paths,
-          advisory: { ...match.advisory },
+        for (const [key, paths] of groupedPaths) {
+          const match = groupedMatch.get(key)
+          if (match === undefined) continue
+          paths.sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right)))
+          const event: VulnerabilityEvent = {
+            schema: RADAR_EVENT_SCHEMA,
+            id: eventId(key, 'new', checkedAt, match.advisory.modified),
+            incidentId: `incident-${hash(key)}`,
+            kind: match.advisory.id.startsWith('MAL-') ? 'malware' : 'vulnerability',
+            change: 'new',
+            detectedAt: checkedAt,
+            project: { ...inventory.project },
+            route: route(inventory),
+            plugin: { ...plugin.package },
+            affected: { ...match.package },
+            paths,
+            advisory: { ...match.advisory },
+          }
+          current.set(key, { key, event })
         }
-        current.set(key, { key, event })
       }
     }
   }
@@ -202,7 +218,6 @@ export async function pollRadar(
       }
     }
   }
-  const sourceErrors: RadarPollResult['sourceErrors'] = []
   let activeCompatibility = previousState.activeCompatibility
   if (releaseSource !== undefined) {
     let releases: Map<string, NpmReleaseObservation>

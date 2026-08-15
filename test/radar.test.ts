@@ -220,6 +220,26 @@ describe('radar polling', () => {
     assert.deepEqual(result.sourceErrors, [{ source: 'npm-releases', message: 'registry unavailable' }])
   })
 
+  it('preserves confirmed vulnerability state and pending tasks when OSV is unavailable', async () => {
+    const first = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      source('2026-08-14T01:00:00.000Z'),
+      new Date('2026-08-14T06:30:00.000Z'),
+    )
+    const unavailable: AdvisorySource = { async query() { throw new Error('OSV timeout') } }
+    const result = await pollRadar(
+      [inventory],
+      first.state,
+      unavailable,
+      new Date('2026-08-14T06:31:00.000Z'),
+    )
+    assert.equal(result.events.length, 0)
+    assert.equal(Object.keys(result.state.activeVulnerabilities).length, 1)
+    assert.equal(result.state.pendingAnalysisTasks.length, 1)
+    assert.deepEqual(result.sourceErrors, [{ source: 'osv', message: 'OSV timeout' }])
+  })
+
   it('keeps npm compatibility facts when GitHub release notes are unavailable', async () => {
     const releases: ReleaseSource = {
       async query(packages) {

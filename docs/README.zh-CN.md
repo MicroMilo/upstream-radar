@@ -207,7 +207,7 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 ## 当前能力与边界
 
-已经支持：npm lock 依赖图、重复版本路径、OSV 精确版本匹配、恶意包记录、npm release 监听、公开 GitHub Release 说明、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查。
+已经支持：npm lock 依赖图、重复版本路径、OSV 精确版本匹配、恶意包记录、npm release 监听、公开 GitHub Release 说明、OSV 故障时保留已确认状态、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查。
 
 `init --profile <name>` 已经可以发现指定的 DSH profile 并生成可审查清单；暂未支持自动选择当前 active profile、原生解析 pnpm override/peer 规则、Yarn 图适配、changelog/比较 diff/迁移文档源、项目级 Session 精确路由、把 Agent 结论写回事件，以及自动创建 Issue 或 PR。
 
