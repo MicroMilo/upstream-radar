@@ -1,4 +1,4 @@
-import type { CompatibilityEvent, RadarEvent, VulnerabilityEvent } from './radar-types.js'
+import type { CompatibilityEvent, DependencySource, RadarEvent, VulnerabilityEvent } from './radar-types.js'
 
 function display(value: string, max = 2_048): string {
   const escaped = value.replace(/[\u0000-\u001f\u007f-\u009f]/g, character => (
@@ -11,6 +11,17 @@ function packageLabel(value: { name: string; version: string }): string {
   return `${display(value.name)}@${display(value.version)}`
 }
 
+function dependencySourceLabel(source: 'profile' | 'dsh-host'): string {
+  return source === 'dsh-host' ? 'DSH host runtime' : 'plugin profile'
+}
+
+function dependencySourcesLabel(sources: readonly DependencySource[]): string {
+  return (['profile', 'dsh-host'] as const)
+    .filter(source => sources.includes(source))
+    .map(dependencySourceLabel)
+    .join(' + ')
+}
+
 function renderVulnerability(event: VulnerabilityEvent): string[] {
   const severity = event.kind === 'malware' ? 'CRITICAL' : event.advisory.severity.toUpperCase()
   const lines = [
@@ -18,6 +29,9 @@ function renderVulnerability(event: VulnerabilityEvent): string[] {
     `Project: ${display(event.project.name)} (${display(event.project.id)})`,
     `Plugin: ${packageLabel(event.plugin)}`,
     `Affected: ${packageLabel(event.affected)}`,
+    ...(event.affectedSources === undefined || event.affectedSources.length === 0
+      ? []
+      : [`Origin: ${dependencySourcesLabel(event.affectedSources)}`]),
     `Advisory: ${display(event.advisory.id)}${event.advisory.aliases.length === 0 ? '' : ` / ${event.advisory.aliases.map(item => display(item)).join(', ')}`}`,
     `Summary: ${display(event.advisory.summary)}`,
   ]

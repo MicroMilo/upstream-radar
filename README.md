@@ -78,6 +78,7 @@ If an advisory affects only one of two installed `parser` versions, Radar report
 Project: Payments API (payments-api)
 Plugin: plugin@1.0.0
 Affected: parser@2.9.0
+Origin: plugin profile
 Advisory: GHSA-demo-2026-parser / CVE-2026-1234
 Paths:
   plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
@@ -237,7 +238,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 ## What works today
 
 - installed DSH `node_modules` graphs and npm lockfile graphs with duplicate versions and bounded dependency paths;
-- DSH shared host-runtime dependency resolution, with profile and `dsh-host` packages kept distinct;
+- DSH shared host-runtime dependency resolution, with profile and `dsh-host` packages kept distinct in both graphs and alerts;
 - exact-version OSV vulnerability and malicious-package matching;
 - npm release monitoring for plugins and DSH/Cordis packages, with public GitHub Release notes attached when an exact candidate tag is available;
 - durable incident state with current-task replacement and resolution;

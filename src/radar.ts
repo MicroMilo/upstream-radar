@@ -10,6 +10,7 @@ import {
   RADAR_STATE_SCHEMA,
   type AdvisoryMatch,
   type AnalysisTask,
+  type DependencySource,
   type EventRoute,
   type PackageCoordinate,
   type ProjectInventory,
@@ -77,6 +78,7 @@ function eventId(key: string, change: VulnerabilityEvent['change'], detectedAt: 
 function eventChanged(previous: VulnerabilityEvent, current: VulnerabilityEvent): boolean {
   return JSON.stringify(previous.advisory) !== JSON.stringify(current.advisory)
     || JSON.stringify(previous.paths) !== JSON.stringify(current.paths)
+    || JSON.stringify(previous.affectedSources) !== JSON.stringify(current.affectedSources)
     || JSON.stringify(previous.route) !== JSON.stringify(current.route)
 }
 
@@ -224,6 +226,7 @@ export async function pollRadar(
       for (const plugin of inventory.plugins) {
         const groupedPaths = new Map<string, PackageCoordinate[][]>()
         const groupedMatch = new Map<string, AdvisoryMatch>()
+        const groupedSources = new Map<string, Set<DependencySource>>()
         for (const node of plugin.graph.nodes) {
           const affected = coordinate(node.name, node.version)
           for (const match of matches.get(packageKey(affected)) ?? []) {
@@ -243,6 +246,11 @@ export async function pollRadar(
             }
             groupedPaths.set(key, existing)
             groupedMatch.set(key, match)
+            if (node.source !== undefined) {
+              const sources = groupedSources.get(key) ?? new Set<DependencySource>()
+              sources.add(node.source)
+              groupedSources.set(key, sources)
+            }
           }
         }
 
@@ -250,6 +258,9 @@ export async function pollRadar(
           const match = groupedMatch.get(key)
           if (match === undefined) continue
           paths.sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right)))
+          const sourceSet = groupedSources.get(key)
+          const orderedSources: readonly DependencySource[] = ['profile', 'dsh-host']
+          const affectedSources = orderedSources.filter(source => sourceSet?.has(source) ?? false)
           const event: VulnerabilityEvent = {
             schema: RADAR_EVENT_SCHEMA,
             id: eventId(key, 'new', checkedAt, match.advisory.modified),
@@ -261,6 +272,7 @@ export async function pollRadar(
             route: route(inventory),
             plugin: { ...plugin.package },
             affected: { ...match.package },
+            ...(affectedSources.length === 0 ? {} : { affectedSources }),
             paths,
             advisory: { ...match.advisory },
           }

@@ -14,6 +14,7 @@ export interface PackageCoordinate {
 }
 
 export type DependencyKind = 'runtime' | 'development' | 'optional' | 'peer'
+export type DependencySource = 'profile' | 'dsh-host'
 
 /** One physical package location. Duplicate name/version pairs remain distinct nodes. */
 export interface DependencyNode {
@@ -21,7 +22,7 @@ export interface DependencyNode {
   name: string
   version: string
   /** Where an installed graph found this physical package. */
-  source?: 'profile' | 'dsh-host'
+  source?: DependencySource
 }
 
 export interface DependencyEdge {
@@ -134,6 +135,8 @@ export interface VulnerabilityEvent extends RadarEventBase {
   kind: 'vulnerability' | 'malware'
   plugin: PackageCoordinate
   affected: PackageCoordinate
+  /** Physical origins of the affected package; absent for legacy/npm-lock graphs. */
+  affectedSources?: DependencySource[]
   paths: PackageCoordinate[][]
   advisory: VulnerabilityAdvisory
 }

@@ -52,7 +52,7 @@ For a real DSH profile, initialization follows the installed `node_modules` reso
 1. Deduplicate all installed npm `name@version` pairs.
 2. Submit them to OSV `querybatch`.
 3. Fetch full details only for returned advisory ids.
-4. Match each result back to physical graph nodes and paths.
+4. Match each result back to physical graph nodes and paths, retaining whether the affected node came from the plugin profile or the DSH host runtime.
 5. Compare the current match set with durable state.
 6. Emit `new`, `updated`, or `resolved` only when state changes.
 7. Add new and updated events to the durable DSH analysis outbox.

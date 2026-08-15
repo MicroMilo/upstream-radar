@@ -14,6 +14,13 @@ function asRecord(value: unknown): Record<string, unknown> | undefined {
   return value as Record<string, unknown>
 }
 
+function validAffectedSources(value: unknown): boolean {
+  if (value === undefined) return true
+  if (!Array.isArray(value) || value.length === 0 || value.length > 2) return false
+  const allowed = new Set(['profile', 'dsh-host'])
+  return new Set(value).size === value.length && value.every(item => typeof item === 'string' && allowed.has(item))
+}
+
 export function parseRadarState(value: unknown): RadarState {
   const root = asRecord(value)
   if (root?.schema !== RADAR_STATE_SCHEMA) throw new Error('radar state has an unsupported schema')
@@ -54,6 +61,7 @@ export function parseRadarState(value: unknown): RadarState {
       || (event.kind !== 'vulnerability' && event.kind !== 'malware' && event.kind !== 'compatibility' && event.kind !== 'source-health')) {
       throw new Error('radar state contains an invalid pending analysis task')
     }
+    if (!validAffectedSources(event.affectedSources)) throw new Error('radar state contains invalid affected package origins')
   }
   if (Object.keys(active).length > 1_000_000) throw new Error('radar state exceeds the active match limit')
   if (Object.keys(activeCompatibility).length > 1_000_000) {
@@ -65,7 +73,8 @@ export function parseRadarState(value: unknown): RadarState {
     const advisory = asRecord(event?.advisory)
     if (stored?.key !== key || event?.schema !== RADAR_EVENT_SCHEMA || typeof event.incidentId !== 'string'
       || (event.kind !== 'vulnerability' && event.kind !== 'malware')
-      || typeof advisory?.id !== 'string' || typeof advisory.modified !== 'string') {
+      || typeof advisory?.id !== 'string' || typeof advisory.modified !== 'string'
+      || !validAffectedSources(event.affectedSources)) {
       throw new Error(`radar state contains an invalid active match: ${key.slice(0, 256)}`)
     }
   }
