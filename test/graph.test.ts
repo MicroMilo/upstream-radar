@@ -25,6 +25,7 @@ describe('dependency graph', () => {
 
     assert.equal(graph.nodes.length, 6)
     assert.equal(graph.edges.length, 5)
+    assert.equal(graph.source, 'npm-lock')
     const vulnerable = graph.nodes.find(node => node.name === 'parser' && node.version === '2.9.0')
     assert.ok(vulnerable)
     assert.deepEqual(

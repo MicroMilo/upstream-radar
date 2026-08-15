@@ -6,6 +6,7 @@ const RADAR_SOURCES: readonly RadarSource[] = ['osv', 'npm-releases', 'github-re
 
 export type RadarMonitoringStatus = 'not-started' | 'healthy' | 'degraded'
 export type RadarSourceStatus = 'not-run' | 'healthy' | 'degraded'
+export type RadarCoverageStatus = 'complete' | 'incomplete'
 
 export interface RadarStatusSource {
   source: RadarSource
@@ -22,8 +23,10 @@ export interface RadarStatusReport {
   stateFile: string
   stateExists: boolean
   monitoring: RadarMonitoringStatus
+  coverage: RadarCoverageStatus
   projects: number
   pluginBundles: number
+  unresolvedDependencies: number
   lastCheckedAt?: string
   sources: RadarStatusSource[]
   activeVulnerabilities: number
@@ -71,14 +74,20 @@ export function createRadarStatus(
     ? 'not-started'
     : observedSources.some(source => source.status === 'degraded') ? 'degraded' : 'healthy'
   const lastCheckedAt = latestTimestamp(sources)
+  const unresolvedDependencies = config.projects.reduce(
+    (total, project) => total + project.plugins.reduce((count, plugin) => count + (plugin.graph.unresolved?.length ?? 0), 0),
+    0,
+  )
   return {
     schema: RADAR_STATUS_SCHEMA,
     configFile: options.configFile,
     stateFile: options.stateFile,
     stateExists: options.stateExists,
     monitoring,
+    coverage: unresolvedDependencies === 0 ? 'complete' : 'incomplete',
     projects: config.projects.length,
     pluginBundles: config.projects.reduce((total, project) => total + project.plugins.length, 0),
+    unresolvedDependencies,
     ...(lastCheckedAt === undefined ? {} : { lastCheckedAt }),
     sources,
     activeVulnerabilities: Object.keys(state.activeVulnerabilities).length,
@@ -112,6 +121,7 @@ export function renderRadarStatus(report: RadarStatusReport): string {
     `Monitoring: ${report.monitoring.replace('-', ' ')}`,
     `Config: ${display(report.configFile)} (${plural(report.projects, 'project')}, ${plural(report.pluginBundles, 'DSH plugin bundle')})`,
     `State: ${display(report.stateFile)}${report.stateExists ? '' : ' (not created yet)'}`,
+    `Coverage: ${report.coverage}${report.unresolvedDependencies === 0 ? '' : ` (${plural(report.unresolvedDependencies, 'unresolved dependency')})`}`,
     `Last check: ${report.lastCheckedAt === undefined ? 'never' : display(report.lastCheckedAt)}`,
     '',
     'Sources:',

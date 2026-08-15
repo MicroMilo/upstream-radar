@@ -33,6 +33,8 @@ export interface DependencyGraph {
   rootNodeId: string
   nodes: DependencyNode[]
   edges: DependencyEdge[]
+  /** How the physical graph was obtained. Older configs may omit this field. */
+  source?: 'npm-lock' | 'installed-node-modules'
   digest?: string
   unresolved?: Array<{
     from: string

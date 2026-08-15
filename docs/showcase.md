@@ -109,6 +109,24 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-
 
 It reports whether monitoring has started, the last successful check for OSV/npm/GitHub Releases, active vulnerability and compatibility incidents, source-health incidents, and pending DSH analysis tasks. It does not poll any upstream source, so it is safe to use for a quick local diagnosis.
 
+The status output also shows `Coverage: incomplete` when the installed profile contains a dependency declaration that DSH cannot currently resolve. That is a configuration gap, not a clean result.
+
+## Scene 10 — the graph follows the installed DSH profile
+
+For a profile containing `dsh-cloudflare-browser-run@0.1.1`, initialization reports the graph source explicitly:
+
+```json
+{
+  "name": "dsh-cloudflare-browser-run",
+  "version": "0.1.1",
+  "nodes": 6,
+  "edges": 9,
+  "source": "installed-node-modules"
+}
+```
+
+This is intentionally different from resolving the same package in a fresh npm project. A DSH profile may provide peer packages from its host, apply overrides, or leave a declaration unresolved; Radar keeps that difference visible instead of silently replacing it with a registry-generated graph.
+
 ## Live sources
 
 The fixture isolates behavior from network timing. Production cycles use:

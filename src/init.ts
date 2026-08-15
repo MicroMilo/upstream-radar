@@ -1,7 +1,8 @@
-import { access, readFile, readdir, writeFile } from 'node:fs/promises'
+import { access, readFile, readdir, realpath, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { basename, isAbsolute, join, relative, resolve } from 'node:path'
 import { inspectNpmPackage, type InspectNpmOptions } from './npm.js'
+import { parseInstalledNodeModulesGraph } from './installed-graph.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 import {
   INVENTORY_SCHEMA,
@@ -79,7 +80,18 @@ async function readPackageManifest(profileDirectory: string, packageName: string
   if (relativePath.startsWith('..') || isAbsolute(relativePath)) {
     throw new Error(`DSH bundle name escapes the profile node_modules directory: ${packageName}`)
   }
-  return parsePackageManifestSnapshot(await readJson(path))
+  const realProfileDirectory = await realpath(profileDirectory)
+  const realNodeModulesDirectory = await realpath(nodeModulesDirectory)
+  const realManifest = await realpath(path)
+  const profileRelativePath = relative(realProfileDirectory, realManifest)
+  if (profileRelativePath.startsWith('..') || isAbsolute(profileRelativePath)) {
+    throw new Error(`DSH bundle manifest escapes the DSH profile: ${packageName}`)
+  }
+  const realRelativePath = relative(realNodeModulesDirectory, realManifest)
+  if (realRelativePath.startsWith('..') || isAbsolute(realRelativePath)) {
+    throw new Error(`DSH bundle manifest escapes the profile node_modules directory: ${packageName}`)
+  }
+  return parsePackageManifestSnapshot(await readJson(realManifest))
 }
 
 function isDshInfrastructure(packageName: string): boolean {
@@ -167,14 +179,16 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
     if (manifest.name !== packageName) {
       throw new Error(`installed manifest name ${manifest.name} does not match DSH bundle ${packageName}`)
     }
-    const report = await inspect(`npm:${manifest.name}@${manifest.version}`, {
-      deep: true,
-      ...(options.registry === undefined ? {} : { registry: options.registry }),
-    })
-    const graph = report.evidence.npm?.dependencyAudit.graph
-    if (graph === undefined) {
-      throw new Error(`could not resolve the exact dependency graph for ${manifest.name}@${manifest.version}`)
-    }
+    const graph = options.inspect !== undefined || options.registry !== undefined
+      ? (await inspect(`npm:${manifest.name}@${manifest.version}`, {
+          deep: true,
+          ...(options.registry === undefined ? {} : { registry: options.registry }),
+        })).evidence.npm?.dependencyAudit.graph
+      : await parseInstalledNodeModulesGraph(profileDirectory, {
+          name: manifest.name,
+          version: manifest.version,
+        })
+    if (graph === undefined) throw new Error(`could not resolve the exact dependency graph for ${manifest.name}@${manifest.version}`)
     plugins.push({
       package: { ecosystem: 'npm', name: manifest.name, version: manifest.version },
       manifest,

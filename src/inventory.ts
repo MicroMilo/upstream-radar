@@ -116,13 +116,36 @@ function graph(value: unknown, label: string): DependencyGraph {
   })
   const rootNodeId = string(source.rootNodeId, `${label}.rootNodeId`, 4_096)
   if (!ids.has(rootNodeId)) throw new Error(`${label} root references a missing node`)
+  const graphSource = source.source === undefined ? undefined : string(source.source, `${label}.source`, 64)
+  if (graphSource !== undefined && graphSource !== 'npm-lock' && graphSource !== 'installed-node-modules') {
+    throw new Error(`${label}.source has an unsupported value`)
+  }
+  const unresolvedValue = source.unresolved
+  if (unresolvedValue !== undefined && (!Array.isArray(unresolvedValue) || unresolvedValue.length > MAX_EDGES_PER_GRAPH)) {
+    throw new Error(`${label}.unresolved must contain at most ${MAX_EDGES_PER_GRAPH} entries`)
+  }
+  const unresolved = unresolvedValue === undefined ? undefined : unresolvedValue.map((rawItem, index) => {
+    const item = record(rawItem, `${label}.unresolved[${index}]`)
+    const from = string(item.from, `${label}.unresolved[${index}].from`, 4_096)
+    if (!ids.has(from)) throw new Error(`${label}.unresolved[${index}] references a missing node`)
+    const kind = string(item.kind, `${label}.unresolved[${index}].kind`, 32) as DependencyKind
+    if (!kinds.has(kind)) throw new Error(`${label}.unresolved[${index}] has an invalid dependency kind`)
+    return {
+      from,
+      name: string(item.name, `${label}.unresolved[${index}].name`, 512),
+      kind,
+      spec: string(item.spec, `${label}.unresolved[${index}].spec`, 2_048),
+    }
+  })
   const digest = optionalString(source.digest, `${label}.digest`, 512)
   return {
     schema: DEPENDENCY_GRAPH_SCHEMA,
     rootNodeId,
     nodes,
     edges,
+    ...(graphSource === undefined ? {} : { source: graphSource }),
     ...(digest === undefined ? {} : { digest }),
+    ...(unresolved === undefined || unresolved.length === 0 ? {} : { unresolved }),
   }
 }
 

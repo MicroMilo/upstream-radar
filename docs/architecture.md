@@ -45,7 +45,7 @@ plugin@1.0.0
 
 Edges retain whether they are runtime, development, optional, or peer dependencies. A vulnerability event contains every bounded root-to-node path, so the alert explains which plugin introduced the package.
 
-The npm deep collector resolves in a temporary project with lifecycle scripts disabled and parses `package-lock.json`. An unresolved edge stays explicit; it is never silently counted as checked.
+For a real DSH profile, initialization follows the installed `node_modules` resolution tree exposed by that profile without importing package code or running lifecycle scripts. This captures duplicate versions and profile-local overrides. Peer packages supplied outside the profile remain explicit unresolved edges until a host-runtime resolver is added. The public npm deep collector remains available for explicit registry comparisons; it resolves in a temporary project with lifecycle scripts disabled and parses `package-lock.json`. In both paths, an unresolved edge stays explicit; it is never silently counted as checked.
 
 ## Vulnerability cycle
 

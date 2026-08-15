@@ -30,6 +30,8 @@ describe('Radar status', () => {
     })
 
     assert.equal(report.monitoring, 'not-started')
+    assert.equal(report.coverage, 'complete')
+    assert.equal(report.unresolvedDependencies, 0)
     assert.equal(report.projects, 1)
     assert.equal(report.pluginBundles, 1)
     assert.equal(report.lastCheckedAt, undefined)
@@ -63,6 +65,7 @@ describe('Radar status', () => {
     })
 
     assert.equal(report.monitoring, 'degraded')
+    assert.equal(report.coverage, 'complete')
     assert.equal(report.lastCheckedAt, '2026-08-16T01:01:00.000Z')
     assert.equal(report.activeVulnerabilities, 1)
     assert.equal(report.activeCompatibility, 1)

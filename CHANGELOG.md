@@ -2,6 +2,19 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.11.0] - 2026-08-16
+
+### Added
+
+- Build the default DSH inventory from the profile's installed `node_modules` resolution tree, so duplicate versions, overrides, and local package-manager choices match what DSH can actually load.
+- Preserve unresolved dependency declarations as incomplete coverage instead of dropping them from the config.
+- Add graph source and coverage details to JSON and `radar status` output.
+- Keep explicit `--registry` initialization available for public npm graph comparisons.
+
+### Security
+
+- Refuse DSH bundle manifests and dependency manifests whose symlinks escape the reviewed profile.
+
 ## [0.10.0] - 2026-08-16
 
 ### Added
@@ -124,6 +137,7 @@ All notable changes to Upstream Radar are documented here.
 - Version matching and compatibility facts are calculated outside the model.
 - Agent analysis is read-only and requires project evidence and explicit uncertainty.
 
+[0.11.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.11.0
 [0.10.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.10.0
 [0.9.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.9.0
 [0.8.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.8.0

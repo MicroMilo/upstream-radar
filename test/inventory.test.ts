@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { parseRadarConfig } from '../src/inventory.js'
+import type { RadarConfig } from '../src/radar-types.js'
 
-const valid = {
+const valid: RadarConfig = {
   schema: 'upstream-radar.radar-config/v1alpha1',
   projects: [{
     schema: 'upstream-radar.inventory/v1alpha1',
@@ -26,6 +27,20 @@ describe('radar inventory parsing', () => {
   it('accepts a bounded project and dependency graph', () => {
     const parsed = parseRadarConfig(valid)
     assert.equal(parsed.projects[0]?.plugins[0]?.graph.nodes[1]?.version, '2.9.0')
+  })
+
+  it('preserves the graph source and unresolved dependencies as incomplete coverage', () => {
+    const candidate = structuredClone(valid)
+    candidate.projects[0]!.plugins[0]!.graph.source = 'installed-node-modules'
+    candidate.projects[0]!.plugins[0]!.graph.unresolved = [{
+      from: 'plugin',
+      name: 'optional-parser',
+      kind: 'optional',
+      spec: '^1.0.0',
+    }]
+    const parsed = parseRadarConfig(candidate)
+    assert.equal(parsed.projects[0]?.plugins[0]?.graph.source, 'installed-node-modules')
+    assert.deepEqual(parsed.projects[0]?.plugins[0]?.graph.unresolved, candidate.projects[0]!.plugins[0]!.graph.unresolved)
   })
 
   it('rejects edges to missing nodes', () => {

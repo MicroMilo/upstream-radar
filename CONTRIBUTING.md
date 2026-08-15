@@ -22,7 +22,7 @@ pnpm dlx upstream-radar@latest init \
   --output ./upstream-radar.config.json
 ```
 
-The generated graph is a reviewable view of each exact public npm artifact. A profile that applies package-manager overrides or patches still needs an explicit review before it is used as the monitoring source.
+The default generated graph is a reviewable view of the profile's installed `node_modules` tree. A profile that has unresolved declarations keeps them as incomplete coverage; this includes peer packages supplied by a DSH host outside the profile. Pass `--registry <url>` only when you intentionally want to compare against public npm resolution.
 
 The repository intentionally denies dependency lifecycle scripts through `.npmrc` and keeps zero runtime dependencies. A proposal to add a runtime dependency should explain why a small audited implementation or platform primitive is insufficient.
 
