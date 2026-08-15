@@ -1,6 +1,6 @@
 {
   "name": "upstream-radar",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Find the exact vulnerable path or breaking update in a DeepSeek Harness plugin, then route evidence to a DSH Agent.",
   "type": "module",
   "license": "Apache-2.0",
@@ -56,7 +56,7 @@
     "docs/assets/upstream-radar-hero.jpg",
     "docs/assets/upstream-radar-hero-mobile.jpg",
     "README.md",
-    "README.zh-CN.md",
+    "docs/README.zh-CN.md",
     "LICENSE"
   ],
   "scripts": {

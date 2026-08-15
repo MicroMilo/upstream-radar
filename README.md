@@ -3,7 +3,7 @@
 <p align="center"><strong>Always-on dependency radar for DeepSeek Harness plugins: exact paths, breaking-change signals, and project-aware Agent follow-up.</strong></p>
 
 <p align="center">
-  English · <a href="README.zh-CN.md">简体中文</a>
+  English · <a href="docs/README.zh-CN.md">简体中文</a>
 </p>
 
 <p align="center">

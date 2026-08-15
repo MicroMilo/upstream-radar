@@ -3,16 +3,16 @@
 <p align="center"><strong>面向 DeepSeek Harness 插件的常驻依赖雷达：精确路径、破坏性更新信号，以及带项目证据的 Agent 跟进。</strong></p>
 
 <p align="center">
-  <a href="README.md">English</a> · 简体中文
+  <a href="../README.md">English</a> · 简体中文
 </p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/upstream-radar"><img alt="npm 版本" src="https://img.shields.io/npm/v/upstream-radar?style=flat-square&color=2563eb"></a>
   <a href="https://github.com/MicroMilo/upstream-radar/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/MicroMilo/upstream-radar?style=flat-square&color=f59e0b"></a>
   <a href="https://github.com/MicroMilo/upstream-radar/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/MicroMilo/upstream-radar/ci.yml?branch=main&style=flat-square&label=CI"></a>
-  <a href="examples/dsh/README.md"><img alt="已使用 DSH 0.1.0-rc.6 验证" src="https://img.shields.io/badge/tested_with_DSH-0.1.0--rc.6-5b5bd6?style=flat-square"></a>
+  <a href="../examples/dsh/README.md"><img alt="已使用 DSH 0.1.0-rc.6 验证" src="https://img.shields.io/badge/tested_with_DSH-0.1.0--rc.6-5b5bd6?style=flat-square"></a>
   <a href="https://github.com/MicroMilo/upstream-radar/releases"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/MicroMilo/upstream-radar?style=flat-square"></a>
-  <a href="LICENSE"><img alt="Apache-2.0 许可证" src="https://img.shields.io/badge/license-Apache--2.0-0f766e?style=flat-square"></a>
+  <a href="../LICENSE"><img alt="Apache-2.0 许可证" src="https://img.shields.io/badge/license-Apache--2.0-0f766e?style=flat-square"></a>
 </p>
 
 ## 60 秒开始
@@ -34,8 +34,8 @@ dsh --profile web
 
 <p align="center">
   <picture>
-    <source media="(max-width: 600px)" srcset="docs/assets/upstream-radar-hero-mobile.jpg">
-    <img src="docs/assets/upstream-radar-hero.jpg" alt="Upstream Radar 监控依赖图，只高亮真正受影响的路径，并把一个信号交给 DSH Agent。" width="100%">
+    <source media="(max-width: 600px)" srcset="assets/upstream-radar-hero-mobile.jpg">
+    <img src="assets/upstream-radar-hero.jpg" alt="Upstream Radar 监控依赖图，只高亮真正受影响的路径，并把一个信号交给 DSH Agent。" width="100%">
   </picture>
 </p>
 
@@ -106,7 +106,7 @@ dsh --profile web
 
 生成的依赖图对应已安装 bundle 版本的精确公共 npm artifact。如果你的 DSH profile 使用了 package-manager override、patch 或特殊的 peer 解析规则，开启持续监控前仍需要人工检查这些差异。
 
-如果需要手写配置或制作 CI fixture，可以参考[示例清单](examples/radar/config.json)。如果没有设置 `UPSTREAM_RADAR_CONFIG`，插件会保持休眠，不发起轮询。
+如果需要手写配置或制作 CI fixture，可以参考[示例清单](../examples/radar/config.json)。如果没有设置 `UPSTREAM_RADAR_CONFIG`，插件会保持休眠，不发起轮询。
 
 启动后，Radar 会轮询 OSV 与 npm，先把事件状态持久化，再把有变化的事件交给第一个在线的根 DSH Agent。
 
@@ -187,7 +187,7 @@ Radar 还会识别与 DSH 插件直接相关的升级边界：
 
 版本是否命中、依赖路径和兼容边界由程序确定。漏洞公告、release notes、链接、包名和仓库文字始终是不可信数据。
 
-DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不确定性，并返回固定的[结果结构](schemas/analysis-result.schema.json)。模型无法改写程序已经确认的匹配事实。
+DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不确定性，并返回固定的[结果结构](../schemas/analysis-result.schema.json)。模型无法改写程序已经确认的匹配事实。
 
 ## 当前能力与边界
 
@@ -199,16 +199,16 @@ Upstream Radar 目前是面向 DSH developer preview 生态的 alpha 软件，�
 
 ## 项目文档
 
-- [架构](docs/architecture.md)
-- [真实 DSH showcase](examples/dsh/README.md)
-- [产品愿景](docs/vision.zh-CN.md)
-- [检查项与证据](docs/checks.zh-CN.md)
-- [威胁模型](docs/threat-model.md)
-- [Roadmap](ROADMAP.md)
-- [Changelog](CHANGELOG.md)
-- [发布流程](docs/releasing.md)
-- [贡献指南](CONTRIBUTING.md)
-- [安全策略](SECURITY.md)
+- [架构](architecture.md)
+- [真实 DSH showcase](../examples/dsh/README.md)
+- [产品愿景](vision.zh-CN.md)
+- [检查项与证据](checks.zh-CN.md)
+- [威胁模型](threat-model.md)
+- [Roadmap](../ROADMAP.md)
+- [Changelog](../CHANGELOG.md)
+- [发布流程](releasing.md)
+- [贡献指南](../CONTRIBUTING.md)
+- [安全策略](../SECURITY.md)
 
 如果 DSH 插件已经进入你的技术栈，欢迎 Star 并在 [GitHub Discussions](https://github.com/MicroMilo/upstream-radar/discussions) 里讨论真实场景。
 
