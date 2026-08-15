@@ -46,37 +46,44 @@
               {
                 "id": "plugin",
                 "name": "plugin",
-                "version": "1.0.0"
+                "version": "1.0.0",
+                "source": "profile"
               },
               {
                 "id": "framework",
                 "name": "framework",
-                "version": "2.4.7"
+                "version": "2.4.7",
+                "source": "profile"
               },
               {
                 "id": "framework-parser",
                 "name": "parser",
-                "version": "3.2.1"
+                "version": "3.2.1",
+                "source": "profile"
               },
               {
                 "id": "archive",
                 "name": "archive",
-                "version": "1.8.0"
+                "version": "1.8.0",
+                "source": "profile"
               },
               {
                 "id": "logger",
                 "name": "logger",
-                "version": "4.0.2"
+                "version": "4.0.2",
+                "source": "profile"
               },
               {
                 "id": "logger-parser",
                 "name": "parser",
-                "version": "2.9.0"
+                "version": "2.9.0",
+                "source": "profile"
               },
               {
                 "id": "dsh-agent",
                 "name": "@deepseek-ai/dsh-agent",
-                "version": "0.1.0-rc.5"
+                "version": "0.1.0-rc.5",
+                "source": "dsh-host"
               }
             ],
             "edges": [

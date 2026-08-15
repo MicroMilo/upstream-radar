@@ -48,6 +48,9 @@
             "name": "parser",
             "version": "2.9.0"
           },
+          "affectedSources": [
+            "profile"
+          ],
           "paths": [
             [
               {
@@ -126,6 +129,9 @@
             "name": "parser",
             "version": "2.9.0"
           },
+          "affectedSources": [
+            "profile"
+          ],
           "paths": [
             [
               {

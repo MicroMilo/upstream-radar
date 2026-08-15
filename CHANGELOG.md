@@ -2,6 +2,18 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.13.0] - 2026-08-16
+
+### Added
+
+- Preserve the physical origin of affected packages in vulnerability events and DSH analysis tasks.
+- Render whether an alert comes from the plugin profile, the DSH host runtime, or both.
+- Extend the deterministic dependency-graph showcase with origin evidence.
+
+### Fixed
+
+- Avoid losing the profile-versus-host distinction between graph construction and the user-facing alert.
+
 ## [0.12.0] - 2026-08-16
 
 ### Added
@@ -149,6 +161,7 @@ All notable changes to Upstream Radar are documented here.
 - Version matching and compatibility facts are calculated outside the model.
 - Agent analysis is read-only and requires project evidence and explicit uncertainty.
 
+[0.13.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.13.0
 [0.12.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.12.0
 [0.11.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.11.0
 [0.10.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.10.0

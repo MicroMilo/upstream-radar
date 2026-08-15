@@ -77,6 +77,7 @@ export {
   type DependencyGraph,
   type DependencyKind,
   type DependencyNode,
+  type DependencySource,
   type EventRoute,
   type PackageCoordinate,
   type PackageManifestSnapshot,

@@ -22,7 +22,7 @@ const inventory: ProjectInventory = {
       nodes: [
         { id: 'plugin', name: 'plugin', version: '1.0.0' },
         { id: 'logger', name: 'logger', version: '4.0.2' },
-        { id: 'parser-old', name: 'parser', version: '2.9.0' },
+        { id: 'parser-old', name: 'parser', version: '2.9.0', source: 'dsh-host' },
       ],
       edges: [
         { from: 'plugin', to: 'logger', kind: 'runtime' },
@@ -67,6 +67,7 @@ describe('radar polling', () => {
     const firstEvent = first.events[0]
     assert.ok(firstEvent !== undefined)
     assert.equal(firstEvent.kind, 'vulnerability')
+    assert.deepEqual(firstEvent.affectedSources, ['dsh-host'])
     assert.deepEqual(firstEvent.paths[0]?.map(item => `${item.name}@${item.version}`), [
       'plugin@1.0.0',
       'logger@4.0.2',

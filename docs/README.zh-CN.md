@@ -69,6 +69,7 @@ OSV 漏洞公告或 npm 新版本
 Project: Payments API (payments-api)
 Plugin: plugin@1.0.0
 Affected: parser@2.9.0
+Origin: plugin profile
 Advisory: GHSA-demo-2026-parser / CVE-2026-1234
 Paths:
   plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
