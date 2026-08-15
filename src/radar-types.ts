@@ -20,6 +20,8 @@ export interface DependencyNode {
   id: string
   name: string
   version: string
+  /** Where an installed graph found this physical package. */
+  source?: 'profile' | 'dsh-host'
 }
 
 export interface DependencyEdge {
@@ -35,6 +37,11 @@ export interface DependencyGraph {
   edges: DependencyEdge[]
   /** How the physical graph was obtained. Older configs may omit this field. */
   source?: 'npm-lock' | 'installed-node-modules'
+  /** Evidence that DSH's shared host dependency plane was included. */
+  hostRuntime?: {
+    source: 'dsh-profile-fallback'
+    resolvedNodes: number
+  }
   digest?: string
   unresolved?: Array<{
     from: string

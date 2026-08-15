@@ -120,7 +120,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-
 
 The generated overlay points DSH at the config and state files explicitly. `radar status` is read-only and reports whether a check has completed, which source is unhealthy, whether dependency coverage is complete, active incidents, and pending DSH tasks. If you prefer environment variables or need to override the polling interval, omit `--dsh-patch` and use `UPSTREAM_RADAR_CONFIG`, `UPSTREAM_RADAR_STATE`, and `UPSTREAM_RADAR_INTERVAL_SECONDS` as before.
 
-The generated graph is the actual installed profile graph. If a dependency is declared but cannot be resolved from the profile, it remains visible as incomplete coverage instead of being treated as absent. Passing `--registry <url>` explicitly selects the older public npm artifact graph path, which is useful for comparing a profile against registry resolution but is not the default.
+The generated graph is the actual installed profile graph. DSH also maintains a shared `profiles/node_modules` host plane for built-in runtime packages; Radar includes packages resolved from that plane, marks them as `dsh-host`, and still checks their exact versions for advisories. If a required dependency is declared but cannot be resolved from either place, it remains visible as incomplete coverage instead of being treated as absent. Missing optional platform packages are retained as evidence but do not make coverage incomplete. Passing `--registry <url>` explicitly selects the older public npm artifact graph path, which is useful for comparing a profile against registry resolution but is not the default.
 
 For a hand-written or CI fixture, use [the example inventory](examples/radar/config.json). If neither a generated `--patch` overlay nor `UPSTREAM_RADAR_CONFIG` is provided, the bundle stays dormant and performs no polling.
 
@@ -237,6 +237,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 ## What works today
 
 - installed DSH `node_modules` graphs and npm lockfile graphs with duplicate versions and bounded dependency paths;
+- DSH shared host-runtime dependency resolution, with profile and `dsh-host` packages kept distinct;
 - exact-version OSV vulnerability and malicious-package matching;
 - npm release monitoring for plugins and DSH/Cordis packages, with public GitHub Release notes attached when an exact candidate tag is available;
 - durable incident state with current-task replacement and resolution;
@@ -255,7 +256,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 ## Current boundaries
 
 - `init` discovers the only DSH profile with third-party bundles when `--profile` is omitted; multiple candidates still require an explicit profile. By default it follows the installed DSH `node_modules` tree, so pnpm overrides and local resolution choices are included. `--dsh-patch <path>` writes an explicit DSH overlay so first startup needs no environment variables. A native pnpm lockfile parser for pre-install/CI inspection is still deferred.
-- A graph with unresolved dependency declarations is marked as incomplete coverage; Radar does not claim that those packages are clean.
+- A graph with unresolved required dependency declarations is marked as incomplete coverage; optional packages that are not installed for the current platform remain visible but do not create a false required-dependency alert.
 - `radar status` is a local snapshot only: it does not refresh OSV/npm/GitHub data, and it cannot prove that a source is current until a check has completed.
 - npm lock graphs are supported; pnpm and Yarn graph adapters are not implemented.
 - OSV, npm `latest`, and public GitHub Release notes are live sources; changelog, comparison-diff, and migration-guide ingestion are deferred.

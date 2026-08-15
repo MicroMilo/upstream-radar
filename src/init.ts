@@ -1,6 +1,6 @@
 import { access, readFile, readdir, realpath, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
-import { basename, isAbsolute, join, relative, resolve } from 'node:path'
+import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path'
 import { inspectNpmPackage, type InspectNpmOptions } from './npm.js'
 import { parseInstalledNodeModulesGraph } from './installed-graph.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
@@ -187,6 +187,11 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
       : await parseInstalledNodeModulesGraph(profileDirectory, {
           name: manifest.name,
           version: manifest.version,
+        }, {
+          // DSH makes this shared flat directory so in-box runtime packages can
+          // satisfy third-party plugin peer dependencies without being copied
+          // into every profile.
+          hostNodeModulesDirectory: join(dirname(profileDirectory), 'node_modules'),
         })
     if (graph === undefined) throw new Error(`could not resolve the exact dependency graph for ${manifest.name}@${manifest.version}`)
     plugins.push({

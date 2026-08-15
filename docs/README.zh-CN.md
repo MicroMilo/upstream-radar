@@ -111,7 +111,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-
 
 `radar status` 只读取本地配置和状态，不会刷新 OSV/npm/GitHub；它会告诉你是否已经完成检查、依赖覆盖是否完整、哪个数据源异常、当前事件和待处理的 DSH 任务。如果不使用 `--dsh-patch`，仍可以使用原来的 `UPSTREAM_RADAR_CONFIG`、`UPSTREAM_RADAR_STATE` 和 `UPSTREAM_RADAR_INTERVAL_SECONDS` 环境变量方式。
 
-生成的依赖图对应 profile 当前实际安装的树。如果依赖声明存在但 profile 中无法解析，它会保留为“覆盖不完整”，不会被当成安全或不存在。显式传入 `--registry <url>` 才会使用公共 npm artifact 图，适合和 registry 解析结果做比较，但不是默认路径。
+生成的依赖图对应 profile 当前实际安装的树。DSH 还会在 `profiles/node_modules` 维护一层共享的宿主运行时依赖；Radar 会把从这里解析到的包纳入漏洞查询，并明确标成 `dsh-host`，不会和插件自己带的依赖混在一起。如果一个必需依赖在 profile 和宿主依赖平面中都找不到，它会保留为“覆盖不完整”，不会被当成安全或不存在。当前平台没有安装的可选原生包仍会记录，但不会制造“必需依赖缺失”的假警报。显式传入 `--registry <url>` 才会使用公共 npm artifact 图，适合和 registry 解析结果做比较，但不是默认路径。
 
 如果需要手写配置或制作 CI fixture，可以参考[示例清单](../examples/radar/config.json)。如果既没有 `--patch` overlay，也没有设置 `UPSTREAM_RADAR_CONFIG`，插件会保持休眠，不发起轮询。
 

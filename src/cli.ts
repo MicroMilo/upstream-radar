@@ -412,14 +412,22 @@ async function runInit(args: readonly string[]): Promise<number> {
       nodes: plugin.graph.nodes.length,
       edges: plugin.graph.edges.length,
       ...(plugin.graph.source === undefined ? {} : { source: plugin.graph.source }),
+      ...(plugin.graph.hostRuntime === undefined ? {} : { hostRuntimeNodes: plugin.graph.hostRuntime.resolvedNodes }),
       ...(plugin.graph.unresolved === undefined ? {} : { unresolved: plugin.graph.unresolved.length }),
+      ...(plugin.graph.unresolved === undefined ? {} : {
+        requiredUnresolved: plugin.graph.unresolved.filter(item => item.kind !== 'optional').length,
+        optionalUnresolved: plugin.graph.unresolved.filter(item => item.kind === 'optional').length,
+      }),
     })), state: statePath, ...(patchPath === undefined ? {} : { patch: patchPath }) }, null, 2)}\n`)
   } else {
     if (autoSelected) process.stdout.write(`Auto-selected DSH profile: ${resolvedProfile}\n`)
     process.stdout.write(`Created ${outputPath}\nDiscovered ${plugins.length} DSH plugin bundle(s):\n`)
     for (const plugin of plugins) {
       const unresolved = plugin.graph.unresolved?.length ?? 0
-      process.stdout.write(`  ${plugin.package.name}@${plugin.package.version} (${plugin.graph.nodes.length} dependency nodes${plugin.graph.source === undefined ? '' : `, ${plugin.graph.source}`}${unresolved === 0 ? '' : `, ${unresolved} unresolved`})\n`)
+      const requiredUnresolved = plugin.graph.unresolved?.filter(item => item.kind !== 'optional').length ?? 0
+      const optionalUnresolved = unresolved - requiredUnresolved
+      const hostRuntime = plugin.graph.hostRuntime?.resolvedNodes ?? 0
+      process.stdout.write(`  ${plugin.package.name}@${plugin.package.version} (${plugin.graph.nodes.length} dependency nodes${plugin.graph.source === undefined ? '' : `, ${plugin.graph.source}`}${hostRuntime === 0 ? '' : `, ${hostRuntime} DSH host`}${requiredUnresolved === 0 ? '' : `, ${requiredUnresolved} required unresolved`}${optionalUnresolved === 0 ? '' : `, ${optionalUnresolved} optional absent`})\n`)
     }
     if (patchPath === undefined) {
       process.stdout.write(`\nReview the generated inventory, then run:\n  export UPSTREAM_RADAR_CONFIG=${shellQuote(outputPath)}\n  export UPSTREAM_RADAR_STATE=${shellQuote(statePath)}\n  dsh --profile ${shellQuote(resolvedProfile)}\n`)

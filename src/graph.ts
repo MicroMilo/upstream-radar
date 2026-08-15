@@ -67,7 +67,7 @@ function dependencyEntries(item: Record<string, unknown>): Array<{ name: string;
 export function dependencyGraphDigest(nodes: readonly DependencyNode[], edges: readonly DependencyEdge[]): string {
   const hash = createHash('sha256')
   for (const node of [...nodes].sort((left, right) => left.id.localeCompare(right.id))) {
-    hash.update(`node\0${node.id}\0${node.name}\0${node.version}\n`)
+    hash.update(`node\0${node.id}\0${node.name}\0${node.version}\0${node.source ?? ''}\n`)
   }
   for (const edge of [...edges].sort((left, right) => (
     left.from.localeCompare(right.from) || left.to.localeCompare(right.to) || left.kind.localeCompare(right.kind)
