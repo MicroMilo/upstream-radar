@@ -258,6 +258,25 @@ This is a runtime compatibility proof for one DSH version, not a package-securit
 
 The same showcase also runs the loadable fixture against DSH `0.1.0-rc.3` and `0.1.0-rc.6`. The matrix is green only because both exact versions complete all five stages; if one version timed out or could not be loaded, the aggregate would remain `unknown` rather than silently passing.
 
+## Scene 18 — observe the dependency plane of the running DSH
+
+The broader headless smoke proves that Radar can hand an event to a DSH Agent. The host-runtime showcase proves which dependency graph is being monitored when a plugin relies on packages supplied by DSH itself:
+
+```bash
+pnpm run showcase:dsh-runtime
+```
+
+It creates a temporary plugin with a peer on the exact `@deepseek-ai/cordis` version installed by `@deepseek-ai/dsh@0.1.0-rc.6`, installs both the current Radar bundle and that plugin into a disposable profile, and starts the real DSH process. A local HTTPS OSV-compatible server returns one deterministic advisory only for that host version. Radar first records the profile fallback, then the native adapter refreshes the graph from the running process and persists:
+
+```text
+profile fallback -> running DSH process
+affected: @deepseek-ai/cordis@4.0.1
+affectedSources: dsh-host
+path: showcase-dsh-host-peer -> @deepseek-ai/cordis
+```
+
+The local model accepts the resulting analysis task, so the report covers the whole path from runtime discovery to Agent writeback. The checked-in [result](../examples/dsh/reports/dsh-runtime-host.json) is synthetic evidence of integration; it is not a claim that the real DSH release is vulnerable.
+
 ## Live sources
 
 The fixture isolates behavior from network timing. Production cycles use:

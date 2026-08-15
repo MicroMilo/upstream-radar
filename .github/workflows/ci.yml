@@ -33,4 +33,6 @@ jobs:
       - if: matrix.node == 22
         run: pnpm run showcase:dsh-probe
       - if: matrix.node == 22
+        run: pnpm run showcase:dsh-runtime
+      - if: matrix.node == 22
         run: pnpm pack --pack-destination /tmp

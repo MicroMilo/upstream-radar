@@ -188,6 +188,8 @@ The command fails unless DSH proves all five facts:
 
 This proof runs in CI on Node.js 22. See the executable [showcase contract](examples/dsh/README.md) and its checked-in [result](examples/dsh/reports/headless-smoke.json). Run `pnpm run try:dsh:live` to include a current OSV and npm poll before the DSH handoff.
 
+To demonstrate the host-runtime dependency path specifically, run `pnpm run showcase:dsh-runtime`. It starts a real DSH `headless` process, refreshes the installed plugin graph from the process's exact host `node_modules`, queries a local OSV-compatible feed for the real `@deepseek-ai/cordis` version, persists a `dsh-host` vulnerability path, and hands it to the DSH Agent. The model and advisory are deterministic local stubs; this proves integration and provenance, not the safety of a real advisory.
+
 ## Validate the compatibility rules
 
 Before wiring a project into a compatibility gate, run the offline rule benchmark:

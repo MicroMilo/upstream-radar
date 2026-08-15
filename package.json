@@ -79,6 +79,8 @@
     "showcase:radar:reports": "pnpm run build && node scripts/radar-showcase.mjs --write-reports",
     "benchmark:compatibility": "pnpm run build && node dist/src/cli.js benchmark compatibility",
     "showcase:dsh-probe": "pnpm run build && node scripts/dsh-load-probe-showcase.mjs",
+    "showcase:dsh-runtime": "pnpm run build && node scripts/dsh-runtime-graph-showcase.mjs",
+    "showcase:dsh-runtime:report": "pnpm run build && node scripts/dsh-runtime-graph-showcase.mjs --write-report",
     "try:consumer": "node scripts/consumer-smoke.mjs",
     "try:dsh": "pnpm run build && node scripts/dsh-headless-showcase.mjs",
     "try:dsh:live": "pnpm run build && node scripts/dsh-headless-showcase.mjs --live-feeds",

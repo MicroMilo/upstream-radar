@@ -181,6 +181,8 @@ pnpm run try:dsh
 
 运行 `pnpm run try:dsh:live`，可以在 DSH 投递前加入一次当前 OSV 与 npm 数据轮询。
 
+如果要专门证明“宿主运行时依赖也会被监控”，运行 `pnpm run showcase:dsh-runtime`。它会启动真实的 DSH `headless` 进程，从该进程实际使用的 `node_modules` 刷新插件依赖图，查询本地 OSV 兼容 feed 中针对真实 `@deepseek-ai/cordis` 版本的确定性演示漏洞，把带有 `dsh-host` 来源和完整依赖路径的事件写入状态，再交给 DSH Agent。模型和漏洞 feed 都是本地 stub；它证明的是接线、来源和持久化，不是真实漏洞的安全结论。使用 `pnpm run showcase:dsh-runtime:report` 可以更新[宿主运行时结果](../examples/dsh/reports/dsh-runtime-host.json)。
+
 ## 验证兼容性规则
 
 在把项目接入兼容性门禁前，可以先运行离线规则 benchmark：

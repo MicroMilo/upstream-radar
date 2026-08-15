@@ -1,0 +1,46 @@
+{
+  "dshPackage": "@deepseek-ai/dsh@0.1.0-rc.6",
+  "plugin": "showcase-dsh-host-peer@1.0.0",
+  "hostPackage": "@deepseek-ai/cordis@4.0.1",
+  "initialProfileOnlyGraph": {
+    "hostRuntimeSource": "dsh-profile-fallback",
+    "hostRuntimePackages": 9
+  },
+  "refreshedGraph": {
+    "source": "dsh-process",
+    "hostRuntimePackages": 5,
+    "hostNode": {
+      "id": "dsh-host/node_modules/@deepseek-ai/cordis",
+      "name": "@deepseek-ai/cordis",
+      "version": "4.0.1",
+      "source": "dsh-host"
+    }
+  },
+  "persistedEvent": {
+    "affected": {
+      "ecosystem": "npm",
+      "name": "@deepseek-ai/cordis",
+      "version": "4.0.1"
+    },
+    "affectedSources": [
+      "dsh-host"
+    ],
+    "path": [
+      {
+        "ecosystem": "npm",
+        "name": "showcase-dsh-host-peer",
+        "version": "1.0.0"
+      },
+      {
+        "ecosystem": "npm",
+        "name": "@deepseek-ai/cordis",
+        "version": "4.0.1"
+      }
+    ]
+  },
+  "dshAnalysisResults": 1,
+  "feedRequests": 4,
+  "modelRequests": 3,
+  "dshProcessPollCompleted": true,
+  "finalAssistant": "{\"project_exposure\":\"unknown\",\"confidence\":\"low\",\"evidence\":[\"showcase: deterministic host-runtime event\"],\"recommended_action\":\"Review the host-runtime advisory with the project tests before changing DSH.\",\"urgency\":\"within_24_hours\",\"reasoning_summary\":\"This local model proves that a real DSH Agent received and acknowledged a host-runtime vulnerability notice; it does not assess a real project.\"}"
+}
