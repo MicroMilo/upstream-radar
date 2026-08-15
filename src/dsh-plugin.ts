@@ -4,6 +4,7 @@ import { resolve } from 'node:path'
 import { renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { GitHubReleaseClient } from './github-release.js'
 import { parseRadarConfig } from './inventory.js'
+import { refreshRadarConfigFromDshProfile } from './init.js'
 import { OsvClient } from './osv.js'
 import { NpmReleaseClient } from './npm-release.js'
 import { pollRadar } from './radar.js'
@@ -16,6 +17,10 @@ export const inject = ['agents']
 export interface Config {
   configFile?: string
   stateFile?: string
+  /** DSH profile name written by `init --dsh-patch`; enables safe graph refresh. */
+  profile?: string
+  /** Set false to keep a generated inventory as a static snapshot. */
+  refreshProfile?: boolean
   intervalSeconds?: number
   osvBaseUrl?: string
   runOnStart?: boolean
@@ -125,7 +130,13 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
         if (stopped) return
         let state = await loadRadarState(stateFile)
         if (poll) {
-          const radarConfig = await readConfig(configFile)
+          const configured = await readConfig(configFile)
+          const radarConfig = config.profile === undefined || config.refreshProfile === false
+            ? configured
+            : await refreshRadarConfigFromDshProfile(configured, config.profile)
+          if (radarConfig !== configured && JSON.stringify(radarConfig.projects) !== JSON.stringify(configured.projects)) {
+            ctx.logger.info(`upstream-radar: refreshed installed DSH profile ${config.profile}`)
+          }
           const result = await pollRadar(radarConfig.projects, state, source, new Date(), releases, releaseNotes)
           state = result.state
           // Persist before model delivery. A crash may duplicate a task, but cannot silently lose it.

@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promis
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, it } from 'node:test'
-import { createRadarConfigFromDshProfile, discoverDshProfiles, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from '../src/init.js'
+import { createRadarConfigFromDshProfile, discoverDshProfiles, refreshRadarConfigFromDshProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from '../src/init.js'
 
 const graph = {
   schema: 'upstream-radar.dependency-graph/v1alpha1' as const,
@@ -68,6 +68,8 @@ describe('DSH profile initialization', () => {
       assert.ok(patchText.includes(`configFile: ${JSON.stringify(output)}`))
       assert.ok(patchText.includes(`stateFile: ${JSON.stringify(`${output}.state.json`)}`))
       assert.match(patchText, /runOnStart: true/)
+      assert.match(patchText, /profile: "web"/)
+      assert.match(patchText, /refreshProfile: true/)
       assert.doesNotMatch(patchText, /UPSTREAM_RADAR_CONFIG|!!js/)
       await writeDshPatch({
         output: patch,
@@ -166,6 +168,55 @@ describe('DSH profile initialization', () => {
       const config = await createRadarConfigFromDshProfile({ profileDirectory: profile })
       assert.equal(config.projects[0]?.plugins[0]?.graph.source, 'installed-node-modules')
       assert.equal(config.projects[0]?.plugins[0]?.graph.nodes.length, 2)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('refreshes a generated inventory from the current installed profile', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-refresh-'))
+    const dshHome = join(root, 'dsh-home')
+    const profile = join(dshHome, 'profiles', 'web')
+    try {
+      await mkdir(join(profile, 'node_modules', 'demo-plugin'), { recursive: true })
+      await writeFile(join(profile, 'package.json'), JSON.stringify({
+        name: 'dsh-profile-web',
+        dsh: { profile: { bundles: ['demo-plugin'] } },
+      }))
+      await writeFile(join(profile, 'node_modules', 'demo-plugin', 'package.json'), JSON.stringify({
+        name: 'demo-plugin',
+        version: '1.0.0',
+        dependencies: { parser: '1.0.0' },
+      }))
+      await mkdir(join(profile, 'node_modules', 'parser'), { recursive: true })
+      await writeFile(join(profile, 'node_modules', 'parser', 'package.json'), JSON.stringify({
+        name: 'parser',
+        version: '1.0.0',
+      }))
+
+      const config = await createRadarConfigFromDshProfile({
+        profileDirectory: profile,
+        projectId: 'demo-project',
+        projectName: 'Demo project',
+        workspace: '/workspace/demo',
+        channels: ['stdout'],
+      })
+      config.dshProfile = { name: 'web' }
+
+      await writeFile(join(profile, 'node_modules', 'demo-plugin', 'package.json'), JSON.stringify({
+        name: 'demo-plugin',
+        version: '2.0.0',
+        dependencies: { parser: '2.0.0' },
+      }))
+      await writeFile(join(profile, 'node_modules', 'parser', 'package.json'), JSON.stringify({
+        name: 'parser',
+        version: '2.0.0',
+      }))
+
+      const refreshed = await refreshRadarConfigFromDshProfile(config, 'web', dshHome)
+      assert.equal(refreshed.projects[0]?.plugins[0]?.package.version, '2.0.0')
+      assert.equal(refreshed.projects[0]?.plugins[0]?.graph.nodes.find(node => node.name === 'parser')?.version, '2.0.0')
+      assert.deepEqual(refreshed.projects[0]?.project.channels, ['stdout'])
     } finally {
       await rm(root, { recursive: true, force: true })
     }

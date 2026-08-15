@@ -22,7 +22,7 @@ pnpm dlx upstream-radar@latest init \
   --output ./upstream-radar.config.json
 ```
 
-The default generated graph is a reviewable view of the profile's installed `node_modules` tree. A profile that has unresolved declarations keeps them as incomplete coverage; this includes peer packages supplied by a DSH host outside the profile. Pass `--registry <url>` only when you intentionally want to compare against public npm resolution.
+The default generated graph is a reviewable view of the profile's installed `node_modules` tree plus DSH's shared host-runtime plane. A profile that has unresolved required declarations keeps them as incomplete coverage; optional platform packages remain visible without creating a required-dependency alert. When the generated `--dsh-patch` overlay is used, the graph is rebuilt before each native DSH poll. Pass `--registry <url>` only when you intentionally want to compare against public npm resolution.
 
 The repository intentionally denies dependency lifecycle scripts through `.npmrc` and keeps zero runtime dependencies. A proposal to add a runtime dependency should explain why a small audited implementation or platform primitive is insufficient.
 

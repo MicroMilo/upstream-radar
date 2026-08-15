@@ -91,6 +91,10 @@ export interface ProjectInventory {
 
 export interface RadarConfig {
   schema: typeof RADAR_CONFIG_SCHEMA
+  /** Present on CLI-generated configs so the native DSH adapter can refresh the installed graph. */
+  dshProfile?: {
+    name: string
+  }
   projects: ProjectInventory[]
 }
 
