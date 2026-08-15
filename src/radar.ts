@@ -14,8 +14,12 @@ import {
   type PackageCoordinate,
   type ProjectInventory,
   type RadarEvent,
+  type RadarSource,
   type RadarState,
+  type SourceHealthEvent,
+  type SourceHealthStatus,
   type StoredCompatibilityMatch,
+  type StoredSourceHealthMatch,
   type StoredVulnerabilityMatch,
   type VulnerabilityEvent,
 } from './radar-types.js'
@@ -34,9 +38,11 @@ export interface RadarPollResult {
   releasePackagesQueried: number
   events: RadarEvent[]
   analysisTasks: AnalysisTask[]
-  sourceErrors: Array<{ source: 'osv' | 'npm-releases' | 'github-releases'; message: string }>
+  sourceErrors: Array<{ source: RadarSource; message: string }>
   state: RadarState
 }
+
+const SOURCE_FAILURE_ALERT_THRESHOLD = 3
 
 function hash(value: string): string {
   return createHash('sha256').update(value).digest('hex').slice(0, 24)
@@ -86,8 +92,86 @@ function compatibilityEventChanged(previous: RadarEvent, current: RadarEvent): b
     || previous.releaseNotesUrl !== current.releaseNotesUrl
 }
 
+function sourceHealthKey(projectId: string, source: RadarSource): string {
+  return `${projectId}\0${source}`
+}
+
+function sourceHealthEventId(
+  key: string,
+  change: SourceHealthEvent['change'],
+  detectedAt: string,
+  status: SourceHealthStatus,
+): string {
+  return `event-${hash(`${key}\0${change}\0${detectedAt}\0${status.consecutiveFailures}\0${status.lastError ?? ''}`)}`
+}
+
+function recordSourceHealth(
+  previous: Record<string, SourceHealthStatus>,
+  source: RadarSource,
+  attemptedAt: string,
+  succeeded: boolean,
+  error?: string,
+): Record<string, SourceHealthStatus> {
+  const current = previous[source]
+  const next: SourceHealthStatus = succeeded
+    ? {
+        lastAttemptedAt: attemptedAt,
+        lastSucceededAt: attemptedAt,
+        consecutiveFailures: 0,
+      }
+    : {
+        lastAttemptedAt: attemptedAt,
+        consecutiveFailures: (current?.consecutiveFailures ?? 0) + 1,
+        ...(current?.lastSucceededAt === undefined ? {} : { lastSucceededAt: current.lastSucceededAt }),
+        ...(error === undefined ? {} : { lastError: error }),
+      }
+  return { ...previous, [source]: next }
+}
+
+function sourceHealthEventChanged(previous: SourceHealthEvent, current: SourceHealthEvent): boolean {
+  return JSON.stringify(previous.project) !== JSON.stringify(current.project)
+    || JSON.stringify(previous.route) !== JSON.stringify(current.route)
+    || previous.source !== current.source
+    || previous.status !== current.status
+    || previous.error !== current.error
+}
+
+function createSourceHealthEvent(
+  inventory: ProjectInventory,
+  source: RadarSource,
+  status: 'degraded' | 'healthy',
+  change: SourceHealthEvent['change'],
+  detectedAt: string,
+  health: SourceHealthStatus,
+): SourceHealthEvent {
+  const key = sourceHealthKey(inventory.project.id, source)
+  return {
+    schema: RADAR_EVENT_SCHEMA,
+    id: sourceHealthEventId(key, change, detectedAt, health),
+    incidentId: key,
+    kind: 'source-health',
+    change,
+    detectedAt,
+    project: { ...inventory.project },
+    route: route(inventory),
+    source,
+    status,
+    failureCount: health.consecutiveFailures,
+    lastAttemptedAt: health.lastAttemptedAt,
+    ...(health.lastSucceededAt === undefined ? {} : { lastSucceededAt: health.lastSucceededAt }),
+    ...(health.lastError === undefined ? {} : { error: health.lastError }),
+  }
+}
+
 export function emptyRadarState(): RadarState {
-  return { schema: RADAR_STATE_SCHEMA, activeVulnerabilities: {}, activeCompatibility: {}, pendingAnalysisTasks: [] }
+  return {
+    schema: RADAR_STATE_SCHEMA,
+    activeVulnerabilities: {},
+    activeCompatibility: {},
+    pendingAnalysisTasks: [],
+    sourceHealth: {},
+    activeSourceHealth: {},
+  }
 }
 
 /** Query exact installed versions, calculate affected paths, and emit state transitions only. */
@@ -103,6 +187,8 @@ export async function pollRadar(
   if (!Number.isFinite(now.getTime())) throw new Error('radar check time is invalid')
   const checkedAt = now.toISOString()
   const sourceErrors: RadarPollResult['sourceErrors'] = []
+  const attemptedSources = new Set<RadarSource>()
+  let sourceHealth = { ...(previousState.sourceHealth ?? {}) }
 
   const uniquePackages = new Map<string, PackageCoordinate>()
   for (const inventory of inventories) {
@@ -115,14 +201,18 @@ export async function pollRadar(
   }
   let matches = new Map<string, AdvisoryMatch[]>()
   let vulnerabilityCheckSucceeded = true
+  attemptedSources.add('osv')
   try {
     matches = await source.query([...uniquePackages.values()])
+    sourceHealth = recordSourceHealth(sourceHealth, 'osv', checkedAt, true)
   } catch (error: unknown) {
     const raw = error instanceof Error ? error.message : String(error)
+    const message = raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048)
     sourceErrors.push({
       source: 'osv',
-      message: raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048),
+      message,
     })
+    sourceHealth = recordSourceHealth(sourceHealth, 'osv', checkedAt, false, message)
     vulnerabilityCheckSucceeded = false
   }
 
@@ -220,32 +310,40 @@ export async function pollRadar(
   }
   let activeCompatibility = previousState.activeCompatibility
   if (releaseSource !== undefined) {
+    attemptedSources.add('npm-releases')
     let releases: Map<string, NpmReleaseObservation>
     let releaseCheckSucceeded = false
     try {
       releases = await releaseSource.query([...releasePackages.values()])
       releaseCheckSucceeded = true
+      sourceHealth = recordSourceHealth(sourceHealth, 'npm-releases', checkedAt, true)
     } catch (error: unknown) {
       const raw = error instanceof Error ? error.message : String(error)
+      const message = raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048)
       sourceErrors.push({
         source: 'npm-releases',
-        message: raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048),
+        message,
       })
+      sourceHealth = recordSourceHealth(sourceHealth, 'npm-releases', checkedAt, false, message)
       releases = new Map()
     }
     if (releaseCheckSucceeded) {
       let releaseNotes = new Map<string, ReleaseNotes>()
       let releaseNotesCheckSucceeded = releaseNotesSource === undefined
       if (releaseNotesSource !== undefined) {
+        attemptedSources.add('github-releases')
         try {
           releaseNotes = await releaseNotesSource.query([...releases.values()])
           releaseNotesCheckSucceeded = true
+          sourceHealth = recordSourceHealth(sourceHealth, 'github-releases', checkedAt, true)
         } catch (error: unknown) {
           const raw = error instanceof Error ? error.message : String(error)
+          const message = raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048)
           sourceErrors.push({
             source: 'github-releases',
-            message: raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048),
+            message,
           })
+          sourceHealth = recordSourceHealth(sourceHealth, 'github-releases', checkedAt, false, message)
         }
       }
       const currentCompatibility = new Map<string, StoredCompatibilityMatch>()
@@ -310,6 +408,34 @@ export async function pollRadar(
       activeCompatibility = Object.fromEntries(currentCompatibility)
     }
   }
+  let activeSourceHealth: Record<string, StoredSourceHealthMatch> = previousState.activeSourceHealth ?? {}
+  const currentSourceHealth = new Map<string, StoredSourceHealthMatch>(Object.entries(activeSourceHealth))
+  for (const inventory of inventories) {
+    for (const sourceName of attemptedSources) {
+      const health = sourceHealth[sourceName]
+      if (health === undefined) continue
+      const key = sourceHealthKey(inventory.project.id, sourceName)
+      const previous = activeSourceHealth[key]
+      if (health.consecutiveFailures >= SOURCE_FAILURE_ALERT_THRESHOLD) {
+        const candidate = createSourceHealthEvent(
+          inventory,
+          sourceName,
+          'degraded',
+          previous === undefined ? 'new' : 'updated',
+          checkedAt,
+          health,
+        )
+        currentSourceHealth.set(key, { key, event: candidate })
+        if (previous === undefined) events.push(candidate)
+        else if (sourceHealthEventChanged(previous.event, candidate)) events.push(candidate)
+      } else if (previous !== undefined) {
+        const recovered = createSourceHealthEvent(inventory, sourceName, 'healthy', 'resolved', checkedAt, health)
+        currentSourceHealth.delete(key)
+        events.push(recovered)
+      }
+    }
+  }
+  activeSourceHealth = Object.fromEntries(currentSourceHealth)
   events.sort((left, right) => left.id.localeCompare(right.id))
 
   const analysisTasks = events
@@ -333,6 +459,8 @@ export async function pollRadar(
       activeVulnerabilities: Object.fromEntries([...current.entries()]),
       activeCompatibility,
       pendingAnalysisTasks: [...pending.values()],
+      sourceHealth,
+      activeSourceHealth,
     },
   }
 }

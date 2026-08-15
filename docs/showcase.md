@@ -85,6 +85,10 @@ The update replaces the older offline task instead of accumulating two analyses.
 
 The showcase then simulates an OSV timeout. Radar emits no new or resolved vulnerability event, keeps the previously confirmed match, keeps the pending DSH task, and returns a visible `sourceErrors: osv` warning. The evidence is saved as `examples/radar/reports/07-source-outage.json`.
 
+## Scene 7 — repeated failures become one source-health notice
+
+After three consecutive failed OSV checks, Radar creates one project-routed `source-health` incident and sends it through the same durable DSH outbox. When OSV recovers, the source-health incident resolves and its pending task is removed. The lifecycle is saved as `examples/radar/reports/08-source-health-lifecycle.json`.
+
 ## Live sources
 
 The fixture isolates behavior from network timing. Production cycles use:

@@ -118,11 +118,12 @@ interface RadarEventBase {
   detectedAt: string
   project: ProjectReference
   route: EventRoute
-  plugin: PackageCoordinate
+  plugin?: PackageCoordinate
 }
 
 export interface VulnerabilityEvent extends RadarEventBase {
   kind: 'vulnerability' | 'malware'
+  plugin: PackageCoordinate
   affected: PackageCoordinate
   paths: PackageCoordinate[][]
   advisory: VulnerabilityAdvisory
@@ -140,6 +141,7 @@ export interface CompatibilitySignal {
 
 export interface CompatibilityEvent extends RadarEventBase {
   kind: 'compatibility'
+  plugin: PackageCoordinate
   installed: PackageCoordinate
   candidate: PackageCoordinate
   signals: CompatibilitySignal[]
@@ -147,7 +149,26 @@ export interface CompatibilityEvent extends RadarEventBase {
   releaseNotesUrl?: string
 }
 
-export type RadarEvent = VulnerabilityEvent | CompatibilityEvent
+export type RadarSource = 'osv' | 'npm-releases' | 'github-releases'
+
+export interface SourceHealthStatus {
+  lastAttemptedAt: string
+  lastSucceededAt?: string
+  consecutiveFailures: number
+  lastError?: string
+}
+
+export interface SourceHealthEvent extends RadarEventBase {
+  kind: 'source-health'
+  source: RadarSource
+  status: 'degraded' | 'healthy'
+  failureCount: number
+  lastAttemptedAt: string
+  lastSucceededAt?: string
+  error?: string
+}
+
+export type RadarEvent = VulnerabilityEvent | CompatibilityEvent | SourceHealthEvent
 
 export interface StoredVulnerabilityMatch {
   key: string
@@ -159,11 +180,18 @@ export interface StoredCompatibilityMatch {
   event: CompatibilityEvent
 }
 
+export interface StoredSourceHealthMatch {
+  key: string
+  event: SourceHealthEvent
+}
+
 export interface RadarState {
   schema: typeof RADAR_STATE_SCHEMA
   activeVulnerabilities: Record<string, StoredVulnerabilityMatch>
   activeCompatibility: Record<string, StoredCompatibilityMatch>
   pendingAnalysisTasks: AnalysisTask[]
+  sourceHealth?: Record<string, SourceHealthStatus>
+  activeSourceHealth?: Record<string, StoredSourceHealthMatch>
 }
 
 export interface AnalysisTask {

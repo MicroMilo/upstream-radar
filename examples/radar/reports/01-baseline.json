@@ -9,6 +9,14 @@
     "schema": "upstream-radar.radar-state/v1alpha1",
     "activeVulnerabilities": {},
     "activeCompatibility": {},
-    "pendingAnalysisTasks": []
+    "pendingAnalysisTasks": [],
+    "sourceHealth": {
+      "osv": {
+        "lastAttemptedAt": "2026-08-14T00:30:00.000Z",
+        "lastSucceededAt": "2026-08-14T00:30:00.000Z",
+        "consecutiveFailures": 0
+      }
+    },
+    "activeSourceHealth": {}
   }
 }

@@ -35,7 +35,9 @@ export function createAnalysisTask(event: RadarEvent): AnalysisTask {
 export function renderAgentAnalysisPrompt(task: AnalysisTask): string {
   const focus = task.event.kind === 'compatibility'
     ? '判断这个候选升级会不会破坏当前项目，定位受影响的 API、配置或运行环境，并给出最小迁移与验证方案。'
-    : '判断该漏洞的触发条件在当前项目中是否成立，定位实际调用和数据入口，并给出当前项目可以执行的修复方案。'
+    : task.event.kind === 'source-health'
+      ? '确认监控源当前不可用对告警覆盖造成的影响，向项目负责人说明不要把“没有新事件”当作安全结论，并给出恢复该监控源的最小行动。'
+      : '判断该漏洞的触发条件在当前项目中是否成立，定位实际调用和数据入口，并给出当前项目可以执行的修复方案。'
 
   return `[UPSTREAM RADAR ANALYSIS TASK]
 

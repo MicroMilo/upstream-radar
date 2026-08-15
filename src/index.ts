@@ -70,8 +70,12 @@ export {
   type ProjectReference,
   type RadarEvent,
   type RadarConfig,
+  type RadarSource,
   type RadarSeverity,
   type RadarState,
+  type SourceHealthEvent,
+  type SourceHealthStatus,
+  type StoredSourceHealthMatch,
   type VulnerabilityAdvisory,
   type VulnerabilityEvent,
 } from './radar-types.js'

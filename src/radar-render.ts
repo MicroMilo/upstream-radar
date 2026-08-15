@@ -47,8 +47,28 @@ function renderCompatibility(event: CompatibilityEvent): string[] {
   return lines
 }
 
+function renderSourceHealth(event: Extract<RadarEvent, { kind: 'source-health' }>): string[] {
+  const title = event.change === 'resolved' ? 'Source recovered' : 'Monitoring source degraded'
+  const lines = [
+    `[SOURCE HEALTH][${event.change.toUpperCase()}] ${title}`,
+    `Project: ${display(event.project.name)} (${display(event.project.id)})`,
+    `Source: ${display(event.source)}`,
+    `Consecutive failures: ${event.failureCount}`,
+    `Last attempted: ${display(event.lastAttemptedAt)}`,
+  ]
+  if (event.lastSucceededAt !== undefined) lines.push(`Last succeeded: ${display(event.lastSucceededAt)}`)
+  if (event.error !== undefined) lines.push(`Error: ${display(event.error)}`)
+  lines.push(`Route: ${event.route.owner === undefined ? '(no owner)' : display(event.route.owner)} via ${event.route.channels.map(item => display(item)).join(', ')}`)
+  return lines
+}
+
 export function renderRadarEvent(event: RadarEvent): string {
-  return `${(event.kind === 'compatibility' ? renderCompatibility(event) : renderVulnerability(event)).join('\n')}\n`
+  const lines = event.kind === 'compatibility'
+    ? renderCompatibility(event)
+    : event.kind === 'source-health'
+      ? renderSourceHealth(event)
+      : renderVulnerability(event)
+  return `${lines.join('\n')}\n`
 }
 
 export function renderRadarEvents(events: readonly RadarEvent[]): string {

@@ -177,6 +177,15 @@
           "reasoning_summary": "short explanation separating deterministic facts from model analysis"
         }
       }
-    ]
+    ],
+    "sourceHealth": {
+      "osv": {
+        "lastAttemptedAt": "2026-08-14T05:00:00.000Z",
+        "consecutiveFailures": 1,
+        "lastSucceededAt": "2026-08-14T01:01:00.000Z",
+        "lastError": "simulated OSV timeout"
+      }
+    },
+    "activeSourceHealth": {}
   }
 }

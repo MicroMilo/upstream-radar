@@ -56,9 +56,9 @@ function safeMessage(error: unknown): string {
 
 function taskSummary(task: AnalysisTask): string {
   const project = task.event.project.name.slice(0, 60)
-  return task.event.kind === 'compatibility'
-    ? `Compatibility change for ${project}`
-    : `${task.event.kind === 'malware' ? 'Malicious package' : 'Vulnerability'} for ${project}`
+  if (task.event.kind === 'compatibility') return `Compatibility change for ${project}`
+  if (task.event.kind === 'source-health') return `Monitoring source degraded for ${project}`
+  return `${task.event.kind === 'malware' ? 'Malicious package' : 'Vulnerability'} for ${project}`
 }
 
 export function createDshRadarMessage(task: AnalysisTask): DshRadarMessage {
