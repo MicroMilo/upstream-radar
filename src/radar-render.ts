@@ -56,6 +56,29 @@ function renderCompatibility(event: CompatibilityEvent): string[] {
   for (const signal of event.signals) {
     lines.push(`  [${signal.confidence.toUpperCase()}] ${display(signal.code)}: ${display(signal.summary)}`)
   }
+  if (event.upgradePath !== undefined) {
+    if (event.upgradePath.firstCandidate === undefined) {
+      lines.push(`Upgrade path: no candidate without a deterministic blocker among ${event.upgradePath.evaluated} newer versions.`)
+    } else {
+      lines.push(`First candidate without a deterministic blocker: ${packageLabel(event.upgradePath.firstCandidate.candidate)} (still requires project analysis)`)
+      if (event.upgradePath.firstCandidate.signals.length > 0) {
+        lines.push('First-candidate signals:')
+        for (const signal of event.upgradePath.firstCandidate.signals) {
+          lines.push(`  [${signal.confidence.toUpperCase()}] ${display(signal.code)}: ${display(signal.summary)}`)
+        }
+      }
+    }
+    lines.push(`Upgrade candidates evaluated: ${event.upgradePath.evaluated}; deterministic blockers: ${event.upgradePath.blockedCount}`)
+    if (event.upgradePath.blocked.length > 0) {
+      lines.push('Blocked candidate samples:')
+      for (const blocked of event.upgradePath.blocked) {
+        const reasons = blocked.signals
+          .filter(signal => signal.confidence === 'confirmed' || signal.confidence === 'strong')
+          .map(signal => display(signal.code))
+        lines.push(`  ${packageLabel(blocked.candidate)}: ${reasons.length === 0 ? 'deterministic blocker' : reasons.join(', ')}`)
+      }
+    }
+  }
   if (event.releaseNotesUrl !== undefined) lines.push(`Release notes: ${display(event.releaseNotesUrl)}`)
   lines.push(`Route: ${event.route.owner === undefined ? '(no owner)' : display(event.route.owner)} via ${event.route.channels.map(item => display(item)).join(', ')}`)
   return lines

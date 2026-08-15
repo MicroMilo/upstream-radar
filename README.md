@@ -91,7 +91,7 @@ That incident becomes a plugin-originated DSH notice. It is not copied into a ge
 | Upstream signal | Radar proves deterministically | DSH Agent investigates |
 | --- | --- | --- |
 | Vulnerability or malicious package | affected `name@version`, every installed path, fixed versions, incident state | whether project code reaches it, attacker input can reach it, and the least disruptive fix |
-| Candidate npm release | version boundary and Node.js, peer, export, entrypoint, bundle, and dependency changes | which APIs or Cordis configuration would break and what migration is appropriate |
+| Candidate npm release | version boundary and Node.js, peer, export, entrypoint, bundle, and dependency changes; when possible, the first newer version without a deterministic blocker | which APIs or Cordis configuration would break and what migration is appropriate; the first candidate is never treated as a safety certificate |
 
 ## Install in DSH
 

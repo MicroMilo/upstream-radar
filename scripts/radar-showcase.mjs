@@ -111,10 +111,20 @@ await save('03-vulnerability-dsh-task.txt', vulnerabilityPrompt)
 heading(4, 'A plugin update appears: detect compatibility and breaking-change signals')
 const previous = parsePackageManifestSnapshot(await json('plugin-before.json'))
 const candidate = parsePackageManifestSnapshot(await json('plugin-candidate.json'))
+const intermediate = {
+  ...structuredClone(previous),
+  version: '1.1.0',
+}
+const blockedIntermediate = {
+  ...structuredClone(previous),
+  version: '1.2.0',
+  engines: { node: '>=24' },
+}
 const releaseNotes = await readFile(join(fixtureDirectory, 'release-notes.txt'), 'utf8')
 const compatibility = assessCompatibilityChange(config.projects[0], {
   previous,
   candidate,
+  upgradeCandidates: [intermediate, blockedIntermediate, candidate],
   releaseNotes,
   releaseNotesUrl: 'https://github.com/acme/plugin/releases/tag/v2.0.0',
   detectedAt: '2026-08-14T02:00:00.000Z',

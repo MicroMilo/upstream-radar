@@ -21,6 +21,37 @@ function validAffectedSources(value: unknown): boolean {
   return new Set(value).size === value.length && value.every(item => typeof item === 'string' && allowed.has(item))
 }
 
+function validCompatibilityUpgradeCandidate(value: unknown): boolean {
+  const candidate = asRecord(value)
+  const coordinate = asRecord(candidate?.candidate)
+  const signals = candidate?.signals
+  if (coordinate?.ecosystem !== 'npm'
+    || typeof coordinate.name !== 'string' || coordinate.name.length === 0 || coordinate.name.length > 512
+    || typeof coordinate.version !== 'string' || coordinate.version.length === 0 || coordinate.version.length > 512
+    || !Array.isArray(signals) || signals.length > 64) return false
+  return signals.every(rawSignal => {
+    const signal = asRecord(rawSignal)
+    return typeof signal?.code === 'string' && signal.code.length > 0 && signal.code.length <= 256
+      && (signal.confidence === 'confirmed' || signal.confidence === 'strong' || signal.confidence === 'needs-analysis')
+      && typeof signal.summary === 'string' && signal.summary.length <= 2_048
+      && (signal.before === undefined || (typeof signal.before === 'string' && signal.before.length <= 2_048))
+      && (signal.after === undefined || (typeof signal.after === 'string' && signal.after.length <= 2_048))
+  })
+}
+
+function validCompatibilityUpgradePath(value: unknown): boolean {
+  if (value === undefined) return true
+  const path = asRecord(value)
+  const evaluated = path?.evaluated
+  const blockedCount = path?.blockedCount
+  const blocked = path?.blocked
+  if (typeof evaluated !== 'number' || !Number.isSafeInteger(evaluated) || evaluated < 0 || evaluated > 1_000_000
+    || typeof blockedCount !== 'number' || !Number.isSafeInteger(blockedCount) || blockedCount < 0 || blockedCount > evaluated
+    || !Array.isArray(blocked) || blocked.length > 8
+    || (path?.firstCandidate !== undefined && !validCompatibilityUpgradeCandidate(path.firstCandidate))) return false
+  return blocked.every(validCompatibilityUpgradeCandidate)
+}
+
 export function parseRadarState(value: unknown): RadarState {
   const root = asRecord(value)
   if (root?.schema !== RADAR_STATE_SCHEMA) throw new Error('radar state has an unsupported schema')
@@ -62,6 +93,7 @@ export function parseRadarState(value: unknown): RadarState {
       throw new Error('radar state contains an invalid pending analysis task')
     }
     if (!validAffectedSources(event.affectedSources)) throw new Error('radar state contains invalid affected package origins')
+    if (!validCompatibilityUpgradePath(event.upgradePath)) throw new Error('radar state contains an invalid compatibility upgrade path')
   }
   if (Object.keys(active).length > 1_000_000) throw new Error('radar state exceeds the active match limit')
   if (Object.keys(activeCompatibility).length > 1_000_000) {
@@ -82,7 +114,8 @@ export function parseRadarState(value: unknown): RadarState {
     const stored = asRecord(rawStored)
     const event = asRecord(stored?.event)
     if (stored?.key !== key || event?.schema !== RADAR_EVENT_SCHEMA
-      || event.kind !== 'compatibility' || event.incidentId !== key) {
+      || event.kind !== 'compatibility' || event.incidentId !== key
+      || !validCompatibilityUpgradePath(event.upgradePath)) {
       throw new Error(`radar state contains an invalid compatibility match: ${key.slice(0, 256)}`)
     }
   }

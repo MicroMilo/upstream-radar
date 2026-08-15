@@ -72,6 +72,36 @@ describe('compatibility change assessment', () => {
     assert.ok(result.signals.some(signal => signal.code === 'dsh-bundle-changed'))
   })
 
+  it('finds the first intermediate candidate without a deterministic blocker', () => {
+    const result = assessCompatibilityChange(inventory, {
+      previous: {
+        name: 'plugin',
+        version: '1.0.0',
+        main: './dist/index.js',
+        engines: { node: '>=22' },
+      },
+      candidate: {
+        name: 'plugin',
+        version: '2.0.0',
+        main: './dist/plugin.js',
+        engines: { node: '>=24' },
+      },
+      upgradeCandidates: [
+        { name: 'plugin', version: '1.1.0', main: './dist/index.js', engines: { node: '>=22' } },
+        { name: 'plugin', version: '1.2.0', main: './dist/index.js', engines: { node: '>=24' } },
+        { name: 'plugin', version: '2.0.0', main: './dist/plugin.js', engines: { node: '>=24' } },
+      ],
+      detectedAt: '2026-08-14T04:00:00.000Z',
+    })
+
+    assert.ok(result?.upgradePath)
+    assert.equal(result.upgradePath.evaluated, 3)
+    assert.equal(result.upgradePath.blockedCount, 2)
+    assert.equal(result.upgradePath.firstCandidate?.candidate.version, '1.1.0')
+    assert.deepEqual(result.upgradePath.blocked.map(item => item.candidate.version), ['1.2.0', '2.0.0'])
+    assert.equal(result.upgradePath.firstCandidate?.signals.length, 0)
+  })
+
   it('does not treat an equal or older semantic version as a candidate upgrade', () => {
     const result = assessCompatibilityChange(inventory, {
       previous: { name: 'plugin', version: '2.0.0', main: './current.js' },

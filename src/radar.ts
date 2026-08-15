@@ -91,6 +91,7 @@ function compatibilityEventChanged(previous: RadarEvent, current: RadarEvent): b
     || JSON.stringify(previous.installed) !== JSON.stringify(current.installed)
     || JSON.stringify(previous.candidate) !== JSON.stringify(current.candidate)
     || JSON.stringify(previous.signals) !== JSON.stringify(current.signals)
+    || JSON.stringify(previous.upgradePath) !== JSON.stringify(current.upgradePath)
     || previous.releaseNotes !== current.releaseNotes
     || previous.releaseNotesUrl !== current.releaseNotesUrl
 }
@@ -403,6 +404,7 @@ export async function pollRadar(
             previous: observation.previous,
             candidate: observation.candidate,
             detectedAt: checkedAt,
+            ...(observation.upgradeCandidates === undefined ? {} : { upgradeCandidates: observation.upgradeCandidates }),
             ...releaseNotesInput,
             ...releaseNotesUrlInput,
           })

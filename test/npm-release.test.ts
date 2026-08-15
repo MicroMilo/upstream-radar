@@ -26,6 +26,26 @@ describe('npm release source', () => {
     assert.equal(change?.publishedAt, '2026-08-14T02:00:00.000Z')
     assert.equal(change?.repository, 'git+https://github.com/acme/plugin.git')
     assert.equal(change?.candidateStatus, 'newer')
+    assert.deepEqual(change?.upgradeCandidates?.map(item => item.version), ['2.0.0'])
+  })
+
+  it('returns newer exact manifests in ascending order without installing them', async () => {
+    const fetcher = async (): Promise<Response> => Response.json({
+      'dist-tags': { latest: '2.0.0' },
+      versions: {
+        '1.0.0': { name: 'plugin', version: '1.0.0' },
+        '1.2.0': { name: 'plugin', version: '1.2.0' },
+        '1.1.0': { name: 'plugin', version: '1.1.0' },
+        '2.0.0': { name: 'plugin', version: '2.0.0' },
+      },
+    })
+    const client = new NpmReleaseClient({ fetch: fetcher })
+    const result = await client.query([{ ecosystem: 'npm', name: 'plugin', version: '1.0.0' }])
+    assert.deepEqual(result.get('npm:plugin@1.0.0')?.upgradeCandidates?.map(item => item.version), [
+      '1.1.0',
+      '1.2.0',
+      '2.0.0',
+    ])
   })
 
   it('marks a regressed npm latest tag as older instead of an upgrade', async () => {

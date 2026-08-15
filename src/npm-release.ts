@@ -23,6 +23,8 @@ export interface NpmReleaseObservation {
   latestVersion: string
   previous: PackageManifestSnapshot
   candidate: PackageManifestSnapshot
+  /** Exact npm manifests newer than the installed version, sorted ascending. */
+  upgradeCandidates?: PackageManifestSnapshot[]
   /** Whether npm's latest tag is newer than the installed exact version. */
   candidateStatus?: NpmReleaseCandidateStatus
   publishedAt?: string
@@ -35,6 +37,27 @@ function candidateStatus(candidate: string, installed: string): NpmReleaseCandid
   if (comparison > 0) return 'newer'
   if (comparison < 0) return 'older'
   return 'same'
+}
+
+function upgradeCandidates(
+  name: string,
+  versions: Record<string, unknown>,
+  installed: string,
+): PackageManifestSnapshot[] {
+  return Object.entries(versions)
+    .flatMap(([version, raw]) => {
+      const comparison = compareSemverValues(version, installed)
+      return comparison === undefined || comparison <= 0 ? [] : [[version, raw] as const]
+    })
+    .sort(([left], [right]) => (compareSemverValues(left, right) ?? 0))
+    .flatMap(([version, raw]) => {
+      try {
+        const parsed = parsePackageManifestSnapshot(raw)
+        return parsed.name === name && parsed.version === version ? [parsed] : []
+      } catch {
+        return []
+      }
+    })
 }
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
@@ -153,12 +176,16 @@ export class NpmReleaseClient {
           throw new Error(`npm installed manifest identity mismatch for ${name}@${installed.version}`)
         }
         const publishedAt = typeof times?.[latestVersion] === 'string' ? times[latestVersion] : undefined
+        const status = candidateStatus(latestVersion, installed.version)
         result.set(packageKey(installed), {
           installed: { ...installed },
           latestVersion,
           previous,
           candidate,
-          candidateStatus: candidateStatus(latestVersion, installed.version),
+          ...(status === 'newer'
+            ? { upgradeCandidates: upgradeCandidates(name, versions, installed.version) }
+            : {}),
+          candidateStatus: status,
           ...(publishedAt === undefined ? {} : { publishedAt }),
           ...(repository === undefined ? {} : { repository }),
         })
