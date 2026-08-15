@@ -183,18 +183,18 @@ pnpm run try:dsh
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.22.0
+  - uses: MicroMilo/upstream-radar@v0.22.1
     with:
       config: upstream-radar.config.json
       fail-on: high
 ```
 
-这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。每次运行彼此独立；达到阈值时返回 `2`，运行或漏洞源出错时返回 `1`。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.22.0` 的发布标签，并根据团队策略固定 checkout Action。
+这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。每次运行彼此独立；达到阈值时返回 `2`，运行或漏洞源出错时返回 `1`。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.22.1` 的发布标签，并根据团队策略固定 checkout Action。
 
 调用方需要先 checkout 仓库。这个 Action 不会安装项目依赖，也不会执行项目的 lifecycle script；它只读取提交到仓库的依赖图并查询配置中的上游漏洞源。如果需要完全显式的底层命令，等价写法是：
 
 ```bash
-pnpm dlx --package=upstream-radar@0.22.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.22.1 upstream-radar radar check \
   ./upstream-radar.config.json --frozen --state :memory: --fail-on high --json
 ```
 

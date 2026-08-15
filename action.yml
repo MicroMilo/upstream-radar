@@ -15,13 +15,13 @@ inputs:
     required: false
     default: high
   state:
-    description: Radar state path; use :memory: for an independent CI check.
+    description: 'Radar state path; use :memory: for an independent CI check.'
     required: false
     default: ':memory:'
   version:
     description: Exact upstream-radar npm version to execute.
     required: false
-    default: 0.22.0
+    default: 0.22.1
   node-version:
     description: Node.js version used to run the CLI.
     required: false

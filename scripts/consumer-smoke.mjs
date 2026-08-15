@@ -5,10 +5,11 @@ import { dirname, resolve } from 'node:path'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const packageJson = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8'))
+const radarVersion = process.env.UPSTREAM_RADAR_CONSUMER_VERSION ?? packageJson.version
 const command = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
 const args = [
   'dlx',
-  `--package=upstream-radar@${packageJson.version}`,
+  `--package=upstream-radar@${radarVersion}`,
   'upstream-radar',
   'radar',
   'check',
@@ -45,7 +46,7 @@ if (result.sourceErrors.length > 0) {
 }
 
 console.log(JSON.stringify({
-  radarVersion: packageJson.version,
+  radarVersion,
   plugin: 'dsh-cloudflare-browser-run@0.1.1',
   packagesQueried: result.packagesQueried,
   releasePackagesQueried: result.releasePackagesQueried,
