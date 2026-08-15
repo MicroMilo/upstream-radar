@@ -2,6 +2,12 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.6.1] - 2026-08-16
+
+### Fixed
+
+- Make the new CLI examples directly runnable from a fresh setup with `pnpm dlx upstream-radar@latest` instead of assuming a global binary.
+
 ## [0.6.0] - 2026-08-16
 
 ### Added
@@ -80,3 +86,4 @@ All notable changes to Upstream Radar are documented here.
 [0.5.2]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.2
 [0.5.3]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.3
 [0.6.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.0
+[0.6.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.1
