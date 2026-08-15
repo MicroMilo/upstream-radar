@@ -178,6 +178,7 @@ describe('DSH profile initialization', () => {
       }))
 
       const config = await createRadarConfigFromDshProfile({ profileDirectory: profile })
+      assert.equal(config.projects[0]?.project.workspace, '.')
       assert.equal(config.projects[0]?.plugins[0]?.graph.source, 'installed-node-modules')
       assert.equal(config.projects[0]?.plugins[0]?.graph.nodes.length, 2)
     } finally {

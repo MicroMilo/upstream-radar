@@ -170,7 +170,10 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
   const profileDirectory = resolve(options.profileDirectory)
   const bundles = await readDshProfileBundles(profileDirectory)
 
-  const workspace = options.workspace ?? process.cwd()
+  // Keep the generated inventory portable by default. DSH is expected to be
+  // started from the project root; callers that launch it elsewhere can pass
+  // an explicit absolute workspace path.
+  const workspace = options.workspace ?? '.'
   const projectId = options.projectId ?? defaultProjectId(workspace)
   const projectName = options.projectName ?? defaultProjectName(workspace)
   const inspect = options.inspect ?? inspectNpmPackage

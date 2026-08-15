@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
@@ -106,6 +106,8 @@ describe('CLI option parsing', () => {
       assert.ok(doctorAt >= 0)
       assert.ok(dshAt > doctorAt)
       assert.match(result.stdout, /--patch .*upstream-radar\.dsh\.yml/)
+      const savedConfig = JSON.parse(await readFile(config, 'utf8')) as { projects: Array<{ project: { workspace?: string } }> }
+      assert.equal(savedConfig.projects[0]?.project.workspace, '.')
     } finally {
       await rm(root, { recursive: true, force: true })
     }

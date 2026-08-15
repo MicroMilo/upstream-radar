@@ -16,6 +16,7 @@
 - [x] Auto-select the only DSH profile with third-party bundles and provide a network-free first-run status snapshot.
 - [x] Provide a network-free doctor command for DSH bundle registration, overlay/config alignment, state readability, and dependency coverage.
 - [x] Show bounded active-incident paths, candidate signals, and next-step guidance in the network-free status command.
+- [x] Make the generated project workspace portable by default so the reviewed inventory can be committed and reused.
 
 ## Milestone 1 — compatibility radar
 

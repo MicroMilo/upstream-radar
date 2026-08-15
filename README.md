@@ -35,7 +35,6 @@ dsh plugin --profile web add upstream-radar@latest
 pnpm dlx --package=upstream-radar@latest upstream-radar init \
   --profile web \
   --project-name "My DSH project" \
-  --workspace "$PWD" \
   --output ./upstream-radar.config.json \
   --dsh-patch ./upstream-radar.dsh.yml
 pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.config.json \
@@ -130,12 +129,11 @@ Generate the inventory from the DSH profile instead of writing the dependency gr
 ```bash
 pnpm dlx --package=upstream-radar@latest upstream-radar init \
   --project-name "My DSH project" \
-  --workspace "$PWD" \
   --output ./upstream-radar.config.json \
   --dsh-patch ./upstream-radar.dsh.yml
 ```
 
-The initializer reads the profile's actual third-party bundles and follows the installed `node_modules` tree exposed by that profile, including duplicate versions, overrides, and local package-manager choices. It reads manifests only: it does not import plugin code, run lifecycle scripts, start DSH, or enable polling. Review both generated files, then run:
+The initializer reads the profile's actual third-party bundles and follows the installed `node_modules` tree exposed by that profile, including duplicate versions, overrides, and local package-manager choices. By default it records the workspace as `.` so the config can be committed and reused on another machine; start DSH from the project root. Pass `--workspace <absolute-path>` only when DSH is launched elsewhere. It reads manifests only: it does not import plugin code, run lifecycle scripts, start DSH, or enable polling. Review both generated files, then run:
 
 ```bash
 dsh --profile web --patch ./upstream-radar.dsh.yml --dump-config
@@ -196,7 +194,7 @@ If your team wants a scheduled CI gate before wiring a machine to a live DSH pro
 
 ```yaml
 run: >-
-  pnpm dlx --package=upstream-radar@0.20.0 upstream-radar
+  pnpm dlx --package=upstream-radar@0.21.0 upstream-radar
   radar check ./upstream-radar.config.json
   --frozen --state :memory: --fail-on high --json
 ```
@@ -298,6 +296,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - durable incident state with current-task replacement and resolution;
 - native DSH bundle installation, startup polling, `agent/created` retry, and plugin-source attribution;
 - automatic selection of the only DSH profile with third-party bundles, plus a network-free `radar status` snapshot;
+- commit-friendly `init` output that records the project workspace as `.` by default;
 - an actionable, network-free `radar status` summary with exact active paths, candidate signals, and next steps;
 - a network-free `doctor` command that checks local DSH registration, overlay/config alignment, state readability, and dependency coverage;
 - compatibility signals for Node.js, peers, exports, entrypoints, bundle paths, dependencies, and version boundaries;

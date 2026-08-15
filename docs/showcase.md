@@ -115,7 +115,7 @@ After three consecutive failed OSV checks, Radar creates one project-routed `sou
 
 ## Scene 9 — onboarding without shell state
 
-`init --dsh-patch ./upstream-radar.dsh.yml` writes the exact inventory and a reviewable DSH overlay. The overlay replaces the bundle's environment-derived paths with explicit config and state files, so the profile can start with one visible command:
+`init --dsh-patch ./upstream-radar.dsh.yml` writes the exact inventory and a reviewable DSH overlay. The inventory records `project.workspace` as `.` by default, so it can be committed without embedding a creator's home directory; run DSH from the project root. The overlay replaces the bundle's environment-derived paths with explicit config and state files, so the profile can start with one visible command:
 
 ```bash
 dsh --profile web --patch ./upstream-radar.dsh.yml
@@ -176,7 +176,7 @@ This is intentionally different from resolving the same package in a fresh npm p
 For a runner that does not have DSH installed, commit the generated config after review and run one frozen check:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.20.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.21.0 upstream-radar radar check \
   ./upstream-radar.config.json \
   --frozen --state :memory: --fail-on high --json
 ```
