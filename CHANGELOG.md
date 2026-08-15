@@ -2,6 +2,13 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.19.3] - 2026-08-16
+
+### Fixed
+
+- Make the first-run README commands explicit about the DSH profile and separate the long-running DSH process from the read-only status check.
+- Make `init` print a version-pinned `doctor` command before the DSH start command, so the next local verification step is visible immediately.
+
 ## [0.19.2] - 2026-08-16
 
 ### Added

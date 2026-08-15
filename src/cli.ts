@@ -420,6 +420,10 @@ async function runInit(args: readonly string[]): Promise<number> {
     force,
   })
   const plugins = config.projects[0]?.plugins ?? []
+  const doctorCommand = `pnpm dlx --package=upstream-radar@${TOOL_VERSION} upstream-radar doctor ${shellQuote(outputPath)} --profile ${shellQuote(resolvedProfile)}${patchPath === undefined ? '' : ` --patch ${shellQuote(patchPath)}`}`
+  const startCommand = patchPath === undefined
+    ? `dsh --profile ${shellQuote(resolvedProfile)}`
+    : `dsh --profile ${shellQuote(resolvedProfile)} --patch ${shellQuote(patchPath)}`
   if (json) {
     process.stdout.write(`${JSON.stringify({ output: outputPath, profile: resolvedProfile, plugins: plugins.map(plugin => ({
       name: plugin.package.name,
@@ -445,9 +449,9 @@ async function runInit(args: readonly string[]): Promise<number> {
       process.stdout.write(`  ${plugin.package.name}@${plugin.package.version} (${plugin.graph.nodes.length} dependency nodes${plugin.graph.source === undefined ? '' : `, ${plugin.graph.source}`}${hostRuntime === 0 ? '' : `, ${hostRuntime} DSH host`}${requiredUnresolved === 0 ? '' : `, ${requiredUnresolved} required unresolved`}${optionalUnresolved === 0 ? '' : `, ${optionalUnresolved} optional absent`})\n`)
     }
     if (patchPath === undefined) {
-      process.stdout.write(`\nReview the generated inventory, then run:\n  export UPSTREAM_RADAR_CONFIG=${shellQuote(outputPath)}\n  export UPSTREAM_RADAR_STATE=${shellQuote(statePath)}\n  dsh --profile ${shellQuote(resolvedProfile)}\n`)
+      process.stdout.write(`\nReview the generated inventory, then verify the wiring:\n  ${doctorCommand}\n\nStart DSH (keep it running):\n  export UPSTREAM_RADAR_CONFIG=${shellQuote(outputPath)}\n  export UPSTREAM_RADAR_STATE=${shellQuote(statePath)}\n  ${startCommand}\n`)
     } else {
-      process.stdout.write(`Created ${patchPath}\n\nReview the generated inventory and DSH overlay, then run:\n  dsh --profile ${shellQuote(resolvedProfile)} --patch ${shellQuote(patchPath)}\n`)
+      process.stdout.write(`Created ${patchPath}\n\nReview the generated inventory and DSH overlay, then verify the wiring:\n  ${doctorCommand}\n\nStart DSH (keep it running):\n  ${startCommand}\n`)
     }
   }
   return 0

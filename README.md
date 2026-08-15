@@ -26,20 +26,31 @@
 
 ## Try it in 60 seconds
 
-Use a DSH profile that already contains at least one third-party bundle. If DSH has only one such profile, `init` can find it for you:
+Use a DSH profile that already contains at least one third-party bundle. Replace `web` with your profile name. The commands below are split between two terminals because DSH normally stays running:
 
 ```bash
+# Terminal 1
 dsh plugin --profile web add upstream-radar@latest
 pnpm dlx --package=upstream-radar@latest upstream-radar init \
+  --profile web \
   --project-name "My DSH project" \
   --workspace "$PWD" \
   --output ./upstream-radar.config.json \
   --dsh-patch ./upstream-radar.dsh.yml
+pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.config.json \
+  --profile web \
+  --patch ./upstream-radar.dsh.yml
 dsh --profile web --patch ./upstream-radar.dsh.yml
+```
+
+After DSH is running, use a second terminal for the read-only status check:
+
+```bash
+# Terminal 2
 pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-radar.config.json
 ```
 
-The initializer writes a reviewable inventory and an explicit DSH overlay. Review both files, start the same profile with `--patch`, then use `radar status` to confirm the first run without another network request. If more than one DSH profile has third-party bundles, pass `--profile <name>` explicitly. Read the [full DSH setup](#install-in-dsh) for the legacy environment-variable path, profile boundaries, and the real runtime proof.
+The initializer writes a reviewable inventory and an explicit DSH overlay. `doctor` verifies the local wiring before DSH starts; `radar status` confirms the first completed check without another network request. Read the [full DSH setup](#install-in-dsh) for the legacy environment-variable path, profile boundaries, and the real runtime proof.
 
 If you want to try the monitoring loop without booting a DSH profile, run one cycle from a reviewed inventory:
 
