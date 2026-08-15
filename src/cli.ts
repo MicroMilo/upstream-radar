@@ -15,6 +15,7 @@ import { NpmReleaseClient } from './npm-release.js'
 import { OsvClient } from './osv.js'
 import { verdictAtLeast } from './policy.js'
 import { emptyRadarState, pollRadar } from './radar.js'
+import { evaluateRadarPolicy, RADAR_FAIL_THRESHOLDS, renderRadarPolicy, type RadarFailThreshold } from './radar-policy.js'
 import { renderRadarEvents } from './radar-render.js'
 import { loadRadarState, saveRadarState } from './radar-state.js'
 import { createRadarStatus, renderRadarStatus } from './radar-status.js'
@@ -24,6 +25,7 @@ import type { Verdict } from './types.js'
 import { TOOL_VERSION } from './version.js'
 
 const VALID_THRESHOLDS = new Set<Verdict | 'never'>(['warn', 'review', 'block', 'never'])
+const VALID_RADAR_THRESHOLDS = new Set<RadarFailThreshold>(RADAR_FAIL_THRESHOLDS)
 
 function safeErrorMessage(value: string): string {
   return value.replace(/[\u0000-\u001f\u007f-\u009f]/g, character => (
@@ -43,9 +45,9 @@ Usage:
   upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
-  upstream-radar radar check <config.json> [--state <state.json>] [--json]
-  upstream-radar radar watch <config.json> [--state <state.json>] [--interval <seconds>] [--once] [--json]
-  upstream-radar radar status <config.json> [--state <state.json>] [--json]
+  upstream-radar radar check <config.json> [--state <state.json>] [--frozen] [--fail-on <severity>] [--json]
+  upstream-radar radar watch <config.json> [--state <state.json>] [--interval <seconds>] [--once] [--frozen] [--fail-on <severity>] [--json]
+  upstream-radar radar status <config.json> [--state <state.json>] [--fail-on <severity>] [--json]
   upstream-radar radar compare <config.json> <before.json> <candidate.json> [--notes <release-notes.txt>] [--json]
   upstream-radar task list <state.json> [--json]
   upstream-radar task show <state.json> [task-id] [--json]
@@ -68,6 +70,8 @@ Options:
   --osv-base-url <url> alternate HTTPS OSV API base URL
   --interval <seconds> watch interval from 300 to 86400 seconds (default: 1800)
   --once               run one watch cycle and exit (useful for CI and demos)
+  --frozen             radar check/watch: use the reviewed graph in config without reading a local DSH profile
+  --fail-on <value>    scan/inspect verdict or radar severity: unknown|info|low|medium|high|critical|never
   --notes <path>       release notes used as untrusted compatibility evidence
   --profile <name>     DSH profile for init or doctor (init auto-selects the only candidate when omitted)
   --output <path>      init output path (default: ./upstream-radar.config.json)
@@ -75,11 +79,10 @@ Options:
   --patch <path>       DSH overlay to verify with doctor
   --force              allow init to replace an existing output file
   --json               emit the canonical JSON report
-  --fail-on <verdict>  CI threshold; default is review
 
 Exit codes:
-  0  scan completed and policy threshold was not reached
-  1  operational or input error
+  0  completed without an operational error or configured policy match
+  1  operational, source, or input error
   2  configured policy threshold was reached
 `
 }
@@ -185,6 +188,8 @@ async function runRadar(args: readonly string[]): Promise<number> {
   let intervalProvided = false
   let once = false
   let deepCandidates = true
+  let frozen = false
+  let failOn: RadarFailThreshold = 'never'
   for (let index = 2; index < args.length; index += 1) {
     const argument = args[index]
     if (argument === '--json') {
@@ -193,14 +198,22 @@ async function runRadar(args: readonly string[]): Promise<number> {
       once = true
     } else if (argument === '--no-deep-candidates') {
       deepCandidates = false
+    } else if (argument === '--frozen') {
+      frozen = true
     } else if (argument === '--state' || argument === '--osv-base-url' || argument === '--registry'
-      || argument === '--notes' || argument === '--interval') {
+      || argument === '--notes' || argument === '--interval' || argument === '--fail-on') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--state') statePath = value
       else if (argument === '--osv-base-url') osvBaseUrl = value
       else if (argument === '--registry') registry = value
       else if (argument === '--notes') notesPath = value
+      else if (argument === '--fail-on') {
+        if (!VALID_RADAR_THRESHOLDS.has(value as RadarFailThreshold)) {
+          throw new Error(`invalid radar --fail-on value: ${value}`)
+        }
+        failOn = value as RadarFailThreshold
+      }
       else {
         intervalProvided = true
         const parsed = Number(value)
@@ -218,11 +231,13 @@ async function runRadar(args: readonly string[]): Promise<number> {
   }
 
   const readConfig = async () => parseRadarConfig(await readJson(configPath))
-  const readConfigForPoll = async () => refreshRadarConfigFromConfiguredProfile(await readConfig())
+  const readConfigForPoll = async () => frozen
+    ? readConfig()
+    : refreshRadarConfigFromConfiguredProfile(await readConfig())
   if (subcommand === 'status') {
     if (positional.length > 0 || notesPath !== undefined || once || intervalProvided
-      || osvBaseUrl !== undefined || registry !== undefined || !deepCandidates || statePath === ':memory:') {
-      throw new Error('radar status only accepts --state and --json options')
+      || osvBaseUrl !== undefined || registry !== undefined || !deepCandidates || frozen || statePath === ':memory:') {
+      throw new Error('radar status only accepts --state, --fail-on and --json options')
     }
     const config = await readConfig()
     const stateFile = statePath ?? `${resolve(configPath)}.state.json`
@@ -233,8 +248,16 @@ async function runRadar(args: readonly string[]): Promise<number> {
       stateFile: resolve(stateFile),
       stateExists,
     })
-    process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderRadarStatus(report))
-    return report.monitoring === 'degraded' || report.coverage === 'incomplete' ? 1 : 0
+    const policy = evaluateRadarPolicy(state, failOn)
+    if (json) {
+      process.stdout.write(failOn === 'never'
+        ? `${JSON.stringify(report, null, 2)}\n`
+        : `${JSON.stringify({ ...report, policy }, null, 2)}\n`)
+    } else {
+      process.stdout.write(`${renderRadarStatus(report)}${failOn === 'never' ? '' : renderRadarPolicy(policy)}`)
+    }
+    if (report.monitoring === 'degraded' || report.coverage === 'incomplete') return 1
+    return policy.status === 'fail' ? 2 : 0
   }
   const osv = new OsvClient({
     ...(osvBaseUrl === undefined ? {} : { baseUrl: osvBaseUrl }),
@@ -254,10 +277,16 @@ async function runRadar(args: readonly string[]): Promise<number> {
     if (statePath !== ':memory:') await saveRadarState(stateFile, result.state)
     return result
   }
-  const writeCheckResult = (result: Awaited<ReturnType<typeof pollRadar>>, compactJson = false): void => {
-    process.stdout.write(json
-      ? `${JSON.stringify(result, null, compactJson ? 0 : 2)}\n`
-      : `${renderRadarEvents(result.events)}${result.sourceErrors.map(error => `Source warning (${error.source}): ${safeErrorMessage(error.message)}\n`).join('')}Prepared ${result.analysisTasks.length} DSH analysis task(s); queried ${result.packagesQueried} exact package versions and ${result.releasePackagesQueried} release streams.\n`)
+  const writeCheckResult = (result: Awaited<ReturnType<typeof pollRadar>>, compactJson = false) => {
+    const policy = evaluateRadarPolicy(result.state, failOn)
+    if (json) {
+      process.stdout.write(failOn === 'never'
+        ? `${JSON.stringify(result, null, compactJson ? 0 : 2)}\n`
+        : `${JSON.stringify({ ...result, policy }, null, compactJson ? 0 : 2)}\n`)
+    } else {
+      process.stdout.write(`${renderRadarEvents(result.events)}${result.sourceErrors.map(error => `Source warning (${error.source}): ${safeErrorMessage(error.message)}\n`).join('')}Prepared ${result.analysisTasks.length} DSH analysis task(s); queried ${result.packagesQueried} exact package versions and ${result.releasePackagesQueried} release streams.\n${failOn === 'never' ? '' : renderRadarPolicy(policy)}`)
+    }
+    return policy
   }
 
   if (subcommand === 'check') {
@@ -265,12 +294,14 @@ async function runRadar(args: readonly string[]): Promise<number> {
       throw new Error('radar check received an option meant for watch or compare')
     }
     const result = await runCheck()
-    writeCheckResult(result)
-    return result.sourceErrors.length === 0 ? 0 : 1
+    const policy = writeCheckResult(result)
+    if (result.sourceErrors.length > 0) return 1
+    return policy.status === 'fail' ? 2 : 0
   }
 
   if (subcommand === 'watch') {
     if (positional.length > 0 || notesPath !== undefined) throw new Error('radar watch received unexpected arguments')
+    if (failOn !== 'never' && !once) throw new Error('radar watch requires --once when --fail-on is used')
     let stopped = false
     let timer: NodeJS.Timeout | undefined
     let wake: (() => void) | undefined
@@ -285,8 +316,9 @@ async function runRadar(args: readonly string[]): Promise<number> {
       do {
         try {
           const result = await runCheck()
-          writeCheckResult(result, true)
+          const policy = writeCheckResult(result, true)
           if (once && result.sourceErrors.length > 0) return 1
+          if (once && policy.status === 'fail') return 2
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : String(error)
           process.stderr.write(`upstream-radar: watch cycle failed: ${safeErrorMessage(message)}\n`)
@@ -308,7 +340,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
     return 0
   }
 
-  if (statePath !== undefined || osvBaseUrl !== undefined || registry !== undefined || once || intervalProvided || !deepCandidates) {
+  if (statePath !== undefined || osvBaseUrl !== undefined || registry !== undefined || once || intervalProvided || !deepCandidates || frozen || failOn !== 'never') {
     throw new Error('radar compare does not accept check or watch options')
   }
   const config = await readConfig()

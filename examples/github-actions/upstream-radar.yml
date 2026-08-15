@@ -1,0 +1,30 @@
+name: Upstream Radar
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 6 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check the reviewed DSH graph
+        run: >-
+          pnpm dlx --package=upstream-radar@0.20.0 upstream-radar
+          radar check ./upstream-radar.config.json
+          --frozen
+          --state :memory:
+          --fail-on high
+          --json

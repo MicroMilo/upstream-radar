@@ -43,6 +43,14 @@ export {
 } from './init.js'
 export { loadRadarState, parseRadarState, saveRadarState } from './radar-state.js'
 export {
+  evaluateRadarPolicy,
+  renderRadarPolicy,
+  RADAR_FAIL_THRESHOLDS,
+  type RadarFailThreshold,
+  type RadarPolicyMatch,
+  type RadarPolicyResult,
+} from './radar-policy.js'
+export {
   createRadarStatus,
   renderRadarStatus,
   RADAR_STATUS_SCHEMA,
