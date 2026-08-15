@@ -12,6 +12,7 @@ import {
   renderAgentAnalysisPrompt,
   renderRadarEvents,
 } from '../dist/src/index.js'
+import { createDshRadarFamilyMessage, groupPendingAnalysisTasks } from '../dist/src/dsh-plugin.js'
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const fixtureDirectory = join(repository, 'examples/radar')
@@ -124,7 +125,41 @@ const compatibilityTask = createAnalysisTask(compatibility)
 await save('04-compatibility-alert.json', compatibility)
 await save('05-compatibility-dsh-task.txt', renderAgentAnalysisPrompt(compatibilityTask))
 
-heading(5, 'Keep one current task per incident, then cancel it when the project catches up')
+heading(5, 'One coordinated DSH runtime update becomes one Agent notice')
+const dshFamilyEvents = [
+  {
+    ...structuredClone(compatibility),
+    id: 'event-dsh-family-agent',
+    incidentId: 'incident-dsh-family-agent',
+    installed: { ecosystem: 'npm', name: '@deepseek-ai/dsh-agent', version: '0.1.0-rc.5' },
+    candidate: { ecosystem: 'npm', name: '@deepseek-ai/dsh-agent', version: '0.2.0' },
+  },
+  {
+    ...structuredClone(compatibility),
+    id: 'event-dsh-family-session',
+    incidentId: 'incident-dsh-family-session',
+    installed: { ecosystem: 'npm', name: '@deepseek-ai/dsh-session', version: '0.1.0-rc.5' },
+    candidate: { ecosystem: 'npm', name: '@deepseek-ai/dsh-session', version: '0.2.0' },
+  },
+]
+const dshFamilyTasks = dshFamilyEvents.map(createAnalysisTask)
+const dshNoticeGroups = groupPendingAnalysisTasks(dshFamilyTasks)
+if (dshNoticeGroups.length !== 1) throw new Error('showcase did not group the DSH family tasks')
+const dshFamilyMessage = createDshRadarFamilyMessage(dshNoticeGroups[0])
+process.stdout.write([
+  `Deterministic compatibility incidents kept in state: ${dshFamilyTasks.length}`,
+  `DSH Agent notices: ${dshNoticeGroups.length}`,
+  `Notice: ${dshFamilyMessage.source.summary}`,
+  '',
+].join('\n'))
+await save('05-dsh-runtime-group.json', {
+  incidentCount: dshFamilyTasks.length,
+  noticeCount: dshNoticeGroups.length,
+  source: dshFamilyMessage.source,
+  prompt: dshFamilyMessage.content[0]?.text,
+})
+
+heading(6, 'Keep one current task per incident, then cancel it when the project catches up')
 const firstCompatibility = await pollRadar(
   config.projects,
   vulnerable.state,
@@ -185,7 +220,7 @@ await save('06-incident-lifecycle.json', {
   },
 })
 
-heading(6, 'A source outage is not a clean bill of health')
+heading(7, 'A source outage is not a clean bill of health')
 const outage = await pollRadar(
   config.projects,
   vulnerable.state,
@@ -199,7 +234,7 @@ process.stdout.write([
 ].join('\n'))
 await save('07-source-outage.json', outage)
 
-heading(7, 'Repeated failures become one routed source-health notice')
+heading(8, 'Repeated failures become one routed source-health notice')
 const healthFirst = await pollRadar(
   config.projects,
   emptyRadarState(),
@@ -241,4 +276,4 @@ await save('08-source-health-lifecycle.json', {
   },
 })
 
-process.stdout.write('\nShowcase complete: feed change -> exact graph match -> project route -> current DSH task -> resolved incident -> source outage -> source-health alert and recovery.\n')
+process.stdout.write('\nShowcase complete: feed change -> exact graph match -> project route -> coordinated DSH notice -> resolved incident -> source outage -> source-health alert and recovery.\n')

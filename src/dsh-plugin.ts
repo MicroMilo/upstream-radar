@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { renderAgentAnalysisPrompt } from './dsh-analysis.js'
+import { renderAgentAnalysisGroupPrompt, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { GitHubReleaseClient } from './github-release.js'
 import { parseRadarConfig } from './inventory.js'
 import { refreshRadarConfigFromDshProfile } from './init.js'
@@ -61,9 +61,42 @@ function safeMessage(error: unknown): string {
 
 function taskSummary(task: AnalysisTask): string {
   const project = task.event.project.name.slice(0, 60)
-  if (task.event.kind === 'compatibility') return `Compatibility change for ${project}`
+  if (task.event.kind === 'compatibility') {
+    const packageName = task.event.installed.name
+    if (packageName === '@deepseek-ai/cordis' || packageName.startsWith('@deepseek-ai/dsh-')) {
+      return `DSH runtime compatibility change for ${project}`
+    }
+    return `Compatibility change for ${project}`
+  }
   if (task.event.kind === 'source-health') return `Monitoring source degraded for ${project}`
   return `${task.event.kind === 'malware' ? 'Malicious package' : 'Vulnerability'} for ${project}`
+}
+
+function isDshRuntimePackage(name: string): boolean {
+  return name === '@deepseek-ai/cordis' || name.startsWith('@deepseek-ai/dsh-')
+}
+
+/** Keep independent state incidents, but combine one project's DSH runtime updates into one Agent notice. */
+export function groupPendingAnalysisTasks(tasks: readonly AnalysisTask[]): AnalysisTask[][] {
+  const groups: AnalysisTask[][] = []
+  const byProject = new Map<string, AnalysisTask[]>()
+  for (const task of tasks) {
+    const event = task.event
+    if (event.kind !== 'compatibility' || !isDshRuntimePackage(event.installed.name)) {
+      groups.push([task])
+      continue
+    }
+    const key = `${event.project.id}\0dsh-runtime\0${event.detectedAt}`
+    const existing = byProject.get(key)
+    if (existing !== undefined) {
+      existing.push(task)
+      continue
+    }
+    const group = [task]
+    byProject.set(key, group)
+    groups.push(group)
+  }
+  return groups
 }
 
 export function createDshRadarMessage(task: AnalysisTask): DshRadarMessage {
@@ -80,19 +113,38 @@ export function createDshRadarMessage(task: AnalysisTask): DshRadarMessage {
   })
 }
 
+export function createDshRadarFamilyMessage(tasks: readonly AnalysisTask[]): DshRadarMessage {
+  const first = tasks[0]
+  if (first === undefined) throw new Error('cannot create a DSH family message without tasks')
+  return Object.freeze({
+    id: randomUUID(),
+    role: 'user' as const,
+    content: [{ type: 'text' as const, text: renderAgentAnalysisGroupPrompt(tasks) }],
+    source: {
+      kind: 'plugin' as const,
+      plugin: 'upstream-radar' as const,
+      form: 'notice' as const,
+      summary: `DSH runtime compatibility changes (${tasks.length}) for ${first.event.project.name.slice(0, 60)}`,
+    },
+  })
+}
+
 /** Synchronous follow-up admission is the acknowledgement boundary; failures stay queued. */
 export function deliverPendingAnalysisTasks(state: RadarState, agent: DshAgentLike): RadarState {
-  let delivered = 0
-  for (const task of state.pendingAnalysisTasks) {
+  const deliveredIds = new Set<string>()
+  for (const group of groupPendingAnalysisTasks(state.pendingAnalysisTasks)) {
     try {
-      agent.followup(createDshRadarMessage(task))
-      delivered += 1
+      agent.followup(group.length === 1 ? createDshRadarMessage(group[0]!) : createDshRadarFamilyMessage(group))
+      for (const task of group) deliveredIds.add(task.id)
     } catch {
       break
     }
   }
-  if (delivered === 0) return state
-  return { ...state, pendingAnalysisTasks: state.pendingAnalysisTasks.slice(delivered) }
+  if (deliveredIds.size === 0) return state
+  return {
+    ...state,
+    pendingAnalysisTasks: state.pendingAnalysisTasks.filter(task => !deliveredIds.has(task.id)),
+  }
 }
 
 async function readConfig(path: string): Promise<ReturnType<typeof parseRadarConfig>> {

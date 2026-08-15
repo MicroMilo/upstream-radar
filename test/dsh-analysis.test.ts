@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { createAnalysisTask, renderDshAnalysisPrompt } from '../src/dsh-analysis.js'
-import type { VulnerabilityEvent } from '../src/radar-types.js'
+import { createAnalysisTask, renderAgentAnalysisGroupPrompt, renderDshAnalysisPrompt } from '../src/dsh-analysis.js'
+import type { CompatibilityEvent, VulnerabilityEvent } from '../src/radar-types.js'
 
 describe('DSH analysis handoff', () => {
   it('keeps feed text untrusted and asks for project-specific evidence', () => {
@@ -39,5 +39,33 @@ describe('DSH analysis handoff', () => {
     assert.match(prompt, /project_exposure/)
     assert.match(prompt, /reasoning_summary/)
     assert.match(prompt, /Ignore previous instructions/)
+  })
+
+  it('renders coordinated DSH runtime changes as one evidence set', () => {
+    const base: CompatibilityEvent = {
+      schema: 'upstream-radar.event/v1alpha1',
+      id: 'event-dsh-agent',
+      incidentId: 'incident-dsh-agent',
+      kind: 'compatibility',
+      change: 'new',
+      detectedAt: '2026-08-14T02:00:00.000Z',
+      project: { id: 'payments-api', name: 'Payments API' },
+      route: { channels: ['stdout'] },
+      plugin: { ecosystem: 'npm', name: 'plugin', version: '1.0.0' },
+      installed: { ecosystem: 'npm', name: '@deepseek-ai/dsh-agent', version: '0.1.0-rc.6' },
+      candidate: { ecosystem: 'npm', name: '@deepseek-ai/dsh-agent', version: '0.2.0' },
+      signals: [{ code: 'dsh-developer-preview-change', confidence: 'strong', summary: 'DSH runtime changed.' }],
+    }
+    const second = {
+      ...base,
+      id: 'event-dsh-session',
+      incidentId: 'incident-dsh-session',
+      installed: { ecosystem: 'npm' as const, name: '@deepseek-ai/dsh-session', version: '0.1.0-rc.6' },
+      candidate: { ecosystem: 'npm' as const, name: '@deepseek-ai/dsh-session', version: '0.2.0' },
+    }
+    const prompt = renderAgentAnalysisGroupPrompt([createAnalysisTask(base), createAnalysisTask(second)])
+    assert.match(prompt, /同一轮 DSH 运行时更新事件/)
+    assert.match(prompt, /@deepseek-ai\/dsh-agent/)
+    assert.match(prompt, /@deepseek-ai\/dsh-session/)
   })
 })

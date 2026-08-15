@@ -83,6 +83,8 @@ Compatibility findings use the same lifecycle as vulnerabilities. A stable `inci
 
 An analysis task includes the deterministic event, project location, route, and a fixed output contract. Its prompt says that every advisory, release note, link, package name, and repository string is untrusted data. It requests read-only investigation and requires file, symbol, configuration, or runtime evidence. DSH consumes it natively as a plugin-originated notice. Text and JSON export remain debugging surfaces, not a second product integration.
 
+Compatibility incidents for one project's DSH runtime packages remain separate in durable state, but the native DSH adapter groups them into one Agent notice when they are pending together. Grouping changes delivery noise, not evidence or incident identity.
+
 The DSH bundle performs this transaction:
 
 ```text

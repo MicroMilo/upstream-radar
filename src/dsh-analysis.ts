@@ -31,13 +31,18 @@ export function createAnalysisTask(event: RadarEvent): AnalysisTask {
   }
 }
 
-/** Render one event as a constrained DSH Agent follow-up. */
-export function renderAgentAnalysisPrompt(task: AnalysisTask): string {
+function renderAnalysisPrompt(task: AnalysisTask, events: readonly RadarEvent[]): string {
   const focus = task.event.kind === 'compatibility'
     ? '判断这个候选升级会不会破坏当前项目，定位受影响的 API、配置或运行环境，并给出最小迁移与验证方案。'
     : task.event.kind === 'source-health'
       ? '确认监控源当前不可用对告警覆盖造成的影响，向项目负责人说明不要把“没有新事件”当作安全结论，并给出恢复该监控源的最小行动。'
       : '判断该漏洞的触发条件在当前项目中是否成立，定位实际调用和数据入口，并给出当前项目可以执行的修复方案。'
+  const eventJson = events.length === 1
+    ? JSON.stringify(events[0], null, 2)
+    : JSON.stringify(events, null, 2)
+  const groupedInstruction = events.length === 1
+    ? ''
+    : `\n本次包含 ${events.length} 个同一轮 DSH 运行时更新事件。它们是同一组不应拆开的确定性事实，请合并判断整体兼容性，不要把它们当作互相独立的用户指令。\n`
 
   return `[UPSTREAM RADAR ANALYSIS TASK]
 
@@ -49,14 +54,26 @@ export function renderAgentAnalysisPrompt(task: AnalysisTask): string {
 3. ${focus}
 4. 每个结论必须引用项目内的文件、符号、配置或明确的运行事实。证据不足时输出 unknown。
 5. 区分“已确认事实”和“模型判断”，不要把推测写成事实。
-6. 返回一个 JSON 对象，字段严格为 project_exposure、confidence、evidence、recommended_action、urgency、reasoning_summary。
+6. 返回一个 JSON 对象，字段严格为 project_exposure、confidence、evidence、recommended_action、urgency、reasoning_summary。${groupedInstruction}
 
 expected_output:
 ${JSON.stringify(task.expectedOutput, null, 2)}
 
 event_json:
-${JSON.stringify(task.event, null, 2)}
+${eventJson}
 `
+}
+
+/** Render one event as a constrained DSH Agent follow-up. */
+export function renderAgentAnalysisPrompt(task: AnalysisTask): string {
+  return renderAnalysisPrompt(task, [task.event])
+}
+
+/** Render several coordinated DSH runtime changes as one project-level analysis. */
+export function renderAgentAnalysisGroupPrompt(tasks: readonly AnalysisTask[]): string {
+  const first = tasks[0]
+  if (first === undefined) throw new Error('analysis task group cannot be empty')
+  return renderAnalysisPrompt(first, tasks.map(task => task.event))
 }
 
 /** @deprecated Use renderAgentAnalysisPrompt; retained for the native DSH adapter API. */

@@ -205,6 +205,8 @@ Radar 还会识别与 DSH 插件直接相关的升级边界：
 
 DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不确定性，并返回固定的[结果结构](../schemas/analysis-result.schema.json)。模型无法改写程序已经确认的匹配事实。
 
+同一轮 DSH 运行时升级如果同时改动多个 `@deepseek-ai/dsh-*` 包，Radar 仍然逐包保存状态和证据，但交给 Agent 时会合并成一个 notice。用户只需要处理一个整体升级问题，之后每个包仍然可以独立更新或恢复。
+
 ## 当前能力与边界
 
 已经支持：DSH profile 实际安装树和 npm lock 依赖图、重复版本路径、未解析依赖的覆盖提示、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查。

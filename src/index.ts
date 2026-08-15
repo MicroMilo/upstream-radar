@@ -16,7 +16,7 @@ export { NpmReleaseClient, type NpmReleaseCandidateStatus, type NpmReleaseClient
 export { GitHubReleaseClient, type GitHubReleaseClientOptions, type ReleaseNotes, type ReleaseNotesSource } from './github-release.js'
 export { emptyRadarState, pollRadar, type AdvisorySource, type RadarPollResult, type ReleaseSource } from './radar.js'
 export { assessCompatibilityChange, assessCompatibilityChanges, type CompatibilityChangeInput } from './compatibility.js'
-export { createAnalysisTask, renderAgentAnalysisPrompt, renderDshAnalysisPrompt } from './dsh-analysis.js'
+export { createAnalysisTask, renderAgentAnalysisGroupPrompt, renderAgentAnalysisPrompt, renderDshAnalysisPrompt } from './dsh-analysis.js'
 export { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 export {
   createRadarConfigFromDshProfile,
