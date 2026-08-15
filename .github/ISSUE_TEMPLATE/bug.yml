@@ -30,6 +30,6 @@ body:
     id: version
     attributes:
       label: Upstream Radar version
-      placeholder: 0.4.0
+      placeholder: 0.5.0
     validations:
       required: true

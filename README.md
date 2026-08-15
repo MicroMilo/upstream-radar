@@ -74,18 +74,30 @@ Upstream Radar is an npm-published DSH bundle, so no install-time build permissi
 dsh plugin --profile web add upstream-radar@latest
 ```
 
-Point the bundle at an explicit project inventory, choose a durable state file, then boot the profile:
+Generate the inventory from the DSH profile instead of writing the dependency graph by hand:
 
 ```bash
-export UPSTREAM_RADAR_CONFIG=/absolute/path/radar-config.json
-export UPSTREAM_RADAR_STATE=/absolute/path/radar-state.json
+pnpm dlx upstream-radar@latest init \
+  --profile web \
+  --project-name "My DSH project" \
+  --workspace "$PWD" \
+  --output ./upstream-radar.config.json
+```
+
+The initializer reads the profile's actual third-party bundles, resolves each exact npm artifact with lifecycle scripts disabled, and writes a reviewable config. It never starts DSH or enables polling by itself. Review the generated file, then point the bundle at it and choose a durable state file:
+
+```bash
+export UPSTREAM_RADAR_CONFIG=$PWD/upstream-radar.config.json
+export UPSTREAM_RADAR_STATE=$PWD/upstream-radar.state.json
 export UPSTREAM_RADAR_INTERVAL_SECONDS=1800
 
 dsh --profile web --dump-config
 dsh --profile web
 ```
 
-Start from [the example inventory](examples/radar/config.json). If `UPSTREAM_RADAR_CONFIG` is not set, the bundle stays dormant and performs no polling.
+The generated graph is the exact public npm artifact graph for the installed bundle versions. If your DSH profile applies package-manager overrides, patches, or unusual peer resolution, review those differences before enabling continuous monitoring.
+
+For a hand-written or CI fixture, use [the example inventory](examples/radar/config.json). If `UPSTREAM_RADAR_CONFIG` is not set, the bundle stays dormant and performs no polling.
 
 Once running, Radar polls OSV and npm, persists incident state before delivery, and submits only changed incidents to the first live root DSH Agent.
 
@@ -208,7 +220,7 @@ upstream-radar inspect npm:dsh-cloudflare-browser-run@0.1.1 --deep
 
 ## Current boundaries
 
-- Project inventory is explicit JSON; active DSH profile discovery is not implemented yet.
+- `init --profile <name>` discovers a named DSH profile and generates a reviewable inventory; automatic active-profile selection and native pnpm override/peer resolution are not implemented yet.
 - npm lock graphs are supported; pnpm and Yarn graph adapters are not implemented.
 - OSV and npm `latest` are the live sources; GitHub release and migration-guide ingestion are deferred.
 - Delivery currently targets the first live root Agent rather than a project-specific session.

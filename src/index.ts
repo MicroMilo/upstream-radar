@@ -16,6 +16,14 @@ export { emptyRadarState, pollRadar, type AdvisorySource, type RadarPollResult, 
 export { assessCompatibilityChange, assessCompatibilityChanges, type CompatibilityChangeInput } from './compatibility.js'
 export { createAnalysisTask, renderAgentAnalysisPrompt, renderDshAnalysisPrompt } from './dsh-analysis.js'
 export { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
+export {
+  createRadarConfigFromDshProfile,
+  resolveDshProfileDirectory,
+  writeRadarConfig,
+  type DshInitOptions,
+  type InitInspector,
+  type WriteRadarConfigOptions,
+} from './init.js'
 export { loadRadarState, parseRadarState, saveRadarState } from './radar-state.js'
 export { renderRadarEvent, renderRadarEvents } from './radar-render.js'
 export { crossesBreakingVersionBoundary, parseSemver, satisfiesSemverRange } from './semver.js'

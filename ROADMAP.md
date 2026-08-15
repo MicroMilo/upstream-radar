@@ -23,7 +23,8 @@
 - [ ] Read GitHub releases, changelogs, comparison diffs, and migration guides.
 - [ ] Track DSH package families as one coordinated release rather than unrelated npm packages.
 - [ ] Resolve the lowest clean plugin upgrade, not merely the latest release.
-- [ ] Discover the active DSH profile and its installed lock graph automatically.
+- [x] Discover a named DSH profile's installed third-party bundles and generate a reviewable inventory.
+- [ ] Discover the active DSH profile without `--profile` and use its native pnpm lock graph as the source of truth.
 - [ ] Run plugin load and representative compatibility probes in a disposable DSH profile.
 - [ ] Record `compatible`, `incompatible`, and `unknown` against an explicit DSH version matrix.
 

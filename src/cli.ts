@@ -5,6 +5,7 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { assessCompatibilityChange } from './compatibility.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
+import { createRadarConfigFromDshProfile, resolveDshProfileDirectory, writeRadarConfig } from './init.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 import { inspectNpmPackage } from './npm.js'
 import { NpmReleaseClient } from './npm-release.js'
@@ -30,6 +31,7 @@ function usage(): string {
   return `Upstream Radar — always-on dependency and compatibility monitoring for DSH plugins
 
 Usage:
+  upstream-radar init --profile <name> [options]
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
   upstream-radar radar check <config.json> [--state <state.json>] [--json]
@@ -40,6 +42,7 @@ Usage:
   upstream-radar version
 
 Commands:
+  init     discover third-party bundles in a DSH profile and write a reviewable inventory
   scan     bounded, read-only inspection of a local package directory
   inspect  fetch and verify the exact npm artifact before inspecting its contents
   radar    monitor vulnerability changes or assess a candidate compatibility change
@@ -51,6 +54,9 @@ Options:
   --state <path>       persistent radar state (default: <config.json>.state.json)
   --osv-base-url <url> alternate HTTPS OSV API base URL
   --notes <path>       release notes used as untrusted compatibility evidence
+  --profile <name>     DSH profile to inspect for init (default DSH_HOME/profiles/<name>)
+  --output <path>      init output path (default: ./upstream-radar.config.json)
+  --force              allow init to replace an existing output file
   --json               emit the canonical JSON report
   --fail-on <verdict>  CI threshold; default is review
 
@@ -202,6 +208,66 @@ async function runRadar(args: readonly string[]): Promise<number> {
   return 0
 }
 
+async function runInit(args: readonly string[]): Promise<number> {
+  let profile: string | undefined
+  let output = 'upstream-radar.config.json'
+  let projectId: string | undefined
+  let projectName: string | undefined
+  let repository: string | undefined
+  let workspace: string | undefined
+  let registry: string | undefined
+  let force = false
+  let json = false
+  const channels: string[] = []
+  for (let index = 0; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === '--force') force = true
+    else if (argument === '--json') json = true
+    else if (argument === '--profile' || argument === '--output' || argument === '--project-id'
+      || argument === '--project-name' || argument === '--repository' || argument === '--workspace'
+      || argument === '--channel' || argument === '--registry') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
+      if (argument === '--profile') profile = value
+      else if (argument === '--output') output = value
+      else if (argument === '--project-id') projectId = value
+      else if (argument === '--project-name') projectName = value
+      else if (argument === '--repository') repository = value
+      else if (argument === '--workspace') workspace = value
+      else if (argument === '--channel') channels.push(value)
+      else registry = value
+      index += 1
+    } else {
+      throw new Error(`unknown option for init: ${argument}`)
+    }
+  }
+  if (profile === undefined) throw new Error('init requires --profile <name>')
+  const config = await createRadarConfigFromDshProfile({
+    profileDirectory: resolveDshProfileDirectory(profile),
+    ...(projectId === undefined ? {} : { projectId }),
+    ...(projectName === undefined ? {} : { projectName }),
+    ...(repository === undefined ? {} : { repository }),
+    ...(workspace === undefined ? {} : { workspace }),
+    ...(channels.length === 0 ? {} : { channels }),
+    ...(registry === undefined ? {} : { registry }),
+  })
+  const outputPath = await writeRadarConfig(config, { output, force })
+  const plugins = config.projects[0]?.plugins ?? []
+  if (json) {
+    process.stdout.write(`${JSON.stringify({ output: outputPath, profile, plugins: plugins.map(plugin => ({
+      name: plugin.package.name,
+      version: plugin.package.version,
+      nodes: plugin.graph.nodes.length,
+      edges: plugin.graph.edges.length,
+    })) }, null, 2)}\n`)
+  } else {
+    process.stdout.write(`Created ${outputPath}\nDiscovered ${plugins.length} DSH plugin bundle(s):\n`)
+    for (const plugin of plugins) process.stdout.write(`  ${plugin.package.name}@${plugin.package.version} (${plugin.graph.nodes.length} dependency nodes)\n`)
+    process.stdout.write('\nReview the generated inventory, then set UPSTREAM_RADAR_CONFIG before starting DSH.\n')
+  }
+  return 0
+}
+
 async function main(args: readonly string[]): Promise<number> {
   const command = args[0]
   if (command === undefined || command === '--help' || command === '-h' || command === 'help') {
@@ -212,6 +278,7 @@ async function main(args: readonly string[]): Promise<number> {
     process.stdout.write(`${TOOL_VERSION}\n`)
     return 0
   }
+  if (command === 'init') return runInit(args.slice(1))
   if (command === 'radar') return runRadar(args.slice(1))
   if (command === 'task') return runTask(args.slice(1))
   if (command !== 'scan' && command !== 'inspect') throw new Error(`unknown command: ${command}`)

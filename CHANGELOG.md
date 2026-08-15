@@ -2,6 +2,18 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.5.0] - 2026-08-15
+
+### Added
+
+- Added `upstream-radar init --profile <name>` to discover third-party bundles from a real DSH profile and generate a reviewable Radar inventory.
+- Added a real DSH profile initialization test covering bundle filtering, exact npm artifact inspection, and safe output creation.
+
+### Changed
+
+- Made the DSH first-use path start from the installed profile instead of asking users to hand-write a dependency graph.
+- Documented the boundary between the generated public npm artifact graph and profile-specific package-manager overrides.
+
 ## [0.4.1] - 2026-08-15
 
 ### Changed
@@ -34,3 +46,4 @@ All notable changes to Upstream Radar are documented here.
 
 [0.4.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.4.1
 [0.4.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.4.0
+[0.5.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.0
