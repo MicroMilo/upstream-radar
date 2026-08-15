@@ -157,7 +157,7 @@ The generated graph is the actual installed profile graph. DSH also maintains a 
 
 For a hand-written or CI fixture, use [the example inventory](examples/radar/config.json). If neither a generated `--patch` overlay nor `UPSTREAM_RADAR_CONFIG` is provided, the bundle stays dormant and performs no polling.
 
-Once running, Radar polls OSV, npm, and public GitHub Releases, persists incident state before delivery, and submits only changed incidents to the first live root DSH Agent. If a source is temporarily unavailable, Radar keeps the last confirmed state instead of claiming that the project is clean, continues delivering already queued tasks, and creates one source-health notice after three consecutive failures.
+Once running, Radar polls OSV, npm, and public GitHub Releases, persists incident state before delivery, and submits only changed incidents to the matching DSH project session. With one root Agent, delivery remains automatic; with multiple roots, Radar requires an exact match between `project.workspace` and `Agent.session.header.cwd`, and keeps the task queued when it cannot prove the route. If a source is temporarily unavailable, Radar keeps the last confirmed state instead of claiming that the project is clean, continues delivering already queued tasks, and creates one source-health notice after three consecutive failures.
 
 Each release cycle also checks a bounded prefix of candidate dependency graphs. This is enabled by default in the DSH adapter and CLI; use `--no-deep-candidates` only when you deliberately want manifest-only compatibility checks. The graph resolver is isolated in a temporary directory and uses `package-lock-only` plus `ignore-scripts`, so candidate package code is not loaded or executed.
 
@@ -193,7 +193,7 @@ This proof runs in CI on Node.js 22. See the executable [showcase contract](exam
 Before wiring a project into a compatibility gate, run the offline rule benchmark:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.27.0 upstream-radar benchmark compatibility
+pnpm dlx --package=upstream-radar@0.28.0 upstream-radar benchmark compatibility
 ```
 
 It covers six contracts: a safe patch, a change that only needs project analysis, an incompatible DSH peer, a publisher-declared breaking release, a vulnerable candidate dependency, and an incomplete candidate graph. The command does not access the network, install a package, load a plugin, or start DSH. It checks the behavior of Radar's deterministic rules and the `breaking`/`any` gates; it is not a runtime compatibility proof.
@@ -206,7 +206,7 @@ When you have an exact plugin artifact and want to know whether one exact DSH re
 # Pack an exact npm release without running its lifecycle scripts.
 npm pack --ignore-scripts dsh-plugin@1.2.3
 
-pnpm dlx --package=upstream-radar@0.27.0 upstream-radar probe dsh-load \
+pnpm dlx --package=upstream-radar@0.28.0 upstream-radar probe dsh-load \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.6
 ```
@@ -232,7 +232,7 @@ It exercises a loadable bundle, a bundle patch DSH rejects, and a package that r
 To compare a plugin against more than one DSH release, use the matrix form:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.27.0 upstream-radar probe dsh-matrix \
+pnpm dlx --package=upstream-radar@0.28.0 upstream-radar probe dsh-matrix \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.3 \
   --dsh-version 0.1.0-rc.6 \
@@ -248,7 +248,7 @@ If your team wants a scheduled CI gate before wiring a machine to a live DSH pro
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.27.0
+  - uses: MicroMilo/upstream-radar@v0.28.0
     with:
       config: upstream-radar.config.json
       fail-on: high
@@ -256,12 +256,12 @@ steps:
       fail-on-compatibility: breaking
 ```
 
-The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.27.0`, and pin the checkout Action in your workflow according to your repository's policy.
+The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.28.0`, and pin the checkout Action in your workflow according to your repository's policy.
 
 The Action requires the caller to check out the repository first. It does not install the project's dependencies or run their lifecycle scripts; it only reads the committed graph and queries the configured upstream sources. For a fully explicit, lower-level invocation, the equivalent command is:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.27.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.28.0 upstream-radar radar check \
   ./upstream-radar.config.json --frozen --state :memory: --fail-on high \
   --fail-on-compatibility breaking --json
 ```
@@ -269,7 +269,7 @@ pnpm dlx --package=upstream-radar@0.27.0 upstream-radar radar check \
 To add the optional DSH load matrix for a published plugin, provide an exact npm package and at least two exact DSH versions:
 
 ```yaml
-- uses: MicroMilo/upstream-radar@v0.27.0
+- uses: MicroMilo/upstream-radar@v0.28.0
   id: radar
   with:
     config: upstream-radar.config.json
@@ -297,7 +297,7 @@ For a local or self-hosted DSH machine, omit `--frozen` so Radar refreshes the s
 3. Watch npm releases for the installed plugin and DSH/Cordis packages.
 4. Create or update one durable incident with the exact dependency path.
 5. Persist a constrained analysis task before delivery.
-6. Send a plugin-originated follow-up to the first live root DSH Agent.
+6. Route a plugin-originated follow-up to the DSH root whose session workspace matches the project.
 7. Keep the task on disk when no Agent is available; cancel it when the incident resolves.
 
 For a local process or a scheduled runner, the same loop is available as:
@@ -417,7 +417,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 - OSV, npm `latest`, and public GitHub Release notes are live sources; changelog, comparison-diff, and migration-guide ingestion are deferred.
 - A failed OSV check preserves confirmed matches and returns a visible source warning; source health is durable and routed through DSH after three consecutive failures, while source-claim conflict handling and external health destinations are not implemented yet.
 - `radar watch` is a CLI monitoring fallback; it does not deliver tasks into DSH by itself.
-- Delivery currently targets the first live root Agent rather than a project-specific session.
+- Delivery uses one root Agent as the simple default; when several roots exist, it requires an exact project-workspace match and leaves ambiguous tasks queued instead of guessing.
 - Agent conclusions stay in the DSH Session; Radar does not ingest them back into incident state yet.
 - No Issue, branch, Pull Request, dependency override, or merge is created automatically.
 

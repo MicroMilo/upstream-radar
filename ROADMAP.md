@@ -44,7 +44,7 @@
 
 - [ ] Add pnpm and Yarn lock graph adapters.
 - [ ] Maintain one durable project registry across multiple machines.
-- [ ] Deliver to the correct DSH project session instead of one security-inbox Agent.
+- [x] Deliver to the correct DSH project session instead of one security-inbox Agent.
 - [ ] Add Feishu, Slack, email, and generic webhook delivery with acknowledgement state.
 - [ ] Add suppression, ownership, maintenance-window, and dev-only rules.
 - [ ] Keep event history for new, updated, acknowledged, fixed, withdrawn, and ignored states.

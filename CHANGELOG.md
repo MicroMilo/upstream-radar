@@ -2,6 +2,19 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.28.0] - 2026-08-16
+
+### Added
+
+- Route pending DSH analysis notices to the root Agent whose session workspace exactly matches the Radar project workspace.
+- Keep tasks queued when multiple DSH roots exist but no trustworthy workspace match is available.
+- Preserve single-root delivery for existing installations and continue delivery for unrelated projects when one route fails.
+- Add routing tests and document the multi-project behavior in the English and Chinese guides.
+
+### Safety
+
+- The adapter never guesses between multiple project sessions; an ambiguous route is visible as a durable pending task and a DSH warning.
+
 ## [0.27.0] - 2026-08-16
 
 ### Added

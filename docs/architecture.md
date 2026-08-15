@@ -97,7 +97,7 @@ poll sources
   -> calculate state changes
   -> replace stale tasks and cancel resolved incidents
   -> atomically save active matches and pending tasks
-  -> select a live root Agent
+  -> select the root Agent whose session workspace matches the project
   -> submit plugin-originated follow-up
   -> atomically remove synchronously accepted tasks from the outbox
 ```
@@ -126,7 +126,7 @@ The same local plane renders a bounded action summary from durable state. It pre
 
 The adapter uses only the small Cordis surface needed for lifecycle cleanup, root-Agent discovery, and `followup`. It intentionally does not depend on the session-local Schedule plugin. A local timer performs fixed polling while the DSH process is alive; durable state provides restart recovery.
 
-Today, the first live root Agent acts as a security inbox. A later adapter will select or create the project-specific session named by each event.
+With one live root Agent, that Agent remains the simple security inbox. When several roots exist, the adapter compares the event's `project.workspace` with each root's `session.header.cwd`; only an exact match is accepted. An absent or ambiguous match leaves the task in the durable outbox, so a security notice cannot be silently delivered to another project.
 
 ## Supporting pre-install collector
 
