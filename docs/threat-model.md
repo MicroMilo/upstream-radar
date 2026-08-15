@@ -66,11 +66,11 @@ Delivery is at-least-once. The state/outbox write happens before `Agent.followup
 - exactly-once delivery across all future external notification systems;
 - automatically merging a generated security fix.
 
-## Current v0.4 limitations
+## Current limitations
 
 - The graph collector currently parses npm lock graphs; pnpm and Yarn adapters are absent.
-- OSV is the only live vulnerability source and npm `latest` is the only automatic release source.
-- Release notes and GitHub diffs are not fetched automatically.
+- OSV is the only live vulnerability source; npm `latest` and bounded public GitHub Release notes are the automatic release sources.
+- GitHub comparison diffs, changelogs, and migration guides are not fetched automatically.
 - One live root DSH Agent acts as the security inbox; project-session selection is not implemented.
 - The prompt establishes a read-only contract, but enforcement still depends on the DSH Agent's configured tools and permission policy.
 - Feed failures are reported by the cycle; independent per-source retry and health alerts need further hardening.

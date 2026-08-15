@@ -16,7 +16,8 @@ The model never decides whether a version range matches.
  npm lock graph ───────────────┐
                                ├─> match + paths ─> durable event/outbox
  OSV exact-version results ────┤                         │
- npm candidate manifests ─────┘                         │
+ npm candidate manifests ─────┐                         │
+ public GitHub Release notes ─┘                         │
                                                          v
                      DSH Agent analysis plane
 
@@ -60,7 +61,7 @@ The active-match key binds project, plugin version, affected package version, an
 
 ## Compatibility cycle
 
-The release source reads npm metadata; it does not install the candidate. The current and candidate manifests are compared for:
+The release source reads npm metadata; it does not install the candidate. When the candidate manifest points to a public `github.com` repository, a second read-only source looks up the exact `v<version>` or `<version>` GitHub Release tag. Its body and link are untrusted evidence. The current and candidate manifests are compared for:
 
 - a major compatibility boundary, or a minor boundary while below 1.0;
 - package entrypoint and export-map changes;
@@ -68,7 +69,7 @@ The release source reads npm metadata; it does not install the candidate. The cu
 - Node.js engine changes and definite runtime exclusion;
 - DSH/Cordis peer-range changes and definite installed-version exclusion;
 - pre-1.0 DSH package updates;
-- publisher-declared breaking language when release notes are supplied.
+- publisher-declared breaking language in the exact public GitHub Release notes when available.
 
 These are signals for project analysis. Only an explicit publisher statement or a mathematically incompatible version range is treated as confirmed/strong evidence. Other changes remain `needs-analysis`.
 

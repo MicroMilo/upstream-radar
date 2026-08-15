@@ -5,6 +5,7 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { assessCompatibilityChange } from './compatibility.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
+import { GitHubReleaseClient } from './github-release.js'
 import { createRadarConfigFromDshProfile, resolveDshProfileDirectory, writeRadarConfig } from './init.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 import { inspectNpmPackage } from './npm.js'
@@ -201,11 +202,12 @@ async function runRadar(args: readonly string[]): Promise<number> {
   const releases = new NpmReleaseClient({
     ...(registry === undefined ? {} : { registry }),
   })
+  const releaseNotesSource = new GitHubReleaseClient()
   const stateFile = statePath ?? `${resolve(configPath)}.state.json`
   const runCheck = async () => {
     const config = await readConfig()
     const state = statePath === ':memory:' ? emptyRadarState() : await loadRadarState(stateFile)
-    const result = await pollRadar(config.projects, state, osv, new Date(), releases)
+    const result = await pollRadar(config.projects, state, osv, new Date(), releases, releaseNotesSource)
     if (statePath !== ':memory:') await saveRadarState(stateFile, result.state)
     return result
   }

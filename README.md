@@ -208,7 +208,7 @@ Upstream Radar also watches candidate releases for compatibility boundaries that
 - changed `main`, `exports`, or DSH bundle patch paths;
 - removed dependencies;
 - major and pre-1.0 breaking version boundaries;
-- publisher-declared breaking changes in supplied release notes.
+- publisher-declared breaking changes in supplied release notes, including public GitHub Release notes attached to the candidate version when npm points to a GitHub repository.
 
 These are signals for project analysis, not automatic claims that an upgrade is broken.
 
@@ -239,7 +239,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 
 - npm lockfile graphs with duplicate versions and bounded dependency paths;
 - exact-version OSV vulnerability and malicious-package matching;
-- npm release monitoring for plugins and DSH/Cordis packages;
+- npm release monitoring for plugins and DSH/Cordis packages, with public GitHub Release notes attached when an exact candidate tag is available;
 - durable incident state with current-task replacement and resolution;
 - native DSH bundle installation, startup polling, `agent/created` retry, and plugin-source attribution;
 - compatibility signals for Node.js, peers, exports, entrypoints, bundle paths, dependencies, and version boundaries;
@@ -256,7 +256,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 
 - `init --profile <name>` discovers a named DSH profile and generates a reviewable inventory; automatic active-profile selection and native pnpm override/peer resolution are not implemented yet.
 - npm lock graphs are supported; pnpm and Yarn graph adapters are not implemented.
-- OSV and npm `latest` are the live sources; GitHub release and migration-guide ingestion are deferred.
+- OSV, npm `latest`, and public GitHub Release notes are live sources; changelog, comparison-diff, and migration-guide ingestion are deferred.
 - `radar watch` is a CLI monitoring fallback; it does not deliver tasks into DSH by itself.
 - Delivery currently targets the first live root Agent rather than a project-specific session.
 - Agent conclusions stay in the DSH Session; Radar does not ingest them back into incident state yet.

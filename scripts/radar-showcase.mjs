@@ -46,7 +46,21 @@ function releaseSource(previous, candidate) {
         latestVersion: candidate.version,
         previous,
         candidate,
+        repository: 'https://github.com/acme/plugin',
       }]])
+    },
+  }
+}
+
+function releaseNotesSource() {
+  return {
+    async query(observations) {
+      return new Map(observations
+        .filter(observation => observation.candidate.version !== observation.installed.version)
+        .map(observation => [packageKey(observation.installed), {
+          text: 'BREAKING CHANGE: the plugin now requires the project session to be configured.',
+          url: `https://github.com/acme/plugin/releases/tag/v${observation.candidate.version}`,
+        }]))
     },
   }
 }
@@ -93,6 +107,7 @@ const compatibility = assessCompatibilityChange(config.projects[0], {
   previous,
   candidate,
   releaseNotes,
+  releaseNotesUrl: 'https://github.com/acme/plugin/releases/tag/v2.0.0',
   detectedAt: '2026-08-14T02:00:00.000Z',
 })
 if (compatibility === undefined) throw new Error('showcase compatibility fixture produced no event')
@@ -108,6 +123,7 @@ const firstCompatibility = await pollRadar(
   source([advisory]),
   new Date('2026-08-14T02:00:00.000Z'),
   releaseSource(previous, candidate),
+  releaseNotesSource(),
 )
 const nextCandidate = { ...candidate, version: '3.0.0' }
 const updatedCompatibility = await pollRadar(
@@ -116,6 +132,7 @@ const updatedCompatibility = await pollRadar(
   source([advisory]),
   new Date('2026-08-14T03:00:00.000Z'),
   releaseSource(previous, nextCandidate),
+  releaseNotesSource(),
 )
 
 const upgradedConfig = structuredClone(config)
@@ -132,6 +149,7 @@ const resolvedCompatibility = await pollRadar(
   source([]),
   new Date('2026-08-14T04:00:00.000Z'),
   releaseSource(nextCandidate, nextCandidate),
+  releaseNotesSource(),
 )
 
 const firstEvent = firstCompatibility.events.find(event => event.kind === 'compatibility')
@@ -143,8 +161,8 @@ if (firstEvent === undefined || updatedEvent === undefined || resolvedEvent === 
 const pendingFor = (result, incidentId) => result.state.pendingAnalysisTasks
   .filter(task => task.event.incidentId === incidentId)
 process.stdout.write([
-  `${firstEvent.change.toUpperCase()}: ${firstEvent.candidate.version}; queued tasks for incident: ${pendingFor(firstCompatibility, firstEvent.incidentId).length}`,
-  `${updatedEvent.change.toUpperCase()}: ${updatedEvent.candidate.version}; queued tasks for incident: ${pendingFor(updatedCompatibility, firstEvent.incidentId).length}`,
+  `${firstEvent.change.toUpperCase()}: ${firstEvent.candidate.version}; release notes: ${firstEvent.releaseNotesUrl ?? 'none'}; queued tasks for incident: ${pendingFor(firstCompatibility, firstEvent.incidentId).length}`,
+  `${updatedEvent.change.toUpperCase()}: ${updatedEvent.candidate.version}; release notes: ${updatedEvent.releaseNotesUrl ?? 'none'}; queued tasks for incident: ${pendingFor(updatedCompatibility, firstEvent.incidentId).length}`,
   `${resolvedEvent.change.toUpperCase()}: project caught up; queued tasks for incident: ${pendingFor(resolvedCompatibility, firstEvent.incidentId).length}`,
   '',
 ].join('\n'))

@@ -21,11 +21,19 @@ export interface NpmReleaseObservation {
   previous: PackageManifestSnapshot
   candidate: PackageManifestSnapshot
   publishedAt?: string
+  repository?: string
 }
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return undefined
   return value as Record<string, unknown>
+}
+
+function repositoryReference(value: unknown): string | undefined {
+  const raw = typeof value === 'string' ? value : asRecord(value)?.url
+  if (typeof raw !== 'string') return undefined
+  const trimmed = raw.trim()
+  return trimmed.length === 0 || trimmed.length > 4_096 ? undefined : trimmed
 }
 
 function normalizeRegistry(input: string): string {
@@ -125,6 +133,7 @@ export class NpmReleaseClient {
       const rawCandidate = versions[latestVersion]
       const candidate = parsePackageManifestSnapshot(rawCandidate)
       if (candidate.name !== name || candidate.version !== latestVersion) throw new Error(`npm latest manifest identity mismatch for ${name}`)
+      const repository = repositoryReference(asRecord(rawCandidate)?.repository)
       for (const installed of coordinates) {
         const previous = parsePackageManifestSnapshot(versions[installed.version])
         if (previous.name !== name || previous.version !== installed.version) {
@@ -137,6 +146,7 @@ export class NpmReleaseClient {
           previous,
           candidate,
           ...(publishedAt === undefined ? {} : { publishedAt }),
+          ...(repository === undefined ? {} : { repository }),
         })
       }
     }

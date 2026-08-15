@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { renderAgentAnalysisPrompt } from './dsh-analysis.js'
+import { GitHubReleaseClient } from './github-release.js'
 import { parseRadarConfig } from './inventory.js'
 import { OsvClient } from './osv.js'
 import { NpmReleaseClient } from './npm-release.js'
@@ -114,6 +115,7 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
   }
   const source = new OsvClient({ ...(config.osvBaseUrl === undefined ? {} : { baseUrl: config.osvBaseUrl }) })
   const releases = new NpmReleaseClient()
+  const releaseNotes = new GitHubReleaseClient()
 
   ctx.effect(() => {
     let stopped = false
@@ -124,7 +126,7 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
         let state = await loadRadarState(stateFile)
         if (poll) {
           const radarConfig = await readConfig(configFile)
-          const result = await pollRadar(radarConfig.projects, state, source, new Date(), releases)
+          const result = await pollRadar(radarConfig.projects, state, source, new Date(), releases, releaseNotes)
           state = result.state
           // Persist before model delivery. A crash may duplicate a task, but cannot silently lose it.
           await saveRadarState(stateFile, state)

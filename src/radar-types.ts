@@ -144,6 +144,7 @@ export interface CompatibilityEvent extends RadarEventBase {
   candidate: PackageCoordinate
   signals: CompatibilitySignal[]
   releaseNotes?: string
+  releaseNotesUrl?: string
 }
 
 export type RadarEvent = VulnerabilityEvent | CompatibilityEvent
