@@ -2,6 +2,18 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.23.0] - 2026-08-16
+
+### Added
+
+- Add `--fail-on-compatibility <never|breaking|any>` to the Radar CLI and a matching `fail-on-compatibility` input to the reusable GitHub Action.
+- Let `breaking` fail only when a compatibility event contains a confirmed or strong incompatibility signal; let `any` fail on every active compatibility event that needs analysis.
+
+### Safety
+
+- The compatibility gate defaults to `never`, so existing vulnerability-only CI behavior is unchanged until a project opts in.
+- The gate changes only the exit code and report; it does not install candidates, execute plugin code, or infer that a candidate is safe.
+
 ## [0.22.1] - 2026-08-16
 
 ### Fixed

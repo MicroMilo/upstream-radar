@@ -176,7 +176,7 @@ This is intentionally different from resolving the same package in a fresh npm p
 For a runner that does not have DSH installed, commit the generated config after review and run one frozen check:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.22.1 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.23.0 upstream-radar radar check \
   ./upstream-radar.config.json \
   --frozen --state :memory: --fail-on high --json
 ```
@@ -190,13 +190,23 @@ The published Action packages the same frozen check so a DSH plugin project does
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.22.1
+  - uses: MicroMilo/upstream-radar@v0.23.0
     with:
       config: upstream-radar.config.json
       fail-on: high
 ```
 
 The Action checks out no code by itself and does not run DSH or plugin lifecycle scripts. It reads the reviewed graph from the caller's workspace, queries the configured sources, and fails only according to the explicit threshold. The native DSH bundle remains the path for always-on monitoring and model analysis.
+
+To make breaking compatibility changes a CI decision as well as a DSH analysis task, opt in explicitly:
+
+```yaml
+with:
+  fail-on: high
+  fail-on-compatibility: breaking
+```
+
+`breaking` fails only when the program has a confirmed or strong incompatibility signal. `any` fails on every active compatibility event; `never` is the default.
 
 ## Scene 15 — verify the consumer path with a real DSH plugin
 
