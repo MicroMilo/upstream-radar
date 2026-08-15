@@ -2,6 +2,20 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.18.0] - 2026-08-16
+
+### Added
+
+- Query every exact intermediate upgrade candidate against OSV before selecting a first candidate.
+- Mark known-vulnerable candidates as confirmed blockers with their advisory id and fixed versions.
+- Withhold the upgrade recommendation when the candidate OSV check is unavailable.
+
+### Safety
+
+- A candidate without an OSV match is not a safety certificate; DSH still performs project-specific analysis.
+- The OSV candidate check never installs or executes a candidate package.
+- Persisted 0.17.0 upgrade paths remain readable after the new vulnerability-status field is added.
+
 ## [0.17.0] - 2026-08-16
 
 ### Added
@@ -208,6 +222,7 @@ All notable changes to Upstream Radar are documented here.
 - Version matching and compatibility facts are calculated outside the model.
 - Agent analysis is read-only and requires project evidence and explicit uncertainty.
 
+[0.18.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.18.0
 [0.17.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.17.0
 [0.16.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.16.0
 [0.15.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.15.0

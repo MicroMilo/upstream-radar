@@ -160,12 +160,16 @@ export interface CompatibilityUpgradeCandidate {
   signals: CompatibilitySignal[]
 }
 
+export type CompatibilityVulnerabilityStatus = 'checked' | 'unavailable' | 'not-requested'
+
 /** A bounded explanation of which intermediate release is worth analyzing first. */
 export interface CompatibilityUpgradePath {
   /** Number of newer manifests considered from the npm packument. */
   evaluated: number
   /** Number of considered candidates with a confirmed or strong blocker. */
   blockedCount: number
+  /** Whether exact candidate versions were checked against the configured OSV source. */
+  vulnerabilityStatus: CompatibilityVulnerabilityStatus
   /** The first candidate without a deterministic blocker; this is not a safety verdict. */
   firstCandidate?: CompatibilityUpgradeCandidate
   /** A small sample of blocked candidates, kept for an actionable alert. */

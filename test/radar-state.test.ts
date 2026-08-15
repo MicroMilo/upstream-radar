@@ -15,6 +15,31 @@ describe('radar state parsing', () => {
     assert.deepEqual(parseRadarState(legacy), legacy)
   })
 
+  it('accepts a 0.17 compatibility path without the later OSV status field', () => {
+    const legacy = emptyRadarState() as unknown as Record<string, any>
+    legacy.activeCompatibility = {
+      'incident-legacy': {
+        key: 'incident-legacy',
+        event: {
+          schema: 'upstream-radar.event/v1alpha1',
+          id: 'event-legacy',
+          incidentId: 'incident-legacy',
+          kind: 'compatibility',
+          upgradePath: {
+            evaluated: 1,
+            blockedCount: 0,
+            firstCandidate: {
+              candidate: { ecosystem: 'npm', name: 'plugin', version: '1.1.0' },
+              signals: [],
+            },
+            blocked: [],
+          },
+        },
+      },
+    }
+    assert.doesNotThrow(() => parseRadarState(legacy))
+  })
+
   it('rejects a queued task without a stable incident identity', () => {
     const state = emptyRadarState() as unknown as Record<string, unknown>
     state.pendingAnalysisTasks = [{

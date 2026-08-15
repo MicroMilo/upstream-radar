@@ -76,6 +76,7 @@ export {
   type CompatibilityEvent,
   type CompatibilityUpgradeCandidate,
   type CompatibilityUpgradePath,
+  type CompatibilityVulnerabilityStatus,
   type CompatibilitySignal,
   type DependencyEdge,
   type DependencyGraph,

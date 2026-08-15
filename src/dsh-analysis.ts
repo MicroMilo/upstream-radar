@@ -55,7 +55,8 @@ function renderAnalysisPrompt(task: AnalysisTask, events: readonly RadarEvent[])
 4. 每个结论必须引用项目内的文件、符号、配置或明确的运行事实。证据不足时输出 unknown。
 5. 区分“已确认事实”和“模型判断”，不要把推测写成事实。
 6. 如果 event_json 含有 upgradePath，firstCandidate 只表示“没有发现确定性阻断的第一个版本”，不是“安全”或“已兼容”；必须继续用项目证据判断它是否值得尝试。
-7. 返回一个 JSON 对象，字段严格为 project_exposure、confidence、evidence、recommended_action、urgency、reasoning_summary。${groupedInstruction}
+7. 如果 upgradePath.vulnerabilityStatus 是 unavailable，不得推荐任何候选版本为安全或可升级；应先恢复 OSV 监控并说明当前判断不完整。
+8. 返回一个 JSON 对象，字段严格为 project_exposure、confidence、evidence、recommended_action、urgency、reasoning_summary。${groupedInstruction}
 
 expected_output:
 ${JSON.stringify(task.expectedOutput, null, 2)}

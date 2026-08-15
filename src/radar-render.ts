@@ -57,7 +57,10 @@ function renderCompatibility(event: CompatibilityEvent): string[] {
     lines.push(`  [${signal.confidence.toUpperCase()}] ${display(signal.code)}: ${display(signal.summary)}`)
   }
   if (event.upgradePath !== undefined) {
-    if (event.upgradePath.firstCandidate === undefined) {
+    const vulnerabilityStatus = event.upgradePath.vulnerabilityStatus ?? 'not-requested'
+    if (vulnerabilityStatus === 'unavailable') {
+      lines.push(`Upgrade path: OSV candidate check unavailable; no candidate is recommended among ${event.upgradePath.evaluated} newer versions.`)
+    } else if (event.upgradePath.firstCandidate === undefined) {
       lines.push(`Upgrade path: no candidate without a deterministic blocker among ${event.upgradePath.evaluated} newer versions.`)
     } else {
       lines.push(`First candidate without a deterministic blocker: ${packageLabel(event.upgradePath.firstCandidate.candidate)} (still requires project analysis)`)
@@ -68,6 +71,7 @@ function renderCompatibility(event: CompatibilityEvent): string[] {
         }
       }
     }
+    lines.push(`Candidate OSV check: ${vulnerabilityStatus === 'checked' ? 'complete' : vulnerabilityStatus === 'unavailable' ? 'unavailable' : 'not requested'}`)
     lines.push(`Upgrade candidates evaluated: ${event.upgradePath.evaluated}; deterministic blockers: ${event.upgradePath.blockedCount}`)
     if (event.upgradePath.blocked.length > 0) {
       lines.push('Blocked candidate samples:')

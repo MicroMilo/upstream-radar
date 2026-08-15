@@ -100,6 +100,66 @@ describe('compatibility change assessment', () => {
     assert.equal(result.upgradePath.firstCandidate?.candidate.version, '1.1.0')
     assert.deepEqual(result.upgradePath.blocked.map(item => item.candidate.version), ['1.2.0', '2.0.0'])
     assert.equal(result.upgradePath.firstCandidate?.signals.length, 0)
+    assert.equal(result.upgradePath.vulnerabilityStatus, 'not-requested')
+  })
+
+  it('skips an intermediate candidate with a known OSV vulnerability', () => {
+    const result = assessCompatibilityChange(inventory, {
+      previous: {
+        name: 'plugin',
+        version: '1.0.0',
+        main: './dist/index.js',
+        engines: { node: '>=22' },
+      },
+      candidate: {
+        name: 'plugin',
+        version: '2.0.0',
+        main: './dist/plugin.js',
+        engines: { node: '>=24' },
+      },
+      upgradeCandidates: [
+        { name: 'plugin', version: '1.1.0', main: './dist/index.js', engines: { node: '>=22' } },
+        { name: 'plugin', version: '1.2.0', main: './dist/index.js', engines: { node: '>=22' } },
+        { name: 'plugin', version: '2.0.0', main: './dist/plugin.js', engines: { node: '>=24' } },
+      ],
+      candidateVulnerabilities: new Map([
+        ['npm:plugin@1.1.0', [{
+          id: 'GHSA-known-plugin',
+          aliases: [],
+          summary: 'Known vulnerable candidate',
+          details: 'The candidate is affected.',
+          severity: 'high',
+          modified: '2026-08-14T04:00:00.000Z',
+          fixedVersions: ['1.2.0'],
+          references: [],
+        }]],
+      ]),
+      candidateVulnerabilityStatus: 'checked',
+      detectedAt: '2026-08-14T04:00:00.000Z',
+    })
+
+    assert.ok(result?.upgradePath)
+    assert.equal(result.upgradePath.vulnerabilityStatus, 'checked')
+    assert.equal(result.upgradePath.firstCandidate?.candidate.version, '1.2.0')
+    assert.equal(result.upgradePath.blocked[0]?.candidate.version, '1.1.0')
+    assert.ok(result.upgradePath.blocked[0]?.signals.some(signal => signal.code === 'known-vulnerability'))
+  })
+
+  it('does not recommend a candidate when the OSV candidate check is unavailable', () => {
+    const result = assessCompatibilityChange(inventory, {
+      previous: { name: 'plugin', version: '1.0.0', main: './dist/index.js' },
+      candidate: { name: 'plugin', version: '2.0.0', main: './dist/plugin.js' },
+      upgradeCandidates: [
+        { name: 'plugin', version: '1.1.0', main: './dist/index.js' },
+        { name: 'plugin', version: '2.0.0', main: './dist/plugin.js' },
+      ],
+      candidateVulnerabilityStatus: 'unavailable',
+      detectedAt: '2026-08-14T04:00:00.000Z',
+    })
+
+    assert.ok(result?.upgradePath)
+    assert.equal(result.upgradePath.vulnerabilityStatus, 'unavailable')
+    assert.equal(result.upgradePath.firstCandidate, undefined)
   })
 
   it('does not treat an equal or older semantic version as a candidate upgrade', () => {
