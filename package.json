@@ -1,6 +1,6 @@
 {
   "name": "upstream-radar",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Always-on vulnerability and breaking-change impact monitoring for DeepSeek Harness plugins.",
   "type": "module",
   "license": "Apache-2.0",
@@ -20,7 +20,11 @@
     "dependency-security",
     "vulnerability-monitoring",
     "breaking-changes",
-    "supply-chain"
+    "supply-chain",
+    "dependency-graph",
+    "osv",
+    "agent-security",
+    "npm"
   ],
   "engines": {
     "node": ">=22"

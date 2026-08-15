@@ -66,18 +66,30 @@ Upstream Radar 发布的是已经构建好的 npm bundle，不需要开放安装
 dsh plugin --profile web add upstream-radar@latest
 ```
 
-指定项目清单和持久化状态文件后启动 profile：
+不用手写依赖图，可以直接从 DSH profile 生成项目清单：
 
 ```bash
-export UPSTREAM_RADAR_CONFIG=/absolute/path/radar-config.json
-export UPSTREAM_RADAR_STATE=/absolute/path/radar-state.json
+pnpm dlx upstream-radar@latest init \
+  --profile web \
+  --project-name "我的 DSH 项目" \
+  --workspace "$PWD" \
+  --output ./upstream-radar.config.json
+```
+
+初始化命令会读取 profile 中实际安装的第三方 bundle，用禁用 lifecycle scripts 的方式解析每个精确 npm artifact，然后写出一份可审查的配置。它不会自行启动 DSH，也不会自行开启轮询。检查生成文件后，再指定清单、持久化状态文件并启动 profile：
+
+```bash
+export UPSTREAM_RADAR_CONFIG=$PWD/upstream-radar.config.json
+export UPSTREAM_RADAR_STATE=$PWD/upstream-radar.state.json
 export UPSTREAM_RADAR_INTERVAL_SECONDS=1800
 
 dsh --profile web --dump-config
 dsh --profile web
 ```
 
-可以从[示例清单](examples/radar/config.json)开始。如果没有设置 `UPSTREAM_RADAR_CONFIG`，插件会保持休眠，不发起轮询。
+生成的依赖图对应已安装 bundle 版本的精确公共 npm artifact。如果你的 DSH profile 使用了 package-manager override、patch 或特殊的 peer 解析规则，开启持续监控前仍需要人工检查这些差异。
+
+如果需要手写配置或制作 CI fixture，可以参考[示例清单](examples/radar/config.json)。如果没有设置 `UPSTREAM_RADAR_CONFIG`，插件会保持休眠，不发起轮询。
 
 启动后，Radar 会轮询 OSV 与 npm，先把事件状态持久化，再把有变化的事件交给第一个在线的根 DSH Agent。
 
@@ -164,7 +176,7 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 已经支持：npm lock 依赖图、重复版本路径、OSV 精确版本匹配、恶意包记录、npm release 监听、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查。
 
-暂未支持：自动发现当前 DSH profile、pnpm/Yarn 图适配、GitHub release 与迁移文档源、项目级 Session 精确路由、把 Agent 结论写回事件，以及自动创建 Issue 或 PR。
+`init --profile <name>` 已经可以发现指定的 DSH profile 并生成可审查清单；暂未支持自动选择当前 active profile、原生解析 pnpm override/peer 规则、Yarn 图适配、GitHub release 与迁移文档源、项目级 Session 精确路由、把 Agent 结论写回事件，以及自动创建 Issue 或 PR。
 
 Upstream Radar 目前是面向 DSH developer preview 生态的 alpha 软件，事件结构和适配边界仍可能变化。
 
