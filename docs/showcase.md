@@ -176,7 +176,7 @@ This is intentionally different from resolving the same package in a fresh npm p
 For a runner that does not have DSH installed, commit the generated config after review and run one frozen check:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.22.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.22.1 upstream-radar radar check \
   ./upstream-radar.config.json \
   --frozen --state :memory: --fail-on high --json
 ```
@@ -190,7 +190,7 @@ The published Action packages the same frozen check so a DSH plugin project does
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.22.0
+  - uses: MicroMilo/upstream-radar@v0.22.1
     with:
       config: upstream-radar.config.json
       fail-on: high

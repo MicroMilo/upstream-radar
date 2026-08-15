@@ -27,7 +27,7 @@ describe('consumer smoke example', () => {
     assert.equal(plugin?.graph?.rootNodeId, 'node_modules/dsh-cloudflare-browser-run')
     assert.ok((plugin?.graph?.nodes?.length ?? 0) >= 18)
     assert.equal(plugin?.graph?.edges?.length, 65)
-    assert.match(workflow, /uses: MicroMilo\/upstream-radar@v0\.22\.0/)
+    assert.match(workflow, /uses: MicroMilo\/upstream-radar@v0\.22\.1/)
     assert.match(workflow, /config: examples\/github-actions\/consumer\/upstream-radar\.config\.json/)
     assert.match(workflow, /fail-on: high/)
     assert.match(workflow, /contents: read/)

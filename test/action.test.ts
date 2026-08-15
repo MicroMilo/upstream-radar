@@ -13,6 +13,7 @@ describe('reusable GitHub Action', () => {
     assert.equal(typeof packageJson.version, 'string')
     assert.match(action, /runs:\n\s+using: composite/)
     assert.match(action, new RegExp(`default: ${String(packageJson.version).replaceAll('.', '\\.')}`))
+    assert.match(action, /description: ['"]Radar state path; use :memory: for an independent CI check\.['"]/)
     assert.match(action, /uses: pnpm\/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6\.0\.10/)
     assert.match(action, /uses: actions\/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7\.0\.0/)
     assert.match(action, /RADAR_CONFIG: \$\{\{ inputs\.config \}\}/)

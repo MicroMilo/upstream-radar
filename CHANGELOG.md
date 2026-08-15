@@ -2,7 +2,11 @@
 
 All notable changes to Upstream Radar are documented here.
 
-## Unreleased
+## [0.22.1] - 2026-08-16
+
+### Fixed
+
+- Quote the Action's `:memory:` input description so GitHub's workflow runner accepts the manifest as valid YAML.
 
 ### Added
 

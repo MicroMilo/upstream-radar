@@ -16,7 +16,7 @@ The workflow runs on demand or weekly. It checks the committed graph against OSV
 For your project, generate the config from the actual DSH profile instead of copying this package's snapshot:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.22.0 upstream-radar init \
+pnpm dlx --package=upstream-radar@0.22.1 upstream-radar init \
   --profile <dsh-profile> \
   --project-id <project-id> \
   --project-name "Your project" \
