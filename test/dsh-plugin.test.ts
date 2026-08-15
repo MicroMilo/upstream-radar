@@ -1,7 +1,13 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { createAnalysisTask } from '../src/dsh-analysis.js'
-import { createDshRadarMessage, deliverPendingAnalysisTasks, groupPendingAnalysisTasks } from '../src/dsh-plugin.js'
+import {
+  createDshRadarMessage,
+  deliverPendingAnalysisTasks,
+  deliverPendingAnalysisTasksToAgents,
+  groupPendingAnalysisTasks,
+  selectDshAgentForProject,
+} from '../src/dsh-plugin.js'
 import { emptyRadarState } from '../src/radar.js'
 import type { CompatibilityEvent, SourceHealthEvent } from '../src/radar-types.js'
 
@@ -95,5 +101,74 @@ describe('DSH radar plugin adapter', () => {
     assert.match(messages[0]?.content[0]?.text ?? '', /@deepseek-ai\/dsh-agent/)
     assert.match(messages[0]?.content[0]?.text ?? '', /@deepseek-ai\/dsh-session/)
     assert.match(messages[0]?.source.summary ?? '', /DSH runtime compatibility changes \(2\)/)
+  })
+
+  it('routes multiple projects by exact DSH session workspace', () => {
+    const secondEvent: CompatibilityEvent = {
+      ...event,
+      id: 'event-compat-second',
+      incidentId: 'incident-compat-second',
+      project: { id: 'project-b', name: 'Project B', workspace: '/workspace/project-b' },
+    }
+    const firstTask = createAnalysisTask(event)
+    const secondTask = createAnalysisTask(secondEvent)
+    const firstMessages: unknown[] = []
+    const secondMessages: unknown[] = []
+    const firstAgent = {
+      session: { header: { cwd: '/workspace/project-a' } },
+      followup: (message: unknown) => firstMessages.push(message),
+    }
+    const secondAgent = {
+      session: { header: { cwd: '/workspace/project-b' } },
+      followup: (message: unknown) => secondMessages.push(message),
+    }
+
+    assert.equal(selectDshAgentForProject(event.project, [firstAgent, secondAgent]), firstAgent)
+    assert.equal(selectDshAgentForProject(secondEvent.project, [firstAgent, secondAgent]), secondAgent)
+    const state = emptyRadarState()
+    state.pendingAnalysisTasks.push(firstTask, secondTask)
+    const remaining = deliverPendingAnalysisTasksToAgents(state, [firstAgent, secondAgent])
+
+    assert.equal(remaining.pendingAnalysisTasks.length, 0)
+    assert.equal(firstMessages.length, 1)
+    assert.equal(secondMessages.length, 1)
+    assert.match(JSON.stringify(firstMessages[0]), /Project A/)
+    assert.match(JSON.stringify(secondMessages[0]), /Project B/)
+  })
+
+  it('keeps a multi-project task queued when no workspace match is trustworthy', () => {
+    const state = emptyRadarState()
+    state.pendingAnalysisTasks.push(createAnalysisTask(event))
+    const messages: unknown[] = []
+    const otherAgent = {
+      session: { header: { cwd: '/workspace/other' } },
+      followup: (message: unknown) => messages.push(message),
+    }
+
+    const remaining = deliverPendingAnalysisTasksToAgents(state, [otherAgent, {
+      session: { header: { cwd: '/workspace/another' } },
+      followup: (message: unknown) => messages.push(message),
+    }])
+
+    assert.equal(remaining.pendingAnalysisTasks.length, 1)
+    assert.equal(messages.length, 0)
+  })
+
+  it('does not guess when two roots advertise the same workspace', () => {
+    const matches = [
+      { session: { header: { cwd: '/workspace/project-a' } }, followup: () => undefined },
+      { session: { header: { cwd: '/workspace/project-a' } }, followup: () => undefined },
+    ]
+    assert.equal(selectDshAgentForProject(event.project, matches), undefined)
+  })
+
+  it('preserves single-root compatibility even without session metadata', () => {
+    const state = emptyRadarState()
+    state.pendingAnalysisTasks.push(createAnalysisTask(event))
+    const messages: unknown[] = []
+    const remaining = deliverPendingAnalysisTasksToAgents(state, [{ followup: message => messages.push(message) }])
+
+    assert.equal(remaining.pendingAnalysisTasks.length, 0)
+    assert.equal(messages.length, 1)
   })
 })

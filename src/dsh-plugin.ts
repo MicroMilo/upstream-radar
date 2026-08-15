@@ -10,7 +10,7 @@ import { NpmCandidateGraphClient } from './npm-candidate.js'
 import { NpmReleaseClient } from './npm-release.js'
 import { pollRadar } from './radar.js'
 import { loadRadarState, saveRadarState } from './radar-state.js'
-import type { AnalysisTask, RadarState } from './radar-types.js'
+import type { AnalysisTask, ProjectReference, RadarState } from './radar-types.js'
 
 export const name = 'upstream-radar'
 export const inject = ['agents']
@@ -44,6 +44,11 @@ export interface DshRadarMessage {
 
 interface DshAgentLike {
   followup(message: DshRadarMessage): void
+  session?: {
+    header?: {
+      cwd?: string | null
+    }
+  }
 }
 
 interface DshRadarContext {
@@ -133,15 +138,47 @@ export function createDshRadarFamilyMessage(tasks: readonly AnalysisTask[]): Dsh
   })
 }
 
-/** Synchronous follow-up admission is the acknowledgement boundary; failures stay queued. */
-export function deliverPendingAnalysisTasks(state: RadarState, agent: DshAgentLike): RadarState {
+function normalizedWorkspace(workspace: string | undefined): string | undefined {
+  if (workspace === undefined || workspace.trim() === '') return undefined
+  return resolve(workspace)
+}
+
+/**
+ * Match one project to a DSH root by the session's working directory.
+ *
+ * A single root remains the backwards-compatible default. With multiple roots,
+ * an exact workspace match is required; guessing would deliver a security
+ * notice to the wrong project session.
+ */
+export function selectDshAgentForProject(
+  project: ProjectReference,
+  agents: readonly DshAgentLike[],
+): DshAgentLike | undefined {
+  if (agents.length === 1) return agents[0]
+  const workspace = normalizedWorkspace(project.workspace)
+  if (workspace === undefined) return undefined
+  const matches = agents.filter((agent) => {
+    const cwd = agent.session?.header?.cwd
+    return typeof cwd === 'string' && normalizedWorkspace(cwd) === workspace
+  })
+  return matches.length === 1 ? matches[0] : undefined
+}
+
+/** Deliver grouped tasks to the matching DSH root; unroutable tasks stay queued. */
+export function deliverPendingAnalysisTasksToAgents(state: RadarState, agents: readonly DshAgentLike[]): RadarState {
   const deliveredIds = new Set<string>()
   for (const group of groupPendingAnalysisTasks(state.pendingAnalysisTasks)) {
+    const first = group[0]
+    if (first === undefined) continue
+    const agent = selectDshAgentForProject(first.event.project, agents)
+    if (agent === undefined) continue
     try {
       agent.followup(group.length === 1 ? createDshRadarMessage(group[0]!) : createDshRadarFamilyMessage(group))
       for (const task of group) deliveredIds.add(task.id)
     } catch {
-      break
+      // Admission failed for this project only; unrelated project tasks may
+      // still be delivered, while this group remains durable for retry.
+      continue
     }
   }
   if (deliveredIds.size === 0) return state
@@ -149,6 +186,11 @@ export function deliverPendingAnalysisTasks(state: RadarState, agent: DshAgentLi
     ...state,
     pendingAnalysisTasks: state.pendingAnalysisTasks.filter(task => !deliveredIds.has(task.id)),
   }
+}
+
+/** Synchronous follow-up admission is the acknowledgement boundary; failures stay queued. */
+export function deliverPendingAnalysisTasks(state: RadarState, agent: DshAgentLike): RadarState {
+  return deliverPendingAnalysisTasksToAgents(state, [agent])
 }
 
 async function readConfig(path: string): Promise<ReturnType<typeof parseRadarConfig>> {
@@ -207,10 +249,20 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
             ctx.logger.warn(`upstream-radar: ${error.source}: ${safeMessage(error.message)}`)
           }
         }
-        const agent = ctx.agents.roots()[0]
-        if (agent === undefined || state.pendingAnalysisTasks.length === 0) return
-        const next = deliverPendingAnalysisTasks(state, agent)
+        const agents = ctx.agents.roots()
+        if (agents.length === 0 || state.pendingAnalysisTasks.length === 0) return
+        const next = deliverPendingAnalysisTasksToAgents(state, agents)
         if (next !== state) await saveRadarState(stateFile, next)
+        const unrouted = groupPendingAnalysisTasks(next.pendingAnalysisTasks).find((group) => {
+          const first = group[0]
+          return first !== undefined && selectDshAgentForProject(first.event.project, agents) === undefined
+        })
+        if (unrouted !== undefined) {
+          const first = unrouted[0]
+          if (first !== undefined) {
+            ctx.logger.warn(`upstream-radar: kept ${unrouted.length} analysis task(s) queued; no DSH root matches project ${first.event.project.name} workspace ${first.event.project.workspace ?? '(not configured)'}`)
+          }
+        }
       }).catch((error: unknown) => {
         ctx.logger.warn(`upstream-radar: cycle failed: ${safeMessage(error)}`)
       })
