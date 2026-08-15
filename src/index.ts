@@ -20,9 +20,11 @@ export { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 export {
   createRadarConfigFromDshProfile,
   resolveDshProfileDirectory,
+  writeDshPatch,
   writeRadarConfig,
   type DshInitOptions,
   type InitInspector,
+  type WriteDshPatchOptions,
   type WriteRadarConfigOptions,
 } from './init.js'
 export { loadRadarState, parseRadarState, saveRadarState } from './radar-state.js'

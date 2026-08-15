@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 import process from 'node:process'
-import { readFile } from 'node:fs/promises'
+import { access, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { assessCompatibilityChange } from './compatibility.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { GitHubReleaseClient } from './github-release.js'
-import { createRadarConfigFromDshProfile, resolveDshProfileDirectory, writeRadarConfig } from './init.js'
+import { createRadarConfigFromDshProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 import { inspectNpmPackage } from './npm.js'
 import { NpmReleaseClient } from './npm-release.js'
@@ -64,6 +64,7 @@ Options:
   --notes <path>       release notes used as untrusted compatibility evidence
   --profile <name>     DSH profile to inspect for init (default DSH_HOME/profiles/<name>)
   --output <path>      init output path (default: ./upstream-radar.config.json)
+  --dsh-patch <path>   write a self-contained DSH --patch overlay (optional)
   --force              allow init to replace an existing output file
   --json               emit the canonical JSON report
   --fail-on <verdict>  CI threshold; default is review
@@ -293,6 +294,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
 async function runInit(args: readonly string[]): Promise<number> {
   let profile: string | undefined
   let output = 'upstream-radar.config.json'
+  let dshPatch: string | undefined
   let projectId: string | undefined
   let projectName: string | undefined
   let repository: string | undefined
@@ -305,13 +307,14 @@ async function runInit(args: readonly string[]): Promise<number> {
     const argument = args[index]
     if (argument === '--force') force = true
     else if (argument === '--json') json = true
-    else if (argument === '--profile' || argument === '--output' || argument === '--project-id'
+    else if (argument === '--profile' || argument === '--output' || argument === '--dsh-patch' || argument === '--project-id'
       || argument === '--project-name' || argument === '--repository' || argument === '--workspace'
       || argument === '--channel' || argument === '--registry') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--profile') profile = value
       else if (argument === '--output') output = value
+      else if (argument === '--dsh-patch') dshPatch = value
       else if (argument === '--project-id') projectId = value
       else if (argument === '--project-name') projectName = value
       else if (argument === '--repository') repository = value
@@ -324,6 +327,23 @@ async function runInit(args: readonly string[]): Promise<number> {
     }
   }
   if (profile === undefined) throw new Error('init requires --profile <name>')
+  const plannedOutputPath = resolve(output)
+  const plannedStatePath = `${plannedOutputPath}.state.json`
+  if (dshPatch !== undefined) {
+    const plannedPatchPath = resolve(dshPatch)
+    if (plannedPatchPath === plannedOutputPath || plannedPatchPath === plannedStatePath) {
+      throw new Error('DSH patch output must be different from the Radar config and state files')
+    }
+    if (!force) {
+      try {
+        await access(plannedPatchPath)
+        throw new Error(`${plannedPatchPath} already exists; pass --force to replace it`)
+      } catch (error: unknown) {
+        if (error instanceof Error && !('code' in error)) throw error
+        if ((error as NodeJS.ErrnoException)?.code !== 'ENOENT') throw error
+      }
+    }
+  }
   const config = await createRadarConfigFromDshProfile({
     profileDirectory: resolveDshProfileDirectory(profile),
     ...(projectId === undefined ? {} : { projectId }),
@@ -333,8 +353,15 @@ async function runInit(args: readonly string[]): Promise<number> {
     ...(channels.length === 0 ? {} : { channels }),
     ...(registry === undefined ? {} : { registry }),
   })
-  const outputPath = await writeRadarConfig(config, { output, force })
-  const statePath = `${outputPath}.state.json`
+  const outputPath = await writeRadarConfig(config, { output: plannedOutputPath, force })
+  const statePath = plannedStatePath
+  const patchPath = dshPatch === undefined ? undefined : await writeDshPatch({
+    output: dshPatch,
+    configFile: outputPath,
+    stateFile: statePath,
+    profile,
+    force,
+  })
   const plugins = config.projects[0]?.plugins ?? []
   if (json) {
     process.stdout.write(`${JSON.stringify({ output: outputPath, profile, plugins: plugins.map(plugin => ({
@@ -342,11 +369,15 @@ async function runInit(args: readonly string[]): Promise<number> {
       version: plugin.package.version,
       nodes: plugin.graph.nodes.length,
       edges: plugin.graph.edges.length,
-    })), state: statePath }, null, 2)}\n`)
+    })), state: statePath, ...(patchPath === undefined ? {} : { patch: patchPath }) }, null, 2)}\n`)
   } else {
     process.stdout.write(`Created ${outputPath}\nDiscovered ${plugins.length} DSH plugin bundle(s):\n`)
     for (const plugin of plugins) process.stdout.write(`  ${plugin.package.name}@${plugin.package.version} (${plugin.graph.nodes.length} dependency nodes)\n`)
-    process.stdout.write(`\nReview the generated inventory, then run:\n  export UPSTREAM_RADAR_CONFIG=${shellQuote(outputPath)}\n  export UPSTREAM_RADAR_STATE=${shellQuote(statePath)}\n  dsh --profile ${shellQuote(profile)}\n`)
+    if (patchPath === undefined) {
+      process.stdout.write(`\nReview the generated inventory, then run:\n  export UPSTREAM_RADAR_CONFIG=${shellQuote(outputPath)}\n  export UPSTREAM_RADAR_STATE=${shellQuote(statePath)}\n  dsh --profile ${shellQuote(profile)}\n`)
+    } else {
+      process.stdout.write(`Created ${patchPath}\n\nReview the generated inventory and DSH overlay, then run:\n  dsh --profile ${shellQuote(profile)} --patch ${shellQuote(patchPath)}\n`)
+    }
   }
   return 0
 }

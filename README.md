@@ -34,12 +34,12 @@ pnpm dlx --package=upstream-radar@latest upstream-radar init \
   --profile web \
   --project-name "My DSH project" \
   --workspace "$PWD" \
-  --output ./upstream-radar.config.json
-export UPSTREAM_RADAR_CONFIG=$PWD/upstream-radar.config.json
-dsh --profile web
+  --output ./upstream-radar.config.json \
+  --dsh-patch ./upstream-radar.dsh.yml
+dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
-The initializer writes a reviewable inventory; it does not start polling until `UPSTREAM_RADAR_CONFIG` is set. Read the [full DSH setup](#install-in-dsh) for state files, profile boundaries, and the real runtime proof.
+The initializer writes a reviewable inventory and an explicit DSH overlay. Review both files, then start the same profile with `--patch`; no shell environment variables are required. Read the [full DSH setup](#install-in-dsh) for the legacy environment-variable path, profile boundaries, and the real runtime proof.
 
 If you want to try the monitoring loop without booting a DSH profile, run one cycle from a reviewed inventory:
 
@@ -107,23 +107,22 @@ pnpm dlx --package=upstream-radar@latest upstream-radar init \
   --profile web \
   --project-name "My DSH project" \
   --workspace "$PWD" \
-  --output ./upstream-radar.config.json
+  --output ./upstream-radar.config.json \
+  --dsh-patch ./upstream-radar.dsh.yml
 ```
 
-The initializer reads the profile's actual third-party bundles, resolves each exact npm artifact with lifecycle scripts disabled, and writes a reviewable config. It never starts DSH or enables polling by itself. Review the generated file, then point the bundle at it and choose a durable state file:
+The initializer reads the profile's actual third-party bundles, resolves each exact npm artifact with lifecycle scripts disabled, and writes a reviewable config plus a self-contained DSH overlay. It never starts DSH or enables polling by itself. Review both generated files, then run:
 
 ```bash
-export UPSTREAM_RADAR_CONFIG=$PWD/upstream-radar.config.json
-export UPSTREAM_RADAR_STATE=$PWD/upstream-radar.state.json
-export UPSTREAM_RADAR_INTERVAL_SECONDS=1800
-
-dsh --profile web --dump-config
-dsh --profile web
+dsh --profile web --patch ./upstream-radar.dsh.yml --dump-config
+dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
+
+The generated overlay points DSH at the config and state files explicitly. If you prefer environment variables or need to override the polling interval, omit `--dsh-patch` and use `UPSTREAM_RADAR_CONFIG`, `UPSTREAM_RADAR_STATE`, and `UPSTREAM_RADAR_INTERVAL_SECONDS` as before.
 
 The generated graph is the exact public npm artifact graph for the installed bundle versions. If your DSH profile applies package-manager overrides, patches, or unusual peer resolution, review those differences before enabling continuous monitoring.
 
-For a hand-written or CI fixture, use [the example inventory](examples/radar/config.json). If `UPSTREAM_RADAR_CONFIG` is not set, the bundle stays dormant and performs no polling.
+For a hand-written or CI fixture, use [the example inventory](examples/radar/config.json). If neither a generated `--patch` overlay nor `UPSTREAM_RADAR_CONFIG` is provided, the bundle stays dormant and performs no polling.
 
 Once running, Radar polls OSV, npm, and public GitHub Releases, persists incident state before delivery, and submits only changed incidents to the first live root DSH Agent. If a source is temporarily unavailable, Radar keeps the last confirmed state instead of claiming that the project is clean, continues delivering already queued tasks, and creates one source-health notice after three consecutive failures.
 
@@ -254,7 +253,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 
 ## Current boundaries
 
-- `init --profile <name>` discovers a named DSH profile and generates a reviewable inventory; automatic active-profile selection and native pnpm override/peer resolution are not implemented yet.
+- `init --profile <name>` discovers a named DSH profile and generates a reviewable inventory; `--dsh-patch <path>` also writes an explicit DSH overlay so first startup needs no environment variables. Automatic active-profile selection and native pnpm override/peer resolution are not implemented yet.
 - npm lock graphs are supported; pnpm and Yarn graph adapters are not implemented.
 - OSV, npm `latest`, and public GitHub Release notes are live sources; changelog, comparison-diff, and migration-guide ingestion are deferred.
 - A failed OSV check preserves confirmed matches and returns a visible source warning; source health is durable and routed through DSH after three consecutive failures, while source-claim conflict handling and external health destinations are not implemented yet.

@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, it } from 'node:test'
-import { createRadarConfigFromDshProfile, resolveDshProfileDirectory, writeRadarConfig } from '../src/init.js'
+import { createRadarConfigFromDshProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from '../src/init.js'
 
 const graph = {
   schema: 'upstream-radar.dependency-graph/v1alpha1' as const,
@@ -55,6 +55,51 @@ describe('DSH profile initialization', () => {
       const saved = JSON.parse(await readFile(output, 'utf8')) as typeof config
       assert.equal(saved.projects[0]?.plugins[0]?.package.version, '1.2.3')
       await assert.rejects(writeRadarConfig(config, { output }), /already exists/)
+
+      const patch = join(root, 'upstream-radar.dsh.yml')
+      await writeDshPatch({
+        output: patch,
+        configFile: output,
+        stateFile: `${output}.state.json`,
+        profile: 'web',
+      })
+      const patchText = await readFile(patch, 'utf8')
+      assert.match(patchText, /name: 'upstream-radar\/dsh'/)
+      assert.ok(patchText.includes(`configFile: ${JSON.stringify(output)}`))
+      assert.ok(patchText.includes(`stateFile: ${JSON.stringify(`${output}.state.json`)}`))
+      assert.match(patchText, /runOnStart: true/)
+      assert.doesNotMatch(patchText, /UPSTREAM_RADAR_CONFIG|!!js/)
+      await writeDshPatch({
+        output: patch,
+        configFile: output,
+        stateFile: `${output}.state.json`,
+        profile: 'web',
+        intervalSeconds: 300,
+        runOnStart: false,
+        force: true,
+      })
+      const customizedPatchText = await readFile(patch, 'utf8')
+      assert.match(customizedPatchText, /intervalSeconds: 300/)
+      assert.match(customizedPatchText, /runOnStart: false/)
+      await assert.rejects(writeDshPatch({
+        output: patch,
+        configFile: output,
+        stateFile: `${output}.state.json`,
+        profile: 'web',
+      }), /already exists/)
+      await assert.rejects(writeDshPatch({
+        output,
+        configFile: output,
+        stateFile: `${output}.state.json`,
+        profile: 'web',
+      }), /different from the Radar config/)
+      await assert.rejects(writeDshPatch({
+        output: join(root, 'invalid.dsh.yml'),
+        configFile: output,
+        stateFile: `${output}.state.json`,
+        profile: 'web',
+        intervalSeconds: 299,
+      }), /intervalSeconds must be between 300 and 86400/)
     } finally {
       await rm(root, { recursive: true, force: true })
     }
