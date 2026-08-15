@@ -15,7 +15,7 @@
 | 候选传递依赖 | 候选版本解析出的依赖树是否引入已知漏洞 | 对按版本排序的有限前缀运行 `npm install --package-lock-only --ignore-scripts`；不执行候选代码；将每个图节点查询 OSV，并保留从候选根到漏洞节点的路径 | candidate-dependency-vulnerability / checked / partial / incomplete / unavailable |
 | 发布说明 | 候选版本有没有对应的公开 GitHub Release 说明 | 仅接受 npm 元数据中的公开 `github.com` 仓库，按 `v<version>` 或 `<version>` 精确读取；正文限长并作为不可信材料 | 发布说明正文与链接，失败不阻塞 npm/OSV 主链路 |
 | Breaking signals | 新版本是否真的是高于当前安装版本的候选，并且是否跨兼容边界或改变关键声明 | 先比较 npm 精确版本方向；只对更高版本比较入口、exports、Node、DSH bundle 和 peer 范围；`latest` 回退不制造新告警，也不把已有问题误判为已解决；当最新版本有确定性阻断时，再按版本从低到高筛出第一个没有确定性阻断且没有已知漏洞的候选；OSV 失败时不推荐候选，但不称为“安全” | confirmed/strong/needs-analysis；最低候选仍需 DSH 项目分析 |
-| DSH 分析入口 | 如何避免“新闻”直接指挥 Agent，以及如何避免一次 DSH 升级刷出多条通知 | 将所有来源文字标记为不可信数据，要求只读和项目证据；同一项目同一轮的 DSH 运行时包更新在投递层合并，底层事件仍逐包保存 | 由 DSH 原生投递；CLI 只用于检查持久 analysis task |
+| DSH 分析入口与结果写回 | 如何避免“新闻”直接指挥 Agent、避免一次 DSH 升级刷出多条通知，以及避免普通聊天被误当成结论 | 将所有来源文字标记为不可信数据，要求只读和项目证据；同一项目同一轮的 DSH 运行时包更新在投递层合并，底层事件仍逐包保存；用 task/message/session/event 四个身份绑定回复，只接受固定六字段 JSON，并在上游事件变化时清掉旧结论 | DSH 原生投递；`radar status`、`analysis list/show` 查看等待和已验证结果 |
 | 去重与恢复 | 重启、重复轮询是否丢失、刷屏或投递过期任务 | 保存活跃漏洞、活跃兼容性问题和待分析任务；同一 incident 的新任务替换旧任务，resolved 会撤销旧任务 | 至少一次投递，不变不重复，不过期投递 |
 | 源失败与健康 | OSV、npm release 或候选依赖图暂时查不到时，是否会被误判成“没有漏洞”，以及负责人能否知道源长期不可用 | 保留上一次确认的漏洞状态，不生成假的 `resolved`，仍继续投递已有 DSH 任务；连续 3 次失败生成持久 `source-health` DSH notice，恢复后 `resolved`；CLI/JSON 返回源警告 | `sourceErrors: osv/npm-releases/npm-candidate-graphs`、源健康状态、source-health 生命周期 |
 | 本地接线 | DSH profile 是否登记 Radar、overlay 是否指向同一份配置和状态、状态是否可读、必需依赖是否完整 | `doctor` 只读本地 manifest、配置、overlay 和状态，不访问 OSV/npm/GitHub，也不执行插件代码 | `READY`、`READY WITH WARNINGS` 或 `BLOCKED` |

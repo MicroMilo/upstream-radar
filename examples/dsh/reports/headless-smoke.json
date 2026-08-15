@@ -7,6 +7,7 @@
   "radarTaskReachedModel": true,
   "pluginSourcePreserved": true,
   "pendingTasksAfterDelivery": 0,
+  "analysisResults": 1,
   "activeVulnerabilities": 1,
   "modelRequests": 3,
   "finalAssistant": {

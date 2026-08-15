@@ -55,6 +55,8 @@ export interface RadarStatusReport {
   activeCompatibility: number
   activeSourceHealth: number
   pendingAnalysisTasks: number
+  analysisDeliveries: number
+  analysisResults: number
   activeIncidents: RadarStatusIncident[]
   activeIncidentOverflow: number
 }
@@ -97,7 +99,13 @@ function sourceLabel(source: RadarSource): string {
   return 'GitHub releases'
 }
 
-function vulnerabilityStatusIncident(event: VulnerabilityEvent): RadarStatusIncident {
+function analysisNextStep(state: RadarState, incidentId: string, fallback: string): string {
+  const result = state.analysisResults?.[incidentId]
+  if (result === undefined) return fallback
+  return `DSH analysis: ${display(result.project_exposure)} (${display(result.confidence)} confidence); ${display(result.recommended_action, 2_048)}`
+}
+
+function vulnerabilityStatusIncident(event: VulnerabilityEvent, state: RadarState): RadarStatusIncident {
   const firstPath = event.paths[0]
   const path = firstPath === undefined
     ? 'dependency path unavailable'
@@ -110,7 +118,7 @@ function vulnerabilityStatusIncident(event: VulnerabilityEvent): RadarStatusInci
       priority: 'critical',
       project: display(event.project.name),
       summary,
-      nextStep: `Remove or isolate ${packageLabel(event.plugin)}, then ask the DSH Agent to assess project exposure.`,
+      nextStep: analysisNextStep(state, event.incidentId, `Remove or isolate ${packageLabel(event.plugin)}, then ask the DSH Agent to assess project exposure.`),
     }
   }
   const fixedVersions = event.advisory.fixedVersions.slice(0, 4).map(item => display(item)).join(', ')
@@ -120,13 +128,13 @@ function vulnerabilityStatusIncident(event: VulnerabilityEvent): RadarStatusInci
     priority: event.advisory.severity,
     project: display(event.project.name),
     summary,
-    nextStep: fixedVersions.length === 0
+    nextStep: analysisNextStep(state, event.incidentId, fixedVersions.length === 0
       ? `No published fix is recorded; ask the DSH Agent to assess containment or replacement for ${packageLabel(event.plugin)}.`
-      : `Review ${event.affected.name} fixed version(s) ${fixedVersions} with the DSH Agent before changing the plugin.`,
+      : `Review ${event.affected.name} fixed version(s) ${fixedVersions} with the DSH Agent before changing the plugin.`),
   }
 }
 
-function compatibilityStatusIncident(event: CompatibilityEvent): RadarStatusIncident {
+function compatibilityStatusIncident(event: CompatibilityEvent, state: RadarState): RadarStatusIncident {
   const firstCandidate = event.upgradePath?.firstCandidate?.candidate
   const candidate = firstCandidate === undefined ? event.candidate : firstCandidate
   const signal = event.signals.find(item => item.confidence === 'confirmed' || item.confidence === 'strong')
@@ -138,11 +146,11 @@ function compatibilityStatusIncident(event: CompatibilityEvent): RadarStatusInci
     priority: 'attention',
     project: display(event.project.name),
     summary: `${packageLabel(event.installed)} -> ${packageLabel(candidate)}: ${signalText}`,
-    nextStep: `Ask the DSH Agent to inspect project impact before applying ${packageLabel(candidate)}.`,
+    nextStep: analysisNextStep(state, event.incidentId, `Ask the DSH Agent to inspect project impact before applying ${packageLabel(candidate)}.`),
   }
 }
 
-function sourceHealthStatusIncident(event: SourceHealthEvent): RadarStatusIncident {
+function sourceHealthStatusIncident(event: SourceHealthEvent, state: RadarState): RadarStatusIncident {
   const source = sourceLabel(event.source)
   return {
     incidentId: event.incidentId,
@@ -150,14 +158,14 @@ function sourceHealthStatusIncident(event: SourceHealthEvent): RadarStatusIncide
     priority: 'attention',
     project: display(event.project.name),
     summary: `${source} failed ${event.failureCount} consecutive check(s)`,
-    nextStep: `Restore ${source} before treating the absence of new alerts as a clean result.`,
+    nextStep: analysisNextStep(state, event.incidentId, `Restore ${source} before treating the absence of new alerts as a clean result.`),
   }
 }
 
-function statusIncident(event: RadarEvent): RadarStatusIncident {
-  if (event.kind === 'compatibility') return compatibilityStatusIncident(event)
-  if (event.kind === 'source-health') return sourceHealthStatusIncident(event)
-  return vulnerabilityStatusIncident(event)
+function statusIncident(event: RadarEvent, state: RadarState): RadarStatusIncident {
+  if (event.kind === 'compatibility') return compatibilityStatusIncident(event, state)
+  if (event.kind === 'source-health') return sourceHealthStatusIncident(event, state)
+  return vulnerabilityStatusIncident(event, state)
 }
 
 function priorityRank(priority: RadarStatusIncident['priority']): number {
@@ -172,9 +180,9 @@ function priorityRank(priority: RadarStatusIncident['priority']): number {
 
 function activeIncidentSummary(state: RadarState): { incidents: RadarStatusIncident[]; overflow: number } {
   const all = [
-    ...Object.values(state.activeVulnerabilities).map(item => statusIncident(item.event)),
-    ...Object.values(state.activeCompatibility).map(item => statusIncident(item.event)),
-    ...Object.values(state.activeSourceHealth ?? {}).map(item => statusIncident(item.event)),
+    ...Object.values(state.activeVulnerabilities).map(item => statusIncident(item.event, state)),
+    ...Object.values(state.activeCompatibility).map(item => statusIncident(item.event, state)),
+    ...Object.values(state.activeSourceHealth ?? {}).map(item => statusIncident(item.event, state)),
   ].sort((left, right) => (
     priorityRank(right.priority) - priorityRank(left.priority)
       || left.project.localeCompare(right.project)
@@ -233,6 +241,8 @@ export function createRadarStatus(
     activeCompatibility: Object.keys(state.activeCompatibility).length,
     activeSourceHealth: Object.keys(state.activeSourceHealth ?? {}).length,
     pendingAnalysisTasks: state.pendingAnalysisTasks.length,
+    analysisDeliveries: Object.keys(state.analysisDeliveries ?? {}).length,
+    analysisResults: Object.keys(state.analysisResults ?? {}).length,
     activeIncidents: activeSummary.incidents,
     activeIncidentOverflow: activeSummary.overflow,
   }
@@ -293,12 +303,16 @@ export function renderRadarStatus(report: RadarStatusReport): string {
     `Active compatibility incidents: ${report.activeCompatibility}`,
     `Source-health incidents: ${report.activeSourceHealth}`,
     `Pending DSH analysis tasks: ${report.pendingAnalysisTasks}`,
+    `Awaiting DSH analysis results: ${report.analysisDeliveries}`,
+    `Verified DSH analysis results: ${report.analysisResults}`,
   )
   if (report.monitoring === 'not-started') {
     lines.push('', 'No completed check is recorded yet. Start DSH or run `radar check` once.')
   }
   if (report.pendingAnalysisTasks > 0) {
     lines.push('', `Next: run \`upstream-radar task show ${display(report.stateFile)}\` to inspect the next queued DSH analysis.`)
+  } else if (report.analysisDeliveries > 0) {
+    lines.push('', 'DSH analysis is in progress; results will appear here only after strict response validation.')
   }
   return `${lines.join('\n')}\n`
 }

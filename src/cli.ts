@@ -37,10 +37,10 @@ const VALID_THRESHOLDS = new Set<Verdict | 'never'>(['warn', 'review', 'block', 
 const VALID_RADAR_THRESHOLDS = new Set<RadarFailThreshold>(RADAR_FAIL_THRESHOLDS)
 const VALID_RADAR_COMPATIBILITY_THRESHOLDS = new Set<RadarCompatibilityFailThreshold>(RADAR_COMPATIBILITY_FAIL_THRESHOLDS)
 
-function safeErrorMessage(value: string): string {
+function safeErrorMessage(value: string, maxLength = 2_048): string {
   return value.replace(/[\u0000-\u001f\u007f-\u009f]/g, character => (
     `\\u${character.codePointAt(0)?.toString(16).padStart(4, '0') ?? '0000'}`
-  )).slice(0, 2_048)
+  )).slice(0, maxLength)
 }
 
 function shellQuote(value: string): string {
@@ -65,6 +65,8 @@ Usage:
   upstream-radar task list <state.json> [--json]
   upstream-radar task show <state.json> [task-id] [--json]
   upstream-radar task ack <state.json> <task-id>
+  upstream-radar analysis list <state.json> [--json]
+  upstream-radar analysis show <state.json> [incident-id] [--json]
   upstream-radar version
 
 Commands:
@@ -76,6 +78,7 @@ Commands:
   benchmark run offline compatibility-rule contracts without network or plugin execution
   radar    monitor vulnerability changes, watch continuously, inspect status, or assess a candidate compatibility change
   task     inspect or acknowledge the durable DSH analysis outbox
+  analysis inspect verified DSH conclusions stored in the Radar state
 
 Options:
   --deep               resolve the dependency graph with scripts disabled and ask npm to verify signatures/provenance
@@ -159,6 +162,63 @@ async function runTask(args: readonly string[]): Promise<number> {
   if (remaining.length === state.pendingAnalysisTasks.length) throw new Error(`pending task not found: ${taskId}`)
   await saveRadarState(statePath, { ...state, pendingAnalysisTasks: remaining })
   process.stdout.write(`Acknowledged ${safeErrorMessage(taskId)}.\n`)
+  return 0
+}
+
+async function runAnalysis(args: readonly string[]): Promise<number> {
+  const subcommand = args[0]
+  if (subcommand !== 'list' && subcommand !== 'show') throw new Error('analysis requires list or show')
+  const statePath = args[1]
+  if (statePath === undefined || statePath.startsWith('-')) throw new Error(`analysis ${subcommand} requires a state file`)
+  const positional: string[] = []
+  let json = false
+  for (const argument of args.slice(2)) {
+    if (argument === '--json') json = true
+    else if (argument.startsWith('-')) throw new Error(`unknown option for analysis ${subcommand}: ${argument}`)
+    else positional.push(argument)
+  }
+  const results = Object.values((await loadRadarState(statePath)).analysisResults ?? {})
+    .sort((left, right) => right.receivedAt.localeCompare(left.receivedAt))
+  if (subcommand === 'list') {
+    if (positional.length > 0) throw new Error('analysis list received unexpected arguments')
+    if (json) {
+      process.stdout.write(`${JSON.stringify(results, null, 2)}\n`)
+    } else if (results.length === 0) {
+      process.stdout.write('No verified DSH analysis results.\n')
+    } else {
+      process.stdout.write('INCIDENT\tEXPOSURE\tCONFIDENCE\tURGENCY\tRECEIVED\n')
+      for (const result of results) {
+        process.stdout.write([
+          safeErrorMessage(result.incidentId),
+          result.project_exposure,
+          result.confidence,
+          result.urgency,
+          safeErrorMessage(result.receivedAt),
+        ].join('\t') + '\n')
+      }
+    }
+    return 0
+  }
+  if (positional.length > 1) throw new Error('analysis show accepts at most one incident id')
+  const requestedId = positional[0]
+  const result = requestedId === undefined
+    ? results[0]
+    : results.find(item => item.incidentId === requestedId)
+  if (result === undefined) throw new Error(requestedId === undefined ? 'no verified DSH analysis result' : `analysis result not found: ${requestedId}`)
+  if (json) {
+    process.stdout.write(`${JSON.stringify(result, null, 2)}\n`)
+  } else {
+    process.stdout.write([
+      `Incident: ${safeErrorMessage(result.incidentId)}`,
+      `Exposure: ${result.project_exposure}`,
+      `Confidence: ${result.confidence}`,
+      `Urgency: ${result.urgency}`,
+      `Evidence: ${result.evidence.map(item => safeErrorMessage(item, 4_096)).join(' | ') || '(none)'}`,
+      `Recommended action: ${safeErrorMessage(result.recommended_action, 8_192)}`,
+      `Reasoning: ${safeErrorMessage(result.reasoning_summary, 16_384)}`,
+      `Received: ${safeErrorMessage(result.receivedAt)}`,
+    ].join('\n') + '\n')
+  }
   return 0
 }
 
@@ -637,6 +697,7 @@ async function main(args: readonly string[]): Promise<number> {
   if (command === 'benchmark') return runBenchmark(args.slice(1))
   if (command === 'radar') return runRadar(args.slice(1))
   if (command === 'task') return runTask(args.slice(1))
+  if (command === 'analysis') return runAnalysis(args.slice(1))
   if (command !== 'scan' && command !== 'inspect') throw new Error(`unknown command: ${command}`)
 
   const target = args[1]

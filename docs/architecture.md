@@ -86,7 +86,7 @@ Compatibility findings use the same lifecycle as vulnerabilities. A stable `inci
 
 ## DSH Agent handoff
 
-An analysis task includes the deterministic event, project location, route, and a fixed output contract. Its prompt says that every advisory, release note, link, package name, and repository string is untrusted data. It requests read-only investigation and requires file, symbol, configuration, or runtime evidence. DSH consumes it natively as a plugin-originated notice. Text and JSON export remain debugging surfaces, not a second product integration.
+An analysis task includes the deterministic event, project location, route, and a fixed output contract. Its prompt says that every advisory, release note, link, package name, and repository string is untrusted data. It requests read-only investigation and requires file, symbol, configuration, or runtime evidence. DSH consumes it natively as a plugin-originated notice. A machine-readable task marker binds the notice to one exact delivery, and Radar listens only for a model-authored assistant message from that same session. The response must be complete JSON with exactly the six fields in [`analysis-result.schema.json`](../schemas/analysis-result.schema.json); prose, extra fields, user messages, and other sessions are ignored. Text and JSON export remain debugging surfaces, not a second product integration.
 
 Compatibility incidents for one project's DSH runtime packages remain separate in durable state, but the native DSH adapter groups them into one Agent notice when they are pending together. Grouping changes delivery noise, not evidence or incident identity.
 
@@ -99,14 +99,16 @@ poll sources
   -> atomically save active matches and pending tasks
   -> select the root Agent whose session workspace matches the project
   -> submit plugin-originated follow-up
-  -> atomically remove synchronously accepted tasks from the outbox
+  -> record the exact message/session delivery
+  -> accept only the matching model response with the strict result schema
+  -> attach the result to the unchanged event id and atomically remove the delivery
 ```
 
 When a generated inventory is used, the native DSH adapter and CLI `radar check/watch` first rebuild the installed graph from the selected DSH profile. This refresh is manifest-only and never executes plugin code. A failed refresh aborts that cycle before state replacement, so an unreadable or half-updated profile cannot be reported as clean. Read-only `status` and explicit-file `compare` do not refresh.
 
 CLI-generated inventories record the project workspace as `.` by default. This keeps the graph and Agent context reviewable in version control without embedding the creator's absolute home path; the DSH process is expected to start from the project root. `--workspace <absolute-path>` remains available when that launch arrangement is not possible.
 
-The delivery boundary is intentionally at-least-once. A crash after follow-up admission but before the second state write can repeat a task; it cannot silently erase it. Event and task ids allow later delivery adapters to deduplicate.
+The delivery boundary is intentionally at-least-once. A crash after follow-up admission but before the second state write can repeat a task; it cannot silently erase it. Event and task ids allow later delivery adapters to deduplicate. A result is never used to rewrite deterministic vulnerability or compatibility state; a new or updated event deletes the old conclusion, and a response for a stale event is discarded.
 
 The `doctor` command is a separate local diagnosis plane. It parses the config and state, reads the selected DSH profile manifest, checks the generated overlay's paths, and reuses the network-free status snapshot. It never polls an upstream source and never loads a plugin, so a `READY` result means “the wiring is locally coherent,” not “the feeds are current” or “the model has completed an analysis.”
 
@@ -124,7 +126,7 @@ The same local plane renders a bounded action summary from durable state. It pre
 
 ## Current DSH boundary
 
-The adapter uses only the small Cordis surface needed for lifecycle cleanup, root-Agent discovery, and `followup`. It intentionally does not depend on the session-local Schedule plugin. A local timer performs fixed polling while the DSH process is alive; durable state provides restart recovery.
+The adapter uses only the small Cordis surface needed for lifecycle cleanup, root-Agent discovery, `followup`, and the append-only `session/event` feed. It intentionally does not depend on the session-local Schedule plugin. A local timer performs fixed polling while the DSH process is alive; durable state provides restart recovery.
 
 With one live root Agent, that Agent remains the simple security inbox. When several roots exist, the adapter compares the event's `project.workspace` with each root's `session.header.cwd`; only an exact match is accepted. An absent or ambiguous match leaves the task in the durable outbox, so a security notice cannot be silently delivered to another project.
 

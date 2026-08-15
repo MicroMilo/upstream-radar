@@ -2,6 +2,20 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.29.0] - 2026-08-16
+
+### Added
+
+- Bind each DSH analysis delivery to its exact task, message, session, and upstream event.
+- Accept model conclusions only from the matching DSH `assistant/message` with the strict six-field JSON result contract.
+- Persist verified analysis results, expose them through `radar status` and `analysis list/show`, and remove stale conclusions when an incident changes or resolves.
+- Extend the real DSH headless showcase to prove result writeback, not only task delivery.
+
+### Safety
+
+- Ordinary chat, forged plugin markers, malformed JSON, other sessions, and stale event responses cannot become Radar conclusions.
+- Model conclusions remain advisory and never rewrite deterministic vulnerability or compatibility state.
+
 ## [0.28.0] - 2026-08-16
 
 ### Added
