@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import process from 'node:process'
+import { spawnSync } from 'node:child_process'
 import { access, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { renderCompatibilityBenchmark, runCompatibilityBenchmark } from './compatibility-benchmark.js'
@@ -51,6 +52,7 @@ function usage(): string {
   return `Upstream Radar — always-on dependency and compatibility monitoring for DSH plugins
 
 Usage:
+  upstream-radar setup [--profile <name>] [options]
   upstream-radar init [--profile <name>] [options]
   upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
@@ -70,6 +72,7 @@ Usage:
   upstream-radar version
 
 Commands:
+  setup    install the exact Radar bundle, generate DSH wiring, and run doctor
   init     discover third-party bundles in a DSH profile and write a reviewable inventory
   doctor   check local Radar/DSH wiring without polling upstream sources
   scan     bounded, read-only inspection of a local package directory
@@ -93,6 +96,7 @@ Options:
   --fail-on-compatibility <value>  CI gate: never|breaking|any (default: never)
   --notes <path>       release notes used as untrusted compatibility evidence
   --profile <name>     DSH profile for init or doctor (init auto-selects the only candidate when omitted)
+  --no-install          setup: reuse an already installed upstream-radar bundle
   --output <path>      init output path (default: ./upstream-radar.config.json)
   --dsh-patch <path>   write a self-contained DSH --patch overlay (optional)
   --patch <path>       DSH overlay to verify with doctor
@@ -519,6 +523,92 @@ async function runRadar(args: readonly string[]): Promise<number> {
   return 0
 }
 
+async function runSetup(args: readonly string[]): Promise<number> {
+  let profile: string | undefined
+  let output = 'upstream-radar.config.json'
+  let patchFile: string | undefined
+  let noInstall = false
+  const initArgs: string[] = []
+  const valueOptions = new Set([
+    '--profile', '--output', '--dsh-patch', '--project-id', '--project-name',
+    '--repository', '--workspace', '--channel', '--registry',
+  ])
+  for (let index = 0; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === '--no-install') {
+      noInstall = true
+      continue
+    }
+    if (argument === '--json') throw new Error('setup does not accept --json; use init --json')
+    if (argument === '--force') {
+      initArgs.push(argument)
+      continue
+    }
+    if (valueOptions.has(argument ?? '')) {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
+      if (argument === '--profile') profile = value
+      else if (argument === '--output') output = value
+      else if (argument === '--dsh-patch') patchFile = value
+      initArgs.push(argument ?? '', value)
+      index += 1
+      continue
+    }
+    throw new Error(`unknown option for setup: ${argument}`)
+  }
+
+  let resolvedProfile = profile
+  if (!noInstall && resolvedProfile === undefined) {
+    const candidates = await discoverDshProfiles()
+    if (candidates.length === 0) {
+      throw new Error('setup could not find a DSH profile with third-party bundles; pass --profile <name>')
+    }
+    if (candidates.length > 1) {
+      throw new Error(`setup found multiple DSH profiles with third-party bundles (${candidates.join(', ')}); pass --profile <name>`)
+    }
+    resolvedProfile = candidates[0]
+  }
+  if (resolvedProfile !== undefined && profile === undefined) {
+    initArgs.unshift('--profile', resolvedProfile)
+  }
+
+  if (!noInstall) {
+    if (resolvedProfile === undefined) throw new Error('setup could not select a DSH profile')
+    resolveDshProfileDirectory(resolvedProfile)
+    const dshCommand = process.platform === 'win32' ? 'dsh.cmd' : 'dsh'
+    process.stdout.write(`Installing upstream-radar@${TOOL_VERSION} into DSH profile ${resolvedProfile}...\n`)
+    const result = spawnSync(dshCommand, [
+      'plugin', '--profile', resolvedProfile, 'add', `upstream-radar@${TOOL_VERSION}`,
+    ], {
+      env: process.env,
+      stdio: 'inherit',
+    })
+    if (result.error !== undefined) {
+      throw new Error(`setup could not run ${dshCommand}: ${safeErrorMessage(result.error.message)}`)
+    }
+    if (result.status !== 0) {
+      throw new Error(`DSH plugin installation failed with exit code ${result.status ?? 'unknown'}`)
+    }
+  }
+
+  const initStatus = await runInit(initArgs)
+  if (initStatus !== 0) return initStatus
+
+  const outputPath = resolve(output)
+  const config = parseRadarConfig(await readJson(outputPath))
+  const statePath = `${outputPath}.state.json`
+  const doctorOptions: Parameters<typeof createDoctorReport>[0] = {
+    configFile: outputPath,
+    stateFile: statePath,
+  }
+  const doctorProfile = config.dshProfile?.name ?? resolvedProfile
+  if (doctorProfile !== undefined) doctorOptions.profile = doctorProfile
+  if (patchFile !== undefined) doctorOptions.patchFile = patchFile
+  const doctor = await createDoctorReport(doctorOptions)
+  process.stdout.write(`\nLocal wiring check:\n${renderDoctorReport(doctor)}`)
+  return doctor.status === 'blocked' ? 1 : 0
+}
+
 async function runInit(args: readonly string[]): Promise<number> {
   let profile: string | undefined
   let output = 'upstream-radar.config.json'
@@ -691,6 +781,7 @@ async function main(args: readonly string[]): Promise<number> {
     process.stdout.write(`${TOOL_VERSION}\n`)
     return 0
   }
+  if (command === 'setup') return runSetup(args.slice(1))
   if (command === 'init') return runInit(args.slice(1))
   if (command === 'doctor') return runDoctor(args.slice(1))
   if (command === 'probe') return runProbe(args.slice(1))

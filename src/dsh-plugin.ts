@@ -513,7 +513,6 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
     const inFlightDeliveries = new Map<string, AnalysisDelivery>()
     const onSessionEvent = (session: DshSessionLike, event: DshSessionEventLike): void => {
       serial = serial.then(async () => {
-        if (stopped) return
         const state = await loadRadarState(stateFile)
         const outcome = applyDshAnalysisSessionEvent(state, session, event, inFlightDeliveries)
         if (outcome.state !== state) await saveRadarState(stateFile, outcome.state)

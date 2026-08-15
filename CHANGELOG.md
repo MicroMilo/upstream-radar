@@ -2,6 +2,18 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.30.0] - 2026-08-16
+
+### Added
+
+- Add an explicit `upstream-radar setup` command that installs the exact running Radar version through DSH, generates the reviewable inventory and overlay, and runs the network-free wiring check.
+- Add `--no-install` for profiles that already contain the Radar bundle.
+- Shorten the DSH quickstart and document the safe boundary: setup does not start DSH or execute plugin business actions.
+
+### Validation
+
+- Add a CLI integration test covering exact DSH installation arguments, generated files, and the doctor result.
+
 ## [0.29.0] - 2026-08-16
 
 ### Added
