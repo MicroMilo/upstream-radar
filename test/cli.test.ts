@@ -19,6 +19,7 @@ describe('CLI option parsing', () => {
     const help = spawnSync(process.execPath, [cli, '--help'], { encoding: 'utf8' })
     assert.equal(help.status, 0)
     assert.match(help.stdout, /radar watch <config\.json>/)
+    assert.match(help.stdout, /radar status <config\.json>/)
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
     assert.match(help.stdout, /--dsh-patch <path>\s+write a self-contained DSH --patch overlay/)
 
@@ -29,6 +30,23 @@ describe('CLI option parsing', () => {
     const misplaced = spawnSync(process.execPath, [cli, 'radar', 'compare', 'missing.json', 'before.json', 'candidate.json', '--interval', '1800'], { encoding: 'utf8' })
     assert.equal(misplaced.status, 1)
     assert.match(misplaced.stderr, /radar compare does not accept check or watch options/)
+  })
+
+  it('shows a network-free first-run status snapshot', () => {
+    const config = resolve(repository, 'examples/radar/config.json')
+    const missingState = resolve(tmpdir(), `upstream-radar-status-${process.pid}-${Date.now()}.json`)
+    const result = spawnSync(process.execPath, [cli, 'radar', 'status', config, '--state', missingState], { encoding: 'utf8' })
+    assert.equal(result.status, 0)
+    assert.match(result.stdout, /Monitoring: not started/)
+    assert.match(result.stdout, /Active vulnerabilities: 0/)
+    assert.match(result.stdout, /No completed check is recorded yet/)
+
+    const json = spawnSync(process.execPath, [cli, 'radar', 'status', config, '--state', missingState, '--json'], { encoding: 'utf8' })
+    assert.equal(json.status, 0)
+    const report = JSON.parse(json.stdout) as { schema: string; stateExists: boolean; monitoring: string }
+    assert.equal(report.schema, 'upstream-radar.radar-status/v1alpha1')
+    assert.equal(report.stateExists, false)
+    assert.equal(report.monitoring, 'not-started')
   })
 
   it('rejects unknown options instead of silently weakening a scan', () => {

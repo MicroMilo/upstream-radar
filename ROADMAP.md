@@ -13,6 +13,7 @@
 - [x] Provide a deterministic vulnerability and breaking-change showcase.
 - [x] Prove bundle installation, plugin-source attribution, Session persistence, and Agent delivery in a real DSH headless profile.
 - [x] Generate an explicit DSH `--patch` overlay so first use does not require environment variables.
+- [x] Auto-select the only DSH profile with third-party bundles and provide a network-free first-run status snapshot.
 
 ## Milestone 1 — compatibility radar
 
@@ -26,7 +27,8 @@
 - [ ] Track DSH package families as one coordinated release rather than unrelated npm packages.
 - [ ] Resolve the lowest clean plugin upgrade, not merely the latest release.
 - [x] Discover a named DSH profile's installed third-party bundles and generate a reviewable inventory.
-- [ ] Discover the active DSH profile without `--profile` and use its native pnpm lock graph as the source of truth.
+- [x] Auto-select the only DSH profile with third-party bundles when `--profile` is omitted.
+- [ ] Use the selected profile's native pnpm lock graph as the source of truth.
 - [ ] Run plugin load and representative compatibility probes in a disposable DSH profile.
 - [ ] Record `compatible`, `incompatible`, and `unknown` against an explicit DSH version matrix.
 
