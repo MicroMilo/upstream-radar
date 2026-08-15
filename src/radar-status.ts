@@ -27,6 +27,9 @@ export interface RadarStatusReport {
   projects: number
   pluginBundles: number
   unresolvedDependencies: number
+  requiredUnresolvedDependencies: number
+  optionalDependenciesNotInstalled: number
+  dshHostRuntimePackages: number
   lastCheckedAt?: string
   sources: RadarStatusSource[]
   activeVulnerabilities: number
@@ -78,16 +81,32 @@ export function createRadarStatus(
     (total, project) => total + project.plugins.reduce((count, plugin) => count + (plugin.graph.unresolved?.length ?? 0), 0),
     0,
   )
+  const requiredUnresolvedDependencies = config.projects.reduce(
+    (total, project) => total + project.plugins.reduce((count, plugin) => (
+      count + (plugin.graph.unresolved?.filter(item => item.kind !== 'optional').length ?? 0)
+    ), 0),
+    0,
+  )
+  const optionalDependenciesNotInstalled = unresolvedDependencies - requiredUnresolvedDependencies
+  const dshHostRuntimePackages = config.projects.reduce(
+    (total, project) => total + project.plugins.reduce((count, plugin) => (
+      count + (plugin.graph.hostRuntime?.resolvedNodes ?? 0)
+    ), 0),
+    0,
+  )
   return {
     schema: RADAR_STATUS_SCHEMA,
     configFile: options.configFile,
     stateFile: options.stateFile,
     stateExists: options.stateExists,
     monitoring,
-    coverage: unresolvedDependencies === 0 ? 'complete' : 'incomplete',
+    coverage: requiredUnresolvedDependencies === 0 ? 'complete' : 'incomplete',
     projects: config.projects.length,
     pluginBundles: config.projects.reduce((total, project) => total + project.plugins.length, 0),
     unresolvedDependencies,
+    requiredUnresolvedDependencies,
+    optionalDependenciesNotInstalled,
+    dshHostRuntimePackages,
     ...(lastCheckedAt === undefined ? {} : { lastCheckedAt }),
     sources,
     activeVulnerabilities: Object.keys(state.activeVulnerabilities).length,
@@ -116,12 +135,18 @@ function plural(value: number, singular: string, multiple = `${singular}s`): str
 
 /** Render the status snapshot for a human checking the first run. */
 export function renderRadarStatus(report: RadarStatusReport): string {
+  const coverageDetail = report.coverage === 'incomplete'
+    ? ` (${plural(report.requiredUnresolvedDependencies, 'required dependency gap')})`
+    : report.optionalDependenciesNotInstalled === 0
+      ? ''
+      : ` (${plural(report.optionalDependenciesNotInstalled, 'optional dependency', 'optional dependencies')} not installed)`
   const lines = [
     'Upstream Radar status',
     `Monitoring: ${report.monitoring.replace('-', ' ')}`,
     `Config: ${display(report.configFile)} (${plural(report.projects, 'project')}, ${plural(report.pluginBundles, 'DSH plugin bundle')})`,
     `State: ${display(report.stateFile)}${report.stateExists ? '' : ' (not created yet)'}`,
-    `Coverage: ${report.coverage}${report.unresolvedDependencies === 0 ? '' : ` (${plural(report.unresolvedDependencies, 'unresolved dependency')})`}`,
+    `Coverage: ${report.coverage}${coverageDetail}`,
+    `DSH host runtime: ${report.dshHostRuntimePackages === 0 ? 'not included' : plural(report.dshHostRuntimePackages, 'package')}`,
     `Last check: ${report.lastCheckedAt === undefined ? 'never' : display(report.lastCheckedAt)}`,
     '',
     'Sources:',

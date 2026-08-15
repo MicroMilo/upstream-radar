@@ -2,6 +2,18 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.12.0] - 2026-08-16
+
+### Added
+
+- Include DSH's shared `profiles/node_modules` host-runtime dependency plane in installed profile graphs.
+- Mark physical packages as `profile` or `dsh-host` and keep host-runtime counts visible in init and status output.
+- Distinguish required unresolved dependencies from optional platform packages that are not installed.
+
+### Fixed
+
+- Avoid reporting DSH's platform-specific optional native packages as required dependency coverage failures.
+
 ## [0.11.0] - 2026-08-16
 
 ### Added
@@ -137,6 +149,7 @@ All notable changes to Upstream Radar are documented here.
 - Version matching and compatibility facts are calculated outside the model.
 - Agent analysis is read-only and requires project evidence and explicit uncertainty.
 
+[0.12.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.12.0
 [0.11.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.11.0
 [0.10.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.10.0
 [0.9.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.9.0

@@ -75,4 +75,24 @@ describe('Radar status', () => {
     assert.equal(report.sources[1]?.status, 'degraded')
     assert.match(renderRadarStatus(report), /temporary registry timeout/)
   })
+
+  it('does not treat absent optional platform packages as a required coverage gap', () => {
+    const optionalConfig = structuredClone(config)
+    const graph = optionalConfig.projects[0]?.plugins[0]?.graph
+    assert.ok(graph)
+    graph.hostRuntime = { source: 'dsh-profile-fallback', resolvedNodes: 22 }
+    graph.unresolved = [{ from: graph.rootNodeId, name: 'native-addon-darwin', kind: 'optional', spec: '1.0.0' }]
+
+    const report = createRadarStatus(optionalConfig, emptyRadarState(), {
+      configFile: '/tmp/radar.json',
+      stateFile: '/tmp/radar.json.state.json',
+      stateExists: false,
+    })
+
+    assert.equal(report.coverage, 'complete')
+    assert.equal(report.requiredUnresolvedDependencies, 0)
+    assert.equal(report.optionalDependenciesNotInstalled, 1)
+    assert.equal(report.dshHostRuntimePackages, 22)
+    assert.match(renderRadarStatus(report), /1 optional dependency not installed/)
+  })
 })

@@ -4,6 +4,7 @@ import {
   RADAR_CONFIG_SCHEMA,
   type DependencyGraph,
   type DependencyKind,
+  type DependencyNode,
   type PackageCoordinate,
   type PackageManifestSnapshot,
   type PluginInstallation,
@@ -96,10 +97,16 @@ function graph(value: unknown, label: string): DependencyGraph {
   }
   const nodes = source.nodes.map((rawNode, index) => {
     const node = record(rawNode, `${label}.nodes[${index}]`)
+    const rawNodeSource = node.source === undefined ? undefined : string(node.source, `${label}.nodes[${index}].source`, 32)
+    if (rawNodeSource !== undefined && rawNodeSource !== 'profile' && rawNodeSource !== 'dsh-host') {
+      throw new Error(`${label}.nodes[${index}].source has an unsupported value`)
+    }
+    const nodeSource = rawNodeSource as DependencyNode['source']
     return {
       id: string(node.id, `${label}.nodes[${index}].id`, 4_096),
       name: string(node.name, `${label}.nodes[${index}].name`, 512),
       version: string(node.version, `${label}.nodes[${index}].version`, 512),
+      ...((nodeSource === 'profile' || nodeSource === 'dsh-host') ? { source: nodeSource } : {}),
     }
   })
   const ids = new Set(nodes.map(node => node.id))
@@ -119,6 +126,19 @@ function graph(value: unknown, label: string): DependencyGraph {
   const graphSource = source.source === undefined ? undefined : string(source.source, `${label}.source`, 64)
   if (graphSource !== undefined && graphSource !== 'npm-lock' && graphSource !== 'installed-node-modules') {
     throw new Error(`${label}.source has an unsupported value`)
+  }
+  const hostRuntimeValue = source.hostRuntime === undefined ? undefined : record(source.hostRuntime, `${label}.hostRuntime`)
+  const hostRuntimeSource = hostRuntimeValue === undefined
+    ? undefined
+    : string(hostRuntimeValue.source, `${label}.hostRuntime.source`, 64)
+  if (hostRuntimeSource !== undefined && hostRuntimeSource !== 'dsh-profile-fallback') {
+    throw new Error(`${label}.hostRuntime.source has an unsupported value`)
+  }
+  const resolvedNodes = hostRuntimeValue === undefined
+    ? undefined
+    : hostRuntimeValue.resolvedNodes
+  if (resolvedNodes !== undefined && (!Number.isSafeInteger(resolvedNodes) || (resolvedNodes as number) < 0 || (resolvedNodes as number) > MAX_NODES_PER_GRAPH)) {
+    throw new Error(`${label}.hostRuntime.resolvedNodes must be a non-negative bounded integer`)
   }
   const unresolvedValue = source.unresolved
   if (unresolvedValue !== undefined && (!Array.isArray(unresolvedValue) || unresolvedValue.length > MAX_EDGES_PER_GRAPH)) {
@@ -144,6 +164,12 @@ function graph(value: unknown, label: string): DependencyGraph {
     nodes,
     edges,
     ...(graphSource === undefined ? {} : { source: graphSource }),
+    ...(hostRuntimeSource === undefined || resolvedNodes === undefined ? {} : {
+      hostRuntime: {
+        source: hostRuntimeSource,
+        resolvedNodes: resolvedNodes as number,
+      },
+    }),
     ...(digest === undefined ? {} : { digest }),
     ...(unresolved === undefined || unresolved.length === 0 ? {} : { unresolved }),
   }

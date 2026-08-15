@@ -73,4 +73,41 @@ describe('installed DSH dependency graph', () => {
       await rm(root, { recursive: true, force: true })
     }
   })
+
+  it('includes DSH host packages separately when a profile resolves a peer from the shared plane', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-installed-graph-'))
+    const profile = join(root, 'profiles', 'web')
+    const hostNodeModules = join(root, 'profiles', 'node_modules')
+    try {
+      await writeManifest(join(profile, 'node_modules', 'plugin', 'package.json'), {
+        name: 'plugin',
+        version: '1.0.0',
+        peerDependencies: { 'host-runtime': '^2.0.0' },
+      })
+      await writeManifest(join(hostNodeModules, 'host-runtime', 'package.json'), {
+        name: 'host-runtime',
+        version: '2.1.0',
+      })
+
+      const graph = await parseInstalledNodeModulesGraph(profile, { name: 'plugin', version: '1.0.0' }, {
+        hostNodeModulesDirectory: hostNodeModules,
+      })
+      assert.deepEqual(graph.hostRuntime, { source: 'dsh-profile-fallback', resolvedNodes: 1 })
+      const host = graph.nodes.find(node => node.name === 'host-runtime')
+      assert.deepEqual(host, {
+        id: 'dsh-host/node_modules/host-runtime',
+        name: 'host-runtime',
+        version: '2.1.0',
+        source: 'dsh-host',
+      })
+      assert.deepEqual(graph.edges, [{
+        from: 'node_modules/plugin',
+        to: 'dsh-host/node_modules/host-runtime',
+        kind: 'peer',
+      }])
+      assert.equal(graph.unresolved, undefined)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
 })

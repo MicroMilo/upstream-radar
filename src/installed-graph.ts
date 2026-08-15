@@ -23,6 +23,7 @@ interface RootPackage {
 interface InstalledPackage {
   id: string
   directory: string
+  source: 'profile' | 'dsh-host'
   manifest: PackageManifestSnapshot
 }
 
@@ -65,7 +66,15 @@ function nodeId(rootDirectory: string, packageDirectory: string): string {
   return value.split(sep).join('/')
 }
 
-async function readInstalledManifest(
+function hostNodeId(hostNodeModulesDirectory: string, packageDirectory: string): string {
+  const value = relative(dirname(hostNodeModulesDirectory), resolve(packageDirectory))
+  if (value === '' || value.startsWith(`..${sep}`) || value === '..' || isAbsolute(value)) {
+    throw new Error(`DSH host package path escapes the shared dependency plane: ${packageDirectory}`)
+  }
+  return `dsh-host/${value.split(sep).join('/')}`
+}
+
+async function readProfileManifest(
   packageDirectory: string,
   profileRoot: string,
   profileRootReal: string,
@@ -89,10 +98,35 @@ async function readInstalledManifest(
     throw new Error(`installed package manifest is not valid JSON: ${packageDirectory}`)
   }
   const manifest = parsePackageManifestSnapshot(parsed)
-  return { id: nodeId(profileRoot, packageDirectory), directory: packageDirectory, manifest }
+  return { id: nodeId(profileRoot, packageDirectory), directory: packageDirectory, source: 'profile', manifest }
 }
 
-async function findInstalledPackage(
+async function readHostManifest(
+  packageDirectory: string,
+  hostNodeModulesDirectory: string,
+): Promise<InstalledPackage> {
+  const realDirectory = await realpath(packageDirectory)
+  const manifestPath = await realpath(join(packageDirectory, 'package.json'))
+  const contents = await readFile(manifestPath, 'utf8')
+  if (Buffer.byteLength(contents) > MAX_MANIFEST_BYTES) {
+    throw new Error(`DSH host package manifest exceeds the ${MAX_MANIFEST_BYTES} byte limit: ${packageDirectory}`)
+  }
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(contents) as unknown
+  } catch {
+    throw new Error(`DSH host package manifest is not valid JSON: ${packageDirectory}`)
+  }
+  const manifest = parsePackageManifestSnapshot(parsed)
+  return {
+    id: hostNodeId(hostNodeModulesDirectory, packageDirectory),
+    directory: realDirectory,
+    source: 'dsh-host',
+    manifest,
+  }
+}
+
+async function findProfilePackage(
   parentDirectory: string,
   dependencyName: string,
   profileRoot: string,
@@ -104,7 +138,7 @@ async function findInstalledPackage(
     const dependencyDirectory = resolve(cursor, 'node_modules', ...dependencyName.split('/'))
     if (!isLexicallyInside(profileRoot, dependencyDirectory)) return undefined
     try {
-      return await readInstalledManifest(dependencyDirectory, profileRoot, profileRootReal)
+      return await readProfileManifest(dependencyDirectory, profileRoot, profileRootReal)
     } catch (error: unknown) {
       const code = (error as NodeJS.ErrnoException).code
       if (code !== 'ENOENT' && code !== 'ENOTDIR') throw error
@@ -117,15 +151,48 @@ async function findInstalledPackage(
   return undefined
 }
 
+async function findHostPackage(
+  dependencyName: string,
+  hostNodeModulesDirectory: string,
+): Promise<InstalledPackage | undefined> {
+  if (!isPackageName(dependencyName)) return undefined
+  const dependencyDirectory = resolve(hostNodeModulesDirectory, ...dependencyName.split('/'))
+  if (!isLexicallyInside(hostNodeModulesDirectory, dependencyDirectory)) return undefined
+  try {
+    const target = await readHostManifest(dependencyDirectory, hostNodeModulesDirectory)
+    if (target.manifest.name !== dependencyName) {
+      throw new Error(`DSH host package manifest name does not match resolved dependency: ${dependencyName}`)
+    }
+    return target
+  } catch (error: unknown) {
+    const code = (error as NodeJS.ErrnoException).code
+    if (code !== 'ENOENT' && code !== 'ENOTDIR') throw error
+    return undefined
+  }
+}
+
 /** Read the package tree that DSH can actually resolve from its installed profile. */
 export async function parseInstalledNodeModulesGraph(
   profileDirectory: string,
   rootPackage: RootPackage,
+  options: { hostNodeModulesDirectory?: string } = {},
 ): Promise<DependencyGraph> {
   const profileRoot = resolve(profileDirectory)
   const profileRootReal = await realpath(profileRoot)
+  const hostNodeModulesDirectory = options.hostNodeModulesDirectory === undefined
+    ? undefined
+    : resolve(options.hostNodeModulesDirectory)
+  let hostNodeModulesDirectoryReal: string | undefined
+  if (hostNodeModulesDirectory !== undefined) {
+    try {
+      hostNodeModulesDirectoryReal = await realpath(hostNodeModulesDirectory)
+    } catch (error: unknown) {
+      const code = (error as NodeJS.ErrnoException).code
+      if (code !== 'ENOENT' && code !== 'ENOTDIR') throw error
+    }
+  }
   if (!isPackageName(rootPackage.name)) throw new Error(`invalid installed root package name: ${rootPackage.name}`)
-  const root = await findInstalledPackage(profileRoot, rootPackage.name, profileRoot, profileRootReal)
+  const root = await findProfilePackage(profileRoot, rootPackage.name, profileRoot, profileRootReal)
   if (root === undefined) {
     throw new Error(`installed root package is not present in the DSH profile: ${rootPackage.name}@${rootPackage.version}`)
   }
@@ -143,7 +210,10 @@ export async function parseInstalledNodeModulesGraph(
     const current = packages.get(currentId)
     if (current === undefined) continue
     for (const dependency of dependencyEntries(current.manifest)) {
-      const target = await findInstalledPackage(current.directory, dependency.name, profileRoot, profileRootReal)
+      const target = current.source === 'dsh-host'
+        ? (hostNodeModulesDirectory === undefined ? undefined : await findHostPackage(dependency.name, hostNodeModulesDirectory))
+        : (await findProfilePackage(current.directory, dependency.name, profileRoot, profileRootReal)
+          ?? (hostNodeModulesDirectory === undefined ? undefined : await findHostPackage(dependency.name, hostNodeModulesDirectory)))
       if (target === undefined) {
         unresolved.push({ from: current.id, ...dependency })
         if (unresolved.length > MAX_EDGES) throw new Error(`installed dependency graph exceeds the ${MAX_EDGES} edge limit`)
@@ -159,7 +229,7 @@ export async function parseInstalledNodeModulesGraph(
   }
 
   const nodes: DependencyNode[] = [...packages.values()]
-    .map(item => ({ id: item.id, name: item.manifest.name, version: item.manifest.version }))
+    .map(item => ({ id: item.id, name: item.manifest.name, version: item.manifest.version, source: item.source }))
     .sort((left, right) => left.id === root.id ? -1 : right.id === root.id ? 1 : left.id.localeCompare(right.id))
   const sortedEdges = edges.sort((left, right) => (
     left.from.localeCompare(right.from) || left.to.localeCompare(right.to) || left.kind.localeCompare(right.kind)
@@ -174,6 +244,12 @@ export async function parseInstalledNodeModulesGraph(
     edges: sortedEdges,
     source: 'installed-node-modules',
     digest: dependencyGraphDigest(nodes, sortedEdges),
+    ...(hostNodeModulesDirectoryReal === undefined ? {} : {
+      hostRuntime: {
+        source: 'dsh-profile-fallback' as const,
+        resolvedNodes: [...packages.values()].filter(item => item.source === 'dsh-host').length,
+      },
+    }),
     ...(reachableUnresolved.length === 0 ? {} : { unresolved: reachableUnresolved }),
   }
 }
