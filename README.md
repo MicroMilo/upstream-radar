@@ -193,7 +193,7 @@ This proof runs in CI on Node.js 22. See the executable [showcase contract](exam
 Before wiring a project into a compatibility gate, run the offline rule benchmark:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.25.0 upstream-radar benchmark compatibility
+pnpm dlx --package=upstream-radar@0.26.0 upstream-radar benchmark compatibility
 ```
 
 It covers six contracts: a safe patch, a change that only needs project analysis, an incompatible DSH peer, a publisher-declared breaking release, a vulnerable candidate dependency, and an incomplete candidate graph. The command does not access the network, install a package, load a plugin, or start DSH. It checks the behavior of Radar's deterministic rules and the `breaking`/`any` gates; it is not a runtime compatibility proof.
@@ -206,7 +206,7 @@ When you have an exact plugin artifact and want to know whether one exact DSH re
 # Pack an exact npm release without running its lifecycle scripts.
 npm pack --ignore-scripts dsh-plugin@1.2.3
 
-pnpm dlx --package=upstream-radar@0.25.0 upstream-radar probe dsh-load \
+pnpm dlx --package=upstream-radar@0.26.0 upstream-radar probe dsh-load \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.6
 ```
@@ -229,6 +229,18 @@ pnpm run showcase:dsh-probe
 
 It exercises a loadable bundle, a bundle patch DSH rejects, and a package that remains `unknown` because it declares `postinstall`.
 
+To compare a plugin against more than one DSH release, use the matrix form:
+
+```bash
+pnpm dlx --package=upstream-radar@0.26.0 upstream-radar probe dsh-matrix \
+  ./dsh-plugin-1.2.3.tgz \
+  --dsh-version 0.1.0-rc.3 \
+  --dsh-version 0.1.0-rc.6 \
+  --json
+```
+
+The matrix runs versions one at a time in separate temporary profiles and evaluates the same artifact each time. It needs at least two distinct exact versions and accepts at most eight. The aggregate is `incompatible` if any version is incompatible, `unknown` if none is incompatible but at least one result is unknown, and `compatible` only when every tested version loads successfully. The JSON shape is documented in the [matrix result schema](schemas/dsh-load-matrix.schema.json).
+
 ## Run it in GitHub Actions
 
 If your team wants a scheduled CI gate before wiring a machine to a live DSH profile, commit the reviewed `upstream-radar.config.json` and copy [the example workflow](examples/github-actions/upstream-radar.yml). The reusable Action keeps the workflow to two meaningful steps:
@@ -236,7 +248,7 @@ If your team wants a scheduled CI gate before wiring a machine to a live DSH pro
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.25.0
+  - uses: MicroMilo/upstream-radar@v0.26.0
     with:
       config: upstream-radar.config.json
       fail-on: high
@@ -244,12 +256,12 @@ steps:
       fail-on-compatibility: breaking
 ```
 
-The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.25.0`, and pin the checkout Action in your workflow according to your repository's policy.
+The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.26.0`, and pin the checkout Action in your workflow according to your repository's policy.
 
 The Action requires the caller to check out the repository first. It does not install the project's dependencies or run their lifecycle scripts; it only reads the committed graph and queries the configured upstream sources. For a fully explicit, lower-level invocation, the equivalent command is:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.25.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.26.0 upstream-radar radar check \
   ./upstream-radar.config.json --frozen --state :memory: --fail-on high \
   --fail-on-compatibility breaking --json
 ```
@@ -365,7 +377,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - compatibility signals for Node.js, peers, exports, entrypoints, bundle paths, dependencies, and version boundaries;
 - an opt-in CI gate for confirmed/strong (`breaking`) or all (`any`) active compatibility changes;
 - an offline `benchmark compatibility` command that locks the deterministic rule and gate behavior into six reviewable contracts;
-- a disposable `probe dsh-load` command that checks one exact DSH version against one exact bundle and returns `compatible`, `incompatible`, or `unknown`;
+- disposable `probe dsh-load` and `probe dsh-matrix` commands that check one exact DSH version or a bounded exact-version matrix against one bundle and return `compatible`, `incompatible`, or `unknown`;
 - network-free Radar and real DSH runtime showcases.
 
 The bounded pre-install scanner remains available as a supporting collector:
@@ -382,6 +394,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 - Candidate upgrade graphs are resolved only for a bounded earliest prefix. A candidate with an incomplete or unavailable graph is not recommended; later unqueried candidates remain visibly unchecked. Pass `--no-deep-candidates` to opt out of this extra registry work.
 - Compatibility CI gating is opt-in: `--fail-on-compatibility breaking` fails on confirmed or strong incompatibility signals, while `any` fails on every active compatibility event; neither setting claims that a candidate is safe.
 - `probe dsh-load` is intentionally narrower than a security scan: a successful load proves only that the selected DSH profile accepted the bundle configuration. It does not execute plugin actions, compare capabilities, or grant admission to an unreviewed package.
+- `probe dsh-matrix` is intentionally sequential and bounded to eight versions. An incomplete matrix is not green: `unknown` propagates to the aggregate result until every selected DSH version has a reliable load result.
 - `radar check/watch --frozen` intentionally uses the graph committed in the config for CI; it does not prove that the installed DSH profile has not changed. Without `--frozen`, native DSH and CLI polling refresh the selected profile first.
 - `radar status` is a local snapshot only: it does not refresh OSV/npm/GitHub data, and it cannot prove that a source is current until a check has completed. Its next steps are guidance, not an automatic upgrade or safety decision.
 - `doctor` checks local wiring only; it cannot prove that a running DSH process has delivered a task to a model or that upstream feeds are current.

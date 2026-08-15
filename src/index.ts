@@ -27,11 +27,18 @@ export {
 } from './radar.js'
 export { assessCompatibilityChange, assessCompatibilityChanges, type CompatibilityChangeInput } from './compatibility.js'
 export {
+  DSH_LOAD_MATRIX_SCHEMA,
   DSH_LOAD_PROBE_SCHEMA,
   inspectDshLoadArtifact,
   probeDshLoad,
+  probeDshLoadMatrix,
   renderDshLoadProbe,
+  renderDshLoadMatrix,
+  summarizeDshLoadResults,
   type DshLoadProbeArtifact,
+  type DshLoadMatrixOptions,
+  type DshLoadMatrixReport,
+  type DshLoadMatrixSummary,
   type DshLoadProbeOptions,
   type DshLoadProbeReport,
   type DshLoadProbeResult,

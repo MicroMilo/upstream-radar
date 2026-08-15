@@ -7,11 +7,14 @@ import { parsePackageManifestSnapshot } from './inventory.js'
 import { parseNpmTarball } from './tar.js'
 
 export const DSH_LOAD_PROBE_SCHEMA = 'upstream-radar.dsh-load-probe/v1alpha1' as const
+export const DSH_LOAD_MATRIX_SCHEMA = 'upstream-radar.dsh-load-matrix/v1alpha1' as const
 
 const DEFAULT_DSH_VERSION = '0.1.0-rc.6'
 const DEFAULT_TIMEOUT_MS = 120_000
 const MAX_ARTIFACT_BYTES = 64 * 1024 * 1024
 const MAX_OUTPUT_BYTES = 2 * 1024
+const MAX_MATRIX_VERSIONS = 8
+const PNPM_COMMAND = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare'] as const
 
@@ -56,6 +59,33 @@ export interface DshLoadProbeOptions {
   dshVersion?: string
   timeoutMs?: number
   keepProfile?: boolean
+}
+
+export interface DshLoadMatrixOptions {
+  packagePath: string
+  dshVersions: readonly string[]
+  timeoutMs?: number
+  keepProfiles?: boolean
+}
+
+export interface DshLoadMatrixSummary {
+  total: number
+  compatible: number
+  incompatible: number
+  unknown: number
+}
+
+export interface DshLoadMatrixReport {
+  schema: typeof DSH_LOAD_MATRIX_SCHEMA
+  probe: 'dsh-matrix'
+  scope: 'bundle-load-only'
+  artifact: DshLoadProbeReport['artifact']
+  dshVersions: string[]
+  reports: DshLoadProbeReport[]
+  summary: DshLoadMatrixSummary
+  result: DshLoadProbeResult
+  reason: string
+  boundary: DshLoadProbeReport['boundary']
 }
 
 interface CommandResult {
@@ -196,13 +226,48 @@ function baseStageDetail(error: unknown): string {
   return bounded(error instanceof Error ? error.message : String(error))
 }
 
-export async function probeDshLoad(options: DshLoadProbeOptions): Promise<DshLoadProbeReport> {
-  const dshVersion = options.dshVersion ?? DEFAULT_DSH_VERSION
+function validateDshVersion(dshVersion: string): void {
   if (!EXACT_VERSION.test(dshVersion)) throw new Error('DSH version must be an exact semantic version')
-  const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
+}
+
+function validateTimeout(timeoutMs: number): void {
   if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 30_000 || timeoutMs > 600_000) {
     throw new Error('DSH probe timeout must be between 30000 and 600000 milliseconds')
   }
+}
+
+function validateMatrixVersions(dshVersions: readonly string[]): string[] {
+  const versions = [...dshVersions]
+  if (versions.length < 2) throw new Error('DSH matrix requires at least two exact DSH versions')
+  if (versions.length > MAX_MATRIX_VERSIONS) throw new Error(`DSH matrix supports at most ${MAX_MATRIX_VERSIONS} versions`)
+  const unique = new Set<string>()
+  for (const version of versions) {
+    validateDshVersion(version)
+    if (unique.has(version)) throw new Error(`DSH matrix contains duplicate version: ${version}`)
+    unique.add(version)
+  }
+  return versions
+}
+
+export function summarizeDshLoadResults(results: readonly DshLoadProbeResult[]): DshLoadMatrixSummary & { result: DshLoadProbeResult } {
+  if (results.length === 0) throw new Error('DSH matrix requires at least one result')
+  const summary: DshLoadMatrixSummary = {
+    total: results.length,
+    compatible: results.filter(result => result === 'compatible').length,
+    incompatible: results.filter(result => result === 'incompatible').length,
+    unknown: results.filter(result => result === 'unknown').length,
+  }
+  return {
+    ...summary,
+    result: summary.incompatible > 0 ? 'incompatible' : summary.unknown > 0 ? 'unknown' : 'compatible',
+  }
+}
+
+export async function probeDshLoad(options: DshLoadProbeOptions): Promise<DshLoadProbeReport> {
+  const dshVersion = options.dshVersion ?? DEFAULT_DSH_VERSION
+  validateDshVersion(dshVersion)
+  const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
+  validateTimeout(timeoutMs)
   const artifactPath = resolve(options.packagePath)
   const baseReport = {
     schema: DSH_LOAD_PROBE_SCHEMA,
@@ -250,7 +315,7 @@ export async function probeDshLoad(options: DshLoadProbeOptions): Promise<DshLoa
     npm_config_ignore_scripts: 'true',
     PNPM_CONFIG_IGNORE_SCRIPTS: 'true',
   }
-  const run = (args: readonly string[]): Promise<CommandResult> => runCommand('pnpm', dshArgs(dshVersion, args), {
+  const run = (args: readonly string[]): Promise<CommandResult> => runCommand(PNPM_COMMAND, dshArgs(dshVersion, args), {
     cwd: process.cwd(),
     env,
     timeoutMs,
@@ -328,6 +393,45 @@ export async function probeDshLoad(options: DshLoadProbeOptions): Promise<DshLoa
   return report
 }
 
+export async function probeDshLoadMatrix(options: DshLoadMatrixOptions): Promise<DshLoadMatrixReport> {
+  const dshVersions = validateMatrixVersions(options.dshVersions)
+  const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
+  validateTimeout(timeoutMs)
+  const reports: DshLoadProbeReport[] = []
+  for (const dshVersion of dshVersions) {
+    reports.push(await probeDshLoad({
+      packagePath: options.packagePath,
+      dshVersion,
+      timeoutMs,
+      ...(options.keepProfiles === undefined ? {} : { keepProfile: options.keepProfiles }),
+    }))
+  }
+  const summary = summarizeDshLoadResults(reports.map(report => report.result))
+  const firstReport = reports[0]
+  if (firstReport === undefined) throw new Error('DSH matrix produced no reports')
+  return {
+    schema: DSH_LOAD_MATRIX_SCHEMA,
+    probe: 'dsh-matrix',
+    scope: 'bundle-load-only',
+    artifact: firstReport.artifact,
+    dshVersions,
+    reports,
+    summary: {
+      total: summary.total,
+      compatible: summary.compatible,
+      incompatible: summary.incompatible,
+      unknown: summary.unknown,
+    },
+    result: summary.result,
+    reason: summary.incompatible > 0
+      ? 'at least one DSH version rejected the bundle'
+      : summary.unknown > 0
+        ? 'at least one DSH version could not establish a reliable load result'
+        : 'all tested DSH versions registered and loaded the bundle',
+    boundary: firstReport.boundary,
+  }
+}
+
 export function renderDshLoadProbe(report: DshLoadProbeReport): string {
   const lines = [
     'DSH load probe (disposable profile; load-only)',
@@ -340,6 +444,23 @@ export function renderDshLoadProbe(report: DshLoadProbeReport): string {
     lines.push(`  ${name}: ${stage.status}${stage.detail === undefined ? '' : ` (${stage.detail})`}`)
   }
   if (report.profileDirectory !== undefined) lines.push(`Profile: ${report.profileDirectory}`)
+  lines.push('', report.boundary)
+  return `${lines.join('\n')}\n`
+}
+
+export function renderDshLoadMatrix(report: DshLoadMatrixReport): string {
+  const lines = [
+    'DSH compatibility matrix (disposable profiles; load-only)',
+    `Artifact: ${report.artifact.name ?? 'unknown'}@${report.artifact.version ?? 'unknown'}`,
+    `Versions: ${report.dshVersions.join(', ')}`,
+    '',
+    `Result: ${report.result.toUpperCase()} — ${report.reason}`,
+    `Summary: ${report.summary.compatible} compatible, ${report.summary.incompatible} incompatible, ${report.summary.unknown} unknown`,
+  ]
+  for (const item of report.reports) {
+    lines.push(`  ${item.dshVersion}: ${item.result}${item.reason === '' ? '' : ` — ${item.reason}`}`)
+    if (item.profileDirectory !== undefined) lines.push(`    Profile: ${item.profileDirectory}`)
+  }
   lines.push('', report.boundary)
   return `${lines.join('\n')}\n`
 }

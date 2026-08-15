@@ -22,7 +22,7 @@ fail-on-compatibility: breaking
 For your project, generate the config from the actual DSH profile instead of copying this package's snapshot:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.25.0 upstream-radar init \
+pnpm dlx --package=upstream-radar@0.26.0 upstream-radar init \
   --profile <dsh-profile> \
   --project-id <project-id> \
   --project-name "Your project" \

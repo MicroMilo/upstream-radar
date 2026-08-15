@@ -5,7 +5,7 @@ import { access, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { renderCompatibilityBenchmark, runCompatibilityBenchmark } from './compatibility-benchmark.js'
 import { assessCompatibilityChange } from './compatibility.js'
-import { probeDshLoad, renderDshLoadProbe } from './dsh-probe.js'
+import { probeDshLoad, probeDshLoadMatrix, renderDshLoadMatrix, renderDshLoadProbe } from './dsh-probe.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { createDoctorReport, renderDoctorReport } from './doctor.js'
 import { GitHubReleaseClient } from './github-release.js'
@@ -56,6 +56,7 @@ Usage:
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
+  upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar benchmark compatibility [--json]
   upstream-radar radar check <config.json> [--state <state.json>] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
   upstream-radar radar watch <config.json> [--state <state.json>] [--interval <seconds>] [--once] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
@@ -71,7 +72,7 @@ Commands:
   doctor   check local Radar/DSH wiring without polling upstream sources
   scan     bounded, read-only inspection of a local package directory
   inspect  fetch and verify the exact npm artifact before inspecting its contents
-  probe    run a bounded DSH bundle-load check in a disposable profile
+  probe    run a bounded DSH bundle-load check or version matrix in disposable profiles
   benchmark run offline compatibility-rule contracts without network or plugin execution
   radar    monitor vulnerability changes, watch continuously, inspect status, or assess a candidate compatibility change
   task     inspect or acknowledge the durable DSH analysis outbox
@@ -189,10 +190,11 @@ async function runBenchmark(args: readonly string[]): Promise<number> {
 }
 
 async function runProbe(args: readonly string[]): Promise<number> {
-  if (args[0] !== 'dsh-load') throw new Error('probe requires dsh-load')
+  const mode = args[0]
+  if (mode !== 'dsh-load' && mode !== 'dsh-matrix') throw new Error('probe requires dsh-load or dsh-matrix')
   const packagePath = args[1]
-  if (packagePath === undefined || packagePath.startsWith('-')) throw new Error('probe dsh-load requires a package.tgz file')
-  let dshVersion: string | undefined
+  if (packagePath === undefined || packagePath.startsWith('-')) throw new Error(`probe ${mode} requires a package.tgz file`)
+  const dshVersions: string[] = []
   let timeoutSeconds = 120
   let keepProfile = false
   let json = false
@@ -206,7 +208,11 @@ async function runProbe(args: readonly string[]): Promise<number> {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--dsh-version') {
-        dshVersion = value
+        const values = value.split(',').map(item => item.trim()).filter(item => item !== '')
+        if (values.length === 0) throw new Error('--dsh-version requires at least one exact version')
+        if (mode === 'dsh-load' && values.length !== 1) throw new Error('probe dsh-load accepts only one DSH version')
+        if (mode === 'dsh-load' && dshVersions.length > 0) throw new Error('probe dsh-load accepts only one DSH version')
+        dshVersions.push(...values)
       } else {
         const parsed = Number(value)
         if (!Number.isSafeInteger(parsed) || parsed < 30 || parsed > 600) {
@@ -216,16 +222,27 @@ async function runProbe(args: readonly string[]): Promise<number> {
       }
       index += 1
     } else {
-      throw new Error(`unknown option for probe dsh-load: ${argument}`)
+      throw new Error(`unknown option for probe ${mode}: ${argument}`)
     }
   }
-  const report = await probeDshLoad({
+  const timeoutMs = timeoutSeconds * 1_000
+  if (mode === 'dsh-load') {
+    const report = await probeDshLoad({
+      packagePath,
+      ...(dshVersions[0] === undefined ? {} : { dshVersion: dshVersions[0] }),
+      timeoutMs,
+      keepProfile,
+    })
+    process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDshLoadProbe(report))
+    return report.result === 'compatible' ? 0 : report.result === 'incompatible' ? 2 : 1
+  }
+  const report = await probeDshLoadMatrix({
     packagePath,
-    ...(dshVersion === undefined ? {} : { dshVersion }),
-    timeoutMs: timeoutSeconds * 1_000,
-    keepProfile,
+    dshVersions,
+    timeoutMs,
+    keepProfiles: keepProfile,
   })
-  process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDshLoadProbe(report))
+  process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDshLoadMatrix(report))
   return report.result === 'compatible' ? 0 : report.result === 'incompatible' ? 2 : 1
 }
 

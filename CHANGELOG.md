@@ -2,6 +2,19 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.26.0] - 2026-08-16
+
+### Added
+
+- Add `probe dsh-matrix` for testing one exact plugin tarball against two to eight exact DSH versions in isolated profiles.
+- Aggregate per-version load results conservatively: any `incompatible` blocks the matrix, and any `unknown` prevents a green result.
+- Add a real `0.1.0-rc.3` plus `0.1.0-rc.6` matrix showcase and run it in CI and the publish workflow.
+
+### Safety
+
+- Matrix runs are sequential and bounded; every version gets its own temporary `DSH_HOME` and the same artifact digest.
+- The matrix remains load-only evidence. It does not execute plugin business actions, benchmark capabilities, or prove package/dependency safety.
+
 ## [0.25.0] - 2026-08-16
 
 ### Added

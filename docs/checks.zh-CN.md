@@ -19,7 +19,7 @@
 | 去重与恢复 | 重启、重复轮询是否丢失、刷屏或投递过期任务 | 保存活跃漏洞、活跃兼容性问题和待分析任务；同一 incident 的新任务替换旧任务，resolved 会撤销旧任务 | 至少一次投递，不变不重复，不过期投递 |
 | 源失败与健康 | OSV、npm release 或候选依赖图暂时查不到时，是否会被误判成“没有漏洞”，以及负责人能否知道源长期不可用 | 保留上一次确认的漏洞状态，不生成假的 `resolved`，仍继续投递已有 DSH 任务；连续 3 次失败生成持久 `source-health` DSH notice，恢复后 `resolved`；CLI/JSON 返回源警告 | `sourceErrors: osv/npm-releases/npm-candidate-graphs`、源健康状态、source-health 生命周期 |
 | 本地接线 | DSH profile 是否登记 Radar、overlay 是否指向同一份配置和状态、状态是否可读、必需依赖是否完整 | `doctor` 只读本地 manifest、配置、overlay 和状态，不访问 OSV/npm/GitHub，也不执行插件代码 | `READY`、`READY WITH WARNINGS` 或 `BLOCKED` |
-| DSH 加载兼容性 | 一个精确 DSH 版本能否加载一个精确插件 tarball 的 bundle 配置 | 先检查包内 `dsh.bundle.patch` 和 lifecycle scripts；再在临时 `headless` profile 中安装、登记并运行 `--dump-config` | `compatible`、`incompatible` 或 `unknown`；只代表加载结果，不代表安全或能力 |
+| DSH 加载兼容性 | 一个或多个精确 DSH 版本能否加载一个精确插件 tarball 的 bundle 配置 | 先检查包内 `dsh.bundle.patch` 和 lifecycle scripts；再把同一发布物依次放进临时 `headless` profile，安装、登记并运行 `--dump-config` | `compatible`、`incompatible` 或 `unknown`；只代表加载结果，不代表安全或能力 |
 
 ## 支持性的安装前检查
 

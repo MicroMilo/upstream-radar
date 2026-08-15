@@ -39,6 +39,7 @@ jobs:
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - run: pnpm test
       - run: pnpm run try:dsh
+      - run: pnpm run showcase:dsh-probe
       - run: pnpm pack --pack-destination /tmp
       - name: Install OIDC-capable npm CLI
         run: npm install --global --ignore-scripts npm@11.18.0

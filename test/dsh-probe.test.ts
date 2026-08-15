@@ -3,7 +3,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, it } from 'node:test'
-import { inspectDshLoadArtifact, probeDshLoad } from '../src/dsh-probe.js'
+import { inspectDshLoadArtifact, probeDshLoad, probeDshLoadMatrix, summarizeDshLoadResults } from '../src/dsh-probe.js'
 import { makeTarball } from './helpers/tar.js'
 
 describe('DSH load probe', () => {
@@ -57,6 +57,34 @@ describe('DSH load probe', () => {
     await assert.rejects(
       probeDshLoad({ packagePath: '/tmp/not-used.tgz', dshVersion: 'latest' }),
       /DSH version must be an exact semantic version/,
+    )
+  })
+
+  it('summarizes a matrix without treating unknown as compatible', () => {
+    assert.deepEqual(summarizeDshLoadResults(['compatible', 'unknown']), {
+      total: 2,
+      compatible: 1,
+      incompatible: 0,
+      unknown: 1,
+      result: 'unknown',
+    })
+    assert.deepEqual(summarizeDshLoadResults(['unknown', 'incompatible', 'compatible']), {
+      total: 3,
+      compatible: 1,
+      incompatible: 1,
+      unknown: 1,
+      result: 'incompatible',
+    })
+  })
+
+  it('requires at least two distinct exact versions for a matrix', async () => {
+    await assert.rejects(
+      probeDshLoadMatrix({ packagePath: '/tmp/not-used.tgz', dshVersions: ['0.1.0-rc.6'] }),
+      /at least two exact DSH versions/,
+    )
+    await assert.rejects(
+      probeDshLoadMatrix({ packagePath: '/tmp/not-used.tgz', dshVersions: ['0.1.0-rc.6', '0.1.0-rc.6'] }),
+      /duplicate version/,
     )
   })
 })
