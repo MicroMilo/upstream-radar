@@ -1,0 +1,31 @@
+# Consumer smoke: a real DSH plugin in GitHub Actions
+
+This directory is a copyable consumer example for a DSH plugin project. It uses the real published `dsh-cloudflare-browser-run@0.1.1` package and its resolved dependency graph, rather than a fictional package name.
+
+## Run the example
+
+Copy these two files into a repository that has reviewed the corresponding DSH plugin graph:
+
+- [`upstream-radar.config.json`](upstream-radar.config.json)
+- [`upstream-radar.yml`](upstream-radar.yml) into `.github/workflows/`
+
+The workflow runs on demand or weekly. It checks the committed graph against OSV and npm, and fails when an active high-or-higher vulnerability is present. It does not install the plugin, run lifecycle scripts, start DSH, or modify the repository.
+
+## Generate your own graph
+
+For your project, generate the config from the actual DSH profile instead of copying this package's snapshot:
+
+```bash
+pnpm dlx --package=upstream-radar@0.22.0 upstream-radar init \
+  --profile <dsh-profile> \
+  --project-id <project-id> \
+  --project-name "Your project" \
+  --output ./upstream-radar.config.json \
+  --dsh-patch ./upstream-radar.dsh.yml
+```
+
+Review the generated graph, commit the config, and then use the Action. The config is an evidence snapshot, not a safety certificate; the native DSH bundle remains the always-on path that refreshes the installed profile and routes model analysis.
+
+## What success means
+
+The first run should show an independent frozen check with no DSH profile required on the runner. A source outage is a failed check, not a clean result. If the plugin or a transitive dependency becomes vulnerable, the workflow exits non-zero and preserves the exact package path in the JSON report.

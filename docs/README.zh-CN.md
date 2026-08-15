@@ -198,6 +198,14 @@ pnpm dlx --package=upstream-radar@0.22.0 upstream-radar radar check \
   ./upstream-radar.config.json --frozen --state :memory: --fail-on high --json
 ```
 
+如果想先跑一个真实消费者样例，可以参考使用真实 [`dsh-cloudflare-browser-run@0.1.1`](../examples/github-actions/consumer/upstream-radar.config.json) 依赖图的[consumer smoke 说明](../examples/github-actions/consumer/README.md)和[可复制 workflow](../examples/github-actions/consumer/upstream-radar.yml)。
+
+在本仓库中也可以直接运行同一个已发布 Action：
+
+```bash
+pnpm run try:consumer
+```
+
 在本地或自托管 DSH 机器上不要加 `--frozen`，这样 Radar 会在每轮检查前刷新选中的 profile。`--fail-on` 适用于一次性 `radar check`、`radar status` 或 `radar watch --once`；长期运行的 watch 不应该因为第一次告警就退出。
 
 ## 闭环如何工作
@@ -266,7 +274,7 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 ## 当前能力与边界
 
-已经支持：DSH profile 实际安装树和 npm lock 依赖图、重复版本路径、未解析依赖的覆盖提示、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace，以及把审查过的图接入 CI 的可复用 GitHub Action。
+已经支持：DSH profile 实际安装树和 npm lock 依赖图、重复版本路径、未解析依赖的覆盖提示、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace、把审查过的图接入 CI 的可复用 GitHub Action，以及基于真实 DSH 插件的 consumer smoke。
 
 `init` 在省略 `--profile` 时可以自动选择唯一一个含第三方 bundle 的 DSH profile；多个候选仍要求显式指定。默认读取实际安装树，因此 pnpm override 和本地解析选择会被纳入；原生解析 pnpm lockfile 以支持安装前/CI 检查仍未实现。加上 `--dsh-patch <path>` 可以生成不依赖环境变量的 DSH overlay。`radar status` 提供离线的首次运行检查、活动事件摘要和下一步提示，但不会替你刷新漏洞源，也不会自动升级插件。暂未支持 Yarn 图适配、changelog/比较 diff/迁移文档源、项目级 Session 精确路由、把 Agent 结论写回事件，以及自动创建 Issue 或 PR。
 

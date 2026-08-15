@@ -2,6 +2,12 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## Unreleased
+
+### Added
+
+- Add a real DSH plugin consumer smoke with a copyable config, workflow, local command, and scheduled dogfood workflow for the published GitHub Action.
+
 ## [0.22.0] - 2026-08-16
 
 ### Added
