@@ -1,4 +1,4 @@
-Upstream Radar 0.4.0
+Upstream Radar 0.4.1
 Target: showcase-review-install-script@1.0.0
 Artifact: sha256:fc43ac3189873f3fc3c207ce834b8670a8d74cc0121452a2e4400c4501d9f217
 DSH bundle: no

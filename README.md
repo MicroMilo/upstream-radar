@@ -7,7 +7,7 @@
 
 <h1 align="center">Upstream Radar</h1>
 
-<p align="center"><strong>Dependency changes that wake your DSH Agent only when your project is actually affected.</strong></p>
+<p align="center"><strong>Always-on vulnerability and breaking-change radar for DeepSeek Harness plugins.</strong></p>
 
 <p align="center">
   English · <a href="README.zh-CN.md">简体中文</a>
@@ -15,6 +15,7 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/upstream-radar"><img alt="npm version" src="https://img.shields.io/npm/v/upstream-radar?style=flat-square&color=2563eb"></a>
+  <a href="https://github.com/MicroMilo/upstream-radar/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/MicroMilo/upstream-radar?style=flat-square&color=f59e0b"></a>
   <a href="https://github.com/MicroMilo/upstream-radar/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/MicroMilo/upstream-radar/ci.yml?branch=main&style=flat-square&label=CI"></a>
   <a href="examples/dsh/README.md"><img alt="Tested with DSH 0.1.0-rc.6" src="https://img.shields.io/badge/tested_with_DSH-0.1.0--rc.6-5b5bd6?style=flat-square"></a>
   <a href="https://github.com/MicroMilo/upstream-radar/releases"><img alt="GitHub release" src="https://img.shields.io/github/v/release/MicroMilo/upstream-radar?style=flat-square"></a>
@@ -22,21 +23,71 @@
 </p>
 
 <p align="center">
-  <a href="#run-the-proof">Run the proof</a> ·
+  <a href="#see-one-incident">See one incident</a> ·
   <a href="#install-in-dsh">Install in DSH</a> ·
+  <a href="#run-the-proof">Run the proof</a> ·
   <a href="#how-the-loop-works">How it works</a> ·
   <a href="ROADMAP.md">Roadmap</a>
 </p>
 
 ---
 
-A vulnerability feed can tell you that a package is affected. It usually cannot tell you which DSH plugin brought that exact version into your profile, whether the vulnerable path reaches your project, or whether the available upgrade breaks DSH on the way out.
+A vulnerability feed stops at “package X is affected.” Upstream Radar keeps going: it identifies the exact installed dependency path, maintains one durable incident, and wakes a [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent with the project evidence needed for a useful investigation.
 
-Upstream Radar closes that loop inside [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness):
+```text
+OSV advisory or npm release
+  -> exact installed plugin path
+  -> new / updated / resolved incident
+  -> project-specific DSH Agent analysis task
+```
 
-- **Exact path, not a package-name guess.** It preserves physical dependency nodes, duplicate versions, and the root-to-package path that actually matched.
-- **An incident, not alert spam.** It stores `new`, `updated`, and `resolved` state and keeps only the current task for each incident.
-- **Program facts before model judgment.** Version matching and compatibility boundaries stay deterministic; the DSH Agent investigates only project-specific reachability and migration impact.
+**No matching installed path means no Agent wake-up.** Version matching and compatibility facts are calculated by code; the model handles only repository-specific judgment.
+
+## See one incident
+
+If an advisory affects only one of two installed `parser` versions, Radar reports the path that actually matched:
+
+```text
+[HIGH][NEW] Dependency vulnerability
+Project: Payments API (payments-api)
+Plugin: plugin@1.0.0
+Affected: parser@2.9.0
+Advisory: GHSA-demo-2026-parser / CVE-2026-1234
+Paths:
+  plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
+Fixed versions: 3.0.0
+Route: payments-platform via feishu:payments-security
+```
+
+That incident becomes a plugin-originated DSH notice. It is not copied into a generic chatbot prompt.
+
+| Upstream signal | Radar proves deterministically | DSH Agent investigates |
+| --- | --- | --- |
+| Vulnerability or malicious package | affected `name@version`, every installed path, fixed versions, incident state | whether project code reaches it, attacker input can reach it, and the least disruptive fix |
+| Candidate npm release | version boundary and Node.js, peer, export, entrypoint, bundle, and dependency changes | which APIs or Cordis configuration would break and what migration is appropriate |
+
+## Install in DSH
+
+Upstream Radar is an npm-published DSH bundle, so no install-time build permission is required:
+
+```bash
+dsh plugin --profile web add upstream-radar@latest
+```
+
+Point the bundle at an explicit project inventory, choose a durable state file, then boot the profile:
+
+```bash
+export UPSTREAM_RADAR_CONFIG=/absolute/path/radar-config.json
+export UPSTREAM_RADAR_STATE=/absolute/path/radar-state.json
+export UPSTREAM_RADAR_INTERVAL_SECONDS=1800
+
+dsh --profile web --dump-config
+dsh --profile web
+```
+
+Start from [the example inventory](examples/radar/config.json). If `UPSTREAM_RADAR_CONFIG` is not set, the bundle stays dormant and performs no polling.
+
+Once running, Radar polls OSV and npm, persists incident state before delivery, and submits only changed incidents to the first live root DSH Agent.
 
 ## Run the proof
 
@@ -63,34 +114,7 @@ The command fails unless DSH proves all four facts:
 }
 ```
 
-This proof runs in CI on Node.js 22. See the executable [showcase contract](examples/dsh/README.md) and its checked-in [result](examples/dsh/reports/headless-smoke.json).
-
-To include a current OSV and npm poll before the DSH handoff:
-
-```bash
-pnpm run try:dsh:live
-```
-
-## Install in DSH
-
-Upstream Radar is an npm-published DSH bundle, so no install-time build permission is required:
-
-```bash
-dsh plugin --profile web add upstream-radar@0.4.0
-```
-
-Point the bundle at an explicit project inventory, choose a durable state file, then boot the profile:
-
-```bash
-export UPSTREAM_RADAR_CONFIG=/absolute/path/radar-config.json
-export UPSTREAM_RADAR_STATE=/absolute/path/radar-state.json
-export UPSTREAM_RADAR_INTERVAL_SECONDS=1800
-
-dsh --profile web --dump-config
-dsh --profile web
-```
-
-Start from [the example inventory](examples/radar/config.json). If `UPSTREAM_RADAR_CONFIG` is not set, the bundle stays dormant and performs no polling.
+This proof runs in CI on Node.js 22. See the executable [showcase contract](examples/dsh/README.md) and its checked-in [result](examples/dsh/reports/headless-smoke.json). Run `pnpm run try:dsh:live` to include a current OSV and npm poll before the DSH handoff.
 
 ## How the loop works
 
@@ -114,7 +138,7 @@ The handoff uses `ctx.agents.roots()[0].followup(...)` with:
 
 It is a native DSH lifecycle integration—not a chat bridge or a remote-control bot.
 
-## One vulnerable path, not a false-positive package name
+## Why package-name alerts are not enough
 
 Given this installed graph:
 
@@ -127,18 +151,7 @@ plugin@1.0.0
     └── parser@2.9.0
 ```
 
-an advisory affecting only `parser@2.9.0` produces:
-
-```text
-[HIGH][NEW] Dependency vulnerability
-Project: Payments API (payments-api)
-Plugin: plugin@1.0.0
-Affected: parser@2.9.0
-Path: plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
-Fixed versions: 3.0.0
-```
-
-The unaffected `parser@3.2.1` remains a distinct node.
+an advisory affecting `parser@2.9.0` matches only the `plugin -> logger -> parser` branch. The unaffected `parser@3.2.1` remains a distinct physical node instead of becoming a package-name false positive.
 
 ## Vulnerabilities are only half the upstream problem
 
@@ -214,6 +227,7 @@ Upstream Radar is alpha software built for the developer-preview DSH ecosystem. 
 - [Threat model](docs/threat-model.md)
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)
+- [Release process](docs/releasing.md)
 - [Contributing](CONTRIBUTING.md)
 - [Security policy](SECURITY.md)
 
