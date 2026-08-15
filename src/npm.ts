@@ -23,12 +23,14 @@ import {
   type Severity,
   type VulnerabilitySummary,
 } from './types.js'
+import type { DependencyGraph } from './radar-types.js'
 import { TOOL_VERSION } from './version.js'
 
 const DEFAULT_REGISTRY = 'https://registry.npmjs.org/'
 const MAX_PACKUMENT_BYTES = 16 * 1024 * 1024
 const MAX_TARBALL_BYTES = 64 * 1024 * 1024
 const MAX_PROCESS_OUTPUT_BYTES = 32 * 1024 * 1024
+const MAX_RESOLUTION_LOCKFILE_BYTES = 64 * 1024 * 1024
 const MISSING_PUBLISH_TIME_CUTOFF = '2015-01-01T00:00:00.000Z'
 const EXACT_VERSION = /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/
 
@@ -448,6 +450,64 @@ function parseJsonOutput(output: string): unknown {
     return JSON.parse(trimmed) as unknown
   } catch {
     return undefined
+  }
+}
+
+export interface NpmDependencyGraphOptions {
+  registry?: string
+  timeoutMs?: number
+}
+
+/**
+ * Resolve one exact npm package into a lock graph without downloading or executing package code.
+ * npm still resolves registry metadata, but package-lock-only plus ignore-scripts keeps this
+ * collector on the manifest plane.
+ */
+export async function resolveNpmDependencyGraph(
+  spec: ParsedNpmSpec,
+  options: NpmDependencyGraphOptions = {},
+): Promise<DependencyGraph> {
+  const registry = normalizeRegistry(options.registry ?? DEFAULT_REGISTRY)
+  const timeoutMs = options.timeoutMs ?? 60_000
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1_000 || timeoutMs > 120_000) {
+    throw new Error('npm dependency graph timeout must be between 1000 and 120000 milliseconds')
+  }
+  const root = await mkdtemp(join(tmpdir(), 'upstream-radar-candidate-graph-'))
+  try {
+    await writeFile(join(root, 'package.json'), `${JSON.stringify({
+      name: 'upstream-radar-candidate-quarantine',
+      version: '0.0.0',
+      private: true,
+      dependencies: { [spec.name]: spec.version },
+    }, null, 2)}\n`, { mode: 0o600 })
+    await writeFile(join(root, 'controlled.npmrc'), `registry=${registry}\nignore-scripts=true\naudit=false\nfund=false\nupdate-notifier=false\n`, { mode: 0o600 })
+    await writeFile(join(root, 'controlled-global.npmrc'), '', { mode: 0o600 })
+    await writeFile(join(root, 'controlled.gitconfig'), '', { mode: 0o600 })
+    const environment = safeEnvironment(root)
+    const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
+    const resolution = await runProcess(npm, [
+      'install', '--package-lock-only', '--ignore-scripts', '--no-audit', '--no-fund', '--save-exact', '--loglevel=error',
+      '--registry', registry,
+    ], root, environment, timeoutMs)
+    if (resolution.code !== 0 || resolution.timedOut || resolution.outputExceeded) {
+      const reason = resolution.timedOut
+        ? 'npm candidate dependency resolution timed out'
+        : resolution.outputExceeded
+          ? 'npm candidate dependency resolution exceeded output budget'
+          : `npm candidate dependency resolution failed with exit code ${resolution.code}`
+      const detail = resolution.stderr
+        .replace(/[\u0000-\u001f\u007f-\u009f]/g, ' ')
+        .trim()
+        .slice(0, 1_024)
+      throw new Error(detail.length === 0 ? reason : `${reason}: ${detail}`)
+    }
+    const lockContents = await readFile(join(root, 'package-lock.json'), 'utf8')
+    if (Buffer.byteLength(lockContents) > MAX_RESOLUTION_LOCKFILE_BYTES) {
+      throw new Error(`npm candidate lockfile exceeds the ${MAX_RESOLUTION_LOCKFILE_BYTES} byte limit`)
+    }
+    return parseNpmLockGraph(JSON.parse(lockContents) as unknown, spec)
+  } finally {
+    await rm(root, { recursive: true, force: true, maxRetries: 2 }).catch(() => undefined)
   }
 }
 

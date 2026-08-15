@@ -8,7 +8,11 @@
 3. 判断这个候选升级会不会破坏当前项目，定位受影响的 API、配置或运行环境，并给出最小迁移与验证方案。
 4. 每个结论必须引用项目内的文件、符号、配置或明确的运行事实。证据不足时输出 unknown。
 5. 区分“已确认事实”和“模型判断”，不要把推测写成事实。
-6. 返回一个 JSON 对象，字段严格为 project_exposure、confidence、evidence、recommended_action、urgency、reasoning_summary。
+6. 如果 event_json 含有 upgradePath，firstCandidate 只表示“没有发现确定性阻断的第一个版本”，不是“安全”或“已兼容”；必须继续用项目证据判断它是否值得尝试。
+7. 如果 upgradePath.vulnerabilityStatus 是 unavailable，不得推荐任何候选版本为安全或可升级；应先恢复 OSV 监控并说明当前判断不完整。
+8. 如果 upgradePath.dependencyStatus 是 unavailable，不得推荐任何候选版本；如果是 partial，只能把 firstCandidate 理解为“已检查的最早一小段中的候选”，不能推断后续版本没有风险。
+9. 如果候选的 dependencyCheck.status 是 incomplete 或 unavailable，必须把传递依赖风险写成 unknown，并说明缺少哪类检查；不要把“没有发现”写成“安全”。
+10. 返回一个 JSON 对象，字段严格为 project_exposure、confidence、evidence、recommended_action、urgency、reasoning_summary。
 
 expected_output:
 {
@@ -115,6 +119,190 @@ event_json:
       "after": "^0.2.0"
     }
   ],
+  "upgradePath": {
+    "evaluated": 4,
+    "blockedCount": 3,
+    "vulnerabilityStatus": "checked",
+    "dependencyStatus": "checked",
+    "uncheckedCount": 0,
+    "firstCandidate": {
+      "candidate": {
+        "ecosystem": "npm",
+        "name": "plugin",
+        "version": "1.3.0"
+      },
+      "signals": [],
+      "dependencyCheck": {
+        "status": "checked",
+        "nodeCount": 3,
+        "unresolvedCount": 0,
+        "findings": []
+      }
+    },
+    "blocked": [
+      {
+        "candidate": {
+          "ecosystem": "npm",
+          "name": "plugin",
+          "version": "1.1.0"
+        },
+        "signals": [
+          {
+            "code": "candidate-dependency-vulnerability",
+            "confidence": "confirmed",
+            "summary": "OSV reports GHSA-transitive-plugin (high) for transitive dependency parser@2.9.0.",
+            "before": "GHSA-transitive-plugin",
+            "after": "plugin@1.1.0 -> logger@4.1.0 -> parser@2.9.0"
+          }
+        ],
+        "dependencyCheck": {
+          "status": "checked",
+          "nodeCount": 3,
+          "unresolvedCount": 0,
+          "findings": [
+            {
+              "package": {
+                "ecosystem": "npm",
+                "name": "parser",
+                "version": "2.9.0"
+              },
+              "advisory": {
+                "id": "GHSA-transitive-plugin",
+                "aliases": [],
+                "summary": "The candidate pulls a vulnerable parser transitively.",
+                "details": "This is a deterministic showcase advisory attached to the candidate graph.",
+                "severity": "high",
+                "modified": "2026-08-14T01:30:00.000Z",
+                "fixedVersions": [
+                  "3.0.0"
+                ],
+                "references": [
+                  "https://example.test/GHSA-transitive-plugin"
+                ]
+              },
+              "paths": [
+                [
+                  {
+                    "ecosystem": "npm",
+                    "name": "plugin",
+                    "version": "1.1.0"
+                  },
+                  {
+                    "ecosystem": "npm",
+                    "name": "logger",
+                    "version": "4.1.0"
+                  },
+                  {
+                    "ecosystem": "npm",
+                    "name": "parser",
+                    "version": "2.9.0"
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "candidate": {
+          "ecosystem": "npm",
+          "name": "plugin",
+          "version": "1.2.0"
+        },
+        "signals": [
+          {
+            "code": "node-engine-requirement-changed",
+            "confidence": "needs-analysis",
+            "summary": "The supported Node.js range changed.",
+            "before": ">=22",
+            "after": ">=24"
+          },
+          {
+            "code": "node-runtime-incompatible",
+            "confidence": "strong",
+            "summary": "The project runs Node.js 22.18.0, outside the candidate requirement >=24.",
+            "before": "22.18.0",
+            "after": ">=24"
+          }
+        ],
+        "dependencyCheck": {
+          "status": "checked",
+          "nodeCount": 3,
+          "unresolvedCount": 0,
+          "findings": []
+        }
+      },
+      {
+        "candidate": {
+          "ecosystem": "npm",
+          "name": "plugin",
+          "version": "2.0.0"
+        },
+        "signals": [
+          {
+            "code": "breaking-version-boundary",
+            "confidence": "strong",
+            "summary": "Version 1.0.0 to 2.0.0 crosses a semantic-version compatibility boundary.",
+            "before": "1.0.0",
+            "after": "2.0.0"
+          },
+          {
+            "code": "publisher-declared-breaking-change",
+            "confidence": "confirmed",
+            "summary": "The publisher explicitly describes this release as breaking."
+          },
+          {
+            "code": "package-entrypoint-changed",
+            "confidence": "needs-analysis",
+            "summary": "The package entrypoint or export map changed.",
+            "before": "{\"exports\":undefined,\"main\":\"./dist/index.js\",\"type\":undefined}",
+            "after": "{\"exports\":undefined,\"main\":\"./dist/plugin.js\",\"type\":undefined}"
+          },
+          {
+            "code": "dsh-bundle-changed",
+            "confidence": "needs-analysis",
+            "summary": "The DSH bundle declaration changed.",
+            "before": "{\"bundle\":{\"patch\":\"./cordis.patch.yml\"}}",
+            "after": "{\"bundle\":{\"patch\":\"./next.patch.yml\"}}"
+          },
+          {
+            "code": "node-engine-requirement-changed",
+            "confidence": "needs-analysis",
+            "summary": "The supported Node.js range changed.",
+            "before": ">=22",
+            "after": ">=24"
+          },
+          {
+            "code": "node-runtime-incompatible",
+            "confidence": "strong",
+            "summary": "The project runs Node.js 22.18.0, outside the candidate requirement >=24.",
+            "before": "22.18.0",
+            "after": ">=24"
+          },
+          {
+            "code": "dsh-peer-incompatible",
+            "confidence": "strong",
+            "summary": "@deepseek-ai/dsh-agent@0.1.0-rc.5 does not satisfy the candidate peer requirement ^0.2.0.",
+            "before": "0.1.0-rc.5",
+            "after": "^0.2.0"
+          },
+          {
+            "code": "dsh-peer-range-changed",
+            "confidence": "needs-analysis",
+            "summary": "The declared compatibility range for @deepseek-ai/dsh-agent changed.",
+            "before": "^0.1.0-rc.5",
+            "after": "^0.2.0"
+          }
+        ],
+        "dependencyCheck": {
+          "status": "checked",
+          "nodeCount": 3,
+          "unresolvedCount": 0,
+          "findings": []
+        }
+      }
+    ]
+  },
   "releaseNotes": "BREAKING CHANGE: plugin@2 requires the new DSH agent API and Node.js 24.\nThe bundle entry moved from cordis.patch.yml to next.patch.yml.\n",
   "releaseNotesUrl": "https://github.com/acme/plugin/releases/tag/v2.0.0"
 }

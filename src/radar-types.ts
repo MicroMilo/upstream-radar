@@ -118,6 +118,16 @@ export interface AdvisoryMatch {
   advisory: VulnerabilityAdvisory
 }
 
+export type CandidateDependencyGraphStatus = 'checked' | 'incomplete' | 'unavailable'
+
+/** Result of resolving one exact upgrade candidate without loading or executing its package code. */
+export interface CandidateDependencyGraphObservation {
+  candidate: PackageCoordinate
+  status: CandidateDependencyGraphStatus
+  graph?: DependencyGraph
+  error?: string
+}
+
 export interface EventRoute {
   owner?: string
   channels: string[]
@@ -155,12 +165,28 @@ export interface CompatibilitySignal {
   after?: string
 }
 
+export interface CompatibilityDependencyFinding {
+  package: PackageCoordinate
+  advisory: VulnerabilityAdvisory
+  paths: PackageCoordinate[][]
+}
+
+export interface CompatibilityDependencyCheck {
+  status: CandidateDependencyGraphStatus
+  nodeCount: number
+  unresolvedCount: number
+  findings: CompatibilityDependencyFinding[]
+  error?: string
+}
+
 export interface CompatibilityUpgradeCandidate {
   candidate: PackageCoordinate
   signals: CompatibilitySignal[]
+  dependencyCheck?: CompatibilityDependencyCheck
 }
 
 export type CompatibilityVulnerabilityStatus = 'checked' | 'unavailable' | 'not-requested'
+export type CompatibilityDependencyStatus = 'checked' | 'partial' | 'unavailable' | 'not-requested'
 
 /** A bounded explanation of which intermediate release is worth analyzing first. */
 export interface CompatibilityUpgradePath {
@@ -170,6 +196,10 @@ export interface CompatibilityUpgradePath {
   blockedCount: number
   /** Whether exact candidate versions were checked against the configured OSV source. */
   vulnerabilityStatus: CompatibilityVulnerabilityStatus
+  /** Whether the candidate dependency graphs were checked; partial means only the earliest bounded prefix was resolved. */
+  dependencyStatus?: CompatibilityDependencyStatus
+  /** Number of candidate versions without a complete dependency check. */
+  uncheckedCount?: number
   /** The first candidate without a deterministic blocker; this is not a safety verdict. */
   firstCandidate?: CompatibilityUpgradeCandidate
   /** A small sample of blocked candidates, kept for an actionable alert. */
@@ -187,7 +217,7 @@ export interface CompatibilityEvent extends RadarEventBase {
   releaseNotesUrl?: string
 }
 
-export type RadarSource = 'osv' | 'npm-releases' | 'github-releases'
+export type RadarSource = 'osv' | 'npm-releases' | 'npm-candidate-graphs' | 'github-releases'
 
 export interface SourceHealthStatus {
   lastAttemptedAt: string

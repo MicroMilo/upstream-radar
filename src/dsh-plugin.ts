@@ -6,6 +6,7 @@ import { GitHubReleaseClient } from './github-release.js'
 import { parseRadarConfig } from './inventory.js'
 import { refreshRadarConfigFromDshProfile } from './init.js'
 import { OsvClient } from './osv.js'
+import { NpmCandidateGraphClient } from './npm-candidate.js'
 import { NpmReleaseClient } from './npm-release.js'
 import { pollRadar } from './radar.js'
 import { loadRadarState, saveRadarState } from './radar-state.js'
@@ -23,6 +24,9 @@ export interface Config {
   refreshProfile?: boolean
   intervalSeconds?: number
   osvBaseUrl?: string
+  registry?: string
+  /** Set false to skip bounded transitive candidate graph checks. */
+  deepCandidates?: boolean
   runOnStart?: boolean
 }
 
@@ -171,7 +175,10 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
     throw new Error('upstream-radar intervalSeconds must be between 300 and 86400')
   }
   const source = new OsvClient({ ...(config.osvBaseUrl === undefined ? {} : { baseUrl: config.osvBaseUrl }) })
-  const releases = new NpmReleaseClient()
+  const releases = new NpmReleaseClient({ ...(config.registry === undefined ? {} : { registry: config.registry }) })
+  const candidateGraphs = config.deepCandidates === false
+    ? undefined
+    : new NpmCandidateGraphClient({ ...(config.registry === undefined ? {} : { registry: config.registry }) })
   const releaseNotes = new GitHubReleaseClient()
 
   ctx.effect(() => {
@@ -189,7 +196,7 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
           if (radarConfig !== configured && JSON.stringify(radarConfig.projects) !== JSON.stringify(configured.projects)) {
             ctx.logger.info(`upstream-radar: refreshed installed DSH profile ${config.profile}`)
           }
-          const result = await pollRadar(radarConfig.projects, state, source, new Date(), releases, releaseNotes)
+          const result = await pollRadar(radarConfig.projects, state, source, new Date(), releases, releaseNotes, candidateGraphs)
           state = result.state
           // Persist before model delivery. A crash may duplicate a task, but cannot silently lose it.
           await saveRadarState(stateFile, state)

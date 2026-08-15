@@ -2,8 +2,8 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import type { ReleaseNotesSource } from '../src/github-release.js'
 import { packageKey } from '../src/osv.js'
-import { emptyRadarState, pollRadar, type AdvisorySource, type ReleaseSource } from '../src/radar.js'
-import type { AdvisoryMatch, ProjectInventory } from '../src/radar-types.js'
+import { emptyRadarState, pollRadar, type AdvisorySource, type CandidateDependencySource, type ReleaseSource } from '../src/radar.js'
+import type { AdvisoryMatch, DependencyGraph, ProjectInventory } from '../src/radar-types.js'
 
 const inventory: ProjectInventory = {
   schema: 'upstream-radar.inventory/v1alpha1',
@@ -290,6 +290,94 @@ describe('radar polling', () => {
     assert.equal(event.upgradePath?.firstCandidate, undefined)
     assert.deepEqual(result.sourceErrors, [{ source: 'osv', message: 'OSV candidate timeout' }])
     assert.equal(result.state.sourceHealth?.osv?.consecutiveFailures, 1)
+  })
+
+  it('blocks a candidate whose transitive dependency graph contains a known vulnerability', async () => {
+    let queryCount = 0
+    const advisory = {
+      id: 'GHSA-transitive-candidate',
+      aliases: [],
+      summary: 'Candidate parser vulnerability',
+      details: 'The candidate graph contains a vulnerable parser.',
+      severity: 'high' as const,
+      modified: '2026-08-14T04:00:00.000Z',
+      fixedVersions: ['3.0.0'],
+      references: [],
+    }
+    const advisories: AdvisorySource = {
+      async query(packages) {
+        queryCount += 1
+        const result = new Map(packages.map(item => [packageKey(item), [] as AdvisoryMatch[]]))
+        if (packages.some(item => item.name === 'logger' && item.version === '4.1.0')) {
+          result.set('npm:parser@2.9.0', [{
+            package: { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+            advisory,
+          }])
+        }
+        return result
+      },
+    }
+    const releases: ReleaseSource = {
+      async query(packages) {
+        const installed = packages.find(item => item.name === 'plugin')
+        assert.ok(installed)
+        return new Map([['npm:plugin@1.0.0', {
+          installed,
+          latestVersion: '2.0.0',
+          previous: { name: 'plugin', version: '1.0.0', main: './old.js' },
+          candidate: { name: 'plugin', version: '2.0.0', main: './new.js' },
+          upgradeCandidates: [
+            { name: 'plugin', version: '1.1.0', main: './old.js' },
+            { name: 'plugin', version: '1.2.0', main: './old.js' },
+            { name: 'plugin', version: '2.0.0', main: './new.js' },
+          ],
+        }]])
+      },
+    }
+    const candidateGraphs: CandidateDependencySource = {
+      async query(packages) {
+        return new Map(packages.map(candidate => {
+          const parserVersion = candidate.version === '1.1.0' ? '2.9.0' : '3.0.0'
+          const loggerVersion = candidate.version === '1.1.0' ? '4.1.0' : '4.2.0'
+          const graph: DependencyGraph = {
+            schema: 'upstream-radar.dependency-graph/v1alpha1',
+            rootNodeId: 'plugin',
+            nodes: [
+              { id: 'plugin', name: 'plugin', version: candidate.version },
+              { id: 'logger', name: 'logger', version: loggerVersion },
+              { id: 'parser', name: 'parser', version: parserVersion },
+            ],
+            edges: [
+              { from: 'plugin', to: 'logger', kind: 'runtime' },
+              { from: 'logger', to: 'parser', kind: 'runtime' },
+            ],
+          }
+          return [packageKey(candidate), { candidate, status: 'checked' as const, graph }]
+        }))
+      },
+    }
+
+    const result = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      advisories,
+      new Date('2026-08-14T04:00:00.000Z'),
+      releases,
+      undefined,
+      candidateGraphs,
+    )
+    const event = result.events.find(item => item.kind === 'compatibility')
+    assert.ok(event?.kind === 'compatibility')
+    assert.equal(event.upgradePath?.dependencyStatus, 'checked')
+    assert.equal(event.upgradePath?.firstCandidate?.candidate.version, '1.2.0')
+    assert.ok(event.upgradePath?.blocked.some(item => item.candidate.version === '1.1.0'
+      && item.signals.some(signal => signal.code === 'candidate-dependency-vulnerability')))
+    assert.deepEqual(event.upgradePath?.blocked[0]?.dependencyCheck?.findings[0]?.paths[0]?.map(item => `${item.name}@${item.version}`), [
+      'plugin@1.1.0',
+      'logger@4.1.0',
+      'parser@2.9.0',
+    ])
+    assert.equal(queryCount, 3)
   })
 
   it('ignores an npm latest tag older than the installed package', async () => {

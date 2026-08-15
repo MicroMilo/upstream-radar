@@ -2,6 +2,21 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.19.0] - 2026-08-16
+
+### Added
+
+- Resolve the earliest bounded prefix of newer npm candidates with `npm install --package-lock-only --ignore-scripts` in a temporary directory.
+- Query every resolved node in those candidate graphs against OSV and retain the vulnerable transitive path in the compatibility event.
+- Distinguish complete, partial, incomplete, and unavailable candidate dependency coverage; do not recommend a candidate when its checked graph is incomplete or unavailable.
+- Run the bounded candidate graph check by default in the native DSH adapter and CLI Radar loop, with `--no-deep-candidates` and `deepCandidates: false` escape hatches.
+
+### Safety
+
+- Candidate graph resolution never imports candidate code or runs lifecycle scripts; it only resolves registry metadata into a temporary lockfile.
+- A failed or incomplete graph is uncertainty, not a clean result. DSH is instructed to treat transitive coverage gaps as unknown.
+- Candidate graph failures have their own `npm-candidate-graphs` source-health record, while OSV failures still preserve confirmed state.
+
 ## [0.18.0] - 2026-08-16
 
 ### Added

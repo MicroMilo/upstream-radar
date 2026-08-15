@@ -17,6 +17,7 @@ The model never decides whether a version range matches.
                                ├─> match + paths ─> durable event/outbox
  OSV exact-version results ────┤                         │
  npm candidate manifests ─────┐                         │
+ candidate dependency graphs ─┤                         │
  public GitHub Release notes ─┘                         │
                                                          v
                      DSH Agent analysis plane
@@ -78,6 +79,8 @@ The release source reads npm metadata; it does not install the candidate. A `lat
 These are signals for project analysis. Only an explicit publisher statement or a mathematically incompatible version range is treated as confirmed/strong evidence. Other changes remain `needs-analysis`.
 
 The npm packument also contains older releases. When the latest candidate is blocked, Radar evaluates newer intermediate manifests in ascending order and checks every exact candidate version against OSV. A known active vulnerability is a confirmed blocker. Radar records the first candidate without a confirmed/strong compatibility blocker or known vulnerability. This is a starting point for DSH analysis, not a claim that the version is safe; the Agent still has to inspect the project's code and configuration. If the candidate OSV check fails, no candidate is recommended. The event keeps only a small sample of blocked versions so the notice stays actionable.
+
+For the earliest bounded prefix of those candidates, Radar also runs npm's resolver in a temporary project with `--package-lock-only --ignore-scripts`. It does not import the candidate or execute lifecycle code. Every resolved node is queried against OSV, and matches are attached to the candidate with root-to-node paths. A required unresolved edge makes that candidate's dependency coverage incomplete; a resolver or OSV failure makes it unavailable. A partial prefix may still identify the earliest checked candidate, but later candidates remain explicitly unchecked and cannot be described as clean.
 
 Compatibility findings use the same lifecycle as vulnerabilities. A stable `incidentId` identifies the project, installed plugin, and changed package while individual event ids identify each `new`, `updated`, or `resolved` transition. A newer candidate replaces the queued analysis for the same incident; when the project catches up or the signal disappears, the unresolved task is removed.
 

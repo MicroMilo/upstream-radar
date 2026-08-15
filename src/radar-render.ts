@@ -58,12 +58,15 @@ function renderCompatibility(event: CompatibilityEvent): string[] {
   }
   if (event.upgradePath !== undefined) {
     const vulnerabilityStatus = event.upgradePath.vulnerabilityStatus ?? 'not-requested'
+    const dependencyStatus = event.upgradePath.dependencyStatus ?? 'not-requested'
     if (vulnerabilityStatus === 'unavailable') {
       lines.push(`Upgrade path: OSV candidate check unavailable; no candidate is recommended among ${event.upgradePath.evaluated} newer versions.`)
+    } else if (dependencyStatus === 'unavailable') {
+      lines.push(`Upgrade path: candidate dependency graph check unavailable; no candidate is recommended among ${event.upgradePath.evaluated} newer versions.`)
     } else if (event.upgradePath.firstCandidate === undefined) {
-      lines.push(`Upgrade path: no candidate without a deterministic blocker among ${event.upgradePath.evaluated} newer versions.`)
+      lines.push(`Upgrade path: no fully checked candidate without a deterministic blocker among the checked ${event.upgradePath.evaluated - (event.upgradePath.uncheckedCount ?? 0)} of ${event.upgradePath.evaluated} newer versions.`)
     } else {
-      lines.push(`First candidate without a deterministic blocker: ${packageLabel(event.upgradePath.firstCandidate.candidate)} (still requires project analysis)`)
+      lines.push(`${dependencyStatus === 'partial' ? 'First checked candidate' : 'First candidate'} without a deterministic blocker: ${packageLabel(event.upgradePath.firstCandidate.candidate)} (still requires project analysis)`)
       if (event.upgradePath.firstCandidate.signals.length > 0) {
         lines.push('First-candidate signals:')
         for (const signal of event.upgradePath.firstCandidate.signals) {
@@ -72,6 +75,7 @@ function renderCompatibility(event: CompatibilityEvent): string[] {
       }
     }
     lines.push(`Candidate OSV check: ${vulnerabilityStatus === 'checked' ? 'complete' : vulnerabilityStatus === 'unavailable' ? 'unavailable' : 'not requested'}`)
+    lines.push(`Candidate dependency graph check: ${dependencyStatus === 'checked' ? 'complete' : dependencyStatus === 'partial' ? 'bounded prefix only' : dependencyStatus === 'unavailable' ? 'unavailable' : 'not requested'}${(event.upgradePath.uncheckedCount ?? 0) === 0 ? '' : `; ${event.upgradePath.uncheckedCount} candidate(s) not fully checked`}`)
     lines.push(`Upgrade candidates evaluated: ${event.upgradePath.evaluated}; deterministic blockers: ${event.upgradePath.blockedCount}`)
     if (event.upgradePath.blocked.length > 0) {
       lines.push('Blocked candidate samples:')

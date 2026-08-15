@@ -21,14 +21,55 @@ function validAffectedSources(value: unknown): boolean {
   return new Set(value).size === value.length && value.every(item => typeof item === 'string' && allowed.has(item))
 }
 
+function validPackageCoordinate(value: unknown): boolean {
+  const coordinate = asRecord(value)
+  return coordinate?.ecosystem === 'npm'
+    && typeof coordinate.name === 'string' && coordinate.name.length > 0 && coordinate.name.length <= 512
+    && typeof coordinate.version === 'string' && coordinate.version.length > 0 && coordinate.version.length <= 512
+}
+
+function validCompatibilityDependencyCheck(value: unknown): boolean {
+  const check = asRecord(value)
+  const findings = check?.findings
+  if ((check?.status !== 'checked' && check?.status !== 'incomplete' && check?.status !== 'unavailable')
+    || typeof check.nodeCount !== 'number' || !Number.isSafeInteger(check.nodeCount) || check.nodeCount < 0 || check.nodeCount > 1_000_000
+    || typeof check.unresolvedCount !== 'number' || !Number.isSafeInteger(check.unresolvedCount) || check.unresolvedCount < 0 || check.unresolvedCount > 1_000_000
+    || !Array.isArray(findings) || findings.length > 32
+    || (check.error !== undefined && (typeof check.error !== 'string' || check.error.length > 2_048))) return false
+  return findings.every(rawFinding => {
+    const finding = asRecord(rawFinding)
+    const advisory = asRecord(finding?.advisory)
+    const paths = finding?.paths
+    return validPackageCoordinate(finding?.package)
+      && typeof advisory?.id === 'string' && advisory.id.length > 0 && advisory.id.length <= 256
+      && typeof advisory.summary === 'string' && advisory.summary.length <= 8_192
+      && typeof advisory.details === 'string' && advisory.details.length <= 64 * 1_024
+      && (advisory.severity === 'unknown' || advisory.severity === 'info' || advisory.severity === 'low'
+        || advisory.severity === 'medium' || advisory.severity === 'high' || advisory.severity === 'critical')
+      && typeof advisory.modified === 'string' && advisory.modified.length <= 256
+      && (advisory.published === undefined || (typeof advisory.published === 'string' && advisory.published.length <= 256))
+      && (advisory.withdrawn === undefined || (typeof advisory.withdrawn === 'string' && advisory.withdrawn.length <= 256))
+      && Array.isArray(advisory.aliases) && advisory.aliases.length <= 100
+      && advisory.aliases.every(item => typeof item === 'string' && item.length <= 256)
+      && Array.isArray(advisory.fixedVersions) && advisory.fixedVersions.length <= 128
+      && advisory.fixedVersions.every(item => typeof item === 'string' && item.length <= 256)
+      && Array.isArray(advisory.references) && advisory.references.length <= 100
+      && advisory.references.every(item => typeof item === 'string' && item.length <= 4_096)
+      && Array.isArray(paths) && paths.length <= 4
+      && paths.every(path => Array.isArray(path) && path.length > 0 && path.length <= 64 && path.every(validPackageCoordinate))
+  })
+}
+
 function validCompatibilityUpgradeCandidate(value: unknown): boolean {
   const candidate = asRecord(value)
   const coordinate = asRecord(candidate?.candidate)
   const signals = candidate?.signals
+  const dependencyCheck = candidate?.dependencyCheck
   if (coordinate?.ecosystem !== 'npm'
     || typeof coordinate.name !== 'string' || coordinate.name.length === 0 || coordinate.name.length > 512
     || typeof coordinate.version !== 'string' || coordinate.version.length === 0 || coordinate.version.length > 512
     || !Array.isArray(signals) || signals.length > 64) return false
+  if (dependencyCheck !== undefined && !validCompatibilityDependencyCheck(dependencyCheck)) return false
   return signals.every(rawSignal => {
     const signal = asRecord(rawSignal)
     return typeof signal?.code === 'string' && signal.code.length > 0 && signal.code.length <= 256
@@ -46,11 +87,17 @@ function validCompatibilityUpgradePath(value: unknown): boolean {
   const blockedCount = path?.blockedCount
   const blocked = path?.blocked
   const vulnerabilityStatus = path?.vulnerabilityStatus
+  const dependencyStatus = path?.dependencyStatus
+  const uncheckedCount = path?.uncheckedCount
   if (typeof evaluated !== 'number' || !Number.isSafeInteger(evaluated) || evaluated < 0 || evaluated > 1_000_000
     || typeof blockedCount !== 'number' || !Number.isSafeInteger(blockedCount) || blockedCount < 0 || blockedCount > evaluated
     // 0.17.0 upgrade paths did not have this field; treat those persisted paths as legacy.
     || (vulnerabilityStatus !== undefined
       && vulnerabilityStatus !== 'checked' && vulnerabilityStatus !== 'unavailable' && vulnerabilityStatus !== 'not-requested')
+    || (dependencyStatus !== undefined
+      && dependencyStatus !== 'checked' && dependencyStatus !== 'partial' && dependencyStatus !== 'unavailable' && dependencyStatus !== 'not-requested')
+    || (uncheckedCount !== undefined
+      && (typeof uncheckedCount !== 'number' || !Number.isSafeInteger(uncheckedCount) || uncheckedCount < 0 || uncheckedCount > evaluated))
     || !Array.isArray(blocked) || blocked.length > 8
     || (path?.firstCandidate !== undefined && !validCompatibilityUpgradeCandidate(path.firstCandidate))) return false
   return blocked.every(validCompatibilityUpgradeCandidate)
@@ -70,7 +117,7 @@ export function parseRadarState(value: unknown): RadarState {
   if (Object.keys(sourceHealth).length > 10 || Object.keys(activeSourceHealth).length > 1_000_000) {
     throw new Error('radar state exceeds the source health limit')
   }
-  const sourceNames = new Set(['osv', 'npm-releases', 'github-releases'])
+  const sourceNames = new Set(['osv', 'npm-releases', 'npm-candidate-graphs', 'github-releases'])
   for (const [source, rawStatus] of Object.entries(sourceHealth)) {
     const status = asRecord(rawStatus)
     const failures = status?.consecutiveFailures

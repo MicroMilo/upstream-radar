@@ -2,10 +2,12 @@ export { decideVerdict, stricterVerdict, verdictAtLeast } from './policy.js'
 export {
   inspectNpmPackage,
   parseNpmSpec,
+  resolveNpmDependencyGraph,
   verifyIntegrity,
   verifyRegistrySignatures,
   type InspectNpmOptions,
   type IntegrityResult,
+  type NpmDependencyGraphOptions,
   type ParsedNpmSpec,
 } from './npm.js'
 export { renderTextReport } from './render.js'
@@ -13,8 +15,16 @@ export { dependencyGraphDigest, findDependencyPaths, parseNpmLockGraph } from '.
 export { parseInstalledNodeModulesGraph } from './installed-graph.js'
 export { OsvClient, packageKey, type OsvClientOptions } from './osv.js'
 export { NpmReleaseClient, type NpmReleaseCandidateStatus, type NpmReleaseClientOptions, type NpmReleaseObservation } from './npm-release.js'
+export { MAX_CANDIDATE_GRAPHS, NpmCandidateGraphClient, type NpmCandidateGraphClientOptions } from './npm-candidate.js'
 export { GitHubReleaseClient, type GitHubReleaseClientOptions, type ReleaseNotes, type ReleaseNotesSource } from './github-release.js'
-export { emptyRadarState, pollRadar, type AdvisorySource, type RadarPollResult, type ReleaseSource } from './radar.js'
+export {
+  emptyRadarState,
+  pollRadar,
+  type AdvisorySource,
+  type CandidateDependencySource,
+  type RadarPollResult,
+  type ReleaseSource,
+} from './radar.js'
 export { assessCompatibilityChange, assessCompatibilityChanges, type CompatibilityChangeInput } from './compatibility.js'
 export { createAnalysisTask, renderAgentAnalysisGroupPrompt, renderAgentAnalysisPrompt, renderDshAnalysisPrompt } from './dsh-analysis.js'
 export { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
@@ -73,6 +83,11 @@ export {
   RADAR_STATE_SCHEMA,
   type AdvisoryMatch,
   type AnalysisTask,
+  type CandidateDependencyGraphObservation,
+  type CandidateDependencyGraphStatus,
+  type CompatibilityDependencyCheck,
+  type CompatibilityDependencyFinding,
+  type CompatibilityDependencyStatus,
   type CompatibilityEvent,
   type CompatibilityUpgradeCandidate,
   type CompatibilityUpgradePath,

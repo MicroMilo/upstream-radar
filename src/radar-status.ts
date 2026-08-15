@@ -2,7 +2,7 @@ import type { RadarConfig, RadarSource, RadarState, SourceHealthStatus } from '.
 
 export const RADAR_STATUS_SCHEMA = 'upstream-radar.radar-status/v1alpha1' as const
 
-const RADAR_SOURCES: readonly RadarSource[] = ['osv', 'npm-releases', 'github-releases']
+const RADAR_SOURCES: readonly RadarSource[] = ['osv', 'npm-releases', 'npm-candidate-graphs', 'github-releases']
 
 export type RadarMonitoringStatus = 'not-started' | 'healthy' | 'degraded'
 export type RadarSourceStatus = 'not-run' | 'healthy' | 'degraded'
@@ -126,6 +126,7 @@ function display(value: string, maxLength = 512): string {
 function sourceLabel(source: RadarSource): string {
   if (source === 'osv') return 'OSV'
   if (source === 'npm-releases') return 'npm releases'
+  if (source === 'npm-candidate-graphs') return 'npm candidate dependency graphs'
   return 'GitHub releases'
 }
 

@@ -162,6 +162,29 @@ describe('compatibility change assessment', () => {
     assert.equal(result.upgradePath.firstCandidate, undefined)
   })
 
+  it('does not recommend a candidate whose transitive graph is incomplete', () => {
+    const result = assessCompatibilityChange(inventory, {
+      previous: { name: 'plugin', version: '1.0.0', main: './index.js' },
+      candidate: { name: 'plugin', version: '1.3.0', main: './new.js' },
+      upgradeCandidates: [
+        { name: 'plugin', version: '1.1.0', main: './index.js' },
+        { name: 'plugin', version: '1.3.0', main: './new.js' },
+      ],
+      candidateDependencyChecks: new Map([
+        ['npm:plugin@1.1.0', { status: 'incomplete', nodeCount: 2, unresolvedCount: 1, findings: [] }],
+        ['npm:plugin@1.3.0', { status: 'checked', nodeCount: 2, unresolvedCount: 0, findings: [] }],
+      ]),
+      candidateDependencyStatus: 'partial',
+      detectedAt: '2026-08-14T04:00:00.000Z',
+    })
+
+    assert.ok(result?.upgradePath)
+    assert.equal(result.upgradePath.dependencyStatus, 'partial')
+    assert.equal(result.upgradePath.uncheckedCount, 1)
+    assert.equal(result.upgradePath.firstCandidate?.candidate.version, '1.3.0')
+    assert.ok(result.upgradePath.blocked.length === 0)
+  })
+
   it('does not treat an equal or older semantic version as a candidate upgrade', () => {
     const result = assessCompatibilityChange(inventory, {
       previous: { name: 'plugin', version: '2.0.0', main: './current.js' },
