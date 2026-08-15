@@ -2,6 +2,17 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.24.0] - 2026-08-16
+
+### Added
+
+- Add `benchmark compatibility` for an offline, no-network regression check of deterministic compatibility signals and the `breaking`/`any` CI gates.
+- Cover safe patches, analysis-only changes, DSH peer incompatibility, publisher-declared breaking changes, candidate dependency vulnerabilities, and incomplete graphs.
+
+### Safety
+
+- The benchmark does not install packages, load plugins, start DSH, or claim runtime compatibility; it checks the rule contract only.
+
 ## [0.23.0] - 2026-08-16
 
 ### Added

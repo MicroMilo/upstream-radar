@@ -3,6 +3,7 @@
 import process from 'node:process'
 import { access, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { renderCompatibilityBenchmark, runCompatibilityBenchmark } from './compatibility-benchmark.js'
 import { assessCompatibilityChange } from './compatibility.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { createDoctorReport, renderDoctorReport } from './doctor.js'
@@ -53,6 +54,7 @@ Usage:
   upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
+  upstream-radar benchmark compatibility [--json]
   upstream-radar radar check <config.json> [--state <state.json>] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
   upstream-radar radar watch <config.json> [--state <state.json>] [--interval <seconds>] [--once] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
   upstream-radar radar status <config.json> [--state <state.json>] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
@@ -67,6 +69,7 @@ Commands:
   doctor   check local Radar/DSH wiring without polling upstream sources
   scan     bounded, read-only inspection of a local package directory
   inspect  fetch and verify the exact npm artifact before inspecting its contents
+  benchmark run offline compatibility-rule contracts without network or plugin execution
   radar    monitor vulnerability changes, watch continuously, inspect status, or assess a candidate compatibility change
   task     inspect or acknowledge the durable DSH analysis outbox
 
@@ -168,6 +171,18 @@ async function readJson(path: string): Promise<unknown> {
   } catch {
     throw new Error(`${path} is not valid JSON`)
   }
+}
+
+async function runBenchmark(args: readonly string[]): Promise<number> {
+  if (args[0] !== 'compatibility') throw new Error('benchmark requires compatibility')
+  let json = false
+  for (const argument of args.slice(1)) {
+    if (argument === '--json') json = true
+    else throw new Error(`unknown option for benchmark: ${argument}`)
+  }
+  const report = runCompatibilityBenchmark()
+  process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderCompatibilityBenchmark(report))
+  return report.summary.failed === 0 ? 0 : 1
 }
 
 async function fileExists(path: string): Promise<boolean> {
@@ -557,6 +572,7 @@ async function main(args: readonly string[]): Promise<number> {
   }
   if (command === 'init') return runInit(args.slice(1))
   if (command === 'doctor') return runDoctor(args.slice(1))
+  if (command === 'benchmark') return runBenchmark(args.slice(1))
   if (command === 'radar') return runRadar(args.slice(1))
   if (command === 'task') return runTask(args.slice(1))
   if (command !== 'scan' && command !== 'inspect') throw new Error(`unknown command: ${command}`)

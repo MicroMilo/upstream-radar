@@ -26,6 +26,13 @@ export {
   type ReleaseSource,
 } from './radar.js'
 export { assessCompatibilityChange, assessCompatibilityChanges, type CompatibilityChangeInput } from './compatibility.js'
+export {
+  COMPATIBILITY_BENCHMARK_SCHEMA,
+  renderCompatibilityBenchmark,
+  runCompatibilityBenchmark,
+  type CompatibilityBenchmarkCaseResult,
+  type CompatibilityBenchmarkReport,
+} from './compatibility-benchmark.js'
 export { createAnalysisTask, renderAgentAnalysisGroupPrompt, renderAgentAnalysisPrompt, renderDshAnalysisPrompt } from './dsh-analysis.js'
 export { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 export {

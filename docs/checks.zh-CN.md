@@ -45,7 +45,7 @@
 - 在 microVM/容器中执行安装和加载，观察文件、网络、进程和凭据探测；
 - 恶意包情报、多源漏洞情报和 maintainer 异常监测；
 - SBOM、签名 review receipt、撤销和 `dsh plugin add/load` 的强制准入；
-- 插件能力、任务成功率、成本和延迟 benchmark。
+- 插件运行时能力、任务成功率、成本和延迟 benchmark；当前提供的是离线兼容性规则契约 benchmark，不是插件能力 benchmark。
 
 因此，真实样例即使当前风险检查全部通过，也会得到 `riskVerdict=allow`、`coverageVerdict=incomplete`、`verdict=review`。这不是保守文案，而是产品最重要的安全语义。
 
