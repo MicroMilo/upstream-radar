@@ -412,6 +412,7 @@ async function runInit(args: readonly string[]): Promise<number> {
     configFile: outputPath,
     stateFile: statePath,
     profile: resolvedProfile,
+    ...(registry === undefined ? {} : { registry }),
     force,
   })
   const plugins = config.projects[0]?.plugins ?? []

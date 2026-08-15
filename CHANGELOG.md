@@ -2,6 +2,13 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.19.1] - 2026-08-16
+
+### Fixed
+
+- Carry the registry selected by `init --registry` into the generated DSH overlay so runtime release and candidate dependency checks use the same registry.
+- Expose registry and candidate-graph controls through the legacy environment-variable patch as well.
+
 ## [0.19.0] - 2026-08-16
 
 ### Added
