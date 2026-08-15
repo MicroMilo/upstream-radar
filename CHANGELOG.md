@@ -2,6 +2,13 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.5.3] - 2026-08-15
+
+### Changed
+
+- Make the npm package description lead with dependency security monitoring for DeepSeek Harness (DSH) plugins.
+- Add focused npm discovery keywords for DSH, plugin security, dependency monitoring, vulnerability paths, and Agent tooling.
+
 ## [0.5.2] - 2026-08-15
 
 ### Fixed
@@ -64,3 +71,4 @@ All notable changes to Upstream Radar are documented here.
 [0.5.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.0
 [0.5.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.1
 [0.5.2]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.2
+[0.5.3]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.3

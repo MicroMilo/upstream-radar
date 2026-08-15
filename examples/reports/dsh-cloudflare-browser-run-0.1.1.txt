@@ -1,4 +1,4 @@
-Upstream Radar 0.5.2
+Upstream Radar 0.5.3
 Target: dsh-cloudflare-browser-run@0.1.1
 Artifact: sha256:27fe660b2fe40b15b70a206310b883ca15722d8ffaacab63232b71128d28701f
 DSH bundle: yes (./cordis.patch.yml)
