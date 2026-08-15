@@ -2,6 +2,13 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.6.0] - 2026-08-16
+
+### Added
+
+- Add `upstream-radar radar watch` with a safe bounded interval and `--once` mode for simple local, CI, and demo runs.
+- Document the CLI fallback while keeping native DSH delivery as the recommended always-on path.
+
 ## [0.5.3] - 2026-08-15
 
 ### Changed
@@ -72,3 +79,4 @@ All notable changes to Upstream Radar are documented here.
 [0.5.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.1
 [0.5.2]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.2
 [0.5.3]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.3
+[0.6.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.0

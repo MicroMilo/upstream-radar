@@ -15,6 +15,21 @@ const cli = resolve(repository, 'dist/src/cli.js')
 const fixture = resolve(repository, 'examples/fixtures/clean-dsh-plugin')
 
 describe('CLI option parsing', () => {
+  it('advertises a one-command watch loop and validates its safety interval', () => {
+    const help = spawnSync(process.execPath, [cli, '--help'], { encoding: 'utf8' })
+    assert.equal(help.status, 0)
+    assert.match(help.stdout, /radar watch <config\.json>/)
+    assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
+
+    const invalid = spawnSync(process.execPath, [cli, 'radar', 'watch', 'missing.json', '--interval', '299'], { encoding: 'utf8' })
+    assert.equal(invalid.status, 1)
+    assert.match(invalid.stderr, /--interval must be an integer between 300 and 86400/)
+
+    const misplaced = spawnSync(process.execPath, [cli, 'radar', 'compare', 'missing.json', 'before.json', 'candidate.json', '--interval', '1800'], { encoding: 'utf8' })
+    assert.equal(misplaced.status, 1)
+    assert.match(misplaced.stderr, /radar compare does not accept check or watch options/)
+  })
+
   it('rejects unknown options instead of silently weakening a scan', () => {
     const result = spawnSync(process.execPath, [cli, 'scan', fixture, '--jsno'], { encoding: 'utf8' })
     assert.equal(result.status, 1)

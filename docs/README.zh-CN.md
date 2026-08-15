@@ -32,6 +32,14 @@ dsh --profile web
 
 初始化命令会写出一份可审查的清单；只有设置 `UPSTREAM_RADAR_CONFIG` 后才会开始轮询。完整的状态文件、profile 边界和真实运行证明见[完整 DSH 配置](#安装到-dsh)。
 
+如果只想先试跑一次监控，而不启动 DSH profile，可以使用同一份清单：
+
+```bash
+upstream-radar radar watch ./upstream-radar.config.json --once
+```
+
+去掉 `--once` 就会持续运行。这个入口适合演示、CI 和排查；需要把任务交给在线 Agent 时，仍然应该安装 DSH bundle。
+
 <p align="center">
   <picture>
     <source media="(max-width: 600px)" srcset="assets/upstream-radar-hero-mobile.jpg">
@@ -145,6 +153,14 @@ pnpm run try:dsh
 6. 通过 `ctx.agents.roots()[0].followup(...)` 唤醒在线 DSH Agent。
 7. Agent 不在线时保留任务；事件解决后撤销过期任务。
 
+如果需要在本地进程或定时任务里运行同一套监控，也可以使用：
+
+```bash
+upstream-radar radar watch ./upstream-radar.config.json --interval 1800
+```
+
+CI 中使用 `--once --json`。它复用同一个状态文件，只输出新建、变化和恢复的事件。
+
 投递消息保留明确的插件身份：
 
 ```json
@@ -194,6 +210,8 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 已经支持：npm lock 依赖图、重复版本路径、OSV 精确版本匹配、恶意包记录、npm release 监听、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查。
 
 `init --profile <name>` 已经可以发现指定的 DSH profile 并生成可审查清单；暂未支持自动选择当前 active profile、原生解析 pnpm override/peer 规则、Yarn 图适配、GitHub release 与迁移文档源、项目级 Session 精确路由、把 Agent 结论写回事件，以及自动创建 Issue 或 PR。
+
+`radar watch` 是 CLI 监控入口，本身不会把任务投递给 DSH；需要 Agent 分析时应使用原生 DSH bundle。
 
 Upstream Radar 目前是面向 DSH developer preview 生态的 alpha 软件，事件结构和适配边界仍可能变化。
 
