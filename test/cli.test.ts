@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdtemp, rm } from 'node:fs/promises'
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
@@ -52,6 +52,48 @@ describe('CLI option parsing', () => {
     assert.equal(report.schema, 'upstream-radar.radar-status/v1alpha1')
     assert.equal(report.stateExists, false)
     assert.equal(report.monitoring, 'not-started')
+  })
+
+  it('prints the local doctor command before the long-running DSH start command', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-init-cli-'))
+    try {
+      const dshHome = join(root, 'dsh-home')
+      const profile = join(dshHome, 'profiles', 'web')
+      await mkdir(join(profile, 'node_modules', 'demo-plugin'), { recursive: true })
+      await writeFile(join(profile, 'package.json'), JSON.stringify({
+        name: 'dsh-profile-web',
+        dsh: { profile: { bundles: ['demo-plugin'] } },
+      }))
+      await writeFile(join(profile, 'node_modules', 'demo-plugin', 'package.json'), JSON.stringify({
+        name: 'demo-plugin',
+        version: '1.0.0',
+        main: './index.js',
+      }))
+
+      const config = join(root, 'upstream-radar.config.json')
+      const patch = join(root, 'upstream-radar.dsh.yml')
+      const result = spawnSync(process.execPath, [
+        cli,
+        'init',
+        '--profile',
+        'web',
+        '--output',
+        config,
+        '--dsh-patch',
+        patch,
+      ], {
+        encoding: 'utf8',
+        env: { ...process.env, DSH_HOME: dshHome },
+      })
+      assert.equal(result.status, 0)
+      const doctorAt = result.stdout.indexOf(' doctor ')
+      const dshAt = result.stdout.indexOf('dsh --profile')
+      assert.ok(doctorAt >= 0)
+      assert.ok(dshAt > doctorAt)
+      assert.match(result.stdout, /--patch .*upstream-radar\.dsh\.yml/)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
   })
 
   it('rejects unknown options instead of silently weakening a scan', () => {

@@ -17,20 +17,31 @@
 
 ## 60 秒开始
 
-使用一个已经安装至少一个第三方 bundle 的 DSH profile。如果 DSH 中只有一个这样的 profile，初始化命令可以自动找到它：
+使用一个已经安装至少一个第三方 bundle 的 DSH profile，把 `web` 换成你的 profile 名称。下面的命令分成两个终端，因为 DSH 通常会持续运行：
 
 ```bash
+# 终端 1
 dsh plugin --profile web add upstream-radar@latest
 pnpm dlx --package=upstream-radar@latest upstream-radar init \
+  --profile web \
   --project-name "我的 DSH 项目" \
   --workspace "$PWD" \
   --output ./upstream-radar.config.json \
   --dsh-patch ./upstream-radar.dsh.yml
+pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.config.json \
+  --profile web \
+  --patch ./upstream-radar.dsh.yml
 dsh --profile web --patch ./upstream-radar.dsh.yml
+```
+
+DSH 启动后，在第二个终端执行只读状态检查：
+
+```bash
+# 终端 2
 pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-radar.config.json
 ```
 
-初始化命令会写出可审查的清单和 DSH overlay。检查两个文件后，用 `--patch` 启动，再用 `radar status` 在不重新请求网络的情况下确认第一次运行。如果有多个 DSH profile 含第三方 bundle，就显式传入 `--profile <name>`。完整的状态文件、兼容的旧环境变量方式、profile 边界和真实运行证明见[完整 DSH 配置](#安装到-dsh)。
+初始化命令会写出可审查的清单和 DSH overlay。`doctor` 会在 DSH 启动前检查本地接线；`radar status` 会在不重新请求网络的情况下确认第一次完整检查。完整的状态文件、兼容的旧环境变量方式、profile 边界和真实运行证明见[完整 DSH 配置](#安装到-dsh)。
 
 如果只想先试跑一次监控，而不启动 DSH profile，可以使用同一份清单：
 
