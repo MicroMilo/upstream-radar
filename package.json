@@ -1,7 +1,7 @@
 {
   "name": "upstream-radar",
-  "version": "0.18.0",
-  "description": "Dependency security monitoring for DeepSeek Harness (DSH) plugins: find the exact vulnerable path or breaking update, then route evidence to a DSH Agent.",
+  "version": "0.19.0",
+  "description": "Always-on dependency security monitoring for DeepSeek Harness (DSH) plugins: find exact installed or candidate transitive vulnerable paths and breaking updates, then route evidence to a DSH Agent.",
   "type": "module",
   "license": "Apache-2.0",
   "author": "MicroMilo",

@@ -9,6 +9,7 @@ import { GitHubReleaseClient } from './github-release.js'
 import { createRadarConfigFromDshProfile, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 import { inspectNpmPackage } from './npm.js'
+import { NpmCandidateGraphClient } from './npm-candidate.js'
 import { NpmReleaseClient } from './npm-release.js'
 import { OsvClient } from './osv.js'
 import { verdictAtLeast } from './policy.js'
@@ -59,6 +60,7 @@ Commands:
 Options:
   --deep               resolve the dependency graph with scripts disabled and ask npm to verify signatures/provenance
   --registry <url>     HTTPS npm registry for inspect or explicit public-graph init
+  --no-deep-candidates skip bounded transitive dependency graph checks for upgrade candidates
   --state <path>       persistent radar state (default: <config.json>.state.json)
   --osv-base-url <url> alternate HTTPS OSV API base URL
   --interval <seconds> watch interval from 300 to 86400 seconds (default: 1800)
@@ -178,12 +180,15 @@ async function runRadar(args: readonly string[]): Promise<number> {
   let intervalSeconds = 1_800
   let intervalProvided = false
   let once = false
+  let deepCandidates = true
   for (let index = 2; index < args.length; index += 1) {
     const argument = args[index]
     if (argument === '--json') {
       json = true
     } else if (argument === '--once') {
       once = true
+    } else if (argument === '--no-deep-candidates') {
+      deepCandidates = false
     } else if (argument === '--state' || argument === '--osv-base-url' || argument === '--registry'
       || argument === '--notes' || argument === '--interval') {
       const value = args[index + 1]
@@ -212,7 +217,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
   const readConfigForPoll = async () => refreshRadarConfigFromConfiguredProfile(await readConfig())
   if (subcommand === 'status') {
     if (positional.length > 0 || notesPath !== undefined || once || intervalProvided
-      || osvBaseUrl !== undefined || registry !== undefined || statePath === ':memory:') {
+      || osvBaseUrl !== undefined || registry !== undefined || !deepCandidates || statePath === ':memory:') {
       throw new Error('radar status only accepts --state and --json options')
     }
     const config = await readConfig()
@@ -233,12 +238,15 @@ async function runRadar(args: readonly string[]): Promise<number> {
   const releases = new NpmReleaseClient({
     ...(registry === undefined ? {} : { registry }),
   })
+  const candidateGraphs = deepCandidates
+    ? new NpmCandidateGraphClient({ ...(registry === undefined ? {} : { registry }) })
+    : undefined
   const releaseNotesSource = new GitHubReleaseClient()
   const stateFile = statePath ?? `${resolve(configPath)}.state.json`
   const runCheck = async () => {
     const config = await readConfigForPoll()
     const state = statePath === ':memory:' ? emptyRadarState() : await loadRadarState(stateFile)
-    const result = await pollRadar(config.projects, state, osv, new Date(), releases, releaseNotesSource)
+    const result = await pollRadar(config.projects, state, osv, new Date(), releases, releaseNotesSource, candidateGraphs)
     if (statePath !== ':memory:') await saveRadarState(stateFile, result.state)
     return result
   }
@@ -296,7 +304,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
     return 0
   }
 
-  if (statePath !== undefined || osvBaseUrl !== undefined || registry !== undefined || once || intervalProvided) {
+  if (statePath !== undefined || osvBaseUrl !== undefined || registry !== undefined || once || intervalProvided || !deepCandidates) {
     throw new Error('radar compare does not accept check or watch options')
   }
   const config = await readConfig()

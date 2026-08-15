@@ -2,6 +2,8 @@ import { createHash } from 'node:crypto'
 import { compareSemverValues, crossesBreakingVersionBoundary, satisfiesSemverRange } from './semver.js'
 import {
   RADAR_EVENT_SCHEMA,
+  type CompatibilityDependencyCheck,
+  type CompatibilityDependencyStatus,
   type CompatibilityEvent,
   type CompatibilityUpgradeCandidate,
   type CompatibilityUpgradePath,
@@ -24,6 +26,9 @@ export interface CompatibilityChangeInput {
   /** Exact OSV results for candidate versions, keyed by npm package coordinate. */
   candidateVulnerabilities?: ReadonlyMap<string, readonly VulnerabilityAdvisory[]>
   candidateVulnerabilityStatus?: CompatibilityVulnerabilityStatus
+  /** OSV results for the bounded transitive graphs of candidate versions. */
+  candidateDependencyChecks?: ReadonlyMap<string, CompatibilityDependencyCheck>
+  candidateDependencyStatus?: CompatibilityDependencyStatus
   detectedAt: string
 }
 
@@ -66,6 +71,7 @@ function collectCompatibilitySignals(
   candidate: PackageManifestSnapshot,
   releaseNotes?: string,
   candidateVulnerabilities: readonly VulnerabilityAdvisory[] = [],
+  candidateDependencyCheck?: CompatibilityDependencyCheck,
 ): CompatibilitySignal[] {
   const signals: CompatibilitySignal[] = []
   if (crossesBreakingVersionBoundary(previous.version, candidate.version)) {
@@ -197,6 +203,32 @@ function collectCompatibilitySignals(
       ...(advisory.fixedVersions.length === 0 ? {} : { after: `fixed: ${advisory.fixedVersions.slice(0, 8).join(', ')}` }),
     })
   }
+  if (candidateDependencyCheck !== undefined) {
+    for (const finding of [...candidateDependencyCheck.findings]
+      .sort((left, right) => packageKey(left.package).localeCompare(packageKey(right.package)) || left.advisory.id.localeCompare(right.advisory.id))) {
+      const path = finding.paths[0]
+      signals.push({
+        code: 'candidate-dependency-vulnerability',
+        confidence: 'confirmed',
+        summary: `OSV reports ${finding.advisory.id} (${finding.advisory.severity}) for transitive dependency ${finding.package.name}@${finding.package.version}.`,
+        before: finding.advisory.id,
+        ...(path === undefined ? {} : { after: path.map(item => `${item.name}@${item.version}`).join(' -> ') }),
+      })
+    }
+    if (candidateDependencyCheck.status === 'incomplete') {
+      signals.push({
+        code: 'candidate-dependency-graph-incomplete',
+        confidence: 'needs-analysis',
+        summary: `The candidate dependency graph has ${candidateDependencyCheck.unresolvedCount} unresolved dependency edge(s); it cannot be treated as fully checked.`,
+      })
+    } else if (candidateDependencyCheck.status === 'unavailable') {
+      signals.push({
+        code: 'candidate-dependency-check-unavailable',
+        confidence: 'needs-analysis',
+        summary: 'The candidate dependency graph or its vulnerability query was unavailable; transitive dependency risk is unknown.',
+      })
+    }
+  }
   return signals
 }
 
@@ -213,6 +245,8 @@ function assessUpgradePath(
   releaseNotes?: string,
   candidateVulnerabilities: ReadonlyMap<string, readonly VulnerabilityAdvisory[]> = new Map(),
   vulnerabilityStatus: CompatibilityVulnerabilityStatus = 'not-requested',
+  candidateDependencyChecks: ReadonlyMap<string, CompatibilityDependencyCheck> = new Map(),
+  dependencyStatus: CompatibilityDependencyStatus = 'not-requested',
 ): CompatibilityUpgradePath | undefined {
   const unique = new Map<string, PackageManifestSnapshot>()
   for (const candidate of candidates) {
@@ -237,22 +271,43 @@ function assessUpgradePath(
       candidate,
       candidate.version === latestCandidate.version ? releaseNotes : undefined,
       candidateVulnerabilities.get(packageKey({ ecosystem: 'npm', name: candidate.name, version: candidate.version })) ?? [],
+      candidateDependencyChecks.get(packageKey({ ecosystem: 'npm', name: candidate.name, version: candidate.version })),
     )
+    const dependencyCheck = candidateDependencyChecks.get(packageKey({
+      ecosystem: 'npm',
+      name: candidate.name,
+      version: candidate.version,
+    }))
     const assessed: CompatibilityUpgradeCandidate = {
       candidate: { ecosystem: 'npm', name: candidate.name, version: candidate.version },
       signals,
+      ...(dependencyCheck === undefined ? {} : { dependencyCheck }),
     }
     if (isDeterministicallyBlocked(signals)) {
       blockedCount += 1
       if (blocked.length < 8) blocked.push(assessed)
-    } else if (firstCandidate === undefined && vulnerabilityStatus !== 'unavailable') {
+    } else if (firstCandidate === undefined
+      && vulnerabilityStatus !== 'unavailable'
+      && dependencyStatus !== 'unavailable'
+      && (dependencyCheck === undefined
+        ? dependencyStatus === 'not-requested'
+        : dependencyCheck.status === 'checked')) {
       firstCandidate = assessed
     }
   }
+  const uncheckedCount = dependencyStatus === 'not-requested'
+    ? 0
+    : ordered.filter(candidate => candidateDependencyChecks.get(packageKey({
+      ecosystem: 'npm',
+      name: candidate.name,
+      version: candidate.version,
+    }))?.status !== 'checked').length
   return {
     evaluated: ordered.length,
     blockedCount,
     vulnerabilityStatus,
+    dependencyStatus,
+    uncheckedCount,
     ...(firstCandidate === undefined ? {} : { firstCandidate }),
     blocked,
   }
@@ -288,6 +343,11 @@ export function assessCompatibilityChanges(
       change.candidate,
       change.releaseNotes,
       change.candidateVulnerabilities?.get(packageKey({ ecosystem: 'npm', name: change.candidate.name, version: change.candidate.version })) ?? [],
+      change.candidateDependencyChecks?.get(packageKey({
+        ecosystem: 'npm',
+        name: change.candidate.name,
+        version: change.candidate.version,
+      })),
     )
 
     if (signals.length === 0) return []
@@ -302,6 +362,8 @@ export function assessCompatibilityChanges(
         change.releaseNotes,
         change.candidateVulnerabilities ?? new Map(),
         change.candidateVulnerabilityStatus ?? 'not-requested',
+        change.candidateDependencyChecks ?? new Map(),
+        change.candidateDependencyStatus ?? 'not-requested',
       )
     const eventSeed = [inventory.project.id, installation.package.name, installation.package.version, change.previous.name, change.previous.version, change.candidate.version, change.detectedAt].join('\0')
     const incidentSeed = [inventory.project.id, installation.package.name, installation.package.version, change.previous.name, change.previous.version].join('\0')

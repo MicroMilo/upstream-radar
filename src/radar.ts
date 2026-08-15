@@ -3,6 +3,7 @@ import { createAnalysisTask } from './dsh-analysis.js'
 import { assessCompatibilityChanges } from './compatibility.js'
 import { findDependencyPaths } from './graph.js'
 import type { ReleaseNotes, ReleaseNotesSource } from './github-release.js'
+import { MAX_CANDIDATE_GRAPHS } from './npm-candidate.js'
 import type { NpmReleaseObservation } from './npm-release.js'
 import { compareSemverValues } from './semver.js'
 import { packageKey } from './osv.js'
@@ -11,7 +12,12 @@ import {
   RADAR_STATE_SCHEMA,
   type AdvisoryMatch,
   type AnalysisTask,
+  type CandidateDependencyGraphObservation,
+  type CompatibilityDependencyCheck,
+  type CompatibilityDependencyFinding,
+  type CompatibilityDependencyStatus,
   type DependencySource,
+  type DependencyGraph,
   type EventRoute,
   type PackageCoordinate,
   type ProjectInventory,
@@ -35,6 +41,10 @@ export interface ReleaseSource {
   query(packages: readonly PackageCoordinate[]): Promise<Map<string, NpmReleaseObservation>>
 }
 
+export interface CandidateDependencySource {
+  query(packages: readonly PackageCoordinate[]): Promise<Map<string, CandidateDependencyGraphObservation>>
+}
+
 export interface RadarPollResult {
   checkedAt: string
   packagesQueried: number
@@ -47,6 +57,10 @@ export interface RadarPollResult {
 
 const SOURCE_FAILURE_ALERT_THRESHOLD = 3
 const MAX_CANDIDATE_VULNERABILITY_QUERY = 50_000
+const MAX_DEEP_CANDIDATES_PER_STREAM = 4
+const MAX_CANDIDATE_DEPENDENCY_QUERY = 50_000
+const MAX_CANDIDATE_DEPENDENCY_FINDINGS = 32
+const MAX_CANDIDATE_DEPENDENCY_PATHS = 4
 
 type CandidateVulnerabilityStatus = 'checked' | 'unavailable' | 'not-requested'
 
@@ -133,6 +147,93 @@ function candidatePackages(releases: ReadonlyMap<string, NpmReleaseObservation>)
     }
   }
   return [...result.values()]
+}
+
+function candidateGraphPackages(releases: ReadonlyMap<string, NpmReleaseObservation>): PackageCoordinate[] {
+  const result = new Map<string, PackageCoordinate>()
+  for (const observation of releases.values()) {
+    if (releaseCandidateStatus(observation) !== 'newer') continue
+    for (const candidate of (observation.upgradeCandidates ?? []).slice(0, MAX_DEEP_CANDIDATES_PER_STREAM)) {
+      const item = coordinate(candidate.name, candidate.version)
+      result.set(packageKey(item), item)
+    }
+  }
+  return [...result.values()]
+}
+
+function candidateDependencyStatus(
+  observation: NpmReleaseObservation,
+  checks: ReadonlyMap<string, CompatibilityDependencyCheck>,
+  requested: boolean,
+): CompatibilityDependencyStatus {
+  if (!requested || observation.upgradeCandidates === undefined || observation.upgradeCandidates.length === 0) {
+    return 'not-requested'
+  }
+  const selected = observation.upgradeCandidates.slice(0, MAX_DEEP_CANDIDATES_PER_STREAM)
+  const selectedChecks = selected.map(candidate => checks.get(packageKey(coordinate(candidate.name, candidate.version))))
+  if (selectedChecks.some(check => check === undefined || check.status === 'unavailable')) {
+    return 'unavailable'
+  }
+  return observation.upgradeCandidates.length > selected.length || selectedChecks.some(check => check?.status === 'incomplete')
+    ? 'partial'
+    : 'checked'
+}
+
+function findingKey(item: CompatibilityDependencyFinding): string {
+  return `${packageKey(item.package)}\0${item.advisory.id}`
+}
+
+function collectCandidateDependencyFindings(
+  graph: DependencyGraph,
+  matches: ReadonlyMap<string, AdvisoryMatch[]>,
+): CompatibilityDependencyFinding[] {
+  const grouped = new Map<string, CompatibilityDependencyFinding>()
+  for (const node of graph.nodes) {
+    const affected = coordinate(node.name, node.version)
+    const paths = findDependencyPaths(graph, node.id, {
+      maxPaths: MAX_CANDIDATE_DEPENDENCY_PATHS,
+      maxDepth: 64,
+    }).map(path => path.map(item => coordinate(item.name, item.version)))
+    if (paths.length === 0) continue
+    for (const match of matches.get(packageKey(affected)) ?? []) {
+      const finding: CompatibilityDependencyFinding = {
+        package: { ...match.package },
+        advisory: { ...match.advisory },
+        paths: paths.map(path => [...path]),
+      }
+      const key = findingKey(finding)
+      const existing = grouped.get(key)
+      if (existing === undefined) {
+        grouped.set(key, finding)
+        continue
+      }
+      const known = new Set(existing.paths.map(path => JSON.stringify(path)))
+      for (const path of finding.paths) {
+        const serialized = JSON.stringify(path)
+        if (known.has(serialized) || existing.paths.length >= MAX_CANDIDATE_DEPENDENCY_PATHS) continue
+        existing.paths.push(path)
+        known.add(serialized)
+      }
+    }
+  }
+  return [...grouped.values()]
+    .sort((left, right) => findingKey(left).localeCompare(findingKey(right)))
+    .slice(0, MAX_CANDIDATE_DEPENDENCY_FINDINGS)
+}
+
+function candidateDependencyCheck(
+  observation: CandidateDependencyGraphObservation | undefined,
+): CompatibilityDependencyCheck {
+  const status = observation === undefined || observation.graph === undefined
+    ? 'unavailable' as const
+    : observation.status
+  return {
+    status,
+    nodeCount: observation?.graph?.nodes.length ?? 0,
+    unresolvedCount: observation?.graph?.unresolved?.length ?? 0,
+    findings: [],
+    ...(observation?.error === undefined ? {} : { error: observation.error }),
+  }
 }
 
 function sourceHealthKey(projectId: string, source: RadarSource): string {
@@ -225,6 +326,7 @@ export async function pollRadar(
   now = new Date(),
   releaseSource?: ReleaseSource,
   releaseNotesSource?: ReleaseNotesSource,
+  candidateDependencySource?: CandidateDependencySource,
 ): Promise<RadarPollResult> {
   if (previousState.schema !== RADAR_STATE_SCHEMA) throw new Error('unsupported radar state schema')
   if (!Number.isFinite(now.getTime())) throw new Error('radar check time is invalid')
@@ -366,6 +468,8 @@ export async function pollRadar(
   let activeCompatibility = previousState.activeCompatibility
   let candidateVulnerabilityMatches = new Map<string, AdvisoryMatch[]>()
   let candidateVulnerabilityStatus: CandidateVulnerabilityStatus = 'not-requested'
+  let candidateDependencyChecks = new Map<string, CompatibilityDependencyCheck>()
+  let candidateDependencySourceRequested = false
   if (releaseSource !== undefined) {
     attemptedSources.add('npm-releases')
     let releases: Map<string, NpmReleaseObservation>
@@ -408,6 +512,94 @@ export async function pollRadar(
             osvSourceSucceeded = false
             osvFailureMessage = message
             candidateVulnerabilityStatus = 'unavailable'
+          }
+        }
+      }
+      if (candidateDependencySource !== undefined) {
+        const graphCandidates = candidateGraphPackages(releases).slice(0, MAX_CANDIDATE_GRAPHS)
+        if (graphCandidates.length > 0) {
+          candidateDependencySourceRequested = true
+          attemptedSources.add('npm-candidate-graphs')
+          let graphObservations = new Map<string, CandidateDependencyGraphObservation>()
+          let graphSourceSucceeded = false
+          try {
+            graphObservations = await candidateDependencySource.query(graphCandidates)
+            if (graphCandidates.some(item => !graphObservations.has(packageKey(item)))) {
+              throw new Error('candidate dependency graph response does not cover every submitted package version')
+            }
+            graphSourceSucceeded = true
+            sourceHealth = recordSourceHealth(sourceHealth, 'npm-candidate-graphs', checkedAt, true)
+          } catch (error: unknown) {
+            const raw = error instanceof Error ? error.message : String(error)
+            const message = raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048)
+            sourceErrors.push({
+              source: 'npm-candidate-graphs',
+              message,
+            })
+            sourceHealth = recordSourceHealth(sourceHealth, 'npm-candidate-graphs', checkedAt, false, message)
+          }
+
+          for (const candidate of graphCandidates) {
+            const key = packageKey(candidate)
+            candidateDependencyChecks.set(key, candidateDependencyCheck(
+              graphSourceSucceeded ? graphObservations.get(key) : undefined,
+            ))
+          }
+
+          if (graphSourceSucceeded) {
+            const dependencyQueryPackages = [...new Map(
+              [...graphObservations.values()]
+                .flatMap(observation => observation.graph === undefined || observation.status === 'unavailable'
+                  ? []
+                  : observation.graph.nodes.map(node => {
+                    const item = coordinate(node.name, node.version)
+                    return [packageKey(item), item] as const
+                  })),
+            ).values()]
+            if (dependencyQueryPackages.length > MAX_CANDIDATE_DEPENDENCY_QUERY) {
+              const message = `OSV candidate dependency query exceeds the ${MAX_CANDIDATE_DEPENDENCY_QUERY} package limit`
+              sourceErrors.push({ source: 'osv', message })
+              osvSourceSucceeded = false
+              osvFailureMessage = message
+              for (const [key, check] of candidateDependencyChecks) {
+                candidateDependencyChecks.set(key, {
+                  ...check,
+                  status: 'unavailable',
+                  error: message,
+                })
+              }
+            } else if (dependencyQueryPackages.length > 0) {
+              try {
+                const queried = await source.query(dependencyQueryPackages)
+                if (dependencyQueryPackages.some(item => !queried.has(packageKey(item)))) {
+                  throw new Error('OSV candidate dependency response does not cover every submitted package version')
+                }
+                for (const candidate of graphCandidates) {
+                  const key = packageKey(candidate)
+                  const check = candidateDependencyChecks.get(key)
+                  const observation = graphObservations.get(key)
+                  if (check === undefined || observation?.graph === undefined || check.status === 'unavailable') continue
+                  candidateDependencyChecks.set(key, {
+                    ...check,
+                    findings: collectCandidateDependencyFindings(observation.graph, queried),
+                  })
+                }
+              } catch (error: unknown) {
+                const raw = error instanceof Error ? error.message : String(error)
+                const message = raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048)
+                sourceErrors.push({ source: 'osv', message })
+                osvSourceSucceeded = false
+                osvFailureMessage = message
+                for (const [key, check] of candidateDependencyChecks) {
+                  if (check.status === 'unavailable') continue
+                  candidateDependencyChecks.set(key, {
+                    ...check,
+                    status: 'unavailable',
+                    error: message,
+                  })
+                }
+              }
+            }
           }
         }
       }
@@ -466,6 +658,10 @@ export async function pollRadar(
             ...(observation.upgradeCandidates === undefined ? {} : {
               candidateVulnerabilities: candidateAdvisories(observation, candidateVulnerabilityMatches),
               candidateVulnerabilityStatus,
+              ...(candidateDependencySourceRequested ? {
+                candidateDependencyChecks,
+                candidateDependencyStatus: candidateDependencyStatus(observation, candidateDependencyChecks, true),
+              } : {}),
             }),
             ...releaseNotesInput,
             ...releaseNotesUrlInput,

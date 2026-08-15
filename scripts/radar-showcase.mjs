@@ -125,21 +125,43 @@ const fallbackIntermediate = {
   version: '1.3.0',
 }
 const releaseNotes = await readFile(join(fixtureDirectory, 'release-notes.txt'), 'utf8')
+const transitiveCandidateAdvisory = {
+  id: 'GHSA-transitive-plugin',
+  aliases: [],
+  summary: 'The candidate pulls a vulnerable parser transitively.',
+  details: 'This is a deterministic showcase advisory attached to the candidate graph.',
+  severity: 'high',
+  modified: '2026-08-14T01:30:00.000Z',
+  fixedVersions: ['3.0.0'],
+  references: ['https://example.test/GHSA-transitive-plugin'],
+}
+const candidateDependencyChecks = new Map([
+  ['npm:plugin@1.1.0', {
+    status: 'checked',
+    nodeCount: 3,
+    unresolvedCount: 0,
+    findings: [{
+      package: { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+      advisory: transitiveCandidateAdvisory,
+      paths: [[
+        { ecosystem: 'npm', name: 'plugin', version: '1.1.0' },
+        { ecosystem: 'npm', name: 'logger', version: '4.1.0' },
+        { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+      ]],
+    }],
+  }],
+  ['npm:plugin@1.2.0', { status: 'checked', nodeCount: 3, unresolvedCount: 0, findings: [] }],
+  ['npm:plugin@1.3.0', { status: 'checked', nodeCount: 3, unresolvedCount: 0, findings: [] }],
+  ['npm:plugin@2.0.0', { status: 'checked', nodeCount: 3, unresolvedCount: 0, findings: [] }],
+])
 const compatibility = assessCompatibilityChange(config.projects[0], {
   previous,
   candidate,
   upgradeCandidates: [intermediate, blockedIntermediate, fallbackIntermediate, candidate],
-  candidateVulnerabilities: new Map([['npm:plugin@1.1.0', [{
-    id: 'GHSA-known-plugin',
-    aliases: [],
-    summary: 'Known vulnerable candidate',
-    details: 'The intermediate candidate is affected by a known advisory.',
-    severity: 'high',
-    modified: '2026-08-14T01:30:00.000Z',
-    fixedVersions: ['1.2.0'],
-    references: ['https://example.test/GHSA-known-plugin'],
-  }]]]),
+  candidateVulnerabilities: new Map(),
   candidateVulnerabilityStatus: 'checked',
+  candidateDependencyChecks,
+  candidateDependencyStatus: 'checked',
   releaseNotes,
   releaseNotesUrl: 'https://github.com/acme/plugin/releases/tag/v2.0.0',
   detectedAt: '2026-08-14T02:00:00.000Z',

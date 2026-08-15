@@ -69,6 +69,18 @@ OSV advisory or npm release
 
 **No matching installed path means no Agent wake-up.** Version matching and compatibility facts are calculated by code; the model handles only repository-specific judgment.
 
+## The missing middle: candidate dependency graphs
+
+An upgrade can look clean at the top level while introducing a vulnerable transitive package. Radar therefore does not stop at `plugin@1.3.0`'s manifest:
+
+```text
+candidate plugin@1.1.0
+└── logger@4.1.0
+    └── parser@2.9.0  ← OSV advisory
+```
+
+For the earliest bounded set of newer versions, Radar resolves npm metadata into a temporary `package-lock.json` with lifecycle scripts disabled, queries every resolved node against OSV, and keeps the exact path in the compatibility event. A missing required edge, resolver failure, or OSV failure is shown as incomplete or unavailable; it is never presented as “no vulnerability found”. Later versions are marked as unchecked when the candidate list is larger than the bounded prefix. The result is still a starting point for DSH project analysis, not an upgrade certificate.
+
 ## See one incident
 
 If an advisory affects only one of two installed `parser` versions, Radar reports the path that actually matched:
@@ -91,7 +103,7 @@ That incident becomes a plugin-originated DSH notice. It is not copied into a ge
 | Upstream signal | Radar proves deterministically | DSH Agent investigates |
 | --- | --- | --- |
 | Vulnerability or malicious package | affected `name@version`, every installed path, fixed versions, incident state | whether project code reaches it, attacker input can reach it, and the least disruptive fix |
-| Candidate npm release | version boundary and Node.js, peer, export, entrypoint, bundle, and dependency changes; exact candidate OSV status; when possible, the first newer version without a deterministic blocker or known vulnerability | which APIs or Cordis configuration would break and what migration is appropriate; the first candidate is never treated as a safety certificate |
+| Candidate npm release | version boundary and Node.js, peer, export, entrypoint, bundle, and dependency changes; exact direct and transitive candidate OSV status; when possible, the first newer version without a deterministic blocker or known vulnerable path | which APIs or Cordis configuration would break and what migration is appropriate; the first candidate is never treated as a safety certificate |
 
 ## Install in DSH
 
@@ -126,6 +138,8 @@ The generated graph is the actual installed profile graph. DSH also maintains a 
 For a hand-written or CI fixture, use [the example inventory](examples/radar/config.json). If neither a generated `--patch` overlay nor `UPSTREAM_RADAR_CONFIG` is provided, the bundle stays dormant and performs no polling.
 
 Once running, Radar polls OSV, npm, and public GitHub Releases, persists incident state before delivery, and submits only changed incidents to the first live root DSH Agent. If a source is temporarily unavailable, Radar keeps the last confirmed state instead of claiming that the project is clean, continues delivering already queued tasks, and creates one source-health notice after three consecutive failures.
+
+Each release cycle also checks a bounded prefix of candidate dependency graphs. This is enabled by default in the DSH adapter and CLI; use `--no-deep-candidates` only when you deliberately want manifest-only compatibility checks. The graph resolver is isolated in a temporary directory and uses `package-lock-only` plus `ignore-scripts`, so candidate package code is not loaded or executed.
 
 ## Run the proof
 
@@ -243,6 +257,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - DSH shared host-runtime dependency resolution, with profile and `dsh-host` packages kept distinct in both graphs and alerts;
 - exact-version OSV vulnerability and malicious-package matching;
 - npm release monitoring for plugins and DSH/Cordis packages, accepting only a candidate newer than the installed exact version (a regressed `latest` dist-tag is not a breaking update), with public GitHub Release notes attached when an exact candidate tag is available;
+- bounded transitive dependency graph checks for the earliest candidate versions, exact OSV matching for every resolved node, vulnerable path evidence, and explicit incomplete/unavailable coverage;
 - durable incident state with current-task replacement and resolution;
 - native DSH bundle installation, startup polling, `agent/created` retry, and plugin-source attribution;
 - automatic selection of the only DSH profile with third-party bundles, plus a network-free `radar status` snapshot;
@@ -260,6 +275,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 
 - `init` discovers the only DSH profile with third-party bundles when `--profile` is omitted; multiple candidates still require an explicit profile. By default it follows the installed DSH `node_modules` tree, so pnpm overrides and local resolution choices are included. `--dsh-patch <path>` writes an explicit DSH overlay so first startup needs no environment variables. A native pnpm lockfile parser for pre-install/CI inspection is still deferred.
 - A graph with unresolved required dependency declarations is marked as incomplete coverage; optional packages that are not installed for the current platform remain visible but do not create a false required-dependency alert.
+- Candidate upgrade graphs are resolved only for a bounded earliest prefix. A candidate with an incomplete or unavailable graph is not recommended; later unqueried candidates remain visibly unchecked. Pass `--no-deep-candidates` to opt out of this extra registry work.
 - `radar status` is a local snapshot only: it does not refresh OSV/npm/GitHub data, and it cannot prove that a source is current until a check has completed.
 - npm lock graphs are supported; pnpm and Yarn graph adapters are not implemented.
 - OSV, npm `latest`, and public GitHub Release notes are live sources; changelog, comparison-diff, and migration-guide ingestion are deferred.

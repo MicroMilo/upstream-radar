@@ -60,6 +60,18 @@ OSV 漏洞公告或 npm 新版本
 
 **没有命中实际安装路径，就不会唤醒 Agent。** 版本匹配和兼容性事实由程序计算；模型只负责结合仓库做判断。
 
+## 关键的一层：候选版本的传递依赖图
+
+升级版本自身没有漏洞，不代表升级后的依赖树没有漏洞。Radar 不只看 `plugin@1.3.0` 的 manifest，还会对最早的一小段候选版本解析临时依赖图：
+
+```text
+候选 plugin@1.1.0
+└── logger@4.1.0
+    └── parser@2.9.0  ← OSV 公告
+```
+
+解析时使用临时目录、`package-lock-only` 和 `ignore-scripts`，不导入、不执行候选插件代码；随后把图中的每个精确版本交给 OSV，并把漏洞所在的完整路径放入兼容性事件。如果必需依赖无法解析、解析器失败，或者 OSV 查询失败，结果会明确标成“不完整”或“不可用”，不会把“没有查到”说成“安全”。候选版本过多时，后面的版本会标成尚未检查；即使给出第一个候选，也只是交给 DSH 做项目分析的起点，不是升级证书。
+
 ## 先看一个真实事件
 
 同一个插件里安装了两个 `parser` 版本，而公告只影响其中一个时，Radar 会报告真正命中的路径：
@@ -82,7 +94,7 @@ Route: payments-platform via feishu:payments-security
 | 上游信号 | Radar 用程序确定 | DSH Agent 结合项目调查 |
 | --- | --- | --- |
 | 漏洞或恶意软件包 | 受影响的精确版本、每条安装路径、修复版本和事件状态 | 项目是否调用、攻击者输入能否到达、代价最低的修复办法 |
-| npm 候选版本 | 版本边界，以及 Node、peer、exports、入口、bundle 和依赖变化 | 哪些 API 或 Cordis 配置会受影响、应该如何迁移 |
+| npm 候选版本 | 版本边界，以及 Node、peer、exports、入口、bundle 和依赖变化；直接依赖与传递依赖的 OSV 结果 | 哪些 API 或 Cordis 配置会受影响、应该如何迁移；第一个候选永远不是安全证书 |
 
 ## 安装到 DSH
 
@@ -117,6 +129,8 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-
 如果需要手写配置或制作 CI fixture，可以参考[示例清单](../examples/radar/config.json)。如果既没有 `--patch` overlay，也没有设置 `UPSTREAM_RADAR_CONFIG`，插件会保持休眠，不发起轮询。
 
 启动后，Radar 会轮询 OSV 与 npm，先把事件状态持久化，再把有变化的事件交给第一个在线的根 DSH Agent。
+
+每轮发现新版本时，默认还会检查最早的一小段候选依赖图。CLI 可以用 `--no-deep-candidates` 显式关闭；原生 DSH 配置可以设置 `deepCandidates: false`。这项解析在临时目录中运行 `npm install --package-lock-only --ignore-scripts`，只解析 manifest 和 lockfile，不加载或执行候选代码。
 
 ## 在真实 DSH 中运行证明
 
@@ -209,11 +223,13 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 ## 当前能力与边界
 
-已经支持：DSH profile 实际安装树和 npm lock 依赖图、重复版本路径、未解析依赖的覆盖提示、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态，并筛出第一个没有确定性阻断且没有已知漏洞、值得交给 DSH 分析的候选；OSV 失败时不推荐候选）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查。
+已经支持：DSH profile 实际安装树和 npm lock 依赖图、重复版本路径、未解析依赖的覆盖提示、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查。
 
 `init` 在省略 `--profile` 时可以自动选择唯一一个含第三方 bundle 的 DSH profile；多个候选仍要求显式指定。默认读取实际安装树，因此 pnpm override 和本地解析选择会被纳入；原生解析 pnpm lockfile 以支持安装前/CI 检查仍未实现。加上 `--dsh-patch <path>` 可以生成不依赖环境变量的 DSH overlay。`radar status` 提供离线的首次运行检查，但不会替你刷新漏洞源。暂未支持 Yarn 图适配、changelog/比较 diff/迁移文档源、项目级 Session 精确路由、把 Agent 结论写回事件，以及自动创建 Issue 或 PR。
 
 `radar watch` 是 CLI 监控入口，本身不会把任务投递给 DSH；需要 Agent 分析时应使用原生 DSH bundle。
+
+候选依赖图默认只覆盖按版本排序的有限前缀，后续未查询版本会在事件中显示为未完整检查。遇到 registry 或 OSV 不可用时，Radar 保留不确定性并发出告警，不会生成“已安全”的结论。
 
 Upstream Radar 目前是面向 DSH developer preview 生态的 alpha 软件，事件结构和适配边界仍可能变化。
 
