@@ -1,7 +1,7 @@
 {
   "name": "upstream-radar",
-  "version": "0.5.0",
-  "description": "Always-on vulnerability and breaking-change impact monitoring for DeepSeek Harness plugins.",
+  "version": "0.5.1",
+  "description": "Find the exact vulnerable path or breaking update in a DeepSeek Harness plugin, then route evidence to a DSH Agent.",
   "type": "module",
   "license": "Apache-2.0",
   "author": "MicroMilo",

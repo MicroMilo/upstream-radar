@@ -1,13 +1,6 @@
-<p align="center">
-  <picture>
-    <source media="(max-width: 600px)" srcset="docs/assets/upstream-radar-hero-mobile.jpg">
-    <img src="docs/assets/upstream-radar-hero.jpg" alt="Upstream Radar 监控依赖图，只高亮真正受影响的路径，并把一个信号交给 DSH Agent。" width="100%">
-  </picture>
-</p>
-
 <h1 align="center">Upstream Radar</h1>
 
-<p align="center"><strong>面向 DeepSeek Harness 插件的常驻漏洞与破坏性更新雷达。</strong></p>
+<p align="center"><strong>面向 DeepSeek Harness 插件的常驻依赖雷达：精确路径、破坏性更新信号，以及带项目证据的 Agent 跟进。</strong></p>
 
 <p align="center">
   <a href="README.md">English</a> · 简体中文
@@ -20,6 +13,30 @@
   <a href="examples/dsh/README.md"><img alt="已使用 DSH 0.1.0-rc.6 验证" src="https://img.shields.io/badge/tested_with_DSH-0.1.0--rc.6-5b5bd6?style=flat-square"></a>
   <a href="https://github.com/MicroMilo/upstream-radar/releases"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/MicroMilo/upstream-radar?style=flat-square"></a>
   <a href="LICENSE"><img alt="Apache-2.0 许可证" src="https://img.shields.io/badge/license-Apache--2.0-0f766e?style=flat-square"></a>
+</p>
+
+## 60 秒开始
+
+使用一个已经安装至少一个第三方 bundle 的 DSH profile，把 `web` 换成你的 profile 名称：
+
+```bash
+dsh plugin --profile web add upstream-radar@latest
+pnpm dlx upstream-radar@latest init \
+  --profile web \
+  --project-name "我的 DSH 项目" \
+  --workspace "$PWD" \
+  --output ./upstream-radar.config.json
+export UPSTREAM_RADAR_CONFIG=$PWD/upstream-radar.config.json
+dsh --profile web
+```
+
+初始化命令会写出一份可审查的清单；只有设置 `UPSTREAM_RADAR_CONFIG` 后才会开始轮询。完整的状态文件、profile 边界和真实运行证明见[完整 DSH 配置](#安装到-dsh)。
+
+<p align="center">
+  <picture>
+    <source media="(max-width: 600px)" srcset="docs/assets/upstream-radar-hero-mobile.jpg">
+    <img src="docs/assets/upstream-radar-hero.jpg" alt="Upstream Radar 监控依赖图，只高亮真正受影响的路径，并把一个信号交给 DSH Agent。" width="100%">
+  </picture>
 </p>
 
 ---
