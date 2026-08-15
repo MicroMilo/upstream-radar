@@ -35,7 +35,7 @@ dsh --profile web
 如果只想先试跑一次监控，而不启动 DSH profile，可以使用同一份清单：
 
 ```bash
-upstream-radar radar watch ./upstream-radar.config.json --once
+pnpm dlx upstream-radar@latest radar watch ./upstream-radar.config.json --once
 ```
 
 去掉 `--once` 就会持续运行。这个入口适合演示、CI 和排查；需要把任务交给在线 Agent 时，仍然应该安装 DSH bundle。
@@ -156,7 +156,7 @@ pnpm run try:dsh
 如果需要在本地进程或定时任务里运行同一套监控，也可以使用：
 
 ```bash
-upstream-radar radar watch ./upstream-radar.config.json --interval 1800
+pnpm dlx upstream-radar@latest radar watch ./upstream-radar.config.json --interval 1800
 ```
 
 CI 中使用 `--once --json`。它复用同一个状态文件，只输出新建、变化和恢复的事件。

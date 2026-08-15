@@ -44,7 +44,7 @@ The initializer writes a reviewable inventory; it does not start polling until `
 If you want to try the monitoring loop without booting a DSH profile, run one cycle from a reviewed inventory:
 
 ```bash
-upstream-radar radar watch ./upstream-radar.config.json --once
+pnpm dlx upstream-radar@latest radar watch ./upstream-radar.config.json --once
 ```
 
 Remove `--once` to keep a local monitor alive. This is a lightweight CLI surface for demos, CI, and diagnosis; the native DSH bundle remains the recommended always-on path because it can deliver the task to a live Agent.
@@ -167,7 +167,7 @@ This proof runs in CI on Node.js 22. See the executable [showcase contract](exam
 For a local process or a scheduled runner, the same loop is available as:
 
 ```bash
-upstream-radar radar watch ./upstream-radar.config.json --interval 1800
+pnpm dlx upstream-radar@latest radar watch ./upstream-radar.config.json --interval 1800
 ```
 
 Use `--once --json` for a machine-readable CI check. The command persists the same state file and emits only new, changed, or resolved incidents.
@@ -248,8 +248,8 @@ Advisories, release notes, links, package names, and repository strings remain u
 The bounded pre-install scanner remains available as a supporting collector:
 
 ```bash
-upstream-radar scan /path/to/dsh-plugin
-upstream-radar inspect npm:dsh-cloudflare-browser-run@0.1.1 --deep
+pnpm dlx upstream-radar@latest scan /path/to/dsh-plugin
+pnpm dlx upstream-radar@latest inspect npm:dsh-cloudflare-browser-run@0.1.1 --deep
 ```
 
 ## Current boundaries
