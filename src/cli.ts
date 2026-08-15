@@ -27,6 +27,10 @@ function safeErrorMessage(value: string): string {
   )).slice(0, 2_048)
 }
 
+function shellQuote(value: string): string {
+  return `'${value.replaceAll("'", "'\\''")}'`
+}
+
 function usage(): string {
   return `Upstream Radar — always-on dependency and compatibility monitoring for DSH plugins
 
@@ -252,6 +256,7 @@ async function runInit(args: readonly string[]): Promise<number> {
     ...(registry === undefined ? {} : { registry }),
   })
   const outputPath = await writeRadarConfig(config, { output, force })
+  const statePath = `${outputPath}.state.json`
   const plugins = config.projects[0]?.plugins ?? []
   if (json) {
     process.stdout.write(`${JSON.stringify({ output: outputPath, profile, plugins: plugins.map(plugin => ({
@@ -259,11 +264,11 @@ async function runInit(args: readonly string[]): Promise<number> {
       version: plugin.package.version,
       nodes: plugin.graph.nodes.length,
       edges: plugin.graph.edges.length,
-    })) }, null, 2)}\n`)
+    })), state: statePath }, null, 2)}\n`)
   } else {
     process.stdout.write(`Created ${outputPath}\nDiscovered ${plugins.length} DSH plugin bundle(s):\n`)
     for (const plugin of plugins) process.stdout.write(`  ${plugin.package.name}@${plugin.package.version} (${plugin.graph.nodes.length} dependency nodes)\n`)
-    process.stdout.write('\nReview the generated inventory, then set UPSTREAM_RADAR_CONFIG before starting DSH.\n')
+    process.stdout.write(`\nReview the generated inventory, then run:\n  export UPSTREAM_RADAR_CONFIG=${shellQuote(outputPath)}\n  export UPSTREAM_RADAR_STATE=${shellQuote(statePath)}\n  dsh --profile ${shellQuote(profile)}\n`)
   }
   return 0
 }

@@ -2,6 +2,14 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.5.1] - 2026-08-15
+
+### Changed
+
+- Put the DSH quick start before the visual hero so the first screen explains how to run Radar.
+- Make `init` print copy-pasteable environment variables and the profile start command, with the recommended state path included in JSON output.
+- Sharpen npm and README descriptions around exact vulnerable paths, breaking updates, and DSH Agent follow-up.
+
 ## [0.5.0] - 2026-08-15
 
 ### Added
@@ -47,3 +55,4 @@ All notable changes to Upstream Radar are documented here.
 [0.4.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.4.1
 [0.4.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.4.0
 [0.5.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.0
+[0.5.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.1

@@ -1,13 +1,6 @@
-<p align="center">
-  <picture>
-    <source media="(max-width: 600px)" srcset="docs/assets/upstream-radar-hero-mobile.jpg">
-    <img src="docs/assets/upstream-radar-hero.jpg" alt="Upstream Radar watches a dependency graph, highlights one affected path, and routes one signal to a DSH Agent." width="100%">
-  </picture>
-</p>
-
 <h1 align="center">Upstream Radar</h1>
 
-<p align="center"><strong>Always-on vulnerability and breaking-change radar for DeepSeek Harness plugins.</strong></p>
+<p align="center"><strong>Always-on dependency radar for DeepSeek Harness plugins: exact paths, breaking-change signals, and project-aware Agent follow-up.</strong></p>
 
 <p align="center">
   English · <a href="README.zh-CN.md">简体中文</a>
@@ -23,11 +16,36 @@
 </p>
 
 <p align="center">
+  <a href="#try-it-in-60-seconds">Try it in 60 seconds</a> ·
   <a href="#see-one-incident">See one incident</a> ·
   <a href="#install-in-dsh">Install in DSH</a> ·
   <a href="#run-the-proof">Run the proof</a> ·
   <a href="#how-the-loop-works">How it works</a> ·
   <a href="ROADMAP.md">Roadmap</a>
+</p>
+
+## Try it in 60 seconds
+
+Use a DSH profile that already contains at least one third-party bundle. Replace `web` with your profile name:
+
+```bash
+dsh plugin --profile web add upstream-radar@latest
+pnpm dlx upstream-radar@latest init \
+  --profile web \
+  --project-name "My DSH project" \
+  --workspace "$PWD" \
+  --output ./upstream-radar.config.json
+export UPSTREAM_RADAR_CONFIG=$PWD/upstream-radar.config.json
+dsh --profile web
+```
+
+The initializer writes a reviewable inventory; it does not start polling until `UPSTREAM_RADAR_CONFIG` is set. Read the [full DSH setup](#install-in-dsh) for state files, profile boundaries, and the real runtime proof.
+
+<p align="center">
+  <picture>
+    <source media="(max-width: 600px)" srcset="docs/assets/upstream-radar-hero-mobile.jpg">
+    <img src="docs/assets/upstream-radar-hero.jpg" alt="Upstream Radar watches a dependency graph, highlights one affected path, and routes one signal to a DSH Agent." width="100%">
+  </picture>
 </p>
 
 ---

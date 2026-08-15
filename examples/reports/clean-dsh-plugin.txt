@@ -1,4 +1,4 @@
-Upstream Radar 0.5.0
+Upstream Radar 0.5.1
 Target: showcase-clean-dsh-plugin@1.0.0
 Artifact: sha256:82dccb0367dd96bfdb737f2844aa023d8456949e2afe5630b99da271686c43ea
 DSH bundle: yes (./cordis.patch.yml)
