@@ -1,5 +1,6 @@
 import { packageKey } from './osv.js'
 import type { NpmReleaseObservation } from './npm-release.js'
+import { compareSemverValues } from './semver.js'
 import { TOOL_VERSION } from './version.js'
 
 const API_ORIGIN = 'https://api.github.com'
@@ -153,7 +154,10 @@ export class GitHubReleaseClient implements ReleaseNotesSource {
   async query(observations: readonly NpmReleaseObservation[]): Promise<Map<string, ReleaseNotes>> {
     const unique = new Map<string, { keys: string[]; repository: GitHubRepository; version: string }>()
     for (const observation of observations) {
-      if (observation.candidate.version === observation.installed.version) continue
+      const comparison = observation.candidateStatus === undefined
+        ? compareSemverValues(observation.candidate.version, observation.installed.version)
+        : observation.candidateStatus === 'newer' ? 1 : observation.candidateStatus === 'same' ? 0 : -1
+      if (comparison === undefined || comparison <= 0) continue
       const repository = parseGitHubRepository(observation.repository)
       if (repository === undefined) continue
       const key = `${repository.owner}/${repository.name}\0${observation.candidate.version}`

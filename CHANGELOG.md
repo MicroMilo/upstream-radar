@@ -2,6 +2,19 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.15.0] - 2026-08-16
+
+### Changed
+
+- CLI `radar check` and `radar watch` now refresh CLI-generated DSH profile inventories before each poll, matching the native DSH adapter.
+- Read-only `radar status` and explicit-file `radar compare` remain non-refreshing.
+- Ignore npm `latest` tags that point to the installed or an older version instead of creating false breaking-change incidents.
+
+### Safety
+
+- The shared refresh path reads manifests only, never imports or executes plugin code; a failed refresh aborts the cycle before durable state replacement.
+- A registry tag rollback does not resolve an existing compatibility incident without evidence that the installed project changed.
+
 ## [0.14.0] - 2026-08-16
 
 ### Added
@@ -173,6 +186,7 @@ All notable changes to Upstream Radar are documented here.
 - Version matching and compatibility facts are calculated outside the model.
 - Agent analysis is read-only and requires project evidence and explicit uncertainty.
 
+[0.15.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.15.0
 [0.14.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.14.0
 [0.13.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.13.0
 [0.12.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.12.0

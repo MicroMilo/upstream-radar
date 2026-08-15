@@ -1,6 +1,7 @@
 import { parsePackageManifestSnapshot } from './inventory.js'
 import { packageKey } from './osv.js'
 import type { PackageCoordinate, PackageManifestSnapshot } from './radar-types.js'
+import { compareSemverValues } from './semver.js'
 import { TOOL_VERSION } from './version.js'
 
 const DEFAULT_REGISTRY = 'https://registry.npmjs.org/'
@@ -15,13 +16,25 @@ export interface NpmReleaseClientOptions {
   timeoutMs?: number
 }
 
+export type NpmReleaseCandidateStatus = 'newer' | 'same' | 'older' | 'uncomparable'
+
 export interface NpmReleaseObservation {
   installed: PackageCoordinate
   latestVersion: string
   previous: PackageManifestSnapshot
   candidate: PackageManifestSnapshot
+  /** Whether npm's latest tag is newer than the installed exact version. */
+  candidateStatus?: NpmReleaseCandidateStatus
   publishedAt?: string
   repository?: string
+}
+
+function candidateStatus(candidate: string, installed: string): NpmReleaseCandidateStatus {
+  const comparison = compareSemverValues(candidate, installed)
+  if (comparison === undefined) return 'uncomparable'
+  if (comparison > 0) return 'newer'
+  if (comparison < 0) return 'older'
+  return 'same'
 }
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
@@ -145,6 +158,7 @@ export class NpmReleaseClient {
           latestVersion,
           previous,
           candidate,
+          candidateStatus: candidateStatus(latestVersion, installed.version),
           ...(publishedAt === undefined ? {} : { publishedAt }),
           ...(repository === undefined ? {} : { repository }),
         })

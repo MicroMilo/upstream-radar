@@ -71,4 +71,13 @@ describe('compatibility change assessment', () => {
     assert.ok(result)
     assert.ok(result.signals.some(signal => signal.code === 'dsh-bundle-changed'))
   })
+
+  it('does not treat an equal or older semantic version as a candidate upgrade', () => {
+    const result = assessCompatibilityChange(inventory, {
+      previous: { name: 'plugin', version: '2.0.0', main: './current.js' },
+      candidate: { name: 'plugin', version: '1.9.0', main: './older.js' },
+      detectedAt: '2026-08-14T04:00:00.000Z',
+    })
+    assert.equal(result, undefined)
+  })
 })

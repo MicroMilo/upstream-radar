@@ -4,6 +4,7 @@ import { assessCompatibilityChanges } from './compatibility.js'
 import { findDependencyPaths } from './graph.js'
 import type { ReleaseNotes, ReleaseNotesSource } from './github-release.js'
 import type { NpmReleaseObservation } from './npm-release.js'
+import { compareSemverValues } from './semver.js'
 import { packageKey } from './osv.js'
 import {
   RADAR_EVENT_SCHEMA,
@@ -92,6 +93,17 @@ function compatibilityEventChanged(previous: RadarEvent, current: RadarEvent): b
     || JSON.stringify(previous.signals) !== JSON.stringify(current.signals)
     || previous.releaseNotes !== current.releaseNotes
     || previous.releaseNotesUrl !== current.releaseNotesUrl
+}
+
+type ReleaseCandidateStatus = 'newer' | 'same' | 'older' | 'uncomparable'
+
+function releaseCandidateStatus(observation: NpmReleaseObservation): ReleaseCandidateStatus {
+  if (observation.candidateStatus !== undefined) return observation.candidateStatus
+  const comparison = compareSemverValues(observation.candidate.version, observation.installed.version)
+  if (comparison === undefined) return 'uncomparable'
+  if (comparison > 0) return 'newer'
+  if (comparison < 0) return 'older'
+  return 'same'
 }
 
 function sourceHealthKey(projectId: string, source: RadarSource): string {
@@ -359,11 +371,16 @@ export async function pollRadar(
         }
       }
       const currentCompatibility = new Map<string, StoredCompatibilityMatch>()
+      const releaseStatuses = new Map<string, ReleaseCandidateStatus>()
+      for (const observation of releases.values()) {
+        releaseStatuses.set(packageKey(observation.installed), releaseCandidateStatus(observation))
+      }
       for (const inventory of inventories) {
         const previousCompatibility = Object.values(previousState.activeCompatibility)
           .map(item => item.event)
           .filter((event): event is Extract<RadarEvent, { kind: 'compatibility' }> => event.kind === 'compatibility')
         for (const observation of releases.values()) {
+          if (releaseCandidateStatus(observation) !== 'newer') continue
           const notes = releaseNotes.get(packageKey(observation.installed))
           const fallback = !releaseNotesCheckSucceeded
             ? previousCompatibility.find(event => (
@@ -410,6 +427,11 @@ export async function pollRadar(
       }
       for (const [key, previous] of Object.entries(previousState.activeCompatibility)) {
         if (currentCompatibility.has(key)) continue
+        const status = releaseStatuses.get(packageKey(previous.event.installed))
+        if (status === 'older' || status === 'uncomparable') {
+          currentCompatibility.set(key, previous)
+          continue
+        }
         events.push({
           ...previous.event,
           id: `event-${hash(`${key}\0resolved\0${checkedAt}`)}`,

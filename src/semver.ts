@@ -41,6 +41,14 @@ export function compareSemver(left: Semver, right: Semver): number {
   return 0
 }
 
+/** Compare two complete semantic-version strings without guessing for non-semver values. */
+export function compareSemverValues(leftValue: string, rightValue: string): number | undefined {
+  const left = parseSemver(leftValue)
+  const right = parseSemver(rightValue)
+  if (left === undefined || right === undefined) return undefined
+  return compareSemver(left, right)
+}
+
 function comparatorMatches(version: Semver, token: string): boolean | undefined {
   const match = /^(>=|<=|>|<|=)?\s*(.+)$/.exec(token)
   if (match === null) return undefined

@@ -6,7 +6,7 @@ import { resolve } from 'node:path'
 import { assessCompatibilityChange } from './compatibility.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { GitHubReleaseClient } from './github-release.js'
-import { createRadarConfigFromDshProfile, discoverDshProfiles, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
+import { createRadarConfigFromDshProfile, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 import { inspectNpmPackage } from './npm.js'
 import { NpmReleaseClient } from './npm-release.js'
@@ -209,6 +209,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
   }
 
   const readConfig = async () => parseRadarConfig(await readJson(configPath))
+  const readConfigForPoll = async () => refreshRadarConfigFromConfiguredProfile(await readConfig())
   if (subcommand === 'status') {
     if (positional.length > 0 || notesPath !== undefined || once || intervalProvided
       || osvBaseUrl !== undefined || registry !== undefined || statePath === ':memory:') {
@@ -235,7 +236,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
   const releaseNotesSource = new GitHubReleaseClient()
   const stateFile = statePath ?? `${resolve(configPath)}.state.json`
   const runCheck = async () => {
-    const config = await readConfig()
+    const config = await readConfigForPoll()
     const state = statePath === ':memory:' ? emptyRadarState() : await loadRadarState(stateFile)
     const result = await pollRadar(config.projects, state, osv, new Date(), releases, releaseNotesSource)
     if (statePath !== ':memory:') await saveRadarState(stateFile, result.state)

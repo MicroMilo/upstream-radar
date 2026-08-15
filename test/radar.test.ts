@@ -188,6 +188,65 @@ describe('radar polling', () => {
     assert.equal(resolved.state.pendingAnalysisTasks.length, 0)
   })
 
+  it('ignores an npm latest tag older than the installed package', async () => {
+    const releases: ReleaseSource = {
+      async query(packages) {
+        const installed = packages.find(item => item.name === 'plugin') ?? {
+          ecosystem: 'npm' as const,
+          name: 'plugin',
+          version: '1.0.0',
+        }
+        return new Map([['npm:plugin@1.0.0', {
+          installed,
+          latestVersion: '0.0.1',
+          previous: { name: 'plugin', version: '1.0.0' },
+          candidate: { name: 'plugin', version: '0.0.1' },
+        }]])
+      },
+    }
+    const result = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      source('2026-08-14T01:00:00.000Z', false),
+      new Date('2026-08-14T04:00:00.000Z'),
+      releases,
+    )
+    assert.equal(result.events.some(event => event.kind === 'compatibility'), false)
+
+    const newer: ReleaseSource = {
+      async query(packages) {
+        const installed = packages.find(item => item.name === 'plugin') ?? {
+          ecosystem: 'npm' as const,
+          name: 'plugin',
+          version: '1.0.0',
+        }
+        return new Map([['npm:plugin@1.0.0', {
+          installed,
+          latestVersion: '2.0.0',
+          previous: { name: 'plugin', version: installed.version },
+          candidate: { name: 'plugin', version: '2.0.0' },
+        }]])
+      },
+    }
+    const active = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      source('2026-08-14T01:00:00.000Z', false),
+      new Date('2026-08-14T04:30:00.000Z'),
+      newer,
+    )
+    assert.equal(Object.keys(active.state.activeCompatibility).length, 1)
+    const rolledBack = await pollRadar(
+      [inventory],
+      active.state,
+      source('2026-08-14T01:00:00.000Z', false),
+      new Date('2026-08-14T05:00:00.000Z'),
+      releases,
+    )
+    assert.equal(rolledBack.events.length, 0)
+    assert.equal(Object.keys(rolledBack.state.activeCompatibility).length, 1)
+  })
+
   it('does not lose a vulnerability event when the independent release source is unavailable', async () => {
     const activeRelease: ReleaseSource = {
       async query(packages) {
