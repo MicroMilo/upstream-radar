@@ -125,7 +125,7 @@ The generated graph is the exact public npm artifact graph for the installed bun
 
 For a hand-written or CI fixture, use [the example inventory](examples/radar/config.json). If `UPSTREAM_RADAR_CONFIG` is not set, the bundle stays dormant and performs no polling.
 
-Once running, Radar polls OSV and npm, persists incident state before delivery, and submits only changed incidents to the first live root DSH Agent.
+Once running, Radar polls OSV, npm, and public GitHub Releases, persists incident state before delivery, and submits only changed incidents to the first live root DSH Agent. If a source is temporarily unavailable, Radar keeps the last confirmed state instead of claiming that the project is clean, and continues delivering already queued tasks.
 
 ## Run the proof
 
@@ -257,6 +257,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 - `init --profile <name>` discovers a named DSH profile and generates a reviewable inventory; automatic active-profile selection and native pnpm override/peer resolution are not implemented yet.
 - npm lock graphs are supported; pnpm and Yarn graph adapters are not implemented.
 - OSV, npm `latest`, and public GitHub Release notes are live sources; changelog, comparison-diff, and migration-guide ingestion are deferred.
+- A failed OSV check preserves confirmed matches and returns a visible source warning; durable source health history and health alerts are not implemented yet.
 - `radar watch` is a CLI monitoring fallback; it does not deliver tasks into DSH by itself.
 - Delivery currently targets the first live root Agent rather than a project-specific session.
 - Agent conclusions stay in the DSH Session; Radar does not ingest them back into incident state yet.

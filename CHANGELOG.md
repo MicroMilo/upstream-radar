@@ -2,6 +2,14 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.7.1] - 2026-08-16
+
+### Fixed
+
+- Preserve confirmed vulnerability matches and pending DSH tasks when OSV is temporarily unavailable instead of aborting the cycle.
+- Return visible `osv` source warnings from the CLI and JSON result; one-shot checks now fail closed on source errors.
+- Add a source-outage scene to the deterministic showcase.
+
 ## [0.7.0] - 2026-08-16
 
 ### Added
@@ -102,3 +110,4 @@ All notable changes to Upstream Radar are documented here.
 [0.6.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.1
 [0.6.2]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.2
 [0.7.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.7.0
+[0.7.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.7.1

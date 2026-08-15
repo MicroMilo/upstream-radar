@@ -36,6 +36,14 @@ function source(matches) {
   }
 }
 
+function unavailableSource(message) {
+  return {
+    async query() {
+      throw new Error(message)
+    },
+  }
+}
+
 function releaseSource(previous, candidate) {
   return {
     async query(packages) {
@@ -177,4 +185,18 @@ await save('06-incident-lifecycle.json', {
   },
 })
 
-process.stdout.write('\nShowcase complete: feed change -> exact graph match -> project route -> current DSH task -> resolved incident.\n')
+heading(6, 'A source outage is not a clean bill of health')
+const outage = await pollRadar(
+  config.projects,
+  vulnerable.state,
+  unavailableSource('simulated OSV timeout'),
+  new Date('2026-08-14T05:00:00.000Z'),
+)
+process.stdout.write([
+  `OSV warning: ${outage.sourceErrors.map(error => error.message).join(', ')}`,
+  `New events: ${outage.events.length}; confirmed vulnerability matches kept: ${Object.keys(outage.state.activeVulnerabilities).length}; pending DSH tasks kept: ${outage.state.pendingAnalysisTasks.length}`,
+  '',
+].join('\n'))
+await save('07-source-outage.json', outage)
+
+process.stdout.write('\nShowcase complete: feed change -> exact graph match -> project route -> current DSH task -> resolved incident -> source outage without false resolution.\n')
