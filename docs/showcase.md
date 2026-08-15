@@ -69,12 +69,14 @@ The candidate `plugin@2.0.0` changes:
 
 Radar identifies the mathematically incompatible environment and peer range, labels structural changes as needing analysis, and creates a separate DSH compatibility task.
 
-The same npm metadata also contains `plugin@1.1.0` and `plugin@1.2.0`. Radar evaluates them without installing either package: `1.2.0` is blocked by the Node.js requirement, while `1.1.0` has no deterministic blocker and is shown as the first version worth handing to DSH. That wording is deliberate: it is a candidate for project analysis, not a safety certificate.
+The same npm metadata also contains `plugin@1.1.0`, `plugin@1.2.0`, and `plugin@1.3.0`. Radar checks those exact candidate versions against OSV without installing them: `1.1.0` is blocked by a known vulnerability, `1.2.0` by the Node.js requirement, and `1.3.0` becomes the first version worth handing to DSH. That wording is deliberate: it is a candidate for project analysis, not a safety certificate.
 
 ```text
-First candidate without a deterministic blocker: plugin@1.1.0 (still requires project analysis)
-Upgrade candidates evaluated: 3; deterministic blockers: 2
+First candidate without a deterministic blocker: plugin@1.3.0 (still requires project analysis)
+Candidate OSV check: complete
+Upgrade candidates evaluated: 4; deterministic blockers: 3
 Blocked candidate samples:
+  plugin@1.1.0: known-vulnerability
   plugin@1.2.0: node-runtime-incompatible
   plugin@2.0.0: breaking-version-boundary, publisher-declared-breaking-change, node-runtime-incompatible, dsh-peer-incompatible
 ```

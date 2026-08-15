@@ -23,6 +23,7 @@ import {
   type StoredCompatibilityMatch,
   type StoredSourceHealthMatch,
   type StoredVulnerabilityMatch,
+  type VulnerabilityAdvisory,
   type VulnerabilityEvent,
 } from './radar-types.js'
 
@@ -45,6 +46,9 @@ export interface RadarPollResult {
 }
 
 const SOURCE_FAILURE_ALERT_THRESHOLD = 3
+const MAX_CANDIDATE_VULNERABILITY_QUERY = 50_000
+
+type CandidateVulnerabilityStatus = 'checked' | 'unavailable' | 'not-requested'
 
 function hash(value: string): string {
   return createHash('sha256').update(value).digest('hex').slice(0, 24)
@@ -105,6 +109,30 @@ function releaseCandidateStatus(observation: NpmReleaseObservation): ReleaseCand
   if (comparison > 0) return 'newer'
   if (comparison < 0) return 'older'
   return 'same'
+}
+
+function candidateAdvisories(
+  observation: NpmReleaseObservation,
+  matches: ReadonlyMap<string, AdvisoryMatch[]>,
+): ReadonlyMap<string, readonly VulnerabilityAdvisory[]> {
+  const result = new Map<string, readonly VulnerabilityAdvisory[]>()
+  for (const candidate of observation.upgradeCandidates ?? []) {
+    const item = coordinate(candidate.name, candidate.version)
+    result.set(packageKey(item), (matches.get(packageKey(item)) ?? []).map(match => match.advisory))
+  }
+  return result
+}
+
+function candidatePackages(releases: ReadonlyMap<string, NpmReleaseObservation>): PackageCoordinate[] {
+  const result = new Map<string, PackageCoordinate>()
+  for (const observation of releases.values()) {
+    if (releaseCandidateStatus(observation) !== 'newer') continue
+    for (const candidate of observation.upgradeCandidates ?? []) {
+      const item = coordinate(candidate.name, candidate.version)
+      result.set(packageKey(item), item)
+    }
+  }
+  return [...result.values()]
 }
 
 function sourceHealthKey(projectId: string, source: RadarSource): string {
@@ -216,10 +244,11 @@ export async function pollRadar(
   }
   let matches = new Map<string, AdvisoryMatch[]>()
   let vulnerabilityCheckSucceeded = true
+  let osvSourceSucceeded = true
+  let osvFailureMessage: string | undefined
   attemptedSources.add('osv')
   try {
     matches = await source.query([...uniquePackages.values()])
-    sourceHealth = recordSourceHealth(sourceHealth, 'osv', checkedAt, true)
   } catch (error: unknown) {
     const raw = error instanceof Error ? error.message : String(error)
     const message = raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048)
@@ -227,7 +256,8 @@ export async function pollRadar(
       source: 'osv',
       message,
     })
-    sourceHealth = recordSourceHealth(sourceHealth, 'osv', checkedAt, false, message)
+    osvSourceSucceeded = false
+    osvFailureMessage = message
     vulnerabilityCheckSucceeded = false
   }
 
@@ -334,6 +364,8 @@ export async function pollRadar(
     }
   }
   let activeCompatibility = previousState.activeCompatibility
+  let candidateVulnerabilityMatches = new Map<string, AdvisoryMatch[]>()
+  let candidateVulnerabilityStatus: CandidateVulnerabilityStatus = 'not-requested'
   if (releaseSource !== undefined) {
     attemptedSources.add('npm-releases')
     let releases: Map<string, NpmReleaseObservation>
@@ -353,6 +385,32 @@ export async function pollRadar(
       releases = new Map()
     }
     if (releaseCheckSucceeded) {
+      const candidateQueryPackages = candidatePackages(releases)
+      if (candidateQueryPackages.length > 0) {
+        if (candidateQueryPackages.length > MAX_CANDIDATE_VULNERABILITY_QUERY) {
+          const message = `OSV candidate query exceeds the ${MAX_CANDIDATE_VULNERABILITY_QUERY} package limit`
+          sourceErrors.push({ source: 'osv', message })
+          osvSourceSucceeded = false
+          osvFailureMessage = message
+          candidateVulnerabilityStatus = 'unavailable'
+        } else {
+          try {
+            const queried = await source.query(candidateQueryPackages)
+            if (candidateQueryPackages.some(item => !queried.has(packageKey(item)))) {
+              throw new Error('OSV candidate response does not cover every submitted package version')
+            }
+            candidateVulnerabilityMatches = queried
+            candidateVulnerabilityStatus = 'checked'
+          } catch (error: unknown) {
+            const raw = error instanceof Error ? error.message : String(error)
+            const message = raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048)
+            sourceErrors.push({ source: 'osv', message })
+            osvSourceSucceeded = false
+            osvFailureMessage = message
+            candidateVulnerabilityStatus = 'unavailable'
+          }
+        }
+      }
       let releaseNotes = new Map<string, ReleaseNotes>()
       let releaseNotesCheckSucceeded = releaseNotesSource === undefined
       if (releaseNotesSource !== undefined) {
@@ -405,6 +463,10 @@ export async function pollRadar(
             candidate: observation.candidate,
             detectedAt: checkedAt,
             ...(observation.upgradeCandidates === undefined ? {} : { upgradeCandidates: observation.upgradeCandidates }),
+            ...(observation.upgradeCandidates === undefined ? {} : {
+              candidateVulnerabilities: candidateAdvisories(observation, candidateVulnerabilityMatches),
+              candidateVulnerabilityStatus,
+            }),
             ...releaseNotesInput,
             ...releaseNotesUrlInput,
           })
@@ -444,6 +506,7 @@ export async function pollRadar(
       activeCompatibility = Object.fromEntries(currentCompatibility)
     }
   }
+  sourceHealth = recordSourceHealth(sourceHealth, 'osv', checkedAt, osvSourceSucceeded, osvFailureMessage)
   let activeSourceHealth: Record<string, StoredSourceHealthMatch> = previousState.activeSourceHealth ?? {}
   const currentSourceHealth = new Map<string, StoredSourceHealthMatch>(Object.entries(activeSourceHealth))
   for (const inventory of inventories) {

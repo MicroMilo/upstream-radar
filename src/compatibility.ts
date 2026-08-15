@@ -5,11 +5,14 @@ import {
   type CompatibilityEvent,
   type CompatibilityUpgradeCandidate,
   type CompatibilityUpgradePath,
+  type CompatibilityVulnerabilityStatus,
   type CompatibilitySignal,
   type PackageManifestSnapshot,
   type PluginInstallation,
   type ProjectInventory,
+  type VulnerabilityAdvisory,
 } from './radar-types.js'
+import { packageKey } from './osv.js'
 
 export interface CompatibilityChangeInput {
   previous: PackageManifestSnapshot
@@ -18,6 +21,9 @@ export interface CompatibilityChangeInput {
   releaseNotesUrl?: string
   /** Exact newer manifests from the same npm packument, used only for deterministic candidate ranking. */
   upgradeCandidates?: readonly PackageManifestSnapshot[]
+  /** Exact OSV results for candidate versions, keyed by npm package coordinate. */
+  candidateVulnerabilities?: ReadonlyMap<string, readonly VulnerabilityAdvisory[]>
+  candidateVulnerabilityStatus?: CompatibilityVulnerabilityStatus
   detectedAt: string
 }
 
@@ -59,6 +65,7 @@ function collectCompatibilitySignals(
   previous: PackageManifestSnapshot,
   candidate: PackageManifestSnapshot,
   releaseNotes?: string,
+  candidateVulnerabilities: readonly VulnerabilityAdvisory[] = [],
 ): CompatibilitySignal[] {
   const signals: CompatibilitySignal[] = []
   if (crossesBreakingVersionBoundary(previous.version, candidate.version)) {
@@ -181,6 +188,15 @@ function collectCompatibilitySignals(
       after: candidate.version,
     })
   }
+  for (const advisory of [...candidateVulnerabilities].sort((left, right) => left.id.localeCompare(right.id))) {
+    signals.push({
+      code: 'known-vulnerability',
+      confidence: 'confirmed',
+      summary: `OSV reports ${advisory.id} (${advisory.severity}) for this candidate version.`,
+      before: advisory.id,
+      ...(advisory.fixedVersions.length === 0 ? {} : { after: `fixed: ${advisory.fixedVersions.slice(0, 8).join(', ')}` }),
+    })
+  }
   return signals
 }
 
@@ -195,6 +211,8 @@ function assessUpgradePath(
   latestCandidate: PackageManifestSnapshot,
   candidates: readonly PackageManifestSnapshot[],
   releaseNotes?: string,
+  candidateVulnerabilities: ReadonlyMap<string, readonly VulnerabilityAdvisory[]> = new Map(),
+  vulnerabilityStatus: CompatibilityVulnerabilityStatus = 'not-requested',
 ): CompatibilityUpgradePath | undefined {
   const unique = new Map<string, PackageManifestSnapshot>()
   for (const candidate of candidates) {
@@ -218,6 +236,7 @@ function assessUpgradePath(
       previous,
       candidate,
       candidate.version === latestCandidate.version ? releaseNotes : undefined,
+      candidateVulnerabilities.get(packageKey({ ecosystem: 'npm', name: candidate.name, version: candidate.version })) ?? [],
     )
     const assessed: CompatibilityUpgradeCandidate = {
       candidate: { ecosystem: 'npm', name: candidate.name, version: candidate.version },
@@ -226,13 +245,14 @@ function assessUpgradePath(
     if (isDeterministicallyBlocked(signals)) {
       blockedCount += 1
       if (blocked.length < 8) blocked.push(assessed)
-    } else if (firstCandidate === undefined) {
+    } else if (firstCandidate === undefined && vulnerabilityStatus !== 'unavailable') {
       firstCandidate = assessed
     }
   }
   return {
     evaluated: ordered.length,
     blockedCount,
+    vulnerabilityStatus,
     ...(firstCandidate === undefined ? {} : { firstCandidate }),
     blocked,
   }
@@ -267,6 +287,7 @@ export function assessCompatibilityChanges(
       change.previous,
       change.candidate,
       change.releaseNotes,
+      change.candidateVulnerabilities?.get(packageKey({ ecosystem: 'npm', name: change.candidate.name, version: change.candidate.version })) ?? [],
     )
 
     if (signals.length === 0) return []
@@ -279,6 +300,8 @@ export function assessCompatibilityChanges(
         change.candidate,
         change.upgradeCandidates,
         change.releaseNotes,
+        change.candidateVulnerabilities ?? new Map(),
+        change.candidateVulnerabilityStatus ?? 'not-requested',
       )
     const eventSeed = [inventory.project.id, installation.package.name, installation.package.version, change.previous.name, change.previous.version, change.candidate.version, change.detectedAt].join('\0')
     const incidentSeed = [inventory.project.id, installation.package.name, installation.package.version, change.previous.name, change.previous.version].join('\0')

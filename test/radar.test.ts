@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import type { ReleaseNotesSource } from '../src/github-release.js'
+import { packageKey } from '../src/osv.js'
 import { emptyRadarState, pollRadar, type AdvisorySource, type ReleaseSource } from '../src/radar.js'
 import type { AdvisoryMatch, ProjectInventory } from '../src/radar-types.js'
 
@@ -193,6 +194,102 @@ describe('radar polling', () => {
     assert.equal(resolved.events[0]?.change, 'resolved')
     assert.equal(resolved.analysisTasks.length, 0)
     assert.equal(resolved.state.pendingAnalysisTasks.length, 0)
+  })
+
+  it('skips a known-vulnerable intermediate release when choosing an upgrade path', async () => {
+    const calls: string[][] = []
+    const candidateAdvisory = {
+      id: 'GHSA-known-plugin',
+      aliases: [],
+      summary: 'Known vulnerable candidate',
+      details: 'The candidate is affected.',
+      severity: 'high' as const,
+      modified: '2026-08-14T04:00:00.000Z',
+      fixedVersions: ['1.2.0'],
+      references: [],
+    }
+    const advisories: AdvisorySource = {
+      async query(packages) {
+        calls.push(packages.map(packageKey))
+        return new Map(packages.map(item => [
+          packageKey(item),
+          item.version === '1.1.0' ? [{ package: item, advisory: candidateAdvisory }] : [],
+        ]))
+      },
+    }
+    const releases: ReleaseSource = {
+      async query(packages) {
+        const installed = packages.find(item => item.name === 'plugin')
+        assert.ok(installed)
+        return new Map([['npm:plugin@1.0.0', {
+          installed,
+          latestVersion: '2.0.0',
+          previous: { name: 'plugin', version: '1.0.0', main: './old.js' },
+          candidate: { name: 'plugin', version: '2.0.0', main: './new.js' },
+          upgradeCandidates: [
+            { name: 'plugin', version: '1.1.0', main: './old.js' },
+            { name: 'plugin', version: '1.2.0', main: './old.js' },
+            { name: 'plugin', version: '2.0.0', main: './new.js' },
+          ],
+        }]])
+      },
+    }
+
+    const result = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      advisories,
+      new Date('2026-08-14T04:00:00.000Z'),
+      releases,
+    )
+    const event = result.events.find(candidate => candidate.kind === 'compatibility')
+    assert.ok(event?.kind === 'compatibility')
+    assert.equal(event.upgradePath?.vulnerabilityStatus, 'checked')
+    assert.equal(event.upgradePath?.firstCandidate?.candidate.version, '1.2.0')
+    assert.ok(event.upgradePath?.blocked.some(item => item.candidate.version === '1.1.0'
+      && item.signals.some(signal => signal.code === 'known-vulnerability')))
+    assert.equal(calls.length, 2)
+    assert.ok(calls[1]?.includes('npm:plugin@1.1.0'))
+  })
+
+  it('withholds the upgrade recommendation when the candidate OSV check fails', async () => {
+    let calls = 0
+    const advisories: AdvisorySource = {
+      async query(packages) {
+        calls += 1
+        if (calls === 2) throw new Error('OSV candidate timeout')
+        return new Map(packages.map(item => [packageKey(item), []]))
+      },
+    }
+    const releases: ReleaseSource = {
+      async query(packages) {
+        const installed = packages.find(item => item.name === 'plugin')
+        assert.ok(installed)
+        return new Map([['npm:plugin@1.0.0', {
+          installed,
+          latestVersion: '2.0.0',
+          previous: { name: 'plugin', version: '1.0.0', main: './old.js' },
+          candidate: { name: 'plugin', version: '2.0.0', main: './new.js' },
+          upgradeCandidates: [
+            { name: 'plugin', version: '1.1.0', main: './old.js' },
+            { name: 'plugin', version: '2.0.0', main: './new.js' },
+          ],
+        }]])
+      },
+    }
+    const result = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      advisories,
+      new Date('2026-08-14T04:00:00.000Z'),
+      releases,
+    )
+    const event = result.events.find(candidate => candidate.kind === 'compatibility')
+    assert.ok(event?.kind === 'compatibility')
+    assert.equal(event.upgradePath?.vulnerabilityStatus, 'unavailable')
+    assert.equal(event.upgradePath?.firstCandidate, undefined)
+    assert.deepEqual(result.sourceErrors, [{ source: 'osv', message: 'OSV candidate timeout' }])
+    assert.equal(result.state.sourceHealth?.osv?.consecutiveFailures, 1)
   })
 
   it('ignores an npm latest tag older than the installed package', async () => {

@@ -120,11 +120,26 @@ const blockedIntermediate = {
   version: '1.2.0',
   engines: { node: '>=24' },
 }
+const fallbackIntermediate = {
+  ...structuredClone(previous),
+  version: '1.3.0',
+}
 const releaseNotes = await readFile(join(fixtureDirectory, 'release-notes.txt'), 'utf8')
 const compatibility = assessCompatibilityChange(config.projects[0], {
   previous,
   candidate,
-  upgradeCandidates: [intermediate, blockedIntermediate, candidate],
+  upgradeCandidates: [intermediate, blockedIntermediate, fallbackIntermediate, candidate],
+  candidateVulnerabilities: new Map([['npm:plugin@1.1.0', [{
+    id: 'GHSA-known-plugin',
+    aliases: [],
+    summary: 'Known vulnerable candidate',
+    details: 'The intermediate candidate is affected by a known advisory.',
+    severity: 'high',
+    modified: '2026-08-14T01:30:00.000Z',
+    fixedVersions: ['1.2.0'],
+    references: ['https://example.test/GHSA-known-plugin'],
+  }]]]),
+  candidateVulnerabilityStatus: 'checked',
   releaseNotes,
   releaseNotesUrl: 'https://github.com/acme/plugin/releases/tag/v2.0.0',
   detectedAt: '2026-08-14T02:00:00.000Z',

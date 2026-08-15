@@ -45,8 +45,12 @@ function validCompatibilityUpgradePath(value: unknown): boolean {
   const evaluated = path?.evaluated
   const blockedCount = path?.blockedCount
   const blocked = path?.blocked
+  const vulnerabilityStatus = path?.vulnerabilityStatus
   if (typeof evaluated !== 'number' || !Number.isSafeInteger(evaluated) || evaluated < 0 || evaluated > 1_000_000
     || typeof blockedCount !== 'number' || !Number.isSafeInteger(blockedCount) || blockedCount < 0 || blockedCount > evaluated
+    // 0.17.0 upgrade paths did not have this field; treat those persisted paths as legacy.
+    || (vulnerabilityStatus !== undefined
+      && vulnerabilityStatus !== 'checked' && vulnerabilityStatus !== 'unavailable' && vulnerabilityStatus !== 'not-requested')
     || !Array.isArray(blocked) || blocked.length > 8
     || (path?.firstCandidate !== undefined && !validCompatibilityUpgradeCandidate(path.firstCandidate))) return false
   return blocked.every(validCompatibilityUpgradeCandidate)
