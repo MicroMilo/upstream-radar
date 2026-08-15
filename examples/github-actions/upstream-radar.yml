@@ -22,7 +22,7 @@ jobs:
           node-version: 22
       - name: Check the reviewed DSH graph
         run: >-
-          pnpm dlx --package=upstream-radar@0.20.0 upstream-radar
+          pnpm dlx --package=upstream-radar@0.21.0 upstream-radar
           radar check ./upstream-radar.config.json
           --frozen
           --state :memory:

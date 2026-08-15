@@ -104,6 +104,8 @@ poll sources
 
 When a generated inventory is used, the native DSH adapter and CLI `radar check/watch` first rebuild the installed graph from the selected DSH profile. This refresh is manifest-only and never executes plugin code. A failed refresh aborts that cycle before state replacement, so an unreadable or half-updated profile cannot be reported as clean. Read-only `status` and explicit-file `compare` do not refresh.
 
+CLI-generated inventories record the project workspace as `.` by default. This keeps the graph and Agent context reviewable in version control without embedding the creator's absolute home path; the DSH process is expected to start from the project root. `--workspace <absolute-path>` remains available when that launch arrangement is not possible.
+
 The delivery boundary is intentionally at-least-once. A crash after follow-up admission but before the second state write can repeat a task; it cannot silently erase it. Event and task ids allow later delivery adapters to deduplicate.
 
 The `doctor` command is a separate local diagnosis plane. It parses the config and state, reads the selected DSH profile manifest, checks the generated overlay's paths, and reuses the network-free status snapshot. It never polls an upstream source and never loads a plugin, so a `READY` result means “the wiring is locally coherent,” not “the feeds are current” or “the model has completed an analysis.”

@@ -18,7 +18,6 @@ dsh plugin --profile contributor-qa add dsh-cloudflare-browser-run@0.1.1
 pnpm dlx upstream-radar@latest init \
   --profile contributor-qa \
   --project-name "Contributor QA" \
-  --workspace "$PWD" \
   --output ./upstream-radar.config.json
 ```
 

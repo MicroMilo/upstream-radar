@@ -2,6 +2,17 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.21.0] - 2026-08-16
+
+### Changed
+
+- Make `init` record `project.workspace` as `.` by default, so the generated dependency inventory can be reviewed and committed without embedding the creator's absolute home path.
+- Remove the unnecessary `$PWD` argument from the first-use commands; pass `--workspace <absolute-path>` only when DSH is launched outside the project root.
+
+### Safety
+
+- The portable default changes only the project path presented to the DSH Agent; it does not change the exact installed dependency graph or its source evidence.
+
 ## [0.20.0] - 2026-08-16
 
 ### Added
