@@ -131,6 +131,16 @@ dsh --profile web --patch ./upstream-radar.dsh.yml
 pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-radar.config.json
 ```
 
+If startup does not behave as expected, run the local wiring check before looking at upstream feeds:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.config.json \
+  --profile web \
+  --patch ./upstream-radar.dsh.yml
+```
+
+`doctor` does not contact OSV, npm, GitHub, or execute plugin code. It checks that the config parses, the selected DSH profile actually registers `upstream-radar`, the overlay points to the same config and state files, the dependency coverage is complete, and the durable state can be read. It exits non-zero only for a blocked setup; a missing first-run state is shown as a warning with the next command to run. Add `--json` when another tool needs the result.
+
 The generated overlay points DSH at the config and state files explicitly and records the selected profile. If `--registry <url>` was used during initialization, the same registry is carried into the running DSH monitor; otherwise release and candidate checks use the public npm registry. Before each native DSH polling cycle, and before each CLI `radar check` or `radar watch` cycle, it re-reads that profile's installed graph, so later plugin installs, upgrades, removals, and host-runtime changes are not silently missed. If the refresh fails, that cycle stops without replacing the last durable state. `radar status` remains read-only and reports whether a check has completed, which source is unhealthy, whether dependency coverage is complete, active incidents, and pending DSH tasks. `radar compare` remains a manual comparison of the files you provide. If you prefer environment variables or need to override the polling interval, omit `--dsh-patch` and use `UPSTREAM_RADAR_CONFIG`, `UPSTREAM_RADAR_STATE`, `UPSTREAM_RADAR_INTERVAL_SECONDS`, `UPSTREAM_RADAR_REGISTRY`, and `UPSTREAM_RADAR_DEEP_CANDIDATES` as before.
 
 The generated graph is the actual installed profile graph. DSH also maintains a shared `profiles/node_modules` host plane for built-in runtime packages; Radar includes packages resolved from that plane, marks them as `dsh-host`, and still checks their exact versions for advisories. If a required dependency is declared but cannot be resolved from either place, it remains visible as incomplete coverage instead of being treated as absent. Missing optional platform packages are retained as evidence but do not make coverage incomplete. Passing `--registry <url>` explicitly selects the older public npm artifact graph path, which is useful for comparing a profile against registry resolution but is not the default.
@@ -261,6 +271,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - durable incident state with current-task replacement and resolution;
 - native DSH bundle installation, startup polling, `agent/created` retry, and plugin-source attribution;
 - automatic selection of the only DSH profile with third-party bundles, plus a network-free `radar status` snapshot;
+- a network-free `doctor` command that checks local DSH registration, overlay/config alignment, state readability, and dependency coverage;
 - compatibility signals for Node.js, peers, exports, entrypoints, bundle paths, dependencies, and version boundaries;
 - network-free Radar and real DSH runtime showcases.
 
@@ -277,6 +288,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 - A graph with unresolved required dependency declarations is marked as incomplete coverage; optional packages that are not installed for the current platform remain visible but do not create a false required-dependency alert.
 - Candidate upgrade graphs are resolved only for a bounded earliest prefix. A candidate with an incomplete or unavailable graph is not recommended; later unqueried candidates remain visibly unchecked. Pass `--no-deep-candidates` to opt out of this extra registry work.
 - `radar status` is a local snapshot only: it does not refresh OSV/npm/GitHub data, and it cannot prove that a source is current until a check has completed.
+- `doctor` checks local wiring only; it cannot prove that a running DSH process has delivered a task to a model or that upstream feeds are current.
 - npm lock graphs are supported; pnpm and Yarn graph adapters are not implemented.
 - OSV, npm `latest`, and public GitHub Release notes are live sources; changelog, comparison-diff, and migration-guide ingestion are deferred.
 - A failed OSV check preserves confirmed matches and returns a visible source warning; source health is durable and routed through DSH after three consecutive failures, while source-claim conflict handling and external health destinations are not implemented yet.

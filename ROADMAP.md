@@ -14,6 +14,7 @@
 - [x] Prove bundle installation, plugin-source attribution, Session persistence, and Agent delivery in a real DSH headless profile.
 - [x] Generate an explicit DSH `--patch` overlay so first use does not require environment variables.
 - [x] Auto-select the only DSH profile with third-party bundles and provide a network-free first-run status snapshot.
+- [x] Provide a network-free doctor command for DSH bundle registration, overlay/config alignment, state readability, and dependency coverage.
 
 ## Milestone 1 — compatibility radar
 

@@ -106,6 +106,8 @@ When a generated inventory is used, the native DSH adapter and CLI `radar check/
 
 The delivery boundary is intentionally at-least-once. A crash after follow-up admission but before the second state write can repeat a task; it cannot silently erase it. Event and task ids allow later delivery adapters to deduplicate.
 
+The `doctor` command is a separate local diagnosis plane. It parses the config and state, reads the selected DSH profile manifest, checks the generated overlay's paths, and reuses the network-free status snapshot. It never polls an upstream source and never loads a plugin, so a `READY` result means “the wiring is locally coherent,” not “the feeds are current” or “the model has completed an analysis.”
+
 ## Failure isolation
 
 - Target plugin code is never imported to build a graph.

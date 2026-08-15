@@ -5,6 +5,7 @@ import { access, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { assessCompatibilityChange } from './compatibility.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
+import { createDoctorReport, renderDoctorReport } from './doctor.js'
 import { GitHubReleaseClient } from './github-release.js'
 import { createRadarConfigFromDshProfile, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
@@ -39,6 +40,7 @@ function usage(): string {
 
 Usage:
   upstream-radar init [--profile <name>] [options]
+  upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
   upstream-radar radar check <config.json> [--state <state.json>] [--json]
@@ -52,6 +54,7 @@ Usage:
 
 Commands:
   init     discover third-party bundles in a DSH profile and write a reviewable inventory
+  doctor   check local Radar/DSH wiring without polling upstream sources
   scan     bounded, read-only inspection of a local package directory
   inspect  fetch and verify the exact npm artifact before inspecting its contents
   radar    monitor vulnerability changes, watch continuously, inspect status, or assess a candidate compatibility change
@@ -66,9 +69,10 @@ Options:
   --interval <seconds> watch interval from 300 to 86400 seconds (default: 1800)
   --once               run one watch cycle and exit (useful for CI and demos)
   --notes <path>       release notes used as untrusted compatibility evidence
-  --profile <name>     DSH profile to inspect for init (auto-selects the only candidate when omitted)
+  --profile <name>     DSH profile for init or doctor (init auto-selects the only candidate when omitted)
   --output <path>      init output path (default: ./upstream-radar.config.json)
   --dsh-patch <path>   write a self-contained DSH --patch overlay (optional)
+  --patch <path>       DSH overlay to verify with doctor
   --force              allow init to replace an existing output file
   --json               emit the canonical JSON report
   --fail-on <verdict>  CI threshold; default is review
@@ -449,6 +453,44 @@ async function runInit(args: readonly string[]): Promise<number> {
   return 0
 }
 
+async function runDoctor(args: readonly string[]): Promise<number> {
+  let configFile = 'upstream-radar.config.json'
+  let stateFile: string | undefined
+  let profile: string | undefined
+  let patchFile: string | undefined
+  let json = false
+  let positionalConfig = false
+  for (let index = 0; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === undefined) throw new Error('doctor received an empty argument')
+    if (argument === '--json') {
+      json = true
+    } else if (argument === '--state' || argument === '--profile' || argument === '--patch') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
+      if (argument === '--state') stateFile = value
+      else if (argument === '--profile') profile = value
+      else patchFile = value
+      index += 1
+    } else if (argument.startsWith('-')) {
+      throw new Error(`unknown option for doctor: ${argument}`)
+    } else if (!positionalConfig) {
+      configFile = argument
+      positionalConfig = true
+    } else {
+      throw new Error(`doctor received unexpected argument: ${argument}`)
+    }
+  }
+  const report = await createDoctorReport({
+    configFile,
+    ...(stateFile === undefined ? {} : { stateFile }),
+    ...(profile === undefined ? {} : { profile }),
+    ...(patchFile === undefined ? {} : { patchFile }),
+  })
+  process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDoctorReport(report))
+  return report.status === 'blocked' ? 1 : 0
+}
+
 async function main(args: readonly string[]): Promise<number> {
   const command = args[0]
   if (command === undefined || command === '--help' || command === '-h' || command === 'help') {
@@ -460,6 +502,7 @@ async function main(args: readonly string[]): Promise<number> {
     return 0
   }
   if (command === 'init') return runInit(args.slice(1))
+  if (command === 'doctor') return runDoctor(args.slice(1))
   if (command === 'radar') return runRadar(args.slice(1))
   if (command === 'task') return runTask(args.slice(1))
   if (command !== 'scan' && command !== 'inspect') throw new Error(`unknown command: ${command}`)

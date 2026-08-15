@@ -54,6 +54,16 @@ export {
   type RadarStatusSource,
 } from './radar-status.js'
 export { renderRadarEvent, renderRadarEvents } from './radar-render.js'
+export {
+  createDoctorReport,
+  renderDoctorReport,
+  DOCTOR_SCHEMA,
+  type DoctorCheck,
+  type DoctorCheckStatus,
+  type DoctorOptions,
+  type DoctorOverallStatus,
+  type DoctorReport,
+} from './doctor.js'
 export { compareSemverValues, crossesBreakingVersionBoundary, parseSemver, satisfiesSemverRange } from './semver.js'
 export { scanDirectory, type ScanOptions } from './scan.js'
 export { parseNpmTarball, type ParsedNpmTarball, type TarEntry, type TarOptions } from './tar.js'
