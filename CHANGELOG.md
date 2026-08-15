@@ -2,6 +2,20 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.17.0] - 2026-08-16
+
+### Added
+
+- Read newer exact npm manifests from the existing packument and evaluate them in ascending order.
+- Record the first candidate without a confirmed or strong deterministic blocker when the latest release is risky.
+- Show blocked intermediate candidates and their reasons in the compatibility event and DSH analysis task.
+
+### Safety
+
+- The first candidate is explicitly not a safety or compatibility certificate; DSH still has to inspect project evidence.
+- Candidate ranking remains outside the model and does not install or execute any release.
+- Persisted upgrade-path state is bounded and validated before it is accepted.
+
 ## [0.16.0] - 2026-08-16
 
 ### Changed
@@ -194,6 +208,7 @@ All notable changes to Upstream Radar are documented here.
 - Version matching and compatibility facts are calculated outside the model.
 - Agent analysis is read-only and requires project evidence and explicit uncertainty.
 
+[0.17.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.17.0
 [0.16.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.16.0
 [0.15.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.15.0
 [0.14.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.14.0

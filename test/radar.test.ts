@@ -99,6 +99,10 @@ describe('radar polling', () => {
           latestVersion: '2.0.0',
           previous: { name: 'plugin', version: '1.0.0', main: './old.js' },
           candidate: { name: 'plugin', version: '2.0.0', main: './new.js' },
+          upgradeCandidates: [
+            { name: 'plugin', version: '1.5.0', main: './old.js' },
+            { name: 'plugin', version: '2.0.0', main: './new.js' },
+          ],
         }]])
       },
     }
@@ -126,6 +130,9 @@ describe('radar polling', () => {
     )
     assert.equal(first.events.length, 1)
     assert.equal(first.events[0]?.kind, 'compatibility')
+    assert.equal(first.events[0]?.kind === 'compatibility'
+      ? first.events[0].upgradePath?.firstCandidate?.candidate.version
+      : undefined, '1.5.0')
     const unchanged = await pollRadar(
       [inventory],
       first.state,

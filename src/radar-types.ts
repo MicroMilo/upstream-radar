@@ -155,12 +155,30 @@ export interface CompatibilitySignal {
   after?: string
 }
 
+export interface CompatibilityUpgradeCandidate {
+  candidate: PackageCoordinate
+  signals: CompatibilitySignal[]
+}
+
+/** A bounded explanation of which intermediate release is worth analyzing first. */
+export interface CompatibilityUpgradePath {
+  /** Number of newer manifests considered from the npm packument. */
+  evaluated: number
+  /** Number of considered candidates with a confirmed or strong blocker. */
+  blockedCount: number
+  /** The first candidate without a deterministic blocker; this is not a safety verdict. */
+  firstCandidate?: CompatibilityUpgradeCandidate
+  /** A small sample of blocked candidates, kept for an actionable alert. */
+  blocked: CompatibilityUpgradeCandidate[]
+}
+
 export interface CompatibilityEvent extends RadarEventBase {
   kind: 'compatibility'
   plugin: PackageCoordinate
   installed: PackageCoordinate
   candidate: PackageCoordinate
   signals: CompatibilitySignal[]
+  upgradePath?: CompatibilityUpgradePath
   releaseNotes?: string
   releaseNotesUrl?: string
 }

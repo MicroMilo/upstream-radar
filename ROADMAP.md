@@ -26,7 +26,7 @@
 - [x] Read the exact public GitHub Release notes for a candidate version; changelogs, comparison diffs, and migration guides remain deferred.
 - [ ] Track DSH package families as one coordinated release rather than unrelated npm packages.
 - [x] Group pending same-project DSH runtime compatibility tasks into one native Agent notice without merging state incidents.
-- [ ] Resolve the lowest clean plugin upgrade, not merely the latest release.
+- [x] Resolve the first newer plugin candidate without a deterministic blocker, while leaving final compatibility to DSH project analysis.
 - [x] Discover a named DSH profile's installed third-party bundles and generate a reviewable inventory.
 - [x] Auto-select the only DSH profile with third-party bundles when `--profile` is omitted.
 - [x] Use the selected profile's installed `node_modules` tree as the source of truth, including unresolved-edge visibility.

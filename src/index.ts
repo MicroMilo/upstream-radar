@@ -74,6 +74,8 @@ export {
   type AdvisoryMatch,
   type AnalysisTask,
   type CompatibilityEvent,
+  type CompatibilityUpgradeCandidate,
+  type CompatibilityUpgradePath,
   type CompatibilitySignal,
   type DependencyEdge,
   type DependencyGraph,
