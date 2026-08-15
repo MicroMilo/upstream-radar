@@ -108,6 +108,8 @@ The delivery boundary is intentionally at-least-once. A crash after follow-up ad
 
 The `doctor` command is a separate local diagnosis plane. It parses the config and state, reads the selected DSH profile manifest, checks the generated overlay's paths, and reuses the network-free status snapshot. It never polls an upstream source and never loads a plugin, so a `READY` result means “the wiring is locally coherent,” not “the feeds are current” or “the model has completed an analysis.”
 
+The same local plane renders a bounded action summary from durable state. It preserves the exact first dependency path for a vulnerability, the first checked candidate and strongest compatibility signal for an upgrade, or the failing source for a health incident. Its suggested next step is explicitly guidance; it never upgrades a package or converts incomplete coverage into a safe result.
+
 ## Failure isolation
 
 - Target plugin code is never imported to build a graph.

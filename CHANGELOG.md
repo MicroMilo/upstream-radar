@@ -2,6 +2,18 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.19.4] - 2026-08-16
+
+### Added
+
+- Add bounded active-incident summaries to `radar status`, including the exact first vulnerable path or candidate signal and a suggested next step.
+- Point users with pending DSH tasks to the local `task show` command.
+
+### Safety
+
+- Status summaries are derived only from durable local state; they do not poll upstream sources or make upgrade/safety decisions.
+- Large state files are truncated to a bounded summary and report the number of omitted incidents.
+
 ## [0.19.3] - 2026-08-16
 
 ### Fixed

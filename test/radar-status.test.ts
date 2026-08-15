@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { createRadarStatus, renderRadarStatus } from '../src/radar-status.js'
 import { emptyRadarState } from '../src/radar.js'
-import type { RadarConfig } from '../src/radar-types.js'
+import type { CompatibilityEvent, RadarConfig, SourceHealthEvent, VulnerabilityEvent } from '../src/radar-types.js'
 
 const config: RadarConfig = {
   schema: 'upstream-radar.radar-config/v1alpha1',
@@ -19,6 +19,64 @@ const config: RadarConfig = {
       },
     }],
   }],
+}
+
+const vulnerabilityEvent: VulnerabilityEvent = {
+  schema: 'upstream-radar.event/v1alpha1',
+  id: 'event-vulnerability',
+  incidentId: 'incident-vulnerability',
+  kind: 'vulnerability',
+  change: 'new',
+  detectedAt: '2026-08-16T01:00:00.000Z',
+  project: { id: 'demo', name: 'Demo project' },
+  route: { channels: ['stdout'] },
+  plugin: { ecosystem: 'npm', name: 'demo-plugin', version: '1.0.0' },
+  affected: { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+  paths: [[
+    { ecosystem: 'npm', name: 'demo-plugin', version: '1.0.0' },
+    { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+  ]],
+  advisory: {
+    id: 'GHSA-demo',
+    aliases: [],
+    summary: 'Demo advisory',
+    details: 'Demo details',
+    severity: 'high',
+    modified: '2026-08-16T01:00:00.000Z',
+    fixedVersions: ['3.0.0'],
+    references: [],
+  },
+}
+
+const compatibilityEvent: CompatibilityEvent = {
+  schema: 'upstream-radar.event/v1alpha1',
+  id: 'event-compatibility',
+  incidentId: 'incident-compatibility',
+  kind: 'compatibility',
+  change: 'new',
+  detectedAt: '2026-08-16T01:00:00.000Z',
+  project: { id: 'demo', name: 'Demo project' },
+  route: { channels: ['stdout'] },
+  plugin: { ecosystem: 'npm', name: 'demo-plugin', version: '1.0.0' },
+  installed: { ecosystem: 'npm', name: 'demo-plugin', version: '1.0.0' },
+  candidate: { ecosystem: 'npm', name: 'demo-plugin', version: '2.0.0' },
+  signals: [{ code: 'breaking-version-boundary', confidence: 'strong', summary: 'Demo breaking update.' }],
+}
+
+const sourceHealthEvent: SourceHealthEvent = {
+  schema: 'upstream-radar.event/v1alpha1',
+  id: 'event-source-health',
+  incidentId: 'incident-source-health',
+  kind: 'source-health',
+  change: 'new',
+  detectedAt: '2026-08-16T01:00:00.000Z',
+  project: { id: 'demo', name: 'Demo project' },
+  route: { channels: ['stdout'] },
+  source: 'osv',
+  status: 'degraded',
+  failureCount: 3,
+  lastAttemptedAt: '2026-08-16T01:00:00.000Z',
+  error: 'OSV timeout',
 }
 
 describe('Radar status', () => {
@@ -53,9 +111,9 @@ describe('Radar status', () => {
         lastError: 'temporary registry timeout',
       },
     }
-    Object.assign(state.activeVulnerabilities, { vulnerability: {} })
-    Object.assign(state.activeCompatibility, { compatibility: {} })
-    Object.assign(state.activeSourceHealth ?? (state.activeSourceHealth = {}), { source: {} })
+    state.activeVulnerabilities = { vulnerability: { key: 'vulnerability', event: vulnerabilityEvent } }
+    state.activeCompatibility = { compatibility: { key: 'compatibility', event: compatibilityEvent } }
+    state.activeSourceHealth = { source: { key: 'source', event: sourceHealthEvent } }
     state.pendingAnalysisTasks.push({} as never)
 
     const report = createRadarStatus(config, state, {
@@ -71,9 +129,14 @@ describe('Radar status', () => {
     assert.equal(report.activeCompatibility, 1)
     assert.equal(report.activeSourceHealth, 1)
     assert.equal(report.pendingAnalysisTasks, 1)
+    assert.equal(report.activeIncidents.length, 3)
+    assert.equal(report.activeIncidentOverflow, 0)
     assert.equal(report.sources[0]?.status, 'healthy')
     assert.equal(report.sources[1]?.status, 'degraded')
-    assert.match(renderRadarStatus(report), /temporary registry timeout/)
+    const rendered = renderRadarStatus(report)
+    assert.match(rendered, /temporary registry timeout/)
+    assert.match(rendered, /parser@2\.9\.0 is affected by GHSA-demo/)
+    assert.match(rendered, /Next: run `upstream-radar task show \/tmp\/radar\.json\.state\.json`/)
   })
 
   it('does not treat absent optional platform packages as a required coverage gap', () => {

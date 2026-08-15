@@ -49,6 +49,7 @@ export {
   type CreateRadarStatusOptions,
   type RadarMonitoringStatus,
   type RadarCoverageStatus,
+  type RadarStatusIncident,
   type RadarSourceStatus,
   type RadarStatusReport,
   type RadarStatusSource,

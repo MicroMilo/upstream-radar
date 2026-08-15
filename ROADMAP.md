@@ -15,6 +15,7 @@
 - [x] Generate an explicit DSH `--patch` overlay so first use does not require environment variables.
 - [x] Auto-select the only DSH profile with third-party bundles and provide a network-free first-run status snapshot.
 - [x] Provide a network-free doctor command for DSH bundle registration, overlay/config alignment, state readability, and dependency coverage.
+- [x] Show bounded active-incident paths, candidate signals, and next-step guidance in the network-free status command.
 
 ## Milestone 1 — compatibility radar
 

@@ -1,4 +1,14 @@
-import type { RadarConfig, RadarSource, RadarState, SourceHealthStatus } from './radar-types.js'
+import type {
+  CompatibilityEvent,
+  RadarConfig,
+  RadarEvent,
+  RadarSeverity,
+  RadarSource,
+  RadarState,
+  SourceHealthEvent,
+  SourceHealthStatus,
+  VulnerabilityEvent,
+} from './radar-types.js'
 
 export const RADAR_STATUS_SCHEMA = 'upstream-radar.radar-status/v1alpha1' as const
 
@@ -7,6 +17,15 @@ const RADAR_SOURCES: readonly RadarSource[] = ['osv', 'npm-releases', 'npm-candi
 export type RadarMonitoringStatus = 'not-started' | 'healthy' | 'degraded'
 export type RadarSourceStatus = 'not-run' | 'healthy' | 'degraded'
 export type RadarCoverageStatus = 'complete' | 'incomplete'
+
+export interface RadarStatusIncident {
+  incidentId: string
+  kind: RadarEvent['kind']
+  priority: RadarSeverity | 'attention'
+  project: string
+  summary: string
+  nextStep: string
+}
 
 export interface RadarStatusSource {
   source: RadarSource
@@ -36,6 +55,8 @@ export interface RadarStatusReport {
   activeCompatibility: number
   activeSourceHealth: number
   pendingAnalysisTasks: number
+  activeIncidents: RadarStatusIncident[]
+  activeIncidentOverflow: number
 }
 
 export interface CreateRadarStatusOptions {
@@ -63,6 +84,104 @@ function latestTimestamp(sources: readonly RadarStatusSource[]): string | undefi
     .flatMap(source => source.lastAttemptedAt === undefined ? [] : [source.lastAttemptedAt])
     .sort()
     .at(-1)
+}
+
+function packageLabel(value: { name: string; version: string }): string {
+  return `${display(value.name)}@${display(value.version)}`
+}
+
+function sourceLabel(source: RadarSource): string {
+  if (source === 'osv') return 'OSV'
+  if (source === 'npm-releases') return 'npm releases'
+  if (source === 'npm-candidate-graphs') return 'npm candidate dependency graphs'
+  return 'GitHub releases'
+}
+
+function vulnerabilityStatusIncident(event: VulnerabilityEvent): RadarStatusIncident {
+  const firstPath = event.paths[0]
+  const path = firstPath === undefined
+    ? 'dependency path unavailable'
+    : firstPath.map(packageLabel).join(' -> ')
+  const summary = `${packageLabel(event.affected)} is affected by ${display(event.advisory.id)} via ${path}`
+  if (event.kind === 'malware') {
+    return {
+      incidentId: event.incidentId,
+      kind: event.kind,
+      priority: 'critical',
+      project: display(event.project.name),
+      summary,
+      nextStep: `Remove or isolate ${packageLabel(event.plugin)}, then ask the DSH Agent to assess project exposure.`,
+    }
+  }
+  const fixedVersions = event.advisory.fixedVersions.slice(0, 4).map(item => display(item)).join(', ')
+  return {
+    incidentId: event.incidentId,
+    kind: event.kind,
+    priority: event.advisory.severity,
+    project: display(event.project.name),
+    summary,
+    nextStep: fixedVersions.length === 0
+      ? `No published fix is recorded; ask the DSH Agent to assess containment or replacement for ${packageLabel(event.plugin)}.`
+      : `Review ${event.affected.name} fixed version(s) ${fixedVersions} with the DSH Agent before changing the plugin.`,
+  }
+}
+
+function compatibilityStatusIncident(event: CompatibilityEvent): RadarStatusIncident {
+  const firstCandidate = event.upgradePath?.firstCandidate?.candidate
+  const candidate = firstCandidate === undefined ? event.candidate : firstCandidate
+  const signal = event.signals.find(item => item.confidence === 'confirmed' || item.confidence === 'strong')
+    ?? event.signals[0]
+  const signalText = signal === undefined ? 'needs project analysis' : display(signal.summary)
+  return {
+    incidentId: event.incidentId,
+    kind: event.kind,
+    priority: 'attention',
+    project: display(event.project.name),
+    summary: `${packageLabel(event.installed)} -> ${packageLabel(candidate)}: ${signalText}`,
+    nextStep: `Ask the DSH Agent to inspect project impact before applying ${packageLabel(candidate)}.`,
+  }
+}
+
+function sourceHealthStatusIncident(event: SourceHealthEvent): RadarStatusIncident {
+  const source = sourceLabel(event.source)
+  return {
+    incidentId: event.incidentId,
+    kind: event.kind,
+    priority: 'attention',
+    project: display(event.project.name),
+    summary: `${source} failed ${event.failureCount} consecutive check(s)`,
+    nextStep: `Restore ${source} before treating the absence of new alerts as a clean result.`,
+  }
+}
+
+function statusIncident(event: RadarEvent): RadarStatusIncident {
+  if (event.kind === 'compatibility') return compatibilityStatusIncident(event)
+  if (event.kind === 'source-health') return sourceHealthStatusIncident(event)
+  return vulnerabilityStatusIncident(event)
+}
+
+function priorityRank(priority: RadarStatusIncident['priority']): number {
+  if (priority === 'critical') return 6
+  if (priority === 'high') return 5
+  if (priority === 'medium') return 4
+  if (priority === 'low') return 3
+  if (priority === 'unknown') return 2
+  if (priority === 'info') return 1
+  return 0
+}
+
+function activeIncidentSummary(state: RadarState): { incidents: RadarStatusIncident[]; overflow: number } {
+  const all = [
+    ...Object.values(state.activeVulnerabilities).map(item => statusIncident(item.event)),
+    ...Object.values(state.activeCompatibility).map(item => statusIncident(item.event)),
+    ...Object.values(state.activeSourceHealth ?? {}).map(item => statusIncident(item.event)),
+  ].sort((left, right) => (
+    priorityRank(right.priority) - priorityRank(left.priority)
+      || left.project.localeCompare(right.project)
+      || left.incidentId.localeCompare(right.incidentId)
+  ))
+  const incidents = all.slice(0, 32)
+  return { incidents, overflow: all.length - incidents.length }
 }
 
 /** Build a network-free snapshot from the reviewed config and durable Radar state. */
@@ -94,6 +213,7 @@ export function createRadarStatus(
     ), 0),
     0,
   )
+  const activeSummary = activeIncidentSummary(state)
   return {
     schema: RADAR_STATUS_SCHEMA,
     configFile: options.configFile,
@@ -113,6 +233,8 @@ export function createRadarStatus(
     activeCompatibility: Object.keys(state.activeCompatibility).length,
     activeSourceHealth: Object.keys(state.activeSourceHealth ?? {}).length,
     pendingAnalysisTasks: state.pendingAnalysisTasks.length,
+    activeIncidents: activeSummary.incidents,
+    activeIncidentOverflow: activeSummary.overflow,
   }
 }
 
@@ -121,13 +243,6 @@ function display(value: string, maxLength = 512): string {
     `\\u${character.codePointAt(0)?.toString(16).padStart(4, '0') ?? '0000'}`
   ))
   return escaped.length <= maxLength ? escaped : `${escaped.slice(0, maxLength)}…`
-}
-
-function sourceLabel(source: RadarSource): string {
-  if (source === 'osv') return 'OSV'
-  if (source === 'npm-releases') return 'npm releases'
-  if (source === 'npm-candidate-graphs') return 'npm candidate dependency graphs'
-  return 'GitHub releases'
 }
 
 function plural(value: number, singular: string, multiple = `${singular}s`): string {
@@ -161,6 +276,19 @@ export function renderRadarStatus(report: RadarStatusReport): string {
   }
   lines.push(
     '',
+    report.activeIncidents.length === 0 ? 'Attention: none' : 'Attention:',
+  )
+  for (const incident of report.activeIncidents) {
+    lines.push(
+      `  [${incident.priority.toUpperCase()}] ${display(incident.project)}: ${display(incident.summary)}`,
+      `    Next: ${display(incident.nextStep)}`,
+    )
+  }
+  if (report.activeIncidentOverflow > 0) {
+    lines.push(`  … ${report.activeIncidentOverflow} more active incident(s) omitted from this summary`)
+  }
+  lines.push(
+    '',
     `Active vulnerabilities: ${report.activeVulnerabilities}`,
     `Active compatibility incidents: ${report.activeCompatibility}`,
     `Source-health incidents: ${report.activeSourceHealth}`,
@@ -168,6 +296,9 @@ export function renderRadarStatus(report: RadarStatusReport): string {
   )
   if (report.monitoring === 'not-started') {
     lines.push('', 'No completed check is recorded yet. Start DSH or run `radar check` once.')
+  }
+  if (report.pendingAnalysisTasks > 0) {
+    lines.push('', `Next: run \`upstream-radar task show ${display(report.stateFile)}\` to inspect the next queued DSH analysis.`)
   }
   return `${lines.join('\n')}\n`
 }
