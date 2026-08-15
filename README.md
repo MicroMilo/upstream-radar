@@ -41,6 +41,14 @@ dsh --profile web
 
 The initializer writes a reviewable inventory; it does not start polling until `UPSTREAM_RADAR_CONFIG` is set. Read the [full DSH setup](#install-in-dsh) for state files, profile boundaries, and the real runtime proof.
 
+If you want to try the monitoring loop without booting a DSH profile, run one cycle from a reviewed inventory:
+
+```bash
+upstream-radar radar watch ./upstream-radar.config.json --once
+```
+
+Remove `--once` to keep a local monitor alive. This is a lightweight CLI surface for demos, CI, and diagnosis; the native DSH bundle remains the recommended always-on path because it can deliver the task to a live Agent.
+
 <p align="center">
   <picture>
     <source media="(max-width: 600px)" srcset="docs/assets/upstream-radar-hero-mobile.jpg">
@@ -156,6 +164,14 @@ This proof runs in CI on Node.js 22. See the executable [showcase contract](exam
 6. Send a plugin-originated follow-up to the first live root DSH Agent.
 7. Keep the task on disk when no Agent is available; cancel it when the incident resolves.
 
+For a local process or a scheduled runner, the same loop is available as:
+
+```bash
+upstream-radar radar watch ./upstream-radar.config.json --interval 1800
+```
+
+Use `--once --json` for a machine-readable CI check. The command persists the same state file and emits only new, changed, or resolved incidents.
+
 The handoff uses `ctx.agents.roots()[0].followup(...)` with:
 
 ```json
@@ -241,6 +257,7 @@ upstream-radar inspect npm:dsh-cloudflare-browser-run@0.1.1 --deep
 - `init --profile <name>` discovers a named DSH profile and generates a reviewable inventory; automatic active-profile selection and native pnpm override/peer resolution are not implemented yet.
 - npm lock graphs are supported; pnpm and Yarn graph adapters are not implemented.
 - OSV and npm `latest` are the live sources; GitHub release and migration-guide ingestion are deferred.
+- `radar watch` is a CLI monitoring fallback; it does not deliver tasks into DSH by itself.
 - Delivery currently targets the first live root Agent rather than a project-specific session.
 - Agent conclusions stay in the DSH Session; Radar does not ingest them back into incident state yet.
 - No Issue, branch, Pull Request, dependency override, or merge is created automatically.

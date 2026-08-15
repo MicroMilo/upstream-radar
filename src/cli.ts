@@ -39,6 +39,7 @@ Usage:
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
   upstream-radar radar check <config.json> [--state <state.json>] [--json]
+  upstream-radar radar watch <config.json> [--state <state.json>] [--interval <seconds>] [--once] [--json]
   upstream-radar radar compare <config.json> <before.json> <candidate.json> [--notes <release-notes.txt>] [--json]
   upstream-radar task list <state.json> [--json]
   upstream-radar task show <state.json> [task-id] [--json]
@@ -49,7 +50,7 @@ Commands:
   init     discover third-party bundles in a DSH profile and write a reviewable inventory
   scan     bounded, read-only inspection of a local package directory
   inspect  fetch and verify the exact npm artifact before inspecting its contents
-  radar    monitor vulnerability changes or assess a candidate compatibility change
+  radar    monitor vulnerability changes, watch continuously, or assess a candidate compatibility change
   task     inspect or acknowledge the durable DSH analysis outbox
 
 Options:
@@ -57,6 +58,8 @@ Options:
   --registry <url>     HTTPS npm registry (default: https://registry.npmjs.org/)
   --state <path>       persistent radar state (default: <config.json>.state.json)
   --osv-base-url <url> alternate HTTPS OSV API base URL
+  --interval <seconds> watch interval from 300 to 86400 seconds (default: 1800)
+  --once               run one watch cycle and exit (useful for CI and demos)
   --notes <path>       release notes used as untrusted compatibility evidence
   --profile <name>     DSH profile to inspect for init (default DSH_HOME/profiles/<name>)
   --output <path>      init output path (default: ./upstream-radar.config.json)
@@ -147,8 +150,8 @@ async function readJson(path: string): Promise<unknown> {
 
 async function runRadar(args: readonly string[]): Promise<number> {
   const subcommand = args[0]
-  if (subcommand !== 'check' && subcommand !== 'compare') {
-    throw new Error('radar requires check or compare')
+  if (subcommand !== 'check' && subcommand !== 'watch' && subcommand !== 'compare') {
+    throw new Error('radar requires check, watch or compare')
   }
   const configPath = args[1]
   if (configPath === undefined || configPath.startsWith('-')) throw new Error(`radar ${subcommand} requires a config file`)
@@ -156,17 +159,33 @@ async function runRadar(args: readonly string[]): Promise<number> {
   let json = false
   let statePath: string | undefined
   let osvBaseUrl: string | undefined
+  let registry: string | undefined
   let notesPath: string | undefined
+  let intervalSeconds = 1_800
+  let intervalProvided = false
+  let once = false
   for (let index = 2; index < args.length; index += 1) {
     const argument = args[index]
     if (argument === '--json') {
       json = true
-    } else if (argument === '--state' || argument === '--osv-base-url' || argument === '--notes') {
+    } else if (argument === '--once') {
+      once = true
+    } else if (argument === '--state' || argument === '--osv-base-url' || argument === '--registry'
+      || argument === '--notes' || argument === '--interval') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--state') statePath = value
       else if (argument === '--osv-base-url') osvBaseUrl = value
-      else notesPath = value
+      else if (argument === '--registry') registry = value
+      else if (argument === '--notes') notesPath = value
+      else {
+        intervalProvided = true
+        const parsed = Number(value)
+        if (!Number.isSafeInteger(parsed) || parsed < 300 || parsed > 86_400) {
+          throw new Error('--interval must be an integer between 300 and 86400')
+        }
+        intervalSeconds = parsed
+      }
       index += 1
     } else if (argument?.startsWith('-')) {
       throw new Error(`unknown option for radar ${subcommand}: ${argument}`)
@@ -175,22 +194,76 @@ async function runRadar(args: readonly string[]): Promise<number> {
     }
   }
 
-  const config = parseRadarConfig(await readJson(configPath))
-  if (subcommand === 'check') {
-    if (positional.length > 0 || notesPath !== undefined) throw new Error('radar check received unexpected arguments')
-    const stateFile = statePath ?? `${resolve(configPath)}.state.json`
+  const readConfig = async () => parseRadarConfig(await readJson(configPath))
+  const osv = new OsvClient({
+    ...(osvBaseUrl === undefined ? {} : { baseUrl: osvBaseUrl }),
+  })
+  const releases = new NpmReleaseClient({
+    ...(registry === undefined ? {} : { registry }),
+  })
+  const stateFile = statePath ?? `${resolve(configPath)}.state.json`
+  const runCheck = async () => {
+    const config = await readConfig()
     const state = statePath === ':memory:' ? emptyRadarState() : await loadRadarState(stateFile)
-    const result = await pollRadar(config.projects, state, new OsvClient({
-      ...(osvBaseUrl === undefined ? {} : { baseUrl: osvBaseUrl }),
-    }), new Date(), new NpmReleaseClient())
+    const result = await pollRadar(config.projects, state, osv, new Date(), releases)
     if (statePath !== ':memory:') await saveRadarState(stateFile, result.state)
+    return result
+  }
+  const writeCheckResult = (result: Awaited<ReturnType<typeof pollRadar>>, compactJson = false): void => {
     process.stdout.write(json
-      ? `${JSON.stringify(result, null, 2)}\n`
+      ? `${JSON.stringify(result, null, compactJson ? 0 : 2)}\n`
       : `${renderRadarEvents(result.events)}${result.sourceErrors.map(error => `Source warning (${error.source}): ${safeErrorMessage(error.message)}\n`).join('')}Prepared ${result.analysisTasks.length} DSH analysis task(s); queried ${result.packagesQueried} exact package versions and ${result.releasePackagesQueried} release streams.\n`)
+  }
+
+  if (subcommand === 'check') {
+    if (positional.length > 0 || notesPath !== undefined || once || intervalProvided) {
+      throw new Error('radar check received an option meant for watch or compare')
+    }
+    writeCheckResult(await runCheck())
     return 0
   }
 
-  if (statePath !== undefined || osvBaseUrl !== undefined) throw new Error('radar compare does not accept --state or --osv-base-url')
+  if (subcommand === 'watch') {
+    if (positional.length > 0 || notesPath !== undefined) throw new Error('radar watch received unexpected arguments')
+    let stopped = false
+    let timer: NodeJS.Timeout | undefined
+    let wake: (() => void) | undefined
+    const stop = (): void => {
+      stopped = true
+      if (timer !== undefined) clearTimeout(timer)
+      wake?.()
+    }
+    process.once('SIGINT', stop)
+    process.once('SIGTERM', stop)
+    try {
+      do {
+        try {
+          writeCheckResult(await runCheck(), true)
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : String(error)
+          process.stderr.write(`upstream-radar: watch cycle failed: ${safeErrorMessage(message)}\n`)
+          if (once) return 1
+        }
+        if (once || stopped) break
+        await new Promise<void>(resolvePromise => {
+          wake = resolvePromise
+          timer = setTimeout(resolvePromise, intervalSeconds * 1_000)
+        })
+        timer = undefined
+        wake = undefined
+      } while (!stopped)
+    } finally {
+      if (timer !== undefined) clearTimeout(timer)
+      process.removeListener('SIGINT', stop)
+      process.removeListener('SIGTERM', stop)
+    }
+    return 0
+  }
+
+  if (statePath !== undefined || osvBaseUrl !== undefined || registry !== undefined || once || intervalProvided) {
+    throw new Error('radar compare does not accept check or watch options')
+  }
+  const config = await readConfig()
   if (positional.length !== 2) throw new Error('radar compare requires before.json and candidate.json')
   const previous = parsePackageManifestSnapshot(await readJson(positional[0] ?? ''))
   const candidate = parsePackageManifestSnapshot(await readJson(positional[1] ?? ''))

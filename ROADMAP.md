@@ -9,6 +9,7 @@
 - [x] Route every event to a project, owner, and configured channel.
 - [x] Persist pending DSH Agent analysis tasks before delivery.
 - [x] Ship an installable DSH bundle with a bounded fixed polling interval.
+- [x] Ship a one-command CLI watch loop for demos, CI, and local diagnosis.
 - [x] Provide a deterministic vulnerability and breaking-change showcase.
 - [x] Prove bundle installation, plugin-source attribution, Session persistence, and Agent delivery in a real DSH headless profile.
 
