@@ -20,6 +20,7 @@ describe('CLI option parsing', () => {
     assert.equal(help.status, 0)
     assert.match(help.stdout, /radar watch <config\.json>/)
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
+    assert.match(help.stdout, /--dsh-patch <path>\s+write a self-contained DSH --patch overlay/)
 
     const invalid = spawnSync(process.execPath, [cli, 'radar', 'watch', 'missing.json', '--interval', '299'], { encoding: 'utf8' })
     assert.equal(invalid.status, 1)

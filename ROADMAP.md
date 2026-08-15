@@ -12,6 +12,7 @@
 - [x] Ship a one-command CLI watch loop for demos, CI, and local diagnosis.
 - [x] Provide a deterministic vulnerability and breaking-change showcase.
 - [x] Prove bundle installation, plugin-source attribution, Session persistence, and Agent delivery in a real DSH headless profile.
+- [x] Generate an explicit DSH `--patch` overlay so first use does not require environment variables.
 
 ## Milestone 1 — compatibility radar
 

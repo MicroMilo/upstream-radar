@@ -25,12 +25,12 @@ pnpm dlx --package=upstream-radar@latest upstream-radar init \
   --profile web \
   --project-name "我的 DSH 项目" \
   --workspace "$PWD" \
-  --output ./upstream-radar.config.json
-export UPSTREAM_RADAR_CONFIG=$PWD/upstream-radar.config.json
-dsh --profile web
+  --output ./upstream-radar.config.json \
+  --dsh-patch ./upstream-radar.dsh.yml
+dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
-初始化命令会写出一份可审查的清单；只有设置 `UPSTREAM_RADAR_CONFIG` 后才会开始轮询。完整的状态文件、profile 边界和真实运行证明见[完整 DSH 配置](#安装到-dsh)。
+初始化命令会写出可审查的清单和 DSH overlay。检查两个文件后，用 `--patch` 启动即可，不需要手动导出环境变量。完整的状态文件、兼容的旧环境变量方式、profile 边界和真实运行证明见[完整 DSH 配置](#安装到-dsh)。
 
 如果只想先试跑一次监控，而不启动 DSH profile，可以使用同一份清单：
 
@@ -98,23 +98,22 @@ pnpm dlx --package=upstream-radar@latest upstream-radar init \
   --profile web \
   --project-name "我的 DSH 项目" \
   --workspace "$PWD" \
-  --output ./upstream-radar.config.json
+  --output ./upstream-radar.config.json \
+  --dsh-patch ./upstream-radar.dsh.yml
 ```
 
-初始化命令会读取 profile 中实际安装的第三方 bundle，用禁用 lifecycle scripts 的方式解析每个精确 npm artifact，然后写出一份可审查的配置。它不会自行启动 DSH，也不会自行开启轮询。检查生成文件后，再指定清单、持久化状态文件并启动 profile：
+初始化命令会读取 profile 中实际安装的第三方 bundle，用禁用 lifecycle scripts 的方式解析每个精确 npm artifact，然后写出可审查的配置和自包含 DSH overlay。它不会自行启动 DSH，也不会自行开启轮询。检查生成文件后，直接运行：
 
 ```bash
-export UPSTREAM_RADAR_CONFIG=$PWD/upstream-radar.config.json
-export UPSTREAM_RADAR_STATE=$PWD/upstream-radar.state.json
-export UPSTREAM_RADAR_INTERVAL_SECONDS=1800
-
-dsh --profile web --dump-config
-dsh --profile web
+dsh --profile web --patch ./upstream-radar.dsh.yml --dump-config
+dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
+
+如果不使用 `--dsh-patch`，仍可以使用原来的 `UPSTREAM_RADAR_CONFIG`、`UPSTREAM_RADAR_STATE` 和 `UPSTREAM_RADAR_INTERVAL_SECONDS` 环境变量方式。
 
 生成的依赖图对应已安装 bundle 版本的精确公共 npm artifact。如果你的 DSH profile 使用了 package-manager override、patch 或特殊的 peer 解析规则，开启持续监控前仍需要人工检查这些差异。
 
-如果需要手写配置或制作 CI fixture，可以参考[示例清单](../examples/radar/config.json)。如果没有设置 `UPSTREAM_RADAR_CONFIG`，插件会保持休眠，不发起轮询。
+如果需要手写配置或制作 CI fixture，可以参考[示例清单](../examples/radar/config.json)。如果既没有 `--patch` overlay，也没有设置 `UPSTREAM_RADAR_CONFIG`，插件会保持休眠，不发起轮询。
 
 启动后，Radar 会轮询 OSV 与 npm，先把事件状态持久化，再把有变化的事件交给第一个在线的根 DSH Agent。
 
@@ -209,7 +208,7 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 已经支持：npm lock 依赖图、重复版本路径、OSV 精确版本匹配、恶意包记录、npm release 监听、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查。
 
-`init --profile <name>` 已经可以发现指定的 DSH profile 并生成可审查清单；暂未支持自动选择当前 active profile、原生解析 pnpm override/peer 规则、Yarn 图适配、changelog/比较 diff/迁移文档源、项目级 Session 精确路由、把 Agent 结论写回事件，以及自动创建 Issue 或 PR。
+`init --profile <name>` 已经可以发现指定的 DSH profile 并生成可审查清单；加上 `--dsh-patch <path>` 还可以生成不依赖环境变量的 DSH overlay。暂未支持自动选择当前 active profile、原生解析 pnpm override/peer 规则、Yarn 图适配、changelog/比较 diff/迁移文档源、项目级 Session 精确路由、把 Agent 结论写回事件，以及自动创建 Issue 或 PR。
 
 `radar watch` 是 CLI 监控入口，本身不会把任务投递给 DSH；需要 Agent 分析时应使用原生 DSH bundle。
 

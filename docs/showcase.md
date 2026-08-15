@@ -89,6 +89,16 @@ The showcase then simulates an OSV timeout. Radar emits no new or resolved vulne
 
 After three consecutive failed OSV checks, Radar creates one project-routed `source-health` incident and sends it through the same durable DSH outbox. When OSV recovers, the source-health incident resolves and its pending task is removed. The lifecycle is saved as `examples/radar/reports/08-source-health-lifecycle.json`.
 
+## Scene 8 — onboarding without shell state
+
+`init --dsh-patch ./upstream-radar.dsh.yml` writes the exact inventory and a reviewable DSH overlay. The overlay replaces the bundle's environment-derived paths with explicit config and state files, so the profile can start with one visible command:
+
+```bash
+dsh --profile web --patch ./upstream-radar.dsh.yml
+```
+
+The generated overlay does not install packages or start DSH; the user still reviews both files and installs the Radar bundle explicitly.
+
 ## Live sources
 
 The fixture isolates behavior from network timing. Production cycles use:

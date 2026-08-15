@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import process from 'node:process'
 
+const { writeDshPatch } = await import('../dist/src/init.js')
 const DSH_PACKAGE = '@deepseek-ai/dsh@0.1.0-rc.6'
 const ROOT = resolve(import.meta.dirname, '..')
 const WRITE_REPORT = process.argv.includes('--write-report')
@@ -167,6 +168,7 @@ async function main() {
   const model = await startModelStub()
   try {
     const overlayFile = join(scratch, 'smoke.patch.yml')
+    const radarOverlayFile = join(scratch, 'upstream-radar.generated.patch.yml')
     const packDirectory = join(scratch, 'package')
     await mkdir(packDirectory)
 
@@ -224,21 +226,23 @@ async function main() {
       `    root: ${JSON.stringify(join(dshHome, 'sessions'))}`,
       '    compression: none',
       '    packChunks: false',
-      '- id: upstream-radar',
-      "  name: 'upstream-radar/dsh'",
-      '  config:',
-      `    configFile: ${JSON.stringify(join(ROOT, LIVE_FEEDS ? 'examples/dsh/live-config.json' : 'examples/radar/config.json'))}`,
-      `    stateFile: ${JSON.stringify(stateFile)}`,
-      '    intervalSeconds: 300',
-      `    runOnStart: ${LIVE_FEEDS ? 'true' : 'false'}`,
       '',
     ].join('\n')
     await writeFile(overlayFile, overlay)
+    await writeDshPatch({
+      output: radarOverlayFile,
+      configFile: join(ROOT, LIVE_FEEDS ? 'examples/dsh/live-config.json' : 'examples/radar/config.json'),
+      stateFile,
+      profile: 'headless',
+      intervalSeconds: 300,
+      runOnStart: LIVE_FEEDS,
+    })
 
     const execution = await run('pnpm', [
       'dlx', DSH_PACKAGE,
       '--profile', 'headless',
       '--patch', overlayFile,
+      '--patch', radarOverlayFile,
       'Wait for the Upstream Radar plugin notice, then answer that notice.',
     ], { env: baseEnv })
 
