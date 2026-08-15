@@ -261,6 +261,6 @@ Upstream Radar is alpha software built for the developer-preview DSH ecosystem. 
 - [Contributing](CONTRIBUTING.md)
 - [Security policy](SECURITY.md)
 
-If DSH plugins are part of your stack, star the repository to follow the upstream safety loop as it grows. Questions and design feedback are welcome in [GitHub Discussions](https://github.com/MicroMilo/upstream-radar/discussions).
+If DSH plugins are part of your stack, star the repository to follow the upstream safety loop as it grows. Start with the [reproducible DSH handoff showcase](https://github.com/MicroMilo/upstream-radar/discussions/11), then share questions and design feedback in [GitHub Discussions](https://github.com/MicroMilo/upstream-radar/discussions).
 
 <sub>Community project for DeepSeek Harness. Not an official DeepSeek product. Apache-2.0 licensed.</sub>
