@@ -2,6 +2,19 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.27.0] - 2026-08-16
+
+### Added
+
+- Extend the reusable GitHub Action with an opt-in `probe-package`, `probe-dsh-versions`, and `probe-timeout` load-matrix step.
+- Pack the exact npm release with lifecycle scripts disabled, run the published DSH matrix, expose `probe-result`, and preserve the matrix exit code.
+- Add copyable English/Chinese workflow guidance using the real `dsh-cloudflare-browser-run@0.1.1` package.
+
+### Safety
+
+- The Action accepts only exact `name@version` package specs and never runs npm lifecycle scripts.
+- The optional step remains load-only compatibility evidence; it is not a security sandbox, a capability benchmark, or an automatic upgrade decision.
+
 ## [0.26.0] - 2026-08-16
 
 ### Added

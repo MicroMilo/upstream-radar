@@ -14,7 +14,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: MicroMilo/upstream-radar@v0.26.0
+      - uses: MicroMilo/upstream-radar@v0.27.0
         with:
           config: examples/github-actions/consumer/upstream-radar.config.json
           fail-on: high
+          # Optional load-only compatibility matrix for the published plugin:
+          # probe-package: dsh-cloudflare-browser-run@0.1.1
+          # probe-dsh-versions: 0.1.0-rc.3,0.1.0-rc.6

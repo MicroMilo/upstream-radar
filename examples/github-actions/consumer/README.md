@@ -17,12 +17,21 @@ To also fail when a confirmed or strong DSH/plugin compatibility break is found,
 fail-on-compatibility: breaking
 ```
 
+To test the published plugin bundle across exact DSH releases as well, add:
+
+```yaml
+probe-package: dsh-cloudflare-browser-run@0.1.1
+probe-dsh-versions: 0.1.0-rc.3,0.1.0-rc.6
+```
+
+The optional probe is load-only. It packs with `--ignore-scripts`, uses a temporary profile per DSH version, and fails on `incompatible` or `unknown`; it does not prove package safety or plugin capability.
+
 ## Generate your own graph
 
 For your project, generate the config from the actual DSH profile instead of copying this package's snapshot:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.26.0 upstream-radar init \
+pnpm dlx --package=upstream-radar@0.27.0 upstream-radar init \
   --profile <dsh-profile> \
   --project-id <project-id> \
   --project-name "Your project" \
