@@ -64,6 +64,8 @@ export interface PackageManifestSnapshot {
   dependencies?: Record<string, string>
   optionalDependencies?: Record<string, string>
   peerDependencies?: Record<string, string>
+  /** npm's declaration that a peer can be absent without making the package unusable. */
+  peerDependenciesMeta?: Record<string, { optional?: boolean }>
   dsh?: unknown
 }
 

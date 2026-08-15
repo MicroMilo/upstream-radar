@@ -2,6 +2,19 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.31.0] - 2026-08-16
+
+### Changed
+
+- Preserve npm `peerDependenciesMeta.optional` in installed and candidate dependency graphs so an absent optional peer does not create a false required coverage gap.
+- Make `radar status` and `doctor` identify missing `@deepseek-ai/dsh-*` and Cordis peers as unobserved DSH host dependencies when the profile does not expose an exact host version.
+- Keep incomplete host coverage explicit: Radar does not invent a DSH runtime version or query a package it was never shown.
+
+### Validation
+
+- Add installed-graph, npm-lock, inventory, and status tests for optional peers and unobserved DSH host peers.
+- Re-run the real `dsh-cloudflare-browser-run@0.1.1` profile showcase; the result reports 8 unobserved DSH host dependencies and 2 optional absent peers.
+
 ## [0.30.0] - 2026-08-16
 
 ### Added

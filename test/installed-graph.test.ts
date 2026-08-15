@@ -74,6 +74,25 @@ describe('installed DSH dependency graph', () => {
     }
   })
 
+  it('does not turn an explicitly optional peer into a required coverage gap', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-installed-graph-'))
+    try {
+      await writeManifest(join(root, 'node_modules', 'plugin', 'package.json'), {
+        name: 'plugin',
+        version: '1.0.0',
+        peerDependencies: { 'optional-host': '^1.0.0', 'required-host': '^1.0.0' },
+        peerDependenciesMeta: { 'optional-host': { optional: true } },
+      })
+      const graph = await parseInstalledNodeModulesGraph(root, { name: 'plugin', version: '1.0.0' })
+      assert.deepEqual(graph.unresolved, [
+        { from: 'node_modules/plugin', name: 'optional-host', kind: 'optional', spec: '^1.0.0' },
+        { from: 'node_modules/plugin', name: 'required-host', kind: 'peer', spec: '^1.0.0' },
+      ])
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
   it('includes DSH host packages separately when a profile resolves a peer from the shared plane', async () => {
     const root = await mkdtemp(join(tmpdir(), 'upstream-radar-installed-graph-'))
     const profile = join(root, 'profiles', 'web')

@@ -40,4 +40,22 @@ describe('dependency graph', () => {
       /requested root package is not present/,
     )
   })
+
+  it('keeps optional peers from making a candidate lock graph incomplete', () => {
+    const graph = parseNpmLockGraph({
+      lockfileVersion: 3,
+      packages: {
+        'node_modules/plugin': {
+          version: '1.0.0',
+          peerDependencies: { optional: '^1.0.0', required: '^1.0.0' },
+          peerDependenciesMeta: { optional: { optional: true } },
+        },
+      },
+    }, { name: 'plugin', version: '1.0.0' })
+
+    assert.deepEqual(graph.unresolved, [
+      { from: 'node_modules/plugin', name: 'optional', kind: 'optional', spec: '^1.0.0' },
+      { from: 'node_modules/plugin', name: 'required', kind: 'peer', spec: '^1.0.0' },
+    ])
+  })
 })

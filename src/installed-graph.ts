@@ -38,11 +38,13 @@ function asStringRecord(value: unknown): Record<string, string> {
 
 function dependencyEntries(item: PackageManifestSnapshot): Array<{ name: string; spec: string; kind: DependencyKind }> {
   const selected = new Map<string, { spec: string; kind: DependencyKind }>()
-  const add = (value: unknown, kind: DependencyKind): void => {
-    for (const [name, spec] of Object.entries(asStringRecord(value))) selected.set(name, { spec, kind })
+  const add = (value: unknown, kind: DependencyKind, selectKind?: (name: string) => DependencyKind): void => {
+    for (const [name, spec] of Object.entries(asStringRecord(value))) {
+      selected.set(name, { spec, kind: selectKind?.(name) ?? kind })
+    }
   }
   add(item.dependencies, 'runtime')
-  add(item.peerDependencies, 'peer')
+  add(item.peerDependencies, 'peer', name => item.peerDependenciesMeta?.[name]?.optional === true ? 'optional' : 'peer')
   add(item.optionalDependencies, 'optional')
   return [...selected.entries()].map(([name, value]) => ({ name, ...value }))
 }

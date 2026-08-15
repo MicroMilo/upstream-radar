@@ -90,6 +90,7 @@ describe('Radar status', () => {
     assert.equal(report.monitoring, 'not-started')
     assert.equal(report.coverage, 'complete')
     assert.equal(report.unresolvedDependencies, 0)
+    assert.equal(report.dshHostDependenciesNotObserved, 0)
     assert.equal(report.projects, 1)
     assert.equal(report.pluginBundles, 1)
     assert.equal(report.lastCheckedAt, undefined)
@@ -155,7 +156,29 @@ describe('Radar status', () => {
     assert.equal(report.coverage, 'complete')
     assert.equal(report.requiredUnresolvedDependencies, 0)
     assert.equal(report.optionalDependenciesNotInstalled, 1)
+    assert.equal(report.dshHostDependenciesNotObserved, 0)
     assert.equal(report.dshHostRuntimePackages, 22)
     assert.match(renderRadarStatus(report), /1 optional dependency not installed/)
+  })
+
+  it('calls out DSH host peers that are outside the captured profile graph', () => {
+    const incompleteConfig = structuredClone(config)
+    const graph = incompleteConfig.projects[0]?.plugins[0]?.graph
+    assert.ok(graph)
+    graph.unresolved = [
+      { from: graph.rootNodeId, name: '@deepseek-ai/dsh-agent', kind: 'peer', spec: '^0.1.0' },
+      { from: graph.rootNodeId, name: 'ordinary-peer', kind: 'peer', spec: '^1.0.0' },
+    ]
+
+    const report = createRadarStatus(incompleteConfig, emptyRadarState(), {
+      configFile: '/tmp/radar.json',
+      stateFile: '/tmp/radar.json.state.json',
+      stateExists: false,
+    })
+
+    assert.equal(report.coverage, 'incomplete')
+    assert.equal(report.requiredUnresolvedDependencies, 2)
+    assert.equal(report.dshHostDependenciesNotObserved, 1)
+    assert.match(renderRadarStatus(report), /1 DSH host dependency not observed/)
   })
 })

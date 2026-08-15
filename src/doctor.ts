@@ -279,8 +279,8 @@ export async function createDoctorReport(options: DoctorOptions): Promise<Doctor
         'coverage',
         'warn',
         '依赖覆盖不完整，不能把当前结果理解成安全',
-        `${radarStatus.requiredUnresolvedDependencies} 个必需依赖没有解析到。`,
-        '检查 DSH profile 的 node_modules、peer 依赖或重新运行 init。',
+        `${radarStatus.requiredUnresolvedDependencies} 个必需依赖没有解析到。${radarStatus.dshHostDependenciesNotObserved === 0 ? '' : ` 其中 ${radarStatus.dshHostDependenciesNotObserved} 个是 DSH 宿主依赖，当前 profile 没有暴露它们的准确版本，因此不在本次检查范围内。`}`,
+        '检查 DSH 运行时的依赖目录，或补充可读取的宿主依赖目录；不要把这次结果理解成完整安全结论。',
       )
     }
     if (radarStatus.monitoring === 'healthy') {
