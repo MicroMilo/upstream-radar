@@ -190,16 +190,25 @@ This proof runs in CI on Node.js 22. See the executable [showcase contract](exam
 
 ## Run it in GitHub Actions
 
-If your team wants a scheduled CI gate before wiring a machine to a live DSH profile, commit the reviewed `upstream-radar.config.json` and copy [the example workflow](examples/github-actions/upstream-radar.yml). It runs the same exact dependency and OSV checks without needing DSH installed in the runner:
+If your team wants a scheduled CI gate before wiring a machine to a live DSH profile, commit the reviewed `upstream-radar.config.json` and copy [the example workflow](examples/github-actions/upstream-radar.yml). The reusable Action keeps the workflow to two meaningful steps:
 
 ```yaml
-run: >-
-  pnpm dlx --package=upstream-radar@0.21.0 upstream-radar
-  radar check ./upstream-radar.config.json
-  --frozen --state :memory: --fail-on high --json
+steps:
+  - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+  - uses: MicroMilo/upstream-radar@v0.22.0
+    with:
+      config: upstream-radar.config.json
+      fail-on: high
 ```
 
-`--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. `--state :memory:` makes each run independent. The command exits `2` when an active vulnerability meets the threshold, and exits `1` for an operational or source error. It does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path.
+The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability meets the threshold, and exits `1` for an operational or source error. It does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.22.0`, and pin the checkout Action in your workflow according to your repository's policy.
+
+The Action requires the caller to check out the repository first. It does not install the project's dependencies or run their lifecycle scripts; it only reads the committed graph and queries the configured upstream sources. For a fully explicit, lower-level invocation, the equivalent command is:
+
+```bash
+pnpm dlx --package=upstream-radar@0.22.0 upstream-radar radar check \
+  ./upstream-radar.config.json --frozen --state :memory: --fail-on high --json
+```
 
 For a local or self-hosted DSH machine, omit `--frozen` so Radar refreshes the selected profile before each cycle. Use `--fail-on` only with `radar check`, `radar status`, or `radar watch --once`; a long-running watch should continue routing incidents instead of terminating on the first one.
 
@@ -297,6 +306,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - native DSH bundle installation, startup polling, `agent/created` retry, and plugin-source attribution;
 - automatic selection of the only DSH profile with third-party bundles, plus a network-free `radar status` snapshot;
 - commit-friendly `init` output that records the project workspace as `.` by default;
+- a reusable GitHub Action that turns the reviewed graph into a two-step, frozen CI gate;
 - an actionable, network-free `radar status` summary with exact active paths, candidate signals, and next steps;
 - a network-free `doctor` command that checks local DSH registration, overlay/config alignment, state readability, and dependency coverage;
 - compatibility signals for Node.js, peers, exports, entrypoints, bundle paths, dependencies, and version boundaries;

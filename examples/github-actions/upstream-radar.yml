@@ -13,18 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: MicroMilo/upstream-radar@v0.22.0
         with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Check the reviewed DSH graph
-        run: >-
-          pnpm dlx --package=upstream-radar@0.21.0 upstream-radar
-          radar check ./upstream-radar.config.json
-          --frozen
-          --state :memory:
-          --fail-on high
-          --json
+          config: upstream-radar.config.json
+          fail-on: high
