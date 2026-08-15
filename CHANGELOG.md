@@ -2,6 +2,12 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.6.2] - 2026-08-16
+
+### Fixed
+
+- Use explicit `pnpm dlx --package=upstream-radar@latest upstream-radar` examples so the commands resolve the published package even when run from the Upstream Radar workspace itself.
+
 ## [0.6.1] - 2026-08-16
 
 ### Fixed
@@ -87,3 +93,4 @@ All notable changes to Upstream Radar are documented here.
 [0.5.3]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.3
 [0.6.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.0
 [0.6.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.1
+[0.6.2]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.2
