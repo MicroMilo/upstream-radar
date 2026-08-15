@@ -52,6 +52,11 @@ export {
   type CompatibilityBenchmarkReport,
 } from './compatibility-benchmark.js'
 export { createAnalysisTask, renderAgentAnalysisGroupPrompt, renderAgentAnalysisPrompt, renderDshAnalysisPrompt } from './dsh-analysis.js'
+export {
+  extractAnalysisTaskIds,
+  parseAgentAnalysisResult,
+  renderAnalysisTaskMarker,
+} from './dsh-analysis-result.js'
 export { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 export {
   createRadarConfigFromDshProfile,
@@ -120,6 +125,8 @@ export {
 } from './types.js'
 export {
   ANALYSIS_TASK_SCHEMA,
+  ANALYSIS_DELIVERY_SCHEMA,
+  ANALYSIS_RESULT_SCHEMA,
   DEPENDENCY_GRAPH_SCHEMA,
   INVENTORY_SCHEMA,
   RADAR_EVENT_SCHEMA,
@@ -127,6 +134,9 @@ export {
   RADAR_STATE_SCHEMA,
   type AdvisoryMatch,
   type AnalysisTask,
+  type AgentAnalysisResult,
+  type AnalysisDelivery,
+  type AnalysisDeliveryTaskReference,
   type CandidateDependencyGraphObservation,
   type CandidateDependencyGraphStatus,
   type CompatibilityDependencyCheck,
@@ -153,6 +163,7 @@ export {
   type RadarSource,
   type RadarSeverity,
   type RadarState,
+  type StoredAnalysisResult,
   type SourceHealthEvent,
   type SourceHealthStatus,
   type StoredSourceHealthMatch,

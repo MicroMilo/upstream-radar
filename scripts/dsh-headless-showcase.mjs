@@ -114,7 +114,7 @@ async function startModelStub() {
         return
       }
       requests.push(parsed)
-      const sawRadar = JSON.stringify(parsed).includes('[UPSTREAM RADAR ANALYSIS TASK]')
+      const sawRadar = JSON.stringify(parsed).includes('[UPSTREAM RADAR ANALYSIS TASK')
       void sse(
         response,
         sawRadar ? finalAnalysis : 'Waiting for the Upstream Radar follow-up.',
@@ -248,17 +248,19 @@ async function main() {
 
     const finalState = JSON.parse(await readFile(stateFile, 'utf8'))
     const requestText = JSON.stringify(model.requests)
-    const radarTaskReachedModel = requestText.includes('[UPSTREAM RADAR ANALYSIS TASK]')
+    const radarTaskReachedModel = requestText.includes('[UPSTREAM RADAR ANALYSIS TASK')
     const sessionFiles = await filesBelow(join(dshHome, 'sessions'))
     const sessionText = (await Promise.all(sessionFiles.map(readSessionFile))).join('\n')
     const pluginSourcePreserved = sessionText.includes('"plugin":"upstream-radar"')
       && sessionText.includes('"kind":"plugin"')
     const pendingTasksAfterDelivery = finalState.pendingAnalysisTasks.length
     const activeVulnerabilities = Object.keys(finalState.activeVulnerabilities).length
+    const analysisResults = Object.keys(finalState.analysisResults ?? {}).length
 
     if (!radarTaskReachedModel) throw new Error('DSH model requests never contained the Radar task')
     if (!pluginSourcePreserved) throw new Error('DSH session did not preserve the plugin source metadata')
     if (pendingTasksAfterDelivery !== 0) throw new Error('Radar task remained queued after DSH admission')
+    if (analysisResults === 0) throw new Error('DSH model result was not accepted into Radar state')
     if (LIVE_FEEDS && activeVulnerabilities === 0) throw new Error('live OSV polling did not create an active vulnerability')
 
     let finalAssistant = execution.stdout.trim()
@@ -276,6 +278,7 @@ async function main() {
       radarTaskReachedModel,
       pluginSourcePreserved,
       pendingTasksAfterDelivery,
+      analysisResults,
       activeVulnerabilities,
       modelRequests: model.requests.length,
       finalAssistant,

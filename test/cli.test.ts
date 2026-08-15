@@ -198,7 +198,34 @@ describe('CLI option parsing', () => {
       const acknowledged = spawnSync(process.execPath, [cli, 'task', 'ack', stateFile, task.id], { encoding: 'utf8' })
       assert.equal(acknowledged.status, 0)
       assert.match(acknowledged.stdout, /Acknowledged/)
-      assert.equal((await loadRadarState(stateFile)).pendingAnalysisTasks.length, 0)
+      const saved = await loadRadarState(stateFile)
+      assert.equal(saved.pendingAnalysisTasks.length, 0)
+      saved.analysisResults = {
+        [event.incidentId]: {
+          schema: 'upstream-radar.analysis-result/v1alpha1',
+          taskId: task.id,
+          incidentId: event.incidentId,
+          eventId: event.id,
+          deliveryId: 'delivery-cli',
+          receivedAt: '2026-08-14T01:02:00.000Z',
+          sessionId: 'session-cli',
+          userMessageId: 'message-cli',
+          assistantMessageId: 'assistant-cli',
+          project_exposure: 'likely_exposed',
+          confidence: 'medium',
+          evidence: ['src/index.ts:12'],
+          recommended_action: 'Review the call path.',
+          urgency: 'within_24_hours',
+          reasoning_summary: 'The model found a likely project path.',
+        },
+      }
+      await saveRadarState(stateFile, saved)
+      const analysisList = spawnSync(process.execPath, [cli, 'analysis', 'list', stateFile], { encoding: 'utf8' })
+      assert.equal(analysisList.status, 0)
+      assert.match(analysisList.stdout, /likely_exposed/)
+      const analysisShow = spawnSync(process.execPath, [cli, 'analysis', 'show', stateFile, event.incidentId], { encoding: 'utf8' })
+      assert.equal(analysisShow.status, 0)
+      assert.match(analysisShow.stdout, /Review the call path/)
     } finally {
       await rm(root, { recursive: true, force: true })
     }

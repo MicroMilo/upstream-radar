@@ -22,10 +22,11 @@
     "evidence": {
       "type": "array",
       "items": { "type": "string" },
-      "maxItems": 100
+      "maxItems": 64
     },
     "recommended_action": {
       "type": "string",
+      "minLength": 1,
       "maxLength": 8192
     },
     "urgency": {
@@ -33,7 +34,8 @@
     },
     "reasoning_summary": {
       "type": "string",
-      "maxLength": 8192
+      "minLength": 1,
+      "maxLength": 16384
     }
   }
 }

@@ -66,4 +66,29 @@ describe('radar state parsing', () => {
     }
     assert.throws(() => parseRadarState(state), /invalid source health status/)
   })
+
+  it('rejects an analysis result with extra fields', () => {
+    const state = emptyRadarState() as unknown as Record<string, any>
+    state.analysisResults = {
+      'incident-analysis': {
+        schema: 'upstream-radar.analysis-result/v1alpha1',
+        taskId: 'analysis-1',
+        incidentId: 'incident-analysis',
+        eventId: 'event-analysis',
+        deliveryId: 'delivery-analysis',
+        receivedAt: '2026-08-16T01:00:00.000Z',
+        sessionId: 'session-analysis',
+        userMessageId: 'message-analysis',
+        assistantMessageId: 'assistant-analysis',
+        project_exposure: 'unknown',
+        confidence: 'low',
+        evidence: [],
+        recommended_action: 'Review the project.',
+        urgency: 'monitor',
+        reasoning_summary: 'No direct evidence.',
+        extra: 'must not be persisted',
+      },
+    }
+    assert.throws(() => parseRadarState(state), /invalid analysis result/)
+  })
 })

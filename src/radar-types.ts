@@ -3,6 +3,8 @@ export const INVENTORY_SCHEMA = 'upstream-radar.inventory/v1alpha1' as const
 export const RADAR_EVENT_SCHEMA = 'upstream-radar.event/v1alpha1' as const
 export const RADAR_STATE_SCHEMA = 'upstream-radar.radar-state/v1alpha1' as const
 export const ANALYSIS_TASK_SCHEMA = 'upstream-radar.analysis-task/v1alpha1' as const
+export const ANALYSIS_DELIVERY_SCHEMA = 'upstream-radar.analysis-delivery/v1alpha1' as const
+export const ANALYSIS_RESULT_SCHEMA = 'upstream-radar.analysis-result/v1alpha1' as const
 export const RADAR_CONFIG_SCHEMA = 'upstream-radar.radar-config/v1alpha1' as const
 
 export type PackageEcosystem = 'npm'
@@ -253,11 +255,62 @@ export interface StoredSourceHealthMatch {
   event: SourceHealthEvent
 }
 
+export type AnalysisExposure = 'exposed' | 'likely_exposed' | 'not_exposed' | 'unknown'
+export type AnalysisConfidence = 'high' | 'medium' | 'low'
+export type AnalysisUrgency = 'immediate' | 'within_24_hours' | 'planned' | 'monitor'
+
+/** The only conclusion shape that can be written back from a DSH model response. */
+export interface AgentAnalysisResult {
+  project_exposure: AnalysisExposure
+  confidence: AnalysisConfidence
+  evidence: string[]
+  recommended_action: string
+  urgency: AnalysisUrgency
+  reasoning_summary: string
+}
+
+export interface AnalysisDeliveryTaskReference {
+  taskId: string
+  incidentId: string
+  eventId: string
+}
+
+/** Durable proof that one exact Radar message was admitted to one DSH session. */
+export interface AnalysisDelivery {
+  schema: typeof ANALYSIS_DELIVERY_SCHEMA
+  id: string
+  messageId: string
+  taskRefs: AnalysisDeliveryTaskReference[]
+  projectId: string
+  deliveredAt: string
+  agentId?: string
+  sessionId?: string
+  userMessageId?: string
+  userMessageSeq?: number
+}
+
+/** A verified model conclusion, attached to the exact event it analyzed. */
+export interface StoredAnalysisResult extends AgentAnalysisResult {
+  schema: typeof ANALYSIS_RESULT_SCHEMA
+  taskId: string
+  incidentId: string
+  eventId: string
+  deliveryId: string
+  receivedAt: string
+  sessionId: string
+  userMessageId: string
+  assistantMessageId: string
+}
+
 export interface RadarState {
   schema: typeof RADAR_STATE_SCHEMA
   activeVulnerabilities: Record<string, StoredVulnerabilityMatch>
   activeCompatibility: Record<string, StoredCompatibilityMatch>
   pendingAnalysisTasks: AnalysisTask[]
+  /** Optional for states written before model-result writeback was introduced. */
+  analysisDeliveries?: Record<string, AnalysisDelivery>
+  /** Optional for states written before model-result writeback was introduced. */
+  analysisResults?: Record<string, StoredAnalysisResult>
   sourceHealth?: Record<string, SourceHealthStatus>
   activeSourceHealth?: Record<string, StoredSourceHealthMatch>
 }

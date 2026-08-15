@@ -313,6 +313,8 @@ export function emptyRadarState(): RadarState {
     activeVulnerabilities: {},
     activeCompatibility: {},
     pendingAnalysisTasks: [],
+    analysisDeliveries: {},
+    analysisResults: {},
     sourceHealth: {},
     activeSourceHealth: {},
   }
@@ -742,6 +744,18 @@ export async function pollRadar(
   }
   for (const task of analysisTasks) pending.set(task.event.incidentId, task)
 
+  // A new or changed event invalidates the previous model conclusion. A
+  // conclusion is never carried across an upstream update, and an in-flight
+  // delivery for that old event must not be allowed to write back later.
+  const changedIncidentIds = new Set(events.map(event => event.incidentId))
+  const analysisResults = { ...(previousState.analysisResults ?? {}) }
+  for (const incidentId of changedIncidentIds) delete analysisResults[incidentId]
+  const analysisDeliveries = Object.fromEntries(
+    Object.entries(previousState.analysisDeliveries ?? {}).filter(([, delivery]) => (
+      delivery.taskRefs.every(reference => !changedIncidentIds.has(reference.incidentId))
+    )),
+  )
+
   return {
     checkedAt,
     packagesQueried: uniquePackages.size,
@@ -754,6 +768,8 @@ export async function pollRadar(
       activeVulnerabilities: Object.fromEntries([...current.entries()]),
       activeCompatibility,
       pendingAnalysisTasks: [...pending.values()],
+      analysisDeliveries,
+      analysisResults,
       sourceHealth,
       activeSourceHealth,
     },

@@ -74,20 +74,44 @@ describe('radar polling', () => {
       'logger@4.0.2',
       'parser@2.9.0',
     ])
+    const firstTask = first.state.pendingAnalysisTasks[0]
+    assert.ok(firstTask)
+    first.state.analysisResults = {
+      [firstEvent.incidentId]: {
+        schema: 'upstream-radar.analysis-result/v1alpha1',
+        taskId: firstTask.id,
+        incidentId: firstEvent.incidentId,
+        eventId: firstEvent.id,
+        deliveryId: 'delivery-test',
+        receivedAt: '2026-08-14T01:02:00.000Z',
+        sessionId: 'session-test',
+        userMessageId: 'message-test',
+        assistantMessageId: 'assistant-test',
+        project_exposure: 'unknown',
+        confidence: 'low',
+        evidence: ['src/index.ts'],
+        recommended_action: 'Inspect the path.',
+        urgency: 'planned',
+        reasoning_summary: 'Evidence is incomplete.',
+      },
+    }
 
     const unchanged = await pollRadar([inventory], first.state, source('2026-08-14T01:00:00.000Z'), new Date('2026-08-14T01:31:00.000Z'))
     assert.equal(unchanged.events.length, 0)
+    assert.equal(Object.keys(unchanged.state.analysisResults ?? {}).length, 1)
 
     const updated = await pollRadar([inventory], unchanged.state, source('2026-08-14T02:00:00.000Z'), new Date('2026-08-14T02:01:00.000Z'))
     assert.equal(updated.events[0]?.change, 'updated')
     assert.equal(updated.events[0]?.incidentId, first.events[0]?.incidentId)
     assert.equal(updated.state.pendingAnalysisTasks.length, 1)
     assert.equal(updated.state.pendingAnalysisTasks[0]?.event.change, 'updated')
+    assert.equal(Object.keys(updated.state.analysisResults ?? {}).length, 0)
 
     const resolved = await pollRadar([inventory], updated.state, source('2026-08-14T02:00:00.000Z', false), new Date('2026-08-14T03:01:00.000Z'))
     assert.equal(resolved.events[0]?.change, 'resolved')
     assert.equal(resolved.analysisTasks.length, 0)
     assert.equal(resolved.state.pendingAnalysisTasks.length, 0)
+    assert.equal(Object.keys(resolved.state.analysisResults ?? {}).length, 0)
   })
 
   it('emits one compatibility task when npm observes a new candidate release', async () => {

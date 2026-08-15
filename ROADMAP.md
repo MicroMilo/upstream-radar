@@ -8,6 +8,7 @@
 - [x] Recognize malicious-package records.
 - [x] Route every event to a project, owner, and configured channel.
 - [x] Persist pending DSH Agent analysis tasks before delivery.
+- [x] Bind DSH model results to the exact message, session, task, and event; reject ordinary chat and stale conclusions.
 - [x] Ship an installable DSH bundle with a bounded fixed polling interval.
 - [x] Ship a one-command CLI watch loop for demos, CI, and local diagnosis.
 - [x] Provide a deterministic vulnerability and breaking-change showcase.
@@ -26,6 +27,7 @@
 - [x] Track compatibility incidents through new, updated, and resolved states.
 - [x] Replace stale queued analysis when an incident changes and cancel it when resolved.
 - [x] Keep a text/JSON task export as a debugging surface for the DSH outbox.
+- [x] Expose verified analysis results through `radar status` and `analysis list/show`.
 - [x] Read the exact public GitHub Release notes for a candidate version; changelogs, comparison diffs, and migration guides remain deferred.
 - [ ] Track DSH package families as one coordinated release rather than unrelated npm packages.
 - [x] Group pending same-project DSH runtime compatibility tasks into one native Agent notice without merging state incidents.

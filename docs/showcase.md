@@ -131,13 +131,15 @@ After DSH has started, the read-only status command reads the same config and du
 pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-radar.config.json
 ```
 
-It reports whether monitoring has started, the last successful check for OSV/npm/GitHub Releases, active vulnerability and compatibility incidents, source-health incidents, and pending DSH analysis tasks. When an incident is active, it also shows the exact affected path or candidate signal and one suggested next step:
+It reports whether monitoring has started, the last successful check for OSV/npm/GitHub Releases, active vulnerability and compatibility incidents, source-health incidents, pending DSH analysis tasks, in-flight deliveries, and verified DSH conclusions. When an incident is active, it also shows the exact affected path or candidate signal and one suggested next step. Once the matching model response passes validation, that next step includes the stored exposure/confidence and recommended action:
 
 ```text
 Attention:
   [HIGH] Payments API: parser@2.9.0 is affected by GHSA-demo-2026-parser via plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
-    Next: Review parser fixed version(s) 3.0.0 with the DSH Agent before changing the plugin.
+    Next: DSH analysis: likely_exposed (medium confidence); Review the call path and run the project tests.
 ```
+
+For the full structured conclusion, use `upstream-radar analysis show <state.json> <incident-id>`; ordinary chat, a response from another session, malformed JSON, and results for an updated event are not accepted.
 
 It does not poll any upstream source, so it is safe to use for a quick local diagnosis. The next step is guidance; it is not an automatic upgrade or a safety verdict.
 
@@ -176,7 +178,7 @@ This is intentionally different from resolving the same package in a fresh npm p
 For a runner that does not have DSH installed, commit the generated config after review and run one frozen check:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.28.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.29.0 upstream-radar radar check \
   ./upstream-radar.config.json \
   --frozen --state :memory: --fail-on high --json
 ```
@@ -190,7 +192,7 @@ The published Action packages the same frozen check so a DSH plugin project does
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.28.0
+  - uses: MicroMilo/upstream-radar@v0.29.0
     with:
       config: upstream-radar.config.json
       fail-on: high
@@ -223,7 +225,7 @@ It packs without lifecycle scripts, runs one temporary DSH profile per version, 
 The package includes a no-network compatibility benchmark for the deterministic gate itself:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.28.0 upstream-radar benchmark compatibility
+pnpm dlx --package=upstream-radar@0.29.0 upstream-radar benchmark compatibility
 ```
 
 It covers a safe patch, analysis-only structural change, DSH peer exclusion, explicit publisher breaking language, a vulnerable candidate dependency, and incomplete candidate coverage. A passing benchmark means the rule contract has not regressed; it does not mean a real plugin is runtime-compatible. The real DSH consumer workflow below remains the integration proof.
@@ -237,7 +239,7 @@ The repository also carries a copyable consumer smoke under [`examples/github-ac
 The `probe dsh-load` command gives the compatibility question its own bounded surface. It takes one exact `.tgz`, uses one exact DSH version, and creates a disposable `headless` profile:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.28.0 upstream-radar probe dsh-load \
+pnpm dlx --package=upstream-radar@0.29.0 upstream-radar probe dsh-load \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.6 --json
 ```

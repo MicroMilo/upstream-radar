@@ -6,6 +6,7 @@ Upstream Radar protects two connected outcomes:
 
 1. an upstream vulnerability or release change is matched to the correct installed package, dependency path, project, and owner without being lost or repeated indefinitely;
 2. DSH receives the upstream material as untrusted data and produces a project-specific analysis without obeying instructions embedded in that material.
+3. A model conclusion is written back only when it is tied to the exact Radar delivery and DSH session, is emitted by the model, and matches the fixed JSON result contract.
 
 The supporting pre-install scanner additionally protects exact-artifact evidence collection.
 
@@ -13,7 +14,7 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 
 - project source, credentials, sessions, local files, and DSH tool authority;
 - project/plugin inventories and exact dependency paths;
-- active vulnerability state, active compatibility incidents, and pending analysis tasks;
+- active vulnerability state, active compatibility incidents, pending analysis tasks, in-flight deliveries, and verified analysis results;
 - correctness of new, updated, resolved, and compatibility transitions;
 - availability and cost of the monitoring and model-analysis loop;
 - legacy artifact evidence and policy decisions.
@@ -29,8 +30,9 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 7. A crash occurs after Agent delivery but before acknowledgement, duplicating work.
 8. A compatibility heuristic is presented as proof that an update is broken.
 9. A model analysis modifies the repository, installs the candidate, runs advisory-supplied commands, or leaks project data.
-10. A flood of advisories, dependency nodes, package releases, or pending tasks exhausts memory, disk, network, model quota, or user attention.
-11. A malicious package attacks the supporting static scanner through archives, paths, links, parsers, lifecycle scripts, or native code.
+10. An ordinary user message, a different DSH session, malformed JSON, or a response for an old event is accepted as a Radar conclusion.
+11. A flood of advisories, dependency nodes, package releases, or pending tasks exhausts memory, disk, network, model quota, or user attention.
+12. A malicious package attacks the supporting static scanner through archives, paths, links, parsers, lifecycle scripts, or native code.
 
 ## Trust boundaries
 
@@ -46,16 +48,17 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 3. Every alert names the project, installed plugin, affected package, and bounded path.
 4. Feed and release prose is framed as untrusted data, never instructions.
 5. Every DSH Agent analysis defaults to read-only and requires project evidence.
-6. New tasks are persisted before synchronous Agent admission.
-7. Unchanged matches do not emit another event.
-8. Missing, malformed, or failed source/state checks cannot silently become clean.
-9. Compatibility heuristics retain their confidence class.
-10. Network bodies, graph sizes, path counts, state size, text length, and time are bounded.
-11. Target-controlled package code and lifecycle scripts are not executed during collection.
+6. Result writeback checks the plugin-originated task marker, exact delivery/message id, session identity, `assistant/message` + `source.kind = model`, event freshness, and the six-field JSON schema. Failed checks are ignored and do not alter incident state.
+7. New tasks are persisted before synchronous Agent admission.
+8. Unchanged matches do not emit another event.
+9. Missing, malformed, or failed source/state checks cannot silently become clean.
+10. Compatibility heuristics retain their confidence class.
+11. Network bodies, graph sizes, path counts, state size, text length, and time are bounded.
+12. Target-controlled package code and lifecycle scripts are not executed during collection.
 
 ## Delivery semantics
 
-Delivery is at-least-once. The state/outbox write happens before `Agent.followup`. After synchronous admission, the task is removed with a second atomic write. A crash in that narrow interval can duplicate the task; stable event/task ids allow future adapters to suppress duplicates. The design prefers a duplicate over a silently lost security event.
+Delivery is at-least-once. The state/outbox write happens before `Agent.followup`. After synchronous admission, the task is removed with a second atomic write and a delivery record is retained until a matching model response is validated. A crash in either narrow interval can duplicate the task or leave a delivery waiting; stable event/task/message ids allow recovery without accepting an unrelated response. The design prefers a duplicate or a visible pending result over a silently lost security event.
 
 ## Out of scope
 
@@ -71,7 +74,7 @@ Delivery is at-least-once. The state/outbox write happens before `Agent.followup
 - The graph collector currently parses npm lock graphs; pnpm and Yarn adapters are absent.
 - OSV is the only live vulnerability source; npm `latest` and bounded public GitHub Release notes are the automatic release sources.
 - GitHub comparison diffs, changelogs, and migration guides are not fetched automatically.
-- One live root DSH Agent acts as the security inbox; project-session selection is not implemented.
+- One live root DSH Agent acts as the security inbox; multiple roots require an exact project-session workspace match.
 - The prompt establishes a read-only contract, but enforcement still depends on the DSH Agent's configured tools and permission policy.
 - Feed failures are reported by the cycle; OSV failures preserve the last confirmed matches and pending tasks, and three consecutive failures create a durable source-health alert. Conflicting source claims and external health destinations remain future work.
 - The scanner uses the host npm CLI with scripts disabled; it is not a microVM detonation boundary.

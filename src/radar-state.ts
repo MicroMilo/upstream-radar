@@ -4,8 +4,13 @@ import { basename, dirname, join, resolve } from 'node:path'
 import { emptyRadarState } from './radar.js'
 import {
   ANALYSIS_TASK_SCHEMA,
+  ANALYSIS_DELIVERY_SCHEMA,
+  ANALYSIS_RESULT_SCHEMA,
   RADAR_EVENT_SCHEMA,
   RADAR_STATE_SCHEMA,
+  type AnalysisDelivery,
+  type AgentAnalysisResult,
+  type StoredAnalysisResult,
   type RadarState,
 } from './radar-types.js'
 
@@ -103,6 +108,84 @@ function validCompatibilityUpgradePath(value: unknown): boolean {
   return blocked.every(validCompatibilityUpgradeCandidate)
 }
 
+function validAnalysisResultFields(value: Record<string, unknown>): value is Record<string, unknown> & AgentAnalysisResult {
+  const evidence = value.evidence
+  return (value.project_exposure === 'exposed'
+    || value.project_exposure === 'likely_exposed'
+    || value.project_exposure === 'not_exposed'
+    || value.project_exposure === 'unknown')
+    && (value.confidence === 'high' || value.confidence === 'medium' || value.confidence === 'low')
+    && (value.urgency === 'immediate'
+      || value.urgency === 'within_24_hours'
+      || value.urgency === 'planned'
+      || value.urgency === 'monitor')
+    && Array.isArray(evidence) && evidence.length <= 64
+    && evidence.every(item => typeof item === 'string' && item.trim().length > 0 && item.length <= 4_096)
+    && typeof value.recommended_action === 'string'
+    && value.recommended_action.trim().length > 0 && value.recommended_action.length <= 8_192
+    && typeof value.reasoning_summary === 'string'
+    && value.reasoning_summary.trim().length > 0 && value.reasoning_summary.length <= 16_384
+}
+
+function validAnalysisDelivery(value: unknown): value is AnalysisDelivery {
+  const delivery = asRecord(value)
+  const taskRefs = delivery?.taskRefs
+  const expectedKeys = new Set([
+    'schema', 'id', 'messageId', 'taskRefs', 'projectId', 'deliveredAt',
+    ...(delivery?.agentId === undefined ? [] : ['agentId']),
+    ...(delivery?.sessionId === undefined ? [] : ['sessionId']),
+    ...(delivery?.userMessageId === undefined ? [] : ['userMessageId']),
+    ...(delivery?.userMessageSeq === undefined ? [] : ['userMessageSeq']),
+  ])
+  if (delivery?.schema !== ANALYSIS_DELIVERY_SCHEMA
+    || Object.keys(delivery).length !== expectedKeys.size
+    || Object.keys(delivery).some(key => !expectedKeys.has(key))
+    || typeof delivery.id !== 'string' || delivery.id.length === 0 || delivery.id.length > 512
+    || typeof delivery.messageId !== 'string' || delivery.messageId.length === 0 || delivery.messageId.length > 512
+    || typeof delivery.projectId !== 'string' || delivery.projectId.length === 0 || delivery.projectId.length > 512
+    || typeof delivery.deliveredAt !== 'string' || delivery.deliveredAt.length > 256
+    || !Array.isArray(taskRefs) || taskRefs.length === 0 || taskRefs.length > 64
+    || (delivery.agentId !== undefined && (typeof delivery.agentId !== 'string' || delivery.agentId.length > 512))
+    || (delivery.sessionId !== undefined && (typeof delivery.sessionId !== 'string' || delivery.sessionId.length > 512))
+    || (delivery.userMessageId !== undefined && (typeof delivery.userMessageId !== 'string' || delivery.userMessageId.length > 512))
+    || (delivery.userMessageSeq !== undefined
+      && (typeof delivery.userMessageSeq !== 'number' || !Number.isSafeInteger(delivery.userMessageSeq) || delivery.userMessageSeq < 0))) {
+    return false
+  }
+  const known = new Set<string>()
+  return taskRefs.every(rawReference => {
+    const reference = asRecord(rawReference)
+    if (reference === undefined
+      || typeof reference.taskId !== 'string' || reference.taskId.length === 0 || reference.taskId.length > 256
+      || typeof reference.incidentId !== 'string' || reference.incidentId.length === 0 || reference.incidentId.length > 512
+      || typeof reference.eventId !== 'string' || reference.eventId.length === 0 || reference.eventId.length > 512
+      || known.has(reference.taskId)) return false
+    known.add(reference.taskId)
+    return true
+  })
+}
+
+function validStoredAnalysisResult(value: unknown): value is StoredAnalysisResult {
+  const result = asRecord(value)
+  const expectedKeys = new Set([
+    'schema', 'taskId', 'incidentId', 'eventId', 'deliveryId', 'receivedAt',
+    'sessionId', 'userMessageId', 'assistantMessageId', 'project_exposure',
+    'confidence', 'evidence', 'recommended_action', 'urgency', 'reasoning_summary',
+  ])
+  if (result === undefined || Object.keys(result).length !== expectedKeys.size
+    || Object.keys(result).some(key => !expectedKeys.has(key))) return false
+  return result?.schema === ANALYSIS_RESULT_SCHEMA
+    && typeof result.taskId === 'string' && result.taskId.length > 0 && result.taskId.length <= 256
+    && typeof result.incidentId === 'string' && result.incidentId.length > 0 && result.incidentId.length <= 512
+    && typeof result.eventId === 'string' && result.eventId.length > 0 && result.eventId.length <= 512
+    && typeof result.deliveryId === 'string' && result.deliveryId.length > 0 && result.deliveryId.length <= 512
+    && typeof result.receivedAt === 'string' && result.receivedAt.length <= 256
+    && typeof result.sessionId === 'string' && result.sessionId.length > 0 && result.sessionId.length <= 512
+    && typeof result.userMessageId === 'string' && result.userMessageId.length > 0 && result.userMessageId.length <= 512
+    && typeof result.assistantMessageId === 'string' && result.assistantMessageId.length > 0 && result.assistantMessageId.length <= 512
+    && validAnalysisResultFields(result)
+}
+
 export function parseRadarState(value: unknown): RadarState {
   const root = asRecord(value)
   if (root?.schema !== RADAR_STATE_SCHEMA) throw new Error('radar state has an unsupported schema')
@@ -114,8 +197,15 @@ export function parseRadarState(value: unknown): RadarState {
   if (sourceHealth === undefined) throw new Error('radar state has an invalid source health map')
   const activeSourceHealth = root.activeSourceHealth === undefined ? {} : asRecord(root.activeSourceHealth)
   if (activeSourceHealth === undefined) throw new Error('radar state has an invalid active source health map')
+  const analysisDeliveries = root.analysisDeliveries === undefined ? {} : asRecord(root.analysisDeliveries)
+  if (analysisDeliveries === undefined) throw new Error('radar state has an invalid analysis delivery map')
+  const analysisResults = root.analysisResults === undefined ? {} : asRecord(root.analysisResults)
+  if (analysisResults === undefined) throw new Error('radar state has an invalid analysis result map')
   if (Object.keys(sourceHealth).length > 10 || Object.keys(activeSourceHealth).length > 1_000_000) {
     throw new Error('radar state exceeds the source health limit')
+  }
+  if (Object.keys(analysisDeliveries).length > 100_000 || Object.keys(analysisResults).length > 100_000) {
+    throw new Error('radar state exceeds the analysis record limit')
   }
   const sourceNames = new Set(['osv', 'npm-releases', 'npm-candidate-graphs', 'github-releases'])
   for (const [source, rawStatus] of Object.entries(sourceHealth)) {
@@ -145,6 +235,16 @@ export function parseRadarState(value: unknown): RadarState {
     }
     if (!validAffectedSources(event.affectedSources)) throw new Error('radar state contains invalid affected package origins')
     if (!validCompatibilityUpgradePath(event.upgradePath)) throw new Error('radar state contains an invalid compatibility upgrade path')
+  }
+  for (const [key, rawDelivery] of Object.entries(analysisDeliveries)) {
+    if (!validAnalysisDelivery(rawDelivery) || rawDelivery.id !== key) {
+      throw new Error(`radar state contains an invalid analysis delivery: ${key.slice(0, 256)}`)
+    }
+  }
+  for (const [key, rawResult] of Object.entries(analysisResults)) {
+    if (!validStoredAnalysisResult(rawResult) || rawResult.incidentId !== key) {
+      throw new Error(`radar state contains an invalid analysis result: ${key.slice(0, 256)}`)
+    }
   }
   if (Object.keys(active).length > 1_000_000) throw new Error('radar state exceeds the active match limit')
   if (Object.keys(activeCompatibility).length > 1_000_000) {
