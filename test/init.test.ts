@@ -83,6 +83,18 @@ describe('DSH profile initialization', () => {
       const customizedPatchText = await readFile(patch, 'utf8')
       assert.match(customizedPatchText, /intervalSeconds: 300/)
       assert.match(customizedPatchText, /runOnStart: false/)
+      await writeDshPatch({
+        output: patch,
+        configFile: output,
+        stateFile: `${output}.state.json`,
+        profile: 'web',
+        registry: 'https://registry.example.test/npm/',
+        deepCandidates: false,
+        force: true,
+      })
+      const registryPatchText = await readFile(patch, 'utf8')
+      assert.match(registryPatchText, /registry: "https:\/\/registry\.example\.test\/npm\//)
+      assert.match(registryPatchText, /deepCandidates: false/)
       await assert.rejects(writeDshPatch({
         output: patch,
         configFile: output,

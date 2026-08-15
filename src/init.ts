@@ -50,6 +50,8 @@ export interface WriteDshPatchOptions {
   profile: string
   intervalSeconds?: number
   runOnStart?: boolean
+  registry?: string
+  deepCandidates?: boolean
   force?: boolean
 }
 
@@ -314,6 +316,8 @@ export async function writeDshPatch(options: WriteDshPatchOptions): Promise<stri
     '    refreshProfile: true',
     `    intervalSeconds: ${intervalSeconds}`,
     `    runOnStart: ${runOnStart}`,
+    ...(options.registry === undefined ? [] : [`    registry: ${JSON.stringify(options.registry)}`]),
+    ...(options.deepCandidates === undefined ? [] : [`    deepCandidates: ${options.deepCandidates}`]),
     '',
   ].join('\n')
   await writeFile(output, patch, { mode: 0o600 })

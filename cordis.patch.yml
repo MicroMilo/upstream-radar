@@ -8,4 +8,6 @@
         stateFile: !!js process.env.UPSTREAM_RADAR_STATE
         intervalSeconds: !!js Number(process.env.UPSTREAM_RADAR_INTERVAL_SECONDS || 1800)
         osvBaseUrl: !!js process.env.UPSTREAM_RADAR_OSV_BASE_URL
+        registry: !!js process.env.UPSTREAM_RADAR_REGISTRY
+        deepCandidates: !!js process.env.UPSTREAM_RADAR_DEEP_CANDIDATES !== 'false'
         runOnStart: !!js process.env.UPSTREAM_RADAR_RUN_ON_START !== 'false'
