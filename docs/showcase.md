@@ -135,7 +135,19 @@ It reports whether monitoring has started, the last successful check for OSV/npm
 
 The status output also shows `Coverage: incomplete` when the installed profile contains a dependency declaration that DSH cannot currently resolve. That is a configuration gap, not a clean result.
 
-## Scene 11 — the graph follows the installed DSH profile
+## Scene 11 — diagnose the wiring before blaming the feeds
+
+The local doctor checks the reviewed config, the selected DSH profile, the generated overlay, the durable state file, and required dependency coverage without contacting OSV, npm, or GitHub:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.config.json \
+  --profile web \
+  --patch ./upstream-radar.dsh.yml
+```
+
+It reports `READY`, `READY WITH WARNINGS`, or `BLOCKED`. A missing first-run state is a warning; a profile without the Radar bundle, a mismatched overlay, an invalid config, or a corrupt state file is blocked. The same report can be emitted as JSON for CI or a future DSH status surface.
+
+## Scene 12 — the graph follows the installed DSH profile
 
 For a profile containing `dsh-cloudflare-browser-run@0.1.1`, initialization reports the graph source explicitly:
 

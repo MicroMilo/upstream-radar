@@ -18,10 +18,15 @@ describe('CLI option parsing', () => {
   it('advertises a one-command watch loop and validates its safety interval', () => {
     const help = spawnSync(process.execPath, [cli, '--help'], { encoding: 'utf8' })
     assert.equal(help.status, 0)
+    assert.match(help.stdout, /doctor \[config\.json\]/)
     assert.match(help.stdout, /radar watch <config\.json>/)
     assert.match(help.stdout, /radar status <config\.json>/)
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
     assert.match(help.stdout, /--dsh-patch <path>\s+write a self-contained DSH --patch overlay/)
+
+    const blockedDoctor = spawnSync(process.execPath, [cli, 'doctor', resolve(tmpdir(), `upstream-radar-missing-${process.pid}.json`)], { encoding: 'utf8' })
+    assert.equal(blockedDoctor.status, 1)
+    assert.match(blockedDoctor.stdout, /Status: BLOCKED/)
 
     const invalid = spawnSync(process.execPath, [cli, 'radar', 'watch', 'missing.json', '--interval', '299'], { encoding: 'utf8' })
     assert.equal(invalid.status, 1)

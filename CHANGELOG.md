@@ -2,6 +2,19 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.19.2] - 2026-08-16
+
+### Added
+
+- Add a network-free `upstream-radar doctor` command for first-run DSH diagnosis.
+- Check local config parsing, DSH profile bundle registration, generated overlay alignment, state-file readability, monitoring status, and required dependency coverage.
+- Support human-readable and `--json` doctor output; only blocked wiring returns a non-zero exit code.
+
+### Safety
+
+- Doctor never contacts OSV, npm, or GitHub and never imports or executes plugin code.
+- A missing first-run state or incomplete coverage remains visible as a warning; neither is described as safe.
+
 ## [0.19.1] - 2026-08-16
 
 ### Fixed
