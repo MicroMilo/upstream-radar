@@ -195,19 +195,22 @@ If your team wants a scheduled CI gate before wiring a machine to a live DSH pro
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.22.1
+  - uses: MicroMilo/upstream-radar@v0.23.0
     with:
       config: upstream-radar.config.json
       fail-on: high
+      # Optional: also fail on deterministic DSH/plugin compatibility breaks.
+      fail-on-compatibility: breaking
 ```
 
-The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability meets the threshold, and exits `1` for an operational or source error. It does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.22.1`, and pin the checkout Action in your workflow according to your repository's policy.
+The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.23.0`, and pin the checkout Action in your workflow according to your repository's policy.
 
 The Action requires the caller to check out the repository first. It does not install the project's dependencies or run their lifecycle scripts; it only reads the committed graph and queries the configured upstream sources. For a fully explicit, lower-level invocation, the equivalent command is:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.22.1 upstream-radar radar check \
-  ./upstream-radar.config.json --frozen --state :memory: --fail-on high --json
+pnpm dlx --package=upstream-radar@0.23.0 upstream-radar radar check \
+  ./upstream-radar.config.json --frozen --state :memory: --fail-on high \
+  --fail-on-compatibility breaking --json
 ```
 
 For a runnable consumer example using the real [`dsh-cloudflare-browser-run@0.1.1`](examples/github-actions/consumer/upstream-radar.config.json) graph, see the [consumer smoke README](examples/github-actions/consumer/README.md) and its [copyable workflow](examples/github-actions/consumer/upstream-radar.yml).
@@ -218,7 +221,7 @@ Run the same released Action locally from this repository with:
 pnpm run try:consumer
 ```
 
-For a local or self-hosted DSH machine, omit `--frozen` so Radar refreshes the selected profile before each cycle. Use `--fail-on` only with `radar check`, `radar status`, or `radar watch --once`; a long-running watch should continue routing incidents instead of terminating on the first one.
+For a local or self-hosted DSH machine, omit `--frozen` so Radar refreshes the selected profile before each cycle. Use `--fail-on` or `--fail-on-compatibility` only with `radar check`, `radar status`, or `radar watch --once`; a long-running watch should continue routing incidents instead of terminating on the first one.
 
 ## How the loop works
 
@@ -236,7 +239,7 @@ For a local process or a scheduled runner, the same loop is available as:
 pnpm dlx --package=upstream-radar@latest upstream-radar radar watch ./upstream-radar.config.json --interval 1800
 ```
 
-Use `radar check --frozen --state :memory: --fail-on high --json` for a machine-enforced CI check against a reviewed graph. The local DSH path continues to use `radar watch`, which refreshes the selected profile before each cycle.
+Use `radar check --frozen --state :memory: --fail-on high --fail-on-compatibility breaking --json` for a machine-enforced CI check against a reviewed graph. The local DSH path continues to use `radar watch`, which refreshes the selected profile before each cycle.
 
 The handoff uses `ctx.agents.roots()[0].followup(...)` with:
 
@@ -319,6 +322,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - an actionable, network-free `radar status` summary with exact active paths, candidate signals, and next steps;
 - a network-free `doctor` command that checks local DSH registration, overlay/config alignment, state readability, and dependency coverage;
 - compatibility signals for Node.js, peers, exports, entrypoints, bundle paths, dependencies, and version boundaries;
+- an opt-in CI gate for confirmed/strong (`breaking`) or all (`any`) active compatibility changes;
 - network-free Radar and real DSH runtime showcases.
 
 The bounded pre-install scanner remains available as a supporting collector:
@@ -333,6 +337,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 - `init` discovers the only DSH profile with third-party bundles when `--profile` is omitted; multiple candidates still require an explicit profile. By default it follows the installed DSH `node_modules` tree, so pnpm overrides and local resolution choices are included. `--dsh-patch <path>` writes an explicit DSH overlay so first startup needs no environment variables and preserves an explicitly selected registry. A native pnpm lockfile parser for pre-install/CI inspection is still deferred.
 - A graph with unresolved required dependency declarations is marked as incomplete coverage; optional packages that are not installed for the current platform remain visible but do not create a false required-dependency alert.
 - Candidate upgrade graphs are resolved only for a bounded earliest prefix. A candidate with an incomplete or unavailable graph is not recommended; later unqueried candidates remain visibly unchecked. Pass `--no-deep-candidates` to opt out of this extra registry work.
+- Compatibility CI gating is opt-in: `--fail-on-compatibility breaking` fails on confirmed or strong incompatibility signals, while `any` fails on every active compatibility event; neither setting claims that a candidate is safe.
 - `radar check/watch --frozen` intentionally uses the graph committed in the config for CI; it does not prove that the installed DSH profile has not changed. Without `--frozen`, native DSH and CLI polling refresh the selected profile first.
 - `radar status` is a local snapshot only: it does not refresh OSV/npm/GitHub data, and it cannot prove that a source is current until a check has completed. Its next steps are guidance, not an automatic upgrade or safety decision.
 - `doctor` checks local wiring only; it cannot prove that a running DSH process has delivered a task to a model or that upstream feeds are current.

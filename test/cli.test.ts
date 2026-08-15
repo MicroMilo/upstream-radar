@@ -24,6 +24,7 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
     assert.match(help.stdout, /--frozen\s+radar check\/watch: use the reviewed graph/)
     assert.match(help.stdout, /--fail-on <value>\s+scan\/inspect verdict or radar severity/)
+    assert.match(help.stdout, /--fail-on-compatibility <value>\s+CI gate: never\|breaking\|any/)
     assert.match(help.stdout, /--dsh-patch <path>\s+write a self-contained DSH --patch overlay/)
 
     const blockedDoctor = spawnSync(process.execPath, [cli, 'doctor', resolve(tmpdir(), `upstream-radar-missing-${process.pid}.json`)], { encoding: 'utf8' })
@@ -64,9 +65,17 @@ describe('CLI option parsing', () => {
     assert.equal(invalidThreshold.status, 1)
     assert.match(invalidThreshold.stderr, /invalid radar --fail-on value: severe/)
 
+    const invalidCompatibilityThreshold = spawnSync(process.execPath, [cli, 'radar', 'status', config, '--fail-on-compatibility', 'severe'], { encoding: 'utf8' })
+    assert.equal(invalidCompatibilityThreshold.status, 1)
+    assert.match(invalidCompatibilityThreshold.stderr, /invalid radar --fail-on-compatibility value: severe/)
+
     const longRunningGate = spawnSync(process.execPath, [cli, 'radar', 'watch', config, '--fail-on', 'high'], { encoding: 'utf8' })
     assert.equal(longRunningGate.status, 1)
-    assert.match(longRunningGate.stderr, /requires --once when --fail-on is used/)
+    assert.match(longRunningGate.stderr, /requires --once when a policy gate is used/)
+
+    const longRunningCompatibilityGate = spawnSync(process.execPath, [cli, 'radar', 'watch', config, '--fail-on-compatibility', 'breaking'], { encoding: 'utf8' })
+    assert.equal(longRunningCompatibilityGate.status, 1)
+    assert.match(longRunningCompatibilityGate.stderr, /requires --once when a policy gate is used/)
   })
 
   it('prints the local doctor command before the long-running DSH start command', async () => {

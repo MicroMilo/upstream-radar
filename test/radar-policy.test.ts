@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { emptyRadarState } from '../src/radar.js'
 import { evaluateRadarPolicy, renderRadarPolicy } from '../src/radar-policy.js'
-import type { VulnerabilityEvent } from '../src/radar-types.js'
+import type { CompatibilityEvent, VulnerabilityEvent } from '../src/radar-types.js'
 
 function event(
   incidentId: string,
@@ -31,6 +31,23 @@ function event(
       fixedVersions: [],
       references: [],
     },
+  }
+}
+
+function compatibilityEvent(incidentId: string, confidence: 'confirmed' | 'strong' | 'needs-analysis'): CompatibilityEvent {
+  return {
+    schema: 'upstream-radar.event/v1alpha1',
+    id: `event-${incidentId}`,
+    incidentId,
+    kind: 'compatibility',
+    change: 'new',
+    detectedAt: '2026-08-16T01:00:00.000Z',
+    project: { id: incidentId, name: `Project ${incidentId}` },
+    route: { channels: ['stdout'] },
+    plugin: { ecosystem: 'npm', name: 'demo-plugin', version: '1.0.0' },
+    installed: { ecosystem: 'npm', name: '@deepseek-ai/dsh-agent', version: '0.1.0-rc.5' },
+    candidate: { ecosystem: 'npm', name: '@deepseek-ai/dsh-agent', version: '0.1.0-rc.6' },
+    signals: [{ code: 'dsh-peer-incompatible', confidence, summary: 'Candidate peer range excludes the installed DSH package.' }],
   }
 }
 
@@ -64,5 +81,23 @@ describe('radar policy', () => {
     const result = evaluateRadarPolicy(state, 'never')
     assert.deepEqual(result, { threshold: 'never', status: 'pass', matches: [] })
     assert.equal(renderRadarPolicy(result), 'Policy: not enforced\n')
+  })
+
+  it('can fail on deterministic compatibility changes without failing on analysis-only changes', () => {
+    const state = emptyRadarState()
+    state.activeCompatibility = {
+      breaking: { key: 'breaking', event: compatibilityEvent('breaking', 'strong') },
+      analysis: { key: 'analysis', event: compatibilityEvent('analysis', 'needs-analysis') },
+    }
+
+    const breaking = evaluateRadarPolicy(state, 'never', 'breaking')
+    assert.equal(breaking.status, 'fail')
+    assert.equal(breaking.compatibilityThreshold, 'breaking')
+    assert.deepEqual(breaking.compatibilityMatches?.map(match => match.incidentId), ['breaking'])
+    assert.match(renderRadarPolicy(breaking), /Compatibility policy: FAIL/)
+    assert.match(renderRadarPolicy(breaking), /BREAKING.*dsh-peer-incompatible/)
+
+    const any = evaluateRadarPolicy(state, 'never', 'any')
+    assert.deepEqual(any.compatibilityMatches?.map(match => match.incidentId), ['analysis', 'breaking'])
   })
 })

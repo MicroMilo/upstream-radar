@@ -11,12 +11,18 @@ Copy these two files into a repository that has reviewed the corresponding DSH p
 
 The workflow runs on demand or weekly. It checks the committed graph against OSV and npm, and fails when an active high-or-higher vulnerability is present. It does not install the plugin, run lifecycle scripts, start DSH, or modify the repository.
 
+To also fail when a confirmed or strong DSH/plugin compatibility break is found, add this input to the Action step:
+
+```yaml
+fail-on-compatibility: breaking
+```
+
 ## Generate your own graph
 
 For your project, generate the config from the actual DSH profile instead of copying this package's snapshot:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.22.1 upstream-radar init \
+pnpm dlx --package=upstream-radar@0.23.0 upstream-radar init \
   --profile <dsh-profile> \
   --project-id <project-id> \
   --project-name "Your project" \
@@ -24,7 +30,7 @@ pnpm dlx --package=upstream-radar@0.22.1 upstream-radar init \
   --dsh-patch ./upstream-radar.dsh.yml
 ```
 
-Review the generated graph, commit the config, and then use the Action. The config is an evidence snapshot, not a safety certificate; the native DSH bundle remains the always-on path that refreshes the installed profile and routes model analysis.
+Review the generated graph, commit the config, and then use the Action. The config is an evidence snapshot, not a safety certificate; the native DSH bundle remains the always-on path that refreshes the installed profile and routes model analysis. The compatibility gate is opt-in and does not replace that project-specific model analysis.
 
 ## What success means
 
