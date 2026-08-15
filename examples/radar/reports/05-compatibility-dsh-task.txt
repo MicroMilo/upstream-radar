@@ -115,5 +115,6 @@ event_json:
       "after": "^0.2.0"
     }
   ],
-  "releaseNotes": "BREAKING CHANGE: plugin@2 requires the new DSH agent API and Node.js 24.\nThe bundle entry moved from cordis.patch.yml to next.patch.yml.\n"
+  "releaseNotes": "BREAKING CHANGE: plugin@2 requires the new DSH agent API and Node.js 24.\nThe bundle entry moved from cordis.patch.yml to next.patch.yml.\n",
+  "releaseNotesUrl": "https://github.com/acme/plugin/releases/tag/v2.0.0"
 }

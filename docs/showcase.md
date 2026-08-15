@@ -65,7 +65,7 @@ The candidate `plugin@2.0.0` changes:
 - DSH bundle patch;
 - Node requirement from 22 to 24;
 - DSH Agent peer requirement from `^0.1.0-rc.5` to `^0.2.0`;
-- release notes that explicitly say `BREAKING CHANGE`.
+- the exact public GitHub Release notes that explicitly say `BREAKING CHANGE`.
 
 Radar identifies the mathematically incompatible environment and peer range, labels structural changes as needing analysis, and creates a separate DSH compatibility task.
 
@@ -86,9 +86,10 @@ The update replaces the older offline task instead of accumulating two analyses.
 The fixture isolates behavior from network timing. Production cycles use:
 
 - OSV `querybatch` plus full advisory records for exact installed versions;
-- npm packuments for the latest plugin and DSH package manifests.
+- npm packuments for the latest plugin and DSH package manifests;
+- public GitHub Release notes for the exact candidate tag when the package metadata points to GitHub.
 
-Release notes and GitHub diffs are currently accepted by the offline comparison command; automatic GitHub release ingestion is on the roadmap.
+The showcase uses a deterministic fake release-notes source, while production cycles use the bounded public GitHub Releases adapter. GitHub comparison diffs, changelogs, and migration guides remain on the roadmap.
 
 ## Legacy admission showcase
 

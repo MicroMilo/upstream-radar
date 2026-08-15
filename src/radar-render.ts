@@ -42,6 +42,7 @@ function renderCompatibility(event: CompatibilityEvent): string[] {
   for (const signal of event.signals) {
     lines.push(`  [${signal.confidence.toUpperCase()}] ${display(signal.code)}: ${display(signal.summary)}`)
   }
+  if (event.releaseNotesUrl !== undefined) lines.push(`Release notes: ${display(event.releaseNotesUrl)}`)
   lines.push(`Route: ${event.route.owner === undefined ? '(no owner)' : display(event.route.owner)} via ${event.route.channels.map(item => display(item)).join(', ')}`)
   return lines
 }

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
+import type { ReleaseNotesSource } from '../src/github-release.js'
 import { emptyRadarState, pollRadar, type AdvisorySource, type ReleaseSource } from '../src/radar.js'
 import type { AdvisoryMatch, ProjectInventory } from '../src/radar-types.js'
 
@@ -100,12 +101,26 @@ describe('radar polling', () => {
       },
     }
     const noVulnerabilities = source('2026-08-14T01:00:00.000Z', false)
+    const releaseNotes: ReleaseNotesSource = {
+      async query(observations) {
+        return new Map(observations
+          .filter(observation => observation.candidate.version !== observation.installed.version)
+          .map(observation => [
+            `${observation.installed.ecosystem}:${observation.installed.name}@${observation.installed.version}`,
+            {
+              text: 'BREAKING CHANGE: the plugin now requires the project session to be configured.',
+              url: `https://github.com/acme/plugin/releases/tag/v${observation.candidate.version}`,
+            },
+          ]))
+      },
+    }
     const first = await pollRadar(
       [inventory],
       emptyRadarState(),
       noVulnerabilities,
       new Date('2026-08-14T04:00:00.000Z'),
       releases,
+      releaseNotes,
     )
     assert.equal(first.events.length, 1)
     assert.equal(first.events[0]?.kind, 'compatibility')
@@ -115,6 +130,7 @@ describe('radar polling', () => {
       noVulnerabilities,
       new Date('2026-08-14T04:30:00.000Z'),
       releases,
+      releaseNotes,
     )
     assert.equal(unchanged.events.length, 0)
 
@@ -136,10 +152,14 @@ describe('radar polling', () => {
       noVulnerabilities,
       new Date('2026-08-14T05:00:00.000Z'),
       nextRelease,
+      releaseNotes,
     )
     assert.equal(updated.events[0]?.kind, 'compatibility')
     assert.equal(updated.events[0]?.change, 'updated')
     assert.equal(updated.state.pendingAnalysisTasks.length, 1)
+    const compatibility = updated.events.find(event => event.kind === 'compatibility')
+    assert.equal(compatibility?.releaseNotesUrl, 'https://github.com/acme/plugin/releases/tag/v3.0.0')
+    assert.equal(compatibility?.releaseNotes?.includes('BREAKING CHANGE'), true)
 
     const caughtUp: ReleaseSource = {
       async query(packages) {
@@ -198,5 +218,74 @@ describe('radar polling', () => {
     assert.equal(result.events.some(event => event.kind === 'compatibility' && event.change === 'resolved'), false)
     assert.equal(Object.keys(result.state.activeCompatibility).length, 1)
     assert.deepEqual(result.sourceErrors, [{ source: 'npm-releases', message: 'registry unavailable' }])
+  })
+
+  it('keeps npm compatibility facts when GitHub release notes are unavailable', async () => {
+    const releases: ReleaseSource = {
+      async query(packages) {
+        const installed = packages.find(item => item.name === 'plugin')
+        assert.ok(installed)
+        return new Map([['npm:plugin@1.0.0', {
+          installed,
+          latestVersion: '2.0.0',
+          previous: { name: 'plugin', version: '1.0.0', main: './old.js' },
+          candidate: { name: 'plugin', version: '2.0.0', main: './new.js' },
+        }]])
+      },
+    }
+    const unavailable: ReleaseNotesSource = { async query() { throw new Error('GitHub rate limit') } }
+    const result = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      source('2026-08-14T01:00:00.000Z', false),
+      new Date('2026-08-14T06:00:00.000Z'),
+      releases,
+      unavailable,
+    )
+    assert.equal(result.events.some(event => event.kind === 'compatibility'), true)
+    assert.deepEqual(result.sourceErrors, [{ source: 'github-releases', message: 'GitHub rate limit' }])
+  })
+
+  it('does not turn a temporary GitHub failure into a duplicate update for the same candidate', async () => {
+    const releases: ReleaseSource = {
+      async query(packages) {
+        const installed = packages.find(item => item.name === 'plugin')
+        assert.ok(installed)
+        return new Map([['npm:plugin@1.0.0', {
+          installed,
+          latestVersion: '2.0.0',
+          previous: { name: 'plugin', version: '1.0.0', main: './old.js' },
+          candidate: { name: 'plugin', version: '2.0.0', main: './new.js' },
+        }]])
+      },
+    }
+    const notes: ReleaseNotesSource = {
+      async query() {
+        return new Map([['npm:plugin@1.0.0', {
+          text: 'BREAKING CHANGE: requires the new session API.',
+          url: 'https://github.com/acme/plugin/releases/tag/v2.0.0',
+        }]])
+      },
+    }
+    const first = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      source('2026-08-14T01:00:00.000Z', false),
+      new Date('2026-08-14T07:00:00.000Z'),
+      releases,
+      notes,
+    )
+    const unavailable: ReleaseNotesSource = { async query() { throw new Error('temporary GitHub failure') } }
+    const second = await pollRadar(
+      [inventory],
+      first.state,
+      source('2026-08-14T01:00:00.000Z', false),
+      new Date('2026-08-14T07:30:00.000Z'),
+      releases,
+      unavailable,
+    )
+    assert.equal(second.events.length, 0)
+    assert.equal(Object.values(second.state.activeCompatibility)[0]?.event.releaseNotesUrl, 'https://github.com/acme/plugin/releases/tag/v2.0.0')
+    assert.deepEqual(second.sourceErrors, [{ source: 'github-releases', message: 'temporary GitHub failure' }])
   })
 })

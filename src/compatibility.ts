@@ -12,6 +12,7 @@ export interface CompatibilityChangeInput {
   previous: PackageManifestSnapshot
   candidate: PackageManifestSnapshot
   releaseNotes?: string
+  releaseNotesUrl?: string
   detectedAt: string
 }
 
@@ -221,6 +222,7 @@ export function assessCompatibilityChanges(
     },
     signals,
     ...(change.releaseNotes === undefined ? {} : { releaseNotes: change.releaseNotes.slice(0, 64 * 1_024) }),
+    ...(change.releaseNotesUrl === undefined ? {} : { releaseNotesUrl: change.releaseNotesUrl.slice(0, 4_096) }),
   }]
   })
 }

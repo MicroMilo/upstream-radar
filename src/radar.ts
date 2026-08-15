@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import { createAnalysisTask } from './dsh-analysis.js'
 import { assessCompatibilityChanges } from './compatibility.js'
 import { findDependencyPaths } from './graph.js'
+import type { ReleaseNotes, ReleaseNotesSource } from './github-release.js'
 import type { NpmReleaseObservation } from './npm-release.js'
 import { packageKey } from './osv.js'
 import {
@@ -33,7 +34,7 @@ export interface RadarPollResult {
   releasePackagesQueried: number
   events: RadarEvent[]
   analysisTasks: AnalysisTask[]
-  sourceErrors: Array<{ source: 'npm-releases'; message: string }>
+  sourceErrors: Array<{ source: 'npm-releases' | 'github-releases'; message: string }>
   state: RadarState
 }
 
@@ -82,6 +83,7 @@ function compatibilityEventChanged(previous: RadarEvent, current: RadarEvent): b
     || JSON.stringify(previous.candidate) !== JSON.stringify(current.candidate)
     || JSON.stringify(previous.signals) !== JSON.stringify(current.signals)
     || previous.releaseNotes !== current.releaseNotes
+    || previous.releaseNotesUrl !== current.releaseNotesUrl
 }
 
 export function emptyRadarState(): RadarState {
@@ -95,6 +97,7 @@ export async function pollRadar(
   source: AdvisorySource,
   now = new Date(),
   releaseSource?: ReleaseSource,
+  releaseNotesSource?: ReleaseNotesSource,
 ): Promise<RadarPollResult> {
   if (previousState.schema !== RADAR_STATE_SCHEMA) throw new Error('unsupported radar state schema')
   if (!Number.isFinite(now.getTime())) throw new Error('radar check time is invalid')
@@ -216,16 +219,53 @@ export async function pollRadar(
       releases = new Map()
     }
     if (releaseCheckSucceeded) {
+      let releaseNotes = new Map<string, ReleaseNotes>()
+      let releaseNotesCheckSucceeded = releaseNotesSource === undefined
+      if (releaseNotesSource !== undefined) {
+        try {
+          releaseNotes = await releaseNotesSource.query([...releases.values()])
+          releaseNotesCheckSucceeded = true
+        } catch (error: unknown) {
+          const raw = error instanceof Error ? error.message : String(error)
+          sourceErrors.push({
+            source: 'github-releases',
+            message: raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048),
+          })
+        }
+      }
       const currentCompatibility = new Map<string, StoredCompatibilityMatch>()
       for (const inventory of inventories) {
+        const previousCompatibility = Object.values(previousState.activeCompatibility)
+          .map(item => item.event)
+          .filter((event): event is Extract<RadarEvent, { kind: 'compatibility' }> => event.kind === 'compatibility')
         for (const observation of releases.values()) {
+          const notes = releaseNotes.get(packageKey(observation.installed))
+          const fallback = !releaseNotesCheckSucceeded
+            ? previousCompatibility.find(event => (
+              event.project.id === inventory.project.id
+              && event.plugin.name === observation.installed.name
+              && event.plugin.version === observation.installed.version
+              && event.installed.name === observation.previous.name
+              && event.installed.version === observation.previous.version
+              && event.candidate.name === observation.candidate.name
+              && event.candidate.version === observation.candidate.version
+            ))
+            : undefined
+          const releaseNotesInput = notes?.text === undefined
+            ? fallback?.releaseNotes === undefined ? {} : { releaseNotes: fallback.releaseNotes }
+            : { releaseNotes: notes.text }
+          const releaseNotesUrlInput = notes?.url === undefined
+            ? fallback?.releaseNotesUrl === undefined ? {} : { releaseNotesUrl: fallback.releaseNotesUrl }
+            : { releaseNotesUrl: notes.url }
           const compatibilityEvents = assessCompatibilityChanges(inventory, {
             previous: observation.previous,
             candidate: observation.candidate,
             detectedAt: checkedAt,
+            ...releaseNotesInput,
+            ...releaseNotesUrlInput,
           })
-          for (const event of compatibilityEvents) {
-            currentCompatibility.set(event.incidentId, { key: event.incidentId, event })
+          for (const candidateEvent of compatibilityEvents) {
+            currentCompatibility.set(candidateEvent.incidentId, { key: candidateEvent.incidentId, event: candidateEvent })
           }
         }
       }

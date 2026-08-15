@@ -21,7 +21,7 @@
 - [x] Track compatibility incidents through new, updated, and resolved states.
 - [x] Replace stale queued analysis when an incident changes and cancel it when resolved.
 - [x] Keep a text/JSON task export as a debugging surface for the DSH outbox.
-- [ ] Read GitHub releases, changelogs, comparison diffs, and migration guides.
+- [x] Read the exact public GitHub Release notes for a candidate version; changelogs, comparison diffs, and migration guides remain deferred.
 - [ ] Track DSH package families as one coordinated release rather than unrelated npm packages.
 - [ ] Resolve the lowest clean plugin upgrade, not merely the latest release.
 - [x] Discover a named DSH profile's installed third-party bundles and generate a reviewable inventory.

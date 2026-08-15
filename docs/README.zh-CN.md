@@ -195,7 +195,7 @@ Radar 还会识别与 DSH 插件直接相关的升级边界：
 - `main`、`exports` 或 DSH bundle patch 路径变化；
 - 依赖被移除；
 - major 和 1.0 前的破坏性版本边界；
-- 发布者在 release notes 中明确声明 breaking change。
+- 发布者在 release notes 中明确声明 breaking change；如果 npm 元数据指向公开 GitHub 仓库，Radar 还会按候选版本读取对应的 GitHub Release 说明。
 
 这些是交给项目分析的信号，不会被包装成“已经确认升级会坏”。
 
@@ -207,9 +207,9 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 ## 当前能力与边界
 
-已经支持：npm lock 依赖图、重复版本路径、OSV 精确版本匹配、恶意包记录、npm release 监听、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查。
+已经支持：npm lock 依赖图、重复版本路径、OSV 精确版本匹配、恶意包记录、npm release 监听、公开 GitHub Release 说明、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查。
 
-`init --profile <name>` 已经可以发现指定的 DSH profile 并生成可审查清单；暂未支持自动选择当前 active profile、原生解析 pnpm override/peer 规则、Yarn 图适配、GitHub release 与迁移文档源、项目级 Session 精确路由、把 Agent 结论写回事件，以及自动创建 Issue 或 PR。
+`init --profile <name>` 已经可以发现指定的 DSH profile 并生成可审查清单；暂未支持自动选择当前 active profile、原生解析 pnpm override/peer 规则、Yarn 图适配、changelog/比较 diff/迁移文档源、项目级 Session 精确路由、把 Agent 结论写回事件，以及自动创建 Issue 或 PR。
 
 `radar watch` 是 CLI 监控入口，本身不会把任务投递给 DSH；需要 Agent 分析时应使用原生 DSH bundle。
 

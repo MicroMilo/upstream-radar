@@ -46,6 +46,11 @@
         "after": "2.0.0"
       },
       {
+        "code": "publisher-declared-breaking-change",
+        "confidence": "confirmed",
+        "summary": "The publisher explicitly describes this release as breaking."
+      },
+      {
         "code": "package-entrypoint-changed",
         "confidence": "needs-analysis",
         "summary": "The package entrypoint or export map changed.",
@@ -87,7 +92,9 @@
         "before": "^0.1.0-rc.5",
         "after": "^0.2.0"
       }
-    ]
+    ],
+    "releaseNotes": "BREAKING CHANGE: the plugin now requires the project session to be configured.",
+    "releaseNotesUrl": "https://github.com/acme/plugin/releases/tag/v2.0.0"
   },
   "updatedEvent": {
     "schema": "upstream-radar.event/v1alpha1",
@@ -136,6 +143,11 @@
         "after": "3.0.0"
       },
       {
+        "code": "publisher-declared-breaking-change",
+        "confidence": "confirmed",
+        "summary": "The publisher explicitly describes this release as breaking."
+      },
+      {
         "code": "package-entrypoint-changed",
         "confidence": "needs-analysis",
         "summary": "The package entrypoint or export map changed.",
@@ -177,7 +189,9 @@
         "before": "^0.1.0-rc.5",
         "after": "^0.2.0"
       }
-    ]
+    ],
+    "releaseNotes": "BREAKING CHANGE: the plugin now requires the project session to be configured.",
+    "releaseNotesUrl": "https://github.com/acme/plugin/releases/tag/v3.0.0"
   },
   "resolvedEvent": {
     "schema": "upstream-radar.event/v1alpha1",
@@ -226,6 +240,11 @@
         "after": "3.0.0"
       },
       {
+        "code": "publisher-declared-breaking-change",
+        "confidence": "confirmed",
+        "summary": "The publisher explicitly describes this release as breaking."
+      },
+      {
         "code": "package-entrypoint-changed",
         "confidence": "needs-analysis",
         "summary": "The package entrypoint or export map changed.",
@@ -267,7 +286,9 @@
         "before": "^0.1.0-rc.5",
         "after": "^0.2.0"
       }
-    ]
+    ],
+    "releaseNotes": "BREAKING CHANGE: the plugin now requires the project session to be configured.",
+    "releaseNotesUrl": "https://github.com/acme/plugin/releases/tag/v3.0.0"
   },
   "pendingTaskCounts": {
     "afterNew": 1,
