@@ -63,6 +63,7 @@
 ## Milestone 4 — GitHub execution arm
 
 - [x] Provide a frozen one-shot CI check with severity exit codes and a copyable GitHub Actions workflow.
+- [x] Publish a reusable composite GitHub Action for the frozen deterministic CI gate.
 - [ ] Re-check the installed and proposed graph in GitHub Actions.
 - [ ] Attach project evidence to a GitHub Issue only after routing policy permits it.
 - [ ] Generate an upgrade branch or Pull Request behind explicit approval.

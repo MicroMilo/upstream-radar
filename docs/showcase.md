@@ -176,12 +176,27 @@ This is intentionally different from resolving the same package in a fresh npm p
 For a runner that does not have DSH installed, commit the generated config after review and run one frozen check:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.21.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.22.0 upstream-radar radar check \
   ./upstream-radar.config.json \
   --frozen --state :memory: --fail-on high --json
 ```
 
 `--frozen` prevents the command from looking for a local DSH profile. `--fail-on high` returns exit code `2` when the committed graph has an active high or critical vulnerability (malware is critical), while source or operational failures return `1`. This is a CI gate for deterministic evidence; it does not replace the native DSH Agent analysis or create an upgrade.
+
+## Scene 14 — make the gate two workflow steps
+
+The published Action packages the same frozen check so a DSH plugin project does not need to copy the runner setup or remember the safety flags:
+
+```yaml
+steps:
+  - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+  - uses: MicroMilo/upstream-radar@v0.22.0
+    with:
+      config: upstream-radar.config.json
+      fail-on: high
+```
+
+The Action checks out no code by itself and does not run DSH or plugin lifecycle scripts. It reads the reviewed graph from the caller's workspace, queries the configured sources, and fails only according to the explicit threshold. The native DSH bundle remains the path for always-on monitoring and model analysis.
 
 ## Live sources
 

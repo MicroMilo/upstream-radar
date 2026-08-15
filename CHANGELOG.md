@@ -2,6 +2,18 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.22.0] - 2026-08-16
+
+### Added
+
+- Publish a reusable GitHub composite Action for the reviewed, frozen Radar CI gate.
+- Allow repositories to configure the graph path, failure threshold, state path, exact Radar version, Node.js version, and working directory without copying the runner setup.
+
+### Safety
+
+- The Action pins its setup dependencies to exact commit SHAs and passes user inputs through environment variables before invoking the CLI.
+- The Action requires the caller to check out the repository and only runs `radar check --frozen`; it does not start DSH, execute plugin code, modify dependencies, or create a branch.
+
 ## [0.21.0] - 2026-08-16
 
 ### Changed

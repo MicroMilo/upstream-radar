@@ -178,16 +178,25 @@ pnpm run try:dsh
 
 ## 在 GitHub Actions 中运行
 
-如果团队想先用定时 CI 检查，而不是马上在 runner 里安装 DSH，可以把审查过的 `upstream-radar.config.json` 提交到仓库，然后复制[示例 workflow](../examples/github-actions/upstream-radar.yml)：
+如果团队想先用定时 CI 检查，而不是马上在 runner 里安装 DSH，可以把审查过的 `upstream-radar.config.json` 提交到仓库，然后复制[示例 workflow](../examples/github-actions/upstream-radar.yml)。现在可以直接使用可复用的 GitHub Action，workflow 只需要两个关键步骤：
 
 ```yaml
-run: >-
-  pnpm dlx --package=upstream-radar@0.21.0 upstream-radar
-  radar check ./upstream-radar.config.json
-  --frozen --state :memory: --fail-on high --json
+steps:
+  - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+  - uses: MicroMilo/upstream-radar@v0.22.0
+    with:
+      config: upstream-radar.config.json
+      fail-on: high
 ```
 
-`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。`--state :memory:` 让每次运行彼此独立。达到阈值时返回 `2`；运行或漏洞源出错时返回 `1`。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。
+这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。每次运行彼此独立；达到阈值时返回 `2`，运行或漏洞源出错时返回 `1`。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.22.0` 的发布标签，并根据团队策略固定 checkout Action。
+
+调用方需要先 checkout 仓库。这个 Action 不会安装项目依赖，也不会执行项目的 lifecycle script；它只读取提交到仓库的依赖图并查询配置中的上游漏洞源。如果需要完全显式的底层命令，等价写法是：
+
+```bash
+pnpm dlx --package=upstream-radar@0.22.0 upstream-radar radar check \
+  ./upstream-radar.config.json --frozen --state :memory: --fail-on high --json
+```
 
 在本地或自托管 DSH 机器上不要加 `--frozen`，这样 Radar 会在每轮检查前刷新选中的 profile。`--fail-on` 适用于一次性 `radar check`、`radar status` 或 `radar watch --once`；长期运行的 watch 不应该因为第一次告警就退出。
 
@@ -257,7 +266,7 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 ## 当前能力与边界
 
-已经支持：DSH profile 实际安装树和 npm lock 依赖图、重复版本路径、未解析依赖的覆盖提示、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查和默认可提交的相对 workspace。
+已经支持：DSH profile 实际安装树和 npm lock 依赖图、重复版本路径、未解析依赖的覆盖提示、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、DSH 原生投递，以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace，以及把审查过的图接入 CI 的可复用 GitHub Action。
 
 `init` 在省略 `--profile` 时可以自动选择唯一一个含第三方 bundle 的 DSH profile；多个候选仍要求显式指定。默认读取实际安装树，因此 pnpm override 和本地解析选择会被纳入；原生解析 pnpm lockfile 以支持安装前/CI 检查仍未实现。加上 `--dsh-patch <path>` 可以生成不依赖环境变量的 DSH overlay。`radar status` 提供离线的首次运行检查、活动事件摘要和下一步提示，但不会替你刷新漏洞源，也不会自动升级插件。暂未支持 Yarn 图适配、changelog/比较 diff/迁移文档源、项目级 Session 精确路由、把 Agent 结论写回事件，以及自动创建 Issue 或 PR。
 
