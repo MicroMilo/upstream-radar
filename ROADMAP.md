@@ -66,6 +66,7 @@
 - [x] Publish a reusable composite GitHub Action for the frozen deterministic CI gate.
 - [x] Verify the published Action with a real DSH plugin consumer snapshot and a dogfood workflow.
 - [x] Add an opt-in compatibility-change gate for breaking DSH/plugin updates.
+- [x] Provide an offline compatibility-rule benchmark covering deterministic and analysis-only outcomes.
 - [ ] Re-check the installed and proposed graph in GitHub Actions.
 - [ ] Attach project evidence to a GitHub Issue only after routing policy permits it.
 - [ ] Generate an upgrade branch or Pull Request behind explicit approval.
@@ -76,4 +77,4 @@
 
 The pre-install scanner remains useful for collecting manifests and exact graphs. Signature, provenance, artifact identity, isolated detonation, and admission receipts are secondary tracks; they must not delay continuous vulnerability and compatibility monitoring.
 
-Plugin usefulness benchmarks remain out of scope.
+Plugin runtime usefulness, task success, cost, and latency benchmarks remain out of scope. The repository does include an offline compatibility-rule contract benchmark; it is a regression surface for deterministic Radar behavior, not a plugin capability score.
