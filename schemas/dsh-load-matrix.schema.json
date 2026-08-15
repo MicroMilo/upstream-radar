@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MicroMilo/upstream-radar/blob/main/schemas/dsh-load-matrix.schema.json",
+  "title": "Upstream Radar DSH load matrix report",
+  "description": "Load-only evidence for one exact DSH bundle tested against a bounded set of exact DSH versions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "probe",
+    "scope",
+    "artifact",
+    "dshVersions",
+    "reports",
+    "summary",
+    "result",
+    "reason",
+    "boundary"
+  ],
+  "properties": {
+    "schema": { "const": "upstream-radar.dsh-load-matrix/v1alpha1" },
+    "probe": { "const": "dsh-matrix" },
+    "scope": { "const": "bundle-load-only" },
+    "artifact": { "$ref": "#/$defs/artifact" },
+    "dshVersions": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 8,
+      "items": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" },
+      "uniqueItems": true
+    },
+    "reports": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 8,
+      "items": { "$ref": "#/$defs/probeReport" }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "compatible", "incompatible", "unknown"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 2, "maximum": 8 },
+        "compatible": { "type": "integer", "minimum": 0 },
+        "incompatible": { "type": "integer", "minimum": 0 },
+        "unknown": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "result": { "enum": ["compatible", "incompatible", "unknown"] },
+    "reason": { "type": "string", "maxLength": 2048 },
+    "boundary": { "type": "string", "maxLength": 2048 }
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 214 },
+        "version": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "bundlePatch": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "findings": { "type": "array", "maxItems": 32, "items": { "type": "string", "maxLength": 256 } }
+      }
+    },
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["passed", "failed", "skipped"] },
+        "code": { "type": ["integer", "null"] },
+        "detail": { "type": "string", "maxLength": 2048 },
+        "output": { "type": "string", "maxLength": 2048 }
+      }
+    },
+    "probeReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "probe", "scope", "dshVersion", "artifact", "stages", "result", "reason", "boundary"],
+      "properties": {
+        "schema": { "const": "upstream-radar.dsh-load-probe/v1alpha1" },
+        "probe": { "const": "dsh-load" },
+        "scope": { "const": "bundle-load-only" },
+        "dshVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" },
+        "artifact": { "$ref": "#/$defs/artifact" },
+        "stages": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["artifact", "profile", "install", "registration", "load"],
+          "properties": {
+            "artifact": { "$ref": "#/$defs/stage" },
+            "profile": { "$ref": "#/$defs/stage" },
+            "install": { "$ref": "#/$defs/stage" },
+            "registration": { "$ref": "#/$defs/stage" },
+            "load": { "$ref": "#/$defs/stage" }
+          }
+        },
+        "result": { "enum": ["compatible", "incompatible", "unknown"] },
+        "reason": { "type": "string", "maxLength": 2048 },
+        "profileDirectory": { "type": "string", "maxLength": 4096 },
+        "boundary": { "type": "string", "maxLength": 2048 }
+      }
+    }
+  }
+}

@@ -35,3 +35,5 @@ pnpm run showcase:dsh-probe
 ```
 
 That showcase reports `compatible`, `incompatible`, and `unknown` independently. A successful result means only that DSH loaded the bundle configuration; it does not execute plugin business actions or replace the dependency and OSV checks.
+
+The showcase also exercises the matrix form against DSH `0.1.0-rc.3` and `0.1.0-rc.6`. The aggregate result is compatible only when both independent profiles load the same artifact.

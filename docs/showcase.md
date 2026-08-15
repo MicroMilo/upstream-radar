@@ -176,7 +176,7 @@ This is intentionally different from resolving the same package in a fresh npm p
 For a runner that does not have DSH installed, commit the generated config after review and run one frozen check:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.25.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.26.0 upstream-radar radar check \
   ./upstream-radar.config.json \
   --frozen --state :memory: --fail-on high --json
 ```
@@ -190,7 +190,7 @@ The published Action packages the same frozen check so a DSH plugin project does
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.25.0
+  - uses: MicroMilo/upstream-radar@v0.26.0
     with:
       config: upstream-radar.config.json
       fail-on: high
@@ -213,7 +213,7 @@ with:
 The package includes a no-network compatibility benchmark for the deterministic gate itself:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.25.0 upstream-radar benchmark compatibility
+pnpm dlx --package=upstream-radar@0.26.0 upstream-radar benchmark compatibility
 ```
 
 It covers a safe patch, analysis-only structural change, DSH peer exclusion, explicit publisher breaking language, a vulnerable candidate dependency, and incomplete candidate coverage. A passing benchmark means the rule contract has not regressed; it does not mean a real plugin is runtime-compatible. The real DSH consumer workflow below remains the integration proof.
@@ -227,7 +227,7 @@ The repository also carries a copyable consumer smoke under [`examples/github-ac
 The `probe dsh-load` command gives the compatibility question its own bounded surface. It takes one exact `.tgz`, uses one exact DSH version, and creates a disposable `headless` profile:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.25.0 upstream-radar probe dsh-load \
+pnpm dlx --package=upstream-radar@0.26.0 upstream-radar probe dsh-load \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.6 --json
 ```
@@ -241,6 +241,8 @@ pnpm run showcase:dsh-probe
 ```
 
 This is a runtime compatibility proof for one DSH version, not a package-security admission, a plugin capability benchmark, or a test of business actions.
+
+The same showcase also runs the loadable fixture against DSH `0.1.0-rc.3` and `0.1.0-rc.6`. The matrix is green only because both exact versions complete all five stages; if one version timed out or could not be loaded, the aggregate would remain `unknown` rather than silently passing.
 
 ## Live sources
 

@@ -5,6 +5,7 @@ import { join, resolve } from 'node:path'
 
 const ROOT = resolve(import.meta.dirname, '..')
 const DSH_VERSION = '0.1.0-rc.6'
+const MATRIX_VERSIONS = ['0.1.0-rc.3', '0.1.0-rc.6']
 const PNPM = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
 
 function run(command, args, options = {}) {
@@ -55,6 +56,23 @@ async function probe(tarball) {
   }
 }
 
+async function probeMatrix(tarball) {
+  const result = await run(process.execPath, [
+    join(ROOT, 'dist/src/cli.js'),
+    'probe',
+    'dsh-matrix',
+    tarball,
+    '--dsh-version',
+    MATRIX_VERSIONS.join(','),
+    '--json',
+  ])
+  if (result.stdout.trim() === '') throw new Error(`matrix probe returned no JSON:\n${result.stderr}`)
+  return {
+    exitCode: result.code,
+    report: JSON.parse(result.stdout),
+  }
+}
+
 const scratch = await mkdtemp(join(tmpdir(), 'upstream-radar-dsh-probe-showcase-'))
 try {
   const cases = [
@@ -63,12 +81,14 @@ try {
     ['probe-unknown-dsh-plugin', 'unknown'],
   ]
   const results = []
+  let compatibleTarball
   for (const [fixture, expected] of cases) {
     const tarball = await packFixture(fixture, join(scratch, 'tarballs', fixture))
     const result = await probe(tarball)
     if (result.report.result !== expected) {
       throw new Error(`${fixture} expected ${expected}, got ${result.report.result}`)
     }
+    if (fixture === 'probe-compatible-dsh-plugin') compatibleTarball = tarball
     results.push({
       fixture,
       result: result.report.result,
@@ -77,10 +97,20 @@ try {
       stages: Object.fromEntries(Object.entries(result.report.stages).map(([stage, value]) => [stage, value.status])),
     })
   }
+  if (compatibleTarball === undefined) throw new Error('compatible showcase fixture was not packed')
+  const matrix = await probeMatrix(compatibleTarball)
+  if (matrix.report.result !== 'compatible') throw new Error(`matrix expected compatible, got ${matrix.report.result}`)
   console.log(JSON.stringify({
     dshVersion: DSH_VERSION,
+    matrixVersions: MATRIX_VERSIONS,
     scope: 'bundle-load-only',
     results,
+    matrix: {
+      result: matrix.report.result,
+      exitCode: matrix.exitCode,
+      summary: matrix.report.summary,
+      reason: matrix.report.reason,
+    },
   }, null, 2))
 } finally {
   await rm(scratch, { recursive: true, force: true })

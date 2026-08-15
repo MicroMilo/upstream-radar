@@ -38,7 +38,7 @@
 - [x] Keep CLI `radar check/watch` aligned with the refreshed native DSH profile path.
 - [ ] Parse the native pnpm lockfile for pre-install and CI inspection.
 - [x] Run a plugin bundle-load probe in a disposable DSH profile for one explicit DSH version.
-- [ ] Record `compatible`, `incompatible`, and `unknown` against an explicit DSH version matrix.
+- [x] Record `compatible`, `incompatible`, and `unknown` against an explicit DSH version matrix.
 
 ## Milestone 2 — reliable project routing
 

@@ -27,6 +27,7 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /--fail-on-compatibility <value>\s+CI gate: never\|breaking\|any/)
     assert.match(help.stdout, /--dsh-patch <path>\s+write a self-contained DSH --patch overlay/)
     assert.match(help.stdout, /probe dsh-load <package\.tgz>/)
+    assert.match(help.stdout, /probe dsh-matrix <package\.tgz>/)
 
     const benchmark = spawnSync(process.execPath, [cli, 'benchmark', 'compatibility', '--json'], { encoding: 'utf8' })
     assert.equal(benchmark.status, 0)
@@ -37,6 +38,10 @@ describe('CLI option parsing', () => {
     const invalidProbeVersion = spawnSync(process.execPath, [cli, 'probe', 'dsh-load', 'missing.tgz', '--dsh-version', 'latest'], { encoding: 'utf8' })
     assert.equal(invalidProbeVersion.status, 1)
     assert.match(invalidProbeVersion.stderr, /DSH version must be an exact semantic version/)
+
+    const incompleteProbeMatrix = spawnSync(process.execPath, [cli, 'probe', 'dsh-matrix', 'missing.tgz', '--dsh-version', '0.1.0-rc.6'], { encoding: 'utf8' })
+    assert.equal(incompleteProbeMatrix.status, 1)
+    assert.match(incompleteProbeMatrix.stderr, /at least two exact DSH versions/)
 
     const blockedDoctor = spawnSync(process.execPath, [cli, 'doctor', resolve(tmpdir(), `upstream-radar-missing-${process.pid}.json`)], { encoding: 'utf8' })
     assert.equal(blockedDoctor.status, 1)
