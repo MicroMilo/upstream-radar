@@ -198,6 +198,10 @@ steps:
 
 The Action checks out no code by itself and does not run DSH or plugin lifecycle scripts. It reads the reviewed graph from the caller's workspace, queries the configured sources, and fails only according to the explicit threshold. The native DSH bundle remains the path for always-on monitoring and model analysis.
 
+## Scene 15 — verify the consumer path with a real DSH plugin
+
+The repository also carries a copyable consumer smoke under [`examples/github-actions/consumer`](../examples/github-actions/consumer/README.md). Its snapshot is built from the published `dsh-cloudflare-browser-run@0.1.1` package and its resolved graph, so the first-run path exercises real npm manifests and real DSH package names. A project should regenerate this snapshot with `radar init` after reviewing its own DSH profile.
+
 ## Live sources
 
 The fixture isolates behavior from network timing. Production cycles use:

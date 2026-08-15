@@ -77,6 +77,7 @@
     "showcase:admission:reports": "pnpm run build && node scripts/showcase.mjs --write-reports",
     "showcase:radar": "pnpm run build && node scripts/radar-showcase.mjs",
     "showcase:radar:reports": "pnpm run build && node scripts/radar-showcase.mjs --write-reports",
+    "try:consumer": "node scripts/consumer-smoke.mjs",
     "try:dsh": "pnpm run build && node scripts/dsh-headless-showcase.mjs",
     "try:dsh:live": "pnpm run build && node scripts/dsh-headless-showcase.mjs --live-feeds",
     "try:dsh:report": "pnpm run build && node scripts/dsh-headless-showcase.mjs --write-report",

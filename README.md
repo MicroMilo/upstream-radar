@@ -210,6 +210,14 @@ pnpm dlx --package=upstream-radar@0.22.0 upstream-radar radar check \
   ./upstream-radar.config.json --frozen --state :memory: --fail-on high --json
 ```
 
+For a runnable consumer example using the real [`dsh-cloudflare-browser-run@0.1.1`](examples/github-actions/consumer/upstream-radar.config.json) graph, see the [consumer smoke README](examples/github-actions/consumer/README.md) and its [copyable workflow](examples/github-actions/consumer/upstream-radar.yml).
+
+Run the same released Action locally from this repository with:
+
+```bash
+pnpm run try:consumer
+```
+
 For a local or self-hosted DSH machine, omit `--frozen` so Radar refreshes the selected profile before each cycle. Use `--fail-on` only with `radar check`, `radar status`, or `radar watch --once`; a long-running watch should continue routing incidents instead of terminating on the first one.
 
 ## How the loop works
@@ -307,6 +315,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - automatic selection of the only DSH profile with third-party bundles, plus a network-free `radar status` snapshot;
 - commit-friendly `init` output that records the project workspace as `.` by default;
 - a reusable GitHub Action that turns the reviewed graph into a two-step, frozen CI gate;
+- a real DSH plugin consumer smoke that runs the published Action against 18 exact package versions;
 - an actionable, network-free `radar status` summary with exact active paths, candidate signals, and next steps;
 - a network-free `doctor` command that checks local DSH registration, overlay/config alignment, state readability, and dependency coverage;
 - compatibility signals for Node.js, peers, exports, entrypoints, bundle paths, dependencies, and version boundaries;
