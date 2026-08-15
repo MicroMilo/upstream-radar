@@ -221,6 +221,40 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
   return config
 }
 
+/**
+ * Rebuild a CLI-generated inventory from the profile DSH is currently running.
+ * Hand-written configs and multi-project configs are intentionally left alone.
+ */
+export async function refreshRadarConfigFromDshProfile(
+  config: RadarConfig,
+  profile: string,
+  dshHome?: string,
+): Promise<RadarConfig> {
+  if (config.dshProfile?.name !== profile) return config
+  if (config.projects.length !== 1) throw new Error('DSH profile refresh requires exactly one configured project')
+  const project = config.projects[0]
+  if (project === undefined) throw new Error('DSH profile refresh found no configured project')
+  const refreshed = await createRadarConfigFromDshProfile({
+    profileDirectory: resolveDshProfileDirectory(profile, dshHome),
+    projectId: project.project.id,
+    projectName: project.project.name,
+    ...(project.project.repository === undefined ? {} : { repository: project.project.repository }),
+    ...(project.project.workspace === undefined ? {} : { workspace: project.project.workspace }),
+    ...(project.project.channels === undefined ? {} : { channels: project.project.channels }),
+  })
+  const refreshedProject = refreshed.projects[0]
+  if (refreshedProject === undefined) throw new Error('DSH profile refresh produced no project')
+  const next: RadarConfig = {
+    ...config,
+    projects: [{
+      ...refreshedProject,
+      project: { ...project.project },
+    }],
+  }
+  parseRadarConfig(next)
+  return next
+}
+
 export async function writeRadarConfig(config: RadarConfig, options: WriteRadarConfigOptions): Promise<string> {
   const output = resolve(options.output)
   if (!options.force) {
@@ -266,6 +300,8 @@ export async function writeDshPatch(options: WriteDshPatchOptions): Promise<stri
     '  config:',
     `    configFile: ${JSON.stringify(configFile)}`,
     `    stateFile: ${JSON.stringify(stateFile)}`,
+    `    profile: ${JSON.stringify(options.profile)}`,
+    '    refreshProfile: true',
     `    intervalSeconds: ${intervalSeconds}`,
     `    runOnStart: ${runOnStart}`,
     '',

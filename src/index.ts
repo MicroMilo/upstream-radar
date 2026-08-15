@@ -21,6 +21,7 @@ export { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 export {
   createRadarConfigFromDshProfile,
   discoverDshProfiles,
+  refreshRadarConfigFromDshProfile,
   resolveDshProfileDirectory,
   writeDshPatch,
   writeRadarConfig,

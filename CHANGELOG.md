@@ -2,6 +2,18 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.14.0] - 2026-08-16
+
+### Added
+
+- Add profile metadata to CLI-generated inventories and generated DSH overlays.
+- Refresh the installed DSH profile graph before each native poll, including later plugin and host-runtime changes.
+- Abort a polling cycle when profile refresh fails, preserving the last durable state.
+
+### Safety
+
+- Profile refresh reads package manifests only and never imports or executes plugin code.
+
 ## [0.13.0] - 2026-08-16
 
 ### Added
@@ -161,6 +173,7 @@ All notable changes to Upstream Radar are documented here.
 - Version matching and compatibility facts are calculated outside the model.
 - Agent analysis is read-only and requires project evidence and explicit uncertainty.
 
+[0.14.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.14.0
 [0.13.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.13.0
 [0.12.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.12.0
 [0.11.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.11.0

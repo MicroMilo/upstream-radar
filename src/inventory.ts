@@ -233,5 +233,16 @@ export function parseRadarConfig(value: unknown): RadarConfig {
   const projects = source.projects.map(project)
   const ids = new Set(projects.map(item => item.project.id))
   if (ids.size !== projects.length) throw new Error('radar config contains duplicate project ids')
-  return { schema: RADAR_CONFIG_SCHEMA, projects }
+  const dshProfileSource = source.dshProfile === undefined ? undefined : record(source.dshProfile, 'radar config dshProfile')
+  const dshProfileName = dshProfileSource === undefined
+    ? undefined
+    : string(dshProfileSource.name, 'radar config dshProfile.name', 128)
+  if (dshProfileName !== undefined && !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(dshProfileName)) {
+    throw new Error('radar config dshProfile.name must be a simple DSH profile name')
+  }
+  return {
+    schema: RADAR_CONFIG_SCHEMA,
+    ...(dshProfileName === undefined ? {} : { dshProfile: { name: dshProfileName } }),
+    projects,
+  }
 }

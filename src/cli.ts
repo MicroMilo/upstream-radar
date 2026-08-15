@@ -395,6 +395,7 @@ async function runInit(args: readonly string[]): Promise<number> {
     ...(channels.length === 0 ? {} : { channels }),
     ...(registry === undefined ? {} : { registry }),
   })
+  config.dshProfile = { name: resolvedProfile }
   const outputPath = await writeRadarConfig(config, { output: plannedOutputPath, force })
   const statePath = plannedStatePath
   const patchPath = dshPatch === undefined ? undefined : await writeDshPatch({

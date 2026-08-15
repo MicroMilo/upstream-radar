@@ -95,6 +95,8 @@ poll sources
   -> atomically remove synchronously accepted tasks from the outbox
 ```
 
+When the generated overlay is used, the cycle first rebuilds the installed graph from the selected DSH profile. This refresh is manifest-only and never executes plugin code. A failed refresh aborts that cycle before state replacement, so an unreadable or half-updated profile cannot be reported as clean.
+
 The delivery boundary is intentionally at-least-once. A crash after follow-up admission but before the second state write can repeat a task; it cannot silently erase it. Event and task ids allow later delivery adapters to deduplicate.
 
 ## Failure isolation

@@ -29,6 +29,13 @@ describe('radar inventory parsing', () => {
     assert.equal(parsed.projects[0]?.plugins[0]?.graph.nodes[1]?.version, '2.9.0')
   })
 
+  it('preserves the generated DSH profile reference used for native refresh', () => {
+    const candidate = structuredClone(valid)
+    candidate.dshProfile = { name: 'web' }
+    const parsed = parseRadarConfig(candidate)
+    assert.deepEqual(parsed.dshProfile, { name: 'web' })
+  })
+
   it('preserves the graph source and unresolved dependencies as incomplete coverage', () => {
     const candidate = structuredClone(valid)
     candidate.projects[0]!.plugins[0]!.graph.source = 'installed-node-modules'
