@@ -99,6 +99,16 @@ dsh --profile web --patch ./upstream-radar.dsh.yml
 
 The generated overlay does not install packages or start DSH; the user still reviews both files and installs the Radar bundle explicitly.
 
+## Scene 9 — confirm the first run without another network request
+
+After DSH has started, the read-only status command reads the same config and durable state files:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-radar.config.json
+```
+
+It reports whether monitoring has started, the last successful check for OSV/npm/GitHub Releases, active vulnerability and compatibility incidents, source-health incidents, and pending DSH analysis tasks. It does not poll any upstream source, so it is safe to use for a quick local diagnosis.
+
 ## Live sources
 
 The fixture isolates behavior from network timing. Production cycles use:

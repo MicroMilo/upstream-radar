@@ -6,7 +6,7 @@ import { resolve } from 'node:path'
 import { assessCompatibilityChange } from './compatibility.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { GitHubReleaseClient } from './github-release.js'
-import { createRadarConfigFromDshProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
+import { createRadarConfigFromDshProfile, discoverDshProfiles, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 import { inspectNpmPackage } from './npm.js'
 import { NpmReleaseClient } from './npm-release.js'
@@ -15,6 +15,7 @@ import { verdictAtLeast } from './policy.js'
 import { emptyRadarState, pollRadar } from './radar.js'
 import { renderRadarEvents } from './radar-render.js'
 import { loadRadarState, saveRadarState } from './radar-state.js'
+import { createRadarStatus, renderRadarStatus } from './radar-status.js'
 import { renderTextReport } from './render.js'
 import { scanDirectory } from './scan.js'
 import type { Verdict } from './types.js'
@@ -36,11 +37,12 @@ function usage(): string {
   return `Upstream Radar — always-on dependency and compatibility monitoring for DSH plugins
 
 Usage:
-  upstream-radar init --profile <name> [options]
+  upstream-radar init [--profile <name>] [options]
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
   upstream-radar radar check <config.json> [--state <state.json>] [--json]
   upstream-radar radar watch <config.json> [--state <state.json>] [--interval <seconds>] [--once] [--json]
+  upstream-radar radar status <config.json> [--state <state.json>] [--json]
   upstream-radar radar compare <config.json> <before.json> <candidate.json> [--notes <release-notes.txt>] [--json]
   upstream-radar task list <state.json> [--json]
   upstream-radar task show <state.json> [task-id] [--json]
@@ -62,7 +64,7 @@ Options:
   --interval <seconds> watch interval from 300 to 86400 seconds (default: 1800)
   --once               run one watch cycle and exit (useful for CI and demos)
   --notes <path>       release notes used as untrusted compatibility evidence
-  --profile <name>     DSH profile to inspect for init (default DSH_HOME/profiles/<name>)
+  --profile <name>     DSH profile to inspect for init (auto-selects the only candidate when omitted)
   --output <path>      init output path (default: ./upstream-radar.config.json)
   --dsh-patch <path>   write a self-contained DSH --patch overlay (optional)
   --force              allow init to replace an existing output file
@@ -150,10 +152,20 @@ async function readJson(path: string): Promise<unknown> {
   }
 }
 
+async function fileExists(path: string): Promise<boolean> {
+  try {
+    await access(resolve(path))
+    return true
+  } catch (error: unknown) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false
+    throw error
+  }
+}
+
 async function runRadar(args: readonly string[]): Promise<number> {
   const subcommand = args[0]
-  if (subcommand !== 'check' && subcommand !== 'watch' && subcommand !== 'compare') {
-    throw new Error('radar requires check, watch or compare')
+  if (subcommand !== 'check' && subcommand !== 'watch' && subcommand !== 'status' && subcommand !== 'compare') {
+    throw new Error('radar requires check, watch, status or compare')
   }
   const configPath = args[1]
   if (configPath === undefined || configPath.startsWith('-')) throw new Error(`radar ${subcommand} requires a config file`)
@@ -197,6 +209,23 @@ async function runRadar(args: readonly string[]): Promise<number> {
   }
 
   const readConfig = async () => parseRadarConfig(await readJson(configPath))
+  if (subcommand === 'status') {
+    if (positional.length > 0 || notesPath !== undefined || once || intervalProvided
+      || osvBaseUrl !== undefined || registry !== undefined || statePath === ':memory:') {
+      throw new Error('radar status only accepts --state and --json options')
+    }
+    const config = await readConfig()
+    const stateFile = statePath ?? `${resolve(configPath)}.state.json`
+    const stateExists = await fileExists(stateFile)
+    const state = stateExists ? await loadRadarState(stateFile) : emptyRadarState()
+    const report = createRadarStatus(config, state, {
+      configFile: resolve(configPath),
+      stateFile: resolve(stateFile),
+      stateExists,
+    })
+    process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderRadarStatus(report))
+    return report.monitoring === 'degraded' ? 1 : 0
+  }
   const osv = new OsvClient({
     ...(osvBaseUrl === undefined ? {} : { baseUrl: osvBaseUrl }),
   })
@@ -326,7 +355,20 @@ async function runInit(args: readonly string[]): Promise<number> {
       throw new Error(`unknown option for init: ${argument}`)
     }
   }
-  if (profile === undefined) throw new Error('init requires --profile <name>')
+  let autoSelected = false
+  let resolvedProfile = profile
+  if (resolvedProfile === undefined) {
+    const candidates = await discoverDshProfiles()
+    if (candidates.length === 0) {
+      throw new Error('init could not find a DSH profile with third-party bundles; pass --profile <name>')
+    }
+    if (candidates.length > 1) {
+      throw new Error(`init found multiple DSH profiles with third-party bundles (${candidates.join(', ')}); pass --profile <name>`)
+    }
+    resolvedProfile = candidates[0]
+    autoSelected = true
+  }
+  if (resolvedProfile === undefined) throw new Error('init could not select a DSH profile')
   const plannedOutputPath = resolve(output)
   const plannedStatePath = `${plannedOutputPath}.state.json`
   if (dshPatch !== undefined) {
@@ -345,7 +387,7 @@ async function runInit(args: readonly string[]): Promise<number> {
     }
   }
   const config = await createRadarConfigFromDshProfile({
-    profileDirectory: resolveDshProfileDirectory(profile),
+    profileDirectory: resolveDshProfileDirectory(resolvedProfile),
     ...(projectId === undefined ? {} : { projectId }),
     ...(projectName === undefined ? {} : { projectName }),
     ...(repository === undefined ? {} : { repository }),
@@ -359,24 +401,25 @@ async function runInit(args: readonly string[]): Promise<number> {
     output: dshPatch,
     configFile: outputPath,
     stateFile: statePath,
-    profile,
+    profile: resolvedProfile,
     force,
   })
   const plugins = config.projects[0]?.plugins ?? []
   if (json) {
-    process.stdout.write(`${JSON.stringify({ output: outputPath, profile, plugins: plugins.map(plugin => ({
+    process.stdout.write(`${JSON.stringify({ output: outputPath, profile: resolvedProfile, plugins: plugins.map(plugin => ({
       name: plugin.package.name,
       version: plugin.package.version,
       nodes: plugin.graph.nodes.length,
       edges: plugin.graph.edges.length,
     })), state: statePath, ...(patchPath === undefined ? {} : { patch: patchPath }) }, null, 2)}\n`)
   } else {
+    if (autoSelected) process.stdout.write(`Auto-selected DSH profile: ${resolvedProfile}\n`)
     process.stdout.write(`Created ${outputPath}\nDiscovered ${plugins.length} DSH plugin bundle(s):\n`)
     for (const plugin of plugins) process.stdout.write(`  ${plugin.package.name}@${plugin.package.version} (${plugin.graph.nodes.length} dependency nodes)\n`)
     if (patchPath === undefined) {
-      process.stdout.write(`\nReview the generated inventory, then run:\n  export UPSTREAM_RADAR_CONFIG=${shellQuote(outputPath)}\n  export UPSTREAM_RADAR_STATE=${shellQuote(statePath)}\n  dsh --profile ${shellQuote(profile)}\n`)
+      process.stdout.write(`\nReview the generated inventory, then run:\n  export UPSTREAM_RADAR_CONFIG=${shellQuote(outputPath)}\n  export UPSTREAM_RADAR_STATE=${shellQuote(statePath)}\n  dsh --profile ${shellQuote(resolvedProfile)}\n`)
     } else {
-      process.stdout.write(`Created ${patchPath}\n\nReview the generated inventory and DSH overlay, then run:\n  dsh --profile ${shellQuote(profile)} --patch ${shellQuote(patchPath)}\n`)
+      process.stdout.write(`Created ${patchPath}\n\nReview the generated inventory and DSH overlay, then run:\n  dsh --profile ${shellQuote(resolvedProfile)} --patch ${shellQuote(patchPath)}\n`)
     }
   }
   return 0

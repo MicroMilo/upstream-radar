@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, it } from 'node:test'
-import { createRadarConfigFromDshProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from '../src/init.js'
+import { createRadarConfigFromDshProfile, discoverDshProfiles, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from '../src/init.js'
 
 const graph = {
   schema: 'upstream-radar.dependency-graph/v1alpha1' as const,
@@ -114,6 +114,33 @@ describe('DSH profile initialization', () => {
       () => resolveDshProfileDirectory('../outside', '/tmp/dsh-home'),
       /simple DSH profile name/,
     )
+  })
+
+  it('auto-discovery returns only profiles with third-party bundles', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-discovery-'))
+    try {
+      await mkdir(join(root, 'profiles', 'headless'), { recursive: true })
+      await writeFile(join(root, 'profiles', 'headless', 'package.json'), JSON.stringify({
+        name: 'dsh-profile-headless',
+        dsh: { profile: { bundles: ['@deepseek-ai/dsh-base', 'cordis'] } },
+      }))
+      await mkdir(join(root, 'profiles', 'web'), { recursive: true })
+      await writeFile(join(root, 'profiles', 'web', 'package.json'), JSON.stringify({
+        name: 'dsh-profile-web',
+        dsh: { profile: { bundles: ['@deepseek-ai/dsh-base', 'demo-plugin'] } },
+      }))
+      await mkdir(join(root, 'profiles', 'api'), { recursive: true })
+      await writeFile(join(root, 'profiles', 'api', 'package.json'), JSON.stringify({
+        name: 'dsh-profile-api',
+        dsh: { profile: { bundles: ['api-plugin'] } },
+      }))
+
+      assert.deepEqual(await discoverDshProfiles(root), ['api', 'web'])
+      await rm(join(root, 'profiles', 'api'), { recursive: true, force: true })
+      assert.deepEqual(await discoverDshProfiles(root), ['web'])
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
   })
 
   it('does not follow a bundle path outside the profile', async () => {

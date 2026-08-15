@@ -19,6 +19,7 @@ export { createAnalysisTask, renderAgentAnalysisPrompt, renderDshAnalysisPrompt 
 export { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 export {
   createRadarConfigFromDshProfile,
+  discoverDshProfiles,
   resolveDshProfileDirectory,
   writeDshPatch,
   writeRadarConfig,
@@ -28,6 +29,16 @@ export {
   type WriteRadarConfigOptions,
 } from './init.js'
 export { loadRadarState, parseRadarState, saveRadarState } from './radar-state.js'
+export {
+  createRadarStatus,
+  renderRadarStatus,
+  RADAR_STATUS_SCHEMA,
+  type CreateRadarStatusOptions,
+  type RadarMonitoringStatus,
+  type RadarSourceStatus,
+  type RadarStatusReport,
+  type RadarStatusSource,
+} from './radar-status.js'
 export { renderRadarEvent, renderRadarEvents } from './radar-render.js'
 export { crossesBreakingVersionBoundary, parseSemver, satisfiesSemverRange } from './semver.js'
 export { scanDirectory, type ScanOptions } from './scan.js'

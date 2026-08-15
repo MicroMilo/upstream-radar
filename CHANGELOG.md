@@ -2,6 +2,14 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.10.0] - 2026-08-16
+
+### Added
+
+- Auto-select the only DSH profile with third-party bundles when `init --profile` is omitted; multiple candidates still require an explicit profile.
+- Add read-only `radar status` for first-run diagnosis without refreshing upstream sources.
+- Report source health, last completed check, active vulnerability/compatibility incidents, source-health incidents, and pending DSH analysis tasks in human-readable and JSON forms.
+
 ## [0.9.0] - 2026-08-16
 
 ### Added
@@ -116,16 +124,17 @@ All notable changes to Upstream Radar are documented here.
 - Version matching and compatibility facts are calculated outside the model.
 - Agent analysis is read-only and requires project evidence and explicit uncertainty.
 
+[0.10.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.10.0
+[0.9.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.9.0
+[0.8.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.8.0
+[0.7.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.7.1
+[0.7.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.7.0
+[0.6.2]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.2
+[0.6.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.1
+[0.6.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.0
+[0.5.3]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.3
+[0.5.2]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.2
+[0.5.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.1
+[0.5.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.0
 [0.4.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.4.1
 [0.4.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.4.0
-[0.5.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.0
-[0.5.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.1
-[0.5.2]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.2
-[0.5.3]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.5.3
-[0.6.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.0
-[0.6.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.1
-[0.6.2]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.2
-[0.7.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.7.0
-[0.7.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.7.1
-[0.8.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.8.0
-[0.9.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.9.0

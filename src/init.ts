@@ -1,4 +1,4 @@
-import { access, readFile, writeFile } from 'node:fs/promises'
+import { access, readFile, readdir, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { basename, isAbsolute, join, relative, resolve } from 'node:path'
 import { inspectNpmPackage, type InspectNpmOptions } from './npm.js'
@@ -89,6 +89,21 @@ function isDshInfrastructure(packageName: string): boolean {
     || packageName.startsWith('@cordis/')
 }
 
+function resolveDshHome(dshHome = process.env.DSH_HOME): string {
+  return dshHome?.trim() === '' || dshHome === undefined ? join(homedir(), '.dsh') : dshHome
+}
+
+async function readDshProfileBundles(profileDirectory: string): Promise<string[]> {
+  const profileManifest = asRecord(await readJson(join(profileDirectory, 'package.json')), 'DSH profile package.json')
+  const dsh = asRecord(profileManifest.dsh, 'DSH profile dsh')
+  const profile = asRecord(dsh.profile, 'DSH profile dsh.profile')
+  const bundles = profile.bundles
+  if (!Array.isArray(bundles) || bundles.length === 0 || !bundles.every(item => typeof item === 'string')) {
+    throw new Error('DSH profile package.json does not contain dsh.profile.bundles')
+  }
+  return bundles
+}
+
 function defaultProjectId(workspace: string): string {
   const name = basename(resolve(workspace)).toLowerCase().replace(/[^a-z0-9._-]+/g, '-')
   return name.replace(/^-+|-+$/g, '').slice(0, 512) || 'dsh-project'
@@ -100,7 +115,7 @@ function defaultProjectName(workspace: string): string {
 
 /** Resolve a DSH profile using the same DSH_HOME convention as the launcher. */
 export function resolveDshProfileDirectory(profile: string, dshHome = process.env.DSH_HOME): string {
-  const home = dshHome?.trim() === '' || dshHome === undefined ? join(homedir(), '.dsh') : dshHome
+  const home = resolveDshHome(dshHome)
   const profileName = requiredString(profile, 'profile')
   if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(profileName)) {
     throw new Error('profile must be a simple DSH profile name (letters, numbers, ., _, and -)')
@@ -108,16 +123,38 @@ export function resolveDshProfileDirectory(profile: string, dshHome = process.en
   return resolve(home, 'profiles', profileName)
 }
 
+/** Find DSH profiles that contain at least one installed third-party bundle. */
+export async function discoverDshProfiles(dshHome = process.env.DSH_HOME): Promise<string[]> {
+  const profilesDirectory = resolve(resolveDshHome(dshHome), 'profiles')
+  let entries
+  try {
+    entries = await readdir(profilesDirectory, { withFileTypes: true })
+  } catch (error: unknown) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return []
+    throw error
+  }
+
+  const candidates: string[] = []
+  for (const entry of entries) {
+    if (!entry.isDirectory() || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(entry.name)) continue
+    const profileDirectory = resolveDshProfileDirectory(entry.name, dshHome)
+    let bundles: string[]
+    try {
+      bundles = await readDshProfileBundles(profileDirectory)
+    } catch (error: unknown) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') continue
+      const message = error instanceof Error ? error.message : String(error)
+      throw new Error(`could not inspect DSH profile ${entry.name}: ${message}`)
+    }
+    if (bundles.some(bundle => !isDshInfrastructure(bundle))) candidates.push(entry.name)
+  }
+  return candidates.sort()
+}
+
 /** Build a reviewable Radar inventory from the third-party bundles in a DSH profile. */
 export async function createRadarConfigFromDshProfile(options: DshInitOptions): Promise<RadarConfig> {
   const profileDirectory = resolve(options.profileDirectory)
-  const profileManifest = asRecord(await readJson(join(profileDirectory, 'package.json')), 'DSH profile package.json')
-  const dsh = asRecord(profileManifest.dsh, 'DSH profile dsh')
-  const profile = asRecord(dsh.profile, 'DSH profile dsh.profile')
-  const bundles = profile.bundles
-  if (!Array.isArray(bundles) || bundles.length === 0 || !bundles.every(item => typeof item === 'string')) {
-    throw new Error('DSH profile package.json does not contain dsh.profile.bundles')
-  }
+  const bundles = await readDshProfileBundles(profileDirectory)
 
   const workspace = options.workspace ?? process.cwd()
   const projectId = options.projectId ?? defaultProjectId(workspace)

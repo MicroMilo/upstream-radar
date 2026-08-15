@@ -26,20 +26,20 @@
 
 ## Try it in 60 seconds
 
-Use a DSH profile that already contains at least one third-party bundle. Replace `web` with your profile name:
+Use a DSH profile that already contains at least one third-party bundle. If DSH has only one such profile, `init` can find it for you:
 
 ```bash
 dsh plugin --profile web add upstream-radar@latest
 pnpm dlx --package=upstream-radar@latest upstream-radar init \
-  --profile web \
   --project-name "My DSH project" \
   --workspace "$PWD" \
   --output ./upstream-radar.config.json \
   --dsh-patch ./upstream-radar.dsh.yml
 dsh --profile web --patch ./upstream-radar.dsh.yml
+pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-radar.config.json
 ```
 
-The initializer writes a reviewable inventory and an explicit DSH overlay. Review both files, then start the same profile with `--patch`; no shell environment variables are required. Read the [full DSH setup](#install-in-dsh) for the legacy environment-variable path, profile boundaries, and the real runtime proof.
+The initializer writes a reviewable inventory and an explicit DSH overlay. Review both files, start the same profile with `--patch`, then use `radar status` to confirm the first run without another network request. If more than one DSH profile has third-party bundles, pass `--profile <name>` explicitly. Read the [full DSH setup](#install-in-dsh) for the legacy environment-variable path, profile boundaries, and the real runtime proof.
 
 If you want to try the monitoring loop without booting a DSH profile, run one cycle from a reviewed inventory:
 
@@ -104,7 +104,6 @@ Generate the inventory from the DSH profile instead of writing the dependency gr
 
 ```bash
 pnpm dlx --package=upstream-radar@latest upstream-radar init \
-  --profile web \
   --project-name "My DSH project" \
   --workspace "$PWD" \
   --output ./upstream-radar.config.json \
@@ -116,9 +115,10 @@ The initializer reads the profile's actual third-party bundles, resolves each ex
 ```bash
 dsh --profile web --patch ./upstream-radar.dsh.yml --dump-config
 dsh --profile web --patch ./upstream-radar.dsh.yml
+pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-radar.config.json
 ```
 
-The generated overlay points DSH at the config and state files explicitly. If you prefer environment variables or need to override the polling interval, omit `--dsh-patch` and use `UPSTREAM_RADAR_CONFIG`, `UPSTREAM_RADAR_STATE`, and `UPSTREAM_RADAR_INTERVAL_SECONDS` as before.
+The generated overlay points DSH at the config and state files explicitly. `radar status` is read-only and reports whether a check has completed, which source is unhealthy, active incidents, and pending DSH tasks. If you prefer environment variables or need to override the polling interval, omit `--dsh-patch` and use `UPSTREAM_RADAR_CONFIG`, `UPSTREAM_RADAR_STATE`, and `UPSTREAM_RADAR_INTERVAL_SECONDS` as before.
 
 The generated graph is the exact public npm artifact graph for the installed bundle versions. If your DSH profile applies package-manager overrides, patches, or unusual peer resolution, review those differences before enabling continuous monitoring.
 
@@ -241,6 +241,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - npm release monitoring for plugins and DSH/Cordis packages, with public GitHub Release notes attached when an exact candidate tag is available;
 - durable incident state with current-task replacement and resolution;
 - native DSH bundle installation, startup polling, `agent/created` retry, and plugin-source attribution;
+- automatic selection of the only DSH profile with third-party bundles, plus a network-free `radar status` snapshot;
 - compatibility signals for Node.js, peers, exports, entrypoints, bundle paths, dependencies, and version boundaries;
 - network-free Radar and real DSH runtime showcases.
 
@@ -253,7 +254,8 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 
 ## Current boundaries
 
-- `init --profile <name>` discovers a named DSH profile and generates a reviewable inventory; `--dsh-patch <path>` also writes an explicit DSH overlay so first startup needs no environment variables. Automatic active-profile selection and native pnpm override/peer resolution are not implemented yet.
+- `init` discovers the only DSH profile with third-party bundles when `--profile` is omitted; multiple candidates still require an explicit profile. `--dsh-patch <path>` writes an explicit DSH overlay so first startup needs no environment variables. Native pnpm override/peer resolution is not implemented yet.
+- `radar status` is a local snapshot only: it does not refresh OSV/npm/GitHub data, and it cannot prove that a source is current until a check has completed.
 - npm lock graphs are supported; pnpm and Yarn graph adapters are not implemented.
 - OSV, npm `latest`, and public GitHub Release notes are live sources; changelog, comparison-diff, and migration-guide ingestion are deferred.
 - A failed OSV check preserves confirmed matches and returns a visible source warning; source health is durable and routed through DSH after three consecutive failures, while source-claim conflict handling and external health destinations are not implemented yet.
