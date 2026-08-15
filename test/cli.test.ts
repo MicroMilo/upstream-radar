@@ -26,7 +26,8 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /--frozen\s+radar check\/watch: use the reviewed graph/)
     assert.match(help.stdout, /--fail-on <value>\s+scan\/inspect verdict or radar severity/)
     assert.match(help.stdout, /--fail-on-compatibility <value>\s+CI gate: never\|breaking\|any/)
-    assert.match(help.stdout, /--dsh-patch <path>\s+write a self-contained DSH --patch overlay/)
+    assert.match(help.stdout, /--dsh-patch <path>\s+write a self-contained DSH --patch overlay \(setup default: \.\/upstream-radar\.dsh\.yml\)/)
+    assert.match(help.stdout, /--no-dsh-patch\s+setup: keep the legacy UPSTREAM_RADAR_\* environment-variable wiring/)
     assert.match(help.stdout, /probe dsh-load <package\.tgz>/)
     assert.match(help.stdout, /probe dsh-matrix <package\.tgz>/)
 
@@ -164,7 +165,6 @@ describe('CLI option parsing', () => {
         { mode: 0o755 })
 
       const config = join(root, 'upstream-radar.config.json')
-      const patch = join(root, 'upstream-radar.dsh.yml')
       const result = spawnSync(process.execPath, [
         cli,
         'setup',
@@ -172,10 +172,9 @@ describe('CLI option parsing', () => {
         'web',
         '--output',
         config,
-        '--dsh-patch',
-        patch,
       ], {
         encoding: 'utf8',
+        cwd: root,
         env: {
           ...process.env,
           DSH_HOME: dshHome,
@@ -187,8 +186,10 @@ describe('CLI option parsing', () => {
       assert.match(result.stdout, /Installing upstream-radar@0\.32\.0 into DSH profile web/)
       assert.match(result.stdout, /Local wiring check:/)
       assert.match(result.stdout, /Status: READY WITH WARNINGS/)
+      assert.match(result.stdout, /Created .*upstream-radar\.dsh\.yml/)
       assert.match(await readFile(dshLog, 'utf8'), /plugin --profile web add upstream-radar@0\.32\.0/)
       assert.equal(JSON.parse(await readFile(config, 'utf8')).dshProfile.name, 'web')
+      assert.match(await readFile(join(root, 'upstream-radar.dsh.yml'), 'utf8'), /name: 'upstream-radar\/dsh'/)
     } finally {
       await rm(root, { recursive: true, force: true })
     }

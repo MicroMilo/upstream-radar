@@ -23,9 +23,7 @@
 # 终端 1
 pnpm dlx --package=upstream-radar@latest upstream-radar setup \
   --profile web \
-  --project-name "我的 DSH 项目" \
-  --output ./upstream-radar.config.json \
-  --dsh-patch ./upstream-radar.dsh.yml
+  --project-name "我的 DSH 项目"
 dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
@@ -36,7 +34,7 @@ DSH 启动后，在第二个终端执行只读状态检查：
 pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-radar.config.json
 ```
 
-`setup` 会明确调用 DSH 的安装命令，把当前正在运行的精确 Radar 版本放进选中的 profile，然后写出可审查的清单和 DSH overlay，并运行不联网的本地接线检查。它不会启动 DSH，也不会执行插件业务动作；检查生成文件后再启动。已经安装过 bundle 时加 `--no-install`。`radar status` 会在不重新请求网络的情况下确认第一次完整检查。完整的状态文件、兼容的旧环境变量方式、profile 边界和真实运行证明见[完整 DSH 配置](#安装到-dsh)。
+`setup` 会明确调用 DSH 的安装命令，把当前正在运行的精确 Radar 版本放进选中的 profile，然后默认写出当前目录下的 `upstream-radar.config.json` 和 `upstream-radar.dsh.yml`，并运行不联网的本地接线检查。它不会启动 DSH，也不会执行插件业务动作；检查生成文件后再启动。需要其他位置时传 `--output` 或 `--dsh-patch`；已经安装过 bundle 时加 `--no-install`。`radar status` 会在不重新请求网络的情况下确认第一次完整检查。完整的状态文件、兼容的旧环境变量方式、profile 边界和真实运行证明见[完整 DSH 配置](#安装到-dsh)。
 
 如果只想先试跑一次监控，而不启动 DSH profile，可以使用同一份清单：
 
@@ -109,12 +107,10 @@ Upstream Radar 发布的是已经构建好的 npm bundle，不需要开放安装
 ```bash
 pnpm dlx --package=upstream-radar@latest upstream-radar setup \
   --profile web \
-  --project-name "我的 DSH 项目" \
-  --output ./upstream-radar.config.json \
-  --dsh-patch ./upstream-radar.dsh.yml
+  --project-name "我的 DSH 项目"
 ```
 
-`setup` 会使用当前命令对应的精确 Radar 版本调用 DSH 安装器，生成项目清单和 overlay，并运行不联网的 `doctor`。它不会启动 DSH。检查两个生成文件后启动 profile：
+`setup` 会使用当前命令对应的精确 Radar 版本调用 DSH 安装器，默认生成 `upstream-radar.config.json` 和 `upstream-radar.dsh.yml`，并运行不联网的 `doctor`。它不会启动 DSH。检查两个生成文件后启动 profile：
 
 ```bash
 dsh --profile web --patch ./upstream-radar.dsh.yml --dump-config

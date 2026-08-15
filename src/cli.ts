@@ -98,7 +98,8 @@ Options:
   --profile <name>     DSH profile for init or doctor (init auto-selects the only candidate when omitted)
   --no-install          setup: reuse an already installed upstream-radar bundle
   --output <path>      init output path (default: ./upstream-radar.config.json)
-  --dsh-patch <path>   write a self-contained DSH --patch overlay (optional)
+  --dsh-patch <path>   write a self-contained DSH --patch overlay (setup default: ./upstream-radar.dsh.yml)
+  --no-dsh-patch       setup: keep the legacy UPSTREAM_RADAR_* environment-variable wiring
   --patch <path>       DSH overlay to verify with doctor
   --force              allow init to replace an existing output file
   --json               emit the canonical JSON report
@@ -526,7 +527,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
 async function runSetup(args: readonly string[]): Promise<number> {
   let profile: string | undefined
   let output = 'upstream-radar.config.json'
-  let patchFile: string | undefined
+  let patchFile: string | undefined = 'upstream-radar.dsh.yml'
   let noInstall = false
   const initArgs: string[] = []
   const valueOptions = new Set([
@@ -539,6 +540,10 @@ async function runSetup(args: readonly string[]): Promise<number> {
       noInstall = true
       continue
     }
+    if (argument === '--no-dsh-patch') {
+      patchFile = undefined
+      continue
+    }
     if (argument === '--json') throw new Error('setup does not accept --json; use init --json')
     if (argument === '--force') {
       initArgs.push(argument)
@@ -549,8 +554,8 @@ async function runSetup(args: readonly string[]): Promise<number> {
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--profile') profile = value
       else if (argument === '--output') output = value
-      else if (argument === '--dsh-patch') patchFile = value
-      initArgs.push(argument ?? '', value)
+      if (argument === '--dsh-patch') patchFile = value
+      else initArgs.push(argument ?? '', value)
       index += 1
       continue
     }
@@ -571,6 +576,12 @@ async function runSetup(args: readonly string[]): Promise<number> {
   if (resolvedProfile !== undefined && profile === undefined) {
     initArgs.unshift('--profile', resolvedProfile)
   }
+
+  // Setup is the beginner-facing path: make the generated DSH overlay the
+  // default so a first run does not fall back to hidden environment variables.
+  // `init` remains available when a user deliberately wants the legacy
+  // environment-variable wiring instead.
+  if (patchFile !== undefined) initArgs.push('--dsh-patch', patchFile)
 
   if (!noInstall) {
     if (resolvedProfile === undefined) throw new Error('setup could not select a DSH profile')

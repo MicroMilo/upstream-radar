@@ -9,6 +9,10 @@ All notable changes to Upstream Radar are documented here.
 - Add a real DSH host-runtime showcase that refreshes a plugin's graph from the running process, matches a deterministic local OSV advisory against `@deepseek-ai/cordis`, and proves `dsh-host` event persistence plus Agent writeback.
 - Run the host-runtime proof in CI and the npm publish preflight, with a checked-in JSON result and one-command documentation.
 
+### Usability
+
+- Make `setup` generate `upstream-radar.dsh.yml` by default, so the first DSH run does not require users to understand environment-variable wiring.
+
 ## [0.32.0] - 2026-08-16
 
 ### Added
