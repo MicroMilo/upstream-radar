@@ -31,17 +31,15 @@ Use a DSH profile that already contains at least one third-party bundle. Replace
 
 ```bash
 # Terminal 1
-dsh plugin --profile web add upstream-radar@latest
-pnpm dlx --package=upstream-radar@latest upstream-radar init \
+pnpm dlx --package=upstream-radar@latest upstream-radar setup \
   --profile web \
   --project-name "My DSH project" \
   --output ./upstream-radar.config.json \
   --dsh-patch ./upstream-radar.dsh.yml
-pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.config.json \
-  --profile web \
-  --patch ./upstream-radar.dsh.yml
 dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
+
+`setup` explicitly installs the exact Radar version used by the command into the selected DSH profile, discovers the installed graph, writes the reviewable config and overlay, and runs the network-free wiring check. It does not start DSH or execute plugin business actions; review the generated files before starting the process. If Radar is already installed, add `--no-install`.
 
 After DSH is running, use a second terminal for the read-only status check:
 
@@ -50,7 +48,7 @@ After DSH is running, use a second terminal for the read-only status check:
 pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-radar.config.json
 ```
 
-The initializer writes a reviewable inventory and an explicit DSH overlay. `doctor` verifies the local wiring before DSH starts; `radar status` confirms the first completed check without another network request. Read the [full DSH setup](#install-in-dsh) for the legacy environment-variable path, profile boundaries, and the real runtime proof.
+The setup command writes a reviewable inventory and an explicit DSH overlay. Its local doctor check verifies the wiring before DSH starts; `radar status` confirms the first completed check without another network request. Read the [full DSH setup](#install-in-dsh) for the legacy environment-variable path, profile boundaries, and the real runtime proof.
 
 If you want to try the monitoring loop without booting a DSH profile, run one cycle from a reviewed inventory:
 
@@ -121,25 +119,24 @@ That incident becomes a plugin-originated DSH notice. It is not copied into a ge
 Upstream Radar is an npm-published DSH bundle, so no install-time build permission is required:
 
 ```bash
-dsh plugin --profile web add upstream-radar@latest
-```
-
-Generate the inventory from the DSH profile instead of writing the dependency graph by hand:
-
-```bash
-pnpm dlx --package=upstream-radar@latest upstream-radar init \
+pnpm dlx --package=upstream-radar@latest upstream-radar setup \
+  --profile web \
   --project-name "My DSH project" \
   --output ./upstream-radar.config.json \
   --dsh-patch ./upstream-radar.dsh.yml
 ```
 
-The initializer reads the profile's actual third-party bundles and follows the installed `node_modules` tree exposed by that profile, including duplicate versions, overrides, and local package-manager choices. By default it records the workspace as `.` so the config can be committed and reused on another machine; start DSH from the project root. Pass `--workspace <absolute-path>` only when DSH is launched elsewhere. It reads manifests only: it does not import plugin code, run lifecycle scripts, start DSH, or enable polling. Review both generated files, then run:
+`setup` delegates the package installation to DSH using the exact Radar version currently being run. It then generates the inventory and overlay and runs `doctor` locally without contacting OSV, npm, or GitHub. It does not start DSH. Review the two generated files, then start the profile:
 
 ```bash
 dsh --profile web --patch ./upstream-radar.dsh.yml --dump-config
 dsh --profile web --patch ./upstream-radar.dsh.yml
 pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-radar.config.json
 ```
+
+For an already installed bundle, add `--no-install`. The lower-level manual path remains available when you want to review the DSH installation separately: run `dsh plugin --profile web add upstream-radar@<exact-version>`, then use `init --profile web --dsh-patch ...` and `doctor`.
+
+The initializer reads the profile's actual third-party bundles and follows the installed `node_modules` tree exposed by that profile, including duplicate versions, overrides, and local package-manager choices. By default it records the workspace as `.` so the config can be committed and reused on another machine; start DSH from the project root. Pass `--workspace <absolute-path>` only when DSH is launched elsewhere. It reads manifests only: it does not import plugin code, run lifecycle scripts, start DSH, or enable polling.
 
 If startup does not behave as expected, run the local wiring check before looking at upstream feeds:
 
@@ -194,7 +191,7 @@ This proof runs in CI on Node.js 22. See the executable [showcase contract](exam
 Before wiring a project into a compatibility gate, run the offline rule benchmark:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.29.0 upstream-radar benchmark compatibility
+pnpm dlx --package=upstream-radar@0.30.0 upstream-radar benchmark compatibility
 ```
 
 It covers six contracts: a safe patch, a change that only needs project analysis, an incompatible DSH peer, a publisher-declared breaking release, a vulnerable candidate dependency, and an incomplete candidate graph. The command does not access the network, install a package, load a plugin, or start DSH. It checks the behavior of Radar's deterministic rules and the `breaking`/`any` gates; it is not a runtime compatibility proof.
@@ -207,7 +204,7 @@ When you have an exact plugin artifact and want to know whether one exact DSH re
 # Pack an exact npm release without running its lifecycle scripts.
 npm pack --ignore-scripts dsh-plugin@1.2.3
 
-pnpm dlx --package=upstream-radar@0.29.0 upstream-radar probe dsh-load \
+pnpm dlx --package=upstream-radar@0.30.0 upstream-radar probe dsh-load \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.6
 ```
@@ -233,7 +230,7 @@ It exercises a loadable bundle, a bundle patch DSH rejects, and a package that r
 To compare a plugin against more than one DSH release, use the matrix form:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.29.0 upstream-radar probe dsh-matrix \
+pnpm dlx --package=upstream-radar@0.30.0 upstream-radar probe dsh-matrix \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.3 \
   --dsh-version 0.1.0-rc.6 \
@@ -249,7 +246,7 @@ If your team wants a scheduled CI gate before wiring a machine to a live DSH pro
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.29.0
+  - uses: MicroMilo/upstream-radar@v0.30.0
     with:
       config: upstream-radar.config.json
       fail-on: high
@@ -257,12 +254,12 @@ steps:
       fail-on-compatibility: breaking
 ```
 
-The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.29.0`, and pin the checkout Action in your workflow according to your repository's policy.
+The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.30.0`, and pin the checkout Action in your workflow according to your repository's policy.
 
 The Action requires the caller to check out the repository first. It does not install the project's dependencies or run their lifecycle scripts; it only reads the committed graph and queries the configured upstream sources. For a fully explicit, lower-level invocation, the equivalent command is:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.29.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.30.0 upstream-radar radar check \
   ./upstream-radar.config.json --frozen --state :memory: --fail-on high \
   --fail-on-compatibility breaking --json
 ```
@@ -270,7 +267,7 @@ pnpm dlx --package=upstream-radar@0.29.0 upstream-radar radar check \
 To add the optional DSH load matrix for a published plugin, provide an exact npm package and at least two exact DSH versions:
 
 ```yaml
-- uses: MicroMilo/upstream-radar@v0.29.0
+- uses: MicroMilo/upstream-radar@v0.30.0
   id: radar
   with:
     config: upstream-radar.config.json

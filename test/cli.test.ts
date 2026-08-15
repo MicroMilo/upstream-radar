@@ -18,6 +18,7 @@ describe('CLI option parsing', () => {
   it('advertises a one-command watch loop and validates its safety interval', () => {
     const help = spawnSync(process.execPath, [cli, '--help'], { encoding: 'utf8' })
     assert.equal(help.status, 0)
+    assert.match(help.stdout, /setup \[--profile <name>\]/)
     assert.match(help.stdout, /doctor \[config\.json\]/)
     assert.match(help.stdout, /radar watch <config\.json>/)
     assert.match(help.stdout, /radar status <config\.json>/)
@@ -133,6 +134,61 @@ describe('CLI option parsing', () => {
       assert.match(result.stdout, /--patch .*upstream-radar\.dsh\.yml/)
       const savedConfig = JSON.parse(await readFile(config, 'utf8')) as { projects: Array<{ project: { workspace?: string } }> }
       assert.equal(savedConfig.projects[0]?.project.workspace, '.')
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('sets up an exact Radar bundle and verifies the generated DSH wiring', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-setup-cli-'))
+    try {
+      const dshHome = join(root, 'dsh-home')
+      const profile = join(dshHome, 'profiles', 'web')
+      const bin = join(root, 'bin')
+      const dshLog = join(root, 'dsh-command.txt')
+      await mkdir(join(profile, 'node_modules', 'demo-plugin'), { recursive: true })
+      await mkdir(bin, { recursive: true })
+      await writeFile(join(profile, 'package.json'), JSON.stringify({
+        name: 'dsh-profile-web',
+        dsh: { profile: { bundles: ['upstream-radar', 'demo-plugin'] } },
+      }))
+      await writeFile(join(profile, 'node_modules', 'demo-plugin', 'package.json'), JSON.stringify({
+        name: 'demo-plugin',
+        version: '1.0.0',
+        main: './index.js',
+      }))
+      await writeFile(join(bin, process.platform === 'win32' ? 'dsh.cmd' : 'dsh'),
+        process.platform === 'win32'
+          ? '@echo %* > "%UPSTREAM_RADAR_TEST_LOG%"\r\n'
+          : '#!/bin/sh\nprintf "%s\\n" "$*" > "$UPSTREAM_RADAR_TEST_LOG"\n',
+        { mode: 0o755 })
+
+      const config = join(root, 'upstream-radar.config.json')
+      const patch = join(root, 'upstream-radar.dsh.yml')
+      const result = spawnSync(process.execPath, [
+        cli,
+        'setup',
+        '--profile',
+        'web',
+        '--output',
+        config,
+        '--dsh-patch',
+        patch,
+      ], {
+        encoding: 'utf8',
+        env: {
+          ...process.env,
+          DSH_HOME: dshHome,
+          PATH: `${bin}:${process.env.PATH ?? ''}`,
+          UPSTREAM_RADAR_TEST_LOG: dshLog,
+        },
+      })
+      assert.equal(result.status, 0)
+      assert.match(result.stdout, /Installing upstream-radar@0\.30\.0 into DSH profile web/)
+      assert.match(result.stdout, /Local wiring check:/)
+      assert.match(result.stdout, /Status: READY WITH WARNINGS/)
+      assert.match(await readFile(dshLog, 'utf8'), /plugin --profile web add upstream-radar@0\.30\.0/)
+      assert.equal(JSON.parse(await readFile(config, 'utf8')).dshProfile.name, 'web')
     } finally {
       await rm(root, { recursive: true, force: true })
     }
