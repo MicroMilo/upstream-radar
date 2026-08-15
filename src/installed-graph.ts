@@ -5,6 +5,7 @@ import { dependencyGraphDigest } from './graph.js'
 import {
   DEPENDENCY_GRAPH_SCHEMA,
   type DependencyEdge,
+  type DependencyHostRuntimeSource,
   type DependencyGraph,
   type DependencyKind,
   type DependencyNode,
@@ -177,7 +178,7 @@ async function findHostPackage(
 export async function parseInstalledNodeModulesGraph(
   profileDirectory: string,
   rootPackage: RootPackage,
-  options: { hostNodeModulesDirectory?: string } = {},
+  options: { hostNodeModulesDirectory?: string; hostRuntimeSource?: DependencyHostRuntimeSource } = {},
 ): Promise<DependencyGraph> {
   const profileRoot = resolve(profileDirectory)
   const profileRootReal = await realpath(profileRoot)
@@ -248,7 +249,7 @@ export async function parseInstalledNodeModulesGraph(
     digest: dependencyGraphDigest(nodes, sortedEdges),
     ...(hostNodeModulesDirectoryReal === undefined ? {} : {
       hostRuntime: {
-        source: 'dsh-profile-fallback' as const,
+        source: options.hostRuntimeSource ?? 'dsh-profile-fallback',
         resolvedNodes: [...packages.values()].filter(item => item.source === 'dsh-host').length,
       },
     }),

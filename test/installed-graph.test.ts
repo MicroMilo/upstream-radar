@@ -110,8 +110,9 @@ describe('installed DSH dependency graph', () => {
 
       const graph = await parseInstalledNodeModulesGraph(profile, { name: 'plugin', version: '1.0.0' }, {
         hostNodeModulesDirectory: hostNodeModules,
+        hostRuntimeSource: 'dsh-process',
       })
-      assert.deepEqual(graph.hostRuntime, { source: 'dsh-profile-fallback', resolvedNodes: 1 })
+      assert.deepEqual(graph.hostRuntime, { source: 'dsh-process', resolvedNodes: 1 })
       const host = graph.nodes.find(node => node.name === 'host-runtime')
       assert.deepEqual(host, {
         id: 'dsh-host/node_modules/host-runtime',

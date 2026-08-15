@@ -91,6 +91,8 @@ describe('Radar status', () => {
     assert.equal(report.coverage, 'complete')
     assert.equal(report.unresolvedDependencies, 0)
     assert.equal(report.dshHostDependenciesNotObserved, 0)
+    assert.equal(report.dshHostRuntimePlanes, 0)
+    assert.deepEqual(report.dshHostRuntimeSources, [])
     assert.equal(report.projects, 1)
     assert.equal(report.pluginBundles, 1)
     assert.equal(report.lastCheckedAt, undefined)
@@ -157,8 +159,27 @@ describe('Radar status', () => {
     assert.equal(report.requiredUnresolvedDependencies, 0)
     assert.equal(report.optionalDependenciesNotInstalled, 1)
     assert.equal(report.dshHostDependenciesNotObserved, 0)
+    assert.equal(report.dshHostRuntimePlanes, 1)
     assert.equal(report.dshHostRuntimePackages, 22)
+    assert.deepEqual(report.dshHostRuntimeSources, ['dsh-profile-fallback'])
     assert.match(renderRadarStatus(report), /1 optional dependency not installed/)
+    assert.match(renderRadarStatus(report), /22 packages observed \(profile fallback\)/)
+  })
+
+  it('labels host evidence discovered from the running DSH process', () => {
+    const processConfig = structuredClone(config)
+    const graph = processConfig.projects[0]?.plugins[0]?.graph
+    assert.ok(graph)
+    graph.hostRuntime = { source: 'dsh-process', resolvedNodes: 4 }
+
+    const report = createRadarStatus(processConfig, emptyRadarState(), {
+      configFile: '/tmp/radar.json',
+      stateFile: '/tmp/radar.json.state.json',
+      stateExists: true,
+    })
+
+    assert.deepEqual(report.dshHostRuntimeSources, ['dsh-process'])
+    assert.match(renderRadarStatus(report), /4 packages observed \(running DSH process\)/)
   })
 
   it('calls out DSH host peers that are outside the captured profile graph', () => {

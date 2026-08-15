@@ -150,7 +150,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.
 
 The generated overlay points DSH at the config and state files explicitly and records the selected profile. If `--registry <url>` was used during initialization, the same registry is carried into the running DSH monitor; otherwise release and candidate checks use the public npm registry. Before each native DSH polling cycle, and before each CLI `radar check` or `radar watch` cycle, it re-reads that profile's installed graph, so later plugin installs, upgrades, removals, and host-runtime changes are not silently missed. If the refresh fails, that cycle stops without replacing the last durable state. `radar status` remains read-only and reports whether a check has completed, which source is unhealthy, whether dependency coverage is complete, the most important active incidents with their exact path or candidate, a suggested next step, pending DSH tasks, and verified model conclusions. You can inspect a stored conclusion with `upstream-radar analysis list <state.json>` or `analysis show <state.json>`. Radar accepts a conclusion only when the response is strict JSON from the matching DSH model session; it never treats arbitrary chat as an analysis result. `radar compare` remains a manual comparison of the files you provide. If you prefer environment variables or need to override the polling interval, omit `--dsh-patch` and use `UPSTREAM_RADAR_CONFIG`, `UPSTREAM_RADAR_STATE`, `UPSTREAM_RADAR_INTERVAL_SECONDS`, `UPSTREAM_RADAR_REGISTRY`, and `UPSTREAM_RADAR_DEEP_CANDIDATES` as before.
 
-The generated graph is the actual installed profile graph. DSH also maintains a shared `profiles/node_modules` host plane for built-in runtime packages; Radar includes packages resolved from that plane, marks them as `dsh-host`, and still checks their exact versions for advisories. If a required dependency is declared but cannot be resolved from either place, it remains visible as incomplete coverage instead of being treated as absent. Missing optional platform packages are retained as evidence but do not make coverage incomplete. Passing `--registry <url>` explicitly selects the older public npm artifact graph path, which is useful for comparing a profile against registry resolution but is not the default.
+The generated graph is the actual installed profile graph. During a native DSH run, Radar also reads the exact DSH CLI entrypoint (`@deepseek-ai/dsh/lib/bin.js`) and discovers the `node_modules` plane that process is using. It does this with bounded, read-only manifest checks: it does not import DSH, load a plugin, or run an install hook. Packages resolved from that plane are marked as `dsh-host`, and their exact versions are checked for advisories. `radar status` says whether the host plane came from the running DSH process or the profile fallback. If a required dependency is declared but cannot be resolved from either place, it remains visible as incomplete coverage instead of being treated as absent. Missing optional platform packages are retained as evidence but do not make coverage incomplete. Passing `--registry <url>` explicitly selects the older public npm artifact graph path, which is useful for comparing a profile against registry resolution but is not the default.
 
 For a hand-written or CI fixture, use [the example inventory](examples/radar/config.json). If neither a generated `--patch` overlay nor `UPSTREAM_RADAR_CONFIG` is provided, the bundle stays dormant and performs no polling.
 
@@ -180,7 +180,9 @@ The command fails unless DSH proves all five facts:
   "radarTaskReachedModel": true,
   "pluginSourcePreserved": true,
   "pendingTasksAfterDelivery": 0,
-  "analysisResults": 1
+  "analysisResults": 1,
+  "dshEntrypointObserved": true,
+  "dshHostRuntimePlaneDiscovered": true
 }
 ```
 
@@ -191,7 +193,7 @@ This proof runs in CI on Node.js 22. See the executable [showcase contract](exam
 Before wiring a project into a compatibility gate, run the offline rule benchmark:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.31.0 upstream-radar benchmark compatibility
+pnpm dlx --package=upstream-radar@0.32.0 upstream-radar benchmark compatibility
 ```
 
 It covers six contracts: a safe patch, a change that only needs project analysis, an incompatible DSH peer, a publisher-declared breaking release, a vulnerable candidate dependency, and an incomplete candidate graph. The command does not access the network, install a package, load a plugin, or start DSH. It checks the behavior of Radar's deterministic rules and the `breaking`/`any` gates; it is not a runtime compatibility proof.
@@ -204,7 +206,7 @@ When you have an exact plugin artifact and want to know whether one exact DSH re
 # Pack an exact npm release without running its lifecycle scripts.
 npm pack --ignore-scripts dsh-plugin@1.2.3
 
-pnpm dlx --package=upstream-radar@0.31.0 upstream-radar probe dsh-load \
+pnpm dlx --package=upstream-radar@0.32.0 upstream-radar probe dsh-load \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.6
 ```
@@ -230,7 +232,7 @@ It exercises a loadable bundle, a bundle patch DSH rejects, and a package that r
 To compare a plugin against more than one DSH release, use the matrix form:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.31.0 upstream-radar probe dsh-matrix \
+pnpm dlx --package=upstream-radar@0.32.0 upstream-radar probe dsh-matrix \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.3 \
   --dsh-version 0.1.0-rc.6 \
@@ -246,7 +248,7 @@ If your team wants a scheduled CI gate before wiring a machine to a live DSH pro
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.31.0
+  - uses: MicroMilo/upstream-radar@v0.32.0
     with:
       config: upstream-radar.config.json
       fail-on: high
@@ -254,12 +256,12 @@ steps:
       fail-on-compatibility: breaking
 ```
 
-The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.31.0`, and pin the checkout Action in your workflow according to your repository's policy.
+The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.32.0`, and pin the checkout Action in your workflow according to your repository's policy.
 
 The Action requires the caller to check out the repository first. It does not install the project's dependencies or run their lifecycle scripts; it only reads the committed graph and queries the configured upstream sources. For a fully explicit, lower-level invocation, the equivalent command is:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.31.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.32.0 upstream-radar radar check \
   ./upstream-radar.config.json --frozen --state :memory: --fail-on high \
   --fail-on-compatibility breaking --json
 ```
@@ -267,7 +269,7 @@ pnpm dlx --package=upstream-radar@0.31.0 upstream-radar radar check \
 To add the optional DSH load matrix for a published plugin, provide an exact npm package and at least two exact DSH versions:
 
 ```yaml
-- uses: MicroMilo/upstream-radar@v0.31.0
+- uses: MicroMilo/upstream-radar@v0.32.0
   id: radar
   with:
     config: upstream-radar.config.json
@@ -375,7 +377,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 ## What works today
 
 - installed DSH `node_modules` graphs and npm lockfile graphs with duplicate versions and bounded dependency paths;
-- DSH shared host-runtime dependency resolution, with profile and `dsh-host` packages kept distinct in both graphs and alerts;
+- DSH shared host-runtime dependency resolution discovered from the running DSH process, with profile and `dsh-host` packages kept distinct in both graphs and alerts;
 - exact-version OSV vulnerability and malicious-package matching;
 - npm release monitoring for plugins and DSH/Cordis packages, accepting only a candidate newer than the installed exact version (a regressed `latest` dist-tag is not a breaking update), with public GitHub Release notes attached when an exact candidate tag is available;
 - bounded transitive dependency graph checks for the earliest candidate versions, exact OSV matching for every resolved node, vulnerable path evidence, and explicit incomplete/unavailable coverage;
@@ -411,7 +413,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 - `probe dsh-load` is intentionally narrower than a security scan: a successful load proves only that the selected DSH profile accepted the bundle configuration. It does not execute plugin actions, compare capabilities, or grant admission to an unreviewed package.
 - `probe dsh-matrix` is intentionally sequential and bounded to eight versions. An incomplete matrix is not green: `unknown` propagates to the aggregate result until every selected DSH version has a reliable load result.
 - `radar check/watch --frozen` intentionally uses the graph committed in the config for CI; it does not prove that the installed DSH profile has not changed. Without `--frozen`, native DSH and CLI polling refresh the selected profile first.
-- `radar status` is a local snapshot only: it does not refresh OSV/npm/GitHub data, and it cannot prove that a source is current until a check has completed. Its next steps are guidance, not an automatic upgrade or safety decision.
+- `radar status` is a local snapshot only: it does not refresh OSV/npm/GitHub data, and it cannot prove that a source is current until a check has completed. It does show whether a captured DSH host plane came from the running process or a profile fallback. Its next steps are guidance, not an automatic upgrade or safety decision.
 - `doctor` checks local wiring only; it cannot prove that a running DSH process has delivered a task to a model or that upstream feeds are current.
 - npm lock graphs are supported; pnpm and Yarn graph adapters are not implemented.
 - OSV, npm `latest`, and public GitHub Release notes are live sources; changelog, comparison-diff, and migration-guide ingestion are deferred.

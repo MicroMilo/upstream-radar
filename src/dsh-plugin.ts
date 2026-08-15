@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { renderAgentAnalysisGroupPrompt, renderAgentAnalysisPrompt } from './dsh-analysis.js'
+import { discoverDshRuntimeNodeModulesDirectory } from './dsh-runtime.js'
 import { GitHubReleaseClient } from './github-release.js'
 import { parseRadarConfig } from './inventory.js'
 import { refreshRadarConfigFromDshProfile } from './init.js'
@@ -506,6 +507,12 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
     ? undefined
     : new NpmCandidateGraphClient({ ...(config.registry === undefined ? {} : { registry: config.registry }) })
   const releaseNotes = new GitHubReleaseClient()
+  const dshHostNodeModulesDirectory = config.profile === undefined || config.refreshProfile === false
+    ? undefined
+    : discoverDshRuntimeNodeModulesDirectory()
+  if (dshHostNodeModulesDirectory !== undefined) {
+    ctx.logger.info('upstream-radar: DSH runtime dependency plane discovered for exact graph refresh')
+  }
 
   ctx.effect(() => {
     let stopped = false
@@ -532,7 +539,15 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
           const configured = await readConfig(configFile)
           const radarConfig = config.profile === undefined || config.refreshProfile === false
             ? configured
-            : await refreshRadarConfigFromDshProfile(configured, config.profile)
+            : await refreshRadarConfigFromDshProfile(
+              configured,
+              config.profile,
+              undefined,
+              dshHostNodeModulesDirectory === undefined ? {} : {
+                hostNodeModulesDirectory: dshHostNodeModulesDirectory,
+                hostRuntimeSource: 'dsh-process',
+              },
+            )
           if (radarConfig !== configured && JSON.stringify(radarConfig.projects) !== JSON.stringify(configured.projects)) {
             ctx.logger.info(`upstream-radar: refreshed installed DSH profile ${config.profile}`)
           }

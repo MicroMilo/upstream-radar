@@ -150,7 +150,7 @@ function graph(value: unknown, label: string): DependencyGraph {
   const hostRuntimeSource = hostRuntimeValue === undefined
     ? undefined
     : string(hostRuntimeValue.source, `${label}.hostRuntime.source`, 64)
-  if (hostRuntimeSource !== undefined && hostRuntimeSource !== 'dsh-profile-fallback') {
+  if (hostRuntimeSource !== undefined && hostRuntimeSource !== 'dsh-profile-fallback' && hostRuntimeSource !== 'dsh-process') {
     throw new Error(`${label}.hostRuntime.source has an unsupported value`)
   }
   const resolvedNodes = hostRuntimeValue === undefined

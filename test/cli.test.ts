@@ -184,10 +184,10 @@ describe('CLI option parsing', () => {
         },
       })
       assert.equal(result.status, 0)
-      assert.match(result.stdout, /Installing upstream-radar@0\.31\.0 into DSH profile web/)
+      assert.match(result.stdout, /Installing upstream-radar@0\.32\.0 into DSH profile web/)
       assert.match(result.stdout, /Local wiring check:/)
       assert.match(result.stdout, /Status: READY WITH WARNINGS/)
-      assert.match(await readFile(dshLog, 'utf8'), /plugin --profile web add upstream-radar@0\.31\.0/)
+      assert.match(await readFile(dshLog, 'utf8'), /plugin --profile web add upstream-radar@0\.32\.0/)
       assert.equal(JSON.parse(await readFile(config, 'utf8')).dshProfile.name, 'web')
     } finally {
       await rm(root, { recursive: true, force: true })

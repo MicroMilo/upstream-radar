@@ -235,6 +235,54 @@ describe('DSH profile initialization', () => {
     }
   })
 
+  it('uses an explicitly discovered DSH process host plane during refresh', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-refresh-host-'))
+    const dshHome = join(root, 'dsh-home')
+    const profile = join(dshHome, 'profiles', 'web')
+    const hostNodeModules = join(root, 'dsh-runtime', 'node_modules')
+    try {
+      await mkdir(join(profile, 'node_modules', 'demo-plugin'), { recursive: true })
+      await writeFile(join(profile, 'package.json'), JSON.stringify({
+        name: 'dsh-profile-web',
+        dsh: { profile: { bundles: ['demo-plugin'] } },
+      }))
+      await writeFile(join(profile, 'node_modules', 'demo-plugin', 'package.json'), JSON.stringify({
+        name: 'demo-plugin',
+        version: '1.0.0',
+        peerDependencies: { '@deepseek-ai/dsh-agent': '^0.1.0' },
+      }))
+      await mkdir(join(hostNodeModules, '@deepseek-ai', 'dsh-agent'), { recursive: true })
+      await writeFile(join(hostNodeModules, '@deepseek-ai', 'dsh-agent', 'package.json'), JSON.stringify({
+        name: '@deepseek-ai/dsh-agent',
+        version: '0.1.4',
+      }))
+
+      const config = await createRadarConfigFromDshProfile({
+        profileDirectory: profile,
+        projectId: 'demo-project',
+        projectName: 'Demo project',
+        workspace: '/workspace/demo',
+      })
+      config.dshProfile = { name: 'web' }
+
+      const refreshed = await refreshRadarConfigFromDshProfile(config, 'web', dshHome, {
+        hostNodeModulesDirectory: hostNodeModules,
+        hostRuntimeSource: 'dsh-process',
+      })
+      const graph = refreshed.projects[0]?.plugins[0]?.graph
+      assert.deepEqual(graph?.hostRuntime, { source: 'dsh-process', resolvedNodes: 1 })
+      assert.deepEqual(graph?.nodes.find(node => node.name === '@deepseek-ai/dsh-agent'), {
+        id: 'dsh-host/node_modules/@deepseek-ai/dsh-agent',
+        name: '@deepseek-ai/dsh-agent',
+        version: '0.1.4',
+        source: 'dsh-host',
+      })
+      assert.equal(graph?.unresolved, undefined)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
   it('keeps hand-written inventories static when no DSH profile metadata is present', async () => {
     const config = {
       schema: 'upstream-radar.radar-config/v1alpha1' as const,

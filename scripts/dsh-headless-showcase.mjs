@@ -6,6 +6,7 @@ import { join, resolve } from 'node:path'
 import process from 'node:process'
 
 const { writeDshPatch } = await import('../dist/src/init.js')
+const { discoverDshRuntimeNodeModulesDirectory } = await import('../dist/src/dsh-runtime.js')
 const DSH_PACKAGE = '@deepseek-ai/dsh@0.1.0-rc.6'
 const ROOT = resolve(import.meta.dirname, '..')
 const WRITE_REPORT = process.argv.includes('--write-report')
@@ -165,6 +166,8 @@ async function main() {
   const scratch = await mkdtemp(join(tmpdir(), 'upstream-radar-dsh-'))
   const dshHome = join(scratch, 'dsh-home')
   const stateFile = join(scratch, 'radar-state.json')
+  const dshArgvFile = join(scratch, 'dsh-argv.json')
+  const dshArgvProbe = join(scratch, 'capture-dsh-argv.cjs')
   const model = await startModelStub()
   try {
     const overlayFile = join(scratch, 'smoke.patch.yml')
@@ -238,13 +241,39 @@ async function main() {
       runOnStart: LIVE_FEEDS,
     })
 
+    // Capture the real DSH CLI entrypoint without importing DSH from the showcase.
+    // The Radar adapter uses the same process.argv[1] boundary for runtime discovery.
+    await writeFile(dshArgvProbe, [
+      "const fs = require('node:fs')",
+      "const entrypoint = process.argv[1]",
+      "if (typeof entrypoint === 'string' && (entrypoint.includes('/node_modules/@deepseek-ai/dsh/') || entrypoint.includes('\\\\node_modules\\\\@deepseek-ai\\\\dsh\\\\'))) {",
+      `  fs.writeFileSync(${JSON.stringify(dshArgvFile)}, JSON.stringify({ argv: process.argv, cwd: process.cwd() }))`,
+      '}',
+      '',
+    ].join('\n'))
+
     const execution = await run('pnpm', [
       'dlx', DSH_PACKAGE,
       '--profile', 'headless',
       '--patch', overlayFile,
       '--patch', radarOverlayFile,
       'Wait for the Upstream Radar plugin notice, then answer that notice.',
-    ], { env: baseEnv })
+    ], { env: { ...baseEnv, NODE_OPTIONS: `--require=${dshArgvProbe}` } })
+
+    let dshEntrypointObserved = false
+    let dshHostRuntimePlaneDiscovered = false
+    try {
+      const captured = JSON.parse(await readFile(dshArgvFile, 'utf8'))
+      const entrypoint = captured?.argv?.[1]
+      dshEntrypointObserved = typeof entrypoint === 'string'
+      dshHostRuntimePlaneDiscovered = dshEntrypointObserved
+        && discoverDshRuntimeNodeModulesDirectory(entrypoint) !== undefined
+    } catch {
+      // Report the failed evidence below instead of turning a valid DSH delivery
+      // proof into an opaque parse error.
+    }
+    if (!dshEntrypointObserved) throw new Error('real DSH CLI entrypoint was not observed')
+    if (!dshHostRuntimePlaneDiscovered) throw new Error('real DSH host dependency plane was not discovered')
 
     const finalState = JSON.parse(await readFile(stateFile, 'utf8'))
     const requestText = JSON.stringify(model.requests)
@@ -281,6 +310,8 @@ async function main() {
       analysisResults,
       activeVulnerabilities,
       modelRequests: model.requests.length,
+      dshEntrypointObserved,
+      dshHostRuntimePlaneDiscovered,
       finalAssistant,
     }
     if (WRITE_REPORT) {
