@@ -65,7 +65,8 @@ describe('radar polling', () => {
     assert.equal(first.events[0]?.change, 'new')
     assert.equal(first.analysisTasks.length, 1)
     const firstEvent = first.events[0]
-    assert.ok(firstEvent !== undefined && firstEvent.kind !== 'compatibility')
+    assert.ok(firstEvent !== undefined)
+    assert.equal(firstEvent.kind, 'vulnerability')
     assert.deepEqual(firstEvent.paths[0]?.map(item => `${item.name}@${item.version}`), [
       'plugin@1.0.0',
       'logger@4.0.2',
@@ -238,6 +239,55 @@ describe('radar polling', () => {
     assert.equal(Object.keys(result.state.activeVulnerabilities).length, 1)
     assert.equal(result.state.pendingAnalysisTasks.length, 1)
     assert.deepEqual(result.sourceErrors, [{ source: 'osv', message: 'OSV timeout' }])
+  })
+
+  it('creates one DSH source-health incident after three failures and resolves it on recovery', async () => {
+    const unavailable: AdvisorySource = { async query() { throw new Error('OSV timeout') } }
+    const first = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      unavailable,
+      new Date('2026-08-14T08:00:00.000Z'),
+    )
+    const second = await pollRadar(
+      [inventory],
+      first.state,
+      unavailable,
+      new Date('2026-08-14T08:30:00.000Z'),
+    )
+    const third = await pollRadar(
+      [inventory],
+      second.state,
+      unavailable,
+      new Date('2026-08-14T09:00:00.000Z'),
+    )
+    assert.equal(first.events.length, 0)
+    assert.equal(second.events.length, 0)
+    assert.equal(third.events.length, 1)
+    assert.equal(third.events[0]?.kind, 'source-health')
+    assert.equal(third.events[0]?.change, 'new')
+    assert.equal(third.state.sourceHealth?.osv?.consecutiveFailures, 3)
+    assert.equal(Object.keys(third.state.activeSourceHealth ?? {}).length, 1)
+    assert.equal(third.state.pendingAnalysisTasks.length, 1)
+
+    const fourth = await pollRadar(
+      [inventory],
+      third.state,
+      unavailable,
+      new Date('2026-08-14T09:30:00.000Z'),
+    )
+    assert.equal(fourth.events.length, 0)
+    assert.equal(Object.values(fourth.state.activeSourceHealth ?? {})[0]?.event.failureCount, 4)
+
+    const recovered = await pollRadar(
+      [inventory],
+      fourth.state,
+      source('2026-08-14T01:00:00.000Z', false),
+      new Date('2026-08-14T10:00:00.000Z'),
+    )
+    assert.equal(recovered.events.some(event => event.kind === 'source-health' && event.change === 'resolved'), true)
+    assert.equal(Object.keys(recovered.state.activeSourceHealth ?? {}).length, 0)
+    assert.equal(recovered.state.pendingAnalysisTasks.length, 0)
   })
 
   it('keeps npm compatibility facts when GitHub release notes are unavailable', async () => {

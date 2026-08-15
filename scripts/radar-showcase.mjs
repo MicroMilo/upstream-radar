@@ -199,4 +199,46 @@ process.stdout.write([
 ].join('\n'))
 await save('07-source-outage.json', outage)
 
-process.stdout.write('\nShowcase complete: feed change -> exact graph match -> project route -> current DSH task -> resolved incident -> source outage without false resolution.\n')
+heading(7, 'Repeated failures become one routed source-health notice')
+const healthFirst = await pollRadar(
+  config.projects,
+  emptyRadarState(),
+  unavailableSource('simulated OSV timeout'),
+  new Date('2026-08-14T05:30:00.000Z'),
+)
+const healthSecond = await pollRadar(
+  config.projects,
+  healthFirst.state,
+  unavailableSource('simulated OSV timeout'),
+  new Date('2026-08-14T06:00:00.000Z'),
+)
+const healthThird = await pollRadar(
+  config.projects,
+  healthSecond.state,
+  unavailableSource('simulated OSV timeout'),
+  new Date('2026-08-14T06:30:00.000Z'),
+)
+const healthRecovered = await pollRadar(
+  config.projects,
+  healthThird.state,
+  source([]),
+  new Date('2026-08-14T07:00:00.000Z'),
+)
+const healthEvent = healthThird.events.find(event => event.kind === 'source-health')
+const recoveryEvent = healthRecovered.events.find(event => event.kind === 'source-health')
+if (healthEvent === undefined || recoveryEvent === undefined) throw new Error('showcase source-health lifecycle did not produce both transitions')
+process.stdout.write([
+  `ALERT: ${healthEvent.source} failed ${healthEvent.failureCount} times; queued DSH tasks: ${healthThird.state.pendingAnalysisTasks.length}`,
+  `RECOVERED: ${recoveryEvent.source}; queued DSH tasks: ${healthRecovered.state.pendingAnalysisTasks.length}`,
+  '',
+].join('\n'))
+await save('08-source-health-lifecycle.json', {
+  alert: healthEvent,
+  recovered: recoveryEvent,
+  pendingTaskCounts: {
+    afterAlert: healthThird.state.pendingAnalysisTasks.length,
+    afterRecovery: healthRecovered.state.pendingAnalysisTasks.length,
+  },
+})
+
+process.stdout.write('\nShowcase complete: feed change -> exact graph match -> project route -> current DSH task -> resolved incident -> source outage -> source-health alert and recovery.\n')

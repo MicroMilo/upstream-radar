@@ -1,0 +1,64 @@
+{
+  "alert": {
+    "schema": "upstream-radar.event/v1alpha1",
+    "id": "event-55c41b7231d1f448470550a5",
+    "incidentId": "payments-api\u0000osv",
+    "kind": "source-health",
+    "change": "new",
+    "detectedAt": "2026-08-14T06:30:00.000Z",
+    "project": {
+      "id": "payments-api",
+      "name": "Payments API",
+      "repository": "https://github.com/acme/payments-api",
+      "workspace": "examples/radar/project",
+      "owner": "payments-platform",
+      "channels": [
+        "feishu:payments-security"
+      ]
+    },
+    "route": {
+      "owner": "payments-platform",
+      "channels": [
+        "feishu:payments-security"
+      ]
+    },
+    "source": "osv",
+    "status": "degraded",
+    "failureCount": 3,
+    "lastAttemptedAt": "2026-08-14T06:30:00.000Z",
+    "error": "simulated OSV timeout"
+  },
+  "recovered": {
+    "schema": "upstream-radar.event/v1alpha1",
+    "id": "event-064acdf3633b58f283b51ab4",
+    "incidentId": "payments-api\u0000osv",
+    "kind": "source-health",
+    "change": "resolved",
+    "detectedAt": "2026-08-14T07:00:00.000Z",
+    "project": {
+      "id": "payments-api",
+      "name": "Payments API",
+      "repository": "https://github.com/acme/payments-api",
+      "workspace": "examples/radar/project",
+      "owner": "payments-platform",
+      "channels": [
+        "feishu:payments-security"
+      ]
+    },
+    "route": {
+      "owner": "payments-platform",
+      "channels": [
+        "feishu:payments-security"
+      ]
+    },
+    "source": "osv",
+    "status": "healthy",
+    "failureCount": 0,
+    "lastAttemptedAt": "2026-08-14T07:00:00.000Z",
+    "lastSucceededAt": "2026-08-14T07:00:00.000Z"
+  },
+  "pendingTaskCounts": {
+    "afterAlert": 1,
+    "afterRecovery": 0
+  }
+}

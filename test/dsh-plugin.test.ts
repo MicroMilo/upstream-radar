@@ -3,7 +3,7 @@ import { describe, it } from 'node:test'
 import { createAnalysisTask } from '../src/dsh-analysis.js'
 import { createDshRadarMessage, deliverPendingAnalysisTasks } from '../src/dsh-plugin.js'
 import { emptyRadarState } from '../src/radar.js'
-import type { CompatibilityEvent } from '../src/radar-types.js'
+import type { CompatibilityEvent, SourceHealthEvent } from '../src/radar-types.js'
 
 const event: CompatibilityEvent = {
   schema: 'upstream-radar.event/v1alpha1',
@@ -18,6 +18,22 @@ const event: CompatibilityEvent = {
   installed: { ecosystem: 'npm', name: 'plugin', version: '1.0.0' },
   candidate: { ecosystem: 'npm', name: 'plugin', version: '2.0.0' },
   signals: [{ code: 'breaking-version-boundary', confidence: 'strong', summary: 'Major update.' }],
+}
+
+const sourceHealthEvent: SourceHealthEvent = {
+  schema: 'upstream-radar.event/v1alpha1',
+  id: 'event-source-health',
+  incidentId: 'project-a\u0000osv',
+  kind: 'source-health',
+  change: 'new',
+  detectedAt: '2026-08-14T04:00:00.000Z',
+  project: { id: 'project-a', name: 'Project A', workspace: '/workspace/project-a' },
+  route: { owner: 'platform', channels: ['stdout'] },
+  source: 'osv',
+  status: 'degraded',
+  failureCount: 3,
+  lastAttemptedAt: '2026-08-14T04:00:00.000Z',
+  error: 'OSV timeout',
 }
 
 describe('DSH radar plugin adapter', () => {
@@ -43,5 +59,11 @@ describe('DSH radar plugin adapter', () => {
       form: 'notice',
       summary: 'Compatibility change for Project A',
     })
+  })
+
+  it('routes a source-health incident as a useful DSH notice', () => {
+    const message = createDshRadarMessage(createAnalysisTask(sourceHealthEvent))
+    assert.equal(message.source.summary, 'Monitoring source degraded for Project A')
+    assert.match(message.content[0]?.text ?? '', /监控源当前不可用/)
   })
 })

@@ -2,6 +2,14 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.8.0] - 2026-08-16
+
+### Added
+
+- Persist per-source health with last attempt, last success, consecutive failures, and bounded error details.
+- Create one durable DSH `source-health` notice after three consecutive source failures and resolve it when the source recovers.
+- Add source-health lifecycle evidence to the deterministic showcase.
+
 ## [0.7.1] - 2026-08-16
 
 ### Fixed
@@ -111,3 +119,4 @@ All notable changes to Upstream Radar are documented here.
 [0.6.2]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.6.2
 [0.7.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.7.0
 [0.7.1]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.7.1
+[0.8.0]: https://github.com/MicroMilo/upstream-radar/releases/tag/v0.8.0

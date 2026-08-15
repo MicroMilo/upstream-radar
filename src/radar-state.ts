@@ -21,6 +21,27 @@ export function parseRadarState(value: unknown): RadarState {
   if (active === undefined) throw new Error('radar state has no active vulnerability map')
   const activeCompatibility = asRecord(root.activeCompatibility)
   if (activeCompatibility === undefined) throw new Error('radar state has no active compatibility map')
+  const sourceHealth = root.sourceHealth === undefined ? {} : asRecord(root.sourceHealth)
+  if (sourceHealth === undefined) throw new Error('radar state has an invalid source health map')
+  const activeSourceHealth = root.activeSourceHealth === undefined ? {} : asRecord(root.activeSourceHealth)
+  if (activeSourceHealth === undefined) throw new Error('radar state has an invalid active source health map')
+  if (Object.keys(sourceHealth).length > 10 || Object.keys(activeSourceHealth).length > 1_000_000) {
+    throw new Error('radar state exceeds the source health limit')
+  }
+  const sourceNames = new Set(['osv', 'npm-releases', 'github-releases'])
+  for (const [source, rawStatus] of Object.entries(sourceHealth)) {
+    const status = asRecord(rawStatus)
+    const failures = status?.consecutiveFailures
+    if (!sourceNames.has(source)
+      || typeof status?.lastAttemptedAt !== 'string'
+      || typeof failures !== 'number' || !Number.isSafeInteger(failures)
+      || failures < 0 || failures > 1_000_000
+      || (status.lastSucceededAt !== undefined && typeof status.lastSucceededAt !== 'string')
+      || (status.lastError !== undefined
+        && (typeof status.lastError !== 'string' || status.lastError.length > 2_048))) {
+      throw new Error(`radar state contains an invalid source health status: ${source}`)
+    }
+  }
   if (!Array.isArray(root.pendingAnalysisTasks) || root.pendingAnalysisTasks.length > 100_000) {
     throw new Error('radar state has an invalid pending analysis queue')
   }
@@ -30,7 +51,7 @@ export function parseRadarState(value: unknown): RadarState {
     if (task?.schema !== ANALYSIS_TASK_SCHEMA || typeof task.id !== 'string'
       || typeof task.createdAt !== 'string' || event?.schema !== RADAR_EVENT_SCHEMA
       || typeof event.id !== 'string' || typeof event.incidentId !== 'string'
-      || (event.kind !== 'vulnerability' && event.kind !== 'malware' && event.kind !== 'compatibility')) {
+      || (event.kind !== 'vulnerability' && event.kind !== 'malware' && event.kind !== 'compatibility' && event.kind !== 'source-health')) {
       throw new Error('radar state contains an invalid pending analysis task')
     }
   }
@@ -54,6 +75,15 @@ export function parseRadarState(value: unknown): RadarState {
     if (stored?.key !== key || event?.schema !== RADAR_EVENT_SCHEMA
       || event.kind !== 'compatibility' || event.incidentId !== key) {
       throw new Error(`radar state contains an invalid compatibility match: ${key.slice(0, 256)}`)
+    }
+  }
+  for (const [key, rawStored] of Object.entries(activeSourceHealth)) {
+    const stored = asRecord(rawStored)
+    const event = asRecord(stored?.event)
+    if (stored?.key !== key || event?.schema !== RADAR_EVENT_SCHEMA
+      || event.kind !== 'source-health' || event.incidentId !== key
+      || !sourceNames.has(typeof event.source === 'string' ? event.source : '')) {
+      throw new Error(`radar state contains an invalid source health match: ${key.slice(0, 256)}`)
     }
   }
   return structuredClone(value) as RadarState

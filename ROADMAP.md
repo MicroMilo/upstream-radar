@@ -45,7 +45,8 @@
 - [ ] Deduplicate OSV, GHSA, CVE, and malicious-package aliases.
 - [ ] Detect when a previously unavailable fixed version is published.
 - [ ] Calculate whether a top-level plugin update actually removes every affected path.
-- [ ] Add source reliability and conflict handling without asking the model to decide version applicability.
+- [x] Persist per-source health, alert after three consecutive failures, and resolve the alert when the source recovers without asking the model to decide version applicability.
+- [ ] Detect conflicting source claims without asking the model to decide version applicability.
 - [x] Preserve confirmed vulnerability state and pending DSH tasks when OSV is temporarily unavailable; surface the failure to CLI and DSH logs.
 
 ## Milestone 4 — GitHub execution arm

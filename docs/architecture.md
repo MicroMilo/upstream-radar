@@ -59,6 +59,8 @@ The npm deep collector resolves in a temporary project with lifecycle scripts di
 
 If OSV is unavailable, the cycle records a source warning, keeps the last confirmed vulnerability matches, emits no false `resolved` events, and still proceeds to deliver already-persisted DSH tasks. A failed source is never treated as a clean result.
 
+The same cycle persists `lastAttemptedAt`, `lastSucceededAt`, consecutive failures, and a bounded error for each attempted source. Three consecutive failures create one project-routed `source-health` event in the same outbox; a successful check resolves it.
+
 The active-match key binds project, plugin version, affected package version, and advisory id. An unchanged advisory does not create another event.
 
 ## Compatibility cycle

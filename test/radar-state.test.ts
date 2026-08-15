@@ -8,6 +8,13 @@ describe('radar state parsing', () => {
     assert.deepEqual(parseRadarState(emptyRadarState()), emptyRadarState())
   })
 
+  it('accepts a state written before source health fields existed', () => {
+    const legacy = structuredClone(emptyRadarState()) as unknown as Record<string, unknown>
+    delete legacy.sourceHealth
+    delete legacy.activeSourceHealth
+    assert.deepEqual(parseRadarState(legacy), legacy)
+  })
+
   it('rejects a queued task without a stable incident identity', () => {
     const state = emptyRadarState() as unknown as Record<string, unknown>
     state.pendingAnalysisTasks = [{
@@ -21,5 +28,17 @@ describe('radar state parsing', () => {
       },
     }]
     assert.throws(() => parseRadarState(state), /invalid pending analysis task/)
+  })
+
+  it('rejects an oversized persisted source error', () => {
+    const state = emptyRadarState() as unknown as Record<string, unknown>
+    state.sourceHealth = {
+      osv: {
+        lastAttemptedAt: '2026-08-14T01:00:00.000Z',
+        consecutiveFailures: 3,
+        lastError: 'x'.repeat(2_049),
+      },
+    }
+    assert.throws(() => parseRadarState(state), /invalid source health status/)
   })
 })
