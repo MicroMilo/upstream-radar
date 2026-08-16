@@ -74,6 +74,8 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-
 
 `setup` 会明确调用 DSH 的安装命令，把当前正在运行的精确 Radar 版本放进选中的 profile，然后默认写出当前目录下的 `upstream-radar.config.json` 和 `upstream-radar.dsh.yml`，并运行不联网的本地接线检查。默认不会启动 DSH，也不会执行插件业务动作；检查生成文件后再启动，或者在确认配置后传 `--start` 让 setup 在 doctor 通过后启动。需要其他位置时传 `--output` 或 `--dsh-patch`；已经安装过 bundle 时加 `--no-install`。`radar status` 会在不重新请求网络的情况下确认第一次完整检查。完整的状态文件、兼容的旧环境变量方式、profile 边界和真实运行证明见[完整 DSH 配置](#安装到-dsh)。
 
+setup 打印的 doctor 命令会使用同一个精确版本的 `npx --yes`，所以即使最初是用 npm 而不是 pnpm 启动，也可以直接复制下一步命令。
+
 同一个状态文件还会保留一份有上限的变化记录。想知道“什么时候发生了什么”，而不重新请求任何漏洞源，可以运行：
 
 ```bash

@@ -77,6 +77,8 @@ If you use npm rather than pnpm, the equivalent launcher is `npx --yes upstream-
 
 `setup` explicitly installs the exact Radar version used by the command into the selected DSH profile, discovers the installed graph, writes `./upstream-radar.config.json` and `./upstream-radar.dsh.yml` by default, and runs the network-free wiring check. By default it does not start DSH or execute plugin business actions; `--start` opts into launching DSH only after the doctor check passes. Use `--output` or `--dsh-patch` for different paths; if Radar is already installed, add `--no-install`.
 
+The printed doctor command uses `npx --yes` with the exact same Radar version, so the handoff also works when the first command was launched with npm rather than pnpm.
+
 After DSH is running, use a second terminal for the read-only status check:
 
 ```bash

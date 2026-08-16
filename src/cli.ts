@@ -1232,7 +1232,12 @@ async function runInit(args: readonly string[]): Promise<number> {
     force,
   })
   const plugins = config.projects[0]?.plugins ?? []
-  const doctorCommand = `pnpm dlx --package=upstream-radar@${TOOL_VERSION} upstream-radar doctor ${shellQuote(outputPath)} --profile ${shellQuote(resolvedProfile)}${patchPath === undefined ? '' : ` --patch ${shellQuote(patchPath)}`}`
+  // Keep the printed recovery command independent of the package manager that
+  // happened to launch this copy. Node ships with npm/npx, while a user may
+  // have entered setup through pnpm, yarn, or a global binary. The command is
+  // deliberately exact-versioned so the doctor checks the same release that
+  // generated the config.
+  const doctorCommand = `npx --yes upstream-radar@${TOOL_VERSION} doctor ${shellQuote(outputPath)} --profile ${shellQuote(resolvedProfile)}${patchPath === undefined ? '' : ` --patch ${shellQuote(patchPath)}`}`
   const startCommand = patchPath === undefined
     ? `dsh --profile ${shellQuote(resolvedProfile)}`
     : `dsh --profile ${shellQuote(resolvedProfile)} --patch ${shellQuote(patchPath)}`

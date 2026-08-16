@@ -201,6 +201,8 @@ describe('CLI option parsing', () => {
       const dshAt = result.stdout.indexOf('dsh --profile')
       assert.ok(doctorAt >= 0)
       assert.ok(dshAt > doctorAt)
+      assert.match(result.stdout, /npx --yes upstream-radar@[^ ]+ doctor/)
+      assert.doesNotMatch(result.stdout, /pnpm dlx --package=upstream-radar@[^ ]+ upstream-radar doctor/)
       assert.match(result.stdout, /--patch .*upstream-radar\.dsh\.yml/)
       const savedConfig = JSON.parse(await readFile(config, 'utf8')) as { projects: Array<{ project: { workspace?: string } }> }
       assert.equal(savedConfig.projects[0]?.project.workspace, '.')
