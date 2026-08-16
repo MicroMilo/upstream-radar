@@ -6,8 +6,10 @@ import { describe, it } from 'node:test'
 describe('reusable GitHub Action', () => {
   it('keeps the published Action thin, pinned, and frozen', async () => {
     const actionPath = fileURLToPath(new URL('../../action.yml', import.meta.url))
+    const examplePath = fileURLToPath(new URL('../../examples/github-actions/upstream-radar.yml', import.meta.url))
     const packagePath = fileURLToPath(new URL('../../package.json', import.meta.url))
     const action = await readFile(actionPath, 'utf8')
+    const example = await readFile(examplePath, 'utf8')
     const packageJson = JSON.parse(await readFile(packagePath, 'utf8')) as { version?: unknown }
 
     assert.equal(typeof packageJson.version, 'string')
@@ -68,5 +70,8 @@ describe('reusable GitHub Action', () => {
     assert.match(action, /scripts\/action-summary\.mjs/)
     assert.match(action, /PIPESTATUS\[0\]/)
     assert.doesNotMatch(action, /pnpm install|npm install/)
+    assert.match(example, /auto-detects one pnpm-lock\.yaml or package-lock\.json/)
+    assert.doesNotMatch(example, /^\s+config:\s/m)
+    assert.match(example, /fail-on-compatibility: breaking/)
   })
 })
