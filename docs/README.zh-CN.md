@@ -24,6 +24,13 @@
 
 <p align="center"><em>上游信号 → 精确安装路径 → 持久事件 → 面向项目的 DSH Agent 分析</em></p>
 
+<p align="center">
+  <a href="#60-秒开始">60 秒开始</a> ·
+  <a href="#安装到-dsh">安装到 DSH</a> ·
+  <a href="https://github.com/MicroMilo/upstream-radar/issues/new?template=trial.yml">分享试用反馈</a> ·
+  <a href="#在-github-actions-中运行">GitHub Actions</a>
+</p>
+
 ## 不确定从哪里开始？先运行 quickstart
 
 如果你还不知道当前项目应该走 DSH profile、锁文件，还是先看 demo，可以先运行只读引导：
@@ -55,6 +62,8 @@ npx --yes upstream-radar@latest demo
 ```
 
 它会打印一条准确的传递依赖路径、独立漏洞源证据（包括明确标出的来源冲突）、只读 DSH Agent 交接任务和下一步安装命令。它只使用本地 fixture，不会读取你的仓库、安装插件，也不声称 demo 公告是真实漏洞；需要机器可读结果时加 `--json`。
+
+已经试过 demo 或真实 DSH 配置？可以[分享一条试用结果](https://github.com/MicroMilo/upstream-radar/issues/new?template=trial.yml)，只需填写版本、入口和脱敏后的结果。不要提交源码、密钥或私有路径。
 
 每个命令都有自己的短帮助：不确定从哪里开始时，可以先运行 `npx --yes upstream-radar@latest setup --help`、`npx --yes upstream-radar@latest inspect --help` 或 `npx --yes upstream-radar@latest radar status --help`。
 

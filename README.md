@@ -31,6 +31,7 @@
   <a href="#notify-feishu-or-an-https-endpoint">Notify Feishu</a> ·
   <a href="#run-the-proof">Run the proof</a> ·
   <a href="#run-it-in-github-actions">Run in GitHub Actions</a> ·
+  <a href="https://github.com/MicroMilo/upstream-radar/issues/new?template=trial.yml">Share feedback</a> ·
   <a href="#how-the-loop-works">How it works</a> ·
   <a href="ROADMAP.md">Roadmap</a>
 </p>
@@ -66,6 +67,8 @@ npx --yes upstream-radar@latest demo
 ```
 
 It prints one exact transitive path, independent advisory-source evidence (including an explicit source conflict), the read-only DSH Agent handoff, and the next setup command. It uses a local fixture only; it does not inspect your repository, install a plugin, or claim that the demo advisory is real. Use `--json` when you want the same proof as a machine-readable artifact.
+
+Tried the demo or a real DSH setup? [Share a short trial result](https://github.com/MicroMilo/upstream-radar/issues/new?template=trial.yml) with the versions, path, and redacted outcome. Never include source code, secrets, or private paths.
 
 Every command has its own short guide: `npx --yes upstream-radar@latest setup --help`, `npx --yes upstream-radar@latest inspect --help`, and `npx --yes upstream-radar@latest radar status --help` are useful starting points when you are not sure which path to choose.
 

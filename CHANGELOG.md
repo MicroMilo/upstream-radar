@@ -37,6 +37,7 @@ All notable changes to Upstream Radar are documented here.
 - Add opt-in `setup --start` to launch the selected DSH profile only after the generated wiring passes the local doctor check; the default remains review-first and does not start DSH.
 - Add an explicit next-action line to CLI vulnerability, compatibility, and source-health events so the first check tells the user what to do next; keep the doctor gate distinct from human review and safety admission.
 - Make the repository's consumer smoke use the current local CLI by default, with an explicit `try:consumer:published` path for checking the public npm artifact before a release announcement.
+- Add a structured DSH trial feedback form and place a redacted-result link in the English and Chinese README first-run paths.
 
 ## [0.33.0] - 2026-08-16
 
