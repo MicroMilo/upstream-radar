@@ -7,7 +7,11 @@ import { TOOL_VERSION } from '../src/version.js'
 describe('release metadata', () => {
   it('keeps the runtime tool version aligned with package.json', async () => {
     const packagePath = fileURLToPath(new URL('../../package.json', import.meta.url))
-    const packageJson = JSON.parse(await readFile(packagePath, 'utf8')) as { version?: unknown }
+    const packageJson = JSON.parse(await readFile(packagePath, 'utf8')) as {
+      version?: unknown
+      scripts?: { prepublishOnly?: unknown }
+    }
     assert.equal(TOOL_VERSION, packageJson.version)
+    assert.equal(packageJson.scripts?.prepublishOnly, 'pnpm test && node scripts/release-preflight.mjs')
   })
 })

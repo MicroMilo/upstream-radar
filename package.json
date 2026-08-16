@@ -90,7 +90,7 @@
     "try:dsh": "pnpm run build && node scripts/dsh-headless-showcase.mjs",
     "try:dsh:live": "pnpm run build && node scripts/dsh-headless-showcase.mjs --live-feeds",
     "try:dsh:report": "pnpm run build && node scripts/dsh-headless-showcase.mjs --write-report",
-    "prepublishOnly": "pnpm test",
+    "prepublishOnly": "pnpm test && node scripts/release-preflight.mjs",
     "test": "pnpm run build && node --test dist/test/*.test.js"
   },
   "dsh": {
