@@ -397,7 +397,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.
 pnpm dlx --package=upstream-radar@latest upstream-radar radar next ./upstream-radar.config.json
 ```
 
-它会和 `radar status` 使用同一条排序，选出第一条活动事件，然后给出排队中的 DSH task、已经验证的分析结论，或下一条检查命令。如果有排队 task，也会显示明确的 `task ack` 命令；确认只会移除这一条投递项，不会删除活动事件或证据。
+它会和 `radar status` 使用同一条排序，选出第一条活动事件，然后给出排队中的 DSH task、已经验证的分析结论，或下一条检查命令。如果 DSH 结论已经验证，输出还会直接显示紧急程度、推荐动作和有界的证据列表，用户不必再打开第二份报告才能开始处理。如果有排队 task，也会显示明确的 `task ack` 命令；确认只会移除这一条投递项，不会删除活动事件或证据。
 
 生成的依赖图对应 profile 当前实际安装的树。原生 DSH 运行时，Radar 还会从确切的 DSH CLI 入口（`@deepseek-ai/dsh/lib/bin.js`）找到这个 DSH 进程实际使用的 `node_modules` 宿主依赖平面。这个过程只做有边界的 manifest 读取，不 import DSH、不加载插件代码，也不运行安装脚本。宿主平面中被实际解析到的包会纳入漏洞查询，并明确标成 `dsh-host`，不会和插件自己带的依赖混在一起；同时会记录拥有这个宿主平面的精确 `@deepseek-ai/dsh` 版本，所以即使它和它能解析到的宿主传递依赖不是插件声明的依赖，也会进入 OSV 漏洞和 npm 新版本检查。图中使用明确的 `host-runtime` 宿主边界边，宿主漏洞不会被包装成普通插件依赖；`radar status` 还会显示宿主图来自“正在运行的 DSH”还是 profile fallback。如果一个必需依赖在 profile 和宿主依赖平面中都找不到，它会保留为“覆盖不完整”，不会被当成安全或不存在。当前平台没有安装的可选原生包仍会记录，但不会制造“必需依赖缺失”的假警报。对于 `@deepseek-ai/dsh`、`@deepseek-ai/dsh-*`、Cordis 这类宿主 peer，如果 profile 没有暴露准确版本，`doctor` 和 `radar status` 会单独写明“DSH 宿主依赖未观察到”，而不是把它和普通缺失依赖混成一个数字。这意味着漏洞查询没有覆盖该宿主边界，结果不能当作完整安全结论。显式传入 `--registry <url>` 才会使用公共 npm artifact 图，适合和 registry 解析结果做比较，但不是默认路径。
 

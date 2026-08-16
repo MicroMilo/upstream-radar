@@ -755,6 +755,8 @@ snapshots:
       ], { encoding: 'utf8' })
       assert.equal(nextWithAnalysis.status, 0)
       assert.match(nextWithAnalysis.stdout, /DSH analysis: verified/)
+      assert.match(nextWithAnalysis.stdout, /Recommendation \(within_24_hours\): Review the call path\./)
+      assert.match(nextWithAnalysis.stdout, /Evidence: src\/index\.ts:12/)
       assert.match(nextWithAnalysis.stdout, new RegExp(`Next command: upstream-radar analysis show .*${event.incidentId}`))
       const analysisList = spawnSync(process.execPath, [cli, 'analysis', 'list', stateFile], { encoding: 'utf8' })
       assert.equal(analysisList.status, 0)

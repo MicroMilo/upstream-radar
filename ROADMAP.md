@@ -24,6 +24,7 @@
 - [x] Provide one explicit DSH setup command that installs the exact Radar version, generates wiring, and runs the network-free doctor check.
 - [x] Make the first-use CLI self-explaining with command-specific help, a read-only `quickstart` path selector, and actionable admission next steps.
 - [x] Provide a one-command, read-only `radar next` handoff from the highest-priority incident to DSH task inspection or the next check.
+- [x] Show verified DSH urgency, recommendation, and bounded evidence inline in the `radar next` handoff.
 
 ## Milestone 1 — compatibility radar
 

@@ -151,7 +151,7 @@ For the shortest first-response path, run:
 pnpm dlx --package=upstream-radar@latest upstream-radar radar next ./upstream-radar.config.json
 ```
 
-This is still local-only. It selects the first item from the same ordering and prints one next command for the queued DSH task, verified analysis, or another check.
+This is still local-only. It selects the first item from the same ordering and prints one next command for the queued DSH task, verified analysis, or another check. Once a DSH result is verified, the same short output includes its urgency, recommendation, and bounded evidence list, turning the status view into a usable handoff rather than another place to look.
 
 It reports whether monitoring has started, the last successful check for OSV/npm/GitHub Releases, active vulnerability and compatibility incidents, source-health incidents, pending DSH analysis tasks, in-flight deliveries, and verified DSH conclusions. When an incident is active, it also shows the exact affected path or candidate signal and one suggested next step. Once the matching model response passes validation, that next step includes the stored exposure/confidence and recommended action:
 

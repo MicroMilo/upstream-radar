@@ -520,12 +520,18 @@ export function renderRadarNext(report: RadarNextReport): string {
     ...(incident.mutedUntil === undefined ? [] : [
       `Delivery: muted until ${display(incident.mutedUntil)}; active evidence remains visible`,
     ]),
-    `Deterministic next step: ${display(incident.nextStep)}`,
+    `Next step: ${display(incident.nextStep)}`,
   )
   if (report.pendingAnalysisTaskId !== undefined) {
     lines.push(`DSH follow-up: queued (${display(report.pendingAnalysisTaskId)})`)
   } else if (report.verifiedAnalysis !== undefined) {
-    lines.push(`DSH analysis: verified (${report.verifiedAnalysis.project_exposure}; ${report.verifiedAnalysis.confidence} confidence)`)
+    const analysis = report.verifiedAnalysis
+    const evidence = analysis.evidence.slice(0, 8).map(item => display(item, 512)).join(', ')
+    lines.push(
+      `DSH analysis: verified (${analysis.project_exposure}; ${analysis.confidence} confidence)`,
+      `Recommendation (${analysis.urgency}): ${display(analysis.recommended_action, 2_048)}`,
+      `Evidence: ${evidence === '' ? '(none recorded)' : evidence}`,
+    )
   } else if (report.monitoring === 'degraded') {
     lines.push('DSH follow-up: not currently recorded; restore the degraded monitoring path before relying on a clean result.')
   } else {
