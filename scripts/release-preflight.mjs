@@ -1,7 +1,8 @@
-import { readFile, readdir, stat } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, readdir, rm, stat } from 'node:fs/promises'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { resolve } from 'node:path'
+import { join, resolve } from 'node:path'
+import { tmpdir } from 'node:os'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const args = new Set(process.argv.slice(2))
@@ -191,6 +192,84 @@ async function checkPackContents() {
   }
 }
 
+async function checkPackedArtifact() {
+  const temporaryRoot = await mkdtemp(join(tmpdir(), 'upstream-radar-release-'))
+  try {
+    const pack = spawnSync('npm', ['pack', '--ignore-scripts', '--pack-destination', temporaryRoot, '--json'], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 4 * 1024 * 1024,
+    })
+    if (pack.status !== 0) {
+      fail('packed artifact smoke', (pack.stderr || pack.stdout || 'npm pack failed').trim())
+      return
+    }
+
+    let metadata
+    try {
+      metadata = JSON.parse(pack.stdout)
+    } catch (error) {
+      fail('packed artifact smoke', `could not parse npm pack output: ${error instanceof Error ? error.message : String(error)}`)
+      return
+    }
+    const filename = metadata[0]?.filename
+    if (typeof filename !== 'string') {
+      fail('packed artifact smoke', 'npm pack did not report an artifact filename')
+      return
+    }
+
+    const installRoot = join(temporaryRoot, 'install')
+    await mkdir(installRoot)
+    const install = spawnSync('npm', [
+      'install',
+      '--prefix',
+      installRoot,
+      '--ignore-scripts',
+      '--no-audit',
+      '--no-fund',
+      '--offline',
+      join(temporaryRoot, filename),
+    ], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 4 * 1024 * 1024,
+    })
+    if (install.status !== 0) {
+      fail('packed artifact smoke', (install.stderr || install.stdout || 'npm install failed').trim())
+      return
+    }
+
+    const cli = join(installRoot, 'node_modules', 'upstream-radar', 'dist', 'src', 'cli.js')
+    const help = spawnSync(process.execPath, [cli, '--help'], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 4 * 1024 * 1024,
+    })
+    if (help.status !== 0 || !help.stdout.includes('radar history')) {
+      fail('packed artifact smoke', (help.stderr || help.stdout || 'installed CLI did not start').trim())
+      return
+    }
+
+    const benchmark = spawnSync(process.execPath, [cli, 'benchmark', 'compatibility', '--json'], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 4 * 1024 * 1024,
+    })
+    if (benchmark.status !== 0) {
+      fail('packed artifact smoke', (benchmark.stderr || benchmark.stdout || 'installed CLI benchmark failed').trim())
+      return
+    }
+    const report = JSON.parse(benchmark.stdout)
+    if (report.mode !== 'offline-rules' || report.summary?.failed !== 0) {
+      fail('packed artifact smoke', 'installed CLI returned an unexpected compatibility benchmark result')
+      return
+    }
+    pass('packed artifact smoke', 'a fresh offline install started the packaged CLI and passed its benchmark')
+  } finally {
+    await rm(temporaryRoot, { recursive: true, force: true })
+  }
+}
+
 async function checkPublishedVersion() {
   if (!args.has('--published')) return
   const result = spawnSync('npm', ['view', `upstream-radar@${version}`, 'version', '--json'], {
@@ -213,6 +292,7 @@ async function checkPublishedVersion() {
 await checkVersionFiles()
 await checkCopyableReferences()
 await checkPackContents()
+await checkPackedArtifact()
 await checkPublishedVersion()
 
 const failed = checks.filter(check => check.status === 'fail')

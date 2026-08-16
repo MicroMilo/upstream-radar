@@ -18,7 +18,7 @@ The relationship can be inspected or replaced with npm CLI 11.5.1 or newer. Acco
 ## Release contract
 
 1. Update `package.json`, `src/version.ts`, and `CHANGELOG.md` to the same version.
-2. Run `pnpm run release:check`. It checks the version, release notes, every copyable Action/npm example, and the files that will enter the npm tarball without publishing anything.
+2. Run `pnpm run release:check`. It checks the version, release notes, every copyable Action/npm example, the npm tarball contents, and a fresh offline install of the packaged CLI without publishing anything.
 3. Regenerate checked-in showcase reports when their rendered version changes.
 4. Merge the release commit into `main` after CI passes.
 5. Publish a non-prerelease GitHub Release whose tag is exactly `v<package version>`.
