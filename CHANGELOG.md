@@ -6,6 +6,7 @@ All notable changes to Upstream Radar are documented here.
 
 ### Added
 
+- Add bounded per-incident `mute`/`unmute` controls for DSH and webhook delivery, keep muted incidents visible in `radar status`/`radar next`, preserve mutes across polling, and automatically resume delivery when the exact event version expires or changes.
 - Add an independent GitHub Advisory Database source for exact npm versions, merge OSV/GHSA/CVE duplicates into one durable incident, retain confirmed findings during a source outage, and expose per-source health through CLI and DSH.
 - Add a network-free `showcase:github-advisories` proving two-source deduplication, three-failure source-health escalation, and recovery without a false vulnerability resolution; run it in CI and publish preflight.
 - Retry one bounded transient GitHub Advisory transport, rate-limit, or 5xx failure so a single network hiccup does not block the first real DSH check; permanent responses remain visible errors.

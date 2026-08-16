@@ -19,6 +19,7 @@ import {
   createNotificationPolicyMap,
   decideProjectRadarNotification,
   filterNotifiableRadarEvents,
+  isRadarIncidentMuted,
 } from './notification-policy.js'
 import { pollRadar } from './radar.js'
 import { loadRadarState, saveRadarState } from './radar-state.js'
@@ -475,19 +476,22 @@ export function deliverPendingAnalysisTasksToAgents(
   const deliveredIds = new Set<string>()
   const deliveries = { ...(state.analysisDeliveries ?? {}) }
   for (const group of groupPendingAnalysisTasks(state.pendingAnalysisTasks)) {
-    const first = group[0]
+    const deliverableGroup = group.filter(task => !isRadarIncidentMuted(state, task.event, now))
+    const first = deliverableGroup[0]
     if (first === undefined) continue
-    if (group.some(task => !decideProjectRadarNotification(task.event, notificationPolicies, now).deliver)) continue
+    if (deliverableGroup.some(task => !decideProjectRadarNotification(task.event, notificationPolicies, now).deliver)) continue
     const agent = selectDshAgentForProject(first.event.project, agents)
     if (agent === undefined) continue
-    const message = group.length === 1 ? createDshRadarMessage(group[0]!) : createDshRadarFamilyMessage(group)
-    const delivery = createAnalysisDelivery(message, group, agent, now.toISOString())
+    const message = deliverableGroup.length === 1
+      ? createDshRadarMessage(deliverableGroup[0]!)
+      : createDshRadarFamilyMessage(deliverableGroup)
+    const delivery = createAnalysisDelivery(message, deliverableGroup, agent, now.toISOString())
     observeDelivery?.(delivery, 'before')
     try {
       agent.followup(message)
       observeDelivery?.(delivery, 'accepted')
       deliveries[delivery.id] = delivery
-      for (const task of group) deliveredIds.add(task.id)
+      for (const task of deliverableGroup) deliveredIds.add(task.id)
     } catch {
       observeDelivery?.(delivery, 'rejected')
       // Admission failed for this project only; unrelated project tasks may
@@ -635,6 +639,7 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
               undeliveredRadarWebhookEvents(state, webhookEndpointHash, result.events),
               notificationPolicies,
               new Date(),
+              state,
             )
             if (pendingWebhookEvents.length > 0) {
               try {

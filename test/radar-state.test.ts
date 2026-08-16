@@ -21,6 +21,21 @@ describe('radar state parsing', () => {
     assert.deepEqual(parseRadarState(legacy), legacy)
   })
 
+  it('accepts bounded incident mutes and rejects malformed expiries', () => {
+    const state = emptyRadarState()
+    state.incidentMutes = {
+      'incident-demo': {
+        eventId: 'event-demo',
+        mutedUntil: '2026-08-17T00:00:00.000Z',
+      },
+    }
+    assert.deepEqual(parseRadarState(state), state)
+
+    const invalid = structuredClone(state) as unknown as Record<string, any>
+    invalid.incidentMutes['incident-demo'].mutedUntil = 'not-a-date'
+    assert.throws(() => parseRadarState(invalid), /invalid incident mute map/)
+  })
+
   it('accepts a shared DSH host event with all affected plugin roots', () => {
     const state = emptyRadarState()
     const event = {

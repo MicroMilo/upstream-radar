@@ -162,6 +162,31 @@ describe('DSH radar plugin adapter', () => {
     assert.equal(delivered.pendingAnalysisTasks.length, 0)
   })
 
+  it('keeps a muted task queued until the exact mute expires', () => {
+    const task = createAnalysisTask(event)
+    const state = emptyRadarState()
+    state.pendingAnalysisTasks.push(task)
+    state.incidentMutes = {
+      [event.incidentId]: { eventId: event.id, mutedUntil: '2026-08-17T00:00:00.000Z' },
+    }
+    const messages: unknown[] = []
+    const agent = { followup: (message: unknown) => messages.push(message) }
+    const held = deliverPendingAnalysisTasksToAgents(
+      state,
+      [agent],
+      new Date('2026-08-16T02:00:00.000Z'),
+    )
+    assert.equal(held.pendingAnalysisTasks.length, 1)
+    assert.equal(messages.length, 0)
+    const delivered = deliverPendingAnalysisTasksToAgents(
+      held,
+      [agent],
+      new Date('2026-08-17T00:00:00.000Z'),
+    )
+    assert.equal(delivered.pendingAnalysisTasks.length, 0)
+    assert.equal(messages.length, 1)
+  })
+
   it('keeps a multi-project task queued when no workspace match is trustworthy', () => {
     const state = emptyRadarState()
     state.pendingAnalysisTasks.push(createAnalysisTask(event))

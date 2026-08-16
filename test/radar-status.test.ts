@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { createAnalysisTask } from '../src/dsh-analysis.js'
-import { createRadarStatus, renderRadarStatus } from '../src/radar-status.js'
+import { createRadarNext, createRadarStatus, renderRadarNext, renderRadarStatus } from '../src/radar-status.js'
 import { emptyRadarState } from '../src/radar.js'
 import type { CompatibilityEvent, RadarConfig, SourceHealthEvent, VulnerabilityEvent } from '../src/radar-types.js'
 
@@ -161,6 +161,29 @@ describe('Radar status', () => {
     const rendered = renderRadarStatus(report)
     assert.match(rendered, /Held by notification policy: 1/)
     assert.match(rendered, /parser@2\.9\.0 is affected by GHSA-demo/)
+  })
+
+  it('keeps a muted incident visible and exposes the resume command', () => {
+    const state = emptyRadarState()
+    state.activeVulnerabilities = { vulnerability: { key: 'vulnerability', event: vulnerabilityEvent } }
+    state.incidentMutes = {
+      [vulnerabilityEvent.incidentId]: {
+        eventId: vulnerabilityEvent.id,
+        mutedUntil: '2026-08-17T00:00:00.000Z',
+      },
+    }
+    const report = createRadarStatus(config, state, {
+      configFile: '/tmp/radar.json',
+      stateFile: '/tmp/radar.json.state.json',
+      stateExists: true,
+      now: new Date('2026-08-16T02:00:00.000Z'),
+    })
+    assert.equal(report.activeIncidents[0]?.mutedUntil, '2026-08-17T00:00:00.000Z')
+    assert.match(renderRadarStatus(report), /Delivery: muted until 2026-08-17T00:00:00.000Z; active evidence remains visible/)
+
+    const next = createRadarNext(report, state)
+    assert.match(next.unmuteCommand ?? '', /upstream-radar unmute .*incident-vulnerability/)
+    assert.match(renderRadarNext(next), /To resume delivery: upstream-radar unmute/)
   })
 
   it('shows advisory sources and conflicts in the daily status summary', () => {

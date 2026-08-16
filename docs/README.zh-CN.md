@@ -190,6 +190,16 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
 
 `minimumSeverity` 只作用于漏洞通知；`critical` 漏洞和恶意包告警始终直接发送。`quietHours` 使用配置的 IANA 时区，也支持跨午夜的时间段。兼容性变化和漏洞源健康通知会遵守安静时段，但不会被漏洞严重级别阈值隐藏。启用策略后，DSH 任务仍留在持久 outbox 中，等可以发送时再交给 Agent；Webhook 也会保留待发送事件，便于重试或策略改变后补发。`radar status` 会显示当前有多少任务被策略暂缓。不写这段配置时，行为保持不变，所有通知都会发送。运行 `pnpm run showcase:notifications` 可以在不联网的情况下看到“暂缓、稍后发送、Webhook outbox 保留”的完整证明。
 
+如果只是某一条活动事件太吵，可以只对它设置一个有期限的静音：
+
+```bash
+upstream-radar radar next ./upstream-radar.config.json
+upstream-radar mute './upstream-radar.config.json.state.json' '<事件 ID>' \
+  --until '2026-08-17T12:00:00Z'
+```
+
+这只会暂停 DSH 和 Webhook 投递；活动事件、精确依赖路径、历史和状态仍然保留，到期后自动恢复。`radar next` 会显示对应的 `unmute` 命令。事件版本一旦更新，新的事实会重新投递，不会被旧静音吞掉。critical 漏洞和恶意包需要显式加 `--force` 才能静音。
+
 ---
 
 普通漏洞源到“某个包有问题”就结束了。Upstream Radar 会继续找到实际安装的依赖路径，维护一个可持续更新的事件，再把带有项目证据的调查任务交给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent。

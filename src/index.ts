@@ -92,6 +92,7 @@ export {
   decideProjectRadarNotification,
   decideRadarNotification,
   filterNotifiableRadarEvents,
+  isRadarIncidentMuted,
   type NotificationDecision,
   type NotificationSuppressionReason,
 } from './notification-policy.js'
@@ -241,6 +242,7 @@ export {
   type ProjectInventory,
   type ProjectReference,
   type RadarEvent,
+  type RadarIncidentMute,
   type RadarConfig,
   type RadarNotificationPolicy,
   type RadarSource,

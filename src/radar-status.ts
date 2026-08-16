@@ -11,7 +11,7 @@ import type {
   StoredAnalysisResult,
   VulnerabilityEvent,
 } from './radar-types.js'
-import { countPolicyHeldAnalysisTasks, createNotificationPolicyMap } from './notification-policy.js'
+import { countPolicyHeldAnalysisTasks, createNotificationPolicyMap, isRadarIncidentMuted } from './notification-policy.js'
 import { renderVulnerabilityPriority, vulnerabilityPriority, type VulnerabilityPriorityEvidence } from './vulnerability-priority.js'
 
 export const RADAR_STATUS_SCHEMA = 'upstream-radar.radar-status/v1alpha1' as const
@@ -38,6 +38,7 @@ export interface RadarStatusIncident {
   summary: string
   nextStep: string
   triage?: RadarStatusTriage
+  mutedUntil?: string
 }
 
 export interface RadarStatusSource {
@@ -94,6 +95,7 @@ export interface RadarNextReport {
   verifiedAnalysis?: StoredAnalysisResult
   nextCommand: string
   acknowledgeCommand?: string
+  unmuteCommand?: string
 }
 
 export interface CreateRadarStatusOptions {
@@ -270,11 +272,18 @@ function compareActiveIncidents(left: RadarStatusIncident, right: RadarStatusInc
     || left.incidentId.localeCompare(right.incidentId)
 }
 
-function activeIncidentSummary(state: RadarState): { incidents: RadarStatusIncident[]; overflow: number } {
+function statusIncidentWithMute(event: RadarEvent, state: RadarState, now: Date): RadarStatusIncident {
+  const incident = statusIncident(event, state)
+  const mute = state.incidentMutes?.[event.incidentId]
+  if (mute === undefined || !isRadarIncidentMuted(state, event, now)) return incident
+  return { ...incident, mutedUntil: mute.mutedUntil }
+}
+
+function activeIncidentSummary(state: RadarState, now: Date): { incidents: RadarStatusIncident[]; overflow: number } {
   const all = [
-    ...Object.values(state.activeVulnerabilities).map(item => statusIncident(item.event, state)),
-    ...Object.values(state.activeCompatibility).map(item => statusIncident(item.event, state)),
-    ...Object.values(state.activeSourceHealth ?? {}).map(item => statusIncident(item.event, state)),
+    ...Object.values(state.activeVulnerabilities).map(item => statusIncidentWithMute(item.event, state, now)),
+    ...Object.values(state.activeCompatibility).map(item => statusIncidentWithMute(item.event, state, now)),
+    ...Object.values(state.activeSourceHealth ?? {}).map(item => statusIncidentWithMute(item.event, state, now)),
   ].sort(compareActiveIncidents)
   const incidents = all.slice(0, 32)
   return { incidents, overflow: all.length - incidents.length }
@@ -286,6 +295,8 @@ export function createRadarStatus(
   state: RadarState,
   options: CreateRadarStatusOptions,
 ): RadarStatusReport {
+  const now = options.now ?? new Date()
+  if (!Number.isFinite(now.getTime())) throw new Error('radar status time is invalid')
   const sources = RADAR_SOURCES.map(source => sourceStatus(source, state.sourceHealth?.[source]))
   const observedSources = sources.filter(source => source.status !== 'not-run')
   const monitoring: RadarMonitoringStatus = observedSources.length === 0
@@ -319,12 +330,12 @@ export function createRadarStatus(
     (hostRuntime): hostRuntime is NonNullable<typeof hostRuntime> => hostRuntime !== undefined,
   )
   const dshHostRuntimeSources = [...new Set(dshHostRuntimeGraphs.map(hostRuntime => hostRuntime.source))].sort()
-  const activeSummary = activeIncidentSummary(state)
+  const activeSummary = activeIncidentSummary(state, now)
   const notificationPolicies = createNotificationPolicyMap(config.projects)
   const notificationPolicyHeldTasks = countPolicyHeldAnalysisTasks(
     state.pendingAnalysisTasks,
     notificationPolicies,
-    options.now,
+    now,
   )
   return {
     schema: RADAR_STATUS_SCHEMA,
@@ -392,6 +403,9 @@ export function createRadarNext(report: RadarStatusReport, state: RadarState): R
     ...(pendingTask === undefined ? {} : {
       acknowledgeCommand: `upstream-radar task ack ${shellArgument(report.stateFile)} ${shellArgument(pendingTask.id)}`,
     }),
+    ...(activeIncident?.mutedUntil === undefined ? {} : {
+      unmuteCommand: `upstream-radar unmute ${shellArgument(report.stateFile)} ${shellArgument(activeIncident.incidentId)}`,
+    }),
   }
 }
 
@@ -457,6 +471,9 @@ export function renderRadarStatus(report: RadarStatusReport): string {
     lines.push(
       `  [${incident.priority.toUpperCase()}] ${display(incident.project)}: ${display(incident.summary)}`,
       ...(triage === undefined ? [] : [`    Triage: ${triage}`]),
+      ...(incident.mutedUntil === undefined ? [] : [
+        `    Delivery: muted until ${display(incident.mutedUntil)}; active evidence remains visible`,
+      ]),
       `    Next: ${display(incident.nextStep)}`,
     )
   }
@@ -500,6 +517,9 @@ export function renderRadarNext(report: RadarNextReport): string {
     '',
     `[${incident.priority.toUpperCase()}] ${display(incident.project)}: ${display(incident.summary)}`,
     ...(incident.triage === undefined ? [] : [`Triage: ${renderVulnerabilityPriority(incident.triage)}`]),
+    ...(incident.mutedUntil === undefined ? [] : [
+      `Delivery: muted until ${display(incident.mutedUntil)}; active evidence remains visible`,
+    ]),
     `Deterministic next step: ${display(incident.nextStep)}`,
   )
   if (report.pendingAnalysisTaskId !== undefined) {
@@ -515,5 +535,6 @@ export function renderRadarNext(report: RadarNextReport): string {
   if (report.acknowledgeCommand !== undefined) {
     lines.push(`After reviewing the task, acknowledge it with: ${report.acknowledgeCommand}`)
   }
+  if (report.unmuteCommand !== undefined) lines.push(`To resume delivery: ${report.unmuteCommand}`)
   return `${lines.join('\n')}\n`
 }

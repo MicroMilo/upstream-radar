@@ -411,6 +411,15 @@ export interface RadarState {
   history?: RadarEvent[]
   /** Event ids successfully delivered to the currently configured webhook endpoint. */
   webhook?: WebhookDeliveryState
+  /** Per-incident delivery mutes; active evidence remains in the state and status view. */
+  incidentMutes?: Record<string, RadarIncidentMute>
+}
+
+export interface RadarIncidentMute {
+  /** The exact event version the user muted; a later update is delivered again. */
+  eventId: string
+  /** An explicit future expiry; mutes never persist indefinitely. */
+  mutedUntil: string
 }
 
 export interface WebhookDeliveryState {

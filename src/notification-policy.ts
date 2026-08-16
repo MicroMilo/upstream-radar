@@ -4,6 +4,7 @@ import type {
   RadarEvent,
   RadarNotificationPolicy,
   RadarSeverity,
+  RadarState,
 } from './radar-types.js'
 
 export type NotificationSuppressionReason = 'below-minimum-severity' | 'quiet-hours'
@@ -11,6 +12,19 @@ export type NotificationSuppressionReason = 'below-minimum-severity' | 'quiet-ho
 export interface NotificationDecision {
   deliver: boolean
   reasons: NotificationSuppressionReason[]
+}
+
+/** Return true only while the exact muted event version is still within its expiry. */
+export function isRadarIncidentMuted(
+  state: RadarState | undefined,
+  event: RadarEvent,
+  now = new Date(),
+): boolean {
+  if (!Number.isFinite(now.getTime())) throw new Error('incident mute decision time is invalid')
+  const mute = state?.incidentMutes?.[event.incidentId]
+  if (mute === undefined || mute.eventId !== event.id) return false
+  const mutedUntil = Date.parse(mute.mutedUntil)
+  return Number.isFinite(mutedUntil) && mutedUntil > now.getTime()
 }
 
 const SEVERITY_RANK: Record<RadarSeverity, number> = {
@@ -103,8 +117,10 @@ export function filterNotifiableRadarEvents(
   events: readonly RadarEvent[],
   policies: ReadonlyMap<string, RadarNotificationPolicy>,
   now = new Date(),
+  state?: RadarState,
 ): RadarEvent[] {
-  return events.filter(event => decideProjectRadarNotification(event, policies, now).deliver)
+  return events.filter(event => decideProjectRadarNotification(event, policies, now).deliver
+    && !isRadarIncidentMuted(state, event, now))
 }
 
 /** Count tasks deliberately held by policy, without removing them from state. */

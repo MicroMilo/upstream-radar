@@ -71,6 +71,12 @@ describe('radar polling', () => {
     const firstEvent = first.events[0]
     assert.ok(firstEvent !== undefined)
     assert.equal(firstEvent.kind, 'vulnerability')
+    first.state.incidentMutes = {
+      [firstEvent.incidentId]: {
+        eventId: firstEvent.id,
+        mutedUntil: '2026-08-17T00:00:00.000Z',
+      },
+    }
     assert.deepEqual(firstEvent.affectedSources, ['dsh-host'])
     assert.deepEqual(firstEvent.advisory.sources, ['osv'])
     assert.deepEqual(firstEvent.paths[0]?.map(item => `${item.name}@${item.version}`), [
@@ -104,6 +110,7 @@ describe('radar polling', () => {
     assert.equal(unchanged.events.length, 0)
     assert.equal(Object.keys(unchanged.state.analysisResults ?? {}).length, 1)
     assert.equal(unchanged.state.history?.length, 1)
+    assert.deepEqual(unchanged.state.incidentMutes, first.state.incidentMutes)
 
     const updated = await pollRadar([inventory], unchanged.state, source('2026-08-14T02:00:00.000Z'), new Date('2026-08-14T02:01:00.000Z'))
     assert.equal(updated.events[0]?.change, 'updated')

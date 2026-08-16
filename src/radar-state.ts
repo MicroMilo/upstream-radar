@@ -303,6 +303,21 @@ function validWebhookDeliveryState(value: unknown): boolean {
   ))
 }
 
+function validIncidentMutes(value: unknown): boolean {
+  if (value === undefined) return true
+  const mutes = asRecord(value)
+  if (mutes === undefined || Object.keys(mutes).length > 100_000) return false
+  return Object.entries(mutes).every(([incidentId, rawMute]) => {
+    const mute = asRecord(rawMute)
+    const mutedUntil = mute?.mutedUntil
+    const eventId = mute?.eventId
+    return incidentId.length > 0 && incidentId.length <= 512
+      && typeof eventId === 'string' && eventId.length > 0 && eventId.length <= 512
+      && typeof mutedUntil === 'string' && mutedUntil.length > 0 && mutedUntil.length <= 256
+      && Number.isFinite(Date.parse(mutedUntil))
+  })
+}
+
 function validHistoryEvent(value: unknown): boolean {
   const event = asRecord(value)
   const project = asRecord(event?.project)
@@ -378,6 +393,9 @@ export function parseRadarState(value: unknown): RadarState {
   }
   if (root.webhook !== undefined && !validWebhookDeliveryState(root.webhook)) {
     throw new Error('radar state has an invalid webhook delivery state')
+  }
+  if (!validIncidentMutes(root.incidentMutes)) {
+    throw new Error('radar state has an invalid incident mute map')
   }
   if (Object.keys(sourceHealth).length > 10 || Object.keys(activeSourceHealth).length > 1_000_000) {
     throw new Error('radar state exceeds the source health limit')

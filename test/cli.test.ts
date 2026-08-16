@@ -660,6 +660,39 @@ snapshots:
       assert.equal(nextReport.activeIncident?.incidentId, event.incidentId)
       assert.equal(nextReport.pendingAnalysisTaskId, task.id)
 
+      const muteUntil = new Date(Date.now() + 60 * 60 * 1_000).toISOString()
+      const muted = spawnSync(process.execPath, [
+        cli,
+        'mute',
+        stateFile,
+        event.incidentId,
+        '--until',
+        muteUntil,
+        '--json',
+      ], { encoding: 'utf8' })
+      assert.equal(muted.status, 0)
+      const muteReport = JSON.parse(muted.stdout) as { incidentId: string; eventId: string; mutedUntil: string }
+      assert.deepEqual(muteReport, {
+        incidentId: event.incidentId,
+        eventId: event.id,
+        mutedUntil: new Date(muteUntil).toISOString(),
+        forced: false,
+      })
+      const mutedNext = spawnSync(process.execPath, [
+        cli,
+        'radar',
+        'next',
+        resolve(repository, 'examples/radar/config.json'),
+        '--state',
+        stateFile,
+      ], { encoding: 'utf8' })
+      assert.equal(mutedNext.status, 0)
+      assert.match(mutedNext.stdout, /Delivery: muted until/)
+      assert.match(mutedNext.stdout, /To resume delivery: upstream-radar unmute/)
+      const unmuted = spawnSync(process.execPath, [cli, 'unmute', stateFile, event.incidentId], { encoding: 'utf8' })
+      assert.equal(unmuted.status, 0)
+      assert.match(unmuted.stdout, /Resumed delivery/)
+
       const history = spawnSync(process.execPath, [
         cli,
         'radar',

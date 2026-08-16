@@ -319,6 +319,18 @@ The deterministic receiver proves one delivery, duplicate suppression, retry aft
 
 For vulnerability events, the human-readable text carries one consistent handling hint: known exploitation in CISA KEV first, then EPSS, then advisory severity. It is a prioritization aid; it does not replace the exact dependency match or the DSH Agent's project analysis.
 
+## Scene 20 — quiet one incident without losing the trail
+
+After `radar next` identifies a noisy active incident, pause only that exact event version for a bounded period:
+
+```bash
+upstream-radar mute './upstream-radar.config.json.state.json' \
+  '<incident-id-from-radar-next>' \
+  --until '2026-08-17T12:00:00Z'
+```
+
+The DSH task and webhook delivery stay queued, while `radar status` and `radar next` continue to show the active path and the expiry. At expiry, delivery resumes automatically. If Radar observes a new event version first, that new event is delivered immediately because the mute is bound to the old event id. `unmute` resumes delivery early; critical and malware events require `--force` to mute.
+
 ## Live sources
 
 The fixture isolates behavior from network timing. Production cycles use:

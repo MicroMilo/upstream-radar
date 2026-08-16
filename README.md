@@ -198,6 +198,16 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
 
 `minimumSeverity` applies to vulnerability notices; `critical` vulnerabilities and malicious-package alerts always pass. `quietHours` uses the configured IANA timezone and also supports a window crossing midnight. Compatibility and source-health notices follow the quiet window but are not hidden by a vulnerability severity threshold. With a policy in effect, DSH tasks stay in the durable outbox until they can be delivered, and the webhook outbox keeps pending events for retry or a later policy change. `radar status` shows how many tasks are currently held. Omitting the block keeps the current behavior and delivers every notice. Run `pnpm run showcase:notifications` for a network-free proof of the hold, later delivery, and durable webhook outbox.
 
+If one active incident is noisy, mute only that incident for a bounded period:
+
+```bash
+upstream-radar radar next ./upstream-radar.config.json
+upstream-radar mute './upstream-radar.config.json.state.json' '<incident-id>' \
+  --until '2026-08-17T12:00:00Z'
+```
+
+This pauses only DSH and webhook delivery. The active incident, exact dependency path, history, and status remain visible; the mute expires automatically, and `radar next` prints the matching `unmute` command. A later event version is delivered again, so muting an old fact cannot hide a new fact. Critical and malware incidents require an explicit `--force`.
+
 ---
 
 A vulnerability feed stops at “package X is affected.” Upstream Radar keeps going: it identifies the exact installed dependency path, maintains one durable incident, and wakes a [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent with the project evidence needed for a useful investigation.

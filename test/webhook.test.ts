@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { createHmac } from 'node:crypto'
 import { describe, it } from 'node:test'
 import { emptyRadarState } from '../src/radar.js'
+import { filterNotifiableRadarEvents } from '../src/notification-policy.js'
 import {
   buildFeishuWebhookPayload,
   buildRadarWebhookPayload,
@@ -208,6 +209,27 @@ describe('webhook delivery', () => {
     const delivered = markRadarWebhookEventsDelivered(queued, endpointHash, [updated])
     assert.deepEqual(delivered.webhook?.pendingEvents, undefined)
     assert.equal(undeliveredRadarWebhookEvents(delivered, endpointHash, []).length, 0)
+  })
+
+  it('keeps a muted event in the webhook outbox until its expiry', () => {
+    const endpointHash = radarWebhookEndpointHash('https://hooks.example.test/incoming')
+    const state = emptyRadarState()
+    state.incidentMutes = {
+      [event.incidentId]: { eventId: event.id, mutedUntil: '2026-08-17T00:00:00.000Z' },
+    }
+    const queued = queueRadarWebhookEvents(state, endpointHash, [event])
+    assert.deepEqual(filterNotifiableRadarEvents(
+      undeliveredRadarWebhookEvents(queued, endpointHash, [event]),
+      new Map(),
+      new Date('2026-08-16T04:01:00.000Z'),
+      queued,
+    ), [])
+    assert.deepEqual(filterNotifiableRadarEvents(
+      undeliveredRadarWebhookEvents(queued, endpointHash, [event]),
+      new Map(),
+      new Date('2026-08-17T00:00:00.000Z'),
+      queued,
+    ), [event])
   })
 
   it('does not acknowledge events beyond one bounded payload batch', async () => {

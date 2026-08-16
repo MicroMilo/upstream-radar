@@ -39,7 +39,7 @@ import { renderTextReport } from './render.js'
 import { scanDirectory } from './scan.js'
 import { CisaKevClient, EpssClient } from './threat-intel.js'
 import type { Verdict } from './types.js'
-import type { RadarNotificationPolicy, RadarSeverity } from './radar-types.js'
+import type { RadarEvent, RadarNotificationPolicy, RadarSeverity, RadarState } from './radar-types.js'
 import { TOOL_VERSION } from './version.js'
 import {
   markRadarWebhookEventsDelivered,
@@ -334,6 +334,20 @@ Usage:
   upstream-radar analysis list <state.json> [--json]
   upstream-radar analysis show <state.json> [incident-id] [--json]
 `,
+    mute: `Upstream Radar — pause delivery for one exact incident until a fixed expiry
+
+Usage:
+  upstream-radar mute <state.json> <incident-id> --until <ISO-8601> [--force] [--json]
+
+This pauses DSH and webhook delivery only. The active incident, dependency paths,
+history, and status remain visible. The mute expires automatically. Critical and
+malware incidents require --force.
+`,
+    unmute: `Upstream Radar — resume delivery for one incident immediately
+
+Usage:
+  upstream-radar unmute <state.json> <incident-id> [--json]
+`,
   }
   return help[key]
 }
@@ -379,6 +393,8 @@ Usage:
   upstream-radar task ack <state.json> <task-id>
   upstream-radar analysis list <state.json> [--json]
   upstream-radar analysis show <state.json> [incident-id] [--json]
+  upstream-radar mute <state.json> <incident-id> --until <ISO-8601> [--force] [--json]
+  upstream-radar unmute <state.json> <incident-id> [--json]
   upstream-radar version
 
 Commands:
@@ -395,6 +411,8 @@ Commands:
   radar    monitor vulnerability changes, watch continuously, find the next action, inspect status/history, or assess a candidate compatibility change
   task     inspect or acknowledge the durable DSH analysis outbox
   analysis inspect verified DSH conclusions stored in the Radar state
+  mute     pause delivery for one incident with a bounded expiry
+  unmute   resume delivery for one incident immediately
 
 Options:
   --deep               resolve the dependency graph with scripts disabled and ask npm to verify signatures/provenance
@@ -568,6 +586,91 @@ async function runTask(args: readonly string[]): Promise<number> {
   if (remaining.length === state.pendingAnalysisTasks.length) throw new Error(`pending task not found: ${taskId}`)
   await saveRadarState(statePath, { ...state, pendingAnalysisTasks: remaining })
   process.stdout.write(`Acknowledged ${safeErrorMessage(taskId)}.\n`)
+  return 0
+}
+
+const MAX_INCIDENT_MUTE_MS = 30 * 24 * 60 * 60 * 1_000
+
+function activeEventForIncident(state: RadarState, incidentId: string): RadarEvent | undefined {
+  return [
+    ...Object.values(state.activeVulnerabilities),
+    ...Object.values(state.activeCompatibility),
+    ...Object.values(state.activeSourceHealth ?? {}),
+  ].map(item => item.event).find(event => event.incidentId === incidentId)
+}
+
+async function runIncidentMute(args: readonly string[]): Promise<number> {
+  const statePath = args[0]
+  const incidentId = args[1]
+  if (statePath === undefined || statePath.startsWith('-')) throw new Error('mute requires a state file')
+  if (incidentId === undefined || incidentId.startsWith('-')) throw new Error('mute requires an incident id')
+  let untilValue: string | undefined
+  let force = false
+  let json = false
+  for (let index = 2; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === undefined) throw new Error('mute received an incomplete option')
+    if (argument === '--force') force = true
+    else if (argument === '--json') json = true
+    else if (argument === '--until') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error('--until requires a value')
+      untilValue = value
+      index += 1
+    } else if (argument.startsWith('-')) {
+      throw new Error(`unknown option for mute: ${argument}`)
+    } else {
+      throw new Error(`mute received unexpected argument: ${argument}`)
+    }
+  }
+  if (untilValue === undefined) throw new Error('mute requires --until <ISO-8601>')
+  const mutedUntilMs = Date.parse(untilValue)
+  const nowMs = Date.now()
+  if (!Number.isFinite(mutedUntilMs)) throw new Error('--until must be a valid ISO-8601 timestamp')
+  if (mutedUntilMs <= nowMs) throw new Error('--until must be in the future')
+  if (mutedUntilMs > nowMs + MAX_INCIDENT_MUTE_MS) throw new Error('--until cannot be more than 30 days away')
+
+  const state = await loadRadarState(statePath)
+  const event = activeEventForIncident(state, incidentId)
+  if (event === undefined) throw new Error(`active incident not found: ${incidentId}`)
+  const forceRequired = event.kind === 'malware'
+    || (event.kind === 'vulnerability' && event.advisory.severity === 'critical')
+  if (forceRequired && !force) throw new Error('critical or malware incidents require --force to mute')
+  const mutedUntil = new Date(mutedUntilMs).toISOString()
+  await saveRadarState(statePath, {
+    ...state,
+    incidentMutes: {
+      ...(state.incidentMutes ?? {}),
+      [incidentId]: { eventId: event.id, mutedUntil },
+    },
+  })
+  const result = { incidentId, eventId: event.id, mutedUntil, forced: force }
+  process.stdout.write(json
+    ? `${JSON.stringify(result, null, 2)}\n`
+    : `Muted delivery for ${safeErrorMessage(incidentId)} until ${mutedUntil}. Active evidence and history remain visible.\n`)
+  return 0
+}
+
+async function runIncidentUnmute(args: readonly string[]): Promise<number> {
+  const statePath = args[0]
+  const incidentId = args[1]
+  if (statePath === undefined || statePath.startsWith('-')) throw new Error('unmute requires a state file')
+  if (incidentId === undefined || incidentId.startsWith('-')) throw new Error('unmute requires an incident id')
+  let json = false
+  for (const argument of args.slice(2)) {
+    if (argument === '--json') json = true
+    else throw new Error(`unknown option for unmute: ${argument}`)
+  }
+  const state = await loadRadarState(statePath)
+  if (state.incidentMutes?.[incidentId] === undefined) throw new Error(`incident is not muted: ${incidentId}`)
+  const nextIncidentMutes = Object.fromEntries(
+    Object.entries(state.incidentMutes).filter(([id]) => id !== incidentId),
+  )
+  await saveRadarState(statePath, { ...state, incidentMutes: nextIncidentMutes })
+  const result = { incidentId, unmuted: true }
+  process.stdout.write(json
+    ? `${JSON.stringify(result, null, 2)}\n`
+    : `Resumed delivery for ${safeErrorMessage(incidentId)}.\n`)
   return 0
 }
 
@@ -924,6 +1027,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
       undeliveredRadarWebhookEvents(queuedState, webhookEndpointHash, result.events),
       notificationPolicies,
       checkedAt,
+      queuedState,
     )
     if (pendingWebhookEvents.length === 0) return { ...result, state: queuedState }
     const payload = await sendRadarWebhook(webhookUrl, pendingWebhookEvents, feishuSecret === undefined ? {} : { feishuSecret })
@@ -1429,6 +1533,8 @@ async function main(args: readonly string[]): Promise<number> {
   if (command === 'radar') return runRadar(args.slice(1))
   if (command === 'task') return runTask(args.slice(1))
   if (command === 'analysis') return runAnalysis(args.slice(1))
+  if (command === 'mute') return runIncidentMute(args.slice(1))
+  if (command === 'unmute') return runIncidentUnmute(args.slice(1))
   if (command !== 'scan' && command !== 'inspect') throw new Error(`unknown command: ${command}`)
 
   const target = args[1]

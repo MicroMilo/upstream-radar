@@ -7,6 +7,7 @@ import {
   filterNotifiableRadarEvents,
 } from '../src/notification-policy.js'
 import { createAnalysisTask } from '../src/dsh-analysis.js'
+import { emptyRadarState } from '../src/radar.js'
 import type { CompatibilityEvent, ProjectInventory, VulnerabilityEvent } from '../src/radar-types.js'
 
 const vulnerability: VulnerabilityEvent = {
@@ -106,6 +107,36 @@ describe('notification policy', () => {
       policies,
       new Date('2026-08-16T02:00:00.000Z'),
     ), [compatibility])
+  })
+
+  it('suppresses only the exact muted event until its expiry', () => {
+    const state = emptyRadarState()
+    state.incidentMutes = {
+      [vulnerability.incidentId]: {
+        eventId: vulnerability.id,
+        mutedUntil: '2026-08-17T00:00:00.000Z',
+      },
+    }
+    const policies = new Map<string, never>()
+    assert.deepEqual(filterNotifiableRadarEvents(
+      [vulnerability, compatibility],
+      policies,
+      new Date('2026-08-16T02:00:00.000Z'),
+      state,
+    ), [compatibility])
+    assert.deepEqual(filterNotifiableRadarEvents(
+      [vulnerability, compatibility],
+      policies,
+      new Date('2026-08-17T00:00:00.000Z'),
+      state,
+    ), [vulnerability, compatibility])
+    const updated = { ...vulnerability, id: 'event-vulnerability-updated' }
+    assert.deepEqual(filterNotifiableRadarEvents(
+      [updated],
+      policies,
+      new Date('2026-08-16T02:00:00.000Z'),
+      state,
+    ), [updated])
   })
 
   it('rejects an invalid decision time', () => {
