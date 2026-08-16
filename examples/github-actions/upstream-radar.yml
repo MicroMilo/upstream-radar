@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: MicroMilo/upstream-radar@v0.33.0
         with:
-          config: upstream-radar.config.json
+          # The Action auto-detects one pnpm-lock.yaml or package-lock.json.
           fail-on: high
           fail-on-compatibility: breaking
           # Optional pre-install review of one exact published plugin:

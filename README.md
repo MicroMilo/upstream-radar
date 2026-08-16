@@ -50,7 +50,7 @@ It looks only at the current directory and local DSH profile metadata. It recomm
 | Your goal | Start here | What you get |
 | --- | --- | --- |
 | Keep a live DSH Agent informed | [`setup`](#install-in-dsh) | A profile-aware monitor that refreshes the installed graph and routes only changed incidents to the matching Agent. |
-| Add a scheduled CI gate | [GitHub Actions example](examples/github-actions/upstream-radar.yml) | A frozen check against a reviewed graph, with a concise Job Summary and a machine-readable JSON report. |
+| Add a scheduled CI gate | [GitHub Actions example](examples/github-actions/upstream-radar.yml) | A frozen check from a reviewed config or one lockfile, with a concise Job Summary and a machine-readable JSON report. |
 | Check a plugin before installing it | [`graph` / `init` for npm or pnpm lockfiles](#inspect-an-npm-or-pnpm-lockfile-before-installation) | Exact dependency paths and OSV/GitHub Advisory results without running the plugin or its lifecycle scripts. |
 | Review one exact published artifact | `upstream-radar inspect npm:<package>@<exact-version> --deep` | Package, dependency, vulnerability, and provenance evidence for one release. |
 | Send changed events to Feishu | [Feishu or HTTPS webhook](#notify-feishu-or-an-https-endpoint) | Native Feishu V2 text, environment-only secrets, durable acknowledgement, and retry. |
@@ -415,14 +415,13 @@ The matrix runs versions one at a time in separate temporary profiles and evalua
 
 ## Run it in GitHub Actions
 
-If your team wants a scheduled CI gate before wiring a machine to a live DSH profile, commit the reviewed `upstream-radar.config.json` and copy [the example workflow](examples/github-actions/upstream-radar.yml). The reusable Action keeps the workflow to two meaningful steps, with an optional third step for DSH load compatibility:
+If your team wants the shortest scheduled CI gate before wiring a machine to a live DSH profile, copy [the example workflow](examples/github-actions/upstream-radar.yml). It auto-detects the only `pnpm-lock.yaml` or `package-lock.json` after checkout, so no Radar config is required for the first run. If you already maintain a reviewed `upstream-radar.config.json`, pass it explicitly instead. The reusable Action keeps the workflow to two meaningful steps, with an optional third step for DSH load compatibility:
 
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
   - uses: MicroMilo/upstream-radar@v0.33.0
     with:
-      config: upstream-radar.config.json
       fail-on: high
       # Optional: also fail on deterministic DSH/plugin compatibility breaks.
       fail-on-compatibility: breaking
