@@ -522,8 +522,10 @@ export function assessCompatibilityChanges(
         change.candidateDependencyStatus ?? 'not-requested',
         (change.activeVulnerabilities ?? []).filter(event => (
           event.project.id === inventory.project.id
-          && event.plugin.name === installation.package.name
-          && event.plugin.version === installation.package.version
+          && (event.affectedPlugins ?? [event.plugin]).some(plugin => (
+            plugin.name === installation.package.name
+            && plugin.version === installation.package.version
+          ))
         )),
       )
     const eventSeed = [inventory.project.id, installation.package.name, installation.package.version, change.previous.name, change.previous.version, change.candidate.version, change.detectedAt].join('\0')

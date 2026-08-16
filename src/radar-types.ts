@@ -178,6 +178,8 @@ interface RadarEventBase {
 export interface VulnerabilityEvent extends RadarEventBase {
   kind: 'vulnerability' | 'malware'
   plugin: PackageCoordinate
+  /** When a shared DSH host-runtime event spans several plugin roots, retain every affected root. */
+  affectedPlugins?: PackageCoordinate[]
   affected: PackageCoordinate
   /** Physical origins of the affected package; absent for legacy/npm-lock graphs. */
   affectedSources?: DependencySource[]

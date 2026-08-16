@@ -334,6 +334,8 @@ This proof runs in CI on Node.js 22. See the executable [showcase contract](exam
 
 To demonstrate the host-runtime dependency path specifically, run `pnpm run showcase:dsh-runtime`. It starts a real DSH `headless` process, begins at the exact DSH executable package, walks the reachable host dependency closure behind an explicit `host-runtime` boundary, queries a local OSV-compatible feed for the real `@deepseek-ai/cordis` version, persists a `dsh-host` vulnerability path, and hands it to the DSH Agent. The model and advisory are deterministic local stubs; this proves integration and provenance, not the safety of a real advisory.
 
+To see why one shared host bug should not page every plugin separately, run `pnpm run showcase:dsh-host-alert`. Two plugin roots share the same exact `@deepseek-ai/cordis` version; Radar emits one project event, keeps both exact paths, and creates one DSH analysis task. Add `:report` to refresh the checked-in [deduplication result](examples/dsh/reports/dsh-host-alert-dedup.json).
+
 To validate the actual first-use path against the real published [`dsh-cloudflare-browser-run@0.1.1`](https://www.npmjs.com/package/dsh-cloudflare-browser-run), run `pnpm run showcase:dsh-adoption`. It creates a disposable `DSH_HOME`, packs the exact Radar and plugin tarballs with lifecycle scripts disabled, lets DSH build its own host runtime, runs `setup --no-install`, `doctor`, a frozen OSV/npm/GitHub check, and the human-readable status surface. It does not start a DSH Agent or call a model, and it does not treat an empty finding list as a safety certificate. The checked-in [adoption result](examples/dsh/reports/adoption-smoke.json) records the last run's package counts and boundaries.
 
 ## Validate the compatibility rules
@@ -563,6 +565,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - installed DSH `node_modules` graphs and npm lockfile graphs with duplicate versions and bounded dependency paths;
 - DSH shared host-runtime dependency resolution discovered from the running DSH process, with profile and `dsh-host` packages kept distinct in both graphs and alerts;
 - exact `@deepseek-ai/dsh` executable-package evidence, including host-boundary OSV alerts and its own npm compatibility stream;
+- one project-level alert for a shared DSH host-runtime vulnerability, retaining every affected plugin root and exact path instead of sending duplicate per-plugin notices;
 - exact-version OSV vulnerability and malicious-package matching;
 - npm release monitoring for plugins and DSH/Cordis packages, accepting only a candidate newer than the installed exact version (a regressed `latest` dist-tag is not a breaking update), with public GitHub Release notes attached when an exact candidate tag is available;
 - bounded transitive dependency graph checks for the earliest candidate versions, exact OSV matching for every resolved node, vulnerable path evidence, and explicit incomplete/unavailable coverage;

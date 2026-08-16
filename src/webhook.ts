@@ -95,7 +95,10 @@ function pathLabels(paths: readonly PackageCoordinate[][]): string[][] {
 
 function vulnerabilityNotice(event: VulnerabilityEvent): RadarWebhookEventNotice {
   const path = event.paths[0]?.map(packageLabel).join(' -> ') ?? 'dependency path unavailable'
-  const summary = `${packageLabel(event.affected)} is affected by ${bounded(event.advisory.id, 256)} via ${bounded(path, 4_096)}`
+  const scope = event.affectedPlugins === undefined || event.affectedPlugins.length <= 1
+    ? ''
+    : ` across ${event.affectedPlugins.length} DSH plugins`
+  const summary = `${packageLabel(event.affected)} is affected by ${bounded(event.advisory.id, 256)}${scope} via ${bounded(path, 4_096)}`
   return {
     id: bounded(event.id, 512),
     incidentId: bounded(event.incidentId, 512),
@@ -105,6 +108,9 @@ function vulnerabilityNotice(event: VulnerabilityEvent): RadarWebhookEventNotice
     project: projectReference(event.project),
     summary,
     plugin: coordinate(event.plugin),
+    ...(event.affectedPlugins === undefined
+      ? {}
+      : { affectedPlugins: event.affectedPlugins.slice(0, 64).map(coordinate) }),
     affected: coordinate(event.affected),
     ...(event.affectedSources === undefined ? {} : { affectedSources: [...event.affectedSources] }),
     advisory: {

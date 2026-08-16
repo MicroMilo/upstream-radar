@@ -34,6 +34,7 @@
 - [x] Expose verified analysis results through `radar status` and `analysis list/show`.
 - [x] Read the exact public GitHub Release notes for a candidate version; changelogs, comparison diffs, and migration guides remain deferred.
 - [x] Track the exact `@deepseek-ai/dsh` executable plus its reachable DSH/Cordis host dependency closure as a coordinated host-runtime release surface; keep per-package evidence and group same-round changes into one DSH Agent notice.
+- [x] Coalesce one shared DSH host-runtime vulnerability across all affected plugin roots, retaining the complete bounded path set and migrating legacy per-plugin host alerts.
 - [x] Group pending same-project DSH runtime compatibility tasks into one native Agent notice without merging state incidents.
 - [x] Resolve the first newer plugin candidate without a deterministic blocker or known OSV vulnerability, while leaving final compatibility to DSH project analysis.
 - [x] Resolve a bounded prefix of each candidate's transitive dependency graph with lifecycle scripts disabled, query graph nodes against OSV, and withhold candidates whose graph is incomplete or unavailable.

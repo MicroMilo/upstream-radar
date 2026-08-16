@@ -21,6 +21,47 @@ describe('radar state parsing', () => {
     assert.deepEqual(parseRadarState(legacy), legacy)
   })
 
+  it('accepts a shared DSH host event with all affected plugin roots', () => {
+    const state = emptyRadarState()
+    const event = {
+      schema: 'upstream-radar.event/v1alpha1' as const,
+      id: 'event-shared-host',
+      incidentId: 'incident-shared-host',
+      kind: 'vulnerability' as const,
+      change: 'new' as const,
+      detectedAt: '2026-08-16T01:00:00.000Z',
+      project: { id: 'project-shared-host', name: 'Shared host project' },
+      route: { channels: ['stdout'] },
+      plugin: { ecosystem: 'npm' as const, name: 'plugin-a', version: '1.0.0' },
+      affectedPlugins: [
+        { ecosystem: 'npm' as const, name: 'plugin-a', version: '1.0.0' },
+        { ecosystem: 'npm' as const, name: 'plugin-b', version: '1.0.0' },
+      ],
+      affected: { ecosystem: 'npm' as const, name: 'host-parser', version: '2.0.0' },
+      affectedSources: ['dsh-host' as const],
+      paths: [[
+        { ecosystem: 'npm' as const, name: 'plugin-a', version: '1.0.0' },
+        { ecosystem: 'npm' as const, name: 'host-parser', version: '2.0.0' },
+      ]],
+      advisory: {
+        id: 'GHSA-shared-host',
+        aliases: [],
+        summary: 'Shared host advisory',
+        details: 'Shared host details',
+        severity: 'high' as const,
+        modified: '2026-08-16T01:00:00.000Z',
+        fixedVersions: ['2.1.0'],
+        references: [],
+      },
+    }
+    state.activeVulnerabilities['project-shared-host\0dsh-host\0npm:host-parser@2.0.0\0GHSA-shared-host'] = {
+      key: 'project-shared-host\0dsh-host\0npm:host-parser@2.0.0\0GHSA-shared-host',
+      event,
+    }
+    state.history = [event]
+    assert.deepEqual(parseRadarState(state), state)
+  })
+
   it('rejects malformed transition history instead of exposing it to the renderer', () => {
     const state = emptyRadarState() as unknown as Record<string, unknown>
     state.history = [{ schema: 'upstream-radar.event/v1alpha1', id: 'event-invalid' }]

@@ -22,12 +22,17 @@ function dependencySourcesLabel(sources: readonly DependencySource[]): string {
     .join(' + ')
 }
 
+function vulnerabilityPluginScope(event: VulnerabilityEvent): string {
+  if (event.affectedPlugins === undefined || event.affectedPlugins.length <= 1) return packageLabel(event.plugin)
+  return `the shared DSH host runtime used by ${event.affectedPlugins.map(packageLabel).join(', ')}`
+}
+
 function vulnerabilityNextStep(event: VulnerabilityEvent): string {
   if (event.change === 'resolved') return 'No action required; confirm the installed graph no longer matches this incident.'
-  if (event.kind === 'malware') return `Remove or isolate ${packageLabel(event.plugin)} and ask the DSH Agent to assess project exposure.`
+  if (event.kind === 'malware') return `Remove or isolate ${vulnerabilityPluginScope(event)} and ask the DSH Agent to assess project exposure.`
   const fixedVersions = event.advisory.fixedVersions.slice(0, 4).map(item => display(item)).join(', ')
   return fixedVersions.length === 0
-    ? `No published fix is recorded; ask the DSH Agent to assess containment or replacement for ${packageLabel(event.plugin)}.`
+    ? `No published fix is recorded; ask the DSH Agent to assess containment or replacement for ${vulnerabilityPluginScope(event)}.`
     : `Review ${packageLabel(event.affected)} fixed version(s) ${fixedVersions} with the DSH Agent before changing the plugin.`
 }
 
@@ -52,7 +57,12 @@ function renderVulnerability(event: VulnerabilityEvent): string[] {
   const lines = [
     `[${severity}][${event.change.toUpperCase()}] ${event.kind === 'malware' ? 'Malicious package' : 'Dependency vulnerability'}`,
     `Project: ${display(event.project.name)} (${display(event.project.id)})`,
-    `Plugin: ${packageLabel(event.plugin)}`,
+    ...(event.affectedPlugins === undefined
+      ? [`Plugin: ${packageLabel(event.plugin)}`]
+      : [
+          `Plugins: ${event.affectedPlugins.map(packageLabel).join(', ')}`,
+          'Scope: shared DSH host runtime (one event covers these plugins)',
+        ]),
     `Affected: ${packageLabel(event.affected)}`,
     ...(event.affectedSources === undefined || event.affectedSources.length === 0
       ? []

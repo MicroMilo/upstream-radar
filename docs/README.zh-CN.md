@@ -328,6 +328,8 @@ pnpm run try:dsh
 
 如果要专门证明“宿主运行时依赖也会被监控”，运行 `pnpm run showcase:dsh-runtime`。它会启动真实的 DSH `headless` 进程，从确切的 DSH 可执行包开始，沿着明确的 `host-runtime` 边界走完这个进程能解析到的宿主传递依赖，再查询本地 OSV 兼容 feed 中针对真实 `@deepseek-ai/cordis` 版本的确定性演示漏洞，把带有 `dsh-host` 来源和完整依赖路径的事件写入状态，再交给 DSH Agent。模型和漏洞 feed 都是本地 stub；它证明的是接线、来源和持久化，不是真实漏洞的安全结论。使用 `pnpm run showcase:dsh-runtime:report` 可以更新[宿主运行时结果](../examples/dsh/reports/dsh-runtime-host.json)。
 
+如果要看“同一个宿主漏洞不要给每个插件重复报警”，运行 `pnpm run showcase:dsh-host-alert`。两个插件根共享同一个精确版本的 `@deepseek-ai/cordis`，Radar 只生成一条项目事件，同时保留两条准确路径，并只创建一个 DSH 分析任务。加上 `:report` 可以更新已提交的[去重结果](../examples/dsh/reports/dsh-host-alert-dedup.json)。
+
 如果要验证真实插件的首用路径，可以运行 `pnpm run showcase:dsh-adoption`。它会在一次性 `DSH_HOME` 中准备精确版本的 Radar 和真实 [`dsh-cloudflare-browser-run@0.1.1`](https://www.npmjs.com/package/dsh-cloudflare-browser-run) tarball，打包时禁用 lifecycle script，同时让 DSH 正常建立自己的宿主运行时，然后执行 `setup --no-install`、`doctor`、冻结的 OSV/npm/GitHub 检查和状态输出。它不会启动 DSH Agent 或调用模型，也不会把“没有发现漏洞”当成安全证明。使用 `pnpm run showcase:dsh-adoption:report` 可以更新[真实插件采用结果](../examples/dsh/reports/adoption-smoke.json)。
 生成的清单还会记录拥有宿主平面的精确 `@deepseek-ai/dsh@0.1.0-rc.6`；当前结果包含 516 个依赖节点，其中 510 个是 DSH 宿主包，并查询 512 个精确版本和 189 条 npm release stream，包含没有出现在插件依赖边上的 DSH 核心及其可达宿主闭包。
 
@@ -533,11 +535,11 @@ Radar 还会识别与 DSH 插件直接相关的升级边界：
 
 DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不确定性，并返回固定的[结果结构](../schemas/analysis-result.schema.json)。Radar 只接受同一 DSH 会话中、由模型产生的完整 JSON；普通聊天、用户伪造的标记、额外字段和过期事件都不会写回。模型无法改写程序已经确认的匹配事实，分析结论也不会改变确定性的漏洞或兼容性状态。
 
-同一轮 DSH 运行时升级如果同时改动 `@deepseek-ai/dsh`、多个 `@deepseek-ai/dsh-*` 包或 Cordis 包，Radar 仍然逐包保存状态和证据，但交给 Agent 时会合并成一个 notice。用户只需要处理一个整体升级问题，之后每个包仍然可以独立更新或恢复。
+同一轮 DSH 运行时升级如果同时改动 `@deepseek-ai/dsh`、多个 `@deepseek-ai/dsh-*` 包或 Cordis 包，Radar 仍然逐包保存状态和证据，但交给 Agent 时会合并成一个 notice。对于共享 DSH 宿主依赖的同一漏洞，多个插件也只会收到一条项目级事件；事件会保留所有受影响插件根和准确路径，避免同一个宿主漏洞制造重复告警。用户只需要处理一个整体问题，之后每个包仍然可以独立更新或恢复。
 
 ## 当前能力与边界
 
-已经支持：DSH profile 实际安装树、npm lock 和 pnpm v6/v9 lock 依赖图、从 npm/pnpm lock 生成静态 Radar 配置并执行同一套 OSV 精确版本检查、重复版本路径、未解析依赖的覆盖提示、可选 peer 与 DSH 宿主 peer 的区分、从正在运行的 DSH 进程发现真实宿主依赖平面和精确 `@deepseek-ai/dsh` 核心版本、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选；如果插件已有活跃漏洞，还会判断候选顶层版本是 `removed`、`still-affected` 还是 `unknown`，并指出第一个消除全部已检查路径的候选，但不会把它称为安全版本）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、有上限的事件历史和 `radar history` 查询、持久事件、按项目 workspace 精确路由到 DSH Agent、严格绑定消息/会话/task/event 的 DSH 结果写回、以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace、把审查过的图接入 CI 的可复用 GitHub Action 以及可读的 Job Summary、可选的 breaking/any 兼容性门禁、可选的 DSH 版本加载矩阵、离线的 `benchmark compatibility` 规则契约检查、provider-neutral HTTPS webhook 事件通知、直接投递飞书/Lark V2 文本消息、按项目设置最低漏洞等级和时区安静时段且不丢任务的通知控制，以及基于真实 DSH 插件的 consumer smoke。
+已经支持：DSH profile 实际安装树、npm lock 和 pnpm v6/v9 lock 依赖图、从 npm/pnpm lock 生成静态 Radar 配置并执行同一套 OSV 精确版本检查、重复版本路径、未解析依赖的覆盖提示、可选 peer 与 DSH 宿主 peer 的区分、从正在运行的 DSH 进程发现真实宿主依赖平面和精确 `@deepseek-ai/dsh` 核心版本、共享 DSH 宿主漏洞按项目去重但保留所有受影响插件和路径、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选；如果插件已有活跃漏洞，还会判断候选顶层版本是 `removed`、`still-affected` 还是 `unknown`，并指出第一个消除全部已检查路径的候选，但不会把它称为安全版本）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、有上限的事件历史和 `radar history` 查询、持久事件、按项目 workspace 精确路由到 DSH Agent、严格绑定消息/会话/task/event 的 DSH 结果写回、以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace、把审查过的图接入 CI 的可复用 GitHub Action 以及可读的 Job Summary、可选的 breaking/any 兼容性门禁、可选的 DSH 版本加载矩阵、离线的 `benchmark compatibility` 规则契约检查、provider-neutral HTTPS webhook 事件通知、直接投递飞书/Lark V2 文本消息、按项目设置最低漏洞等级和时区安静时段且不丢任务的通知控制，以及基于真实 DSH 插件的 consumer smoke。
 
 此外支持一次性的 `probe dsh-load` 和有界的 `probe dsh-matrix`：在临时 DSH profile 中针对一个或多个精确 DSH 版本加载一个精确 tarball，并返回 `compatible`、`incompatible` 或 `unknown`。它是加载兼容性证据，不是安全准入，也不是插件能力 benchmark。
 

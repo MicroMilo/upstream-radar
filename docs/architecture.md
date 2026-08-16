@@ -59,7 +59,7 @@ The pre-install `graph npm-lock` and `graph pnpm-lock` commands use bounded, dep
 1. Deduplicate all installed npm `name@version` pairs.
 2. Submit them to OSV `querybatch`.
 3. Fetch full details only for returned advisory ids.
-4. Match each result back to physical graph nodes and paths, retaining whether the affected node came from the plugin profile or the DSH host runtime.
+4. Match each result back to physical graph nodes and paths, retaining whether the affected node came from the plugin profile or the DSH host runtime. For a shared host-runtime package, coalesce the same project/package-version/advisory match into one event and retain every affected plugin root.
 5. Compare the current match set with durable state.
 6. Emit `new`, `updated`, or `resolved` only when state changes.
 7. Add new and updated events to the durable DSH analysis outbox.
@@ -70,7 +70,7 @@ The npm release source treats an HTTP 404 for one package as “this plugin is n
 
 The same cycle persists `lastAttemptedAt`, `lastSucceededAt`, consecutive failures, and a bounded error for each attempted source. Three consecutive failures create one project-routed `source-health` event in the same outbox; a successful check resolves it.
 
-The active-match key binds project, plugin version, affected package version, and advisory id. An unchanged advisory does not create another event.
+The active-match key binds project, plugin version, affected package version, and advisory id for ordinary plugin-profile findings. A shared DSH host-runtime finding instead binds project, affected package version, and advisory id, so several plugins using the same host package receive one incident with all affected roots and paths. An unchanged advisory does not create another event; older per-plugin host keys are migrated when the finding is still active.
 
 ## Optional external notification
 

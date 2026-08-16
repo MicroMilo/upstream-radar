@@ -62,6 +62,7 @@ const MAX_DEEP_CANDIDATES_PER_STREAM = 4
 const MAX_CANDIDATE_DEPENDENCY_QUERY = 50_000
 const MAX_CANDIDATE_DEPENDENCY_FINDINGS = 32
 const MAX_CANDIDATE_DEPENDENCY_PATHS = 4
+const MAX_VULNERABILITY_PATHS = 64
 
 type CandidateVulnerabilityStatus = 'checked' | 'unavailable' | 'not-requested'
 
@@ -87,8 +88,13 @@ function matchKey(
   plugin: PackageCoordinate,
   affected: PackageCoordinate,
   advisoryId: string,
+  scope: 'plugin' | 'dsh-host' = 'plugin',
 ): string {
-  return [inventory.project.id, packageKey(plugin), packageKey(affected), advisoryId].join('\0')
+  return [inventory.project.id, scope === 'dsh-host' ? 'dsh-host' : packageKey(plugin), packageKey(affected), advisoryId].join('\0')
+}
+
+function hostMatchKey(projectId: string, affected: PackageCoordinate, advisoryId: string): string {
+  return [projectId, 'dsh-host', packageKey(affected), advisoryId].join('\0')
 }
 
 function eventId(key: string, change: VulnerabilityEvent['change'], detectedAt: string, modified: string): string {
@@ -96,7 +102,9 @@ function eventId(key: string, change: VulnerabilityEvent['change'], detectedAt: 
 }
 
 function eventChanged(previous: VulnerabilityEvent, current: VulnerabilityEvent): boolean {
-  return JSON.stringify(previous.advisory) !== JSON.stringify(current.advisory)
+  return JSON.stringify(previous.plugin) !== JSON.stringify(current.plugin)
+    || JSON.stringify(previous.affectedPlugins) !== JSON.stringify(current.affectedPlugins)
+    || JSON.stringify(previous.advisory) !== JSON.stringify(current.advisory)
     || JSON.stringify(previous.paths) !== JSON.stringify(current.paths)
     || JSON.stringify(previous.affectedSources) !== JSON.stringify(current.affectedSources)
     || JSON.stringify(previous.route) !== JSON.stringify(current.route)
@@ -379,10 +387,15 @@ export async function pollRadar(
     : new Map(Object.entries(previousState.activeVulnerabilities))
   if (vulnerabilityCheckSucceeded) {
     for (const inventory of inventories) {
+      // A DSH profile can load several plugins into one shared host-runtime
+      // plane. Group those observations at the project level so one vulnerable
+      // Cordis/DSH package does not become one alert per plugin.
+      const groupedPaths = new Map<string, PackageCoordinate[][]>()
+      const groupedMatch = new Map<string, AdvisoryMatch>()
+      const groupedSources = new Map<string, Set<DependencySource>>()
+      const groupedPlugins = new Map<string, Map<string, PackageCoordinate>>()
+      const primaryPlugins = new Map<string, PackageCoordinate>()
       for (const plugin of inventory.plugins) {
-        const groupedPaths = new Map<string, PackageCoordinate[][]>()
-        const groupedMatch = new Map<string, AdvisoryMatch>()
-        const groupedSources = new Map<string, Set<DependencySource>>()
         const hostRuntimePackage = plugin.graph.hostRuntime?.package
         const hasHostRuntimeNode = hostRuntimePackage !== undefined
           && plugin.graph.nodes.some(node => (
@@ -410,7 +423,14 @@ export async function pollRadar(
         for (const { node, hostRuntimeBoundary } of monitoredNodes) {
           const affected = coordinate(node.name, node.version)
           for (const match of matches.get(packageKey(affected)) ?? []) {
-            const key = matchKey(inventory, plugin.package, affected, match.advisory.id)
+            const hostRuntimeScoped = hostRuntimeBoundary || node.source === 'dsh-host'
+            const key = matchKey(
+              inventory,
+              plugin.package,
+              affected,
+              match.advisory.id,
+              hostRuntimeScoped ? 'dsh-host' : 'plugin',
+            )
             const paths = hostRuntimeBoundary
               ? [[affected]]
               : findDependencyPaths(plugin.graph, node.id).map(path => (
@@ -420,6 +440,7 @@ export async function pollRadar(
             const existing = groupedPaths.get(key) ?? []
             const known = new Set(existing.map(path => JSON.stringify(path)))
             for (const path of paths) {
+              if (existing.length >= MAX_VULNERABILITY_PATHS) break
               const serialized = JSON.stringify(path)
               if (!known.has(serialized)) {
                 existing.push(path)
@@ -428,6 +449,12 @@ export async function pollRadar(
             }
             groupedPaths.set(key, existing)
             groupedMatch.set(key, match)
+            primaryPlugins.set(key, primaryPlugins.get(key) ?? plugin.package)
+            if (hostRuntimeScoped) {
+              const affectedPlugins = groupedPlugins.get(key) ?? new Map<string, PackageCoordinate>()
+              affectedPlugins.set(packageKey(plugin.package), plugin.package)
+              groupedPlugins.set(key, affectedPlugins)
+            }
             if (node.source !== undefined) {
               const sources = groupedSources.get(key) ?? new Set<DependencySource>()
               sources.add(node.source)
@@ -435,38 +462,65 @@ export async function pollRadar(
             }
           }
         }
-
-        for (const [key, paths] of groupedPaths) {
-          const match = groupedMatch.get(key)
-          if (match === undefined) continue
-          paths.sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right)))
-          const sourceSet = groupedSources.get(key)
-          const orderedSources: readonly DependencySource[] = ['profile', 'dsh-host']
-          const affectedSources = orderedSources.filter(source => sourceSet?.has(source) ?? false)
-          const event: VulnerabilityEvent = {
-            schema: RADAR_EVENT_SCHEMA,
-            id: eventId(key, 'new', checkedAt, match.advisory.modified),
-            incidentId: `incident-${hash(key)}`,
-            kind: match.advisory.id.startsWith('MAL-') ? 'malware' : 'vulnerability',
-            change: 'new',
-            detectedAt: checkedAt,
-            project: { ...inventory.project },
-            route: route(inventory),
-            plugin: { ...plugin.package },
-            affected: { ...match.package },
-            ...(affectedSources.length === 0 ? {} : { affectedSources }),
-            paths,
-            advisory: { ...match.advisory },
-          }
-          current.set(key, { key, event })
-        }
       }
+      for (const [key, paths] of groupedPaths) {
+        const match = groupedMatch.get(key)
+        paths.sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right)))
+        const sourceSet = groupedSources.get(key)
+        const orderedSources: readonly DependencySource[] = ['profile', 'dsh-host']
+        const affectedSources = orderedSources.filter(source => sourceSet?.has(source) ?? false)
+        const affectedPlugins = [...(groupedPlugins.get(key)?.values() ?? [])]
+          .sort((left, right) => packageKey(left).localeCompare(packageKey(right)))
+        const primaryPlugin = affectedPlugins[0] ?? primaryPlugins.get(key)
+        if (match === undefined || primaryPlugin === undefined) continue
+        const event: VulnerabilityEvent = {
+          schema: RADAR_EVENT_SCHEMA,
+          id: eventId(key, 'new', checkedAt, match.advisory.modified),
+          incidentId: `incident-${hash(key)}`,
+          kind: match.advisory.id.startsWith('MAL-') ? 'malware' : 'vulnerability',
+          change: 'new',
+          detectedAt: checkedAt,
+          project: { ...inventory.project },
+          route: route(inventory),
+          plugin: { ...primaryPlugin },
+          ...(affectedPlugins.length > 1
+            ? { affectedPlugins: affectedPlugins.map(item => ({ ...item })) }
+            : {}),
+          affected: { ...match.package },
+          ...(affectedSources.length === 0 ? {} : { affectedSources }),
+          paths,
+          advisory: { ...match.advisory },
+        }
+        current.set(key, { key, event })
+      }
+    }
+  }
+
+  // Versions before project-level DSH host grouping used the plugin package in
+  // the match key. Reuse one of those events for the new aggregate key when
+  // the finding is still active, so an upgrade does not produce a fake
+  // resolved + new pair of notifications.
+  const previousVulnerabilities = new Map(Object.entries(previousState.activeVulnerabilities))
+  const migratedLegacyKeys = new Set<string>()
+  const migratedLegacyIncidentIds = new Set<string>()
+  if (vulnerabilityCheckSucceeded) {
+    for (const [legacyKey, previous] of Object.entries(previousState.activeVulnerabilities)) {
+      if (previous.event.affectedSources?.includes('dsh-host') !== true) continue
+      const aggregateKey = hostMatchKey(
+        previous.event.project.id,
+        previous.event.affected,
+        previous.event.advisory.id,
+      )
+      if (aggregateKey === legacyKey || !current.has(aggregateKey)) continue
+      if (!previousVulnerabilities.has(aggregateKey)) previousVulnerabilities.set(aggregateKey, previous)
+      migratedLegacyKeys.add(legacyKey)
+      migratedLegacyIncidentIds.add(previous.event.incidentId)
     }
   }
 
   const events: RadarEvent[] = []
   for (const [key, item] of current) {
-    const previous = previousState.activeVulnerabilities[key]
+    const previous = previousVulnerabilities.get(key)
     if (previous === undefined) {
       events.push(item.event)
       continue
@@ -480,7 +534,7 @@ export async function pollRadar(
     }
   }
   for (const [key, previous] of Object.entries(previousState.activeVulnerabilities)) {
-    if (current.has(key)) continue
+    if (current.has(key) || migratedLegacyKeys.has(key)) continue
     events.push({
       ...previous.event,
       id: eventId(key, 'resolved', checkedAt, previous.event.advisory.modified),
@@ -712,8 +766,10 @@ export async function pollRadar(
               .map(item => item.event)
               .filter(event => (
                 event.project.id === inventory.project.id
-                && event.plugin.name === observation.installed.name
-                && event.plugin.version === observation.installed.version
+                && (event.affectedPlugins ?? [event.plugin]).some(plugin => (
+                  plugin.name === observation.installed.name
+                  && plugin.version === observation.installed.version
+                ))
               )),
             ...releaseNotesInput,
             ...releaseNotesUrlInput,
@@ -800,7 +856,9 @@ export async function pollRadar(
   const analysisTasks = events
     .filter(event => event.change !== 'resolved')
     .map(createAnalysisTask)
-  const pending = new Map(previousState.pendingAnalysisTasks.map(task => [task.event.incidentId, task]))
+  const pending = new Map(previousState.pendingAnalysisTasks
+    .filter(task => !migratedLegacyIncidentIds.has(task.event.incidentId))
+    .map(task => [task.event.incidentId, task]))
   for (const event of events) {
     if (event.change === 'resolved') pending.delete(event.incidentId)
   }
@@ -809,7 +867,10 @@ export async function pollRadar(
   // A new or changed event invalidates the previous model conclusion. A
   // conclusion is never carried across an upstream update, and an in-flight
   // delivery for that old event must not be allowed to write back later.
-  const changedIncidentIds = new Set(events.map(event => event.incidentId))
+  const changedIncidentIds = new Set([
+    ...events.map(event => event.incidentId),
+    ...migratedLegacyIncidentIds,
+  ])
   const analysisResults = { ...(previousState.analysisResults ?? {}) }
   for (const incidentId of changedIncidentIds) delete analysisResults[incidentId]
   const analysisDeliveries = Object.fromEntries(

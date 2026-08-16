@@ -6,6 +6,7 @@ All notable changes to Upstream Radar are documented here.
 
 ### Added
 
+- Coalesce the same shared DSH host-runtime vulnerability across all affected plugins in one project-level event, while retaining every plugin root and bounded exact path; migrate legacy per-plugin host keys without a fake resolve/new alert pair.
 - Walk the exact DSH executable package through a synthetic `host-runtime` boundary and its reachable host dependency closure, so advisories in DSH core's own transitive packages keep an exact path and source attribution instead of disappearing outside the plugin graph.
 - Keep installed-package graph collection tolerant of non-semantic empty/non-string `main` and `type` metadata found in real DSH host packages without weakening the strict parser used for Radar configuration and release metadata.
 - Record the exact `@deepseek-ai/dsh` executable package that owns the shared host plane, monitor its OSV vulnerabilities and npm releases, and render a DSH-core finding as an explicit host-runtime boundary rather than a fabricated plugin dependency edge.

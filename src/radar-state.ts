@@ -28,6 +28,15 @@ function validAffectedSources(value: unknown): boolean {
   return new Set(value).size === value.length && value.every(item => typeof item === 'string' && allowed.has(item))
 }
 
+function validAffectedPlugins(value: unknown): boolean {
+  if (value === undefined) return true
+  if (!Array.isArray(value) || value.length === 0 || value.length > 1_000) return false
+  const keys = value.map(item => validPackageCoordinate(item)
+    ? `${(item as { ecosystem: string }).ecosystem}:${(item as { name: string }).name}@${(item as { version: string }).version}`
+    : undefined)
+  return keys.every(key => key !== undefined) && new Set(keys).size === keys.length
+}
+
 function validPackageCoordinate(value: unknown): boolean {
   const coordinate = asRecord(value)
   return coordinate?.ecosystem === 'npm'
@@ -252,6 +261,7 @@ function validHistoryEvent(value: unknown): boolean {
     const advisory = asRecord(event.advisory)
     const paths = event.paths
     return validPackageCoordinate(event.plugin)
+      && validAffectedPlugins(event.affectedPlugins)
       && validPackageCoordinate(event.affected)
       && Array.isArray(paths) && paths.length <= 64
       && paths.every(path => Array.isArray(path) && path.length > 0 && path.length <= 128 && path.every(validPackageCoordinate))
@@ -337,7 +347,8 @@ export function parseRadarState(value: unknown): RadarState {
       || (event.kind !== 'vulnerability' && event.kind !== 'malware' && event.kind !== 'compatibility' && event.kind !== 'source-health')) {
       throw new Error('radar state contains an invalid pending analysis task')
     }
-    if (!validAffectedSources(event.affectedSources)) throw new Error('radar state contains invalid affected package origins')
+    if (!validAffectedSources(event.affectedSources)
+      || !validAffectedPlugins(event.affectedPlugins)) throw new Error('radar state contains invalid vulnerability scope')
     if (!validCompatibilityUpgradePath(event.upgradePath)) throw new Error('radar state contains an invalid compatibility upgrade path')
   }
   for (const [key, rawDelivery] of Object.entries(analysisDeliveries)) {
@@ -361,7 +372,8 @@ export function parseRadarState(value: unknown): RadarState {
     if (stored?.key !== key || event?.schema !== RADAR_EVENT_SCHEMA || typeof event.incidentId !== 'string'
       || (event.kind !== 'vulnerability' && event.kind !== 'malware')
       || typeof advisory?.id !== 'string' || typeof advisory.modified !== 'string'
-      || !validAffectedSources(event.affectedSources)) {
+      || !validAffectedSources(event.affectedSources)
+      || !validAffectedPlugins(event.affectedPlugins)) {
       throw new Error(`radar state contains an invalid active match: ${key.slice(0, 256)}`)
     }
   }

@@ -364,6 +364,109 @@ describe('radar polling', () => {
     assert.equal(result.packagesQueried, 4)
   })
 
+  it('coalesces one shared DSH host finding across plugin roots and keeps paths deterministic', async () => {
+    const multiPluginInventory = structuredClone(inventory)
+    const secondPlugin = structuredClone(inventory.plugins[0]!)
+    secondPlugin.package = { ecosystem: 'npm', name: 'plugin-two', version: '1.0.0' }
+    secondPlugin.graph = {
+      schema: 'upstream-radar.dependency-graph/v1alpha1',
+      rootNodeId: 'plugin-two',
+      nodes: [
+        { id: 'plugin-two', name: 'plugin-two', version: '1.0.0' },
+        { id: 'shared-parser', name: 'parser', version: '2.9.0', source: 'dsh-host' },
+      ],
+      edges: [{ from: 'plugin-two', to: 'shared-parser', kind: 'runtime' }],
+    }
+    multiPluginInventory.plugins.push(secondPlugin)
+
+    const first = await pollRadar(
+      [multiPluginInventory],
+      emptyRadarState(),
+      source('2026-08-14T01:00:00.000Z'),
+      new Date('2026-08-14T01:01:00.000Z'),
+    )
+    assert.equal(first.events.length, 1)
+    assert.equal(first.analysisTasks.length, 1)
+    assert.equal(Object.keys(first.state.activeVulnerabilities).length, 1)
+    const event = first.events[0]
+    assert.ok(event?.kind === 'vulnerability')
+    assert.deepEqual(event.affectedPlugins?.map(packageKey), [
+      'npm:plugin-two@1.0.0',
+      'npm:plugin@1.0.0',
+    ])
+    assert.deepEqual(event.paths.map(path => path.map(packageKey)), [
+      ['npm:plugin-two@1.0.0', 'npm:parser@2.9.0'],
+      ['npm:plugin@1.0.0', 'npm:logger@4.0.2', 'npm:parser@2.9.0'],
+    ])
+
+    const reordered = structuredClone(multiPluginInventory)
+    reordered.plugins.reverse()
+    const stable = await pollRadar(
+      [reordered],
+      first.state,
+      source('2026-08-14T01:00:00.000Z'),
+      new Date('2026-08-14T01:31:00.000Z'),
+    )
+    assert.equal(stable.events.length, 0)
+  })
+
+  it('migrates legacy per-plugin DSH host keys without emitting a fake resolution', async () => {
+    const single = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      source('2026-08-14T01:00:00.000Z'),
+      new Date('2026-08-14T01:01:00.000Z'),
+    )
+    const legacy = structuredClone(single.state)
+    const currentEntry = Object.values(legacy.activeVulnerabilities)[0]
+    assert.ok(currentEntry)
+    const legacyKey = [
+      inventory.project.id,
+      'npm:plugin@1.0.0',
+      'npm:parser@2.9.0',
+      'GHSA-demo',
+    ].join('\0')
+    const legacyEvent = {
+      ...currentEntry.event,
+      id: 'event-legacy-host',
+      incidentId: 'incident-legacy-host',
+    }
+    delete legacy.activeVulnerabilities[Object.keys(legacy.activeVulnerabilities)[0]!]
+    legacy.activeVulnerabilities[legacyKey] = { key: legacyKey, event: legacyEvent }
+    legacy.pendingAnalysisTasks = legacy.pendingAnalysisTasks.map(task => ({
+      ...task,
+      id: 'analysis-legacy-host',
+      event: legacyEvent,
+    }))
+
+    const multiPluginInventory = structuredClone(inventory)
+    const secondPlugin = structuredClone(inventory.plugins[0]!)
+    secondPlugin.package = { ecosystem: 'npm', name: 'plugin-two', version: '1.0.0' }
+    secondPlugin.graph = {
+      schema: 'upstream-radar.dependency-graph/v1alpha1',
+      rootNodeId: 'plugin-two',
+      nodes: [
+        { id: 'plugin-two', name: 'plugin-two', version: '1.0.0' },
+        { id: 'shared-parser', name: 'parser', version: '2.9.0', source: 'dsh-host' },
+      ],
+      edges: [{ from: 'plugin-two', to: 'shared-parser', kind: 'runtime' }],
+    }
+    multiPluginInventory.plugins.push(secondPlugin)
+
+    const result = await pollRadar(
+      [multiPluginInventory],
+      legacy,
+      source('2026-08-14T01:00:00.000Z'),
+      new Date('2026-08-14T02:01:00.000Z'),
+    )
+    assert.deepEqual(result.events.map(event => event.change), ['updated'])
+    assert.notEqual(result.events[0]?.incidentId, legacyEvent.incidentId)
+    assert.equal(Object.keys(result.state.activeVulnerabilities).length, 1)
+    assert.equal(Object.keys(result.state.activeVulnerabilities)[0]?.includes('\0dsh-host\0'), true)
+    assert.equal(result.state.pendingAnalysisTasks.length, 1)
+    assert.notEqual(result.state.pendingAnalysisTasks[0]?.event.incidentId, legacyEvent.incidentId)
+  })
+
   it('skips a known-vulnerable intermediate release when choosing an upgrade path', async () => {
     const calls: string[][] = []
     const candidateAdvisory = {

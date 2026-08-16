@@ -1,0 +1,68 @@
+{
+  "schema": "upstream-radar.dsh-host-alert-showcase/v1alpha1",
+  "project": {
+    "id": "dsh-host-showcase",
+    "name": "DSH host alert showcase",
+    "channels": [
+      "stdout"
+    ]
+  },
+  "pluginRoots": [
+    {
+      "ecosystem": "npm",
+      "name": "browser-plugin",
+      "version": "1.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "search-plugin",
+      "version": "2.0.0"
+    }
+  ],
+  "activeEvents": 1,
+  "dshAnalysisTasks": 1,
+  "affectedPackage": {
+    "ecosystem": "npm",
+    "name": "@deepseek-ai/cordis",
+    "version": "4.0.1"
+  },
+  "affectedPlugins": [
+    {
+      "ecosystem": "npm",
+      "name": "browser-plugin",
+      "version": "1.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "search-plugin",
+      "version": "2.0.0"
+    }
+  ],
+  "affectedPaths": [
+    [
+      {
+        "ecosystem": "npm",
+        "name": "browser-plugin",
+        "version": "1.0.0"
+      },
+      {
+        "ecosystem": "npm",
+        "name": "@deepseek-ai/cordis",
+        "version": "4.0.1"
+      }
+    ],
+    [
+      {
+        "ecosystem": "npm",
+        "name": "search-plugin",
+        "version": "2.0.0"
+      },
+      {
+        "ecosystem": "npm",
+        "name": "@deepseek-ai/cordis",
+        "version": "4.0.1"
+      }
+    ]
+  ],
+  "incidentId": "incident-3741c049be5f15311d49ebf4"
+}

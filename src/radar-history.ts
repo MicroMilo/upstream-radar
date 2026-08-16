@@ -40,7 +40,10 @@ function packageLabel(value: { name: string; version: string }): string {
 function vulnerabilitySummary(event: VulnerabilityEvent): string {
   const path = event.paths[0]?.map(packageLabel).join(' -> ') ?? 'dependency path unavailable'
   const kind = event.kind === 'malware' ? 'malicious package' : 'vulnerability'
-  return `${kind}: ${packageLabel(event.affected)} (${display(event.advisory.id)}) via ${path}`
+  const scope = event.affectedPlugins === undefined || event.affectedPlugins.length <= 1
+    ? ''
+    : ` across ${event.affectedPlugins.length} DSH plugins`
+  return `${kind}: ${packageLabel(event.affected)} (${display(event.advisory.id)})${scope} via ${path}`
 }
 
 function compatibilitySummary(event: CompatibilityEvent): string {

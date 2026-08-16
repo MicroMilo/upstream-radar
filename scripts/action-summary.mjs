@@ -30,6 +30,12 @@ function packageLabel(value) {
   return `${value.name ?? 'unknown'}@${value.version ?? 'unknown'}`
 }
 
+function vulnerabilityPluginScope(event) {
+  return Array.isArray(event?.affectedPlugins) && event.affectedPlugins.length > 1
+    ? `the shared DSH host runtime used by ${event.affectedPlugins.map(packageLabel).join(', ')}`
+    : packageLabel(event?.plugin)
+}
+
 function pathLabel(path) {
   return Array.isArray(path) && path.length > 0
     ? path.map(packageLabel).join(' → ')
@@ -46,7 +52,7 @@ function vulnerabilityGuidance(event) {
   if (event?.kind === 'malware') {
     return {
       fix: 'remove or isolate the plugin',
-      next: `Remove or isolate ${packageLabel(event.plugin)} and investigate project exposure.`,
+      next: `Remove or isolate ${vulnerabilityPluginScope(event)} and investigate project exposure.`,
     }
   }
   const fixedVersions = Array.isArray(event?.advisory?.fixedVersions)
@@ -55,7 +61,7 @@ function vulnerabilityGuidance(event) {
   return fixedVersions.length === 0
     ? {
         fix: 'none published',
-        next: `Assess containment or replacement for ${packageLabel(event?.plugin)}.`,
+        next: `Assess containment or replacement for ${vulnerabilityPluginScope(event)}.`,
       }
     : {
         fix: fixedVersions,

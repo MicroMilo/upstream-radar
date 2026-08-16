@@ -49,6 +49,10 @@ describe('Radar event rendering', () => {
       project: { id: 'demo', name: 'Demo' },
       route: { channels: ['stdout'] },
       plugin: { ecosystem: 'npm', name: 'demo-plugin', version: '1.0.0' },
+      affectedPlugins: [
+        { ecosystem: 'npm', name: 'demo-plugin', version: '1.0.0' },
+        { ecosystem: 'npm', name: 'second-plugin', version: '1.0.0' },
+      ],
       affected: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
       affectedSources: ['dsh-host'],
       paths: [[{ ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' }]],
@@ -64,6 +68,8 @@ describe('Radar event rendering', () => {
       },
     }
     const output = renderRadarEvent(event)
+    assert.match(output, /Plugins: demo-plugin@1\.0\.0, second-plugin@1\.0\.0/)
+    assert.match(output, /Scope: shared DSH host runtime \(one event covers these plugins\)/)
     assert.match(output, /Path note: this one-node path is the exact DSH host-runtime boundary, not a plugin dependency edge\./)
   })
 

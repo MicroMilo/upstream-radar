@@ -103,6 +103,11 @@ function packageLabel(value: { name: string; version: string }): string {
   return `${display(value.name)}@${display(value.version)}`
 }
 
+function vulnerabilityPluginScope(event: VulnerabilityEvent): string {
+  if (event.affectedPlugins === undefined || event.affectedPlugins.length <= 1) return packageLabel(event.plugin)
+  return `the shared DSH host runtime used by ${event.affectedPlugins.map(packageLabel).join(', ')}`
+}
+
 function sourceLabel(source: RadarSource): string {
   if (source === 'osv') return 'OSV'
   if (source === 'npm-releases') return 'npm releases'
@@ -128,7 +133,10 @@ function vulnerabilityStatusIncident(event: VulnerabilityEvent, state: RadarStat
   const path = firstPath === undefined
     ? 'dependency path unavailable'
     : firstPath.map(packageLabel).join(' -> ')
-  const summary = `${packageLabel(event.affected)} is affected by ${display(event.advisory.id)} via ${path}`
+  const scope = event.affectedPlugins === undefined || event.affectedPlugins.length <= 1
+    ? ''
+    : ` across ${event.affectedPlugins.length} DSH plugins`
+  const summary = `${packageLabel(event.affected)} is affected by ${display(event.advisory.id)}${scope} via ${path}`
   if (event.kind === 'malware') {
     return {
       incidentId: event.incidentId,
@@ -136,7 +144,7 @@ function vulnerabilityStatusIncident(event: VulnerabilityEvent, state: RadarStat
       priority: 'critical',
       project: display(event.project.name),
       summary,
-      nextStep: analysisNextStep(state, event.incidentId, `Remove or isolate ${packageLabel(event.plugin)}, then ask the DSH Agent to assess project exposure.`),
+      nextStep: analysisNextStep(state, event.incidentId, `Remove or isolate ${vulnerabilityPluginScope(event)}, then ask the DSH Agent to assess project exposure.`),
     }
   }
   const fixedVersions = event.advisory.fixedVersions.slice(0, 4).map(item => display(item)).join(', ')
@@ -147,7 +155,7 @@ function vulnerabilityStatusIncident(event: VulnerabilityEvent, state: RadarStat
     project: display(event.project.name),
     summary,
     nextStep: analysisNextStep(state, event.incidentId, fixedVersions.length === 0
-      ? `No published fix is recorded; ask the DSH Agent to assess containment or replacement for ${packageLabel(event.plugin)}.`
+      ? `No published fix is recorded; ask the DSH Agent to assess containment or replacement for ${vulnerabilityPluginScope(event)}.`
       : `Review ${event.affected.name} fixed version(s) ${fixedVersions} with the DSH Agent before changing the plugin.`),
   }
 }

@@ -13,7 +13,7 @@ import {
   sendRadarWebhook,
   undeliveredRadarWebhookEvents,
 } from '../src/webhook.js'
-import type { CompatibilityEvent } from '../src/radar-types.js'
+import type { CompatibilityEvent, VulnerabilityEvent } from '../src/radar-types.js'
 
 const event: CompatibilityEvent = {
   schema: 'upstream-radar.event/v1alpha1',
@@ -31,6 +31,43 @@ const event: CompatibilityEvent = {
 }
 
 describe('webhook delivery', () => {
+  it('keeps all plugin roots when a shared DSH host event is delivered', () => {
+    const vulnerability: VulnerabilityEvent = {
+      schema: 'upstream-radar.event/v1alpha1',
+      id: 'event-shared-host-webhook',
+      incidentId: 'incident-shared-host-webhook',
+      kind: 'vulnerability',
+      change: 'new',
+      detectedAt: '2026-08-16T04:00:00.000Z',
+      project: { id: 'project-webhook', name: 'Webhook project' },
+      route: { channels: ['stdout'] },
+      plugin: { ecosystem: 'npm', name: 'plugin-a', version: '1.0.0' },
+      affectedPlugins: [
+        { ecosystem: 'npm', name: 'plugin-a', version: '1.0.0' },
+        { ecosystem: 'npm', name: 'plugin-b', version: '1.0.0' },
+      ],
+      affected: { ecosystem: 'npm', name: 'host-parser', version: '2.0.0' },
+      affectedSources: ['dsh-host'],
+      paths: [[
+        { ecosystem: 'npm', name: 'plugin-a', version: '1.0.0' },
+        { ecosystem: 'npm', name: 'host-parser', version: '2.0.0' },
+      ]],
+      advisory: {
+        id: 'GHSA-shared-host-webhook',
+        aliases: [],
+        summary: 'Shared host webhook advisory',
+        details: 'Details',
+        severity: 'high',
+        modified: '2026-08-16T04:00:00.000Z',
+        fixedVersions: ['2.1.0'],
+        references: [],
+      },
+    }
+    const notice = buildRadarWebhookPayload([vulnerability]).events[0]
+    assert.deepEqual(notice?.affectedPlugins, vulnerability.affectedPlugins)
+    assert.match(notice?.summary ?? '', /across 2 DSH plugins/)
+  })
+
   it('accepts HTTPS provider URLs but never credentials or fragments', () => {
     const url = 'https://hooks.example.test/incoming?token=secret'
     assert.equal(normalizeRadarWebhookUrl(url), url)
