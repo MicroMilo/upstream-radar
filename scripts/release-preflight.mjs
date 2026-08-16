@@ -32,6 +32,18 @@ function fail(name, detail) {
   checks.push({ name, status: 'fail', detail })
 }
 
+function isCrossSourceDemoReport(report) {
+  const sources = report?.event?.advisory?.sources
+  const conflicts = report?.event?.advisory?.conflicts
+  return report?.schema === 'upstream-radar.demo/v1alpha1'
+    && report?.networkFree === true
+    && Array.isArray(sources)
+    && sources.includes('osv')
+    && sources.includes('github-advisories')
+    && Array.isArray(conflicts)
+    && conflicts.some(conflict => conflict?.field === 'fixed-versions')
+}
+
 async function pathExists(relativePath) {
   try {
     await stat(resolve(root, relativePath))
@@ -265,7 +277,28 @@ async function checkPackedArtifact() {
       fail('packed artifact smoke', 'installed CLI returned an unexpected compatibility benchmark result')
       return
     }
-    pass('packed artifact smoke', 'a fresh offline install started the packaged CLI and passed its benchmark')
+
+    const demo = spawnSync(process.execPath, [cli, 'demo', '--json'], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 4 * 1024 * 1024,
+    })
+    if (demo.status !== 0) {
+      fail('packed artifact smoke', (demo.stderr || demo.stdout || 'installed CLI demo failed').trim())
+      return
+    }
+    let demoReport
+    try {
+      demoReport = JSON.parse(demo.stdout)
+    } catch (error) {
+      fail('packed artifact smoke', `installed CLI returned invalid demo JSON: ${error instanceof Error ? error.message : String(error)}`)
+      return
+    }
+    if (!isCrossSourceDemoReport(demoReport)) {
+      fail('packed artifact smoke', 'installed CLI demo did not contain the cross-source advisory evidence showcase')
+      return
+    }
+    pass('packed artifact smoke', 'a fresh offline install started the packaged CLI, passed its benchmark, and preserved the cross-source demo')
   } finally {
     await rm(temporaryRoot, { recursive: true, force: true })
   }
@@ -373,11 +406,11 @@ async function checkPublishedArtifact(isAvailable) {
       fail('published artifact smoke', `published CLI returned invalid demo JSON: ${error instanceof Error ? error.message : String(error)}`)
       return
     }
-    if (report.schema !== 'upstream-radar.demo/v1alpha1' || report.networkFree !== true) {
-      fail('published artifact smoke', 'published CLI returned an unexpected demo report')
+    if (!isCrossSourceDemoReport(report)) {
+      fail('published artifact smoke', 'published CLI returned an unexpected or incomplete cross-source demo report')
       return
     }
-    pass('published artifact smoke', `upstream-radar@${version} installed from npm with scripts disabled and passed help plus demo`)
+    pass('published artifact smoke', `upstream-radar@${version} installed from npm with scripts disabled and passed help plus the cross-source demo`)
   } finally {
     await rm(temporaryRoot, { recursive: true, force: true })
   }
