@@ -120,6 +120,7 @@ function vulnerabilityNotice(event: VulnerabilityEvent): RadarWebhookEventNotice
       severity: event.kind === 'malware' ? 'critical' : event.advisory.severity,
       fixedVersions: event.advisory.fixedVersions.slice(0, 16).map(item => bounded(item, 256)),
       references: event.advisory.references.slice(0, 16).map(item => bounded(item, 2_048)),
+      ...(event.advisory.sources === undefined ? {} : { sources: [...event.advisory.sources] }),
     },
     paths: pathLabels(event.paths),
   }

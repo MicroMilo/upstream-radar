@@ -1,4 +1,4 @@
-import type { CompatibilityEvent, DependencySource, RadarEvent, VulnerabilityEvent } from './radar-types.js'
+import type { AdvisorySourceName, CompatibilityEvent, DependencySource, RadarEvent, VulnerabilityEvent } from './radar-types.js'
 
 function display(value: string, max = 2_048): string {
   const escaped = value.replace(/[\u0000-\u001f\u007f-\u009f]/g, character => (
@@ -19,6 +19,13 @@ function dependencySourcesLabel(sources: readonly DependencySource[]): string {
   return (['profile', 'dsh-host'] as const)
     .filter(source => sources.includes(source))
     .map(dependencySourceLabel)
+    .join(' + ')
+}
+
+function advisorySourcesLabel(sources: readonly AdvisorySourceName[]): string {
+  return (['osv', 'github-advisories'] as const)
+    .filter(source => sources.includes(source))
+    .map(source => source === 'github-advisories' ? 'GitHub Advisory Database' : 'OSV')
     .join(' + ')
 }
 
@@ -68,6 +75,9 @@ function renderVulnerability(event: VulnerabilityEvent): string[] {
       ? []
       : [`Origin: ${dependencySourcesLabel(event.affectedSources)}`]),
     `Advisory: ${display(event.advisory.id)}${event.advisory.aliases.length === 0 ? '' : ` / ${event.advisory.aliases.map(item => display(item)).join(', ')}`}`,
+    ...(event.advisory.sources === undefined || event.advisory.sources.length === 0
+      ? []
+      : [`Sources: ${advisorySourcesLabel(event.advisory.sources)}`]),
     `Summary: ${display(event.advisory.summary)}`,
   ]
   if (event.paths.length > 0) {

@@ -30,11 +30,13 @@ describe('Radar event rendering', () => {
         modified: '2026-08-16T01:00:00.000Z',
         fixedVersions: ['0.2.0'],
         references: [],
+        sources: ['osv', 'github-advisories'],
       },
     }
 
     const output = renderRadarEvent(event)
     assert.match(output, /Origin: plugin profile \+ DSH host runtime/)
+    assert.match(output, /Sources: OSV \+ GitHub Advisory Database/)
     assert.match(output, /Next: Review @deepseek-ai\/dsh-agent@0\.1\.0-rc\.6 fixed version\(s\) 0\.2\.0 with the DSH Agent before changing the plugin\./)
   })
 

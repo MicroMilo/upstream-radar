@@ -76,6 +76,7 @@ const firstVulnerabilities = first.events.filter(event => event.kind === 'vulner
 assert.equal(firstVulnerabilities.length, 1)
 assert.equal(firstVulnerabilities[0]?.advisory.id, 'GHSA-demo-2026-parser')
 assert.deepEqual(firstVulnerabilities[0]?.advisory.fixedVersions, ['3.0.0', '3.1.0'])
+assert.deepEqual(firstVulnerabilities[0]?.advisory.sources, ['osv', 'github-advisories'])
 assert.equal(healthyGitHub.calls(), 2)
 
 const unavailable = await githubSource({ fail: true })
@@ -119,6 +120,7 @@ assert.equal(Object.keys(recovered.state.activeVulnerabilities).length, 1)
 
 console.log('GitHub Advisory Database showcase')
 console.log(`  same advisory from OSV + GitHub: 2 reports -> ${firstVulnerabilities.length} Radar incident`)
+console.log(`  source provenance: ${firstVulnerabilities[0]?.advisory.sources?.join(' + ')}`)
 console.log(`  merged aliases: ${firstVulnerabilities[0]?.advisory.aliases.join(', ')}`)
 console.log(`  merged fixed versions: ${firstVulnerabilities[0]?.advisory.fixedVersions.join(', ')}`)
 console.log(`  GitHub API requests: ${healthyGitHub.calls()} (network = none; deterministic fetch stub)`)

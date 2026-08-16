@@ -40,6 +40,7 @@ describe('OSV client', () => {
     assert.equal(hit?.[0]?.advisory.id, 'GHSA-demo')
     assert.deepEqual(hit?.[0]?.advisory.fixedVersions, ['3.0.0'])
     assert.equal(hit?.[0]?.advisory.severity, 'high')
+    assert.deepEqual(hit?.[0]?.advisory.sources, ['osv'])
     assert.equal(requests.length, 2)
   })
 })

@@ -12,6 +12,7 @@ import {
   MAX_RADAR_HISTORY_EVENTS,
   RADAR_STATE_SCHEMA,
   type AdvisoryMatch,
+  type AdvisorySourceName,
   type AnalysisTask,
   type CandidateDependencyGraphObservation,
   type CompatibilityDependencyCheck,
@@ -365,12 +366,27 @@ function advisoriesOverlap(left: VulnerabilityAdvisory, right: VulnerabilityAdvi
   return [...advisoryIdentities(left)].some(identity => rightIdentities.has(identity))
 }
 
+const ADVISORY_SOURCE_ORDER: readonly AdvisorySourceName[] = ['osv', 'github-advisories']
+
+function advisorySources(advisory: VulnerabilityAdvisory): AdvisorySourceName[] {
+  return ADVISORY_SOURCE_ORDER.filter(source => advisory.sources?.includes(source) === true)
+}
+
+function addAdvisorySource(advisory: VulnerabilityAdvisory, source: AdvisorySourceName): VulnerabilityAdvisory {
+  const sources = new Set([...advisorySources(advisory), source])
+  return {
+    ...advisory,
+    sources: ADVISORY_SOURCE_ORDER.filter(item => sources.has(item)),
+  }
+}
+
 /** Merge one source's richer metadata without allowing a lower severity to hide a higher one. */
 function mergeAdvisory(left: VulnerabilityAdvisory, right: VulnerabilityAdvisory): VulnerabilityAdvisory {
   const aliases = new Set([...left.aliases, ...right.aliases, right.id])
   aliases.delete(left.id)
   const fixedVersions = new Set([...left.fixedVersions, ...right.fixedVersions])
   const references = new Set([...left.references, ...right.references])
+  const sources = new Set([...advisorySources(left), ...advisorySources(right)])
   return {
     id: left.id,
     aliases: [...aliases].sort(),
@@ -382,26 +398,31 @@ function mergeAdvisory(left: VulnerabilityAdvisory, right: VulnerabilityAdvisory
     ...(left.withdrawn === undefined ? right.withdrawn === undefined ? {} : { withdrawn: right.withdrawn } : { withdrawn: left.withdrawn }),
     fixedVersions: [...fixedVersions].sort(),
     references: [...references].slice(0, 100),
+    ...(sources.size === 0 ? {} : { sources: ADVISORY_SOURCE_ORDER.filter(source => sources.has(source)) }),
   }
 }
 
 function mergeAdvisoryMatches(
-  sources: readonly Map<string, AdvisoryMatch[]>[],
+  sources: readonly { name: AdvisorySourceName; matches: Map<string, AdvisoryMatch[]> }[],
 ): Map<string, AdvisoryMatch[]> {
   const grouped = new Map<string, AdvisoryMatch[][]>()
   for (const source of sources) {
-    for (const [key, matches] of source) {
+    for (const [key, matches] of source.matches) {
       const groups = grouped.get(key) ?? []
       for (const match of matches) {
-        const overlapping = groups.filter(group => group.some(existing => advisoriesOverlap(existing.advisory, match.advisory)))
+        const sourcedMatch: AdvisoryMatch = {
+          package: { ...match.package },
+          advisory: addAdvisorySource(match.advisory, source.name),
+        }
+        const overlapping = groups.filter(group => group.some(existing => advisoriesOverlap(existing.advisory, sourcedMatch.advisory)))
         if (overlapping.length === 0) {
-          groups.push([{ package: { ...match.package }, advisory: { ...match.advisory } }])
+          groups.push([sourcedMatch])
           continue
         }
         // Keep the first source's identifier as the durable primary key. The
         // later source contributes aliases and metadata instead of renaming an
         // already-known incident on every poll.
-        const combined = [...overlapping.flat(), match]
+        const combined = [...overlapping.flat(), sourcedMatch]
         const first = combined[0]
         if (first === undefined) continue
         const mergedAdvisory = combined.slice(1).reduce(
@@ -486,7 +507,10 @@ export async function pollRadar(
       advisoryOutcomes.set(binding.name, { succeeded: false, message })
     }
   }
-  const matches = mergeAdvisoryMatches(advisoryResults.map(item => item.matches))
+  const matches = mergeAdvisoryMatches(advisoryResults.map(item => ({
+    name: item.binding.name,
+    matches: item.matches,
+  })))
   const vulnerabilityQuerySucceeded = advisoryResults.length > 0
   const vulnerabilityCheckSucceeded = advisoryBindings.every(binding => advisoryOutcomes.get(binding.name)?.succeeded === true)
   const current = vulnerabilityCheckSucceeded

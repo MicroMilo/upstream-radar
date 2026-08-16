@@ -186,7 +186,7 @@ OSV/GitHub Advisory or npm release
 
 **No matching installed path means no Agent wake-up.** Version matching and compatibility facts are calculated by code; the model handles only repository-specific judgment.
 
-Radar checks OSV and the GitHub Advisory Database as independent vulnerability sources. If both sources describe the same issue through a GHSA or CVE alias, Radar emits one incident and keeps the source identifiers and fix versions together. If one source times out, the last confirmed vulnerability is retained; the source itself becomes a visible health incident after three consecutive failures instead of being treated as clean. The CLI and DSH adapter use the GitHub source by default, accept an optional `GITHUB_TOKEN` from the environment for API rate limits, and expose `--no-github-advisories` when an operator deliberately needs an OSV-only run. See the [GitHub Advisory Database API](https://docs.github.com/en/rest/security-advisories/global-advisories?apiVersion=2026-03-10) for the upstream query contract.
+Radar checks OSV and the GitHub Advisory Database as independent vulnerability sources. If both sources describe the same issue through a GHSA or CVE alias, Radar emits one incident and keeps the source identifiers, source list, and fix versions together; human-readable output says `Sources: OSV + GitHub Advisory Database` for this cross-confirmed case. If one source times out, the last confirmed vulnerability is retained; the source itself becomes a visible health incident after three consecutive failures instead of being treated as clean. The CLI and DSH adapter use the GitHub source by default, accept an optional `GITHUB_TOKEN` from the environment for API rate limits, and expose `--no-github-advisories` when an operator deliberately needs an OSV-only run. See the [GitHub Advisory Database API](https://docs.github.com/en/rest/security-advisories/global-advisories?apiVersion=2026-03-10) for the upstream query contract.
 
 ## The missing middle: candidate dependency graphs
 
@@ -350,7 +350,7 @@ To see why one shared host bug should not page every plugin separately, run `pnp
 
 To validate the actual first-use path against the real published [`dsh-cloudflare-browser-run@0.1.1`](https://www.npmjs.com/package/dsh-cloudflare-browser-run), run `pnpm run showcase:dsh-adoption`. It creates a disposable `DSH_HOME`, packs the exact Radar and plugin tarballs with lifecycle scripts disabled, lets DSH build its own host runtime, runs `setup --no-install`, `doctor`, a frozen OSV/npm/GitHub check, and the human-readable status surface. It does not start a DSH Agent or call a model, and it does not treat an empty finding list as a safety certificate. The checked-in [adoption result](examples/dsh/reports/adoption-smoke.json) records the last run's package counts and boundaries.
 
-To see the two-source vulnerability contract without contacting the network, run `pnpm run showcase:github-advisories`. It feeds the same parser issue through OSV and a deterministic GitHub Advisory Database client, proves that two reports become one Radar incident, then simulates three GitHub failures and recovery. The existing vulnerability remains active throughout; only the GitHub source-health incident changes.
+To see the two-source vulnerability contract without contacting the network, run `pnpm run showcase:github-advisories`. It feeds the same parser issue through OSV and a deterministic GitHub Advisory Database client, proves that two reports become one Radar incident with explicit source provenance, then simulates three GitHub failures and recovery. The existing vulnerability remains active throughout; only the GitHub source-health incident changes.
 
 ## Validate the compatibility rules
 
@@ -493,7 +493,7 @@ For a local or self-hosted DSH machine, omit `--frozen` so Radar refreshes the s
 ## How the loop works
 
 1. Read the project inventory and exact installed npm graph.
-2. Query OSV and GitHub Advisory Database with every installed `name@version` pair, then merge matching GHSA/CVE aliases.
+2. Query OSV and GitHub Advisory Database with every installed `name@version` pair, then merge matching GHSA/CVE aliases while preserving which source(s) confirmed the result.
 3. Watch npm releases for the installed plugin and DSH/Cordis packages.
 4. Create or update one durable incident with the exact dependency path.
 5. Persist a constrained analysis task before delivery.

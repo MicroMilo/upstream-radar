@@ -55,6 +55,7 @@ describe('GitHub Advisory Database source', () => {
     assert.deepEqual(matches?.[0]?.advisory.aliases, ['CVE-2026-1234'])
     assert.deepEqual(matches?.[0]?.advisory.fixedVersions, ['3.0.0'])
     assert.equal(matches?.[0]?.advisory.severity, 'high')
+    assert.deepEqual(matches?.[0]?.advisory.sources, ['github-advisories'])
     assert.equal(calls.length, 2)
     assert.equal(calls[0]?.headers.get('accept'), 'application/vnd.github+json')
     assert.equal(calls[0]?.headers.get('x-github-api-version'), '2022-11-28')

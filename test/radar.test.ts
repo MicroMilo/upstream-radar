@@ -71,6 +71,7 @@ describe('radar polling', () => {
     assert.ok(firstEvent !== undefined)
     assert.equal(firstEvent.kind, 'vulnerability')
     assert.deepEqual(firstEvent.affectedSources, ['dsh-host'])
+    assert.deepEqual(firstEvent.advisory.sources, ['osv'])
     assert.deepEqual(firstEvent.paths[0]?.map(item => `${item.name}@${item.version}`), [
       'plugin@1.0.0',
       'logger@4.0.2',
@@ -807,6 +808,7 @@ describe('radar polling', () => {
     assert.equal(event.advisory.id, 'GHSA-demo')
     assert.deepEqual(event.advisory.aliases, ['CVE-2026-1234', 'GHSA-github-copy'])
     assert.deepEqual(event.advisory.fixedVersions, ['3.0.0', '3.1.0'])
+    assert.deepEqual(event.advisory.sources, ['osv', 'github-advisories'])
     assert.equal(result.sourceErrors.length, 0)
     assert.equal(result.state.sourceHealth?.osv?.consecutiveFailures, 0)
     assert.equal(result.state.sourceHealth?.['github-advisories']?.consecutiveFailures, 0)

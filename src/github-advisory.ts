@@ -217,6 +217,7 @@ function advisoryForPackage(
     fixedVersions: [...new Set(vulnerabilities
       .flatMap(item => item.firstPatchedVersion === undefined ? [] : [item.firstPatchedVersion]))].sort(),
     references: [...advisory.references],
+    sources: ['github-advisories'],
   }
 }
 

@@ -28,6 +28,13 @@ function validAffectedSources(value: unknown): boolean {
   return new Set(value).size === value.length && value.every(item => typeof item === 'string' && allowed.has(item))
 }
 
+function validAdvisorySources(value: unknown): boolean {
+  if (value === undefined) return true
+  if (!Array.isArray(value) || value.length === 0 || value.length > 2) return false
+  const allowed = new Set(['osv', 'github-advisories'])
+  return new Set(value).size === value.length && value.every(item => typeof item === 'string' && allowed.has(item))
+}
+
 function validAffectedPlugins(value: unknown): boolean {
   if (value === undefined) return true
   if (!Array.isArray(value) || value.length === 0 || value.length > 1_000) return false
@@ -72,6 +79,7 @@ function validCompatibilityDependencyCheck(value: unknown): boolean {
       && advisory.fixedVersions.every(item => typeof item === 'string' && item.length <= 256)
       && Array.isArray(advisory.references) && advisory.references.length <= 100
       && advisory.references.every(item => typeof item === 'string' && item.length <= 4_096)
+      && validAdvisorySources(advisory.sources)
       && Array.isArray(paths) && paths.length <= 4
       && paths.every(path => Array.isArray(path) && path.length > 0 && path.length <= 64 && path.every(validPackageCoordinate))
   })
@@ -269,6 +277,7 @@ function validHistoryEvent(value: unknown): boolean {
       && advisory.modified !== undefined && typeof advisory.modified === 'string' && advisory.modified.length > 0 && advisory.modified.length <= 256
       && (advisory.severity === 'unknown' || advisory.severity === 'info' || advisory.severity === 'low'
         || advisory.severity === 'medium' || advisory.severity === 'high' || advisory.severity === 'critical')
+      && validAdvisorySources(advisory.sources)
   }
   if (event.kind === 'compatibility') {
     return validPackageCoordinate(event.plugin)
@@ -372,6 +381,7 @@ export function parseRadarState(value: unknown): RadarState {
     if (stored?.key !== key || event?.schema !== RADAR_EVENT_SCHEMA || typeof event.incidentId !== 'string'
       || (event.kind !== 'vulnerability' && event.kind !== 'malware')
       || typeof advisory?.id !== 'string' || typeof advisory.modified !== 'string'
+      || !validAdvisorySources(advisory.sources)
       || !validAffectedSources(event.affectedSources)
       || !validAffectedPlugins(event.affectedPlugins)) {
       throw new Error(`radar state contains an invalid active match: ${key.slice(0, 256)}`)

@@ -61,10 +61,12 @@ describe('webhook delivery', () => {
         modified: '2026-08-16T04:00:00.000Z',
         fixedVersions: ['2.1.0'],
         references: [],
+        sources: ['osv', 'github-advisories'],
       },
     }
     const notice = buildRadarWebhookPayload([vulnerability]).events[0]
     assert.deepEqual(notice?.affectedPlugins, vulnerability.affectedPlugins)
+    assert.deepEqual((notice?.advisory as { sources?: string[] } | undefined)?.sources, ['osv', 'github-advisories'])
     assert.match(notice?.summary ?? '', /across 2 DSH plugins/)
   })
 

@@ -24,6 +24,8 @@ export interface PackageCoordinate {
 export type DependencyKind = 'runtime' | 'development' | 'optional' | 'peer' | 'host-runtime'
 export type DependencySource = 'profile' | 'dsh-host'
 export type DependencyHostRuntimeSource = 'dsh-profile-fallback' | 'dsh-process'
+/** Vulnerability databases that can independently confirm one advisory. */
+export type AdvisorySourceName = 'osv' | 'github-advisories'
 
 /** One physical package location. Duplicate name/version pairs remain distinct nodes. */
 export interface DependencyNode {
@@ -141,6 +143,8 @@ export interface VulnerabilityAdvisory {
   withdrawn?: string
   fixedVersions: string[]
   references: string[]
+  /** Databases that supplied or confirmed this advisory; absent in legacy state. */
+  sources?: AdvisorySourceName[]
 }
 
 export interface AdvisoryMatch {
@@ -269,7 +273,7 @@ export interface CompatibilityEvent extends RadarEventBase {
   releaseNotesUrl?: string
 }
 
-export type RadarSource = 'osv' | 'github-advisories' | 'npm-releases' | 'npm-candidate-graphs' | 'github-releases'
+export type RadarSource = AdvisorySourceName | 'npm-releases' | 'npm-candidate-graphs' | 'github-releases'
 
 export interface SourceHealthStatus {
   lastAttemptedAt: string
