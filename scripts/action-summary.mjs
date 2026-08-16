@@ -36,6 +36,12 @@ function vulnerabilityPluginScope(event) {
     : packageLabel(event?.plugin)
 }
 
+function affectedPluginSummary(event) {
+  return Array.isArray(event?.affectedPlugins) && event.affectedPlugins.length > 1
+    ? ` · plugins: ${event.affectedPlugins.map(packageLabel).join(', ')}`
+    : ''
+}
+
 function pathLabel(path) {
   return Array.isArray(path) && path.length > 0
     ? path.map(packageLabel).join(' → ')
@@ -86,7 +92,7 @@ function eventLine(event) {
   const severity = event?.kind === 'malware' ? 'CRITICAL' : String(event?.advisory?.severity ?? 'unknown').toUpperCase()
   const path = pathLabel(event?.paths?.[0])
   const guidance = vulnerabilityGuidance(event)
-  return `${text(event?.change?.toUpperCase())} · ${severity} · ${text(event?.kind ?? 'vulnerability')} · ${code(packageLabel(event?.affected))} (${code(event?.advisory?.id ?? 'advisory')}) via ${code(path, 2_048)} · fix: ${text(guidance.fix, 512)} · next: ${text(guidance.next, 1_024)}`
+  return `${text(event?.change?.toUpperCase())} · ${severity} · ${text(event?.kind ?? 'vulnerability')} · ${code(packageLabel(event?.affected))} (${code(event?.advisory?.id ?? 'advisory')}) via ${code(path, 2_048)}${affectedPluginSummary(event)} · fix: ${text(guidance.fix, 512)} · next: ${text(guidance.next, 1_024)}`
 }
 
 if (report.schema === 'upstream-radar.scan/v1alpha1') {

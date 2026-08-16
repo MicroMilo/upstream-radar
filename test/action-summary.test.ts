@@ -26,6 +26,10 @@ describe('GitHub Action summary', () => {
             { name: 'plugin', version: '1.0.0' },
             { name: 'parser', version: '2.9.0' },
           ]],
+          affectedPlugins: [
+            { name: 'plugin', version: '1.0.0' },
+            { name: 'second-plugin', version: '1.0.0' },
+          ],
         }],
         sourceErrors: [{ source: 'osv', message: 'temporary outage' }],
         policy: { status: 'fail' },
@@ -36,6 +40,7 @@ describe('GitHub Action summary', () => {
       assert.match(result.stdout, /source check incomplete/)
       assert.match(result.stdout, /HIGH · vulnerability/)
       assert.match(result.stdout, /plugin@1\.0\.0/)
+      assert.match(result.stdout, /plugins: plugin@1\.0\.0, second-plugin@1\.0\.0/)
       assert.match(result.stdout, /GHSA-\\`demo\\`/)
       assert.match(result.stdout, /fix: 3\.0\.0/)
       assert.match(result.stdout, /next: Review parser@2\.9\.0 fixed version\(s\) 3\.0\.0 before changing the plugin\./)
