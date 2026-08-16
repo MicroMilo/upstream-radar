@@ -18,6 +18,7 @@ describe('consumer smoke example', () => {
       }>
     }
     const workflow = await readFile(`${root}/.github/workflows/action-consumer-smoke.yml`, 'utf8')
+    const packageJson = JSON.parse(await readFile(`${root}/package.json`, 'utf8')) as { version?: unknown }
     const plugin = config.projects?.[0]?.plugins?.[0]
 
     assert.equal(config.schema, 'upstream-radar.radar-config/v1alpha1')
@@ -27,7 +28,8 @@ describe('consumer smoke example', () => {
     assert.equal(plugin?.graph?.rootNodeId, 'node_modules/dsh-cloudflare-browser-run')
     assert.ok((plugin?.graph?.nodes?.length ?? 0) >= 18)
     assert.equal(plugin?.graph?.edges?.length, 65)
-    assert.match(workflow, /uses: MicroMilo\/upstream-radar@v0\.24\.0/)
+    assert.equal(typeof packageJson.version, 'string')
+    assert.match(workflow, new RegExp(`uses: MicroMilo/upstream-radar@v${String(packageJson.version).replaceAll('.', '\\.')}`))
     assert.match(workflow, /config: examples\/github-actions\/consumer\/upstream-radar\.config\.json/)
     assert.match(workflow, /fail-on: high/)
     assert.match(workflow, /contents: read/)

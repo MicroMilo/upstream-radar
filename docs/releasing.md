@@ -18,11 +18,14 @@ The relationship can be inspected or replaced with npm CLI 11.5.1 or newer. Acco
 ## Release contract
 
 1. Update `package.json`, `src/version.ts`, and `CHANGELOG.md` to the same version.
-2. Regenerate checked-in showcase reports when their rendered version changes.
-3. Merge the release commit into `main` after CI passes.
-4. Publish a non-prerelease GitHub Release whose tag is exactly `v<package version>`.
-5. Wait for the `Publish npm package` workflow to pass.
-6. Verify the npm version, integrity, and provenance before announcing the release.
+2. Run `pnpm run release:check`. It checks the version, release notes, every copyable Action/npm example, and the files that will enter the npm tarball without publishing anything.
+3. Regenerate checked-in showcase reports when their rendered version changes.
+4. Merge the release commit into `main` after CI passes.
+5. Publish a non-prerelease GitHub Release whose tag is exactly `v<package version>`.
+6. Wait for the `Publish npm package` workflow to pass.
+7. Run `pnpm run build && node scripts/release-preflight.mjs --published` from a checkout of the released commit, then verify npm integrity and provenance before announcing the release.
+
+The preflight is intentionally separate from publishing. Before the release exists, the normal command proves that users will receive consistent instructions; after npm publishing, `--published` adds the registry availability check. It does not treat a successful npm publication as a security certificate.
 
 The workflow refuses a tag/package mismatch. It installs with lifecycle scripts disabled, runs the full test suite and real DSH headless proof, packs the artifact, and only then asks npm for a short-lived publish credential.
 
