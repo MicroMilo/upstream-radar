@@ -38,13 +38,13 @@ If you want project-specific reasoning from DSH, use the first path. If you only
 
 ## Try it in 60 seconds
 
-Use a DSH profile that already contains at least one third-party bundle. Replace `web` with your profile name. The commands below are split between two terminals because DSH normally stays running:
+Use DSH with at least one third-party bundle. When it has exactly one such profile, `setup` selects it automatically; pass `--profile <name>` only when you have multiple profiles. The commands below are split between two terminals because DSH normally stays running:
 
 ```bash
 # Terminal 1
 pnpm dlx --package=upstream-radar@latest upstream-radar setup \
-  --profile web \
   --project-name "My DSH project"
+# Use the profile name printed by setup; `web` is only an example.
 dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
@@ -204,11 +204,10 @@ Upstream Radar is an npm-published DSH bundle, so no install-time build permissi
 
 ```bash
 pnpm dlx --package=upstream-radar@latest upstream-radar setup \
-  --profile web \
   --project-name "My DSH project"
 ```
 
-`setup` delegates the package installation to DSH using the exact Radar version currently being run. It then generates `upstream-radar.config.json` and `upstream-radar.dsh.yml` by default, and runs `doctor` locally without contacting OSV, npm, or GitHub. It does not start DSH. Review the two generated files, then start the profile:
+When exactly one DSH profile contains third-party bundles, `setup` selects it automatically; pass `--profile <name>` when more than one profile is eligible. `setup` delegates the package installation to DSH using the exact Radar version currently being run. It then generates `upstream-radar.config.json` and `upstream-radar.dsh.yml` by default, and runs `doctor` locally without contacting OSV, npm, or GitHub. It does not start DSH. Review the two generated files, then start the profile:
 
 ```bash
 dsh --profile web --patch ./upstream-radar.dsh.yml --dump-config

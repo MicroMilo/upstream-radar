@@ -28,13 +28,13 @@
 
 ## 60 秒开始
 
-使用一个已经安装至少一个第三方 bundle 的 DSH profile，把 `web` 换成你的 profile 名称。下面的命令分成两个终端，因为 DSH 通常会持续运行：
+使用一个已经安装至少一个第三方 bundle 的 DSH 环境。如果只有一个这样的 profile，`setup` 会自动选择；只有多个 profile 时才需要传 `--profile <名称>`。下面的命令分成两个终端，因为 DSH 通常会持续运行：
 
 ```bash
 # 终端 1
 pnpm dlx --package=upstream-radar@latest upstream-radar setup \
-  --profile web \
   --project-name "我的 DSH 项目"
+# 使用 setup 输出的 profile 名称；这里的 web 只是示例。
 dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
@@ -192,11 +192,10 @@ Upstream Radar 发布的是已经构建好的 npm bundle，不需要开放安装
 
 ```bash
 pnpm dlx --package=upstream-radar@latest upstream-radar setup \
-  --profile web \
   --project-name "我的 DSH 项目"
 ```
 
-`setup` 会使用当前命令对应的精确 Radar 版本调用 DSH 安装器，默认生成 `upstream-radar.config.json` 和 `upstream-radar.dsh.yml`，并运行不联网的 `doctor`。它不会启动 DSH。检查两个生成文件后启动 profile：
+如果只有一个 DSH profile 含有第三方 bundle，`setup` 会自动选择；有多个候选时再传 `--profile <名称>`。`setup` 会使用当前命令对应的精确 Radar 版本调用 DSH 安装器，默认生成 `upstream-radar.config.json` 和 `upstream-radar.dsh.yml`，并运行不联网的 `doctor`。它不会启动 DSH。检查两个生成文件后启动 profile：
 
 ```bash
 dsh --profile web --patch ./upstream-radar.dsh.yml --dump-config

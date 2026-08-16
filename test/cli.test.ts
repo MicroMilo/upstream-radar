@@ -311,8 +311,6 @@ snapshots:
       const result = spawnSync(process.execPath, [
         cli,
         'setup',
-        '--profile',
-        'web',
         '--output',
         config,
       ], {
