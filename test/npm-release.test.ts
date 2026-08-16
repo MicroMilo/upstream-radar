@@ -60,4 +60,25 @@ describe('npm release source', () => {
     const result = await client.query([{ ecosystem: 'npm', name: '@deepseek-ai/dsh-agent', version: '0.1.0-rc.6' }])
     assert.equal(result.get('npm:@deepseek-ai/dsh-agent@0.1.0-rc.6')?.candidateStatus, 'older')
   })
+
+  it('skips an unpublished plugin without hiding other published release streams', async () => {
+    const fetcher = async (input: string | URL): Promise<Response> => {
+      const name = decodeURIComponent(new URL(String(input)).pathname.slice(1))
+      if (name === 'local-plugin') return new Response('not found', { status: 404 })
+      return Response.json({
+        'dist-tags': { latest: '2.0.0' },
+        versions: {
+          '1.0.0': { name, version: '1.0.0' },
+          '2.0.0': { name, version: '2.0.0' },
+        },
+      })
+    }
+    const client = new NpmReleaseClient({ fetch: fetcher })
+    const result = await client.query([
+      { ecosystem: 'npm', name: 'local-plugin', version: '1.0.0' },
+      { ecosystem: 'npm', name: 'published-host', version: '1.0.0' },
+    ])
+    assert.equal(result.has('npm:local-plugin@1.0.0'), false)
+    assert.equal(result.get('npm:published-host@1.0.0')?.candidateStatus, 'newer')
+  })
 })

@@ -66,6 +66,8 @@ The pre-install `graph npm-lock` and `graph pnpm-lock` commands use bounded, dep
 
 If OSV is unavailable, the cycle records a source warning, keeps the last confirmed vulnerability matches, emits no false `resolved` events, and still proceeds to deliver already-persisted DSH tasks. A failed source is never treated as a clean result.
 
+The npm release source treats an HTTP 404 for one package as “this plugin is not published to the selected registry” and skips only that release stream. It continues with exact OSV checks and other published DSH host packages; transport failures, malformed packuments, and non-404 registry errors remain source failures.
+
 The same cycle persists `lastAttemptedAt`, `lastSucceededAt`, consecutive failures, and a bounded error for each attempted source. Three consecutive failures create one project-routed `source-health` event in the same outbox; a successful check resolves it.
 
 The active-match key binds project, plugin version, affected package version, and advisory id. An unchanged advisory does not create another event.

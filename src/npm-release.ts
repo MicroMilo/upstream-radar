@@ -122,16 +122,21 @@ export class NpmReleaseClient {
     }
   }
 
-  private async fetchPackument(name: string): Promise<unknown> {
+  private async fetchPackument(name: string): Promise<unknown | undefined> {
     const url = new URL(encodeURIComponent(name), this.registry)
-    return boundedJson(await this.fetcher(url, {
+    const response = await this.fetcher(url, {
       headers: {
         accept: 'application/vnd.npm.install-v1+json, application/json',
         'user-agent': `upstream-radar/${TOOL_VERSION}`,
       },
       redirect: 'follow',
       signal: AbortSignal.timeout(this.timeoutMs),
-    }))
+    })
+    // A DSH plugin may be private, GitHub-only, or still unpublished. That is
+    // not a registry outage: skip its release comparison while continuing to
+    // monitor the exact lockfile graph and any published host packages.
+    if (response.status === 404) return undefined
+    return boundedJson(response)
   }
 
   async query(input: readonly PackageCoordinate[]): Promise<Map<string, NpmReleaseObservation>> {
@@ -153,17 +158,20 @@ export class NpmReleaseClient {
       while (queue.length > 0) {
         const name = queue.shift()
         if (name === undefined) return
-        packuments.set(name, await this.fetchPackument(name))
+        const packument = await this.fetchPackument(name)
+        if (packument !== undefined) packuments.set(name, packument)
       }
     })
     await Promise.all(workers)
 
     const result = new Map<string, NpmReleaseObservation>()
     for (const [name, coordinates] of byName) {
-      const packument = asRecord(packuments.get(name))
-      const tags = asRecord(packument?.['dist-tags'])
-      const versions = asRecord(packument?.versions)
-      const times = asRecord(packument?.time)
+      const packument = packuments.get(name)
+      if (packument === undefined) continue
+      const packumentRecord = asRecord(packument)
+      const tags = asRecord(packumentRecord?.['dist-tags'])
+      const versions = asRecord(packumentRecord?.versions)
+      const times = asRecord(packumentRecord?.time)
       const latestVersion = typeof tags?.latest === 'string' ? tags.latest : undefined
       if (latestVersion === undefined || versions === undefined) throw new Error(`npm packument has no latest release for ${name}`)
       const rawCandidate = versions[latestVersion]

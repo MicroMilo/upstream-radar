@@ -428,6 +428,8 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 `init --pnpm-lock <path>` 或 `init --npm-lock <path>` 是不依赖 DSH profile 的静态配置入口；默认读取锁文件旁的 `package.json`，也可以用 `--root <name>@<version>` 覆盖。之后可用 `radar check` 或 `radar watch` 查询 OSV。它不会启动 DSH，也不会自己投递 Agent 任务。
 
+如果插件根包没有发布到当前 npm registry，返回 `404` 时只跳过这个包的版本比较，锁文件中的精确依赖和已发布的 DSH 宿主包仍会继续检查。registry 故障、超时、损坏响应和 OSV 故障仍然会让本轮失败。
+
 `radar watch` 是 CLI 监控入口，本身不会把任务投递给 DSH；需要 Agent 分析时应使用原生 DSH bundle。
 
 `doctor` 只检查本地接线，不能证明 DSH 进程已经把任务交给模型，也不能证明漏洞源当前可用。
