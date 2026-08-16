@@ -40,6 +40,7 @@ Paths:
   plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
 Fixed versions: 3.0.0
 Route: payments-platform via feishu:payments-security
+Next: Review parser@2.9.0 fixed version(s) 3.0.0 with the DSH Agent before changing the plugin.
 ```
 
 Running the same unchanged feed again produces no event. A changed advisory produces `updated`; removing the match produces `resolved`.
@@ -121,7 +122,15 @@ After three consecutive failed OSV checks, Radar creates one project-routed `sou
 dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
-The setup command does not start DSH or execute plugin business actions; the user still reviews both generated files before launching the profile. Use `--no-install` when the bundle is already present.
+The setup command does not start DSH or execute plugin business actions; the user still reviews both generated files before launching the profile. Use `--no-install` when the bundle is already present. If the user explicitly wants the one-command path, `setup --start` runs the same local doctor first and starts the selected profile only when that check is not blocked; the doctor is a wiring check, not a human review or package-safety certificate.
+
+The one-command path is covered by a separate network-free proof:
+
+```bash
+pnpm run showcase:setup-start
+```
+
+It records the important boundary: Radar is installed into DSH, the local wiring check passes, and the DSH start command is invoked; no network request or plugin business code is executed by the showcase.
 
 ## Scene 10 — confirm the first run without another network request
 
