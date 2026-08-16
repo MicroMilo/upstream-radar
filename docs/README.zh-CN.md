@@ -44,7 +44,7 @@ npx --yes upstream-radar@latest quickstart
 npx --yes upstream-radar@latest demo
 ```
 
-它会打印一条准确的传递依赖路径、只读 DSH Agent 交接任务和下一步安装命令。它只使用本地 fixture，不会读取你的仓库、安装插件，也不声称 demo 公告是真实漏洞；需要机器可读结果时加 `--json`。
+它会打印一条准确的传递依赖路径、独立漏洞源证据（包括明确标出的来源冲突）、只读 DSH Agent 交接任务和下一步安装命令。它只使用本地 fixture，不会读取你的仓库、安装插件，也不声称 demo 公告是真实漏洞；需要机器可读结果时加 `--json`。
 
 每个命令都有自己的短帮助：不确定从哪里开始时，可以先运行 `npx --yes upstream-radar@latest setup --help`、`npx --yes upstream-radar@latest inspect --help` 或 `npx --yes upstream-radar@latest radar status --help`。
 

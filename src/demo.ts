@@ -42,8 +42,16 @@ export function createDemoEvent(): VulnerabilityEvent {
       severity: 'high',
       published: '2026-08-15T00:00:00.000Z',
       modified: '2026-08-16T00:00:00.000Z',
-      fixedVersions: ['3.0.0'],
+      fixedVersions: ['3.0.0', '3.1.0'],
       references: ['https://example.test/advisories/GHSA-demo-parser'],
+      sources: ['osv', 'github-advisories'],
+      conflicts: [{
+        field: 'fixed-versions',
+        claims: [
+          { source: 'osv', value: '3.0.0' },
+          { source: 'github-advisories', value: '3.1.0' },
+        ],
+      }],
     },
   }
 }
