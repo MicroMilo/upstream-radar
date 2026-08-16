@@ -306,7 +306,6 @@ If the repository has a pnpm lockfile but no committed Radar config yet, the Act
 - uses: MicroMilo/upstream-radar@v0.33.0
   with:
     pnpm-lock: pnpm-lock.yaml
-    root: '@your-scope/your-dsh-plugin@1.0.0'
     fail-on: high
 ```
 
