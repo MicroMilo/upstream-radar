@@ -134,23 +134,7 @@ runs:
         RADAR_CONFIG: ${{ inputs.config }}
       run: |
         set -euo pipefail
-        if [[ -f "$RADAR_CONFIG" ]]; then
-          printf 'kind=config\n' >> "$GITHUB_OUTPUT"
-          exit 0
-        fi
-        has_pnpm=0
-        has_npm=0
-        [[ -f pnpm-lock.yaml ]] && has_pnpm=1
-        [[ -f package-lock.json ]] && has_npm=1
-        if (( has_pnpm == 1 && has_npm == 1 )); then
-          printf 'kind=ambiguous\n' >> "$GITHUB_OUTPUT"
-        elif (( has_pnpm == 1 )); then
-          printf 'kind=pnpm\npath=pnpm-lock.yaml\n' >> "$GITHUB_OUTPUT"
-        elif (( has_npm == 1 )); then
-          printf 'kind=npm\npath=package-lock.json\n' >> "$GITHUB_OUTPUT"
-        else
-          printf 'kind=missing\n' >> "$GITHUB_OUTPUT"
-        fi
+        node "$GITHUB_ACTION_PATH/scripts/detect-action-input.mjs"
     - name: Require one Radar input
       if: inputs.pnpm-lock == '' && inputs.npm-lock == '' && (steps.detect-project-input.outputs.kind == 'ambiguous' || steps.detect-project-input.outputs.kind == 'missing')
       shell: bash

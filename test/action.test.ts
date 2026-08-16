@@ -1,15 +1,40 @@
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { execFile } from 'node:child_process'
+import { promisify } from 'node:util'
 import { describe, it } from 'node:test'
+
+const execFileAsync = promisify(execFile)
+
+async function runActionInputDetector(files: string[], config = 'upstream-radar.config.json') {
+  const root = await mkdtemp(join(tmpdir(), 'upstream-radar-action-input-'))
+  const output = join(root, 'github-output')
+  try {
+    for (const file of files) await writeFile(join(root, file), '')
+    const script = fileURLToPath(new URL('../../scripts/detect-action-input.mjs', import.meta.url))
+    const result = await execFileAsync(process.execPath, [script], {
+      cwd: root,
+      env: { ...process.env, RADAR_CONFIG: config, GITHUB_OUTPUT: output },
+      encoding: 'utf8',
+    })
+    return { stdout: result.stdout, output: await readFile(output, 'utf8') }
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+}
 
 describe('reusable GitHub Action', () => {
   it('keeps the published Action thin, pinned, and frozen', async () => {
     const actionPath = fileURLToPath(new URL('../../action.yml', import.meta.url))
     const examplePath = fileURLToPath(new URL('../../examples/github-actions/upstream-radar.yml', import.meta.url))
+    const detectorPath = fileURLToPath(new URL('../../scripts/detect-action-input.mjs', import.meta.url))
     const packagePath = fileURLToPath(new URL('../../package.json', import.meta.url))
     const action = await readFile(actionPath, 'utf8')
     const example = await readFile(examplePath, 'utf8')
+    const detector = await readFile(detectorPath, 'utf8')
     const packageJson = JSON.parse(await readFile(packagePath, 'utf8')) as { version?: unknown }
 
     assert.equal(typeof packageJson.version, 'string')
@@ -23,11 +48,11 @@ describe('reusable GitHub Action', () => {
     assert.match(action, /root_args=\(\)/)
     assert.doesNotMatch(action, /root is required when pnpm-lock is set/)
     assert.match(action, /id: detect-project-input/)
-    assert.match(action, /kind=config/)
-    assert.match(action, /kind=pnpm/)
-    assert.match(action, /kind=npm/)
-    assert.match(action, /kind=ambiguous/)
-    assert.match(action, /kind=missing/)
+    assert.match(detector, /kind = 'config'/)
+    assert.match(detector, /kind = 'pnpm'/)
+    assert.match(detector, /kind = 'npm'/)
+    assert.match(detector, /kind = 'ambiguous'/)
+    assert.match(detector, /kind = 'missing'/)
     assert.match(action, /No reviewed Radar config or supported lockfile was found/)
     assert.match(action, /steps\.detect-project-input\.outputs\.kind/)
     assert.match(action, /if: inputs\.pnpm-lock != ''/)
@@ -35,6 +60,7 @@ describe('reusable GitHub Action', () => {
     assert.match(action, /if: inputs\.pnpm-lock == '' && inputs\.npm-lock == ''/)
     assert.match(action, /pnpm-lock and npm-lock are mutually exclusive/)
     assert.match(action, /if: inputs\.pnpm-lock != '' \|\| inputs\.npm-lock != ''/)
+    assert.match(action, /node "\$GITHUB_ACTION_PATH\/scripts\/detect-action-input\.mjs"/)
     assert.match(action, /runs:\n\s+using: composite/)
     assert.match(action, new RegExp(`default: ${String(packageJson.version).replaceAll('.', '\\.')}`))
     assert.match(action, /description: ['"]Radar state path; use :memory: for an independent CI check\.['"]/)
@@ -73,5 +99,27 @@ describe('reusable GitHub Action', () => {
     assert.match(example, /auto-detects one pnpm-lock\.yaml or package-lock\.json/)
     assert.doesNotMatch(example, /^\s+config:\s/m)
     assert.match(example, /fail-on-compatibility: breaking/)
+  })
+
+  it('executes the same zero-config detector used by the Action', async () => {
+    const configured = await runActionInputDetector(['upstream-radar.config.json', 'pnpm-lock.yaml'])
+    assert.match(configured.stdout, /^kind=config\n$/)
+    assert.equal(configured.output, 'kind=config\n')
+
+    const pnpm = await runActionInputDetector(['pnpm-lock.yaml'])
+    assert.match(pnpm.stdout, /^kind=pnpm\npath=pnpm-lock\.yaml\n$/)
+    assert.equal(pnpm.output, 'kind=pnpm\npath=pnpm-lock.yaml\n')
+
+    const npm = await runActionInputDetector(['package-lock.json'])
+    assert.match(npm.stdout, /^kind=npm\npath=package-lock\.json\n$/)
+    assert.equal(npm.output, 'kind=npm\npath=package-lock.json\n')
+
+    const ambiguous = await runActionInputDetector(['pnpm-lock.yaml', 'package-lock.json'])
+    assert.match(ambiguous.stdout, /^kind=ambiguous\n$/)
+    assert.equal(ambiguous.output, 'kind=ambiguous\n')
+
+    const missing = await runActionInputDetector([])
+    assert.match(missing.stdout, /^kind=missing\n$/)
+    assert.equal(missing.output, 'kind=missing\n')
   })
 })
