@@ -770,6 +770,119 @@ describe('radar polling', () => {
     assert.deepEqual(result.sourceErrors, [{ source: 'osv', message: 'OSV timeout' }])
   })
 
+  it('merges one advisory reported by OSV and GitHub without a duplicate incident', async () => {
+    const githubAdvisories: AdvisorySource = {
+      async query(packages) {
+        const results = new Map(packages.map(item => [packageKey(item), [] as AdvisoryMatch[]]))
+        results.set('npm:parser@2.9.0', [{
+          package: { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+          advisory: {
+            id: 'GHSA-github-copy',
+            aliases: ['CVE-2026-1234'],
+            summary: 'Parser issue from the GitHub advisory feed',
+            details: 'The second source describes the same affected parser.',
+            severity: 'medium',
+            modified: '2026-08-14T03:00:00.000Z',
+            fixedVersions: ['3.1.0'],
+            references: ['https://github.com/advisories/GHSA-github-copy'],
+          },
+        }])
+        return results
+      },
+    }
+    const result = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      source('2026-08-14T02:00:00.000Z'),
+      new Date('2026-08-14T03:01:00.000Z'),
+      undefined,
+      undefined,
+      undefined,
+      [{ name: 'github-advisories', source: githubAdvisories }],
+    )
+    const events = result.events.filter(event => event.kind === 'vulnerability')
+    assert.equal(events.length, 1)
+    const event = events[0]
+    assert.ok(event?.kind === 'vulnerability')
+    assert.equal(event.advisory.id, 'GHSA-demo')
+    assert.deepEqual(event.advisory.aliases, ['CVE-2026-1234', 'GHSA-github-copy'])
+    assert.deepEqual(event.advisory.fixedVersions, ['3.0.0', '3.1.0'])
+    assert.equal(result.sourceErrors.length, 0)
+    assert.equal(result.state.sourceHealth?.osv?.consecutiveFailures, 0)
+    assert.equal(result.state.sourceHealth?.['github-advisories']?.consecutiveFailures, 0)
+  })
+
+  it('keeps the confirmed finding during a GitHub outage and resolves only source health on recovery', async () => {
+    const githubUnavailable: AdvisorySource = {
+      async query() {
+        throw new Error('GitHub advisory timeout')
+      },
+    }
+    const seeded = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      source('2026-08-14T01:00:00.000Z'),
+      new Date('2026-08-14T04:00:00.000Z'),
+    )
+    const firstFailure = await pollRadar(
+      [inventory],
+      seeded.state,
+      source('2026-08-14T01:00:00.000Z'),
+      new Date('2026-08-14T04:30:00.000Z'),
+      undefined,
+      undefined,
+      undefined,
+      [{ name: 'github-advisories', source: githubUnavailable }],
+    )
+    const secondFailure = await pollRadar(
+      [inventory],
+      firstFailure.state,
+      source('2026-08-14T01:00:00.000Z'),
+      new Date('2026-08-14T05:00:00.000Z'),
+      undefined,
+      undefined,
+      undefined,
+      [{ name: 'github-advisories', source: githubUnavailable }],
+    )
+    const thirdFailure = await pollRadar(
+      [inventory],
+      secondFailure.state,
+      source('2026-08-14T01:00:00.000Z'),
+      new Date('2026-08-14T05:30:00.000Z'),
+      undefined,
+      undefined,
+      undefined,
+      [{ name: 'github-advisories', source: githubUnavailable }],
+    )
+    assert.equal(Object.keys(thirdFailure.state.activeVulnerabilities).length, 1)
+    assert.equal(thirdFailure.events.filter(event => event.kind === 'vulnerability').length, 0)
+    assert.equal(thirdFailure.state.sourceHealth?.['github-advisories']?.consecutiveFailures, 3)
+    assert.equal(thirdFailure.events.some(event => event.kind === 'source-health' && event.change === 'new'), true)
+    assert.deepEqual(thirdFailure.sourceErrors, [{ source: 'github-advisories', message: 'GitHub advisory timeout' }])
+
+    const recovered = await pollRadar(
+      [inventory],
+      thirdFailure.state,
+      source('2026-08-14T01:00:00.000Z'),
+      new Date('2026-08-14T06:00:00.000Z'),
+      undefined,
+      undefined,
+      undefined,
+      [{
+        name: 'github-advisories',
+        source: {
+          async query(packages) {
+            return new Map(packages.map(item => [packageKey(item), [] as AdvisoryMatch[]]))
+          },
+        },
+      }],
+    )
+    assert.equal(Object.keys(recovered.state.activeVulnerabilities).length, 1)
+    assert.equal(recovered.events.some(event => event.kind === 'vulnerability' && event.change === 'resolved'), false)
+    assert.equal(recovered.events.some(event => event.kind === 'source-health' && event.change === 'resolved'), true)
+    assert.equal(recovered.state.sourceHealth?.['github-advisories']?.consecutiveFailures, 0)
+  })
+
   it('creates one DSH source-health incident after three failures and resolves it on recovery', async () => {
     const unavailable: AdvisorySource = { async query() { throw new Error('OSV timeout') } }
     const first = await pollRadar(

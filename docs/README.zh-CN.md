@@ -31,7 +31,7 @@ npx --yes upstream-radar@latest quickstart
 | --- | --- | --- |
 | 让在线 DSH Agent 持续跟进 | [`setup`](#安装到-dsh) | 自动刷新 profile 里的实际依赖图，只把有变化的事件交给对应项目的 Agent。 |
 | 加一个定时 CI 门禁 | [GitHub Actions 示例](../examples/github-actions/upstream-radar.yml) | 基于审查过的依赖图执行冻结检查，同时输出简短 Job Summary 和机器可读 JSON。 |
-| 安装插件前先检查它 | [npm/pnpm 锁文件的 `graph` / `init`](#安装前先检查-npm-或-pnpm-锁文件) | 不运行插件或 lifecycle script，直接得到精确依赖路径和 OSV 结果。 |
+| 安装插件前先检查它 | [npm/pnpm 锁文件的 `graph` / `init`](#安装前先检查-npm-或-pnpm-锁文件) | 不运行插件或 lifecycle script，直接得到精确依赖路径和 OSV/GitHub Advisory 结果。 |
 | 审查一个精确的发布物 | `upstream-radar inspect npm:<包名>@<精确版本> --deep` | 查看单个版本的包、依赖、漏洞和 provenance 证据。 |
 
 需要结合项目代码做判断时，选第一条；只需要独立的准入或回归门禁时，选第二或第三条，不需要启动 DSH profile。
@@ -166,13 +166,15 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
 普通漏洞源到“某个包有问题”就结束了。Upstream Radar 会继续找到实际安装的依赖路径，维护一个可持续更新的事件，再把带有项目证据的调查任务交给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent。
 
 ```text
-OSV 漏洞公告或 npm 新版本
+OSV/GitHub Advisory 漏洞公告或 npm 新版本
   -> 真正命中的插件依赖路径
   -> new / updated / resolved 事件
   -> 面向具体项目的 DSH Agent 分析任务
 ```
 
 **没有命中实际安装路径，就不会唤醒 Agent。** 版本匹配和兼容性事实由程序计算；模型只负责结合仓库做判断。
+
+Radar 把 OSV 和 GitHub Advisory Database 当作两个独立的漏洞来源。如果两个来源通过同一个 GHSA 或 CVE 别名描述同一个问题，Radar 只生成一个事件，同时保留两个来源的编号和修复版本。如果其中一个来源超时，最后一次确认的漏洞不会被清掉；连续失败三次后，故障本身会变成可见的 source-health 事件，而不是被当成“没有漏洞”。CLI 和 DSH 适配器默认启用 GitHub 来源；需要提高 API 限额时，可以只从环境变量提供 `GITHUB_TOKEN`；如果确实要只跑 OSV，可以使用 `--no-github-advisories`。上游接口见 [GitHub Advisory Database API](https://docs.github.com/en/rest/security-advisories/global-advisories?apiVersion=2026-03-10)。
 
 ## 关键的一层：候选版本的传递依赖图
 
@@ -291,13 +293,19 @@ pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.
 
 `doctor` 不访问 OSV、npm 或 GitHub，也不执行插件代码。它检查配置是否能解析、选中的 DSH profile 是否真的登记了 `upstream-radar`、overlay 是否指向同一份配置和状态文件、依赖覆盖是否完整，以及状态文件是否可读。如果设置了 `UPSTREAM_RADAR_WEBHOOK_URL`，它还会在本地检查 HTTPS 地址、识别飞书/Lark V2 地址，并在第一次轮询前拦住已经废弃的 V1 地址；它不会打印 webhook 地址或 `UPSTREAM_RADAR_FEISHU_SECRET`。只有接线被阻断时才返回非零；第一次还没有状态文件会显示为警告，并给出下一条命令。需要给其他工具读取时加上 `--json`。
 
-生成的 overlay 会记录选中的 profile；如果初始化时传入了 `--registry <url>`，它也会被带入 DSH 运行时，避免后续 release 和候选依赖检查悄悄切回公共 npm。原生 DSH 每次轮询前，以及 CLI 的 `radar check/watch` 每次轮询前，都会重新读取这个 profile 的实际依赖图，因此之后安装、升级、卸载插件，或 DSH 宿主运行时发生变化时，不会继续悄悄监控旧快照；如果重读失败，本轮会停止，不会替换最后一次持久化状态。`radar status` 仍然只读取本地配置和状态，不会刷新 OSV/npm/GitHub；它还会列出最重要的活动事件、精确依赖路径或候选信号，以及建议的下一步。`radar history` 同样只读同一份状态文件，会显示已经恢复、因此不再出现在活动列表里的事件。`radar compare` 也只比较你明确提供的文件。如果不使用 `--dsh-patch`，仍可以使用 `UPSTREAM_RADAR_CONFIG`、`UPSTREAM_RADAR_STATE`、`UPSTREAM_RADAR_INTERVAL_SECONDS`、`UPSTREAM_RADAR_REGISTRY` 和 `UPSTREAM_RADAR_DEEP_CANDIDATES` 环境变量方式。
+生成的 overlay 会记录选中的 profile；如果初始化时传入了 `--registry <url>`，它也会被带入 DSH 运行时，避免后续 release 和候选依赖检查悄悄切回公共 npm。原生 DSH 每次轮询前，以及 CLI 的 `radar check/watch` 每次轮询前，都会重新读取这个 profile 的实际依赖图，因此之后安装、升级、卸载插件，或 DSH 宿主运行时发生变化时，不会继续悄悄监控旧快照；如果重读失败，本轮会停止，不会替换最后一次持久化状态。`radar status` 仍然只读取本地配置和状态，不会刷新 OSV、GitHub Advisory、npm 或 GitHub Release；它还会列出最重要的活动事件、精确依赖路径或候选信号，以及建议的下一步。`radar history` 同样只读同一份状态文件，会显示已经恢复、因此不再出现在活动列表里的事件。`radar compare` 也只比较你明确提供的文件。如果不使用 `--dsh-patch`，仍可以使用 `UPSTREAM_RADAR_CONFIG`、`UPSTREAM_RADAR_STATE`、`UPSTREAM_RADAR_INTERVAL_SECONDS`、`UPSTREAM_RADAR_REGISTRY` 和 `UPSTREAM_RADAR_DEEP_CANDIDATES` 环境变量方式。
 
 生成的依赖图对应 profile 当前实际安装的树。原生 DSH 运行时，Radar 还会从确切的 DSH CLI 入口（`@deepseek-ai/dsh/lib/bin.js`）找到这个 DSH 进程实际使用的 `node_modules` 宿主依赖平面。这个过程只做有边界的 manifest 读取，不 import DSH、不加载插件代码，也不运行安装脚本。宿主平面中被实际解析到的包会纳入漏洞查询，并明确标成 `dsh-host`，不会和插件自己带的依赖混在一起；同时会记录拥有这个宿主平面的精确 `@deepseek-ai/dsh` 版本，所以即使它和它能解析到的宿主传递依赖不是插件声明的依赖，也会进入 OSV 漏洞和 npm 新版本检查。图中使用明确的 `host-runtime` 宿主边界边，宿主漏洞不会被包装成普通插件依赖；`radar status` 还会显示宿主图来自“正在运行的 DSH”还是 profile fallback。如果一个必需依赖在 profile 和宿主依赖平面中都找不到，它会保留为“覆盖不完整”，不会被当成安全或不存在。当前平台没有安装的可选原生包仍会记录，但不会制造“必需依赖缺失”的假警报。对于 `@deepseek-ai/dsh`、`@deepseek-ai/dsh-*`、Cordis 这类宿主 peer，如果 profile 没有暴露准确版本，`doctor` 和 `radar status` 会单独写明“DSH 宿主依赖未观察到”，而不是把它和普通缺失依赖混成一个数字。这意味着漏洞查询没有覆盖该宿主边界，结果不能当作完整安全结论。显式传入 `--registry <url>` 才会使用公共 npm artifact 图，适合和 registry 解析结果做比较，但不是默认路径。
 
 如果需要手写配置或制作 CI fixture，可以参考[示例清单](../examples/radar/config.json)。如果既没有 `--patch` overlay，也没有设置 `UPSTREAM_RADAR_CONFIG`，插件会保持休眠，不发起轮询。
 
-启动后，Radar 会轮询 OSV、npm 和公开 GitHub Release，先把事件状态持久化，再把有变化的事件交给项目 workspace 对应的根 DSH Agent。只有一个 root 时保持自动投递；有多个 root 且无法精确匹配 workspace 时，任务会留在队列中，不会误投给另一个项目。原生适配器会记录准确的消息 id、DSH 会话、task id 和 event id；只有同一会话产生的 `assistant/message`，且可解析为固定六字段 JSON，才会写入 `analysisResults`。事件发生更新后，旧结论会被清掉，过期模型回复不会覆盖新事实。
+启动后，Radar 会轮询 OSV、GitHub Advisory Database、npm 和公开 GitHub Release，先把事件状态持久化，再把有变化的事件交给项目 workspace 对应的根 DSH Agent。只有一个 root 时保持自动投递；有多个 root 且无法精确匹配 workspace 时，任务会留在队列中，不会误投给另一个项目。原生适配器会记录准确的消息 id、DSH 会话、task id 和 event id；只有同一会话产生的 `assistant/message`，且可解析为固定六字段 JSON，才会写入 `analysisResults`。事件发生更新后，旧结论会被清掉，过期模型回复不会覆盖新事实。
+
+要在不访问真实漏洞源的情况下看两个来源如何合并，以及某个来源故障时为什么不会误清告警，可以运行：
+
+```bash
+pnpm run showcase:github-advisories
+```
 
 检查持久化结论：
 
@@ -486,7 +494,7 @@ pnpm run try:consumer
 ## 闭环如何工作
 
 1. 读取项目清单和实际安装的 npm 依赖图。
-2. 用每一个精确 `name@version` 查询 OSV。
+2. 用每一个精确 `name@version` 查询 OSV 和 GitHub Advisory Database，再按 GHSA/CVE 别名合并。
 3. 监听已安装插件和 DSH/Cordis 包的 npm 新版本。
 4. 用真实依赖路径创建或更新一个持久事件。
 5. 先把受约束的分析任务落盘，再尝试投递。
@@ -549,21 +557,21 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 ## 当前能力与边界
 
-已经支持：DSH profile 实际安装树、npm lock 和 pnpm v6/v9 lock 依赖图、从 npm/pnpm lock 生成静态 Radar 配置并执行同一套 OSV 精确版本检查、重复版本路径、未解析依赖的覆盖提示、可选 peer 与 DSH 宿主 peer 的区分、从正在运行的 DSH 进程发现真实宿主依赖平面和精确 `@deepseek-ai/dsh` 核心版本、共享 DSH 宿主漏洞按项目去重但保留所有受影响插件和路径、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选；如果插件已有活跃漏洞，还会判断候选顶层版本是 `removed`、`still-affected` 还是 `unknown`，并指出第一个消除全部已检查路径的候选，但不会把它称为安全版本）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、有上限的事件历史和 `radar history` 查询、持久事件、按项目 workspace 精确路由到 DSH Agent、严格绑定消息/会话/task/event 的 DSH 结果写回、以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace、把审查过的图接入 CI 的可复用 GitHub Action 以及可读的 Job Summary、可选的 breaking/any 兼容性门禁、可选的 DSH 版本加载矩阵、离线的 `benchmark compatibility` 规则契约检查、provider-neutral HTTPS webhook 事件通知、直接投递飞书/Lark V2 文本消息、按项目设置最低漏洞等级和时区安静时段且不丢任务的通知控制，以及基于真实 DSH 插件的 consumer smoke。
+已经支持：DSH profile 实际安装树、npm lock 和 pnpm v6/v9 lock 依赖图、从 npm/pnpm lock 生成静态 Radar 配置并执行同一套 OSV 精确版本检查、重复版本路径、未解析依赖的覆盖提示、可选 peer 与 DSH 宿主 peer 的区分、从正在运行的 DSH 进程发现真实宿主依赖平面和精确 `@deepseek-ai/dsh` 核心版本、共享 DSH 宿主漏洞按项目去重但保留所有受影响插件和路径、OSV 精确版本匹配、GitHub Advisory Database 精确 npm 版本匹配和 GHSA/CVE 别名去重、两个漏洞来源分别记录健康状态、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选；如果插件已有活跃漏洞，还会判断候选顶层版本是 `removed`、`still-affected` 还是 `unknown`，并指出第一个消除全部已检查路径的候选，但不会把它称为安全版本）、公开 GitHub Release 说明、漏洞源故障时保留已确认状态、连续失败后的 source-health DSH notice、有上限的事件历史和 `radar history` 查询、持久事件、按项目 workspace 精确路由到 DSH Agent、严格绑定消息/会话/task/event 的 DSH 结果写回、以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace、把审查过的图接入 CI 的可复用 GitHub Action 以及可读的 Job Summary、可选的 breaking/any 兼容性门禁、可选的 DSH 版本加载矩阵、离线的 `benchmark compatibility` 规则契约检查、provider-neutral HTTPS webhook 事件通知、直接投递飞书/Lark V2 文本消息、按项目设置最低漏洞等级和时区安静时段且不丢任务的通知控制，以及基于真实 DSH 插件的 consumer smoke。
 
 此外支持一次性的 `probe dsh-load` 和有界的 `probe dsh-matrix`：在临时 DSH profile 中针对一个或多个精确 DSH 版本加载一个精确 tarball，并返回 `compatible`、`incompatible` 或 `unknown`。它是加载兼容性证据，不是安全准入，也不是插件能力 benchmark。
 
 `init` 在省略 `--profile` 时可以自动选择唯一一个含第三方 bundle 的 DSH profile；多个候选仍要求显式指定。默认读取实际安装树，因此 pnpm override 和本地解析选择会被纳入；`graph npm-lock`/`graph pnpm-lock` 是独立的安装前/CI 图采集入口，本身不会查询 OSV，也不会生成 Radar 配置。加上 `--dsh-patch <path>` 可以生成不依赖环境变量的 DSH overlay。`radar status` 提供离线的首次运行检查、活动事件摘要、等待中的投递和已验证结论，还会显示宿主依赖图是否来自正在运行的 DSH 进程；但不会替你刷新漏洞源，也不会自动升级插件。暂未支持 Yarn 图适配、changelog/比较 diff/迁移文档源，以及自动创建 Issue 或 PR。多 root Agent 场景下，只有 `project.workspace` 与 DSH 会话的 `cwd` 精确一致才会投递；无法确认时任务会留在队列中。
 
-`init --pnpm-lock <path>` 或 `init --npm-lock <path>` 是不依赖 DSH profile 的静态配置入口；默认读取锁文件旁的 `package.json`，也可以用 `--root <name>@<version>` 覆盖。之后可用 `radar check` 或 `radar watch` 查询 OSV。它不会启动 DSH，也不会自己投递 Agent 任务。
+`init --pnpm-lock <path>` 或 `init --npm-lock <path>` 是不依赖 DSH profile 的静态配置入口；默认读取锁文件旁的 `package.json`，也可以用 `--root <name>@<version>` 覆盖。之后可用 `radar check` 或 `radar watch` 查询 OSV 和 GitHub Advisory Database。它不会启动 DSH，也不会自己投递 Agent 任务。
 
-如果插件根包没有发布到当前 npm registry，返回 `404` 时只跳过这个包的版本比较，锁文件中的精确依赖和已发布的 DSH 宿主包仍会继续检查。registry 故障、超时、损坏响应和 OSV 故障仍然会让本轮失败。
+如果插件根包没有发布到当前 npm registry，返回 `404` 时只跳过这个包的版本比较，锁文件中的精确依赖和已发布的 DSH 宿主包仍会继续检查。registry 故障、超时、损坏响应和任一漏洞源故障仍然会让本轮失败。
 
 `radar watch` 是 CLI 监控入口，本身不会把任务投递给 DSH；需要 Agent 分析时应使用原生 DSH bundle。
 
 `doctor` 只检查本地接线，不能证明 DSH 进程已经把任务交给模型，也不能证明漏洞源当前可用。
 
-`probe dsh-load` 只证明选定 DSH 版本是否登记并加载了 bundle 配置；即使结果是 `compatible`，也不代表插件安全、业务动作可用或模型效果合格。要评估依赖漏洞，仍然使用 Radar 的依赖图和 OSV 监控。
+`probe dsh-load` 只证明选定 DSH 版本是否登记并加载了 bundle 配置；即使结果是 `compatible`，也不代表插件安全、业务动作可用或模型效果合格。要评估依赖漏洞，仍然使用 Radar 的依赖图和 OSV/GitHub Advisory 监控。
 
 `probe dsh-matrix` 最多检查八个版本，并且逐个运行；只要还有一个版本是 `unknown`，汇总结果就不会变成 `compatible`。
 

@@ -66,9 +66,9 @@
 
 ## Milestone 3 — richer vulnerability intelligence
 
-- [ ] Ingest GitHub Security Advisories incrementally as a second source.
+- [x] Ingest GitHub Security Advisories as an independent exact-version source with optional API-token support.
 - [ ] Enrich matched CVEs with CISA KEV and EPSS.
-- [ ] Deduplicate OSV, GHSA, CVE, and malicious-package aliases.
+- [x] Deduplicate OSV and GitHub Advisory GHSA/CVE aliases while retaining one durable primary incident and merged fix versions.
 - [x] Detect when a previously unavailable fixed version is published and re-open the project analysis task.
 - [x] Calculate whether a top-level plugin update actually removes every affected path, while keeping incomplete or DSH host-runtime evidence unknown.
 - [x] Persist per-source health, alert after three consecutive failures, and resolve the alert when the source recovers without asking the model to decide version applicability.

@@ -282,7 +282,7 @@ function validHistoryEvent(value: unknown): boolean {
       && validCompatibilityUpgradePath(event.upgradePath)
   }
   if (event.kind === 'source-health') {
-    return (event.source === 'osv' || event.source === 'npm-releases'
+    return (event.source === 'osv' || event.source === 'github-advisories' || event.source === 'npm-releases'
       || event.source === 'npm-candidate-graphs' || event.source === 'github-releases')
       && (event.status === 'degraded' || event.status === 'healthy')
       && typeof event.failureCount === 'number' && Number.isSafeInteger(event.failureCount)
@@ -321,7 +321,7 @@ export function parseRadarState(value: unknown): RadarState {
   if (Object.keys(analysisDeliveries).length > 100_000 || Object.keys(analysisResults).length > 100_000) {
     throw new Error('radar state exceeds the analysis record limit')
   }
-  const sourceNames = new Set(['osv', 'npm-releases', 'npm-candidate-graphs', 'github-releases'])
+  const sourceNames = new Set(['osv', 'github-advisories', 'npm-releases', 'npm-candidate-graphs', 'github-releases'])
   for (const [source, rawStatus] of Object.entries(sourceHealth)) {
     const status = asRecord(rawStatus)
     const failures = status?.consecutiveFailures

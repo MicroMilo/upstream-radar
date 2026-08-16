@@ -84,6 +84,7 @@
     "showcase:dsh-runtime:report": "pnpm run build && node scripts/dsh-runtime-graph-showcase.mjs --write-report",
     "showcase:dsh-host-alert": "pnpm run build && node scripts/dsh-host-alert-showcase.mjs",
     "showcase:dsh-host-alert:report": "pnpm run build && node scripts/dsh-host-alert-showcase.mjs --write-report",
+    "showcase:github-advisories": "pnpm run build && node scripts/github-advisory-showcase.mjs",
     "showcase:quickstart": "pnpm run build && node scripts/quickstart-showcase.mjs",
     "showcase:dsh-adoption": "pnpm run build && node scripts/dsh-adoption-showcase.mjs",
     "showcase:dsh-adoption:report": "pnpm run build && node scripts/dsh-adoption-showcase.mjs --write-report",

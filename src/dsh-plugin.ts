@@ -8,6 +8,7 @@ import {
   discoverDshRuntimePackageDirectory,
 } from './dsh-runtime.js'
 import { GitHubReleaseClient } from './github-release.js'
+import { GitHubAdvisoryClient } from './github-advisory.js'
 import { parseRadarConfig } from './inventory.js'
 import { refreshRadarConfigFromDshProfile } from './init.js'
 import { OsvClient } from './osv.js'
@@ -58,6 +59,8 @@ export interface Config {
   registry?: string
   /** Set false to skip bounded transitive candidate graph checks. */
   deepCandidates?: boolean
+  /** Set false to skip the independent GitHub Advisory Database check. */
+  githubAdvisories?: boolean
   /** Optional HTTPS endpoint for changed-event notifications; the URL is never persisted. */
   webhookUrl?: string
   runOnStart?: boolean
@@ -535,6 +538,9 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
     ? undefined
     : new NpmCandidateGraphClient({ ...(config.registry === undefined ? {} : { registry: config.registry }) })
   const releaseNotes = new GitHubReleaseClient()
+  const githubAdvisories = config.githubAdvisories === false
+    ? undefined
+    : new GitHubAdvisoryClient({ ...(process.env.GITHUB_TOKEN === undefined ? {} : { token: process.env.GITHUB_TOKEN }) })
   const configuredWebhookUrl = config.webhookUrl ?? process.env.UPSTREAM_RADAR_WEBHOOK_URL
   const webhookUrl = configuredWebhookUrl === undefined || configuredWebhookUrl.trim() === ''
     ? undefined
@@ -599,7 +605,16 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
           notificationPolicies = createNotificationPolicyMap(radarConfig.projects)
           activeNotificationPolicies = notificationPolicies
           notificationPoliciesLoaded = true
-          const result = await pollRadar(radarConfig.projects, state, source, new Date(), releases, releaseNotes, candidateGraphs)
+          const result = await pollRadar(
+            radarConfig.projects,
+            state,
+            source,
+            new Date(),
+            releases,
+            releaseNotes,
+            candidateGraphs,
+            githubAdvisories === undefined ? [] : [{ name: 'github-advisories' as const, source: githubAdvisories }],
+          )
           state = result.state
           // Persist before model delivery. A crash may duplicate a task, but cannot silently lose it.
           await saveRadarState(stateFile, state)

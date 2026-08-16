@@ -41,7 +41,7 @@ It looks only at the current directory and local DSH profile metadata. It recomm
 | --- | --- | --- |
 | Keep a live DSH Agent informed | [`setup`](#install-in-dsh) | A profile-aware monitor that refreshes the installed graph and routes only changed incidents to the matching Agent. |
 | Add a scheduled CI gate | [GitHub Actions example](examples/github-actions/upstream-radar.yml) | A frozen check against a reviewed graph, with a concise Job Summary and a machine-readable JSON report. |
-| Check a plugin before installing it | [`graph` / `init` for npm or pnpm lockfiles](#inspect-an-npm-or-pnpm-lockfile-before-installation) | Exact dependency paths and OSV results without running the plugin or its lifecycle scripts. |
+| Check a plugin before installing it | [`graph` / `init` for npm or pnpm lockfiles](#inspect-an-npm-or-pnpm-lockfile-before-installation) | Exact dependency paths and OSV/GitHub Advisory results without running the plugin or its lifecycle scripts. |
 | Review one exact published artifact | `upstream-radar inspect npm:<package>@<exact-version> --deep` | Package, dependency, vulnerability, and provenance evidence for one release. |
 
 If you want project-specific reasoning from DSH, use the first path. If you only need an independent admission or regression gate, use the second or third; they do not require a running DSH profile.
@@ -178,13 +178,15 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
 A vulnerability feed stops at “package X is affected.” Upstream Radar keeps going: it identifies the exact installed dependency path, maintains one durable incident, and wakes a [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent with the project evidence needed for a useful investigation.
 
 ```text
-OSV advisory or npm release
+OSV/GitHub Advisory or npm release
   -> exact installed plugin path
   -> new / updated / resolved incident
   -> project-specific DSH Agent analysis task
 ```
 
 **No matching installed path means no Agent wake-up.** Version matching and compatibility facts are calculated by code; the model handles only repository-specific judgment.
+
+Radar checks OSV and the GitHub Advisory Database as independent vulnerability sources. If both sources describe the same issue through a GHSA or CVE alias, Radar emits one incident and keeps the source identifiers and fix versions together. If one source times out, the last confirmed vulnerability is retained; the source itself becomes a visible health incident after three consecutive failures instead of being treated as clean. The CLI and DSH adapter use the GitHub source by default, accept an optional `GITHUB_TOKEN` from the environment for API rate limits, and expose `--no-github-advisories` when an operator deliberately needs an OSV-only run. See the [GitHub Advisory Database API](https://docs.github.com/en/rest/security-advisories/global-advisories?apiVersion=2026-03-10) for the upstream query contract.
 
 ## The missing middle: candidate dependency graphs
 
@@ -308,7 +310,7 @@ The generated graph is the actual installed profile graph. During a native DSH r
 
 For a hand-written or CI fixture, use [the example inventory](examples/radar/config.json). If neither a generated `--patch` overlay nor `UPSTREAM_RADAR_CONFIG` is provided, the bundle stays dormant and performs no polling.
 
-Once running, Radar polls OSV, npm, and public GitHub Releases, persists incident state before delivery, and submits only changed incidents to the matching DSH project session. With one root Agent, delivery remains automatic; with multiple roots, Radar requires an exact match between `project.workspace` and `Agent.session.header.cwd`, and keeps the task queued when it cannot prove the route. The native adapter records the exact message id, DSH session, task id, and event id; it writes back only a matching `assistant/message` from that session whose visible text is the six-field JSON result. A new or updated upstream event invalidates the previous result, so an old model conclusion cannot survive a changed dependency fact. If a source is temporarily unavailable, Radar keeps the last confirmed state instead of claiming that the project is clean, continues delivering already queued tasks, and creates one source-health notice after three consecutive failures.
+Once running, Radar polls OSV, GitHub Advisory Database, npm, and public GitHub Releases, persists incident state before delivery, and submits only changed incidents to the matching DSH project session. With one root Agent, delivery remains automatic; with multiple roots, Radar requires an exact match between `project.workspace` and `Agent.session.header.cwd`, and keeps the task queued when it cannot prove the route. The native adapter records the exact message id, DSH session, task id, and event id; it writes back only a matching `assistant/message` from that session whose visible text is the six-field JSON result. A new or updated upstream event invalidates the previous result, so an old model conclusion cannot survive a changed dependency fact. If a source is temporarily unavailable, Radar keeps the last confirmed state instead of claiming that the project is clean, continues delivering already queued tasks, and creates one source-health notice for that source after three consecutive failures.
 
 Each release cycle also checks a bounded prefix of candidate dependency graphs. This is enabled by default in the DSH adapter and CLI; use `--no-deep-candidates` only when you deliberately want manifest-only compatibility checks. The graph resolver is isolated in a temporary directory and uses `package-lock-only` plus `ignore-scripts`, so candidate package code is not loaded or executed.
 
@@ -347,6 +349,8 @@ To demonstrate the host-runtime dependency path specifically, run `pnpm run show
 To see why one shared host bug should not page every plugin separately, run `pnpm run showcase:dsh-host-alert`. Two plugin roots share the same exact `@deepseek-ai/cordis` version; Radar emits one project event, keeps both exact paths, and creates one DSH analysis task. Add `:report` to refresh the checked-in [deduplication result](examples/dsh/reports/dsh-host-alert-dedup.json).
 
 To validate the actual first-use path against the real published [`dsh-cloudflare-browser-run@0.1.1`](https://www.npmjs.com/package/dsh-cloudflare-browser-run), run `pnpm run showcase:dsh-adoption`. It creates a disposable `DSH_HOME`, packs the exact Radar and plugin tarballs with lifecycle scripts disabled, lets DSH build its own host runtime, runs `setup --no-install`, `doctor`, a frozen OSV/npm/GitHub check, and the human-readable status surface. It does not start a DSH Agent or call a model, and it does not treat an empty finding list as a safety certificate. The checked-in [adoption result](examples/dsh/reports/adoption-smoke.json) records the last run's package counts and boundaries.
+
+To see the two-source vulnerability contract without contacting the network, run `pnpm run showcase:github-advisories`. It feeds the same parser issue through OSV and a deterministic GitHub Advisory Database client, proves that two reports become one Radar incident, then simulates three GitHub failures and recovery. The existing vulnerability remains active throughout; only the GitHub source-health incident changes.
 
 ## Validate the compatibility rules
 
@@ -489,7 +493,7 @@ For a local or self-hosted DSH machine, omit `--frozen` so Radar refreshes the s
 ## How the loop works
 
 1. Read the project inventory and exact installed npm graph.
-2. Query OSV with every installed `name@version` pair.
+2. Query OSV and GitHub Advisory Database with every installed `name@version` pair, then merge matching GHSA/CVE aliases.
 3. Watch npm releases for the installed plugin and DSH/Cordis packages.
 4. Create or update one durable incident with the exact dependency path.
 5. Persist a constrained analysis task before delivery.
@@ -577,6 +581,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - exact `@deepseek-ai/dsh` executable-package evidence, including host-boundary OSV alerts and its own npm compatibility stream;
 - one project-level alert for a shared DSH host-runtime vulnerability, retaining every affected plugin root and exact path instead of sending duplicate per-plugin notices;
 - exact-version OSV vulnerability and malicious-package matching;
+- independent GitHub Advisory Database matching for exact npm versions, with GHSA/CVE alias deduplication, merged fix versions, and source-specific health;
 - npm release monitoring for plugins and DSH/Cordis packages, accepting only a candidate newer than the installed exact version (a regressed `latest` dist-tag is not a breaking update), with public GitHub Release notes attached when an exact candidate tag is available;
 - bounded transitive dependency graph checks for the earliest candidate versions, exact OSV matching for every resolved node, vulnerable path evidence, and explicit incomplete/unavailable coverage;
 - durable incident state with current-task replacement and resolution;
@@ -623,11 +628,11 @@ The default text gate exits `2` for `review` or `block`, which is useful when ev
 - `probe dsh-load` is intentionally narrower than a security scan: a successful load proves only that the selected DSH profile accepted the bundle configuration. It does not execute plugin actions, compare capabilities, or grant admission to an unreviewed package.
 - `probe dsh-matrix` is intentionally sequential and bounded to eight versions. An incomplete matrix is not green: `unknown` propagates to the aggregate result until every selected DSH version has a reliable load result.
 - `radar check/watch --frozen` intentionally uses the graph committed in the config for CI; it does not prove that the installed DSH profile has not changed. Without `--frozen`, native DSH and CLI polling refresh the selected profile first.
-- `radar status` is a local snapshot only: it does not refresh OSV/npm/GitHub data, and it cannot prove that a source is current until a check has completed. It does show whether a captured DSH host plane came from the running process or a profile fallback. Its next steps are guidance, not an automatic upgrade or safety decision.
+- `radar status` is a local snapshot only: it does not refresh OSV, GitHub Advisory, npm, or GitHub Release data, and it cannot prove that a source is current until a check has completed. It does show whether a captured DSH host plane came from the running process or a profile fallback. Its next steps are guidance, not an automatic upgrade or safety decision.
 - `doctor` checks local wiring only; it cannot prove that a running DSH process has delivered a task to a model or that upstream feeds are current.
 - npm and pnpm lock graphs are supported; Yarn graph extraction is not implemented.
-- OSV, npm `latest`, and public GitHub Release notes are live sources; changelog, comparison-diff, and migration-guide ingestion are deferred.
-- A failed OSV check preserves confirmed matches and returns a visible source warning; source health is durable and routed through DSH after three consecutive failures, while source-claim conflict handling and external health destinations are not implemented yet.
+- OSV, GitHub Advisory Database, npm `latest`, and public GitHub Release notes are live sources; changelog, comparison-diff, and migration-guide ingestion are deferred.
+- A failed advisory-source check preserves confirmed matches and returns a visible source warning; each source's health is durable and routed through DSH after three consecutive failures. Conflicting source claims and external health destinations are not implemented yet.
 - `radar watch` is a CLI monitoring fallback; it does not deliver tasks into DSH by itself.
 - Delivery uses one root Agent as the simple default; when several roots exist, it requires an exact project-workspace match and leaves ambiguous tasks queued instead of guessing.
 - DSH result writeback accepts only the exact six-field JSON contract from the matching model session; it does not infer conclusions from ordinary chat or tool output. The result is advisory and never changes deterministic incident state.

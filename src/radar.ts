@@ -23,6 +23,7 @@ import {
   type PackageCoordinate,
   type ProjectInventory,
   type RadarEvent,
+  type RadarSeverity,
   type RadarSource,
   type RadarState,
   type SourceHealthEvent,
@@ -36,6 +37,12 @@ import {
 
 export interface AdvisorySource {
   query(packages: readonly PackageCoordinate[]): Promise<Map<string, AdvisoryMatch[]>>
+}
+
+export interface AdvisorySourceBinding {
+  /** The source name is persisted in source-health state and source errors. */
+  name: Extract<RadarSource, 'osv' | 'github-advisories'>
+  source: AdvisorySource
 }
 
 export interface ReleaseSource {
@@ -65,6 +72,11 @@ const MAX_CANDIDATE_DEPENDENCY_PATHS = 4
 const MAX_VULNERABILITY_PATHS = 64
 
 type CandidateVulnerabilityStatus = 'checked' | 'unavailable' | 'not-requested'
+
+type AdvisorySourceOutcome = {
+  succeeded: boolean
+  message?: string
+}
 
 function hash(value: string): string {
   return createHash('sha256').update(value).digest('hex').slice(0, 24)
@@ -333,6 +345,89 @@ export function emptyRadarState(): RadarState {
   }
 }
 
+function severityRank(value: RadarSeverity): number {
+  switch (value) {
+    case 'critical': return 6
+    case 'high': return 5
+    case 'medium': return 4
+    case 'low': return 3
+    case 'info': return 2
+    case 'unknown': return 1
+  }
+}
+
+function advisoryIdentities(advisory: VulnerabilityAdvisory): Set<string> {
+  return new Set([advisory.id, ...advisory.aliases].map(value => value.trim().toUpperCase()).filter(Boolean))
+}
+
+function advisoriesOverlap(left: VulnerabilityAdvisory, right: VulnerabilityAdvisory): boolean {
+  const rightIdentities = advisoryIdentities(right)
+  return [...advisoryIdentities(left)].some(identity => rightIdentities.has(identity))
+}
+
+/** Merge one source's richer metadata without allowing a lower severity to hide a higher one. */
+function mergeAdvisory(left: VulnerabilityAdvisory, right: VulnerabilityAdvisory): VulnerabilityAdvisory {
+  const aliases = new Set([...left.aliases, ...right.aliases, right.id])
+  aliases.delete(left.id)
+  const fixedVersions = new Set([...left.fixedVersions, ...right.fixedVersions])
+  const references = new Set([...left.references, ...right.references])
+  return {
+    id: left.id,
+    aliases: [...aliases].sort(),
+    summary: left.summary === '(no summary supplied)' ? right.summary : left.summary,
+    details: left.details.length === 0 ? right.details : left.details,
+    severity: severityRank(left.severity) >= severityRank(right.severity) ? left.severity : right.severity,
+    ...(left.published === undefined ? right.published === undefined ? {} : { published: right.published } : { published: left.published }),
+    modified: left.modified >= right.modified ? left.modified : right.modified,
+    ...(left.withdrawn === undefined ? right.withdrawn === undefined ? {} : { withdrawn: right.withdrawn } : { withdrawn: left.withdrawn }),
+    fixedVersions: [...fixedVersions].sort(),
+    references: [...references].slice(0, 100),
+  }
+}
+
+function mergeAdvisoryMatches(
+  sources: readonly Map<string, AdvisoryMatch[]>[],
+): Map<string, AdvisoryMatch[]> {
+  const grouped = new Map<string, AdvisoryMatch[][]>()
+  for (const source of sources) {
+    for (const [key, matches] of source) {
+      const groups = grouped.get(key) ?? []
+      for (const match of matches) {
+        const overlapping = groups.filter(group => group.some(existing => advisoriesOverlap(existing.advisory, match.advisory)))
+        if (overlapping.length === 0) {
+          groups.push([{ package: { ...match.package }, advisory: { ...match.advisory } }])
+          continue
+        }
+        // Keep the first source's identifier as the durable primary key. The
+        // later source contributes aliases and metadata instead of renaming an
+        // already-known incident on every poll.
+        const combined = [...overlapping.flat(), match]
+        const first = combined[0]
+        if (first === undefined) continue
+        const mergedAdvisory = combined.slice(1).reduce(
+          (current, item) => mergeAdvisory(current, item.advisory),
+          first.advisory,
+        )
+        const merged: AdvisoryMatch = {
+          package: { ...first.package },
+          advisory: mergedAdvisory,
+        }
+        for (const group of overlapping) {
+          const index = groups.indexOf(group)
+          if (index >= 0) groups.splice(index, 1)
+        }
+        groups.push([merged])
+      }
+      grouped.set(key, groups)
+    }
+  }
+  return new Map([...grouped.entries()].map(([key, groups]) => [
+    key,
+    groups.map(group => group[0]).filter((match): match is AdvisoryMatch => match !== undefined)
+      .sort((left, right) => left.advisory.id.localeCompare(right.advisory.id)),
+  ]))
+}
+
 /** Query exact installed versions, calculate affected paths, and emit state transitions only. */
 export async function pollRadar(
   inventories: readonly ProjectInventory[],
@@ -342,6 +437,7 @@ export async function pollRadar(
   releaseSource?: ReleaseSource,
   releaseNotesSource?: ReleaseNotesSource,
   candidateDependencySource?: CandidateDependencySource,
+  additionalAdvisorySources: readonly AdvisorySourceBinding[] = [],
 ): Promise<RadarPollResult> {
   if (previousState.schema !== RADAR_STATE_SCHEMA) throw new Error('unsupported radar state schema')
   if (!Number.isFinite(now.getTime())) throw new Error('radar check time is invalid')
@@ -363,29 +459,40 @@ export async function pollRadar(
       }
     }
   }
-  let matches = new Map<string, AdvisoryMatch[]>()
-  let vulnerabilityCheckSucceeded = true
-  let osvSourceSucceeded = true
-  let osvFailureMessage: string | undefined
-  attemptedSources.add('osv')
-  try {
-    matches = await source.query([...uniquePackages.values()])
-  } catch (error: unknown) {
-    const raw = error instanceof Error ? error.message : String(error)
-    const message = raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048)
-    sourceErrors.push({
-      source: 'osv',
-      message,
-    })
-    osvSourceSucceeded = false
-    osvFailureMessage = message
-    vulnerabilityCheckSucceeded = false
+  const advisoryBindings: AdvisorySourceBinding[] = [
+    { name: 'osv', source },
+    ...additionalAdvisorySources,
+  ]
+  const bindingNames = new Set<string>()
+  for (const binding of advisoryBindings) {
+    if (bindingNames.has(binding.name)) throw new Error(`duplicate advisory source binding: ${binding.name}`)
+    bindingNames.add(binding.name)
   }
-
+  const advisoryResults: Array<{ binding: AdvisorySourceBinding; matches: Map<string, AdvisoryMatch[]> }> = []
+  const advisoryOutcomes = new Map<AdvisorySourceBinding['name'], AdvisorySourceOutcome>()
+  for (const binding of advisoryBindings) {
+    attemptedSources.add(binding.name)
+    try {
+      const queried = await binding.source.query([...uniquePackages.values()])
+      if ([...uniquePackages.keys()].some(key => !queried.has(key))) {
+        throw new Error(`${binding.name} response does not cover every submitted package version`)
+      }
+      advisoryResults.push({ binding, matches: queried })
+      advisoryOutcomes.set(binding.name, { succeeded: true })
+    } catch (error: unknown) {
+      const raw = error instanceof Error ? error.message : String(error)
+      const message = raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048)
+      sourceErrors.push({ source: binding.name, message })
+      advisoryOutcomes.set(binding.name, { succeeded: false, message })
+    }
+  }
+  const matches = mergeAdvisoryMatches(advisoryResults.map(item => item.matches))
+  const vulnerabilityQuerySucceeded = advisoryResults.length > 0
+  const vulnerabilityCheckSucceeded = advisoryBindings.every(binding => advisoryOutcomes.get(binding.name)?.succeeded === true)
   const current = vulnerabilityCheckSucceeded
     ? new Map<string, StoredVulnerabilityMatch>()
     : new Map(Object.entries(previousState.activeVulnerabilities))
-  if (vulnerabilityCheckSucceeded) {
+  if (vulnerabilityQuerySucceeded) {
     for (const inventory of inventories) {
       // A DSH profile can load several plugins into one shared host-runtime
       // plane. Group those observations at the project level so one vulnerable
@@ -503,7 +610,7 @@ export async function pollRadar(
   const previousVulnerabilities = new Map(Object.entries(previousState.activeVulnerabilities))
   const migratedLegacyKeys = new Set<string>()
   const migratedLegacyIncidentIds = new Set<string>()
-  if (vulnerabilityCheckSucceeded) {
+  if (vulnerabilityQuerySucceeded) {
     for (const [legacyKey, previous] of Object.entries(previousState.activeVulnerabilities)) {
       if (previous.event.affectedSources?.includes('dsh-host') !== true) continue
       const aggregateKey = hostMatchKey(
@@ -591,8 +698,7 @@ export async function pollRadar(
         if (candidateQueryPackages.length > MAX_CANDIDATE_VULNERABILITY_QUERY) {
           const message = `OSV candidate query exceeds the ${MAX_CANDIDATE_VULNERABILITY_QUERY} package limit`
           sourceErrors.push({ source: 'osv', message })
-          osvSourceSucceeded = false
-          osvFailureMessage = message
+          advisoryOutcomes.set('osv', { succeeded: false, message })
           candidateVulnerabilityStatus = 'unavailable'
         } else {
           try {
@@ -606,8 +712,7 @@ export async function pollRadar(
             const raw = error instanceof Error ? error.message : String(error)
             const message = raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048)
             sourceErrors.push({ source: 'osv', message })
-            osvSourceSucceeded = false
-            osvFailureMessage = message
+            advisoryOutcomes.set('osv', { succeeded: false, message })
             candidateVulnerabilityStatus = 'unavailable'
           }
         }
@@ -656,8 +761,7 @@ export async function pollRadar(
             if (dependencyQueryPackages.length > MAX_CANDIDATE_DEPENDENCY_QUERY) {
               const message = `OSV candidate dependency query exceeds the ${MAX_CANDIDATE_DEPENDENCY_QUERY} package limit`
               sourceErrors.push({ source: 'osv', message })
-              osvSourceSucceeded = false
-              osvFailureMessage = message
+              advisoryOutcomes.set('osv', { succeeded: false, message })
               for (const [key, check] of candidateDependencyChecks) {
                 candidateDependencyChecks.set(key, {
                   ...check,
@@ -687,8 +791,7 @@ export async function pollRadar(
                 const raw = error instanceof Error ? error.message : String(error)
                 const message = raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048)
                 sourceErrors.push({ source: 'osv', message })
-                osvSourceSucceeded = false
-                osvFailureMessage = message
+                advisoryOutcomes.set('osv', { succeeded: false, message })
                 for (const [key, check] of candidateDependencyChecks) {
                   if (check.status === 'unavailable') continue
                   candidateDependencyChecks.set(key, {
@@ -810,7 +913,16 @@ export async function pollRadar(
       activeCompatibility = Object.fromEntries(currentCompatibility)
     }
   }
-  sourceHealth = recordSourceHealth(sourceHealth, 'osv', checkedAt, osvSourceSucceeded, osvFailureMessage)
+  for (const binding of advisoryBindings) {
+    const outcome = advisoryOutcomes.get(binding.name)
+    sourceHealth = recordSourceHealth(
+      sourceHealth,
+      binding.name,
+      checkedAt,
+      outcome?.succeeded === true,
+      outcome?.message,
+    )
+  }
   let activeSourceHealth: Record<string, StoredSourceHealthMatch> = previousState.activeSourceHealth ?? {}
   const currentSourceHealth = new Map<string, StoredSourceHealthMatch>(Object.entries(activeSourceHealth))
   for (const inventory of inventories) {

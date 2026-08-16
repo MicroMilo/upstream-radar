@@ -175,6 +175,7 @@ runs:
         RADAR_STATE: ${{ inputs.state }}
         RADAR_VERSION: ${{ inputs.version }}
         RADAR_REPORT: ${{ runner.temp }}/upstream-radar/radar-check.json
+        GITHUB_TOKEN: ${{ github.token }}
       run: |
         set -euo pipefail
         mkdir -p "$(dirname "$RADAR_REPORT")"
@@ -243,6 +244,7 @@ runs:
         RADAR_STATE: ${{ inputs.state }}
         RADAR_VERSION: ${{ inputs.version }}
         RADAR_REPORT: ${{ runner.temp }}/upstream-radar/radar-check.json
+        GITHUB_TOKEN: ${{ github.token }}
       run: |
         set -euo pipefail
         mkdir -p "$(dirname "$RADAR_REPORT")"

@@ -23,10 +23,12 @@ export { OsvClient, packageKey, type OsvClientOptions } from './osv.js'
 export { NpmReleaseClient, type NpmReleaseCandidateStatus, type NpmReleaseClientOptions, type NpmReleaseObservation } from './npm-release.js'
 export { MAX_CANDIDATE_GRAPHS, NpmCandidateGraphClient, type NpmCandidateGraphClientOptions } from './npm-candidate.js'
 export { GitHubReleaseClient, type GitHubReleaseClientOptions, type ReleaseNotes, type ReleaseNotesSource } from './github-release.js'
+export { GitHubAdvisoryClient, type GitHubAdvisoryClientOptions } from './github-advisory.js'
 export {
   emptyRadarState,
   pollRadar,
   type AdvisorySource,
+  type AdvisorySourceBinding,
   type CandidateDependencySource,
   type RadarPollResult,
   type ReleaseSource,

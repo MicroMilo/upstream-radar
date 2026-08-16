@@ -269,7 +269,7 @@ export interface CompatibilityEvent extends RadarEventBase {
   releaseNotesUrl?: string
 }
 
-export type RadarSource = 'osv' | 'npm-releases' | 'npm-candidate-graphs' | 'github-releases'
+export type RadarSource = 'osv' | 'github-advisories' | 'npm-releases' | 'npm-candidate-graphs' | 'github-releases'
 
 export interface SourceHealthStatus {
   lastAttemptedAt: string

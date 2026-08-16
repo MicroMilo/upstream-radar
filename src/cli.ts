@@ -21,6 +21,7 @@ import { createNotificationPolicyMap, filterNotifiableRadarEvents } from './noti
 import { OsvClient } from './osv.js'
 import { verdictAtLeast } from './policy.js'
 import { createQuickstartReport, renderQuickstartReport } from './quickstart.js'
+import { GitHubAdvisoryClient } from './github-advisory.js'
 import { emptyRadarState, pollRadar } from './radar.js'
 import {
   evaluateRadarPolicy,
@@ -386,6 +387,7 @@ Options:
   --no-deep-candidates skip bounded transitive dependency graph checks for upgrade candidates
   --state <path>       persistent radar state (default: <config.json>.state.json)
   --osv-base-url <url> alternate HTTPS OSV API base URL
+  --no-github-advisories disable the independent GitHub Advisory Database check for radar check/watch
   --webhook <https-url>  radar check/watch: POST changed events to an HTTPS endpoint
   --interval <seconds> watch interval from 300 to 86400 seconds (default: 1800)
   --limit <n>         radar history: show 1 to 1000 recent transitions (default: 20)
@@ -735,6 +737,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
   let historyLimitProvided = false
   let once = false
   let deepCandidates = true
+  let githubAdvisories = true
   let frozen = false
   let failOn: RadarFailThreshold = 'never'
   let failOnCompatibility: RadarCompatibilityFailThreshold = 'never'
@@ -746,6 +749,8 @@ async function runRadar(args: readonly string[]): Promise<number> {
       once = true
     } else if (argument === '--no-deep-candidates') {
       deepCandidates = false
+    } else if (argument === '--no-github-advisories') {
+      githubAdvisories = false
     } else if (argument === '--frozen') {
       frozen = true
     } else if (argument === '--state' || argument === '--osv-base-url' || argument === '--registry' || argument === '--webhook'
@@ -798,7 +803,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
     : refreshRadarConfigFromConfiguredProfile(await readConfig())
   if (subcommand === 'status') {
     if (positional.length > 0 || notesPath !== undefined || once || intervalProvided
-      || historyLimitProvided || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || !deepCandidates || frozen || statePath === ':memory:') {
+      || historyLimitProvided || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || !deepCandidates || !githubAdvisories || frozen || statePath === ':memory:') {
       throw new Error('radar status only accepts --state, --fail-on, --fail-on-compatibility and --json options')
     }
     const config = await readConfig()
@@ -824,7 +829,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
   }
   if (subcommand === 'history') {
     if (positional.length > 0 || notesPath !== undefined || once || intervalProvided
-      || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || !deepCandidates || frozen
+      || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || !deepCandidates || !githubAdvisories || frozen
       || failOn !== 'never' || failOnCompatibility !== 'never') {
       throw new Error('radar history only accepts --state, --limit and --json options')
     }
@@ -853,6 +858,9 @@ async function runRadar(args: readonly string[]): Promise<number> {
     ? new NpmCandidateGraphClient({ ...(registry === undefined ? {} : { registry }) })
     : undefined
   const releaseNotesSource = new GitHubReleaseClient()
+  const githubAdvisorySource = githubAdvisories
+    ? new GitHubAdvisoryClient({ ...(process.env.GITHUB_TOKEN === undefined ? {} : { token: process.env.GITHUB_TOKEN }) })
+    : undefined
   const stateFile = statePath ?? `${resolve(configPath)}.state.json`
   if (webhookUrl !== undefined && statePath === ':memory:') {
     throw new Error('radar --webhook requires a persistent --state file so successful deliveries can be remembered')
@@ -863,7 +871,16 @@ async function runRadar(args: readonly string[]): Promise<number> {
     const config = await readConfigForPoll()
     const state = statePath === ':memory:' ? emptyRadarState() : await loadRadarState(stateFile)
     const checkedAt = new Date()
-    const result = await pollRadar(config.projects, state, osv, checkedAt, releases, releaseNotesSource, candidateGraphs)
+    const result = await pollRadar(
+      config.projects,
+      state,
+      osv,
+      checkedAt,
+      releases,
+      releaseNotesSource,
+      candidateGraphs,
+      githubAdvisorySource === undefined ? [] : [{ name: 'github-advisories' as const, source: githubAdvisorySource }],
+    )
     if (statePath !== ':memory:') await saveRadarState(stateFile, result.state)
     if (webhookUrl === undefined || webhookEndpointHash === undefined) return result
     const queuedState = queueRadarWebhookEvents(result.state, webhookEndpointHash, result.events)
@@ -946,7 +963,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
     return 0
   }
 
-  if (statePath !== undefined || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || once || intervalProvided || historyLimitProvided || !deepCandidates || frozen || failOn !== 'never' || failOnCompatibility !== 'never') {
+  if (statePath !== undefined || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || once || intervalProvided || historyLimitProvided || !deepCandidates || !githubAdvisories || frozen || failOn !== 'never' || failOnCompatibility !== 'never') {
     throw new Error('radar compare does not accept check or watch options')
   }
   const config = await readConfig()
