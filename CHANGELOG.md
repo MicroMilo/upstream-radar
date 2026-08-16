@@ -39,6 +39,7 @@ All notable changes to Upstream Radar are documented here.
 - Make the repository's consumer smoke use the current local CLI by default, with an explicit `try:consumer:published` path for checking the public npm artifact before a release announcement.
 - Add a structured DSH trial feedback form and place a redacted-result link in the English and Chinese README first-run paths.
 - Document the real `create-dsh-plugin` to pnpm lockfile graph and GitHub Action path, so DSH plugin authors can review dependencies before installation and keep the same gate in CI.
+- Order the read-only `radar status` Attention list by CISA KEV, EPSS, and advisory severity, and show the evidence used for each vulnerability's position.
 
 ## [0.33.0] - 2026-08-16
 

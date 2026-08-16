@@ -146,6 +146,7 @@ export {
   type RadarMonitoringStatus,
   type RadarCoverageStatus,
   type RadarStatusIncident,
+  type RadarStatusTriage,
   type RadarSourceStatus,
   type RadarStatusReport,
   type RadarStatusSource,

@@ -19,6 +19,7 @@
 - [x] Auto-select the only DSH profile with third-party bundles and provide a network-free first-run status snapshot.
 - [x] Provide a network-free doctor command for DSH bundle registration, overlay/config alignment, state readability, and dependency coverage.
 - [x] Show bounded active-incident paths, candidate signals, and next-step guidance in the network-free status command.
+- [x] Order active status incidents by known exploitation, EPSS, and advisory severity while keeping missing signals explicit.
 - [x] Make the generated project workspace portable by default so the reviewed inventory can be committed and reused.
 - [x] Provide one explicit DSH setup command that installs the exact Radar version, generates wiring, and runs the network-free doctor check.
 - [x] Make the first-use CLI self-explaining with command-specific help, a read-only `quickstart` path selector, and actionable admission next steps.

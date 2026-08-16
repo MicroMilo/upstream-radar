@@ -20,6 +20,18 @@ export type RadarMonitoringStatus = 'not-started' | 'healthy' | 'degraded'
 export type RadarSourceStatus = 'not-run' | 'healthy' | 'degraded'
 export type RadarCoverageStatus = 'complete' | 'incomplete'
 
+/**
+ * Evidence used to order active vulnerability incidents for human triage.
+ * Missing fields mean that Radar did not retain that signal; they are not a
+ * claim that the incident is safe.
+ */
+export interface RadarStatusTriage {
+  severity: RadarSeverity
+  knownExploited?: true
+  epssScore?: number
+  epssPercentile?: number
+}
+
 export interface RadarStatusIncident {
   incidentId: string
   kind: RadarEvent['kind']
@@ -27,6 +39,7 @@ export interface RadarStatusIncident {
   project: string
   summary: string
   nextStep: string
+  triage?: RadarStatusTriage
 }
 
 export interface RadarStatusSource {
@@ -147,6 +160,18 @@ function analysisNextStep(state: RadarState, incidentId: string, fallback: strin
   return `DSH analysis: ${display(result.project_exposure)} (${display(result.confidence)} confidence); ${display(result.recommended_action, 2_048)}`
 }
 
+function vulnerabilityTriage(event: VulnerabilityEvent): RadarStatusTriage {
+  const signals = event.advisory.riskSignals
+  return {
+    severity: event.kind === 'malware' ? 'critical' : event.advisory.severity,
+    ...(signals?.cisaKev === undefined ? {} : { knownExploited: true as const }),
+    ...(signals?.epss === undefined ? {} : {
+      epssScore: signals.epss.score,
+      epssPercentile: signals.epss.percentile,
+    }),
+  }
+}
+
 function vulnerabilityStatusIncident(event: VulnerabilityEvent, state: RadarState): RadarStatusIncident {
   const firstPath = event.paths[0]
   const path = firstPath === undefined
@@ -164,6 +189,7 @@ function vulnerabilityStatusIncident(event: VulnerabilityEvent, state: RadarStat
       project: display(event.project.name),
       summary,
       nextStep: analysisNextStep(state, event.incidentId, `Remove or isolate ${vulnerabilityPluginScope(event)}, then ask the DSH Agent to assess project exposure.`),
+      triage: vulnerabilityTriage(event),
     }
   }
   const fixedVersions = event.advisory.fixedVersions.slice(0, 4).map(item => display(item)).join(', ')
@@ -176,6 +202,7 @@ function vulnerabilityStatusIncident(event: VulnerabilityEvent, state: RadarStat
     nextStep: analysisNextStep(state, event.incidentId, fixedVersions.length === 0
       ? `No published fix is recorded; ask the DSH Agent to assess containment or replacement for ${vulnerabilityPluginScope(event)}.`
       : `Review ${event.affected.name} fixed version(s) ${fixedVersions} with the DSH Agent before changing the plugin.`),
+    triage: vulnerabilityTriage(event),
   }
 }
 
@@ -213,7 +240,7 @@ function statusIncident(event: RadarEvent, state: RadarState): RadarStatusIncide
   return vulnerabilityStatusIncident(event, state)
 }
 
-function priorityRank(priority: RadarStatusIncident['priority']): number {
+function priorityRank(priority: RadarSeverity | 'attention'): number {
   if (priority === 'critical') return 6
   if (priority === 'high') return 5
   if (priority === 'medium') return 4
@@ -223,16 +250,32 @@ function priorityRank(priority: RadarStatusIncident['priority']): number {
   return 0
 }
 
+function triageSortKey(incident: RadarStatusIncident): [number, number, number, number] {
+  return [
+    incident.triage?.knownExploited === true ? 1 : 0,
+    incident.triage?.epssScore ?? -1,
+    incident.triage === undefined ? 0 : priorityRank(incident.triage.severity),
+    priorityRank(incident.priority),
+  ]
+}
+
+function compareActiveIncidents(left: RadarStatusIncident, right: RadarStatusIncident): number {
+  const leftKey = triageSortKey(left)
+  const rightKey = triageSortKey(right)
+  return rightKey[0] - leftKey[0]
+    || rightKey[1] - leftKey[1]
+    || rightKey[2] - leftKey[2]
+    || rightKey[3] - leftKey[3]
+    || left.project.localeCompare(right.project)
+    || left.incidentId.localeCompare(right.incidentId)
+}
+
 function activeIncidentSummary(state: RadarState): { incidents: RadarStatusIncident[]; overflow: number } {
   const all = [
     ...Object.values(state.activeVulnerabilities).map(item => statusIncident(item.event, state)),
     ...Object.values(state.activeCompatibility).map(item => statusIncident(item.event, state)),
     ...Object.values(state.activeSourceHealth ?? {}).map(item => statusIncident(item.event, state)),
-  ].sort((left, right) => (
-    priorityRank(right.priority) - priorityRank(left.priority)
-      || left.project.localeCompare(right.project)
-      || left.incidentId.localeCompare(right.incidentId)
-  ))
+  ].sort(compareActiveIncidents)
   const incidents = all.slice(0, 32)
   return { incidents, overflow: all.length - incidents.length }
 }
@@ -328,6 +371,16 @@ function hostRuntimeSourceLabel(source: DependencyHostRuntimeSource): string {
   return source === 'dsh-process' ? 'running DSH process' : 'profile fallback'
 }
 
+function renderTriage(triage: RadarStatusTriage | undefined): string | undefined {
+  if (triage === undefined) return undefined
+  const details = [
+    ...(triage.knownExploited === true ? ['CISA KEV known exploited'] : []),
+    ...(triage.epssScore === undefined ? [] : [`EPSS ${(triage.epssScore * 100).toFixed(1)}%`]),
+    `severity ${triage.severity}`,
+  ]
+  return details.join('; ')
+}
+
 /** Render the status snapshot for a human checking the first run. */
 export function renderRadarStatus(report: RadarStatusReport): string {
   const coverageParts: string[] = []
@@ -361,11 +414,15 @@ export function renderRadarStatus(report: RadarStatusReport): string {
   }
   lines.push(
     '',
-    report.activeIncidents.length === 0 ? 'Attention: none' : 'Attention:',
+    report.activeIncidents.length === 0
+      ? 'Attention: none'
+      : 'Attention (ordered by CISA KEV, EPSS, then severity):',
   )
   for (const incident of report.activeIncidents) {
+    const triage = renderTriage(incident.triage)
     lines.push(
       `  [${incident.priority.toUpperCase()}] ${display(incident.project)}: ${display(incident.summary)}`,
+      ...(triage === undefined ? [] : [`    Triage: ${triage}`]),
       `    Next: ${display(incident.nextStep)}`,
     )
   }

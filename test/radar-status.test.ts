@@ -190,6 +190,62 @@ describe('Radar status', () => {
     assert.match(rendered, /source conflict: fixed versions/)
   })
 
+  it('orders active incidents by exploitation evidence, EPSS, then severity', () => {
+    const state = emptyRadarState()
+    const knownExploited: VulnerabilityEvent = {
+      ...vulnerabilityEvent,
+      incidentId: 'incident-known-exploited',
+      advisory: {
+        ...vulnerabilityEvent.advisory,
+        severity: 'low',
+        riskSignals: {
+          cisaKev: { knownExploited: true },
+          epss: { score: 0.1, percentile: 0.7 },
+        },
+      },
+    }
+    const highEpss: VulnerabilityEvent = {
+      ...vulnerabilityEvent,
+      incidentId: 'incident-high-epss',
+      advisory: {
+        ...vulnerabilityEvent.advisory,
+        severity: 'low',
+        riskSignals: { epss: { score: 0.99, percentile: 0.99 } },
+      },
+    }
+    const critical: VulnerabilityEvent = {
+      ...vulnerabilityEvent,
+      incidentId: 'incident-critical',
+      advisory: { ...vulnerabilityEvent.advisory, severity: 'critical' },
+    }
+    state.activeVulnerabilities = {
+      knownExploited: { key: knownExploited.incidentId, event: knownExploited },
+      highEpss: { key: highEpss.incidentId, event: highEpss },
+      critical: { key: critical.incidentId, event: critical },
+    }
+
+    const report = createRadarStatus(config, state, {
+      configFile: '/tmp/radar.json',
+      stateFile: '/tmp/radar.json.state.json',
+      stateExists: true,
+    })
+
+    assert.deepEqual(report.activeIncidents.map(incident => incident.incidentId), [
+      'incident-known-exploited',
+      'incident-high-epss',
+      'incident-critical',
+    ])
+    assert.deepEqual(report.activeIncidents[0]?.triage, {
+      severity: 'low',
+      knownExploited: true,
+      epssScore: 0.1,
+      epssPercentile: 0.7,
+    })
+    const rendered = renderRadarStatus(report)
+    assert.match(rendered, /Attention \(ordered by CISA KEV, EPSS, then severity\):/)
+    assert.match(rendered, /Triage: CISA KEV known exploited; EPSS 10\.0%; severity low/)
+  })
+
   it('does not treat absent optional platform packages as a required coverage gap', () => {
     const optionalConfig = structuredClone(config)
     const graph = optionalConfig.projects[0]?.plugins[0]?.graph
