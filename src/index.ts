@@ -25,6 +25,15 @@ export { MAX_CANDIDATE_GRAPHS, NpmCandidateGraphClient, type NpmCandidateGraphCl
 export { GitHubReleaseClient, type GitHubReleaseClientOptions, type ReleaseNotes, type ReleaseNotesSource } from './github-release.js'
 export { GitHubAdvisoryClient, type GitHubAdvisoryClientOptions } from './github-advisory.js'
 export {
+  CisaKevClient,
+  EpssClient,
+  THREAT_INTEL_REFERENCES,
+  type CisaKevClientOptions,
+  type EpssClientOptions,
+  type ThreatIntelSource,
+  type ThreatIntelSourceBinding,
+} from './threat-intel.js'
+export {
   emptyRadarState,
   pollRadar,
   type AdvisorySource,

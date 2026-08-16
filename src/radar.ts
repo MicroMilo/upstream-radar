@@ -15,6 +15,7 @@ import {
   type AdvisoryConflictClaim,
   type AdvisoryConflictField,
   type AdvisoryMatch,
+  type AdvisoryRiskSignals,
   type AdvisorySourceName,
   type AnalysisTask,
   type CandidateDependencyGraphObservation,
@@ -30,6 +31,7 @@ import {
   type RadarSeverity,
   type RadarSource,
   type RadarState,
+  type ThreatIntelSourceName,
   type SourceHealthEvent,
   type SourceHealthStatus,
   type StoredCompatibilityMatch,
@@ -38,6 +40,7 @@ import {
   type VulnerabilityAdvisory,
   type VulnerabilityEvent,
 } from './radar-types.js'
+import type { ThreatIntelSourceBinding } from './threat-intel.js'
 
 export interface AdvisorySource {
   query(packages: readonly PackageCoordinate[]): Promise<Map<string, AdvisoryMatch[]>>
@@ -409,6 +412,27 @@ function addAdvisorySource(advisory: VulnerabilityAdvisory, source: AdvisorySour
   }
 }
 
+function mergeRiskSignals(
+  left: AdvisoryRiskSignals | undefined,
+  right: AdvisoryRiskSignals | undefined,
+): AdvisoryRiskSignals | undefined {
+  const cisaKev = right?.cisaKev ?? left?.cisaKev
+  const epss = right?.epss ?? left?.epss
+  if (cisaKev === undefined && epss === undefined) return undefined
+  return {
+    ...(cisaKev === undefined ? {} : { cisaKev: { ...cisaKev } }),
+    ...(epss === undefined ? {} : { epss: { ...epss } }),
+  }
+}
+
+function preserveRiskSignals(
+  previous: VulnerabilityAdvisory,
+  current: VulnerabilityAdvisory,
+): VulnerabilityAdvisory {
+  const riskSignals = mergeRiskSignals(previous.riskSignals, current.riskSignals)
+  return riskSignals === undefined ? current : { ...current, riskSignals }
+}
+
 function advisoryClaimValue(advisory: VulnerabilityAdvisory, field: AdvisoryConflictField): string {
   if (field === 'severity') return advisory.severity
   const fixedVersions = [...new Set(advisory.fixedVersions)].sort()
@@ -537,6 +561,7 @@ export async function pollRadar(
   releaseNotesSource?: ReleaseNotesSource,
   candidateDependencySource?: CandidateDependencySource,
   additionalAdvisorySources: readonly AdvisorySourceBinding[] = [],
+  additionalThreatIntelSources: readonly ThreatIntelSourceBinding[] = [],
 ): Promise<RadarPollResult> {
   if (previousState.schema !== RADAR_STATE_SCHEMA) throw new Error('unsupported radar state schema')
   if (!Number.isFinite(now.getTime())) throw new Error('radar check time is invalid')
@@ -585,12 +610,55 @@ export async function pollRadar(
       advisoryOutcomes.set(binding.name, { succeeded: false, message })
     }
   }
-  const matches = mergeAdvisoryMatches(advisoryResults.map(item => ({
+  const mergedMatches = mergeAdvisoryMatches(advisoryResults.map(item => ({
     name: item.binding.name,
     matches: item.matches,
   })))
+  const threatIntelAdvisories = [...new Map(
+    [...mergedMatches.values()].flatMap(items => items.map(item => [item.advisory.id, item.advisory] as const)),
+  ).values()]
+  const threatIntelBindings = [...additionalThreatIntelSources]
+  const threatIntelBindingNames = new Set<ThreatIntelSourceName>()
+  const threatIntelResults = new Map<string, AdvisoryRiskSignals>()
+  const threatIntelOutcomes = new Map<ThreatIntelSourceName, AdvisorySourceOutcome>()
+  for (const binding of threatIntelBindings) {
+    if (threatIntelBindingNames.has(binding.name)) throw new Error(`duplicate threat-intel source binding: ${binding.name}`)
+    threatIntelBindingNames.add(binding.name)
+    attemptedSources.add(binding.name)
+    try {
+      const queried = await binding.source.query(threatIntelAdvisories)
+      if (threatIntelAdvisories.some(advisory => !queried.has(advisory.id))) {
+        throw new Error(`${binding.name} response does not cover every submitted advisory`)
+      }
+      for (const advisory of threatIntelAdvisories) {
+        const signals = queried.get(advisory.id)
+        if (signals === undefined) continue
+        const merged = mergeRiskSignals(threatIntelResults.get(advisory.id), signals)
+        if (merged !== undefined) threatIntelResults.set(advisory.id, merged)
+      }
+      threatIntelOutcomes.set(binding.name, { succeeded: true })
+    } catch (error: unknown) {
+      const raw = error instanceof Error ? error.message : String(error)
+      const message = raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, 2_048)
+      sourceErrors.push({ source: binding.name, message })
+      threatIntelOutcomes.set(binding.name, { succeeded: false, message })
+    }
+  }
+  const matches = new Map([...mergedMatches.entries()].map(([key, items]) => [
+    key,
+    items.map(item => {
+      const riskSignals = threatIntelResults.get(item.advisory.id)
+      return {
+        package: { ...item.package },
+        advisory: riskSignals === undefined
+          ? { ...item.advisory }
+          : { ...item.advisory, riskSignals },
+      }
+    }),
+  ]))
   const vulnerabilityQuerySucceeded = advisoryResults.length > 0
   const vulnerabilityCheckSucceeded = advisoryBindings.every(binding => advisoryOutcomes.get(binding.name)?.succeeded === true)
+  const threatIntelCheckSucceeded = threatIntelBindings.every(binding => threatIntelOutcomes.get(binding.name)?.succeeded === true)
   const current = vulnerabilityCheckSucceeded
     ? new Map<string, StoredVulnerabilityMatch>()
     : new Map(Object.entries(previousState.activeVulnerabilities))
@@ -700,13 +768,16 @@ export async function pollRadar(
           paths,
           advisory: { ...match.advisory },
         }
-        if (!vulnerabilityCheckSucceeded) {
+        if (!vulnerabilityCheckSucceeded || !threatIntelCheckSucceeded) {
           const previous = previousPartialVulnerability(event, previousState.activeVulnerabilities)
           if (previous !== undefined) {
+            const mergedAdvisory = mergeAdvisory(previous[1].event.advisory, event.advisory)
             const stableEvent: VulnerabilityEvent = {
               ...event,
               incidentId: previous[1].event.incidentId,
-              advisory: mergeAdvisory(previous[1].event.advisory, event.advisory),
+              advisory: threatIntelCheckSucceeded
+                ? mergedAdvisory
+                : preserveRiskSignals(previous[1].event.advisory, mergedAdvisory),
             }
             current.set(previous[0], { key: previous[0], event: stableEvent })
             continue
@@ -1029,6 +1100,16 @@ export async function pollRadar(
   }
   for (const binding of advisoryBindings) {
     const outcome = advisoryOutcomes.get(binding.name)
+    sourceHealth = recordSourceHealth(
+      sourceHealth,
+      binding.name,
+      checkedAt,
+      outcome?.succeeded === true,
+      outcome?.message,
+    )
+  }
+  for (const binding of threatIntelBindings) {
+    const outcome = threatIntelOutcomes.get(binding.name)
     sourceHealth = recordSourceHealth(
       sourceHealth,
       binding.name,

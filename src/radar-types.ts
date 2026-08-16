@@ -26,6 +26,8 @@ export type DependencySource = 'profile' | 'dsh-host'
 export type DependencyHostRuntimeSource = 'dsh-profile-fallback' | 'dsh-process'
 /** Vulnerability databases that can independently confirm one advisory. */
 export type AdvisorySourceName = 'osv' | 'github-advisories'
+/** External signals that help prioritize an advisory without changing whether it matches. */
+export type ThreatIntelSourceName = 'cisa-kev' | 'epss'
 export type AdvisoryConflictField = 'severity' | 'fixed-versions'
 
 export interface AdvisoryConflictClaim {
@@ -158,6 +160,31 @@ export interface VulnerabilityAdvisory {
   sources?: AdvisorySourceName[]
   /** Non-fatal disagreements between independent advisory databases. */
   conflicts?: AdvisoryConflict[]
+  /** Positive prioritization signals; absence is not a claim that a CVE is safe. */
+  riskSignals?: AdvisoryRiskSignals
+}
+
+export interface CisaKevSignal {
+  /** CISA lists this CVE as exploited in the wild. */
+  knownExploited: true
+  dateAdded?: string
+  dueDate?: string
+  knownRansomwareCampaignUse?: string
+  requiredAction?: string
+  notes?: string
+}
+
+export interface EpssSignal {
+  /** FIRST's daily estimated probability that the CVE will be exploited in the next 30 days. */
+  score: number
+  /** The CVE's percentile among the EPSS-scored CVEs, in the range 0..1. */
+  percentile: number
+  date?: string
+}
+
+export interface AdvisoryRiskSignals {
+  cisaKev?: CisaKevSignal
+  epss?: EpssSignal
 }
 
 export interface AdvisoryMatch {
@@ -286,7 +313,7 @@ export interface CompatibilityEvent extends RadarEventBase {
   releaseNotesUrl?: string
 }
 
-export type RadarSource = AdvisorySourceName | 'npm-releases' | 'npm-candidate-graphs' | 'github-releases'
+export type RadarSource = AdvisorySourceName | ThreatIntelSourceName | 'npm-releases' | 'npm-candidate-graphs' | 'github-releases'
 
 export interface SourceHealthStatus {
   lastAttemptedAt: string

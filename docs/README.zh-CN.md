@@ -1,6 +1,6 @@
 <h1 align="center">Upstream Radar</h1>
 
-<p align="center"><strong>面向 DeepSeek Harness 插件的常驻依赖雷达：精确路径、破坏性更新信号，以及带项目证据的 Agent 跟进。</strong></p>
+<p align="center"><strong>面向 DeepSeek Harness 插件的常驻依赖雷达：精确路径、CISA KEV/EPSS 优先级信号、破坏性更新检测，以及带项目证据的 Agent 跟进。</strong></p>
 
 <p align="center">
   <a href="../README.md">English</a> · 简体中文
@@ -318,6 +318,21 @@ Next: Review parser@2.9.0 fixed version(s) 3.0.0, 3.1.0 with the DSH Agent befor
 
 这个事件会成为带有插件身份的 DSH notice，而不是被复制进一段泛泛的聊天提示词。两个来源说法不一致时，Radar 会把双方证据都留下，不会悄悄替你选一个修复版本；具体采用哪个版本，再交给 DSH Agent 结合项目判断。
 
+如果公告带有 CVE，原生 DSH 还会补两条“先处理谁”的证据：
+
+```text
+Threat signal: CISA KEV lists this CVE as exploited in the wild.
+FIRST EPSS estimated exploitation probability: 97.2% (percentile 100.0%)
+```
+
+[CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) 表示这个 CVE 是否已被 CISA 列为“在野外被利用”；[FIRST EPSS](https://www.first.org/epss/) 每天给出未来一段时间内被利用的概率估计和相对百分位。它们只用于排序和提醒，不改变精确依赖匹配；没有这两条信号，也不代表安全。
+
+想在不联网的情况下重放这两条信号，以及其中一个来源故障时如何保留旧告警：
+
+```bash
+pnpm run showcase:threat-intel
+```
+
 | 上游信号 | Radar 用程序确定 | DSH Agent 结合项目调查 |
 | --- | --- | --- |
 | 漏洞或恶意软件包 | 受影响的精确版本、每条安装路径、修复版本和事件状态 | 项目是否调用、攻击者输入能否到达、代价最低的修复办法 |
@@ -367,7 +382,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.
 
 如果需要手写配置或制作 CI fixture，可以参考[示例清单](../examples/radar/config.json)。如果既没有 `--patch` overlay，也没有设置 `UPSTREAM_RADAR_CONFIG`，插件会保持休眠，不发起轮询。
 
-启动后，Radar 会轮询 OSV、GitHub Advisory Database、npm 和公开 GitHub Release，先把事件状态持久化，再把有变化的事件交给项目 workspace 对应的根 DSH Agent。只有一个 root 时保持自动投递；有多个 root 且无法精确匹配 workspace 时，任务会留在队列中，不会误投给另一个项目。原生适配器会记录准确的消息 id、DSH 会话、task id 和 event id；只有同一会话产生的 `assistant/message`，且可解析为固定六字段 JSON，才会写入 `analysisResults`。事件发生更新后，旧结论会被清掉，过期模型回复不会覆盖新事实。
+启动后，Radar 会轮询 OSV、GitHub Advisory Database、npm 和公开 GitHub Release，并为命中的 CVE 查询 CISA KEV 与 FIRST EPSS。原生 DSH 默认开启这两个优先级信号；如果想保持轻量运行，可以设置 `UPSTREAM_RADAR_THREAT_INTEL=false`。它们只帮助排序，不决定某个包是否存在漏洞。Radar 先把事件状态持久化，再把有变化的事件交给项目 workspace 对应的根 DSH Agent。只有一个 root 时保持自动投递；有多个 root 且无法精确匹配 workspace 时，任务会留在队列中，不会误投给另一个项目。原生适配器会记录准确的消息 id、DSH 会话、task id 和 event id；只有同一会话产生的 `assistant/message`，且可解析为固定六字段 JSON，才会写入 `analysisResults`。事件发生更新后，旧结论会被清掉，过期模型回复不会覆盖新事实。
 
 要在不访问真实漏洞源的情况下看两个来源如何合并，以及某个来源故障时为什么不会误清告警，可以运行：
 
@@ -488,9 +503,11 @@ steps:
       fail-on: high
       # 可选：把确定性的 DSH/插件兼容性破坏也作为 CI 失败条件
       fail-on-compatibility: breaking
+      # 可选：为命中的 CVE 加上 CISA KEV 和 FIRST EPSS 优先级信号
+      threat-intel: true
 ```
 
-这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --fail-on-compatibility breaking --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。每次运行彼此独立；发现达到阈值的漏洞或选择的兼容性变化时返回 `2`，运行或漏洞源出错时返回 `1`。`breaking` 只拦截有 confirmed/strong 信号的兼容性事件，`any` 会拦截所有活动兼容性事件，默认值是 `never`。除了原始 JSON 日志，Action 还会把经过转义的简短摘要写入 GitHub Job Summary，定时任务失败时可以直接看到受影响的包、准确依赖路径、已经发布的修复版本（如果有）和建议的下一步。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.33.0` 的发布标签，并根据团队策略固定 checkout Action。
+这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --fail-on-compatibility breaking --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。`threat-intel` 默认是 `false`，这样普通 CI 门禁不会因为额外查询变重；设置为 `true` 后，Job Summary 和原始 JSON 会包含 CISA KEV 与 FIRST EPSS 的优先级证据。每次运行彼此独立；发现达到阈值的漏洞或选择的兼容性变化时返回 `2`，运行或漏洞源出错时返回 `1`。`breaking` 只拦截有 confirmed/strong 信号的兼容性事件，`any` 会拦截所有活动兼容性事件，默认值是 `never`。除了原始 JSON 日志，Action 还会把经过转义的简短摘要写入 GitHub Job Summary，定时任务失败时可以直接看到受影响的包、准确依赖路径、已经发布的修复版本（如果有）、请求的优先级信号和建议的下一步。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.33.0` 的发布标签，并根据团队策略固定 checkout Action。
 
 如果仓库还没有提交 Radar 配置，最短接入方式是省略 `config`、`pnpm-lock` 和 `npm-lock`。checkout 之后，Action 会自动使用唯一存在的 `pnpm-lock.yaml` 或 `package-lock.json`，生成临时的审查清单，再执行同一个 frozen 检查：
 
@@ -565,7 +582,7 @@ pnpm run try:consumer
 ## 闭环如何工作
 
 1. 读取项目清单和实际安装的 npm 依赖图。
-2. 用每一个精确 `name@version` 查询 OSV 和 GitHub Advisory Database，再按 GHSA/CVE 别名合并，同时保留是哪一个或哪几个来源确认了结果。
+2. 用每一个精确 `name@version` 查询 OSV 和 GitHub Advisory Database，再按 GHSA/CVE 别名合并，同时保留是哪一个或哪几个来源确认了结果。原生 DSH 会继续为命中的 CVE 查询 CISA KEV 和 FIRST EPSS；CLI 用 `--threat-intel`，Action 用 `threat-intel: true` 显式开启。
 3. 监听已安装插件和 DSH/Cordis 包的 npm 新版本。
 4. 用真实依赖路径创建或更新一个持久事件。
 5. 先把受约束的分析任务落盘，再尝试投递。

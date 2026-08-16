@@ -69,13 +69,22 @@ describe('webhook delivery', () => {
             { source: 'github-advisories', value: '2.2.0' },
           ],
         }],
+        riskSignals: {
+          cisaKev: { knownExploited: true, dateAdded: '2026-08-15' },
+          epss: { score: 0.97224, percentile: 0.99999, date: '2026-08-16' },
+        },
       },
     }
     const notice = buildRadarWebhookPayload([vulnerability]).events[0]
     assert.deepEqual(notice?.affectedPlugins, vulnerability.affectedPlugins)
     assert.deepEqual((notice?.advisory as { sources?: string[] } | undefined)?.sources, ['osv', 'github-advisories'])
     assert.deepEqual((notice?.advisory as { conflicts?: unknown } | undefined)?.conflicts, vulnerability.advisory.conflicts)
+    assert.deepEqual((notice?.advisory as { riskSignals?: unknown } | undefined)?.riskSignals, {
+      cisaKev: { knownExploited: true, dateAdded: '2026-08-15' },
+      epss: { score: 0.97224, percentile: 0.99999, date: '2026-08-16' },
+    })
     assert.match(notice?.summary ?? '', /across 2 DSH plugins/)
+    assert.match(notice?.summary ?? '', /CISA KEV: known exploited/)
   })
 
   it('accepts HTTPS provider URLs but never credentials or fragments', () => {

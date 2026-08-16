@@ -19,6 +19,7 @@ jobs:
           # The Action auto-detects one pnpm-lock.yaml or package-lock.json.
           fail-on: high
           fail-on-compatibility: breaking
+          # threat-intel: true
           # Optional pre-install review of one exact published plugin:
           # inspect-package: dsh-cloudflare-browser-run@0.1.1
           # inspect-fail-on: review

@@ -94,6 +94,7 @@ export interface WriteDshPatchOptions {
   runOnStart?: boolean
   registry?: string
   deepCandidates?: boolean
+  threatIntel?: boolean
   force?: boolean
 }
 
@@ -423,6 +424,7 @@ export async function writeDshPatch(options: WriteDshPatchOptions): Promise<stri
     `    runOnStart: ${runOnStart}`,
     ...(options.registry === undefined ? [] : [`    registry: ${JSON.stringify(options.registry)}`]),
     ...(options.deepCandidates === undefined ? [] : [`    deepCandidates: ${options.deepCandidates}`]),
+    ...(options.threatIntel === undefined ? [`    threatIntel: true`] : [`    threatIntel: ${options.threatIntel}`]),
     '',
   ].join('\n')
   await writeFile(output, patch, { mode: 0o600 })

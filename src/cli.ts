@@ -37,6 +37,7 @@ import { loadRadarState, saveRadarState } from './radar-state.js'
 import { createRadarStatus, renderRadarStatus } from './radar-status.js'
 import { renderTextReport } from './render.js'
 import { scanDirectory } from './scan.js'
+import { CisaKevClient, EpssClient } from './threat-intel.js'
 import type { Verdict } from './types.js'
 import type { RadarNotificationPolicy, RadarSeverity } from './radar-types.js'
 import { TOOL_VERSION } from './version.js'
@@ -265,10 +266,13 @@ Use 'radar status' and 'radar history' for local, no-network diagnosis. Use
 Usage:
   upstream-radar radar check <config.json> [--state <state.json>] [--frozen]
     [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>]
-    [--webhook <https-url>] [--json]
+    [--webhook <https-url>] [--threat-intel] [--json]
 
 One cycle queries the configured sources and persists changed incidents. Use
 --frozen when the config is the reviewed graph you want to enforce.
+
+--threat-intel adds CISA KEV and FIRST EPSS prioritization signals for matched
+CVEs. It is opt-in here; the native DSH bundle enables it by default.
 `,
     'radar watch': `Upstream Radar — keep monitoring a reviewed inventory
 
@@ -276,6 +280,7 @@ Usage:
   upstream-radar radar watch <config.json> [--interval <seconds>] [--once]
     [--state <state.json>] [--frozen] [--fail-on <severity>]
     [--fail-on-compatibility <never|breaking|any>] [--webhook <https-url>]
+    [--threat-intel]
 
 Use --once in CI. A long-running watch keeps polling and should not be given a
 policy gate that would make it exit on the first incident.
@@ -354,8 +359,8 @@ Usage:
   upstream-radar demo [--json]
   upstream-radar quickstart [directory] [--json]
   upstream-radar benchmark compatibility [--json]
-  upstream-radar radar check <config.json> [--state <state.json>] [--webhook <https-url>] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
-  upstream-radar radar watch <config.json> [--state <state.json>] [--webhook <https-url>] [--interval <seconds>] [--once] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
+  upstream-radar radar check <config.json> [--state <state.json>] [--webhook <https-url>] [--threat-intel] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
+  upstream-radar radar watch <config.json> [--state <state.json>] [--webhook <https-url>] [--threat-intel] [--interval <seconds>] [--once] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
   upstream-radar radar status <config.json> [--state <state.json>] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
   upstream-radar radar history <config.json> [--state <state.json>] [--limit <n>] [--json]
   upstream-radar radar compare <config.json> <before.json> <candidate.json> [--notes <release-notes.txt>] [--json]
@@ -388,6 +393,7 @@ Options:
   --state <path>       persistent radar state (default: <config.json>.state.json)
   --osv-base-url <url> alternate HTTPS OSV API base URL
   --no-github-advisories disable the independent GitHub Advisory Database check for radar check/watch
+  --threat-intel      radar check/watch: add CISA KEV and FIRST EPSS signals for matched CVEs
   --webhook <https-url>  radar check/watch: POST changed events to an HTTPS endpoint
   --interval <seconds> watch interval from 300 to 86400 seconds (default: 1800)
   --limit <n>         radar history: show 1 to 1000 recent transitions (default: 20)
@@ -738,6 +744,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
   let once = false
   let deepCandidates = true
   let githubAdvisories = true
+  let threatIntel = false
   let frozen = false
   let failOn: RadarFailThreshold = 'never'
   let failOnCompatibility: RadarCompatibilityFailThreshold = 'never'
@@ -751,6 +758,8 @@ async function runRadar(args: readonly string[]): Promise<number> {
       deepCandidates = false
     } else if (argument === '--no-github-advisories') {
       githubAdvisories = false
+    } else if (argument === '--threat-intel') {
+      threatIntel = true
     } else if (argument === '--frozen') {
       frozen = true
     } else if (argument === '--state' || argument === '--osv-base-url' || argument === '--registry' || argument === '--webhook'
@@ -803,7 +812,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
     : refreshRadarConfigFromConfiguredProfile(await readConfig())
   if (subcommand === 'status') {
     if (positional.length > 0 || notesPath !== undefined || once || intervalProvided
-      || historyLimitProvided || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || !deepCandidates || !githubAdvisories || frozen || statePath === ':memory:') {
+      || historyLimitProvided || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || !deepCandidates || !githubAdvisories || threatIntel || frozen || statePath === ':memory:') {
       throw new Error('radar status only accepts --state, --fail-on, --fail-on-compatibility and --json options')
     }
     const config = await readConfig()
@@ -830,7 +839,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
   if (subcommand === 'history') {
     if (positional.length > 0 || notesPath !== undefined || once || intervalProvided
       || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || !deepCandidates || !githubAdvisories || frozen
-      || failOn !== 'never' || failOnCompatibility !== 'never') {
+      || failOn !== 'never' || failOnCompatibility !== 'never' || threatIntel) {
       throw new Error('radar history only accepts --state, --limit and --json options')
     }
     // Parse the config as an input check, but deliberately do not refresh it
@@ -861,6 +870,12 @@ async function runRadar(args: readonly string[]): Promise<number> {
   const githubAdvisorySource = githubAdvisories
     ? new GitHubAdvisoryClient({ ...(process.env.GITHUB_TOKEN === undefined ? {} : { token: process.env.GITHUB_TOKEN }) })
     : undefined
+  const threatIntelSources = threatIntel
+    ? [
+        { name: 'cisa-kev' as const, source: new CisaKevClient() },
+        { name: 'epss' as const, source: new EpssClient() },
+      ]
+    : []
   const stateFile = statePath ?? `${resolve(configPath)}.state.json`
   if (webhookUrl !== undefined && statePath === ':memory:') {
     throw new Error('radar --webhook requires a persistent --state file so successful deliveries can be remembered')
@@ -880,6 +895,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
       releaseNotesSource,
       candidateGraphs,
       githubAdvisorySource === undefined ? [] : [{ name: 'github-advisories' as const, source: githubAdvisorySource }],
+      threatIntelSources,
     )
     if (statePath !== ':memory:') await saveRadarState(stateFile, result.state)
     if (webhookUrl === undefined || webhookEndpointHash === undefined) return result
@@ -963,7 +979,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
     return 0
   }
 
-  if (statePath !== undefined || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || once || intervalProvided || historyLimitProvided || !deepCandidates || !githubAdvisories || frozen || failOn !== 'never' || failOnCompatibility !== 'never') {
+  if (statePath !== undefined || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || once || intervalProvided || historyLimitProvided || !deepCandidates || !githubAdvisories || threatIntel || frozen || failOn !== 'never' || failOnCompatibility !== 'never') {
     throw new Error('radar compare does not accept check or watch options')
   }
   const config = await readConfig()

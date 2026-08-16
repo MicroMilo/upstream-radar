@@ -67,7 +67,7 @@
 ## Milestone 3 — richer vulnerability intelligence
 
 - [x] Ingest GitHub Security Advisories as an independent exact-version source with optional API-token support.
-- [ ] Enrich matched CVEs with CISA KEV and EPSS.
+- [x] Enrich matched CVEs with CISA KEV and EPSS, while treating both as prioritization evidence rather than safety verdicts.
 - [x] Deduplicate OSV and GitHub Advisory GHSA/CVE aliases while retaining one durable primary incident and merged fix versions.
 - [x] Preserve advisory source provenance in events, state, CLI output, and webhook payloads so cross-source confirmation is visible.
 - [x] Surface severity and fixed-version disagreements as source conflicts, while preserving the last confirmed incident during partial source outages.

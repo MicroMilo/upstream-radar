@@ -59,6 +59,10 @@ function advisoryEvidence(event) {
   const parts = [
     ...(sources.length === 0 ? [] : [`sources: ${sources}`]),
     ...(conflicts.length === 0 ? [] : [`source conflict: ${conflicts}`]),
+    ...(event?.advisory?.riskSignals?.cisaKev === undefined ? [] : ['CISA KEV: known exploited']),
+    ...(event?.advisory?.riskSignals?.epss === undefined ? [] : [
+      `EPSS: ${(Number(event.advisory.riskSignals.epss.score) * 100).toFixed(1)}% estimated exploitation probability`,
+    ]),
   ]
   return parts.length === 0 ? '' : ` · ${text(parts.join('; '), 1_024)}`
 }

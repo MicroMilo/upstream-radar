@@ -93,12 +93,22 @@ function pathLabels(paths: readonly PackageCoordinate[][]): string[][] {
   return paths.slice(0, 4).map(path => path.slice(0, 64).map(packageLabel))
 }
 
+function advisoryRiskSummary(event: VulnerabilityEvent): string {
+  const parts = [
+    ...(event.advisory.riskSignals?.cisaKev === undefined ? [] : ['CISA KEV: known exploited']),
+    ...(event.advisory.riskSignals?.epss === undefined ? [] : [
+      `EPSS: ${(event.advisory.riskSignals.epss.score * 100).toFixed(1)}% estimated exploitation probability`,
+    ]),
+  ]
+  return parts.length === 0 ? '' : ` [${parts.join('; ')}]`
+}
+
 function vulnerabilityNotice(event: VulnerabilityEvent): RadarWebhookEventNotice {
   const path = event.paths[0]?.map(packageLabel).join(' -> ') ?? 'dependency path unavailable'
   const scope = event.affectedPlugins === undefined || event.affectedPlugins.length <= 1
     ? ''
     : ` across ${event.affectedPlugins.length} DSH plugins`
-  const summary = `${packageLabel(event.affected)} is affected by ${bounded(event.advisory.id, 256)}${scope} via ${bounded(path, 4_096)}`
+  const summary = `${packageLabel(event.affected)} is affected by ${bounded(event.advisory.id, 256)}${scope} via ${bounded(path, 4_096)}${advisoryRiskSummary(event)}`
   return {
     id: bounded(event.id, 512),
     incidentId: bounded(event.incidentId, 512),
@@ -129,6 +139,25 @@ function vulnerabilityNotice(event: VulnerabilityEvent): RadarWebhookEventNotice
             value: bounded(claim.value, 1_024),
           })),
         })),
+      }),
+      ...(event.advisory.riskSignals === undefined ? {} : {
+        riskSignals: {
+          ...(event.advisory.riskSignals.cisaKev === undefined ? {} : {
+            cisaKev: {
+              knownExploited: true,
+              ...(event.advisory.riskSignals.cisaKev.dateAdded === undefined ? {} : { dateAdded: bounded(event.advisory.riskSignals.cisaKev.dateAdded, 128) }),
+              ...(event.advisory.riskSignals.cisaKev.dueDate === undefined ? {} : { dueDate: bounded(event.advisory.riskSignals.cisaKev.dueDate, 128) }),
+              ...(event.advisory.riskSignals.cisaKev.knownRansomwareCampaignUse === undefined ? {} : { knownRansomwareCampaignUse: bounded(event.advisory.riskSignals.cisaKev.knownRansomwareCampaignUse, 128) }),
+            },
+          }),
+          ...(event.advisory.riskSignals.epss === undefined ? {} : {
+            epss: {
+              score: event.advisory.riskSignals.epss.score,
+              percentile: event.advisory.riskSignals.epss.percentile,
+              ...(event.advisory.riskSignals.epss.date === undefined ? {} : { date: bounded(event.advisory.riskSignals.epss.date, 64) }),
+            },
+          }),
+        },
       }),
     },
     paths: pathLabels(event.paths),

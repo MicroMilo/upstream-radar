@@ -18,6 +18,8 @@ pnpm run try:dsh:live
 
 That mode intentionally depends on current external feeds. The default command uses a checked-in event so the DSH delivery contract stays reproducible.
 
+Native DSH enables CISA KEV and FIRST EPSS prioritization for matched CVEs by default. These signals help the Agent decide what to inspect first; they do not change the exact dependency match or turn an unmarked CVE into a safe result. Set `UPSTREAM_RADAR_THREAT_INTEL=false` for a lean run without these two feeds.
+
 The run fails unless all of these facts hold:
 
 - DSH adds `upstream-radar` to the `headless` profile's bundle stack;

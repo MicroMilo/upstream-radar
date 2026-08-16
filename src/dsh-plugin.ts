@@ -14,6 +14,7 @@ import { refreshRadarConfigFromDshProfile } from './init.js'
 import { OsvClient } from './osv.js'
 import { NpmCandidateGraphClient } from './npm-candidate.js'
 import { NpmReleaseClient } from './npm-release.js'
+import { CisaKevClient, EpssClient } from './threat-intel.js'
 import {
   createNotificationPolicyMap,
   decideProjectRadarNotification,
@@ -61,6 +62,8 @@ export interface Config {
   deepCandidates?: boolean
   /** Set false to skip the independent GitHub Advisory Database check. */
   githubAdvisories?: boolean
+  /** Set false to skip CISA KEV and FIRST EPSS prioritization signals. */
+  threatIntel?: boolean
   /** Optional HTTPS endpoint for changed-event notifications; the URL is never persisted. */
   webhookUrl?: string
   runOnStart?: boolean
@@ -541,6 +544,12 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
   const githubAdvisories = config.githubAdvisories === false
     ? undefined
     : new GitHubAdvisoryClient({ ...(process.env.GITHUB_TOKEN === undefined ? {} : { token: process.env.GITHUB_TOKEN }) })
+  const threatIntelSources = config.threatIntel === false
+    ? []
+    : [
+        { name: 'cisa-kev' as const, source: new CisaKevClient() },
+        { name: 'epss' as const, source: new EpssClient() },
+      ]
   const configuredWebhookUrl = config.webhookUrl ?? process.env.UPSTREAM_RADAR_WEBHOOK_URL
   const webhookUrl = configuredWebhookUrl === undefined || configuredWebhookUrl.trim() === ''
     ? undefined
@@ -614,6 +623,7 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
             releaseNotes,
             candidateGraphs,
             githubAdvisories === undefined ? [] : [{ name: 'github-advisories' as const, source: githubAdvisories }],
+            threatIntelSources,
           )
           state = result.state
           // Persist before model delivery. A crash may duplicate a task, but cannot silently lose it.

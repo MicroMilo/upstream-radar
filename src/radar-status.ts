@@ -14,7 +14,7 @@ import { countPolicyHeldAnalysisTasks, createNotificationPolicyMap } from './not
 
 export const RADAR_STATUS_SCHEMA = 'upstream-radar.radar-status/v1alpha1' as const
 
-const RADAR_SOURCES: readonly RadarSource[] = ['osv', 'github-advisories', 'npm-releases', 'npm-candidate-graphs', 'github-releases']
+const RADAR_SOURCES: readonly RadarSource[] = ['osv', 'github-advisories', 'cisa-kev', 'epss', 'npm-releases', 'npm-candidate-graphs', 'github-releases']
 
 export type RadarMonitoringStatus = 'not-started' | 'healthy' | 'degraded'
 export type RadarSourceStatus = 'not-run' | 'healthy' | 'degraded'
@@ -111,6 +111,8 @@ function vulnerabilityPluginScope(event: VulnerabilityEvent): string {
 function sourceLabel(source: RadarSource): string {
   if (source === 'osv') return 'OSV'
   if (source === 'github-advisories') return 'GitHub Advisory Database'
+  if (source === 'cisa-kev') return 'CISA KEV'
+  if (source === 'epss') return 'FIRST EPSS'
   if (source === 'npm-releases') return 'npm releases'
   if (source === 'npm-candidate-graphs') return 'npm candidate dependency graphs'
   return 'GitHub releases'
@@ -124,6 +126,10 @@ function vulnerabilityEvidenceSuffix(event: VulnerabilityEvent): string {
   const details = [
     ...(sources === undefined ? [] : [`sources: ${sources}`]),
     ...(conflicts === undefined ? [] : [`source conflict: ${conflicts}`]),
+    ...(event.advisory.riskSignals?.cisaKev === undefined ? [] : ['CISA KEV: known exploited']),
+    ...(event.advisory.riskSignals?.epss === undefined ? [] : [
+      `EPSS: ${(event.advisory.riskSignals.epss.score * 100).toFixed(1)}% estimated exploitation probability`,
+    ]),
   ]
   return details.length === 0 ? '' : ` (${details.join('; ')})`
 }

@@ -38,6 +38,10 @@ describe('Radar event rendering', () => {
             { source: 'github-advisories', value: '0.3.0' },
           ],
         }],
+        riskSignals: {
+          cisaKev: { knownExploited: true, dateAdded: '2026-08-15' },
+          epss: { score: 0.97224, percentile: 0.99999, date: '2026-08-16' },
+        },
       },
     }
 
@@ -45,6 +49,8 @@ describe('Radar event rendering', () => {
     assert.match(output, /Origin: plugin profile \+ DSH host runtime/)
     assert.match(output, /Sources: OSV \+ GitHub Advisory Database/)
     assert.match(output, /Source conflict: fixed versions — OSV=0\.2\.0; GitHub Advisory Database=0\.3\.0/)
+    assert.match(output, /Threat signal: CISA KEV lists this CVE as exploited in the wild\./)
+    assert.match(output, /FIRST EPSS estimated exploitation probability: 97\.2% \(percentile 100\.0%\)/)
     assert.match(output, /Next: Review @deepseek-ai\/dsh-agent@0\.1\.0-rc\.6 fixed version\(s\) 0\.2\.0 with the DSH Agent before changing the plugin\./)
   })
 

@@ -60,6 +60,10 @@ describe('radar state parsing', () => {
             { source: 'github-advisories' as const, value: '2.2.0' },
           ],
         }],
+        riskSignals: {
+          cisaKev: { knownExploited: true as const, dateAdded: '2026-08-15' },
+          epss: { score: 0.97224, percentile: 0.99999, date: '2026-08-16' },
+        },
       },
     }
     state.activeVulnerabilities['project-shared-host\0dsh-host\0npm:host-parser@2.0.0\0GHSA-shared-host'] = {
@@ -72,6 +76,11 @@ describe('radar state parsing', () => {
     const invalid = structuredClone(state) as unknown as Record<string, any>
     invalid.history[0].advisory.conflicts[0].claims[0].source = 'untrusted-feed'
     assert.throws(() => parseRadarState(invalid), /invalid event history/)
+
+    const invalidSignal = structuredClone(state) as unknown as Record<string, any>
+    invalidSignal.activeVulnerabilities['project-shared-host\0dsh-host\0npm:host-parser@2.0.0\0GHSA-shared-host'].event.advisory.riskSignals.epss.score = 1.1
+    delete invalidSignal.history
+    assert.throws(() => parseRadarState(invalidSignal), /invalid active match/)
   })
 
   it('rejects malformed transition history instead of exposing it to the renderer', () => {

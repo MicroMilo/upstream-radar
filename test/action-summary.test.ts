@@ -27,6 +27,10 @@ describe('GitHub Action summary', () => {
             fixedVersions: ['3.0.0'],
             sources: ['osv', 'github-advisories'],
             conflicts: [{ field: 'fixed-versions', claims: [] }],
+            riskSignals: {
+              cisaKev: { knownExploited: true },
+              epss: { score: 0.97224, percentile: 0.99999 },
+            },
           },
           paths: [[
             { name: 'plugin', version: '1.0.0' },
@@ -51,6 +55,8 @@ describe('GitHub Action summary', () => {
       assert.match(result.stdout, /fix: 3\.0\.0/)
       assert.match(result.stdout, /sources: OSV \+ GitHub Advisory Database/)
       assert.match(result.stdout, /source conflict: fixed versions/)
+      assert.match(result.stdout, /CISA KEV: known exploited/)
+      assert.match(result.stdout, /EPSS: 97\.2% estimated exploitation probability/)
       assert.match(result.stdout, /next: Review parser@2\.9\.0 fixed version\(s\) 3\.0\.0 before changing the plugin\./)
       assert.match(result.stdout, /### Source warnings/)
       assert.match(result.stdout, /temporary outage/)

@@ -43,6 +43,25 @@ function advisoryConflictLabel(conflict: AdvisoryConflict): string {
     .join('; ')}`
 }
 
+function advisoryRiskSignalLines(event: VulnerabilityEvent): string[] {
+  const signals = event.advisory.riskSignals
+  if (signals === undefined) return []
+  const lines: string[] = []
+  if (signals.cisaKev !== undefined) {
+    lines.push('Threat signal: CISA KEV lists this CVE as exploited in the wild.')
+    if (signals.cisaKev.dateAdded !== undefined) lines.push(`CISA KEV date added: ${display(signals.cisaKev.dateAdded)}`)
+    if (signals.cisaKev.dueDate !== undefined) lines.push(`CISA KEV due date: ${display(signals.cisaKev.dueDate)}`)
+    if (signals.cisaKev.knownRansomwareCampaignUse !== undefined) {
+      lines.push(`CISA ransomware campaign use: ${display(signals.cisaKev.knownRansomwareCampaignUse)}`)
+    }
+  }
+  if (signals.epss !== undefined) {
+    lines.push(`FIRST EPSS estimated exploitation probability: ${(signals.epss.score * 100).toFixed(1)}% (percentile ${(signals.epss.percentile * 100).toFixed(1)}%)`)
+    if (signals.epss.date !== undefined) lines.push(`FIRST EPSS score date: ${display(signals.epss.date)}`)
+  }
+  return lines
+}
+
 function vulnerabilityPluginScope(event: VulnerabilityEvent): string {
   if (event.affectedPlugins === undefined || event.affectedPlugins.length <= 1) return packageLabel(event.plugin)
   return `the shared DSH host runtime used by ${event.affectedPlugins.map(packageLabel).join(', ')}`
@@ -93,6 +112,7 @@ function renderVulnerability(event: VulnerabilityEvent): string[] {
       ? []
       : [`Sources: ${advisorySourcesLabel(event.advisory.sources)}`]),
     ...(event.advisory.conflicts ?? []).map(advisoryConflictLabel),
+    ...advisoryRiskSignalLines(event),
     `Summary: ${display(event.advisory.summary)}`,
   ]
   if (event.paths.length > 0) {

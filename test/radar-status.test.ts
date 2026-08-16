@@ -97,7 +97,7 @@ describe('Radar status', () => {
     assert.equal(report.projects, 1)
     assert.equal(report.pluginBundles, 1)
     assert.equal(report.lastCheckedAt, undefined)
-    assert.deepEqual(report.sources.map(source => source.status), ['not-run', 'not-run', 'not-run', 'not-run', 'not-run'])
+    assert.deepEqual(report.sources.map(source => source.status), ['not-run', 'not-run', 'not-run', 'not-run', 'not-run', 'not-run', 'not-run'])
     assert.match(renderRadarStatus(report), /No completed check is recorded yet/)
   })
 

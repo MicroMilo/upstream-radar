@@ -3,7 +3,8 @@ import { describe, it } from 'node:test'
 import type { ReleaseNotesSource } from '../src/github-release.js'
 import { packageKey } from '../src/osv.js'
 import { emptyRadarState, pollRadar, type AdvisorySource, type CandidateDependencySource, type ReleaseSource } from '../src/radar.js'
-import type { AdvisoryMatch, DependencyGraph, ProjectInventory } from '../src/radar-types.js'
+import type { AdvisoryMatch, AdvisoryRiskSignals, DependencyGraph, ProjectInventory, VulnerabilityAdvisory } from '../src/radar-types.js'
+import type { ThreatIntelSourceBinding } from '../src/threat-intel.js'
 
 const inventory: ProjectInventory = {
   schema: 'upstream-radar.inventory/v1alpha1',
@@ -882,6 +883,71 @@ describe('radar polling', () => {
     assert.equal(active.incidentId, initialEvent.incidentId)
     assert.deepEqual(active.advisory.sources, ['osv', 'github-advisories'])
     assert.deepEqual(active.advisory.fixedVersions, ['3.0.0', '3.1.0'])
+  })
+
+  it('attaches KEV and EPSS signals, then preserves them when one enrichment source is unavailable', async () => {
+    const healthyThreatSources: ThreatIntelSourceBinding[] = [
+      {
+        name: 'cisa-kev' as const,
+        source: {
+          async query(advisories: readonly VulnerabilityAdvisory[]): Promise<Map<string, AdvisoryRiskSignals>> {
+            return new Map(advisories.map(advisory => [advisory.id, {
+              cisaKev: { knownExploited: true as const, dateAdded: '2026-08-15' },
+            } satisfies AdvisoryRiskSignals]))
+          },
+        },
+      },
+      {
+        name: 'epss' as const,
+        source: {
+          async query(advisories: readonly VulnerabilityAdvisory[]): Promise<Map<string, AdvisoryRiskSignals>> {
+            return new Map(advisories.map(advisory => [advisory.id, {
+              epss: { score: 0.97224, percentile: 0.99999, date: '2026-08-16' },
+            } satisfies AdvisoryRiskSignals]))
+          },
+        },
+      },
+    ]
+    const initial = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      source('2026-08-14T02:00:00.000Z'),
+      new Date('2026-08-16T01:00:00.000Z'),
+      undefined,
+      undefined,
+      undefined,
+      [],
+      healthyThreatSources,
+    )
+    const first = initial.events.find(event => event.kind === 'vulnerability')
+    assert.ok(first?.kind === 'vulnerability')
+    assert.deepEqual(first.advisory.riskSignals, {
+      cisaKev: { knownExploited: true, dateAdded: '2026-08-15' },
+      epss: { score: 0.97224, percentile: 0.99999, date: '2026-08-16' },
+    })
+    assert.equal(initial.state.sourceHealth?.['cisa-kev']?.consecutiveFailures, 0)
+    assert.equal(initial.state.sourceHealth?.epss?.consecutiveFailures, 0)
+
+    const outage = await pollRadar(
+      [inventory],
+      initial.state,
+      source('2026-08-14T02:00:00.000Z'),
+      new Date('2026-08-16T02:00:00.000Z'),
+      undefined,
+      undefined,
+      undefined,
+      [],
+      [
+        { name: 'cisa-kev', source: { async query() { throw new Error('CISA KEV timeout') } } },
+        healthyThreatSources[1]!,
+      ],
+    )
+    assert.equal(outage.events.filter(event => event.kind === 'vulnerability').length, 0)
+    const active = Object.values(outage.state.activeVulnerabilities)[0]?.event
+    assert.ok(active?.kind === 'vulnerability')
+    assert.deepEqual(active.advisory.riskSignals, first.advisory.riskSignals)
+    assert.deepEqual(outage.sourceErrors, [{ source: 'cisa-kev', message: 'CISA KEV timeout' }])
+    assert.equal(outage.state.sourceHealth?.['cisa-kev']?.consecutiveFailures, 1)
   })
 
   it('keeps the confirmed finding during a GitHub outage and resolves only source health on recovery', async () => {

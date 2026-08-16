@@ -1,6 +1,6 @@
 <h1 align="center">Upstream Radar</h1>
 
-<p align="center"><strong>Always-on dependency radar for DeepSeek Harness plugins: exact paths, breaking-change signals, and project-aware Agent follow-up.</strong></p>
+<p align="center"><strong>Always-on dependency radar for DeepSeek Harness plugins: exact paths, CISA KEV/EPSS priority signals, breaking-change detection, and project-aware Agent follow-up.</strong></p>
 
 <p align="center">
   English · <a href="docs/README.zh-CN.md">简体中文</a>
@@ -325,6 +325,21 @@ Route: payments-platform via feishu:payments-security
 
 That incident becomes a plugin-originated DSH notice. Radar keeps both source claims visible instead of silently picking one fixed version; the DSH Agent then decides which fix is appropriate for the project. It is not copied into a generic chatbot prompt.
 
+For a CVE, native DSH also adds two prioritization signals:
+
+```text
+Threat signal: CISA KEV lists this CVE as exploited in the wild.
+FIRST EPSS estimated exploitation probability: 97.2% (percentile 100.0%)
+```
+
+[CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) answers “is this CVE known to be exploited in the wild?” [FIRST EPSS](https://www.first.org/epss/) gives a daily estimate of exploitation probability and relative percentile. They help the Agent and the team decide what to inspect first; they do not change the exact dependency match, and a missing signal is not a safety certificate.
+
+To replay the two signals and a source outage without network access:
+
+```bash
+pnpm run showcase:threat-intel
+```
+
 | Upstream signal | Radar proves deterministically | DSH Agent investigates |
 | --- | --- | --- |
 | Vulnerability or malicious package | affected `name@version`, every installed path, fixed versions, incident state | whether project code reaches it, attacker input can reach it, and the least disruptive fix |
@@ -374,7 +389,7 @@ The generated graph is the actual installed profile graph. During a native DSH r
 
 For a hand-written or CI fixture, use [the example inventory](examples/radar/config.json). If neither a generated `--patch` overlay nor `UPSTREAM_RADAR_CONFIG` is provided, the bundle stays dormant and performs no polling.
 
-Once running, Radar polls OSV, GitHub Advisory Database, npm, and public GitHub Releases, persists incident state before delivery, and submits only changed incidents to the matching DSH project session. With one root Agent, delivery remains automatic; with multiple roots, Radar requires an exact match between `project.workspace` and `Agent.session.header.cwd`, and keeps the task queued when it cannot prove the route. The native adapter records the exact message id, DSH session, task id, and event id; it writes back only a matching `assistant/message` from that session whose visible text is the six-field JSON result. A new or updated upstream event invalidates the previous result, so an old model conclusion cannot survive a changed dependency fact. If a source is temporarily unavailable, Radar keeps the last confirmed state instead of claiming that the project is clean, continues delivering already queued tasks, and creates one source-health notice for that source after three consecutive failures.
+Once running, Radar polls OSV, GitHub Advisory Database, npm, and public GitHub Releases, then queries CISA KEV and FIRST EPSS for matched CVEs. Native DSH enables those two prioritization feeds by default; set `UPSTREAM_RADAR_THREAT_INTEL=false` when a lean run should omit them. The signals do not decide whether a package is vulnerable: they only explain which confirmed incidents deserve attention first. Radar persists incident state before delivery, and submits only changed incidents to the matching DSH project session. With one root Agent, delivery remains automatic; with multiple roots, Radar requires an exact match between `project.workspace` and `Agent.session.header.cwd`, and keeps the task queued when it cannot prove the route. The native adapter records the exact message id, DSH session, task id, and event id; it writes back only a matching `assistant/message` from that session whose visible text is the six-field JSON result. A new or updated upstream event invalidates the previous result, so an old model conclusion cannot survive a changed dependency fact. If a source is temporarily unavailable, Radar keeps the last confirmed state instead of claiming that the project is clean, continues delivering already queued tasks, and creates one source-health notice for that source after three consecutive failures.
 
 Each release cycle also checks a bounded prefix of candidate dependency graphs. This is enabled by default in the DSH adapter and CLI; use `--no-deep-candidates` only when you deliberately want manifest-only compatibility checks. The graph resolver is isolated in a temporary directory and uses `package-lock-only` plus `ignore-scripts`, so candidate package code is not loaded or executed.
 
@@ -481,9 +496,11 @@ steps:
       fail-on: high
       # Optional: also fail on deterministic DSH/plugin compatibility breaks.
       fail-on-compatibility: breaking
+      # Optional: add CISA KEV and FIRST EPSS signals to matched CVEs.
+      threat-intel: true
 ```
 
-The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. In addition to the raw JSON log, the Action writes a short escaped summary to the GitHub Job Summary so a scheduled failure immediately shows the affected package, exact path, published fix version when available, and a suggested next step. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.33.0`, and pin the checkout Action in your workflow according to your repository's policy.
+The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. `threat-intel` is false by default so an ordinary CI gate stays lean; set it to `true` when the Job Summary and raw JSON should include CISA KEV and FIRST EPSS prioritization evidence. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. In addition to the raw JSON log, the Action writes a short escaped summary to the GitHub Job Summary so a scheduled failure immediately shows the affected package, exact path, published fix version when available, threat signals when requested, and a suggested next step. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.33.0`, and pin the checkout Action in your workflow according to your repository's policy.
 
 If the repository has no committed Radar config yet, the smallest setup is to omit `config`, `pnpm-lock`, and `npm-lock`. After checkout, the Action automatically uses the only one of `pnpm-lock.yaml` or `package-lock.json` that exists, generates a temporary reviewed config, and runs the same frozen check:
 
@@ -558,7 +575,7 @@ For a local or self-hosted DSH machine, omit `--frozen` so Radar refreshes the s
 ## How the loop works
 
 1. Read the project inventory and exact installed npm graph.
-2. Query OSV and GitHub Advisory Database with every installed `name@version` pair, then merge matching GHSA/CVE aliases while preserving which source(s) confirmed the result.
+2. Query OSV and GitHub Advisory Database with every installed `name@version` pair, then merge matching GHSA/CVE aliases while preserving which source(s) confirmed the result. Native DSH also queries CISA KEV and FIRST EPSS for matched CVEs; CLI and Action users opt in with `--threat-intel` or `threat-intel: true`.
 3. Watch npm releases for the installed plugin and DSH/Cordis packages.
 4. Create or update one durable incident with the exact dependency path.
 5. Persist a constrained analysis task before delivery.

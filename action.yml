@@ -38,6 +38,10 @@ inputs:
     description: 'Compatibility changes that fail the job: never, breaking, or any.'
     required: false
     default: never
+  threat-intel:
+    description: 'When true, query CISA KEV and FIRST EPSS to prioritize matched CVEs; default is false for a lean CI gate.'
+    required: false
+    default: 'false'
   state:
     description: 'Radar state path; use :memory: for an independent CI check.'
     required: false
@@ -156,6 +160,7 @@ runs:
         RADAR_CONFIG: ${{ inputs.config }}
         RADAR_FAIL_ON: ${{ inputs.fail-on }}
         RADAR_FAIL_ON_COMPATIBILITY: ${{ inputs.fail-on-compatibility }}
+        RADAR_THREAT_INTEL: ${{ inputs.threat-intel }}
         RADAR_STATE: ${{ inputs.state }}
         RADAR_VERSION: ${{ inputs.version }}
         RADAR_REPORT: ${{ runner.temp }}/upstream-radar/radar-check.json
@@ -163,6 +168,12 @@ runs:
       run: |
         set -euo pipefail
         mkdir -p "$(dirname "$RADAR_REPORT")"
+        threat_intel_args=()
+        case "${RADAR_THREAT_INTEL,,}" in
+          true) threat_intel_args=(--threat-intel) ;;
+          false|'') ;;
+          *) echo 'threat-intel must be true or false.' >&2; exit 1 ;;
+        esac
         set +e
         pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar \
           radar check "$RADAR_CONFIG" \
@@ -170,6 +181,7 @@ runs:
           --state "$RADAR_STATE" \
           --fail-on "$RADAR_FAIL_ON" \
           --fail-on-compatibility "$RADAR_FAIL_ON_COMPATIBILITY" \
+          "${threat_intel_args[@]}" \
           --json | tee "$RADAR_REPORT"
         radar_exit=${PIPESTATUS[0]}
         set -e
@@ -225,6 +237,7 @@ runs:
         RADAR_CONFIG: ${{ inputs.config }}
         RADAR_FAIL_ON: ${{ inputs.fail-on }}
         RADAR_FAIL_ON_COMPATIBILITY: ${{ inputs.fail-on-compatibility }}
+        RADAR_THREAT_INTEL: ${{ inputs.threat-intel }}
         RADAR_STATE: ${{ inputs.state }}
         RADAR_VERSION: ${{ inputs.version }}
         RADAR_REPORT: ${{ runner.temp }}/upstream-radar/radar-check.json
@@ -232,6 +245,12 @@ runs:
       run: |
         set -euo pipefail
         mkdir -p "$(dirname "$RADAR_REPORT")"
+        threat_intel_args=()
+        case "${RADAR_THREAT_INTEL,,}" in
+          true) threat_intel_args=(--threat-intel) ;;
+          false|'') ;;
+          *) echo 'threat-intel must be true or false.' >&2; exit 1 ;;
+        esac
         set +e
         pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar \
           radar check "$RADAR_CONFIG" \
@@ -239,6 +258,7 @@ runs:
           --state "$RADAR_STATE" \
           --fail-on "$RADAR_FAIL_ON" \
           --fail-on-compatibility "$RADAR_FAIL_ON_COMPATIBILITY" \
+          "${threat_intel_args[@]}" \
           --json | tee "$RADAR_REPORT"
         radar_exit=${PIPESTATUS[0]}
         set -e

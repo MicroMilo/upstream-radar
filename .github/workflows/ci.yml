@@ -41,6 +41,8 @@ jobs:
       - if: matrix.node == 22
         run: pnpm run showcase:github-advisories
       - if: matrix.node == 22
+        run: pnpm run showcase:threat-intel
+      - if: matrix.node == 22
         run: pnpm run showcase:quickstart
       - if: matrix.node == 22
         run: pnpm run showcase:pnpm-lock

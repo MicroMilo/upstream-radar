@@ -59,6 +59,32 @@ function validAdvisoryConflicts(value: unknown, sourcesValue: unknown): boolean 
   })
 }
 
+function validAdvisoryRiskSignals(value: unknown): boolean {
+  if (value === undefined) return true
+  const signals = asRecord(value)
+  if (signals === undefined) return false
+  const cisaKev = signals.cisaKev === undefined ? undefined : asRecord(signals.cisaKev)
+  const epss = signals.epss === undefined ? undefined : asRecord(signals.epss)
+  if (cisaKev === undefined && epss === undefined) return false
+  if (cisaKev !== undefined) {
+    if (cisaKev.knownExploited !== true
+      || (cisaKev.dateAdded !== undefined && (typeof cisaKev.dateAdded !== 'string' || cisaKev.dateAdded.length > 128))
+      || (cisaKev.dueDate !== undefined && (typeof cisaKev.dueDate !== 'string' || cisaKev.dueDate.length > 128))
+      || (cisaKev.knownRansomwareCampaignUse !== undefined
+        && (typeof cisaKev.knownRansomwareCampaignUse !== 'string' || cisaKev.knownRansomwareCampaignUse.length > 128))
+      || (cisaKev.requiredAction !== undefined
+        && (typeof cisaKev.requiredAction !== 'string' || cisaKev.requiredAction.length > 8_192))
+      || (cisaKev.notes !== undefined
+        && (typeof cisaKev.notes !== 'string' || cisaKev.notes.length > 8_192))) return false
+  }
+  if (epss !== undefined) {
+    if (typeof epss.score !== 'number' || !Number.isFinite(epss.score) || epss.score < 0 || epss.score > 1
+      || typeof epss.percentile !== 'number' || !Number.isFinite(epss.percentile) || epss.percentile < 0 || epss.percentile > 1
+      || (epss.date !== undefined && (typeof epss.date !== 'string' || epss.date.length > 64))) return false
+  }
+  return true
+}
+
 function validAffectedPlugins(value: unknown): boolean {
   if (value === undefined) return true
   if (!Array.isArray(value) || value.length === 0 || value.length > 1_000) return false
@@ -105,6 +131,7 @@ function validCompatibilityDependencyCheck(value: unknown): boolean {
       && advisory.references.every(item => typeof item === 'string' && item.length <= 4_096)
       && validAdvisorySources(advisory.sources)
       && validAdvisoryConflicts(advisory.conflicts, advisory.sources)
+      && validAdvisoryRiskSignals(advisory.riskSignals)
       && Array.isArray(paths) && paths.length <= 4
       && paths.every(path => Array.isArray(path) && path.length > 0 && path.length <= 64 && path.every(validPackageCoordinate))
   })
@@ -304,6 +331,7 @@ function validHistoryEvent(value: unknown): boolean {
         || advisory.severity === 'medium' || advisory.severity === 'high' || advisory.severity === 'critical')
       && validAdvisorySources(advisory.sources)
       && validAdvisoryConflicts(advisory.conflicts, advisory.sources)
+      && validAdvisoryRiskSignals(advisory.riskSignals)
   }
   if (event.kind === 'compatibility') {
     return validPackageCoordinate(event.plugin)
@@ -317,7 +345,8 @@ function validHistoryEvent(value: unknown): boolean {
       && validCompatibilityUpgradePath(event.upgradePath)
   }
   if (event.kind === 'source-health') {
-    return (event.source === 'osv' || event.source === 'github-advisories' || event.source === 'npm-releases'
+    return (event.source === 'osv' || event.source === 'github-advisories' || event.source === 'cisa-kev'
+      || event.source === 'epss' || event.source === 'npm-releases'
       || event.source === 'npm-candidate-graphs' || event.source === 'github-releases')
       && (event.status === 'degraded' || event.status === 'healthy')
       && typeof event.failureCount === 'number' && Number.isSafeInteger(event.failureCount)
@@ -356,7 +385,7 @@ export function parseRadarState(value: unknown): RadarState {
   if (Object.keys(analysisDeliveries).length > 100_000 || Object.keys(analysisResults).length > 100_000) {
     throw new Error('radar state exceeds the analysis record limit')
   }
-  const sourceNames = new Set(['osv', 'github-advisories', 'npm-releases', 'npm-candidate-graphs', 'github-releases'])
+  const sourceNames = new Set(['osv', 'github-advisories', 'cisa-kev', 'epss', 'npm-releases', 'npm-candidate-graphs', 'github-releases'])
   for (const [source, rawStatus] of Object.entries(sourceHealth)) {
     const status = asRecord(rawStatus)
     const failures = status?.consecutiveFailures
@@ -409,6 +438,7 @@ export function parseRadarState(value: unknown): RadarState {
       || typeof advisory?.id !== 'string' || typeof advisory.modified !== 'string'
       || !validAdvisorySources(advisory.sources)
       || !validAdvisoryConflicts(advisory.conflicts, advisory.sources)
+      || !validAdvisoryRiskSignals(advisory.riskSignals)
       || !validAffectedSources(event.affectedSources)
       || !validAffectedPlugins(event.affectedPlugins)) {
       throw new Error(`radar state contains an invalid active match: ${key.slice(0, 256)}`)
