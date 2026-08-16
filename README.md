@@ -406,6 +406,16 @@ steps:
 
 The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. In addition to the raw JSON log, the Action writes a short escaped summary to the GitHub Job Summary so a scheduled failure immediately shows the affected package, exact path, published fix version when available, and a suggested next step. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.33.0`, and pin the checkout Action in your workflow according to your repository's policy.
 
+If the repository has no committed Radar config yet, the smallest setup is to omit `config`, `pnpm-lock`, and `npm-lock`. After checkout, the Action automatically uses the only one of `pnpm-lock.yaml` or `package-lock.json` that exists, generates a temporary reviewed config, and runs the same frozen check:
+
+```yaml
+- uses: MicroMilo/upstream-radar@v0.33.0
+  with:
+    fail-on: high
+```
+
+An existing `config` wins over auto-detection. If both lockfiles exist, or neither a config nor a supported lockfile exists, the Action stops with a direct message instead of guessing.
+
 To review the exact plugin artifact before it enters DSH, add `inspect-package`:
 
 ```yaml

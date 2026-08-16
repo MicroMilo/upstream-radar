@@ -79,6 +79,7 @@
 - [x] Provide a frozen one-shot CI check with severity exit codes and a copyable GitHub Actions workflow.
 - [x] Publish a reusable composite GitHub Action for the frozen deterministic CI gate.
 - [x] Write an escaped, human-readable GitHub Job Summary alongside the Action's raw JSON result.
+- [x] Auto-detect one pnpm or npm lockfile in GitHub Actions when no reviewed config is present, while failing clearly for ambiguous or missing inputs.
 - [x] Verify the published Action with a real DSH plugin consumer snapshot and a dogfood workflow.
 - [x] Add an opt-in Action input that packs one exact plugin release and runs the bounded DSH load matrix.
 - [x] Add an opt-in Action input that deeply inspects one exact npm plugin artifact before installation and writes its admission result to the Job Summary.

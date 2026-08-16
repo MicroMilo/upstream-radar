@@ -1,5 +1,5 @@
 name: Upstream Radar
-description: Check a reviewed DSH dependency graph for active upstream vulnerabilities.
+description: Check a reviewed or lockfile-derived DSH dependency graph for active upstream vulnerabilities.
 author: MicroMilo
 branding:
   icon: shield
@@ -19,11 +19,11 @@ inputs:
     required: false
     default: upstream-radar.config.json
   pnpm-lock:
-    description: 'Optional pnpm-lock.yaml path; when set, generate the config input from this lockfile before checking it.'
+    description: 'Optional explicit pnpm-lock.yaml path; when omitted and no config exists, a single pnpm lockfile is detected automatically.'
     required: false
     default: ''
   npm-lock:
-    description: 'Optional package-lock.json path; when set, generate the config input from this lockfile before checking it.'
+    description: 'Optional explicit package-lock.json path; when omitted and no config exists, a single npm lockfile is detected automatically.'
     required: false
     default: ''
   root:
@@ -125,8 +125,47 @@ runs:
       run: |
         echo 'pnpm-lock and npm-lock are mutually exclusive; set only one.' >&2
         exit 1
-    - name: Check reviewed DSH graph
+    - name: Detect project input
       if: inputs.pnpm-lock == '' && inputs.npm-lock == ''
+      id: detect-project-input
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        RADAR_CONFIG: ${{ inputs.config }}
+      run: |
+        set -euo pipefail
+        if [[ -f "$RADAR_CONFIG" ]]; then
+          printf 'kind=config\n' >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+        has_pnpm=0
+        has_npm=0
+        [[ -f pnpm-lock.yaml ]] && has_pnpm=1
+        [[ -f package-lock.json ]] && has_npm=1
+        if (( has_pnpm == 1 && has_npm == 1 )); then
+          printf 'kind=ambiguous\n' >> "$GITHUB_OUTPUT"
+        elif (( has_pnpm == 1 )); then
+          printf 'kind=pnpm\npath=pnpm-lock.yaml\n' >> "$GITHUB_OUTPUT"
+        elif (( has_npm == 1 )); then
+          printf 'kind=npm\npath=package-lock.json\n' >> "$GITHUB_OUTPUT"
+        else
+          printf 'kind=missing\n' >> "$GITHUB_OUTPUT"
+        fi
+    - name: Require one Radar input
+      if: inputs.pnpm-lock == '' && inputs.npm-lock == '' && (steps.detect-project-input.outputs.kind == 'ambiguous' || steps.detect-project-input.outputs.kind == 'missing')
+      shell: bash
+      env:
+        RADAR_INPUT_KIND: ${{ steps.detect-project-input.outputs.kind }}
+      run: |
+        set -euo pipefail
+        if [[ "$RADAR_INPUT_KIND" == ambiguous ]]; then
+          echo 'Both pnpm-lock.yaml and package-lock.json exist, and no reviewed config was provided. Set config, pnpm-lock, or npm-lock explicitly.' >&2
+        else
+          echo 'No reviewed Radar config or supported lockfile was found. Commit config, or add one pnpm-lock.yaml/package-lock.json.' >&2
+        fi
+        exit 1
+    - name: Check reviewed DSH graph
+      if: inputs.pnpm-lock == '' && inputs.npm-lock == '' && steps.detect-project-input.outputs.kind == 'config'
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:
@@ -154,12 +193,12 @@ runs:
         fi
         exit "$radar_exit"
     - name: Build Radar config from pnpm lockfile
-      if: inputs.pnpm-lock != '' && inputs.npm-lock == ''
+      if: inputs.pnpm-lock != '' || (inputs.pnpm-lock == '' && inputs.npm-lock == '' && steps.detect-project-input.outputs.kind == 'pnpm')
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:
         RADAR_CONFIG: ${{ inputs.config }}
-        RADAR_LOCKFILE: ${{ inputs.pnpm-lock }}
+        RADAR_LOCKFILE: ${{ inputs.pnpm-lock != '' && inputs.pnpm-lock || steps.detect-project-input.outputs.path }}
         RADAR_ROOT: ${{ inputs.root }}
         RADAR_VERSION: ${{ inputs.version }}
       run: |
@@ -174,12 +213,12 @@ runs:
           --output "$RADAR_CONFIG" \
           --force
     - name: Build Radar config from npm lockfile
-      if: inputs.npm-lock != '' && inputs.pnpm-lock == ''
+      if: inputs.npm-lock != '' || (inputs.npm-lock == '' && inputs.pnpm-lock == '' && steps.detect-project-input.outputs.kind == 'npm')
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:
         RADAR_CONFIG: ${{ inputs.config }}
-        RADAR_LOCKFILE: ${{ inputs.npm-lock }}
+        RADAR_LOCKFILE: ${{ inputs.npm-lock != '' && inputs.npm-lock || steps.detect-project-input.outputs.path }}
         RADAR_ROOT: ${{ inputs.root }}
         RADAR_VERSION: ${{ inputs.version }}
       run: |
@@ -194,7 +233,7 @@ runs:
           --output "$RADAR_CONFIG" \
           --force
     - name: Check generated lockfile DSH graph
-      if: inputs.pnpm-lock != '' || inputs.npm-lock != ''
+      if: inputs.pnpm-lock != '' || inputs.npm-lock != '' || steps.detect-project-input.outputs.kind == 'pnpm' || steps.detect-project-input.outputs.kind == 'npm'
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:
