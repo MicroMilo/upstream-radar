@@ -42,6 +42,7 @@ npx --yes upstream-radar@latest quickstart
 | 加一个定时 CI 门禁 | [GitHub Actions 示例](../examples/github-actions/upstream-radar.yml) | 基于审查过的依赖图执行冻结检查，同时输出简短 Job Summary 和机器可读 JSON。 |
 | 安装插件前先检查它 | [npm/pnpm 锁文件的 `graph` / `init`](#安装前先检查-npm-或-pnpm-锁文件) | 不运行插件或 lifecycle script，直接得到精确依赖路径和 OSV/GitHub Advisory 结果。 |
 | 审查一个精确的发布物 | `upstream-radar inspect npm:<包名>@<精确版本> --deep` | 查看单个版本的包、依赖、漏洞和 provenance 证据。 |
+| 把变化通知到飞书 | [飞书与 HTTPS 通知](#飞书与-https-通知) | 原生飞书 V2 文本、只从环境读取密钥、持久确认和失败重试。 |
 
 需要结合项目代码做判断时，选第一条；只需要独立的准入或回归门禁时，选第二或第三条，不需要启动 DSH profile。
 
@@ -110,6 +111,8 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar watch ./upstream-r
 ```
 
 去掉 `--once` 就会持续运行。这个入口适合演示、CI 和排查；需要把任务交给在线 Agent 时，仍然应该安装 DSH bundle。
+
+## 飞书与 HTTPS 通知
 
 如果还要把事件通知发到团队自己的 HTTPS 接口，可以把地址放在环境变量里，不要写进提交的配置和状态文件：
 

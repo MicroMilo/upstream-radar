@@ -28,6 +28,7 @@
   <a href="#try-it-in-60-seconds">Try it in 60 seconds</a> ·
   <a href="#see-one-incident">See one incident</a> ·
   <a href="#install-in-dsh">Install in DSH</a> ·
+  <a href="#notify-feishu-or-an-https-endpoint">Notify Feishu</a> ·
   <a href="#run-the-proof">Run the proof</a> ·
   <a href="#run-it-in-github-actions">Run in GitHub Actions</a> ·
   <a href="#how-the-loop-works">How it works</a> ·
@@ -52,6 +53,7 @@ It looks only at the current directory and local DSH profile metadata. It recomm
 | Add a scheduled CI gate | [GitHub Actions example](examples/github-actions/upstream-radar.yml) | A frozen check against a reviewed graph, with a concise Job Summary and a machine-readable JSON report. |
 | Check a plugin before installing it | [`graph` / `init` for npm or pnpm lockfiles](#inspect-an-npm-or-pnpm-lockfile-before-installation) | Exact dependency paths and OSV/GitHub Advisory results without running the plugin or its lifecycle scripts. |
 | Review one exact published artifact | `upstream-radar inspect npm:<package>@<exact-version> --deep` | Package, dependency, vulnerability, and provenance evidence for one release. |
+| Send changed events to Feishu | [Feishu or HTTPS webhook](#notify-feishu-or-an-https-endpoint) | Native Feishu V2 text, environment-only secrets, durable acknowledgement, and retry. |
 
 If you want project-specific reasoning from DSH, use the first path. If you only need an independent admission or regression gate, use the second or third; they do not require a running DSH profile.
 
@@ -122,6 +124,8 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar watch ./upstream-r
 ```
 
 Remove `--once` to keep a local monitor alive. This is a lightweight CLI surface for demos, CI, and diagnosis; the native DSH bundle remains the recommended always-on path because it can deliver the task to a live Agent.
+
+## Notify Feishu or an HTTPS endpoint
 
 To also notify a team-owned HTTPS endpoint when an incident changes, keep the endpoint outside the reviewed config and state:
 
