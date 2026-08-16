@@ -58,6 +58,7 @@
 - [ ] Add suppression, ownership, maintenance-window, and dev-only rules.
   - [x] Add per-project minimum vulnerability severity and timezone-aware quiet hours as delivery-only controls.
   - [x] Keep held DSH tasks and webhook events durable so policy changes do not lose evidence.
+  - [x] Expose the common notification controls through `setup` and every `init` mode without requiring manual JSON edits.
   - [ ] Add explicit owner routing and maintenance-window/dev-only scopes beyond quiet hours.
 - [x] Keep a bounded local transition history for new, updated, and resolved/source-health states, with a read-only `radar history` query.
 

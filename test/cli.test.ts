@@ -98,7 +98,22 @@ describe('CLI option parsing', () => {
     assert.match(setupHelp.stdout, /install the exact Radar bundle into DSH/)
     assert.match(setupHelp.stdout, /Review the generated files/)
     assert.match(setupHelp.stdout, /notificationPolicy/)
+    assert.match(setupHelp.stdout, /--minimum-severity <level>/)
+    assert.match(setupHelp.stdout, /--quiet-hours <tz,start-end>/)
     assert.doesNotMatch(setupHelp.stderr, /unknown option/)
+
+    const initHelp = spawnSync(process.execPath, [cli, 'init', '--help'], { encoding: 'utf8' })
+    assert.equal(initHelp.status, 0)
+    assert.match(initHelp.stdout, /--minimum-severity <level>/)
+    assert.match(initHelp.stdout, /--quiet-hours <tz,start-end>/)
+
+    const invalidNotificationSeverity = spawnSync(process.execPath, [cli, 'init', '--minimum-severity', 'severe'], { encoding: 'utf8' })
+    assert.equal(invalidNotificationSeverity.status, 1)
+    assert.match(invalidNotificationSeverity.stderr, /--minimum-severity must be info, low, medium, high or critical/)
+
+    const invalidQuietHours = spawnSync(process.execPath, [cli, 'init', '--quiet-hours', 'Asia/Shanghai,22:00-22:00'], { encoding: 'utf8' })
+    assert.equal(invalidQuietHours.status, 1)
+    assert.match(invalidQuietHours.stderr, /--quiet-hours must use <IANA timezone>,<HH:MM>-<HH:MM>/)
 
     const inspectHelp = spawnSync(process.execPath, [cli, 'inspect', '--help'], { encoding: 'utf8' })
     assert.equal(inspectHelp.status, 0)
@@ -350,6 +365,10 @@ snapshots:
         'setup',
         '--output',
         config,
+        '--minimum-severity',
+        'high',
+        '--quiet-hours',
+        'Asia/Shanghai,22:00-08:00',
       ], {
         encoding: 'utf8',
         cwd: root,
@@ -366,7 +385,15 @@ snapshots:
       assert.match(result.stdout, /Status: READY WITH WARNINGS/)
       assert.match(result.stdout, /Created .*upstream-radar\.dsh\.yml/)
       assert.ok((await readFile(dshLog, 'utf8')).includes(`plugin --profile web add upstream-radar@${TOOL_VERSION}`))
-      assert.equal(JSON.parse(await readFile(config, 'utf8')).dshProfile.name, 'web')
+      const saved = JSON.parse(await readFile(config, 'utf8')) as {
+        dshProfile: { name: string }
+        projects: Array<{ notificationPolicy?: unknown }>
+      }
+      assert.equal(saved.dshProfile.name, 'web')
+      assert.deepEqual(saved.projects[0]?.notificationPolicy, {
+        minimumSeverity: 'high',
+        quietHours: { timezone: 'Asia/Shanghai', start: '22:00', end: '08:00' },
+      })
       assert.match(await readFile(join(root, 'upstream-radar.dsh.yml'), 'utf8'), /name: 'upstream-radar\/dsh'/)
     } finally {
       await rm(root, { recursive: true, force: true })

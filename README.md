@@ -118,7 +118,15 @@ The Feishu secret is read only from the environment and is never written to the 
 
 ## Control notification noise without losing evidence
 
-The generated inventory can hold ordinary notices while keeping the full incident, dependency path, history, and DSH task intact. Add this optional block beside `project`, `environment`, and `plugins` in one `projects[]` entry:
+The generated inventory can hold ordinary notices while keeping the full incident, dependency path, history, and DSH task intact. For a first setup, use flags so you do not need to edit JSON by hand:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar setup \
+  --minimum-severity high \
+  --quiet-hours 'Asia/Shanghai,22:00-08:00'
+```
+
+`init --profile`, `init --pnpm-lock`, and `init --npm-lock` accept the same two flags. `--minimum-severity` accepts `info`, `low`, `medium`, `high`, or `critical`. `--quiet-hours` uses `<IANA timezone>,<HH:MM>-<HH:MM>`; the window may cross midnight. The equivalent generated block is:
 
 ```json
 {

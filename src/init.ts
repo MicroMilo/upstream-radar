@@ -13,6 +13,7 @@ import {
   type PackageManifestSnapshot,
   type PluginInstallation,
   type RadarConfig,
+  type RadarNotificationPolicy,
 } from './radar-types.js'
 
 const MAX_JSON_BYTES = 8 * 1024 * 1024
@@ -37,6 +38,7 @@ export interface DshInitOptions {
   repository?: string
   workspace?: string
   channels?: string[]
+  notificationPolicy?: RadarNotificationPolicy
   registry?: string
   inspect?: InitInspector
   /** Optional DSH process dependency plane discovered without importing DSH code. */
@@ -55,6 +57,7 @@ export interface PnpmLockInitOptions {
   repository?: string
   workspace?: string
   channels?: string[]
+  notificationPolicy?: RadarNotificationPolicy
 }
 
 export interface NpmLockInitOptions {
@@ -68,6 +71,7 @@ export interface NpmLockInitOptions {
   repository?: string
   workspace?: string
   channels?: string[]
+  notificationPolicy?: RadarNotificationPolicy
 }
 
 export interface WriteRadarConfigOptions {
@@ -256,6 +260,7 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
         ...(options.channels === undefined || options.channels.length === 0 ? {} : { channels: options.channels }),
       },
       environment: { nodeVersion: process.versions.node },
+      ...(options.notificationPolicy === undefined ? {} : { notificationPolicy: options.notificationPolicy }),
       plugins,
     }],
   }
@@ -266,7 +271,7 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
 function createStaticLockConfig(
   graph: DependencyGraph,
   root: { name: string; version: string },
-  options: Pick<PnpmLockInitOptions, 'projectId' | 'projectName' | 'repository' | 'workspace' | 'channels'>,
+  options: Pick<PnpmLockInitOptions, 'projectId' | 'projectName' | 'repository' | 'workspace' | 'channels' | 'notificationPolicy'>,
 ): RadarConfig {
   const workspace = options.workspace ?? '.'
   const projectId = options.projectId ?? defaultProjectId(workspace)
@@ -283,6 +288,7 @@ function createStaticLockConfig(
         ...(options.channels === undefined || options.channels.length === 0 ? {} : { channels: options.channels }),
       },
       environment: { nodeVersion: process.versions.node },
+      ...(options.notificationPolicy === undefined ? {} : { notificationPolicy: options.notificationPolicy }),
       plugins: [{
         package: { ecosystem: 'npm', name: root.name, version: root.version },
         graph,

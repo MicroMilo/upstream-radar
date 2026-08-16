@@ -106,7 +106,15 @@ dsh --profile web --patch ./upstream-radar.dsh.yml
 
 ## 降低通知噪音，但不丢证据
 
-生成的清单可以暂时压住普通通知，同时保留完整事件、依赖路径、历史和 DSH 任务。在某个 `projects[]` 条目里，把下面这段放在 `project`、`environment` 和 `plugins` 旁边：
+生成的清单可以暂时压住普通通知，同时保留完整事件、依赖路径、历史和 DSH 任务。首次配置时可以直接用参数，不需要手动编辑 JSON：
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar setup \
+  --minimum-severity high \
+  --quiet-hours 'Asia/Shanghai,22:00-08:00'
+```
+
+`init --profile`、`init --pnpm-lock` 和 `init --npm-lock` 也支持这两个参数。`--minimum-severity` 可填 `info`、`low`、`medium`、`high` 或 `critical`；`--quiet-hours` 格式是 `<IANA 时区>,<HH:MM>-<HH:MM>`，时间段可以跨午夜。它们最终会生成下面这个配置块，放在某个 `projects[]` 条目的 `project`、`environment` 和 `plugins` 旁边：
 
 ```json
 {

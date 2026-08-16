@@ -36,6 +36,7 @@ import { createRadarStatus, renderRadarStatus } from './radar-status.js'
 import { renderTextReport } from './render.js'
 import { scanDirectory } from './scan.js'
 import type { Verdict } from './types.js'
+import type { RadarNotificationPolicy, RadarSeverity } from './radar-types.js'
 import { TOOL_VERSION } from './version.js'
 import {
   markRadarWebhookEventsDelivered,
@@ -49,6 +50,7 @@ import {
 const VALID_THRESHOLDS = new Set<Verdict | 'never'>(['warn', 'review', 'block', 'never'])
 const VALID_RADAR_THRESHOLDS = new Set<RadarFailThreshold>(RADAR_FAIL_THRESHOLDS)
 const VALID_RADAR_COMPATIBILITY_THRESHOLDS = new Set<RadarCompatibilityFailThreshold>(RADAR_COMPATIBILITY_FAIL_THRESHOLDS)
+const VALID_NOTIFICATION_SEVERITIES = new Set<Exclude<RadarSeverity, 'unknown'>>(['info', 'low', 'medium', 'high', 'critical'])
 
 function safeErrorMessage(value: string, maxLength = 2_048): string {
   return value.replace(/[\u0000-\u001f\u007f-\u009f]/g, character => (
@@ -58,6 +60,41 @@ function safeErrorMessage(value: string, maxLength = 2_048): string {
 
 function shellQuote(value: string): string {
   return `'${value.replaceAll("'", "'\\''")}'`
+}
+
+function parseNotificationPolicyArguments(
+  minimumSeverity: string | undefined,
+  quietHoursValue: string | undefined,
+): RadarNotificationPolicy | undefined {
+  if (minimumSeverity === undefined && quietHoursValue === undefined) return undefined
+  if (minimumSeverity !== undefined && !VALID_NOTIFICATION_SEVERITIES.has(minimumSeverity as Exclude<RadarSeverity, 'unknown'>)) {
+    throw new Error('--minimum-severity must be info, low, medium, high or critical')
+  }
+  let quietHours: RadarNotificationPolicy['quietHours'] | undefined
+  if (quietHoursValue !== undefined) {
+    const comma = quietHoursValue.indexOf(',')
+    const interval = comma < 0 ? '' : quietHoursValue.slice(comma + 1)
+    const dash = interval.indexOf('-')
+    const timezone = comma < 1 ? '' : quietHoursValue.slice(0, comma)
+    const start = dash < 1 ? '' : interval.slice(0, dash)
+    const end = dash < 0 ? '' : interval.slice(dash + 1)
+    if (!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(start)
+      || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(end)
+      || start === end
+      || timezone.length === 0) {
+      throw new Error('--quiet-hours must use <IANA timezone>,<HH:MM>-<HH:MM> with different start and end times')
+    }
+    try {
+      new Intl.DateTimeFormat('en-US', { timeZone: timezone }).format()
+    } catch {
+      throw new Error('--quiet-hours must start with a valid IANA timezone')
+    }
+    quietHours = { timezone, start, end }
+  }
+  return {
+    ...(minimumSeverity === undefined ? {} : { minimumSeverity: minimumSeverity as Exclude<RadarSeverity, 'unknown'> }),
+    ...(quietHours === undefined ? {} : { quietHours }),
+  }
 }
 
 function commandUsage(key: string): string | undefined {
@@ -82,6 +119,8 @@ Common options:
   --repository <url>     repository evidence passed to the Agent task
   --output <path>        Radar config path (default: ./upstream-radar.config.json)
   --dsh-patch <path>     DSH overlay path (default: ./upstream-radar.dsh.yml)
+  --minimum-severity <level>  minimum vulnerability notice level
+  --quiet-hours <tz,start-end>  e.g. Asia/Shanghai,22:00-08:00
   --no-install            reuse an already installed Radar bundle
   --no-dsh-patch          use legacy environment-variable wiring
 
@@ -113,6 +152,8 @@ Common options:
   --project-name <name>             name shown in incidents
   --output <path>                   config path (default: ./upstream-radar.config.json)
   --dsh-patch <path>                write a self-contained DSH overlay (profile mode)
+  --minimum-severity <level>        minimum vulnerability notice level
+  --quiet-hours <tz,start-end>      e.g. Asia/Shanghai,22:00-08:00
   --json                            print a compact machine-readable summary
   --force                           replace an existing output file
 
@@ -339,6 +380,8 @@ Options:
   --no-install          setup: reuse an already installed upstream-radar bundle
   --output <path>      init output path (default: ./upstream-radar.config.json)
   --dsh-patch <path>   write a self-contained DSH --patch overlay (setup default: ./upstream-radar.dsh.yml)
+  --minimum-severity <level>  init/setup notification threshold: info|low|medium|high|critical
+  --quiet-hours <tz,start-end>  init/setup window, e.g. Asia/Shanghai,22:00-08:00
   --no-dsh-patch       setup: keep the legacy UPSTREAM_RADAR_* environment-variable wiring
   --patch <path>       DSH overlay to verify with doctor
   --force              allow init to replace an existing output file
@@ -914,7 +957,7 @@ async function runSetup(args: readonly string[]): Promise<number> {
   const initArgs: string[] = []
   const valueOptions = new Set([
     '--profile', '--output', '--dsh-patch', '--project-id', '--project-name',
-    '--repository', '--workspace', '--channel', '--registry',
+    '--repository', '--workspace', '--channel', '--registry', '--minimum-severity', '--quiet-hours',
   ])
   for (let index = 0; index < args.length; index += 1) {
     const argument = args[index]
@@ -1018,6 +1061,8 @@ async function runInit(args: readonly string[]): Promise<number> {
   let repository: string | undefined
   let workspace: string | undefined
   let registry: string | undefined
+  let minimumSeverity: string | undefined
+  let quietHoursValue: string | undefined
   let force = false
   let json = false
   const channels: string[] = []
@@ -1027,7 +1072,7 @@ async function runInit(args: readonly string[]): Promise<number> {
     else if (argument === '--json') json = true
     else if (argument === '--profile' || argument === '--npm-lock' || argument === '--pnpm-lock' || argument === '--root' || argument === '--output' || argument === '--dsh-patch' || argument === '--project-id'
       || argument === '--project-name' || argument === '--repository' || argument === '--workspace'
-      || argument === '--channel' || argument === '--registry') {
+      || argument === '--channel' || argument === '--registry' || argument === '--minimum-severity' || argument === '--quiet-hours') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--profile') profile = value
@@ -1041,12 +1086,15 @@ async function runInit(args: readonly string[]): Promise<number> {
       else if (argument === '--repository') repository = value
       else if (argument === '--workspace') workspace = value
       else if (argument === '--channel') channels.push(value)
+      else if (argument === '--minimum-severity') minimumSeverity = value
+      else if (argument === '--quiet-hours') quietHoursValue = value
       else registry = value
       index += 1
     } else {
       throw new Error(`unknown option for init: ${argument}`)
     }
   }
+  const notificationPolicy = parseNotificationPolicyArguments(minimumSeverity, quietHoursValue)
 
   if (npmLockPath !== undefined || pnpmLockPath !== undefined) {
     if (npmLockPath !== undefined && pnpmLockPath !== undefined) {
@@ -1070,6 +1118,7 @@ async function runInit(args: readonly string[]): Promise<number> {
         ...(repository === undefined ? {} : { repository }),
         ...(workspace === undefined ? {} : { workspace }),
         ...(channels.length === 0 ? {} : { channels }),
+        ...(notificationPolicy === undefined ? {} : { notificationPolicy }),
       })
       : await createRadarConfigFromPnpmLock({
         lockfile,
@@ -1079,6 +1128,7 @@ async function runInit(args: readonly string[]): Promise<number> {
         ...(repository === undefined ? {} : { repository }),
         ...(workspace === undefined ? {} : { workspace }),
         ...(channels.length === 0 ? {} : { channels }),
+        ...(notificationPolicy === undefined ? {} : { notificationPolicy }),
       })
     const outputPath = await writeRadarConfig(config, { output: resolve(output), force })
     const plugin = config.projects[0]?.plugins[0]
@@ -1137,6 +1187,7 @@ async function runInit(args: readonly string[]): Promise<number> {
     ...(repository === undefined ? {} : { repository }),
     ...(workspace === undefined ? {} : { workspace }),
     ...(channels.length === 0 ? {} : { channels }),
+    ...(notificationPolicy === undefined ? {} : { notificationPolicy }),
     ...(registry === undefined ? {} : { registry }),
   })
   config.dshProfile = { name: resolvedProfile }

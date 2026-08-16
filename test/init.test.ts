@@ -39,6 +39,10 @@ describe('DSH profile initialization', () => {
         projectName: 'Payments API',
         workspace: '/workspace/payments-api',
         channels: ['feishu:payments-security'],
+        notificationPolicy: {
+          minimumSeverity: 'high',
+          quietHours: { timezone: 'Asia/Shanghai', start: '22:00', end: '08:00' },
+        },
         inspect: async (spec) => {
           calls.push(spec)
           return { evidence: { npm: { dependencyAudit: { graph } } } }
@@ -49,6 +53,10 @@ describe('DSH profile initialization', () => {
       assert.equal(config.projects[0]?.project.name, 'Payments API')
       assert.equal(config.projects[0]?.plugins[0]?.package.name, 'demo-plugin')
       assert.equal(config.projects[0]?.plugins[0]?.graph.nodes.length, 2)
+      assert.deepEqual(config.projects[0]?.notificationPolicy, {
+        minimumSeverity: 'high',
+        quietHours: { timezone: 'Asia/Shanghai', start: '22:00', end: '08:00' },
+      })
 
       const output = join(root, 'upstream-radar.config.json')
       await writeRadarConfig(config, { output })
