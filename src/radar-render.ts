@@ -22,6 +22,27 @@ function dependencySourcesLabel(sources: readonly DependencySource[]): string {
     .join(' + ')
 }
 
+function vulnerabilityNextStep(event: VulnerabilityEvent): string {
+  if (event.change === 'resolved') return 'No action required; confirm the installed graph no longer matches this incident.'
+  if (event.kind === 'malware') return `Remove or isolate ${packageLabel(event.plugin)} and ask the DSH Agent to assess project exposure.`
+  const fixedVersions = event.advisory.fixedVersions.slice(0, 4).map(item => display(item)).join(', ')
+  return fixedVersions.length === 0
+    ? `No published fix is recorded; ask the DSH Agent to assess containment or replacement for ${packageLabel(event.plugin)}.`
+    : `Review ${packageLabel(event.affected)} fixed version(s) ${fixedVersions} with the DSH Agent before changing the plugin.`
+}
+
+function compatibilityNextStep(event: CompatibilityEvent): string {
+  if (event.change === 'resolved') return 'No action required; confirm the current graph and source are up to date.'
+  const candidate = event.upgradePath?.firstCandidate?.candidate ?? event.candidate
+  return `Ask the DSH Agent to inspect project impact before applying ${packageLabel(candidate)}.`
+}
+
+function sourceHealthNextStep(event: Extract<RadarEvent, { kind: 'source-health' }>): string {
+  return event.change === 'resolved'
+    ? 'No action required; continue monitoring.'
+    : `Restore ${display(event.source)} before treating the absence of new alerts as a clean result.`
+}
+
 function renderVulnerability(event: VulnerabilityEvent): string[] {
   const severity = event.kind === 'malware' ? 'CRITICAL' : event.advisory.severity.toUpperCase()
   const lines = [
@@ -41,6 +62,7 @@ function renderVulnerability(event: VulnerabilityEvent): string[] {
   }
   lines.push(`Fixed versions: ${event.advisory.fixedVersions.length === 0 ? 'none published' : event.advisory.fixedVersions.map(item => display(item)).join(', ')}`)
   lines.push(`Route: ${event.route.owner === undefined ? '(no owner)' : display(event.route.owner)} via ${event.route.channels.map(item => display(item)).join(', ')}`)
+  lines.push(`Next: ${vulnerabilityNextStep(event)}`)
   return lines
 }
 
@@ -89,6 +111,7 @@ function renderCompatibility(event: CompatibilityEvent): string[] {
   }
   if (event.releaseNotesUrl !== undefined) lines.push(`Release notes: ${display(event.releaseNotesUrl)}`)
   lines.push(`Route: ${event.route.owner === undefined ? '(no owner)' : display(event.route.owner)} via ${event.route.channels.map(item => display(item)).join(', ')}`)
+  lines.push(`Next: ${compatibilityNextStep(event)}`)
   return lines
 }
 
@@ -104,6 +127,7 @@ function renderSourceHealth(event: Extract<RadarEvent, { kind: 'source-health' }
   if (event.lastSucceededAt !== undefined) lines.push(`Last succeeded: ${display(event.lastSucceededAt)}`)
   if (event.error !== undefined) lines.push(`Error: ${display(event.error)}`)
   lines.push(`Route: ${event.route.owner === undefined ? '(no owner)' : display(event.route.owner)} via ${event.route.channels.map(item => display(item)).join(', ')}`)
+  lines.push(`Next: ${sourceHealthNextStep(event)}`)
   return lines
 }
 

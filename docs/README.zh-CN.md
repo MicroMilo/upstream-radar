@@ -52,14 +52,14 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
 dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
-如果你已经检查过生成的文件，希望本地 doctor 通过后立即启动 DSH，可以加上 `--start`：
+如果你明确希望 setup 在同一条命令里完成本地 doctor 后立即启动 DSH，可以加上 `--start`：
 
 ```bash
 pnpm dlx --package=upstream-radar@latest upstream-radar setup \
   --project-name "我的 DSH 项目" --start
 ```
 
-不加 `--start` 时，setup 不会启动 DSH。这个显式参数保留了默认的 review-first 安全边界，同时让已经确认过配置的本地安装可以一条命令启动。
+不加 `--start` 时，setup 不会启动 DSH，并会给你留下审阅生成文件的停顿。加上这个参数才是一键启动路径；doctor 只验证本地接线，不等于人工审查，也不是插件安全证明。
 
 这条一键路径还有一个不联网的 showcase：`pnpm run showcase:setup-start`。
 
@@ -249,7 +249,14 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
   --project-name "我的 DSH 项目"
 ```
 
-如果只有一个 DSH profile 含有第三方 bundle，`setup` 会自动选择；有多个候选时再传 `--profile <名称>`。`setup` 会使用当前命令对应的精确 Radar 版本调用 DSH 安装器，默认生成 `upstream-radar.config.json` 和 `upstream-radar.dsh.yml`，并运行不联网的 `doctor`。默认不会启动 DSH；检查两个生成文件后，如果希望 setup 在 doctor 通过后直接启动 profile，可以加上 `--start`：
+如果只有一个 DSH profile 含有第三方 bundle，`setup` 会自动选择；有多个候选时再传 `--profile <名称>`。`setup` 会使用当前命令对应的精确 Radar 版本调用 DSH 安装器，默认生成 `upstream-radar.config.json` 和 `upstream-radar.dsh.yml`，并运行不联网的 `doctor`。默认不会启动 DSH。一条命令完成启动的明确入口是：
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar setup \
+  --project-name "我的 DSH 项目" --start
+```
+
+如果要保留人工审阅停顿，再手动启动生成的 overlay：
 
 ```bash
 dsh --profile web --patch ./upstream-radar.dsh.yml --dump-config

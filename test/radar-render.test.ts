@@ -35,5 +35,6 @@ describe('Radar event rendering', () => {
 
     const output = renderRadarEvent(event)
     assert.match(output, /Origin: plugin profile \+ DSH host runtime/)
+    assert.match(output, /Next: Review @deepseek-ai\/dsh-agent@0\.1\.0-rc\.6 fixed version\(s\) 0\.2\.0 with the DSH Agent before changing the plugin\./)
   })
 })

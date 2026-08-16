@@ -133,8 +133,8 @@ Notification controls:
 
   Next:
   Review the generated files, then run the printed doctor command and start DSH
-  with the printed --patch command. Pass --start when you explicitly want setup
-  to start DSH after the doctor check passes.
+  with the printed --patch command. Pass --start only when you explicitly accept
+  starting DSH in the same invocation after the doctor check passes.
 
 If the profile has no third-party plugin yet:
   dsh plugin --profile <name> add <package>@<exact-version>

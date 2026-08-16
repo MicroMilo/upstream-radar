@@ -62,14 +62,14 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
 dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
-If you have reviewed the generated files and want setup to launch DSH immediately after its local doctor check passes, add `--start`:
+If you explicitly want setup to launch DSH in the same invocation after its local doctor check passes, add `--start`:
 
 ```bash
 pnpm dlx --package=upstream-radar@latest upstream-radar setup \
   --project-name "My DSH project" --start
 ```
 
-Without `--start`, setup never launches DSH. The explicit flag keeps the review-first default while making a verified local installation a one-command start when desired.
+Without `--start`, setup never launches DSH and gives you a pause to review the generated files. The explicit flag is the one-command path; doctor verifies local wiring, but it is not a human review or a package-safety certificate.
 
 The one-command path is also covered by a network-free showcase: `pnpm run showcase:setup-start`.
 
@@ -261,7 +261,14 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
   --project-name "My DSH project"
 ```
 
-When exactly one DSH profile contains third-party bundles, `setup` selects it automatically; pass `--profile <name>` when more than one profile is eligible. `setup` delegates the package installation to DSH using the exact Radar version currently being run. It then generates `upstream-radar.config.json` and `upstream-radar.dsh.yml` by default, and runs `doctor` locally without contacting OSV, npm, or GitHub. By default it does not start DSH; use `--start` after reviewing the generated files when you want setup to launch the profile after doctor passes:
+When exactly one DSH profile contains third-party bundles, `setup` selects it automatically; pass `--profile <name>` when more than one profile is eligible. `setup` delegates the package installation to DSH using the exact Radar version currently being run. It then generates `upstream-radar.config.json` and `upstream-radar.dsh.yml` by default, and runs `doctor` locally without contacting OSV, npm, or GitHub. By default it does not start DSH. The explicit one-command path is:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar setup \
+  --project-name "My DSH project" --start
+```
+
+For the review-first path, start the generated overlay yourself:
 
 ```bash
 dsh --profile web --patch ./upstream-radar.dsh.yml --dump-config
