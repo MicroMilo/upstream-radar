@@ -62,9 +62,20 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
 dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
+If you have reviewed the generated files and want setup to launch DSH immediately after its local doctor check passes, add `--start`:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar setup \
+  --project-name "My DSH project" --start
+```
+
+Without `--start`, setup never launches DSH. The explicit flag keeps the review-first default while making a verified local installation a one-command start when desired.
+
+The one-command path is also covered by a network-free showcase: `pnpm run showcase:setup-start`.
+
 If you use npm rather than pnpm, the equivalent launcher is `npx --yes upstream-radar@latest setup --project-name "My DSH project"`. For a reproducible team workflow, replace `latest` with the exact release you have reviewed.
 
-`setup` explicitly installs the exact Radar version used by the command into the selected DSH profile, discovers the installed graph, writes `./upstream-radar.config.json` and `./upstream-radar.dsh.yml` by default, and runs the network-free wiring check. It does not start DSH or execute plugin business actions; review the generated files before starting the process. Use `--output` or `--dsh-patch` for different paths; if Radar is already installed, add `--no-install`.
+`setup` explicitly installs the exact Radar version used by the command into the selected DSH profile, discovers the installed graph, writes `./upstream-radar.config.json` and `./upstream-radar.dsh.yml` by default, and runs the network-free wiring check. By default it does not start DSH or execute plugin business actions; `--start` opts into launching DSH only after the doctor check passes. Use `--output` or `--dsh-patch` for different paths; if Radar is already installed, add `--no-install`.
 
 After DSH is running, use a second terminal for the read-only status check:
 
@@ -250,7 +261,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
   --project-name "My DSH project"
 ```
 
-When exactly one DSH profile contains third-party bundles, `setup` selects it automatically; pass `--profile <name>` when more than one profile is eligible. `setup` delegates the package installation to DSH using the exact Radar version currently being run. It then generates `upstream-radar.config.json` and `upstream-radar.dsh.yml` by default, and runs `doctor` locally without contacting OSV, npm, or GitHub. It does not start DSH. Review the two generated files, then start the profile:
+When exactly one DSH profile contains third-party bundles, `setup` selects it automatically; pass `--profile <name>` when more than one profile is eligible. `setup` delegates the package installation to DSH using the exact Radar version currently being run. It then generates `upstream-radar.config.json` and `upstream-radar.dsh.yml` by default, and runs `doctor` locally without contacting OSV, npm, or GitHub. By default it does not start DSH; use `--start` after reviewing the generated files when you want setup to launch the profile after doctor passes:
 
 ```bash
 dsh --profile web --patch ./upstream-radar.dsh.yml --dump-config

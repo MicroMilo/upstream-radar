@@ -100,6 +100,7 @@ describe('CLI option parsing', () => {
     assert.match(setupHelp.stdout, /notificationPolicy/)
     assert.match(setupHelp.stdout, /--minimum-severity <level>/)
     assert.match(setupHelp.stdout, /--quiet-hours <tz,start-end>/)
+    assert.match(setupHelp.stdout, /--start\s+start DSH after the local wiring check passes/)
     assert.doesNotMatch(setupHelp.stderr, /unknown option/)
 
     const initHelp = spawnSync(process.execPath, [cli, 'init', '--help'], { encoding: 'utf8' })
@@ -395,6 +396,92 @@ snapshots:
         quietHours: { timezone: 'Asia/Shanghai', start: '22:00', end: '08:00' },
       })
       assert.match(await readFile(join(root, 'upstream-radar.dsh.yml'), 'utf8'), /name: 'upstream-radar\/dsh'/)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('can explicitly start DSH after the local wiring check passes', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-setup-start-'))
+    try {
+      const dshHome = join(root, 'dsh-home')
+      const profile = join(dshHome, 'profiles', 'web')
+      const bin = join(root, 'bin')
+      const dshLog = join(root, 'dsh-commands.txt')
+      await mkdir(join(profile, 'node_modules', 'demo-plugin'), { recursive: true })
+      await mkdir(bin, { recursive: true })
+      await writeFile(join(profile, 'package.json'), JSON.stringify({
+        name: 'dsh-profile-web',
+        dsh: { profile: { bundles: ['upstream-radar', 'demo-plugin'] } },
+      }))
+      await writeFile(join(profile, 'node_modules', 'demo-plugin', 'package.json'), JSON.stringify({
+        name: 'demo-plugin',
+        version: '1.0.0',
+        main: './index.js',
+      }))
+      await writeFile(join(bin, process.platform === 'win32' ? 'dsh.cmd' : 'dsh'),
+        process.platform === 'win32'
+          ? '@echo %* >> "%UPSTREAM_RADAR_TEST_LOG%"\r\n'
+          : '#!/bin/sh\nprintf "%s\\n" "$*" >> "$UPSTREAM_RADAR_TEST_LOG"\n',
+        { mode: 0o755 })
+
+      const result = spawnSync(process.execPath, [cli, 'setup', '--output', 'upstream-radar.config.json', '--start'], {
+        encoding: 'utf8',
+        cwd: root,
+        env: {
+          ...process.env,
+          DSH_HOME: dshHome,
+          PATH: `${bin}:${process.env.PATH ?? ''}`,
+          UPSTREAM_RADAR_TEST_LOG: dshLog,
+        },
+      })
+      assert.equal(result.status, 0)
+      assert.match(result.stdout, /Starting DSH profile web/)
+      const commands = (await readFile(dshLog, 'utf8')).trim().split('\n')
+      assert.equal(commands[0], `plugin --profile web add upstream-radar@${TOOL_VERSION}`)
+      assert.equal(commands[1], '--profile web --patch upstream-radar.dsh.yml')
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('does not start DSH when the local wiring check is blocked', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-setup-start-blocked-'))
+    try {
+      const dshHome = join(root, 'dsh-home')
+      const profile = join(dshHome, 'profiles', 'web')
+      const bin = join(root, 'bin')
+      const dshLog = join(root, 'dsh-commands.txt')
+      await mkdir(join(profile, 'node_modules', 'demo-plugin'), { recursive: true })
+      await mkdir(bin, { recursive: true })
+      await writeFile(join(profile, 'package.json'), JSON.stringify({
+        name: 'dsh-profile-web',
+        dsh: { profile: { bundles: ['demo-plugin'] } },
+      }))
+      await writeFile(join(profile, 'node_modules', 'demo-plugin', 'package.json'), JSON.stringify({
+        name: 'demo-plugin',
+        version: '1.0.0',
+        main: './index.js',
+      }))
+      await writeFile(join(bin, process.platform === 'win32' ? 'dsh.cmd' : 'dsh'),
+        process.platform === 'win32'
+          ? '@echo %* >> "%UPSTREAM_RADAR_TEST_LOG%"\r\n'
+          : '#!/bin/sh\nprintf "%s\\n" "$*" >> "$UPSTREAM_RADAR_TEST_LOG"\n',
+        { mode: 0o755 })
+
+      const result = spawnSync(process.execPath, [cli, 'setup', '--profile', 'web', '--no-install', '--start'], {
+        encoding: 'utf8',
+        cwd: root,
+        env: {
+          ...process.env,
+          DSH_HOME: dshHome,
+          PATH: `${bin}:${process.env.PATH ?? ''}`,
+          UPSTREAM_RADAR_TEST_LOG: dshLog,
+        },
+      })
+      assert.equal(result.status, 1)
+      assert.match(result.stdout, /Status: BLOCKED/)
+      await assert.rejects(readFile(dshLog, 'utf8'), { code: 'ENOENT' })
     } finally {
       await rm(root, { recursive: true, force: true })
     }

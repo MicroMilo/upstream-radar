@@ -102,12 +102,13 @@ function commandUsage(key: string): string | undefined {
     setup: `Upstream Radar — install the exact Radar bundle into DSH and prepare monitoring
 
 Usage:
-  upstream-radar setup [--profile <name>] [--project-name <name>]
+  upstream-radar setup [--profile <name>] [--start] [--project-name <name>]
 
 What it does:
   Installs Radar into the selected DSH profile, writes a reviewable config and
-  --patch overlay, then runs the local doctor check. It does not start DSH or
-  execute plugin business actions.
+  --patch overlay, then runs the local doctor check. By default it does not
+  start DSH or execute plugin business actions; --start opts into launching DSH
+  only after the doctor check passes.
 
 Prerequisite:
   Install DeepSeek Harness first and verify that \`dsh --help\` works.
@@ -121,6 +122,7 @@ Common options:
   --dsh-patch <path>     DSH overlay path (default: ./upstream-radar.dsh.yml)
   --minimum-severity <level>  minimum vulnerability notice level
   --quiet-hours <tz,start-end>  e.g. Asia/Shanghai,22:00-08:00
+  --start                 start DSH after the local wiring check passes
   --no-install            reuse an already installed Radar bundle
   --no-dsh-patch          use legacy environment-variable wiring
 
@@ -131,7 +133,8 @@ Notification controls:
 
   Next:
   Review the generated files, then run the printed doctor command and start DSH
-  with the printed --patch command.
+  with the printed --patch command. Pass --start when you explicitly want setup
+  to start DSH after the doctor check passes.
 
 If the profile has no third-party plugin yet:
   dsh plugin --profile <name> add <package>@<exact-version>
@@ -321,7 +324,7 @@ function usage(): string {
 
 Usage:
   upstream-radar <command> --help
-  upstream-radar setup [--profile <name>] [options]
+  upstream-radar setup [--profile <name>] [--start] [options]
   upstream-radar init [--profile <name>] [options]
   upstream-radar init --pnpm-lock <pnpm-lock.yaml> [--root <package>@<exact-version>] [options]
   upstream-radar init --npm-lock <package-lock.json> [--root <package>@<exact-version>] [options]
@@ -382,6 +385,7 @@ Options:
   --dsh-patch <path>   write a self-contained DSH --patch overlay (setup default: ./upstream-radar.dsh.yml)
   --minimum-severity <level>  init/setup notification threshold: info|low|medium|high|critical
   --quiet-hours <tz,start-end>  init/setup window, e.g. Asia/Shanghai,22:00-08:00
+  --start              setup: start DSH after the local wiring check passes
   --no-dsh-patch       setup: keep the legacy UPSTREAM_RADAR_* environment-variable wiring
   --patch <path>       DSH overlay to verify with doctor
   --force              allow init to replace an existing output file
@@ -954,6 +958,7 @@ async function runSetup(args: readonly string[]): Promise<number> {
   let output = 'upstream-radar.config.json'
   let patchFile: string | undefined = 'upstream-radar.dsh.yml'
   let noInstall = false
+  let startDsh = false
   const initArgs: string[] = []
   const valueOptions = new Set([
     '--profile', '--output', '--dsh-patch', '--project-id', '--project-name',
@@ -967,6 +972,10 @@ async function runSetup(args: readonly string[]): Promise<number> {
     }
     if (argument === '--no-dsh-patch') {
       patchFile = undefined
+      continue
+    }
+    if (argument === '--start') {
+      startDsh = true
       continue
     }
     if (argument === '--json') throw new Error('setup does not accept --json; use init --json')
@@ -1046,7 +1055,28 @@ async function runSetup(args: readonly string[]): Promise<number> {
   if (patchFile !== undefined) doctorOptions.patchFile = patchFile
   const doctor = await createDoctorReport(doctorOptions)
   process.stdout.write(`\nLocal wiring check:\n${renderDoctorReport(doctor)}`)
-  return doctor.status === 'blocked' ? 1 : 0
+  if (doctor.status === 'blocked') return 1
+  if (!startDsh) return 0
+
+  if (doctorProfile === undefined) {
+    throw new Error('setup --start could not determine the DSH profile; pass --profile <name>')
+  }
+  const dshCommand = process.platform === 'win32' ? 'dsh.cmd' : 'dsh'
+  const dshArgs = ['--profile', doctorProfile]
+  const dshEnvironment = patchFile === undefined
+    ? { ...process.env, UPSTREAM_RADAR_CONFIG: outputPath, UPSTREAM_RADAR_STATE: statePath }
+    : process.env
+  if (patchFile !== undefined) dshArgs.push('--patch', patchFile)
+  process.stdout.write(`\nStarting DSH profile ${doctorProfile}; press Ctrl-C to stop.\n`)
+  const result = spawnSync(dshCommand, dshArgs, { env: dshEnvironment, stdio: 'inherit' })
+  if (result.error !== undefined) {
+    const spawnError = result.error as NodeJS.ErrnoException
+    if (spawnError.code === 'ENOENT') {
+      throw new Error('setup --start could not find the `dsh` command; install DeepSeek Harness, verify `dsh --help` works, then rerun setup')
+    }
+    throw new Error(`setup --start could not run ${dshCommand}: ${safeErrorMessage(result.error.message)}`)
+  }
+  return result.status ?? 1
 }
 
 async function runInit(args: readonly string[]): Promise<number> {

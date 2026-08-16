@@ -22,6 +22,7 @@ All notable changes to Upstream Radar are documented here.
 - Add an opt-in GitHub Action pre-install artifact gate for one exact npm plugin, with an admission verdict, coverage, findings, next step, and `inspect-verdict` output.
 - Add delivery-only per-project notification controls for minimum vulnerability severity and timezone-aware quiet hours; critical and malicious-package events bypass the controls, while DSH tasks and webhook events remain durable for retry.
 - Let `setup` and all `init` modes configure those notification controls directly, with validation for severity values, IANA timezones, and quiet-hour ranges; generated configs no longer require hand-editing JSON for the common path.
+- Add opt-in `setup --start` to launch the selected DSH profile only after the generated wiring passes the local doctor check; the default remains review-first and does not start DSH.
 
 ## [0.33.0] - 2026-08-16
 

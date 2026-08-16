@@ -53,6 +53,7 @@
 - [x] Add the pnpm lock graph adapter; Yarn remains a separate future adapter.
 - [ ] Maintain one durable project registry across multiple machines.
 - [x] Deliver to the correct DSH project session instead of one security-inbox Agent.
+- [x] Offer an explicit `setup --start` shortcut while keeping the review-first default.
 - [x] Add provider-neutral HTTPS webhook delivery with durable event acknowledgement and retry.
 - [x] Add direct Feishu/Lark V2 custom-bot text delivery with optional environment-only signature generation; keep generic webhook acknowledgement state.
 - [ ] Add suppression, ownership, maintenance-window, and dev-only rules.

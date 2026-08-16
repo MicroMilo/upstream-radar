@@ -52,6 +52,17 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
 dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
+如果你已经检查过生成的文件，希望本地 doctor 通过后立即启动 DSH，可以加上 `--start`：
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar setup \
+  --project-name "我的 DSH 项目" --start
+```
+
+不加 `--start` 时，setup 不会启动 DSH。这个显式参数保留了默认的 review-first 安全边界，同时让已经确认过配置的本地安装可以一条命令启动。
+
+这条一键路径还有一个不联网的 showcase：`pnpm run showcase:setup-start`。
+
 如果你使用 npm 而不是 pnpm，等价入口是 `npx --yes upstream-radar@latest setup --project-name "我的 DSH 项目"`。团队要复现同一套行为时，把 `latest` 换成已经审查过的精确版本。
 
 DSH 启动后，在第二个终端执行只读状态检查：
@@ -61,7 +72,7 @@ DSH 启动后，在第二个终端执行只读状态检查：
 pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-radar.config.json
 ```
 
-`setup` 会明确调用 DSH 的安装命令，把当前正在运行的精确 Radar 版本放进选中的 profile，然后默认写出当前目录下的 `upstream-radar.config.json` 和 `upstream-radar.dsh.yml`，并运行不联网的本地接线检查。它不会启动 DSH，也不会执行插件业务动作；检查生成文件后再启动。需要其他位置时传 `--output` 或 `--dsh-patch`；已经安装过 bundle 时加 `--no-install`。`radar status` 会在不重新请求网络的情况下确认第一次完整检查。完整的状态文件、兼容的旧环境变量方式、profile 边界和真实运行证明见[完整 DSH 配置](#安装到-dsh)。
+`setup` 会明确调用 DSH 的安装命令，把当前正在运行的精确 Radar 版本放进选中的 profile，然后默认写出当前目录下的 `upstream-radar.config.json` 和 `upstream-radar.dsh.yml`，并运行不联网的本地接线检查。默认不会启动 DSH，也不会执行插件业务动作；检查生成文件后再启动，或者在确认配置后传 `--start` 让 setup 在 doctor 通过后启动。需要其他位置时传 `--output` 或 `--dsh-patch`；已经安装过 bundle 时加 `--no-install`。`radar status` 会在不重新请求网络的情况下确认第一次完整检查。完整的状态文件、兼容的旧环境变量方式、profile 边界和真实运行证明见[完整 DSH 配置](#安装到-dsh)。
 
 同一个状态文件还会保留一份有上限的变化记录。想知道“什么时候发生了什么”，而不重新请求任何漏洞源，可以运行：
 
@@ -238,7 +249,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
   --project-name "我的 DSH 项目"
 ```
 
-如果只有一个 DSH profile 含有第三方 bundle，`setup` 会自动选择；有多个候选时再传 `--profile <名称>`。`setup` 会使用当前命令对应的精确 Radar 版本调用 DSH 安装器，默认生成 `upstream-radar.config.json` 和 `upstream-radar.dsh.yml`，并运行不联网的 `doctor`。它不会启动 DSH。检查两个生成文件后启动 profile：
+如果只有一个 DSH profile 含有第三方 bundle，`setup` 会自动选择；有多个候选时再传 `--profile <名称>`。`setup` 会使用当前命令对应的精确 Radar 版本调用 DSH 安装器，默认生成 `upstream-radar.config.json` 和 `upstream-radar.dsh.yml`，并运行不联网的 `doctor`。默认不会启动 DSH；检查两个生成文件后，如果希望 setup 在 doctor 通过后直接启动 profile，可以加上 `--start`：
 
 ```bash
 dsh --profile web --patch ./upstream-radar.dsh.yml --dump-config
