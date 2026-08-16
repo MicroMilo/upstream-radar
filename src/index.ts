@@ -110,6 +110,13 @@ export {
   type RadarStatusReport,
   type RadarStatusSource,
 } from './radar-status.js'
+export {
+  createRadarHistory,
+  renderRadarHistory,
+  RADAR_HISTORY_REPORT_SCHEMA,
+  type CreateRadarHistoryOptions,
+  type RadarHistoryReport,
+} from './radar-history.js'
 export { renderRadarEvent, renderRadarEvents } from './radar-render.js'
 export {
   createDoctorReport,
@@ -147,8 +154,10 @@ export {
   ANALYSIS_RESULT_SCHEMA,
   DEPENDENCY_GRAPH_SCHEMA,
   INVENTORY_SCHEMA,
+  MAX_RADAR_HISTORY_EVENTS,
   RADAR_EVENT_SCHEMA,
   RADAR_CONFIG_SCHEMA,
+  RADAR_HISTORY_SCHEMA,
   RADAR_STATE_SCHEMA,
   WEBHOOK_DELIVERY_SCHEMA,
   type AdvisoryMatch,

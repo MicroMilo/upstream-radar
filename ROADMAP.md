@@ -53,7 +53,7 @@
 - [x] Add provider-neutral HTTPS webhook delivery with durable event acknowledgement and retry.
 - [ ] Add Feishu, Slack, and email adapters with provider-native formatting and acknowledgement state.
 - [ ] Add suppression, ownership, maintenance-window, and dev-only rules.
-- [ ] Keep event history for new, updated, acknowledged, fixed, withdrawn, and ignored states.
+- [x] Keep a bounded local transition history for new, updated, and resolved/source-health states, with a read-only `radar history` query.
 
 ## Milestone 3 — richer vulnerability intelligence
 

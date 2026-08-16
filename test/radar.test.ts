@@ -65,6 +65,8 @@ describe('radar polling', () => {
     assert.equal(first.events.length, 1)
     assert.equal(first.events[0]?.change, 'new')
     assert.equal(first.analysisTasks.length, 1)
+    assert.equal(first.state.history?.length, 1)
+    assert.equal(first.state.history?.[0]?.change, 'new')
     const firstEvent = first.events[0]
     assert.ok(firstEvent !== undefined)
     assert.equal(firstEvent.kind, 'vulnerability')
@@ -99,6 +101,7 @@ describe('radar polling', () => {
     const unchanged = await pollRadar([inventory], first.state, source('2026-08-14T01:00:00.000Z'), new Date('2026-08-14T01:31:00.000Z'))
     assert.equal(unchanged.events.length, 0)
     assert.equal(Object.keys(unchanged.state.analysisResults ?? {}).length, 1)
+    assert.equal(unchanged.state.history?.length, 1)
 
     const updated = await pollRadar([inventory], unchanged.state, source('2026-08-14T02:00:00.000Z'), new Date('2026-08-14T02:01:00.000Z'))
     assert.equal(updated.events[0]?.change, 'updated')
@@ -106,12 +109,40 @@ describe('radar polling', () => {
     assert.equal(updated.state.pendingAnalysisTasks.length, 1)
     assert.equal(updated.state.pendingAnalysisTasks[0]?.event.change, 'updated')
     assert.equal(Object.keys(updated.state.analysisResults ?? {}).length, 0)
+    assert.equal(updated.state.history?.length, 2)
 
     const resolved = await pollRadar([inventory], updated.state, source('2026-08-14T02:00:00.000Z', false), new Date('2026-08-14T03:01:00.000Z'))
     assert.equal(resolved.events[0]?.change, 'resolved')
     assert.equal(resolved.analysisTasks.length, 0)
     assert.equal(resolved.state.pendingAnalysisTasks.length, 0)
     assert.equal(Object.keys(resolved.state.analysisResults ?? {}).length, 0)
+    assert.equal(resolved.state.history?.length, 3)
+    assert.deepEqual(resolved.state.history?.map(event => event.change), ['new', 'updated', 'resolved'])
+  })
+
+  it('deduplicates and bounds the durable transition history', async () => {
+    const first = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      source('2026-08-14T01:00:00.000Z'),
+      new Date('2026-08-14T01:01:00.000Z'),
+    )
+    const seed = first.events[0]
+    assert.ok(seed !== undefined)
+    const state = first.state
+    state.history = Array.from({ length: 1_001 }, (_, index) => ({
+      ...structuredClone(seed),
+      id: `event-history-${index}`,
+      detectedAt: new Date(index * 1_000).toISOString(),
+    }))
+    const next = await pollRadar(
+      [inventory],
+      state,
+      source('2026-08-14T01:00:00.000Z', false),
+      new Date('2026-08-14T02:01:00.000Z'),
+    )
+    assert.equal(next.state.history?.length, 1_000)
+    assert.equal(new Set(next.state.history?.map(event => event.id)).size, 1_000)
   })
 
   it('emits one compatibility task when npm observes a new candidate release', async () => {

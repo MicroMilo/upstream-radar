@@ -36,6 +36,7 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 11. A flood of advisories, dependency nodes, package releases, or pending tasks exhausts memory, disk, network, model quota, or user attention.
 12. A malicious package attacks the supporting static scanner through archives, paths, links, parsers, lifecycle scripts, or native code.
 13. A configured notification endpoint is unavailable, redirects unexpectedly, or receives more data than the operator intended.
+14. A long-running monitor grows its local state without bound, or a retry records the same transition repeatedly.
 
 ## Trust boundaries
 
@@ -61,6 +62,7 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 12. Target-controlled package code and lifecycle scripts are not executed during collection.
 13. Webhook URLs must use HTTPS and are read from runtime configuration or an explicit CLI argument; only a SHA-256 fingerprint and delivered event ids are persisted.
 14. A webhook is sent only for a changed event, and a non-2xx response does not mark it delivered; delivery is at-least-once across a crash window.
+15. The transition ledger is bounded and deduplicated by stable event id; losing old history never changes the active incident state.
 
 ## Delivery semantics
 
@@ -79,10 +81,10 @@ The optional webhook follows the same bias: Radar persists the changed incident 
 
 ## Current limitations
 
-- The graph collector currently parses npm lock graphs; pnpm and Yarn adapters are absent.
+- The graph collector parses npm and pnpm v6/v9 lock graphs; Yarn graph extraction is not implemented.
 - OSV is the only live vulnerability source; npm `latest` and bounded public GitHub Release notes are the automatic release sources.
 - GitHub comparison diffs, changelogs, and migration guides are not fetched automatically.
 - One live root DSH Agent acts as the security inbox; multiple roots require an exact project-session workspace match.
 - The prompt establishes a read-only contract, but enforcement still depends on the DSH Agent's configured tools and permission policy.
-- Feed failures are reported by the cycle; OSV failures preserve the last confirmed matches and pending tasks, and three consecutive failures create a durable source-health alert. Provider-native Feishu/Slack formatting, signatures, and acknowledgement workflows remain future work; the current generic endpoint receives the stable JSON contract.
+- Feed failures are reported by the cycle; OSV failures preserve the last confirmed matches and pending tasks, and three consecutive failures create a durable source-health alert. The local transition ledger is intentionally bounded to the most recent 1,000 events; it is an audit convenience, not a complete historical database. Provider-native Feishu/Slack formatting, signatures, and acknowledgement workflows remain future work; the current generic endpoint receives the stable JSON contract.
 - The scanner uses the host npm CLI with scripts disabled; it is not a microVM detonation boundary.

@@ -6,6 +6,7 @@ import {
   ANALYSIS_TASK_SCHEMA,
   ANALYSIS_DELIVERY_SCHEMA,
   ANALYSIS_RESULT_SCHEMA,
+  MAX_RADAR_HISTORY_EVENTS,
   RADAR_EVENT_SCHEMA,
   RADAR_STATE_SCHEMA,
   WEBHOOK_DELIVERY_SCHEMA,
@@ -202,6 +203,54 @@ function validWebhookDeliveryState(value: unknown): boolean {
   ))
 }
 
+function validHistoryEvent(value: unknown): boolean {
+  const event = asRecord(value)
+  const project = asRecord(event?.project)
+  const route = asRecord(event?.route)
+  if (event?.schema !== RADAR_EVENT_SCHEMA
+    || typeof event.id !== 'string' || event.id.length === 0 || event.id.length > 512
+    || typeof event.incidentId !== 'string' || event.incidentId.length === 0 || event.incidentId.length > 512
+    || (event.change !== 'new' && event.change !== 'updated' && event.change !== 'resolved')
+    || typeof event.detectedAt !== 'string' || event.detectedAt.length === 0 || event.detectedAt.length > 256
+    || project?.id === undefined || typeof project.id !== 'string' || project.id.length === 0 || project.id.length > 512
+    || project.name === undefined || typeof project.name !== 'string' || project.name.length === 0 || project.name.length > 2_048
+    || !Array.isArray(route?.channels) || route.channels.length > 64
+    || !route.channels.every(item => typeof item === 'string' && item.length > 0 && item.length <= 512)) return false
+
+  if (event.kind === 'vulnerability' || event.kind === 'malware') {
+    const advisory = asRecord(event.advisory)
+    const paths = event.paths
+    return validPackageCoordinate(event.plugin)
+      && validPackageCoordinate(event.affected)
+      && Array.isArray(paths) && paths.length <= 64
+      && paths.every(path => Array.isArray(path) && path.length > 0 && path.length <= 128 && path.every(validPackageCoordinate))
+      && advisory?.id !== undefined && typeof advisory.id === 'string' && advisory.id.length > 0 && advisory.id.length <= 512
+      && advisory.modified !== undefined && typeof advisory.modified === 'string' && advisory.modified.length > 0 && advisory.modified.length <= 256
+      && (advisory.severity === 'unknown' || advisory.severity === 'info' || advisory.severity === 'low'
+        || advisory.severity === 'medium' || advisory.severity === 'high' || advisory.severity === 'critical')
+  }
+  if (event.kind === 'compatibility') {
+    return validPackageCoordinate(event.plugin)
+      && validPackageCoordinate(event.installed)
+      && validPackageCoordinate(event.candidate)
+      && Array.isArray(event.signals) && event.signals.length <= 64
+      && event.signals.every(signal => {
+        const item = asRecord(signal)
+        return typeof item?.summary === 'string' && item.summary.length <= 2_048
+      })
+      && validCompatibilityUpgradePath(event.upgradePath)
+  }
+  if (event.kind === 'source-health') {
+    return (event.source === 'osv' || event.source === 'npm-releases'
+      || event.source === 'npm-candidate-graphs' || event.source === 'github-releases')
+      && (event.status === 'degraded' || event.status === 'healthy')
+      && typeof event.failureCount === 'number' && Number.isSafeInteger(event.failureCount)
+      && event.failureCount >= 0 && event.failureCount <= 1_000_000
+      && typeof event.lastAttemptedAt === 'string' && event.lastAttemptedAt.length > 0 && event.lastAttemptedAt.length <= 256
+  }
+  return false
+}
+
 export function parseRadarState(value: unknown): RadarState {
   const root = asRecord(value)
   if (root?.schema !== RADAR_STATE_SCHEMA) throw new Error('radar state has an unsupported schema')
@@ -217,6 +266,11 @@ export function parseRadarState(value: unknown): RadarState {
   if (analysisDeliveries === undefined) throw new Error('radar state has an invalid analysis delivery map')
   const analysisResults = root.analysisResults === undefined ? {} : asRecord(root.analysisResults)
   if (analysisResults === undefined) throw new Error('radar state has an invalid analysis result map')
+  const history = root.history === undefined ? [] : root.history
+  if (!Array.isArray(history) || history.length > MAX_RADAR_HISTORY_EVENTS
+    || history.some(event => !validHistoryEvent(event))) {
+    throw new Error('radar state has an invalid event history')
+  }
   if (root.webhook !== undefined && !validWebhookDeliveryState(root.webhook)) {
     throw new Error('radar state has an invalid webhook delivery state')
   }

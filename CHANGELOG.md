@@ -4,6 +4,10 @@ All notable changes to Upstream Radar are documented here.
 
 ## [Unreleased]
 
+### Added
+
+- Keep a bounded, deduplicated transition ledger in the Radar state and expose it through the network-free `radar history` command, so resolved incidents and source recovery remain auditable.
+
 ## [0.33.0] - 2026-08-16
 
 ### Added

@@ -7,6 +7,10 @@ export const ANALYSIS_DELIVERY_SCHEMA = 'upstream-radar.analysis-delivery/v1alph
 export const ANALYSIS_RESULT_SCHEMA = 'upstream-radar.analysis-result/v1alpha1' as const
 export const RADAR_CONFIG_SCHEMA = 'upstream-radar.radar-config/v1alpha1' as const
 export const WEBHOOK_DELIVERY_SCHEMA = 'upstream-radar.webhook-delivery/v1alpha1' as const
+export const RADAR_HISTORY_SCHEMA = 'upstream-radar.radar-history/v1alpha1' as const
+
+/** The state file is a durable monitor, not an unbounded event database. */
+export const MAX_RADAR_HISTORY_EVENTS = 1_000
 
 export type PackageEcosystem = 'npm'
 
@@ -317,6 +321,8 @@ export interface RadarState {
   analysisResults?: Record<string, StoredAnalysisResult>
   sourceHealth?: Record<string, SourceHealthStatus>
   activeSourceHealth?: Record<string, StoredSourceHealthMatch>
+  /** Most recent state transitions, retained for local audit and diagnosis. */
+  history?: RadarEvent[]
   /** Event ids successfully delivered to the currently configured webhook endpoint. */
   webhook?: WebhookDeliveryState
 }

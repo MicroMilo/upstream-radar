@@ -143,6 +143,14 @@ For the full structured conclusion, use `upstream-radar analysis show <state.jso
 
 It does not poll any upstream source, so it is safe to use for a quick local diagnosis. The next step is guidance; it is not an automatic upgrade or a safety verdict.
 
+The same durable state also keeps the recent transition ledger. This makes a resolved incident auditable instead of making it disappear from the current status summary:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar radar history ./upstream-radar.config.json
+```
+
+The command is network-free, shows `new`, `updated`, `resolved`, and source-health transitions, and keeps a bounded tail of the latest 1,000 event ids. The runnable showcase prints this ledger as its final scene.
+
 The status output also shows `Coverage: incomplete` when the installed profile contains a dependency declaration that DSH cannot currently resolve. Optional peers remain visible without being counted as required gaps. If a required `@deepseek-ai/dsh-*` or Cordis peer is absent from both the profile and the exposed DSH host plane, status calls it out as a DSH host dependency that was not observed; that is a configuration gap, not a clean result.
 
 ## Scene 11 — diagnose the wiring before blaming the feeds

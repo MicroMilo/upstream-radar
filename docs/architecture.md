@@ -98,6 +98,8 @@ For the earliest bounded prefix of those candidates, Radar also runs npm's resol
 
 Compatibility findings use the same lifecycle as vulnerabilities. A stable `incidentId` identifies the project, installed plugin, and changed package while individual event ids identify each `new`, `updated`, or `resolved` transition. A newer candidate replaces the queued analysis for the same incident; when the project catches up or the signal disappears, the unresolved task is removed.
 
+Every emitted transition is also appended to a bounded ledger in the same atomic state file. Event ids make retries and repeated checks idempotent, and the ledger keeps the newest 1,000 transitions so a long-running DSH process does not grow an unbounded log. `radar history` reads this ledger without polling any source, which preserves the evidence for resolved incidents and source recovery after they leave the active summary.
+
 ## DSH Agent handoff
 
 An analysis task includes the deterministic event, project location, route, and a fixed output contract. Its prompt says that every advisory, release note, link, package name, and repository string is untrusted data. It requests read-only investigation and requires file, symbol, configuration, or runtime evidence. DSH consumes it natively as a plugin-originated notice. A machine-readable task marker binds the notice to one exact delivery, and Radar listens only for a model-authored assistant message from that same session. The response must be complete JSON with exactly the six fields in [`analysis-result.schema.json`](../schemas/analysis-result.schema.json); prose, extra fields, user messages, and other sessions are ignored. Text and JSON export remain debugging surfaces, not a second product integration.

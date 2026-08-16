@@ -9,6 +9,7 @@ import { compareSemverValues } from './semver.js'
 import { packageKey } from './osv.js'
 import {
   RADAR_EVENT_SCHEMA,
+  MAX_RADAR_HISTORY_EVENTS,
   RADAR_STATE_SCHEMA,
   type AdvisoryMatch,
   type AnalysisTask,
@@ -317,6 +318,7 @@ export function emptyRadarState(): RadarState {
     analysisResults: {},
     sourceHealth: {},
     activeSourceHealth: {},
+    history: [],
   }
 }
 
@@ -735,6 +737,18 @@ export async function pollRadar(
   activeSourceHealth = Object.fromEntries(currentSourceHealth)
   events.sort((left, right) => left.id.localeCompare(right.id))
 
+  // Keep the transition ledger in the same durable state as the active
+  // matches. A repeated check can be safely retried because event ids are
+  // stable, and the bounded tail prevents a long-running monitor from
+  // turning its state file into an unbounded log.
+  const historyById = new Map((previousState.history ?? []).map(event => [event.id, event]))
+  for (const event of events) {
+    if (!historyById.has(event.id)) historyById.set(event.id, event)
+  }
+  const history = [...historyById.values()]
+    .sort((left, right) => left.detectedAt.localeCompare(right.detectedAt) || left.id.localeCompare(right.id))
+    .slice(-MAX_RADAR_HISTORY_EVENTS)
+
   const analysisTasks = events
     .filter(event => event.change !== 'resolved')
     .map(createAnalysisTask)
@@ -772,6 +786,7 @@ export async function pollRadar(
       analysisResults,
       sourceHealth,
       activeSourceHealth,
+      history,
     },
   }
 }

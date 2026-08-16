@@ -27,6 +27,7 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /--npm-lock <path>\s+init: build a static inventory from an npm v2\/v3 package-lock\.json/)
     assert.match(help.stdout, /radar watch <config\.json>/)
     assert.match(help.stdout, /radar status <config\.json>/)
+    assert.match(help.stdout, /radar history <config\.json>/)
     assert.match(help.stdout, /graph <npm-lock\|pnpm-lock> <lockfile> \[--root <package>@<exact-version>\]/)
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
     assert.match(help.stdout, /--frozen\s+radar check\/watch: use the reviewed graph/)
@@ -382,6 +383,7 @@ snapshots:
       const task = createAnalysisTask(event)
       const state = emptyRadarState()
       state.pendingAnalysisTasks.push(task)
+      state.history = [event]
       await saveRadarState(stateFile, state)
 
       const listed = spawnSync(process.execPath, [cli, 'task', 'list', stateFile], { encoding: 'utf8' })
@@ -393,6 +395,33 @@ snapshots:
       assert.equal(shown.status, 0)
       assert.match(shown.stdout, /UPSTREAM RADAR ANALYSIS TASK/)
       assert.match(shown.stdout, /不可信数据/)
+
+      const history = spawnSync(process.execPath, [
+        cli,
+        'radar',
+        'history',
+        resolve(repository, 'examples/radar/config.json'),
+        '--state',
+        stateFile,
+      ], { encoding: 'utf8' })
+      assert.equal(history.status, 0)
+      assert.match(history.stdout, /Showing 1 of 1 recorded transition\(s\)/)
+      assert.match(history.stdout, /NEW\tvulnerability\tProject A/)
+      const historyJson = spawnSync(process.execPath, [
+        cli,
+        'radar',
+        'history',
+        resolve(repository, 'examples/radar/config.json'),
+        '--state',
+        stateFile,
+        '--limit',
+        '1',
+        '--json',
+      ], { encoding: 'utf8' })
+      assert.equal(historyJson.status, 0)
+      const historyReport = JSON.parse(historyJson.stdout) as { events: Array<{ id: string }>; totalRecorded: number }
+      assert.equal(historyReport.totalRecorded, 1)
+      assert.equal(historyReport.events[0]?.id, event.id)
 
       const acknowledged = spawnSync(process.execPath, [cli, 'task', 'ack', stateFile, task.id], { encoding: 'utf8' })
       assert.equal(acknowledged.status, 0)

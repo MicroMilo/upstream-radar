@@ -28,6 +28,7 @@ import {
   type RadarFailThreshold,
 } from './radar-policy.js'
 import { renderRadarEvents } from './radar-render.js'
+import { createRadarHistory, renderRadarHistory } from './radar-history.js'
 import { loadRadarState, saveRadarState } from './radar-state.js'
 import { createRadarStatus, renderRadarStatus } from './radar-status.js'
 import { renderTextReport } from './render.js'
@@ -74,6 +75,7 @@ Usage:
   upstream-radar radar check <config.json> [--state <state.json>] [--webhook <https-url>] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
   upstream-radar radar watch <config.json> [--state <state.json>] [--webhook <https-url>] [--interval <seconds>] [--once] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
   upstream-radar radar status <config.json> [--state <state.json>] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
+  upstream-radar radar history <config.json> [--state <state.json>] [--limit <n>] [--json]
   upstream-radar radar compare <config.json> <before.json> <candidate.json> [--notes <release-notes.txt>] [--json]
   upstream-radar task list <state.json> [--json]
   upstream-radar task show <state.json> [task-id] [--json]
@@ -91,7 +93,7 @@ Commands:
   graph    read a lockfile into the canonical dependency graph without installing packages
   probe    run a bounded DSH bundle-load check or version matrix in disposable profiles
   benchmark run offline compatibility-rule contracts without network or plugin execution
-  radar    monitor vulnerability changes, watch continuously, inspect status, or assess a candidate compatibility change
+  radar    monitor vulnerability changes, watch continuously, inspect status/history, or assess a candidate compatibility change
   task     inspect or acknowledge the durable DSH analysis outbox
   analysis inspect verified DSH conclusions stored in the Radar state
 
@@ -103,6 +105,7 @@ Options:
   --osv-base-url <url> alternate HTTPS OSV API base URL
   --webhook <https-url>  radar check/watch: POST changed events to an HTTPS endpoint
   --interval <seconds> watch interval from 300 to 86400 seconds (default: 1800)
+  --limit <n>         radar history: show 1 to 1000 recent transitions (default: 20)
   --once               run one watch cycle and exit (useful for CI and demos)
   --frozen             radar check/watch: use the reviewed graph in config without reading a local DSH profile
   --fail-on <value>    scan/inspect verdict or radar severity: unknown|info|low|medium|high|critical|never
@@ -417,8 +420,8 @@ async function fileExists(path: string): Promise<boolean> {
 
 async function runRadar(args: readonly string[]): Promise<number> {
   const subcommand = args[0]
-  if (subcommand !== 'check' && subcommand !== 'watch' && subcommand !== 'status' && subcommand !== 'compare') {
-    throw new Error('radar requires check, watch, status or compare')
+  if (subcommand !== 'check' && subcommand !== 'watch' && subcommand !== 'status' && subcommand !== 'history' && subcommand !== 'compare') {
+    throw new Error('radar requires check, watch, status, history or compare')
   }
   const configPath = args[1]
   if (configPath === undefined || configPath.startsWith('-')) throw new Error(`radar ${subcommand} requires a config file`)
@@ -431,6 +434,8 @@ async function runRadar(args: readonly string[]): Promise<number> {
   let notesPath: string | undefined
   let intervalSeconds = 1_800
   let intervalProvided = false
+  let historyLimit = 20
+  let historyLimitProvided = false
   let once = false
   let deepCandidates = true
   let frozen = false
@@ -447,7 +452,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
     } else if (argument === '--frozen') {
       frozen = true
     } else if (argument === '--state' || argument === '--osv-base-url' || argument === '--registry' || argument === '--webhook'
-      || argument === '--notes' || argument === '--interval' || argument === '--fail-on'
+      || argument === '--notes' || argument === '--interval' || argument === '--limit' || argument === '--fail-on'
       || argument === '--fail-on-compatibility') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
@@ -466,6 +471,13 @@ async function runRadar(args: readonly string[]): Promise<number> {
           throw new Error(`invalid radar --fail-on-compatibility value: ${value}`)
         }
         failOnCompatibility = value as RadarCompatibilityFailThreshold
+      } else if (argument === '--limit') {
+        historyLimitProvided = true
+        const parsed = Number(value)
+        if (!Number.isSafeInteger(parsed) || parsed < 1 || parsed > 1_000) {
+          throw new Error('--limit must be an integer between 1 and 1000')
+        }
+        historyLimit = parsed
       }
       else {
         intervalProvided = true
@@ -489,7 +501,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
     : refreshRadarConfigFromConfiguredProfile(await readConfig())
   if (subcommand === 'status') {
     if (positional.length > 0 || notesPath !== undefined || once || intervalProvided
-      || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || !deepCandidates || frozen || statePath === ':memory:') {
+      || historyLimitProvided || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || !deepCandidates || frozen || statePath === ':memory:') {
       throw new Error('radar status only accepts --state, --fail-on, --fail-on-compatibility and --json options')
     }
     const config = await readConfig()
@@ -512,6 +524,27 @@ async function runRadar(args: readonly string[]): Promise<number> {
     }
     if (report.monitoring === 'degraded' || report.coverage === 'incomplete') return 1
     return policy.status === 'fail' ? 2 : 0
+  }
+  if (subcommand === 'history') {
+    if (positional.length > 0 || notesPath !== undefined || once || intervalProvided
+      || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || !deepCandidates || frozen
+      || failOn !== 'never' || failOnCompatibility !== 'never') {
+      throw new Error('radar history only accepts --state, --limit and --json options')
+    }
+    // Parse the config as an input check, but deliberately do not refresh it
+    // or contact any upstream source. History is a local diagnosis command.
+    await readConfig()
+    const stateFile = statePath ?? `${resolve(configPath)}.state.json`
+    const stateExists = await fileExists(stateFile)
+    const state = stateExists ? await loadRadarState(stateFile) : emptyRadarState()
+    const report = createRadarHistory(state, {
+      configFile: resolve(configPath),
+      stateFile: resolve(stateFile),
+      stateExists,
+      limit: historyLimit,
+    })
+    process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderRadarHistory(report))
+    return 0
   }
   const osv = new OsvClient({
     ...(osvBaseUrl === undefined ? {} : { baseUrl: osvBaseUrl }),
@@ -555,7 +588,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
   }
 
   if (subcommand === 'check') {
-    if (positional.length > 0 || notesPath !== undefined || once || intervalProvided) {
+    if (positional.length > 0 || notesPath !== undefined || once || intervalProvided || historyLimitProvided) {
       throw new Error('radar check received an option meant for watch or compare')
     }
     const result = await runCheck()
@@ -565,7 +598,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
   }
 
   if (subcommand === 'watch') {
-    if (positional.length > 0 || notesPath !== undefined) throw new Error('radar watch received unexpected arguments')
+    if (positional.length > 0 || notesPath !== undefined || historyLimitProvided) throw new Error('radar watch received unexpected arguments')
     if ((failOn !== 'never' || failOnCompatibility !== 'never') && !once) throw new Error('radar watch requires --once when a policy gate is used')
     let stopped = false
     let timer: NodeJS.Timeout | undefined
@@ -605,7 +638,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
     return 0
   }
 
-  if (statePath !== undefined || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || once || intervalProvided || !deepCandidates || frozen || failOn !== 'never' || failOnCompatibility !== 'never') {
+  if (statePath !== undefined || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || once || intervalProvided || historyLimitProvided || !deepCandidates || frozen || failOn !== 'never' || failOnCompatibility !== 'never') {
     throw new Error('radar compare does not accept check or watch options')
   }
   const config = await readConfig()

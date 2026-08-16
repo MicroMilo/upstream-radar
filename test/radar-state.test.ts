@@ -15,6 +15,18 @@ describe('radar state parsing', () => {
     assert.deepEqual(parseRadarState(legacy), legacy)
   })
 
+  it('accepts a state written before the transition history field existed', () => {
+    const legacy = structuredClone(emptyRadarState()) as unknown as Record<string, unknown>
+    delete legacy.history
+    assert.deepEqual(parseRadarState(legacy), legacy)
+  })
+
+  it('rejects malformed transition history instead of exposing it to the renderer', () => {
+    const state = emptyRadarState() as unknown as Record<string, unknown>
+    state.history = [{ schema: 'upstream-radar.event/v1alpha1', id: 'event-invalid' }]
+    assert.throws(() => parseRadarState(state), /invalid event history/)
+  })
+
   it('accepts a 0.17 compatibility path without the later OSV status field', () => {
     const legacy = emptyRadarState() as unknown as Record<string, any>
     legacy.activeCompatibility = {
