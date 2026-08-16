@@ -92,7 +92,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar watch \
   ./upstream-radar.config.json --webhook "$UPSTREAM_RADAR_WEBHOOK_URL"
 ```
 
-Webhook 只发送 `new`、`updated`、`resolved` 变化（包括漏洞源健康变化），格式是有界的 `upstream-radar.webhook/v1alpha1` JSON，具体字段见[schema](../schemas/webhook.schema.json)。收到 HTTP 2xx 后才记录事件 id；请求失败会在下一轮继续重试。状态文件只保存 endpoint 的 SHA-256 指纹和已发送事件 id，不保存 URL 或 token。普通 HTTPS 接口仍然收到供应商无关的 JSON，可以由 relay 转成飞书或 Slack 卡片；如果使用飞书/Lark V2 自定义机器人，Radar 会识别 `/open-apis/bot/v2/hook/` 地址并直接发送原生文本消息：
+Webhook 只发送 `new`、`updated`、`resolved` 变化（包括漏洞源健康变化），格式是有界的 `upstream-radar.webhook/v1alpha1` JSON，具体字段见[schema](../schemas/webhook.schema.json)。收到 HTTP 2xx 后才记录事件 id；请求失败会在下一轮继续重试。状态文件只保存 endpoint 的 SHA-256 指纹、发送记录，以及等待重试或等待安静时段结束的有界事件副本，不保存 URL 或 token。普通 HTTPS 接口仍然收到供应商无关的 JSON，可以由 relay 转成飞书或 Slack 卡片；如果使用飞书/Lark V2 自定义机器人，Radar 会识别 `/open-apis/bot/v2/hook/` 地址并直接发送原生文本消息：
 
 ```bash
 export UPSTREAM_RADAR_WEBHOOK_URL='https://open.feishu.cn/open-apis/bot/v2/hook/替换成真实 token'
@@ -103,6 +103,25 @@ dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
 飞书密钥只从环境变量读取，不会写入 Radar 配置或状态文件。创建机器人时可参考[飞书官方自定义机器人指南](https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN?lang=zh-CN)。请使用 V2 地址；旧的 `/open-apis/bot/hook/` 地址会被明确拒绝。运行 `pnpm run showcase:webhook` 可以在不访问真实接口的情况下看到去重和重试。
+
+## 降低通知噪音，但不丢证据
+
+生成的清单可以暂时压住普通通知，同时保留完整事件、依赖路径、历史和 DSH 任务。在某个 `projects[]` 条目里，把下面这段放在 `project`、`environment` 和 `plugins` 旁边：
+
+```json
+{
+  "notificationPolicy": {
+    "minimumSeverity": "high",
+    "quietHours": {
+      "timezone": "Asia/Shanghai",
+      "start": "22:00",
+      "end": "08:00"
+    }
+  }
+}
+```
+
+`minimumSeverity` 只作用于漏洞通知；`critical` 漏洞和恶意包告警始终直接发送。`quietHours` 使用配置的 IANA 时区，也支持跨午夜的时间段。兼容性变化和漏洞源健康通知会遵守安静时段，但不会被漏洞严重级别阈值隐藏。启用策略后，DSH 任务仍留在持久 outbox 中，等可以发送时再交给 Agent；Webhook 也会保留待发送事件，便于重试或策略改变后补发。`radar status` 会显示当前有多少任务被策略暂缓。不写这段配置时，行为保持不变，所有通知都会发送。运行 `pnpm run showcase:notifications` 可以在不联网的情况下看到“暂缓、稍后发送、Webhook outbox 保留”的完整证明。
 
 <p align="center">
   <picture>
@@ -478,7 +497,7 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 ## 当前能力与边界
 
-已经支持：DSH profile 实际安装树、npm lock 和 pnpm v6/v9 lock 依赖图、从 npm/pnpm lock 生成静态 Radar 配置并执行同一套 OSV 精确版本检查、重复版本路径、未解析依赖的覆盖提示、可选 peer 与 DSH 宿主 peer 的区分、从正在运行的 DSH 进程发现真实宿主依赖平面、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、有上限的事件历史和 `radar history` 查询、持久事件、按项目 workspace 精确路由到 DSH Agent、严格绑定消息/会话/task/event 的 DSH 结果写回、以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace、把审查过的图接入 CI 的可复用 GitHub Action 以及可读的 Job Summary、可选的 breaking/any 兼容性门禁、可选的 DSH 版本加载矩阵、离线的 `benchmark compatibility` 规则契约检查、provider-neutral HTTPS webhook 事件通知、直接投递飞书/Lark V2 文本消息，以及基于真实 DSH 插件的 consumer smoke。
+已经支持：DSH profile 实际安装树、npm lock 和 pnpm v6/v9 lock 依赖图、从 npm/pnpm lock 生成静态 Radar 配置并执行同一套 OSV 精确版本检查、重复版本路径、未解析依赖的覆盖提示、可选 peer 与 DSH 宿主 peer 的区分、从正在运行的 DSH 进程发现真实宿主依赖平面、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、有上限的事件历史和 `radar history` 查询、持久事件、按项目 workspace 精确路由到 DSH Agent、严格绑定消息/会话/task/event 的 DSH 结果写回、以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace、把审查过的图接入 CI 的可复用 GitHub Action 以及可读的 Job Summary、可选的 breaking/any 兼容性门禁、可选的 DSH 版本加载矩阵、离线的 `benchmark compatibility` 规则契约检查、provider-neutral HTTPS webhook 事件通知、直接投递飞书/Lark V2 文本消息、按项目设置最低漏洞等级和时区安静时段且不丢任务的通知控制，以及基于真实 DSH 插件的 consumer smoke。
 
 此外支持一次性的 `probe dsh-load` 和有界的 `probe dsh-matrix`：在临时 DSH profile 中针对一个或多个精确 DSH 版本加载一个精确 tarball，并返回 `compatible`、`incompatible` 或 `unknown`。它是加载兼容性证据，不是安全准入，也不是插件能力 benchmark。
 

@@ -8,6 +8,7 @@ import {
   isFeishuV2WebhookUrl,
   markRadarWebhookEventsDelivered,
   normalizeRadarWebhookUrl,
+  queueRadarWebhookEvents,
   radarWebhookEndpointHash,
   sendRadarWebhook,
   undeliveredRadarWebhookEvents,
@@ -136,6 +137,44 @@ describe('webhook delivery', () => {
       /webhook request failed/,
     )
     assert.equal(undeliveredRadarWebhookEvents(initial, endpointHash, [event]).length, 1)
+  })
+
+  it('keeps a quieted event in a durable outbox until a later cycle', () => {
+    const endpointHash = radarWebhookEndpointHash('https://hooks.example.test/incoming')
+    const updated = { ...event, id: 'event-webhook-1-updated', change: 'updated' as const }
+    const queued = queueRadarWebhookEvents(
+      queueRadarWebhookEvents(emptyRadarState(), endpointHash, [event]),
+      endpointHash,
+      [updated],
+    )
+    assert.equal(undeliveredRadarWebhookEvents(queued, endpointHash, []).length, 1)
+    assert.equal(undeliveredRadarWebhookEvents(queued, endpointHash, [])[0]?.id, updated.id)
+    const delivered = markRadarWebhookEventsDelivered(queued, endpointHash, [updated])
+    assert.deepEqual(delivered.webhook?.pendingEvents, undefined)
+    assert.equal(undeliveredRadarWebhookEvents(delivered, endpointHash, []).length, 0)
+  })
+
+  it('does not acknowledge events beyond one bounded payload batch', async () => {
+    const endpointHash = radarWebhookEndpointHash('https://hooks.example.test/incoming')
+    const events = Array.from({ length: 65 }, (_, index) => ({
+      ...event,
+      id: `event-webhook-${index}`,
+      incidentId: `incident-webhook-${index}`,
+      project: { ...event.project, id: `project-webhook-${index}` },
+    }))
+    const queued = queueRadarWebhookEvents(emptyRadarState(), endpointHash, events)
+    const pending = undeliveredRadarWebhookEvents(queued, endpointHash, [])
+    const payload = await sendRadarWebhook('https://hooks.example.test/incoming', pending, {
+      fetch: async () => new Response(null, { status: 200 }),
+    })
+    const deliveredIds = new Set(payload.events.map(item => item.id))
+    const delivered = markRadarWebhookEventsDelivered(
+      queued,
+      endpointHash,
+      pending.filter(item => deliveredIds.has(item.id)),
+    )
+    assert.equal(payload.events.length, 64)
+    assert.equal(undeliveredRadarWebhookEvents(delivered, endpointHash, []).length, 1)
   })
 
   it('changes the delivery ledger when the endpoint changes without persisting its URL', () => {

@@ -60,8 +60,8 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 10. Compatibility heuristics retain their confidence class.
 11. Network bodies, graph sizes, path counts, state size, text length, and time are bounded.
 12. Target-controlled package code and lifecycle scripts are not executed during collection.
-13. Webhook URLs must use HTTPS and are read from runtime configuration or an explicit CLI argument; only a SHA-256 fingerprint and delivered event ids are persisted. A Feishu/Lark V2 signing secret is read only from `UPSTREAM_RADAR_FEISHU_SECRET`, never from config or state.
-14. A webhook is sent only for a changed event, and a non-2xx response does not mark it delivered; delivery is at-least-once across a crash window.
+13. Webhook URLs must use HTTPS and are read from runtime configuration or an explicit CLI argument; only a SHA-256 fingerprint, delivered event ids, and a bounded copy of waiting event evidence are persisted. A Feishu/Lark V2 signing secret is read only from `UPSTREAM_RADAR_FEISHU_SECRET`, never from config or state.
+14. A webhook is sent only for a changed event, and a non-2xx response or notification policy hold does not mark it delivered; delivery is at-least-once across a crash window.
 15. The transition ledger is bounded and deduplicated by stable event id; losing old history never changes the active incident state.
 16. GitHub Job Summary output escapes report-controlled strings and is only a human-readable view; the raw JSON remains authoritative.
 
@@ -69,7 +69,7 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 
 Delivery is at-least-once. The state/outbox write happens before `Agent.followup`. After synchronous admission, the task is removed with a second atomic write and a delivery record is retained until a matching model response is validated. A crash in either narrow interval can duplicate the task or leave a delivery waiting; stable event/task/message ids allow recovery without accepting an unrelated response. The design prefers a duplicate or a visible pending result over a silently lost security event.
 
-The optional webhook follows the same bias: Radar persists the changed incident before attempting the POST, records event ids only after an HTTP 2xx response, and leaves failed ids eligible for the next cycle. A process crash between the receiver's acknowledgement and the ledger write can duplicate a notification; the payload is therefore suitable for idempotent consumers and includes stable `id` and `incidentId` fields.
+The optional webhook follows the same bias: Radar persists the changed incident and a bounded webhook outbox before attempting the POST, records event ids only after an HTTP 2xx response, and leaves failed or policy-held events eligible for the next cycle. A process crash between the receiver's acknowledgement and the ledger write can duplicate a notification; the payload is therefore suitable for idempotent consumers and includes stable `id` and `incidentId` fields.
 
 ## Out of scope
 
@@ -87,5 +87,5 @@ The optional webhook follows the same bias: Radar persists the changed incident 
 - GitHub comparison diffs, changelogs, and migration guides are not fetched automatically.
 - One live root DSH Agent acts as the security inbox; multiple roots require an exact project-session workspace match.
 - The prompt establishes a read-only contract, but enforcement still depends on the DSH Agent's configured tools and permission policy.
-- Feed failures are reported by the cycle; OSV failures preserve the last confirmed matches and pending tasks, and three consecutive failures create a durable source-health alert. The local transition ledger is intentionally bounded to the most recent 1,000 events; it is an audit convenience, not a complete historical database. Provider-native Feishu V2 text formatting is supported; the generic endpoint remains the stable JSON contract, and delivery acknowledgement stays endpoint-fingerprint based.
+- Feed failures are reported by the cycle; OSV failures preserve the last confirmed matches and pending tasks, and three consecutive failures create a durable source-health alert. The local transition ledger is intentionally bounded to the most recent 1,000 events; it is an audit convenience, not a complete historical database. Provider-native Feishu V2 text formatting is supported; the generic endpoint remains the stable JSON contract, and delivery acknowledgement stays endpoint-fingerprint based. Notification policy is currently limited to per-project minimum vulnerability severity and quiet hours; owner routing and dev-only scopes remain future work.
 - The scanner uses the host npm CLI with scripts disabled; it is not a microVM detonation boundary.

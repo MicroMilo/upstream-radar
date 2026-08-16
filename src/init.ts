@@ -336,6 +336,7 @@ export async function refreshRadarConfigFromDshProfile(
     ...config,
     projects: [{
       ...refreshedProject,
+      ...(project.notificationPolicy === undefined ? {} : { notificationPolicy: project.notificationPolicy }),
       project: { ...project.project },
     }],
   }

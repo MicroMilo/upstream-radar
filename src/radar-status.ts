@@ -10,6 +10,7 @@ import type {
   SourceHealthStatus,
   VulnerabilityEvent,
 } from './radar-types.js'
+import { countPolicyHeldAnalysisTasks, createNotificationPolicyMap } from './notification-policy.js'
 
 export const RADAR_STATUS_SCHEMA = 'upstream-radar.radar-status/v1alpha1' as const
 
@@ -62,6 +63,8 @@ export interface RadarStatusReport {
   activeCompatibility: number
   activeSourceHealth: number
   pendingAnalysisTasks: number
+  /** Tasks still retained in the outbox but currently held by project policy. */
+  notificationPolicyHeldTasks: number
   analysisDeliveries: number
   analysisResults: number
   activeIncidents: RadarStatusIncident[]
@@ -72,6 +75,7 @@ export interface CreateRadarStatusOptions {
   configFile: string
   stateFile: string
   stateExists: boolean
+  now?: Date
 }
 
 function sourceStatus(source: RadarSource, status: SourceHealthStatus | undefined): RadarStatusSource {
@@ -245,6 +249,12 @@ export function createRadarStatus(
   )
   const dshHostRuntimeSources = [...new Set(dshHostRuntimeGraphs.map(hostRuntime => hostRuntime.source))].sort()
   const activeSummary = activeIncidentSummary(state)
+  const notificationPolicies = createNotificationPolicyMap(config.projects)
+  const notificationPolicyHeldTasks = countPolicyHeldAnalysisTasks(
+    state.pendingAnalysisTasks,
+    notificationPolicies,
+    options.now,
+  )
   return {
     schema: RADAR_STATUS_SCHEMA,
     configFile: options.configFile,
@@ -267,6 +277,7 @@ export function createRadarStatus(
     activeCompatibility: Object.keys(state.activeCompatibility).length,
     activeSourceHealth: Object.keys(state.activeSourceHealth ?? {}).length,
     pendingAnalysisTasks: state.pendingAnalysisTasks.length,
+    notificationPolicyHeldTasks,
     analysisDeliveries: Object.keys(state.analysisDeliveries ?? {}).length,
     analysisResults: Object.keys(state.analysisResults ?? {}).length,
     activeIncidents: activeSummary.incidents,
@@ -339,6 +350,7 @@ export function renderRadarStatus(report: RadarStatusReport): string {
     `Active compatibility incidents: ${report.activeCompatibility}`,
     `Source-health incidents: ${report.activeSourceHealth}`,
     `Pending DSH analysis tasks: ${report.pendingAnalysisTasks}`,
+    `Held by notification policy: ${report.notificationPolicyHeldTasks}`,
     `Awaiting DSH analysis results: ${report.analysisDeliveries}`,
     `Verified DSH analysis results: ${report.analysisResults}`,
   )

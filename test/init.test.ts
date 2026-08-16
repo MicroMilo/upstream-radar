@@ -286,6 +286,10 @@ snapshots:
         workspace: '/workspace/demo',
         channels: ['stdout'],
       })
+      config.projects[0]!.notificationPolicy = {
+        minimumSeverity: 'high',
+        quietHours: { timezone: 'Asia/Shanghai', start: '22:00', end: '08:00' },
+      }
       config.dshProfile = { name: 'web' }
 
       await writeFile(join(profile, 'node_modules', 'demo-plugin', 'package.json'), JSON.stringify({
@@ -302,6 +306,7 @@ snapshots:
       assert.equal(refreshed.projects[0]?.plugins[0]?.package.version, '2.0.0')
       assert.equal(refreshed.projects[0]?.plugins[0]?.graph.nodes.find(node => node.name === 'parser')?.version, '2.0.0')
       assert.deepEqual(refreshed.projects[0]?.project.channels, ['stdout'])
+      assert.deepEqual(refreshed.projects[0]?.notificationPolicy, config.projects[0]?.notificationPolicy)
     } finally {
       await rm(root, { recursive: true, force: true })
     }

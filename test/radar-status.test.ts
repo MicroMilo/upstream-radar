@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
+import { createAnalysisTask } from '../src/dsh-analysis.js'
 import { createRadarStatus, renderRadarStatus } from '../src/radar-status.js'
 import { emptyRadarState } from '../src/radar.js'
 import type { CompatibilityEvent, RadarConfig, SourceHealthEvent, VulnerabilityEvent } from '../src/radar-types.js'
@@ -140,6 +141,26 @@ describe('Radar status', () => {
     assert.match(rendered, /temporary registry timeout/)
     assert.match(rendered, /parser@2\.9\.0 is affected by GHSA-demo/)
     assert.match(rendered, /Next: run `upstream-radar task show \/tmp\/radar\.json\.state\.json`/)
+  })
+
+  it('shows policy-held tasks separately without hiding the active incident', () => {
+    const policyConfig = structuredClone(config)
+    policyConfig.projects[0]!.notificationPolicy = { minimumSeverity: 'critical' }
+    const state = emptyRadarState()
+    state.activeVulnerabilities = { vulnerability: { key: 'vulnerability', event: vulnerabilityEvent } }
+    state.pendingAnalysisTasks.push(createAnalysisTask(vulnerabilityEvent))
+    const report = createRadarStatus(policyConfig, state, {
+      configFile: '/tmp/radar.json',
+      stateFile: '/tmp/radar.json.state.json',
+      stateExists: true,
+      now: new Date('2026-08-16T02:00:00.000Z'),
+    })
+
+    assert.equal(report.pendingAnalysisTasks, 1)
+    assert.equal(report.notificationPolicyHeldTasks, 1)
+    const rendered = renderRadarStatus(report)
+    assert.match(rendered, /Held by notification policy: 1/)
+    assert.match(rendered, /parser@2\.9\.0 is affected by GHSA-demo/)
   })
 
   it('does not treat absent optional platform packages as a required coverage gap', () => {

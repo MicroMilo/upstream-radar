@@ -97,6 +97,7 @@ describe('CLI option parsing', () => {
     assert.equal(setupHelp.status, 0)
     assert.match(setupHelp.stdout, /install the exact Radar bundle into DSH/)
     assert.match(setupHelp.stdout, /Review the generated files/)
+    assert.match(setupHelp.stdout, /notificationPolicy/)
     assert.doesNotMatch(setupHelp.stderr, /unknown option/)
 
     const inspectHelp = spawnSync(process.execPath, [cli, 'inspect', '--help'], { encoding: 'utf8' })

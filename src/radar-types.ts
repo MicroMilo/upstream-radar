@@ -96,6 +96,8 @@ export interface ProjectInventory {
   environment?: {
     nodeVersion?: string
   }
+  /** Optional delivery-only policy; active matches and history are never filtered by it. */
+  notificationPolicy?: RadarNotificationPolicy
   plugins: PluginInstallation[]
 }
 
@@ -109,6 +111,21 @@ export interface RadarConfig {
 }
 
 export type RadarSeverity = 'unknown' | 'info' | 'low' | 'medium' | 'high' | 'critical'
+
+/**
+ * Controls when a project receives a DSH/webhook notice. It deliberately does
+ * not change what Radar scans or persists.
+ */
+export interface RadarNotificationPolicy {
+  /** Vulnerability notices below this level stay queued but are not delivered. */
+  minimumSeverity?: Exclude<RadarSeverity, 'unknown'>
+  /** An IANA timezone and a daily half-open interval in local wall-clock time. */
+  quietHours?: {
+    timezone: string
+    start: string
+    end: string
+  }
+}
 
 export interface VulnerabilityAdvisory {
   id: string
@@ -332,6 +349,8 @@ export interface WebhookDeliveryState {
   /** SHA-256 of the normalized endpoint; the secret URL is never persisted. */
   endpointHash: string
   deliveredEventIds: Record<string, string>
+  /** Changed events waiting for a quiet window or a retry; event evidence is retained verbatim. */
+  pendingEvents?: RadarEvent[]
 }
 
 export interface AnalysisTask {

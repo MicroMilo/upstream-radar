@@ -16,6 +16,7 @@ const MAX_WEBHOOK_EVENTS = 64
 const MAX_WEBHOOK_TEXT = 24 * 1024
 const MAX_FEISHU_TEXT_BYTES = 16 * 1024
 const MAX_WEBHOOK_DELIVERIES = 10_000
+const MAX_WEBHOOK_PENDING_EVENTS = 10_000
 
 export interface RadarWebhookEventNotice {
   id: string
@@ -287,15 +288,47 @@ export function undeliveredRadarWebhookEvents(
   endpointHash: string,
   events: readonly RadarEvent[],
 ): RadarEvent[] {
-  const delivered = state.webhook?.endpointHash === endpointHash
-    ? state.webhook.deliveredEventIds
-    : {}
+  const sameEndpoint = state.webhook?.endpointHash === endpointHash
+  const delivered = sameEndpoint ? state.webhook?.deliveredEventIds ?? {} : {}
+  const queued = sameEndpoint ? state.webhook?.pendingEvents ?? [] : []
+  const candidates = [...new Map([...queued, ...events].map(event => [event.id, event])).values()]
   const seen = new Set<string>()
-  return events.filter(event => {
+  return candidates.filter(event => {
     if (seen.has(event.id) || delivered[event.id] !== undefined) return false
     seen.add(event.id)
     return true
   })
+}
+
+/** Put changed events into the durable webhook outbox before applying delivery policy. */
+export function queueRadarWebhookEvents(
+  state: RadarState,
+  endpointHash: string,
+  events: readonly RadarEvent[],
+): RadarState {
+  if (!/^[a-f0-9]{64}$/.test(endpointHash)) throw new Error('webhook endpoint fingerprint is invalid')
+  if (events.length === 0) return state
+  const existing: WebhookDeliveryState | undefined = state.webhook?.endpointHash === endpointHash
+    ? state.webhook
+    : undefined
+  const delivered = existing?.deliveredEventIds ?? {}
+  // Coalesce missed transitions for the same incident. The full transition
+  // history remains available, but a quiet window should not dump every
+  // intermediate update into the next notification batch.
+  const pending = new Map((existing?.pendingEvents ?? []).map(event => [event.incidentId, event]))
+  for (const event of events) {
+    if (delivered[event.id] === undefined) pending.set(event.incidentId, event)
+  }
+  const pendingEvents = [...pending.values()].slice(-MAX_WEBHOOK_PENDING_EVENTS)
+  return {
+    ...state,
+    webhook: {
+      schema: WEBHOOK_DELIVERY_SCHEMA,
+      endpointHash,
+      deliveredEventIds: { ...delivered },
+      ...(pendingEvents.length === 0 ? {} : { pendingEvents }),
+    },
+  }
 }
 
 export function markRadarWebhookEventsDelivered(
@@ -311,16 +344,19 @@ export function markRadarWebhookEventsDelivered(
     : undefined
   const delivered = { ...(existing?.deliveredEventIds ?? {}) }
   const timestamp = deliveredAt.toISOString()
+  const deliveredIds = new Set(events.map(event => event.id))
   for (const event of events) delivered[event.id] = timestamp
   const entries = Object.entries(delivered)
     .sort((left, right) => left[1].localeCompare(right[1]) || left[0].localeCompare(right[0]))
     .slice(-MAX_WEBHOOK_DELIVERIES)
+  const pendingEvents = (existing?.pendingEvents ?? []).filter(event => !deliveredIds.has(event.id))
   return {
     ...state,
     webhook: {
       schema: WEBHOOK_DELIVERY_SCHEMA,
       endpointHash,
       deliveredEventIds: Object.fromEntries(entries),
+      ...(pendingEvents.length === 0 ? {} : { pendingEvents }),
     },
   }
 }

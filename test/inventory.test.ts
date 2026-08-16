@@ -77,6 +77,24 @@ describe('radar inventory parsing', () => {
     })
   })
 
+  it('accepts a delivery-only notification policy without changing the inventory graph', () => {
+    const candidate = structuredClone(valid)
+    candidate.projects[0]!.notificationPolicy = {
+      minimumSeverity: 'high',
+      quietHours: { timezone: 'Asia/Shanghai', start: '22:00', end: '08:00' },
+    }
+    const parsed = parseRadarConfig(candidate)
+    assert.deepEqual(parsed.projects[0]?.notificationPolicy, candidate.projects[0]!.notificationPolicy)
+  })
+
+  it('rejects ambiguous notification windows', () => {
+    const candidate = structuredClone(valid)
+    candidate.projects[0]!.notificationPolicy = {
+      quietHours: { timezone: 'Asia/Shanghai', start: '08:00', end: '08:00' },
+    }
+    assert.throws(() => parseRadarConfig(candidate), /start and end must be different/)
+  })
+
   it('rejects edges to missing nodes', () => {
     const broken = structuredClone(valid)
     broken.projects[0]!.plugins[0]!.graph.edges[0]!.to = 'missing'

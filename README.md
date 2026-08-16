@@ -104,7 +104,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar watch \
   ./upstream-radar.config.json --webhook "$UPSTREAM_RADAR_WEBHOOK_URL"
 ```
 
-The webhook receives only `new`, `updated`, and `resolved` changes (including source-health changes) in the bounded `upstream-radar.webhook/v1alpha1` JSON format described by the [schema](schemas/webhook.schema.json). A successful HTTP 2xx response records the event id; a failed request remains retryable on the next cycle. The state stores only a SHA-256 endpoint fingerprint and delivered ids, never the URL or its token. For a normal endpoint, this provider-neutral JSON can be turned into a Feishu or Slack card by a relay. For a Feishu/Lark V2 custom bot, Radar recognizes the `/open-apis/bot/v2/hook/` URL and sends the native text body directly:
+The webhook receives only `new`, `updated`, and `resolved` changes (including source-health changes) in the bounded `upstream-radar.webhook/v1alpha1` JSON format described by the [schema](schemas/webhook.schema.json). A successful HTTP 2xx response records the event id; a failed request remains retryable on the next cycle. The state stores only a SHA-256 endpoint fingerprint, delivery ids, and a bounded copy of events waiting for retry or a quiet window; it never stores the URL or its token. For a normal endpoint, this provider-neutral JSON can be turned into a Feishu or Slack card by a relay. For a Feishu/Lark V2 custom bot, Radar recognizes the `/open-apis/bot/v2/hook/` URL and sends the native text body directly:
 
 ```bash
 export UPSTREAM_RADAR_WEBHOOK_URL='https://open.feishu.cn/open-apis/bot/v2/hook/replace-me'
@@ -115,6 +115,25 @@ dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
 The Feishu secret is read only from the environment and is never written to the Radar config or state. Follow the [official Feishu custom-bot guide](https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN?lang=zh-CN) when creating the V2 bot. Use the V2 URL; the older `/open-apis/bot/hook/` form is rejected with an actionable error. Run `pnpm run showcase:webhook` to see deduplication and retry behavior without contacting a real endpoint.
+
+## Control notification noise without losing evidence
+
+The generated inventory can hold ordinary notices while keeping the full incident, dependency path, history, and DSH task intact. Add this optional block beside `project`, `environment`, and `plugins` in one `projects[]` entry:
+
+```json
+{
+  "notificationPolicy": {
+    "minimumSeverity": "high",
+    "quietHours": {
+      "timezone": "Asia/Shanghai",
+      "start": "22:00",
+      "end": "08:00"
+    }
+  }
+}
+```
+
+`minimumSeverity` applies to vulnerability notices; `critical` vulnerabilities and malicious-package alerts always pass. `quietHours` uses the configured IANA timezone and also supports a window crossing midnight. Compatibility and source-health notices follow the quiet window but are not hidden by a vulnerability severity threshold. With a policy in effect, DSH tasks stay in the durable outbox until they can be delivered, and the webhook outbox keeps pending events for retry or a later policy change. `radar status` shows how many tasks are currently held. Omitting the block keeps the current behavior and delivers every notice. Run `pnpm run showcase:notifications` for a network-free proof of the hold, later delivery, and durable webhook outbox.
 
 <p align="center">
   <picture>
@@ -513,6 +532,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - strict DSH result writeback bound to the exact message, session, task, and event, with stale-result rejection;
 - native DSH bundle installation, startup polling, `agent/created` retry, and plugin-source attribution;
 - optional provider-neutral HTTPS webhook delivery for changed events, with endpoint-safe deduplication and retry, plus direct Feishu/Lark V2 text delivery;
+- delivery-only notification controls for per-project minimum vulnerability severity and timezone-aware quiet hours; critical and malicious-package alerts bypass them, while held DSH tasks and webhook events remain durable;
 - read-only pnpm v6/v9 lockfile graph extraction, including project-root importers and explicit ambiguous peer references;
 - static Radar inventory generation from npm or pnpm lockfiles, followed by the same exact-version OSV check used by the DSH monitor;
 - automatic selection of the only DSH profile with third-party bundles, plus a network-free `radar status` snapshot;

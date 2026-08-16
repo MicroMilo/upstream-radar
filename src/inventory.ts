@@ -9,6 +9,8 @@ import {
   type PackageManifestSnapshot,
   type PluginInstallation,
   type ProjectInventory,
+  type RadarNotificationPolicy,
+  type RadarSeverity,
   type RadarConfig,
 } from './radar-types.js'
 
@@ -35,6 +37,59 @@ function stringArray(value: unknown, label: string): string[] | undefined {
   if (value === undefined) return undefined
   if (!Array.isArray(value) || value.length > 100) throw new Error(`${label} must be an array with at most 100 entries`)
   return value.map((item, index) => string(item, `${label}[${index}]`, 1_024))
+}
+
+const NOTIFICATION_SEVERITIES = new Set<Exclude<RadarSeverity, 'unknown'>>([
+  'info',
+  'low',
+  'medium',
+  'high',
+  'critical',
+])
+
+function clockTime(value: unknown, label: string): string {
+  const parsed = string(value, label, 5)
+  if (!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(parsed)) {
+    throw new Error(`${label} must use HH:MM in 24-hour time`)
+  }
+  return parsed
+}
+
+function timezone(value: unknown, label: string): string {
+  const parsed = string(value, label, 128)
+  try {
+    new Intl.DateTimeFormat('en-US', { timeZone: parsed }).format()
+  } catch {
+    throw new Error(`${label} must be a valid IANA timezone`)
+  }
+  return parsed
+}
+
+function notificationPolicy(value: unknown, label: string): RadarNotificationPolicy | undefined {
+  if (value === undefined) return undefined
+  const source = record(value, label)
+  const minimumSeverity = source.minimumSeverity === undefined
+    ? undefined
+    : string(source.minimumSeverity, `${label}.minimumSeverity`, 16) as RadarNotificationPolicy['minimumSeverity']
+  if (minimumSeverity !== undefined && !NOTIFICATION_SEVERITIES.has(minimumSeverity)) {
+    throw new Error(`${label}.minimumSeverity must be info, low, medium, high or critical`)
+  }
+  const quietSource = source.quietHours === undefined ? undefined : record(source.quietHours, `${label}.quietHours`)
+  if (quietSource === undefined) {
+    return minimumSeverity === undefined ? {} : { minimumSeverity }
+  }
+  const quietHours = {
+    timezone: timezone(quietSource.timezone, `${label}.quietHours.timezone`),
+    start: clockTime(quietSource.start, `${label}.quietHours.start`),
+    end: clockTime(quietSource.end, `${label}.quietHours.end`),
+  }
+  if (quietHours.start === quietHours.end) {
+    throw new Error(`${label}.quietHours.start and end must be different`)
+  }
+  return {
+    ...(minimumSeverity === undefined ? {} : { minimumSeverity }),
+    quietHours,
+  }
 }
 
 function stringRecord(value: unknown, label: string): Record<string, string> | undefined {
@@ -228,6 +283,7 @@ function project(value: unknown, index: number): ProjectInventory {
   const channels = stringArray(projectSource.channels, `${label}.project.channels`)
   const environmentSource = source.environment === undefined ? undefined : record(source.environment, `${label}.environment`)
   const nodeVersion = optionalString(environmentSource?.nodeVersion, `${label}.environment.nodeVersion`, 128)
+  const notificationPolicyValue = notificationPolicy(source.notificationPolicy, `${label}.notificationPolicy`)
   return {
     schema: INVENTORY_SCHEMA,
     project: {
@@ -239,6 +295,7 @@ function project(value: unknown, index: number): ProjectInventory {
       ...(channels === undefined ? {} : { channels }),
     },
     ...(environmentSource === undefined ? {} : { environment: nodeVersion === undefined ? {} : { nodeVersion } }),
+    ...(notificationPolicyValue === undefined ? {} : { notificationPolicy: notificationPolicyValue }),
     plugins: source.plugins.map((item, pluginIndex) => plugin(item, `${label}.plugins[${pluginIndex}]`)),
   }
 }

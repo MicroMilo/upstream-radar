@@ -136,6 +136,32 @@ describe('DSH radar plugin adapter', () => {
     assert.match(JSON.stringify(secondMessages[0]), /Project B/)
   })
 
+  it('keeps a policy-held task durable and delivers it after quiet hours', () => {
+    const task = createAnalysisTask(event)
+    const state = emptyRadarState()
+    state.pendingAnalysisTasks.push(task)
+    const agent = { followup: () => undefined }
+    const policy = new Map([['project-a', {
+      quietHours: { timezone: 'Asia/Shanghai', start: '22:00', end: '08:00' },
+    }]])
+    const held = deliverPendingAnalysisTasksToAgents(
+      state,
+      [agent],
+      new Date('2026-08-16T15:30:00.000Z'),
+      undefined,
+      policy,
+    )
+    assert.equal(held.pendingAnalysisTasks.length, 1)
+    const delivered = deliverPendingAnalysisTasksToAgents(
+      held,
+      [agent],
+      new Date('2026-08-16T02:00:00.000Z'),
+      undefined,
+      policy,
+    )
+    assert.equal(delivered.pendingAnalysisTasks.length, 0)
+  })
+
   it('keeps a multi-project task queued when no workspace match is trustworthy', () => {
     const state = emptyRadarState()
     state.pendingAnalysisTasks.push(createAnalysisTask(event))

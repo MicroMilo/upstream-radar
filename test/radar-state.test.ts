@@ -62,6 +62,30 @@ describe('radar state parsing', () => {
     assert.doesNotThrow(() => parseRadarState(state))
   })
 
+  it('accepts a bounded pending webhook event for a later retry', () => {
+    const state = emptyRadarState() as unknown as Record<string, any>
+    state.webhook = {
+      schema: 'upstream-radar.webhook-delivery/v1alpha1',
+      endpointHash: 'a'.repeat(64),
+      deliveredEventIds: {},
+      pendingEvents: [{
+        schema: 'upstream-radar.event/v1alpha1',
+        id: 'event-pending',
+        incidentId: 'incident-pending',
+        kind: 'compatibility',
+        change: 'new',
+        detectedAt: '2026-08-16T01:00:00.000Z',
+        project: { id: 'project-pending', name: 'Pending project' },
+        route: { channels: ['stdout'] },
+        plugin: { ecosystem: 'npm', name: 'plugin', version: '1.0.0' },
+        installed: { ecosystem: 'npm', name: 'plugin', version: '1.0.0' },
+        candidate: { ecosystem: 'npm', name: 'plugin', version: '2.0.0' },
+        signals: [{ code: 'major', confidence: 'strong', summary: 'Major update.' }],
+      }],
+    }
+    assert.doesNotThrow(() => parseRadarState(state))
+  })
+
   it('rejects a webhook ledger that contains the endpoint instead of its hash', () => {
     const state = emptyRadarState() as unknown as Record<string, any>
     state.webhook = {

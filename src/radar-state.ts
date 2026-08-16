@@ -191,12 +191,20 @@ function validStoredAnalysisResult(value: unknown): value is StoredAnalysisResul
 function validWebhookDeliveryState(value: unknown): boolean {
   const webhook = asRecord(value)
   const delivered = asRecord(webhook?.deliveredEventIds)
-  const expectedKeys = new Set(['schema', 'endpointHash', 'deliveredEventIds'])
+  const pending = webhook?.pendingEvents
+  const expectedKeys = new Set([
+    'schema',
+    'endpointHash',
+    'deliveredEventIds',
+    ...(pending === undefined ? [] : ['pendingEvents']),
+  ])
   if (webhook === undefined || Object.keys(webhook).length !== expectedKeys.size
     || Object.keys(webhook).some(key => !expectedKeys.has(key))
     || webhook.schema !== WEBHOOK_DELIVERY_SCHEMA
     || typeof webhook.endpointHash !== 'string' || !/^[a-f0-9]{64}$/.test(webhook.endpointHash)
-    || delivered === undefined || Object.keys(delivered).length > 10_000) return false
+    || delivered === undefined || Object.keys(delivered).length > 10_000
+    || (pending !== undefined && (!Array.isArray(pending) || pending.length > 10_000))) return false
+  if (pending !== undefined && !pending.every(validHistoryEvent)) return false
   return Object.entries(delivered).every(([eventId, deliveredAt]) => (
     eventId.length > 0 && eventId.length <= 512
       && typeof deliveredAt === 'string' && deliveredAt.length > 0 && deliveredAt.length <= 256

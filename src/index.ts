@@ -61,6 +61,15 @@ export {
 } from './dsh-analysis-result.js'
 export { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 export {
+  countPolicyHeldAnalysisTasks,
+  createNotificationPolicyMap,
+  decideProjectRadarNotification,
+  decideRadarNotification,
+  filterNotifiableRadarEvents,
+  type NotificationDecision,
+  type NotificationSuppressionReason,
+} from './notification-policy.js'
+export {
   createRadarConfigFromDshProfile,
   createRadarConfigFromNpmLock,
   createRadarConfigFromPnpmLock,
@@ -85,6 +94,7 @@ export {
   isFeishuV2WebhookUrl,
   markRadarWebhookEventsDelivered,
   normalizeRadarWebhookUrl,
+  queueRadarWebhookEvents,
   radarWebhookEndpointHash,
   sendRadarWebhook,
   toRadarWebhookEventNotice,
@@ -193,6 +203,7 @@ export {
   type ProjectReference,
   type RadarEvent,
   type RadarConfig,
+  type RadarNotificationPolicy,
   type RadarSource,
   type RadarSeverity,
   type RadarState,

@@ -17,6 +17,7 @@ import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 import { inspectNpmPackage } from './npm.js'
 import { NpmCandidateGraphClient } from './npm-candidate.js'
 import { NpmReleaseClient } from './npm-release.js'
+import { createNotificationPolicyMap, filterNotifiableRadarEvents } from './notification-policy.js'
 import { OsvClient } from './osv.js'
 import { verdictAtLeast } from './policy.js'
 import { emptyRadarState, pollRadar } from './radar.js'
@@ -39,6 +40,7 @@ import { TOOL_VERSION } from './version.js'
 import {
   markRadarWebhookEventsDelivered,
   normalizeRadarWebhookUrl,
+  queueRadarWebhookEvents,
   radarWebhookEndpointHash,
   sendRadarWebhook,
   undeliveredRadarWebhookEvents,
@@ -83,6 +85,11 @@ Common options:
   --no-install            reuse an already installed Radar bundle
   --no-dsh-patch          use legacy environment-variable wiring
 
+Notification controls:
+  Add an optional \`notificationPolicy\` block to a generated projects[] entry
+  to set \`minimumSeverity\` and timezone-aware \`quietHours\`. This changes only
+  delivery; active evidence and queued tasks remain durable.
+
   Next:
   Review the generated files, then run the printed doctor command and start DSH
   with the printed --patch command.
@@ -108,6 +115,11 @@ Common options:
   --dsh-patch <path>                write a self-contained DSH overlay (profile mode)
   --json                            print a compact machine-readable summary
   --force                           replace an existing output file
+
+Notification controls:
+  Add an optional \`notificationPolicy\` block to a generated projects[] entry
+  to set \`minimumSeverity\` and timezone-aware \`quietHours\`. This changes only
+  delivery; active evidence and queued tasks remain durable.
 
 Next:
   upstream-radar radar check ./upstream-radar.config.json --frozen
@@ -785,13 +797,23 @@ async function runRadar(args: readonly string[]): Promise<number> {
   const runCheck = async () => {
     const config = await readConfigForPoll()
     const state = statePath === ':memory:' ? emptyRadarState() : await loadRadarState(stateFile)
-    const result = await pollRadar(config.projects, state, osv, new Date(), releases, releaseNotesSource, candidateGraphs)
+    const checkedAt = new Date()
+    const result = await pollRadar(config.projects, state, osv, checkedAt, releases, releaseNotesSource, candidateGraphs)
     if (statePath !== ':memory:') await saveRadarState(stateFile, result.state)
-    if (webhookUrl === undefined || webhookEndpointHash === undefined || result.events.length === 0) return result
-    const pendingWebhookEvents = undeliveredRadarWebhookEvents(result.state, webhookEndpointHash, result.events)
-    if (pendingWebhookEvents.length === 0) return result
-    await sendRadarWebhook(webhookUrl, pendingWebhookEvents, feishuSecret === undefined ? {} : { feishuSecret })
-    const nextState = markRadarWebhookEventsDelivered(result.state, webhookEndpointHash, pendingWebhookEvents)
+    if (webhookUrl === undefined || webhookEndpointHash === undefined) return result
+    const queuedState = queueRadarWebhookEvents(result.state, webhookEndpointHash, result.events)
+    if (statePath !== ':memory:') await saveRadarState(stateFile, queuedState)
+    const notificationPolicies = createNotificationPolicyMap(config.projects)
+    const pendingWebhookEvents = filterNotifiableRadarEvents(
+      undeliveredRadarWebhookEvents(queuedState, webhookEndpointHash, result.events),
+      notificationPolicies,
+      checkedAt,
+    )
+    if (pendingWebhookEvents.length === 0) return { ...result, state: queuedState }
+    const payload = await sendRadarWebhook(webhookUrl, pendingWebhookEvents, feishuSecret === undefined ? {} : { feishuSecret })
+    const deliveredIds = new Set(payload.events.map(event => event.id))
+    const deliveredEvents = pendingWebhookEvents.filter(event => deliveredIds.has(event.id))
+    const nextState = markRadarWebhookEventsDelivered(queuedState, webhookEndpointHash, deliveredEvents)
     await saveRadarState(stateFile, nextState)
     return { ...result, state: nextState }
   }
