@@ -21,6 +21,8 @@ describe('CLI option parsing', () => {
     assert.equal(help.status, 0)
     assert.match(help.stdout, /setup \[--profile <name>\]/)
     assert.match(help.stdout, /doctor \[config\.json\]/)
+    assert.match(help.stdout, /init --pnpm-lock <pnpm-lock\.yaml> --root <package>@<exact-version>/)
+    assert.match(help.stdout, /--pnpm-lock <path>\s+init: build a static inventory from a pnpm v6\/v9 lockfile/)
     assert.match(help.stdout, /radar watch <config\.json>/)
     assert.match(help.stdout, /radar status <config\.json>/)
     assert.match(help.stdout, /graph pnpm-lock <pnpm-lock\.yaml> --root <package>@<exact-version>/)
@@ -146,6 +148,58 @@ describe('CLI option parsing', () => {
       assert.match(result.stdout, /--patch .*upstream-radar\.dsh\.yml/)
       const savedConfig = JSON.parse(await readFile(config, 'utf8')) as { projects: Array<{ project: { workspace?: string } }> }
       assert.equal(savedConfig.projects[0]?.project.workspace, '.')
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('initializes a monitorable config directly from a pnpm lockfile', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-pnpm-init-cli-'))
+    try {
+      const lockfile = join(root, 'pnpm-lock.yaml')
+      const config = join(root, 'upstream-radar.config.json')
+      await writeFile(lockfile, `
+lockfileVersion: '9.0'
+
+importers:
+  .:
+    dependencies:
+      demo-plugin:
+        specifier: 1.0.0
+        version: 1.0.0
+
+packages:
+  'demo-plugin@1.0.0': {}
+  'parser@2.9.0': {}
+
+snapshots:
+  'demo-plugin@1.0.0':
+    dependencies:
+      parser: 2.9.0
+  'parser@2.9.0': {}
+`)
+      const result = spawnSync(process.execPath, [
+        cli,
+        'init',
+        '--pnpm-lock',
+        lockfile,
+        '--root',
+        'demo-plugin@1.0.0',
+        '--output',
+        config,
+        '--project-name',
+        'Demo plugin',
+      ], { encoding: 'utf8', cwd: root })
+      assert.equal(result.status, 0)
+      assert.match(result.stdout, /Source: pnpm-lock/)
+      assert.match(result.stdout, /Next: upstream-radar radar check/)
+      const saved = JSON.parse(await readFile(config, 'utf8')) as {
+        dshProfile?: unknown
+        projects: Array<{ plugins: Array<{ graph: { source?: string; nodes: unknown[] } }> }>
+      }
+      assert.equal(saved.dshProfile, undefined)
+      assert.equal(saved.projects[0]?.plugins[0]?.graph.source, 'pnpm-lock')
+      assert.equal(saved.projects[0]?.plugins[0]?.graph.nodes.length, 2)
     } finally {
       await rm(root, { recursive: true, force: true })
     }

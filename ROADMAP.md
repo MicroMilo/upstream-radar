@@ -35,6 +35,7 @@
 - [x] Resolve the first newer plugin candidate without a deterministic blocker or known OSV vulnerability, while leaving final compatibility to DSH project analysis.
 - [x] Resolve a bounded prefix of each candidate's transitive dependency graph with lifecycle scripts disabled, query graph nodes against OSV, and withhold candidates whose graph is incomplete or unavailable.
 - [x] Parse the native pnpm v6/v9 lockfile for pre-install and CI inspection, including importer roots and peer-context ambiguity.
+- [x] Turn a pnpm lockfile graph into a static Radar config and prove the lockfile-to-OSV event path before DSH installation.
 - [x] Discover a named DSH profile's installed third-party bundles and generate a reviewable inventory.
 - [x] Auto-select the only DSH profile with third-party bundles when `--profile` is omitted.
 - [x] Use the selected profile's installed `node_modules` tree as the source of truth, including unresolved-edge visibility.

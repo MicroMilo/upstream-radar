@@ -11,6 +11,7 @@ All notable changes to Upstream Radar are documented here.
 - Add an optional provider-neutral HTTPS webhook for changed vulnerability, compatibility, malware, and source-health events from both the native DSH adapter and CLI `radar check/watch`.
 - Deduplicate webhook event ids per endpoint, persist only the endpoint fingerprint, and retry failed deliveries on a later cycle.
 - Add a read-only `graph pnpm-lock` CLI command for pnpm v6/v9 lockfile dependency graphs, including project-root importers and explicit ambiguous peer references.
+- Add `init --pnpm-lock --root` to turn a lockfile graph into a static Radar config that can run the normal OSV check before DSH installation.
 
 ### Validation
 

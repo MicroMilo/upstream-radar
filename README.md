@@ -116,6 +116,20 @@ pnpm dlx --package=upstream-radar@latest upstream-radar graph pnpm-lock \
 
 This reads only the lockfile. It does not run `pnpm install`, lifecycle scripts, plugin code, or network requests. It understands pnpm v6/v9 package locators, peer-context variants, duplicate versions, and a project root declared through the `importers` section. An unresolved or ambiguous dependency remains visible instead of being guessed away. The JSON is the same canonical graph shape used by Radar's OSV path matching, so a CI job can review the graph before the plugin is admitted to DSH. Run `pnpm run showcase:pnpm-lock` for a real repository example.
 
+To turn that graph into a monitorable inventory and run the first vulnerability check:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar init \
+  --pnpm-lock ./pnpm-lock.yaml \
+  --root @your-scope/your-dsh-plugin@1.0.0 \
+  --project-name "My DSH plugin"
+
+pnpm dlx --package=upstream-radar@latest upstream-radar radar check \
+  ./upstream-radar.config.json --frozen --fail-on high
+```
+
+`init --pnpm-lock` does not need a DSH profile and writes a normal Radar config; `radar check` then queries exact locked versions and emits the same DSH-ready event shape. Use the native DSH `setup` path when the plugin is installed and should receive follow-up analysis in a live Agent. Run `pnpm run showcase:pnpm-lock:monitor` to see the complete lockfile-to-OSV event locally.
+
 ## See one incident
 
 If an advisory affects only one of two installed `parser` versions, Radar reports the path that actually matched:
@@ -412,6 +426,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - native DSH bundle installation, startup polling, `agent/created` retry, and plugin-source attribution;
 - optional provider-neutral HTTPS webhook delivery for changed events, with endpoint-safe deduplication and retry;
 - read-only pnpm v6/v9 lockfile graph extraction, including project-root importers and explicit ambiguous peer references;
+- static Radar inventory generation from a pnpm lockfile, followed by the same exact-version OSV check used by the DSH monitor;
 - automatic selection of the only DSH profile with third-party bundles, plus a network-free `radar status` snapshot;
 - commit-friendly `init` output that records the project workspace as `.` by default;
 - a reusable GitHub Action that turns the reviewed graph into a two-step, frozen CI gate;
@@ -435,6 +450,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 ## Current boundaries
 
 - `init` discovers the only DSH profile with third-party bundles when `--profile` is omitted; multiple candidates still require an explicit profile. By default it follows the installed DSH `node_modules` tree, so pnpm overrides and local resolution choices are included. `--dsh-patch <path>` writes an explicit DSH overlay so first startup needs no environment variables and preserves an explicitly selected registry. `graph pnpm-lock` is a separate pre-install/CI collector; it does not itself query OSV or create a Radar config.
+- `init --pnpm-lock <path> --root <name>@<version>` creates a static config without a DSH profile; follow it with `radar check` or `radar watch` to query OSV. It does not itself start DSH or deliver Agent tasks.
 - A graph with unresolved required dependency declarations is marked as incomplete coverage; optional packages that are not installed for the current platform remain visible but do not create a false required-dependency alert. Missing `@deepseek-ai/dsh-*` and Cordis peers are called out separately as unobserved DSH host dependencies because Radar cannot query a version it was never shown.
 - Candidate upgrade graphs are resolved only for a bounded earliest prefix. A candidate with an incomplete or unavailable graph is not recommended; later unqueried candidates remain visibly unchecked. Pass `--no-deep-candidates` to opt out of this extra registry work.
 - Compatibility CI gating is opt-in: `--fail-on-compatibility breaking` fails on confirmed or strong incompatibility signals, while `any` fails on every active compatibility event; neither setting claims that a candidate is safe.

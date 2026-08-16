@@ -11,7 +11,7 @@ import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js
 import { createDoctorReport, renderDoctorReport } from './doctor.js'
 import { GitHubReleaseClient } from './github-release.js'
 import { parsePnpmLockGraph } from './graph.js'
-import { createRadarConfigFromDshProfile, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
+import { createRadarConfigFromDshProfile, createRadarConfigFromPnpmLock, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 import { inspectNpmPackage } from './npm.js'
 import { NpmCandidateGraphClient } from './npm-candidate.js'
@@ -62,6 +62,7 @@ function usage(): string {
 Usage:
   upstream-radar setup [--profile <name>] [options]
   upstream-radar init [--profile <name>] [options]
+  upstream-radar init --pnpm-lock <pnpm-lock.yaml> --root <package>@<exact-version> [options]
   upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
@@ -82,7 +83,7 @@ Usage:
 
 Commands:
   setup    install the exact Radar bundle, generate DSH wiring, and run doctor
-  init     discover third-party bundles in a DSH profile and write a reviewable inventory
+  init     discover third-party bundles in DSH or initialize a reviewable lockfile inventory
   doctor   check local Radar/DSH wiring without polling upstream sources
   scan     bounded, read-only inspection of a local package directory
   inspect  fetch and verify the exact npm artifact before inspecting its contents
@@ -107,6 +108,8 @@ Options:
   --fail-on-compatibility <value>  CI gate: never|breaking|any (default: never)
   --notes <path>       release notes used as untrusted compatibility evidence
   --profile <name>     DSH profile for init or doctor (init auto-selects the only candidate when omitted)
+  --pnpm-lock <path>   init: build a static inventory from a pnpm v6/v9 lockfile
+  --root <coordinate>  init --pnpm-lock: exact package root, for example @scope/plugin@1.0.0
   --no-install          setup: reuse an already installed upstream-radar bundle
   --output <path>      init output path (default: ./upstream-radar.config.json)
   --dsh-patch <path>   write a self-contained DSH --patch overlay (setup default: ./upstream-radar.dsh.yml)
@@ -705,6 +708,8 @@ async function runSetup(args: readonly string[]): Promise<number> {
 
 async function runInit(args: readonly string[]): Promise<number> {
   let profile: string | undefined
+  let pnpmLockPath: string | undefined
+  let rootSpec: string | undefined
   let output = 'upstream-radar.config.json'
   let dshPatch: string | undefined
   let projectId: string | undefined
@@ -719,12 +724,14 @@ async function runInit(args: readonly string[]): Promise<number> {
     const argument = args[index]
     if (argument === '--force') force = true
     else if (argument === '--json') json = true
-    else if (argument === '--profile' || argument === '--output' || argument === '--dsh-patch' || argument === '--project-id'
+    else if (argument === '--profile' || argument === '--pnpm-lock' || argument === '--root' || argument === '--output' || argument === '--dsh-patch' || argument === '--project-id'
       || argument === '--project-name' || argument === '--repository' || argument === '--workspace'
       || argument === '--channel' || argument === '--registry') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--profile') profile = value
+      else if (argument === '--pnpm-lock') pnpmLockPath = value
+      else if (argument === '--root') rootSpec = value
       else if (argument === '--output') output = value
       else if (argument === '--dsh-patch') dshPatch = value
       else if (argument === '--project-id') projectId = value
@@ -738,6 +745,41 @@ async function runInit(args: readonly string[]): Promise<number> {
       throw new Error(`unknown option for init: ${argument}`)
     }
   }
+
+  if (pnpmLockPath !== undefined) {
+    if (profile !== undefined || dshPatch !== undefined || registry !== undefined) {
+      throw new Error('init --pnpm-lock does not accept --profile, --dsh-patch or --registry')
+    }
+    if (rootSpec === undefined) throw new Error('init --pnpm-lock requires --root <package>@<exact-version>')
+    const root = parseExactPackageCoordinate(rootSpec)
+    const config = await createRadarConfigFromPnpmLock({
+      lockfile: pnpmLockPath,
+      root,
+      ...(projectId === undefined ? {} : { projectId }),
+      ...(projectName === undefined ? {} : { projectName }),
+      ...(repository === undefined ? {} : { repository }),
+      ...(workspace === undefined ? {} : { workspace }),
+      ...(channels.length === 0 ? {} : { channels }),
+    })
+    const outputPath = await writeRadarConfig(config, { output: resolve(output), force })
+    const plugin = config.projects[0]?.plugins[0]
+    if (plugin === undefined) throw new Error('pnpm lock initialization produced no plugin')
+    if (json) {
+      process.stdout.write(`${JSON.stringify({
+        output: outputPath,
+        source: plugin.graph.source,
+        root: plugin.package,
+        nodes: plugin.graph.nodes.length,
+        edges: plugin.graph.edges.length,
+        ...(plugin.graph.unresolved === undefined ? {} : { unresolved: plugin.graph.unresolved.length }),
+      }, null, 2)}\n`)
+    } else {
+      const unresolved = plugin.graph.unresolved?.length ?? 0
+      process.stdout.write(`Created ${outputPath}\nSource: pnpm-lock\nRoot: ${plugin.package.name}@${plugin.package.version}\nGraph: ${plugin.graph.nodes.length} nodes, ${plugin.graph.edges.length} edges, ${unresolved} unresolved\nNext: upstream-radar radar check ${shellQuote(outputPath)} --frozen\n`)
+    }
+    return 0
+  }
+  if (rootSpec !== undefined) throw new Error('init --root is only valid with --pnpm-lock')
   let autoSelected = false
   let resolvedProfile = profile
   if (resolvedProfile === undefined) {

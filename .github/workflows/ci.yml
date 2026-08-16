@@ -37,4 +37,6 @@ jobs:
       - if: matrix.node == 22
         run: pnpm run showcase:pnpm-lock
       - if: matrix.node == 22
+        run: pnpm run showcase:pnpm-lock:monitor
+      - if: matrix.node == 22
         run: pnpm pack --pack-destination /tmp

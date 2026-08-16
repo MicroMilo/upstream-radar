@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promis
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, it } from 'node:test'
-import { createRadarConfigFromDshProfile, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, refreshRadarConfigFromDshProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from '../src/init.js'
+import { createRadarConfigFromDshProfile, createRadarConfigFromPnpmLock, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, refreshRadarConfigFromDshProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from '../src/init.js'
 
 const graph = {
   schema: 'upstream-radar.dependency-graph/v1alpha1' as const,
@@ -181,6 +181,48 @@ describe('DSH profile initialization', () => {
       assert.equal(config.projects[0]?.project.workspace, '.')
       assert.equal(config.projects[0]?.plugins[0]?.graph.source, 'installed-node-modules')
       assert.equal(config.projects[0]?.plugins[0]?.graph.nodes.length, 2)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('creates a static Radar inventory from a pnpm lockfile project root', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-init-pnpm-'))
+    try {
+      const lockfile = join(root, 'pnpm-lock.yaml')
+      await writeFile(lockfile, `
+lockfileVersion: '9.0'
+
+importers:
+  .:
+    dependencies:
+      demo-plugin:
+        specifier: 1.0.0
+        version: 1.0.0
+
+packages:
+  'demo-plugin@1.0.0': {}
+  'parser@2.9.0': {}
+
+snapshots:
+  'demo-plugin@1.0.0':
+    dependencies:
+      parser: 2.9.0
+  'parser@2.9.0': {}
+`)
+
+      const config = await createRadarConfigFromPnpmLock({
+        lockfile,
+        root: { name: 'demo-plugin', version: '1.0.0' },
+        projectName: 'Demo DSH plugin',
+        channels: ['stdout'],
+      })
+      assert.equal(config.dshProfile, undefined)
+      assert.equal(config.projects[0]?.project.name, 'Demo DSH plugin')
+      assert.deepEqual(config.projects[0]?.project.channels, ['stdout'])
+      assert.equal(config.projects[0]?.plugins[0]?.graph.source, 'pnpm-lock')
+      assert.equal(config.projects[0]?.plugins[0]?.graph.nodes.length, 2)
+      assert.equal(config.projects[0]?.plugins[0]?.graph.edges.length, 1)
     } finally {
       await rm(root, { recursive: true, force: true })
     }

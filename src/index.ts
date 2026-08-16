@@ -61,6 +61,7 @@ export {
 export { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 export {
   createRadarConfigFromDshProfile,
+  createRadarConfigFromPnpmLock,
   discoverDshProfiles,
   refreshRadarConfigFromConfiguredProfile,
   refreshRadarConfigFromDshProfile,
@@ -68,6 +69,7 @@ export {
   writeDshPatch,
   writeRadarConfig,
   type DshInitOptions,
+  type PnpmLockInitOptions,
   type InitInspector,
   type WriteDshPatchOptions,
   type WriteRadarConfigOptions,

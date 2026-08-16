@@ -63,6 +63,18 @@ pnpm dlx --package=upstream-radar@latest upstream-radar graph pnpm-lock \
 
 This is the same graph shape used by the Radar monitor, but the command is strictly pre-install: it reads pnpm's lockfile, does not run pnpm or plugin code, and keeps unresolved peer-context references visible. The repository's real-lockfile proof is `pnpm run showcase:pnpm-lock`.
 
+To turn the lockfile into a static monitor before DSH installation:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar init \
+  --pnpm-lock ./pnpm-lock.yaml \
+  --root @your-scope/your-dsh-plugin@1.0.0
+pnpm dlx --package=upstream-radar@latest upstream-radar radar check \
+  ./upstream-radar.config.json --frozen --fail-on high
+```
+
+The end-to-end local proof is `pnpm run showcase:pnpm-lock:monitor`: it initializes a project-root graph, queries a deterministic OSV fixture, and prints the exact vulnerable path. This pre-install monitor produces DSH-ready evidence; the live DSH bundle remains the path that hands the task to an Agent.
+
 For the narrower question “can this exact bundle load in this exact DSH version?”, run the separate disposable-profile probe from the repository root:
 
 ```bash

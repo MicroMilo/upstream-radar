@@ -1,6 +1,7 @@
 import { access, readFile, readdir, realpath, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path'
+import { parsePnpmLockGraph } from './graph.js'
 import { inspectNpmPackage, type InspectNpmOptions } from './npm.js'
 import { parseInstalledNodeModulesGraph } from './installed-graph.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
@@ -40,6 +41,19 @@ export interface DshInitOptions {
   /** Optional DSH process dependency plane discovered without importing DSH code. */
   hostNodeModulesDirectory?: string
   hostRuntimeSource?: DependencyHostRuntimeSource
+}
+
+export interface PnpmLockInitOptions {
+  lockfile: string
+  root: {
+    name: string
+    version: string
+  }
+  projectId?: string
+  projectName?: string
+  repository?: string
+  workspace?: string
+  channels?: string[]
 }
 
 export interface WriteRadarConfigOptions {
@@ -227,6 +241,35 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
       },
       environment: { nodeVersion: process.versions.node },
       plugins,
+    }],
+  }
+  parseRadarConfig(config)
+  return config
+}
+
+/** Build a static Radar inventory from a pnpm lockfile without installing packages. */
+export async function createRadarConfigFromPnpmLock(options: PnpmLockInitOptions): Promise<RadarConfig> {
+  const lockfile = resolve(options.lockfile)
+  const graph = parsePnpmLockGraph(await readFile(lockfile, 'utf8'), options.root)
+  const workspace = options.workspace ?? '.'
+  const projectId = options.projectId ?? defaultProjectId(workspace)
+  const projectName = options.projectName ?? defaultProjectName(workspace)
+  const config: RadarConfig = {
+    schema: RADAR_CONFIG_SCHEMA,
+    projects: [{
+      schema: INVENTORY_SCHEMA,
+      project: {
+        id: projectId,
+        name: projectName,
+        ...(options.repository === undefined ? {} : { repository: options.repository }),
+        workspace,
+        ...(options.channels === undefined || options.channels.length === 0 ? {} : { channels: options.channels }),
+      },
+      environment: { nodeVersion: process.versions.node },
+      plugins: [{
+        package: { ecosystem: 'npm', name: options.root.name, version: options.root.version },
+        graph,
+      }],
     }],
   }
   parseRadarConfig(config)
