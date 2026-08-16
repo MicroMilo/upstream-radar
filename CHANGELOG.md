@@ -7,7 +7,7 @@ All notable changes to Upstream Radar are documented here.
 ### Added
 
 - Keep a bounded, deduplicated transition ledger in the Radar state and expose it through the network-free `radar history` command, so resolved incidents and source recovery remain auditable.
-- Write a concise escaped GitHub Job Summary from the reusable Action while preserving the raw JSON report and the original policy/source exit code.
+- Write a concise escaped GitHub Job Summary from the reusable Action, including the exact path, published fix versions, and a suggested next step while preserving the raw JSON report and the original policy/source exit code.
 - Send changed-event text directly to Feishu/Lark V2 custom bots, with optional signature generation from an environment-only secret; keep the existing provider-neutral webhook envelope for other endpoints.
 - Extend the network-free `doctor` check to validate the environment webhook route before the first poll, reject retired Feishu/Lark V1 URLs, and warn about unused signing secrets without printing them.
 - Make the primary DSH quickstart omit `--profile` when the machine has exactly one eligible profile; keep the explicit flag for multi-profile installations.

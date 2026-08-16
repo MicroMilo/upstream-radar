@@ -21,7 +21,7 @@ describe('GitHub Action summary', () => {
           kind: 'vulnerability',
           change: 'new',
           affected: { name: 'parser', version: '2.9.0' },
-          advisory: { id: 'GHSA-`demo`', severity: 'high' },
+          advisory: { id: 'GHSA-`demo`', severity: 'high', fixedVersions: ['3.0.0'] },
           paths: [[
             { name: 'plugin', version: '1.0.0' },
             { name: 'parser', version: '2.9.0' },
@@ -37,11 +37,61 @@ describe('GitHub Action summary', () => {
       assert.match(result.stdout, /HIGH · vulnerability/)
       assert.match(result.stdout, /plugin@1\.0\.0/)
       assert.match(result.stdout, /GHSA-\\`demo\\`/)
+      assert.match(result.stdout, /fix: 3\.0\.0/)
+      assert.match(result.stdout, /next: Review parser@2\.9\.0 fixed version\(s\) 3\.0\.0 before changing the plugin\./)
       assert.match(result.stdout, /### Source warnings/)
       assert.match(result.stdout, /temporary outage/)
     } finally {
       await rm(root, { recursive: true, force: true })
     }
   })
-})
 
+  it('gives each event kind a safe next step and distinguishes recovery', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-action-summary-guidance-'))
+    try {
+      const report = join(root, 'report.json')
+      await writeFile(report, JSON.stringify({
+        events: [
+          {
+            kind: 'compatibility',
+            change: 'new',
+            installed: { name: 'dsh-plugin', version: '1.0.0' },
+            candidate: { name: 'dsh-plugin', version: '2.0.0' },
+            signals: [{ summary: 'breaking boundary' }],
+          },
+          {
+            kind: 'source-health',
+            change: 'resolved',
+            source: 'osv',
+            status: 'healthy',
+            failureCount: 0,
+          },
+          {
+            kind: 'vulnerability',
+            change: 'new',
+            plugin: { name: 'no-fix-plugin', version: '1.0.0' },
+            affected: { name: 'parser', version: '2.0.0' },
+            advisory: { id: 'GHSA-no-fix', severity: 'medium' },
+            paths: [],
+          },
+          {
+            kind: 'malware',
+            change: 'resolved',
+            plugin: { name: 'old-plugin', version: '1.0.0' },
+            affected: { name: 'old-plugin', version: '1.0.0' },
+            advisory: { id: 'MALWARE-demo', severity: 'critical' },
+            paths: [],
+          },
+        ],
+      }))
+      const result = spawnSync(process.execPath, [summaryScript, report], { encoding: 'utf8' })
+      assert.equal(result.status, 0)
+      assert.match(result.stdout, /next: inspect project impact before applying the candidate/)
+      assert.match(result.stdout, /source health.*next: no action; continue monitoring/)
+      assert.match(result.stdout, /fix: none published.*Assess containment or replacement for no-fix-plugin@1\.0\.0\./)
+      assert.match(result.stdout, /fix: incident resolved.*Confirm the installed graph no longer matches this incident\./)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+})
