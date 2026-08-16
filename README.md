@@ -56,6 +56,21 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar watch ./upstream-r
 
 Remove `--once` to keep a local monitor alive. This is a lightweight CLI surface for demos, CI, and diagnosis; the native DSH bundle remains the recommended always-on path because it can deliver the task to a live Agent.
 
+To also notify a team-owned HTTPS endpoint when an incident changes, keep the endpoint outside the reviewed config and state:
+
+```bash
+export UPSTREAM_RADAR_WEBHOOK_URL='https://alerts.example.test/upstream-radar?token=replace-me'
+
+# Native DSH path: the bundle reads the variable at runtime.
+dsh --profile web --patch ./upstream-radar.dsh.yml
+
+# Or use the CLI path for a persistent one-shot/continuous monitor.
+pnpm dlx --package=upstream-radar@latest upstream-radar radar watch \
+  ./upstream-radar.config.json --webhook "$UPSTREAM_RADAR_WEBHOOK_URL"
+```
+
+The webhook receives only `new`, `updated`, and `resolved` changes (including source-health changes) in the bounded `upstream-radar.webhook/v1alpha1` JSON format described by the [schema](schemas/webhook.schema.json). A successful HTTP 2xx response records the event id; a failed request remains retryable on the next cycle. The state stores only a SHA-256 endpoint fingerprint and delivered ids, never the URL or its token. This is a provider-neutral JSON endpoint; a Feishu or Slack relay can turn its `text` and `events` fields into the provider's native card. Run `pnpm run showcase:webhook` to see deduplication and retry behavior without contacting a real endpoint.
+
 <p align="center">
   <picture>
     <source media="(max-width: 600px)" srcset="docs/assets/upstream-radar-hero-mobile.jpg">
@@ -382,6 +397,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - durable incident state with current-task replacement and resolution;
 - strict DSH result writeback bound to the exact message, session, task, and event, with stale-result rejection;
 - native DSH bundle installation, startup polling, `agent/created` retry, and plugin-source attribution;
+- optional provider-neutral HTTPS webhook delivery for changed events, with endpoint-safe deduplication and retry;
 - automatic selection of the only DSH profile with third-party bundles, plus a network-free `radar status` snapshot;
 - commit-friendly `init` output that records the project workspace as `.` by default;
 - a reusable GitHub Action that turns the reviewed graph into a two-step, frozen CI gate;

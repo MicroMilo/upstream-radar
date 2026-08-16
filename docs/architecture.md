@@ -30,6 +30,8 @@ The model never decides whether a version range matches.
                                         │
                                         v
                          owner + configured channel
+                                        │
+                                        └─> optional HTTPS webhook (changed events only)
 ```
 
 ## Dependency graph
@@ -63,6 +65,12 @@ If OSV is unavailable, the cycle records a source warning, keeps the last confir
 The same cycle persists `lastAttemptedAt`, `lastSucceededAt`, consecutive failures, and a bounded error for each attempted source. Three consecutive failures create one project-routed `source-health` event in the same outbox; a successful check resolves it.
 
 The active-match key binds project, plugin version, affected package version, and advisory id. An unchanged advisory does not create another event.
+
+## Optional external notification
+
+The native DSH path remains the primary analysis route. When `UPSTREAM_RADAR_WEBHOOK_URL` is set, or the CLI receives `--webhook <https-url>`, Radar also sends a bounded JSON payload for each `new`, `updated`, or `resolved` event. The payload contains stable event and incident ids, the project identity without a local workspace path, exact package paths, relevant severity or compatibility signals, and a short `text` rendering. Advisory details are not executed or treated as instructions.
+
+The endpoint must use HTTPS. Radar writes the state change first, then POSTs the payload; a 2xx response records the event id under a SHA-256 endpoint fingerprint. A failed request is logged and remains eligible for retry. The ledger never stores the URL or query token, and a crash between receiver acknowledgement and ledger persistence can produce a duplicate, so consumers should deduplicate on `id` or `incidentId`.
 
 ## Compatibility cycle
 

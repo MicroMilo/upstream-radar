@@ -1,0 +1,265 @@
+import { createHash } from 'node:crypto'
+import { TOOL_VERSION } from './version.js'
+import type {
+  CompatibilityEvent,
+  PackageCoordinate,
+  ProjectReference,
+  RadarEvent,
+  RadarState,
+  VulnerabilityEvent,
+} from './radar-types.js'
+import { WEBHOOK_DELIVERY_SCHEMA, type WebhookDeliveryState } from './radar-types.js'
+
+export const RADAR_WEBHOOK_SCHEMA = 'upstream-radar.webhook/v1alpha1' as const
+
+const MAX_WEBHOOK_EVENTS = 64
+const MAX_WEBHOOK_TEXT = 24 * 1024
+const MAX_WEBHOOK_DELIVERIES = 10_000
+
+export interface RadarWebhookEventNotice {
+  id: string
+  incidentId: string
+  change: RadarEvent['change']
+  kind: RadarEvent['kind']
+  detectedAt: string
+  project: {
+    id: string
+    name: string
+    owner?: string
+    repository?: string
+  }
+  summary: string
+  [key: string]: unknown
+}
+
+export interface RadarWebhookPayload {
+  schema: typeof RADAR_WEBHOOK_SCHEMA
+  sentAt: string
+  tool: { name: 'upstream-radar'; version: string }
+  totalEvents: number
+  truncated: boolean
+  text: string
+  events: RadarWebhookEventNotice[]
+}
+
+export interface SendRadarWebhookOptions {
+  fetch?: typeof fetch
+  now?: Date
+}
+
+function bounded(value: string, maxLength: number): string {
+  const clean = value.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?')
+  return clean.length <= maxLength ? clean : `${clean.slice(0, maxLength - 1)}…`
+}
+
+function packageLabel(value: PackageCoordinate): string {
+  return `${bounded(value.name, 512)}@${bounded(value.version, 512)}`
+}
+
+function projectReference(project: ProjectReference): RadarWebhookEventNotice['project'] {
+  return {
+    id: bounded(project.id, 512),
+    name: bounded(project.name, 512),
+    ...(project.owner === undefined ? {} : { owner: bounded(project.owner, 512) }),
+    ...(project.repository === undefined ? {} : { repository: bounded(project.repository, 2_048) }),
+  }
+}
+
+function coordinate(value: PackageCoordinate): PackageCoordinate {
+  return {
+    ecosystem: 'npm',
+    name: bounded(value.name, 512),
+    version: bounded(value.version, 512),
+  }
+}
+
+function pathLabels(paths: readonly PackageCoordinate[][]): string[][] {
+  return paths.slice(0, 4).map(path => path.slice(0, 64).map(packageLabel))
+}
+
+function vulnerabilityNotice(event: VulnerabilityEvent): RadarWebhookEventNotice {
+  const path = event.paths[0]?.map(packageLabel).join(' -> ') ?? 'dependency path unavailable'
+  const summary = `${packageLabel(event.affected)} is affected by ${bounded(event.advisory.id, 256)} via ${bounded(path, 4_096)}`
+  return {
+    id: bounded(event.id, 512),
+    incidentId: bounded(event.incidentId, 512),
+    change: event.change,
+    kind: event.kind,
+    detectedAt: bounded(event.detectedAt, 256),
+    project: projectReference(event.project),
+    summary,
+    plugin: coordinate(event.plugin),
+    affected: coordinate(event.affected),
+    ...(event.affectedSources === undefined ? {} : { affectedSources: [...event.affectedSources] }),
+    advisory: {
+      id: bounded(event.advisory.id, 256),
+      aliases: event.advisory.aliases.slice(0, 16).map(item => bounded(item, 256)),
+      summary: bounded(event.advisory.summary, 2_048),
+      severity: event.kind === 'malware' ? 'critical' : event.advisory.severity,
+      fixedVersions: event.advisory.fixedVersions.slice(0, 16).map(item => bounded(item, 256)),
+      references: event.advisory.references.slice(0, 16).map(item => bounded(item, 2_048)),
+    },
+    paths: pathLabels(event.paths),
+  }
+}
+
+function compatibilityNotice(event: CompatibilityEvent): RadarWebhookEventNotice {
+  const candidate = event.upgradePath?.firstCandidate?.candidate ?? event.candidate
+  const signal = event.signals.find(item => item.confidence === 'confirmed' || item.confidence === 'strong')
+    ?? event.signals[0]
+  const signalText = signal === undefined ? 'needs project analysis' : bounded(signal.summary, 2_048)
+  return {
+    id: bounded(event.id, 512),
+    incidentId: bounded(event.incidentId, 512),
+    change: event.change,
+    kind: event.kind,
+    detectedAt: bounded(event.detectedAt, 256),
+    project: projectReference(event.project),
+    summary: `${packageLabel(event.installed)} -> ${packageLabel(candidate)}: ${signalText}`,
+    plugin: coordinate(event.plugin),
+    installed: coordinate(event.installed),
+    candidate: coordinate(candidate),
+    signals: event.signals.slice(0, 16).map(item => ({
+      code: bounded(item.code, 256),
+      confidence: item.confidence,
+      summary: bounded(item.summary, 2_048),
+      ...(item.before === undefined ? {} : { before: bounded(item.before, 2_048) }),
+      ...(item.after === undefined ? {} : { after: bounded(item.after, 2_048) }),
+    })),
+    ...(event.releaseNotesUrl === undefined ? {} : { releaseNotesUrl: bounded(event.releaseNotesUrl, 4_096) }),
+  }
+}
+
+function sourceHealthNotice(event: Extract<RadarEvent, { kind: 'source-health' }>): RadarWebhookEventNotice {
+  return {
+    id: bounded(event.id, 512),
+    incidentId: bounded(event.incidentId, 512),
+    change: event.change,
+    kind: event.kind,
+    detectedAt: bounded(event.detectedAt, 256),
+    project: projectReference(event.project),
+    summary: `${bounded(event.source, 256)} is ${event.status} after ${event.failureCount} consecutive failure(s)`,
+    source: event.source,
+    status: event.status,
+    failureCount: event.failureCount,
+    lastAttemptedAt: bounded(event.lastAttemptedAt, 256),
+    ...(event.lastSucceededAt === undefined ? {} : { lastSucceededAt: bounded(event.lastSucceededAt, 256) }),
+    ...(event.error === undefined ? {} : { error: bounded(event.error, 2_048) }),
+  }
+}
+
+export function toRadarWebhookEventNotice(event: RadarEvent): RadarWebhookEventNotice {
+  if (event.kind === 'compatibility') return compatibilityNotice(event)
+  if (event.kind === 'source-health') return sourceHealthNotice(event)
+  return vulnerabilityNotice(event)
+}
+
+export function buildRadarWebhookPayload(events: readonly RadarEvent[], now = new Date()): RadarWebhookPayload {
+  if (!Number.isFinite(now.getTime())) throw new Error('webhook timestamp is invalid')
+  const unique = [...new Map(events.map(event => [event.id, event])).values()]
+  const notices = unique.slice(0, MAX_WEBHOOK_EVENTS).map(toRadarWebhookEventNotice)
+  const text = notices.map(event => `[${event.change.toUpperCase()}][${event.kind}] ${event.summary}`).join('\n')
+  return {
+    schema: RADAR_WEBHOOK_SCHEMA,
+    sentAt: now.toISOString(),
+    tool: { name: 'upstream-radar', version: TOOL_VERSION },
+    totalEvents: unique.length,
+    truncated: unique.length > notices.length,
+    text: bounded(text, MAX_WEBHOOK_TEXT),
+    events: notices,
+  }
+}
+
+/** Normalize and validate an outbound endpoint without ever storing its secret query value. */
+export function normalizeRadarWebhookUrl(value: string): string {
+  if (typeof value !== 'string' || value.trim().length === 0 || value.length > 4_096) {
+    throw new Error('webhook URL must be a non-empty URL no longer than 4096 characters')
+  }
+  let url: URL
+  try {
+    url = new URL(value.trim())
+  } catch {
+    throw new Error('webhook URL is invalid')
+  }
+  if (url.protocol !== 'https:') throw new Error('webhook URL must use HTTPS')
+  if (url.username !== '' || url.password !== '') throw new Error('webhook URL must not contain credentials')
+  if (url.hash !== '') throw new Error('webhook URL must not contain a fragment')
+  return url.toString()
+}
+
+export function radarWebhookEndpointHash(value: string): string {
+  return createHash('sha256').update(normalizeRadarWebhookUrl(value), 'utf8').digest('hex')
+}
+
+export async function sendRadarWebhook(
+  url: string,
+  events: readonly RadarEvent[],
+  options: SendRadarWebhookOptions = {},
+): Promise<RadarWebhookPayload> {
+  const endpoint = normalizeRadarWebhookUrl(url)
+  if (events.length === 0) return buildRadarWebhookPayload([], options.now)
+  const payload = buildRadarWebhookPayload(events, options.now)
+  const fetchImpl = options.fetch ?? fetch
+  let response: Response
+  try {
+    response = await fetchImpl(endpoint, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'user-agent': `upstream-radar/${TOOL_VERSION}`,
+        'x-upstream-radar-schema': RADAR_WEBHOOK_SCHEMA,
+      },
+      body: JSON.stringify(payload),
+      redirect: 'error',
+      signal: AbortSignal.timeout(10_000),
+    })
+  } catch (error: unknown) {
+    const kind = error instanceof Error && error.name.length > 0 ? error.name : 'request error'
+    throw new Error(`webhook request failed (${bounded(kind, 128)})`)
+  }
+  if (!response.ok) throw new Error(`webhook returned HTTP ${response.status}`)
+  return payload
+}
+
+export function undeliveredRadarWebhookEvents(
+  state: RadarState,
+  endpointHash: string,
+  events: readonly RadarEvent[],
+): RadarEvent[] {
+  const delivered = state.webhook?.endpointHash === endpointHash
+    ? state.webhook.deliveredEventIds
+    : {}
+  const seen = new Set<string>()
+  return events.filter(event => {
+    if (seen.has(event.id) || delivered[event.id] !== undefined) return false
+    seen.add(event.id)
+    return true
+  })
+}
+
+export function markRadarWebhookEventsDelivered(
+  state: RadarState,
+  endpointHash: string,
+  events: readonly RadarEvent[],
+  deliveredAt = new Date(),
+): RadarState {
+  if (!Number.isFinite(deliveredAt.getTime())) throw new Error('webhook delivery timestamp is invalid')
+  if (!/^[a-f0-9]{64}$/.test(endpointHash)) throw new Error('webhook endpoint fingerprint is invalid')
+  const existing: WebhookDeliveryState | undefined = state.webhook?.endpointHash === endpointHash
+    ? state.webhook
+    : undefined
+  const delivered = { ...(existing?.deliveredEventIds ?? {}) }
+  const timestamp = deliveredAt.toISOString()
+  for (const event of events) delivered[event.id] = timestamp
+  const entries = Object.entries(delivered)
+    .sort((left, right) => left[1].localeCompare(right[1]) || left[0].localeCompare(right[0]))
+    .slice(-MAX_WEBHOOK_DELIVERIES)
+  return {
+    ...state,
+    webhook: {
+      schema: WEBHOOK_DELIVERY_SCHEMA,
+      endpointHash,
+      deliveredEventIds: Object.fromEntries(entries),
+    },
+  }
+}

@@ -277,6 +277,16 @@ path: showcase-dsh-host-peer -> @deepseek-ai/cordis
 
 The local model accepts the resulting analysis task, so the report covers the whole path from runtime discovery to Agent writeback. The checked-in [result](../examples/dsh/reports/dsh-runtime-host.json) is synthetic evidence of integration; it is not a claim that the real DSH release is vulnerable.
 
+## Scene 19 — send one changed event to an external endpoint
+
+The optional webhook path is provider-neutral and does not require a real Feishu or Slack account:
+
+```bash
+pnpm run showcase:webhook
+```
+
+The deterministic receiver proves one delivery, duplicate suppression, retry after a failed request, and that the persisted ledger contains only an endpoint fingerprint—not the URL or token. Production DSH runs opt in with `UPSTREAM_RADAR_WEBHOOK_URL`; CLI runs can pass the same HTTPS endpoint with `radar check/watch --webhook`.
+
 ## Live sources
 
 The fixture isolates behavior from network timing. Production cycles use:

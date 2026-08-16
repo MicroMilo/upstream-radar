@@ -27,6 +27,7 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /--frozen\s+radar check\/watch: use the reviewed graph/)
     assert.match(help.stdout, /--fail-on <value>\s+scan\/inspect verdict or radar severity/)
     assert.match(help.stdout, /--fail-on-compatibility <value>\s+CI gate: never\|breaking\|any/)
+    assert.match(help.stdout, /--webhook <https-url>\s+radar check\/watch: POST changed events to an HTTPS endpoint/)
     assert.match(help.stdout, /--dsh-patch <path>\s+write a self-contained DSH --patch overlay \(setup default: \.\/upstream-radar\.dsh\.yml\)/)
     assert.match(help.stdout, /--no-dsh-patch\s+setup: keep the legacy UPSTREAM_RADAR_\* environment-variable wiring/)
     assert.match(help.stdout, /probe dsh-load <package\.tgz>/)
@@ -57,6 +58,14 @@ describe('CLI option parsing', () => {
     const misplaced = spawnSync(process.execPath, [cli, 'radar', 'compare', 'missing.json', 'before.json', 'candidate.json', '--interval', '1800'], { encoding: 'utf8' })
     assert.equal(misplaced.status, 1)
     assert.match(misplaced.stderr, /radar compare does not accept check or watch options/)
+
+    const insecureWebhook = spawnSync(process.execPath, [cli, 'radar', 'watch', 'missing.json', '--once', '--webhook', 'http://127.0.0.1:8080'], { encoding: 'utf8' })
+    assert.equal(insecureWebhook.status, 1)
+    assert.match(insecureWebhook.stderr, /webhook URL must use HTTPS/)
+
+    const memoryWebhook = spawnSync(process.execPath, [cli, 'radar', 'watch', 'missing.json', '--once', '--state', ':memory:', '--webhook', 'https://hooks.example.test/incoming'], { encoding: 'utf8' })
+    assert.equal(memoryWebhook.status, 1)
+    assert.match(memoryWebhook.stderr, /requires a persistent --state file/)
   })
 
   it('shows a network-free first-run status snapshot', () => {

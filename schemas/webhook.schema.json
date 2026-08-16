@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MicroMilo/upstream-radar/blob/main/schemas/webhook.schema.json",
+  "title": "Upstream Radar webhook notification",
+  "description": "A bounded, provider-neutral notification for changed vulnerability, compatibility, malware, or source-health events.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "sentAt", "tool", "totalEvents", "truncated", "text", "events"],
+  "properties": {
+    "schema": { "const": "upstream-radar.webhook/v1alpha1" },
+    "sentAt": { "type": "string", "maxLength": 256 },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "const": "upstream-radar" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 256 }
+      }
+    },
+    "totalEvents": { "type": "integer", "minimum": 0, "maximum": 1000000 },
+    "truncated": { "type": "boolean" },
+    "text": { "type": "string", "maxLength": 24576 },
+    "events": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "required": ["id", "incidentId", "change", "kind", "detectedAt", "project", "summary"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "incidentId": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "change": { "enum": ["new", "updated", "resolved"] },
+          "kind": { "enum": ["vulnerability", "malware", "compatibility", "source-health"] },
+          "detectedAt": { "type": "string", "maxLength": 256 },
+          "project": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "name"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "maxLength": 512 },
+              "name": { "type": "string", "minLength": 1, "maxLength": 512 },
+              "owner": { "type": "string", "maxLength": 512 },
+              "repository": { "type": "string", "maxLength": 2048 }
+            }
+          },
+          "summary": { "type": "string", "minLength": 1, "maxLength": 4096 }
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}

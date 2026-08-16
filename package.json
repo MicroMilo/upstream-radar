@@ -81,6 +81,7 @@
     "showcase:dsh-probe": "pnpm run build && node scripts/dsh-load-probe-showcase.mjs",
     "showcase:dsh-runtime": "pnpm run build && node scripts/dsh-runtime-graph-showcase.mjs",
     "showcase:dsh-runtime:report": "pnpm run build && node scripts/dsh-runtime-graph-showcase.mjs --write-report",
+    "showcase:webhook": "pnpm run build && node scripts/webhook-showcase.mjs",
     "try:consumer": "node scripts/consumer-smoke.mjs",
     "try:dsh": "pnpm run build && node scripts/dsh-headless-showcase.mjs",
     "try:dsh:live": "pnpm run build && node scripts/dsh-headless-showcase.mjs --live-feeds",

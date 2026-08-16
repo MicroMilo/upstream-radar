@@ -44,6 +44,21 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar watch ./upstream-r
 
 去掉 `--once` 就会持续运行。这个入口适合演示、CI 和排查；需要把任务交给在线 Agent 时，仍然应该安装 DSH bundle。
 
+如果还要把事件通知发到团队自己的 HTTPS 接口，可以把地址放在环境变量里，不要写进提交的配置和状态文件：
+
+```bash
+export UPSTREAM_RADAR_WEBHOOK_URL='https://alerts.example.test/upstream-radar?token=replace-me'
+
+# 原生 DSH：bundle 会在运行时读取这个变量
+dsh --profile web --patch ./upstream-radar.dsh.yml
+
+# 或使用 CLI 的持久化一次检查/持续监控
+pnpm dlx --package=upstream-radar@latest upstream-radar radar watch \
+  ./upstream-radar.config.json --webhook "$UPSTREAM_RADAR_WEBHOOK_URL"
+```
+
+Webhook 只发送 `new`、`updated`、`resolved` 变化（包括漏洞源健康变化），格式是有界的 `upstream-radar.webhook/v1alpha1` JSON，具体字段见[schema](../schemas/webhook.schema.json)。收到 HTTP 2xx 后才记录事件 id；请求失败会在下一轮继续重试。状态文件只保存 endpoint 的 SHA-256 指纹和已发送事件 id，不保存 URL 或 token。这是与供应商无关的 JSON 接口；接入飞书或 Slack 时，可以用一个 relay 把其中的 `text` 和 `events` 转成对应卡片。运行 `pnpm run showcase:webhook` 可以在不访问真实接口的情况下看到去重和重试。
+
 <p align="center">
   <picture>
     <source media="(max-width: 600px)" srcset="assets/upstream-radar-hero-mobile.jpg">
@@ -349,7 +364,7 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 ## 当前能力与边界
 
-已经支持：DSH profile 实际安装树和 npm lock 依赖图、重复版本路径、未解析依赖的覆盖提示、可选 peer 与 DSH 宿主 peer 的区分、从正在运行的 DSH 进程发现真实宿主依赖平面、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、按项目 workspace 精确路由到 DSH Agent、严格绑定消息/会话/task/event 的 DSH 结果写回、以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace、把审查过的图接入 CI 的可复用 GitHub Action、可选的 breaking/any 兼容性门禁、可选的 DSH 版本加载矩阵、离线的 `benchmark compatibility` 规则契约检查，以及基于真实 DSH 插件的 consumer smoke。
+已经支持：DSH profile 实际安装树和 npm lock 依赖图、重复版本路径、未解析依赖的覆盖提示、可选 peer 与 DSH 宿主 peer 的区分、从正在运行的 DSH 进程发现真实宿主依赖平面、OSV 精确版本匹配、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选）、公开 GitHub Release 说明、OSV 故障时保留已确认状态、连续失败后的 source-health DSH notice、持久事件、按项目 workspace 精确路由到 DSH Agent、严格绑定消息/会话/task/event 的 DSH 结果写回、以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace、把审查过的图接入 CI 的可复用 GitHub Action、可选的 breaking/any 兼容性门禁、可选的 DSH 版本加载矩阵、离线的 `benchmark compatibility` 规则契约检查、provider-neutral HTTPS webhook 事件通知，以及基于真实 DSH 插件的 consumer smoke。
 
 此外支持一次性的 `probe dsh-load` 和有界的 `probe dsh-matrix`：在临时 DSH profile 中针对一个或多个精确 DSH 版本加载一个精确 tarball，并返回 `compatible`、`incompatible` 或 `unknown`。它是加载兼容性证据，不是安全准入，也不是插件能力 benchmark。
 

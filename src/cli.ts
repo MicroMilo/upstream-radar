@@ -33,6 +33,13 @@ import { renderTextReport } from './render.js'
 import { scanDirectory } from './scan.js'
 import type { Verdict } from './types.js'
 import { TOOL_VERSION } from './version.js'
+import {
+  markRadarWebhookEventsDelivered,
+  normalizeRadarWebhookUrl,
+  radarWebhookEndpointHash,
+  sendRadarWebhook,
+  undeliveredRadarWebhookEvents,
+} from './webhook.js'
 
 const VALID_THRESHOLDS = new Set<Verdict | 'never'>(['warn', 'review', 'block', 'never'])
 const VALID_RADAR_THRESHOLDS = new Set<RadarFailThreshold>(RADAR_FAIL_THRESHOLDS)
@@ -60,8 +67,8 @@ Usage:
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar benchmark compatibility [--json]
-  upstream-radar radar check <config.json> [--state <state.json>] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
-  upstream-radar radar watch <config.json> [--state <state.json>] [--interval <seconds>] [--once] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
+  upstream-radar radar check <config.json> [--state <state.json>] [--webhook <https-url>] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
+  upstream-radar radar watch <config.json> [--state <state.json>] [--webhook <https-url>] [--interval <seconds>] [--once] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
   upstream-radar radar status <config.json> [--state <state.json>] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
   upstream-radar radar compare <config.json> <before.json> <candidate.json> [--notes <release-notes.txt>] [--json]
   upstream-radar task list <state.json> [--json]
@@ -89,6 +96,7 @@ Options:
   --no-deep-candidates skip bounded transitive dependency graph checks for upgrade candidates
   --state <path>       persistent radar state (default: <config.json>.state.json)
   --osv-base-url <url> alternate HTTPS OSV API base URL
+  --webhook <https-url>  radar check/watch: POST changed events to an HTTPS endpoint
   --interval <seconds> watch interval from 300 to 86400 seconds (default: 1800)
   --once               run one watch cycle and exit (useful for CI and demos)
   --frozen             radar check/watch: use the reviewed graph in config without reading a local DSH profile
@@ -333,6 +341,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
   let statePath: string | undefined
   let osvBaseUrl: string | undefined
   let registry: string | undefined
+  let webhookUrl: string | undefined
   let notesPath: string | undefined
   let intervalSeconds = 1_800
   let intervalProvided = false
@@ -351,7 +360,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
       deepCandidates = false
     } else if (argument === '--frozen') {
       frozen = true
-    } else if (argument === '--state' || argument === '--osv-base-url' || argument === '--registry'
+    } else if (argument === '--state' || argument === '--osv-base-url' || argument === '--registry' || argument === '--webhook'
       || argument === '--notes' || argument === '--interval' || argument === '--fail-on'
       || argument === '--fail-on-compatibility') {
       const value = args[index + 1]
@@ -359,6 +368,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
       if (argument === '--state') statePath = value
       else if (argument === '--osv-base-url') osvBaseUrl = value
       else if (argument === '--registry') registry = value
+      else if (argument === '--webhook') webhookUrl = normalizeRadarWebhookUrl(value)
       else if (argument === '--notes') notesPath = value
       else if (argument === '--fail-on') {
         if (!VALID_RADAR_THRESHOLDS.has(value as RadarFailThreshold)) {
@@ -393,7 +403,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
     : refreshRadarConfigFromConfiguredProfile(await readConfig())
   if (subcommand === 'status') {
     if (positional.length > 0 || notesPath !== undefined || once || intervalProvided
-      || osvBaseUrl !== undefined || registry !== undefined || !deepCandidates || frozen || statePath === ':memory:') {
+      || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || !deepCandidates || frozen || statePath === ':memory:') {
       throw new Error('radar status only accepts --state, --fail-on, --fail-on-compatibility and --json options')
     }
     const config = await readConfig()
@@ -428,12 +438,22 @@ async function runRadar(args: readonly string[]): Promise<number> {
     : undefined
   const releaseNotesSource = new GitHubReleaseClient()
   const stateFile = statePath ?? `${resolve(configPath)}.state.json`
+  if (webhookUrl !== undefined && statePath === ':memory:') {
+    throw new Error('radar --webhook requires a persistent --state file so successful deliveries can be remembered')
+  }
+  const webhookEndpointHash = webhookUrl === undefined ? undefined : radarWebhookEndpointHash(webhookUrl)
   const runCheck = async () => {
     const config = await readConfigForPoll()
     const state = statePath === ':memory:' ? emptyRadarState() : await loadRadarState(stateFile)
     const result = await pollRadar(config.projects, state, osv, new Date(), releases, releaseNotesSource, candidateGraphs)
     if (statePath !== ':memory:') await saveRadarState(stateFile, result.state)
-    return result
+    if (webhookUrl === undefined || webhookEndpointHash === undefined || result.events.length === 0) return result
+    const pendingWebhookEvents = undeliveredRadarWebhookEvents(result.state, webhookEndpointHash, result.events)
+    if (pendingWebhookEvents.length === 0) return result
+    await sendRadarWebhook(webhookUrl, pendingWebhookEvents)
+    const nextState = markRadarWebhookEventsDelivered(result.state, webhookEndpointHash, pendingWebhookEvents)
+    await saveRadarState(stateFile, nextState)
+    return { ...result, state: nextState }
   }
   const writeCheckResult = (result: Awaited<ReturnType<typeof pollRadar>>, compactJson = false) => {
     const policy = evaluateRadarPolicy(result.state, failOn, failOnCompatibility)
@@ -499,7 +519,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
     return 0
   }
 
-  if (statePath !== undefined || osvBaseUrl !== undefined || registry !== undefined || once || intervalProvided || !deepCandidates || frozen || failOn !== 'never' || failOnCompatibility !== 'never') {
+  if (statePath !== undefined || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || once || intervalProvided || !deepCandidates || frozen || failOn !== 'never' || failOnCompatibility !== 'never') {
     throw new Error('radar compare does not accept check or watch options')
   }
   const config = await readConfig()

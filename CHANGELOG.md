@@ -6,6 +6,11 @@ All notable changes to Upstream Radar are documented here.
 
 ## [0.33.0] - 2026-08-16
 
+### Added
+
+- Add an optional provider-neutral HTTPS webhook for changed vulnerability, compatibility, malware, and source-health events from both the native DSH adapter and CLI `radar check/watch`.
+- Deduplicate webhook event ids per endpoint, persist only the endpoint fingerprint, and retry failed deliveries on a later cycle.
+
 ### Validation
 
 - Add a real DSH host-runtime showcase that refreshes a plugin's graph from the running process, matches a deterministic local OSV advisory against `@deepseek-ai/cordis`, and proves `dsh-host` event persistence plus Agent writeback.

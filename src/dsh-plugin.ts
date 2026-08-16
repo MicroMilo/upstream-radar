@@ -12,6 +12,13 @@ import { NpmReleaseClient } from './npm-release.js'
 import { pollRadar } from './radar.js'
 import { loadRadarState, saveRadarState } from './radar-state.js'
 import {
+  markRadarWebhookEventsDelivered,
+  normalizeRadarWebhookUrl,
+  radarWebhookEndpointHash,
+  sendRadarWebhook,
+  undeliveredRadarWebhookEvents,
+} from './webhook.js'
+import {
   ANALYSIS_DELIVERY_SCHEMA,
   type AnalysisDelivery,
   type AnalysisTask,
@@ -40,6 +47,8 @@ export interface Config {
   registry?: string
   /** Set false to skip bounded transitive candidate graph checks. */
   deepCandidates?: boolean
+  /** Optional HTTPS endpoint for changed-event notifications; the URL is never persisted. */
+  webhookUrl?: string
   runOnStart?: boolean
 }
 
@@ -507,6 +516,11 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
     ? undefined
     : new NpmCandidateGraphClient({ ...(config.registry === undefined ? {} : { registry: config.registry }) })
   const releaseNotes = new GitHubReleaseClient()
+  const configuredWebhookUrl = config.webhookUrl ?? process.env.UPSTREAM_RADAR_WEBHOOK_URL
+  const webhookUrl = configuredWebhookUrl === undefined || configuredWebhookUrl.trim() === ''
+    ? undefined
+    : normalizeRadarWebhookUrl(configuredWebhookUrl)
+  const webhookEndpointHash = webhookUrl === undefined ? undefined : radarWebhookEndpointHash(webhookUrl)
   const dshHostNodeModulesDirectory = config.profile === undefined || config.refreshProfile === false
     ? undefined
     : discoverDshRuntimeNodeModulesDirectory()
@@ -555,6 +569,19 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
           state = result.state
           // Persist before model delivery. A crash may duplicate a task, but cannot silently lose it.
           await saveRadarState(stateFile, state)
+          if (webhookUrl !== undefined && webhookEndpointHash !== undefined && result.events.length > 0) {
+            const pendingWebhookEvents = undeliveredRadarWebhookEvents(state, webhookEndpointHash, result.events)
+            if (pendingWebhookEvents.length > 0) {
+              try {
+                await sendRadarWebhook(webhookUrl, pendingWebhookEvents)
+                state = markRadarWebhookEventsDelivered(state, webhookEndpointHash, pendingWebhookEvents)
+                await saveRadarState(stateFile, state)
+                ctx.logger.info(`upstream-radar: delivered ${pendingWebhookEvents.length} changed event(s) to the configured webhook`)
+              } catch (error: unknown) {
+                ctx.logger.warn(`upstream-radar: webhook delivery failed; will retry: ${safeMessage(error)}`)
+              }
+            }
+          }
           if (result.events.length > 0) {
             ctx.logger.info(`upstream-radar: ${result.events.length} change(s), ${result.analysisTasks.length} analysis task(s)`)
           }

@@ -8,6 +8,7 @@ import {
   ANALYSIS_RESULT_SCHEMA,
   RADAR_EVENT_SCHEMA,
   RADAR_STATE_SCHEMA,
+  WEBHOOK_DELIVERY_SCHEMA,
   type AnalysisDelivery,
   type AgentAnalysisResult,
   type StoredAnalysisResult,
@@ -186,6 +187,21 @@ function validStoredAnalysisResult(value: unknown): value is StoredAnalysisResul
     && validAnalysisResultFields(result)
 }
 
+function validWebhookDeliveryState(value: unknown): boolean {
+  const webhook = asRecord(value)
+  const delivered = asRecord(webhook?.deliveredEventIds)
+  const expectedKeys = new Set(['schema', 'endpointHash', 'deliveredEventIds'])
+  if (webhook === undefined || Object.keys(webhook).length !== expectedKeys.size
+    || Object.keys(webhook).some(key => !expectedKeys.has(key))
+    || webhook.schema !== WEBHOOK_DELIVERY_SCHEMA
+    || typeof webhook.endpointHash !== 'string' || !/^[a-f0-9]{64}$/.test(webhook.endpointHash)
+    || delivered === undefined || Object.keys(delivered).length > 10_000) return false
+  return Object.entries(delivered).every(([eventId, deliveredAt]) => (
+    eventId.length > 0 && eventId.length <= 512
+      && typeof deliveredAt === 'string' && deliveredAt.length > 0 && deliveredAt.length <= 256
+  ))
+}
+
 export function parseRadarState(value: unknown): RadarState {
   const root = asRecord(value)
   if (root?.schema !== RADAR_STATE_SCHEMA) throw new Error('radar state has an unsupported schema')
@@ -201,6 +217,9 @@ export function parseRadarState(value: unknown): RadarState {
   if (analysisDeliveries === undefined) throw new Error('radar state has an invalid analysis delivery map')
   const analysisResults = root.analysisResults === undefined ? {} : asRecord(root.analysisResults)
   if (analysisResults === undefined) throw new Error('radar state has an invalid analysis result map')
+  if (root.webhook !== undefined && !validWebhookDeliveryState(root.webhook)) {
+    throw new Error('radar state has an invalid webhook delivery state')
+  }
   if (Object.keys(sourceHealth).length > 10 || Object.keys(activeSourceHealth).length > 1_000_000) {
     throw new Error('radar state exceeds the source health limit')
   }

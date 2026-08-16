@@ -142,6 +142,7 @@ async function startModelStub() {
 
 async function startFeedStub(options) {
   const requests = []
+  const webhookRequests = []
   const advisory = {
     id: ADVISORY_ID,
     aliases: [],
@@ -179,6 +180,11 @@ async function startFeedStub(options) {
         jsonResponse(response, 200, advisory)
         return
       }
+      if (request.method === 'POST' && url.pathname === '/webhook') {
+        webhookRequests.push(JSON.parse(await readRequestBody(request)))
+        response.writeHead(204).end()
+        return
+      }
       // A 404 makes the npm release source explicit but harmless. This showcase
       // is proving OSV matching and DSH host refresh, not npm release metadata.
       response.writeHead(404).end('not found')
@@ -195,6 +201,8 @@ async function startFeedStub(options) {
   return {
     baseUrl: `https://127.0.0.1:${address.port}/`,
     requests,
+    webhookUrl: `https://127.0.0.1:${address.port}/webhook`,
+    webhookRequests,
     close: () => new Promise(resolveClose => server.close(resolveClose)),
   }
 }
@@ -383,6 +391,7 @@ async function main() {
         ...baseEnv,
         NODE_EXTRA_CA_CERTS: certificate.certFile,
         NODE_OPTIONS: `--require=${captureProbe}`,
+        UPSTREAM_RADAR_WEBHOOK_URL: feed.webhookUrl,
       },
     })
 
@@ -406,6 +415,10 @@ async function main() {
     })}`)
     const analysisResults = Object.keys(finalState.analysisResults ?? {}).length
     if (analysisResults === 0) throw new Error('real DSH host-runtime analysis result was not accepted')
+    const webhookEventIds = feed.webhookRequests.flatMap(payload => payload.events?.map(event => event.id) ?? [])
+    if (feed.webhookRequests.length !== 1 || !webhookEventIds.includes(hostEvent.id)) {
+      throw new Error(`real DSH webhook delivery was not recorded exactly once: ${JSON.stringify(feed.webhookRequests)}`)
+    }
 
     const report = {
       dshPackage: DSH_PACKAGE,
@@ -428,6 +441,9 @@ async function main() {
       dshAnalysisResults: analysisResults,
       feedRequests: feed.requests.length,
       modelRequests: model.requests.length,
+      webhookRequests: feed.webhookRequests.length,
+      webhookEventIds,
+      webhookEndpointPersisted: JSON.stringify(finalState).includes(feed.webhookUrl),
       dshProcessPollCompleted: true,
       finalAssistant: execution.stdout.trim(),
     }

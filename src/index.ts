@@ -74,6 +74,19 @@ export {
 } from './init.js'
 export { loadRadarState, parseRadarState, saveRadarState } from './radar-state.js'
 export {
+  RADAR_WEBHOOK_SCHEMA,
+  buildRadarWebhookPayload,
+  markRadarWebhookEventsDelivered,
+  normalizeRadarWebhookUrl,
+  radarWebhookEndpointHash,
+  sendRadarWebhook,
+  toRadarWebhookEventNotice,
+  undeliveredRadarWebhookEvents,
+  type RadarWebhookEventNotice,
+  type RadarWebhookPayload,
+  type SendRadarWebhookOptions,
+} from './webhook.js'
+export {
   evaluateRadarPolicy,
   renderRadarPolicy,
   RADAR_FAIL_THRESHOLDS,
@@ -133,6 +146,7 @@ export {
   RADAR_EVENT_SCHEMA,
   RADAR_CONFIG_SCHEMA,
   RADAR_STATE_SCHEMA,
+  WEBHOOK_DELIVERY_SCHEMA,
   type AdvisoryMatch,
   type AnalysisTask,
   type AgentAnalysisResult,
@@ -171,4 +185,5 @@ export {
   type StoredSourceHealthMatch,
   type VulnerabilityAdvisory,
   type VulnerabilityEvent,
+  type WebhookDeliveryState,
 } from './radar-types.js'

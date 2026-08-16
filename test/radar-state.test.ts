@@ -40,6 +40,26 @@ describe('radar state parsing', () => {
     assert.doesNotThrow(() => parseRadarState(legacy))
   })
 
+  it('accepts a webhook delivery ledger without storing the endpoint URL', () => {
+    const state = emptyRadarState() as unknown as Record<string, unknown>
+    state.webhook = {
+      schema: 'upstream-radar.webhook-delivery/v1alpha1',
+      endpointHash: 'a'.repeat(64),
+      deliveredEventIds: { 'event-1': '2026-08-16T01:00:00.000Z' },
+    }
+    assert.doesNotThrow(() => parseRadarState(state))
+  })
+
+  it('rejects a webhook ledger that contains the endpoint instead of its hash', () => {
+    const state = emptyRadarState() as unknown as Record<string, any>
+    state.webhook = {
+      schema: 'upstream-radar.webhook-delivery/v1alpha1',
+      endpointHash: 'https://hooks.example.test/incoming',
+      deliveredEventIds: {},
+    }
+    assert.throws(() => parseRadarState(state), /invalid webhook delivery state/)
+  })
+
   it('rejects a queued task without a stable incident identity', () => {
     const state = emptyRadarState() as unknown as Record<string, unknown>
     state.pendingAnalysisTasks = [{

@@ -39,8 +39,13 @@
     ]
   },
   "dshAnalysisResults": 1,
-  "feedRequests": 4,
+  "feedRequests": 5,
   "modelRequests": 3,
+  "webhookRequests": 1,
+  "webhookEventIds": [
+    "event-a282519c8ead817d140d50fe"
+  ],
+  "webhookEndpointPersisted": false,
   "dshProcessPollCompleted": true,
   "finalAssistant": "{\"project_exposure\":\"unknown\",\"confidence\":\"low\",\"evidence\":[\"showcase: deterministic host-runtime event\"],\"recommended_action\":\"Review the host-runtime advisory with the project tests before changing DSH.\",\"urgency\":\"within_24_hours\",\"reasoning_summary\":\"This local model proves that a real DSH Agent received and acknowledged a host-runtime vulnerability notice; it does not assess a real project.\"}"
 }
