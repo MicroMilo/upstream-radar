@@ -48,6 +48,8 @@ export interface DshInitOptions {
   hostRuntimeSource?: DependencyHostRuntimeSource
   /** Exact DSH executable package owning the shared host plane. */
   hostRuntimePackage?: PackageCoordinate
+  /** Directory containing the exact DSH executable package when its dependency plane is nested. */
+  hostRuntimePackageDirectory?: string
 }
 
 export interface PnpmLockInitOptions {
@@ -221,6 +223,8 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
   const hostRuntimeSource = options.hostRuntimeSource ?? 'dsh-profile-fallback'
   const hostRuntimePackage = options.hostRuntimePackage
     ?? discoverDshRuntimePackageFromNodeModulesDirectory(hostNodeModulesDirectory)
+  const hostRuntimePackageDirectory = options.hostRuntimePackageDirectory
+    ?? (hostRuntimePackage === undefined ? undefined : resolve(hostNodeModulesDirectory, '@deepseek-ai', 'dsh'))
   const plugins: PluginInstallation[] = []
   for (const packageName of bundles) {
     if (isDshInfrastructure(packageName)) continue
@@ -243,6 +247,7 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
           hostNodeModulesDirectory,
           hostRuntimeSource,
           ...(hostRuntimePackage === undefined ? {} : { hostRuntimePackage }),
+          ...(hostRuntimePackageDirectory === undefined ? {} : { hostRuntimePackageDirectory }),
         })
     if (graph === undefined) throw new Error(`could not resolve the exact dependency graph for ${manifest.name}@${manifest.version}`)
     plugins.push({
@@ -328,7 +333,7 @@ export async function refreshRadarConfigFromDshProfile(
   config: RadarConfig,
   profile: string,
   dshHome?: string,
-  options: Pick<DshInitOptions, 'hostNodeModulesDirectory' | 'hostRuntimeSource' | 'hostRuntimePackage'> = {},
+  options: Pick<DshInitOptions, 'hostNodeModulesDirectory' | 'hostRuntimeSource' | 'hostRuntimePackage' | 'hostRuntimePackageDirectory'> = {},
 ): Promise<RadarConfig> {
   if (config.dshProfile?.name !== profile) return config
   if (config.projects.length !== 1) throw new Error('DSH profile refresh requires exactly one configured project')

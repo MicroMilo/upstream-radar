@@ -185,7 +185,7 @@ function graph(value: unknown, label: string): DependencyGraph {
   })
   const ids = new Set(nodes.map(node => node.id))
   if (ids.size !== nodes.length) throw new Error(`${label} contains duplicate node ids`)
-  const kinds = new Set<DependencyKind>(['runtime', 'development', 'optional', 'peer'])
+  const kinds = new Set<DependencyKind>(['runtime', 'development', 'optional', 'peer', 'host-runtime'])
   const edges = source.edges.map((rawEdge, index) => {
     const edge = record(rawEdge, `${label}.edges[${index}]`)
     const from = string(edge.from, `${label}.edges[${index}].from`, 4_096)

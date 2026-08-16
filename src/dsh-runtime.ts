@@ -95,9 +95,16 @@ export function discoverDshRuntimeNodeModulesDirectory(
 export function discoverDshRuntimePackage(
   entrypoint = process.argv[1],
 ): PackageCoordinate | undefined {
-  if (typeof entrypoint !== 'string' || entrypoint.trim() === '') return undefined
-  const root = packageRoot(entrypoint)
+  const root = discoverDshRuntimePackageDirectory(entrypoint)
   return root === undefined ? undefined : runtimePackage(root)
+}
+
+/** Locate the exact DSH package root without importing or executing it. */
+export function discoverDshRuntimePackageDirectory(
+  entrypoint = process.argv[1],
+): string | undefined {
+  if (typeof entrypoint !== 'string' || entrypoint.trim() === '') return undefined
+  return packageRoot(entrypoint)
 }
 
 /** Read the exact DSH executable package from a known shared host plane. */

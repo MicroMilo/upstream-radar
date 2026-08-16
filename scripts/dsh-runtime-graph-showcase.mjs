@@ -105,7 +105,11 @@ async function startModelStub() {
         response.writeHead(400).end('invalid JSON')
         return
       }
-      const sawRadar = JSON.stringify(requests.at(-1)).includes('[UPSTREAM RADAR ANALYSIS TASK')
+      // DSH may make more than one model request while the Agent is handling
+      // a follow-up. Once the admitted Radar marker has appeared in the
+      // conversation, keep the deterministic stub's answer stable across
+      // subsequent turns instead of depending on the last request shape.
+      const sawRadar = JSON.stringify(requests).includes('[UPSTREAM RADAR ANALYSIS TASK')
       response.writeHead(200, { 'content-type': 'text/event-stream' })
       response.write(': dsh-runtime-graph-showcase\n\n')
       const events = [
@@ -124,7 +128,18 @@ async function startModelStub() {
         index += 1
         setTimeout(send, 60)
       }
-      send()
+      if (sawRadar) {
+        send()
+        return
+      }
+      // The headless profile exits after its first turn. Keep that first model
+      // turn open long enough for Radar's runOnStart poll to finish the real
+      // host-closure refresh and enqueue the follow-up in the same Agent.
+      const heartbeat = setInterval(() => response.write(': waiting-for-radar\n\n'), 2_000)
+      setTimeout(() => {
+        clearInterval(heartbeat)
+        send()
+      }, 30_000)
     })
   })
   await new Promise((resolveListen, rejectListen) => {
@@ -369,7 +384,7 @@ async function main() {
       '    thinking: disabled',
       '    reasoningEffort: off',
       '    maxTokens: 1024',
-      '    streamIdleTimeoutMs: 10000',
+      '    streamIdleTimeoutMs: 60000',
       '- id: session-persistence-jsonl',
       "  name: '@deepseek-ai/dsh-session-persistence-jsonl'",
       '  config:',
@@ -414,7 +429,16 @@ async function main() {
       dshStderr: execution.stderr.slice(-8_000),
     })}`)
     const analysisResults = Object.keys(finalState.analysisResults ?? {}).length
-    if (analysisResults === 0) throw new Error('real DSH host-runtime analysis result was not accepted')
+    if (analysisResults === 0) throw new Error(`real DSH host-runtime analysis result was not accepted: ${JSON.stringify({
+      pendingAnalysisTasks: finalState.pendingAnalysisTasks?.length ?? 0,
+      analysisDeliveries: Object.keys(finalState.analysisDeliveries ?? {}).length,
+      modelRequests: model.requests.map(request => ({
+        messageCount: request.messages?.length,
+        containsRadarMarker: JSON.stringify(request).includes('[UPSTREAM RADAR ANALYSIS TASK'),
+      })),
+      dshStdout: execution.stdout.slice(-4_000),
+      dshStderr: execution.stderr.slice(-4_000),
+    })}`)
     const webhookEventIds = feed.webhookRequests.flatMap(payload => payload.events?.map(event => event.id) ?? [])
     if (feed.webhookRequests.length !== 1 || !webhookEventIds.includes(hostEvent.id)) {
       throw new Error(`real DSH webhook delivery was not recorded exactly once: ${JSON.stringify(feed.webhookRequests)}`)

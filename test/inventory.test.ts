@@ -79,6 +79,27 @@ describe('radar inventory parsing', () => {
     })
   })
 
+  it('preserves the explicit host-runtime boundary edge', () => {
+    const candidate = structuredClone(valid)
+    candidate.projects[0]!.plugins[0]!.graph.nodes.push({
+      id: 'dsh-host/runtime',
+      name: '@deepseek-ai/dsh',
+      version: '0.1.0-rc.6',
+      source: 'dsh-host',
+    })
+    candidate.projects[0]!.plugins[0]!.graph.edges.push({
+      from: 'plugin',
+      to: 'dsh-host/runtime',
+      kind: 'host-runtime',
+    })
+    const parsed = parseRadarConfig(candidate)
+    assert.deepEqual(parsed.projects[0]?.plugins[0]?.graph.edges.at(-1), {
+      from: 'plugin',
+      to: 'dsh-host/runtime',
+      kind: 'host-runtime',
+    })
+  })
+
   it('accepts a delivery-only notification policy without changing the inventory graph', () => {
     const candidate = structuredClone(valid)
     candidate.projects[0]!.notificationPolicy = {

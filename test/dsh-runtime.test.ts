@@ -6,6 +6,7 @@ import { describe, it } from 'node:test'
 import {
   discoverDshRuntimeNodeModulesDirectory,
   discoverDshRuntimePackage,
+  discoverDshRuntimePackageDirectory,
   discoverDshRuntimePackageFromNodeModulesDirectory,
 } from '../src/dsh-runtime.js'
 
@@ -29,6 +30,7 @@ describe('DSH runtime dependency discovery', () => {
         name: '@deepseek-ai/dsh',
         version: '0.1.0-rc.6',
       })
+      assert.equal(discoverDshRuntimePackageDirectory(join(dshRoot, 'lib', 'bin.js')), await realpath(dshRoot))
       assert.deepEqual(discoverDshRuntimePackageFromNodeModulesDirectory(join(root, 'node_modules')), {
         ecosystem: 'npm',
         name: '@deepseek-ai/dsh',
@@ -49,6 +51,7 @@ describe('DSH runtime dependency discovery', () => {
 
       assert.equal(discoverDshRuntimeNodeModulesDirectory(join(packageRoot, 'lib', 'bin.js')), undefined)
       assert.equal(discoverDshRuntimePackage(join(packageRoot, 'lib', 'bin.js')), undefined)
+      assert.equal(discoverDshRuntimePackageDirectory(join(packageRoot, 'lib', 'bin.js')), undefined)
       assert.equal(discoverDshRuntimeNodeModulesDirectory(join(root, 'missing.js')), undefined)
     } finally {
       await rm(root, { recursive: true, force: true })

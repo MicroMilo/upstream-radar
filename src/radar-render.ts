@@ -64,11 +64,13 @@ function renderVulnerability(event: VulnerabilityEvent): string[] {
     lines.push('Paths:')
     for (const path of event.paths) lines.push(`  ${path.map(packageLabel).join(' -> ')}`)
   }
-  if (event.affectedSources?.includes('dsh-host') === true
-    && event.paths.some(path => path.length === 1
+  if (event.affectedSources?.includes('dsh-host') === true) {
+    const directBoundary = event.paths.some(path => path.length === 1
       && path[0]?.name === event.affected.name
-      && path[0]?.version === event.affected.version)) {
-    lines.push('Path note: this one-node path is the exact DSH host-runtime boundary, not a plugin dependency edge.')
+      && path[0]?.version === event.affected.version)
+    lines.push(directBoundary
+      ? 'Path note: this one-node path is the exact DSH host-runtime boundary, not a plugin dependency edge.'
+      : 'Path note: this finding crosses the shared DSH host-runtime boundary; the path does not mean the plugin declared every host package directly.')
   }
   lines.push(`Fixed versions: ${event.advisory.fixedVersions.length === 0 ? 'none published' : event.advisory.fixedVersions.map(item => display(item)).join(', ')}`)
   lines.push(`Route: ${event.route.owner === undefined ? '(no owner)' : display(event.route.owner)} via ${event.route.channels.map(item => display(item)).join(', ')}`)

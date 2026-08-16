@@ -67,6 +67,39 @@ describe('Radar event rendering', () => {
     assert.match(output, /Path note: this one-node path is the exact DSH host-runtime boundary, not a plugin dependency edge\./)
   })
 
+  it('labels a transitive finding that crosses the DSH host boundary', () => {
+    const event: VulnerabilityEvent = {
+      schema: 'upstream-radar.event/v1alpha1',
+      id: 'event-dsh-transitive',
+      incidentId: 'incident-dsh-transitive',
+      kind: 'vulnerability',
+      change: 'new',
+      detectedAt: '2026-08-16T01:00:00.000Z',
+      project: { id: 'demo', name: 'Demo' },
+      route: { channels: ['stdout'] },
+      plugin: { ecosystem: 'npm', name: 'demo-plugin', version: '1.0.0' },
+      affected: { ecosystem: 'npm', name: 'host-parser', version: '2.0.0' },
+      affectedSources: ['dsh-host'],
+      paths: [[
+        { ecosystem: 'npm', name: 'demo-plugin', version: '1.0.0' },
+        { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
+        { ecosystem: 'npm', name: 'host-parser', version: '2.0.0' },
+      ]],
+      advisory: {
+        id: 'GHSA-dsh-transitive-demo',
+        aliases: [],
+        summary: 'DSH host dependency demo advisory',
+        details: 'Demo details',
+        severity: 'high',
+        modified: '2026-08-16T01:00:00.000Z',
+        fixedVersions: ['3.0.0'],
+        references: [],
+      },
+    }
+    const output = renderRadarEvent(event)
+    assert.match(output, /Path note: this finding crosses the shared DSH host-runtime boundary; the path does not mean the plugin declared every host package directly\./)
+  })
+
   it('renders a top-level candidate that removes all checked vulnerability paths', () => {
     const candidate = {
       candidate: { ecosystem: 'npm' as const, name: 'demo-plugin', version: '1.3.0' },

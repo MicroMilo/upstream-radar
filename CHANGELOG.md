@@ -6,6 +6,8 @@ All notable changes to Upstream Radar are documented here.
 
 ### Added
 
+- Walk the exact DSH executable package through a synthetic `host-runtime` boundary and its reachable host dependency closure, so advisories in DSH core's own transitive packages keep an exact path and source attribution instead of disappearing outside the plugin graph.
+- Keep installed-package graph collection tolerant of non-semantic empty/non-string `main` and `type` metadata found in real DSH host packages without weakening the strict parser used for Radar configuration and release metadata.
 - Record the exact `@deepseek-ai/dsh` executable package that owns the shared host plane, monitor its OSV vulnerabilities and npm releases, and render a DSH-core finding as an explicit host-runtime boundary rather than a fabricated plugin dependency edge.
 - Keep a bounded, deduplicated transition ledger in the Radar state and expose it through the network-free `radar history` command, so resolved incidents and source recovery remain auditable.
 - Write a concise escaped GitHub Job Summary from the reusable Action, including the exact path, published fix versions, and a suggested next step while preserving the raw JSON report and the original policy/source exit code.

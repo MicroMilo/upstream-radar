@@ -362,8 +362,13 @@ snapshots:
       const graph = refreshed.projects[0]?.plugins[0]?.graph
       assert.deepEqual(graph?.hostRuntime, {
         source: 'dsh-process',
-        resolvedNodes: 1,
+        resolvedNodes: 2,
         package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
+      })
+      assert.deepEqual(graph?.edges.find(edge => edge.kind === 'host-runtime'), {
+        from: 'node_modules/demo-plugin',
+        to: 'dsh-host/node_modules/@deepseek-ai/dsh',
+        kind: 'host-runtime',
       })
       assert.deepEqual(graph?.nodes.find(node => node.name === '@deepseek-ai/dsh-agent'), {
         id: 'dsh-host/node_modules/@deepseek-ai/dsh-agent',

@@ -20,7 +20,8 @@ export interface PackageCoordinate {
   version: string
 }
 
-export type DependencyKind = 'runtime' | 'development' | 'optional' | 'peer'
+/** `host-runtime` is a synthetic boundary from a plugin into the DSH process. */
+export type DependencyKind = 'runtime' | 'development' | 'optional' | 'peer' | 'host-runtime'
 export type DependencySource = 'profile' | 'dsh-host'
 export type DependencyHostRuntimeSource = 'dsh-profile-fallback' | 'dsh-process'
 

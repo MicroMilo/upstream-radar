@@ -2,7 +2,11 @@ import { randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { renderAgentAnalysisGroupPrompt, renderAgentAnalysisPrompt } from './dsh-analysis.js'
-import { discoverDshRuntimeNodeModulesDirectory, discoverDshRuntimePackage } from './dsh-runtime.js'
+import {
+  discoverDshRuntimeNodeModulesDirectory,
+  discoverDshRuntimePackage,
+  discoverDshRuntimePackageDirectory,
+} from './dsh-runtime.js'
 import { GitHubReleaseClient } from './github-release.js'
 import { parseRadarConfig } from './inventory.js'
 import { refreshRadarConfigFromDshProfile } from './init.js'
@@ -543,6 +547,9 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
   const dshHostRuntimePackage = config.profile === undefined || config.refreshProfile === false
     ? undefined
     : discoverDshRuntimePackage()
+  const dshHostRuntimePackageDirectory = config.profile === undefined || config.refreshProfile === false
+    ? undefined
+    : discoverDshRuntimePackageDirectory()
   if (dshHostNodeModulesDirectory !== undefined) {
     ctx.logger.info('upstream-radar: DSH runtime dependency plane discovered for exact graph refresh')
   }
@@ -583,6 +590,7 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
                 hostNodeModulesDirectory: dshHostNodeModulesDirectory,
                 hostRuntimeSource: 'dsh-process',
                 ...(dshHostRuntimePackage === undefined ? {} : { hostRuntimePackage: dshHostRuntimePackage }),
+                ...(dshHostRuntimePackageDirectory === undefined ? {} : { hostRuntimePackageDirectory: dshHostRuntimePackageDirectory }),
               },
             )
           if (radarConfig !== configured && JSON.stringify(radarConfig.projects) !== JSON.stringify(configured.projects)) {

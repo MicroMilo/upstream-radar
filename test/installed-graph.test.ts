@@ -130,4 +130,53 @@ describe('installed DSH dependency graph', () => {
       await rm(root, { recursive: true, force: true })
     }
   })
+
+  it('walks the DSH executable and its transitive dependencies across the host boundary', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-installed-graph-'))
+    const profile = join(root, 'profiles', 'web')
+    const runtimeRoot = join(root, 'dsh-runtime')
+    const hostNodeModules = join(runtimeRoot, 'node_modules')
+    try {
+      await writeManifest(join(profile, 'node_modules', 'plugin', 'package.json'), {
+        name: 'plugin',
+        version: '1.0.0',
+      })
+      await writeManifest(join(runtimeRoot, 'package.json'), {
+        name: '@deepseek-ai/dsh',
+        version: '0.1.0-rc.6',
+        main: false,
+        dependencies: { 'host-parser': '2.0.0' },
+      })
+      await writeManifest(join(hostNodeModules, 'host-parser', 'package.json'), {
+        name: 'host-parser',
+        version: '2.0.0',
+      })
+
+      const graph = await parseInstalledNodeModulesGraph(profile, { name: 'plugin', version: '1.0.0' }, {
+        hostNodeModulesDirectory: hostNodeModules,
+        hostRuntimeSource: 'dsh-process',
+        hostRuntimePackage: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
+        hostRuntimePackageDirectory: runtimeRoot,
+      })
+      assert.deepEqual(graph.hostRuntime, {
+        source: 'dsh-process',
+        resolvedNodes: 2,
+        package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
+      })
+      assert.deepEqual(graph.edges, [
+        { from: 'dsh-host/runtime', to: 'dsh-host/node_modules/host-parser', kind: 'runtime' },
+        { from: 'node_modules/plugin', to: 'dsh-host/runtime', kind: 'host-runtime' },
+      ])
+      const parser = graph.nodes.find(node => node.name === 'host-parser')
+      assert.ok(parser)
+      assert.deepEqual(findDependencyPaths(graph, parser.id).map(path => path.map(node => `${node.name}@${node.version}`)), [[
+        'plugin@1.0.0',
+        '@deepseek-ai/dsh@0.1.0-rc.6',
+        'host-parser@2.0.0',
+      ]])
+      assert.equal(graph.unresolved, undefined)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
 })

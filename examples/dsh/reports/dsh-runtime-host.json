@@ -4,11 +4,11 @@
   "hostPackage": "@deepseek-ai/cordis@4.0.1",
   "initialProfileOnlyGraph": {
     "hostRuntimeSource": "dsh-profile-fallback",
-    "hostRuntimePackages": 9
+    "hostRuntimePackages": 510
   },
   "refreshedGraph": {
     "source": "dsh-process",
-    "hostRuntimePackages": 5,
+    "hostRuntimePackages": 62,
     "hostNode": {
       "id": "dsh-host/node_modules/@deepseek-ai/cordis",
       "name": "@deepseek-ai/cordis",
@@ -39,11 +39,11 @@
     ]
   },
   "dshAnalysisResults": 1,
-  "feedRequests": 5,
+  "feedRequests": 59,
   "modelRequests": 3,
   "webhookRequests": 1,
   "webhookEventIds": [
-    "event-a282519c8ead817d140d50fe"
+    "event-e9cea0f53dbdca810d0e99c2"
   ],
   "webhookEndpointPersisted": false,
   "dshProcessPollCompleted": true,

@@ -15,13 +15,13 @@
       "name": "@deepseek-ai/dsh",
       "version": "0.1.0-rc.6"
     },
-    "dependencyNodes": 28,
-    "dshHostPackages": 22,
-    "optionalDependenciesNotInstalled": 7
+    "dependencyNodes": 516,
+    "dshHostPackages": 510,
+    "optionalDependenciesNotInstalled": 65
   },
   "check": {
-    "packagesQueried": 25,
-    "releasePackagesQueried": 16,
+    "packagesQueried": 512,
+    "releasePackagesQueried": 189,
     "events": 0,
     "sourceErrors": 0,
     "activeVulnerabilities": 0

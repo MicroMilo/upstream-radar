@@ -16,6 +16,7 @@ export { parseInstalledNodeModulesGraph } from './installed-graph.js'
 export {
   discoverDshRuntimeNodeModulesDirectory,
   discoverDshRuntimePackage,
+  discoverDshRuntimePackageDirectory,
   discoverDshRuntimePackageFromNodeModulesDirectory,
 } from './dsh-runtime.js'
 export { OsvClient, packageKey, type OsvClientOptions } from './osv.js'
