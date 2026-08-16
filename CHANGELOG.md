@@ -38,6 +38,7 @@ All notable changes to Upstream Radar are documented here.
 - Add an explicit next-action line to CLI vulnerability, compatibility, and source-health events so the first check tells the user what to do next; keep the doctor gate distinct from human review and safety admission.
 - Make the repository's consumer smoke use the current local CLI by default, with an explicit `try:consumer:published` path for checking the public npm artifact before a release announcement.
 - Add a structured DSH trial feedback form and place a redacted-result link in the English and Chinese README first-run paths.
+- Document the real `create-dsh-plugin` to pnpm lockfile graph and GitHub Action path, so DSH plugin authors can review dependencies before installation and keep the same gate in CI.
 
 ## [0.33.0] - 2026-08-16
 

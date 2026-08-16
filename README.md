@@ -54,6 +54,7 @@ It looks only at the current directory and local DSH profile metadata. It recomm
 | Add a scheduled CI gate | [GitHub Actions example](examples/github-actions/upstream-radar.yml) | A frozen check from a reviewed config or one lockfile, with a concise Job Summary and a machine-readable JSON report. |
 | Check a plugin before installing it | [`graph` / `init` for npm or pnpm lockfiles](#inspect-an-npm-or-pnpm-lockfile-before-installation) | Exact dependency paths and OSV/GitHub Advisory results without running the plugin or its lifecycle scripts. |
 | Review one exact published artifact | `upstream-radar inspect npm:<package>@<exact-version> --deep` | Package, dependency, vulnerability, and provenance evidence for one release. |
+| Publish and maintain a DSH plugin | [Plugin author path](#for-dsh-plugin-authors) | Start from a real DSH scaffold, review its locked graph, and add a two-step CI gate before users install it. |
 | Send changed events to Feishu | [Feishu or HTTPS webhook](#notify-feishu-or-an-https-endpoint) | Native Feishu V2 text, environment-only secrets, durable acknowledgement, and retry. |
 
 If you want project-specific reasoning from DSH, use the first path. If you only need an independent admission or regression gate, use the second or third; they do not require a running DSH profile.
@@ -262,6 +263,46 @@ pnpm dlx --package=upstream-radar@latest upstream-radar init \
 For an npm project root, Radar reads `packages[""]` from the lockfile and ignores the root package's development-only dependencies. The command still does not install packages, run lifecycle scripts, load plugin code, or make network requests until the subsequent `radar check` queries OSV.
 
 Run `pnpm run showcase:npm-lock:monitor` for a deterministic local proof of this npm lockfile-to-OSV-to-DSH event path.
+
+## For DSH plugin authors
+
+If you start with the real [`create-dsh-plugin`](https://www.npmjs.com/package/create-dsh-plugin) scaffold, the shortest review-first path is:
+
+```bash
+npx create-dsh-plugin my-dsh-plugin -t tool --yes --skip-install
+cd my-dsh-plugin
+pnpm install --ignore-scripts
+
+# Read the exact graph before adding the plugin to a DSH profile.
+pnpm dlx --package=upstream-radar@0.33.0 upstream-radar graph pnpm-lock pnpm-lock.yaml --json
+```
+
+The graph includes the exact DSH package versions and keeps unresolved optional peers visible. It does not load the generated plugin or run lifecycle scripts. After reviewing it, copy this complete workflow into `.github/workflows/upstream-radar.yml`:
+
+```yaml
+name: Upstream Radar
+
+on:
+  workflow_dispatch:
+  pull_request:
+  schedule:
+    - cron: '17 6 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-radar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: MicroMilo/upstream-radar@v0.33.0
+        with:
+          fail-on: high
+          fail-on-compatibility: breaking
+```
+
+The Action auto-detects the one `pnpm-lock.yaml`, checks the same exact graph, and writes the result to the Job Summary. This is a pre-install and CI gate; it does not install the plugin into DSH. After the graph is reviewed, use the normal `dsh plugin` flow to install it and `upstream-radar setup` to start project-aware monitoring.
 
 ## See one incident
 

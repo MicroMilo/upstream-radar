@@ -49,6 +49,7 @@ npx --yes upstream-radar@latest quickstart
 | 加一个定时 CI 门禁 | [GitHub Actions 示例](../examples/github-actions/upstream-radar.yml) | 基于审查过的配置或唯一锁文件执行冻结检查，同时输出简短 Job Summary 和机器可读 JSON。 |
 | 安装插件前先检查它 | [npm/pnpm 锁文件的 `graph` / `init`](#安装前先检查-npm-或-pnpm-锁文件) | 不运行插件或 lifecycle script，直接得到精确依赖路径和 OSV/GitHub Advisory 结果。 |
 | 审查一个精确的发布物 | `upstream-radar inspect npm:<包名>@<精确版本> --deep` | 查看单个版本的包、依赖、漏洞和 provenance 证据。 |
+| 发布和维护 DSH 插件 | [插件作者路径](#dsh-插件作者) | 从真实 DSH 脚手架开始，先审查锁定的依赖图，再在用户安装前接入两步 CI 门禁。 |
 | 把变化通知到飞书 | [飞书与 HTTPS 通知](#飞书与-https-通知) | 原生飞书 V2 文本、只从环境读取密钥、持久确认和失败重试。 |
 
 需要结合项目代码做判断时，选第一条；只需要独立的准入或回归门禁时，选第二或第三条，不需要启动 DSH profile。
@@ -254,6 +255,46 @@ pnpm dlx --package=upstream-radar@latest upstream-radar init \
 对于 npm 项目根，Radar 读取锁文件中的 `packages[""]`，并排除根包仅用于开发的依赖。两个入口都不会安装包、运行 lifecycle script、加载插件代码或联网；后续 `radar check` 才会查询 OSV。
 
 运行 `pnpm run showcase:npm-lock:monitor` 可以本地看到这条 npm 锁文件到 OSV 再到 DSH 事件的确定性证明。
+
+## DSH 插件作者
+
+如果你使用真实的 [`create-dsh-plugin`](https://www.npmjs.com/package/create-dsh-plugin) 脚手架，最短的“先审查、再安装”路径是：
+
+```bash
+npx create-dsh-plugin my-dsh-plugin -t tool --yes --skip-install
+cd my-dsh-plugin
+pnpm install --ignore-scripts
+
+# 把插件放进 DSH profile 前，先读取精确依赖图。
+pnpm dlx --package=upstream-radar@0.33.0 upstream-radar graph pnpm-lock pnpm-lock.yaml --json
+```
+
+这棵图会保留精确的 DSH 包版本，也会把未解析的可选 peer 明确显示出来；它不会加载生成的插件，也不会运行 lifecycle script。审查后，把下面这个完整 workflow 复制到 `.github/workflows/upstream-radar.yml`：
+
+```yaml
+name: Upstream Radar
+
+on:
+  workflow_dispatch:
+  pull_request:
+  schedule:
+    - cron: '17 6 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-radar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: MicroMilo/upstream-radar@v0.33.0
+        with:
+          fail-on: high
+          fail-on-compatibility: breaking
+```
+
+Action 会自动识别唯一的 `pnpm-lock.yaml`，检查同一棵精确依赖图，并把结果写入 Job Summary。这是安装前和 CI 门禁，不会把插件安装进 DSH；图审查通过后，再使用正常的 `dsh plugin` 流程安装，并用 `upstream-radar setup` 开始面向项目的持续监控。
 
 ## 先看一个真实事件
 
