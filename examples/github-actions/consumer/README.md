@@ -11,6 +11,15 @@ Copy these two files into a repository that has reviewed the corresponding DSH p
 
 The workflow runs on demand or weekly. It checks the committed graph against OSV and npm, and fails when an active high-or-higher vulnerability is present. It does not install the plugin, run lifecycle scripts, start DSH, or modify the repository.
 
+To add the pre-install artifact gate for this exact plugin, add these inputs to the Action step:
+
+```yaml
+inspect-package: dsh-cloudflare-browser-run@0.1.1
+inspect-fail-on: review
+```
+
+That gate reviews the published tarball with scripts disabled and writes its verdict, coverage, findings, and next step to the Job Summary before the dependency graph check runs. It is not a sandbox and does not execute plugin business actions.
+
 To also fail when a confirmed or strong DSH/plugin compatibility break is found, add this input to the Action step:
 
 ```yaml

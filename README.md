@@ -359,6 +359,18 @@ steps:
 
 The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. In addition to the raw JSON log, the Action writes a short escaped summary to the GitHub Job Summary so a scheduled failure immediately shows the affected package, exact path, published fix version when available, and a suggested next step. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.33.0`, and pin the checkout Action in your workflow according to your repository's policy.
 
+To review the exact plugin artifact before it enters DSH, add `inspect-package`:
+
+```yaml
+- uses: MicroMilo/upstream-radar@v0.33.0
+  with:
+    inspect-package: dsh-cloudflare-browser-run@0.1.1
+    # review is the safe default; use block only when incomplete coverage may pass.
+    inspect-fail-on: review
+```
+
+This downloads that exact npm tarball, verifies the registry integrity/signature and provenance when available, resolves dependencies with lifecycle scripts disabled, and puts the admission verdict, coverage, findings, and next step in the Job Summary. Write the input as `package@version`; the Action adds the internal `npm:` prefix. It does not install or execute the plugin. The optional `inspect-verdict` output exposes `allow`, `warn`, `review`, or `block` to later workflow steps. An empty finding list with incomplete coverage remains a review result, not a safety certificate.
+
 If the repository has a pnpm lockfile but no committed Radar config yet, the Action can generate the config in the same job. See the [copyable pnpm workflow](examples/github-actions/upstream-radar-pnpm.yml):
 
 ```yaml

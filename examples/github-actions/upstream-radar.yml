@@ -19,3 +19,6 @@ jobs:
           config: upstream-radar.config.json
           fail-on: high
           fail-on-compatibility: breaking
+          # Optional pre-install review of one exact published plugin:
+          # inspect-package: dsh-cloudflare-browser-run@0.1.1
+          # inspect-fail-on: review

@@ -354,6 +354,18 @@ steps:
 
 这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --fail-on-compatibility breaking --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。每次运行彼此独立；发现达到阈值的漏洞或选择的兼容性变化时返回 `2`，运行或漏洞源出错时返回 `1`。`breaking` 只拦截有 confirmed/strong 信号的兼容性事件，`any` 会拦截所有活动兼容性事件，默认值是 `never`。除了原始 JSON 日志，Action 还会把经过转义的简短摘要写入 GitHub Job Summary，定时任务失败时可以直接看到受影响的包、准确依赖路径、已经发布的修复版本（如果有）和建议的下一步。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.33.0` 的发布标签，并根据团队策略固定 checkout Action。
 
+如果要在插件进入 DSH 前审查精确发布物，可以增加 `inspect-package`：
+
+```yaml
+- uses: MicroMilo/upstream-radar@v0.33.0
+  with:
+    inspect-package: dsh-cloudflare-browser-run@0.1.1
+    # review 是安全默认值；只有允许覆盖不完整时才使用 block
+    inspect-fail-on: review
+```
+
+它会下载这个精确 npm tarball，在可用时验证 registry 完整性、签名和 provenance，在禁用 lifecycle script 的情况下解析依赖，并把 admission verdict、覆盖范围、发现项和下一步写入 Job Summary。输入填写 `包名@版本` 即可，Action 会自动补上内部的 `npm:` 前缀。它不会安装或执行插件；`inspect-verdict` 输出可供后续步骤读取 `allow`、`warn`、`review` 或 `block`。没有发现项但覆盖不完整时仍然是 review，不是安全证明。
+
 如果仓库只有 pnpm 锁文件，还没有提交 Radar 配置，可以让 Action 在同一个 job 中生成配置；可直接复制[pnpm workflow 示例](../examples/github-actions/upstream-radar-pnpm.yml)：
 
 ```yaml

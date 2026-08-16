@@ -76,6 +76,7 @@
 - [x] Write an escaped, human-readable GitHub Job Summary alongside the Action's raw JSON result.
 - [x] Verify the published Action with a real DSH plugin consumer snapshot and a dogfood workflow.
 - [x] Add an opt-in Action input that packs one exact plugin release and runs the bounded DSH load matrix.
+- [x] Add an opt-in Action input that deeply inspects one exact npm plugin artifact before installation and writes its admission result to the Job Summary.
 - [x] Add an opt-in compatibility-change gate for breaking DSH/plugin updates.
 - [x] Provide an offline compatibility-rule benchmark covering deterministic and analysis-only outcomes.
 - [ ] Re-check the installed and proposed graph in GitHub Actions.

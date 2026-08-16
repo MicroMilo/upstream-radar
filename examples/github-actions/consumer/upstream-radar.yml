@@ -18,6 +18,9 @@ jobs:
         with:
           config: examples/github-actions/consumer/upstream-radar.config.json
           fail-on: high
+          # Optional pre-install artifact gate for the real plugin in this example:
+          # inspect-package: dsh-cloudflare-browser-run@0.1.1
+          # inspect-fail-on: review
           # Optional load-only compatibility matrix for the published plugin:
           # probe-package: dsh-cloudflare-browser-run@0.1.1
           # probe-dsh-versions: 0.1.0-rc.3,0.1.0-rc.6

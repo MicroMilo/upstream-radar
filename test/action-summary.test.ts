@@ -46,6 +46,49 @@ describe('GitHub Action summary', () => {
     }
   })
 
+  it('renders an exact plugin admission report with coverage and next steps', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-action-summary-admission-'))
+    try {
+      const report = join(root, 'inspect.json')
+      await writeFile(report, JSON.stringify({
+        schema: 'upstream-radar.scan/v1alpha1',
+        target: { name: 'demo-plugin', version: '1.0.0' },
+        verdict: 'review',
+        riskVerdict: 'allow',
+        coverageVerdict: 'incomplete',
+        coverage: {
+          artifactIntegrity: 'verified',
+          dependencyResolution: 'resolved',
+          registrySignature: 'verified',
+          provenance: 'missing',
+        },
+        evidence: {
+          npm: {
+            registrySignature: { status: 'verified' },
+            provenance: { status: 'missing' },
+            dependencyAudit: { packages: 18 },
+          },
+        },
+        findings: [{
+          code: 'dependency-graph-incomplete',
+          severity: 'high',
+          summary: 'One required dependency edge could not be resolved.',
+        }],
+      }))
+      const result = spawnSync(process.execPath, [summaryScript, report], { encoding: 'utf8' })
+      assert.equal(result.status, 0)
+      assert.match(result.stdout, /plugin admission/)
+      assert.match(result.stdout, /admission review required/)
+      assert.match(result.stdout, /demo-plugin@1\.0\.0/)
+      assert.match(result.stdout, /risk: `REVIEW` · coverage: `INCOMPLETE`/)
+      assert.match(result.stdout, /18 packages/)
+      assert.match(result.stdout, /dependency-graph-incomplete/)
+      assert.match(result.stdout, /Review .*findings and incomplete coverage before installing it/)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
   it('gives each event kind a safe next step and distinguishes recovery', async () => {
     const root = await mkdtemp(join(tmpdir(), 'upstream-radar-action-summary-guidance-'))
     try {

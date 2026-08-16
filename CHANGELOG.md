@@ -19,6 +19,7 @@ All notable changes to Upstream Radar are documented here.
 - Make a missing DSH executable during `setup` explain the exact prerequisite and recovery command instead of exposing a raw process-spawn error.
 - Explain how to prepare a profile when `setup` finds DSH but no third-party plugin to monitor.
 - Add a post-publish npm artifact smoke that installs the exact public tarball with scripts disabled and runs the packaged CLI demo.
+- Add an opt-in GitHub Action pre-install artifact gate for one exact npm plugin, with an admission verdict, coverage, findings, next step, and `inspect-verdict` output.
 
 ## [0.33.0] - 2026-08-16
 

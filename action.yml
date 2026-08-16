@@ -9,6 +9,9 @@ outputs:
   probe-result:
     description: 'Optional DSH load-matrix result: compatible, incompatible, or unknown.'
     value: ${{ steps.dsh-load-matrix.outputs.result }}
+  inspect-verdict:
+    description: 'Optional exact npm artifact admission verdict: allow, warn, review, or block.'
+    value: ${{ steps.inspect-package.outputs.verdict }}
 
 inputs:
   config:
@@ -51,6 +54,14 @@ inputs:
     description: Directory containing the reviewed config and project checkout.
     required: false
     default: .
+  inspect-package:
+    description: 'Optional exact npm package spec to inspect before installation (package@version, without the npm: prefix), for example dsh-cloudflare-browser-run@0.1.1.'
+    required: false
+    default: ''
+  inspect-fail-on:
+    description: 'Verdict threshold for inspect-package: warn, review, block, or never.'
+    required: false
+    default: review
   probe-package:
     description: 'Optional exact npm package spec (name@version) to pack and probe across DSH versions.'
     required: false
@@ -76,6 +87,38 @@ runs:
       uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         node-version: ${{ inputs.node-version }}
+    - name: Inspect exact npm plugin artifact
+      if: inputs.inspect-package != ''
+      id: inspect-package
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        RADAR_VERSION: ${{ inputs.version }}
+        RADAR_INSPECT_PACKAGE: ${{ inputs.inspect-package }}
+        RADAR_INSPECT_FAIL_ON: ${{ inputs.inspect-fail-on }}
+        RADAR_INSPECT_REPORT: ${{ runner.temp }}/upstream-radar/inspect-report.json
+      run: |
+        set -euo pipefail
+        exact_package='^(@[^/@[:space:]]+/[^@/[:space:]]+|[^@/[:space:]]+)@[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'
+        if [[ ! "$RADAR_INSPECT_PACKAGE" =~ $exact_package ]]; then
+          echo 'inspect-package must be an exact npm package spec such as dsh-cloudflare-browser-run@0.1.1' >&2
+          exit 1
+        fi
+        mkdir -p "$(dirname "$RADAR_INSPECT_REPORT")"
+        set +e
+        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar \
+          inspect "npm:$RADAR_INSPECT_PACKAGE" \
+          --deep \
+          --fail-on "$RADAR_INSPECT_FAIL_ON" \
+          --json | tee "$RADAR_INSPECT_REPORT"
+        inspect_exit=${PIPESTATUS[0]}
+        set -e
+        if [[ -n "${GITHUB_STEP_SUMMARY:-}" && -s "$RADAR_INSPECT_REPORT" ]]; then
+          node "$GITHUB_ACTION_PATH/scripts/action-summary.mjs" "$RADAR_INSPECT_REPORT" >> "$GITHUB_STEP_SUMMARY" || true
+        fi
+        inspect_verdict="$(REPORT_FILE="$RADAR_INSPECT_REPORT" node --input-type=module -e 'import { readFileSync } from "node:fs"; const report = JSON.parse(readFileSync(process.env.REPORT_FILE, "utf8")); process.stdout.write(String(report.verdict ?? "unknown"))' 2>/dev/null || printf 'unknown')"
+        printf 'verdict=%s\n' "$inspect_verdict" >> "$GITHUB_OUTPUT"
+        exit "$inspect_exit"
     - name: Validate lockfile inputs
       if: inputs.pnpm-lock != '' && inputs.npm-lock != ''
       shell: bash
