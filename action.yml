@@ -19,8 +19,12 @@ inputs:
     description: 'Optional pnpm-lock.yaml path; when set, generate the config input from this lockfile before checking it.'
     required: false
     default: ''
+  npm-lock:
+    description: 'Optional package-lock.json path; when set, generate the config input from this lockfile before checking it.'
+    required: false
+    default: ''
   root:
-    description: 'Optional exact package root override for pnpm-lock, for example @scope/plugin@1.0.0; otherwise read package.json beside the lockfile.'
+    description: 'Optional exact package root override for npm-lock or pnpm-lock, for example @scope/plugin@1.0.0; otherwise read package.json beside the lockfile.'
     required: false
     default: ''
   fail-on:
@@ -72,8 +76,14 @@ runs:
       uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         node-version: ${{ inputs.node-version }}
+    - name: Validate lockfile inputs
+      if: inputs.pnpm-lock != '' && inputs.npm-lock != ''
+      shell: bash
+      run: |
+        echo 'pnpm-lock and npm-lock are mutually exclusive; set only one.' >&2
+        exit 1
     - name: Check reviewed DSH graph
-      if: inputs.pnpm-lock == ''
+      if: inputs.pnpm-lock == '' && inputs.npm-lock == ''
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:
@@ -91,7 +101,7 @@ runs:
         --fail-on-compatibility "$RADAR_FAIL_ON_COMPATIBILITY"
         --json
     - name: Build Radar config from pnpm lockfile
-      if: inputs.pnpm-lock != ''
+      if: inputs.pnpm-lock != '' && inputs.npm-lock == ''
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:
@@ -110,8 +120,28 @@ runs:
           "${root_args[@]}" \
           --output "$RADAR_CONFIG" \
           --force
-    - name: Check generated pnpm DSH graph
-      if: inputs.pnpm-lock != ''
+    - name: Build Radar config from npm lockfile
+      if: inputs.npm-lock != '' && inputs.pnpm-lock == ''
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        RADAR_CONFIG: ${{ inputs.config }}
+        RADAR_LOCKFILE: ${{ inputs.npm-lock }}
+        RADAR_ROOT: ${{ inputs.root }}
+        RADAR_VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        root_args=()
+        if [[ -n "$RADAR_ROOT" ]]; then
+          root_args=(--root "$RADAR_ROOT")
+        fi
+        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar \
+          init --npm-lock "$RADAR_LOCKFILE" \
+          "${root_args[@]}" \
+          --output "$RADAR_CONFIG" \
+          --force
+    - name: Check generated lockfile DSH graph
+      if: inputs.pnpm-lock != '' || inputs.npm-lock != ''
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:

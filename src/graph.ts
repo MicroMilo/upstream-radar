@@ -60,14 +60,14 @@ function candidateDependencyPaths(parentPath: string, dependencyName: string): s
   return [...new Set(candidates)]
 }
 
-function dependencyEntries(item: Record<string, unknown>): Array<{ name: string; spec: string; kind: DependencyKind }> {
+function dependencyEntries(item: Record<string, unknown>, includeDevelopment = true): Array<{ name: string; spec: string; kind: DependencyKind }> {
   const selected = new Map<string, { spec: string; kind: DependencyKind }>()
   const add = (value: unknown, kind: DependencyKind, selectKind?: (name: string) => DependencyKind): void => {
     for (const [name, spec] of Object.entries(asStringRecord(value))) {
       selected.set(name, { spec, kind: selectKind?.(name) ?? kind })
     }
   }
-  add(item.devDependencies, 'development')
+  if (includeDevelopment) add(item.devDependencies, 'development')
   add(item.dependencies, 'runtime')
   const optionalPeers = optionalPeerNames(item.peerDependenciesMeta)
   add(item.peerDependencies, 'peer', name => optionalPeers.has(name) ? 'optional' : 'peer')
@@ -108,10 +108,21 @@ export function parseNpmLockGraph(lockfile: unknown, rootPackage: RootPackage): 
     allNodes.set(path, { id: path, name, version })
   }
 
+  const rootRecord = asRecord(rawPackages[''])
+  const rootRecordName = typeof rootRecord?.name === 'string' ? rootRecord.name : undefined
+  const rootRecordVersion = typeof rootRecord?.version === 'string' ? rootRecord.version : undefined
+  const workspaceRootId = rootRecordName === rootPackage.name && rootRecordVersion === rootPackage.version
+    ? `npm:workspace-root:${rootPackage.name}@${rootPackage.version}`
+    : undefined
+  if (workspaceRootId !== undefined && rootRecord !== undefined) {
+    records.set(workspaceRootId, rootRecord)
+    allNodes.set(workspaceRootId, { id: workspaceRootId, name: rootPackage.name, version: rootPackage.version })
+  }
+
   const roots = [...allNodes.values()]
     .filter(node => node.name === rootPackage.name && node.version === rootPackage.version)
     .sort((left, right) => left.id.length - right.id.length || left.id.localeCompare(right.id))
-  const rootNode = roots[0]
+  const rootNode = workspaceRootId === undefined ? roots[0] : allNodes.get(workspaceRootId)
   if (rootNode === undefined) {
     throw new Error(`requested root package is not present in npm lockfile: ${rootPackage.name}@${rootPackage.version}`)
   }
@@ -121,7 +132,7 @@ export function parseNpmLockGraph(lockfile: unknown, rootPackage: RootPackage): 
   for (const [parentPath, parentNode] of allNodes) {
     const item = records.get(parentPath)
     if (item === undefined) continue
-    for (const dependency of dependencyEntries(item)) {
+    for (const dependency of dependencyEntries(item, parentPath !== workspaceRootId)) {
       const targetPath = candidateDependencyPaths(parentPath, dependency.name)
         .find(candidate => allNodes.has(candidate))
       if (targetPath === undefined) {

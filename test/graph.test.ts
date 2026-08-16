@@ -41,6 +41,35 @@ describe('dependency graph', () => {
     )
   })
 
+  it('synthesizes an npm workspace root from the package-lock root entry', () => {
+    const graph = parseNpmLockGraph({
+      lockfileVersion: 3,
+      packages: {
+        '': {
+          name: 'demo-dsh-plugin',
+          version: '1.0.0',
+          dependencies: { logger: '4.0.2' },
+          devDependencies: { testkit: '9.0.0' },
+        },
+        'node_modules/logger': {
+          version: '4.0.2',
+          dependencies: { parser: '2.9.0' },
+        },
+        'node_modules/parser': { version: '2.9.0' },
+        'node_modules/testkit': { version: '9.0.0' },
+      },
+    }, { name: 'demo-dsh-plugin', version: '1.0.0' })
+
+    assert.equal(graph.rootNodeId, 'npm:workspace-root:demo-dsh-plugin@1.0.0')
+    assert.deepEqual(graph.nodes.map(node => `${node.name}@${node.version}`), [
+      'demo-dsh-plugin@1.0.0',
+      'logger@4.0.2',
+      'parser@2.9.0',
+    ])
+    assert.deepEqual(graph.edges.map(edge => edge.kind), ['runtime', 'runtime'])
+    assert.equal(graph.unresolved, undefined)
+  })
+
   it('keeps optional peers from making a candidate lock graph incomplete', () => {
     const graph = parseNpmLockGraph({
       lockfileVersion: 3,

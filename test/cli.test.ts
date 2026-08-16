@@ -22,10 +22,12 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /setup \[--profile <name>\]/)
     assert.match(help.stdout, /doctor \[config\.json\]/)
     assert.match(help.stdout, /init --pnpm-lock <pnpm-lock\.yaml> \[--root <package>@<exact-version>\]/)
+    assert.match(help.stdout, /init --npm-lock <package-lock\.json> \[--root <package>@<exact-version>\]/)
     assert.match(help.stdout, /--pnpm-lock <path>\s+init: build a static inventory from a pnpm v6\/v9 lockfile/)
+    assert.match(help.stdout, /--npm-lock <path>\s+init: build a static inventory from an npm v2\/v3 package-lock\.json/)
     assert.match(help.stdout, /radar watch <config\.json>/)
     assert.match(help.stdout, /radar status <config\.json>/)
-    assert.match(help.stdout, /graph pnpm-lock <pnpm-lock\.yaml> --root <package>@<exact-version>/)
+    assert.match(help.stdout, /graph <npm-lock\|pnpm-lock> <lockfile> \[--root <package>@<exact-version>\]/)
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
     assert.match(help.stdout, /--frozen\s+radar check\/watch: use the reviewed graph/)
     assert.match(help.stdout, /--fail-on <value>\s+scan\/inspect verdict or radar severity/)
@@ -220,6 +222,61 @@ snapshots:
       ], { encoding: 'utf8', cwd: root })
       assert.equal(result.status, 1)
       assert.match(result.stderr, /could not infer the pnpm lockfile root from .*package\.json; pass --root <package>@<exact-version>/)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('initializes and graphs an npm lockfile without a repeated root coordinate', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-npm-init-cli-'))
+    try {
+      const lockfile = join(root, 'package-lock.json')
+      const config = join(root, 'upstream-radar.config.json')
+      await writeFile(join(root, 'package.json'), JSON.stringify({
+        name: 'demo-plugin',
+        version: '1.0.0',
+      }))
+      await writeFile(lockfile, JSON.stringify({
+        lockfileVersion: 3,
+        packages: {
+          '': {
+            name: 'demo-plugin',
+            version: '1.0.0',
+            dependencies: { parser: '2.9.0' },
+          },
+          'node_modules/parser': { version: '2.9.0' },
+        },
+      }))
+
+      const graph = spawnSync(process.execPath, [
+        cli,
+        'graph',
+        'npm-lock',
+        lockfile,
+        '--json',
+      ], { encoding: 'utf8', cwd: root })
+      assert.equal(graph.status, 0)
+      const savedGraph = JSON.parse(graph.stdout) as { source?: string; rootNodeId?: string; nodes: unknown[]; edges: unknown[] }
+      assert.equal(savedGraph.source, 'npm-lock')
+      assert.equal(savedGraph.rootNodeId, 'npm:workspace-root:demo-plugin@1.0.0')
+      assert.equal(savedGraph.nodes.length, 2)
+      assert.equal(savedGraph.edges.length, 1)
+
+      const result = spawnSync(process.execPath, [
+        cli,
+        'init',
+        '--npm-lock',
+        lockfile,
+        '--output',
+        config,
+      ], { encoding: 'utf8', cwd: root })
+      assert.equal(result.status, 0)
+      assert.match(result.stdout, /Source: npm-lock/)
+      const saved = JSON.parse(await readFile(config, 'utf8')) as {
+        projects: Array<{ plugins: Array<{ graph: { source?: string; nodes: unknown[] } }> }>
+      }
+      assert.equal(saved.projects[0]?.plugins[0]?.graph.source, 'npm-lock')
+      assert.equal(saved.projects[0]?.plugins[0]?.graph.nodes.length, 2)
     } finally {
       await rm(root, { recursive: true, force: true })
     }

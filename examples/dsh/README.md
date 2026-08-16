@@ -61,7 +61,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar graph pnpm-lock \
   --json
 ```
 
-This is the same graph shape used by the Radar monitor, but the command is strictly pre-install: it reads pnpm's lockfile, does not run pnpm or plugin code, and keeps unresolved peer-context references visible. The repository's real-lockfile proof is `pnpm run showcase:pnpm-lock`.
+This is the same graph shape used by the Radar monitor, but the command is strictly pre-install: it reads the lockfile, does not run a package manager or plugin code, and keeps unresolved peer-context references visible. Use `npm-lock` with `package-lock.json` for npm projects. The repository's real-lockfile proof is `pnpm run showcase:pnpm-lock` (and `pnpm run showcase:npm-lock:monitor` for npm).
 
 To turn the lockfile into a static monitor before DSH installation:
 

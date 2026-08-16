@@ -103,14 +103,13 @@ candidate plugin@1.1.0
 
 For the earliest bounded set of newer versions, Radar resolves npm metadata into a temporary `package-lock.json` with lifecycle scripts disabled, queries every resolved node against OSV, and keeps the exact path in the compatibility event. A missing required edge, resolver failure, or OSV failure is shown as incomplete or unavailable; it is never presented as “no vulnerability found”. Later versions are marked as unchecked when the candidate list is larger than the bounded prefix. The result is still a starting point for DSH project analysis, not an upgrade certificate.
 
-## Inspect a pnpm lockfile before installation
+## Inspect an npm or pnpm lockfile before installation
 
 If a DSH plugin is managed with pnpm, inspect the exact locked tree before putting it into a DSH profile:
 
 ```bash
 pnpm dlx --package=upstream-radar@latest upstream-radar graph pnpm-lock \
   ./pnpm-lock.yaml \
-  --root @your-scope/your-dsh-plugin@1.0.0 \
   --json
 ```
 
@@ -121,7 +120,6 @@ To turn that graph into a monitorable inventory and run the first vulnerability 
 ```bash
 pnpm dlx --package=upstream-radar@latest upstream-radar init \
   --pnpm-lock ./pnpm-lock.yaml \
-  --root @your-scope/your-dsh-plugin@1.0.0 \
   --project-name "My DSH plugin"
 
 pnpm dlx --package=upstream-radar@latest upstream-radar radar check \
@@ -131,6 +129,21 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar check \
 `init --pnpm-lock` does not need a DSH profile and writes a normal Radar config; `radar check` then queries exact locked versions and emits the same DSH-ready event shape. Use the native DSH `setup` path when the plugin is installed and should receive follow-up analysis in a live Agent. Run `pnpm run showcase:pnpm-lock:monitor` to see the complete lockfile-to-OSV event locally.
 
 When `package.json` sits beside `pnpm-lock.yaml`, `--root` can be omitted; Radar reads the exact package name and version from that manifest. Keep `--root` when the lockfile belongs to another workspace root or when you want the admission coordinate to be explicit.
+
+The same path works for npm projects with a committed `package-lock.json`:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar graph npm-lock \
+  ./package-lock.json --json
+
+pnpm dlx --package=upstream-radar@latest upstream-radar init \
+  --npm-lock ./package-lock.json \
+  --project-name "My DSH plugin"
+```
+
+For an npm project root, Radar reads `packages[""]` from the lockfile and ignores the root package's development-only dependencies. The command still does not install packages, run lifecycle scripts, load plugin code, or make network requests until the subsequent `radar check` queries OSV.
+
+Run `pnpm run showcase:npm-lock:monitor` for a deterministic local proof of this npm lockfile-to-OSV-to-DSH event path.
 
 ## See one incident
 
@@ -311,6 +324,9 @@ If the repository has a pnpm lockfile but no committed Radar config yet, the Act
 
 This mode runs `init --pnpm-lock` first and then the same frozen check. `root` is optional when `package.json` is beside the lockfile, and can be supplied for an explicit or non-adjacent workspace root. It never installs the project or executes the plugin; `config` is the output path (default `upstream-radar.config.json`). Leave `pnpm-lock` empty to keep the reviewed-config mode above.
 
+Set `npm-lock: package-lock.json` instead for npm projects; `pnpm-lock` and `npm-lock` are mutually exclusive. Both modes infer the root from the adjacent `package.json` unless `root` is supplied.
+See the [copyable npm workflow](examples/github-actions/upstream-radar-npm.yml) for that form.
+
 The Action requires the caller to check out the repository first. It does not install the project's dependencies or run their lifecycle scripts; it only reads the committed graph and queries the configured upstream sources. For a fully explicit, lower-level invocation, the equivalent command is:
 
 ```bash
@@ -439,7 +455,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - native DSH bundle installation, startup polling, `agent/created` retry, and plugin-source attribution;
 - optional provider-neutral HTTPS webhook delivery for changed events, with endpoint-safe deduplication and retry;
 - read-only pnpm v6/v9 lockfile graph extraction, including project-root importers and explicit ambiguous peer references;
-- static Radar inventory generation from a pnpm lockfile, followed by the same exact-version OSV check used by the DSH monitor;
+- static Radar inventory generation from npm or pnpm lockfiles, followed by the same exact-version OSV check used by the DSH monitor;
 - automatic selection of the only DSH profile with third-party bundles, plus a network-free `radar status` snapshot;
 - commit-friendly `init` output that records the project workspace as `.` by default;
 - a reusable GitHub Action that turns the reviewed graph into a two-step, frozen CI gate;
@@ -462,8 +478,8 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 
 ## Current boundaries
 
-- `init` discovers the only DSH profile with third-party bundles when `--profile` is omitted; multiple candidates still require an explicit profile. By default it follows the installed DSH `node_modules` tree, so pnpm overrides and local resolution choices are included. `--dsh-patch <path>` writes an explicit DSH overlay so first startup needs no environment variables and preserves an explicitly selected registry. `graph pnpm-lock` is a separate pre-install/CI collector; it does not itself query OSV or create a Radar config.
-- `init --pnpm-lock <path>` creates a static config without a DSH profile; it reads `package.json` beside the lockfile unless `--root <name>@<version>` is supplied. Follow it with `radar check` or `radar watch` to query OSV. It does not itself start DSH or deliver Agent tasks.
+- `init` discovers the only DSH profile with third-party bundles when `--profile` is omitted; multiple candidates still require an explicit profile. By default it follows the installed DSH `node_modules` tree, so pnpm overrides and local resolution choices are included. `--dsh-patch <path>` writes an explicit DSH overlay so first startup needs no environment variables and preserves an explicitly selected registry. `graph npm-lock` and `graph pnpm-lock` are separate pre-install/CI collectors; they do not themselves query OSV or create a Radar config.
+- `init --pnpm-lock <path>` or `init --npm-lock <path>` creates a static config without a DSH profile; it reads `package.json` beside the lockfile unless `--root <name>@<version>` is supplied. Follow it with `radar check` or `radar watch` to query OSV. It does not itself start DSH or deliver Agent tasks.
 - A graph with unresolved required dependency declarations is marked as incomplete coverage; optional packages that are not installed for the current platform remain visible but do not create a false required-dependency alert. Missing `@deepseek-ai/dsh-*` and Cordis peers are called out separately as unobserved DSH host dependencies because Radar cannot query a version it was never shown.
 - Candidate upgrade graphs are resolved only for a bounded earliest prefix. A candidate with an incomplete or unavailable graph is not recommended; later unqueried candidates remain visibly unchecked. Pass `--no-deep-candidates` to opt out of this extra registry work.
 - Compatibility CI gating is opt-in: `--fail-on-compatibility breaking` fails on confirmed or strong incompatibility signals, while `any` fails on every active compatibility event; neither setting claims that a candidate is safe.

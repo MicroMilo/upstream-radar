@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promis
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, it } from 'node:test'
-import { createRadarConfigFromDshProfile, createRadarConfigFromPnpmLock, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, refreshRadarConfigFromDshProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from '../src/init.js'
+import { createRadarConfigFromDshProfile, createRadarConfigFromNpmLock, createRadarConfigFromPnpmLock, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, refreshRadarConfigFromDshProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from '../src/init.js'
 
 const graph = {
   schema: 'upstream-radar.dependency-graph/v1alpha1' as const,
@@ -221,6 +221,36 @@ snapshots:
       assert.equal(config.projects[0]?.project.name, 'Demo DSH plugin')
       assert.deepEqual(config.projects[0]?.project.channels, ['stdout'])
       assert.equal(config.projects[0]?.plugins[0]?.graph.source, 'pnpm-lock')
+      assert.equal(config.projects[0]?.plugins[0]?.graph.nodes.length, 2)
+      assert.equal(config.projects[0]?.plugins[0]?.graph.edges.length, 1)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('creates a static Radar inventory from an npm lockfile project root', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-init-npm-'))
+    try {
+      const lockfile = join(root, 'package-lock.json')
+      await writeFile(lockfile, JSON.stringify({
+        lockfileVersion: 3,
+        packages: {
+          '': {
+            name: 'demo-plugin',
+            version: '1.0.0',
+            dependencies: { parser: '2.9.0' },
+          },
+          'node_modules/parser': { version: '2.9.0' },
+        },
+      }))
+
+      const config = await createRadarConfigFromNpmLock({
+        lockfile,
+        root: { name: 'demo-plugin', version: '1.0.0' },
+        projectName: 'Demo npm DSH plugin',
+      })
+      assert.equal(config.projects[0]?.plugins[0]?.graph.source, 'npm-lock')
+      assert.equal(config.projects[0]?.plugins[0]?.graph.rootNodeId, 'npm:workspace-root:demo-plugin@1.0.0')
       assert.equal(config.projects[0]?.plugins[0]?.graph.nodes.length, 2)
       assert.equal(config.projects[0]?.plugins[0]?.graph.edges.length, 1)
     } finally {

@@ -10,8 +10,8 @@ import { probeDshLoad, probeDshLoadMatrix, renderDshLoadMatrix, renderDshLoadPro
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { createDoctorReport, renderDoctorReport } from './doctor.js'
 import { GitHubReleaseClient } from './github-release.js'
-import { parsePnpmLockGraph } from './graph.js'
-import { createRadarConfigFromDshProfile, createRadarConfigFromPnpmLock, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
+import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
+import { createRadarConfigFromDshProfile, createRadarConfigFromNpmLock, createRadarConfigFromPnpmLock, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 import { inspectNpmPackage } from './npm.js'
 import { NpmCandidateGraphClient } from './npm-candidate.js'
@@ -63,10 +63,11 @@ Usage:
   upstream-radar setup [--profile <name>] [options]
   upstream-radar init [--profile <name>] [options]
   upstream-radar init --pnpm-lock <pnpm-lock.yaml> [--root <package>@<exact-version>] [options]
+  upstream-radar init --npm-lock <package-lock.json> [--root <package>@<exact-version>] [options]
   upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
-  upstream-radar graph pnpm-lock <pnpm-lock.yaml> --root <package>@<exact-version> [--json]
+  upstream-radar graph <npm-lock|pnpm-lock> <lockfile> [--root <package>@<exact-version>] [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar benchmark compatibility [--json]
@@ -108,8 +109,9 @@ Options:
   --fail-on-compatibility <value>  CI gate: never|breaking|any (default: never)
   --notes <path>       release notes used as untrusted compatibility evidence
   --profile <name>     DSH profile for init or doctor (init auto-selects the only candidate when omitted)
+  --npm-lock <path>    init: build a static inventory from an npm v2/v3 package-lock.json
   --pnpm-lock <path>   init: build a static inventory from a pnpm v6/v9 lockfile
-  --root <coordinate>  init --pnpm-lock: override the root; otherwise read package.json beside the lockfile
+  --root <coordinate>  init/graph lockfiles: override the root; otherwise read package.json beside the lockfile
   --no-install          setup: reuse an already installed upstream-radar bundle
   --output <path>      init output path (default: ./upstream-radar.config.json)
   --dsh-patch <path>   write a self-contained DSH --patch overlay (setup default: ./upstream-radar.dsh.yml)
@@ -134,23 +136,24 @@ function parseExactPackageCoordinate(value: string): { name: string; version: st
   return { name, version }
 }
 
-async function inferPnpmRoot(lockfile: string): Promise<{ name: string; version: string }> {
+async function inferLockfileRoot(lockfile: string, kind: 'npm' | 'pnpm'): Promise<{ name: string; version: string }> {
   const manifestPath = join(dirname(resolve(lockfile)), 'package.json')
   try {
     const manifest = parsePackageManifestSnapshot(await readJson(manifestPath))
     return { name: manifest.name, version: manifest.version }
   } catch (error: unknown) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-      throw new Error(`could not infer the pnpm lockfile root from ${manifestPath}; pass --root <package>@<exact-version>`)
+      throw new Error(`could not infer the ${kind} lockfile root from ${manifestPath}; pass --root <package>@<exact-version>`)
     }
     throw error
   }
 }
 
 async function runGraph(args: readonly string[]): Promise<number> {
-  if (args[0] !== 'pnpm-lock') throw new Error('graph requires the pnpm-lock subcommand')
+  const kind = args[0]
+  if (kind !== 'npm-lock' && kind !== 'pnpm-lock') throw new Error('graph requires the npm-lock or pnpm-lock subcommand')
   const lockfile = args[1]
-  if (lockfile === undefined || lockfile.startsWith('-')) throw new Error('graph pnpm-lock requires a lockfile path')
+  if (lockfile === undefined || lockfile.startsWith('-')) throw new Error(`graph ${kind} requires a lockfile path`)
   let rootSpec: string | undefined
   let json = false
   for (let index = 2; index < args.length; index += 1) {
@@ -163,11 +166,15 @@ async function runGraph(args: readonly string[]): Promise<number> {
       rootSpec = value
       index += 1
     } else {
-      throw new Error(`unknown option for graph pnpm-lock: ${argument}`)
+      throw new Error(`unknown option for graph ${kind}: ${argument}`)
     }
   }
-  if (rootSpec === undefined) throw new Error('graph pnpm-lock requires --root <package>@<exact-version>')
-  const graph = parsePnpmLockGraph(await readFile(lockfile, 'utf8'), parseExactPackageCoordinate(rootSpec))
+  const packageRoot = rootSpec === undefined
+    ? await inferLockfileRoot(lockfile, kind === 'npm-lock' ? 'npm' : 'pnpm')
+    : parseExactPackageCoordinate(rootSpec)
+  const graph = kind === 'npm-lock'
+    ? parseNpmLockGraph(await readJson(lockfile), packageRoot)
+    : parsePnpmLockGraph(await readBoundedFile(lockfile, 16 * 1024 * 1024), packageRoot)
   if (json) {
     process.stdout.write(`${JSON.stringify(graph, null, 2)}\n`)
     return 0
@@ -181,7 +188,7 @@ async function runGraph(args: readonly string[]): Promise<number> {
   const unresolved = graph.unresolved ?? []
   process.stdout.write([
     `Dependency graph: ${root === undefined ? graph.rootNodeId : `${root.name}@${root.version}`}`,
-    'Source: pnpm-lock (read-only; no install, no plugin execution)',
+    `Source: ${kind} (read-only; no install, no plugin execution)`,
     `Nodes: ${graph.nodes.length}`,
     `Edges: ${graph.edges.length}`,
     `Unresolved: ${unresolved.length}`,
@@ -721,6 +728,7 @@ async function runSetup(args: readonly string[]): Promise<number> {
 
 async function runInit(args: readonly string[]): Promise<number> {
   let profile: string | undefined
+  let npmLockPath: string | undefined
   let pnpmLockPath: string | undefined
   let rootSpec: string | undefined
   let output = 'upstream-radar.config.json'
@@ -737,12 +745,13 @@ async function runInit(args: readonly string[]): Promise<number> {
     const argument = args[index]
     if (argument === '--force') force = true
     else if (argument === '--json') json = true
-    else if (argument === '--profile' || argument === '--pnpm-lock' || argument === '--root' || argument === '--output' || argument === '--dsh-patch' || argument === '--project-id'
+    else if (argument === '--profile' || argument === '--npm-lock' || argument === '--pnpm-lock' || argument === '--root' || argument === '--output' || argument === '--dsh-patch' || argument === '--project-id'
       || argument === '--project-name' || argument === '--repository' || argument === '--workspace'
       || argument === '--channel' || argument === '--registry') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--profile') profile = value
+      else if (argument === '--npm-lock') npmLockPath = value
       else if (argument === '--pnpm-lock') pnpmLockPath = value
       else if (argument === '--root') rootSpec = value
       else if (argument === '--output') output = value
@@ -759,25 +768,41 @@ async function runInit(args: readonly string[]): Promise<number> {
     }
   }
 
-  if (pnpmLockPath !== undefined) {
+  if (npmLockPath !== undefined || pnpmLockPath !== undefined) {
+    if (npmLockPath !== undefined && pnpmLockPath !== undefined) {
+      throw new Error('init accepts only one of --npm-lock or --pnpm-lock')
+    }
+    const lockKind = npmLockPath === undefined ? 'pnpm-lock' : 'npm-lock'
+    const lockfile = npmLockPath ?? pnpmLockPath
+    if (lockfile === undefined) throw new Error('init lockfile path is missing')
     if (profile !== undefined || dshPatch !== undefined || registry !== undefined) {
-      throw new Error('init --pnpm-lock does not accept --profile, --dsh-patch or --registry')
+      throw new Error(`init --${lockKind} does not accept --profile, --dsh-patch or --registry`)
     }
     const root = rootSpec === undefined
-      ? await inferPnpmRoot(pnpmLockPath)
+      ? await inferLockfileRoot(lockfile, lockKind === 'npm-lock' ? 'npm' : 'pnpm')
       : parseExactPackageCoordinate(rootSpec)
-    const config = await createRadarConfigFromPnpmLock({
-      lockfile: pnpmLockPath,
-      root,
-      ...(projectId === undefined ? {} : { projectId }),
-      ...(projectName === undefined ? {} : { projectName }),
-      ...(repository === undefined ? {} : { repository }),
-      ...(workspace === undefined ? {} : { workspace }),
-      ...(channels.length === 0 ? {} : { channels }),
-    })
+    const config = lockKind === 'npm-lock'
+      ? await createRadarConfigFromNpmLock({
+        lockfile,
+        root,
+        ...(projectId === undefined ? {} : { projectId }),
+        ...(projectName === undefined ? {} : { projectName }),
+        ...(repository === undefined ? {} : { repository }),
+        ...(workspace === undefined ? {} : { workspace }),
+        ...(channels.length === 0 ? {} : { channels }),
+      })
+      : await createRadarConfigFromPnpmLock({
+        lockfile,
+        root,
+        ...(projectId === undefined ? {} : { projectId }),
+        ...(projectName === undefined ? {} : { projectName }),
+        ...(repository === undefined ? {} : { repository }),
+        ...(workspace === undefined ? {} : { workspace }),
+        ...(channels.length === 0 ? {} : { channels }),
+      })
     const outputPath = await writeRadarConfig(config, { output: resolve(output), force })
     const plugin = config.projects[0]?.plugins[0]
-    if (plugin === undefined) throw new Error('pnpm lock initialization produced no plugin')
+    if (plugin === undefined) throw new Error(`${lockKind} initialization produced no plugin`)
     if (json) {
       process.stdout.write(`${JSON.stringify({
         output: outputPath,
@@ -789,11 +814,11 @@ async function runInit(args: readonly string[]): Promise<number> {
       }, null, 2)}\n`)
     } else {
       const unresolved = plugin.graph.unresolved?.length ?? 0
-      process.stdout.write(`Created ${outputPath}\nSource: pnpm-lock\nRoot: ${plugin.package.name}@${plugin.package.version}\nGraph: ${plugin.graph.nodes.length} nodes, ${plugin.graph.edges.length} edges, ${unresolved} unresolved\nNext: upstream-radar radar check ${shellQuote(outputPath)} --frozen\n`)
+      process.stdout.write(`Created ${outputPath}\nSource: ${plugin.graph.source ?? lockKind}\nRoot: ${plugin.package.name}@${plugin.package.version}\nGraph: ${plugin.graph.nodes.length} nodes, ${plugin.graph.edges.length} edges, ${unresolved} unresolved\nNext: upstream-radar radar check ${shellQuote(outputPath)} --frozen\n`)
     }
     return 0
   }
-  if (rootSpec !== undefined) throw new Error('init --root is only valid with --pnpm-lock')
+  if (rootSpec !== undefined) throw new Error('init --root is only valid with --npm-lock or --pnpm-lock')
   let autoSelected = false
   let resolvedProfile = profile
   if (resolvedProfile === undefined) {

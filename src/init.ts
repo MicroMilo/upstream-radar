@@ -1,7 +1,7 @@
 import { access, readFile, readdir, realpath, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path'
-import { parsePnpmLockGraph } from './graph.js'
+import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
 import { inspectNpmPackage, type InspectNpmOptions } from './npm.js'
 import { parseInstalledNodeModulesGraph } from './installed-graph.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
@@ -16,6 +16,7 @@ import {
 } from './radar-types.js'
 
 const MAX_JSON_BYTES = 8 * 1024 * 1024
+const MAX_LOCKFILE_JSON_BYTES = 256 * 1024 * 1024
 
 type InitInspection = {
   evidence: {
@@ -56,6 +57,19 @@ export interface PnpmLockInitOptions {
   channels?: string[]
 }
 
+export interface NpmLockInitOptions {
+  lockfile: string
+  root: {
+    name: string
+    version: string
+  }
+  projectId?: string
+  projectName?: string
+  repository?: string
+  workspace?: string
+  channels?: string[]
+}
+
 export interface WriteRadarConfigOptions {
   output: string
   force?: boolean
@@ -83,9 +97,9 @@ function requiredString(value: unknown, label: string): string {
   return value
 }
 
-async function readJson(path: string): Promise<unknown> {
+async function readJson(path: string, maxBytes = MAX_JSON_BYTES): Promise<unknown> {
   const contents = await readFile(path, 'utf8')
-  if (Buffer.byteLength(contents) > MAX_JSON_BYTES) throw new Error(`${path} exceeds the ${MAX_JSON_BYTES} byte limit`)
+  if (Buffer.byteLength(contents) > maxBytes) throw new Error(`${path} exceeds the ${maxBytes} byte limit`)
   try {
     return JSON.parse(contents) as unknown
   } catch {
@@ -247,10 +261,11 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
   return config
 }
 
-/** Build a static Radar inventory from a pnpm lockfile without installing packages. */
-export async function createRadarConfigFromPnpmLock(options: PnpmLockInitOptions): Promise<RadarConfig> {
-  const lockfile = resolve(options.lockfile)
-  const graph = parsePnpmLockGraph(await readFile(lockfile, 'utf8'), options.root)
+function createStaticLockConfig(
+  graph: DependencyGraph,
+  root: { name: string; version: string },
+  options: Pick<PnpmLockInitOptions, 'projectId' | 'projectName' | 'repository' | 'workspace' | 'channels'>,
+): RadarConfig {
   const workspace = options.workspace ?? '.'
   const projectId = options.projectId ?? defaultProjectId(workspace)
   const projectName = options.projectName ?? defaultProjectName(workspace)
@@ -267,13 +282,27 @@ export async function createRadarConfigFromPnpmLock(options: PnpmLockInitOptions
       },
       environment: { nodeVersion: process.versions.node },
       plugins: [{
-        package: { ecosystem: 'npm', name: options.root.name, version: options.root.version },
+        package: { ecosystem: 'npm', name: root.name, version: root.version },
         graph,
       }],
     }],
   }
   parseRadarConfig(config)
   return config
+}
+
+/** Build a static Radar inventory from a pnpm lockfile without installing packages. */
+export async function createRadarConfigFromPnpmLock(options: PnpmLockInitOptions): Promise<RadarConfig> {
+  const lockfile = resolve(options.lockfile)
+  const graph = parsePnpmLockGraph(await readFile(lockfile, 'utf8'), options.root)
+  return createStaticLockConfig(graph, options.root, options)
+}
+
+/** Build a static Radar inventory from an npm lockfile without installing packages. */
+export async function createRadarConfigFromNpmLock(options: NpmLockInitOptions): Promise<RadarConfig> {
+  const lockfile = resolve(options.lockfile)
+  const graph = parseNpmLockGraph(await readJson(lockfile, MAX_LOCKFILE_JSON_BYTES), options.root)
+  return createStaticLockConfig(graph, options.root, options)
 }
 
 /**
