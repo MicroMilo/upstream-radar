@@ -520,6 +520,7 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
   const webhookUrl = configuredWebhookUrl === undefined || configuredWebhookUrl.trim() === ''
     ? undefined
     : normalizeRadarWebhookUrl(configuredWebhookUrl)
+  const feishuSecret = process.env.UPSTREAM_RADAR_FEISHU_SECRET?.trim() || undefined
   const webhookEndpointHash = webhookUrl === undefined ? undefined : radarWebhookEndpointHash(webhookUrl)
   const dshHostNodeModulesDirectory = config.profile === undefined || config.refreshProfile === false
     ? undefined
@@ -573,7 +574,7 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
             const pendingWebhookEvents = undeliveredRadarWebhookEvents(state, webhookEndpointHash, result.events)
             if (pendingWebhookEvents.length > 0) {
               try {
-                await sendRadarWebhook(webhookUrl, pendingWebhookEvents)
+                await sendRadarWebhook(webhookUrl, pendingWebhookEvents, feishuSecret === undefined ? {} : { feishuSecret })
                 state = markRadarWebhookEventsDelivered(state, webhookEndpointHash, pendingWebhookEvents)
                 await saveRadarState(stateFile, state)
                 ctx.logger.info(`upstream-radar: delivered ${pendingWebhookEvents.length} changed event(s) to the configured webhook`)

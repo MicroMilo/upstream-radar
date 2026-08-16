@@ -88,7 +88,17 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar watch \
   ./upstream-radar.config.json --webhook "$UPSTREAM_RADAR_WEBHOOK_URL"
 ```
 
-The webhook receives only `new`, `updated`, and `resolved` changes (including source-health changes) in the bounded `upstream-radar.webhook/v1alpha1` JSON format described by the [schema](schemas/webhook.schema.json). A successful HTTP 2xx response records the event id; a failed request remains retryable on the next cycle. The state stores only a SHA-256 endpoint fingerprint and delivered ids, never the URL or its token. This is a provider-neutral JSON endpoint; a Feishu or Slack relay can turn its `text` and `events` fields into the provider's native card. Run `pnpm run showcase:webhook` to see deduplication and retry behavior without contacting a real endpoint.
+The webhook receives only `new`, `updated`, and `resolved` changes (including source-health changes) in the bounded `upstream-radar.webhook/v1alpha1` JSON format described by the [schema](schemas/webhook.schema.json). A successful HTTP 2xx response records the event id; a failed request remains retryable on the next cycle. The state stores only a SHA-256 endpoint fingerprint and delivered ids, never the URL or its token. For a normal endpoint, this provider-neutral JSON can be turned into a Feishu or Slack card by a relay. For a Feishu/Lark V2 custom bot, Radar recognizes the `/open-apis/bot/v2/hook/` URL and sends the native text body directly:
+
+```bash
+export UPSTREAM_RADAR_WEBHOOK_URL='https://open.feishu.cn/open-apis/bot/v2/hook/replace-me'
+# Only needed when the Feishu bot has signature validation enabled.
+export UPSTREAM_RADAR_FEISHU_SECRET='replace-me'
+
+dsh --profile web --patch ./upstream-radar.dsh.yml
+```
+
+The Feishu secret is read only from the environment and is never written to the Radar config or state. Use the V2 URL; the older `/open-apis/bot/hook/` form is rejected with an actionable error. Run `pnpm run showcase:webhook` to see deduplication and retry behavior without contacting a real endpoint.
 
 <p align="center">
   <picture>
@@ -473,7 +483,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - a bounded transition history with a local `radar history` audit command;
 - strict DSH result writeback bound to the exact message, session, task, and event, with stale-result rejection;
 - native DSH bundle installation, startup polling, `agent/created` retry, and plugin-source attribution;
-- optional provider-neutral HTTPS webhook delivery for changed events, with endpoint-safe deduplication and retry;
+- optional provider-neutral HTTPS webhook delivery for changed events, with endpoint-safe deduplication and retry, plus direct Feishu/Lark V2 text delivery;
 - read-only pnpm v6/v9 lockfile graph extraction, including project-root importers and explicit ambiguous peer references;
 - static Radar inventory generation from npm or pnpm lockfiles, followed by the same exact-version OSV check used by the DSH monitor;
 - automatic selection of the only DSH profile with third-party bundles, plus a network-free `radar status` snapshot;

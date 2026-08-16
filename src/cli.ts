@@ -561,6 +561,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
     throw new Error('radar --webhook requires a persistent --state file so successful deliveries can be remembered')
   }
   const webhookEndpointHash = webhookUrl === undefined ? undefined : radarWebhookEndpointHash(webhookUrl)
+  const feishuSecret = process.env.UPSTREAM_RADAR_FEISHU_SECRET?.trim() || undefined
   const runCheck = async () => {
     const config = await readConfigForPoll()
     const state = statePath === ':memory:' ? emptyRadarState() : await loadRadarState(stateFile)
@@ -569,7 +570,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
     if (webhookUrl === undefined || webhookEndpointHash === undefined || result.events.length === 0) return result
     const pendingWebhookEvents = undeliveredRadarWebhookEvents(result.state, webhookEndpointHash, result.events)
     if (pendingWebhookEvents.length === 0) return result
-    await sendRadarWebhook(webhookUrl, pendingWebhookEvents)
+    await sendRadarWebhook(webhookUrl, pendingWebhookEvents, feishuSecret === undefined ? {} : { feishuSecret })
     const nextState = markRadarWebhookEventsDelivered(result.state, webhookEndpointHash, pendingWebhookEvents)
     await saveRadarState(stateFile, nextState)
     return { ...result, state: nextState }

@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict'
+import { createHmac } from 'node:crypto'
 import { describe, it } from 'node:test'
 import { emptyRadarState } from '../src/radar.js'
 import {
+  buildFeishuWebhookPayload,
   buildRadarWebhookPayload,
+  isFeishuV2WebhookUrl,
   markRadarWebhookEventsDelivered,
   normalizeRadarWebhookUrl,
   radarWebhookEndpointHash,
@@ -34,6 +37,45 @@ describe('webhook delivery', () => {
     assert.throws(() => normalizeRadarWebhookUrl('http://hooks.example.test/incoming'), /must use HTTPS/)
     assert.throws(() => normalizeRadarWebhookUrl('https://user:pass@hooks.example.test/incoming'), /credentials/)
     assert.throws(() => normalizeRadarWebhookUrl('https://hooks.example.test/incoming#fragment'), /fragment/)
+  })
+
+  it('formats Feishu V2 custom-bot messages and signs only when a secret is supplied', async () => {
+    const now = new Date('2026-08-16T04:01:00.000Z')
+    const radarPayload = buildRadarWebhookPayload([event], now)
+    const unsigned = buildFeishuWebhookPayload(radarPayload, { now })
+    assert.deepEqual(unsigned, {
+      msg_type: 'text',
+      content: { text: '[NEW][compatibility] demo-plugin@1.0.0 -> demo-plugin@2.0.0: The candidate crosses a major version boundary.' },
+    })
+    const secret = 'feishu-secret'
+    const timestamp = Math.floor(now.getTime() / 1_000).toString()
+    const signed = buildFeishuWebhookPayload(radarPayload, { now, secret })
+    assert.equal(signed.timestamp, timestamp)
+    assert.equal(signed.sign, createHmac('sha256', `${timestamp}\n${secret}`).digest('base64'))
+    assert.equal(isFeishuV2WebhookUrl('https://open.feishu.cn/open-apis/bot/v2/hook/token'), true)
+    assert.equal(isFeishuV2WebhookUrl('https://open.larksuite.com/open-apis/bot/v2/hook/token'), true)
+    assert.equal(isFeishuV2WebhookUrl('https://hooks.example.test/incoming'), false)
+    await assert.rejects(
+      sendRadarWebhook('https://open.feishu.cn/open-apis/bot/hook/token', [event]),
+      /V1 webhook is not supported/,
+    )
+  })
+
+  it('sends Feishu V2 JSON instead of the provider-neutral envelope', async () => {
+    const url = 'https://open.feishu.cn/open-apis/bot/v2/hook/token'
+    let requestInit: RequestInit | undefined
+    await sendRadarWebhook(url, [event], {
+      now: new Date('2026-08-16T04:01:00.000Z'),
+      feishuSecret: 'secret',
+      fetch: async (_input, init) => {
+        requestInit = init
+        return new Response(null, { status: 200 })
+      },
+    })
+    const body = JSON.parse(String(requestInit?.body)) as { msg_type: string; content: { text: string }; schema?: string }
+    assert.equal(body.msg_type, 'text')
+    assert.equal(body.schema, undefined)
+    assert.match(body.content.text, /^\[NEW\]\[compatibility\]/)
   })
 
   it('sends a bounded structured payload and records only successful event ids', async () => {

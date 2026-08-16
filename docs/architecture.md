@@ -74,9 +74,9 @@ The active-match key binds project, plugin version, affected package version, an
 
 ## Optional external notification
 
-The native DSH path remains the primary analysis route. When `UPSTREAM_RADAR_WEBHOOK_URL` is set, or the CLI receives `--webhook <https-url>`, Radar also sends a bounded JSON payload for each `new`, `updated`, or `resolved` event. The payload contains stable event and incident ids, the project identity without a local workspace path, exact package paths, relevant severity or compatibility signals, and a short `text` rendering. Advisory details are not executed or treated as instructions.
+The native DSH path remains the primary analysis route. When `UPSTREAM_RADAR_WEBHOOK_URL` is set, or the CLI receives `--webhook <https-url>`, Radar also sends a bounded notification for each `new`, `updated`, or `resolved` event. Normal HTTPS endpoints receive the provider-neutral JSON payload with stable event and incident ids, the project identity without a local workspace path, exact package paths, relevant severity or compatibility signals, and a short `text` rendering. A Feishu/Lark V2 custom-bot URL is recognized by its exact host/path and receives a bounded native text body instead. Advisory details are not executed or treated as instructions.
 
-The endpoint must use HTTPS. Radar writes the state change first, then POSTs the payload; a 2xx response records the event id under a SHA-256 endpoint fingerprint. A failed request is logged and remains eligible for retry. The ledger never stores the URL or query token, and a crash between receiver acknowledgement and ledger persistence can produce a duplicate, so consumers should deduplicate on `id` or `incidentId`.
+The endpoint must use HTTPS. Radar writes the state change first, then POSTs the payload; a 2xx response records the event id under a SHA-256 endpoint fingerprint. A failed request is logged and remains eligible for retry. The ledger never stores the URL or query token. Feishu signature material is accepted only through `UPSTREAM_RADAR_FEISHU_SECRET`, is never persisted, and is generated only for V2 custom-bot URLs. A crash between receiver acknowledgement and ledger persistence can produce a duplicate, so consumers should deduplicate on `id` or `incidentId`.
 
 ## Compatibility cycle
 

@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto'
+import { createHash, createHmac } from 'node:crypto'
 import { TOOL_VERSION } from './version.js'
 import type {
   CompatibilityEvent,
@@ -14,6 +14,7 @@ export const RADAR_WEBHOOK_SCHEMA = 'upstream-radar.webhook/v1alpha1' as const
 
 const MAX_WEBHOOK_EVENTS = 64
 const MAX_WEBHOOK_TEXT = 24 * 1024
+const MAX_FEISHU_TEXT_BYTES = 16 * 1024
 const MAX_WEBHOOK_DELIVERIES = 10_000
 
 export interface RadarWebhookEventNotice {
@@ -45,11 +46,25 @@ export interface RadarWebhookPayload {
 export interface SendRadarWebhookOptions {
   fetch?: typeof fetch
   now?: Date
+  /** Feishu V2 signature secret; read from the environment, never from Radar state. */
+  feishuSecret?: string
 }
 
 function bounded(value: string, maxLength: number): string {
   const clean = value.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?')
   return clean.length <= maxLength ? clean : `${clean.slice(0, maxLength - 1)}…`
+}
+
+function boundedUtf8(value: string, maxBytes: number): string {
+  const clean = value.replace(/[\x00-\x1f\x7f-\x9f]/g, '?')
+  if (Buffer.byteLength(clean, 'utf8') <= maxBytes) return clean
+  const suffix = '…'
+  let output = ''
+  for (const character of clean) {
+    if (Buffer.byteLength(`${output}${character}${suffix}`, 'utf8') > maxBytes) break
+    output += character
+  }
+  return `${output}${suffix}`
 }
 
 function packageLabel(value: PackageCoordinate): string {
@@ -191,6 +206,42 @@ export function radarWebhookEndpointHash(value: string): string {
   return createHash('sha256').update(normalizeRadarWebhookUrl(value), 'utf8').digest('hex')
 }
 
+/** Recognize the recommended Feishu/Lark V2 custom-bot endpoint. */
+export function isFeishuV2WebhookUrl(value: string): boolean {
+  const url = new URL(normalizeRadarWebhookUrl(value))
+  return (url.hostname === 'open.feishu.cn' || url.hostname === 'open.larksuite.com')
+    && url.pathname.startsWith('/open-apis/bot/v2/hook/')
+}
+
+function isLegacyFeishuWebhookUrl(value: string): boolean {
+  const url = new URL(normalizeRadarWebhookUrl(value))
+  return (url.hostname === 'open.feishu.cn' || url.hostname === 'open.larksuite.com')
+    && url.pathname.startsWith('/open-apis/bot/hook/')
+}
+
+export interface FeishuWebhookPayload {
+  timestamp?: string
+  sign?: string
+  msg_type: 'text'
+  content: { text: string }
+}
+
+/** Build the Feishu V2 custom-bot text body without exposing the generic event payload. */
+export function buildFeishuWebhookPayload(
+  payload: RadarWebhookPayload,
+  options: { now?: Date; secret?: string } = {},
+): FeishuWebhookPayload {
+  const now = options.now ?? new Date()
+  if (!Number.isFinite(now.getTime())) throw new Error('webhook timestamp is invalid')
+  const text = boundedUtf8(payload.text.replaceAll('<', '＜'), MAX_FEISHU_TEXT_BYTES)
+  const secret = options.secret
+  if (secret === undefined || secret.length === 0) return { msg_type: 'text', content: { text } }
+  if (secret.length > 4_096) throw new Error('Feishu webhook secret is too long')
+  const timestamp = Math.floor(now.getTime() / 1_000).toString()
+  const sign = createHmac('sha256', `${timestamp}\n${secret}`).digest('base64')
+  return { timestamp, sign, msg_type: 'text', content: { text } }
+}
+
 export async function sendRadarWebhook(
   url: string,
   events: readonly RadarEvent[],
@@ -198,7 +249,16 @@ export async function sendRadarWebhook(
 ): Promise<RadarWebhookPayload> {
   const endpoint = normalizeRadarWebhookUrl(url)
   if (events.length === 0) return buildRadarWebhookPayload([], options.now)
+  if (isLegacyFeishuWebhookUrl(endpoint)) {
+    throw new Error('Feishu V1 webhook is not supported; use the V2 /open-apis/bot/v2/hook/... URL')
+  }
   const payload = buildRadarWebhookPayload(events, options.now)
+  const body = isFeishuV2WebhookUrl(endpoint)
+    ? JSON.stringify(buildFeishuWebhookPayload(payload, {
+      ...(options.now === undefined ? {} : { now: options.now }),
+      ...(options.feishuSecret === undefined ? {} : { secret: options.feishuSecret }),
+    }))
+    : JSON.stringify(payload)
   const fetchImpl = options.fetch ?? fetch
   let response: Response
   try {
@@ -209,7 +269,7 @@ export async function sendRadarWebhook(
         'user-agent': `upstream-radar/${TOOL_VERSION}`,
         'x-upstream-radar-schema': RADAR_WEBHOOK_SCHEMA,
       },
-      body: JSON.stringify(payload),
+      body,
       redirect: 'error',
       signal: AbortSignal.timeout(10_000),
     })

@@ -51,7 +51,7 @@
 - [ ] Maintain one durable project registry across multiple machines.
 - [x] Deliver to the correct DSH project session instead of one security-inbox Agent.
 - [x] Add provider-neutral HTTPS webhook delivery with durable event acknowledgement and retry.
-- [ ] Add Feishu, Slack, and email adapters with provider-native formatting and acknowledgement state.
+- [x] Add direct Feishu/Lark V2 custom-bot text delivery with optional environment-only signature generation; keep generic webhook acknowledgement state.
 - [ ] Add suppression, ownership, maintenance-window, and dev-only rules.
 - [x] Keep a bounded local transition history for new, updated, and resolved/source-health states, with a read-only `radar history` query.
 

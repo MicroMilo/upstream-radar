@@ -287,13 +287,13 @@ The local model accepts the resulting analysis task, so the report covers the wh
 
 ## Scene 19 — send one changed event to an external endpoint
 
-The optional webhook path is provider-neutral and does not require a real Feishu or Slack account:
+The optional webhook path is provider-neutral and does not require a real Feishu or Slack account. It also recognizes Feishu/Lark V2 custom-bot URLs and converts the same event text to Feishu's native `msg_type: "text"` body; set `UPSTREAM_RADAR_FEISHU_SECRET` only when signature validation is enabled:
 
 ```bash
 pnpm run showcase:webhook
 ```
 
-The deterministic receiver proves one delivery, duplicate suppression, retry after a failed request, and that the persisted ledger contains only an endpoint fingerprint—not the URL or token. Production DSH runs opt in with `UPSTREAM_RADAR_WEBHOOK_URL`; CLI runs can pass the same HTTPS endpoint with `radar check/watch --webhook`.
+The deterministic receiver proves one delivery, duplicate suppression, retry after a failed request, that the persisted ledger contains only an endpoint fingerprint—not the URL or token, and that a Feishu V2 endpoint receives a native signed text body instead of the generic envelope. Production DSH runs opt in with `UPSTREAM_RADAR_WEBHOOK_URL`; set `UPSTREAM_RADAR_FEISHU_SECRET` when Feishu signature validation is enabled. CLI runs can pass the same HTTPS endpoint with `radar check/watch --webhook`.
 
 ## Live sources
 

@@ -80,6 +80,8 @@ export { loadRadarState, parseRadarState, saveRadarState } from './radar-state.j
 export {
   RADAR_WEBHOOK_SCHEMA,
   buildRadarWebhookPayload,
+  buildFeishuWebhookPayload,
+  isFeishuV2WebhookUrl,
   markRadarWebhookEventsDelivered,
   normalizeRadarWebhookUrl,
   radarWebhookEndpointHash,
@@ -88,6 +90,7 @@ export {
   undeliveredRadarWebhookEvents,
   type RadarWebhookEventNotice,
   type RadarWebhookPayload,
+  type FeishuWebhookPayload,
   type SendRadarWebhookOptions,
 } from './webhook.js'
 export {
