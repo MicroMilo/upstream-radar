@@ -78,6 +78,23 @@ describe('webhook delivery', () => {
     assert.match(body.content.text, /^\[NEW\]\[compatibility\]/)
   })
 
+  it('keeps untrusted Feishu text from creating mentions and stays below the bot body limit', () => {
+    const unsafeEvent: CompatibilityEvent = {
+      ...event,
+      signals: [{
+        code: 'untrusted-release-note',
+        confidence: 'needs-analysis',
+        summary: '<at user_id="all">notify everyone</at> ' + 'x'.repeat(2_048),
+      }],
+    }
+    const radarPayload = buildRadarWebhookPayload(Array.from({ length: 64 }, () => unsafeEvent))
+    const feishu = buildFeishuWebhookPayload(radarPayload, {
+      now: new Date('2026-08-16T04:01:00.000Z'),
+    })
+    assert.doesNotMatch(feishu.content.text, /<at\b/)
+    assert.ok(Buffer.byteLength(JSON.stringify(feishu), 'utf8') < 20 * 1024)
+  })
+
   it('sends a bounded structured payload and records only successful event ids', async () => {
     const url = 'https://hooks.example.test/incoming?token=secret'
     const endpointHash = radarWebhookEndpointHash(url)

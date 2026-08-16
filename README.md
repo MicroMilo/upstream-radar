@@ -98,7 +98,7 @@ export UPSTREAM_RADAR_FEISHU_SECRET='replace-me'
 dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
-The Feishu secret is read only from the environment and is never written to the Radar config or state. Use the V2 URL; the older `/open-apis/bot/hook/` form is rejected with an actionable error. Run `pnpm run showcase:webhook` to see deduplication and retry behavior without contacting a real endpoint.
+The Feishu secret is read only from the environment and is never written to the Radar config or state. Follow the [official Feishu custom-bot guide](https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN?lang=zh-CN) when creating the V2 bot. Use the V2 URL; the older `/open-apis/bot/hook/` form is rejected with an actionable error. Run `pnpm run showcase:webhook` to see deduplication and retry behavior without contacting a real endpoint.
 
 <p align="center">
   <picture>

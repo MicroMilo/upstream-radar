@@ -86,7 +86,7 @@ export UPSTREAM_RADAR_FEISHU_SECRET='替换成真实密钥'
 dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
-飞书密钥只从环境变量读取，不会写入 Radar 配置或状态文件。请使用 V2 地址；旧的 `/open-apis/bot/hook/` 地址会被明确拒绝。运行 `pnpm run showcase:webhook` 可以在不访问真实接口的情况下看到去重和重试。
+飞书密钥只从环境变量读取，不会写入 Radar 配置或状态文件。创建机器人时可参考[飞书官方自定义机器人指南](https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN?lang=zh-CN)。请使用 V2 地址；旧的 `/open-apis/bot/hook/` 地址会被明确拒绝。运行 `pnpm run showcase:webhook` 可以在不访问真实接口的情况下看到去重和重试。
 
 <p align="center">
   <picture>
