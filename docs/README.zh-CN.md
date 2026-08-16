@@ -38,6 +38,8 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
 dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
+如果你使用 npm 而不是 pnpm，等价入口是 `npx --yes upstream-radar@latest setup --project-name "我的 DSH 项目"`。团队要复现同一套行为时，把 `latest` 换成已经审查过的精确版本。
+
 DSH 启动后，在第二个终端执行只读状态检查：
 
 ```bash

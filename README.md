@@ -48,6 +48,8 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
 dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
+If you use npm rather than pnpm, the equivalent launcher is `npx --yes upstream-radar@latest setup --project-name "My DSH project"`. For a reproducible team workflow, replace `latest` with the exact release you have reviewed.
+
 `setup` explicitly installs the exact Radar version used by the command into the selected DSH profile, discovers the installed graph, writes `./upstream-radar.config.json` and `./upstream-radar.dsh.yml` by default, and runs the network-free wiring check. It does not start DSH or execute plugin business actions; review the generated files before starting the process. Use `--output` or `--dsh-patch` for different paths; if Radar is already installed, add `--no-install`.
 
 After DSH is running, use a second terminal for the read-only status check:
