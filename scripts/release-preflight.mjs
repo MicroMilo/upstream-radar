@@ -271,7 +271,7 @@ async function checkPackedArtifact() {
 }
 
 async function checkPublishedVersion() {
-  if (!args.has('--published')) return
+  if (!args.has('--published')) return false
   const result = spawnSync('npm', ['view', `upstream-radar@${version}`, 'version', '--json'], {
     cwd: root,
     encoding: 'utf8',
@@ -279,13 +279,106 @@ async function checkPublishedVersion() {
   })
   if (result.status !== 0) {
     fail('npm published version', (result.stderr || result.stdout || 'npm view failed').trim())
-    return
+    return false
   }
   const published = String(JSON.parse(result.stdout))
   if (published === version) {
     pass('npm published version', `upstream-radar@${version} is available from npm`)
+    return true
   } else {
     fail('npm published version', `npm returned ${published}; expected ${version}`)
+    return false
+  }
+}
+
+async function checkPublishedArtifact(isAvailable) {
+  if (!isAvailable) return
+  const temporaryRoot = await mkdtemp(join(tmpdir(), 'upstream-radar-published-'))
+  try {
+    const pack = spawnSync('npm', [
+      'pack',
+      `upstream-radar@${version}`,
+      '--ignore-scripts',
+      '--pack-destination',
+      temporaryRoot,
+      '--json',
+    ], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 4 * 1024 * 1024,
+    })
+    if (pack.status !== 0) {
+      fail('published artifact smoke', (pack.stderr || pack.stdout || 'npm pack failed').trim())
+      return
+    }
+
+    let metadata
+    try {
+      metadata = JSON.parse(pack.stdout)
+    } catch (error) {
+      fail('published artifact smoke', `could not parse npm pack output: ${error instanceof Error ? error.message : String(error)}`)
+      return
+    }
+    const filename = metadata[0]?.filename
+    if (typeof filename !== 'string') {
+      fail('published artifact smoke', 'npm pack did not report an artifact filename')
+      return
+    }
+
+    const installRoot = join(temporaryRoot, 'install')
+    await mkdir(installRoot)
+    const install = spawnSync('npm', [
+      'install',
+      '--prefix',
+      installRoot,
+      '--ignore-scripts',
+      '--no-audit',
+      '--no-fund',
+      join(temporaryRoot, filename),
+    ], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 4 * 1024 * 1024,
+    })
+    if (install.status !== 0) {
+      fail('published artifact smoke', (install.stderr || install.stdout || 'npm install failed').trim())
+      return
+    }
+
+    const cli = join(installRoot, 'node_modules', 'upstream-radar', 'dist', 'src', 'cli.js')
+    const help = spawnSync(process.execPath, [cli, '--help'], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 4 * 1024 * 1024,
+    })
+    if (help.status !== 0 || !help.stdout.includes('radar history')) {
+      fail('published artifact smoke', (help.stderr || help.stdout || 'published CLI did not start').trim())
+      return
+    }
+
+    const demo = spawnSync(process.execPath, [cli, 'demo', '--json'], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 4 * 1024 * 1024,
+    })
+    if (demo.status !== 0) {
+      fail('published artifact smoke', (demo.stderr || demo.stdout || 'published CLI demo failed').trim())
+      return
+    }
+    let report
+    try {
+      report = JSON.parse(demo.stdout)
+    } catch (error) {
+      fail('published artifact smoke', `published CLI returned invalid demo JSON: ${error instanceof Error ? error.message : String(error)}`)
+      return
+    }
+    if (report.schema !== 'upstream-radar.demo/v1alpha1' || report.networkFree !== true) {
+      fail('published artifact smoke', 'published CLI returned an unexpected demo report')
+      return
+    }
+    pass('published artifact smoke', `upstream-radar@${version} installed from npm with scripts disabled and passed help plus demo`)
+  } finally {
+    await rm(temporaryRoot, { recursive: true, force: true })
   }
 }
 
@@ -293,7 +386,8 @@ await checkVersionFiles()
 await checkCopyableReferences()
 await checkPackContents()
 await checkPackedArtifact()
-await checkPublishedVersion()
+const publishedAvailable = await checkPublishedVersion()
+await checkPublishedArtifact(publishedAvailable)
 
 const failed = checks.filter(check => check.status === 'fail')
 const report = {

@@ -89,6 +89,7 @@
     "showcase:npm-lock:monitor": "pnpm run build && node scripts/npm-lock-monitor-showcase.mjs",
     "showcase:webhook": "pnpm run build && node scripts/webhook-showcase.mjs",
     "release:check": "pnpm run build && node scripts/release-preflight.mjs",
+    "release:check:published": "pnpm run build && node scripts/release-preflight.mjs --published",
     "try:consumer": "node scripts/consumer-smoke.mjs",
     "try:dsh": "pnpm run build && node scripts/dsh-headless-showcase.mjs",
     "try:dsh:live": "pnpm run build && node scripts/dsh-headless-showcase.mjs --live-feeds",

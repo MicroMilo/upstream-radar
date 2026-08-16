@@ -23,9 +23,9 @@ The relationship can be inspected or replaced with npm CLI 11.5.1 or newer. Acco
 4. Merge the release commit into `main` after CI passes.
 5. Publish a non-prerelease GitHub Release whose tag is exactly `v<package version>`.
 6. Wait for the `Publish npm package` workflow to pass.
-7. Run `pnpm run build && node scripts/release-preflight.mjs --published` from a checkout of the released commit, then verify npm integrity and provenance before announcing the release.
+7. Run `pnpm run release:check:published` from a checkout of the released commit, then verify npm integrity and provenance before announcing the release.
 
-The preflight is intentionally separate from publishing. Before the release exists, the normal command proves that users will receive consistent instructions; after npm publishing, `--published` adds the registry availability check. It does not treat a successful npm publication as a security certificate.
+The preflight is intentionally separate from publishing. Before the release exists, the normal command proves that users will receive consistent instructions; after npm publishing, `release:check:published` downloads the exact public tarball with lifecycle scripts disabled, installs it in a temporary directory, starts its CLI, and runs the network-free demo. It does not treat a successful npm publication as a security certificate.
 
 The workflow refuses a tag/package mismatch. It installs with lifecycle scripts disabled, runs the full test suite and real DSH headless proof, packs the artifact, and only then asks npm for a short-lived publish credential.
 
