@@ -3,6 +3,7 @@ import { TOOL_VERSION } from './version.js'
 import type {
   CompatibilityEvent,
   PackageCoordinate,
+  ProjectInventory,
   ProjectReference,
   RadarEvent,
   RadarState,
@@ -50,6 +51,89 @@ export interface SendRadarWebhookOptions {
   now?: Date
   /** Feishu V2 signature secret; read from the environment, never from Radar state. */
   feishuSecret?: string
+}
+
+/** A resolved delivery target; URLs and secrets are runtime-only values. */
+export interface RadarWebhookTarget {
+  url: string
+  endpointHash: string
+  feishuSecret?: string
+  /** Undefined means the explicit global endpoint receives every event. */
+  projectIds?: string[]
+}
+
+function mergeWebhookTarget(
+  targets: Map<string, RadarWebhookTarget>,
+  target: Omit<RadarWebhookTarget, 'projectIds'> & { projectId?: string },
+): void {
+  const existing = targets.get(target.endpointHash)
+  if (existing === undefined) {
+    targets.set(target.endpointHash, {
+      url: target.url,
+      endpointHash: target.endpointHash,
+      ...(target.feishuSecret === undefined ? {} : { feishuSecret: target.feishuSecret }),
+      ...(target.projectId === undefined ? {} : { projectIds: [target.projectId] }),
+    })
+    return
+  }
+  if ((existing.feishuSecret ?? '') !== (target.feishuSecret ?? '')) {
+    throw new Error('the same webhook endpoint is configured with different Feishu signing secrets')
+  }
+  // A global target is intentionally broadcast to every project; a project
+  // target sharing its endpoint therefore needs no additional filtering.
+  if (existing.projectIds === undefined || target.projectId === undefined) return
+  if (!existing.projectIds.includes(target.projectId)) existing.projectIds.push(target.projectId)
+}
+
+/** Resolve the global endpoint plus any project-specific environment routes. */
+export function resolveRadarWebhookTargets(
+  projects: readonly ProjectInventory[],
+  options: {
+    globalUrl?: string
+    globalFeishuSecret?: string
+    environment?: NodeJS.ProcessEnv
+  } = {},
+): RadarWebhookTarget[] {
+  const environment = options.environment ?? process.env
+  const targets = new Map<string, RadarWebhookTarget>()
+  if (options.globalUrl !== undefined) {
+    const url = normalizeRadarWebhookUrl(options.globalUrl)
+    mergeWebhookTarget(targets, {
+      url,
+      endpointHash: radarWebhookEndpointHash(url),
+      ...(options.globalFeishuSecret === undefined ? {} : { feishuSecret: options.globalFeishuSecret }),
+    })
+  }
+  for (const inventory of projects) {
+    const urlEnv = inventory.project.webhookUrlEnv
+    if (urlEnv === undefined) continue
+    const rawUrl = environment[urlEnv]?.trim()
+    if (rawUrl === undefined || rawUrl.length === 0) {
+      throw new Error(`project ${inventory.project.id} webhook URL environment variable ${urlEnv} is not set`)
+    }
+    const url = normalizeRadarWebhookUrl(rawUrl)
+    const secretEnv = inventory.project.webhookSecretEnv
+    const secret = secretEnv === undefined ? undefined : environment[secretEnv]?.trim() || undefined
+    mergeWebhookTarget(targets, {
+      url,
+      endpointHash: radarWebhookEndpointHash(url),
+      ...(secret === undefined ? {} : { feishuSecret: secret }),
+      projectId: inventory.project.id,
+    })
+  }
+  return [...targets.values()].map(target => ({
+    ...target,
+    ...(target.projectIds === undefined ? {} : { projectIds: [...target.projectIds].sort() }),
+  }))
+}
+
+export function eventsForRadarWebhookTarget(
+  events: readonly RadarEvent[],
+  target: RadarWebhookTarget,
+): RadarEvent[] {
+  if (target.projectIds === undefined) return [...events]
+  const projects = new Set(target.projectIds)
+  return events.filter(event => projects.has(event.project.id))
 }
 
 function bounded(value: string, maxLength: number): string {
@@ -399,4 +483,61 @@ export function markRadarWebhookEventsDelivered(
       ...(pendingEvents.length === 0 ? {} : { pendingEvents }),
     },
   }
+}
+
+function stateForWebhookRoute(state: RadarState, endpointHash: string): RadarState {
+  const stateWithoutLegacyWebhook = { ...state }
+  delete stateWithoutLegacyWebhook.webhook
+  const routed = state.webhookRoutes?.[endpointHash]
+  return routed === undefined
+    ? stateWithoutLegacyWebhook
+    : { ...stateWithoutLegacyWebhook, webhook: routed }
+}
+
+function saveWebhookRouteState(
+  original: RadarState,
+  endpointHash: string,
+  routed: RadarState,
+): RadarState {
+  const routedWebhook = routed.webhook
+  if (routedWebhook === undefined) throw new Error('webhook route state was not written')
+  const { webhook: _temporaryWebhook, ...withoutTemporaryWebhook } = routed
+  return {
+    ...withoutTemporaryWebhook,
+    ...(original.webhook === undefined ? {} : { webhook: original.webhook }),
+    webhookRoutes: {
+      ...(original.webhookRoutes ?? {}),
+      [endpointHash]: routedWebhook,
+    },
+  }
+}
+
+/** Read the durable outbox for one project-specific endpoint. */
+export function undeliveredRadarWebhookEventsForRoute(
+  state: RadarState,
+  endpointHash: string,
+  events: readonly RadarEvent[],
+): RadarEvent[] {
+  return undeliveredRadarWebhookEvents(stateForWebhookRoute(state, endpointHash), endpointHash, events)
+}
+
+/** Queue changed events for one project-specific endpoint. */
+export function queueRadarWebhookEventsForRoute(
+  state: RadarState,
+  endpointHash: string,
+  events: readonly RadarEvent[],
+): RadarState {
+  const routed = queueRadarWebhookEvents(stateForWebhookRoute(state, endpointHash), endpointHash, events)
+  return events.length === 0 ? state : saveWebhookRouteState(state, endpointHash, routed)
+}
+
+/** Mark successful delivery for one project-specific endpoint. */
+export function markRadarWebhookEventsDeliveredForRoute(
+  state: RadarState,
+  endpointHash: string,
+  events: readonly RadarEvent[],
+  deliveredAt = new Date(),
+): RadarState {
+  const routed = markRadarWebhookEventsDelivered(stateForWebhookRoute(state, endpointHash), endpointHash, events, deliveredAt)
+  return saveWebhookRouteState(state, endpointHash, routed)
 }

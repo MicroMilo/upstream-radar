@@ -36,6 +36,8 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /--fail-on <value>\s+scan\/inspect verdict or radar severity/)
     assert.match(help.stdout, /--fail-on-compatibility <value>\s+CI gate: never\|breaking\|any/)
     assert.match(help.stdout, /--webhook <https-url>\s+radar check\/watch: POST changed events to an HTTPS endpoint/)
+    assert.match(help.stdout, /--webhook-url-env <name>/)
+    assert.match(help.stdout, /--webhook-secret-env <name>/)
     assert.match(help.stdout, /--dsh-patch <path>\s+write a self-contained DSH --patch overlay \(setup default: \.\/upstream-radar\.dsh\.yml\)/)
     assert.match(help.stdout, /--no-dsh-patch\s+setup: keep the legacy UPSTREAM_RADAR_\* environment-variable wiring/)
     assert.match(help.stdout, /probe dsh-load <package\.tgz>/)
@@ -102,6 +104,8 @@ describe('CLI option parsing', () => {
     assert.match(setupHelp.stdout, /notificationPolicy/)
     assert.match(setupHelp.stdout, /--minimum-severity <level>/)
     assert.match(setupHelp.stdout, /--quiet-hours <tz,start-end>/)
+    assert.match(setupHelp.stdout, /--webhook-url-env <name>/)
+    assert.match(setupHelp.stdout, /--webhook-secret-env <name>/)
     assert.match(setupHelp.stdout, /--start\s+start DSH after the local wiring check passes/)
     assert.doesNotMatch(setupHelp.stderr, /unknown option/)
 
@@ -109,6 +113,8 @@ describe('CLI option parsing', () => {
     assert.equal(initHelp.status, 0)
     assert.match(initHelp.stdout, /--minimum-severity <level>/)
     assert.match(initHelp.stdout, /--quiet-hours <tz,start-end>/)
+    assert.match(initHelp.stdout, /--webhook-url-env <name>/)
+    assert.match(initHelp.stdout, /--webhook-secret-env <name>/)
 
     const invalidNotificationSeverity = spawnSync(process.execPath, [cli, 'init', '--minimum-severity', 'severe'], { encoding: 'utf8' })
     assert.equal(invalidNotificationSeverity.status, 1)

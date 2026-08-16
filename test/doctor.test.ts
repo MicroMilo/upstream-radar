@@ -176,4 +176,30 @@ describe('upstream-radar doctor', () => {
       await rm(root, { recursive: true, force: true })
     }
   })
+
+  it('checks project webhook environment routes without printing their values', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-doctor-project-webhook-'))
+    const variable = 'UPSTREAM_RADAR_DOCTOR_PROJECT_URL'
+    const previous = process.env[variable]
+    try {
+      const candidate = config()
+      candidate.projects[0]!.project.webhookUrlEnv = variable
+      const configFile = join(root, 'upstream-radar.config.json')
+      await writeFile(configFile, `${JSON.stringify(candidate, null, 2)}\n`)
+
+      delete process.env[variable]
+      const missing = await createDoctorReport({ configFile })
+      assert.equal(missing.checks.find(check => check.id === 'project-webhooks')?.status, 'fail')
+      assert.doesNotMatch(renderDoctorReport(missing), /alerts\.example\.test\/project/)
+
+      process.env[variable] = 'https://alerts.example.test/project'
+      const ready = await createDoctorReport({ configFile })
+      assert.equal(ready.checks.find(check => check.id === 'project-webhooks')?.status, 'pass')
+      assert.doesNotMatch(renderDoctorReport(ready), /alerts\.example\.test\/project/)
+    } finally {
+      if (previous === undefined) delete process.env[variable]
+      else process.env[variable] = previous
+      await rm(root, { recursive: true, force: true })
+    }
+  })
 })

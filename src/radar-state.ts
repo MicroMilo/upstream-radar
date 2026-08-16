@@ -303,6 +303,17 @@ function validWebhookDeliveryState(value: unknown): boolean {
   ))
 }
 
+function validWebhookDeliveryStateMap(value: unknown): boolean {
+  if (value === undefined) return true
+  const routes = asRecord(value)
+  if (routes === undefined || Object.keys(routes).length > 1_000) return false
+  return Object.entries(routes).every(([endpointHash, rawState]) => (
+    /^[a-f0-9]{64}$/.test(endpointHash)
+      && validWebhookDeliveryState(rawState)
+      && asRecord(rawState)?.endpointHash === endpointHash
+  ))
+}
+
 function validIncidentMutes(value: unknown): boolean {
   if (value === undefined) return true
   const mutes = asRecord(value)
@@ -425,6 +436,9 @@ export function parseRadarState(value: unknown): RadarState {
   }
   if (root.webhook !== undefined && !validWebhookDeliveryState(root.webhook)) {
     throw new Error('radar state has an invalid webhook delivery state')
+  }
+  if (!validWebhookDeliveryStateMap(root.webhookRoutes)) {
+    throw new Error('radar state has an invalid webhook route map')
   }
   if (!validIncidentMutes(root.incidentMutes)) {
     throw new Error('radar state has an invalid incident mute map')

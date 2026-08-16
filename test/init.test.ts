@@ -39,6 +39,8 @@ describe('DSH profile initialization', () => {
         projectName: 'Payments API',
         workspace: '/workspace/payments-api',
         channels: ['feishu:payments-security'],
+        webhookUrlEnv: 'RADAR_PAYMENTS_URL',
+        webhookSecretEnv: 'RADAR_PAYMENTS_SECRET',
         notificationPolicy: {
           minimumSeverity: 'high',
           quietHours: { timezone: 'Asia/Shanghai', start: '22:00', end: '08:00' },
@@ -53,6 +55,8 @@ describe('DSH profile initialization', () => {
       assert.equal(config.projects[0]?.project.name, 'Payments API')
       assert.equal(config.projects[0]?.plugins[0]?.package.name, 'demo-plugin')
       assert.equal(config.projects[0]?.plugins[0]?.graph.nodes.length, 2)
+      assert.equal(config.projects[0]?.project.webhookUrlEnv, 'RADAR_PAYMENTS_URL')
+      assert.equal(config.projects[0]?.project.webhookSecretEnv, 'RADAR_PAYMENTS_SECRET')
       assert.deepEqual(config.projects[0]?.notificationPolicy, {
         minimumSeverity: 'high',
         quietHours: { timezone: 'Asia/Shanghai', start: '22:00', end: '08:00' },

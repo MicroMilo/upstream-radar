@@ -60,6 +60,7 @@
 - [x] Offer an explicit `setup --start` shortcut while keeping the review-first default.
 - [x] Add provider-neutral HTTPS webhook delivery with durable event acknowledgement and retry.
 - [x] Add direct Feishu/Lark V2 custom-bot text delivery with optional environment-only signature generation; keep generic webhook acknowledgement state.
+- [x] Route webhook events to project-specific environment endpoints with independent endpoint outboxes while preserving the global broadcast-compatible path.
 - [ ] Add suppression, ownership, maintenance-window, and dev-only rules.
   - [x] Add per-project minimum vulnerability severity and timezone-aware quiet hours as delivery-only controls.
   - [x] Keep held DSH tasks and webhook events durable so policy changes do not lose evidence.

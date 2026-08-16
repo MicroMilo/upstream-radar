@@ -24,12 +24,16 @@ import {
 import { pollRadar } from './radar.js'
 import { loadRadarState, saveRadarState } from './radar-state.js'
 import {
+  eventsForRadarWebhookTarget,
   markRadarWebhookEventsDelivered,
+  markRadarWebhookEventsDeliveredForRoute,
   normalizeRadarWebhookUrl,
   queueRadarWebhookEvents,
-  radarWebhookEndpointHash,
+  queueRadarWebhookEventsForRoute,
+  resolveRadarWebhookTargets,
   sendRadarWebhook,
   undeliveredRadarWebhookEvents,
+  undeliveredRadarWebhookEventsForRoute,
 } from './webhook.js'
 import {
   ANALYSIS_DELIVERY_SCHEMA,
@@ -559,7 +563,6 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
     ? undefined
     : normalizeRadarWebhookUrl(configuredWebhookUrl)
   const feishuSecret = process.env.UPSTREAM_RADAR_FEISHU_SECRET?.trim() || undefined
-  const webhookEndpointHash = webhookUrl === undefined ? undefined : radarWebhookEndpointHash(webhookUrl)
   const dshHostNodeModulesDirectory = config.profile === undefined || config.refreshProfile === false
     ? undefined
     : discoverDshRuntimeNodeModulesDirectory()
@@ -632,26 +635,38 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
           state = result.state
           // Persist before model delivery. A crash may duplicate a task, but cannot silently lose it.
           await saveRadarState(stateFile, state)
-          if (webhookUrl !== undefined && webhookEndpointHash !== undefined) {
-            state = queueRadarWebhookEvents(state, webhookEndpointHash, result.events)
+          const webhookTargets = resolveRadarWebhookTargets(radarConfig.projects, {
+            ...(webhookUrl === undefined ? {} : { globalUrl: webhookUrl }),
+            ...(feishuSecret === undefined ? {} : { globalFeishuSecret: feishuSecret }),
+          })
+          for (const target of webhookTargets) {
+            const targetEvents = eventsForRadarWebhookTarget(result.events, target)
+            const isLegacyGlobal = webhookUrl !== undefined && target.projectIds === undefined
+            const queuedState = isLegacyGlobal
+              ? queueRadarWebhookEvents(state, target.endpointHash, targetEvents)
+              : queueRadarWebhookEventsForRoute(state, target.endpointHash, targetEvents)
+            state = queuedState
             await saveRadarState(stateFile, state)
             const pendingWebhookEvents = filterNotifiableRadarEvents(
-              undeliveredRadarWebhookEvents(state, webhookEndpointHash, result.events),
+              isLegacyGlobal
+                ? undeliveredRadarWebhookEvents(state, target.endpointHash, targetEvents)
+                : undeliveredRadarWebhookEventsForRoute(state, target.endpointHash, targetEvents),
               notificationPolicies,
               new Date(),
               state,
             )
-            if (pendingWebhookEvents.length > 0) {
-              try {
-                const payload = await sendRadarWebhook(webhookUrl, pendingWebhookEvents, feishuSecret === undefined ? {} : { feishuSecret })
-                const deliveredIds = new Set(payload.events.map(event => event.id))
-                const deliveredEvents = pendingWebhookEvents.filter(event => deliveredIds.has(event.id))
-                state = markRadarWebhookEventsDelivered(state, webhookEndpointHash, deliveredEvents)
-                await saveRadarState(stateFile, state)
-                ctx.logger.info(`upstream-radar: delivered ${deliveredEvents.length} changed event(s) to the configured webhook`)
-              } catch (error: unknown) {
-                ctx.logger.warn(`upstream-radar: webhook delivery failed; will retry: ${safeMessage(error)}`)
-              }
+            if (pendingWebhookEvents.length === 0) continue
+            try {
+              const payload = await sendRadarWebhook(target.url, pendingWebhookEvents, target.feishuSecret === undefined ? {} : { feishuSecret: target.feishuSecret })
+              const deliveredIds = new Set(payload.events.map(event => event.id))
+              const deliveredEvents = pendingWebhookEvents.filter(event => deliveredIds.has(event.id))
+              state = isLegacyGlobal
+                ? markRadarWebhookEventsDelivered(state, target.endpointHash, deliveredEvents)
+                : markRadarWebhookEventsDeliveredForRoute(state, target.endpointHash, deliveredEvents)
+              await saveRadarState(stateFile, state)
+              ctx.logger.info(`upstream-radar: delivered ${deliveredEvents.length} changed event(s) to the configured webhook route`)
+            } catch (error: unknown) {
+              ctx.logger.warn(`upstream-radar: webhook delivery failed; will retry: ${safeMessage(error)}`)
             }
           }
           if (result.events.length > 0) {

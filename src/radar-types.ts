@@ -106,6 +106,10 @@ export interface ProjectReference {
   workspace?: string
   owner?: string
   channels?: string[]
+  /** Environment variable containing this project's HTTPS webhook URL. */
+  webhookUrlEnv?: string
+  /** Optional environment variable containing the Feishu/Lark V2 signing secret. */
+  webhookSecretEnv?: string
 }
 
 export interface ProjectInventory {
@@ -411,6 +415,8 @@ export interface RadarState {
   history?: RadarEvent[]
   /** Event ids successfully delivered to the currently configured webhook endpoint. */
   webhook?: WebhookDeliveryState
+  /** Per-project webhook ledgers keyed by endpoint fingerprint; URLs and secrets stay out of state. */
+  webhookRoutes?: Record<string, WebhookDeliveryState>
   /** Per-incident delivery mutes; active evidence remains in the state and status view. */
   incidentMutes?: Record<string, RadarIncidentMute>
   /** Human follow-up state; the event id prevents an old decision from covering a new fact. */

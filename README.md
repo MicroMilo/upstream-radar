@@ -171,6 +171,30 @@ dsh --profile web --patch ./upstream-radar.dsh.yml
 
 The Feishu secret is read only from the environment and is never written to the Radar config or state. Follow the [official Feishu custom-bot guide](https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN?lang=zh-CN) when creating the V2 bot. Use the V2 URL; the older `/open-apis/bot/hook/` form is rejected with an actionable error. Run `pnpm run showcase:webhook` to see deduplication and retry behavior without contacting a real endpoint.
 
+For more than one monitored project, give each project its own environment-variable route. The config stores only the variable names, never the webhook URL or secret:
+
+```json
+{
+  "project": {
+    "id": "payments-api",
+    "name": "Payments API",
+    "webhookUrlEnv": "UPSTREAM_RADAR_PAYMENTS_WEBHOOK_URL",
+    "webhookSecretEnv": "UPSTREAM_RADAR_PAYMENTS_FEISHU_SECRET"
+  }
+}
+```
+
+```bash
+export UPSTREAM_RADAR_PAYMENTS_WEBHOOK_URL='https://open.feishu.cn/open-apis/bot/v2/hook/replace-me'
+export UPSTREAM_RADAR_PAYMENTS_FEISHU_SECRET='replace-me'
+
+pnpm dlx --package=upstream-radar@latest upstream-radar setup \
+  --webhook-url-env UPSTREAM_RADAR_PAYMENTS_WEBHOOK_URL \
+  --webhook-secret-env UPSTREAM_RADAR_PAYMENTS_FEISHU_SECRET
+```
+
+Each project's changed events go only to its configured endpoint. If two projects intentionally share one endpoint, Radar combines them into one delivery target; conflicting Feishu secrets fail the local `doctor` check instead of choosing one silently. The existing global `UPSTREAM_RADAR_WEBHOOK_URL` and CLI `--webhook` paths remain broadcast-compatible for a single team endpoint. Project webhook ledgers are kept separately under endpoint fingerprints, so a failed Payments delivery cannot acknowledge a Platform event.
+
 ## Control notification noise without losing evidence
 
 The generated inventory can hold ordinary notices while keeping the full incident, dependency path, history, and DSH task intact. For a first setup, use flags so you do not need to edit JSON by hand:
@@ -702,7 +726,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - a bounded transition history with a local `radar history` audit command;
 - strict DSH result writeback bound to the exact message, session, task, and event, with stale-result rejection;
 - native DSH bundle installation, startup polling, `agent/created` retry, and plugin-source attribution;
-- optional provider-neutral HTTPS webhook delivery for changed events, with endpoint-safe deduplication and retry, plus direct Feishu/Lark V2 text delivery;
+- optional provider-neutral HTTPS webhook delivery for changed events, with endpoint-safe deduplication and retry, project-specific environment routes with independent outboxes, plus direct Feishu/Lark V2 text delivery;
 - delivery-only notification controls for per-project minimum vulnerability severity and timezone-aware quiet hours; critical and malicious-package alerts bypass them, while held DSH tasks and webhook events remain durable;
 - read-only pnpm v6/v9 lockfile graph extraction, including project-root importers and explicit ambiguous peer references;
 - static Radar inventory generation from npm or pnpm lockfiles, followed by the same exact-version OSV check used by the DSH monitor;

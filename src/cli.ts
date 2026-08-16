@@ -49,12 +49,16 @@ import type {
 } from './radar-types.js'
 import { TOOL_VERSION } from './version.js'
 import {
+  eventsForRadarWebhookTarget,
   markRadarWebhookEventsDelivered,
+  markRadarWebhookEventsDeliveredForRoute,
   normalizeRadarWebhookUrl,
   queueRadarWebhookEvents,
-  radarWebhookEndpointHash,
+  queueRadarWebhookEventsForRoute,
+  resolveRadarWebhookTargets,
   sendRadarWebhook,
   undeliveredRadarWebhookEvents,
+  undeliveredRadarWebhookEventsForRoute,
 } from './webhook.js'
 
 const VALID_THRESHOLDS = new Set<Verdict | 'never'>(['warn', 'review', 'block', 'never'])
@@ -128,6 +132,8 @@ Common options:
   --project-name <name>  name shown in incidents and Agent tasks
   --workspace <path>     project workspace used to route Agent follow-up
   --repository <url>     repository evidence passed to the Agent task
+  --webhook-url-env <name>  env var containing this project's HTTPS webhook URL
+  --webhook-secret-env <name>  optional env var for a Feishu/Lark V2 signing secret
   --output <path>        Radar config path (default: ./upstream-radar.config.json)
   --dsh-patch <path>     DSH overlay path (default: ./upstream-radar.dsh.yml)
   --minimum-severity <level>  minimum vulnerability notice level
@@ -163,6 +169,8 @@ What it does:
 Common options:
   --root <package>@<exact-version>  explicit lockfile root when it cannot be inferred
   --project-name <name>             name shown in incidents
+  --webhook-url-env <name>          env var containing this project's HTTPS webhook URL
+  --webhook-secret-env <name>       optional env var for a Feishu/Lark V2 signing secret
   --output <path>                   config path (default: ./upstream-radar.config.json)
   --dsh-patch <path>                write a self-contained DSH overlay (profile mode)
   --minimum-severity <level>        minimum vulnerability notice level
@@ -174,6 +182,11 @@ Notification controls:
   Add an optional \`notificationPolicy\` block to a generated projects[] entry
   to set \`minimumSeverity\` and timezone-aware \`quietHours\`. This changes only
   delivery; active evidence and queued tasks remain durable.
+
+Project webhook routing:
+  Store only environment variable names in the config. Set the URL and optional
+  Feishu secret in the DSH process environment; each project's changed events
+  then use its own endpoint while the native DSH Agent route remains workspace-based.
 
 Next:
   upstream-radar radar check ./upstream-radar.config.json --frozen
@@ -443,6 +456,8 @@ Options:
   --no-github-advisories disable the independent GitHub Advisory Database check for radar check/watch
   --threat-intel      radar check/watch: add CISA KEV and FIRST EPSS signals for matched CVEs
   --webhook <https-url>  radar check/watch: POST changed events to an HTTPS endpoint
+  --webhook-url-env <name>  init/setup: env var containing a project's HTTPS webhook URL
+  --webhook-secret-env <name>  init/setup: optional Feishu/Lark V2 signing secret env var
   --interval <seconds> watch interval from 300 to 86400 seconds (default: 1800)
   --limit <n>         radar history: show 1 to 1000 recent transitions (default: 20)
   --once               run one watch cycle and exit (useful for CI and demos)
@@ -1102,10 +1117,16 @@ async function runRadar(args: readonly string[]): Promise<number> {
   if (webhookUrl !== undefined && statePath === ':memory:') {
     throw new Error('radar --webhook requires a persistent --state file so successful deliveries can be remembered')
   }
-  const webhookEndpointHash = webhookUrl === undefined ? undefined : radarWebhookEndpointHash(webhookUrl)
   const feishuSecret = process.env.UPSTREAM_RADAR_FEISHU_SECRET?.trim() || undefined
   const runCheck = async () => {
     const config = await readConfigForPoll()
+    const webhookTargets = resolveRadarWebhookTargets(config.projects, {
+      ...(webhookUrl === undefined ? {} : { globalUrl: webhookUrl }),
+      ...(feishuSecret === undefined ? {} : { globalFeishuSecret: feishuSecret }),
+    })
+    if (statePath === ':memory:' && webhookTargets.length > 0) {
+      throw new Error('radar webhook routes require a persistent --state file so successful deliveries can be remembered')
+    }
     const state = statePath === ':memory:' ? emptyRadarState() : await loadRadarState(stateFile)
     const checkedAt = new Date()
     const result = await pollRadar(
@@ -1120,22 +1141,35 @@ async function runRadar(args: readonly string[]): Promise<number> {
       threatIntelSources,
     )
     if (statePath !== ':memory:') await saveRadarState(stateFile, result.state)
-    if (webhookUrl === undefined || webhookEndpointHash === undefined) return result
-    const queuedState = queueRadarWebhookEvents(result.state, webhookEndpointHash, result.events)
-    if (statePath !== ':memory:') await saveRadarState(stateFile, queuedState)
     const notificationPolicies = createNotificationPolicyMap(config.projects)
-    const pendingWebhookEvents = filterNotifiableRadarEvents(
-      undeliveredRadarWebhookEvents(queuedState, webhookEndpointHash, result.events),
-      notificationPolicies,
-      checkedAt,
-      queuedState,
-    )
-    if (pendingWebhookEvents.length === 0) return { ...result, state: queuedState }
-    const payload = await sendRadarWebhook(webhookUrl, pendingWebhookEvents, feishuSecret === undefined ? {} : { feishuSecret })
-    const deliveredIds = new Set(payload.events.map(event => event.id))
-    const deliveredEvents = pendingWebhookEvents.filter(event => deliveredIds.has(event.id))
-    const nextState = markRadarWebhookEventsDelivered(queuedState, webhookEndpointHash, deliveredEvents)
-    await saveRadarState(stateFile, nextState)
+    let nextState = result.state
+    for (const target of webhookTargets) {
+      const targetEvents = eventsForRadarWebhookTarget(result.events, target)
+      const isLegacyGlobal = webhookUrl !== undefined && target.projectIds === undefined
+      const queuedState = isLegacyGlobal
+        ? queueRadarWebhookEvents(nextState, target.endpointHash, targetEvents)
+        : queueRadarWebhookEventsForRoute(nextState, target.endpointHash, targetEvents)
+      if (statePath !== ':memory:') await saveRadarState(stateFile, queuedState)
+      const pendingWebhookEvents = filterNotifiableRadarEvents(
+        isLegacyGlobal
+          ? undeliveredRadarWebhookEvents(queuedState, target.endpointHash, targetEvents)
+          : undeliveredRadarWebhookEventsForRoute(queuedState, target.endpointHash, targetEvents),
+        notificationPolicies,
+        checkedAt,
+        queuedState,
+      )
+      if (pendingWebhookEvents.length === 0) {
+        nextState = queuedState
+        continue
+      }
+      const payload = await sendRadarWebhook(target.url, pendingWebhookEvents, target.feishuSecret === undefined ? {} : { feishuSecret: target.feishuSecret })
+      const deliveredIds = new Set(payload.events.map(event => event.id))
+      const deliveredEvents = pendingWebhookEvents.filter(event => deliveredIds.has(event.id))
+      nextState = isLegacyGlobal
+        ? markRadarWebhookEventsDelivered(queuedState, target.endpointHash, deliveredEvents)
+        : markRadarWebhookEventsDeliveredForRoute(queuedState, target.endpointHash, deliveredEvents)
+      await saveRadarState(stateFile, nextState)
+    }
     return { ...result, state: nextState }
   }
   const writeCheckResult = (result: Awaited<ReturnType<typeof pollRadar>>, compactJson = false) => {
@@ -1255,7 +1289,8 @@ async function runSetup(args: readonly string[]): Promise<number> {
   const initArgs: string[] = []
   const valueOptions = new Set([
     '--profile', '--output', '--dsh-patch', '--project-id', '--project-name',
-    '--repository', '--workspace', '--channel', '--registry', '--minimum-severity', '--quiet-hours',
+    '--repository', '--workspace', '--channel', '--webhook-url-env', '--webhook-secret-env',
+    '--registry', '--minimum-severity', '--quiet-hours',
   ])
   for (let index = 0; index < args.length; index += 1) {
     const argument = args[index]
@@ -1383,6 +1418,8 @@ async function runInit(args: readonly string[]): Promise<number> {
   let projectName: string | undefined
   let repository: string | undefined
   let workspace: string | undefined
+  let webhookUrlEnv: string | undefined
+  let webhookSecretEnv: string | undefined
   let registry: string | undefined
   let minimumSeverity: string | undefined
   let quietHoursValue: string | undefined
@@ -1395,7 +1432,8 @@ async function runInit(args: readonly string[]): Promise<number> {
     else if (argument === '--json') json = true
     else if (argument === '--profile' || argument === '--npm-lock' || argument === '--pnpm-lock' || argument === '--root' || argument === '--output' || argument === '--dsh-patch' || argument === '--project-id'
       || argument === '--project-name' || argument === '--repository' || argument === '--workspace'
-      || argument === '--channel' || argument === '--registry' || argument === '--minimum-severity' || argument === '--quiet-hours') {
+      || argument === '--channel' || argument === '--webhook-url-env' || argument === '--webhook-secret-env'
+      || argument === '--registry' || argument === '--minimum-severity' || argument === '--quiet-hours') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--profile') profile = value
@@ -1409,6 +1447,8 @@ async function runInit(args: readonly string[]): Promise<number> {
       else if (argument === '--repository') repository = value
       else if (argument === '--workspace') workspace = value
       else if (argument === '--channel') channels.push(value)
+      else if (argument === '--webhook-url-env') webhookUrlEnv = value
+      else if (argument === '--webhook-secret-env') webhookSecretEnv = value
       else if (argument === '--minimum-severity') minimumSeverity = value
       else if (argument === '--quiet-hours') quietHoursValue = value
       else registry = value
@@ -1441,6 +1481,8 @@ async function runInit(args: readonly string[]): Promise<number> {
         ...(repository === undefined ? {} : { repository }),
         ...(workspace === undefined ? {} : { workspace }),
         ...(channels.length === 0 ? {} : { channels }),
+        ...(webhookUrlEnv === undefined ? {} : { webhookUrlEnv }),
+        ...(webhookSecretEnv === undefined ? {} : { webhookSecretEnv }),
         ...(notificationPolicy === undefined ? {} : { notificationPolicy }),
       })
       : await createRadarConfigFromPnpmLock({
@@ -1451,6 +1493,8 @@ async function runInit(args: readonly string[]): Promise<number> {
         ...(repository === undefined ? {} : { repository }),
         ...(workspace === undefined ? {} : { workspace }),
         ...(channels.length === 0 ? {} : { channels }),
+        ...(webhookUrlEnv === undefined ? {} : { webhookUrlEnv }),
+        ...(webhookSecretEnv === undefined ? {} : { webhookSecretEnv }),
         ...(notificationPolicy === undefined ? {} : { notificationPolicy }),
       })
     const outputPath = await writeRadarConfig(config, { output: resolve(output), force })
@@ -1510,6 +1554,8 @@ async function runInit(args: readonly string[]): Promise<number> {
     ...(repository === undefined ? {} : { repository }),
     ...(workspace === undefined ? {} : { workspace }),
     ...(channels.length === 0 ? {} : { channels }),
+    ...(webhookUrlEnv === undefined ? {} : { webhookUrlEnv }),
+    ...(webhookSecretEnv === undefined ? {} : { webhookSecretEnv }),
     ...(notificationPolicy === undefined ? {} : { notificationPolicy }),
     ...(registry === undefined ? {} : { registry }),
   })

@@ -3,9 +3,14 @@ import process from 'node:process'
 const { emptyRadarState } = await import('../dist/src/radar.js')
 const {
   markRadarWebhookEventsDelivered,
+  markRadarWebhookEventsDeliveredForRoute,
+  eventsForRadarWebhookTarget,
   radarWebhookEndpointHash,
+  queueRadarWebhookEventsForRoute,
+  resolveRadarWebhookTargets,
   sendRadarWebhook,
   undeliveredRadarWebhookEvents,
+  undeliveredRadarWebhookEventsForRoute,
 } = await import('../dist/src/webhook.js')
 
 const endpoint = 'https://hooks.example.test/upstream-radar?token=showcase-only'
@@ -92,6 +97,45 @@ const retryStillPending = undeliveredRadarWebhookEvents(state, endpointHash, [re
 await sendRadarWebhook(endpoint, retryStillPending, { fetch: fetchStub })
 state = markRadarWebhookEventsDelivered(state, endpointHash, retryStillPending)
 
+const routeTargets = resolveRadarWebhookTargets([
+  {
+    schema: 'upstream-radar.inventory/v1alpha1',
+    project: {
+      id: 'project-payments',
+      name: 'Payments',
+      webhookUrlEnv: 'RADAR_PAYMENTS_URL',
+      webhookSecretEnv: 'RADAR_PAYMENTS_SECRET',
+    },
+    plugins: [],
+  },
+  {
+    schema: 'upstream-radar.inventory/v1alpha1',
+    project: {
+      id: 'project-platform',
+      name: 'Platform',
+      webhookUrlEnv: 'RADAR_PLATFORM_URL',
+    },
+    plugins: [],
+  },
+], {
+  environment: {
+    RADAR_PAYMENTS_URL: 'https://open.feishu.cn/open-apis/bot/v2/hook/payments-showcase',
+    RADAR_PAYMENTS_SECRET: 'payments-showcase-secret',
+    RADAR_PLATFORM_URL: 'https://alerts.example.test/platform-showcase',
+  },
+})
+const paymentsTarget = routeTargets.find(target => target.projectIds?.includes('project-payments'))
+const platformTarget = routeTargets.find(target => target.projectIds?.includes('project-platform'))
+if (paymentsTarget === undefined || platformTarget === undefined) throw new Error('project webhook showcase targets were not resolved')
+const paymentsEvent = { ...event, project: { ...event.project, id: 'project-payments', name: 'Payments' } }
+const platformEvent = { ...event, id: 'event-webhook-platform-showcase', incidentId: 'project-showcase\u0000platform', project: { ...event.project, id: 'project-platform', name: 'Platform' } }
+let projectState = emptyRadarState()
+projectState = queueRadarWebhookEventsForRoute(projectState, paymentsTarget.endpointHash, eventsForRadarWebhookTarget([paymentsEvent, platformEvent], paymentsTarget))
+projectState = queueRadarWebhookEventsForRoute(projectState, platformTarget.endpointHash, eventsForRadarWebhookTarget([paymentsEvent, platformEvent], platformTarget))
+const projectPaymentsPending = undeliveredRadarWebhookEventsForRoute(projectState, paymentsTarget.endpointHash, [])
+const projectPlatformPending = undeliveredRadarWebhookEventsForRoute(projectState, platformTarget.endpointHash, [])
+projectState = markRadarWebhookEventsDeliveredForRoute(projectState, paymentsTarget.endpointHash, projectPaymentsPending)
+
 await sendRadarWebhook(feishuEndpoint, [priorityEvent], {
   feishuSecret: 'showcase-secret',
   now: new Date('2026-08-16T04:02:00.000Z'),
@@ -122,5 +166,15 @@ process.stdout.write(`${JSON.stringify({
     nativeTextBody: feishuRequests[0]?.payload.msg_type === 'text',
     signatureIncluded: typeof feishuRequests[0]?.payload.sign === 'string',
     providerEnvelopeOmitted: feishuRequests[0]?.payload.schema === undefined,
+  },
+  projectRouting: {
+    targetCount: routeTargets.length,
+    paymentsProjects: paymentsTarget.projectIds,
+    platformProjects: platformTarget.projectIds,
+    independentOutboxes: Object.keys(projectState.webhookRoutes ?? {}).length,
+    paymentsDelivered: undeliveredRadarWebhookEventsForRoute(projectState, paymentsTarget.endpointHash, []).length === 0,
+    platformStillPending: undeliveredRadarWebhookEventsForRoute(projectState, platformTarget.endpointHash, []).length === 1,
+    endpointAndSecretNotPersisted: !JSON.stringify(projectState).includes('alerts.example.test')
+      && !JSON.stringify(projectState).includes('payments-showcase-secret'),
   },
 }, null, 2)}\n`)

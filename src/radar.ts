@@ -1203,6 +1203,8 @@ export async function pollRadar(
       sourceHealth,
       activeSourceHealth,
       history,
+      ...(previousState.webhook === undefined ? {} : { webhook: previousState.webhook }),
+      ...(previousState.webhookRoutes === undefined ? {} : { webhookRoutes: previousState.webhookRoutes }),
       ...(previousState.incidentMutes === undefined ? {} : { incidentMutes: previousState.incidentMutes }),
       ...(previousState.incidentTriage === undefined ? {} : { incidentTriage: previousState.incidentTriage }),
     },

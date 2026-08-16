@@ -14,6 +14,7 @@ import {
   isFeishuV2WebhookUrl,
   isLegacyFeishuWebhookUrl,
   normalizeRadarWebhookUrl,
+  resolveRadarWebhookTargets,
 } from './webhook.js'
 
 export const DOCTOR_SCHEMA = 'upstream-radar.doctor/v1alpha1' as const
@@ -307,6 +308,34 @@ function inspectWebhookEnvironment(checks: DoctorCheck[]): void {
   }
 }
 
+/** Check project-specific webhook environment routes without contacting them. */
+function inspectProjectWebhookEnvironment(
+  checks: DoctorCheck[],
+  config: RadarConfig,
+): void {
+  const routedProjects = config.projects.filter(project => project.project.webhookUrlEnv !== undefined)
+  if (routedProjects.length === 0) return
+  try {
+    const targets = resolveRadarWebhookTargets(config.projects)
+    addCheck(
+      checks,
+      'project-webhooks',
+      'pass',
+      `已检查 ${routedProjects.length} 个项目级 webhook 路由`,
+      `${targets.length} 个 endpoint；URL 和签名密钥只从环境变量读取，不写入配置或状态文件。`,
+    )
+  } catch (error: unknown) {
+    addCheck(
+      checks,
+      'project-webhooks',
+      'fail',
+      '项目级 webhook 路由不可用',
+      errorText(error),
+      '设置配置中声明的 URL 环境变量，并确认地址使用 HTTPS；如果是飞书，使用 V2 webhook 地址。',
+    )
+  }
+}
+
 function reportStatus(checks: readonly DoctorCheck[]): DoctorOverallStatus {
   if (checks.some(check => check.status === 'fail')) return 'blocked'
   if (checks.some(check => check.status === 'warn')) return 'ready-with-warnings'
@@ -392,6 +421,7 @@ export async function createDoctorReport(options: DoctorOptions): Promise<Doctor
     }
     await inspectPatch(checks, options.patchFile, configFile, stateFile, profile)
     inspectWebhookEnvironment(checks)
+    inspectProjectWebhookEnvironment(checks, config)
 
     const report: DoctorReport = {
       schema: DOCTOR_SCHEMA,
@@ -409,6 +439,7 @@ export async function createDoctorReport(options: DoctorOptions): Promise<Doctor
 
   await inspectPatch(checks, options.patchFile, configFile, stateFile, profile)
   inspectWebhookEnvironment(checks)
+  if (config !== undefined) inspectProjectWebhookEnvironment(checks, config)
   await inspectDshProfile(checks, profile, options.dshHome)
   return {
     schema: DOCTOR_SCHEMA,

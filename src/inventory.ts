@@ -39,6 +39,14 @@ function stringArray(value: unknown, label: string): string[] | undefined {
   return value.map((item, index) => string(item, `${label}[${index}]`, 1_024))
 }
 
+function environmentVariableName(value: unknown, label: string): string | undefined {
+  const parsed = optionalString(value, label, 256)
+  if (parsed !== undefined && !/^[A-Za-z_][A-Za-z0-9_]*$/.test(parsed)) {
+    throw new Error(`${label} must be a valid environment variable name`)
+  }
+  return parsed
+}
+
 const NOTIFICATION_SEVERITIES = new Set<Exclude<RadarSeverity, 'unknown'>>([
   'info',
   'low',
@@ -288,6 +296,11 @@ function project(value: unknown, index: number): ProjectInventory {
   const workspace = optionalString(projectSource.workspace, `${label}.project.workspace`)
   const owner = optionalString(projectSource.owner, `${label}.project.owner`, 1_024)
   const channels = stringArray(projectSource.channels, `${label}.project.channels`)
+  const webhookUrlEnv = environmentVariableName(projectSource.webhookUrlEnv, `${label}.project.webhookUrlEnv`)
+  const webhookSecretEnv = environmentVariableName(projectSource.webhookSecretEnv, `${label}.project.webhookSecretEnv`)
+  if (webhookSecretEnv !== undefined && webhookUrlEnv === undefined) {
+    throw new Error(`${label}.project.webhookSecretEnv requires webhookUrlEnv`)
+  }
   const environmentSource = source.environment === undefined ? undefined : record(source.environment, `${label}.environment`)
   const nodeVersion = optionalString(environmentSource?.nodeVersion, `${label}.environment.nodeVersion`, 128)
   const notificationPolicyValue = notificationPolicy(source.notificationPolicy, `${label}.notificationPolicy`)
@@ -300,6 +313,8 @@ function project(value: unknown, index: number): ProjectInventory {
       ...(workspace === undefined ? {} : { workspace }),
       ...(owner === undefined ? {} : { owner }),
       ...(channels === undefined ? {} : { channels }),
+      ...(webhookUrlEnv === undefined ? {} : { webhookUrlEnv }),
+      ...(webhookSecretEnv === undefined ? {} : { webhookSecretEnv }),
     },
     ...(environmentSource === undefined ? {} : { environment: nodeVersion === undefined ? {} : { nodeVersion } }),
     ...(notificationPolicyValue === undefined ? {} : { notificationPolicy: notificationPolicyValue }),

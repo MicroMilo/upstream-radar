@@ -201,6 +201,23 @@ describe('radar state parsing', () => {
     assert.doesNotThrow(() => parseRadarState(state))
   })
 
+  it('accepts isolated project webhook ledgers and rejects mismatched route keys', () => {
+    const state = emptyRadarState() as unknown as Record<string, any>
+    const endpointHash = 'b'.repeat(64)
+    state.webhookRoutes = {
+      [endpointHash]: {
+        schema: 'upstream-radar.webhook-delivery/v1alpha1',
+        endpointHash,
+        deliveredEventIds: { 'event-project-route': '2026-08-16T01:00:00.000Z' },
+      },
+    }
+    assert.doesNotThrow(() => parseRadarState(state))
+
+    const invalid = structuredClone(state)
+    invalid.webhookRoutes[endpointHash].endpointHash = 'c'.repeat(64)
+    assert.throws(() => parseRadarState(invalid), /invalid webhook route map/)
+  })
+
   it('rejects a webhook ledger that contains the endpoint instead of its hash', () => {
     const state = emptyRadarState() as unknown as Record<string, any>
     state.webhook = {

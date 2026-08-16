@@ -6,13 +6,18 @@ import { filterNotifiableRadarEvents } from '../src/notification-policy.js'
 import {
   buildFeishuWebhookPayload,
   buildRadarWebhookPayload,
+  eventsForRadarWebhookTarget,
   isFeishuV2WebhookUrl,
   markRadarWebhookEventsDelivered,
+  markRadarWebhookEventsDeliveredForRoute,
   normalizeRadarWebhookUrl,
   queueRadarWebhookEvents,
+  queueRadarWebhookEventsForRoute,
   radarWebhookEndpointHash,
+  resolveRadarWebhookTargets,
   sendRadarWebhook,
   undeliveredRadarWebhookEvents,
+  undeliveredRadarWebhookEventsForRoute,
 } from '../src/webhook.js'
 import type { CompatibilityEvent, VulnerabilityEvent } from '../src/radar-types.js'
 
@@ -261,5 +266,85 @@ describe('webhook delivery', () => {
     const state = markRadarWebhookEventsDelivered(emptyRadarState(), firstHash, [event])
     assert.equal(undeliveredRadarWebhookEvents(state, secondHash, [event]).length, 1)
     assert.doesNotMatch(JSON.stringify(state), /hooks\.example\.test/)
+  })
+
+  it('routes project events to isolated environment endpoints and ledgers', () => {
+    const projects = [
+      {
+        schema: 'upstream-radar.inventory/v1alpha1' as const,
+        project: {
+          id: 'project-payments',
+          name: 'Payments',
+          webhookUrlEnv: 'RADAR_PAYMENTS_URL',
+          webhookSecretEnv: 'RADAR_PAYMENTS_SECRET',
+        },
+        plugins: [],
+      },
+      {
+        schema: 'upstream-radar.inventory/v1alpha1' as const,
+        project: {
+          id: 'project-platform',
+          name: 'Platform',
+          webhookUrlEnv: 'RADAR_PLATFORM_URL',
+        },
+        plugins: [],
+      },
+    ]
+    const targets = resolveRadarWebhookTargets(projects, {
+      environment: {
+        RADAR_PAYMENTS_URL: 'https://open.feishu.cn/open-apis/bot/v2/hook/payments',
+        RADAR_PAYMENTS_SECRET: 'payments-secret',
+        RADAR_PLATFORM_URL: 'https://alerts.example.test/platform',
+      },
+    })
+    assert.equal(targets.length, 2)
+    const paymentsTarget = targets.find(target => target.projectIds?.includes('project-payments'))
+    const platformTarget = targets.find(target => target.projectIds?.includes('project-platform'))
+    assert.deepEqual(paymentsTarget?.projectIds, ['project-payments'])
+    assert.equal(paymentsTarget?.feishuSecret, 'payments-secret')
+    assert.deepEqual(platformTarget?.projectIds, ['project-platform'])
+
+    const paymentsEvent = { ...event, project: { ...event.project, id: 'project-payments' } }
+    const platformEvent = { ...event, id: 'event-webhook-platform', incidentId: 'incident-webhook-platform', project: { ...event.project, id: 'project-platform' } }
+    assert.deepEqual(eventsForRadarWebhookTarget([paymentsEvent, platformEvent], paymentsTarget!), [paymentsEvent])
+    assert.deepEqual(eventsForRadarWebhookTarget([paymentsEvent, platformEvent], platformTarget!), [platformEvent])
+
+    let state = emptyRadarState()
+    state = queueRadarWebhookEventsForRoute(state, paymentsTarget!.endpointHash, [paymentsEvent])
+    state = queueRadarWebhookEventsForRoute(state, platformTarget!.endpointHash, [platformEvent])
+    assert.equal(state.webhook, undefined)
+    assert.equal(Object.keys(state.webhookRoutes ?? {}).length, 2)
+    assert.equal(undeliveredRadarWebhookEventsForRoute(state, paymentsTarget!.endpointHash, []).length, 1)
+    assert.equal(undeliveredRadarWebhookEventsForRoute(state, platformTarget!.endpointHash, []).length, 1)
+
+    state = markRadarWebhookEventsDeliveredForRoute(state, paymentsTarget!.endpointHash, [paymentsEvent], new Date('2026-08-16T04:02:00.000Z'))
+    assert.equal(undeliveredRadarWebhookEventsForRoute(state, paymentsTarget!.endpointHash, []).length, 0)
+    assert.equal(undeliveredRadarWebhookEventsForRoute(state, platformTarget!.endpointHash, []).length, 1)
+    assert.doesNotMatch(JSON.stringify(state), /open\.feishu\.cn|alerts\.example\.test|payments-secret/)
+  })
+
+  it('requires project webhook URLs and rejects conflicting secrets', () => {
+    const project = {
+      schema: 'upstream-radar.inventory/v1alpha1' as const,
+      project: { id: 'project-required', name: 'Required', webhookUrlEnv: 'RADAR_REQUIRED_URL' },
+      plugins: [],
+    }
+    assert.throws(
+      () => resolveRadarWebhookTargets([project], { environment: {} }),
+      /RADAR_REQUIRED_URL is not set/,
+    )
+    assert.throws(
+      () => resolveRadarWebhookTargets([
+        { ...project, project: { ...project.project, id: 'project-a', webhookSecretEnv: 'RADAR_SECRET_A' } },
+        { ...project, project: { ...project.project, id: 'project-b', webhookSecretEnv: 'RADAR_SECRET_B' } },
+      ], {
+        environment: {
+          RADAR_REQUIRED_URL: 'https://open.feishu.cn/open-apis/bot/v2/hook/shared',
+          RADAR_SECRET_A: 'a',
+          RADAR_SECRET_B: 'b',
+        },
+      }),
+      /different Feishu signing secrets/,
+    )
   })
 })

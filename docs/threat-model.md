@@ -19,6 +19,7 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 - active vulnerability state, active compatibility incidents, pending analysis tasks, in-flight deliveries, and verified analysis results;
 - human follow-up records, including owner, status, note, and optional deadline;
 - webhook delivery fingerprints and event ids, without the endpoint URL or token;
+- project webhook environment-variable names and the separation between each endpoint's pending and delivered events;
 - correctness of new, updated, resolved, and compatibility transitions;
 - availability and cost of the monitoring and model-analysis loop;
 - legacy artifact evidence and policy decisions.
@@ -67,6 +68,9 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 15. The transition ledger is bounded and deduplicated by stable event id; losing old history never changes the active incident state.
 16. GitHub Job Summary output escapes report-controlled strings and is only a human-readable view; the raw JSON remains authoritative.
 17. A follow-up record is displayed only when its stored event id matches the current active event; an expired deadline is a reminder, never a resolution or suppression decision.
+18. A project webhook target receives only events for its declared project ids; the global endpoint is the only explicit broadcast path.
+19. A project webhook route is rejected when its URL variable is missing, its URL is not HTTPS, or the same Feishu endpoint is paired with conflicting secrets.
+20. Project webhook ledgers are keyed by endpoint fingerprint and processed independently, so acknowledging one endpoint cannot acknowledge another project's event.
 
 ## Delivery semantics
 
@@ -90,5 +94,5 @@ The optional webhook follows the same bias: Radar persists the changed incident 
 - GitHub comparison diffs, changelogs, and migration guides are not fetched automatically.
 - One live root DSH Agent acts as the security inbox; multiple roots require an exact project-session workspace match.
 - The prompt establishes a read-only contract, but enforcement still depends on the DSH Agent's configured tools and permission policy.
-- Feed failures are reported by the cycle; OSV failures preserve the last confirmed matches and pending tasks, and three consecutive failures create a durable source-health alert. The local transition ledger is intentionally bounded to the most recent 1,000 events; it is an audit convenience, not a complete historical database. Provider-native Feishu V2 text formatting is supported; the generic endpoint remains the stable JSON contract, and delivery acknowledgement stays endpoint-fingerprint based. Notification policy is currently limited to per-project minimum vulnerability severity and quiet hours; explicit external owner routing and dev-only scopes remain future work. Follow-up deadlines are currently surfaced by the local `status`/`next` views rather than emitted as a new vulnerability event.
+- Feed failures are reported by the cycle; OSV failures preserve the last confirmed matches and pending tasks, and three consecutive failures create a durable source-health alert. The local transition ledger is intentionally bounded to the most recent 1,000 events; it is an audit convenience, not a complete historical database. Provider-native Feishu V2 text formatting is supported; the generic endpoint remains the stable JSON contract, and delivery acknowledgement stays endpoint-fingerprint based. Global and project-specific webhook routes are supported, but URL variables and secrets must be present in the process environment at runtime. Notification policy is currently limited to per-project minimum vulnerability severity and quiet hours; explicit external owner routing and dev-only scopes remain future work. Follow-up deadlines are currently surfaced by the local `status`/`next` views rather than emitted as a new vulnerability event.
 - The scanner uses the host npm CLI with scripts disabled; it is not a microVM detonation boundary.

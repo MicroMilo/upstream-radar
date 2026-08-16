@@ -40,6 +40,8 @@ export interface DshInitOptions {
   repository?: string
   workspace?: string
   channels?: string[]
+  webhookUrlEnv?: string
+  webhookSecretEnv?: string
   notificationPolicy?: RadarNotificationPolicy
   registry?: string
   inspect?: InitInspector
@@ -63,6 +65,8 @@ export interface PnpmLockInitOptions {
   repository?: string
   workspace?: string
   channels?: string[]
+  webhookUrlEnv?: string
+  webhookSecretEnv?: string
   notificationPolicy?: RadarNotificationPolicy
 }
 
@@ -77,6 +81,8 @@ export interface NpmLockInitOptions {
   repository?: string
   workspace?: string
   channels?: string[]
+  webhookUrlEnv?: string
+  webhookSecretEnv?: string
   notificationPolicy?: RadarNotificationPolicy
 }
 
@@ -271,6 +277,8 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
         ...(options.repository === undefined ? {} : { repository: options.repository }),
         workspace,
         ...(options.channels === undefined || options.channels.length === 0 ? {} : { channels: options.channels }),
+        ...(options.webhookUrlEnv === undefined ? {} : { webhookUrlEnv: options.webhookUrlEnv }),
+        ...(options.webhookSecretEnv === undefined ? {} : { webhookSecretEnv: options.webhookSecretEnv }),
       },
       environment: { nodeVersion: process.versions.node },
       ...(options.notificationPolicy === undefined ? {} : { notificationPolicy: options.notificationPolicy }),
@@ -284,7 +292,7 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
 function createStaticLockConfig(
   graph: DependencyGraph,
   root: { name: string; version: string },
-  options: Pick<PnpmLockInitOptions, 'projectId' | 'projectName' | 'repository' | 'workspace' | 'channels' | 'notificationPolicy'>,
+  options: Pick<PnpmLockInitOptions, 'projectId' | 'projectName' | 'repository' | 'workspace' | 'channels' | 'webhookUrlEnv' | 'webhookSecretEnv' | 'notificationPolicy'>,
 ): RadarConfig {
   const workspace = options.workspace ?? '.'
   const projectId = options.projectId ?? defaultProjectId(workspace)
@@ -299,6 +307,8 @@ function createStaticLockConfig(
         ...(options.repository === undefined ? {} : { repository: options.repository }),
         workspace,
         ...(options.channels === undefined || options.channels.length === 0 ? {} : { channels: options.channels }),
+        ...(options.webhookUrlEnv === undefined ? {} : { webhookUrlEnv: options.webhookUrlEnv }),
+        ...(options.webhookSecretEnv === undefined ? {} : { webhookSecretEnv: options.webhookSecretEnv }),
       },
       environment: { nodeVersion: process.versions.node },
       ...(options.notificationPolicy === undefined ? {} : { notificationPolicy: options.notificationPolicy }),
@@ -347,6 +357,8 @@ export async function refreshRadarConfigFromDshProfile(
     ...(project.project.repository === undefined ? {} : { repository: project.project.repository }),
     ...(project.project.workspace === undefined ? {} : { workspace: project.project.workspace }),
     ...(project.project.channels === undefined ? {} : { channels: project.project.channels }),
+    ...(project.project.webhookUrlEnv === undefined ? {} : { webhookUrlEnv: project.project.webhookUrlEnv }),
+    ...(project.project.webhookSecretEnv === undefined ? {} : { webhookSecretEnv: project.project.webhookSecretEnv }),
     ...options,
   })
   const refreshedProject = refreshed.projects[0]

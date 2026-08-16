@@ -163,6 +163,30 @@ dsh --profile web --patch ./upstream-radar.dsh.yml
 
 飞书密钥只从环境变量读取，不会写入 Radar 配置或状态文件。创建机器人时可参考[飞书官方自定义机器人指南](https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN?lang=zh-CN)。请使用 V2 地址；旧的 `/open-apis/bot/hook/` 地址会被明确拒绝。运行 `pnpm run showcase:webhook` 可以在不访问真实接口的情况下看到去重和重试。
 
+如果要同时监控多个项目，可以给每个项目配置自己的环境变量。配置文件只保存“变量名”，不保存 webhook 地址或密钥：
+
+```json
+{
+  "project": {
+    "id": "payments-api",
+    "name": "Payments API",
+    "webhookUrlEnv": "UPSTREAM_RADAR_PAYMENTS_WEBHOOK_URL",
+    "webhookSecretEnv": "UPSTREAM_RADAR_PAYMENTS_FEISHU_SECRET"
+  }
+}
+```
+
+```bash
+export UPSTREAM_RADAR_PAYMENTS_WEBHOOK_URL='https://open.feishu.cn/open-apis/bot/v2/hook/替换成真实 token'
+export UPSTREAM_RADAR_PAYMENTS_FEISHU_SECRET='替换成真实密钥'
+
+pnpm dlx --package=upstream-radar@latest upstream-radar setup \
+  --webhook-url-env UPSTREAM_RADAR_PAYMENTS_WEBHOOK_URL \
+  --webhook-secret-env UPSTREAM_RADAR_PAYMENTS_FEISHU_SECRET
+```
+
+这样每个项目的变化只会发到它自己的 endpoint。两个项目如果确实共用一个 endpoint，Radar 会合并成一个投递目标；如果同一个飞书 endpoint 配了不同密钥，`doctor` 会在第一次轮询前直接拦住，不会悄悄挑一个。原来的全局 `UPSTREAM_RADAR_WEBHOOK_URL` 和 CLI `--webhook` 仍然保留，适合单个团队 endpoint 的广播兼容路径。项目级 webhook 的投递记录也按 endpoint 指纹分开保存，因此 Payments 的失败不会错误确认 Platform 的事件。
+
 ## 降低通知噪音，但不丢证据
 
 生成的清单可以暂时压住普通通知，同时保留完整事件、依赖路径、历史和 DSH 任务。首次配置时可以直接用参数，不需要手动编辑 JSON：
@@ -677,7 +701,7 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 ## 当前能力与边界
 
-已经支持：DSH profile 实际安装树、npm lock 和 pnpm v6/v9 lock 依赖图、从 npm/pnpm lock 生成静态 Radar 配置并执行同一套 OSV 精确版本检查、重复版本路径、未解析依赖的覆盖提示、可选 peer 与 DSH 宿主 peer 的区分、从正在运行的 DSH 进程发现真实宿主依赖平面和精确 `@deepseek-ai/dsh` 核心版本、共享 DSH 宿主漏洞按项目去重但保留所有受影响插件和路径、OSV 精确版本匹配、GitHub Advisory Database 精确 npm 版本匹配和 GHSA/CVE 别名去重、保留漏洞来源出处并识别 OSV 与 GitHub Advisory Database 在严重度或修复版本上的冲突、两个漏洞来源分别记录健康状态、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选；如果插件已有活跃漏洞，还会判断候选顶层版本是 `removed`、`still-affected` 还是 `unknown`，并指出第一个消除全部已检查路径的候选，但不会把它称为安全版本）、公开 GitHub Release 说明、漏洞源故障时保留已确认状态、连续失败后的 source-health DSH notice、有上限的事件历史和 `radar history` 查询、持久事件、按项目 workspace 精确路由到 DSH Agent、严格绑定消息/会话/task/event 的 DSH 结果写回、以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace、把审查过的图接入 CI 的可复用 GitHub Action 以及可读的 Job Summary、可选的 breaking/any 兼容性门禁、可选的 DSH 版本加载矩阵、离线的 `benchmark compatibility` 规则契约检查、provider-neutral HTTPS webhook 事件通知、直接投递飞书/Lark V2 文本消息、按项目设置最低漏洞等级和时区安静时段且不丢任务的通知控制，以及基于真实 DSH 插件的 consumer smoke。
+已经支持：DSH profile 实际安装树、npm lock 和 pnpm v6/v9 lock 依赖图、从 npm/pnpm lock 生成静态 Radar 配置并执行同一套 OSV 精确版本检查、重复版本路径、未解析依赖的覆盖提示、可选 peer 与 DSH 宿主 peer 的区分、从正在运行的 DSH 进程发现真实宿主依赖平面和精确 `@deepseek-ai/dsh` 核心版本、共享 DSH 宿主漏洞按项目去重但保留所有受影响插件和路径、OSV 精确版本匹配、GitHub Advisory Database 精确 npm 版本匹配和 GHSA/CVE 别名去重、保留漏洞来源出处并识别 OSV 与 GitHub Advisory Database 在严重度或修复版本上的冲突、两个漏洞来源分别记录健康状态、恶意包记录、npm release 监听（只接受高于当前安装版本的候选；npm 的 `latest` 回退不会制造 breaking 告警；最新版本有确定性阻断时会检查历史候选的 OSV 状态和最早一小段传递依赖图，并筛出第一个没有确定性阻断且没有已知漏洞路径、值得交给 DSH 分析的候选；图不完整、图解析或 OSV 失败时不推荐候选；如果插件已有活跃漏洞，还会判断候选顶层版本是 `removed`、`still-affected` 还是 `unknown`，并指出第一个消除全部已检查路径的候选，但不会把它称为安全版本）、公开 GitHub Release 说明、漏洞源故障时保留已确认状态、连续失败后的 source-health DSH notice、有上限的事件历史和 `radar history` 查询、持久事件、按项目 workspace 精确路由到 DSH Agent、严格绑定消息/会话/task/event 的 DSH 结果写回、以及 Node/peer/exports/入口/bundle/版本边界检查；还包括不联网的 `doctor` 接线检查、默认可提交的相对 workspace、把审查过的图接入 CI 的可复用 GitHub Action 以及可读的 Job Summary、可选的 breaking/any 兼容性门禁、可选的 DSH 版本加载矩阵、离线的 `benchmark compatibility` 规则契约检查、provider-neutral HTTPS webhook 事件通知、按项目环境变量分流并独立保存投递记录、直接投递飞书/Lark V2 文本消息、按项目设置最低漏洞等级和时区安静时段且不丢任务的通知控制，以及基于真实 DSH 插件的 consumer smoke。
 
 此外支持一次性的 `probe dsh-load` 和有界的 `probe dsh-matrix`：在临时 DSH profile 中针对一个或多个精确 DSH 版本加载一个精确 tarball，并返回 `compatible`、`incompatible` 或 `unknown`。它是加载兼容性证据，不是安全准入，也不是插件能力 benchmark。
 

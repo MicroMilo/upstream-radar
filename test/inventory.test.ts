@@ -29,6 +29,23 @@ describe('radar inventory parsing', () => {
     assert.equal(parsed.projects[0]?.plugins[0]?.graph.nodes[1]?.version, '2.9.0')
   })
 
+  it('preserves project webhook environment routing and validates its names', () => {
+    const candidate = structuredClone(valid)
+    candidate.projects[0]!.project.webhookUrlEnv = 'RADAR_PAYMENTS_URL'
+    candidate.projects[0]!.project.webhookSecretEnv = 'RADAR_PAYMENTS_SECRET'
+    const parsed = parseRadarConfig(candidate)
+    assert.equal(parsed.projects[0]?.project.webhookUrlEnv, 'RADAR_PAYMENTS_URL')
+    assert.equal(parsed.projects[0]?.project.webhookSecretEnv, 'RADAR_PAYMENTS_SECRET')
+
+    const invalidName = structuredClone(candidate)
+    invalidName.projects[0]!.project.webhookUrlEnv = 'RADAR-PAYMENTS-URL'
+    assert.throws(() => parseRadarConfig(invalidName), /webhookUrlEnv must be a valid environment variable name/)
+
+    const secretWithoutUrl = structuredClone(valid)
+    secretWithoutUrl.projects[0]!.project.webhookSecretEnv = 'RADAR_PAYMENTS_SECRET'
+    assert.throws(() => parseRadarConfig(secretWithoutUrl), /webhookSecretEnv requires webhookUrlEnv/)
+  })
+
   it('preserves npm optional peer metadata in manifests', () => {
     const candidate = structuredClone(valid)
     candidate.projects[0]!.plugins[0]!.manifest = {

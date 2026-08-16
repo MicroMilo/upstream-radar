@@ -319,6 +319,8 @@ The deterministic receiver proves one delivery, duplicate suppression, retry aft
 
 For vulnerability events, the human-readable text carries one consistent handling hint: known exploitation in CISA KEV first, then EPSS, then advisory severity. It is a prioritization aid; it does not replace the exact dependency match or the DSH Agent's project analysis.
 
+The same command now also proves project-level routing without making a network request. Payments and Platform resolve different environment-backed endpoints, receive only their own event, and keep independent outboxes; acknowledging Payments leaves Platform pending. The checked state contains neither endpoint URL nor Feishu secret.
+
 ## Scene 20 — quiet one incident without losing the trail
 
 After `radar next` identifies a noisy active incident, pause only that exact event version for a bounded period:
