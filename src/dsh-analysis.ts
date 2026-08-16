@@ -63,7 +63,8 @@ function renderAnalysisPrompt(
 7. 如果 upgradePath.vulnerabilityStatus 是 unavailable，不得推荐任何候选版本为安全或可升级；应先恢复 OSV 监控并说明当前判断不完整。
 8. 如果 upgradePath.dependencyStatus 是 unavailable，不得推荐任何候选版本；如果是 partial，只能把 firstCandidate 理解为“已检查的最早一小段中的候选”，不能推断后续版本没有风险。
 9. 如果候选的 dependencyCheck.status 是 incomplete 或 unavailable，必须把传递依赖风险写成 unknown，并说明缺少哪类检查；不要把“没有发现”写成“安全”。
-10. 返回一个 JSON 对象，字段严格为 project_exposure、confidence、evidence、recommended_action、urgency、reasoning_summary。${groupedInstruction}
+10. 如果 event_json 含有 upgradePath.remediationCoverage 和 firstCandidateRemovingAllPaths，它们只表示“已查询的漏洞源和候选图中没有发现这些已知路径”；仍要检查项目兼容性，不得把它写成“安全”或“已验证”。如果 remediationCoverage 是 partial、unavailable 或 not-requested，不得推荐候选已经消除了漏洞；应说明缺失的检查。
+11. 返回一个 JSON 对象，字段严格为 project_exposure、confidence、evidence、recommended_action、urgency、reasoning_summary。${groupedInstruction}
 
 expected_output:
 ${JSON.stringify(task.expectedOutput, null, 2)}

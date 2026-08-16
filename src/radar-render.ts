@@ -33,6 +33,10 @@ function vulnerabilityNextStep(event: VulnerabilityEvent): string {
 
 function compatibilityNextStep(event: CompatibilityEvent): string {
   if (event.change === 'resolved') return 'No action required; confirm the current graph and source are up to date.'
+  const remediationCandidate = event.upgradePath?.firstCandidateRemovingAllPaths?.candidate
+  if (remediationCandidate !== undefined) {
+    return `Ask the DSH Agent to inspect project impact before applying ${packageLabel(remediationCandidate)}; it removes all checked vulnerability paths.`
+  }
   const candidate = event.upgradePath?.firstCandidate?.candidate ?? event.candidate
   return `Ask the DSH Agent to inspect project impact before applying ${packageLabel(candidate)}.`
 }
@@ -98,6 +102,19 @@ function renderCompatibility(event: CompatibilityEvent): string[] {
     }
     lines.push(`Candidate OSV check: ${vulnerabilityStatus === 'checked' ? 'complete' : vulnerabilityStatus === 'unavailable' ? 'unavailable' : 'not requested'}`)
     lines.push(`Candidate dependency graph check: ${dependencyStatus === 'checked' ? 'complete' : dependencyStatus === 'partial' ? 'bounded prefix only' : dependencyStatus === 'unavailable' ? 'unavailable' : 'not requested'}${(event.upgradePath.uncheckedCount ?? 0) === 0 ? '' : `; ${event.upgradePath.uncheckedCount} candidate(s) not fully checked`}`)
+    if (event.upgradePath.remediationCoverage !== undefined) {
+      const coverage = event.upgradePath.remediationCoverage
+      lines.push(`Vulnerability remediation check: ${coverage === 'checked' ? 'complete' : coverage === 'partial' ? 'bounded prefix only' : coverage === 'unavailable' ? 'unavailable' : 'not requested'}`)
+      if (event.upgradePath.firstCandidateRemovingAllPaths !== undefined) {
+        const remediation = event.upgradePath.firstCandidateRemovingAllPaths
+        lines.push(`First checked candidate removing all known vulnerability paths: ${packageLabel(remediation.candidate)} (still requires project analysis)`)
+        for (const item of remediation.vulnerabilityRemediation ?? []) {
+          lines.push(`  ${display(item.advisoryId)}: ${item.status}; ${display(item.reason)}`)
+        }
+      } else if (coverage === 'checked') {
+        lines.push('No checked candidate removes all known vulnerability paths without a deterministic blocker.')
+      }
+    }
     lines.push(`Upgrade candidates evaluated: ${event.upgradePath.evaluated}; deterministic blockers: ${event.upgradePath.blockedCount}`)
     if (event.upgradePath.blocked.length > 0) {
       lines.push('Blocked candidate samples:')

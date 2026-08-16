@@ -29,6 +29,7 @@ All notable changes to Upstream Radar are documented here.
 
 ### Added
 
+- Compare active vulnerability ids and aliases with complete candidate dependency graphs, report `removed`/`still-affected`/`unknown` evidence, and identify the first non-blocked top-level plugin candidate that removes all checked paths without calling it safe.
 - Add an optional provider-neutral HTTPS webhook for changed vulnerability, compatibility, malware, and source-health events from both the native DSH adapter and CLI `radar check/watch`.
 - Deduplicate webhook event ids per endpoint, persist only the endpoint fingerprint, and retry failed deliveries on a later cycle.
 - Add a read-only `graph pnpm-lock` CLI command for pnpm v6/v9 lockfile dependency graphs, including project-root importers and explicit ambiguous peer references.

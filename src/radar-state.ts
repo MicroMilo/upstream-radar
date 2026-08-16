@@ -42,6 +42,7 @@ function validCompatibilityDependencyCheck(value: unknown): boolean {
     || typeof check.nodeCount !== 'number' || !Number.isSafeInteger(check.nodeCount) || check.nodeCount < 0 || check.nodeCount > 1_000_000
     || typeof check.unresolvedCount !== 'number' || !Number.isSafeInteger(check.unresolvedCount) || check.unresolvedCount < 0 || check.unresolvedCount > 1_000_000
     || !Array.isArray(findings) || findings.length > 32
+    || (check.findingsTruncated !== undefined && typeof check.findingsTruncated !== 'boolean')
     || (check.error !== undefined && (typeof check.error !== 'string' || check.error.length > 2_048))) return false
   return findings.every(rawFinding => {
     const finding = asRecord(rawFinding)
@@ -67,16 +68,34 @@ function validCompatibilityDependencyCheck(value: unknown): boolean {
   })
 }
 
+function validCompatibilityVulnerabilityRemediation(value: unknown): boolean {
+  const remediation = asRecord(value)
+  const remainingPaths = remediation?.remainingPaths
+  if (typeof remediation?.incidentId !== 'string' || remediation.incidentId.length === 0 || remediation.incidentId.length > 512
+    || typeof remediation.advisoryId !== 'string' || remediation.advisoryId.length === 0 || remediation.advisoryId.length > 512
+    || !validPackageCoordinate(remediation.affected)
+    || (remediation.status !== 'removed' && remediation.status !== 'still-affected' && remediation.status !== 'unknown')
+    || typeof remediation.reason !== 'string' || remediation.reason.length > 2_048
+    || (remainingPaths !== undefined && (!Array.isArray(remainingPaths) || remainingPaths.length > 4))) return false
+  return remainingPaths === undefined || remainingPaths.every(path => (
+    Array.isArray(path) && path.length > 0 && path.length <= 64 && path.every(validPackageCoordinate)
+  ))
+}
+
 function validCompatibilityUpgradeCandidate(value: unknown): boolean {
   const candidate = asRecord(value)
   const coordinate = asRecord(candidate?.candidate)
   const signals = candidate?.signals
   const dependencyCheck = candidate?.dependencyCheck
+  const vulnerabilityRemediation = candidate?.vulnerabilityRemediation
   if (coordinate?.ecosystem !== 'npm'
     || typeof coordinate.name !== 'string' || coordinate.name.length === 0 || coordinate.name.length > 512
     || typeof coordinate.version !== 'string' || coordinate.version.length === 0 || coordinate.version.length > 512
     || !Array.isArray(signals) || signals.length > 64) return false
   if (dependencyCheck !== undefined && !validCompatibilityDependencyCheck(dependencyCheck)) return false
+  if (vulnerabilityRemediation !== undefined
+    && (!Array.isArray(vulnerabilityRemediation) || vulnerabilityRemediation.length > 32
+      || !vulnerabilityRemediation.every(validCompatibilityVulnerabilityRemediation))) return false
   return signals.every(rawSignal => {
     const signal = asRecord(rawSignal)
     return typeof signal?.code === 'string' && signal.code.length > 0 && signal.code.length <= 256
@@ -96,6 +115,7 @@ function validCompatibilityUpgradePath(value: unknown): boolean {
   const vulnerabilityStatus = path?.vulnerabilityStatus
   const dependencyStatus = path?.dependencyStatus
   const uncheckedCount = path?.uncheckedCount
+  const remediationCoverage = path?.remediationCoverage
   if (typeof evaluated !== 'number' || !Number.isSafeInteger(evaluated) || evaluated < 0 || evaluated > 1_000_000
     || typeof blockedCount !== 'number' || !Number.isSafeInteger(blockedCount) || blockedCount < 0 || blockedCount > evaluated
     // 0.17.0 upgrade paths did not have this field; treat those persisted paths as legacy.
@@ -103,10 +123,13 @@ function validCompatibilityUpgradePath(value: unknown): boolean {
       && vulnerabilityStatus !== 'checked' && vulnerabilityStatus !== 'unavailable' && vulnerabilityStatus !== 'not-requested')
     || (dependencyStatus !== undefined
       && dependencyStatus !== 'checked' && dependencyStatus !== 'partial' && dependencyStatus !== 'unavailable' && dependencyStatus !== 'not-requested')
+    || (remediationCoverage !== undefined
+      && remediationCoverage !== 'checked' && remediationCoverage !== 'partial' && remediationCoverage !== 'unavailable' && remediationCoverage !== 'not-requested')
     || (uncheckedCount !== undefined
       && (typeof uncheckedCount !== 'number' || !Number.isSafeInteger(uncheckedCount) || uncheckedCount < 0 || uncheckedCount > evaluated))
     || !Array.isArray(blocked) || blocked.length > 8
-    || (path?.firstCandidate !== undefined && !validCompatibilityUpgradeCandidate(path.firstCandidate))) return false
+    || (path?.firstCandidate !== undefined && !validCompatibilityUpgradeCandidate(path.firstCandidate))
+    || (path?.firstCandidateRemovingAllPaths !== undefined && !validCompatibilityUpgradeCandidate(path.firstCandidateRemovingAllPaths))) return false
   return blocked.every(validCompatibilityUpgradeCandidate)
 }
 

@@ -43,6 +43,25 @@ describe('radar state parsing', () => {
             firstCandidate: {
               candidate: { ecosystem: 'npm', name: 'plugin', version: '1.1.0' },
               signals: [],
+              vulnerabilityRemediation: [{
+                incidentId: 'incident-legacy-vulnerability',
+                advisoryId: 'GHSA-legacy',
+                affected: { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+                status: 'removed',
+                reason: 'The checked candidate graph has no matching finding.',
+              }],
+            },
+            remediationCoverage: 'checked',
+            firstCandidateRemovingAllPaths: {
+              candidate: { ecosystem: 'npm', name: 'plugin', version: '1.1.0' },
+              signals: [],
+              vulnerabilityRemediation: [{
+                incidentId: 'incident-legacy-vulnerability',
+                advisoryId: 'GHSA-legacy',
+                affected: { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+                status: 'removed',
+                reason: 'The checked candidate graph has no matching finding.',
+              }],
             },
             blocked: [],
           },

@@ -395,7 +395,7 @@ describe('radar polling', () => {
       async query(packages) {
         queryCount += 1
         const result = new Map(packages.map(item => [packageKey(item), [] as AdvisoryMatch[]]))
-        if (packages.some(item => item.name === 'logger' && item.version === '4.1.0')) {
+        if (packages.some(item => item.name === 'parser' && item.version === '2.9.0')) {
           result.set('npm:parser@2.9.0', [{
             package: { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
             advisory,
@@ -444,8 +444,11 @@ describe('radar polling', () => {
       },
     }
 
+    const profileInventory = structuredClone(inventory)
+    profileInventory.plugins[0]!.graph.nodes.find(node => node.name === 'parser')!.source = 'profile'
+
     const result = await pollRadar(
-      [inventory],
+      [profileInventory],
       emptyRadarState(),
       advisories,
       new Date('2026-08-14T04:00:00.000Z'),
@@ -457,6 +460,9 @@ describe('radar polling', () => {
     assert.ok(event?.kind === 'compatibility')
     assert.equal(event.upgradePath?.dependencyStatus, 'checked')
     assert.equal(event.upgradePath?.firstCandidate?.candidate.version, '1.2.0')
+    assert.equal(event.upgradePath?.remediationCoverage, 'checked')
+    assert.equal(event.upgradePath?.firstCandidateRemovingAllPaths?.candidate.version, '1.2.0')
+    assert.equal(event.upgradePath?.firstCandidateRemovingAllPaths?.vulnerabilityRemediation?.[0]?.status, 'removed')
     assert.ok(event.upgradePath?.blocked.some(item => item.candidate.version === '1.1.0'
       && item.signals.some(signal => signal.code === 'candidate-dependency-vulnerability')))
     assert.deepEqual(event.upgradePath?.blocked[0]?.dependencyCheck?.findings[0]?.paths[0]?.map(item => `${item.name}@${item.version}`), [

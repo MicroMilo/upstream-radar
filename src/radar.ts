@@ -187,7 +187,7 @@ function findingKey(item: CompatibilityDependencyFinding): string {
 function collectCandidateDependencyFindings(
   graph: DependencyGraph,
   matches: ReadonlyMap<string, AdvisoryMatch[]>,
-): CompatibilityDependencyFinding[] {
+): { findings: CompatibilityDependencyFinding[]; findingsTruncated: boolean } {
   const grouped = new Map<string, CompatibilityDependencyFinding>()
   for (const node of graph.nodes) {
     const affected = coordinate(node.name, node.version)
@@ -217,9 +217,12 @@ function collectCandidateDependencyFindings(
       }
     }
   }
-  return [...grouped.values()]
+  const ordered = [...grouped.values()]
     .sort((left, right) => findingKey(left).localeCompare(findingKey(right)))
-    .slice(0, MAX_CANDIDATE_DEPENDENCY_FINDINGS)
+  return {
+    findings: ordered.slice(0, MAX_CANDIDATE_DEPENDENCY_FINDINGS),
+    findingsTruncated: ordered.length > MAX_CANDIDATE_DEPENDENCY_FINDINGS,
+  }
 }
 
 function candidateDependencyCheck(
@@ -583,9 +586,11 @@ export async function pollRadar(
                   const check = candidateDependencyChecks.get(key)
                   const observation = graphObservations.get(key)
                   if (check === undefined || observation?.graph === undefined || check.status === 'unavailable') continue
+                  const collected = collectCandidateDependencyFindings(observation.graph, queried)
                   candidateDependencyChecks.set(key, {
                     ...check,
-                    findings: collectCandidateDependencyFindings(observation.graph, queried),
+                    findings: collected.findings,
+                    ...(collected.findingsTruncated ? { findingsTruncated: true } : {}),
                   })
                 }
               } catch (error: unknown) {
@@ -667,6 +672,13 @@ export async function pollRadar(
                 candidateDependencyStatus: candidateDependencyStatus(observation, candidateDependencyChecks, true),
               } : {}),
             }),
+            activeVulnerabilities: [...current.values()]
+              .map(item => item.event)
+              .filter(event => (
+                event.project.id === inventory.project.id
+                && event.plugin.name === observation.installed.name
+                && event.plugin.version === observation.installed.version
+              )),
             ...releaseNotesInput,
             ...releaseNotesUrlInput,
           })

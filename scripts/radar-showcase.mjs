@@ -164,6 +164,7 @@ const compatibility = assessCompatibilityChange(config.projects[0], {
   candidateVulnerabilityStatus: 'checked',
   candidateDependencyChecks,
   candidateDependencyStatus: 'checked',
+  activeVulnerabilities: vulnerable.events.filter(event => event.kind === 'vulnerability' || event.kind === 'malware'),
   releaseNotes,
   releaseNotesUrl: 'https://github.com/acme/plugin/releases/tag/v2.0.0',
   detectedAt: '2026-08-14T02:00:00.000Z',

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { assessCompatibilityChange } from '../src/compatibility.js'
-import type { ProjectInventory } from '../src/radar-types.js'
+import type { ProjectInventory, VulnerabilityEvent } from '../src/radar-types.js'
 
 const inventory: ProjectInventory = {
   schema: 'upstream-radar.inventory/v1alpha1',
@@ -19,6 +19,35 @@ const inventory: ProjectInventory = {
       edges: [{ from: 'plugin', to: 'dsh-agent', kind: 'peer' }],
     },
   }],
+}
+
+const activeParserVulnerability: VulnerabilityEvent = {
+  schema: 'upstream-radar.event/v1alpha1',
+  id: 'event-parser-vulnerability',
+  incidentId: 'incident-parser-vulnerability',
+  kind: 'vulnerability',
+  change: 'new',
+  detectedAt: '2026-08-14T03:00:00.000Z',
+  project: { id: 'payments-api', name: 'Payments API' },
+  route: { channels: ['stdout'] },
+  plugin: { ecosystem: 'npm', name: 'plugin', version: '1.0.0' },
+  affected: { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+  affectedSources: ['profile'],
+  paths: [[
+    { ecosystem: 'npm', name: 'plugin', version: '1.0.0' },
+    { ecosystem: 'npm', name: 'logger', version: '4.0.2' },
+    { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+  ]],
+  advisory: {
+    id: 'GHSA-parser-active',
+    aliases: ['CVE-parser-active'],
+    summary: 'Active parser vulnerability',
+    details: 'The active parser path is vulnerable.',
+    severity: 'high',
+    modified: '2026-08-14T03:00:00.000Z',
+    fixedVersions: ['3.0.0'],
+    references: [],
+  },
 }
 
 describe('compatibility change assessment', () => {
@@ -183,6 +212,88 @@ describe('compatibility change assessment', () => {
     assert.equal(result.upgradePath.uncheckedCount, 1)
     assert.equal(result.upgradePath.firstCandidate?.candidate.version, '1.3.0')
     assert.ok(result.upgradePath.blocked.length === 0)
+  })
+
+  it('finds the first top-level candidate that removes every checked active vulnerability path', () => {
+    const result = assessCompatibilityChange(inventory, {
+      previous: { name: 'plugin', version: '1.0.0', main: './index.js', engines: { node: '>=22' } },
+      candidate: { name: 'plugin', version: '2.0.0', main: './new.js', engines: { node: '>=24' } },
+      upgradeCandidates: [
+        { name: 'plugin', version: '1.1.0', main: './index.js', engines: { node: '>=22' } },
+        { name: 'plugin', version: '1.2.0', main: './index.js', engines: { node: '>=24' } },
+        { name: 'plugin', version: '1.3.0', main: './index.js', engines: { node: '>=22' } },
+        { name: 'plugin', version: '2.0.0', main: './new.js', engines: { node: '>=24' } },
+      ],
+      candidateVulnerabilityStatus: 'checked',
+      candidateDependencyStatus: 'checked',
+      candidateDependencyChecks: new Map([
+        ['npm:plugin@1.1.0', {
+          status: 'checked', nodeCount: 3, unresolvedCount: 0,
+          findings: [{
+            package: { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+            advisory: activeParserVulnerability.advisory,
+            paths: [[
+              { ecosystem: 'npm', name: 'plugin', version: '1.1.0' },
+              { ecosystem: 'npm', name: 'logger', version: '4.1.0' },
+              { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+            ]],
+          }],
+        }],
+        ['npm:plugin@1.2.0', { status: 'checked', nodeCount: 3, unresolvedCount: 0, findings: [] }],
+        ['npm:plugin@1.3.0', { status: 'checked', nodeCount: 3, unresolvedCount: 0, findings: [] }],
+        ['npm:plugin@2.0.0', { status: 'checked', nodeCount: 3, unresolvedCount: 0, findings: [] }],
+      ]),
+      activeVulnerabilities: [activeParserVulnerability],
+      detectedAt: '2026-08-14T04:00:00.000Z',
+    })
+
+    assert.ok(result?.upgradePath)
+    assert.equal(result.upgradePath.remediationCoverage, 'checked')
+    assert.equal(result.upgradePath.firstCandidateRemovingAllPaths?.candidate.version, '1.3.0')
+    assert.equal(result.upgradePath.firstCandidate?.candidate.version, '1.3.0')
+    assert.equal(result.upgradePath.blocked[0]?.vulnerabilityRemediation?.[0]?.status, 'still-affected')
+    assert.equal(result.upgradePath.firstCandidateRemovingAllPaths?.vulnerabilityRemediation?.[0]?.status, 'removed')
+  })
+
+  it('keeps remediation unknown when the active path comes from the DSH host runtime', () => {
+    const hostVulnerability: VulnerabilityEvent = { ...activeParserVulnerability, affectedSources: ['dsh-host'] }
+    const result = assessCompatibilityChange(inventory, {
+      previous: { name: 'plugin', version: '1.0.0' },
+      candidate: { name: 'plugin', version: '1.1.0', main: './new.js' },
+      upgradeCandidates: [{ name: 'plugin', version: '1.1.0', main: './new.js' }],
+      candidateVulnerabilityStatus: 'checked',
+      candidateDependencyStatus: 'checked',
+      candidateDependencyChecks: new Map([
+        ['npm:plugin@1.1.0', { status: 'checked', nodeCount: 2, unresolvedCount: 0, findings: [] }],
+      ]),
+      activeVulnerabilities: [hostVulnerability],
+      detectedAt: '2026-08-14T04:00:00.000Z',
+    })
+
+    assert.equal(result?.upgradePath?.remediationCoverage, 'unavailable')
+    assert.equal(result?.upgradePath?.firstCandidateRemovingAllPaths, undefined)
+    assert.equal(result?.upgradePath?.firstCandidate?.vulnerabilityRemediation?.[0]?.status, 'unknown')
+  })
+
+  it('does not treat a truncated candidate finding list as proof of remediation', () => {
+    const result = assessCompatibilityChange(inventory, {
+      previous: { name: 'plugin', version: '1.0.0' },
+      candidate: { name: 'plugin', version: '1.1.0', main: './new.js' },
+      upgradeCandidates: [{ name: 'plugin', version: '1.1.0', main: './new.js' }],
+      candidateVulnerabilityStatus: 'checked',
+      candidateDependencyStatus: 'checked',
+      candidateDependencyChecks: new Map([
+        ['npm:plugin@1.1.0', {
+          status: 'checked', nodeCount: 100, unresolvedCount: 0, findings: [], findingsTruncated: true,
+        }],
+      ]),
+      activeVulnerabilities: [activeParserVulnerability],
+      detectedAt: '2026-08-14T04:00:00.000Z',
+    })
+
+    assert.equal(result?.upgradePath?.remediationCoverage, 'partial')
+    assert.equal(result?.upgradePath?.firstCandidateRemovingAllPaths, undefined)
+    assert.equal(result?.upgradePath?.firstCandidate?.vulnerabilityRemediation?.[0]?.status, 'unknown')
   })
 
   it('does not treat an equal or older semantic version as a candidate upgrade', () => {

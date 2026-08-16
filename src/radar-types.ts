@@ -203,17 +203,33 @@ export interface CompatibilityDependencyCheck {
   nodeCount: number
   unresolvedCount: number
   findings: CompatibilityDependencyFinding[]
+  /** True when the bounded finding list may omit additional matching advisories. */
+  findingsTruncated?: boolean
   error?: string
+}
+
+export type CompatibilityVulnerabilityRemediationStatus = 'removed' | 'still-affected' | 'unknown'
+
+/** Whether one candidate removes every currently known path for one active advisory. */
+export interface CompatibilityVulnerabilityRemediation {
+  incidentId: string
+  advisoryId: string
+  affected: PackageCoordinate
+  status: CompatibilityVulnerabilityRemediationStatus
+  reason: string
+  remainingPaths?: PackageCoordinate[][]
 }
 
 export interface CompatibilityUpgradeCandidate {
   candidate: PackageCoordinate
   signals: CompatibilitySignal[]
   dependencyCheck?: CompatibilityDependencyCheck
+  vulnerabilityRemediation?: CompatibilityVulnerabilityRemediation[]
 }
 
 export type CompatibilityVulnerabilityStatus = 'checked' | 'unavailable' | 'not-requested'
 export type CompatibilityDependencyStatus = 'checked' | 'partial' | 'unavailable' | 'not-requested'
+export type CompatibilityRemediationCoverage = 'checked' | 'partial' | 'unavailable' | 'not-requested'
 
 /** A bounded explanation of which intermediate release is worth analyzing first. */
 export interface CompatibilityUpgradePath {
@@ -229,6 +245,10 @@ export interface CompatibilityUpgradePath {
   uncheckedCount?: number
   /** The first candidate without a deterministic blocker; this is not a safety verdict. */
   firstCandidate?: CompatibilityUpgradeCandidate
+  /** Whether active vulnerability paths could be compared against candidate graphs. */
+  remediationCoverage?: CompatibilityRemediationCoverage
+  /** The first non-blocked candidate that removes all checked active vulnerability paths. */
+  firstCandidateRemovingAllPaths?: CompatibilityUpgradeCandidate
   /** A small sample of blocked candidates, kept for an actionable alert. */
   blocked: CompatibilityUpgradeCandidate[]
 }

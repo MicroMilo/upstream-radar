@@ -70,12 +70,15 @@ The candidate `plugin@2.0.0` changes:
 
 Radar identifies the mathematically incompatible environment and peer range, labels structural changes as needing analysis, and creates a separate DSH compatibility task.
 
-The same npm metadata also contains `plugin@1.1.0`, `plugin@1.2.0`, and `plugin@1.3.0`. Radar checks those exact candidate versions against OSV without installing them, then checks their bounded transitive graphs with lifecycle scripts disabled. `1.1.0` is blocked because its graph contains `logger@4.1.0 -> parser@2.9.0` with a known advisory, `1.2.0` by the Node.js requirement, and `1.3.0` becomes the first checked version worth handing to DSH. That wording is deliberate: it is a candidate for project analysis, not a safety certificate.
+The same npm metadata also contains `plugin@1.1.0`, `plugin@1.2.0`, and `plugin@1.3.0`. Radar checks those exact candidate versions against OSV without installing them, then checks their bounded transitive graphs with lifecycle scripts disabled. `1.1.0` is blocked because its graph contains `logger@4.1.0 -> parser@2.9.0` with a known advisory, `1.2.0` by the Node.js requirement, and `1.3.0` becomes the first checked version worth handing to DSH. That wording is deliberate: it is a candidate for project analysis, not a safety certificate. When an active vulnerability is known for this plugin, Radar also compares its advisory id and aliases against each complete candidate graph. A candidate can then be reported as removing all checked paths, still affected, or unknown; removing a known path is not a safety or compatibility certificate.
 
 ```text
 First candidate without a deterministic blocker: plugin@1.3.0 (still requires project analysis)
 Candidate OSV check: complete
 Candidate dependency graph check: complete
+Vulnerability remediation check: complete
+First checked candidate removing all known vulnerability paths: plugin@1.3.0 (still requires project analysis)
+  GHSA-demo-2026-parser: removed; The complete candidate graph has no OSV finding matching GHSA-demo-2026-parser.
 Upgrade candidates evaluated: 4; deterministic blockers: 3
 Blocked candidate samples:
   plugin@1.1.0: candidate-dependency-vulnerability

@@ -13,6 +13,7 @@
 | 插件新版本 | npm `latest` 是否出现新候选 | 只读 packument，不安装候选 | 兼容性事件或无变化 |
 | 候选漏洞 | 中间版本本身是否已被 OSV 报告为受影响 | 对每个更高的精确候选版本做 OSV 查询；命中任何有效公告就阻断该候选；OSV 查询失败则不推荐任何候选 | known-vulnerability / checked / unavailable |
 | 候选传递依赖 | 候选版本解析出的依赖树是否引入已知漏洞 | 对按版本排序的有限前缀运行 `npm install --package-lock-only --ignore-scripts`；不执行候选代码；将每个图节点查询 OSV，并保留从候选根到漏洞节点的路径 | candidate-dependency-vulnerability / checked / partial / incomplete / unavailable |
+| 漏洞路径修复候选 | 哪个顶层插件版本能消除当前已知的全部受影响路径 | 将活跃事件的公告 id/别名与每个完整候选图的 OSV 结果比对；完整图没有匹配项才记为 removed，仍有匹配路径记为 still-affected；图、源或 DSH 宿主路径不够时记为 unknown | remediationCoverage、firstCandidateRemovingAllPaths、removed/still-affected/unknown |
 | 发布说明 | 候选版本有没有对应的公开 GitHub Release 说明 | 仅接受 npm 元数据中的公开 `github.com` 仓库，按 `v<version>` 或 `<version>` 精确读取；正文限长并作为不可信材料 | 发布说明正文与链接，失败不阻塞 npm/OSV 主链路 |
 | Breaking signals | 新版本是否真的是高于当前安装版本的候选，并且是否跨兼容边界或改变关键声明 | 先比较 npm 精确版本方向；只对更高版本比较入口、exports、Node、DSH bundle 和 peer 范围；`latest` 回退不制造新告警，也不把已有问题误判为已解决；当最新版本有确定性阻断时，再按版本从低到高筛出第一个没有确定性阻断且没有已知漏洞的候选；OSV 失败时不推荐候选，但不称为“安全” | confirmed/strong/needs-analysis；最低候选仍需 DSH 项目分析 |
 | DSH 分析入口与结果写回 | 如何避免“新闻”直接指挥 Agent、避免一次 DSH 升级刷出多条通知，以及避免普通聊天被误当成结论 | 将所有来源文字标记为不可信数据，要求只读和项目证据；同一项目同一轮的 DSH 运行时包更新在投递层合并，底层事件仍逐包保存；用 task/message/session/event 四个身份绑定回复，只接受固定六字段 JSON，并在上游事件变化时清掉旧结论 | DSH 原生投递；`radar status`、`analysis list/show` 查看等待和已验证结果 |
