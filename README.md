@@ -67,7 +67,7 @@ Want to see the core value before touching DSH? Run the packaged, network-free d
 npx --yes upstream-radar@latest demo
 ```
 
-It prints one exact transitive path, independent advisory-source evidence (including an explicit source conflict), the read-only DSH Agent handoff, and the next setup command. It uses a local fixture only; it does not inspect your repository, install a plugin, or claim that the demo advisory is real. Use `--json` when you want the same proof as a machine-readable artifact.
+It prints one exact transitive path, independent advisory-source evidence (including an explicit source conflict), CISA KEV/EPSS prioritization evidence, the read-only DSH Agent handoff, and the next setup command. It uses a local fixture only; it does not inspect your repository, install a plugin, or claim that the demo advisory is real. Use `--json` when you want the same proof as a machine-readable artifact.
 
 The core result looks like this (the demo uses a local fixture; fields are abbreviated):
 
@@ -76,6 +76,8 @@ The core result looks like this (the demo uses a local fixture; fields are abbre
 Affected: parser@2.9.0
 Paths:
   demo-plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
+Threat signal: CISA KEV lists this CVE as exploited in the wild.
+FIRST EPSS estimated exploitation probability: 97.2% (percentile 100.0%)
 Next: Review the fixed version with the DSH Agent in this project.
 ```
 

@@ -62,7 +62,7 @@ npx --yes upstream-radar@latest quickstart
 npx --yes upstream-radar@latest demo
 ```
 
-它会打印一条准确的传递依赖路径、独立漏洞源证据（包括明确标出的来源冲突）、只读 DSH Agent 交接任务和下一步安装命令。它只使用本地 fixture，不会读取你的仓库、安装插件，也不声称 demo 公告是真实漏洞；需要机器可读结果时加 `--json`。
+它会打印一条准确的传递依赖路径、独立漏洞源证据（包括明确标出的来源冲突）、CISA KEV/EPSS 优先级证据、只读 DSH Agent 交接任务和下一步安装命令。它只使用本地 fixture，不会读取你的仓库、安装插件，也不声称 demo 公告是真实漏洞；需要机器可读结果时加 `--json`。
 
 它的核心结果大致是这样（demo 使用本地 fixture，省略了部分字段）：
 
@@ -70,6 +70,8 @@ npx --yes upstream-radar@latest demo
 [HIGH][NEW] 依赖漏洞
 受影响：parser@2.9.0
 路径：demo-plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
+Threat signal: CISA KEV lists this CVE as exploited in the wild.
+FIRST EPSS estimated exploitation probability: 97.2% (percentile 100.0%)
 下一步：让当前项目里的 DSH Agent 判断实际影响，再决定是否升级。
 ```
 

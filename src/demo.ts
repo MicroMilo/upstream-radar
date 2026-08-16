@@ -36,7 +36,7 @@ export function createDemoEvent(): VulnerabilityEvent {
     ]],
     advisory: {
       id: 'GHSA-demo-parser',
-      aliases: ['CVE-2026-DEMO'],
+      aliases: ['CVE-2026-1234'],
       summary: 'The demo parser advisory is attached to the exact transitive path.',
       details: 'This deterministic local fixture exists only to demonstrate the Radar-to-DSH handoff.',
       severity: 'high',
@@ -52,6 +52,18 @@ export function createDemoEvent(): VulnerabilityEvent {
           { source: 'github-advisories', value: '3.1.0' },
         ],
       }],
+      riskSignals: {
+        cisaKev: {
+          knownExploited: true as const,
+          dateAdded: '2026-08-15',
+          dueDate: '2026-08-22',
+        },
+        epss: {
+          score: 0.97224,
+          percentile: 0.99999,
+          date: '2026-08-16',
+        },
+      },
     },
   }
 }

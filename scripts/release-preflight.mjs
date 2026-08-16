@@ -35,6 +35,7 @@ function fail(name, detail) {
 function isCrossSourceDemoReport(report) {
   const sources = report?.event?.advisory?.sources
   const conflicts = report?.event?.advisory?.conflicts
+  const riskSignals = report?.event?.advisory?.riskSignals
   return report?.schema === 'upstream-radar.demo/v1alpha1'
     && report?.networkFree === true
     && Array.isArray(sources)
@@ -42,6 +43,9 @@ function isCrossSourceDemoReport(report) {
     && sources.includes('github-advisories')
     && Array.isArray(conflicts)
     && conflicts.some(conflict => conflict?.field === 'fixed-versions')
+    && riskSignals?.cisaKev?.knownExploited === true
+    && typeof riskSignals?.epss?.score === 'number'
+    && riskSignals.epss.score >= 0 && riskSignals.epss.score <= 1
 }
 
 async function pathExists(relativePath) {
