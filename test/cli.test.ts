@@ -427,6 +427,30 @@ snapshots:
     }
   })
 
+  it('explains how to prepare a DSH profile with no third-party plugin', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-setup-empty-profile-'))
+    try {
+      const dshHome = join(root, 'dsh-home')
+      const profile = join(dshHome, 'profiles', 'web')
+      await mkdir(profile, { recursive: true })
+      await writeFile(join(profile, 'package.json'), JSON.stringify({
+        name: 'dsh-profile-web',
+        dsh: { profile: { bundles: ['@deepseek-ai/dsh-base'] } },
+      }))
+
+      const result = spawnSync(process.execPath, [cli, 'setup', '--profile', 'web', '--no-install'], {
+        encoding: 'utf8',
+        cwd: root,
+        env: { ...process.env, DSH_HOME: dshHome },
+      })
+      assert.equal(result.status, 1)
+      assert.match(result.stderr, /has no third-party bundles to monitor/)
+      assert.match(result.stderr, /dsh plugin --profile <name> add <package>@<exact-version>/)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
   it('rejects unknown options instead of silently weakening a scan', () => {
     const result = spawnSync(process.execPath, [cli, 'scan', fixture, '--jsno'], { encoding: 'utf8' })
     assert.equal(result.status, 1)

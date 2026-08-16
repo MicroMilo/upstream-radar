@@ -17,6 +17,7 @@ All notable changes to Upstream Radar are documented here.
 - Add a repeatable real-plugin DSH adoption showcase that packs the packages with lifecycle scripts disabled, then validates setup, doctor, frozen upstream checks, and status in a disposable DSH profile.
 - Add command-specific `--help` for setup, inspection, lockfile, DSH, radar, task, and analysis paths, plus concrete next-step guidance in text admission reports.
 - Make a missing DSH executable during `setup` explain the exact prerequisite and recovery command instead of exposing a raw process-spawn error.
+- Explain how to prepare a profile when `setup` finds DSH but no third-party plugin to monitor.
 - Add a post-publish npm artifact smoke that installs the exact public tarball with scripts disabled and runs the packaged CLI demo.
 
 ## [0.33.0] - 2026-08-16

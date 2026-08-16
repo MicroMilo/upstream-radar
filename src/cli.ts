@@ -83,9 +83,12 @@ Common options:
   --no-install            reuse an already installed Radar bundle
   --no-dsh-patch          use legacy environment-variable wiring
 
-Next:
+  Next:
   Review the generated files, then run the printed doctor command and start DSH
   with the printed --patch command.
+
+If the profile has no third-party plugin yet:
+  dsh plugin --profile <name> add <package>@<exact-version>
 `,
     init: `Upstream Radar — create a reviewable inventory
 
@@ -923,7 +926,7 @@ async function runSetup(args: readonly string[]): Promise<number> {
   if (!noInstall && resolvedProfile === undefined) {
     const candidates = await discoverDshProfiles()
     if (candidates.length === 0) {
-      throw new Error('setup could not find a DSH profile with third-party bundles; pass --profile <name>')
+      throw new Error('setup could not find a DSH profile with third-party bundles; install one with `dsh plugin --profile <name> add <package>@<exact-version>`, then rerun setup')
     }
     if (candidates.length > 1) {
       throw new Error(`setup found multiple DSH profiles with third-party bundles (${candidates.join(', ')}); pass --profile <name>`)

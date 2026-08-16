@@ -240,7 +240,9 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
       graph,
     })
   }
-  if (plugins.length === 0) throw new Error('DSH profile has no third-party bundles to monitor')
+  if (plugins.length === 0) {
+    throw new Error('DSH profile has no third-party bundles to monitor; install one with `dsh plugin --profile <name> add <package>@<exact-version>`, then rerun setup')
+  }
 
   const config: RadarConfig = {
     schema: RADAR_CONFIG_SCHEMA,

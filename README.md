@@ -52,6 +52,8 @@ Use DSH with at least one third-party bundle. When it has exactly one such profi
 
 Before running `setup`, confirm that DeepSeek Harness is installed and `dsh --help` works. If `setup` cannot find `dsh`, it prints this recovery step again.
 
+If DSH has no third-party plugin profile yet, install the plugin you want to monitor first: `dsh plugin --profile <name> add <package>@<exact-version>`.
+
 ```bash
 # Terminal 1
 pnpm dlx --package=upstream-radar@latest upstream-radar setup \

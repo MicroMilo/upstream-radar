@@ -42,6 +42,8 @@ npx --yes upstream-radar@latest demo
 
 运行 `setup` 前，先确认 DeepSeek Harness 已安装，并且 `dsh --help` 能正常执行。如果 `setup` 找不到 `dsh`，它会再次打印这个处理办法。
 
+如果 DSH 里还没有包含第三方插件的 profile，先安装要监控的插件：`dsh plugin --profile <名称> add <包名>@<精确版本>`。
+
 ```bash
 # 终端 1
 pnpm dlx --package=upstream-radar@latest upstream-radar setup \
