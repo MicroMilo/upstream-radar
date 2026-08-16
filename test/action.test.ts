@@ -11,6 +11,13 @@ describe('reusable GitHub Action', () => {
     const packageJson = JSON.parse(await readFile(packagePath, 'utf8')) as { version?: unknown }
 
     assert.equal(typeof packageJson.version, 'string')
+    assert.match(action, /pnpm-lock:/)
+    assert.match(action, /root:/)
+    assert.match(action, /Build Radar config from pnpm lockfile/)
+    assert.match(action, /init --pnpm-lock "\$RADAR_LOCKFILE"/)
+    assert.match(action, /--root "\$RADAR_ROOT"/)
+    assert.match(action, /if: inputs\.pnpm-lock != ''/)
+    assert.match(action, /if: inputs\.pnpm-lock == ''/)
     assert.match(action, /runs:\n\s+using: composite/)
     assert.match(action, new RegExp(`default: ${String(packageJson.version).replaceAll('.', '\\.')}`))
     assert.match(action, /description: ['"]Radar state path; use :memory: for an independent CI check\.['"]/)

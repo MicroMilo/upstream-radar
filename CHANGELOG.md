@@ -12,6 +12,7 @@ All notable changes to Upstream Radar are documented here.
 - Deduplicate webhook event ids per endpoint, persist only the endpoint fingerprint, and retry failed deliveries on a later cycle.
 - Add a read-only `graph pnpm-lock` CLI command for pnpm v6/v9 lockfile dependency graphs, including project-root importers and explicit ambiguous peer references.
 - Add `init --pnpm-lock --root` to turn a lockfile graph into a static Radar config that can run the normal OSV check before DSH installation.
+- Let the reusable GitHub Action optionally build that config from `pnpm-lock` and `root`, while preserving the reviewed-config mode by default.
 
 ### Validation
 

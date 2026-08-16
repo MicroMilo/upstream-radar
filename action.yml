@@ -15,6 +15,14 @@ inputs:
     description: Reviewed Upstream Radar config path, relative to the working directory.
     required: false
     default: upstream-radar.config.json
+  pnpm-lock:
+    description: 'Optional pnpm-lock.yaml path; when set, generate the config input from this lockfile before checking it.'
+    required: false
+    default: ''
+  root:
+    description: 'Exact package root used with pnpm-lock, for example @scope/plugin@1.0.0.'
+    required: false
+    default: ''
   fail-on:
     description: Minimum active vulnerability severity that fails the job.
     required: false
@@ -65,6 +73,45 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
     - name: Check reviewed DSH graph
+      if: inputs.pnpm-lock == ''
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        RADAR_CONFIG: ${{ inputs.config }}
+        RADAR_FAIL_ON: ${{ inputs.fail-on }}
+        RADAR_FAIL_ON_COMPATIBILITY: ${{ inputs.fail-on-compatibility }}
+        RADAR_STATE: ${{ inputs.state }}
+        RADAR_VERSION: ${{ inputs.version }}
+      run: >-
+        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar
+        radar check "$RADAR_CONFIG"
+        --frozen
+        --state "$RADAR_STATE"
+        --fail-on "$RADAR_FAIL_ON"
+        --fail-on-compatibility "$RADAR_FAIL_ON_COMPATIBILITY"
+        --json
+    - name: Build Radar config from pnpm lockfile
+      if: inputs.pnpm-lock != ''
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        RADAR_CONFIG: ${{ inputs.config }}
+        RADAR_LOCKFILE: ${{ inputs.pnpm-lock }}
+        RADAR_ROOT: ${{ inputs.root }}
+        RADAR_VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        if [[ -z "$RADAR_ROOT" ]]; then
+          echo 'root is required when pnpm-lock is set; use an exact package coordinate such as @scope/plugin@1.0.0' >&2
+          exit 1
+        fi
+        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar \
+          init --pnpm-lock "$RADAR_LOCKFILE" \
+          --root "$RADAR_ROOT" \
+          --output "$RADAR_CONFIG" \
+          --force
+    - name: Check generated pnpm DSH graph
+      if: inputs.pnpm-lock != ''
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:

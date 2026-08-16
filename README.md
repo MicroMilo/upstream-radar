@@ -298,6 +298,18 @@ steps:
 
 The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.33.0`, and pin the checkout Action in your workflow according to your repository's policy.
 
+If the repository has a pnpm lockfile but no committed Radar config yet, the Action can generate the config in the same job. See the [copyable pnpm workflow](examples/github-actions/upstream-radar-pnpm.yml):
+
+```yaml
+- uses: MicroMilo/upstream-radar@v0.33.0
+  with:
+    pnpm-lock: pnpm-lock.yaml
+    root: '@your-scope/your-dsh-plugin@1.0.0'
+    fail-on: high
+```
+
+This mode runs `init --pnpm-lock --root` first and then the same frozen check. It never installs the project or executes the plugin; `config` is the output path (default `upstream-radar.config.json`). Leave `pnpm-lock` empty to keep the reviewed-config mode above.
+
 The Action requires the caller to check out the repository first. It does not install the project's dependencies or run their lifecycle scripts; it only reads the committed graph and queries the configured upstream sources. For a fully explicit, lower-level invocation, the equivalent command is:
 
 ```bash

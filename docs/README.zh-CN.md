@@ -293,6 +293,18 @@ steps:
 
 这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --fail-on-compatibility breaking --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。每次运行彼此独立；发现达到阈值的漏洞或选择的兼容性变化时返回 `2`，运行或漏洞源出错时返回 `1`。`breaking` 只拦截有 confirmed/strong 信号的兼容性事件，`any` 会拦截所有活动兼容性事件，默认值是 `never`。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.33.0` 的发布标签，并根据团队策略固定 checkout Action。
 
+如果仓库只有 pnpm 锁文件，还没有提交 Radar 配置，可以让 Action 在同一个 job 中生成配置；可直接复制[pnpm workflow 示例](../examples/github-actions/upstream-radar-pnpm.yml)：
+
+```yaml
+- uses: MicroMilo/upstream-radar@v0.33.0
+  with:
+    pnpm-lock: pnpm-lock.yaml
+    root: '@your-scope/your-dsh-plugin@1.0.0'
+    fail-on: high
+```
+
+这个模式会先执行 `init --pnpm-lock --root`，再执行同一个 frozen 检查。它不会安装项目，也不会执行插件；`config` 是生成文件的路径（默认 `upstream-radar.config.json`）。不填写 `pnpm-lock` 就仍然使用上面的已审查配置模式。
+
 调用方需要先 checkout 仓库。这个 Action 不会安装项目依赖，也不会执行项目的 lifecycle script；它只读取提交到仓库的依赖图并查询配置中的上游漏洞源。如果需要完全显式的底层命令，等价写法是：
 
 ```bash
