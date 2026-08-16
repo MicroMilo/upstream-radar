@@ -12,6 +12,7 @@
 - [x] Ship an installable DSH bundle with a bounded fixed polling interval.
 - [x] Ship a one-command CLI watch loop for demos, CI, and local diagnosis.
 - [x] Provide a deterministic vulnerability and breaking-change showcase.
+- [x] Provide a packaged, network-free demo that shows the exact path and constrained DSH handoff before a user installs anything.
 - [x] Prove bundle installation, plugin-source attribution, Session persistence, and Agent delivery in a real DSH headless profile.
 - [x] Generate an explicit DSH `--patch` overlay so first use does not require environment variables.
 - [x] Auto-select the only DSH profile with third-party bundles and provide a network-free first-run status snapshot.

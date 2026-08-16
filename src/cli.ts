@@ -9,6 +9,7 @@ import { assessCompatibilityChange } from './compatibility.js'
 import { probeDshLoad, probeDshLoadMatrix, renderDshLoadMatrix, renderDshLoadProbe } from './dsh-probe.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { createDoctorReport, renderDoctorReport } from './doctor.js'
+import { createDemoReport, renderDemo } from './demo.js'
 import { GitHubReleaseClient } from './github-release.js'
 import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
 import { createRadarConfigFromDshProfile, createRadarConfigFromNpmLock, createRadarConfigFromPnpmLock, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
@@ -71,6 +72,7 @@ Usage:
   upstream-radar graph <npm-lock|pnpm-lock> <lockfile> [--root <package>@<exact-version>] [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
+  upstream-radar demo [--json]
   upstream-radar benchmark compatibility [--json]
   upstream-radar radar check <config.json> [--state <state.json>] [--webhook <https-url>] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
   upstream-radar radar watch <config.json> [--state <state.json>] [--webhook <https-url>] [--interval <seconds>] [--once] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
@@ -92,6 +94,7 @@ Commands:
   inspect  fetch and verify the exact npm artifact before inspecting its contents
   graph    read a lockfile into the canonical dependency graph without installing packages
   probe    run a bounded DSH bundle-load check or version matrix in disposable profiles
+  demo     show the exact-path-to-DSH handoff without network, DSH, or plugin installation
   benchmark run offline compatibility-rule contracts without network or plugin execution
   radar    monitor vulnerability changes, watch continuously, inspect status/history, or assess a candidate compatibility change
   task     inspect or acknowledge the durable DSH analysis outbox
@@ -349,6 +352,17 @@ async function runBenchmark(args: readonly string[]): Promise<number> {
   const report = runCompatibilityBenchmark()
   process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderCompatibilityBenchmark(report))
   return report.summary.failed === 0 ? 0 : 1
+}
+
+function runDemo(args: readonly string[]): number {
+  let json = false
+  for (const argument of args) {
+    if (argument === '--json') json = true
+    else throw new Error(`unknown option for demo: ${argument}`)
+  }
+  const report = createDemoReport()
+  process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDemo(report))
+  return 0
 }
 
 async function runProbe(args: readonly string[]): Promise<number> {
@@ -995,6 +1009,7 @@ async function main(args: readonly string[]): Promise<number> {
   if (command === 'doctor') return runDoctor(args.slice(1))
   if (command === 'graph') return runGraph(args.slice(1))
   if (command === 'probe') return runProbe(args.slice(1))
+  if (command === 'demo') return runDemo(args.slice(1))
   if (command === 'benchmark') return runBenchmark(args.slice(1))
   if (command === 'radar') return runRadar(args.slice(1))
   if (command === 'task') return runTask(args.slice(1))

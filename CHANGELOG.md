@@ -13,6 +13,7 @@ All notable changes to Upstream Radar are documented here.
 - Make the primary DSH quickstart omit `--profile` when the machine has exactly one eligible profile; keep the explicit flag for multi-profile installations.
 - Re-open a project-specific DSH analysis task when an existing advisory later gains its first fixed version, preserving the updated dependency evidence.
 - Document the npm-native `npx` launcher alongside the pnpm quickstart, while recommending exact versions for reproducible team use.
+- Add a packaged `upstream-radar demo` command that shows the exact-path-to-DSH handoff without network access, a DSH profile, or plugin installation.
 
 ## [0.33.0] - 2026-08-16
 

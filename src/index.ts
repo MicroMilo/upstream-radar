@@ -53,6 +53,7 @@ export {
   type CompatibilityBenchmarkReport,
 } from './compatibility-benchmark.js'
 export { createAnalysisTask, renderAgentAnalysisGroupPrompt, renderAgentAnalysisPrompt, renderDshAnalysisPrompt } from './dsh-analysis.js'
+export { DEMO_SCHEMA, createDemoEvent, createDemoReport, renderDemo, type DemoReport } from './demo.js'
 export {
   extractAnalysisTaskIds,
   parseAgentAnalysisResult,

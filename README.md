@@ -38,6 +38,14 @@ If you want project-specific reasoning from DSH, use the first path. If you only
 
 ## Try it in 60 seconds
 
+Want to see the core value before touching DSH? Run the packaged, network-free demo:
+
+```bash
+npx --yes upstream-radar@latest demo
+```
+
+It prints one exact transitive path, the read-only DSH Agent handoff, and the next setup command. It uses a local fixture only; it does not inspect your repository, install a plugin, or claim that the demo advisory is real. Use `--json` when you want the same proof as a machine-readable artifact.
+
 Use DSH with at least one third-party bundle. When it has exactly one such profile, `setup` selects it automatically; pass `--profile <name>` only when you have multiple profiles. The commands below are split between two terminals because DSH normally stays running:
 
 ```bash

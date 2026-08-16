@@ -38,6 +38,24 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /--no-dsh-patch\s+setup: keep the legacy UPSTREAM_RADAR_\* environment-variable wiring/)
     assert.match(help.stdout, /probe dsh-load <package\.tgz>/)
     assert.match(help.stdout, /probe dsh-matrix <package\.tgz>/)
+    assert.match(help.stdout, /demo \[--json\]/)
+
+    const demo = spawnSync(process.execPath, [cli, 'demo'], { encoding: 'utf8' })
+    assert.equal(demo.status, 0)
+    assert.match(demo.stdout, /network-free; no DSH profile required/)
+    assert.match(demo.stdout, /demo-plugin@1\.0\.0 -> logger@4\.0\.2 -> parser@2\.9\.0/)
+    assert.match(demo.stdout, /Try it for real:/)
+
+    const demoJson = spawnSync(process.execPath, [cli, 'demo', '--json'], { encoding: 'utf8' })
+    assert.equal(demoJson.status, 0)
+    const demoReport = JSON.parse(demoJson.stdout) as { schema: string; networkFree: boolean; analysisTask: { constraints: { readOnly: boolean } } }
+    assert.equal(demoReport.schema, 'upstream-radar.demo/v1alpha1')
+    assert.equal(demoReport.networkFree, true)
+    assert.equal(demoReport.analysisTask.constraints.readOnly, true)
+
+    const invalidDemo = spawnSync(process.execPath, [cli, 'demo', '--unexpected'], { encoding: 'utf8' })
+    assert.equal(invalidDemo.status, 1)
+    assert.match(invalidDemo.stderr, /unknown option for demo/)
 
     const benchmark = spawnSync(process.execPath, [cli, 'benchmark', 'compatibility', '--json'], { encoding: 'utf8' })
     assert.equal(benchmark.status, 0)

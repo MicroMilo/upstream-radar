@@ -69,6 +69,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "cli": "node dist/src/cli.js",
+    "demo": "pnpm run build && node dist/src/cli.js demo",
     "check": "tsc -p tsconfig.json --noEmit",
     "scan:self": "pnpm run build && node dist/src/cli.js scan . --fail-on block",
     "showcase": "pnpm run build && node scripts/radar-showcase.mjs",
