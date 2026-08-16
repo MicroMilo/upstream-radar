@@ -241,14 +241,16 @@ Plugin: plugin@1.0.0
 Affected: parser@2.9.0
 Origin: plugin profile
 Advisory: GHSA-demo-2026-parser / CVE-2026-1234
+Sources: OSV + GitHub Advisory Database
+Source conflict: fixed versions — OSV=3.0.0; GitHub Advisory Database=3.1.0
 Paths:
   plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
-Fixed versions: 3.0.0
+Fixed versions: 3.0.0, 3.1.0
 Route: payments-platform via feishu:payments-security
-Next: Review parser@2.9.0 fixed version(s) 3.0.0 with the DSH Agent before changing the plugin.
+Next: Review parser@2.9.0 fixed version(s) 3.0.0, 3.1.0 with the DSH Agent before changing the plugin.
 ```
 
-这个事件会成为带有插件身份的 DSH notice，而不是被复制进一段泛泛的聊天提示词。
+这个事件会成为带有插件身份的 DSH notice，而不是被复制进一段泛泛的聊天提示词。两个来源说法不一致时，Radar 会把双方证据都留下，不会悄悄替你选一个修复版本；具体采用哪个版本，再交给 DSH Agent 结合项目判断。
 
 | 上游信号 | Radar 用程序确定 | DSH Agent 结合项目调查 |
 | --- | --- | --- |
