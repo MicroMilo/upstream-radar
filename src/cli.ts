@@ -70,6 +70,9 @@ What it does:
   --patch overlay, then runs the local doctor check. It does not start DSH or
   execute plugin business actions.
 
+Prerequisite:
+  Install DeepSeek Harness first and verify that \`dsh --help\` works.
+
 Common options:
   --profile <name>       select a DSH profile (auto-selects the only candidate)
   --project-name <name>  name shown in incidents and Agent tasks
@@ -949,6 +952,10 @@ async function runSetup(args: readonly string[]): Promise<number> {
       stdio: 'inherit',
     })
     if (result.error !== undefined) {
+      const spawnError = result.error as NodeJS.ErrnoException
+      if (spawnError.code === 'ENOENT') {
+        throw new Error('setup could not find the `dsh` command; install DeepSeek Harness, verify `dsh --help` works, then rerun setup')
+      }
       throw new Error(`setup could not run ${dshCommand}: ${safeErrorMessage(result.error.message)}`)
     }
     if (result.status !== 0) {

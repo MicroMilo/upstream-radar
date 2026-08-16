@@ -40,6 +40,8 @@ npx --yes upstream-radar@latest demo
 
 如果要运行真实监控，请使用至少安装了一个第三方 bundle 的 DSH 环境。只有一个这样的 profile 时，`setup` 会自动选择；只有多个 profile 时才需要传 `--profile <名称>`。下面的命令分成两个终端，因为 DSH 通常会持续运行：
 
+运行 `setup` 前，先确认 DeepSeek Harness 已安装，并且 `dsh --help` 能正常执行。如果 `setup` 找不到 `dsh`，它会再次打印这个处理办法。
+
 ```bash
 # 终端 1
 pnpm dlx --package=upstream-radar@latest upstream-radar setup \

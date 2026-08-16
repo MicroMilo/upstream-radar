@@ -50,6 +50,8 @@ Every command has its own short guide: `npx --yes upstream-radar@latest setup --
 
 Use DSH with at least one third-party bundle. When it has exactly one such profile, `setup` selects it automatically; pass `--profile <name>` only when you have multiple profiles. The commands below are split between two terminals because DSH normally stays running:
 
+Before running `setup`, confirm that DeepSeek Harness is installed and `dsh --help` works. If `setup` cannot find `dsh`, it prints this recovery step again.
+
 ```bash
 # Terminal 1
 pnpm dlx --package=upstream-radar@latest upstream-radar setup \

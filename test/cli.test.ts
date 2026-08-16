@@ -372,6 +372,36 @@ snapshots:
     }
   })
 
+  it('explains how to recover when the DSH command is missing', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-setup-missing-dsh-'))
+    try {
+      const dshHome = join(root, 'dsh-home')
+      const profile = join(dshHome, 'profiles', 'web')
+      const missingPath = join(root, 'no-dsh-bin')
+      await mkdir(join(profile, 'node_modules', 'demo-plugin'), { recursive: true })
+      await writeFile(join(profile, 'package.json'), JSON.stringify({
+        name: 'dsh-profile-web',
+        dsh: { profile: { bundles: ['upstream-radar', 'demo-plugin'] } },
+      }))
+      await writeFile(join(profile, 'node_modules', 'demo-plugin', 'package.json'), JSON.stringify({
+        name: 'demo-plugin',
+        version: '1.0.0',
+        main: './index.js',
+      }))
+
+      const result = spawnSync(process.execPath, [cli, 'setup', '--profile', 'web'], {
+        encoding: 'utf8',
+        cwd: root,
+        env: { ...process.env, DSH_HOME: dshHome, PATH: missingPath },
+      })
+      assert.equal(result.status, 1)
+      assert.match(result.stderr, /could not find the `dsh` command/)
+      assert.match(result.stderr, /verify `dsh --help` works/)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
   it('explains when setup needs an explicit profile in a multi-profile DSH home', async () => {
     const root = await mkdtemp(join(tmpdir(), 'upstream-radar-setup-multiple-profiles-'))
     try {
