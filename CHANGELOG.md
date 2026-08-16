@@ -8,6 +8,7 @@ All notable changes to Upstream Radar are documented here.
 
 - Add an independent GitHub Advisory Database source for exact npm versions, merge OSV/GHSA/CVE duplicates into one durable incident, retain confirmed findings during a source outage, and expose per-source health through CLI and DSH.
 - Add a network-free `showcase:github-advisories` proving two-source deduplication, three-failure source-health escalation, and recovery without a false vulnerability resolution; run it in CI and publish preflight.
+- Retry one bounded transient GitHub Advisory transport, rate-limit, or 5xx failure so a single network hiccup does not block the first real DSH check; permanent responses remain visible errors.
 - Add a read-only `quickstart` CLI that detects an existing Radar config, a single supported lockfile, or eligible DSH profiles, then prints one honest copy/paste path with explicit side-effect labels; ambiguous profiles and lockfiles remain user decisions.
 - Coalesce the same shared DSH host-runtime vulnerability across all affected plugins in one project-level event, while retaining every plugin root and bounded exact path; migrate legacy per-plugin host keys without a fake resolve/new alert pair.
 - Show the complete affected plugin scope for shared-host events in GitHub Job Summaries, and run the host-alert deduplication showcase in CI and the publish preflight.

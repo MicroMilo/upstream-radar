@@ -90,4 +90,30 @@ describe('GitHub Advisory Database source', () => {
     )
     assert.throws(() => new GitHubAdvisoryClient({ baseUrl: 'http://api.github.test/' }), /must use HTTPS/)
   })
+
+  it('retries one transient transport failure without retrying permanent responses', async () => {
+    let attempts = 0
+    const client = new GitHubAdvisoryClient({
+      includeUnreviewed: false,
+      fetch: async () => {
+        attempts += 1
+        if (attempts === 1) throw new TypeError('fetch failed')
+        return Response.json([])
+      },
+    })
+    const result = await client.query([coordinate])
+    assert.deepEqual(result.get('npm:parser@2.9.0'), [])
+    assert.equal(attempts, 2)
+
+    let permanentAttempts = 0
+    const permanent = new GitHubAdvisoryClient({
+      includeUnreviewed: false,
+      fetch: async () => {
+        permanentAttempts += 1
+        return new Response(null, { status: 404 })
+      },
+    })
+    await assert.rejects(permanent.query([coordinate]), /HTTP 404/)
+    assert.equal(permanentAttempts, 1)
+  })
 })

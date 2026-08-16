@@ -16,6 +16,8 @@ const MAX_AFFECTS_PER_REQUEST = 100
 const MAX_URL_LENGTH = 6_000
 const MAX_PAGES_PER_QUERY = 20
 const MAX_ADVISORIES = 10_000
+const MAX_FETCH_ATTEMPTS = 2
+const TRANSIENT_RETRY_DELAY_MS = 250
 const ADVISORY_TYPES = ['reviewed', 'unreviewed'] as const
 
 type FetchLike = (input: string | URL, init?: RequestInit) => Promise<Response>
@@ -251,6 +253,12 @@ function sameOrigin(value: string, baseUrl: string): boolean {
   }
 }
 
+function retryableFetchError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error)
+  return message === 'fetch failed'
+    || /^GitHub advisories returned HTTP (408|425|429|500|502|503|504)$/u.test(message)
+}
+
 export class GitHubAdvisoryClient {
   private readonly baseUrl: string
   private readonly token: string | undefined
@@ -271,22 +279,30 @@ export class GitHubAdvisoryClient {
   }
 
   private async fetchPage(url: string): Promise<{ value: unknown; next?: string }> {
-    const response = await this.fetcher(url, {
-      headers: {
-        accept: 'application/vnd.github+json',
-        'user-agent': `upstream-radar/${TOOL_VERSION}`,
-        'x-github-api-version': GITHUB_API_VERSION,
-        ...(this.token === undefined ? {} : { authorization: `Bearer ${this.token}` }),
-      },
-      redirect: 'error',
-      signal: AbortSignal.timeout(this.timeoutMs),
-    })
-    const value = await boundedJson(response)
-    const next = nextLink(response)
-    if (next !== undefined && !sameOrigin(next, this.baseUrl)) {
-      throw new Error('GitHub advisory pagination escaped the configured API origin')
+    for (let attempt = 1; attempt <= MAX_FETCH_ATTEMPTS; attempt += 1) {
+      try {
+        const response = await this.fetcher(url, {
+          headers: {
+            accept: 'application/vnd.github+json',
+            'user-agent': `upstream-radar/${TOOL_VERSION}`,
+            'x-github-api-version': GITHUB_API_VERSION,
+            ...(this.token === undefined ? {} : { authorization: `Bearer ${this.token}` }),
+          },
+          redirect: 'error',
+          signal: AbortSignal.timeout(this.timeoutMs),
+        })
+        const value = await boundedJson(response)
+        const next = nextLink(response)
+        if (next !== undefined && !sameOrigin(next, this.baseUrl)) {
+          throw new Error('GitHub advisory pagination escaped the configured API origin')
+        }
+        return { value, ...(next === undefined ? {} : { next }) }
+      } catch (error: unknown) {
+        if (attempt >= MAX_FETCH_ATTEMPTS || !retryableFetchError(error)) throw error
+        await new Promise(resolve => setTimeout(resolve, TRANSIENT_RETRY_DELAY_MS * attempt))
+      }
     }
-    return { value, ...(next === undefined ? {} : { next }) }
+    throw new Error('GitHub advisory request did not complete')
   }
 
   private async fetchAdvisories(packages: readonly PackageCoordinate[], type: string): Promise<GitHubAdvisoryRecord[]> {
