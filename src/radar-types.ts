@@ -26,6 +26,17 @@ export type DependencySource = 'profile' | 'dsh-host'
 export type DependencyHostRuntimeSource = 'dsh-profile-fallback' | 'dsh-process'
 /** Vulnerability databases that can independently confirm one advisory. */
 export type AdvisorySourceName = 'osv' | 'github-advisories'
+export type AdvisoryConflictField = 'severity' | 'fixed-versions'
+
+export interface AdvisoryConflictClaim {
+  source: AdvisorySourceName
+  value: string
+}
+
+export interface AdvisoryConflict {
+  field: AdvisoryConflictField
+  claims: AdvisoryConflictClaim[]
+}
 
 /** One physical package location. Duplicate name/version pairs remain distinct nodes. */
 export interface DependencyNode {
@@ -145,6 +156,8 @@ export interface VulnerabilityAdvisory {
   references: string[]
   /** Databases that supplied or confirmed this advisory; absent in legacy state. */
   sources?: AdvisorySourceName[]
+  /** Non-fatal disagreements between independent advisory databases. */
+  conflicts?: AdvisoryConflict[]
 }
 
 export interface AdvisoryMatch {

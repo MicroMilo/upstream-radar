@@ -116,6 +116,18 @@ function sourceLabel(source: RadarSource): string {
   return 'GitHub releases'
 }
 
+function vulnerabilityEvidenceSuffix(event: VulnerabilityEvent): string {
+  const sources = event.advisory.sources?.map(sourceLabel).join(' + ')
+  const conflicts = event.advisory.conflicts?.map(conflict => (
+    conflict.field === 'severity' ? 'severity' : 'fixed versions'
+  )).join(', ')
+  const details = [
+    ...(sources === undefined ? [] : [`sources: ${sources}`]),
+    ...(conflicts === undefined ? [] : [`source conflict: ${conflicts}`]),
+  ]
+  return details.length === 0 ? '' : ` (${details.join('; ')})`
+}
+
 function isDshHostDependency(name: string): boolean {
   return name === '@deepseek-ai/dsh'
     || name === '@deepseek-ai/cordis'
@@ -137,7 +149,7 @@ function vulnerabilityStatusIncident(event: VulnerabilityEvent, state: RadarStat
   const scope = event.affectedPlugins === undefined || event.affectedPlugins.length <= 1
     ? ''
     : ` across ${event.affectedPlugins.length} DSH plugins`
-  const summary = `${packageLabel(event.affected)} is affected by ${display(event.advisory.id)}${scope} via ${path}`
+  const summary = `${packageLabel(event.affected)} is affected by ${display(event.advisory.id)}${scope} via ${path}${vulnerabilityEvidenceSuffix(event)}`
   if (event.kind === 'malware') {
     return {
       incidentId: event.incidentId,

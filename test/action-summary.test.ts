@@ -21,7 +21,13 @@ describe('GitHub Action summary', () => {
           kind: 'vulnerability',
           change: 'new',
           affected: { name: 'parser', version: '2.9.0' },
-          advisory: { id: 'GHSA-`demo`', severity: 'high', fixedVersions: ['3.0.0'] },
+          advisory: {
+            id: 'GHSA-`demo`',
+            severity: 'high',
+            fixedVersions: ['3.0.0'],
+            sources: ['osv', 'github-advisories'],
+            conflicts: [{ field: 'fixed-versions', claims: [] }],
+          },
           paths: [[
             { name: 'plugin', version: '1.0.0' },
             { name: 'parser', version: '2.9.0' },
@@ -43,6 +49,8 @@ describe('GitHub Action summary', () => {
       assert.match(result.stdout, /plugins: plugin@1\.0\.0, second-plugin@1\.0\.0/)
       assert.match(result.stdout, /GHSA-\\`demo\\`/)
       assert.match(result.stdout, /fix: 3\.0\.0/)
+      assert.match(result.stdout, /sources: OSV \+ GitHub Advisory Database/)
+      assert.match(result.stdout, /source conflict: fixed versions/)
       assert.match(result.stdout, /next: Review parser@2\.9\.0 fixed version\(s\) 3\.0\.0 before changing the plugin\./)
       assert.match(result.stdout, /### Source warnings/)
       assert.match(result.stdout, /temporary outage/)

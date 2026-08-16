@@ -163,6 +163,33 @@ describe('Radar status', () => {
     assert.match(rendered, /parser@2\.9\.0 is affected by GHSA-demo/)
   })
 
+  it('shows advisory sources and conflicts in the daily status summary', () => {
+    const state = emptyRadarState()
+    const event: VulnerabilityEvent = {
+      ...vulnerabilityEvent,
+      advisory: {
+        ...vulnerabilityEvent.advisory,
+        sources: ['osv', 'github-advisories'],
+        conflicts: [{
+          field: 'fixed-versions',
+          claims: [
+            { source: 'osv', value: '3.0.0' },
+            { source: 'github-advisories', value: '3.1.0' },
+          ],
+        }],
+      },
+    }
+    state.activeVulnerabilities = { vulnerability: { key: 'vulnerability', event } }
+    const report = createRadarStatus(config, state, {
+      configFile: '/tmp/radar.json',
+      stateFile: '/tmp/radar.json.state.json',
+      stateExists: true,
+    })
+    const rendered = renderRadarStatus(report)
+    assert.match(rendered, /sources: OSV \+ GitHub Advisory Database/)
+    assert.match(rendered, /source conflict: fixed versions/)
+  })
+
   it('does not treat absent optional platform packages as a required coverage gap', () => {
     const optionalConfig = structuredClone(config)
     const graph = optionalConfig.projects[0]?.plugins[0]?.graph

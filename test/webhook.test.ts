@@ -62,11 +62,19 @@ describe('webhook delivery', () => {
         fixedVersions: ['2.1.0'],
         references: [],
         sources: ['osv', 'github-advisories'],
+        conflicts: [{
+          field: 'fixed-versions',
+          claims: [
+            { source: 'osv', value: '2.1.0' },
+            { source: 'github-advisories', value: '2.2.0' },
+          ],
+        }],
       },
     }
     const notice = buildRadarWebhookPayload([vulnerability]).events[0]
     assert.deepEqual(notice?.affectedPlugins, vulnerability.affectedPlugins)
     assert.deepEqual((notice?.advisory as { sources?: string[] } | undefined)?.sources, ['osv', 'github-advisories'])
+    assert.deepEqual((notice?.advisory as { conflicts?: unknown } | undefined)?.conflicts, vulnerability.advisory.conflicts)
     assert.match(notice?.summary ?? '', /across 2 DSH plugins/)
   })
 

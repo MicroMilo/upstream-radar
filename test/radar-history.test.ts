@@ -83,5 +83,25 @@ describe('Radar history', () => {
     })
     assert.match(renderRadarHistory(report), /No recorded Radar events/)
   })
-})
 
+  it('keeps advisory evidence in the audit trail details', () => {
+    const event = vulnerability('new', '2026-08-16T04:00:00.000Z', 'event-evidence')
+    event.advisory.sources = ['osv', 'github-advisories']
+    event.advisory.conflicts = [{
+      field: 'fixed-versions',
+      claims: [
+        { source: 'osv', value: '3.0.0' },
+        { source: 'github-advisories', value: '3.1.0' },
+      ],
+    }]
+    const report = createRadarHistory({ ...emptyRadarState(), history: [event] }, {
+      configFile: '/tmp/config.json',
+      stateFile: '/tmp/config.json.state.json',
+      stateExists: true,
+      limit: 20,
+    })
+    const rendered = renderRadarHistory(report)
+    assert.match(rendered, /sources: OSV \+ GitHub Advisory Database/)
+    assert.match(rendered, /source conflict: fixed versions/)
+  })
+})

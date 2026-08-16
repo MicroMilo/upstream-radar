@@ -11,6 +11,9 @@ import {
   RADAR_EVENT_SCHEMA,
   MAX_RADAR_HISTORY_EVENTS,
   RADAR_STATE_SCHEMA,
+  type AdvisoryConflict,
+  type AdvisoryConflictClaim,
+  type AdvisoryConflictField,
   type AdvisoryMatch,
   type AdvisorySourceName,
   type AnalysisTask,
@@ -366,6 +369,32 @@ function advisoriesOverlap(left: VulnerabilityAdvisory, right: VulnerabilityAdvi
   return [...advisoryIdentities(left)].some(identity => rightIdentities.has(identity))
 }
 
+function vulnerabilityScope(event: VulnerabilityEvent): string {
+  return event.affectedSources?.includes('dsh-host') === true
+    ? 'dsh-host'
+    : packageKey(event.plugin)
+}
+
+/**
+ * When only some advisory sources answered, keep the old incident identity for
+ * an overlapping finding. This prevents a transient outage from creating a
+ * duplicate event or temporarily dropping metadata supplied by the failed
+ * source. A fully successful poll is still allowed to remove that source's
+ * evidence when it explicitly returns no matching advisory.
+ */
+function previousPartialVulnerability(
+  event: VulnerabilityEvent,
+  previous: Readonly<Record<string, StoredVulnerabilityMatch>>,
+): [key: string, match: StoredVulnerabilityMatch] | undefined {
+  return Object.entries(previous)
+    .filter(([, item]) => item.event.kind === event.kind
+      && item.event.project.id === event.project.id
+      && packageKey(item.event.affected) === packageKey(event.affected)
+      && vulnerabilityScope(item.event) === vulnerabilityScope(event)
+      && advisoriesOverlap(item.event.advisory, event.advisory))
+    .sort(([left], [right]) => left.localeCompare(right))[0]
+}
+
 const ADVISORY_SOURCE_ORDER: readonly AdvisorySourceName[] = ['osv', 'github-advisories']
 
 function advisorySources(advisory: VulnerabilityAdvisory): AdvisorySourceName[] {
@@ -380,6 +409,53 @@ function addAdvisorySource(advisory: VulnerabilityAdvisory, source: AdvisorySour
   }
 }
 
+function advisoryClaimValue(advisory: VulnerabilityAdvisory, field: AdvisoryConflictField): string {
+  if (field === 'severity') return advisory.severity
+  const fixedVersions = [...new Set(advisory.fixedVersions)].sort()
+  return fixedVersions.length === 0 ? '(none published)' : fixedVersions.join(', ')
+}
+
+function sourceClaims(advisory: VulnerabilityAdvisory, field: AdvisoryConflictField): AdvisoryConflictClaim[] {
+  return advisorySources(advisory).map(source => ({
+    source,
+    value: advisoryClaimValue(advisory, field),
+  }))
+}
+
+function mergeAdvisoryConflicts(
+  left: VulnerabilityAdvisory,
+  right: VulnerabilityAdvisory,
+): AdvisoryConflict[] {
+  const byField = new Map<AdvisoryConflictField, Map<AdvisorySourceName, string>>()
+  const addClaims = (field: AdvisoryConflictField, claims: readonly AdvisoryConflictClaim[]) => {
+    const bySource = byField.get(field) ?? new Map<AdvisorySourceName, string>()
+    for (const claim of claims) bySource.set(claim.source, claim.value)
+    byField.set(field, bySource)
+  }
+  for (const field of ['severity', 'fixed-versions'] as const) {
+    const existingClaims = [
+      ...(left.conflicts?.find(item => item.field === field)?.claims ?? []),
+      ...(right.conflicts?.find(item => item.field === field)?.claims ?? []),
+    ]
+    addClaims(field, existingClaims)
+    const knownSources = new Set(existingClaims.map(claim => claim.source))
+    addClaims(field, sourceClaims(left, field).filter(claim => !knownSources.has(claim.source)))
+    addClaims(field, sourceClaims(right, field).filter(claim => !knownSources.has(claim.source)))
+  }
+  return (['severity', 'fixed-versions'] as const).flatMap(field => {
+    const claims = [...(byField.get(field)?.entries() ?? [])]
+      .map(([source, value]) => ({ source, value }))
+      .sort((leftClaim, rightClaim) => (
+        ADVISORY_SOURCE_ORDER.indexOf(leftClaim.source) - ADVISORY_SOURCE_ORDER.indexOf(rightClaim.source)
+      ))
+    const comparable = field === 'severity'
+      ? claims.filter(claim => claim.value !== 'unknown')
+      : claims
+    const values = new Set(comparable.map(claim => claim.value))
+    return values.size <= 1 ? [] : [{ field, claims }]
+  })
+}
+
 /** Merge one source's richer metadata without allowing a lower severity to hide a higher one. */
 function mergeAdvisory(left: VulnerabilityAdvisory, right: VulnerabilityAdvisory): VulnerabilityAdvisory {
   const aliases = new Set([...left.aliases, ...right.aliases, right.id])
@@ -387,6 +463,7 @@ function mergeAdvisory(left: VulnerabilityAdvisory, right: VulnerabilityAdvisory
   const fixedVersions = new Set([...left.fixedVersions, ...right.fixedVersions])
   const references = new Set([...left.references, ...right.references])
   const sources = new Set([...advisorySources(left), ...advisorySources(right)])
+  const conflicts = mergeAdvisoryConflicts(left, right)
   return {
     id: left.id,
     aliases: [...aliases].sort(),
@@ -399,6 +476,7 @@ function mergeAdvisory(left: VulnerabilityAdvisory, right: VulnerabilityAdvisory
     fixedVersions: [...fixedVersions].sort(),
     references: [...references].slice(0, 100),
     ...(sources.size === 0 ? {} : { sources: ADVISORY_SOURCE_ORDER.filter(source => sources.has(source)) }),
+    ...(conflicts.length === 0 ? {} : { conflicts }),
   }
 }
 
@@ -621,6 +699,18 @@ export async function pollRadar(
           ...(affectedSources.length === 0 ? {} : { affectedSources }),
           paths,
           advisory: { ...match.advisory },
+        }
+        if (!vulnerabilityCheckSucceeded) {
+          const previous = previousPartialVulnerability(event, previousState.activeVulnerabilities)
+          if (previous !== undefined) {
+            const stableEvent: VulnerabilityEvent = {
+              ...event,
+              incidentId: previous[1].event.incidentId,
+              advisory: mergeAdvisory(previous[1].event.advisory, event.advisory),
+            }
+            current.set(previous[0], { key: previous[0], event: stableEvent })
+            continue
+          }
         }
         current.set(key, { key, event })
       }

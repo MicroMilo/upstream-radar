@@ -1,4 +1,4 @@
-import type { AdvisorySourceName, CompatibilityEvent, DependencySource, RadarEvent, VulnerabilityEvent } from './radar-types.js'
+import type { AdvisoryConflict, AdvisorySourceName, CompatibilityEvent, DependencySource, RadarEvent, VulnerabilityEvent } from './radar-types.js'
 
 function display(value: string, max = 2_048): string {
   const escaped = value.replace(/[\u0000-\u001f\u007f-\u009f]/g, character => (
@@ -27,6 +27,20 @@ function advisorySourcesLabel(sources: readonly AdvisorySourceName[]): string {
     .filter(source => sources.includes(source))
     .map(source => source === 'github-advisories' ? 'GitHub Advisory Database' : 'OSV')
     .join(' + ')
+}
+
+function advisoryConflictFieldLabel(field: AdvisoryConflict['field']): string {
+  return field === 'severity' ? 'severity' : 'fixed versions'
+}
+
+function advisoryConflictSourceLabel(source: AdvisorySourceName): string {
+  return source === 'github-advisories' ? 'GitHub Advisory Database' : 'OSV'
+}
+
+function advisoryConflictLabel(conflict: AdvisoryConflict): string {
+  return `Source conflict: ${advisoryConflictFieldLabel(conflict.field)} — ${conflict.claims
+    .map(claim => `${advisoryConflictSourceLabel(claim.source)}=${display(claim.value)}`)
+    .join('; ')}`
 }
 
 function vulnerabilityPluginScope(event: VulnerabilityEvent): string {
@@ -78,6 +92,7 @@ function renderVulnerability(event: VulnerabilityEvent): string[] {
     ...(event.advisory.sources === undefined || event.advisory.sources.length === 0
       ? []
       : [`Sources: ${advisorySourcesLabel(event.advisory.sources)}`]),
+    ...(event.advisory.conflicts ?? []).map(advisoryConflictLabel),
     `Summary: ${display(event.advisory.summary)}`,
   ]
   if (event.paths.length > 0) {

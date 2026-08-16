@@ -174,7 +174,7 @@ OSV/GitHub Advisory 漏洞公告或 npm 新版本
 
 **没有命中实际安装路径，就不会唤醒 Agent。** 版本匹配和兼容性事实由程序计算；模型只负责结合仓库做判断。
 
-Radar 把 OSV 和 GitHub Advisory Database 当作两个独立的漏洞来源。如果两个来源通过同一个 GHSA 或 CVE 别名描述同一个问题，Radar 只生成一个事件，同时保留两个来源的编号、来源列表和修复版本；终端输出会明确显示 `Sources: OSV + GitHub Advisory Database`，让人知道这不是单一来源的命中。如果其中一个来源超时，最后一次确认的漏洞不会被清掉；连续失败三次后，故障本身会变成可见的 source-health 事件，而不是被当成“没有漏洞”。CLI 和 DSH 适配器默认启用 GitHub 来源；需要提高 API 限额时，可以只从环境变量提供 `GITHUB_TOKEN`；如果确实要只跑 OSV，可以使用 `--no-github-advisories`。上游接口见 [GitHub Advisory Database API](https://docs.github.com/en/rest/security-advisories/global-advisories?apiVersion=2026-03-10)。
+Radar 把 OSV 和 GitHub Advisory Database 当作两个独立的漏洞来源。如果两个来源通过同一个 GHSA 或 CVE 别名描述同一个问题，Radar 只生成一个事件，同时保留两个来源的编号、来源列表和修复版本；终端输出会明确显示 `Sources: OSV + GitHub Advisory Database`，让人知道这不是单一来源的命中。如果两个来源对严重级别或修复版本的说法不同，事件还会显示 `Source conflict`，把每个来源的说法列出来，不让用户自己猜为什么有多个修复版本。如果其中一个来源超时，最后一次确认的漏洞证据和事件身份都不会被降级或重建；连续失败三次后，故障本身会变成可见的 source-health 事件，而不是被当成“没有漏洞”。CLI 和 DSH 适配器默认启用 GitHub 来源；需要提高 API 限额时，可以只从环境变量提供 `GITHUB_TOKEN`；如果确实要只跑 OSV，可以使用 `--no-github-advisories`。上游接口见 [GitHub Advisory Database API](https://docs.github.com/en/rest/security-advisories/global-advisories?apiVersion=2026-03-10)。
 
 ## 关键的一层：候选版本的传递依赖图
 
@@ -307,7 +307,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.
 pnpm run showcase:github-advisories
 ```
 
-这个 showcase 还会打印 `osv + github-advisories` 来源证据，表示同一条事件同时被两个独立来源确认；如果 GitHub 连续失败，原有漏洞仍保留，只有 GitHub 的 source-health 事件变化。
+这个 showcase 还会打印 `osv + github-advisories` 来源证据和 fixed-version 冲突，表示同一条事件同时被两个独立来源确认，但两个来源的修复说法并不完全相同；如果 GitHub 连续失败，原有漏洞、来源证据和事件身份仍保留，只有 GitHub 的 source-health 事件变化。
 
 检查持久化结论：
 

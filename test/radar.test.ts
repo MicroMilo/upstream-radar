@@ -809,9 +809,79 @@ describe('radar polling', () => {
     assert.deepEqual(event.advisory.aliases, ['CVE-2026-1234', 'GHSA-github-copy'])
     assert.deepEqual(event.advisory.fixedVersions, ['3.0.0', '3.1.0'])
     assert.deepEqual(event.advisory.sources, ['osv', 'github-advisories'])
+    assert.deepEqual(event.advisory.conflicts, [
+      {
+        field: 'severity',
+        claims: [
+          { source: 'osv', value: 'high' },
+          { source: 'github-advisories', value: 'medium' },
+        ],
+      },
+      {
+        field: 'fixed-versions',
+        claims: [
+          { source: 'osv', value: '3.0.0' },
+          { source: 'github-advisories', value: '3.1.0' },
+        ],
+      },
+    ])
     assert.equal(result.sourceErrors.length, 0)
     assert.equal(result.state.sourceHealth?.osv?.consecutiveFailures, 0)
     assert.equal(result.state.sourceHealth?.['github-advisories']?.consecutiveFailures, 0)
+  })
+
+  it('keeps the last confirmed advisory evidence during a partial source outage', async () => {
+    const githubAdvisories: AdvisorySource = {
+      async query(packages) {
+        const results = new Map(packages.map(item => [packageKey(item), [] as AdvisoryMatch[]]))
+        results.set('npm:parser@2.9.0', [{
+          package: { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+          advisory: {
+            id: 'GHSA-github-copy',
+            aliases: ['CVE-2026-1234'],
+            summary: 'The same parser issue from GitHub.',
+            details: 'GitHub independently confirms the parser issue.',
+            severity: 'medium',
+            modified: '2026-08-14T03:00:00.000Z',
+            fixedVersions: ['3.1.0'],
+            references: ['https://github.com/advisories/GHSA-github-copy'],
+          },
+        }])
+        return results
+      },
+    }
+    const initial = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      source('2026-08-14T02:00:00.000Z'),
+      new Date('2026-08-14T03:01:00.000Z'),
+      undefined,
+      undefined,
+      undefined,
+      [{ name: 'github-advisories', source: githubAdvisories }],
+    )
+    const initialEvent = initial.events.find(event => event.kind === 'vulnerability')
+    assert.ok(initialEvent?.kind === 'vulnerability')
+
+    const outage = await pollRadar(
+      [inventory],
+      initial.state,
+      source('2026-08-14T02:00:00.000Z'),
+      new Date('2026-08-14T03:31:00.000Z'),
+      undefined,
+      undefined,
+      undefined,
+      [{
+        name: 'github-advisories',
+        source: { async query() { throw new Error('GitHub advisory timeout') } },
+      }],
+    )
+    assert.equal(outage.events.filter(event => event.kind === 'vulnerability').length, 0)
+    const active = Object.values(outage.state.activeVulnerabilities)[0]?.event
+    assert.ok(active?.kind === 'vulnerability')
+    assert.equal(active.incidentId, initialEvent.incidentId)
+    assert.deepEqual(active.advisory.sources, ['osv', 'github-advisories'])
+    assert.deepEqual(active.advisory.fixedVersions, ['3.0.0', '3.1.0'])
   })
 
   it('keeps the confirmed finding during a GitHub outage and resolves only source health on recovery', async () => {

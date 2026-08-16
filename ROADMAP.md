@@ -70,6 +70,7 @@
 - [ ] Enrich matched CVEs with CISA KEV and EPSS.
 - [x] Deduplicate OSV and GitHub Advisory GHSA/CVE aliases while retaining one durable primary incident and merged fix versions.
 - [x] Preserve advisory source provenance in events, state, CLI output, and webhook payloads so cross-source confirmation is visible.
+- [x] Surface severity and fixed-version disagreements as source conflicts, while preserving the last confirmed incident during partial source outages.
 - [x] Detect when a previously unavailable fixed version is published and re-open the project analysis task.
 - [x] Calculate whether a top-level plugin update actually removes every affected path, while keeping incomplete or DSH host-runtime evidence unknown.
 - [x] Persist per-source health, alert after three consecutive failures, and resolve the alert when the source recovers without asking the model to decide version applicability.

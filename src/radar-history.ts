@@ -37,13 +37,25 @@ function packageLabel(value: { name: string; version: string }): string {
   return `${display(value.name)}@${display(value.version)}`
 }
 
+function vulnerabilityEvidenceSuffix(event: VulnerabilityEvent): string {
+  const sourceLabels = event.advisory.sources?.map(source => source === 'github-advisories' ? 'GitHub Advisory Database' : 'OSV').join(' + ')
+  const conflicts = event.advisory.conflicts?.map(conflict => (
+    conflict.field === 'severity' ? 'severity' : 'fixed versions'
+  )).join(', ')
+  const details = [
+    ...(sourceLabels === undefined ? [] : [`sources: ${sourceLabels}`]),
+    ...(conflicts === undefined ? [] : [`source conflict: ${conflicts}`]),
+  ]
+  return details.length === 0 ? '' : ` (${details.join('; ')})`
+}
+
 function vulnerabilitySummary(event: VulnerabilityEvent): string {
   const path = event.paths[0]?.map(packageLabel).join(' -> ') ?? 'dependency path unavailable'
   const kind = event.kind === 'malware' ? 'malicious package' : 'vulnerability'
   const scope = event.affectedPlugins === undefined || event.affectedPlugins.length <= 1
     ? ''
     : ` across ${event.affectedPlugins.length} DSH plugins`
-  return `${kind}: ${packageLabel(event.affected)} (${display(event.advisory.id)})${scope} via ${path}`
+  return `${kind}: ${packageLabel(event.affected)} (${display(event.advisory.id)})${scope} via ${path}${vulnerabilityEvidenceSuffix(event)}`
 }
 
 function compatibilitySummary(event: CompatibilityEvent): string {

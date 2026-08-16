@@ -48,6 +48,21 @@ function pathLabel(path) {
     : 'dependency path unavailable'
 }
 
+function advisoryEvidence(event) {
+  const sourceLabels = { osv: 'OSV', 'github-advisories': 'GitHub Advisory Database' }
+  const sources = Array.isArray(event?.advisory?.sources)
+    ? event.advisory.sources.map(source => sourceLabels[source] ?? String(source)).join(' + ')
+    : ''
+  const conflicts = Array.isArray(event?.advisory?.conflicts)
+    ? event.advisory.conflicts.map(conflict => conflict?.field === 'severity' ? 'severity' : 'fixed versions').join(', ')
+    : ''
+  const parts = [
+    ...(sources.length === 0 ? [] : [`sources: ${sources}`]),
+    ...(conflicts.length === 0 ? [] : [`source conflict: ${conflicts}`]),
+  ]
+  return parts.length === 0 ? '' : ` · ${text(parts.join('; '), 1_024)}`
+}
+
 function vulnerabilityGuidance(event) {
   if (event?.change === 'resolved') {
     return {
@@ -92,7 +107,7 @@ function eventLine(event) {
   const severity = event?.kind === 'malware' ? 'CRITICAL' : String(event?.advisory?.severity ?? 'unknown').toUpperCase()
   const path = pathLabel(event?.paths?.[0])
   const guidance = vulnerabilityGuidance(event)
-  return `${text(event?.change?.toUpperCase())} · ${severity} · ${text(event?.kind ?? 'vulnerability')} · ${code(packageLabel(event?.affected))} (${code(event?.advisory?.id ?? 'advisory')}) via ${code(path, 2_048)}${affectedPluginSummary(event)} · fix: ${text(guidance.fix, 512)} · next: ${text(guidance.next, 1_024)}`
+  return `${text(event?.change?.toUpperCase())} · ${severity} · ${text(event?.kind ?? 'vulnerability')} · ${code(packageLabel(event?.affected))} (${code(event?.advisory?.id ?? 'advisory')}) via ${code(path, 2_048)}${affectedPluginSummary(event)}${advisoryEvidence(event)} · fix: ${text(guidance.fix, 512)} · next: ${text(guidance.next, 1_024)}`
 }
 
 if (report.schema === 'upstream-radar.scan/v1alpha1') {

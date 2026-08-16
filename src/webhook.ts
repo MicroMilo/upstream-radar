@@ -121,6 +121,15 @@ function vulnerabilityNotice(event: VulnerabilityEvent): RadarWebhookEventNotice
       fixedVersions: event.advisory.fixedVersions.slice(0, 16).map(item => bounded(item, 256)),
       references: event.advisory.references.slice(0, 16).map(item => bounded(item, 2_048)),
       ...(event.advisory.sources === undefined ? {} : { sources: [...event.advisory.sources] }),
+      ...(event.advisory.conflicts === undefined ? {} : {
+        conflicts: event.advisory.conflicts.slice(0, 2).map(conflict => ({
+          field: conflict.field,
+          claims: conflict.claims.slice(0, 2).map(claim => ({
+            source: claim.source,
+            value: bounded(claim.value, 1_024),
+          })),
+        })),
+      }),
     },
     paths: pathLabels(event.paths),
   }

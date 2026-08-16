@@ -52,6 +52,14 @@ describe('radar state parsing', () => {
         modified: '2026-08-16T01:00:00.000Z',
         fixedVersions: ['2.1.0'],
         references: [],
+        sources: ['osv', 'github-advisories'] as Array<'osv' | 'github-advisories'>,
+        conflicts: [{
+          field: 'fixed-versions' as const,
+          claims: [
+            { source: 'osv' as const, value: '2.1.0' },
+            { source: 'github-advisories' as const, value: '2.2.0' },
+          ],
+        }],
       },
     }
     state.activeVulnerabilities['project-shared-host\0dsh-host\0npm:host-parser@2.0.0\0GHSA-shared-host'] = {
@@ -60,6 +68,10 @@ describe('radar state parsing', () => {
     }
     state.history = [event]
     assert.deepEqual(parseRadarState(state), state)
+
+    const invalid = structuredClone(state) as unknown as Record<string, any>
+    invalid.history[0].advisory.conflicts[0].claims[0].source = 'untrusted-feed'
+    assert.throws(() => parseRadarState(invalid), /invalid event history/)
   })
 
   it('rejects malformed transition history instead of exposing it to the renderer', () => {

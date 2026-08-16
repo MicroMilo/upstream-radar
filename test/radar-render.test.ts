@@ -31,12 +31,20 @@ describe('Radar event rendering', () => {
         fixedVersions: ['0.2.0'],
         references: [],
         sources: ['osv', 'github-advisories'],
+        conflicts: [{
+          field: 'fixed-versions',
+          claims: [
+            { source: 'osv', value: '0.2.0' },
+            { source: 'github-advisories', value: '0.3.0' },
+          ],
+        }],
       },
     }
 
     const output = renderRadarEvent(event)
     assert.match(output, /Origin: plugin profile \+ DSH host runtime/)
     assert.match(output, /Sources: OSV \+ GitHub Advisory Database/)
+    assert.match(output, /Source conflict: fixed versions — OSV=0\.2\.0; GitHub Advisory Database=0\.3\.0/)
     assert.match(output, /Next: Review @deepseek-ai\/dsh-agent@0\.1\.0-rc\.6 fixed version\(s\) 0\.2\.0 with the DSH Agent before changing the plugin\./)
   })
 

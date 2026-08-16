@@ -35,6 +35,30 @@ function validAdvisorySources(value: unknown): boolean {
   return new Set(value).size === value.length && value.every(item => typeof item === 'string' && allowed.has(item))
 }
 
+function validAdvisoryConflicts(value: unknown, sourcesValue: unknown): boolean {
+  if (value === undefined) return true
+  if (!Array.isArray(sourcesValue)) return false
+  if (!Array.isArray(value) || value.length === 0 || value.length > 2) return false
+  const fields = value.map(raw => asRecord(raw)?.field)
+  if (new Set(fields).size !== fields.length
+    || fields.some(field => field !== 'severity' && field !== 'fixed-versions')) return false
+  const allowedSources = new Set(['osv', 'github-advisories'])
+  const declaredSources = new Set(sourcesValue)
+  return value.every(raw => {
+    const conflict = asRecord(raw)
+    const claims = conflict?.claims
+    if (!Array.isArray(claims) || claims.length < 2 || claims.length > 2) return false
+    const sources = claims.map(claim => asRecord(claim)?.source)
+    return new Set(sources).size === sources.length
+      && sources.every(source => typeof source === 'string' && allowedSources.has(source))
+      && sources.every(source => declaredSources.has(source))
+      && claims.every(claim => {
+        const item = asRecord(claim)
+        return typeof item?.value === 'string' && item.value.length > 0 && item.value.length <= 1_024
+      })
+  })
+}
+
 function validAffectedPlugins(value: unknown): boolean {
   if (value === undefined) return true
   if (!Array.isArray(value) || value.length === 0 || value.length > 1_000) return false
@@ -80,6 +104,7 @@ function validCompatibilityDependencyCheck(value: unknown): boolean {
       && Array.isArray(advisory.references) && advisory.references.length <= 100
       && advisory.references.every(item => typeof item === 'string' && item.length <= 4_096)
       && validAdvisorySources(advisory.sources)
+      && validAdvisoryConflicts(advisory.conflicts, advisory.sources)
       && Array.isArray(paths) && paths.length <= 4
       && paths.every(path => Array.isArray(path) && path.length > 0 && path.length <= 64 && path.every(validPackageCoordinate))
   })
@@ -278,6 +303,7 @@ function validHistoryEvent(value: unknown): boolean {
       && (advisory.severity === 'unknown' || advisory.severity === 'info' || advisory.severity === 'low'
         || advisory.severity === 'medium' || advisory.severity === 'high' || advisory.severity === 'critical')
       && validAdvisorySources(advisory.sources)
+      && validAdvisoryConflicts(advisory.conflicts, advisory.sources)
   }
   if (event.kind === 'compatibility') {
     return validPackageCoordinate(event.plugin)
@@ -382,6 +408,7 @@ export function parseRadarState(value: unknown): RadarState {
       || (event.kind !== 'vulnerability' && event.kind !== 'malware')
       || typeof advisory?.id !== 'string' || typeof advisory.modified !== 'string'
       || !validAdvisorySources(advisory.sources)
+      || !validAdvisoryConflicts(advisory.conflicts, advisory.sources)
       || !validAffectedSources(event.affectedSources)
       || !validAffectedPlugins(event.affectedPlugins)) {
       throw new Error(`radar state contains an invalid active match: ${key.slice(0, 256)}`)
