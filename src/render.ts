@@ -64,6 +64,16 @@ export function renderTextReport(report: ScanReport): string {
     }
   }
 
+  const nextStep = report.riskVerdict === 'block'
+    ? 'Do not install this package until the blocking finding is resolved.'
+    : report.riskVerdict === 'review'
+      ? 'Review the findings before installation; use --fail-on block only when your gate should block hard stops.'
+      : report.riskVerdict === 'warn'
+        ? 'Review the warnings before installation and decide whether your team accepts them.'
+        : report.coverageVerdict === 'incomplete'
+          ? 'Coverage is incomplete; do not treat an empty finding list as an allow decision.'
+          : 'The implemented admission checks passed; continue with DSH setup and keep monitoring.'
+  lines.push('', `Next step: ${nextStep}`)
   lines.push('', 'This is a bounded evidence report, not a guarantee that the plugin is safe.')
   return `${lines.join('\n')}\n`
 }

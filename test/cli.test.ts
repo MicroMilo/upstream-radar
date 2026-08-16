@@ -92,6 +92,24 @@ describe('CLI option parsing', () => {
     assert.match(memoryWebhook.stderr, /requires a persistent --state file/)
   })
 
+  it('offers self-contained help for the first-use commands', () => {
+    const setupHelp = spawnSync(process.execPath, [cli, 'setup', '--help'], { encoding: 'utf8' })
+    assert.equal(setupHelp.status, 0)
+    assert.match(setupHelp.stdout, /install the exact Radar bundle into DSH/)
+    assert.match(setupHelp.stdout, /Review the generated files/)
+    assert.doesNotMatch(setupHelp.stderr, /unknown option/)
+
+    const inspectHelp = spawnSync(process.execPath, [cli, 'inspect', '--help'], { encoding: 'utf8' })
+    assert.equal(inspectHelp.status, 0)
+    assert.match(inspectHelp.stdout, /inspect one exact npm artifact before installation/)
+    assert.match(inspectHelp.stdout, /empty finding list is not\s+a safety certificate/)
+
+    const statusHelp = spawnSync(process.execPath, [cli, 'radar', 'status', '--help'], { encoding: 'utf8' })
+    assert.equal(statusHelp.status, 0)
+    assert.match(statusHelp.stdout, /see the local monitoring snapshot/)
+    assert.match(statusHelp.stdout, /never polls OSV, npm, GitHub, or DSH/)
+  })
+
   it('shows a network-free first-run status snapshot', () => {
     const config = resolve(repository, 'examples/radar/config.json')
     const missingState = resolve(tmpdir(), `upstream-radar-status-${process.pid}-${Date.now()}.json`)

@@ -58,10 +58,210 @@ function shellQuote(value: string): string {
   return `'${value.replaceAll("'", "'\\''")}'`
 }
 
+function commandUsage(key: string): string | undefined {
+  const help: Record<string, string> = {
+    setup: `Upstream Radar — install the exact Radar bundle into DSH and prepare monitoring
+
+Usage:
+  upstream-radar setup [--profile <name>] [--project-name <name>]
+
+What it does:
+  Installs Radar into the selected DSH profile, writes a reviewable config and
+  --patch overlay, then runs the local doctor check. It does not start DSH or
+  execute plugin business actions.
+
+Common options:
+  --profile <name>       select a DSH profile (auto-selects the only candidate)
+  --project-name <name>  name shown in incidents and Agent tasks
+  --workspace <path>     project workspace used to route Agent follow-up
+  --repository <url>     repository evidence passed to the Agent task
+  --output <path>        Radar config path (default: ./upstream-radar.config.json)
+  --dsh-patch <path>     DSH overlay path (default: ./upstream-radar.dsh.yml)
+  --no-install            reuse an already installed Radar bundle
+  --no-dsh-patch          use legacy environment-variable wiring
+
+Next:
+  Review the generated files, then run the printed doctor command and start DSH
+  with the printed --patch command.
+`,
+    init: `Upstream Radar — create a reviewable inventory
+
+Usage:
+  upstream-radar init --profile <name> [options]
+  upstream-radar init --pnpm-lock <pnpm-lock.yaml> [options]
+  upstream-radar init --npm-lock <package-lock.json> [options]
+
+What it does:
+  Reads a DSH profile or lockfile without executing plugin code. Lockfile mode
+  is the pre-install path; it writes a static graph for a later frozen check.
+
+Common options:
+  --root <package>@<exact-version>  explicit lockfile root when it cannot be inferred
+  --project-name <name>             name shown in incidents
+  --output <path>                   config path (default: ./upstream-radar.config.json)
+  --dsh-patch <path>                write a self-contained DSH overlay (profile mode)
+  --json                            print a compact machine-readable summary
+  --force                           replace an existing output file
+
+Next:
+  upstream-radar radar check ./upstream-radar.config.json --frozen
+`,
+    doctor: `Upstream Radar — verify local wiring without polling upstream sources
+
+Usage:
+  upstream-radar doctor [config.json] [--profile <name>] [--patch <path>] [--json]
+
+Checks:
+  config/state readability, Radar registration in DSH, overlay alignment,
+  dependency coverage, and local webhook configuration. It does not contact
+  OSV, npm, GitHub, DSH, or a model.
+`,
+    scan: `Upstream Radar — inspect a local package directory without running it
+
+Usage:
+  upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
+
+Use this for an unpacked plugin before installation. Lifecycle scripts, remote
+shell patterns, unsafe symlinks, mutable dependencies, and DSH bundle metadata
+are recorded as bounded evidence.
+`,
+    inspect: `Upstream Radar — inspect one exact npm artifact before installation
+
+Usage:
+  upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json]
+    [--registry <https-url>] [--fail-on <warn|review|block|never>]
+
+--deep downloads the exact tarball, verifies npm integrity/signatures and
+provenance when available, resolves the dependency graph with scripts disabled,
+and queries the implemented vulnerability checks. An empty finding list is not
+a safety certificate; check the coverage verdict before admitting the package.
+The default gate exits 2 for review or block; use --fail-on block when review
+should remain visible without failing CI.
+`,
+    graph: `Upstream Radar — read a lockfile into the canonical dependency graph
+
+Usage:
+  upstream-radar graph pnpm-lock <pnpm-lock.yaml> [--root <package>@<exact-version>] [--json]
+  upstream-radar graph npm-lock <package-lock.json> [--root <package>@<exact-version>] [--json]
+
+This command is offline and does not install packages, run lifecycle scripts,
+load plugin code, or query vulnerability sources.
+`,
+    probe: `Upstream Radar — test whether a DSH bundle loads in disposable profiles
+
+Usage:
+  upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--json]
+  upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>,<v2>,... [--json]
+
+The probe is bounded and isolated. It is a compatibility/load check, not a
+semantic safety review or a substitute for dependency monitoring.
+`,
+    demo: `Upstream Radar — show the exact-path-to-DSH handoff without side effects
+
+Usage:
+  upstream-radar demo [--json]
+
+The demo is network-free and uses only a local fixture. It does not inspect your
+repository, install a plugin, start DSH, or claim that its advisory is real.
+`,
+    benchmark: `Upstream Radar — run offline compatibility-rule contracts
+
+Usage:
+  upstream-radar benchmark compatibility [--json]
+`,
+    radar: `Upstream Radar — monitor a reviewed inventory
+
+Usage:
+  upstream-radar radar check <config.json> [options]
+  upstream-radar radar watch <config.json> [options]
+  upstream-radar radar status <config.json> [options]
+  upstream-radar radar history <config.json> [options]
+  upstream-radar radar compare <config.json> <before.json> <candidate.json> [options]
+
+Use 'radar status' and 'radar history' for local, no-network diagnosis. Use
+--frozen for CI or any run that must not read a live DSH profile.
+`,
+    'radar check': `Upstream Radar — run one vulnerability and compatibility check
+
+Usage:
+  upstream-radar radar check <config.json> [--state <state.json>] [--frozen]
+    [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>]
+    [--webhook <https-url>] [--json]
+
+One cycle queries the configured sources and persists changed incidents. Use
+--frozen when the config is the reviewed graph you want to enforce.
+`,
+    'radar watch': `Upstream Radar — keep monitoring a reviewed inventory
+
+Usage:
+  upstream-radar radar watch <config.json> [--interval <seconds>] [--once]
+    [--state <state.json>] [--frozen] [--fail-on <severity>]
+    [--fail-on-compatibility <never|breaking|any>] [--webhook <https-url>]
+
+Use --once in CI. A long-running watch keeps polling and should not be given a
+policy gate that would make it exit on the first incident.
+`,
+    'radar status': `Upstream Radar — see the local monitoring snapshot
+
+Usage:
+  upstream-radar radar status <config.json> [--state <state.json>]
+    [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
+
+This command never polls OSV, npm, GitHub, or DSH. It shows whether monitoring
+has run, coverage, active incidents, queued Agent tasks, and the next useful
+action.
+`,
+    'radar history': `Upstream Radar — inspect the durable transition ledger
+
+Usage:
+  upstream-radar radar history <config.json> [--state <state.json>] [--limit <n>] [--json]
+
+This command is local-only and shows new, updated, resolved, and source-health
+transitions, including their exact affected paths.
+`,
+    'radar compare': `Upstream Radar — compare one reviewed release candidate
+
+Usage:
+  upstream-radar radar compare <config.json> <before.json> <candidate.json>
+    [--notes <release-notes.txt>] [--json]
+
+The release notes are treated as untrusted evidence. This command does not
+install or execute the candidate.
+`,
+    task: `Upstream Radar — inspect or acknowledge the DSH analysis outbox
+
+Usage:
+  upstream-radar task list <state.json> [--json]
+  upstream-radar task show <state.json> [task-id] [--json]
+  upstream-radar task ack <state.json> <task-id>
+`,
+    analysis: `Upstream Radar — inspect verified DSH conclusions
+
+Usage:
+  upstream-radar analysis list <state.json> [--json]
+  upstream-radar analysis show <state.json> [incident-id] [--json]
+`,
+  }
+  return help[key]
+}
+
+function commandHelp(args: readonly string[]): string | undefined {
+  const helpIndex = args.findIndex(argument => argument === '--help' || argument === '-h')
+  if (helpIndex < 0) return undefined
+  const command = args[0]
+  if (command === undefined) return undefined
+  const nested = command === 'radar' || command === 'task' || command === 'analysis'
+    ? args[1]
+    : undefined
+  const key = nested === undefined ? command : `${command} ${nested}`
+  return commandUsage(key) ?? commandUsage(command)
+}
+
 function usage(): string {
   return `Upstream Radar — always-on dependency and compatibility monitoring for DSH plugins
 
 Usage:
+  upstream-radar <command> --help
   upstream-radar setup [--profile <name>] [options]
   upstream-radar init [--profile <name>] [options]
   upstream-radar init --pnpm-lock <pnpm-lock.yaml> [--root <package>@<exact-version>] [options]
@@ -995,6 +1195,11 @@ async function runDoctor(args: readonly string[]): Promise<number> {
 }
 
 async function main(args: readonly string[]): Promise<number> {
+  const help = commandHelp(args)
+  if (help !== undefined) {
+    process.stdout.write(help)
+    return 0
+  }
   const command = args[0]
   if (command === undefined || command === '--help' || command === '-h' || command === 'help') {
     process.stdout.write(usage())

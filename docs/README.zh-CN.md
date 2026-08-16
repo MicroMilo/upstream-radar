@@ -36,6 +36,8 @@ npx --yes upstream-radar@latest demo
 
 它会打印一条准确的传递依赖路径、只读 DSH Agent 交接任务和下一步安装命令。它只使用本地 fixture，不会读取你的仓库、安装插件，也不声称 demo 公告是真实漏洞；需要机器可读结果时加 `--json`。
 
+每个命令都有自己的短帮助：不确定从哪里开始时，可以先运行 `npx --yes upstream-radar@latest setup --help`、`npx --yes upstream-radar@latest inspect --help` 或 `npx --yes upstream-radar@latest radar status --help`。
+
 如果要运行真实监控，请使用至少安装了一个第三方 bundle 的 DSH 环境。只有一个这样的 profile 时，`setup` 会自动选择；只有多个 profile 时才需要传 `--profile <名称>`。下面的命令分成两个终端，因为 DSH 通常会持续运行：
 
 ```bash

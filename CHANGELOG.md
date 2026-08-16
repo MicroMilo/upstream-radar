@@ -15,6 +15,7 @@ All notable changes to Upstream Radar are documented here.
 - Document the npm-native `npx` launcher alongside the pnpm quickstart, while recommending exact versions for reproducible team use.
 - Add a packaged `upstream-radar demo` command that shows the exact-path-to-DSH handoff without network access, a DSH profile, or plugin installation.
 - Add a repeatable real-plugin DSH adoption showcase that packs the packages with lifecycle scripts disabled, then validates setup, doctor, frozen upstream checks, and status in a disposable DSH profile.
+- Add command-specific `--help` for setup, inspection, lockfile, DSH, radar, task, and analysis paths, plus concrete next-step guidance in text admission reports.
 
 ## [0.33.0] - 2026-08-16
 
