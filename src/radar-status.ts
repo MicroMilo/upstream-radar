@@ -41,6 +41,7 @@ export interface RadarStatusIncident {
   triage?: RadarStatusTriage
   mutedUntil?: string
   followUp?: RadarIncidentTriage
+  followUpOverdue?: boolean
 }
 
 export interface RadarStatusSource {
@@ -278,11 +279,16 @@ function compareActiveIncidents(left: RadarStatusIncident, right: RadarStatusInc
 function statusIncidentWithState(event: RadarEvent, state: RadarState, now: Date): RadarStatusIncident {
   const incident = statusIncident(event, state)
   const mute = state.incidentMutes?.[event.incidentId]
-  const followUp = state.incidentTriage?.[event.incidentId]
+  const storedFollowUp = state.incidentTriage?.[event.incidentId]
+  const followUp = storedFollowUp?.eventId === event.id ? storedFollowUp : undefined
+  const followUpOverdue = followUp?.dueAt !== undefined
+    && Number.isFinite(Date.parse(followUp.dueAt))
+    && Date.parse(followUp.dueAt) <= now.getTime()
   return {
     ...incident,
     ...(mute === undefined || !isRadarIncidentMuted(state, event, now) ? {} : { mutedUntil: mute.mutedUntil }),
-    ...(followUp === undefined || followUp.eventId !== event.id ? {} : { followUp }),
+    ...(followUp === undefined ? {} : { followUp }),
+    ...(followUpOverdue ? { followUpOverdue: true } : {}),
   }
 }
 
@@ -446,10 +452,13 @@ function triageStatusLabel(status: RadarIncidentTriage['status']): string {
   return status
 }
 
-function renderIncidentFollowUp(followUp: RadarIncidentTriage): string {
+function renderIncidentFollowUp(followUp: RadarIncidentTriage, overdue = false): string {
   const owner = followUp.owner === undefined ? '' : `; owner: ${display(followUp.owner)}`
   const note = followUp.note === undefined ? '' : `; note: ${display(followUp.note, 1_024)}`
-  return `${triageStatusLabel(followUp.status)}${owner}${note}`
+  const due = followUp.dueAt === undefined
+    ? ''
+    : `; due: ${display(followUp.dueAt)}${overdue ? ' (overdue)' : ''}`
+  return `${triageStatusLabel(followUp.status)}${owner}${note}${due}`
 }
 
 /** Render the status snapshot for a human checking the first run. */
@@ -498,7 +507,7 @@ export function renderRadarStatus(report: RadarStatusReport): string {
         `    Delivery: muted until ${display(incident.mutedUntil)}; active evidence remains visible`,
       ]),
       ...(incident.followUp === undefined ? [] : [
-        `    Follow-up: ${renderIncidentFollowUp(incident.followUp)}`,
+        `    Follow-up: ${renderIncidentFollowUp(incident.followUp, incident.followUpOverdue === true)}`,
       ]),
       `    Next: ${display(incident.nextStep)}`,
     )
@@ -547,7 +556,7 @@ export function renderRadarNext(report: RadarNextReport): string {
       `Delivery: muted until ${display(incident.mutedUntil)}; active evidence remains visible`,
     ]),
     ...(incident.followUp === undefined ? [] : [
-      `Follow-up: ${renderIncidentFollowUp(incident.followUp)}`,
+      `Follow-up: ${renderIncidentFollowUp(incident.followUp, incident.followUpOverdue === true)}`,
     ]),
     `Next step: ${display(incident.nextStep)}`,
   )

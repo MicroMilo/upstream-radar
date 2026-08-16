@@ -435,6 +435,8 @@ export interface RadarIncidentTriage {
   owner?: string
   /** Short context for the handoff or risk decision. */
   note?: string
+  /** Optional human deadline; passing it never changes the upstream finding. */
+  dueAt?: string
   /** When this follow-up record was last changed. */
   updatedAt: string
 }

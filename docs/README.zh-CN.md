@@ -205,10 +205,11 @@ upstream-radar mute './upstream-radar.config.json.state.json' '<事件 ID>' \
 ```bash
 upstream-radar triage './upstream-radar.config.json.state.json' '<事件 ID>' \
   --status in-progress --owner security-team \
-  --note '排查 parser 的输入路径'
+  --note '排查 parser 的输入路径' \
+  --due '2026-08-17T12:00:00Z'
 ```
 
-状态可以是 `open`、`in-progress`、`blocked` 或 `accepted-risk`；后两种必须填写备注。这只是团队交接记录，不会把仍然活动的漏洞标成已解决，也不会隐藏证据。记录绑定到精确事件 ID，漏洞事实更新后必须重新确认；`radar status` 和 `radar next` 会显示当前负责人和备注。
+状态可以是 `open`、`in-progress`、`blocked` 或 `accepted-risk`；后两种必须填写备注。`--due` 是可选的人工截止时间，过期后 `radar status` 和 `radar next` 会明确标记为逾期。这只是团队交接记录，不会把仍然活动的漏洞标成已解决，也不会隐藏证据。记录绑定到精确事件 ID，漏洞事实更新后必须重新确认；两个命令会显示当前负责人、备注和截止时间。
 
 ---
 

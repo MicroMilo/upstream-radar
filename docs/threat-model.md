@@ -8,6 +8,7 @@ Upstream Radar protects two connected outcomes:
 2. DSH receives the upstream material as untrusted data and produces a project-specific analysis without obeying instructions embedded in that material.
 3. A model conclusion is written back only when it is tied to the exact Radar delivery and DSH session, is emitted by the model, and matches the fixed JSON result contract.
 4. An optional external notification receives only changed events, with delivery failures remaining visible and retryable.
+5. Human follow-up does not silently cover a newer upstream fact; an optional deadline is visible when it expires.
 
 The supporting pre-install scanner additionally protects exact-artifact evidence collection.
 
@@ -16,6 +17,7 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 - project source, credentials, sessions, local files, and DSH tool authority;
 - project/plugin inventories and exact dependency paths;
 - active vulnerability state, active compatibility incidents, pending analysis tasks, in-flight deliveries, and verified analysis results;
+- human follow-up records, including owner, status, note, and optional deadline;
 - webhook delivery fingerprints and event ids, without the endpoint URL or token;
 - correctness of new, updated, resolved, and compatibility transitions;
 - availability and cost of the monitoring and model-analysis loop;
@@ -64,6 +66,7 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 14. A webhook is sent only for a changed event, and a non-2xx response or notification policy hold does not mark it delivered; delivery is at-least-once across a crash window.
 15. The transition ledger is bounded and deduplicated by stable event id; losing old history never changes the active incident state.
 16. GitHub Job Summary output escapes report-controlled strings and is only a human-readable view; the raw JSON remains authoritative.
+17. A follow-up record is displayed only when its stored event id matches the current active event; an expired deadline is a reminder, never a resolution or suppression decision.
 
 ## Delivery semantics
 
@@ -87,5 +90,5 @@ The optional webhook follows the same bias: Radar persists the changed incident 
 - GitHub comparison diffs, changelogs, and migration guides are not fetched automatically.
 - One live root DSH Agent acts as the security inbox; multiple roots require an exact project-session workspace match.
 - The prompt establishes a read-only contract, but enforcement still depends on the DSH Agent's configured tools and permission policy.
-- Feed failures are reported by the cycle; OSV failures preserve the last confirmed matches and pending tasks, and three consecutive failures create a durable source-health alert. The local transition ledger is intentionally bounded to the most recent 1,000 events; it is an audit convenience, not a complete historical database. Provider-native Feishu V2 text formatting is supported; the generic endpoint remains the stable JSON contract, and delivery acknowledgement stays endpoint-fingerprint based. Notification policy is currently limited to per-project minimum vulnerability severity and quiet hours; owner routing and dev-only scopes remain future work.
+- Feed failures are reported by the cycle; OSV failures preserve the last confirmed matches and pending tasks, and three consecutive failures create a durable source-health alert. The local transition ledger is intentionally bounded to the most recent 1,000 events; it is an audit convenience, not a complete historical database. Provider-native Feishu V2 text formatting is supported; the generic endpoint remains the stable JSON contract, and delivery acknowledgement stays endpoint-fingerprint based. Notification policy is currently limited to per-project minimum vulnerability severity and quiet hours; explicit external owner routing and dev-only scopes remain future work. Follow-up deadlines are currently surfaced by the local `status`/`next` views rather than emitted as a new vulnerability event.
 - The scanner uses the host npm CLI with scripts disabled; it is not a microVM detonation boundary.

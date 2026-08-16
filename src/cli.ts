@@ -360,7 +360,7 @@ Usage:
 Usage:
   upstream-radar triage <state.json> <incident-id>
     --status <open|in-progress|blocked|accepted-risk>
-    [--owner <name>] [--note <text>] [--json]
+    [--owner <name>] [--note <text>] [--due <ISO-8601>] [--json]
 
 This records ownership and work context without resolving, hiding, or changing
 the deterministic incident. A new event version requires a fresh follow-up.
@@ -413,7 +413,7 @@ Usage:
   upstream-radar analysis show <state.json> [incident-id] [--json]
   upstream-radar mute <state.json> <incident-id> --until <ISO-8601> [--force] [--json]
   upstream-radar unmute <state.json> <incident-id> [--json]
-  upstream-radar triage <state.json> <incident-id> --status <open|in-progress|blocked|accepted-risk> [--owner <name>] [--note <text>] [--json]
+  upstream-radar triage <state.json> <incident-id> --status <open|in-progress|blocked|accepted-risk> [--owner <name>] [--note <text>] [--due <ISO-8601>] [--json]
   upstream-radar version
 
 Commands:
@@ -708,17 +708,19 @@ async function runIncidentTriage(args: readonly string[]): Promise<number> {
   let statusValue: string | undefined
   let ownerValue: string | undefined
   let noteValue: string | undefined
+  let dueValue: string | undefined
   let json = false
   for (let index = 2; index < args.length; index += 1) {
     const argument = args[index]
     if (argument === undefined) throw new Error('triage received an incomplete option')
     if (argument === '--json') json = true
-    else if (argument === '--status' || argument === '--owner' || argument === '--note') {
+    else if (argument === '--status' || argument === '--owner' || argument === '--note' || argument === '--due') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--status') statusValue = value
       else if (argument === '--owner') ownerValue = value
-      else noteValue = value
+      else if (argument === '--note') noteValue = value
+      else dueValue = value
       index += 1
     } else if (argument.startsWith('-')) {
       throw new Error(`unknown option for triage: ${argument}`)
@@ -737,6 +739,8 @@ async function runIncidentTriage(args: readonly string[]): Promise<number> {
   if (owner !== undefined && owner.length > 512) throw new Error('--owner must be 512 characters or fewer')
   if (noteValue !== undefined && (note === undefined || note.length === 0)) throw new Error('--note cannot be empty')
   if (note !== undefined && note.length > 2_048) throw new Error('--note must be 2048 characters or fewer')
+  const dueAtMs = dueValue === undefined ? undefined : Date.parse(dueValue)
+  if (dueValue !== undefined && !Number.isFinite(dueAtMs)) throw new Error('--due must be a valid ISO-8601 timestamp')
 
   const state = await loadRadarState(statePath)
   const event = activeEventForIncident(state, incidentId)
@@ -748,12 +752,14 @@ async function runIncidentTriage(args: readonly string[]): Promise<number> {
     throw new Error(`triage status ${status} requires --note <text>`)
   }
   const recordOwner = owner ?? inherited?.owner
+  const recordDueAt = dueAtMs === undefined ? inherited?.dueAt : new Date(dueAtMs).toISOString()
   const record: RadarIncidentTriage = {
     eventId: event.id,
     status,
     updatedAt: new Date().toISOString(),
     ...(recordOwner === undefined ? {} : { owner: recordOwner }),
     ...(recordNote === undefined ? {} : { note: recordNote }),
+    ...(recordDueAt === undefined ? {} : { dueAt: recordDueAt }),
   }
   await saveRadarState(statePath, {
     ...state,

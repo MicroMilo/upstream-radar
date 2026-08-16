@@ -35,6 +35,7 @@ describe('radar state parsing', () => {
         status: 'in-progress',
         owner: 'security-team',
         note: 'Confirm the project call path.',
+        dueAt: '2026-08-17T00:00:00.000Z',
         updatedAt: '2026-08-16T02:00:00.000Z',
       },
     }
@@ -48,6 +49,10 @@ describe('radar state parsing', () => {
     invalidTriage.incidentTriage['incident-demo'].status = 'accepted-risk'
     delete invalidTriage.incidentTriage['incident-demo'].note
     assert.throws(() => parseRadarState(invalidTriage), /invalid incident triage map/)
+
+    const invalidDue = structuredClone(state) as unknown as Record<string, any>
+    invalidDue.incidentTriage['incident-demo'].dueAt = 'not-a-date'
+    assert.throws(() => parseRadarState(invalidDue), /invalid incident triage map/)
   })
 
   it('accepts a shared DSH host event with all affected plugin roots', () => {

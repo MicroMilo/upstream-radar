@@ -29,6 +29,7 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /radar status <config\.json>/)
     assert.match(help.stdout, /radar next <config\.json>/)
     assert.match(help.stdout, /radar history <config\.json>/)
+    assert.match(help.stdout, /triage <state\.json> <incident-id> --status .*--due <ISO-8601>/)
     assert.match(help.stdout, /graph <npm-lock\|pnpm-lock> <lockfile> \[--root <package>@<exact-version>\]/)
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
     assert.match(help.stdout, /--frozen\s+radar check\/watch: use the reviewed graph/)
@@ -672,6 +673,8 @@ snapshots:
         'security-team',
         '--note',
         'Trace the parser input.',
+        '--due',
+        '2026-08-17T00:00:00+00:00',
         '--json',
       ], { encoding: 'utf8' })
       assert.equal(triaged.status, 0)
@@ -681,6 +684,7 @@ snapshots:
         status: string
         owner?: string
         note?: string
+        dueAt?: string
         updatedAt: string
       }
       assert.deepEqual(triageReport, {
@@ -689,6 +693,7 @@ snapshots:
         status: 'in-progress',
         owner: 'security-team',
         note: 'Trace the parser input.',
+        dueAt: '2026-08-17T00:00:00.000Z',
         updatedAt: triageReport.updatedAt,
       })
 
@@ -720,7 +725,7 @@ snapshots:
       ], { encoding: 'utf8' })
       assert.equal(mutedNext.status, 0)
       assert.match(mutedNext.stdout, /Delivery: muted until/)
-      assert.match(mutedNext.stdout, /Follow-up: in progress; owner: security-team; note: Trace the parser input\./)
+      assert.match(mutedNext.stdout, /Follow-up: in progress; owner: security-team; note: Trace the parser input\.; due: 2026-08-17T00:00:00.000Z/)
       assert.match(mutedNext.stdout, /To resume delivery: upstream-radar unmute/)
       const unmuted = spawnSync(process.execPath, [cli, 'unmute', stateFile, event.incidentId], { encoding: 'utf8' })
       assert.equal(unmuted.status, 0)

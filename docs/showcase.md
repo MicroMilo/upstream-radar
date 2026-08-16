@@ -340,10 +340,11 @@ upstream-radar triage './upstream-radar.config.json.state.json' \
   '<incident-id-from-radar-next>' \
   --status in-progress \
   --owner security-team \
-  --note 'Trace the parser input path'
+  --note 'Trace the parser input path' \
+  --due '2026-08-17T12:00:00Z'
 ```
 
-The allowed states are `open`, `in-progress`, `blocked`, and `accepted-risk`; the last two require a note. The record is only a handoff note: the active vulnerability, evidence, DSH task, and delivery policy remain unchanged. When an advisory changes and Radar creates a new event id, the old follow-up is ignored and `radar next` asks for a fresh review. This keeps a stale “accepted risk” from silently covering a newly published upstream fact.
+The allowed states are `open`, `in-progress`, `blocked`, and `accepted-risk`; the last two require a note. `--due` is an optional human deadline; after it passes, both read-only views mark the follow-up overdue. The record is only a handoff note: the active vulnerability, evidence, DSH task, and delivery policy remain unchanged. When an advisory changes and Radar creates a new event id, the old follow-up is ignored and `radar next` asks for a fresh review. This keeps a stale “accepted risk” from silently covering a newly published upstream fact.
 
 ## Live sources
 

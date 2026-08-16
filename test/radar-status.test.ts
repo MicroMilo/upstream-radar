@@ -178,6 +178,7 @@ describe('Radar status', () => {
         status: 'in-progress',
         owner: 'security-team',
         note: 'Trace the parser input.',
+        dueAt: '2026-08-16T01:30:00.000Z',
         updatedAt: '2026-08-16T02:00:00.000Z',
       },
     }
@@ -190,13 +191,14 @@ describe('Radar status', () => {
     assert.equal(report.activeIncidents[0]?.mutedUntil, '2026-08-17T00:00:00.000Z')
     assert.deepEqual(report.activeIncidents[0]?.followUp, state.incidentTriage[vulnerabilityEvent.incidentId])
     assert.match(renderRadarStatus(report), /Delivery: muted until 2026-08-17T00:00:00.000Z; active evidence remains visible/)
-    assert.match(renderRadarStatus(report), /Follow-up: in progress; owner: security-team; note: Trace the parser input\./)
+    assert.match(renderRadarStatus(report), /Follow-up: in progress; owner: security-team; note: Trace the parser input\.; due: 2026-08-16T01:30:00.000Z \(overdue\)/)
+    assert.equal(report.activeIncidents[0]?.followUpOverdue, true)
 
     const next = createRadarNext(report, state)
     assert.match(next.unmuteCommand ?? '', /upstream-radar unmute .*incident-vulnerability/)
     assert.equal(next.triageCommand, undefined)
     assert.match(renderRadarNext(next), /To resume delivery: upstream-radar unmute/)
-    assert.match(renderRadarNext(next), /Follow-up: in progress; owner: security-team; note: Trace the parser input\./)
+    assert.match(renderRadarNext(next), /Follow-up: in progress; owner: security-team; note: Trace the parser input\.; due: 2026-08-16T01:30:00.000Z \(overdue\)/)
 
     const newerState = structuredClone(state)
     const newerEvent: VulnerabilityEvent = {
@@ -219,6 +221,27 @@ describe('Radar status', () => {
     const newerNext = createRadarNext(newerReport, newerState)
     assert.match(newerNext.triageCommand ?? '', /--status in-progress/)
     assert.match(renderRadarNext(newerNext), /Follow-up: open; record an owner\/status with:/)
+  })
+
+  it('marks a current follow-up due in the future without calling it overdue', () => {
+    const state = emptyRadarState()
+    state.activeVulnerabilities = { vulnerability: { key: 'vulnerability', event: vulnerabilityEvent } }
+    state.incidentTriage = {
+      [vulnerabilityEvent.incidentId]: {
+        eventId: vulnerabilityEvent.id,
+        status: 'in-progress',
+        dueAt: '2026-08-17T00:00:00.000Z',
+        updatedAt: '2026-08-16T02:00:00.000Z',
+      },
+    }
+    const report = createRadarStatus(config, state, {
+      configFile: '/tmp/radar.json',
+      stateFile: '/tmp/radar.json.state.json',
+      stateExists: true,
+      now: new Date('2026-08-16T02:00:00.000Z'),
+    })
+    assert.equal(report.activeIncidents[0]?.followUpOverdue, undefined)
+    assert.match(renderRadarStatus(report), /due: 2026-08-17T00:00:00.000Z(?! \(overdue\))/)
   })
 
   it('shows advisory sources and conflicts in the daily status summary', () => {

@@ -213,10 +213,11 @@ Record the human handoff next to the same incident:
 ```bash
 upstream-radar triage './upstream-radar.config.json.state.json' '<incident-id>' \
   --status in-progress --owner security-team \
-  --note 'Trace the parser input path'
+  --note 'Trace the parser input path' \
+  --due '2026-08-17T12:00:00Z'
 ```
 
-The available states are `open`, `in-progress`, `blocked`, and `accepted-risk`. `blocked` and `accepted-risk` require a note. This is workflow context only: it never marks an active vulnerability resolved or suppresses its evidence. The record is bound to the exact event id, so an updated upstream fact requires a fresh review; `radar status` and `radar next` show the current owner and note.
+The available states are `open`, `in-progress`, `blocked`, and `accepted-risk`. `blocked` and `accepted-risk` require a note. `--due` is an optional human deadline; `radar status` and `radar next` mark it as overdue when it passes. This is workflow context only: it never marks an active vulnerability resolved or suppresses its evidence. The record is bound to the exact event id, so an updated upstream fact requires a fresh review; `radar status` and `radar next` show the current owner, note, and deadline.
 
 ---
 

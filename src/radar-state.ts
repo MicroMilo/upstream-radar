@@ -326,7 +326,14 @@ function validIncidentTriage(value: unknown): boolean {
   return Object.entries(triage).every(([incidentId, rawRecord]) => {
     const record = asRecord(rawRecord)
     if (record === undefined) return false
-    const expectedKeys = new Set(['eventId', 'status', 'updatedAt', ...(record.owner === undefined ? [] : ['owner']), ...(record.note === undefined ? [] : ['note'])])
+    const expectedKeys = new Set([
+      'eventId',
+      'status',
+      'updatedAt',
+      ...(record.owner === undefined ? [] : ['owner']),
+      ...(record.note === undefined ? [] : ['note']),
+      ...(record.dueAt === undefined ? [] : ['dueAt']),
+    ])
     if (Object.keys(record).length !== expectedKeys.size || Object.keys(record).some(key => !expectedKeys.has(key))) return false
     const note = record.note
     return incidentId.length > 0 && incidentId.length <= 512
@@ -336,6 +343,9 @@ function validIncidentTriage(value: unknown): boolean {
       && Number.isFinite(Date.parse(record.updatedAt))
       && (record.owner === undefined || (typeof record.owner === 'string' && record.owner.length > 0 && record.owner.length <= 512))
       && (note === undefined || (typeof note === 'string' && note.length > 0 && note.length <= 2_048))
+      && (record.dueAt === undefined
+        || (typeof record.dueAt === 'string' && record.dueAt.length > 0 && record.dueAt.length <= 256
+          && Number.isFinite(Date.parse(record.dueAt))))
       && ((record.status !== 'blocked' && record.status !== 'accepted-risk') || note !== undefined)
   })
 }
