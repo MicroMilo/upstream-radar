@@ -14,6 +14,7 @@ All notable changes to Upstream Radar are documented here.
 - Re-open a project-specific DSH analysis task when an existing advisory later gains its first fixed version, preserving the updated dependency evidence.
 - Document the npm-native `npx` launcher alongside the pnpm quickstart, while recommending exact versions for reproducible team use.
 - Add a packaged `upstream-radar demo` command that shows the exact-path-to-DSH handoff without network access, a DSH profile, or plugin installation.
+- Add a repeatable real-plugin DSH adoption showcase that packs the packages with lifecycle scripts disabled, then validates setup, doctor, frozen upstream checks, and status in a disposable DSH profile.
 
 ## [0.33.0] - 2026-08-16
 

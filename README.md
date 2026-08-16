@@ -281,6 +281,8 @@ This proof runs in CI on Node.js 22. See the executable [showcase contract](exam
 
 To demonstrate the host-runtime dependency path specifically, run `pnpm run showcase:dsh-runtime`. It starts a real DSH `headless` process, refreshes the installed plugin graph from the process's exact host `node_modules`, queries a local OSV-compatible feed for the real `@deepseek-ai/cordis` version, persists a `dsh-host` vulnerability path, and hands it to the DSH Agent. The model and advisory are deterministic local stubs; this proves integration and provenance, not the safety of a real advisory.
 
+To validate the actual first-use path against the real published [`dsh-cloudflare-browser-run@0.1.1`](https://www.npmjs.com/package/dsh-cloudflare-browser-run), run `pnpm run showcase:dsh-adoption`. It creates a disposable `DSH_HOME`, packs the exact Radar and plugin tarballs with lifecycle scripts disabled, lets DSH build its own host runtime, runs `setup --no-install`, `doctor`, a frozen OSV/npm/GitHub check, and the human-readable status surface. It does not start a DSH Agent or call a model, and it does not treat an empty finding list as a safety certificate. The checked-in [adoption result](examples/dsh/reports/adoption-smoke.json) records the last run's package counts and boundaries.
+
 ## Validate the compatibility rules
 
 Before wiring a project into a compatibility gate, run the offline rule benchmark:

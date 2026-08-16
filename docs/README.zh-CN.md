@@ -274,6 +274,8 @@ pnpm run try:dsh
 
 如果要专门证明“宿主运行时依赖也会被监控”，运行 `pnpm run showcase:dsh-runtime`。它会启动真实的 DSH `headless` 进程，从该进程实际使用的 `node_modules` 刷新插件依赖图，查询本地 OSV 兼容 feed 中针对真实 `@deepseek-ai/cordis` 版本的确定性演示漏洞，把带有 `dsh-host` 来源和完整依赖路径的事件写入状态，再交给 DSH Agent。模型和漏洞 feed 都是本地 stub；它证明的是接线、来源和持久化，不是真实漏洞的安全结论。使用 `pnpm run showcase:dsh-runtime:report` 可以更新[宿主运行时结果](../examples/dsh/reports/dsh-runtime-host.json)。
 
+如果要验证真实插件的首用路径，可以运行 `pnpm run showcase:dsh-adoption`。它会在一次性 `DSH_HOME` 中准备精确版本的 Radar 和真实 [`dsh-cloudflare-browser-run@0.1.1`](https://www.npmjs.com/package/dsh-cloudflare-browser-run) tarball，打包时禁用 lifecycle script，同时让 DSH 正常建立自己的宿主运行时，然后执行 `setup --no-install`、`doctor`、冻结的 OSV/npm/GitHub 检查和状态输出。它不会启动 DSH Agent 或调用模型，也不会把“没有发现漏洞”当成安全证明。使用 `pnpm run showcase:dsh-adoption:report` 可以更新[真实插件采用结果](../examples/dsh/reports/adoption-smoke.json)。
+
 ## 验证兼容性规则
 
 在把项目接入兼容性门禁前，可以先运行离线规则 benchmark：

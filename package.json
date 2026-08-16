@@ -82,6 +82,8 @@
     "showcase:dsh-probe": "pnpm run build && node scripts/dsh-load-probe-showcase.mjs",
     "showcase:dsh-runtime": "pnpm run build && node scripts/dsh-runtime-graph-showcase.mjs",
     "showcase:dsh-runtime:report": "pnpm run build && node scripts/dsh-runtime-graph-showcase.mjs --write-report",
+    "showcase:dsh-adoption": "pnpm run build && node scripts/dsh-adoption-showcase.mjs",
+    "showcase:dsh-adoption:report": "pnpm run build && node scripts/dsh-adoption-showcase.mjs --write-report",
     "showcase:pnpm-lock": "pnpm run build && node scripts/pnpm-lock-showcase.mjs",
     "showcase:pnpm-lock:monitor": "pnpm run build && node scripts/pnpm-lock-monitor-showcase.mjs",
     "showcase:npm-lock:monitor": "pnpm run build && node scripts/npm-lock-monitor-showcase.mjs",
