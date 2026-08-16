@@ -6,6 +6,7 @@ All notable changes to Upstream Radar are documented here.
 
 ### Added
 
+- Record the exact `@deepseek-ai/dsh` executable package that owns the shared host plane, monitor its OSV vulnerabilities and npm releases, and render a DSH-core finding as an explicit host-runtime boundary rather than a fabricated plugin dependency edge.
 - Keep a bounded, deduplicated transition ledger in the Radar state and expose it through the network-free `radar history` command, so resolved incidents and source recovery remain auditable.
 - Write a concise escaped GitHub Job Summary from the reusable Action, including the exact path, published fix versions, and a suggested next step while preserving the raw JSON report and the original policy/source exit code.
 - Send changed-event text directly to Feishu/Lark V2 custom bots, with optional signature generation from an environment-only secret; keep the existing provider-neutral webhook envelope for other endpoints.

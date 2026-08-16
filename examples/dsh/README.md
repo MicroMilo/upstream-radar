@@ -39,6 +39,7 @@ pnpm run showcase:dsh-adoption
 ```
 
 This uses exact `@deepseek-ai/dsh@0.1.0-rc.6`, `upstream-radar` from the current package build, and `dsh-cloudflare-browser-run@0.1.1` in a disposable `DSH_HOME`. It packs both tarballs with lifecycle scripts disabled, lets DSH establish its own host runtime, runs `setup --no-install`, confirms the generated overlay with `doctor`, performs one frozen OSV/npm/GitHub check, and then reads `radar status`. It does not start DSH, call a model, or execute plugin business actions. It is an adoption and graph-coverage proof, not a package safety certificate or a claim that the real plugin has no vulnerabilities. The checked-in [result](reports/adoption-smoke.json) is generated with `pnpm run showcase:dsh-adoption:report`.
+The generated inventory also records the exact `@deepseek-ai/dsh@0.1.0-rc.6` executable package that owns the shared host plane. The check therefore covers 25 exact package versions and 16 npm release streams in this snapshot, including the DSH core even though it is not a plugin dependency edge.
 
 ## Host-runtime dependency graph proof
 

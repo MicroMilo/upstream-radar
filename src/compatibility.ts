@@ -19,6 +19,12 @@ import {
 } from './radar-types.js'
 import { packageKey } from './osv.js'
 
+function isDshRuntimePackage(name: string): boolean {
+  return name === '@deepseek-ai/dsh'
+    || name === '@deepseek-ai/cordis'
+    || name.startsWith('@deepseek-ai/dsh-')
+}
+
 export interface CompatibilityChangeInput {
   previous: PackageManifestSnapshot
   candidate: PackageManifestSnapshot
@@ -132,7 +138,7 @@ function collectCompatibilitySignals(
   const previousPeers = previous.peerDependencies ?? {}
   const candidatePeers = candidate.peerDependencies ?? {}
   for (const [name, range] of Object.entries(candidatePeers).sort(([left], [right]) => left.localeCompare(right))) {
-    if (!(name.startsWith('@deepseek-ai/dsh-') || name === '@deepseek-ai/cordis')) continue
+    if (!isDshRuntimePackage(name)) continue
     const installed = installation.graph.nodes
       .filter(node => node.name === name)
       .map(node => node.version)
@@ -176,7 +182,7 @@ function collectCompatibilitySignals(
     })
   }
 
-  if (candidate.name.startsWith('@deepseek-ai/dsh-')
+  if (isDshRuntimePackage(candidate.name)
     && previous.version.startsWith('0.')
     && previous.version !== candidate.version) {
     signals.push({
@@ -478,9 +484,11 @@ export function assessCompatibilityChanges(
   if (!Number.isFinite(Date.parse(change.detectedAt))) throw new Error('compatibility change has an invalid detection time')
   const versionOrder = compareSemverValues(change.candidate.version, change.previous.version)
   if (versionOrder !== undefined && versionOrder <= 0) return []
-  const installations = inventory.plugins.filter(plugin => plugin.graph.nodes.some(node => (
-    node.name === change.previous.name && node.version === change.previous.version
-  )))
+  const installations = inventory.plugins.filter(plugin => (
+    plugin.graph.nodes.some(node => node.name === change.previous.name && node.version === change.previous.version)
+    || (plugin.graph.hostRuntime?.package?.name === change.previous.name
+      && plugin.graph.hostRuntime.package.version === change.previous.version)
+  ))
   if (installations.length === 0) return []
 
   return installations.flatMap((installation) => {

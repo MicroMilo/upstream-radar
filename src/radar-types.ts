@@ -50,6 +50,8 @@ export interface DependencyGraph {
   hostRuntime?: {
     source: DependencyHostRuntimeSource
     resolvedNodes: number
+    /** The exact DSH executable package that owns this shared host plane. */
+    package?: PackageCoordinate
   }
   digest?: string
   unresolved?: Array<{

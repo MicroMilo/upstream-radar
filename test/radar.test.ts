@@ -283,6 +283,87 @@ describe('radar polling', () => {
     assert.equal(resolved.state.pendingAnalysisTasks.length, 0)
   })
 
+  it('monitors the exact DSH executable package as a host-runtime release stream', async () => {
+    const dshInventory = structuredClone(inventory)
+    dshInventory.plugins[0]!.graph.hostRuntime = {
+      source: 'dsh-process',
+      resolvedNodes: 3,
+      package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
+    }
+    const releases: ReleaseSource = {
+      async query(packages) {
+        const installed = packages.find(item => item.name === '@deepseek-ai/dsh')
+        assert.ok(installed)
+        assert.equal(packages.some(item => item.name === 'plugin'), true)
+        return new Map([['npm:@deepseek-ai/dsh@0.1.0-rc.6', {
+          installed,
+          latestVersion: '0.1.0-rc.7',
+          previous: { name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
+          candidate: { name: '@deepseek-ai/dsh', version: '0.1.0-rc.7' },
+        }]])
+      },
+    }
+    const result = await pollRadar(
+      [dshInventory],
+      emptyRadarState(),
+      source('2026-08-14T01:00:00.000Z', false),
+      new Date('2026-08-16T01:00:00.000Z'),
+      releases,
+    )
+    const event = result.events.find(item => item.kind === 'compatibility')
+    assert.ok(event?.kind === 'compatibility')
+    assert.equal(event.installed.name, '@deepseek-ai/dsh')
+    assert.equal(event.candidate.version, '0.1.0-rc.7')
+    assert.equal(event.plugin.name, 'plugin')
+    assert.equal(event.signals.some(signal => signal.code === 'dsh-developer-preview-change'), true)
+    assert.equal(result.releasePackagesQueried, 2)
+  })
+
+  it('alerts on a DSH executable vulnerability without inventing a plugin dependency edge', async () => {
+    const dshInventory = structuredClone(inventory)
+    dshInventory.plugins[0]!.graph.hostRuntime = {
+      source: 'dsh-process',
+      resolvedNodes: 3,
+      package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
+    }
+    const advisory: AdvisoryMatch = {
+      package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
+      advisory: {
+        id: 'GHSA-dsh-core-demo',
+        aliases: [],
+        summary: 'The DSH executable is affected.',
+        details: 'A deterministic test advisory for the DSH host boundary.',
+        severity: 'high',
+        modified: '2026-08-16T01:00:00.000Z',
+        fixedVersions: ['0.1.0-rc.7'],
+        references: [],
+      },
+    }
+    const result = await pollRadar(
+      [dshInventory],
+      emptyRadarState(),
+      {
+        async query(packages) {
+          return new Map(packages.map(item => [
+            packageKey(item),
+            item.name === '@deepseek-ai/dsh' && item.version === '0.1.0-rc.6' ? [advisory] : [],
+          ]))
+        },
+      },
+      new Date('2026-08-16T01:00:00.000Z'),
+    )
+    const event = result.events.find(item => item.kind === 'vulnerability')
+    assert.ok(event?.kind === 'vulnerability')
+    assert.equal(event.affected.name, '@deepseek-ai/dsh')
+    assert.deepEqual(event.affectedSources, ['dsh-host'])
+    assert.deepEqual(event.paths, [[{
+      ecosystem: 'npm',
+      name: '@deepseek-ai/dsh',
+      version: '0.1.0-rc.6',
+    }]])
+    assert.equal(result.packagesQueried, 4)
+  })
+
   it('skips a known-vulnerable intermediate release when choosing an upgrade path', async () => {
     const calls: string[][] = []
     const candidateAdvisory = {

@@ -9,6 +9,7 @@ import {
   type DependencyGraph,
   type DependencyKind,
   type DependencyNode,
+  type PackageCoordinate,
   type PackageManifestSnapshot,
 } from './radar-types.js'
 
@@ -178,7 +179,11 @@ async function findHostPackage(
 export async function parseInstalledNodeModulesGraph(
   profileDirectory: string,
   rootPackage: RootPackage,
-  options: { hostNodeModulesDirectory?: string; hostRuntimeSource?: DependencyHostRuntimeSource } = {},
+  options: {
+    hostNodeModulesDirectory?: string
+    hostRuntimeSource?: DependencyHostRuntimeSource
+    hostRuntimePackage?: PackageCoordinate
+  } = {},
 ): Promise<DependencyGraph> {
   const profileRoot = resolve(profileDirectory)
   const profileRootReal = await realpath(profileRoot)
@@ -251,6 +256,7 @@ export async function parseInstalledNodeModulesGraph(
       hostRuntime: {
         source: options.hostRuntimeSource ?? 'dsh-profile-fallback',
         resolvedNodes: [...packages.values()].filter(item => item.source === 'dsh-host').length,
+        ...(options.hostRuntimePackage === undefined ? {} : { package: { ...options.hostRuntimePackage } }),
       },
     }),
     ...(reachableUnresolved.length === 0 ? {} : { unresolved: reachableUnresolved }),

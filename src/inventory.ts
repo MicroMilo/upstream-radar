@@ -214,6 +214,12 @@ function graph(value: unknown, label: string): DependencyGraph {
   if (resolvedNodes !== undefined && (!Number.isSafeInteger(resolvedNodes) || (resolvedNodes as number) < 0 || (resolvedNodes as number) > MAX_NODES_PER_GRAPH)) {
     throw new Error(`${label}.hostRuntime.resolvedNodes must be a non-negative bounded integer`)
   }
+  const hostRuntimePackage = hostRuntimeValue === undefined || hostRuntimeValue.package === undefined
+    ? undefined
+    : coordinate(hostRuntimeValue.package, `${label}.hostRuntime.package`)
+  if (hostRuntimePackage !== undefined && hostRuntimePackage.name !== '@deepseek-ai/dsh') {
+    throw new Error(`${label}.hostRuntime.package must be @deepseek-ai/dsh`)
+  }
   const unresolvedValue = source.unresolved
   if (unresolvedValue !== undefined && (!Array.isArray(unresolvedValue) || unresolvedValue.length > MAX_EDGES_PER_GRAPH)) {
     throw new Error(`${label}.unresolved must contain at most ${MAX_EDGES_PER_GRAPH} entries`)
@@ -242,6 +248,7 @@ function graph(value: unknown, label: string): DependencyGraph {
       hostRuntime: {
         source: hostRuntimeSource,
         resolvedNodes: resolvedNodes as number,
+        ...(hostRuntimePackage === undefined ? {} : { package: hostRuntimePackage }),
       },
     }),
     ...(digest === undefined ? {} : { digest }),

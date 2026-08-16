@@ -126,6 +126,10 @@ async function main() {
     }
     if (plugin.graph?.source !== 'installed-node-modules') throw new Error('setup did not use the installed DSH graph')
     if ((plugin.graph?.hostRuntime?.resolvedNodes ?? 0) < 1) throw new Error('setup did not observe the DSH host dependency plane')
+    if (plugin.graph?.hostRuntime?.package?.name !== '@deepseek-ai/dsh'
+      || plugin.graph.hostRuntime.package.version !== DSH_VERSION) {
+      throw new Error(`setup did not record the exact DSH executable package: ${JSON.stringify(plugin.graph?.hostRuntime?.package)}`)
+    }
     if ((plugin.graph?.unresolved ?? []).some(item => item.kind !== 'optional')) throw new Error('real DSH graph has a required unresolved dependency')
 
     const doctorBefore = parseJson(requireSuccess(await run(process.execPath, [
@@ -175,6 +179,7 @@ async function main() {
       setup: {
         status: setup.stdout.includes('Local wiring check:') ? 'completed' : 'unknown',
         graphSource: plugin.graph.source,
+        dshRuntimePackage: plugin.graph.hostRuntime.package,
         dependencyNodes: plugin.graph.nodes.length,
         dshHostPackages: plugin.graph.hostRuntime.resolvedNodes,
         optionalDependenciesNotInstalled: (plugin.graph.unresolved ?? []).filter(item => item.kind === 'optional').length,

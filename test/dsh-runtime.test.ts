@@ -3,7 +3,11 @@ import { mkdir, mkdtemp, realpath, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, it } from 'node:test'
-import { discoverDshRuntimeNodeModulesDirectory } from '../src/dsh-runtime.js'
+import {
+  discoverDshRuntimeNodeModulesDirectory,
+  discoverDshRuntimePackage,
+  discoverDshRuntimePackageFromNodeModulesDirectory,
+} from '../src/dsh-runtime.js'
 
 describe('DSH runtime dependency discovery', () => {
   it('finds the node_modules directory beside the exact DSH CLI package', async () => {
@@ -20,6 +24,16 @@ describe('DSH runtime dependency discovery', () => {
         discoverDshRuntimeNodeModulesDirectory(join(dshRoot, 'lib', 'bin.js')),
         await realpath(join(root, 'node_modules')),
       )
+      assert.deepEqual(discoverDshRuntimePackage(join(dshRoot, 'lib', 'bin.js')), {
+        ecosystem: 'npm',
+        name: '@deepseek-ai/dsh',
+        version: '0.1.0-rc.6',
+      })
+      assert.deepEqual(discoverDshRuntimePackageFromNodeModulesDirectory(join(root, 'node_modules')), {
+        ecosystem: 'npm',
+        name: '@deepseek-ai/dsh',
+        version: '0.1.0-rc.6',
+      })
     } finally {
       await rm(root, { recursive: true, force: true })
     }
@@ -34,6 +48,7 @@ describe('DSH runtime dependency discovery', () => {
       await writeFile(join(packageRoot, 'lib', 'bin.js'), '')
 
       assert.equal(discoverDshRuntimeNodeModulesDirectory(join(packageRoot, 'lib', 'bin.js')), undefined)
+      assert.equal(discoverDshRuntimePackage(join(packageRoot, 'lib', 'bin.js')), undefined)
       assert.equal(discoverDshRuntimeNodeModulesDirectory(join(root, 'missing.js')), undefined)
     } finally {
       await rm(root, { recursive: true, force: true })

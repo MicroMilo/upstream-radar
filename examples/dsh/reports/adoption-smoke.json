@@ -10,13 +10,18 @@
   "setup": {
     "status": "completed",
     "graphSource": "installed-node-modules",
+    "dshRuntimePackage": {
+      "ecosystem": "npm",
+      "name": "@deepseek-ai/dsh",
+      "version": "0.1.0-rc.6"
+    },
     "dependencyNodes": 28,
     "dshHostPackages": 22,
     "optionalDependenciesNotInstalled": 7
   },
   "check": {
-    "packagesQueried": 24,
-    "releasePackagesQueried": 15,
+    "packagesQueried": 25,
+    "releasePackagesQueried": 16,
     "events": 0,
     "sourceErrors": 0,
     "activeVulnerabilities": 0

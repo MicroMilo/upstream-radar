@@ -38,6 +38,35 @@ describe('Radar event rendering', () => {
     assert.match(output, /Next: Review @deepseek-ai\/dsh-agent@0\.1\.0-rc\.6 fixed version\(s\) 0\.2\.0 with the DSH Agent before changing the plugin\./)
   })
 
+  it('labels a DSH-core finding that has no plugin dependency edge', () => {
+    const event: VulnerabilityEvent = {
+      schema: 'upstream-radar.event/v1alpha1',
+      id: 'event-dsh-core',
+      incidentId: 'incident-dsh-core',
+      kind: 'vulnerability',
+      change: 'new',
+      detectedAt: '2026-08-16T01:00:00.000Z',
+      project: { id: 'demo', name: 'Demo' },
+      route: { channels: ['stdout'] },
+      plugin: { ecosystem: 'npm', name: 'demo-plugin', version: '1.0.0' },
+      affected: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
+      affectedSources: ['dsh-host'],
+      paths: [[{ ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' }]],
+      advisory: {
+        id: 'GHSA-dsh-core-demo',
+        aliases: [],
+        summary: 'DSH core demo advisory',
+        details: 'Demo details',
+        severity: 'high',
+        modified: '2026-08-16T01:00:00.000Z',
+        fixedVersions: ['0.1.0-rc.7'],
+        references: [],
+      },
+    }
+    const output = renderRadarEvent(event)
+    assert.match(output, /Path note: this one-node path is the exact DSH host-runtime boundary, not a plugin dependency edge\./)
+  })
+
   it('renders a top-level candidate that removes all checked vulnerability paths', () => {
     const candidate = {
       candidate: { ecosystem: 'npm' as const, name: 'demo-plugin', version: '1.3.0' },

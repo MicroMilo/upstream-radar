@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { renderAgentAnalysisGroupPrompt, renderAgentAnalysisPrompt } from './dsh-analysis.js'
-import { discoverDshRuntimeNodeModulesDirectory } from './dsh-runtime.js'
+import { discoverDshRuntimeNodeModulesDirectory, discoverDshRuntimePackage } from './dsh-runtime.js'
 import { GitHubReleaseClient } from './github-release.js'
 import { parseRadarConfig } from './inventory.js'
 import { refreshRadarConfigFromDshProfile } from './init.js'
@@ -124,7 +124,9 @@ function taskSummary(task: AnalysisTask): string {
 }
 
 function isDshRuntimePackage(name: string): boolean {
-  return name === '@deepseek-ai/cordis' || name.startsWith('@deepseek-ai/dsh-')
+  return name === '@deepseek-ai/dsh'
+    || name === '@deepseek-ai/cordis'
+    || name.startsWith('@deepseek-ai/dsh-')
 }
 
 /** Keep independent state incidents, but combine one project's DSH runtime updates into one Agent notice. */
@@ -538,6 +540,9 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
   const dshHostNodeModulesDirectory = config.profile === undefined || config.refreshProfile === false
     ? undefined
     : discoverDshRuntimeNodeModulesDirectory()
+  const dshHostRuntimePackage = config.profile === undefined || config.refreshProfile === false
+    ? undefined
+    : discoverDshRuntimePackage()
   if (dshHostNodeModulesDirectory !== undefined) {
     ctx.logger.info('upstream-radar: DSH runtime dependency plane discovered for exact graph refresh')
   }
@@ -577,6 +582,7 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
               dshHostNodeModulesDirectory === undefined ? {} : {
                 hostNodeModulesDirectory: dshHostNodeModulesDirectory,
                 hostRuntimeSource: 'dsh-process',
+                ...(dshHostRuntimePackage === undefined ? {} : { hostRuntimePackage: dshHostRuntimePackage }),
               },
             )
           if (radarConfig !== configured && JSON.stringify(radarConfig.projects) !== JSON.stringify(configured.projects)) {

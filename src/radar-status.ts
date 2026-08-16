@@ -111,7 +111,8 @@ function sourceLabel(source: RadarSource): string {
 }
 
 function isDshHostDependency(name: string): boolean {
-  return name === '@deepseek-ai/cordis'
+  return name === '@deepseek-ai/dsh'
+    || name === '@deepseek-ai/cordis'
     || name.startsWith('@deepseek-ai/cordis-plugin-')
     || name.startsWith('@deepseek-ai/dsh-')
 }

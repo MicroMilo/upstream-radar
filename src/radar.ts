@@ -349,6 +349,10 @@ export async function pollRadar(
         const item = coordinate(node.name, node.version)
         uniquePackages.set(packageKey(item), item)
       }
+      const hostRuntimePackage = plugin.graph.hostRuntime?.package
+      if (hostRuntimePackage !== undefined) {
+        uniquePackages.set(packageKey(hostRuntimePackage), hostRuntimePackage)
+      }
     }
   }
   let matches = new Map<string, AdvisoryMatch[]>()
@@ -379,13 +383,39 @@ export async function pollRadar(
         const groupedPaths = new Map<string, PackageCoordinate[][]>()
         const groupedMatch = new Map<string, AdvisoryMatch>()
         const groupedSources = new Map<string, Set<DependencySource>>()
-        for (const node of plugin.graph.nodes) {
+        const hostRuntimePackage = plugin.graph.hostRuntime?.package
+        const hasHostRuntimeNode = hostRuntimePackage !== undefined
+          && plugin.graph.nodes.some(node => (
+            node.name === hostRuntimePackage.name
+            && node.version === hostRuntimePackage.version
+            && node.source === 'dsh-host'
+          ))
+        const monitoredNodes = hostRuntimePackage === undefined || hasHostRuntimeNode
+          ? plugin.graph.nodes.map(node => ({ node, hostRuntimeBoundary: false }))
+          : [
+              ...plugin.graph.nodes.map(node => ({ node, hostRuntimeBoundary: false })),
+              // The DSH executable is a runtime boundary, not a dependency edge
+              // in the plugin graph. Keep it as a synthetic observation so its
+              // direct advisory can still be routed without inventing topology.
+              {
+                node: {
+                  id: `dsh-host/runtime/${hostRuntimePackage.name}@${hostRuntimePackage.version}`,
+                  name: hostRuntimePackage.name,
+                  version: hostRuntimePackage.version,
+                  source: 'dsh-host' as const,
+                },
+                hostRuntimeBoundary: true,
+              },
+            ]
+        for (const { node, hostRuntimeBoundary } of monitoredNodes) {
           const affected = coordinate(node.name, node.version)
           for (const match of matches.get(packageKey(affected)) ?? []) {
             const key = matchKey(inventory, plugin.package, affected, match.advisory.id)
-            const paths = findDependencyPaths(plugin.graph, node.id).map(path => (
-              path.map(item => coordinate(item.name, item.version))
-            ))
+            const paths = hostRuntimeBoundary
+              ? [[affected]]
+              : findDependencyPaths(plugin.graph, node.id).map(path => (
+                  path.map(item => coordinate(item.name, item.version))
+                ))
             if (paths.length === 0) continue
             const existing = groupedPaths.get(key) ?? []
             const known = new Set(existing.map(path => JSON.stringify(path)))
@@ -464,8 +494,14 @@ export async function pollRadar(
     for (const inventory of inventories) {
       for (const plugin of inventory.plugins) {
         releasePackages.set(packageKey(plugin.package), plugin.package)
+        const hostRuntimePackage = plugin.graph.hostRuntime?.package
+        if (hostRuntimePackage !== undefined) {
+          releasePackages.set(packageKey(hostRuntimePackage), hostRuntimePackage)
+        }
         for (const node of plugin.graph.nodes) {
-          if (!(node.name.startsWith('@deepseek-ai/dsh-') || node.name === '@deepseek-ai/cordis')) continue
+          if (!(node.name === '@deepseek-ai/dsh'
+            || node.name.startsWith('@deepseek-ai/dsh-')
+            || node.name === '@deepseek-ai/cordis')) continue
           const item = coordinate(node.name, node.version)
           releasePackages.set(packageKey(item), item)
         }

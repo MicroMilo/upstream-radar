@@ -341,6 +341,11 @@ snapshots:
         name: '@deepseek-ai/dsh-agent',
         version: '0.1.4',
       }))
+      await mkdir(join(hostNodeModules, '@deepseek-ai', 'dsh'), { recursive: true })
+      await writeFile(join(hostNodeModules, '@deepseek-ai', 'dsh', 'package.json'), JSON.stringify({
+        name: '@deepseek-ai/dsh',
+        version: '0.1.0-rc.6',
+      }))
 
       const config = await createRadarConfigFromDshProfile({
         profileDirectory: profile,
@@ -355,7 +360,11 @@ snapshots:
         hostRuntimeSource: 'dsh-process',
       })
       const graph = refreshed.projects[0]?.plugins[0]?.graph
-      assert.deepEqual(graph?.hostRuntime, { source: 'dsh-process', resolvedNodes: 1 })
+      assert.deepEqual(graph?.hostRuntime, {
+        source: 'dsh-process',
+        resolvedNodes: 1,
+        package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
+      })
       assert.deepEqual(graph?.nodes.find(node => node.name === '@deepseek-ai/dsh-agent'), {
         id: 'dsh-host/node_modules/@deepseek-ai/dsh-agent',
         name: '@deepseek-ai/dsh-agent',

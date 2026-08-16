@@ -5,11 +5,13 @@ import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
 import { inspectNpmPackage, type InspectNpmOptions } from './npm.js'
 import { parseInstalledNodeModulesGraph } from './installed-graph.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
+import { discoverDshRuntimePackageFromNodeModulesDirectory } from './dsh-runtime.js'
 import {
   INVENTORY_SCHEMA,
   RADAR_CONFIG_SCHEMA,
   type DependencyGraph,
   type DependencyHostRuntimeSource,
+  type PackageCoordinate,
   type PackageManifestSnapshot,
   type PluginInstallation,
   type RadarConfig,
@@ -44,6 +46,8 @@ export interface DshInitOptions {
   /** Optional DSH process dependency plane discovered without importing DSH code. */
   hostNodeModulesDirectory?: string
   hostRuntimeSource?: DependencyHostRuntimeSource
+  /** Exact DSH executable package owning the shared host plane. */
+  hostRuntimePackage?: PackageCoordinate
 }
 
 export interface PnpmLockInitOptions {
@@ -215,6 +219,8 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
   const inspect = options.inspect ?? inspectNpmPackage
   const hostNodeModulesDirectory = options.hostNodeModulesDirectory ?? join(dirname(profileDirectory), 'node_modules')
   const hostRuntimeSource = options.hostRuntimeSource ?? 'dsh-profile-fallback'
+  const hostRuntimePackage = options.hostRuntimePackage
+    ?? discoverDshRuntimePackageFromNodeModulesDirectory(hostNodeModulesDirectory)
   const plugins: PluginInstallation[] = []
   for (const packageName of bundles) {
     if (isDshInfrastructure(packageName)) continue
@@ -236,6 +242,7 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
           // into every profile.
           hostNodeModulesDirectory,
           hostRuntimeSource,
+          ...(hostRuntimePackage === undefined ? {} : { hostRuntimePackage }),
         })
     if (graph === undefined) throw new Error(`could not resolve the exact dependency graph for ${manifest.name}@${manifest.version}`)
     plugins.push({
@@ -321,7 +328,7 @@ export async function refreshRadarConfigFromDshProfile(
   config: RadarConfig,
   profile: string,
   dshHome?: string,
-  options: Pick<DshInitOptions, 'hostNodeModulesDirectory' | 'hostRuntimeSource'> = {},
+  options: Pick<DshInitOptions, 'hostNodeModulesDirectory' | 'hostRuntimeSource' | 'hostRuntimePackage'> = {},
 ): Promise<RadarConfig> {
   if (config.dshProfile?.name !== profile) return config
   if (config.projects.length !== 1) throw new Error('DSH profile refresh requires exactly one configured project')

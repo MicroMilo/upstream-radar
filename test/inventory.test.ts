@@ -69,11 +69,13 @@ describe('radar inventory parsing', () => {
     candidate.projects[0]!.plugins[0]!.graph.hostRuntime = {
       source: 'dsh-process',
       resolvedNodes: 3,
+      package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
     }
     const parsed = parseRadarConfig(candidate)
     assert.deepEqual(parsed.projects[0]?.plugins[0]?.graph.hostRuntime, {
       source: 'dsh-process',
       resolvedNodes: 3,
+      package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
     })
   })
 
