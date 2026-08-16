@@ -489,11 +489,13 @@ The Action packs the exact package with `--ignore-scripts`, runs `probe dsh-matr
 
 For a runnable consumer example using the real [`dsh-cloudflare-browser-run@0.1.1`](examples/github-actions/consumer/upstream-radar.config.json) graph, see the [consumer smoke README](examples/github-actions/consumer/README.md) and its [copyable workflow](examples/github-actions/consumer/upstream-radar.yml).
 
-Run the same released Action locally from this repository with:
+Run the consumer path locally from this repository with:
 
 ```bash
 pnpm run try:consumer
 ```
+
+This builds the current checkout and runs the same frozen consumer check with the local CLI, so it also works before the next npm version is published. To deliberately verify the public npm artifact instead, run `pnpm run try:consumer:published`; it resolves the package version in `package.json` from npm and should only be used after that version exists publicly.
 
 For a local or self-hosted DSH machine, omit `--frozen` so Radar refreshes the selected profile before each cycle. Use `--fail-on` or `--fail-on-compatibility` only with `radar check`, `radar status`, or `radar watch --once`; a long-running watch should continue routing incidents instead of terminating on the first one.
 

@@ -491,11 +491,13 @@ Action 会用 `--ignore-scripts` 打包精确 npm 版本，运行 `probe dsh-mat
 
 如果想先跑一个真实消费者样例，可以参考使用真实 [`dsh-cloudflare-browser-run@0.1.1`](../examples/github-actions/consumer/upstream-radar.config.json) 依赖图的[consumer smoke 说明](../examples/github-actions/consumer/README.md)和[可复制 workflow](../examples/github-actions/consumer/upstream-radar.yml)。
 
-在本仓库中也可以直接运行同一个已发布 Action：
+在本仓库中也可以直接运行同一条 consumer 检查路径：
 
 ```bash
 pnpm run try:consumer
 ```
+
+它会先构建当前 checkout，再用本地 CLI 执行同一份冻结检查，所以候选版本还没有发布到 npm 时也能运行。要明确验证公开 npm 包，再运行 `pnpm run try:consumer:published`；它会从 npm 获取 `package.json` 中的版本，只有该版本已经公开发布后才应该使用。
 
 在本地或自托管 DSH 机器上不要加 `--frozen`，这样 Radar 会在每轮检查前刷新选中的 profile。`--fail-on` 和 `--fail-on-compatibility` 适用于一次性 `radar check`、`radar status` 或 `radar watch --once`；长期运行的 watch 不应该因为第一次告警就退出。
 
