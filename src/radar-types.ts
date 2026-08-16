@@ -413,6 +413,8 @@ export interface RadarState {
   webhook?: WebhookDeliveryState
   /** Per-incident delivery mutes; active evidence remains in the state and status view. */
   incidentMutes?: Record<string, RadarIncidentMute>
+  /** Human follow-up state; the event id prevents an old decision from covering a new fact. */
+  incidentTriage?: Record<string, RadarIncidentTriage>
 }
 
 export interface RadarIncidentMute {
@@ -420,6 +422,21 @@ export interface RadarIncidentMute {
   eventId: string
   /** An explicit future expiry; mutes never persist indefinitely. */
   mutedUntil: string
+}
+
+export type RadarIncidentTriageStatus = 'open' | 'in-progress' | 'blocked' | 'accepted-risk'
+
+export interface RadarIncidentTriage {
+  /** The exact event version the person reviewed. */
+  eventId: string
+  /** Human workflow state; this never claims that the upstream finding is resolved. */
+  status: RadarIncidentTriageStatus
+  /** Team, person, or queue responsible for the next action. */
+  owner?: string
+  /** Short context for the handoff or risk decision. */
+  note?: string
+  /** When this follow-up record was last changed. */
+  updatedAt: string
 }
 
 export interface WebhookDeliveryState {

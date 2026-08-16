@@ -200,6 +200,16 @@ upstream-radar mute './upstream-radar.config.json.state.json' '<事件 ID>' \
 
 这只会暂停 DSH 和 Webhook 投递；活动事件、精确依赖路径、历史和状态仍然保留，到期后自动恢复。`radar next` 会显示对应的 `unmute` 命令。事件版本一旦更新，新的事实会重新投递，不会被旧静音吞掉。critical 漏洞和恶意包需要显式加 `--force` 才能静音。
 
+还可以把这条事件交给具体的人或团队：
+
+```bash
+upstream-radar triage './upstream-radar.config.json.state.json' '<事件 ID>' \
+  --status in-progress --owner security-team \
+  --note '排查 parser 的输入路径'
+```
+
+状态可以是 `open`、`in-progress`、`blocked` 或 `accepted-risk`；后两种必须填写备注。这只是团队交接记录，不会把仍然活动的漏洞标成已解决，也不会隐藏证据。记录绑定到精确事件 ID，漏洞事实更新后必须重新确认；`radar status` 和 `radar next` 会显示当前负责人和备注。
+
 ---
 
 普通漏洞源到“某个包有问题”就结束了。Upstream Radar 会继续找到实际安装的依赖路径，维护一个可持续更新的事件，再把带有项目证据的调查任务交给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent。

@@ -331,6 +331,20 @@ upstream-radar mute './upstream-radar.config.json.state.json' \
 
 The DSH task and webhook delivery stay queued, while `radar status` and `radar next` continue to show the active path and the expiry. At expiry, delivery resumes automatically. If Radar observes a new event version first, that new event is delivered immediately because the mute is bound to the old event id. `unmute` resumes delivery early; critical and malware events require `--force` to mute.
 
+## Scene 21 — hand off one incident without pretending it is fixed
+
+After `radar next` identifies the incident to handle, record the human owner and current work state next to that exact event version:
+
+```bash
+upstream-radar triage './upstream-radar.config.json.state.json' \
+  '<incident-id-from-radar-next>' \
+  --status in-progress \
+  --owner security-team \
+  --note 'Trace the parser input path'
+```
+
+The allowed states are `open`, `in-progress`, `blocked`, and `accepted-risk`; the last two require a note. The record is only a handoff note: the active vulnerability, evidence, DSH task, and delivery policy remain unchanged. When an advisory changes and Radar creates a new event id, the old follow-up is ignored and `radar next` asks for a fresh review. This keeps a stale “accepted risk” from silently covering a newly published upstream fact.
+
 ## Live sources
 
 The fixture isolates behavior from network timing. Production cycles use:

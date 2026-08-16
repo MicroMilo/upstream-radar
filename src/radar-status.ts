@@ -2,6 +2,7 @@ import type {
   CompatibilityEvent,
   RadarConfig,
   RadarEvent,
+  RadarIncidentTriage,
   RadarSeverity,
   RadarSource,
   RadarState,
@@ -39,6 +40,7 @@ export interface RadarStatusIncident {
   nextStep: string
   triage?: RadarStatusTriage
   mutedUntil?: string
+  followUp?: RadarIncidentTriage
 }
 
 export interface RadarStatusSource {
@@ -96,6 +98,7 @@ export interface RadarNextReport {
   nextCommand: string
   acknowledgeCommand?: string
   unmuteCommand?: string
+  triageCommand?: string
 }
 
 export interface CreateRadarStatusOptions {
@@ -272,18 +275,22 @@ function compareActiveIncidents(left: RadarStatusIncident, right: RadarStatusInc
     || left.incidentId.localeCompare(right.incidentId)
 }
 
-function statusIncidentWithMute(event: RadarEvent, state: RadarState, now: Date): RadarStatusIncident {
+function statusIncidentWithState(event: RadarEvent, state: RadarState, now: Date): RadarStatusIncident {
   const incident = statusIncident(event, state)
   const mute = state.incidentMutes?.[event.incidentId]
-  if (mute === undefined || !isRadarIncidentMuted(state, event, now)) return incident
-  return { ...incident, mutedUntil: mute.mutedUntil }
+  const followUp = state.incidentTriage?.[event.incidentId]
+  return {
+    ...incident,
+    ...(mute === undefined || !isRadarIncidentMuted(state, event, now) ? {} : { mutedUntil: mute.mutedUntil }),
+    ...(followUp === undefined || followUp.eventId !== event.id ? {} : { followUp }),
+  }
 }
 
 function activeIncidentSummary(state: RadarState, now: Date): { incidents: RadarStatusIncident[]; overflow: number } {
   const all = [
-    ...Object.values(state.activeVulnerabilities).map(item => statusIncidentWithMute(item.event, state, now)),
-    ...Object.values(state.activeCompatibility).map(item => statusIncidentWithMute(item.event, state, now)),
-    ...Object.values(state.activeSourceHealth ?? {}).map(item => statusIncidentWithMute(item.event, state, now)),
+    ...Object.values(state.activeVulnerabilities).map(item => statusIncidentWithState(item.event, state, now)),
+    ...Object.values(state.activeCompatibility).map(item => statusIncidentWithState(item.event, state, now)),
+    ...Object.values(state.activeSourceHealth ?? {}).map(item => statusIncidentWithState(item.event, state, now)),
   ].sort(compareActiveIncidents)
   const incidents = all.slice(0, 32)
   return { incidents, overflow: all.length - incidents.length }
@@ -380,6 +387,9 @@ export function createRadarNext(report: RadarStatusReport, state: RadarState): R
   const verifiedAnalysis = activeIncident === undefined
     ? undefined
     : state.analysisResults?.[activeIncident.incidentId]
+  const triageCommand = activeIncident === undefined || activeIncident.followUp !== undefined
+    ? undefined
+    : `upstream-radar triage ${shellArgument(report.stateFile)} ${shellArgument(activeIncident.incidentId)} --status in-progress`
   const nextCommand = activeIncident === undefined
     ? `upstream-radar radar check ${shellArgument(report.configFile)}`
     : verifiedAnalysis !== undefined
@@ -406,6 +416,7 @@ export function createRadarNext(report: RadarStatusReport, state: RadarState): R
     ...(activeIncident?.mutedUntil === undefined ? {} : {
       unmuteCommand: `upstream-radar unmute ${shellArgument(report.stateFile)} ${shellArgument(activeIncident.incidentId)}`,
     }),
+    ...(triageCommand === undefined ? {} : { triageCommand }),
   }
 }
 
@@ -427,6 +438,18 @@ function hostRuntimeSourceLabel(source: DependencyHostRuntimeSource): string {
 function renderTriage(triage: RadarStatusTriage | undefined): string | undefined {
   if (triage === undefined) return undefined
   return renderVulnerabilityPriority(triage)
+}
+
+function triageStatusLabel(status: RadarIncidentTriage['status']): string {
+  if (status === 'in-progress') return 'in progress'
+  if (status === 'accepted-risk') return 'accepted risk'
+  return status
+}
+
+function renderIncidentFollowUp(followUp: RadarIncidentTriage): string {
+  const owner = followUp.owner === undefined ? '' : `; owner: ${display(followUp.owner)}`
+  const note = followUp.note === undefined ? '' : `; note: ${display(followUp.note, 1_024)}`
+  return `${triageStatusLabel(followUp.status)}${owner}${note}`
 }
 
 /** Render the status snapshot for a human checking the first run. */
@@ -474,6 +497,9 @@ export function renderRadarStatus(report: RadarStatusReport): string {
       ...(incident.mutedUntil === undefined ? [] : [
         `    Delivery: muted until ${display(incident.mutedUntil)}; active evidence remains visible`,
       ]),
+      ...(incident.followUp === undefined ? [] : [
+        `    Follow-up: ${renderIncidentFollowUp(incident.followUp)}`,
+      ]),
       `    Next: ${display(incident.nextStep)}`,
     )
   }
@@ -520,8 +546,14 @@ export function renderRadarNext(report: RadarNextReport): string {
     ...(incident.mutedUntil === undefined ? [] : [
       `Delivery: muted until ${display(incident.mutedUntil)}; active evidence remains visible`,
     ]),
+    ...(incident.followUp === undefined ? [] : [
+      `Follow-up: ${renderIncidentFollowUp(incident.followUp)}`,
+    ]),
     `Next step: ${display(incident.nextStep)}`,
   )
+  if (incident.followUp === undefined && report.triageCommand !== undefined) {
+    lines.push(`Follow-up: open; record an owner/status with: ${report.triageCommand}`)
+  }
   if (report.pendingAnalysisTaskId !== undefined) {
     lines.push(`DSH follow-up: queued (${display(report.pendingAnalysisTaskId)})`)
   } else if (report.verifiedAnalysis !== undefined) {

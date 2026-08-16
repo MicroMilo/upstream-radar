@@ -243,6 +243,8 @@ export {
   type ProjectReference,
   type RadarEvent,
   type RadarIncidentMute,
+  type RadarIncidentTriage,
+  type RadarIncidentTriageStatus,
   type RadarConfig,
   type RadarNotificationPolicy,
   type RadarSource,

@@ -65,6 +65,7 @@
   - [x] Keep held DSH tasks and webhook events durable so policy changes do not lose evidence.
   - [x] Expose the common notification controls through `setup` and every `init` mode without requiring manual JSON edits.
   - [x] Add bounded per-incident delivery mutes with explicit expiry, exact event-version matching, and an immediate `unmute` command.
+  - [x] Add per-incident follow-up status, owner, and handoff note bound to the exact event version; keep it separate from delivery suppression and resolution.
   - [ ] Add explicit owner routing and maintenance-window/dev-only scopes beyond quiet hours.
 - [x] Keep a bounded local transition history for new, updated, and resolved/source-health states, with a read-only `radar history` query.
 

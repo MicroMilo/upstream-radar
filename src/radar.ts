@@ -1204,6 +1204,7 @@ export async function pollRadar(
       activeSourceHealth,
       history,
       ...(previousState.incidentMutes === undefined ? {} : { incidentMutes: previousState.incidentMutes }),
+      ...(previousState.incidentTriage === undefined ? {} : { incidentTriage: previousState.incidentTriage }),
     },
   }
 }

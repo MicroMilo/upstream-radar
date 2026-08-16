@@ -39,7 +39,14 @@ import { renderTextReport } from './render.js'
 import { scanDirectory } from './scan.js'
 import { CisaKevClient, EpssClient } from './threat-intel.js'
 import type { Verdict } from './types.js'
-import type { RadarEvent, RadarNotificationPolicy, RadarSeverity, RadarState } from './radar-types.js'
+import type {
+  RadarEvent,
+  RadarIncidentTriage,
+  RadarIncidentTriageStatus,
+  RadarNotificationPolicy,
+  RadarSeverity,
+  RadarState,
+} from './radar-types.js'
 import { TOOL_VERSION } from './version.js'
 import {
   markRadarWebhookEventsDelivered,
@@ -348,6 +355,17 @@ malware incidents require --force.
 Usage:
   upstream-radar unmute <state.json> <incident-id> [--json]
 `,
+    triage: `Upstream Radar — record human follow-up for one active incident
+
+Usage:
+  upstream-radar triage <state.json> <incident-id>
+    --status <open|in-progress|blocked|accepted-risk>
+    [--owner <name>] [--note <text>] [--json]
+
+This records ownership and work context without resolving, hiding, or changing
+the deterministic incident. A new event version requires a fresh follow-up.
+Blocked and accepted-risk states require a note.
+`,
   }
   return help[key]
 }
@@ -395,6 +413,7 @@ Usage:
   upstream-radar analysis show <state.json> [incident-id] [--json]
   upstream-radar mute <state.json> <incident-id> --until <ISO-8601> [--force] [--json]
   upstream-radar unmute <state.json> <incident-id> [--json]
+  upstream-radar triage <state.json> <incident-id> --status <open|in-progress|blocked|accepted-risk> [--owner <name>] [--note <text>] [--json]
   upstream-radar version
 
 Commands:
@@ -413,6 +432,7 @@ Commands:
   analysis inspect verified DSH conclusions stored in the Radar state
   mute     pause delivery for one incident with a bounded expiry
   unmute   resume delivery for one incident immediately
+  triage   record owner, work status, and handoff note for one incident
 
 Options:
   --deep               resolve the dependency graph with scripts disabled and ask npm to verify signatures/provenance
@@ -590,6 +610,12 @@ async function runTask(args: readonly string[]): Promise<number> {
 }
 
 const MAX_INCIDENT_MUTE_MS = 30 * 24 * 60 * 60 * 1_000
+const VALID_INCIDENT_TRIAGE_STATUSES = new Set<RadarIncidentTriageStatus>([
+  'open',
+  'in-progress',
+  'blocked',
+  'accepted-risk',
+])
 
 function activeEventForIncident(state: RadarState, incidentId: string): RadarEvent | undefined {
   return [
@@ -671,6 +697,75 @@ async function runIncidentUnmute(args: readonly string[]): Promise<number> {
   process.stdout.write(json
     ? `${JSON.stringify(result, null, 2)}\n`
     : `Resumed delivery for ${safeErrorMessage(incidentId)}.\n`)
+  return 0
+}
+
+async function runIncidentTriage(args: readonly string[]): Promise<number> {
+  const statePath = args[0]
+  const incidentId = args[1]
+  if (statePath === undefined || statePath.startsWith('-')) throw new Error('triage requires a state file')
+  if (incidentId === undefined || incidentId.startsWith('-')) throw new Error('triage requires an incident id')
+  let statusValue: string | undefined
+  let ownerValue: string | undefined
+  let noteValue: string | undefined
+  let json = false
+  for (let index = 2; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === undefined) throw new Error('triage received an incomplete option')
+    if (argument === '--json') json = true
+    else if (argument === '--status' || argument === '--owner' || argument === '--note') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
+      if (argument === '--status') statusValue = value
+      else if (argument === '--owner') ownerValue = value
+      else noteValue = value
+      index += 1
+    } else if (argument.startsWith('-')) {
+      throw new Error(`unknown option for triage: ${argument}`)
+    } else {
+      throw new Error(`triage received unexpected argument: ${argument}`)
+    }
+  }
+  if (statusValue === undefined) throw new Error('triage requires --status <open|in-progress|blocked|accepted-risk>')
+  if (!VALID_INCIDENT_TRIAGE_STATUSES.has(statusValue as RadarIncidentTriageStatus)) {
+    throw new Error(`invalid triage --status value: ${statusValue}`)
+  }
+  const status = statusValue as RadarIncidentTriageStatus
+  const owner = ownerValue?.trim()
+  const note = noteValue?.trim()
+  if (ownerValue !== undefined && (owner === undefined || owner.length === 0)) throw new Error('--owner cannot be empty')
+  if (owner !== undefined && owner.length > 512) throw new Error('--owner must be 512 characters or fewer')
+  if (noteValue !== undefined && (note === undefined || note.length === 0)) throw new Error('--note cannot be empty')
+  if (note !== undefined && note.length > 2_048) throw new Error('--note must be 2048 characters or fewer')
+
+  const state = await loadRadarState(statePath)
+  const event = activeEventForIncident(state, incidentId)
+  if (event === undefined) throw new Error(`active incident not found: ${incidentId}`)
+  const previous = state.incidentTriage?.[incidentId]
+  const inherited = previous?.eventId === event.id ? previous : undefined
+  const recordNote = note ?? inherited?.note
+  if ((status === 'blocked' || status === 'accepted-risk') && recordNote === undefined) {
+    throw new Error(`triage status ${status} requires --note <text>`)
+  }
+  const recordOwner = owner ?? inherited?.owner
+  const record: RadarIncidentTriage = {
+    eventId: event.id,
+    status,
+    updatedAt: new Date().toISOString(),
+    ...(recordOwner === undefined ? {} : { owner: recordOwner }),
+    ...(recordNote === undefined ? {} : { note: recordNote }),
+  }
+  await saveRadarState(statePath, {
+    ...state,
+    incidentTriage: {
+      ...(state.incidentTriage ?? {}),
+      [incidentId]: record,
+    },
+  })
+  const result = { incidentId, ...record }
+  process.stdout.write(json
+    ? `${JSON.stringify(result, null, 2)}\n`
+    : `Recorded ${status} follow-up for ${safeErrorMessage(incidentId)}${record.owner === undefined ? '' : ` (owner: ${safeErrorMessage(record.owner)})`}.\n`)
   return 0
 }
 
@@ -1535,6 +1630,7 @@ async function main(args: readonly string[]): Promise<number> {
   if (command === 'analysis') return runAnalysis(args.slice(1))
   if (command === 'mute') return runIncidentMute(args.slice(1))
   if (command === 'unmute') return runIncidentUnmute(args.slice(1))
+  if (command === 'triage') return runIncidentTriage(args.slice(1))
   if (command !== 'scan' && command !== 'inspect') throw new Error(`unknown command: ${command}`)
 
   const target = args[1]

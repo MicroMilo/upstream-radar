@@ -6,6 +6,7 @@ All notable changes to Upstream Radar are documented here.
 
 ### Added
 
+- Add per-incident follow-up records with owner, status, and handoff notes bound to the exact event version; show a copyable `triage` command in `radar next` without resolving or suppressing the active evidence.
 - Make `radar next` show a verified DSH conclusion's urgency, recommendation, and bounded evidence inline, so the first action does not require opening a second report.
 - Add bounded per-incident `mute`/`unmute` controls for DSH and webhook delivery, keep muted incidents visible in `radar status`/`radar next`, preserve mutes across polling, and automatically resume delivery when the exact event version expires or changes.
 - Add an independent GitHub Advisory Database source for exact npm versions, merge OSV/GHSA/CVE duplicates into one durable incident, retain confirmed findings during a source outage, and expose per-source health through CLI and DSH.

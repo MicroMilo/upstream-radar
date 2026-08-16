@@ -208,6 +208,16 @@ upstream-radar mute './upstream-radar.config.json.state.json' '<incident-id>' \
 
 This pauses only DSH and webhook delivery. The active incident, exact dependency path, history, and status remain visible; the mute expires automatically, and `radar next` prints the matching `unmute` command. A later event version is delivered again, so muting an old fact cannot hide a new fact. Critical and malware incidents require an explicit `--force`.
 
+Record the human handoff next to the same incident:
+
+```bash
+upstream-radar triage './upstream-radar.config.json.state.json' '<incident-id>' \
+  --status in-progress --owner security-team \
+  --note 'Trace the parser input path'
+```
+
+The available states are `open`, `in-progress`, `blocked`, and `accepted-risk`. `blocked` and `accepted-risk` require a note. This is workflow context only: it never marks an active vulnerability resolved or suppresses its evidence. The record is bound to the exact event id, so an updated upstream fact requires a fresh review; `radar status` and `radar next` show the current owner and note.
+
 ---
 
 A vulnerability feed stops at “package X is affected.” Upstream Radar keeps going: it identifies the exact installed dependency path, maintains one durable incident, and wakes a [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent with the project evidence needed for a useful investigation.

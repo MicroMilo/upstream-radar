@@ -318,6 +318,28 @@ function validIncidentMutes(value: unknown): boolean {
   })
 }
 
+function validIncidentTriage(value: unknown): boolean {
+  if (value === undefined) return true
+  const triage = asRecord(value)
+  if (triage === undefined || Object.keys(triage).length > 100_000) return false
+  const statuses = new Set(['open', 'in-progress', 'blocked', 'accepted-risk'])
+  return Object.entries(triage).every(([incidentId, rawRecord]) => {
+    const record = asRecord(rawRecord)
+    if (record === undefined) return false
+    const expectedKeys = new Set(['eventId', 'status', 'updatedAt', ...(record.owner === undefined ? [] : ['owner']), ...(record.note === undefined ? [] : ['note'])])
+    if (Object.keys(record).length !== expectedKeys.size || Object.keys(record).some(key => !expectedKeys.has(key))) return false
+    const note = record.note
+    return incidentId.length > 0 && incidentId.length <= 512
+      && typeof record.eventId === 'string' && record.eventId.length > 0 && record.eventId.length <= 512
+      && typeof record.status === 'string' && statuses.has(record.status)
+      && typeof record.updatedAt === 'string' && record.updatedAt.length > 0 && record.updatedAt.length <= 256
+      && Number.isFinite(Date.parse(record.updatedAt))
+      && (record.owner === undefined || (typeof record.owner === 'string' && record.owner.length > 0 && record.owner.length <= 512))
+      && (note === undefined || (typeof note === 'string' && note.length > 0 && note.length <= 2_048))
+      && ((record.status !== 'blocked' && record.status !== 'accepted-risk') || note !== undefined)
+  })
+}
+
 function validHistoryEvent(value: unknown): boolean {
   const event = asRecord(value)
   const project = asRecord(event?.project)
@@ -396,6 +418,9 @@ export function parseRadarState(value: unknown): RadarState {
   }
   if (!validIncidentMutes(root.incidentMutes)) {
     throw new Error('radar state has an invalid incident mute map')
+  }
+  if (!validIncidentTriage(root.incidentTriage)) {
+    throw new Error('radar state has an invalid incident triage map')
   }
   if (Object.keys(sourceHealth).length > 10 || Object.keys(activeSourceHealth).length > 1_000_000) {
     throw new Error('radar state exceeds the source health limit')

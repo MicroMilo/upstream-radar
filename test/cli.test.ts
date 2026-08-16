@@ -645,6 +645,7 @@ snapshots:
       assert.match(next.stdout, /DSH follow-up: queued/)
       assert.match(next.stdout, new RegExp(`Next command: upstream-radar task show .*${task.id}`))
       assert.match(next.stdout, new RegExp(`After reviewing the task, acknowledge it with: upstream-radar task ack .*${task.id}`))
+      assert.match(next.stdout, /Follow-up: open; record an owner\/status with: upstream-radar triage/)
       const nextJson = spawnSync(process.execPath, [
         cli,
         'radar',
@@ -659,6 +660,37 @@ snapshots:
       assert.equal(nextReport.schema, 'upstream-radar.radar-next/v1alpha1')
       assert.equal(nextReport.activeIncident?.incidentId, event.incidentId)
       assert.equal(nextReport.pendingAnalysisTaskId, task.id)
+
+      const triaged = spawnSync(process.execPath, [
+        cli,
+        'triage',
+        stateFile,
+        event.incidentId,
+        '--status',
+        'in-progress',
+        '--owner',
+        'security-team',
+        '--note',
+        'Trace the parser input.',
+        '--json',
+      ], { encoding: 'utf8' })
+      assert.equal(triaged.status, 0)
+      const triageReport = JSON.parse(triaged.stdout) as {
+        incidentId: string
+        eventId: string
+        status: string
+        owner?: string
+        note?: string
+        updatedAt: string
+      }
+      assert.deepEqual(triageReport, {
+        incidentId: event.incidentId,
+        eventId: event.id,
+        status: 'in-progress',
+        owner: 'security-team',
+        note: 'Trace the parser input.',
+        updatedAt: triageReport.updatedAt,
+      })
 
       const muteUntil = new Date(Date.now() + 60 * 60 * 1_000).toISOString()
       const muted = spawnSync(process.execPath, [
@@ -688,6 +720,7 @@ snapshots:
       ], { encoding: 'utf8' })
       assert.equal(mutedNext.status, 0)
       assert.match(mutedNext.stdout, /Delivery: muted until/)
+      assert.match(mutedNext.stdout, /Follow-up: in progress; owner: security-team; note: Trace the parser input\./)
       assert.match(mutedNext.stdout, /To resume delivery: upstream-radar unmute/)
       const unmuted = spawnSync(process.execPath, [cli, 'unmute', stateFile, event.incidentId], { encoding: 'utf8' })
       assert.equal(unmuted.status, 0)

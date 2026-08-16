@@ -29,11 +29,25 @@ describe('radar state parsing', () => {
         mutedUntil: '2026-08-17T00:00:00.000Z',
       },
     }
+    state.incidentTriage = {
+      'incident-demo': {
+        eventId: 'event-demo',
+        status: 'in-progress',
+        owner: 'security-team',
+        note: 'Confirm the project call path.',
+        updatedAt: '2026-08-16T02:00:00.000Z',
+      },
+    }
     assert.deepEqual(parseRadarState(state), state)
 
     const invalid = structuredClone(state) as unknown as Record<string, any>
     invalid.incidentMutes['incident-demo'].mutedUntil = 'not-a-date'
     assert.throws(() => parseRadarState(invalid), /invalid incident mute map/)
+
+    const invalidTriage = structuredClone(state) as unknown as Record<string, any>
+    invalidTriage.incidentTriage['incident-demo'].status = 'accepted-risk'
+    delete invalidTriage.incidentTriage['incident-demo'].note
+    assert.throws(() => parseRadarState(invalidTriage), /invalid incident triage map/)
   })
 
   it('accepts a shared DSH host event with all affected plugin roots', () => {
