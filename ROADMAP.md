@@ -60,7 +60,7 @@
 - [ ] Ingest GitHub Security Advisories incrementally as a second source.
 - [ ] Enrich matched CVEs with CISA KEV and EPSS.
 - [ ] Deduplicate OSV, GHSA, CVE, and malicious-package aliases.
-- [ ] Detect when a previously unavailable fixed version is published.
+- [x] Detect when a previously unavailable fixed version is published and re-open the project analysis task.
 - [ ] Calculate whether a top-level plugin update actually removes every affected path.
 - [x] Persist per-source health, alert after three consecutive failures, and resolve the alert when the source recovers without asking the model to decide version applicability.
 - [ ] Detect conflicting source claims without asking the model to decide version applicability.

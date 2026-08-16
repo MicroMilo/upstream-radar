@@ -11,6 +11,7 @@ All notable changes to Upstream Radar are documented here.
 - Send changed-event text directly to Feishu/Lark V2 custom bots, with optional signature generation from an environment-only secret; keep the existing provider-neutral webhook envelope for other endpoints.
 - Extend the network-free `doctor` check to validate the environment webhook route before the first poll, reject retired Feishu/Lark V1 URLs, and warn about unused signing secrets without printing them.
 - Make the primary DSH quickstart omit `--profile` when the machine has exactly one eligible profile; keep the explicit flag for multi-profile installations.
+- Re-open a project-specific DSH analysis task when an existing advisory later gains its first fixed version, preserving the updated dependency evidence.
 
 ## [0.33.0] - 2026-08-16
 

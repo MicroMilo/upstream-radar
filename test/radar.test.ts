@@ -33,7 +33,7 @@ const inventory: ProjectInventory = {
   }],
 }
 
-function source(modified: string, active = true): AdvisorySource {
+function source(modified: string, active = true, fixedVersions = ['3.0.0']): AdvisorySource {
   return {
     async query(packages): Promise<Map<string, AdvisoryMatch[]>> {
       const results = new Map<string, AdvisoryMatch[]>()
@@ -49,7 +49,7 @@ function source(modified: string, active = true): AdvisorySource {
             severity: 'high',
             published: '2026-08-14T00:00:00.000Z',
             modified,
-            fixedVersions: ['3.0.0'],
+            fixedVersions,
             references: ['https://example.test/GHSA-demo'],
           },
         }])
@@ -118,6 +118,38 @@ describe('radar polling', () => {
     assert.equal(Object.keys(resolved.state.analysisResults ?? {}).length, 0)
     assert.equal(resolved.state.history?.length, 3)
     assert.deepEqual(resolved.state.history?.map(event => event.change), ['new', 'updated', 'resolved'])
+  })
+
+  it('reopens analysis when an advisory later publishes its first fixed version', async () => {
+    const first = await pollRadar(
+      [inventory],
+      emptyRadarState(),
+      source('2026-08-14T01:00:00.000Z', true, []),
+      new Date('2026-08-14T01:01:00.000Z'),
+    )
+    assert.equal(first.events[0]?.change, 'new')
+    assert.deepEqual(first.events[0]?.kind === 'vulnerability' ? first.events[0].advisory.fixedVersions : undefined, [])
+
+    const unchanged = await pollRadar(
+      [inventory],
+      first.state,
+      source('2026-08-14T01:00:00.000Z', true, []),
+      new Date('2026-08-14T02:01:00.000Z'),
+    )
+    assert.equal(unchanged.events.length, 0)
+
+    const fixed = await pollRadar(
+      [inventory],
+      unchanged.state,
+      source('2026-08-15T01:00:00.000Z', true, ['3.0.0']),
+      new Date('2026-08-15T01:01:00.000Z'),
+    )
+    assert.equal(fixed.events.length, 1)
+    assert.equal(fixed.events[0]?.change, 'updated')
+    assert.deepEqual(fixed.events[0]?.kind === 'vulnerability' ? fixed.events[0].advisory.fixedVersions : undefined, ['3.0.0'])
+    assert.equal(fixed.analysisTasks.length, 1)
+    assert.equal(fixed.state.pendingAnalysisTasks[0]?.event.change, 'updated')
+    assert.deepEqual(fixed.state.history?.map(event => event.change), ['new', 'updated'])
   })
 
   it('deduplicates and bounds the durable transition history', async () => {
