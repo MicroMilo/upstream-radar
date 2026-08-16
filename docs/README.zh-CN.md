@@ -15,6 +15,16 @@
   <a href="../LICENSE"><img alt="Apache-2.0 许可证" src="https://img.shields.io/badge/license-Apache--2.0-0f766e?style=flat-square"></a>
 </p>
 
+## 不确定从哪里开始？先运行 quickstart
+
+如果你还不知道当前项目应该走 DSH profile、锁文件，还是先看 demo，可以先运行只读引导：
+
+```bash
+npx --yes upstream-radar@latest quickstart
+```
+
+它只查看当前目录和本地 DSH profile 元数据，然后给出一条真实可复制的下一步路径。每条命令都会标明是只读、写本地文件，还是安装/启动；如果同时存在两种锁文件，或有多个可用 profile，它会停下来让你选择，不替你猜。quickstart 自身不会安装包、启动 DSH、请求漏洞源，也不会执行插件代码。需要给启动器或页面使用时加 `--json`。
+
 ## 先选最小入口
 
 | 你的目标 | 从这里开始 | 你会得到什么 |

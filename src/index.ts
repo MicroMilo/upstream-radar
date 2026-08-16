@@ -60,6 +60,16 @@ export {
 export { createAnalysisTask, renderAgentAnalysisGroupPrompt, renderAgentAnalysisPrompt, renderDshAnalysisPrompt } from './dsh-analysis.js'
 export { DEMO_SCHEMA, createDemoEvent, createDemoReport, renderDemo, type DemoReport } from './demo.js'
 export {
+  QUICKSTART_SCHEMA,
+  createQuickstartReport,
+  renderQuickstartReport,
+  type QuickstartEffect,
+  type QuickstartMode,
+  type QuickstartOptions,
+  type QuickstartReport,
+  type QuickstartStep,
+} from './quickstart.js'
+export {
   extractAnalysisTaskIds,
   parseAgentAnalysisResult,
   renderAnalysisTaskMarker,

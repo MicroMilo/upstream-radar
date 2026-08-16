@@ -178,6 +178,7 @@ async function checkPackContents() {
     'dist/src/dsh-plugin.js',
     'schemas/analysis-result.schema.json',
     'schemas/dsh-load-matrix.schema.json',
+    'schemas/quickstart.schema.json',
     'schemas/webhook.schema.json',
     'cordis.patch.yml',
     'README.md',

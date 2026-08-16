@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MicroMilo/upstream-radar/blob/main/schemas/quickstart.schema.json",
+  "title": "Upstream Radar quickstart report",
+  "description": "A read-only local path selector for the first Upstream Radar command.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "cwd", "mode", "evidence", "steps", "warnings"],
+  "properties": {
+    "schema": { "const": "upstream-radar.quickstart/v1alpha1" },
+    "cwd": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "mode": {
+      "enum": ["configured", "dsh", "choose-dsh-profile", "pnpm-lock", "npm-lock", "choose-lockfile", "demo"]
+    },
+    "evidence": { "$ref": "#/$defs/evidence" },
+    "steps": {
+      "type": "array",
+      "maxItems": 128,
+      "items": { "$ref": "#/$defs/step" }
+    },
+    "warnings": {
+      "type": "array",
+      "maxItems": 64,
+      "items": { "type": "string", "maxLength": 2048 }
+    }
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dshProfiles"],
+      "properties": {
+        "config": { "type": "string", "maxLength": 256 },
+        "pnpmLock": { "type": "string", "maxLength": 256 },
+        "npmLock": { "type": "string", "maxLength": 256 },
+        "dshProfiles": {
+          "type": "array",
+          "maxItems": 128,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+        }
+      }
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "command", "effect", "reason"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "command": { "type": "string", "minLength": 1, "maxLength": 8192 },
+        "effect": { "enum": ["read-only", "writes-local-files", "installs-and-writes", "installs-and-starts"] },
+        "reason": { "type": "string", "minLength": 1, "maxLength": 2048 }
+      }
+    }
+  }
+}

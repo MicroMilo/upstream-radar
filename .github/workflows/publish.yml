@@ -42,6 +42,7 @@ jobs:
       - run: pnpm run showcase:dsh-probe
       - run: pnpm run showcase:dsh-runtime
       - run: pnpm run showcase:dsh-host-alert
+      - run: pnpm run showcase:quickstart
       - run: pnpm run showcase:setup-start
       - run: pnpm run release:check
       - run: pnpm pack --pack-destination /tmp

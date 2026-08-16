@@ -20,6 +20,7 @@ import { NpmReleaseClient } from './npm-release.js'
 import { createNotificationPolicyMap, filterNotifiableRadarEvents } from './notification-policy.js'
 import { OsvClient } from './osv.js'
 import { verdictAtLeast } from './policy.js'
+import { createQuickstartReport, renderQuickstartReport } from './quickstart.js'
 import { emptyRadarState, pollRadar } from './radar.js'
 import {
   evaluateRadarPolicy,
@@ -226,6 +227,21 @@ Usage:
 The demo is network-free and uses only a local fixture. It does not inspect your
 repository, install a plugin, start DSH, or claim that its advisory is real.
 `,
+    quickstart: `Upstream Radar — choose the smallest honest first-use path
+
+Usage:
+  upstream-radar quickstart [directory] [--json]
+
+What it does:
+  Inspects only the selected directory and local DSH profile metadata. It finds
+  an existing Radar config, one supported lockfile, or eligible DSH profiles,
+  then prints the next commands in the right order.
+
+Safety:
+  This command never installs packages, starts DSH, queries vulnerability
+  sources, or executes plugin code. It does not choose between two lockfiles or
+  multiple DSH profiles on your behalf.
+`,
     benchmark: `Upstream Radar — run offline compatibility-rule contracts
 
 Usage:
@@ -335,6 +351,7 @@ Usage:
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar demo [--json]
+  upstream-radar quickstart [directory] [--json]
   upstream-radar benchmark compatibility [--json]
   upstream-radar radar check <config.json> [--state <state.json>] [--webhook <https-url>] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
   upstream-radar radar watch <config.json> [--state <state.json>] [--webhook <https-url>] [--interval <seconds>] [--once] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
@@ -357,6 +374,7 @@ Commands:
   graph    read a lockfile into the canonical dependency graph without installing packages
   probe    run a bounded DSH bundle-load check or version matrix in disposable profiles
   demo     show the exact-path-to-DSH handoff without network, DSH, or plugin installation
+  quickstart choose the smallest first-use path without changing the environment
   benchmark run offline compatibility-rule contracts without network or plugin execution
   radar    monitor vulnerability changes, watch continuously, inspect status/history, or assess a candidate compatibility change
   task     inspect or acknowledge the durable DSH analysis outbox
@@ -953,6 +971,25 @@ async function runRadar(args: readonly string[]): Promise<number> {
   return 0
 }
 
+async function runQuickstart(args: readonly string[]): Promise<number> {
+  let directory = process.cwd()
+  let json = false
+  let positional = false
+  for (const argument of args) {
+    if (argument === '--json') {
+      json = true
+      continue
+    }
+    if (argument.startsWith('-')) throw new Error(`unknown option for quickstart: ${argument}`)
+    if (positional) throw new Error('quickstart accepts at most one directory')
+    directory = argument
+    positional = true
+  }
+  const report = await createQuickstartReport(directory)
+  process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderQuickstartReport(report))
+  return 0
+}
+
 async function runSetup(args: readonly string[]): Promise<number> {
   let profile: string | undefined
   let output = 'upstream-radar.config.json'
@@ -1330,6 +1367,7 @@ async function main(args: readonly string[]): Promise<number> {
     process.stdout.write(`${TOOL_VERSION}\n`)
     return 0
   }
+  if (command === 'quickstart') return runQuickstart(args.slice(1))
   if (command === 'setup') return runSetup(args.slice(1))
   if (command === 'init') return runInit(args.slice(1))
   if (command === 'doctor') return runDoctor(args.slice(1))

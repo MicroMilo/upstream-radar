@@ -6,6 +6,7 @@ All notable changes to Upstream Radar are documented here.
 
 ### Added
 
+- Add a read-only `quickstart` CLI that detects an existing Radar config, a single supported lockfile, or eligible DSH profiles, then prints one honest copy/paste path with explicit side-effect labels; ambiguous profiles and lockfiles remain user decisions.
 - Coalesce the same shared DSH host-runtime vulnerability across all affected plugins in one project-level event, while retaining every plugin root and bounded exact path; migrate legacy per-plugin host keys without a fake resolve/new alert pair.
 - Show the complete affected plugin scope for shared-host events in GitHub Job Summaries, and run the host-alert deduplication showcase in CI and the publish preflight.
 - Walk the exact DSH executable package through a synthetic `host-runtime` boundary and its reachable host dependency closure, so advisories in DSH core's own transitive packages keep an exact path and source attribution instead of disappearing outside the plugin graph.

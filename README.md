@@ -25,6 +25,16 @@
   <a href="ROADMAP.md">Roadmap</a>
 </p>
 
+## Start without guessing
+
+If you are not sure whether this project should use a DSH profile, a lockfile, or the packaged demo, run the read-only guide first:
+
+```bash
+npx --yes upstream-radar@latest quickstart
+```
+
+It looks only at the current directory and local DSH profile metadata. It recommends one of the real paths below, labels every suggested command as read-only, local-file creation, or install/start, and refuses to choose between two lockfiles or multiple DSH profiles. The guide itself never installs packages, starts DSH, queries vulnerability sources, or executes plugin code. Use `--json` to feed the result into a setup page or internal launcher.
+
 ## Choose the smallest path
 
 | Your goal | Start here | What you get |
