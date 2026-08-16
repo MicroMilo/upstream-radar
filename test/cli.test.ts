@@ -336,6 +336,31 @@ snapshots:
     }
   })
 
+  it('explains when setup needs an explicit profile in a multi-profile DSH home', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-setup-multiple-profiles-'))
+    try {
+      const dshHome = join(root, 'dsh-home')
+      for (const profileName of ['api', 'web']) {
+        const profile = join(dshHome, 'profiles', profileName)
+        await mkdir(profile, { recursive: true })
+        await writeFile(join(profile, 'package.json'), JSON.stringify({
+          name: `dsh-profile-${profileName}`,
+          dsh: { profile: { bundles: ['demo-plugin'] } },
+        }))
+      }
+
+      const result = spawnSync(process.execPath, [cli, 'setup'], {
+        encoding: 'utf8',
+        cwd: root,
+        env: { ...process.env, DSH_HOME: dshHome },
+      })
+      assert.equal(result.status, 1)
+      assert.match(result.stderr, /multiple DSH profiles with third-party bundles \(api, web\); pass --profile <name>/)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
   it('rejects unknown options instead of silently weakening a scan', () => {
     const result = spawnSync(process.execPath, [cli, 'scan', fixture, '--jsno'], { encoding: 'utf8' })
     assert.equal(result.status, 1)
