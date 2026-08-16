@@ -3,7 +3,7 @@
 import process from 'node:process'
 import { spawnSync } from 'node:child_process'
 import { access, readFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { renderCompatibilityBenchmark, runCompatibilityBenchmark } from './compatibility-benchmark.js'
 import { assessCompatibilityChange } from './compatibility.js'
 import { probeDshLoad, probeDshLoadMatrix, renderDshLoadMatrix, renderDshLoadProbe } from './dsh-probe.js'
@@ -62,7 +62,7 @@ function usage(): string {
 Usage:
   upstream-radar setup [--profile <name>] [options]
   upstream-radar init [--profile <name>] [options]
-  upstream-radar init --pnpm-lock <pnpm-lock.yaml> --root <package>@<exact-version> [options]
+  upstream-radar init --pnpm-lock <pnpm-lock.yaml> [--root <package>@<exact-version>] [options]
   upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
@@ -109,7 +109,7 @@ Options:
   --notes <path>       release notes used as untrusted compatibility evidence
   --profile <name>     DSH profile for init or doctor (init auto-selects the only candidate when omitted)
   --pnpm-lock <path>   init: build a static inventory from a pnpm v6/v9 lockfile
-  --root <coordinate>  init --pnpm-lock: exact package root, for example @scope/plugin@1.0.0
+  --root <coordinate>  init --pnpm-lock: override the root; otherwise read package.json beside the lockfile
   --no-install          setup: reuse an already installed upstream-radar bundle
   --output <path>      init output path (default: ./upstream-radar.config.json)
   --dsh-patch <path>   write a self-contained DSH --patch overlay (setup default: ./upstream-radar.dsh.yml)
@@ -132,6 +132,19 @@ function parseExactPackageCoordinate(value: string): { name: string; version: st
   const version = value.slice(at + 1)
   if (name.startsWith('@') && !name.includes('/')) throw new Error(`--root must include a scoped package name: ${value}`)
   return { name, version }
+}
+
+async function inferPnpmRoot(lockfile: string): Promise<{ name: string; version: string }> {
+  const manifestPath = join(dirname(resolve(lockfile)), 'package.json')
+  try {
+    const manifest = parsePackageManifestSnapshot(await readJson(manifestPath))
+    return { name: manifest.name, version: manifest.version }
+  } catch (error: unknown) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      throw new Error(`could not infer the pnpm lockfile root from ${manifestPath}; pass --root <package>@<exact-version>`)
+    }
+    throw error
+  }
 }
 
 async function runGraph(args: readonly string[]): Promise<number> {
@@ -750,8 +763,9 @@ async function runInit(args: readonly string[]): Promise<number> {
     if (profile !== undefined || dshPatch !== undefined || registry !== undefined) {
       throw new Error('init --pnpm-lock does not accept --profile, --dsh-patch or --registry')
     }
-    if (rootSpec === undefined) throw new Error('init --pnpm-lock requires --root <package>@<exact-version>')
-    const root = parseExactPackageCoordinate(rootSpec)
+    const root = rootSpec === undefined
+      ? await inferPnpmRoot(pnpmLockPath)
+      : parseExactPackageCoordinate(rootSpec)
     const config = await createRadarConfigFromPnpmLock({
       lockfile: pnpmLockPath,
       root,

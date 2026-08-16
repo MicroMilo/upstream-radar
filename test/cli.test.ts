@@ -21,7 +21,7 @@ describe('CLI option parsing', () => {
     assert.equal(help.status, 0)
     assert.match(help.stdout, /setup \[--profile <name>\]/)
     assert.match(help.stdout, /doctor \[config\.json\]/)
-    assert.match(help.stdout, /init --pnpm-lock <pnpm-lock\.yaml> --root <package>@<exact-version>/)
+    assert.match(help.stdout, /init --pnpm-lock <pnpm-lock\.yaml> \[--root <package>@<exact-version>\]/)
     assert.match(help.stdout, /--pnpm-lock <path>\s+init: build a static inventory from a pnpm v6\/v9 lockfile/)
     assert.match(help.stdout, /radar watch <config\.json>/)
     assert.match(help.stdout, /radar status <config\.json>/)
@@ -158,6 +158,10 @@ describe('CLI option parsing', () => {
     try {
       const lockfile = join(root, 'pnpm-lock.yaml')
       const config = join(root, 'upstream-radar.config.json')
+      await writeFile(join(root, 'package.json'), JSON.stringify({
+        name: 'demo-plugin',
+        version: '1.0.0',
+      }))
       await writeFile(lockfile, `
 lockfileVersion: '9.0'
 
@@ -183,8 +187,6 @@ snapshots:
         'init',
         '--pnpm-lock',
         lockfile,
-        '--root',
-        'demo-plugin@1.0.0',
         '--output',
         config,
         '--project-name',
@@ -200,6 +202,24 @@ snapshots:
       assert.equal(saved.dshProfile, undefined)
       assert.equal(saved.projects[0]?.plugins[0]?.graph.source, 'pnpm-lock')
       assert.equal(saved.projects[0]?.plugins[0]?.graph.nodes.length, 2)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('requires an explicit root when a lockfile has no adjacent package manifest', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-pnpm-root-cli-'))
+    try {
+      const lockfile = join(root, 'pnpm-lock.yaml')
+      await writeFile(lockfile, "lockfileVersion: '9.0'\n")
+      const result = spawnSync(process.execPath, [
+        cli,
+        'init',
+        '--pnpm-lock',
+        lockfile,
+      ], { encoding: 'utf8', cwd: root })
+      assert.equal(result.status, 1)
+      assert.match(result.stderr, /could not infer the pnpm lockfile root from .*package\.json; pass --root <package>@<exact-version>/)
     } finally {
       await rm(root, { recursive: true, force: true })
     }

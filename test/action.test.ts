@@ -16,6 +16,8 @@ describe('reusable GitHub Action', () => {
     assert.match(action, /Build Radar config from pnpm lockfile/)
     assert.match(action, /init --pnpm-lock "\$RADAR_LOCKFILE"/)
     assert.match(action, /--root "\$RADAR_ROOT"/)
+    assert.match(action, /root_args=\(\)/)
+    assert.doesNotMatch(action, /root is required when pnpm-lock is set/)
     assert.match(action, /if: inputs\.pnpm-lock != ''/)
     assert.match(action, /if: inputs\.pnpm-lock == ''/)
     assert.match(action, /runs:\n\s+using: composite/)

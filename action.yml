@@ -20,7 +20,7 @@ inputs:
     required: false
     default: ''
   root:
-    description: 'Exact package root used with pnpm-lock, for example @scope/plugin@1.0.0.'
+    description: 'Optional exact package root override for pnpm-lock, for example @scope/plugin@1.0.0; otherwise read package.json beside the lockfile.'
     required: false
     default: ''
   fail-on:
@@ -101,13 +101,13 @@ runs:
         RADAR_VERSION: ${{ inputs.version }}
       run: |
         set -euo pipefail
-        if [[ -z "$RADAR_ROOT" ]]; then
-          echo 'root is required when pnpm-lock is set; use an exact package coordinate such as @scope/plugin@1.0.0' >&2
-          exit 1
+        root_args=()
+        if [[ -n "$RADAR_ROOT" ]]; then
+          root_args=(--root "$RADAR_ROOT")
         fi
         pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar \
           init --pnpm-lock "$RADAR_LOCKFILE" \
-          --root "$RADAR_ROOT" \
+          "${root_args[@]}" \
           --output "$RADAR_CONFIG" \
           --force
     - name: Check generated pnpm DSH graph

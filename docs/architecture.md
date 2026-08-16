@@ -52,7 +52,7 @@ For a real DSH profile, initialization follows the installed `node_modules` reso
 
 The pre-install `graph pnpm-lock` command uses a bounded, dependency-free parser for pnpm v6/v9 lockfile package and snapshot sections. It can synthesize a project root from the `importers` section when the root package itself is not a snapshot, and it resolves peer-context suffixes only when the lockfile identifies one exact target. A missing or ambiguous target stays unresolved. It does not run pnpm, install hooks, plugin code, or network requests; its output uses the same canonical graph shape as the installed and npm-lock collectors, so a CI job can inspect the graph before DSH admission.
 
-`init --pnpm-lock <path> --root <name>@<version>` wraps that collector in a normal static Radar config. The config can be passed to `radar check` or `radar watch`, which then uses the same exact-version OSV matching and durable event lifecycle as an installed DSH profile. This keeps the pre-install path useful for plugin authors and CI without pretending that it has already loaded the plugin into DSH.
+`init --pnpm-lock <path>` wraps that collector in a normal static Radar config. When `package.json` is beside the lockfile, the CLI reads the exact root name and version from it; `--root <name>@<version>` remains an explicit override for another workspace root. The config can be passed to `radar check` or `radar watch`, which then uses the same exact-version OSV matching and durable event lifecycle as an installed DSH profile. This keeps the pre-install path useful for plugin authors and CI without pretending that it has already loaded the plugin into DSH.
 
 ## Vulnerability cycle
 

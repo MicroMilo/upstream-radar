@@ -118,6 +118,8 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar check \
 
 `init --pnpm-lock` 不需要 DSH profile，只会生成普通 Radar 配置；`radar check` 随后查询锁定的精确版本，并产生与 DSH 监控相同的事件格式。插件真正安装进 DSH、需要交给在线 Agent 做项目分析时，再使用原生 DSH 的 `setup` 路径。运行 `pnpm run showcase:pnpm-lock:monitor` 可以本地看到从锁文件到 OSV 漏洞事件的完整链路。
 
+如果 `package.json` 与 `pnpm-lock.yaml` 在同一目录，`--root` 可以省略，Radar 会从 manifest 读取精确的包名和版本。锁文件来自其他 workspace，或你希望明确指定接入坐标时，再传入 `--root`。
+
 ## 先看一个真实事件
 
 同一个插件里安装了两个 `parser` 版本，而公告只影响其中一个时，Radar 会报告真正命中的路径：
@@ -303,7 +305,7 @@ steps:
     fail-on: high
 ```
 
-这个模式会先执行 `init --pnpm-lock --root`，再执行同一个 frozen 检查。它不会安装项目，也不会执行插件；`config` 是生成文件的路径（默认 `upstream-radar.config.json`）。不填写 `pnpm-lock` 就仍然使用上面的已审查配置模式。
+这个模式会先执行 `init --pnpm-lock`，再执行同一个 frozen 检查。`root` 在锁文件旁有 `package.json` 时可以省略；如果是其他 workspace 或希望显式指定根包，也可以传入它。它不会安装项目，也不会执行插件；`config` 是生成文件的路径（默认 `upstream-radar.config.json`）。不填写 `pnpm-lock` 就仍然使用上面的已审查配置模式。
 
 调用方需要先 checkout 仓库。这个 Action 不会安装项目依赖，也不会执行项目的 lifecycle script；它只读取提交到仓库的依赖图并查询配置中的上游漏洞源。如果需要完全显式的底层命令，等价写法是：
 
@@ -409,7 +411,7 @@ DSH Agent 收到的任务要求：只读分析、引用项目证据、保留不�
 
 `init` 在省略 `--profile` 时可以自动选择唯一一个含第三方 bundle 的 DSH profile；多个候选仍要求显式指定。默认读取实际安装树，因此 pnpm override 和本地解析选择会被纳入；`graph pnpm-lock` 是独立的安装前/CI 图采集入口，本身不会查询 OSV，也不会生成 Radar 配置。加上 `--dsh-patch <path>` 可以生成不依赖环境变量的 DSH overlay。`radar status` 提供离线的首次运行检查、活动事件摘要、等待中的投递和已验证结论，还会显示宿主依赖图是否来自正在运行的 DSH 进程；但不会替你刷新漏洞源，也不会自动升级插件。暂未支持 Yarn 图适配、changelog/比较 diff/迁移文档源，以及自动创建 Issue 或 PR。多 root Agent 场景下，只有 `project.workspace` 与 DSH 会话的 `cwd` 精确一致才会投递；无法确认时任务会留在队列中。
 
-`init --pnpm-lock <path> --root <name>@<version>` 是不依赖 DSH profile 的静态配置入口；之后可用 `radar check` 或 `radar watch` 查询 OSV。它不会启动 DSH，也不会自己投递 Agent 任务。
+`init --pnpm-lock <path>` 是不依赖 DSH profile 的静态配置入口；默认读取锁文件旁的 `package.json`，也可以用 `--root <name>@<version>` 覆盖。之后可用 `radar check` 或 `radar watch` 查询 OSV。它不会启动 DSH，也不会自己投递 Agent 任务。
 
 `radar watch` 是 CLI 监控入口，本身不会把任务投递给 DSH；需要 Agent 分析时应使用原生 DSH bundle。
 
