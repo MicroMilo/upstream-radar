@@ -63,6 +63,17 @@ npx --yes upstream-radar@latest demo
 
 它会打印一条准确的传递依赖路径、独立漏洞源证据（包括明确标出的来源冲突）、只读 DSH Agent 交接任务和下一步安装命令。它只使用本地 fixture，不会读取你的仓库、安装插件，也不声称 demo 公告是真实漏洞；需要机器可读结果时加 `--json`。
 
+它的核心结果大致是这样（demo 使用本地 fixture，省略了部分字段）：
+
+```text
+[HIGH][NEW] 依赖漏洞
+受影响：parser@2.9.0
+路径：demo-plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
+下一步：让当前项目里的 DSH Agent 判断实际影响，再决定是否升级。
+```
+
+真正有用的不是再列一遍“哪些包有漏洞”，而是指出准确路径，并给出结合当前项目的下一步。
+
 已经试过 demo 或真实 DSH 配置？可以[分享一条试用结果](https://github.com/MicroMilo/upstream-radar/issues/new?template=trial.yml)，只需填写版本、入口和脱敏后的结果。不要提交源码、密钥或私有路径。
 
 每个命令都有自己的短帮助：不确定从哪里开始时，可以先运行 `npx --yes upstream-radar@latest setup --help`、`npx --yes upstream-radar@latest inspect --help` 或 `npx --yes upstream-radar@latest radar status --help`。

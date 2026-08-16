@@ -68,6 +68,18 @@ npx --yes upstream-radar@latest demo
 
 It prints one exact transitive path, independent advisory-source evidence (including an explicit source conflict), the read-only DSH Agent handoff, and the next setup command. It uses a local fixture only; it does not inspect your repository, install a plugin, or claim that the demo advisory is real. Use `--json` when you want the same proof as a machine-readable artifact.
 
+The core result looks like this (the demo uses a local fixture; fields are abbreviated):
+
+```text
+[HIGH][NEW] Dependency vulnerability
+Affected: parser@2.9.0
+Paths:
+  demo-plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
+Next: Review the fixed version with the DSH Agent in this project.
+```
+
+The useful part is the exact path and project-specific next step—not another generic list of vulnerable package names.
+
 Tried the demo or a real DSH setup? [Share a short trial result](https://github.com/MicroMilo/upstream-radar/issues/new?template=trial.yml) with the versions, path, and redacted outcome. Never include source code, secrets, or private paths.
 
 Every command has its own short guide: `npx --yes upstream-radar@latest setup --help`, `npx --yes upstream-radar@latest inspect --help`, and `npx --yes upstream-radar@latest radar status --help` are useful starting points when you are not sure which path to choose.
