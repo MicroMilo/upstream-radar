@@ -11,6 +11,7 @@ import type {
   VulnerabilityEvent,
 } from './radar-types.js'
 import { countPolicyHeldAnalysisTasks, createNotificationPolicyMap } from './notification-policy.js'
+import { renderVulnerabilityPriority, vulnerabilityPriority, type VulnerabilityPriorityEvidence } from './vulnerability-priority.js'
 
 export const RADAR_STATUS_SCHEMA = 'upstream-radar.radar-status/v1alpha1' as const
 
@@ -25,12 +26,7 @@ export type RadarCoverageStatus = 'complete' | 'incomplete'
  * Missing fields mean that Radar did not retain that signal; they are not a
  * claim that the incident is safe.
  */
-export interface RadarStatusTriage {
-  severity: RadarSeverity
-  knownExploited?: true
-  epssScore?: number
-  epssPercentile?: number
-}
+export interface RadarStatusTriage extends VulnerabilityPriorityEvidence {}
 
 export interface RadarStatusIncident {
   incidentId: string
@@ -160,18 +156,6 @@ function analysisNextStep(state: RadarState, incidentId: string, fallback: strin
   return `DSH analysis: ${display(result.project_exposure)} (${display(result.confidence)} confidence); ${display(result.recommended_action, 2_048)}`
 }
 
-function vulnerabilityTriage(event: VulnerabilityEvent): RadarStatusTriage {
-  const signals = event.advisory.riskSignals
-  return {
-    severity: event.kind === 'malware' ? 'critical' : event.advisory.severity,
-    ...(signals?.cisaKev === undefined ? {} : { knownExploited: true as const }),
-    ...(signals?.epss === undefined ? {} : {
-      epssScore: signals.epss.score,
-      epssPercentile: signals.epss.percentile,
-    }),
-  }
-}
-
 function vulnerabilityStatusIncident(event: VulnerabilityEvent, state: RadarState): RadarStatusIncident {
   const firstPath = event.paths[0]
   const path = firstPath === undefined
@@ -189,7 +173,7 @@ function vulnerabilityStatusIncident(event: VulnerabilityEvent, state: RadarStat
       project: display(event.project.name),
       summary,
       nextStep: analysisNextStep(state, event.incidentId, `Remove or isolate ${vulnerabilityPluginScope(event)}, then ask the DSH Agent to assess project exposure.`),
-      triage: vulnerabilityTriage(event),
+      triage: vulnerabilityPriority(event),
     }
   }
   const fixedVersions = event.advisory.fixedVersions.slice(0, 4).map(item => display(item)).join(', ')
@@ -202,7 +186,7 @@ function vulnerabilityStatusIncident(event: VulnerabilityEvent, state: RadarStat
     nextStep: analysisNextStep(state, event.incidentId, fixedVersions.length === 0
       ? `No published fix is recorded; ask the DSH Agent to assess containment or replacement for ${vulnerabilityPluginScope(event)}.`
       : `Review ${event.affected.name} fixed version(s) ${fixedVersions} with the DSH Agent before changing the plugin.`),
-    triage: vulnerabilityTriage(event),
+    triage: vulnerabilityPriority(event),
   }
 }
 
@@ -373,12 +357,7 @@ function hostRuntimeSourceLabel(source: DependencyHostRuntimeSource): string {
 
 function renderTriage(triage: RadarStatusTriage | undefined): string | undefined {
   if (triage === undefined) return undefined
-  const details = [
-    ...(triage.knownExploited === true ? ['CISA KEV known exploited'] : []),
-    ...(triage.epssScore === undefined ? [] : [`EPSS ${(triage.epssScore * 100).toFixed(1)}%`]),
-    `severity ${triage.severity}`,
-  ]
-  return details.join('; ')
+  return renderVulnerabilityPriority(triage)
 }
 
 /** Render the status snapshot for a human checking the first run. */

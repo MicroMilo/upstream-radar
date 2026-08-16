@@ -9,6 +9,7 @@ import type {
   VulnerabilityEvent,
 } from './radar-types.js'
 import { WEBHOOK_DELIVERY_SCHEMA, type WebhookDeliveryState } from './radar-types.js'
+import { renderVulnerabilityPriority, vulnerabilityPriority } from './vulnerability-priority.js'
 
 export const RADAR_WEBHOOK_SCHEMA = 'upstream-radar.webhook/v1alpha1' as const
 
@@ -94,13 +95,7 @@ function pathLabels(paths: readonly PackageCoordinate[][]): string[][] {
 }
 
 function advisoryRiskSummary(event: VulnerabilityEvent): string {
-  const parts = [
-    ...(event.advisory.riskSignals?.cisaKev === undefined ? [] : ['CISA KEV: known exploited']),
-    ...(event.advisory.riskSignals?.epss === undefined ? [] : [
-      `EPSS: ${(event.advisory.riskSignals.epss.score * 100).toFixed(1)}% estimated exploitation probability`,
-    ]),
-  ]
-  return parts.length === 0 ? '' : ` [${parts.join('; ')}]`
+  return ` [priority: ${renderVulnerabilityPriority(vulnerabilityPriority(event))}]`
 }
 
 function vulnerabilityNotice(event: VulnerabilityEvent): RadarWebhookEventNotice {

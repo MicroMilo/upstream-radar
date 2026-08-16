@@ -307,7 +307,9 @@ The optional webhook path is provider-neutral and does not require a real Feishu
 pnpm run showcase:webhook
 ```
 
-The deterministic receiver proves one delivery, duplicate suppression, retry after a failed request, that the persisted ledger contains only an endpoint fingerprint—not the URL or token, and that a Feishu V2 endpoint receives a native signed text body instead of the generic envelope. Production DSH runs opt in with `UPSTREAM_RADAR_WEBHOOK_URL`; set `UPSTREAM_RADAR_FEISHU_SECRET` when Feishu signature validation is enabled. CLI runs can pass the same HTTPS endpoint with `radar check/watch --webhook`.
+The deterministic receiver proves one delivery, duplicate suppression, retry after a failed request, that the persisted ledger contains only an endpoint fingerprint—not the URL or token, and that a Feishu V2 endpoint receives a native signed text body instead of the generic envelope. Its local vulnerability fixture also prints the exact Feishu text priority hint (`CISA KEV known exploited; EPSS 97.2%; severity high`). Production DSH runs opt in with `UPSTREAM_RADAR_WEBHOOK_URL`; set `UPSTREAM_RADAR_FEISHU_SECRET` when Feishu signature validation is enabled. CLI runs can pass the same HTTPS endpoint with `radar check/watch --webhook`.
+
+For vulnerability events, the human-readable text carries one consistent handling hint: known exploitation in CISA KEV first, then EPSS, then advisory severity. It is a prioritization aid; it does not replace the exact dependency match or the DSH Agent's project analysis.
 
 ## Live sources
 

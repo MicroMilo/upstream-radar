@@ -150,7 +150,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar watch \
   ./upstream-radar.config.json --webhook "$UPSTREAM_RADAR_WEBHOOK_URL"
 ```
 
-Webhook 只发送 `new`、`updated`、`resolved` 变化（包括漏洞源健康变化），格式是有界的 `upstream-radar.webhook/v1alpha1` JSON，具体字段见[schema](../schemas/webhook.schema.json)。收到 HTTP 2xx 后才记录事件 id；请求失败会在下一轮继续重试。状态文件只保存 endpoint 的 SHA-256 指纹、发送记录，以及等待重试或等待安静时段结束的有界事件副本，不保存 URL 或 token。普通 HTTPS 接口仍然收到供应商无关的 JSON，可以由 relay 转成飞书或 Slack 卡片；如果使用飞书/Lark V2 自定义机器人，Radar 会识别 `/open-apis/bot/v2/hook/` 地址并直接发送原生文本消息：
+Webhook 只发送 `new`、`updated`、`resolved` 变化（包括漏洞源健康变化），格式是有界的 `upstream-radar.webhook/v1alpha1` JSON，具体字段见[schema](../schemas/webhook.schema.json)。收到 HTTP 2xx 后才记录事件 id；请求失败会在下一轮继续重试。状态文件只保存 endpoint 的 SHA-256 指纹、发送记录，以及等待重试或等待安静时段结束的有界事件副本，不保存 URL 或 token。漏洞摘要会和 `radar status` 使用同一行优先级证据——CISA KEV、EPSS、严重度——因此飞书消息不需要团队再次解释哪一条先处理。普通 HTTPS 接口仍然收到供应商无关的 JSON，可以由 relay 转成飞书或 Slack 卡片；如果使用飞书/Lark V2 自定义机器人，Radar 会识别 `/open-apis/bot/v2/hook/` 地址并直接发送原生文本消息：
 
 ```bash
 export UPSTREAM_RADAR_WEBHOOK_URL='https://open.feishu.cn/open-apis/bot/v2/hook/替换成真实 token'
@@ -509,7 +509,7 @@ steps:
       threat-intel: true
 ```
 
-这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --fail-on-compatibility breaking --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。`threat-intel` 默认是 `false`，这样普通 CI 门禁不会因为额外查询变重；设置为 `true` 后，Job Summary 和原始 JSON 会包含 CISA KEV 与 FIRST EPSS 的优先级证据。每次运行彼此独立；发现达到阈值的漏洞或选择的兼容性变化时返回 `2`，运行或漏洞源出错时返回 `1`。`breaking` 只拦截有 confirmed/strong 信号的兼容性事件，`any` 会拦截所有活动兼容性事件，默认值是 `never`。除了原始 JSON 日志，Action 还会把经过转义的简短摘要写入 GitHub Job Summary，定时任务失败时可以直接看到受影响的包、准确依赖路径、已经发布的修复版本（如果有）、请求的优先级信号和建议的下一步。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.33.0` 的发布标签，并根据团队策略固定 checkout Action。
+这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --fail-on-compatibility breaking --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。`threat-intel` 默认是 `false`，这样普通 CI 门禁不会因为额外查询变重；设置为 `true` 后，Job Summary 和原始 JSON 会包含 CISA KEV 与 FIRST EPSS 的优先级证据。每次运行彼此独立；发现达到阈值的漏洞或选择的兼容性变化时返回 `2`，运行或漏洞源出错时返回 `1`。`breaking` 只拦截有 confirmed/strong 信号的兼容性事件，`any` 会拦截所有活动兼容性事件，默认值是 `never`。除了原始 JSON 日志，Action 还会把经过转义的简短摘要写入 GitHub Job Summary，定时任务失败时可以直接看到受影响的包、准确依赖路径、已经发布的修复版本（如果有）、一行优先级证据和建议的下一步。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.33.0` 的发布标签，并根据团队策略固定 checkout Action。
 
 如果仓库还没有提交 Radar 配置，最短接入方式是省略 `config`、`pnpm-lock` 和 `npm-lock`。checkout 之后，Action 会自动使用唯一存在的 `pnpm-lock.yaml` 或 `package-lock.json`，生成临时的审查清单，再执行同一个 frozen 检查：
 

@@ -84,7 +84,7 @@ describe('webhook delivery', () => {
       epss: { score: 0.97224, percentile: 0.99999, date: '2026-08-16' },
     })
     assert.match(notice?.summary ?? '', /across 2 DSH plugins/)
-    assert.match(notice?.summary ?? '', /CISA KEV: known exploited/)
+    assert.match(notice?.summary ?? '', /priority: CISA KEV known exploited; EPSS 97\.2%; severity high/)
   })
 
   it('accepts HTTPS provider URLs but never credentials or fragments', () => {

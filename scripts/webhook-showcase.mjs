@@ -27,6 +27,37 @@ const event = {
   error: 'deterministic showcase outage',
 }
 
+const priorityEvent = {
+  schema: 'upstream-radar.event/v1alpha1',
+  id: 'event-webhook-priority-showcase',
+  incidentId: 'project-showcase\u0000parser\u00002.9.0\u0000GHSA-priority-showcase',
+  kind: 'vulnerability',
+  change: 'new',
+  detectedAt: '2026-08-16T04:00:00.000Z',
+  project: { id: 'project-showcase', name: 'DSH showcase' },
+  route: { channels: ['feishu:security'] },
+  plugin: { ecosystem: 'npm', name: 'demo-plugin', version: '1.0.0' },
+  affected: { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+  paths: [[
+    { ecosystem: 'npm', name: 'demo-plugin', version: '1.0.0' },
+    { ecosystem: 'npm', name: 'parser', version: '2.9.0' },
+  ]],
+  advisory: {
+    id: 'GHSA-priority-showcase',
+    aliases: ['CVE-2026-1234'],
+    summary: 'Deterministic priority evidence showcase',
+    details: 'Local fixture only.',
+    severity: 'high',
+    modified: '2026-08-16T04:00:00.000Z',
+    fixedVersions: ['3.0.0'],
+    references: [],
+    riskSignals: {
+      cisaKev: { knownExploited: true },
+      epss: { score: 0.97224, percentile: 0.99999 },
+    },
+  },
+}
+
 const requests = []
 const feishuRequests = []
 let failNext = false
@@ -61,7 +92,7 @@ const retryStillPending = undeliveredRadarWebhookEvents(state, endpointHash, [re
 await sendRadarWebhook(endpoint, retryStillPending, { fetch: fetchStub })
 state = markRadarWebhookEventsDelivered(state, endpointHash, retryStillPending)
 
-await sendRadarWebhook(feishuEndpoint, [event], {
+await sendRadarWebhook(feishuEndpoint, [priorityEvent], {
   feishuSecret: 'showcase-secret',
   now: new Date('2026-08-16T04:02:00.000Z'),
   fetch: async (input, init) => {
@@ -86,6 +117,7 @@ process.stdout.write(`${JSON.stringify({
   },
   endpointUrlPersisted: JSON.stringify(state).includes('hooks.example.test'),
   payloadText: requests[0]?.payload.text,
+  priorityText: feishuRequests[0]?.payload.content?.text,
   feishuDirectDelivery: {
     nativeTextBody: feishuRequests[0]?.payload.msg_type === 'text',
     signatureIncluded: typeof feishuRequests[0]?.payload.sign === 'string',

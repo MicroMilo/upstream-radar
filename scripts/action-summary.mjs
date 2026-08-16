@@ -56,13 +56,17 @@ function advisoryEvidence(event) {
   const conflicts = Array.isArray(event?.advisory?.conflicts)
     ? event.advisory.conflicts.map(conflict => conflict?.field === 'severity' ? 'severity' : 'fixed versions').join(', ')
     : ''
+  const priority = [
+    ...(event?.advisory?.riskSignals?.cisaKev === undefined ? [] : ['CISA KEV known exploited']),
+    ...(event?.advisory?.riskSignals?.epss === undefined ? [] : [
+      `EPSS ${(Number(event.advisory.riskSignals.epss.score) * 100).toFixed(1)}%`,
+    ]),
+    `severity ${event?.kind === 'malware' ? 'critical' : String(event?.advisory?.severity ?? 'unknown')}`,
+  ]
   const parts = [
     ...(sources.length === 0 ? [] : [`sources: ${sources}`]),
     ...(conflicts.length === 0 ? [] : [`source conflict: ${conflicts}`]),
-    ...(event?.advisory?.riskSignals?.cisaKev === undefined ? [] : ['CISA KEV: known exploited']),
-    ...(event?.advisory?.riskSignals?.epss === undefined ? [] : [
-      `EPSS: ${(Number(event.advisory.riskSignals.epss.score) * 100).toFixed(1)}% estimated exploitation probability`,
-    ]),
+    `priority: ${priority.join('; ')}`,
   ]
   return parts.length === 0 ? '' : ` · ${text(parts.join('; '), 1_024)}`
 }

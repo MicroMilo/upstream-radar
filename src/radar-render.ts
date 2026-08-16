@@ -1,4 +1,5 @@
 import type { AdvisoryConflict, AdvisorySourceName, CompatibilityEvent, DependencySource, RadarEvent, VulnerabilityEvent } from './radar-types.js'
+import { renderVulnerabilityPriority, vulnerabilityPriority } from './vulnerability-priority.js'
 
 function display(value: string, max = 2_048): string {
   const escaped = value.replace(/[\u0000-\u001f\u007f-\u009f]/g, character => (
@@ -46,7 +47,7 @@ function advisoryConflictLabel(conflict: AdvisoryConflict): string {
 function advisoryRiskSignalLines(event: VulnerabilityEvent): string[] {
   const signals = event.advisory.riskSignals
   if (signals === undefined) return []
-  const lines: string[] = []
+  const lines: string[] = [`Priority for handling: ${renderVulnerabilityPriority(vulnerabilityPriority(event))}`]
   if (signals.cisaKev !== undefined) {
     lines.push('Threat signal: CISA KEV lists this CVE as exploited in the wild.')
     if (signals.cisaKev.dateAdded !== undefined) lines.push(`CISA KEV date added: ${display(signals.cisaKev.dateAdded)}`)

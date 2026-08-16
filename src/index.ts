@@ -159,6 +159,7 @@ export {
   type RadarHistoryReport,
 } from './radar-history.js'
 export { renderRadarEvent, renderRadarEvents } from './radar-render.js'
+export { renderVulnerabilityPriority, vulnerabilityPriority, type VulnerabilityPriorityEvidence } from './vulnerability-priority.js'
 export {
   createDoctorReport,
   renderDoctorReport,
