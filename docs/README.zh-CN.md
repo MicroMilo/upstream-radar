@@ -15,6 +15,15 @@
   <a href="../LICENSE"><img alt="Apache-2.0 许可证" src="https://img.shields.io/badge/license-Apache--2.0-0f766e?style=flat-square"></a>
 </p>
 
+<p align="center">
+  <picture>
+    <source media="(max-width: 600px)" srcset="assets/upstream-radar-hero-mobile.jpg">
+    <img src="assets/upstream-radar-hero.jpg" alt="Upstream Radar 监控依赖图，只高亮真正受影响的路径，并把一个信号交给 DSH Agent。" width="100%">
+  </picture>
+</p>
+
+<p align="center"><em>上游信号 → 精确安装路径 → 持久事件 → 面向项目的 DSH Agent 分析</em></p>
+
 ## 不确定从哪里开始？先运行 quickstart
 
 如果你还不知道当前项目应该走 DSH profile、锁文件，还是先看 demo，可以先运行只读引导：
@@ -153,13 +162,6 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
 ```
 
 `minimumSeverity` 只作用于漏洞通知；`critical` 漏洞和恶意包告警始终直接发送。`quietHours` 使用配置的 IANA 时区，也支持跨午夜的时间段。兼容性变化和漏洞源健康通知会遵守安静时段，但不会被漏洞严重级别阈值隐藏。启用策略后，DSH 任务仍留在持久 outbox 中，等可以发送时再交给 Agent；Webhook 也会保留待发送事件，便于重试或策略改变后补发。`radar status` 会显示当前有多少任务被策略暂缓。不写这段配置时，行为保持不变，所有通知都会发送。运行 `pnpm run showcase:notifications` 可以在不联网的情况下看到“暂缓、稍后发送、Webhook outbox 保留”的完整证明。
-
-<p align="center">
-  <picture>
-    <source media="(max-width: 600px)" srcset="assets/upstream-radar-hero-mobile.jpg">
-    <img src="assets/upstream-radar-hero.jpg" alt="Upstream Radar 监控依赖图，只高亮真正受影响的路径，并把一个信号交给 DSH Agent。" width="100%">
-  </picture>
-</p>
 
 ---
 

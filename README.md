@@ -16,6 +16,15 @@
 </p>
 
 <p align="center">
+  <picture>
+    <source media="(max-width: 600px)" srcset="docs/assets/upstream-radar-hero-mobile.jpg">
+    <img src="docs/assets/upstream-radar-hero.jpg" alt="Upstream Radar watches a dependency graph, highlights one affected path, and routes one signal to a DSH Agent." width="100%">
+  </picture>
+</p>
+
+<p align="center"><em>Upstream signal → exact installed path → durable incident → project-specific DSH Agent analysis</em></p>
+
+<p align="center">
   <a href="#try-it-in-60-seconds">Try it in 60 seconds</a> ·
   <a href="#see-one-incident">See one incident</a> ·
   <a href="#install-in-dsh">Install in DSH</a> ·
@@ -165,13 +174,6 @@ pnpm dlx --package=upstream-radar@latest upstream-radar setup \
 ```
 
 `minimumSeverity` applies to vulnerability notices; `critical` vulnerabilities and malicious-package alerts always pass. `quietHours` uses the configured IANA timezone and also supports a window crossing midnight. Compatibility and source-health notices follow the quiet window but are not hidden by a vulnerability severity threshold. With a policy in effect, DSH tasks stay in the durable outbox until they can be delivered, and the webhook outbox keeps pending events for retry or a later policy change. `radar status` shows how many tasks are currently held. Omitting the block keeps the current behavior and delivers every notice. Run `pnpm run showcase:notifications` for a network-free proof of the hold, later delivery, and durable webhook outbox.
-
-<p align="center">
-  <picture>
-    <source media="(max-width: 600px)" srcset="docs/assets/upstream-radar-hero-mobile.jpg">
-    <img src="docs/assets/upstream-radar-hero.jpg" alt="Upstream Radar watches a dependency graph, highlights one affected path, and routes one signal to a DSH Agent." width="100%">
-  </picture>
-</p>
 
 ---
 
