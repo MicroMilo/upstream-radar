@@ -103,6 +103,19 @@ candidate plugin@1.1.0
 
 For the earliest bounded set of newer versions, Radar resolves npm metadata into a temporary `package-lock.json` with lifecycle scripts disabled, queries every resolved node against OSV, and keeps the exact path in the compatibility event. A missing required edge, resolver failure, or OSV failure is shown as incomplete or unavailable; it is never presented as “no vulnerability found”. Later versions are marked as unchecked when the candidate list is larger than the bounded prefix. The result is still a starting point for DSH project analysis, not an upgrade certificate.
 
+## Inspect a pnpm lockfile before installation
+
+If a DSH plugin is managed with pnpm, inspect the exact locked tree before putting it into a DSH profile:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar graph pnpm-lock \
+  ./pnpm-lock.yaml \
+  --root @your-scope/your-dsh-plugin@1.0.0 \
+  --json
+```
+
+This reads only the lockfile. It does not run `pnpm install`, lifecycle scripts, plugin code, or network requests. It understands pnpm v6/v9 package locators, peer-context variants, duplicate versions, and a project root declared through the `importers` section. An unresolved or ambiguous dependency remains visible instead of being guessed away. The JSON is the same canonical graph shape used by Radar's OSV path matching, so a CI job can review the graph before the plugin is admitted to DSH. Run `pnpm run showcase:pnpm-lock` for a real repository example.
+
 ## See one incident
 
 If an advisory affects only one of two installed `parser` versions, Radar reports the path that actually matched:
@@ -398,6 +411,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - strict DSH result writeback bound to the exact message, session, task, and event, with stale-result rejection;
 - native DSH bundle installation, startup polling, `agent/created` retry, and plugin-source attribution;
 - optional provider-neutral HTTPS webhook delivery for changed events, with endpoint-safe deduplication and retry;
+- read-only pnpm v6/v9 lockfile graph extraction, including project-root importers and explicit ambiguous peer references;
 - automatic selection of the only DSH profile with third-party bundles, plus a network-free `radar status` snapshot;
 - commit-friendly `init` output that records the project workspace as `.` by default;
 - a reusable GitHub Action that turns the reviewed graph into a two-step, frozen CI gate;
@@ -420,7 +434,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 
 ## Current boundaries
 
-- `init` discovers the only DSH profile with third-party bundles when `--profile` is omitted; multiple candidates still require an explicit profile. By default it follows the installed DSH `node_modules` tree, so pnpm overrides and local resolution choices are included. `--dsh-patch <path>` writes an explicit DSH overlay so first startup needs no environment variables and preserves an explicitly selected registry. A native pnpm lockfile parser for pre-install/CI inspection is still deferred.
+- `init` discovers the only DSH profile with third-party bundles when `--profile` is omitted; multiple candidates still require an explicit profile. By default it follows the installed DSH `node_modules` tree, so pnpm overrides and local resolution choices are included. `--dsh-patch <path>` writes an explicit DSH overlay so first startup needs no environment variables and preserves an explicitly selected registry. `graph pnpm-lock` is a separate pre-install/CI collector; it does not itself query OSV or create a Radar config.
 - A graph with unresolved required dependency declarations is marked as incomplete coverage; optional packages that are not installed for the current platform remain visible but do not create a false required-dependency alert. Missing `@deepseek-ai/dsh-*` and Cordis peers are called out separately as unobserved DSH host dependencies because Radar cannot query a version it was never shown.
 - Candidate upgrade graphs are resolved only for a bounded earliest prefix. A candidate with an incomplete or unavailable graph is not recommended; later unqueried candidates remain visibly unchecked. Pass `--no-deep-candidates` to opt out of this extra registry work.
 - Compatibility CI gating is opt-in: `--fail-on-compatibility breaking` fails on confirmed or strong incompatibility signals, while `any` fails on every active compatibility event; neither setting claims that a candidate is safe.
@@ -429,7 +443,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar inspect npm:dsh-cloudfla
 - `radar check/watch --frozen` intentionally uses the graph committed in the config for CI; it does not prove that the installed DSH profile has not changed. Without `--frozen`, native DSH and CLI polling refresh the selected profile first.
 - `radar status` is a local snapshot only: it does not refresh OSV/npm/GitHub data, and it cannot prove that a source is current until a check has completed. It does show whether a captured DSH host plane came from the running process or a profile fallback. Its next steps are guidance, not an automatic upgrade or safety decision.
 - `doctor` checks local wiring only; it cannot prove that a running DSH process has delivered a task to a model or that upstream feeds are current.
-- npm lock graphs are supported; pnpm and Yarn graph adapters are not implemented.
+- npm and pnpm lock graphs are supported; Yarn graph extraction is not implemented.
 - OSV, npm `latest`, and public GitHub Release notes are live sources; changelog, comparison-diff, and migration-guide ingestion are deferred.
 - A failed OSV check preserves confirmed matches and returns a visible source warning; source health is durable and routed through DSH after three consecutive failures, while source-claim conflict handling and external health destinations are not implemented yet.
 - `radar watch` is a CLI monitoring fallback; it does not deliver tasks into DSH by itself.

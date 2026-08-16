@@ -143,7 +143,7 @@ function graph(value: unknown, label: string): DependencyGraph {
   const rootNodeId = string(source.rootNodeId, `${label}.rootNodeId`, 4_096)
   if (!ids.has(rootNodeId)) throw new Error(`${label} root references a missing node`)
   const graphSource = source.source === undefined ? undefined : string(source.source, `${label}.source`, 64)
-  if (graphSource !== undefined && graphSource !== 'npm-lock' && graphSource !== 'installed-node-modules') {
+  if (graphSource !== undefined && graphSource !== 'npm-lock' && graphSource !== 'pnpm-lock' && graphSource !== 'installed-node-modules') {
     throw new Error(`${label}.source has an unsupported value`)
   }
   const hostRuntimeValue = source.hostRuntime === undefined ? undefined : record(source.hostRuntime, `${label}.hostRuntime`)

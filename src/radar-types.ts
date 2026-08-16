@@ -41,7 +41,7 @@ export interface DependencyGraph {
   nodes: DependencyNode[]
   edges: DependencyEdge[]
   /** How the physical graph was obtained. Older configs may omit this field. */
-  source?: 'npm-lock' | 'installed-node-modules'
+  source?: 'npm-lock' | 'pnpm-lock' | 'installed-node-modules'
   /** Evidence that DSH's shared host dependency plane was included. */
   hostRuntime?: {
     source: DependencyHostRuntimeSource

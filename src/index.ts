@@ -11,7 +11,7 @@ export {
   type ParsedNpmSpec,
 } from './npm.js'
 export { renderTextReport } from './render.js'
-export { dependencyGraphDigest, findDependencyPaths, parseNpmLockGraph } from './graph.js'
+export { dependencyGraphDigest, findDependencyPaths, parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
 export { parseInstalledNodeModulesGraph } from './installed-graph.js'
 export { discoverDshRuntimeNodeModulesDirectory } from './dsh-runtime.js'
 export { OsvClient, packageKey, type OsvClientOptions } from './osv.js'

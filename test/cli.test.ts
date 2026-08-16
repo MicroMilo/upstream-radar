@@ -23,6 +23,7 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /doctor \[config\.json\]/)
     assert.match(help.stdout, /radar watch <config\.json>/)
     assert.match(help.stdout, /radar status <config\.json>/)
+    assert.match(help.stdout, /graph pnpm-lock <pnpm-lock\.yaml> --root <package>@<exact-version>/)
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
     assert.match(help.stdout, /--frozen\s+radar check\/watch: use the reviewed graph/)
     assert.match(help.stdout, /--fail-on <value>\s+scan\/inspect verdict or radar severity/)

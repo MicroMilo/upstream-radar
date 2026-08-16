@@ -13,7 +13,7 @@ The model never decides whether a version range matches.
 ```text
                   deterministic plane
 
- npm lock graph ───────────────┐
+ npm / pnpm lock graph ────────┐
                                ├─> match + paths ─> durable event/outbox
  OSV exact-version results ────┤                         │
  npm candidate manifests ─────┐                         │
@@ -49,6 +49,8 @@ plugin@1.0.0
 Edges retain whether they are runtime, development, optional, or peer dependencies. A vulnerability event contains every bounded root-to-node path, so the alert explains which plugin introduced the package.
 
 For a real DSH profile, initialization follows the installed `node_modules` resolution tree exposed by that profile without importing package code or running lifecycle scripts. This captures duplicate versions and profile-local overrides. During a native DSH run, the adapter also starts from the exact `process.argv[1]` entrypoint, verifies the nearest manifest is exactly `@deepseek-ai/dsh`, and discovers the DSH process's usable `node_modules` plane with bounded read-only filesystem checks. It never imports DSH or executes package code to do this. DSH may maintain a shared host plane outside the profile for its runtime closure; Radar prefers the plane discovered from the running process and uses the profile-level plane as a fallback when it is not available. It marks those physical nodes as `dsh-host`, includes their exact versions in OSV matching, and records the evidence source in the graph and status snapshot. A required edge that is absent from both places stays explicit and makes coverage incomplete. Radar preserves npm's `peerDependenciesMeta.optional` declaration, so an optional platform package does not become a required coverage failure. A missing `@deepseek-ai/dsh-*` or Cordis peer is separately counted as an unobserved DSH host dependency; without an exact host version, Radar does not query or guess it. The public npm deep collector remains available for explicit registry comparisons; it resolves in a temporary project with lifecycle scripts disabled and parses `package-lock.json`. In both paths, an unresolved edge stays explicit; it is never silently counted as checked.
+
+The pre-install `graph pnpm-lock` command uses a bounded, dependency-free parser for pnpm v6/v9 lockfile package and snapshot sections. It can synthesize a project root from the `importers` section when the root package itself is not a snapshot, and it resolves peer-context suffixes only when the lockfile identifies one exact target. A missing or ambiguous target stays unresolved. It does not run pnpm, install hooks, plugin code, or network requests; its output uses the same canonical graph shape as the installed and npm-lock collectors, so a CI job can inspect the graph before DSH admission.
 
 ## Vulnerability cycle
 

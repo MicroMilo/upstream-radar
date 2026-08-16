@@ -34,18 +34,18 @@
 - [x] Group pending same-project DSH runtime compatibility tasks into one native Agent notice without merging state incidents.
 - [x] Resolve the first newer plugin candidate without a deterministic blocker or known OSV vulnerability, while leaving final compatibility to DSH project analysis.
 - [x] Resolve a bounded prefix of each candidate's transitive dependency graph with lifecycle scripts disabled, query graph nodes against OSV, and withhold candidates whose graph is incomplete or unavailable.
+- [x] Parse the native pnpm v6/v9 lockfile for pre-install and CI inspection, including importer roots and peer-context ambiguity.
 - [x] Discover a named DSH profile's installed third-party bundles and generate a reviewable inventory.
 - [x] Auto-select the only DSH profile with third-party bundles when `--profile` is omitted.
 - [x] Use the selected profile's installed `node_modules` tree as the source of truth, including unresolved-edge visibility.
 - [x] Refresh generated native DSH inventories from the current installed profile before each poll.
 - [x] Keep CLI `radar check/watch` aligned with the refreshed native DSH profile path.
-- [ ] Parse the native pnpm lockfile for pre-install and CI inspection.
 - [x] Run a plugin bundle-load probe in a disposable DSH profile for one explicit DSH version.
 - [x] Record `compatible`, `incompatible`, and `unknown` against an explicit DSH version matrix.
 
 ## Milestone 2 — reliable project routing
 
-- [ ] Add pnpm and Yarn lock graph adapters.
+- [x] Add the pnpm lock graph adapter; Yarn remains a separate future adapter.
 - [ ] Maintain one durable project registry across multiple machines.
 - [x] Deliver to the correct DSH project session instead of one security-inbox Agent.
 - [x] Add provider-neutral HTTPS webhook delivery with durable event acknowledgement and retry.

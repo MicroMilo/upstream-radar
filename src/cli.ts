@@ -10,6 +10,7 @@ import { probeDshLoad, probeDshLoadMatrix, renderDshLoadMatrix, renderDshLoadPro
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { createDoctorReport, renderDoctorReport } from './doctor.js'
 import { GitHubReleaseClient } from './github-release.js'
+import { parsePnpmLockGraph } from './graph.js'
 import { createRadarConfigFromDshProfile, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 import { inspectNpmPackage } from './npm.js'
@@ -64,6 +65,7 @@ Usage:
   upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
+  upstream-radar graph pnpm-lock <pnpm-lock.yaml> --root <package>@<exact-version> [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar benchmark compatibility [--json]
@@ -84,6 +86,7 @@ Commands:
   doctor   check local Radar/DSH wiring without polling upstream sources
   scan     bounded, read-only inspection of a local package directory
   inspect  fetch and verify the exact npm artifact before inspecting its contents
+  graph    read a lockfile into the canonical dependency graph without installing packages
   probe    run a bounded DSH bundle-load check or version matrix in disposable profiles
   benchmark run offline compatibility-rule contracts without network or plugin execution
   radar    monitor vulnerability changes, watch continuously, inspect status, or assess a candidate compatibility change
@@ -117,6 +120,66 @@ Exit codes:
   1  operational, source, or input error
   2  configured policy threshold was reached
 `
+}
+
+function parseExactPackageCoordinate(value: string): { name: string; version: string } {
+  const at = value.lastIndexOf('@')
+  if (at <= 0 || at === value.length - 1) throw new Error(`--root must be an exact package coordinate: ${value}`)
+  const name = value.slice(0, at)
+  const version = value.slice(at + 1)
+  if (name.startsWith('@') && !name.includes('/')) throw new Error(`--root must include a scoped package name: ${value}`)
+  return { name, version }
+}
+
+async function runGraph(args: readonly string[]): Promise<number> {
+  if (args[0] !== 'pnpm-lock') throw new Error('graph requires the pnpm-lock subcommand')
+  const lockfile = args[1]
+  if (lockfile === undefined || lockfile.startsWith('-')) throw new Error('graph pnpm-lock requires a lockfile path')
+  let rootSpec: string | undefined
+  let json = false
+  for (let index = 2; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === '--json') {
+      json = true
+    } else if (argument === '--root') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error('--root requires a value')
+      rootSpec = value
+      index += 1
+    } else {
+      throw new Error(`unknown option for graph pnpm-lock: ${argument}`)
+    }
+  }
+  if (rootSpec === undefined) throw new Error('graph pnpm-lock requires --root <package>@<exact-version>')
+  const graph = parsePnpmLockGraph(await readFile(lockfile, 'utf8'), parseExactPackageCoordinate(rootSpec))
+  if (json) {
+    process.stdout.write(`${JSON.stringify(graph, null, 2)}\n`)
+    return 0
+  }
+  const nodes = new Map(graph.nodes.map(node => [node.id, node]))
+  const root = nodes.get(graph.rootNodeId)
+  const display = (id: string): string => {
+    const node = nodes.get(id)
+    return node === undefined ? id : `${node.name}@${node.version}`
+  }
+  const unresolved = graph.unresolved ?? []
+  process.stdout.write([
+    `Dependency graph: ${root === undefined ? graph.rootNodeId : `${root.name}@${root.version}`}`,
+    'Source: pnpm-lock (read-only; no install, no plugin execution)',
+    `Nodes: ${graph.nodes.length}`,
+    `Edges: ${graph.edges.length}`,
+    `Unresolved: ${unresolved.length}`,
+    `Digest: ${graph.digest ?? '(none)'}`,
+    '',
+    'Edges:',
+    ...(graph.edges.length === 0 ? ['  (none)'] : graph.edges.map(edge => `  ${display(edge.from)} -[${edge.kind}]-> ${display(edge.to)}`)),
+    ...(unresolved.length === 0 ? [] : [
+      '',
+      'Unresolved dependencies:',
+      ...unresolved.map(item => `  ${display(item.from)} -[${item.kind}]-> ${item.name} (${item.spec})`),
+    ]),
+  ].join('\n') + '\n')
+  return 0
 }
 
 async function runTask(args: readonly string[]): Promise<number> {
@@ -815,6 +878,7 @@ async function main(args: readonly string[]): Promise<number> {
   if (command === 'setup') return runSetup(args.slice(1))
   if (command === 'init') return runInit(args.slice(1))
   if (command === 'doctor') return runDoctor(args.slice(1))
+  if (command === 'graph') return runGraph(args.slice(1))
   if (command === 'probe') return runProbe(args.slice(1))
   if (command === 'benchmark') return runBenchmark(args.slice(1))
   if (command === 'radar') return runRadar(args.slice(1))
