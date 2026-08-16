@@ -213,7 +213,8 @@ export function isFeishuV2WebhookUrl(value: string): boolean {
     && url.pathname.startsWith('/open-apis/bot/v2/hook/')
 }
 
-function isLegacyFeishuWebhookUrl(value: string): boolean {
+/** Recognize the retired Feishu/Lark V1 custom-bot endpoint. */
+export function isLegacyFeishuWebhookUrl(value: string): boolean {
   const url = new URL(normalizeRadarWebhookUrl(value))
   return (url.hostname === 'open.feishu.cn' || url.hostname === 'open.larksuite.com')
     && url.pathname.startsWith('/open-apis/bot/hook/')

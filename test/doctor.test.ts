@@ -37,6 +37,27 @@ async function writeProfile(root: string, bundles: string[]): Promise<string> {
   return profile
 }
 
+async function withWebhookEnvironment<T>(
+  webhookUrl: string | undefined,
+  feishuSecret: string | undefined,
+  action: () => Promise<T>,
+): Promise<T> {
+  const previousUrl = process.env.UPSTREAM_RADAR_WEBHOOK_URL
+  const previousSecret = process.env.UPSTREAM_RADAR_FEISHU_SECRET
+  if (webhookUrl === undefined) delete process.env.UPSTREAM_RADAR_WEBHOOK_URL
+  else process.env.UPSTREAM_RADAR_WEBHOOK_URL = webhookUrl
+  if (feishuSecret === undefined) delete process.env.UPSTREAM_RADAR_FEISHU_SECRET
+  else process.env.UPSTREAM_RADAR_FEISHU_SECRET = feishuSecret
+  try {
+    return await action()
+  } finally {
+    if (previousUrl === undefined) delete process.env.UPSTREAM_RADAR_WEBHOOK_URL
+    else process.env.UPSTREAM_RADAR_WEBHOOK_URL = previousUrl
+    if (previousSecret === undefined) delete process.env.UPSTREAM_RADAR_FEISHU_SECRET
+    else process.env.UPSTREAM_RADAR_FEISHU_SECRET = previousSecret
+  }
+}
+
 describe('upstream-radar doctor', () => {
   it('confirms the local DSH wiring without creating a state file or making a network request', async () => {
     const root = await mkdtemp(join(tmpdir(), 'upstream-radar-doctor-'))
@@ -93,6 +114,64 @@ describe('upstream-radar doctor', () => {
       assert.equal(report.checks.find(check => check.id === 'dsh-profile')?.status, 'warn')
       assert.equal(report.checks.find(check => check.id === 'dsh-overlay')?.status, 'warn')
       assert.match(renderDoctorReport(report), /UPSTREAM_RADAR_\* 环境变量/)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('catches invalid webhook routes before the first polling cycle and recognizes Feishu V2', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-doctor-webhook-'))
+    try {
+      const configFile = join(root, 'upstream-radar.config.json')
+      await writeFile(configFile, `${JSON.stringify(config(), null, 2)}\n`)
+
+      await withWebhookEnvironment(
+        'https://open.feishu.cn/open-apis/bot/hook/legacy-token',
+        undefined,
+        async () => {
+          const report = await createDoctorReport({ configFile })
+          assert.equal(report.status, 'blocked')
+          assert.equal(report.checks.find(check => check.id === 'webhook')?.status, 'fail')
+          assert.match(renderDoctorReport(report), /V1 webhook/)
+          assert.doesNotMatch(renderDoctorReport(report), /legacy-token/)
+        },
+      )
+
+      await withWebhookEnvironment(
+        'https://open.feishu.cn/open-apis/bot/v2/hook/v2-token',
+        'signing-secret',
+        async () => {
+          const report = await createDoctorReport({ configFile })
+          assert.equal(report.checks.find(check => check.id === 'webhook')?.status, 'pass')
+          assert.match(renderDoctorReport(report), /飞书\/Lark V2 webhook/)
+          assert.doesNotMatch(renderDoctorReport(report), /v2-token|signing-secret/)
+        },
+      )
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('reports malformed HTTPS and unused Feishu secret configuration without contacting the endpoint', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-doctor-webhook-boundary-'))
+    try {
+      const configFile = join(root, 'upstream-radar.config.json')
+      await writeFile(configFile, `${JSON.stringify(config(), null, 2)}\n`)
+
+      await withWebhookEnvironment('http://alerts.example.test/radar', undefined, async () => {
+        const report = await createDoctorReport({ configFile })
+        assert.equal(report.status, 'blocked')
+        assert.equal(report.checks.find(check => check.id === 'webhook')?.status, 'fail')
+        assert.match(renderDoctorReport(report), /webhook URL must use HTTPS/)
+      })
+
+      await withWebhookEnvironment('https://alerts.example.test/radar', 'unused-secret', async () => {
+        const report = await createDoctorReport({ configFile })
+        assert.equal(report.checks.find(check => check.id === 'webhook')?.status, 'pass')
+        assert.equal(report.checks.find(check => check.id === 'webhook-secret')?.status, 'warn')
+        assert.match(renderDoctorReport(report), /不会用于当前 webhook/)
+        assert.doesNotMatch(renderDoctorReport(report), /unused-secret/)
+      })
     } finally {
       await rm(root, { recursive: true, force: true })
     }

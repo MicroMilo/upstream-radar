@@ -10,6 +10,11 @@ import {
   type RadarStatusReport,
 } from './radar-status.js'
 import type { RadarConfig, RadarState } from './radar-types.js'
+import {
+  isFeishuV2WebhookUrl,
+  isLegacyFeishuWebhookUrl,
+  normalizeRadarWebhookUrl,
+} from './webhook.js'
 
 export const DOCTOR_SCHEMA = 'upstream-radar.doctor/v1alpha1' as const
 
@@ -207,6 +212,101 @@ async function inspectPatch(
   }
 }
 
+/**
+ * Check the environment-based delivery route without contacting the endpoint.
+ * The URL itself is deliberately never included in the report because webhook
+ * query strings commonly contain a credential.
+ */
+function inspectWebhookEnvironment(checks: DoctorCheck[]): void {
+  const configuredUrl = process.env.UPSTREAM_RADAR_WEBHOOK_URL?.trim()
+  const configuredSecret = process.env.UPSTREAM_RADAR_FEISHU_SECRET?.trim()
+
+  if (configuredUrl === undefined || configuredUrl.length === 0) {
+    if (configuredSecret !== undefined && configuredSecret.length > 0) {
+      addCheck(
+        checks,
+        'webhook-secret',
+        'warn',
+        '发现飞书密钥，但没有配置 webhook 地址',
+        'UPSTREAM_RADAR_FEISHU_SECRET 只会用于飞书/Lark V2 自定义机器人；当前没有可用的 webhook，因此密钥会被忽略。',
+        '设置 UPSTREAM_RADAR_WEBHOOK_URL，或清除 UPSTREAM_RADAR_FEISHU_SECRET。',
+      )
+    }
+    return
+  }
+
+  let endpoint: string
+  try {
+    endpoint = normalizeRadarWebhookUrl(configuredUrl)
+  } catch (error: unknown) {
+    addCheck(
+      checks,
+      'webhook',
+      'fail',
+      'webhook 地址不可用',
+      errorText(error),
+      '设置一个不带账号密码、fragment 且使用 HTTPS 的 webhook 地址。',
+    )
+    return
+  }
+
+  if (isLegacyFeishuWebhookUrl(endpoint)) {
+    addCheck(
+      checks,
+      'webhook',
+      'fail',
+      '配置的是不再支持的飞书/Lark V1 webhook',
+      'Radar 只向 /open-apis/bot/v2/hook/… 地址发送原生飞书文本消息。',
+      '把机器人地址替换为 /open-apis/bot/v2/hook/…；不要把旧 V1 地址继续交给 DSH。',
+    )
+    return
+  }
+
+  if (isFeishuV2WebhookUrl(endpoint)) {
+    if (configuredSecret !== undefined && configuredSecret.length > 4_096) {
+      addCheck(
+        checks,
+        'webhook',
+        'fail',
+        '飞书 webhook 密钥过长',
+        'UPSTREAM_RADAR_FEISHU_SECRET 超过 4096 个字符，发送时会被拒绝。',
+        '更换为不超过 4096 个字符的飞书签名密钥。',
+      )
+      return
+    }
+    addCheck(
+      checks,
+      'webhook',
+      'pass',
+      '已识别飞书/Lark V2 webhook',
+      configuredSecret === undefined
+        ? '使用原生 text 消息；未设置签名密钥时不会生成签名。密钥只从环境变量读取，不写入状态文件。'
+        : '使用原生 text 消息和环境变量中的签名密钥；地址与密钥都不会写入状态文件。',
+    )
+    return
+  }
+
+  addCheck(
+    checks,
+    'webhook',
+    'pass',
+    'HTTPS webhook 配置有效',
+    configuredSecret === undefined
+      ? '使用通用 Radar JSON 消息；地址不会写入状态文件。'
+      : '使用通用 Radar JSON 消息；飞书密钥不会用于该地址，也不会写入状态文件。',
+  )
+  if (configuredSecret !== undefined) {
+    addCheck(
+      checks,
+      'webhook-secret',
+      'warn',
+      '飞书密钥不会用于当前 webhook',
+      '只有飞书/Lark V2 自定义机器人地址会使用 UPSTREAM_RADAR_FEISHU_SECRET。',
+      '如果目标是飞书，请改用 /open-apis/bot/v2/hook/… 地址；否则清除这个多余的环境变量。',
+    )
+  }
+}
+
 function reportStatus(checks: readonly DoctorCheck[]): DoctorOverallStatus {
   if (checks.some(check => check.status === 'fail')) return 'blocked'
   if (checks.some(check => check.status === 'warn')) return 'ready-with-warnings'
@@ -291,6 +391,7 @@ export async function createDoctorReport(options: DoctorOptions): Promise<Doctor
       addCheck(checks, 'monitoring', 'warn', '尚未完成第一次监控', undefined, `启动 DSH 或运行 upstream-radar radar check ${configFile} --state ${stateFile}。`)
     }
     await inspectPatch(checks, options.patchFile, configFile, stateFile, profile)
+    inspectWebhookEnvironment(checks)
 
     const report: DoctorReport = {
       schema: DOCTOR_SCHEMA,
@@ -307,6 +408,7 @@ export async function createDoctorReport(options: DoctorOptions): Promise<Doctor
   }
 
   await inspectPatch(checks, options.patchFile, configFile, stateFile, profile)
+  inspectWebhookEnvironment(checks)
   await inspectDshProfile(checks, profile, options.dshHome)
   return {
     schema: DOCTOR_SCHEMA,

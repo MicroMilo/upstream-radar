@@ -216,7 +216,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.
   --patch ./upstream-radar.dsh.yml
 ```
 
-`doctor` 不访问 OSV、npm 或 GitHub，也不执行插件代码。它检查配置是否能解析、选中的 DSH profile 是否真的登记了 `upstream-radar`、overlay 是否指向同一份配置和状态文件、依赖覆盖是否完整，以及状态文件是否可读。只有接线被阻断时才返回非零；第一次还没有状态文件会显示为警告，并给出下一条命令。需要给其他工具读取时加上 `--json`。
+`doctor` 不访问 OSV、npm 或 GitHub，也不执行插件代码。它检查配置是否能解析、选中的 DSH profile 是否真的登记了 `upstream-radar`、overlay 是否指向同一份配置和状态文件、依赖覆盖是否完整，以及状态文件是否可读。如果设置了 `UPSTREAM_RADAR_WEBHOOK_URL`，它还会在本地检查 HTTPS 地址、识别飞书/Lark V2 地址，并在第一次轮询前拦住已经废弃的 V1 地址；它不会打印 webhook 地址或 `UPSTREAM_RADAR_FEISHU_SECRET`。只有接线被阻断时才返回非零；第一次还没有状态文件会显示为警告，并给出下一条命令。需要给其他工具读取时加上 `--json`。
 
 生成的 overlay 会记录选中的 profile；如果初始化时传入了 `--registry <url>`，它也会被带入 DSH 运行时，避免后续 release 和候选依赖检查悄悄切回公共 npm。原生 DSH 每次轮询前，以及 CLI 的 `radar check/watch` 每次轮询前，都会重新读取这个 profile 的实际依赖图，因此之后安装、升级、卸载插件，或 DSH 宿主运行时发生变化时，不会继续悄悄监控旧快照；如果重读失败，本轮会停止，不会替换最后一次持久化状态。`radar status` 仍然只读取本地配置和状态，不会刷新 OSV/npm/GitHub；它还会列出最重要的活动事件、精确依赖路径或候选信号，以及建议的下一步。`radar history` 同样只读同一份状态文件，会显示已经恢复、因此不再出现在活动列表里的事件。`radar compare` 也只比较你明确提供的文件。如果不使用 `--dsh-patch`，仍可以使用 `UPSTREAM_RADAR_CONFIG`、`UPSTREAM_RADAR_STATE`、`UPSTREAM_RADAR_INTERVAL_SECONDS`、`UPSTREAM_RADAR_REGISTRY` 和 `UPSTREAM_RADAR_DEEP_CANDIDATES` 环境变量方式。
 

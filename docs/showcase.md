@@ -155,7 +155,7 @@ The status output also shows `Coverage: incomplete` when the installed profile c
 
 ## Scene 11 — diagnose the wiring before blaming the feeds
 
-The local doctor checks the reviewed config, the selected DSH profile, the generated overlay, the durable state file, and required dependency coverage without contacting OSV, npm, or GitHub:
+The local doctor checks the reviewed config, the selected DSH profile, the generated overlay, the durable state file, required dependency coverage, and the environment-based webhook route without contacting OSV, npm, or GitHub:
 
 ```bash
 pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.config.json \
@@ -163,7 +163,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.
   --patch ./upstream-radar.dsh.yml
 ```
 
-It reports `READY`, `READY WITH WARNINGS`, or `BLOCKED`. A missing first-run state is a warning; a profile without the Radar bundle, a mismatched overlay, an invalid config, or a corrupt state file is blocked. The same report can be emitted as JSON for CI or a future DSH status surface.
+It reports `READY`, `READY WITH WARNINGS`, or `BLOCKED`. A missing first-run state is a warning; a profile without the Radar bundle, a mismatched overlay, an invalid config, a corrupt state file, an invalid HTTPS webhook, or a retired Feishu V1 route is blocked. The same report can be emitted as JSON for CI or a future DSH status surface. The check never contacts the endpoint or prints its URL/token.
 
 ## Scene 12 — the graph follows the installed DSH profile
 
