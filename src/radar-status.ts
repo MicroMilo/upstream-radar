@@ -8,12 +8,14 @@ import type {
   DependencyHostRuntimeSource,
   SourceHealthEvent,
   SourceHealthStatus,
+  StoredAnalysisResult,
   VulnerabilityEvent,
 } from './radar-types.js'
 import { countPolicyHeldAnalysisTasks, createNotificationPolicyMap } from './notification-policy.js'
 import { renderVulnerabilityPriority, vulnerabilityPriority, type VulnerabilityPriorityEvidence } from './vulnerability-priority.js'
 
 export const RADAR_STATUS_SCHEMA = 'upstream-radar.radar-status/v1alpha1' as const
+export const RADAR_NEXT_SCHEMA = 'upstream-radar.radar-next/v1alpha1' as const
 
 const RADAR_SOURCES: readonly RadarSource[] = ['osv', 'github-advisories', 'cisa-kev', 'epss', 'npm-releases', 'npm-candidate-graphs', 'github-releases']
 
@@ -78,6 +80,20 @@ export interface RadarStatusReport {
   analysisResults: number
   activeIncidents: RadarStatusIncident[]
   activeIncidentOverflow: number
+}
+
+export interface RadarNextReport {
+  schema: typeof RADAR_NEXT_SCHEMA
+  configFile: string
+  stateFile: string
+  stateExists: boolean
+  monitoring: RadarMonitoringStatus
+  coverage: RadarCoverageStatus
+  activeIncident?: RadarStatusIncident
+  pendingAnalysisTaskId?: string
+  verifiedAnalysis?: StoredAnalysisResult
+  nextCommand: string
+  acknowledgeCommand?: string
 }
 
 export interface CreateRadarStatusOptions {
@@ -340,6 +356,45 @@ export function createRadarStatus(
   }
 }
 
+function shellArgument(value: string): string {
+  return `'${value.replaceAll("'", "'\\''")}'`
+}
+
+/** Build the one-action handoff shown after a user sees the first alert. */
+export function createRadarNext(report: RadarStatusReport, state: RadarState): RadarNextReport {
+  const activeIncident = report.activeIncidents[0]
+  const pendingTask = activeIncident === undefined
+    ? undefined
+    : state.pendingAnalysisTasks.find(task => task.event.incidentId === activeIncident.incidentId)
+  const verifiedAnalysis = activeIncident === undefined
+    ? undefined
+    : state.analysisResults?.[activeIncident.incidentId]
+  const nextCommand = activeIncident === undefined
+    ? `upstream-radar radar check ${shellArgument(report.configFile)}`
+    : verifiedAnalysis !== undefined
+      ? `upstream-radar analysis show ${shellArgument(report.stateFile)} ${shellArgument(activeIncident.incidentId)}`
+      : pendingTask !== undefined
+        ? `upstream-radar task show ${shellArgument(report.stateFile)} ${shellArgument(pendingTask.id)}`
+        : report.analysisDeliveries > 0
+          ? `upstream-radar radar status ${shellArgument(report.configFile)} --state ${shellArgument(report.stateFile)}`
+          : `upstream-radar radar check ${shellArgument(report.configFile)} --state ${shellArgument(report.stateFile)}`
+  return {
+    schema: RADAR_NEXT_SCHEMA,
+    configFile: report.configFile,
+    stateFile: report.stateFile,
+    stateExists: report.stateExists,
+    monitoring: report.monitoring,
+    coverage: report.coverage,
+    ...(activeIncident === undefined ? {} : { activeIncident }),
+    ...(pendingTask === undefined ? {} : { pendingAnalysisTaskId: pendingTask.id }),
+    ...(verifiedAnalysis === undefined ? {} : { verifiedAnalysis }),
+    nextCommand,
+    ...(pendingTask === undefined ? {} : {
+      acknowledgeCommand: `upstream-radar task ack ${shellArgument(report.stateFile)} ${shellArgument(pendingTask.id)}`,
+    }),
+  }
+}
+
 function display(value: string, maxLength = 512): string {
   const escaped = value.replace(/[\u0000-\u001f\u007f-\u009f]/g, character => (
     `\\u${character.codePointAt(0)?.toString(16).padStart(4, '0') ?? '0000'}`
@@ -425,6 +480,40 @@ export function renderRadarStatus(report: RadarStatusReport): string {
     lines.push('', `Next: run \`upstream-radar task show ${display(report.stateFile)}\` to inspect the next queued DSH analysis.`)
   } else if (report.analysisDeliveries > 0) {
     lines.push('', 'DSH analysis is in progress; results will appear here only after strict response validation.')
+  }
+  return `${lines.join('\n')}\n`
+}
+
+/** Render one short, read-only action handoff for a person who just saw an alert. */
+export function renderRadarNext(report: RadarNextReport): string {
+  const lines = [
+    'Upstream Radar next action',
+    `Monitoring: ${report.monitoring.replace('-', ' ')}`,
+    `Coverage: ${report.coverage}`,
+  ]
+  const incident = report.activeIncident
+  if (incident === undefined) {
+    lines.push('', 'No active incident is currently recorded.', `Next command: ${report.nextCommand}`)
+    return `${lines.join('\n')}\n`
+  }
+  lines.push(
+    '',
+    `[${incident.priority.toUpperCase()}] ${display(incident.project)}: ${display(incident.summary)}`,
+    ...(incident.triage === undefined ? [] : [`Triage: ${renderVulnerabilityPriority(incident.triage)}`]),
+    `Deterministic next step: ${display(incident.nextStep)}`,
+  )
+  if (report.pendingAnalysisTaskId !== undefined) {
+    lines.push(`DSH follow-up: queued (${display(report.pendingAnalysisTaskId)})`)
+  } else if (report.verifiedAnalysis !== undefined) {
+    lines.push(`DSH analysis: verified (${report.verifiedAnalysis.project_exposure}; ${report.verifiedAnalysis.confidence} confidence)`)
+  } else if (report.monitoring === 'degraded') {
+    lines.push('DSH follow-up: not currently recorded; restore the degraded monitoring path before relying on a clean result.')
+  } else {
+    lines.push('DSH follow-up: not currently queued in this state.')
+  }
+  lines.push(`Next command: ${report.nextCommand}`)
+  if (report.acknowledgeCommand !== undefined) {
+    lines.push(`After reviewing the task, acknowledge it with: ${report.acknowledgeCommand}`)
   }
   return `${lines.join('\n')}\n`
 }

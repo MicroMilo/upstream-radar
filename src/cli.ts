@@ -34,7 +34,7 @@ import {
 import { renderRadarEvents } from './radar-render.js'
 import { createRadarHistory, renderRadarHistory } from './radar-history.js'
 import { loadRadarState, saveRadarState } from './radar-state.js'
-import { createRadarStatus, renderRadarStatus } from './radar-status.js'
+import { createRadarNext, createRadarStatus, renderRadarNext, renderRadarStatus } from './radar-status.js'
 import { renderTextReport } from './render.js'
 import { scanDirectory } from './scan.js'
 import { CisaKevClient, EpssClient } from './threat-intel.js'
@@ -295,6 +295,15 @@ This command never polls OSV, npm, GitHub, or DSH. It shows whether monitoring
 has run, coverage, active incidents, queued Agent tasks, and the next useful
 action.
 `,
+    'radar next': `Upstream Radar — show the one next action for the highest-priority incident
+
+Usage:
+  upstream-radar radar next <config.json> [--state <state.json>] [--json]
+
+This command is read-only and does not poll upstream sources. It selects the
+same first incident as 'radar status', then points to the pending DSH task,
+verified analysis, or the next check command.
+`,
     'radar history': `Upstream Radar — inspect the durable transition ledger
 
 Usage:
@@ -362,6 +371,7 @@ Usage:
   upstream-radar radar check <config.json> [--state <state.json>] [--webhook <https-url>] [--threat-intel] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
   upstream-radar radar watch <config.json> [--state <state.json>] [--webhook <https-url>] [--threat-intel] [--interval <seconds>] [--once] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
   upstream-radar radar status <config.json> [--state <state.json>] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
+  upstream-radar radar next <config.json> [--state <state.json>] [--json]
   upstream-radar radar history <config.json> [--state <state.json>] [--limit <n>] [--json]
   upstream-radar radar compare <config.json> <before.json> <candidate.json> [--notes <release-notes.txt>] [--json]
   upstream-radar task list <state.json> [--json]
@@ -382,7 +392,7 @@ Commands:
   demo     show the exact-path-to-DSH handoff without network, DSH, or plugin installation
   quickstart choose the smallest first-use path without changing the environment
   benchmark run offline compatibility-rule contracts without network or plugin execution
-  radar    monitor vulnerability changes, watch continuously, inspect status/history, or assess a candidate compatibility change
+  radar    monitor vulnerability changes, watch continuously, find the next action, inspect status/history, or assess a candidate compatibility change
   task     inspect or acknowledge the durable DSH analysis outbox
   analysis inspect verified DSH conclusions stored in the Radar state
 
@@ -725,8 +735,8 @@ async function fileExists(path: string): Promise<boolean> {
 
 async function runRadar(args: readonly string[]): Promise<number> {
   const subcommand = args[0]
-  if (subcommand !== 'check' && subcommand !== 'watch' && subcommand !== 'status' && subcommand !== 'history' && subcommand !== 'compare') {
-    throw new Error('radar requires check, watch, status, history or compare')
+  if (subcommand !== 'check' && subcommand !== 'watch' && subcommand !== 'status' && subcommand !== 'next' && subcommand !== 'history' && subcommand !== 'compare') {
+    throw new Error('radar requires check, watch, status, next, history or compare')
   }
   const configPath = args[1]
   if (configPath === undefined || configPath.startsWith('-')) throw new Error(`radar ${subcommand} requires a config file`)
@@ -810,10 +820,13 @@ async function runRadar(args: readonly string[]): Promise<number> {
   const readConfigForPoll = async () => frozen
     ? readConfig()
     : refreshRadarConfigFromConfiguredProfile(await readConfig())
-  if (subcommand === 'status') {
+  if (subcommand === 'status' || subcommand === 'next') {
     if (positional.length > 0 || notesPath !== undefined || once || intervalProvided
-      || historyLimitProvided || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || !deepCandidates || !githubAdvisories || threatIntel || frozen || statePath === ':memory:') {
-      throw new Error('radar status only accepts --state, --fail-on, --fail-on-compatibility and --json options')
+      || historyLimitProvided || osvBaseUrl !== undefined || registry !== undefined || webhookUrl !== undefined || !deepCandidates || !githubAdvisories || threatIntel || frozen || statePath === ':memory:'
+      || (subcommand === 'next' && (failOn !== 'never' || failOnCompatibility !== 'never'))) {
+      throw new Error(subcommand === 'next'
+        ? 'radar next only accepts --state and --json options'
+        : 'radar status only accepts --state, --fail-on, --fail-on-compatibility and --json options')
     }
     const config = await readConfig()
     const stateFile = statePath ?? `${resolve(configPath)}.state.json`
@@ -826,6 +839,11 @@ async function runRadar(args: readonly string[]): Promise<number> {
     })
     const policy = evaluateRadarPolicy(state, failOn, failOnCompatibility)
     const policyEnabled = failOn !== 'never' || failOnCompatibility !== 'never'
+    if (subcommand === 'next') {
+      const next = createRadarNext(report, state)
+      process.stdout.write(json ? `${JSON.stringify(next, null, 2)}\n` : renderRadarNext(next))
+      return 0
+    }
     if (json) {
       process.stdout.write(!policyEnabled
         ? `${JSON.stringify(report, null, 2)}\n`

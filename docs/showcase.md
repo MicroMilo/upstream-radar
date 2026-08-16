@@ -145,6 +145,14 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-
 
 When active vulnerabilities are present, the Attention list is already ordered by known exploitation in CISA KEV, then FIRST EPSS score, then advisory severity. Each vulnerability includes the signals that were actually observed; an absent signal is not treated as proof that the package is safe.
 
+For the shortest first-response path, run:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar radar next ./upstream-radar.config.json
+```
+
+This is still local-only. It selects the first item from the same ordering and prints one next command for the queued DSH task, verified analysis, or another check.
+
 It reports whether monitoring has started, the last successful check for OSV/npm/GitHub Releases, active vulnerability and compatibility incidents, source-health incidents, pending DSH analysis tasks, in-flight deliveries, and verified DSH conclusions. When an incident is active, it also shows the exact affected path or candidate signal and one suggested next step. Once the matching model response passes validation, that next step includes the stored exposure/confidence and recommended action:
 
 ```text

@@ -41,6 +41,7 @@ All notable changes to Upstream Radar are documented here.
 - Document the real `create-dsh-plugin` to pnpm lockfile graph and GitHub Action path, so DSH plugin authors can review dependencies before installation and keep the same gate in CI.
 - Order the read-only `radar status` Attention list by CISA KEV, EPSS, and advisory severity, and show the evidence used for each vulnerability's position.
 - Reuse the same short priority evidence in DSH event text, Feishu/HTTPS webhook summaries, and GitHub Action Job Summaries.
+- Add a read-only `radar next` handoff that selects the first status incident and points to its queued DSH task, verified analysis, or next check command.
 
 ## [0.33.0] - 2026-08-16
 

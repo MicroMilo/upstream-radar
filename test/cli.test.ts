@@ -27,6 +27,7 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /--npm-lock <path>\s+init: build a static inventory from an npm v2\/v3 package-lock\.json/)
     assert.match(help.stdout, /radar watch <config\.json>/)
     assert.match(help.stdout, /radar status <config\.json>/)
+    assert.match(help.stdout, /radar next <config\.json>/)
     assert.match(help.stdout, /radar history <config\.json>/)
     assert.match(help.stdout, /graph <npm-lock\|pnpm-lock> <lockfile> \[--root <package>@<exact-version>\]/)
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
@@ -613,6 +614,9 @@ snapshots:
       }
       const task = createAnalysisTask(event)
       const state = emptyRadarState()
+      state.activeVulnerabilities = {
+        [event.incidentId]: { key: event.incidentId, event },
+      }
       state.pendingAnalysisTasks.push(task)
       state.history = [event]
       await saveRadarState(stateFile, state)
@@ -626,6 +630,35 @@ snapshots:
       assert.equal(shown.status, 0)
       assert.match(shown.stdout, /UPSTREAM RADAR ANALYSIS TASK/)
       assert.match(shown.stdout, /不可信数据/)
+
+      const next = spawnSync(process.execPath, [
+        cli,
+        'radar',
+        'next',
+        resolve(repository, 'examples/radar/config.json'),
+        '--state',
+        stateFile,
+      ], { encoding: 'utf8' })
+      assert.equal(next.status, 0)
+      assert.match(next.stdout, /Upstream Radar next action/)
+      assert.match(next.stdout, /Project A: parser@2\.9\.0 is affected by GHSA-demo/)
+      assert.match(next.stdout, /DSH follow-up: queued/)
+      assert.match(next.stdout, new RegExp(`Next command: upstream-radar task show .*${task.id}`))
+      assert.match(next.stdout, new RegExp(`After reviewing the task, acknowledge it with: upstream-radar task ack .*${task.id}`))
+      const nextJson = spawnSync(process.execPath, [
+        cli,
+        'radar',
+        'next',
+        resolve(repository, 'examples/radar/config.json'),
+        '--state',
+        stateFile,
+        '--json',
+      ], { encoding: 'utf8' })
+      assert.equal(nextJson.status, 0)
+      const nextReport = JSON.parse(nextJson.stdout) as { schema: string; activeIncident?: { incidentId: string }; pendingAnalysisTaskId?: string }
+      assert.equal(nextReport.schema, 'upstream-radar.radar-next/v1alpha1')
+      assert.equal(nextReport.activeIncident?.incidentId, event.incidentId)
+      assert.equal(nextReport.pendingAnalysisTaskId, task.id)
 
       const history = spawnSync(process.execPath, [
         cli,
@@ -679,6 +712,17 @@ snapshots:
         },
       }
       await saveRadarState(stateFile, saved)
+      const nextWithAnalysis = spawnSync(process.execPath, [
+        cli,
+        'radar',
+        'next',
+        resolve(repository, 'examples/radar/config.json'),
+        '--state',
+        stateFile,
+      ], { encoding: 'utf8' })
+      assert.equal(nextWithAnalysis.status, 0)
+      assert.match(nextWithAnalysis.stdout, /DSH analysis: verified/)
+      assert.match(nextWithAnalysis.stdout, new RegExp(`Next command: upstream-radar analysis show .*${event.incidentId}`))
       const analysisList = spawnSync(process.execPath, [cli, 'analysis', 'list', stateFile], { encoding: 'utf8' })
       assert.equal(analysisList.status, 0)
       assert.match(analysisList.stdout, /likely_exposed/)
