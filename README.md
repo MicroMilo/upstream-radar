@@ -25,6 +25,17 @@
   <a href="ROADMAP.md">Roadmap</a>
 </p>
 
+## Choose the smallest path
+
+| Your goal | Start here | What you get |
+| --- | --- | --- |
+| Keep a live DSH Agent informed | [`setup`](#install-in-dsh) | A profile-aware monitor that refreshes the installed graph and routes only changed incidents to the matching Agent. |
+| Add a scheduled CI gate | [GitHub Actions example](examples/github-actions/upstream-radar.yml) | A frozen check against a reviewed graph, with a concise Job Summary and a machine-readable JSON report. |
+| Check a plugin before installing it | [`graph` / `init` for npm or pnpm lockfiles](#inspect-an-npm-or-pnpm-lockfile-before-installation) | Exact dependency paths and OSV results without running the plugin or its lifecycle scripts. |
+| Review one exact published artifact | `upstream-radar inspect npm:<package>@<exact-version> --deep` | Package, dependency, vulnerability, and provenance evidence for one release. |
+
+If you want project-specific reasoning from DSH, use the first path. If you only need an independent admission or regression gate, use the second or third; they do not require a running DSH profile.
+
 ## Try it in 60 seconds
 
 Use a DSH profile that already contains at least one third-party bundle. Replace `web` with your profile name. The commands below are split between two terminals because DSH normally stays running:

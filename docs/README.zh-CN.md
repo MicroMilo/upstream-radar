@@ -15,6 +15,17 @@
   <a href="../LICENSE"><img alt="Apache-2.0 许可证" src="https://img.shields.io/badge/license-Apache--2.0-0f766e?style=flat-square"></a>
 </p>
 
+## 先选最小入口
+
+| 你的目标 | 从这里开始 | 你会得到什么 |
+| --- | --- | --- |
+| 让在线 DSH Agent 持续跟进 | [`setup`](#安装到-dsh) | 自动刷新 profile 里的实际依赖图，只把有变化的事件交给对应项目的 Agent。 |
+| 加一个定时 CI 门禁 | [GitHub Actions 示例](../examples/github-actions/upstream-radar.yml) | 基于审查过的依赖图执行冻结检查，同时输出简短 Job Summary 和机器可读 JSON。 |
+| 安装插件前先检查它 | [npm/pnpm 锁文件的 `graph` / `init`](#安装前先检查-npm-或-pnpm-锁文件) | 不运行插件或 lifecycle script，直接得到精确依赖路径和 OSV 结果。 |
+| 审查一个精确的发布物 | `upstream-radar inspect npm:<包名>@<精确版本> --deep` | 查看单个版本的包、依赖、漏洞和 provenance 证据。 |
+
+需要结合项目代码做判断时，选第一条；只需要独立的准入或回归门禁时，选第二或第三条，不需要启动 DSH profile。
+
 ## 60 秒开始
 
 使用一个已经安装至少一个第三方 bundle 的 DSH profile，把 `web` 换成你的 profile 名称。下面的命令分成两个终端，因为 DSH 通常会持续运行：
