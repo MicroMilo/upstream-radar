@@ -70,6 +70,7 @@
 
 - [x] Provide a frozen one-shot CI check with severity exit codes and a copyable GitHub Actions workflow.
 - [x] Publish a reusable composite GitHub Action for the frozen deterministic CI gate.
+- [x] Write an escaped, human-readable GitHub Job Summary alongside the Action's raw JSON result.
 - [x] Verify the published Action with a real DSH plugin consumer snapshot and a dogfood workflow.
 - [x] Add an opt-in Action input that packs one exact plugin release and runs the bounded DSH load matrix.
 - [x] Add an opt-in compatibility-change gate for breaking DSH/plugin updates.

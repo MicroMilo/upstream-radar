@@ -63,6 +63,7 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 13. Webhook URLs must use HTTPS and are read from runtime configuration or an explicit CLI argument; only a SHA-256 fingerprint and delivered event ids are persisted.
 14. A webhook is sent only for a changed event, and a non-2xx response does not mark it delivered; delivery is at-least-once across a crash window.
 15. The transition ledger is bounded and deduplicated by stable event id; losing old history never changes the active incident state.
+16. GitHub Job Summary output escapes report-controlled strings and is only a human-readable view; the raw JSON remains authoritative.
 
 ## Delivery semantics
 

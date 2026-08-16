@@ -92,14 +92,24 @@ runs:
         RADAR_FAIL_ON_COMPATIBILITY: ${{ inputs.fail-on-compatibility }}
         RADAR_STATE: ${{ inputs.state }}
         RADAR_VERSION: ${{ inputs.version }}
-      run: >-
-        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar
-        radar check "$RADAR_CONFIG"
-        --frozen
-        --state "$RADAR_STATE"
-        --fail-on "$RADAR_FAIL_ON"
-        --fail-on-compatibility "$RADAR_FAIL_ON_COMPATIBILITY"
-        --json
+        RADAR_REPORT: ${{ runner.temp }}/upstream-radar/radar-check.json
+      run: |
+        set -euo pipefail
+        mkdir -p "$(dirname "$RADAR_REPORT")"
+        set +e
+        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar \
+          radar check "$RADAR_CONFIG" \
+          --frozen \
+          --state "$RADAR_STATE" \
+          --fail-on "$RADAR_FAIL_ON" \
+          --fail-on-compatibility "$RADAR_FAIL_ON_COMPATIBILITY" \
+          --json | tee "$RADAR_REPORT"
+        radar_exit=${PIPESTATUS[0]}
+        set -e
+        if [[ -n "${GITHUB_STEP_SUMMARY:-}" && -s "$RADAR_REPORT" ]]; then
+          node "$GITHUB_ACTION_PATH/scripts/action-summary.mjs" "$RADAR_REPORT" >> "$GITHUB_STEP_SUMMARY" || true
+        fi
+        exit "$radar_exit"
     - name: Build Radar config from pnpm lockfile
       if: inputs.pnpm-lock != '' && inputs.npm-lock == ''
       shell: bash
@@ -150,14 +160,24 @@ runs:
         RADAR_FAIL_ON_COMPATIBILITY: ${{ inputs.fail-on-compatibility }}
         RADAR_STATE: ${{ inputs.state }}
         RADAR_VERSION: ${{ inputs.version }}
-      run: >-
-        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar
-        radar check "$RADAR_CONFIG"
-        --frozen
-        --state "$RADAR_STATE"
-        --fail-on "$RADAR_FAIL_ON"
-        --fail-on-compatibility "$RADAR_FAIL_ON_COMPATIBILITY"
-        --json
+        RADAR_REPORT: ${{ runner.temp }}/upstream-radar/radar-check.json
+      run: |
+        set -euo pipefail
+        mkdir -p "$(dirname "$RADAR_REPORT")"
+        set +e
+        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar \
+          radar check "$RADAR_CONFIG" \
+          --frozen \
+          --state "$RADAR_STATE" \
+          --fail-on "$RADAR_FAIL_ON" \
+          --fail-on-compatibility "$RADAR_FAIL_ON_COMPATIBILITY" \
+          --json | tee "$RADAR_REPORT"
+        radar_exit=${PIPESTATUS[0]}
+        set -e
+        if [[ -n "${GITHUB_STEP_SUMMARY:-}" && -s "$RADAR_REPORT" ]]; then
+          node "$GITHUB_ACTION_PATH/scripts/action-summary.mjs" "$RADAR_REPORT" >> "$GITHUB_STEP_SUMMARY" || true
+        fi
+        exit "$radar_exit"
     - name: Probe published plugin across DSH versions
       if: inputs.probe-package != ''
       id: dsh-load-matrix

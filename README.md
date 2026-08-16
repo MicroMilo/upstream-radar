@@ -319,7 +319,7 @@ steps:
       fail-on-compatibility: breaking
 ```
 
-The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.33.0`, and pin the checkout Action in your workflow according to your repository's policy.
+The Action is a thin wrapper around `radar check --frozen --state :memory: --fail-on high --json`; when the optional compatibility input is enabled, it also passes `--fail-on-compatibility breaking` or `any`. `--frozen` is deliberate: it uses the graph in the reviewed config and does not try to read a developer's local DSH profile. Each run is independent, exits `2` when an active vulnerability or opted-in compatibility change meets its threshold, and exits `1` for an operational or source error. `breaking` catches confirmed or strong incompatibility signals; `any` catches every active compatibility event. The default is `never`, so vulnerability-only behavior stays unchanged. In addition to the raw JSON log, the Action writes a short escaped summary to the GitHub Job Summary so a scheduled failure immediately shows the affected package and exact path. The Action does not deliver a DSH Agent task or modify a branch; the native DSH bundle remains the always-on analysis path. Pin the Action to a release tag such as `v0.33.0`, and pin the checkout Action in your workflow according to your repository's policy.
 
 If the repository has a pnpm lockfile but no committed Radar config yet, the Action can generate the config in the same job. See the [copyable pnpm workflow](examples/github-actions/upstream-radar-pnpm.yml):
 
@@ -468,6 +468,7 @@ Advisories, release notes, links, package names, and repository strings remain u
 - automatic selection of the only DSH profile with third-party bundles, plus a network-free `radar status` snapshot;
 - commit-friendly `init` output that records the project workspace as `.` by default;
 - a reusable GitHub Action that turns the reviewed graph into a two-step, frozen CI gate;
+- a concise escaped GitHub Job Summary alongside the Action's raw JSON result;
 - an opt-in GitHub Action DSH load matrix for exact published plugin versions and exact DSH versions;
 - a real DSH plugin consumer smoke that runs the published Action against 18 exact package versions;
 - an actionable, network-free `radar status` summary with exact active paths, candidate signals, and next steps;
