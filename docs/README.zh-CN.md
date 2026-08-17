@@ -674,6 +674,8 @@ pnpm run try:dsh
 
 如果要验证真实插件的首用路径，可以运行 `pnpm run showcase:dsh-adoption`。它会在一次性 `DSH_HOME` 中准备精确版本的 Radar 和三个真实插件：[`dsh-cloudflare-browser-run@0.1.1`](https://www.npmjs.com/package/dsh-cloudflare-browser-run)、[`@open-agfs/dsh-agfs@0.1.9`](https://www.npmjs.com/package/@open-agfs/dsh-agfs)、[`dsh-feishu-bot@0.14.0`](https://www.npmjs.com/package/dsh-feishu-bot)，打包时禁用 lifecycle script，同时让 DSH 正常建立自己的宿主运行时，然后执行 `setup --no-install`、`doctor`、冻结的 OSV/npm/GitHub 检查和状态输出。最近一次试用中，前两个插件安装并进入监控；Feishu 桥接插件被明确记录为 blocked，因为干净的 DSH profile 会在它的传递依赖 `protobufjs` 构建脚本处停止，必须由人明确批准后才能继续。这个阻塞不会被伪装成“没有漏洞”。它不会启动 DSH Agent 或调用模型；单独的 `try:dsh` proof 负责验证任务投递。使用 `pnpm run showcase:dsh-adoption:report` 可以更新[真实插件采用结果](../examples/dsh/reports/adoption-smoke.json)。
 依赖分析本身不需要启动 DSH Agent。如果要额外验证“真实第三方插件能否接住 DSH 任务”，可以运行 `pnpm run try:dsh:real` 作为可选 smoke test。它会把精确版本的 `dsh-find-plugin@0.3.6` 安装进一次性 headless profile，启动真实 DSH Agent，并验证 Radar 任务被接收、消费和写回；模型端点仍是本地确定性 stub，不会执行插件业务动作，也不会调用付费服务。只有在确认目标插件的 profile 和凭证要求后，才通过 `DSH_REAL_PLUGINS` 换成其他精确包。
+
+要看一条公开问题的完整闭环，可以运行 `pnpm run try:dsh:public-case`。它重放 [`dsh-web-ui #35`](https://github.com/zhu1090093659/dsh-web-ui/issues/35) 和 [`#71`](https://github.com/zhu1090093659/dsh-web-ui/issues/71)：旧 profile 因 loader 缺失而阻塞，手动补包又因重复 loader id 阻塞，维护者采用 bundled-carrier 的修复后通过。随后同一个兼容性事件会进入真实 DSH `headless` 会话，并写回一条绑定了 task、incident 和 event 的 `analysisResult`；结果见[已提交的案例报告](../examples/dsh/reports/dsh-web-ui-public-case.json)。这是接线闭环证明，使用本地确定性模型 stub，不代表线上模型质量，也不会读取你的 DSH 凭据或调用付费模型接口。
 生成的清单还会记录拥有宿主平面的精确 `@deepseek-ai/dsh@0.1.0-rc.6`；当前结果每个已安装插件都观察到 516 个依赖节点，其中 510 个是 DSH 宿主包，并查询 513 个精确版本和 190 条 npm release stream，包含没有出现在插件依赖边上的 DSH 核心及其可达宿主闭包。
 
 ## 验证兼容性规则

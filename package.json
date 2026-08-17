@@ -106,6 +106,8 @@
     "try:consumer:published": "node scripts/consumer-smoke.mjs --published",
     "try:dsh": "pnpm run build && node scripts/dsh-headless-showcase.mjs",
     "try:dsh:real": "pnpm run build && node scripts/dsh-headless-showcase.mjs --real-plugins",
+    "try:dsh:public-case": "pnpm run build && node scripts/dsh-headless-showcase.mjs --public-case",
+    "try:dsh:public-case:report": "pnpm run build && node scripts/dsh-headless-showcase.mjs --public-case --write-report",
     "try:dsh:live": "pnpm run build && node scripts/dsh-headless-showcase.mjs --live-feeds",
     "try:dsh:report": "pnpm run build && node scripts/dsh-headless-showcase.mjs --write-report",
     "prepublishOnly": "pnpm test && node scripts/release-preflight.mjs",
