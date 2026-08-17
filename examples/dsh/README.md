@@ -143,6 +143,8 @@ That showcase reports `compatible`, `incompatible`, and `unknown` independently.
 
 The showcase also exercises the matrix form against DSH `0.1.0-rc.3` and `0.1.0-rc.6`. The aggregate result is compatible only when both independent profiles load the same artifact.
 
+The real public baseline [dsh-feishu-bot@0.15.4 matrix result](reports/dsh-feishu-bot-0.15.4-matrix.md) passes on both DSH `rc.6` and `rc.7`.
+
 ## Webhook delivery proof
 
 To prove the provider-neutral notification path without sending data outside the process, run:
