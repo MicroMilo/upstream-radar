@@ -317,6 +317,9 @@ The accompanying [maintainer feedback draft](examples/dsh/reports/dsh-core-npm-p
 turns the artifact's missing npm provenance into a concrete release-workflow
 patch and a next-release verification step. It is a supply-chain gap, not a
 claim that the DSH package is malicious.
+The same rule now works from source: scanning the official DSH repository finds
+three npm publication workflows and three publisher scripts that do not declare
+provenance, then prints the same fix without installing or running DSH.
 
 ## Observe DSH plugin upstream changes
 

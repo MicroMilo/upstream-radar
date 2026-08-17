@@ -109,6 +109,35 @@ describe('directory scanner', () => {
     assert.match(report.evidence.dependencyGraphError ?? '', /requested root package is not present/)
   })
 
+  it('finds an npm publication path that does not declare provenance', async () => {
+    const root = await fixture(
+      { name: 'release-example', version: '1.0.0' },
+      {
+        '.github/workflows/release.yml': 'jobs:\n  publish:\n    steps:\n      - run: pnpm run release:publish\n',
+        'scripts/release/publish.ts': "attemptEchoed('npm', ['publish', tarball])\n",
+      },
+    )
+
+    const report = await scanDirectory(root)
+    const finding = report.findings.find(item => item.code === 'npm-publish-provenance-not-declared')
+    assert.equal(finding?.severity, 'medium')
+    assert.match(finding?.remediation ?? '', /id-token: write/)
+    assert.deepEqual(finding?.evidence?.workflowPaths, ['.github/workflows/release.yml'])
+    assert.deepEqual(finding?.evidence?.publisherPaths, ['scripts/release/publish.ts'])
+  })
+
+  it('accepts an npm publication path that explicitly enables provenance', async () => {
+    const root = await fixture(
+      { name: 'release-with-provenance', version: '1.0.0' },
+      {
+        '.github/workflows/release.yml': 'jobs:\n  publish:\n    permissions:\n      id-token: write\n    steps:\n      - run: npm publish --provenance\n',
+      },
+    )
+
+    const report = await scanDirectory(root)
+    assert.equal(report.findings.some(item => item.code === 'npm-publish-provenance-not-declared'), false)
+  })
+
   it('reads a committed npm lockfile into the scan report without installing anything', async () => {
     const root = await fixture(
       {

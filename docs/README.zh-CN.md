@@ -256,6 +256,7 @@ OpenAI-compatible 模型，先设置
 [源码与发布物的 old → new 重放报告](../examples/upstream-observer/reports/dsh-core-release-rc6-rc7-2026-08-18.md)则用官方 DSH 的真实提交验证了第二步：发现源码从 `rc.6` 走到 `rc.7`，保留 70 条本地 workspace 未解析边，并且不会因为根包版本变化就把没有变化的依赖边误报成新增和删除。整个结果来自静态 observer，没有调用 DSH LLM。
 [DSH `rc.7` 精确发布物报告](../examples/dsh/reports/dsh-core-artifact-rc7-2026-08-18.md)又验证了依赖审计本身：严格 npm peer 解析超时后，Radar 自动转入明确标注的 legacy-peer 模式，拿到 568 个节点、262 条未解析 peer/optional 边和 0 个 npm audit 已知漏洞；它不会把超时伪装成“安全”，也不会把 fallback 当成完整 peer 兼容性证明。
 配套的[作者反馈草案](../examples/dsh/reports/dsh-core-npm-provenance-feedback.md)把缺失的 npm provenance 转成了发布 workflow 的最小修复建议，以及下一次发布后的复查动作；这是供应链覆盖缺口，不是“DSH 恶意”的结论。
+同一条规则也已经接入源码扫描：直接扫描官方 DSH 仓库会发现 3 个 npm 发布 workflow 和 3 个发布脚本没有声明 provenance，并在不安装、不运行 DSH 的情况下给出相同修复建议。
 
 ## 观察 DSH 插件的上游变化
 
