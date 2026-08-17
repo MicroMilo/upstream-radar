@@ -320,6 +320,56 @@ function inspectDependencySpecs(
   }
 }
 
+function inspectNpmLockfileRoot(
+  root: string,
+  manifest: PackageManifest,
+  files: readonly ScannedFile[],
+  findings: Finding[],
+): Promise<void> {
+  const lockfile = files.find(file => file.path === 'package-lock.json')
+  const expectedName = asString(manifest.name)
+  const expectedVersion = asString(manifest.version)
+  if (lockfile === undefined || lockfile.size > MAX_MANIFEST_BYTES || expectedName === undefined || expectedVersion === undefined) {
+    return Promise.resolve()
+  }
+
+  return readFile(resolve(root, lockfile.path), 'utf8').then(contents => {
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(contents) as unknown
+    } catch {
+      return
+    }
+    const record = asRecord(parsed)
+    const packages = asRecord(record?.packages)
+    const rootRecord = asRecord(packages?.[''])
+    const actualName = asString(rootRecord?.name) ?? asString(record?.name)
+    const actualVersion = asString(rootRecord?.version) ?? asString(record?.version)
+    if (actualName === undefined || actualVersion === undefined) return
+
+    const mismatches: string[] = []
+    if (actualName !== expectedName) mismatches.push(`name ${actualName} → ${expectedName}`)
+    if (actualVersion !== expectedVersion) mismatches.push(`version ${actualVersion} → ${expectedVersion}`)
+    if (mismatches.length === 0) return
+
+    addFinding(
+      findings,
+      'lockfile-root-metadata-stale',
+      'info',
+      'package-lock root metadata does not match package.json',
+      `The lockfile root is stale (${mismatches.join(', ')}). The dependency tree may still resolve, but source-version tracking and reproducible monitoring can point at the wrong plugin release.`,
+      {
+        path: 'package-lock.json',
+        packageName: expectedName,
+        packageVersion: expectedVersion,
+        lockfileName: actualName,
+        lockfileVersion: actualVersion,
+      },
+      'Regenerate package-lock.json from the intended package.json with lifecycle scripts disabled, then review the complete lockfile diff.',
+    )
+  }).catch(() => undefined)
+}
+
 function inspectFiles(root: string, files: readonly ScannedFile[], findings: Finding[]): void {
   for (const file of files) {
     const lowercase = file.path.toLowerCase()
@@ -464,6 +514,7 @@ export async function scanDirectory(input: string, options: ScanOptions = {}): P
 
   inspectLifecycleScripts(lifecycleScripts, findings)
   inspectDependencySpecs(dependencies, lockfiles.length > 0, options.dependencyGraphResolved ?? false, findings)
+  await inspectNpmLockfileRoot(root, manifest, walk.files, findings)
   inspectBundledDependencies(manifest, findings)
   inspectFiles(root, walk.files, findings)
   await inspectNpmrc(root, walk.files, findings)

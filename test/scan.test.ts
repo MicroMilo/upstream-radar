@@ -87,6 +87,26 @@ describe('directory scanner', () => {
     assert.ok(report.findings.some(item => item.code === 'mutable-git-dependency'))
   })
 
+  it('reports stale npm lockfile root metadata without treating it as a vulnerability', async () => {
+    const root = await fixture(
+      { name: 'dsh-composer-expand', version: '0.1.2' },
+      {
+        'package-lock.json': JSON.stringify({
+          name: 'dsh-composer-expand',
+          version: '0.1.0',
+          lockfileVersion: 3,
+          packages: { '': { name: 'dsh-composer-expand', version: '0.1.0' } },
+        }),
+      },
+    )
+
+    const report = await scanDirectory(root)
+    const finding = report.findings.find(item => item.code === 'lockfile-root-metadata-stale')
+    assert.equal(finding?.severity, 'info')
+    assert.equal(report.riskVerdict, 'allow')
+    assert.match(finding?.remediation ?? '', /Regenerate package-lock\.json/)
+  })
+
   it('blocks a symlink that escapes the reviewed root', async () => {
     const root = await fixture({ name: 'escaping-link', version: '1.0.0' })
     await symlink('../outside', join(root, 'outside-link'))
