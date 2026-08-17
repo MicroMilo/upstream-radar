@@ -119,7 +119,9 @@ into a repository, run it manually, and enter an exact `package@version` plus
 two DSH versions. It produces an artifact/dependency verdict and a disposable
 bundle-load matrix in the Job Summary and keeps both JSON reports for 14 days.
 It does not need a local DSH profile, a checked-out plugin repository, or an
-LLM.
+LLM. After this PR is merged, the same manual review is also available from
+the [Upstream Radar Actions tab](https://github.com/MicroMilo/upstream-radar/actions/workflows/review-dsh-plugin.yml)
+with `dsh-cloudflare-browser-run@0.1.1` prefilled as the first example.
 
 Want to see a real author-actionable result? This exact published DSH plugin
 currently cannot produce a complete dependency graph in a clean npm resolver:

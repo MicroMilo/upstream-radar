@@ -103,6 +103,7 @@ npx --yes upstream-radar@0.33.12 inspect dsh-feishu-bot@0.15.4 --deep
 创建项目配置或启动 DSH。
 
 如果希望团队成员直接点击链接看到同样结果，可以复制[一次性 DSH 插件 review workflow](../examples/github-actions/dsh-plugin-review-minimal.yml) 到任意仓库，手动输入精确的 `package@version` 和两个 DSH 版本。它会在 Job Summary 显示发布物/依赖审计和一次性 bundle-load 矩阵，并保留两份 JSON 报告 14 天；不需要本地 DSH profile、插件源码仓库或 LLM。
+这个 PR 合并后，Upstream Radar 自己的 [Actions 页面](https://github.com/MicroMilo/upstream-radar/actions/workflows/review-dsh-plugin.yml)也会提供同一个手动入口，并预填 `dsh-cloudflare-browser-run@0.1.1` 作为第一个例子。
 
 想直接看到一个真实、可以交给作者修的问题？这个精确版本的 DSH 插件在干净的
 npm 解析环境中目前无法建立完整依赖图：
