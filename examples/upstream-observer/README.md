@@ -5,7 +5,7 @@ This example is the new upstream-change loop for DSH plugins:
 ```text
 targets.yml
   ↓
-GitHub commit + npm package metadata + optional lockfile
+GitHub commit + npm package metadata + auto-detected or explicit lockfile
   ↓
 observations.json
   ↓
@@ -19,10 +19,21 @@ The sample target points at the real public DSH/Feishu plugin
 first run produces a real dependency graph instead of a synthetic fixture.
 Replace it with the repositories your team depends on.
 
-For one repository, the shortest path skips YAML entirely:
+For one repository, the shortest path skips YAML and lockfile configuration entirely:
 
 ```bash
-npx --yes upstream-radar@0.33.8 observe \
+npx --yes upstream-radar@0.33.9 observe \
+  https://github.com/PlutoKeating/dsh-lark-bot \
+  --state /tmp/upstream-radar-observations.json \
+  --report /tmp/upstream-radar-observer.md
+```
+
+Radar automatically chooses the committed `pnpm-lock.yaml` or
+`package-lock.json`. This public example has a different npm package name, so
+the explicit form below adds `--package`:
+
+```bash
+npx --yes upstream-radar@0.33.9 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --package dsh-feishu-bot \
   --lockfile pnpm-lock.yaml --lockfile-type pnpm \
@@ -32,7 +43,8 @@ npx --yes upstream-radar@0.33.8 observe \
 
 The first run creates the baseline. Re-run the same command from a scheduled
 job to compare the latest `main` commit. Use `--package-path` for a nested
-plugin, and `--ref` when replaying a specific commit.
+plugin, `--package` when its npm name differs from `package.json`, and `--ref`
+when replaying a specific commit.
 
 For a real end-to-end replay against a public DSH/Feishu plugin, see
 [`cases/dsh-feishu-bot.md`](cases/dsh-feishu-bot.md). It demonstrates baseline →
@@ -43,7 +55,7 @@ Run it from any directory with the published CLI:
 
 ```bash
 export GITHUB_TOKEN='a read-only token with repository metadata access'
-npx --yes upstream-radar@0.33.8 observe \
+npx --yes upstream-radar@0.33.9 observe \
   /path/to/targets.yml \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md
@@ -54,7 +66,8 @@ For the checked-in public target, replace `/path/to/targets.yml` with
 and `node dist/src/cli.js observe` instead.
 
 The first run creates a baseline. Later runs compare the source commit, npm
-version/integrity, package manifest, and the optional lockfile graph. A change
+version/integrity, package manifest, and the auto-detected or explicit lockfile
+graph. A change
 limited to README/docs/tests advances the observation point without creating a
 DSH task. A runtime, DSH bundle, package entry, lockfile, dependency, or npm
 integrity change creates one. The scheduled workflow also uses

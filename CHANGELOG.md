@@ -2,6 +2,12 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.33.9] - 2026-08-18
+
+### Usability
+
+- Auto-discover a committed `pnpm-lock.yaml` or `package-lock.json` when `observe` receives a GitHub repository URL without explicit lockfile options, so the one-command path includes the real dependency graph.
+
 ## [0.33.8] - 2026-08-18
 
 ### Usability

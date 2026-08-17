@@ -112,6 +112,64 @@ describe('upstream observer', () => {
     assert.deepEqual(result.nonRuntimeFiles, ['README.md'])
   })
 
+  it('auto-discovers a committed pnpm lockfile when a target omits lockfile options', async () => {
+    const requested: string[] = []
+    const source = new UpstreamObserverClient({
+      fetch: async input => {
+        const url = String(input)
+        requested.push(url)
+        if (url.includes('/commits/main')) {
+          return new Response(JSON.stringify({ sha: 'commit-1' }), { status: 200 })
+        }
+        if (url.endsWith('/commit-1/package.json')) {
+          return new Response(JSON.stringify({
+            name: 'dsh-demo',
+            version: '1.0.0',
+            packageManager: 'pnpm@10.0.0',
+          }), { status: 200 })
+        }
+        if (url.startsWith('https://registry.npmjs.org/')) {
+          return new Response('', { status: 404 })
+        }
+        if (url.endsWith('/commit-1/pnpm-lock.yaml')) {
+          return new Response([
+            "lockfileVersion: '9.0'",
+            '',
+            'importers:',
+            '  .:',
+            '    dependencies:',
+            '      logger: 1.0.0',
+            '',
+            'packages:',
+            '  logger@1.0.0: {}',
+            '',
+            'snapshots:',
+            '  logger@1.0.0: {}',
+            '',
+          ].join('\n'), { status: 200 })
+        }
+        if (url.endsWith('/commit-1/package-lock.json')) {
+          return new Response('', { status: 404 })
+        }
+        throw new Error(`unexpected request: ${url}`)
+      },
+    })
+    const result = await source.observe({
+      id: 'dsh-demo',
+      ecosystem: 'dsh',
+      repository: 'acme/dsh-demo',
+      ref: 'main',
+      packageName: 'dsh-demo',
+      packagePath: 'package.json',
+    }, '2026-08-17T00:00:00.000Z')
+    assert.equal(result.source.lockfile, 'pnpm-lock.yaml')
+    assert.equal(result.graph?.source, 'pnpm-lock')
+    assert.equal(result.graph?.nodes.some(node => node.name === 'logger' && node.version === '1.0.0'), true)
+    assert.equal(result.warnings?.length ?? 0, 1)
+    assert.match(result.warnings?.[0] ?? '', /dsh-demo was not found/)
+    assert.equal(requested.some(url => url.endsWith('/commit-1/pnpm-lock.yaml')), true)
+  })
+
   it('parses the small targets.yml format and normalizes aliases', () => {
     const config = parseObserverConfigText(`
 schema: ${OBSERVER_TARGETS_SCHEMA}
@@ -338,6 +396,18 @@ targets:
     }, { source, now: new Date('2026-08-17T06:00:00.000Z') })
     const task = run.state.pendingTasks[0]
     assert.ok(task)
+    const failedReport = renderObserverReport({
+      ...run.report,
+      agent: {
+        configured: true,
+        attempted: 1,
+        succeeded: 0,
+        failed: 1,
+        skipped: 0,
+        invocations: [{ taskId: task.id, status: 'failed', error: 'LLM endpoint returned HTTP 404' }],
+      },
+    })
+    assert.match(failedReport, /Agent failure .*HTTP 404/)
 
     const requestBodies: string[] = []
     const server = createServer((request, response) => {

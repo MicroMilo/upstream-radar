@@ -801,25 +801,61 @@ export class UpstreamObserverClient implements ObserverSource {
     return boundedJson(response, MAX_API_RESPONSE_BYTES, 'GitHub API')
   }
 
-  private async fetchRaw(repository: GitHubRepository, ref: string, path: string): Promise<{ text: string; url: string }> {
+  private async fetchRaw(repository: GitHubRepository, ref: string, path: string): Promise<{ text: string; url: string }>
+  private async fetchRaw(repository: GitHubRepository, ref: string, path: string, options: { allowMissing: true }): Promise<{ text: string; url: string } | undefined>
+  private async fetchRaw(repository: GitHubRepository, ref: string, path: string, options: { allowMissing?: boolean } = {}): Promise<{ text: string; url: string } | undefined> {
     const url = `https://raw.githubusercontent.com/${githubPath(repository, ref)}/${sourcePath(path)}`
     const response = await this.fetchWithRetry(url, {
       headers: { accept: 'text/plain', 'user-agent': 'upstream-radar/upstream-observer' },
       redirect: 'error',
     })
     if (response.ok) return { text: await boundedBody(response, MAX_SOURCE_FILE_BYTES, `GitHub raw file ${path}`), url }
+    if (response.status === 404 && options.allowMissing === true) return undefined
     if (this.githubToken === undefined || (response.status !== 403 && response.status !== 429)) {
       throw new Error(`GitHub raw file ${path} returned HTTP ${response.status}`)
     }
     const apiPath = `repos/${githubPath(repository, `contents/${path}`)}?ref=${encodeURIComponent(ref)}`
     const payload = asRecord(await this.fetchGitHubJson(apiPath))
     const encoded = typeof payload?.content === 'string' ? payload.content.replace(/\s/g, '') : undefined
+    if (options.allowMissing === true && payload?.message === 'Not Found') return undefined
     if (encoded === undefined || payload?.encoding !== 'base64') {
       throw new Error(`GitHub Contents API returned no base64 content for ${path}`)
     }
     const contents = Buffer.from(encoded, 'base64')
     if (contents.length > MAX_SOURCE_FILE_BYTES) throw new Error(`GitHub Contents API file ${path} exceeds ${MAX_SOURCE_FILE_BYTES} bytes`)
     return { text: contents.toString('utf8'), url: `https://api.github.com/${apiPath}` }
+  }
+
+  private async discoverLockfile(
+    repository: GitHubRepository,
+    ref: string,
+    rawManifest: unknown,
+  ): Promise<{ path: string; type: ObserverLockfileType; text: string; url: string; warning?: string } | undefined> {
+    const packageManager = typeof asRecord(rawManifest)?.packageManager === 'string'
+      ? asRecord(rawManifest)?.packageManager as string
+      : undefined
+    const candidates: Array<{ path: string; type: ObserverLockfileType }> = packageManager?.startsWith('npm@') === true
+      ? [
+          { path: 'package-lock.json', type: 'npm' },
+          { path: 'pnpm-lock.yaml', type: 'pnpm' },
+        ]
+      : [
+          { path: 'pnpm-lock.yaml', type: 'pnpm' },
+          { path: 'package-lock.json', type: 'npm' },
+        ]
+    const found: Array<{ path: string; type: ObserverLockfileType; text: string; url: string }> = []
+    for (const candidate of candidates) {
+      const file = await this.fetchRaw(repository, ref, candidate.path, { allowMissing: true })
+      if (file !== undefined) found.push({ ...candidate, ...file })
+    }
+    const selected = found[0]
+    if (selected === undefined) return undefined
+    return {
+      ...selected,
+      ...(found.length > 1
+        ? { warning: `multiple supported lockfiles found; automatically selected ${selected.path}; pass --lockfile to choose explicitly` }
+        : {}),
+    }
   }
 
   private async fetchNpmObservation(name: string): Promise<ObserverPackageObservation | undefined> {
@@ -876,7 +912,32 @@ export class UpstreamObserverClient implements ObserverSource {
     let graph: DependencyGraph | undefined
     let graphError: string | undefined
     let lockfileUrl: string | undefined
-    if (targetValue.lockfile !== undefined && targetValue.lockfileType !== undefined) {
+    let observedLockfile = targetValue.lockfile
+    if (targetValue.lockfile === undefined) {
+      try {
+        const discovered = await this.discoverLockfile(targetRepository, commit, rawManifest)
+        if (discovered === undefined) {
+          warnings.push('no supported lockfile found; dependency graph was not available')
+        } else {
+          observedLockfile = discovered.path
+          lockfileUrl = discovered.url
+          if (discovered.warning !== undefined) warnings.push(discovered.warning)
+          if (discovered.type === 'pnpm') {
+            graph = parsePnpmLockGraph(discovered.text, { name: manifest.name, version: manifest.version })
+          } else {
+            let rawLockfile: unknown
+            try {
+              rawLockfile = JSON.parse(discovered.text) as unknown
+            } catch {
+              throw new Error('npm lockfile is not valid JSON')
+            }
+            graph = parseNpmLockGraph(rawLockfile, { name: manifest.name, version: manifest.version })
+          }
+        }
+      } catch (error: unknown) {
+        graphError = safeError(error)
+      }
+    } else if (targetValue.lockfileType !== undefined) {
       try {
         const lockfile = await this.fetchRaw(targetRepository, commit, targetValue.lockfile)
         lockfileUrl = lockfile.url
@@ -904,7 +965,7 @@ export class UpstreamObserverClient implements ObserverSource {
         ref: targetValueRef,
         commit,
         packagePath,
-        ...(targetValue.lockfile === undefined ? {} : { lockfile: targetValue.lockfile }),
+        ...(observedLockfile === undefined ? {} : { lockfile: observedLockfile }),
         commitUrl: `${repositoryUrl(targetRepository)}/commit/${encodeURIComponent(commit)}`,
         packageUrl: packageFile.url,
         ...(lockfileUrl === undefined ? {} : { lockfileUrl }),
@@ -1543,6 +1604,11 @@ export function renderObserverReport(report: ObserverReport): string {
     lines.push('')
   }
   lines.push(`DSH Agent: ${report.agent.configured ? `${report.agent.succeeded} succeeded, ${report.agent.failed} failed` : 'not configured; meaningful tasks remain pending'}`)
+  for (const invocation of report.agent.invocations) {
+    if (invocation.status === 'failed' && invocation.error !== undefined) {
+      lines.push(`Agent failure (${invocation.taskId}): ${invocation.error}`)
+    }
+  }
   if (report.pendingTasks.length > 0) lines.push(`Pending tasks: ${report.pendingTasks.join(', ')}`)
   return `${lines.join('\n')}\n`
 }

@@ -14,11 +14,11 @@ Run the two observations with the same state file:
 
 ```bash
 export GITHUB_TOKEN='a read-only GitHub token'
-npx --yes upstream-radar@0.33.8 observe \
+npx --yes upstream-radar@0.33.9 observe \
   examples/upstream-observer/cases/dsh-feishu-bot-before.yml \
   --state /tmp/upstream-radar-dsh-feishu-bot.json
 
-npx --yes upstream-radar@0.33.8 observe \
+npx --yes upstream-radar@0.33.9 observe \
   examples/upstream-observer/cases/dsh-feishu-bot-after.yml \
   --state /tmp/upstream-radar-dsh-feishu-bot.json
 ```

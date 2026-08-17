@@ -19,7 +19,7 @@ From a clean checkout, the finding is reproducible without installing or
 executing the plugin:
 
 ```bash
-npx --yes upstream-radar@0.33.8 scan . --json
+npx --yes upstream-radar@0.33.9 scan . --json
 ```
 
 The current static scan reports:
