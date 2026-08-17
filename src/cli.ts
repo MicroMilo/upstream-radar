@@ -44,6 +44,7 @@ import {
   parseObserverConfigText,
   renderObserverReport,
   runDshAgentCommand,
+  runOpenAiCompatibleAgent,
   runObserver,
   saveObservationState,
   UpstreamObserverClient,
@@ -239,7 +240,7 @@ should remain visible without failing CI.
 Usage:
   upstream-radar observe <targets.yml> [--state <observations.json>]
     [--report <report.md>] [--dsh-agent-command <executable>]
-    [--dsh-agent-arg <argument>] [--retry-pending] [--json]
+    [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending] [--json]
 
 The first run creates a baseline. Later runs compare source commits, published
 npm metadata, package manifests, and an optional npm/pnpm dependency graph. A
@@ -247,7 +248,9 @@ DSH Agent is called only for meaningful changes. Safety: does not install packag
 
 The Agent executable receives one read-only task prompt on stdin and should
 return one JSON conclusion on stdout. If it is not configured, the task stays
-in observations.json for a later explicit retry.
+in observations.json for a later explicit retry. As a simpler alternative,
+--llm-env-file reads an OpenAI-compatible issue-locator/.env-style file for
+only the model call; it never writes the key or endpoint to observations.json.
 `,
     graph: `Upstream Radar — read a lockfile into the canonical dependency graph
 
@@ -445,7 +448,7 @@ Usage:
   upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
-  upstream-radar observe <targets.yml> [--state <observations.json>] [--report <report.md>] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--retry-pending] [--json]
+  upstream-radar observe <targets.yml> [--state <observations.json>] [--report <report.md>] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending] [--json]
   upstream-radar graph <npm-lock|pnpm-lock> <lockfile> [--root <package>@<exact-version>] [--json]
   upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
@@ -1356,6 +1359,7 @@ async function runObserve(args: readonly string[]): Promise<number> {
   let reportPath: string | undefined
   let agentCommand: string | undefined
   let agentArgs: string[] = []
+  let llmEnvFile: string | undefined
   let registry: string | undefined
   let retryPending = false
   let json = false
@@ -1365,13 +1369,14 @@ async function runObserve(args: readonly string[]): Promise<number> {
       json = true
     } else if (argument === '--retry-pending') {
       retryPending = true
-    } else if (argument === '--state' || argument === '--report' || argument === '--dsh-agent-command' || argument === '--dsh-agent-arg' || argument === '--registry') {
+    } else if (argument === '--state' || argument === '--report' || argument === '--dsh-agent-command' || argument === '--dsh-agent-arg' || argument === '--llm-env-file' || argument === '--registry') {
       const value = args[index + 1]
       if (value === undefined || (value.startsWith('-') && argument !== '--dsh-agent-arg')) throw new Error(`${argument} requires a value`)
       if (argument === '--state') statePath = value
       else if (argument === '--report') reportPath = value
       else if (argument === '--dsh-agent-command') agentCommand = value
       else if (argument === '--dsh-agent-arg') agentArgs.push(value)
+      else if (argument === '--llm-env-file') llmEnvFile = value
       else registry = value
       index += 1
     } else {
@@ -1393,11 +1398,17 @@ async function runObserve(args: readonly string[]): Promise<number> {
       ...(agentArgs.length === 0 ? {} : { args: agentArgs }),
     }
   }
+  if (agentCommand !== undefined && llmEnvFile !== undefined) {
+    throw new Error('observe accepts either --dsh-agent-command or --llm-env-file, not both')
+  }
   const result = await runObserver(config, previousState, {
     source,
     retryPending,
     ...(agentOptions === undefined ? {} : {
       agent: (task, prompt) => runDshAgentCommand(task, prompt, agentOptions),
+    }),
+    ...(llmEnvFile === undefined ? {} : {
+      agent: (task, prompt) => runOpenAiCompatibleAgent(task, prompt, { envFile: resolve(llmEnvFile!) }),
     }),
   })
   await saveObservationState(statePath, result.state)

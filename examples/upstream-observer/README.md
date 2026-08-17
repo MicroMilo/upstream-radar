@@ -58,3 +58,17 @@ Radar writes one read-only task prompt to the wrapper's stdin and expects one
 JSON conclusion on stdout. It never invokes a shell, installs the observed
 plugin, or executes repository code. Without this option, meaningful tasks stay
 in `observations.json` and can be retried later with `--retry-pending`.
+
+If DSH is not configured with an LLM wrapper yet, use the existing
+issue-locator/OpenAI-compatible `.env` file as the explicit model entry point:
+
+```bash
+node dist/src/cli.js observe examples/upstream-observer/targets.yml \
+  --state observations.json \
+  --llm-env-file /path/to/issue-locator/.env
+```
+
+The observer reads only the endpoint, API key, and model name for the request;
+none of them are persisted. It calls the model only for meaningful upstream
+changes. If the endpoint fails, the task stays pending and can be retried with
+`--retry-pending`.

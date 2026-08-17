@@ -19,6 +19,7 @@ const MAX_API_RESPONSE_BYTES = 16 * 1024 * 1024
 const MAX_CHANGED_FILES = 2_000
 const MAX_PENDING_TASKS = 10_000
 const MAX_AGENT_OUTPUT_BYTES = 2 * 1024 * 1024
+const MAX_LLM_ENV_FILE_BYTES = 64 * 1024
 const DEFAULT_AGENT_TIMEOUT_MS = 120_000
 const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org/'
 const EXACT_NPM_PACKAGE_NAME = /^(?:@[^/\s]+\/[^/\s]+|[^/@\s]+)$/
@@ -182,6 +183,12 @@ export interface ObserverAgentCommandOptions {
   cwd?: string
   timeoutMs?: number
   env?: NodeJS.ProcessEnv
+}
+
+export interface OpenAiCompatibleAgentOptions {
+  /** A dotenv-style file containing the model endpoint, key, and model name. */
+  envFile: string
+  timeoutMs?: number
 }
 
 export interface ObserverReport {
@@ -1133,6 +1140,121 @@ function parseAgentOutput(output: string): { value?: ObserverAgentConclusion; er
       urgency,
       reasoning_summary: reasoningSummary,
     },
+  }
+}
+
+function parseDotEnv(text: string): Record<string, string> {
+  const values: Record<string, string> = {}
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.trim()
+    if (line === '' || line.startsWith('#')) continue
+    const content = line.startsWith('export ') ? line.slice('export '.length).trimStart() : line
+    const equals = content.indexOf('=')
+    if (equals < 1) continue
+    const key = content.slice(0, equals).trim()
+    if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(key)) continue
+    let value = content.slice(equals + 1).trim()
+    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1)
+    }
+    values[key] = value
+  }
+  return values
+}
+
+function safeLlmEndpoint(value: string): string {
+  try {
+    const url = new URL(value)
+    url.username = ''
+    url.password = ''
+    url.search = ''
+    url.hash = ''
+    return url.toString()
+  } catch {
+    return '(invalid endpoint)'
+  }
+}
+
+function extractJsonObject(text: string): string {
+  const trimmed = text.trim()
+  const start = trimmed.indexOf('{')
+  const end = trimmed.lastIndexOf('}')
+  if (start < 0 || end <= start) throw new Error('model returned no JSON object')
+  return trimmed.slice(start, end + 1)
+}
+
+/**
+ * Call an explicit OpenAI-compatible model without requiring users to write a
+ * DSH wrapper. The env file is read for this invocation only; the key and
+ * endpoint are never persisted in observation state or report output.
+ */
+export async function runOpenAiCompatibleAgent(
+  task: UpstreamChangeTask,
+  prompt: string,
+  options: OpenAiCompatibleAgentOptions,
+): Promise<ObserverAgentInvocation> {
+  const timeoutMs = options.timeoutMs ?? DEFAULT_AGENT_TIMEOUT_MS
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1_000 || timeoutMs > 600_000) {
+    return { taskId: task.id, status: 'failed', error: 'LLM timeout must be between 1000 and 600000 milliseconds' }
+  }
+  let values: Record<string, string>
+  try {
+    const text = await readFile(options.envFile, 'utf8')
+    if (Buffer.byteLength(text, 'utf8') > MAX_LLM_ENV_FILE_BYTES) {
+      return { taskId: task.id, status: 'failed', error: `LLM env file exceeds ${MAX_LLM_ENV_FILE_BYTES} bytes` }
+    }
+    values = parseDotEnv(text)
+  } catch (error: unknown) {
+    return { taskId: task.id, status: 'failed', error: `could not read LLM env file: ${safeError(error)}` }
+  }
+  const baseUrl = values.ISSUE_LOCATOR_LLM_BASE_URL ?? values.OPENAI_BASE_URL
+  const apiKey = values.ISSUE_LOCATOR_LLM_API_KEY ?? values.OPENAI_API_KEY
+  const model = values.ISSUE_LOCATOR_LLM_MODEL ?? values.OPENAI_MODEL
+  if (baseUrl === undefined || apiKey === undefined || model === undefined || baseUrl === '' || apiKey === '' || model === '') {
+    return {
+      taskId: task.id,
+      status: 'failed',
+      error: 'LLM env file must define ISSUE_LOCATOR_LLM_BASE_URL, ISSUE_LOCATOR_LLM_API_KEY and ISSUE_LOCATOR_LLM_MODEL (or OPENAI equivalents)',
+    }
+  }
+  const endpoint = `${baseUrl.replace(/\/$/, '')}/chat/completions`
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${apiKey}`,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: 'system', content: '只返回严格 JSON，不要输出 Markdown。' },
+          { role: 'user', content: prompt },
+        ],
+        temperature: 0,
+        response_format: { type: 'json_object' },
+      }),
+      signal: AbortSignal.timeout(timeoutMs),
+    })
+    if (!response.ok) {
+      return {
+        taskId: task.id,
+        status: 'failed',
+        error: `LLM endpoint returned HTTP ${response.status}: ${safeLlmEndpoint(endpoint)}`,
+      }
+    }
+    const body = await response.json() as { choices?: Array<{ message?: { content?: unknown } }> }
+    const content = body.choices?.[0]?.message?.content
+    if (typeof content !== 'string') {
+      return { taskId: task.id, status: 'failed', error: `LLM response had no message content: ${safeLlmEndpoint(endpoint)}` }
+    }
+    const parsed = parseAgentOutput(extractJsonObject(content))
+    if (parsed.value === undefined) {
+      return { taskId: task.id, status: 'failed', error: parsed.error ?? 'LLM returned an invalid conclusion' }
+    }
+    return { taskId: task.id, status: 'succeeded', parsedOutput: parsed.value }
+  } catch (error: unknown) {
+    return { taskId: task.id, status: 'failed', error: `LLM request failed at ${safeLlmEndpoint(endpoint)}: ${safeError(error)}` }
   }
 }
 

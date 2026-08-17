@@ -1,4 +1,8 @@
 import assert from 'node:assert/strict'
+import { createServer } from 'node:http'
+import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { describe, it } from 'node:test'
 import {
   OBSERVER_TARGETS_SCHEMA,
@@ -8,6 +12,7 @@ import {
   parseObservationState,
   renderUpstreamChangeAgentPrompt,
   runDshAgentCommand,
+  runOpenAiCompatibleAgent,
   runObserver,
   type ObserverSnapshot,
   type ObserverSource,
@@ -266,5 +271,72 @@ targets:
     const invalid = await runDshAgentCommand(task, 'untrusted prompt', { command: process.execPath, args: ['-e', invalidCode] })
     assert.equal(invalid.status, 'failed')
     assert.match(invalid.error ?? '', /exactly the eight conclusion fields/)
+  })
+
+  it('calls an OpenAI-compatible env-file agent and keeps the task contract', async () => {
+    const before = snapshot('commit-1', '1.0.0', 'graph-v1')
+    const after = snapshot('commit-2', '1.1.0', 'graph-v2')
+    const source: ObserverSource = {
+      observe: async () => after,
+      compare: async (repository, beforeCommit, afterCommit) => ({
+        beforeCommit,
+        afterCommit,
+        comparison: 'complete',
+        changedFiles: ['src/index.ts'],
+        runtimeFiles: ['src/index.ts'],
+        nonRuntimeFiles: [],
+      }),
+    }
+    const run = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, {
+      schema: OBSERVATION_STATE_SCHEMA,
+      targets: { [target.id]: before },
+      pendingTasks: [],
+    }, { source, now: new Date('2026-08-17T06:00:00.000Z') })
+    const task = run.state.pendingTasks[0]
+    assert.ok(task)
+
+    let requestBody = ''
+    const server = createServer((request, response) => {
+      request.on('data', chunk => { requestBody += chunk.toString('utf8') })
+      request.on('end', () => {
+        response.writeHead(200, { 'content-type': 'application/json' })
+        response.end(JSON.stringify({
+          choices: [{ message: { content: JSON.stringify({
+            impact: 'likely_affected',
+            confidence: 'medium',
+            evidence: ['src/index.ts'],
+            breaking_change: 'unknown',
+            dependency_risk: 'low',
+            recommended_action: 'Review the changed entrypoint before upgrading.',
+            urgency: 'planned',
+            reasoning_summary: 'The source changed, but the project-specific impact needs review.',
+          }) } }],
+        }))
+      })
+    })
+    await new Promise<void>((resolve, reject) => {
+      server.once('error', reject)
+      server.listen(0, '127.0.0.1', () => resolve())
+    })
+    const address = server.address()
+    if (address === null || typeof address === 'string') throw new Error('test server did not expose an address')
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-llm-agent-'))
+    try {
+      const envFile = join(root, 'issue-locator.env')
+      await writeFile(envFile, [
+        `ISSUE_LOCATOR_LLM_BASE_URL=http://127.0.0.1:${address.port}/v1`,
+        'ISSUE_LOCATOR_LLM_API_KEY=test-only',
+        'ISSUE_LOCATOR_LLM_MODEL=test-model',
+        '',
+      ].join('\n'))
+      const invocation = await runOpenAiCompatibleAgent(task, 'read-only task prompt', { envFile })
+      assert.equal(invocation.status, 'succeeded')
+      assert.equal((invocation.parsedOutput as { impact: string }).impact, 'likely_affected')
+      assert.equal(JSON.parse(requestBody).model, 'test-model')
+      assert.match(JSON.parse(requestBody).messages[1].content, /read-only task prompt/)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+      await new Promise<void>((resolve, reject) => server.close(error => error === undefined ? resolve() : reject(error)))
+    }
   })
 })

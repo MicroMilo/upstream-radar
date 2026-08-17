@@ -249,6 +249,20 @@ node dist/src/cli.js observe \
 DSH bundle、入口文件、依赖图、npm 版本或 npm integrity 变化时，才生成 old → new
 任务。如果没有配置 Agent，任务会留在 `observations.json`，不会安装或执行被观察的插件。
 
+如果你还没有配置 DSH wrapper，可以直接复用现有的 issue-locator/OpenAI 兼容 `.env`
+文件作为模型入口：
+
+```bash
+upstream-radar observe ./targets.yml \
+  --state ./observations.json \
+  --llm-env-file /path/to/issue-locator/.env
+```
+
+Radar 只读取这次调用需要的接口地址、API key 和模型名，不会把 key 或接口地址写进
+观察状态或报告。只有运行时代码、依赖图、DSH bundle、入口或 npm 发布物发生重要变化
+时才调用模型；建立基线和文档变更不会调用。接口不可用时，确定性的变化任务仍会保留
+为 pending，可用 `--retry-pending` 重试。
+
 可复制的定时 workflow 是
 [examples/github-actions/upstream-observer.yml](../examples/github-actions/upstream-observer.yml)。
 仓库里这份 workflow 是 Radar 自己的 dogfood 示例：它先 checkout 并构建 Radar，

@@ -271,6 +271,21 @@ Agent. Runtime source, DSH bundle, package entry, dependency graph, npm version,
 or npm integrity changes create an old → new task. If the Agent is not configured,
 the task stays in `observations.json`; no plugin is installed or executed.
 
+If you do not have a DSH wrapper configured yet, you can point the observer at
+an existing issue-locator/OpenAI-compatible `.env` file instead:
+
+```bash
+upstream-radar observe ./targets.yml \
+  --state ./observations.json \
+  --llm-env-file /path/to/issue-locator/.env
+```
+
+Radar reads only the endpoint, API key, and model name for that call. It never
+writes the key or endpoint into the observation state or report. The model is
+called only after a meaningful upstream change; a baseline or docs-only change
+does not call it. If the endpoint is unavailable, the deterministic change
+record remains pending and can be retried with `--retry-pending`.
+
 The scheduled workflow is [examples/github-actions/upstream-observer.yml](examples/github-actions/upstream-observer.yml).
 The checked-in workflow is a dogfood workflow for this repository: it checks out
 and builds Radar before running the observer. It persists only the observation

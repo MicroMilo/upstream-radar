@@ -182,6 +182,8 @@ describe('CLI option parsing', () => {
     assert.equal(observeHelp.status, 0)
     assert.match(observeHelp.stdout, /watch DSH plugin repositories and packages/)
     assert.match(observeHelp.stdout, /does not install packages, run lifecycle scripts, load plugin code, or invoke a shell/)
+    assert.match(observeHelp.stdout, /--llm-env-file <path>/)
+    assert.match(observeHelp.stdout, /issue-locator\/\.env-style file/)
 
     const statusHelp = spawnSync(process.execPath, [cli, 'radar', 'status', '--help'], { encoding: 'utf8' })
     assert.equal(statusHelp.status, 0)
