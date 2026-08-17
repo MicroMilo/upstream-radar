@@ -2,21 +2,46 @@ import { randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { renderAgentAnalysisGroupPrompt, renderAgentAnalysisPrompt } from './dsh-analysis.js'
-import { discoverDshRuntimeNodeModulesDirectory } from './dsh-runtime.js'
+import {
+  discoverDshRuntimeNodeModulesDirectory,
+  discoverDshRuntimePackage,
+  discoverDshRuntimePackageDirectory,
+} from './dsh-runtime.js'
 import { GitHubReleaseClient } from './github-release.js'
+import { GitHubAdvisoryClient } from './github-advisory.js'
 import { parseRadarConfig } from './inventory.js'
 import { refreshRadarConfigFromDshProfile } from './init.js'
 import { OsvClient } from './osv.js'
 import { NpmCandidateGraphClient } from './npm-candidate.js'
 import { NpmReleaseClient } from './npm-release.js'
+import { CisaKevClient, EpssClient } from './threat-intel.js'
+import {
+  createNotificationPolicyMap,
+  decideProjectRadarNotification,
+  filterNotifiableRadarEvents,
+  isRadarIncidentMuted,
+} from './notification-policy.js'
 import { pollRadar } from './radar.js'
 import { loadRadarState, saveRadarState } from './radar-state.js'
+import {
+  eventsForRadarWebhookTarget,
+  markRadarWebhookEventsDelivered,
+  markRadarWebhookEventsDeliveredForRoute,
+  normalizeRadarWebhookUrl,
+  queueRadarWebhookEvents,
+  queueRadarWebhookEventsForRoute,
+  resolveRadarWebhookTargets,
+  sendRadarWebhook,
+  undeliveredRadarWebhookEvents,
+  undeliveredRadarWebhookEventsForRoute,
+} from './webhook.js'
 import {
   ANALYSIS_DELIVERY_SCHEMA,
   type AnalysisDelivery,
   type AnalysisTask,
   type ProjectReference,
   type RadarEvent,
+  type RadarNotificationPolicy,
   type RadarState,
   type StoredAnalysisResult,
 } from './radar-types.js'
@@ -40,6 +65,12 @@ export interface Config {
   registry?: string
   /** Set false to skip bounded transitive candidate graph checks. */
   deepCandidates?: boolean
+  /** Set false to skip the independent GitHub Advisory Database check. */
+  githubAdvisories?: boolean
+  /** Set false to skip CISA KEV and FIRST EPSS prioritization signals. */
+  threatIntel?: boolean
+  /** Optional HTTPS endpoint for changed-event notifications; the URL is never persisted. */
+  webhookUrl?: string
   runOnStart?: boolean
 }
 
@@ -108,7 +139,9 @@ function taskSummary(task: AnalysisTask): string {
 }
 
 function isDshRuntimePackage(name: string): boolean {
-  return name === '@deepseek-ai/cordis' || name.startsWith('@deepseek-ai/dsh-')
+  return name === '@deepseek-ai/dsh'
+    || name === '@deepseek-ai/cordis'
+    || name.startsWith('@deepseek-ai/dsh-')
 }
 
 /** Keep independent state incidents, but combine one project's DSH runtime updates into one Agent notice. */
@@ -441,23 +474,28 @@ export function deliverPendingAnalysisTasksToAgents(
   agents: readonly DshAgentLike[],
   now = new Date(),
   observeDelivery?: DeliveryObserver,
+  notificationPolicies: ReadonlyMap<string, RadarNotificationPolicy> = new Map(),
 ): RadarState {
   if (!Number.isFinite(now.getTime())) throw new Error('analysis delivery time is invalid')
   const deliveredIds = new Set<string>()
   const deliveries = { ...(state.analysisDeliveries ?? {}) }
   for (const group of groupPendingAnalysisTasks(state.pendingAnalysisTasks)) {
-    const first = group[0]
+    const deliverableGroup = group.filter(task => !isRadarIncidentMuted(state, task.event, now))
+    const first = deliverableGroup[0]
     if (first === undefined) continue
+    if (deliverableGroup.some(task => !decideProjectRadarNotification(task.event, notificationPolicies, now).deliver)) continue
     const agent = selectDshAgentForProject(first.event.project, agents)
     if (agent === undefined) continue
-    const message = group.length === 1 ? createDshRadarMessage(group[0]!) : createDshRadarFamilyMessage(group)
-    const delivery = createAnalysisDelivery(message, group, agent, now.toISOString())
+    const message = deliverableGroup.length === 1
+      ? createDshRadarMessage(deliverableGroup[0]!)
+      : createDshRadarFamilyMessage(deliverableGroup)
+    const delivery = createAnalysisDelivery(message, deliverableGroup, agent, now.toISOString())
     observeDelivery?.(delivery, 'before')
     try {
       agent.followup(message)
       observeDelivery?.(delivery, 'accepted')
       deliveries[delivery.id] = delivery
-      for (const task of group) deliveredIds.add(task.id)
+      for (const task of deliverableGroup) deliveredIds.add(task.id)
     } catch {
       observeDelivery?.(delivery, 'rejected')
       // Admission failed for this project only; unrelated project tasks may
@@ -474,8 +512,12 @@ export function deliverPendingAnalysisTasksToAgents(
 }
 
 /** Synchronous follow-up admission is the acknowledgement boundary; failures stay queued. */
-export function deliverPendingAnalysisTasks(state: RadarState, agent: DshAgentLike): RadarState {
-  return deliverPendingAnalysisTasksToAgents(state, [agent])
+export function deliverPendingAnalysisTasks(
+  state: RadarState,
+  agent: DshAgentLike,
+  notificationPolicies?: ReadonlyMap<string, RadarNotificationPolicy>,
+): RadarState {
+  return deliverPendingAnalysisTasksToAgents(state, [agent], new Date(), undefined, notificationPolicies)
 }
 
 async function readConfig(path: string): Promise<ReturnType<typeof parseRadarConfig>> {
@@ -507,9 +549,29 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
     ? undefined
     : new NpmCandidateGraphClient({ ...(config.registry === undefined ? {} : { registry: config.registry }) })
   const releaseNotes = new GitHubReleaseClient()
+  const githubAdvisories = config.githubAdvisories === false
+    ? undefined
+    : new GitHubAdvisoryClient({ ...(process.env.GITHUB_TOKEN === undefined ? {} : { token: process.env.GITHUB_TOKEN }) })
+  const threatIntelSources = config.threatIntel === false
+    ? []
+    : [
+        { name: 'cisa-kev' as const, source: new CisaKevClient() },
+        { name: 'epss' as const, source: new EpssClient() },
+      ]
+  const configuredWebhookUrl = config.webhookUrl ?? process.env.UPSTREAM_RADAR_WEBHOOK_URL
+  const webhookUrl = configuredWebhookUrl === undefined || configuredWebhookUrl.trim() === ''
+    ? undefined
+    : normalizeRadarWebhookUrl(configuredWebhookUrl)
+  const feishuSecret = process.env.UPSTREAM_RADAR_FEISHU_SECRET?.trim() || undefined
   const dshHostNodeModulesDirectory = config.profile === undefined || config.refreshProfile === false
     ? undefined
     : discoverDshRuntimeNodeModulesDirectory()
+  const dshHostRuntimePackage = config.profile === undefined || config.refreshProfile === false
+    ? undefined
+    : discoverDshRuntimePackage()
+  const dshHostRuntimePackageDirectory = config.profile === undefined || config.refreshProfile === false
+    ? undefined
+    : discoverDshRuntimePackageDirectory()
   if (dshHostNodeModulesDirectory !== undefined) {
     ctx.logger.info('upstream-radar: DSH runtime dependency plane discovered for exact graph refresh')
   }
@@ -518,6 +580,8 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
     let stopped = false
     let serial = Promise.resolve()
     const inFlightDeliveries = new Map<string, AnalysisDelivery>()
+    let activeNotificationPolicies: ReadonlyMap<string, RadarNotificationPolicy> = new Map()
+    let notificationPoliciesLoaded = false
     const onSessionEvent = (session: DshSessionLike, event: DshSessionEventLike): void => {
       serial = serial.then(async () => {
         const state = await loadRadarState(stateFile)
@@ -535,6 +599,7 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
       serial = serial.then(async () => {
         if (stopped) return
         let state = await loadRadarState(stateFile)
+        let notificationPolicies = activeNotificationPolicies
         if (poll) {
           const configured = await readConfig(configFile)
           const radarConfig = config.profile === undefined || config.refreshProfile === false
@@ -546,21 +611,75 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
               dshHostNodeModulesDirectory === undefined ? {} : {
                 hostNodeModulesDirectory: dshHostNodeModulesDirectory,
                 hostRuntimeSource: 'dsh-process',
+                ...(dshHostRuntimePackage === undefined ? {} : { hostRuntimePackage: dshHostRuntimePackage }),
+                ...(dshHostRuntimePackageDirectory === undefined ? {} : { hostRuntimePackageDirectory: dshHostRuntimePackageDirectory }),
               },
             )
           if (radarConfig !== configured && JSON.stringify(radarConfig.projects) !== JSON.stringify(configured.projects)) {
             ctx.logger.info(`upstream-radar: refreshed installed DSH profile ${config.profile}`)
           }
-          const result = await pollRadar(radarConfig.projects, state, source, new Date(), releases, releaseNotes, candidateGraphs)
+          notificationPolicies = createNotificationPolicyMap(radarConfig.projects)
+          activeNotificationPolicies = notificationPolicies
+          notificationPoliciesLoaded = true
+          const result = await pollRadar(
+            radarConfig.projects,
+            state,
+            source,
+            new Date(),
+            releases,
+            releaseNotes,
+            candidateGraphs,
+            githubAdvisories === undefined ? [] : [{ name: 'github-advisories' as const, source: githubAdvisories }],
+            threatIntelSources,
+          )
           state = result.state
           // Persist before model delivery. A crash may duplicate a task, but cannot silently lose it.
           await saveRadarState(stateFile, state)
+          const webhookTargets = resolveRadarWebhookTargets(radarConfig.projects, {
+            ...(webhookUrl === undefined ? {} : { globalUrl: webhookUrl }),
+            ...(feishuSecret === undefined ? {} : { globalFeishuSecret: feishuSecret }),
+          })
+          for (const target of webhookTargets) {
+            const targetEvents = eventsForRadarWebhookTarget(result.events, target)
+            const isLegacyGlobal = webhookUrl !== undefined && target.projectIds === undefined
+            const queuedState = isLegacyGlobal
+              ? queueRadarWebhookEvents(state, target.endpointHash, targetEvents)
+              : queueRadarWebhookEventsForRoute(state, target.endpointHash, targetEvents)
+            state = queuedState
+            await saveRadarState(stateFile, state)
+            const pendingWebhookEvents = filterNotifiableRadarEvents(
+              isLegacyGlobal
+                ? undeliveredRadarWebhookEvents(state, target.endpointHash, targetEvents)
+                : undeliveredRadarWebhookEventsForRoute(state, target.endpointHash, targetEvents),
+              notificationPolicies,
+              new Date(),
+              state,
+            )
+            if (pendingWebhookEvents.length === 0) continue
+            try {
+              const payload = await sendRadarWebhook(target.url, pendingWebhookEvents, target.feishuSecret === undefined ? {} : { feishuSecret: target.feishuSecret })
+              const deliveredIds = new Set(payload.events.map(event => event.id))
+              const deliveredEvents = pendingWebhookEvents.filter(event => deliveredIds.has(event.id))
+              state = isLegacyGlobal
+                ? markRadarWebhookEventsDelivered(state, target.endpointHash, deliveredEvents)
+                : markRadarWebhookEventsDeliveredForRoute(state, target.endpointHash, deliveredEvents)
+              await saveRadarState(stateFile, state)
+              ctx.logger.info(`upstream-radar: delivered ${deliveredEvents.length} changed event(s) to the configured webhook route`)
+            } catch (error: unknown) {
+              ctx.logger.warn(`upstream-radar: webhook delivery failed; will retry: ${safeMessage(error)}`)
+            }
+          }
           if (result.events.length > 0) {
             ctx.logger.info(`upstream-radar: ${result.events.length} change(s), ${result.analysisTasks.length} analysis task(s)`)
           }
           for (const error of result.sourceErrors) {
             ctx.logger.warn(`upstream-radar: ${error.source}: ${safeMessage(error.message)}`)
           }
+        } else if (!notificationPoliciesLoaded) {
+          const configured = await readConfig(configFile)
+          activeNotificationPolicies = createNotificationPolicyMap(configured.projects)
+          notificationPolicies = activeNotificationPolicies
+          notificationPoliciesLoaded = true
         }
         const agents = ctx.agents.roots()
         if (agents.length === 0 || state.pendingAnalysisTasks.length === 0) return
@@ -572,6 +691,7 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
             if (phase === 'rejected') inFlightDeliveries.delete(delivery.id)
             else inFlightDeliveries.set(delivery.id, delivery)
           },
+          notificationPolicies,
         )
         if (next !== state) await saveRadarState(stateFile, next)
         const unrouted = groupPendingAnalysisTasks(next.pendingAnalysisTasks).find((group) => {

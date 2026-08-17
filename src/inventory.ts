@@ -9,6 +9,8 @@ import {
   type PackageManifestSnapshot,
   type PluginInstallation,
   type ProjectInventory,
+  type RadarNotificationPolicy,
+  type RadarSeverity,
   type RadarConfig,
 } from './radar-types.js'
 
@@ -35,6 +37,67 @@ function stringArray(value: unknown, label: string): string[] | undefined {
   if (value === undefined) return undefined
   if (!Array.isArray(value) || value.length > 100) throw new Error(`${label} must be an array with at most 100 entries`)
   return value.map((item, index) => string(item, `${label}[${index}]`, 1_024))
+}
+
+function environmentVariableName(value: unknown, label: string): string | undefined {
+  const parsed = optionalString(value, label, 256)
+  if (parsed !== undefined && !/^[A-Za-z_][A-Za-z0-9_]*$/.test(parsed)) {
+    throw new Error(`${label} must be a valid environment variable name`)
+  }
+  return parsed
+}
+
+const NOTIFICATION_SEVERITIES = new Set<Exclude<RadarSeverity, 'unknown'>>([
+  'info',
+  'low',
+  'medium',
+  'high',
+  'critical',
+])
+
+function clockTime(value: unknown, label: string): string {
+  const parsed = string(value, label, 5)
+  if (!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(parsed)) {
+    throw new Error(`${label} must use HH:MM in 24-hour time`)
+  }
+  return parsed
+}
+
+function timezone(value: unknown, label: string): string {
+  const parsed = string(value, label, 128)
+  try {
+    new Intl.DateTimeFormat('en-US', { timeZone: parsed }).format()
+  } catch {
+    throw new Error(`${label} must be a valid IANA timezone`)
+  }
+  return parsed
+}
+
+function notificationPolicy(value: unknown, label: string): RadarNotificationPolicy | undefined {
+  if (value === undefined) return undefined
+  const source = record(value, label)
+  const minimumSeverity = source.minimumSeverity === undefined
+    ? undefined
+    : string(source.minimumSeverity, `${label}.minimumSeverity`, 16) as RadarNotificationPolicy['minimumSeverity']
+  if (minimumSeverity !== undefined && !NOTIFICATION_SEVERITIES.has(minimumSeverity)) {
+    throw new Error(`${label}.minimumSeverity must be info, low, medium, high or critical`)
+  }
+  const quietSource = source.quietHours === undefined ? undefined : record(source.quietHours, `${label}.quietHours`)
+  if (quietSource === undefined) {
+    return minimumSeverity === undefined ? {} : { minimumSeverity }
+  }
+  const quietHours = {
+    timezone: timezone(quietSource.timezone, `${label}.quietHours.timezone`),
+    start: clockTime(quietSource.start, `${label}.quietHours.start`),
+    end: clockTime(quietSource.end, `${label}.quietHours.end`),
+  }
+  if (quietHours.start === quietHours.end) {
+    throw new Error(`${label}.quietHours.start and end must be different`)
+  }
+  return {
+    ...(minimumSeverity === undefined ? {} : { minimumSeverity }),
+    quietHours,
+  }
 }
 
 function stringRecord(value: unknown, label: string): Record<string, string> | undefined {
@@ -130,7 +193,7 @@ function graph(value: unknown, label: string): DependencyGraph {
   })
   const ids = new Set(nodes.map(node => node.id))
   if (ids.size !== nodes.length) throw new Error(`${label} contains duplicate node ids`)
-  const kinds = new Set<DependencyKind>(['runtime', 'development', 'optional', 'peer'])
+  const kinds = new Set<DependencyKind>(['runtime', 'development', 'optional', 'peer', 'host-runtime'])
   const edges = source.edges.map((rawEdge, index) => {
     const edge = record(rawEdge, `${label}.edges[${index}]`)
     const from = string(edge.from, `${label}.edges[${index}].from`, 4_096)
@@ -143,7 +206,7 @@ function graph(value: unknown, label: string): DependencyGraph {
   const rootNodeId = string(source.rootNodeId, `${label}.rootNodeId`, 4_096)
   if (!ids.has(rootNodeId)) throw new Error(`${label} root references a missing node`)
   const graphSource = source.source === undefined ? undefined : string(source.source, `${label}.source`, 64)
-  if (graphSource !== undefined && graphSource !== 'npm-lock' && graphSource !== 'installed-node-modules') {
+  if (graphSource !== undefined && graphSource !== 'npm-lock' && graphSource !== 'pnpm-lock' && graphSource !== 'installed-node-modules') {
     throw new Error(`${label}.source has an unsupported value`)
   }
   const hostRuntimeValue = source.hostRuntime === undefined ? undefined : record(source.hostRuntime, `${label}.hostRuntime`)
@@ -158,6 +221,12 @@ function graph(value: unknown, label: string): DependencyGraph {
     : hostRuntimeValue.resolvedNodes
   if (resolvedNodes !== undefined && (!Number.isSafeInteger(resolvedNodes) || (resolvedNodes as number) < 0 || (resolvedNodes as number) > MAX_NODES_PER_GRAPH)) {
     throw new Error(`${label}.hostRuntime.resolvedNodes must be a non-negative bounded integer`)
+  }
+  const hostRuntimePackage = hostRuntimeValue === undefined || hostRuntimeValue.package === undefined
+    ? undefined
+    : coordinate(hostRuntimeValue.package, `${label}.hostRuntime.package`)
+  if (hostRuntimePackage !== undefined && hostRuntimePackage.name !== '@deepseek-ai/dsh') {
+    throw new Error(`${label}.hostRuntime.package must be @deepseek-ai/dsh`)
   }
   const unresolvedValue = source.unresolved
   if (unresolvedValue !== undefined && (!Array.isArray(unresolvedValue) || unresolvedValue.length > MAX_EDGES_PER_GRAPH)) {
@@ -187,6 +256,7 @@ function graph(value: unknown, label: string): DependencyGraph {
       hostRuntime: {
         source: hostRuntimeSource,
         resolvedNodes: resolvedNodes as number,
+        ...(hostRuntimePackage === undefined ? {} : { package: hostRuntimePackage }),
       },
     }),
     ...(digest === undefined ? {} : { digest }),
@@ -226,8 +296,14 @@ function project(value: unknown, index: number): ProjectInventory {
   const workspace = optionalString(projectSource.workspace, `${label}.project.workspace`)
   const owner = optionalString(projectSource.owner, `${label}.project.owner`, 1_024)
   const channels = stringArray(projectSource.channels, `${label}.project.channels`)
+  const webhookUrlEnv = environmentVariableName(projectSource.webhookUrlEnv, `${label}.project.webhookUrlEnv`)
+  const webhookSecretEnv = environmentVariableName(projectSource.webhookSecretEnv, `${label}.project.webhookSecretEnv`)
+  if (webhookSecretEnv !== undefined && webhookUrlEnv === undefined) {
+    throw new Error(`${label}.project.webhookSecretEnv requires webhookUrlEnv`)
+  }
   const environmentSource = source.environment === undefined ? undefined : record(source.environment, `${label}.environment`)
   const nodeVersion = optionalString(environmentSource?.nodeVersion, `${label}.environment.nodeVersion`, 128)
+  const notificationPolicyValue = notificationPolicy(source.notificationPolicy, `${label}.notificationPolicy`)
   return {
     schema: INVENTORY_SCHEMA,
     project: {
@@ -237,8 +313,11 @@ function project(value: unknown, index: number): ProjectInventory {
       ...(workspace === undefined ? {} : { workspace }),
       ...(owner === undefined ? {} : { owner }),
       ...(channels === undefined ? {} : { channels }),
+      ...(webhookUrlEnv === undefined ? {} : { webhookUrlEnv }),
+      ...(webhookSecretEnv === undefined ? {} : { webhookSecretEnv }),
     },
     ...(environmentSource === undefined ? {} : { environment: nodeVersion === undefined ? {} : { nodeVersion } }),
+    ...(notificationPolicyValue === undefined ? {} : { notificationPolicy: notificationPolicyValue }),
     plugins: source.plugins.map((item, pluginIndex) => plugin(item, `${label}.plugins[${pluginIndex}]`)),
   }
 }

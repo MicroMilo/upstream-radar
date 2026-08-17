@@ -11,17 +11,33 @@ export {
   type ParsedNpmSpec,
 } from './npm.js'
 export { renderTextReport } from './render.js'
-export { dependencyGraphDigest, findDependencyPaths, parseNpmLockGraph } from './graph.js'
+export { dependencyGraphDigest, findDependencyPaths, parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
 export { parseInstalledNodeModulesGraph } from './installed-graph.js'
-export { discoverDshRuntimeNodeModulesDirectory } from './dsh-runtime.js'
+export {
+  discoverDshRuntimeNodeModulesDirectory,
+  discoverDshRuntimePackage,
+  discoverDshRuntimePackageDirectory,
+  discoverDshRuntimePackageFromNodeModulesDirectory,
+} from './dsh-runtime.js'
 export { OsvClient, packageKey, type OsvClientOptions } from './osv.js'
 export { NpmReleaseClient, type NpmReleaseCandidateStatus, type NpmReleaseClientOptions, type NpmReleaseObservation } from './npm-release.js'
 export { MAX_CANDIDATE_GRAPHS, NpmCandidateGraphClient, type NpmCandidateGraphClientOptions } from './npm-candidate.js'
 export { GitHubReleaseClient, type GitHubReleaseClientOptions, type ReleaseNotes, type ReleaseNotesSource } from './github-release.js'
+export { GitHubAdvisoryClient, type GitHubAdvisoryClientOptions } from './github-advisory.js'
+export {
+  CisaKevClient,
+  EpssClient,
+  THREAT_INTEL_REFERENCES,
+  type CisaKevClientOptions,
+  type EpssClientOptions,
+  type ThreatIntelSource,
+  type ThreatIntelSourceBinding,
+} from './threat-intel.js'
 export {
   emptyRadarState,
   pollRadar,
   type AdvisorySource,
+  type AdvisorySourceBinding,
   type CandidateDependencySource,
   type RadarPollResult,
   type ReleaseSource,
@@ -53,6 +69,17 @@ export {
   type CompatibilityBenchmarkReport,
 } from './compatibility-benchmark.js'
 export { createAnalysisTask, renderAgentAnalysisGroupPrompt, renderAgentAnalysisPrompt, renderDshAnalysisPrompt } from './dsh-analysis.js'
+export { DEMO_SCHEMA, createDemoEvent, createDemoReport, renderDemo, type DemoReport } from './demo.js'
+export {
+  QUICKSTART_SCHEMA,
+  createQuickstartReport,
+  renderQuickstartReport,
+  type QuickstartEffect,
+  type QuickstartMode,
+  type QuickstartOptions,
+  type QuickstartReport,
+  type QuickstartStep,
+} from './quickstart.js'
 export {
   extractAnalysisTaskIds,
   parseAgentAnalysisResult,
@@ -60,7 +87,19 @@ export {
 } from './dsh-analysis-result.js'
 export { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 export {
+  countPolicyHeldAnalysisTasks,
+  createNotificationPolicyMap,
+  decideProjectRadarNotification,
+  decideRadarNotification,
+  filterNotifiableRadarEvents,
+  isRadarIncidentMuted,
+  type NotificationDecision,
+  type NotificationSuppressionReason,
+} from './notification-policy.js'
+export {
   createRadarConfigFromDshProfile,
+  createRadarConfigFromNpmLock,
+  createRadarConfigFromPnpmLock,
   discoverDshProfiles,
   refreshRadarConfigFromConfiguredProfile,
   refreshRadarConfigFromDshProfile,
@@ -68,11 +107,36 @@ export {
   writeDshPatch,
   writeRadarConfig,
   type DshInitOptions,
+  type NpmLockInitOptions,
+  type PnpmLockInitOptions,
   type InitInspector,
   type WriteDshPatchOptions,
   type WriteRadarConfigOptions,
 } from './init.js'
 export { loadRadarState, parseRadarState, saveRadarState } from './radar-state.js'
+export {
+  RADAR_WEBHOOK_SCHEMA,
+  buildRadarWebhookPayload,
+  buildFeishuWebhookPayload,
+  eventsForRadarWebhookTarget,
+  isFeishuV2WebhookUrl,
+  markRadarWebhookEventsDelivered,
+  markRadarWebhookEventsDeliveredForRoute,
+  normalizeRadarWebhookUrl,
+  queueRadarWebhookEvents,
+  queueRadarWebhookEventsForRoute,
+  radarWebhookEndpointHash,
+  resolveRadarWebhookTargets,
+  sendRadarWebhook,
+  toRadarWebhookEventNotice,
+  undeliveredRadarWebhookEvents,
+  undeliveredRadarWebhookEventsForRoute,
+  type RadarWebhookEventNotice,
+  type RadarWebhookPayload,
+  type RadarWebhookTarget,
+  type FeishuWebhookPayload,
+  type SendRadarWebhookOptions,
+} from './webhook.js'
 export {
   evaluateRadarPolicy,
   renderRadarPolicy,
@@ -83,17 +147,30 @@ export {
 } from './radar-policy.js'
 export {
   createRadarStatus,
+  createRadarNext,
   renderRadarStatus,
+  renderRadarNext,
+  RADAR_NEXT_SCHEMA,
   RADAR_STATUS_SCHEMA,
   type CreateRadarStatusOptions,
   type RadarMonitoringStatus,
   type RadarCoverageStatus,
+  type RadarNextReport,
   type RadarStatusIncident,
+  type RadarStatusTriage,
   type RadarSourceStatus,
   type RadarStatusReport,
   type RadarStatusSource,
 } from './radar-status.js'
+export {
+  createRadarHistory,
+  renderRadarHistory,
+  RADAR_HISTORY_REPORT_SCHEMA,
+  type CreateRadarHistoryOptions,
+  type RadarHistoryReport,
+} from './radar-history.js'
 export { renderRadarEvent, renderRadarEvents } from './radar-render.js'
+export { renderVulnerabilityPriority, vulnerabilityPriority, type VulnerabilityPriorityEvidence } from './vulnerability-priority.js'
 export {
   createDoctorReport,
   renderDoctorReport,
@@ -130,10 +207,17 @@ export {
   ANALYSIS_RESULT_SCHEMA,
   DEPENDENCY_GRAPH_SCHEMA,
   INVENTORY_SCHEMA,
+  MAX_RADAR_HISTORY_EVENTS,
   RADAR_EVENT_SCHEMA,
   RADAR_CONFIG_SCHEMA,
+  RADAR_HISTORY_SCHEMA,
   RADAR_STATE_SCHEMA,
+  WEBHOOK_DELIVERY_SCHEMA,
+  type AdvisoryConflict,
+  type AdvisoryConflictClaim,
+  type AdvisoryConflictField,
   type AdvisoryMatch,
+  type AdvisorySourceName,
   type AnalysisTask,
   type AgentAnalysisResult,
   type AnalysisDelivery,
@@ -144,8 +228,11 @@ export {
   type CompatibilityDependencyFinding,
   type CompatibilityDependencyStatus,
   type CompatibilityEvent,
+  type CompatibilityRemediationCoverage,
   type CompatibilityUpgradeCandidate,
   type CompatibilityUpgradePath,
+  type CompatibilityVulnerabilityRemediation,
+  type CompatibilityVulnerabilityRemediationStatus,
   type CompatibilityVulnerabilityStatus,
   type CompatibilitySignal,
   type DependencyEdge,
@@ -161,7 +248,11 @@ export {
   type ProjectInventory,
   type ProjectReference,
   type RadarEvent,
+  type RadarIncidentMute,
+  type RadarIncidentTriage,
+  type RadarIncidentTriageStatus,
   type RadarConfig,
+  type RadarNotificationPolicy,
   type RadarSource,
   type RadarSeverity,
   type RadarState,
@@ -171,4 +262,5 @@ export {
   type StoredSourceHealthMatch,
   type VulnerabilityAdvisory,
   type VulnerabilityEvent,
+  type WebhookDeliveryState,
 } from './radar-types.js'

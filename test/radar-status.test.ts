@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { createRadarStatus, renderRadarStatus } from '../src/radar-status.js'
+import { createAnalysisTask } from '../src/dsh-analysis.js'
+import { createRadarNext, createRadarStatus, renderRadarNext, renderRadarStatus } from '../src/radar-status.js'
 import { emptyRadarState } from '../src/radar.js'
 import type { CompatibilityEvent, RadarConfig, SourceHealthEvent, VulnerabilityEvent } from '../src/radar-types.js'
 
@@ -96,7 +97,7 @@ describe('Radar status', () => {
     assert.equal(report.projects, 1)
     assert.equal(report.pluginBundles, 1)
     assert.equal(report.lastCheckedAt, undefined)
-    assert.deepEqual(report.sources.map(source => source.status), ['not-run', 'not-run', 'not-run', 'not-run'])
+    assert.deepEqual(report.sources.map(source => source.status), ['not-run', 'not-run', 'not-run', 'not-run', 'not-run', 'not-run', 'not-run'])
     assert.match(renderRadarStatus(report), /No completed check is recorded yet/)
   })
 
@@ -134,12 +135,196 @@ describe('Radar status', () => {
     assert.equal(report.pendingAnalysisTasks, 1)
     assert.equal(report.activeIncidents.length, 3)
     assert.equal(report.activeIncidentOverflow, 0)
-    assert.equal(report.sources[0]?.status, 'healthy')
-    assert.equal(report.sources[1]?.status, 'degraded')
+    assert.equal(report.sources.find(source => source.source === 'osv')?.status, 'healthy')
+    assert.equal(report.sources.find(source => source.source === 'npm-releases')?.status, 'degraded')
     const rendered = renderRadarStatus(report)
     assert.match(rendered, /temporary registry timeout/)
     assert.match(rendered, /parser@2\.9\.0 is affected by GHSA-demo/)
     assert.match(rendered, /Next: run `upstream-radar task show \/tmp\/radar\.json\.state\.json`/)
+  })
+
+  it('shows policy-held tasks separately without hiding the active incident', () => {
+    const policyConfig = structuredClone(config)
+    policyConfig.projects[0]!.notificationPolicy = { minimumSeverity: 'critical' }
+    const state = emptyRadarState()
+    state.activeVulnerabilities = { vulnerability: { key: 'vulnerability', event: vulnerabilityEvent } }
+    state.pendingAnalysisTasks.push(createAnalysisTask(vulnerabilityEvent))
+    const report = createRadarStatus(policyConfig, state, {
+      configFile: '/tmp/radar.json',
+      stateFile: '/tmp/radar.json.state.json',
+      stateExists: true,
+      now: new Date('2026-08-16T02:00:00.000Z'),
+    })
+
+    assert.equal(report.pendingAnalysisTasks, 1)
+    assert.equal(report.notificationPolicyHeldTasks, 1)
+    const rendered = renderRadarStatus(report)
+    assert.match(rendered, /Held by notification policy: 1/)
+    assert.match(rendered, /parser@2\.9\.0 is affected by GHSA-demo/)
+  })
+
+  it('keeps a muted incident visible and exposes the resume command', () => {
+    const state = emptyRadarState()
+    state.activeVulnerabilities = { vulnerability: { key: 'vulnerability', event: vulnerabilityEvent } }
+    state.incidentMutes = {
+      [vulnerabilityEvent.incidentId]: {
+        eventId: vulnerabilityEvent.id,
+        mutedUntil: '2026-08-17T00:00:00.000Z',
+      },
+    }
+    state.incidentTriage = {
+      [vulnerabilityEvent.incidentId]: {
+        eventId: vulnerabilityEvent.id,
+        status: 'in-progress',
+        owner: 'security-team',
+        note: 'Trace the parser input.',
+        dueAt: '2026-08-16T01:30:00.000Z',
+        updatedAt: '2026-08-16T02:00:00.000Z',
+      },
+    }
+    const report = createRadarStatus(config, state, {
+      configFile: '/tmp/radar.json',
+      stateFile: '/tmp/radar.json.state.json',
+      stateExists: true,
+      now: new Date('2026-08-16T02:00:00.000Z'),
+    })
+    assert.equal(report.activeIncidents[0]?.mutedUntil, '2026-08-17T00:00:00.000Z')
+    assert.deepEqual(report.activeIncidents[0]?.followUp, state.incidentTriage[vulnerabilityEvent.incidentId])
+    assert.match(renderRadarStatus(report), /Delivery: muted until 2026-08-17T00:00:00.000Z; active evidence remains visible/)
+    assert.match(renderRadarStatus(report), /Follow-up: in progress; owner: security-team; note: Trace the parser input\.; due: 2026-08-16T01:30:00.000Z \(overdue\)/)
+    assert.equal(report.activeIncidents[0]?.followUpOverdue, true)
+
+    const next = createRadarNext(report, state)
+    assert.match(next.unmuteCommand ?? '', /upstream-radar unmute .*incident-vulnerability/)
+    assert.equal(next.triageCommand, undefined)
+    assert.match(renderRadarNext(next), /To resume delivery: upstream-radar unmute/)
+    assert.match(renderRadarNext(next), /Follow-up: in progress; owner: security-team; note: Trace the parser input\.; due: 2026-08-16T01:30:00.000Z \(overdue\)/)
+
+    const newerState = structuredClone(state)
+    const newerEvent: VulnerabilityEvent = {
+      ...vulnerabilityEvent,
+      id: 'event-vulnerability-updated',
+      change: 'updated',
+      detectedAt: '2026-08-16T03:00:00.000Z',
+      advisory: { ...vulnerabilityEvent.advisory, modified: '2026-08-16T03:00:00.000Z' },
+    }
+    newerState.activeVulnerabilities = {
+      vulnerability: { key: 'vulnerability', event: newerEvent },
+    }
+    const newerReport = createRadarStatus(config, newerState, {
+      configFile: '/tmp/radar.json',
+      stateFile: '/tmp/radar.json.state.json',
+      stateExists: true,
+      now: new Date('2026-08-16T03:00:00.000Z'),
+    })
+    assert.equal(newerReport.activeIncidents[0]?.followUp, undefined)
+    const newerNext = createRadarNext(newerReport, newerState)
+    assert.match(newerNext.triageCommand ?? '', /--status in-progress/)
+    assert.match(renderRadarNext(newerNext), /Follow-up: open; record an owner\/status with:/)
+  })
+
+  it('marks a current follow-up due in the future without calling it overdue', () => {
+    const state = emptyRadarState()
+    state.activeVulnerabilities = { vulnerability: { key: 'vulnerability', event: vulnerabilityEvent } }
+    state.incidentTriage = {
+      [vulnerabilityEvent.incidentId]: {
+        eventId: vulnerabilityEvent.id,
+        status: 'in-progress',
+        dueAt: '2026-08-17T00:00:00.000Z',
+        updatedAt: '2026-08-16T02:00:00.000Z',
+      },
+    }
+    const report = createRadarStatus(config, state, {
+      configFile: '/tmp/radar.json',
+      stateFile: '/tmp/radar.json.state.json',
+      stateExists: true,
+      now: new Date('2026-08-16T02:00:00.000Z'),
+    })
+    assert.equal(report.activeIncidents[0]?.followUpOverdue, undefined)
+    assert.match(renderRadarStatus(report), /due: 2026-08-17T00:00:00.000Z(?! \(overdue\))/)
+  })
+
+  it('shows advisory sources and conflicts in the daily status summary', () => {
+    const state = emptyRadarState()
+    const event: VulnerabilityEvent = {
+      ...vulnerabilityEvent,
+      advisory: {
+        ...vulnerabilityEvent.advisory,
+        sources: ['osv', 'github-advisories'],
+        conflicts: [{
+          field: 'fixed-versions',
+          claims: [
+            { source: 'osv', value: '3.0.0' },
+            { source: 'github-advisories', value: '3.1.0' },
+          ],
+        }],
+      },
+    }
+    state.activeVulnerabilities = { vulnerability: { key: 'vulnerability', event } }
+    const report = createRadarStatus(config, state, {
+      configFile: '/tmp/radar.json',
+      stateFile: '/tmp/radar.json.state.json',
+      stateExists: true,
+    })
+    const rendered = renderRadarStatus(report)
+    assert.match(rendered, /sources: OSV \+ GitHub Advisory Database/)
+    assert.match(rendered, /source conflict: fixed versions/)
+  })
+
+  it('orders active incidents by exploitation evidence, EPSS, then severity', () => {
+    const state = emptyRadarState()
+    const knownExploited: VulnerabilityEvent = {
+      ...vulnerabilityEvent,
+      incidentId: 'incident-known-exploited',
+      advisory: {
+        ...vulnerabilityEvent.advisory,
+        severity: 'low',
+        riskSignals: {
+          cisaKev: { knownExploited: true },
+          epss: { score: 0.1, percentile: 0.7 },
+        },
+      },
+    }
+    const highEpss: VulnerabilityEvent = {
+      ...vulnerabilityEvent,
+      incidentId: 'incident-high-epss',
+      advisory: {
+        ...vulnerabilityEvent.advisory,
+        severity: 'low',
+        riskSignals: { epss: { score: 0.99, percentile: 0.99 } },
+      },
+    }
+    const critical: VulnerabilityEvent = {
+      ...vulnerabilityEvent,
+      incidentId: 'incident-critical',
+      advisory: { ...vulnerabilityEvent.advisory, severity: 'critical' },
+    }
+    state.activeVulnerabilities = {
+      knownExploited: { key: knownExploited.incidentId, event: knownExploited },
+      highEpss: { key: highEpss.incidentId, event: highEpss },
+      critical: { key: critical.incidentId, event: critical },
+    }
+
+    const report = createRadarStatus(config, state, {
+      configFile: '/tmp/radar.json',
+      stateFile: '/tmp/radar.json.state.json',
+      stateExists: true,
+    })
+
+    assert.deepEqual(report.activeIncidents.map(incident => incident.incidentId), [
+      'incident-known-exploited',
+      'incident-high-epss',
+      'incident-critical',
+    ])
+    assert.deepEqual(report.activeIncidents[0]?.triage, {
+      severity: 'low',
+      knownExploited: true,
+      epssScore: 0.1,
+      epssPercentile: 0.7,
+    })
+    const rendered = renderRadarStatus(report)
+    assert.match(rendered, /Attention \(ordered by CISA KEV, EPSS, then severity\):/)
+    assert.match(rendered, /Triage: CISA KEV known exploited; EPSS 10\.0%; severity low/)
   })
 
   it('does not treat absent optional platform packages as a required coverage gap', () => {

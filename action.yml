@@ -1,5 +1,5 @@
 name: Upstream Radar
-description: Check a reviewed DSH dependency graph for active upstream vulnerabilities.
+description: Check a reviewed or lockfile-derived DSH dependency graph for active upstream vulnerabilities.
 author: MicroMilo
 branding:
   icon: shield
@@ -9,12 +9,27 @@ outputs:
   probe-result:
     description: 'Optional DSH load-matrix result: compatible, incompatible, or unknown.'
     value: ${{ steps.dsh-load-matrix.outputs.result }}
+  inspect-verdict:
+    description: 'Optional exact npm artifact admission verdict: allow, warn, review, or block.'
+    value: ${{ steps.inspect-package.outputs.verdict }}
 
 inputs:
   config:
     description: Reviewed Upstream Radar config path, relative to the working directory.
     required: false
     default: upstream-radar.config.json
+  pnpm-lock:
+    description: 'Optional explicit pnpm-lock.yaml path; when omitted and no config exists, a single pnpm lockfile is detected automatically.'
+    required: false
+    default: ''
+  npm-lock:
+    description: 'Optional explicit package-lock.json path; when omitted and no config exists, a single npm lockfile is detected automatically.'
+    required: false
+    default: ''
+  root:
+    description: 'Optional exact package root override for npm-lock or pnpm-lock, for example @scope/plugin@1.0.0; otherwise read package.json beside the lockfile.'
+    required: false
+    default: ''
   fail-on:
     description: Minimum active vulnerability severity that fails the job.
     required: false
@@ -23,6 +38,10 @@ inputs:
     description: 'Compatibility changes that fail the job: never, breaking, or any.'
     required: false
     default: never
+  threat-intel:
+    description: 'When true, query CISA KEV and FIRST EPSS to prioritize matched CVEs; default is false for a lean CI gate.'
+    required: false
+    default: 'false'
   state:
     description: 'Radar state path; use :memory: for an independent CI check.'
     required: false
@@ -30,7 +49,7 @@ inputs:
   version:
     description: Exact upstream-radar npm version to execute.
     required: false
-    default: 0.32.0
+    default: 0.33.0
   node-version:
     description: Node.js version used to run the CLI.
     required: false
@@ -39,6 +58,14 @@ inputs:
     description: Directory containing the reviewed config and project checkout.
     required: false
     default: .
+  inspect-package:
+    description: 'Optional exact npm package spec to inspect before installation (package@version, without the npm: prefix), for example dsh-cloudflare-browser-run@0.1.1.'
+    required: false
+    default: ''
+  inspect-fail-on:
+    description: 'Verdict threshold for inspect-package: warn, review, block, or never.'
+    required: false
+    default: review
   probe-package:
     description: 'Optional exact npm package spec (name@version) to pack and probe across DSH versions.'
     required: false
@@ -64,23 +91,181 @@ runs:
       uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         node-version: ${{ inputs.node-version }}
+    - name: Inspect exact npm plugin artifact
+      if: inputs.inspect-package != ''
+      id: inspect-package
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        RADAR_VERSION: ${{ inputs.version }}
+        RADAR_INSPECT_PACKAGE: ${{ inputs.inspect-package }}
+        RADAR_INSPECT_FAIL_ON: ${{ inputs.inspect-fail-on }}
+        RADAR_INSPECT_REPORT: ${{ runner.temp }}/upstream-radar/inspect-report.json
+      run: |
+        set -euo pipefail
+        exact_package='^(@[^/@[:space:]]+/[^@/[:space:]]+|[^@/[:space:]]+)@[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'
+        if [[ ! "$RADAR_INSPECT_PACKAGE" =~ $exact_package ]]; then
+          echo 'inspect-package must be an exact npm package spec such as dsh-cloudflare-browser-run@0.1.1' >&2
+          exit 1
+        fi
+        mkdir -p "$(dirname "$RADAR_INSPECT_REPORT")"
+        set +e
+        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar \
+          inspect "npm:$RADAR_INSPECT_PACKAGE" \
+          --deep \
+          --fail-on "$RADAR_INSPECT_FAIL_ON" \
+          --json | tee "$RADAR_INSPECT_REPORT"
+        inspect_exit=${PIPESTATUS[0]}
+        set -e
+        if [[ -n "${GITHUB_STEP_SUMMARY:-}" && -s "$RADAR_INSPECT_REPORT" ]]; then
+          node "$GITHUB_ACTION_PATH/scripts/action-summary.mjs" "$RADAR_INSPECT_REPORT" >> "$GITHUB_STEP_SUMMARY" || true
+        fi
+        inspect_verdict="$(REPORT_FILE="$RADAR_INSPECT_REPORT" node --input-type=module -e 'import { readFileSync } from "node:fs"; const report = JSON.parse(readFileSync(process.env.REPORT_FILE, "utf8")); process.stdout.write(String(report.verdict ?? "unknown"))' 2>/dev/null || printf 'unknown')"
+        printf 'verdict=%s\n' "$inspect_verdict" >> "$GITHUB_OUTPUT"
+        exit "$inspect_exit"
+    - name: Validate lockfile inputs
+      if: inputs.pnpm-lock != '' && inputs.npm-lock != ''
+      shell: bash
+      run: |
+        echo 'pnpm-lock and npm-lock are mutually exclusive; set only one.' >&2
+        exit 1
+    - name: Detect project input
+      if: inputs.pnpm-lock == '' && inputs.npm-lock == ''
+      id: detect-project-input
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        RADAR_CONFIG: ${{ inputs.config }}
+      run: |
+        set -euo pipefail
+        node "$GITHUB_ACTION_PATH/scripts/detect-action-input.mjs"
+    - name: Require one Radar input
+      if: inputs.pnpm-lock == '' && inputs.npm-lock == '' && (steps.detect-project-input.outputs.kind == 'ambiguous' || steps.detect-project-input.outputs.kind == 'missing')
+      shell: bash
+      env:
+        RADAR_INPUT_KIND: ${{ steps.detect-project-input.outputs.kind }}
+      run: |
+        set -euo pipefail
+        if [[ "$RADAR_INPUT_KIND" == ambiguous ]]; then
+          echo 'Both pnpm-lock.yaml and package-lock.json exist, and no reviewed config was provided. Set config, pnpm-lock, or npm-lock explicitly.' >&2
+        else
+          echo 'No reviewed Radar config or supported lockfile was found. Commit config, or add one pnpm-lock.yaml/package-lock.json.' >&2
+        fi
+        exit 1
     - name: Check reviewed DSH graph
+      if: inputs.pnpm-lock == '' && inputs.npm-lock == '' && steps.detect-project-input.outputs.kind == 'config'
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:
         RADAR_CONFIG: ${{ inputs.config }}
         RADAR_FAIL_ON: ${{ inputs.fail-on }}
         RADAR_FAIL_ON_COMPATIBILITY: ${{ inputs.fail-on-compatibility }}
+        RADAR_THREAT_INTEL: ${{ inputs.threat-intel }}
         RADAR_STATE: ${{ inputs.state }}
         RADAR_VERSION: ${{ inputs.version }}
-      run: >-
-        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar
-        radar check "$RADAR_CONFIG"
-        --frozen
-        --state "$RADAR_STATE"
-        --fail-on "$RADAR_FAIL_ON"
-        --fail-on-compatibility "$RADAR_FAIL_ON_COMPATIBILITY"
-        --json
+        RADAR_REPORT: ${{ runner.temp }}/upstream-radar/radar-check.json
+        GITHUB_TOKEN: ${{ github.token }}
+      run: |
+        set -euo pipefail
+        mkdir -p "$(dirname "$RADAR_REPORT")"
+        threat_intel_args=()
+        case "${RADAR_THREAT_INTEL,,}" in
+          true) threat_intel_args=(--threat-intel) ;;
+          false|'') ;;
+          *) echo 'threat-intel must be true or false.' >&2; exit 1 ;;
+        esac
+        set +e
+        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar \
+          radar check "$RADAR_CONFIG" \
+          --frozen \
+          --state "$RADAR_STATE" \
+          --fail-on "$RADAR_FAIL_ON" \
+          --fail-on-compatibility "$RADAR_FAIL_ON_COMPATIBILITY" \
+          "${threat_intel_args[@]}" \
+          --json | tee "$RADAR_REPORT"
+        radar_exit=${PIPESTATUS[0]}
+        set -e
+        if [[ -n "${GITHUB_STEP_SUMMARY:-}" && -s "$RADAR_REPORT" ]]; then
+          node "$GITHUB_ACTION_PATH/scripts/action-summary.mjs" "$RADAR_REPORT" >> "$GITHUB_STEP_SUMMARY" || true
+        fi
+        exit "$radar_exit"
+    - name: Build Radar config from pnpm lockfile
+      if: inputs.pnpm-lock != '' || (inputs.pnpm-lock == '' && inputs.npm-lock == '' && steps.detect-project-input.outputs.kind == 'pnpm')
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        RADAR_CONFIG: ${{ inputs.config }}
+        RADAR_LOCKFILE: ${{ inputs.pnpm-lock != '' && inputs.pnpm-lock || steps.detect-project-input.outputs.path }}
+        RADAR_ROOT: ${{ inputs.root }}
+        RADAR_VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        root_args=()
+        if [[ -n "$RADAR_ROOT" ]]; then
+          root_args=(--root "$RADAR_ROOT")
+        fi
+        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar \
+          init --pnpm-lock "$RADAR_LOCKFILE" \
+          "${root_args[@]}" \
+          --output "$RADAR_CONFIG" \
+          --force
+    - name: Build Radar config from npm lockfile
+      if: inputs.npm-lock != '' || (inputs.npm-lock == '' && inputs.pnpm-lock == '' && steps.detect-project-input.outputs.kind == 'npm')
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        RADAR_CONFIG: ${{ inputs.config }}
+        RADAR_LOCKFILE: ${{ inputs.npm-lock != '' && inputs.npm-lock || steps.detect-project-input.outputs.path }}
+        RADAR_ROOT: ${{ inputs.root }}
+        RADAR_VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        root_args=()
+        if [[ -n "$RADAR_ROOT" ]]; then
+          root_args=(--root "$RADAR_ROOT")
+        fi
+        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar \
+          init --npm-lock "$RADAR_LOCKFILE" \
+          "${root_args[@]}" \
+          --output "$RADAR_CONFIG" \
+          --force
+    - name: Check generated lockfile DSH graph
+      if: inputs.pnpm-lock != '' || inputs.npm-lock != '' || steps.detect-project-input.outputs.kind == 'pnpm' || steps.detect-project-input.outputs.kind == 'npm'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        RADAR_CONFIG: ${{ inputs.config }}
+        RADAR_FAIL_ON: ${{ inputs.fail-on }}
+        RADAR_FAIL_ON_COMPATIBILITY: ${{ inputs.fail-on-compatibility }}
+        RADAR_THREAT_INTEL: ${{ inputs.threat-intel }}
+        RADAR_STATE: ${{ inputs.state }}
+        RADAR_VERSION: ${{ inputs.version }}
+        RADAR_REPORT: ${{ runner.temp }}/upstream-radar/radar-check.json
+        GITHUB_TOKEN: ${{ github.token }}
+      run: |
+        set -euo pipefail
+        mkdir -p "$(dirname "$RADAR_REPORT")"
+        threat_intel_args=()
+        case "${RADAR_THREAT_INTEL,,}" in
+          true) threat_intel_args=(--threat-intel) ;;
+          false|'') ;;
+          *) echo 'threat-intel must be true or false.' >&2; exit 1 ;;
+        esac
+        set +e
+        pnpm dlx --package="upstream-radar@$RADAR_VERSION" upstream-radar \
+          radar check "$RADAR_CONFIG" \
+          --frozen \
+          --state "$RADAR_STATE" \
+          --fail-on "$RADAR_FAIL_ON" \
+          --fail-on-compatibility "$RADAR_FAIL_ON_COMPATIBILITY" \
+          "${threat_intel_args[@]}" \
+          --json | tee "$RADAR_REPORT"
+        radar_exit=${PIPESTATUS[0]}
+        set -e
+        if [[ -n "${GITHUB_STEP_SUMMARY:-}" && -s "$RADAR_REPORT" ]]; then
+          node "$GITHUB_ACTION_PATH/scripts/action-summary.mjs" "$RADAR_REPORT" >> "$GITHUB_STEP_SUMMARY" || true
+        fi
+        exit "$radar_exit"
     - name: Probe published plugin across DSH versions
       if: inputs.probe-package != ''
       id: dsh-load-matrix

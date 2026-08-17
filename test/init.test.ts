@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promis
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, it } from 'node:test'
-import { createRadarConfigFromDshProfile, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, refreshRadarConfigFromDshProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from '../src/init.js'
+import { createRadarConfigFromDshProfile, createRadarConfigFromNpmLock, createRadarConfigFromPnpmLock, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, refreshRadarConfigFromDshProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from '../src/init.js'
 
 const graph = {
   schema: 'upstream-radar.dependency-graph/v1alpha1' as const,
@@ -39,6 +39,12 @@ describe('DSH profile initialization', () => {
         projectName: 'Payments API',
         workspace: '/workspace/payments-api',
         channels: ['feishu:payments-security'],
+        webhookUrlEnv: 'RADAR_PAYMENTS_URL',
+        webhookSecretEnv: 'RADAR_PAYMENTS_SECRET',
+        notificationPolicy: {
+          minimumSeverity: 'high',
+          quietHours: { timezone: 'Asia/Shanghai', start: '22:00', end: '08:00' },
+        },
         inspect: async (spec) => {
           calls.push(spec)
           return { evidence: { npm: { dependencyAudit: { graph } } } }
@@ -49,6 +55,12 @@ describe('DSH profile initialization', () => {
       assert.equal(config.projects[0]?.project.name, 'Payments API')
       assert.equal(config.projects[0]?.plugins[0]?.package.name, 'demo-plugin')
       assert.equal(config.projects[0]?.plugins[0]?.graph.nodes.length, 2)
+      assert.equal(config.projects[0]?.project.webhookUrlEnv, 'RADAR_PAYMENTS_URL')
+      assert.equal(config.projects[0]?.project.webhookSecretEnv, 'RADAR_PAYMENTS_SECRET')
+      assert.deepEqual(config.projects[0]?.notificationPolicy, {
+        minimumSeverity: 'high',
+        quietHours: { timezone: 'Asia/Shanghai', start: '22:00', end: '08:00' },
+      })
 
       const output = join(root, 'upstream-radar.config.json')
       await writeRadarConfig(config, { output })
@@ -186,6 +198,78 @@ describe('DSH profile initialization', () => {
     }
   })
 
+  it('creates a static Radar inventory from a pnpm lockfile project root', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-init-pnpm-'))
+    try {
+      const lockfile = join(root, 'pnpm-lock.yaml')
+      await writeFile(lockfile, `
+lockfileVersion: '9.0'
+
+importers:
+  .:
+    dependencies:
+      demo-plugin:
+        specifier: 1.0.0
+        version: 1.0.0
+
+packages:
+  'demo-plugin@1.0.0': {}
+  'parser@2.9.0': {}
+
+snapshots:
+  'demo-plugin@1.0.0':
+    dependencies:
+      parser: 2.9.0
+  'parser@2.9.0': {}
+`)
+
+      const config = await createRadarConfigFromPnpmLock({
+        lockfile,
+        root: { name: 'demo-plugin', version: '1.0.0' },
+        projectName: 'Demo DSH plugin',
+        channels: ['stdout'],
+      })
+      assert.equal(config.dshProfile, undefined)
+      assert.equal(config.projects[0]?.project.name, 'Demo DSH plugin')
+      assert.deepEqual(config.projects[0]?.project.channels, ['stdout'])
+      assert.equal(config.projects[0]?.plugins[0]?.graph.source, 'pnpm-lock')
+      assert.equal(config.projects[0]?.plugins[0]?.graph.nodes.length, 2)
+      assert.equal(config.projects[0]?.plugins[0]?.graph.edges.length, 1)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('creates a static Radar inventory from an npm lockfile project root', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-init-npm-'))
+    try {
+      const lockfile = join(root, 'package-lock.json')
+      await writeFile(lockfile, JSON.stringify({
+        lockfileVersion: 3,
+        packages: {
+          '': {
+            name: 'demo-plugin',
+            version: '1.0.0',
+            dependencies: { parser: '2.9.0' },
+          },
+          'node_modules/parser': { version: '2.9.0' },
+        },
+      }))
+
+      const config = await createRadarConfigFromNpmLock({
+        lockfile,
+        root: { name: 'demo-plugin', version: '1.0.0' },
+        projectName: 'Demo npm DSH plugin',
+      })
+      assert.equal(config.projects[0]?.plugins[0]?.graph.source, 'npm-lock')
+      assert.equal(config.projects[0]?.plugins[0]?.graph.rootNodeId, 'npm:workspace-root:demo-plugin@1.0.0')
+      assert.equal(config.projects[0]?.plugins[0]?.graph.nodes.length, 2)
+      assert.equal(config.projects[0]?.plugins[0]?.graph.edges.length, 1)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
   it('refreshes a generated inventory from the current installed profile', async () => {
     const root = await mkdtemp(join(tmpdir(), 'upstream-radar-refresh-'))
     const dshHome = join(root, 'dsh-home')
@@ -214,6 +298,10 @@ describe('DSH profile initialization', () => {
         workspace: '/workspace/demo',
         channels: ['stdout'],
       })
+      config.projects[0]!.notificationPolicy = {
+        minimumSeverity: 'high',
+        quietHours: { timezone: 'Asia/Shanghai', start: '22:00', end: '08:00' },
+      }
       config.dshProfile = { name: 'web' }
 
       await writeFile(join(profile, 'node_modules', 'demo-plugin', 'package.json'), JSON.stringify({
@@ -230,6 +318,7 @@ describe('DSH profile initialization', () => {
       assert.equal(refreshed.projects[0]?.plugins[0]?.package.version, '2.0.0')
       assert.equal(refreshed.projects[0]?.plugins[0]?.graph.nodes.find(node => node.name === 'parser')?.version, '2.0.0')
       assert.deepEqual(refreshed.projects[0]?.project.channels, ['stdout'])
+      assert.deepEqual(refreshed.projects[0]?.notificationPolicy, config.projects[0]?.notificationPolicy)
     } finally {
       await rm(root, { recursive: true, force: true })
     }
@@ -256,6 +345,11 @@ describe('DSH profile initialization', () => {
         name: '@deepseek-ai/dsh-agent',
         version: '0.1.4',
       }))
+      await mkdir(join(hostNodeModules, '@deepseek-ai', 'dsh'), { recursive: true })
+      await writeFile(join(hostNodeModules, '@deepseek-ai', 'dsh', 'package.json'), JSON.stringify({
+        name: '@deepseek-ai/dsh',
+        version: '0.1.0-rc.6',
+      }))
 
       const config = await createRadarConfigFromDshProfile({
         profileDirectory: profile,
@@ -270,7 +364,16 @@ describe('DSH profile initialization', () => {
         hostRuntimeSource: 'dsh-process',
       })
       const graph = refreshed.projects[0]?.plugins[0]?.graph
-      assert.deepEqual(graph?.hostRuntime, { source: 'dsh-process', resolvedNodes: 1 })
+      assert.deepEqual(graph?.hostRuntime, {
+        source: 'dsh-process',
+        resolvedNodes: 2,
+        package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
+      })
+      assert.deepEqual(graph?.edges.find(edge => edge.kind === 'host-runtime'), {
+        from: 'node_modules/demo-plugin',
+        to: 'dsh-host/node_modules/@deepseek-ai/dsh',
+        kind: 'host-runtime',
+      })
       assert.deepEqual(graph?.nodes.find(node => node.name === '@deepseek-ai/dsh-agent'), {
         id: 'dsh-host/node_modules/@deepseek-ai/dsh-agent',
         name: '@deepseek-ai/dsh-agent',

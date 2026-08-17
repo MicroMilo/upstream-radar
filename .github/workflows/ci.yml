@@ -31,6 +31,26 @@ jobs:
       - if: matrix.node == 22
         run: pnpm run try:dsh
       - if: matrix.node == 22
+        run: pnpm run showcase:setup-start
+      - if: matrix.node == 22
         run: pnpm run showcase:dsh-probe
+      - if: matrix.node == 22
+        run: pnpm run showcase:dsh-runtime
+      - if: matrix.node == 22
+        run: pnpm run showcase:dsh-host-alert
+      - if: matrix.node == 22
+        run: pnpm run showcase:github-advisories
+      - if: matrix.node == 22
+        run: pnpm run showcase:threat-intel
+      - if: matrix.node == 22
+        run: pnpm run showcase:quickstart
+      - if: matrix.node == 22
+        run: pnpm run showcase:pnpm-lock
+      - if: matrix.node == 22
+        run: pnpm run showcase:pnpm-lock:monitor
+      - if: matrix.node == 22
+        run: pnpm run showcase:npm-lock:monitor
+      - if: matrix.node == 22
+        run: pnpm run release:check
       - if: matrix.node == 22
         run: pnpm pack --pack-destination /tmp

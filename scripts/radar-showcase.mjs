@@ -4,12 +4,14 @@ import { dirname, join, resolve } from 'node:path'
 import {
   assessCompatibilityChange,
   createAnalysisTask,
+  createRadarHistory,
   emptyRadarState,
   packageKey,
   parsePackageManifestSnapshot,
   parseRadarConfig,
   pollRadar,
   renderAgentAnalysisPrompt,
+  renderRadarHistory,
   renderRadarEvents,
 } from '../dist/src/index.js'
 import { createDshRadarFamilyMessage, groupPendingAnalysisTasks } from '../dist/src/dsh-plugin.js'
@@ -162,6 +164,7 @@ const compatibility = assessCompatibilityChange(config.projects[0], {
   candidateVulnerabilityStatus: 'checked',
   candidateDependencyChecks,
   candidateDependencyStatus: 'checked',
+  activeVulnerabilities: vulnerable.events.filter(event => event.kind === 'vulnerability' || event.kind === 'malware'),
   releaseNotes,
   releaseNotesUrl: 'https://github.com/acme/plugin/releases/tag/v2.0.0',
   detectedAt: '2026-08-14T02:00:00.000Z',
@@ -265,6 +268,7 @@ await save('06-incident-lifecycle.json', {
     afterUpdated: pendingFor(updatedCompatibility, firstEvent.incidentId).length,
     afterResolved: pendingFor(resolvedCompatibility, firstEvent.incidentId).length,
   },
+  transitionHistory: resolvedCompatibility.state.history,
 })
 
 heading(7, 'A source outage is not a clean bill of health')
@@ -321,6 +325,16 @@ await save('08-source-health-lifecycle.json', {
     afterAlert: healthThird.state.pendingAnalysisTasks.length,
     afterRecovery: healthRecovered.state.pendingAnalysisTasks.length,
   },
+  transitionHistory: healthRecovered.state.history,
 })
 
-process.stdout.write('\nShowcase complete: feed change -> exact graph match -> project route -> coordinated DSH notice -> resolved incident -> source outage -> source-health alert and recovery.\n')
+heading(9, 'Inspect the bounded local transition history')
+const history = createRadarHistory(healthRecovered.state, {
+  configFile: './upstream-radar.config.json',
+  stateFile: './upstream-radar.config.json.state.json',
+  stateExists: true,
+  limit: 20,
+})
+process.stdout.write(renderRadarHistory(history))
+
+process.stdout.write('\nShowcase complete: feed change -> exact graph match -> project route -> coordinated DSH notice -> resolved incident -> source outage -> source-health alert and recovery -> local audit history.\n')

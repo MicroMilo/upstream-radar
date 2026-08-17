@@ -6,6 +6,11 @@ export const ANALYSIS_TASK_SCHEMA = 'upstream-radar.analysis-task/v1alpha1' as c
 export const ANALYSIS_DELIVERY_SCHEMA = 'upstream-radar.analysis-delivery/v1alpha1' as const
 export const ANALYSIS_RESULT_SCHEMA = 'upstream-radar.analysis-result/v1alpha1' as const
 export const RADAR_CONFIG_SCHEMA = 'upstream-radar.radar-config/v1alpha1' as const
+export const WEBHOOK_DELIVERY_SCHEMA = 'upstream-radar.webhook-delivery/v1alpha1' as const
+export const RADAR_HISTORY_SCHEMA = 'upstream-radar.radar-history/v1alpha1' as const
+
+/** The state file is a durable monitor, not an unbounded event database. */
+export const MAX_RADAR_HISTORY_EVENTS = 1_000
 
 export type PackageEcosystem = 'npm'
 
@@ -15,9 +20,25 @@ export interface PackageCoordinate {
   version: string
 }
 
-export type DependencyKind = 'runtime' | 'development' | 'optional' | 'peer'
+/** `host-runtime` is a synthetic boundary from a plugin into the DSH process. */
+export type DependencyKind = 'runtime' | 'development' | 'optional' | 'peer' | 'host-runtime'
 export type DependencySource = 'profile' | 'dsh-host'
 export type DependencyHostRuntimeSource = 'dsh-profile-fallback' | 'dsh-process'
+/** Vulnerability databases that can independently confirm one advisory. */
+export type AdvisorySourceName = 'osv' | 'github-advisories'
+/** External signals that help prioritize an advisory without changing whether it matches. */
+export type ThreatIntelSourceName = 'cisa-kev' | 'epss'
+export type AdvisoryConflictField = 'severity' | 'fixed-versions'
+
+export interface AdvisoryConflictClaim {
+  source: AdvisorySourceName
+  value: string
+}
+
+export interface AdvisoryConflict {
+  field: AdvisoryConflictField
+  claims: AdvisoryConflictClaim[]
+}
 
 /** One physical package location. Duplicate name/version pairs remain distinct nodes. */
 export interface DependencyNode {
@@ -40,11 +61,13 @@ export interface DependencyGraph {
   nodes: DependencyNode[]
   edges: DependencyEdge[]
   /** How the physical graph was obtained. Older configs may omit this field. */
-  source?: 'npm-lock' | 'installed-node-modules'
+  source?: 'npm-lock' | 'pnpm-lock' | 'installed-node-modules'
   /** Evidence that DSH's shared host dependency plane was included. */
   hostRuntime?: {
     source: DependencyHostRuntimeSource
     resolvedNodes: number
+    /** The exact DSH executable package that owns this shared host plane. */
+    package?: PackageCoordinate
   }
   digest?: string
   unresolved?: Array<{
@@ -83,6 +106,10 @@ export interface ProjectReference {
   workspace?: string
   owner?: string
   channels?: string[]
+  /** Environment variable containing this project's HTTPS webhook URL. */
+  webhookUrlEnv?: string
+  /** Optional environment variable containing the Feishu/Lark V2 signing secret. */
+  webhookSecretEnv?: string
 }
 
 export interface ProjectInventory {
@@ -91,6 +118,8 @@ export interface ProjectInventory {
   environment?: {
     nodeVersion?: string
   }
+  /** Optional delivery-only policy; active matches and history are never filtered by it. */
+  notificationPolicy?: RadarNotificationPolicy
   plugins: PluginInstallation[]
 }
 
@@ -105,6 +134,21 @@ export interface RadarConfig {
 
 export type RadarSeverity = 'unknown' | 'info' | 'low' | 'medium' | 'high' | 'critical'
 
+/**
+ * Controls when a project receives a DSH/webhook notice. It deliberately does
+ * not change what Radar scans or persists.
+ */
+export interface RadarNotificationPolicy {
+  /** Vulnerability notices below this level stay queued but are not delivered. */
+  minimumSeverity?: Exclude<RadarSeverity, 'unknown'>
+  /** An IANA timezone and a daily half-open interval in local wall-clock time. */
+  quietHours?: {
+    timezone: string
+    start: string
+    end: string
+  }
+}
+
 export interface VulnerabilityAdvisory {
   id: string
   aliases: string[]
@@ -116,6 +160,35 @@ export interface VulnerabilityAdvisory {
   withdrawn?: string
   fixedVersions: string[]
   references: string[]
+  /** Databases that supplied or confirmed this advisory; absent in legacy state. */
+  sources?: AdvisorySourceName[]
+  /** Non-fatal disagreements between independent advisory databases. */
+  conflicts?: AdvisoryConflict[]
+  /** Positive prioritization signals; absence is not a claim that a CVE is safe. */
+  riskSignals?: AdvisoryRiskSignals
+}
+
+export interface CisaKevSignal {
+  /** CISA lists this CVE as exploited in the wild. */
+  knownExploited: true
+  dateAdded?: string
+  dueDate?: string
+  knownRansomwareCampaignUse?: string
+  requiredAction?: string
+  notes?: string
+}
+
+export interface EpssSignal {
+  /** FIRST's daily estimated probability that the CVE will be exploited in the next 30 days. */
+  score: number
+  /** The CVE's percentile among the EPSS-scored CVEs, in the range 0..1. */
+  percentile: number
+  date?: string
+}
+
+export interface AdvisoryRiskSignals {
+  cisaKev?: CisaKevSignal
+  epss?: EpssSignal
 }
 
 export interface AdvisoryMatch {
@@ -153,6 +226,8 @@ interface RadarEventBase {
 export interface VulnerabilityEvent extends RadarEventBase {
   kind: 'vulnerability' | 'malware'
   plugin: PackageCoordinate
+  /** When a shared DSH host-runtime event spans several plugin roots, retain every affected root. */
+  affectedPlugins?: PackageCoordinate[]
   affected: PackageCoordinate
   /** Physical origins of the affected package; absent for legacy/npm-lock graphs. */
   affectedSources?: DependencySource[]
@@ -181,17 +256,33 @@ export interface CompatibilityDependencyCheck {
   nodeCount: number
   unresolvedCount: number
   findings: CompatibilityDependencyFinding[]
+  /** True when the bounded finding list may omit additional matching advisories. */
+  findingsTruncated?: boolean
   error?: string
+}
+
+export type CompatibilityVulnerabilityRemediationStatus = 'removed' | 'still-affected' | 'unknown'
+
+/** Whether one candidate removes every currently known path for one active advisory. */
+export interface CompatibilityVulnerabilityRemediation {
+  incidentId: string
+  advisoryId: string
+  affected: PackageCoordinate
+  status: CompatibilityVulnerabilityRemediationStatus
+  reason: string
+  remainingPaths?: PackageCoordinate[][]
 }
 
 export interface CompatibilityUpgradeCandidate {
   candidate: PackageCoordinate
   signals: CompatibilitySignal[]
   dependencyCheck?: CompatibilityDependencyCheck
+  vulnerabilityRemediation?: CompatibilityVulnerabilityRemediation[]
 }
 
 export type CompatibilityVulnerabilityStatus = 'checked' | 'unavailable' | 'not-requested'
 export type CompatibilityDependencyStatus = 'checked' | 'partial' | 'unavailable' | 'not-requested'
+export type CompatibilityRemediationCoverage = 'checked' | 'partial' | 'unavailable' | 'not-requested'
 
 /** A bounded explanation of which intermediate release is worth analyzing first. */
 export interface CompatibilityUpgradePath {
@@ -207,6 +298,10 @@ export interface CompatibilityUpgradePath {
   uncheckedCount?: number
   /** The first candidate without a deterministic blocker; this is not a safety verdict. */
   firstCandidate?: CompatibilityUpgradeCandidate
+  /** Whether active vulnerability paths could be compared against candidate graphs. */
+  remediationCoverage?: CompatibilityRemediationCoverage
+  /** The first non-blocked candidate that removes all checked active vulnerability paths. */
+  firstCandidateRemovingAllPaths?: CompatibilityUpgradeCandidate
   /** A small sample of blocked candidates, kept for an actionable alert. */
   blocked: CompatibilityUpgradeCandidate[]
 }
@@ -222,7 +317,7 @@ export interface CompatibilityEvent extends RadarEventBase {
   releaseNotesUrl?: string
 }
 
-export type RadarSource = 'osv' | 'npm-releases' | 'npm-candidate-graphs' | 'github-releases'
+export type RadarSource = AdvisorySourceName | ThreatIntelSourceName | 'npm-releases' | 'npm-candidate-graphs' | 'github-releases'
 
 export interface SourceHealthStatus {
   lastAttemptedAt: string
@@ -316,6 +411,49 @@ export interface RadarState {
   analysisResults?: Record<string, StoredAnalysisResult>
   sourceHealth?: Record<string, SourceHealthStatus>
   activeSourceHealth?: Record<string, StoredSourceHealthMatch>
+  /** Most recent state transitions, retained for local audit and diagnosis. */
+  history?: RadarEvent[]
+  /** Event ids successfully delivered to the currently configured webhook endpoint. */
+  webhook?: WebhookDeliveryState
+  /** Per-project webhook ledgers keyed by endpoint fingerprint; URLs and secrets stay out of state. */
+  webhookRoutes?: Record<string, WebhookDeliveryState>
+  /** Per-incident delivery mutes; active evidence remains in the state and status view. */
+  incidentMutes?: Record<string, RadarIncidentMute>
+  /** Human follow-up state; the event id prevents an old decision from covering a new fact. */
+  incidentTriage?: Record<string, RadarIncidentTriage>
+}
+
+export interface RadarIncidentMute {
+  /** The exact event version the user muted; a later update is delivered again. */
+  eventId: string
+  /** An explicit future expiry; mutes never persist indefinitely. */
+  mutedUntil: string
+}
+
+export type RadarIncidentTriageStatus = 'open' | 'in-progress' | 'blocked' | 'accepted-risk'
+
+export interface RadarIncidentTriage {
+  /** The exact event version the person reviewed. */
+  eventId: string
+  /** Human workflow state; this never claims that the upstream finding is resolved. */
+  status: RadarIncidentTriageStatus
+  /** Team, person, or queue responsible for the next action. */
+  owner?: string
+  /** Short context for the handoff or risk decision. */
+  note?: string
+  /** Optional human deadline; passing it never changes the upstream finding. */
+  dueAt?: string
+  /** When this follow-up record was last changed. */
+  updatedAt: string
+}
+
+export interface WebhookDeliveryState {
+  schema: typeof WEBHOOK_DELIVERY_SCHEMA
+  /** SHA-256 of the normalized endpoint; the secret URL is never persisted. */
+  endpointHash: string
+  deliveredEventIds: Record<string, string>
+  /** Changed events waiting for a quiet window or a retry; event evidence is retained verbatim. */
+  pendingEvents?: RadarEvent[]
 }
 
 export interface AnalysisTask {

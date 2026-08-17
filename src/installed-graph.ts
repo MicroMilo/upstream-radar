@@ -9,12 +9,14 @@ import {
   type DependencyGraph,
   type DependencyKind,
   type DependencyNode,
+  type PackageCoordinate,
   type PackageManifestSnapshot,
 } from './radar-types.js'
 
 const MAX_MANIFEST_BYTES = 8 * 1024 * 1024
 const MAX_NODES = 100_000
 const MAX_EDGES = 250_000
+const DSH_RUNTIME_PACKAGE_NAME = '@deepseek-ai/dsh'
 
 interface RootPackage {
   name: string
@@ -26,6 +28,25 @@ interface InstalledPackage {
   directory: string
   source: 'profile' | 'dsh-host'
   manifest: PackageManifestSnapshot
+}
+
+const HOST_RUNTIME_EDGE_KIND: DependencyKind = 'host-runtime'
+
+/**
+ * Installed npm manifests are source material, not Radar configuration. Some
+ * packages in the DSH host tree publish an empty or non-string optional
+ * `main`/`type` field; it carries no dependency information, so omit it only
+ * at this read-only graph boundary and keep the stricter inventory parser
+ * unchanged.
+ */
+function parseInstalledManifestSnapshot(value: unknown): PackageManifestSnapshot {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return parsePackageManifestSnapshot(value)
+  }
+  const normalized = { ...(value as Record<string, unknown>) }
+  if (typeof normalized.main !== 'string' || normalized.main.length === 0) delete normalized.main
+  if (typeof normalized.type !== 'string' || normalized.type.length === 0) delete normalized.type
+  return parsePackageManifestSnapshot(normalized)
 }
 
 function asStringRecord(value: unknown): Record<string, string> {
@@ -100,7 +121,7 @@ async function readProfileManifest(
   } catch {
     throw new Error(`installed package manifest is not valid JSON: ${packageDirectory}`)
   }
-  const manifest = parsePackageManifestSnapshot(parsed)
+  const manifest = parseInstalledManifestSnapshot(parsed)
   return { id: nodeId(profileRoot, packageDirectory), directory: packageDirectory, source: 'profile', manifest }
 }
 
@@ -120,13 +141,34 @@ async function readHostManifest(
   } catch {
     throw new Error(`DSH host package manifest is not valid JSON: ${packageDirectory}`)
   }
-  const manifest = parsePackageManifestSnapshot(parsed)
+  const manifest = parseInstalledManifestSnapshot(parsed)
   return {
     id: hostNodeId(hostNodeModulesDirectory, packageDirectory),
     directory: realDirectory,
     source: 'dsh-host',
     manifest,
   }
+}
+
+/** Read the DSH executable package when it lives beside, rather than inside, its dependency plane. */
+async function readRuntimeManifest(packageDirectory: string): Promise<InstalledPackage> {
+  const realDirectory = await realpath(packageDirectory)
+  const manifestPath = await realpath(join(packageDirectory, 'package.json'))
+  const contents = await readFile(manifestPath, 'utf8')
+  if (Buffer.byteLength(contents) > MAX_MANIFEST_BYTES) {
+    throw new Error(`DSH runtime package manifest exceeds the ${MAX_MANIFEST_BYTES} byte limit: ${packageDirectory}`)
+  }
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(contents) as unknown
+  } catch {
+    throw new Error(`DSH runtime package manifest is not valid JSON: ${packageDirectory}`)
+  }
+  const manifest = parseInstalledManifestSnapshot(parsed)
+  if (manifest.name !== DSH_RUNTIME_PACKAGE_NAME) {
+    throw new Error(`DSH runtime package manifest name does not match ${DSH_RUNTIME_PACKAGE_NAME}: ${packageDirectory}`)
+  }
+  return { id: 'dsh-host/runtime', directory: realDirectory, source: 'dsh-host', manifest }
 }
 
 async function findProfilePackage(
@@ -178,7 +220,12 @@ async function findHostPackage(
 export async function parseInstalledNodeModulesGraph(
   profileDirectory: string,
   rootPackage: RootPackage,
-  options: { hostNodeModulesDirectory?: string; hostRuntimeSource?: DependencyHostRuntimeSource } = {},
+  options: {
+    hostNodeModulesDirectory?: string
+    hostRuntimeSource?: DependencyHostRuntimeSource
+    hostRuntimePackage?: PackageCoordinate
+    hostRuntimePackageDirectory?: string
+  } = {},
 ): Promise<DependencyGraph> {
   const profileRoot = resolve(profileDirectory)
   const profileRootReal = await realpath(profileRoot)
@@ -195,6 +242,10 @@ export async function parseInstalledNodeModulesGraph(
     }
   }
   if (!isPackageName(rootPackage.name)) throw new Error(`invalid installed root package name: ${rootPackage.name}`)
+  if (options.hostRuntimePackage !== undefined
+    && (options.hostRuntimePackage.ecosystem !== 'npm' || options.hostRuntimePackage.name !== DSH_RUNTIME_PACKAGE_NAME)) {
+    throw new Error(`DSH host runtime package must be ${DSH_RUNTIME_PACKAGE_NAME}`)
+  }
   const root = await findProfilePackage(profileRoot, rootPackage.name, profileRoot, profileRootReal)
   if (root === undefined) {
     throw new Error(`installed root package is not present in the DSH profile: ${rootPackage.name}@${rootPackage.version}`)
@@ -207,6 +258,52 @@ export async function parseInstalledNodeModulesGraph(
   const edges: DependencyEdge[] = []
   const unresolved: NonNullable<DependencyGraph['unresolved']> = []
   const queue = [root.id]
+  if (hostNodeModulesDirectoryReal !== undefined && options.hostRuntimePackage !== undefined) {
+    const resolvedHostNodeModulesDirectory = hostNodeModulesDirectory
+    if (resolvedHostNodeModulesDirectory === undefined) throw new Error('DSH host dependency plane is unexpectedly unavailable')
+    const runtimePackageDirectory = options.hostRuntimePackageDirectory
+    let runtimeRoot: InstalledPackage | undefined
+    if (runtimePackageDirectory !== undefined) {
+      let runtimeDirectoryReal: string | undefined
+      try {
+        runtimeDirectoryReal = await realpath(runtimePackageDirectory)
+      } catch (error: unknown) {
+        const code = (error as NodeJS.ErrnoException).code
+        if (code !== 'ENOENT' && code !== 'ENOTDIR') throw error
+      }
+      if (runtimeDirectoryReal !== undefined) {
+        runtimeRoot = isLexicallyInside(hostNodeModulesDirectoryReal, runtimeDirectoryReal)
+          ? await readHostManifest(runtimePackageDirectory, resolvedHostNodeModulesDirectory)
+          : await readRuntimeManifest(runtimePackageDirectory)
+      }
+    } else {
+      runtimeRoot = await findHostPackage('@deepseek-ai/dsh', resolvedHostNodeModulesDirectory)
+    }
+    if (runtimeRoot !== undefined) {
+      if (runtimeRoot.manifest.name !== options.hostRuntimePackage.name) {
+        throw new Error(`DSH runtime package manifest name does not match discovered coordinate: expected ${options.hostRuntimePackage.name}, found ${runtimeRoot.manifest.name}`)
+      }
+      if (runtimeRoot.manifest.version !== options.hostRuntimePackage.version) {
+        throw new Error(`DSH runtime package does not match discovered coordinate: expected @deepseek-ai/dsh@${options.hostRuntimePackage.version}, found ${runtimeRoot.manifest.version}`)
+      }
+      if (!packages.has(runtimeRoot.id)) {
+        if (packages.size >= MAX_NODES) throw new Error(`installed dependency graph exceeds the ${MAX_NODES} node limit`)
+        packages.set(runtimeRoot.id, runtimeRoot)
+        queue.push(runtimeRoot.id)
+      }
+      if (!edges.some(edge => edge.from === root.id && edge.to === runtimeRoot.id && edge.kind === HOST_RUNTIME_EDGE_KIND)) {
+        if (edges.length >= MAX_EDGES) throw new Error(`installed dependency graph exceeds the ${MAX_EDGES} edge limit`)
+        edges.push({ from: root.id, to: runtimeRoot.id, kind: HOST_RUNTIME_EDGE_KIND })
+      }
+    } else {
+      unresolved.push({
+        from: root.id,
+        name: options.hostRuntimePackage.name,
+        kind: HOST_RUNTIME_EDGE_KIND,
+        spec: `=${options.hostRuntimePackage.version}`,
+      })
+    }
+  }
   for (let index = 0; index < queue.length; index += 1) {
     const currentId = queue[index]
     if (currentId === undefined) break
@@ -251,6 +348,7 @@ export async function parseInstalledNodeModulesGraph(
       hostRuntime: {
         source: options.hostRuntimeSource ?? 'dsh-profile-fallback',
         resolvedNodes: [...packages.values()].filter(item => item.source === 'dsh-host').length,
+        ...(options.hostRuntimePackage === undefined ? {} : { package: { ...options.hostRuntimePackage } }),
       },
     }),
     ...(reachableUnresolved.length === 0 ? {} : { unresolved: reachableUnresolved }),

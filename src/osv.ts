@@ -154,6 +154,7 @@ function parseAdvisory(value: unknown, packageName: string): VulnerabilityAdviso
     ...(withdrawn === undefined ? {} : { withdrawn }),
     fixedVersions: [...fixedVersions].sort(),
     references,
+    sources: ['osv'],
   }
 }
 

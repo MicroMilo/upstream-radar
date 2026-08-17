@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
+  - name: Share a DSH trial result
+    url: https://github.com/MicroMilo/upstream-radar/issues/new?template=trial.yml
+    about: Tell us what worked, what was confusing, and what should improve after a real DSH trial.
   - name: Questions and DSH integration ideas
     url: https://github.com/MicroMilo/upstream-radar/discussions
     about: Ask how to connect Radar to a DSH profile or share a real monitoring scenario.

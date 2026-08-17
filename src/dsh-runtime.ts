@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
+import type { PackageCoordinate } from './radar-types.js'
 
 const MAX_MANIFEST_BYTES = 1 * 1024 * 1024
 const MAX_ANCESTORS = 64
@@ -44,6 +45,11 @@ function packageRoot(entrypoint: string): string | undefined {
   return undefined
 }
 
+function runtimePackage(root: string): PackageCoordinate | undefined {
+  const manifest = packageManifest(join(root, 'package.json'))
+  return manifest === undefined ? undefined : { ecosystem: 'npm', ...manifest }
+}
+
 function usableNodeModulesDirectory(path: string): string | undefined {
   try {
     const resolved = realpathSync(path)
@@ -83,4 +89,28 @@ export function discoverDshRuntimeNodeModulesDirectory(
   const root = packageRoot(entrypoint)
   if (root === undefined) return undefined
   return runtimeNodeModulesDirectory(root)
+}
+
+/** Read the exact DSH executable package without importing or executing DSH. */
+export function discoverDshRuntimePackage(
+  entrypoint = process.argv[1],
+): PackageCoordinate | undefined {
+  const root = discoverDshRuntimePackageDirectory(entrypoint)
+  return root === undefined ? undefined : runtimePackage(root)
+}
+
+/** Locate the exact DSH package root without importing or executing it. */
+export function discoverDshRuntimePackageDirectory(
+  entrypoint = process.argv[1],
+): string | undefined {
+  if (typeof entrypoint !== 'string' || entrypoint.trim() === '') return undefined
+  return packageRoot(entrypoint)
+}
+
+/** Read the exact DSH executable package from a known shared host plane. */
+export function discoverDshRuntimePackageFromNodeModulesDirectory(
+  nodeModulesDirectory: string,
+): PackageCoordinate | undefined {
+  if (typeof nodeModulesDirectory !== 'string' || nodeModulesDirectory.trim() === '') return undefined
+  return runtimePackage(join(resolve(nodeModulesDirectory), '@deepseek-ai', 'dsh'))
 }

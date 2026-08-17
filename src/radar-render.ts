@@ -1,4 +1,5 @@
-import type { CompatibilityEvent, DependencySource, RadarEvent, VulnerabilityEvent } from './radar-types.js'
+import type { AdvisoryConflict, AdvisorySourceName, CompatibilityEvent, DependencySource, RadarEvent, VulnerabilityEvent } from './radar-types.js'
+import { renderVulnerabilityPriority, vulnerabilityPriority } from './vulnerability-priority.js'
 
 function display(value: string, max = 2_048): string {
   const escaped = value.replace(/[\u0000-\u001f\u007f-\u009f]/g, character => (
@@ -22,25 +23,114 @@ function dependencySourcesLabel(sources: readonly DependencySource[]): string {
     .join(' + ')
 }
 
+function advisorySourcesLabel(sources: readonly AdvisorySourceName[]): string {
+  return (['osv', 'github-advisories'] as const)
+    .filter(source => sources.includes(source))
+    .map(source => source === 'github-advisories' ? 'GitHub Advisory Database' : 'OSV')
+    .join(' + ')
+}
+
+function advisoryConflictFieldLabel(field: AdvisoryConflict['field']): string {
+  return field === 'severity' ? 'severity' : 'fixed versions'
+}
+
+function advisoryConflictSourceLabel(source: AdvisorySourceName): string {
+  return source === 'github-advisories' ? 'GitHub Advisory Database' : 'OSV'
+}
+
+function advisoryConflictLabel(conflict: AdvisoryConflict): string {
+  return `Source conflict: ${advisoryConflictFieldLabel(conflict.field)} — ${conflict.claims
+    .map(claim => `${advisoryConflictSourceLabel(claim.source)}=${display(claim.value)}`)
+    .join('; ')}`
+}
+
+function advisoryRiskSignalLines(event: VulnerabilityEvent): string[] {
+  const signals = event.advisory.riskSignals
+  if (signals === undefined) return []
+  const lines: string[] = [`Priority for handling: ${renderVulnerabilityPriority(vulnerabilityPriority(event))}`]
+  if (signals.cisaKev !== undefined) {
+    lines.push('Threat signal: CISA KEV lists this CVE as exploited in the wild.')
+    if (signals.cisaKev.dateAdded !== undefined) lines.push(`CISA KEV date added: ${display(signals.cisaKev.dateAdded)}`)
+    if (signals.cisaKev.dueDate !== undefined) lines.push(`CISA KEV due date: ${display(signals.cisaKev.dueDate)}`)
+    if (signals.cisaKev.knownRansomwareCampaignUse !== undefined) {
+      lines.push(`CISA ransomware campaign use: ${display(signals.cisaKev.knownRansomwareCampaignUse)}`)
+    }
+  }
+  if (signals.epss !== undefined) {
+    lines.push(`FIRST EPSS estimated exploitation probability: ${(signals.epss.score * 100).toFixed(1)}% (percentile ${(signals.epss.percentile * 100).toFixed(1)}%)`)
+    if (signals.epss.date !== undefined) lines.push(`FIRST EPSS score date: ${display(signals.epss.date)}`)
+  }
+  return lines
+}
+
+function vulnerabilityPluginScope(event: VulnerabilityEvent): string {
+  if (event.affectedPlugins === undefined || event.affectedPlugins.length <= 1) return packageLabel(event.plugin)
+  return `the shared DSH host runtime used by ${event.affectedPlugins.map(packageLabel).join(', ')}`
+}
+
+function vulnerabilityNextStep(event: VulnerabilityEvent): string {
+  if (event.change === 'resolved') return 'No action required; confirm the installed graph no longer matches this incident.'
+  if (event.kind === 'malware') return `Remove or isolate ${vulnerabilityPluginScope(event)} and ask the DSH Agent to assess project exposure.`
+  const fixedVersions = event.advisory.fixedVersions.slice(0, 4).map(item => display(item)).join(', ')
+  return fixedVersions.length === 0
+    ? `No published fix is recorded; ask the DSH Agent to assess containment or replacement for ${vulnerabilityPluginScope(event)}.`
+    : `Review ${packageLabel(event.affected)} fixed version(s) ${fixedVersions} with the DSH Agent before changing the plugin.`
+}
+
+function compatibilityNextStep(event: CompatibilityEvent): string {
+  if (event.change === 'resolved') return 'No action required; confirm the current graph and source are up to date.'
+  const remediationCandidate = event.upgradePath?.firstCandidateRemovingAllPaths?.candidate
+  if (remediationCandidate !== undefined) {
+    return `Ask the DSH Agent to inspect project impact before applying ${packageLabel(remediationCandidate)}; it removes all checked vulnerability paths.`
+  }
+  const candidate = event.upgradePath?.firstCandidate?.candidate ?? event.candidate
+  return `Ask the DSH Agent to inspect project impact before applying ${packageLabel(candidate)}.`
+}
+
+function sourceHealthNextStep(event: Extract<RadarEvent, { kind: 'source-health' }>): string {
+  return event.change === 'resolved'
+    ? 'No action required; continue monitoring.'
+    : `Restore ${display(event.source)} before treating the absence of new alerts as a clean result.`
+}
+
 function renderVulnerability(event: VulnerabilityEvent): string[] {
   const severity = event.kind === 'malware' ? 'CRITICAL' : event.advisory.severity.toUpperCase()
   const lines = [
     `[${severity}][${event.change.toUpperCase()}] ${event.kind === 'malware' ? 'Malicious package' : 'Dependency vulnerability'}`,
     `Project: ${display(event.project.name)} (${display(event.project.id)})`,
-    `Plugin: ${packageLabel(event.plugin)}`,
+    ...(event.affectedPlugins === undefined
+      ? [`Plugin: ${packageLabel(event.plugin)}`]
+      : [
+          `Plugins: ${event.affectedPlugins.map(packageLabel).join(', ')}`,
+          'Scope: shared DSH host runtime (one event covers these plugins)',
+        ]),
     `Affected: ${packageLabel(event.affected)}`,
     ...(event.affectedSources === undefined || event.affectedSources.length === 0
       ? []
       : [`Origin: ${dependencySourcesLabel(event.affectedSources)}`]),
     `Advisory: ${display(event.advisory.id)}${event.advisory.aliases.length === 0 ? '' : ` / ${event.advisory.aliases.map(item => display(item)).join(', ')}`}`,
+    ...(event.advisory.sources === undefined || event.advisory.sources.length === 0
+      ? []
+      : [`Sources: ${advisorySourcesLabel(event.advisory.sources)}`]),
+    ...(event.advisory.conflicts ?? []).map(advisoryConflictLabel),
+    ...advisoryRiskSignalLines(event),
     `Summary: ${display(event.advisory.summary)}`,
   ]
   if (event.paths.length > 0) {
     lines.push('Paths:')
     for (const path of event.paths) lines.push(`  ${path.map(packageLabel).join(' -> ')}`)
   }
+  if (event.affectedSources?.includes('dsh-host') === true) {
+    const directBoundary = event.paths.some(path => path.length === 1
+      && path[0]?.name === event.affected.name
+      && path[0]?.version === event.affected.version)
+    lines.push(directBoundary
+      ? 'Path note: this one-node path is the exact DSH host-runtime boundary, not a plugin dependency edge.'
+      : 'Path note: this finding crosses the shared DSH host-runtime boundary; the path does not mean the plugin declared every host package directly.')
+  }
   lines.push(`Fixed versions: ${event.advisory.fixedVersions.length === 0 ? 'none published' : event.advisory.fixedVersions.map(item => display(item)).join(', ')}`)
   lines.push(`Route: ${event.route.owner === undefined ? '(no owner)' : display(event.route.owner)} via ${event.route.channels.map(item => display(item)).join(', ')}`)
+  lines.push(`Next: ${vulnerabilityNextStep(event)}`)
   return lines
 }
 
@@ -76,6 +166,19 @@ function renderCompatibility(event: CompatibilityEvent): string[] {
     }
     lines.push(`Candidate OSV check: ${vulnerabilityStatus === 'checked' ? 'complete' : vulnerabilityStatus === 'unavailable' ? 'unavailable' : 'not requested'}`)
     lines.push(`Candidate dependency graph check: ${dependencyStatus === 'checked' ? 'complete' : dependencyStatus === 'partial' ? 'bounded prefix only' : dependencyStatus === 'unavailable' ? 'unavailable' : 'not requested'}${(event.upgradePath.uncheckedCount ?? 0) === 0 ? '' : `; ${event.upgradePath.uncheckedCount} candidate(s) not fully checked`}`)
+    if (event.upgradePath.remediationCoverage !== undefined) {
+      const coverage = event.upgradePath.remediationCoverage
+      lines.push(`Vulnerability remediation check: ${coverage === 'checked' ? 'complete' : coverage === 'partial' ? 'bounded prefix only' : coverage === 'unavailable' ? 'unavailable' : 'not requested'}`)
+      if (event.upgradePath.firstCandidateRemovingAllPaths !== undefined) {
+        const remediation = event.upgradePath.firstCandidateRemovingAllPaths
+        lines.push(`First checked candidate removing all known vulnerability paths: ${packageLabel(remediation.candidate)} (still requires project analysis)`)
+        for (const item of remediation.vulnerabilityRemediation ?? []) {
+          lines.push(`  ${display(item.advisoryId)}: ${item.status}; ${display(item.reason)}`)
+        }
+      } else if (coverage === 'checked') {
+        lines.push('No checked candidate removes all known vulnerability paths without a deterministic blocker.')
+      }
+    }
     lines.push(`Upgrade candidates evaluated: ${event.upgradePath.evaluated}; deterministic blockers: ${event.upgradePath.blockedCount}`)
     if (event.upgradePath.blocked.length > 0) {
       lines.push('Blocked candidate samples:')
@@ -89,6 +192,7 @@ function renderCompatibility(event: CompatibilityEvent): string[] {
   }
   if (event.releaseNotesUrl !== undefined) lines.push(`Release notes: ${display(event.releaseNotesUrl)}`)
   lines.push(`Route: ${event.route.owner === undefined ? '(no owner)' : display(event.route.owner)} via ${event.route.channels.map(item => display(item)).join(', ')}`)
+  lines.push(`Next: ${compatibilityNextStep(event)}`)
   return lines
 }
 
@@ -104,6 +208,7 @@ function renderSourceHealth(event: Extract<RadarEvent, { kind: 'source-health' }
   if (event.lastSucceededAt !== undefined) lines.push(`Last succeeded: ${display(event.lastSucceededAt)}`)
   if (event.error !== undefined) lines.push(`Error: ${display(event.error)}`)
   lines.push(`Route: ${event.route.owner === undefined ? '(no owner)' : display(event.route.owner)} via ${event.route.channels.map(item => display(item)).join(', ')}`)
+  lines.push(`Next: ${sourceHealthNextStep(event)}`)
   return lines
 }
 

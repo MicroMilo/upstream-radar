@@ -15,11 +15,16 @@ To try the DSH-first setup against a disposable profile, install a bundle and ge
 
 ```bash
 dsh plugin --profile contributor-qa add dsh-cloudflare-browser-run@0.1.1
-pnpm dlx upstream-radar@latest init \
+pnpm dlx --package=upstream-radar@latest upstream-radar init \
   --profile contributor-qa \
   --project-name "Contributor QA" \
   --output ./upstream-radar.config.json
 ```
+
+Before this step, make sure the DSH command is available by running `dsh --help`.
+If you want to reproduce the complete first-use path against a real published
+bundle, run `pnpm run showcase:dsh-adoption`; it uses a disposable DSH home and
+does not start an Agent or execute plugin business actions.
 
 The default generated graph is a reviewable view of the profile's installed `node_modules` tree plus DSH's shared host-runtime plane. A profile that has unresolved required declarations keeps them as incomplete coverage; optional platform packages remain visible without creating a required-dependency alert. When the generated `--dsh-patch` overlay is used, the graph is rebuilt before each native DSH poll. Pass `--registry <url>` only when you intentionally want to compare against public npm resolution.
 

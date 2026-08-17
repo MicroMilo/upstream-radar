@@ -2,22 +2,34 @@ import type {
   CompatibilityEvent,
   RadarConfig,
   RadarEvent,
+  RadarIncidentTriage,
   RadarSeverity,
   RadarSource,
   RadarState,
   DependencyHostRuntimeSource,
   SourceHealthEvent,
   SourceHealthStatus,
+  StoredAnalysisResult,
   VulnerabilityEvent,
 } from './radar-types.js'
+import { countPolicyHeldAnalysisTasks, createNotificationPolicyMap, isRadarIncidentMuted } from './notification-policy.js'
+import { renderVulnerabilityPriority, vulnerabilityPriority, type VulnerabilityPriorityEvidence } from './vulnerability-priority.js'
 
 export const RADAR_STATUS_SCHEMA = 'upstream-radar.radar-status/v1alpha1' as const
+export const RADAR_NEXT_SCHEMA = 'upstream-radar.radar-next/v1alpha1' as const
 
-const RADAR_SOURCES: readonly RadarSource[] = ['osv', 'npm-releases', 'npm-candidate-graphs', 'github-releases']
+const RADAR_SOURCES: readonly RadarSource[] = ['osv', 'github-advisories', 'cisa-kev', 'epss', 'npm-releases', 'npm-candidate-graphs', 'github-releases']
 
 export type RadarMonitoringStatus = 'not-started' | 'healthy' | 'degraded'
 export type RadarSourceStatus = 'not-run' | 'healthy' | 'degraded'
 export type RadarCoverageStatus = 'complete' | 'incomplete'
+
+/**
+ * Evidence used to order active vulnerability incidents for human triage.
+ * Missing fields mean that Radar did not retain that signal; they are not a
+ * claim that the incident is safe.
+ */
+export interface RadarStatusTriage extends VulnerabilityPriorityEvidence {}
 
 export interface RadarStatusIncident {
   incidentId: string
@@ -26,6 +38,10 @@ export interface RadarStatusIncident {
   project: string
   summary: string
   nextStep: string
+  triage?: RadarStatusTriage
+  mutedUntil?: string
+  followUp?: RadarIncidentTriage
+  followUpOverdue?: boolean
 }
 
 export interface RadarStatusSource {
@@ -62,16 +78,35 @@ export interface RadarStatusReport {
   activeCompatibility: number
   activeSourceHealth: number
   pendingAnalysisTasks: number
+  /** Tasks still retained in the outbox but currently held by project policy. */
+  notificationPolicyHeldTasks: number
   analysisDeliveries: number
   analysisResults: number
   activeIncidents: RadarStatusIncident[]
   activeIncidentOverflow: number
 }
 
+export interface RadarNextReport {
+  schema: typeof RADAR_NEXT_SCHEMA
+  configFile: string
+  stateFile: string
+  stateExists: boolean
+  monitoring: RadarMonitoringStatus
+  coverage: RadarCoverageStatus
+  activeIncident?: RadarStatusIncident
+  pendingAnalysisTaskId?: string
+  verifiedAnalysis?: StoredAnalysisResult
+  nextCommand: string
+  acknowledgeCommand?: string
+  unmuteCommand?: string
+  triageCommand?: string
+}
+
 export interface CreateRadarStatusOptions {
   configFile: string
   stateFile: string
   stateExists: boolean
+  now?: Date
 }
 
 function sourceStatus(source: RadarSource, status: SourceHealthStatus | undefined): RadarStatusSource {
@@ -99,15 +134,40 @@ function packageLabel(value: { name: string; version: string }): string {
   return `${display(value.name)}@${display(value.version)}`
 }
 
+function vulnerabilityPluginScope(event: VulnerabilityEvent): string {
+  if (event.affectedPlugins === undefined || event.affectedPlugins.length <= 1) return packageLabel(event.plugin)
+  return `the shared DSH host runtime used by ${event.affectedPlugins.map(packageLabel).join(', ')}`
+}
+
 function sourceLabel(source: RadarSource): string {
   if (source === 'osv') return 'OSV'
+  if (source === 'github-advisories') return 'GitHub Advisory Database'
+  if (source === 'cisa-kev') return 'CISA KEV'
+  if (source === 'epss') return 'FIRST EPSS'
   if (source === 'npm-releases') return 'npm releases'
   if (source === 'npm-candidate-graphs') return 'npm candidate dependency graphs'
   return 'GitHub releases'
 }
 
+function vulnerabilityEvidenceSuffix(event: VulnerabilityEvent): string {
+  const sources = event.advisory.sources?.map(sourceLabel).join(' + ')
+  const conflicts = event.advisory.conflicts?.map(conflict => (
+    conflict.field === 'severity' ? 'severity' : 'fixed versions'
+  )).join(', ')
+  const details = [
+    ...(sources === undefined ? [] : [`sources: ${sources}`]),
+    ...(conflicts === undefined ? [] : [`source conflict: ${conflicts}`]),
+    ...(event.advisory.riskSignals?.cisaKev === undefined ? [] : ['CISA KEV: known exploited']),
+    ...(event.advisory.riskSignals?.epss === undefined ? [] : [
+      `EPSS: ${(event.advisory.riskSignals.epss.score * 100).toFixed(1)}% estimated exploitation probability`,
+    ]),
+  ]
+  return details.length === 0 ? '' : ` (${details.join('; ')})`
+}
+
 function isDshHostDependency(name: string): boolean {
-  return name === '@deepseek-ai/cordis'
+  return name === '@deepseek-ai/dsh'
+    || name === '@deepseek-ai/cordis'
     || name.startsWith('@deepseek-ai/cordis-plugin-')
     || name.startsWith('@deepseek-ai/dsh-')
 }
@@ -123,7 +183,10 @@ function vulnerabilityStatusIncident(event: VulnerabilityEvent, state: RadarStat
   const path = firstPath === undefined
     ? 'dependency path unavailable'
     : firstPath.map(packageLabel).join(' -> ')
-  const summary = `${packageLabel(event.affected)} is affected by ${display(event.advisory.id)} via ${path}`
+  const scope = event.affectedPlugins === undefined || event.affectedPlugins.length <= 1
+    ? ''
+    : ` across ${event.affectedPlugins.length} DSH plugins`
+  const summary = `${packageLabel(event.affected)} is affected by ${display(event.advisory.id)}${scope} via ${path}${vulnerabilityEvidenceSuffix(event)}`
   if (event.kind === 'malware') {
     return {
       incidentId: event.incidentId,
@@ -131,7 +194,8 @@ function vulnerabilityStatusIncident(event: VulnerabilityEvent, state: RadarStat
       priority: 'critical',
       project: display(event.project.name),
       summary,
-      nextStep: analysisNextStep(state, event.incidentId, `Remove or isolate ${packageLabel(event.plugin)}, then ask the DSH Agent to assess project exposure.`),
+      nextStep: analysisNextStep(state, event.incidentId, `Remove or isolate ${vulnerabilityPluginScope(event)}, then ask the DSH Agent to assess project exposure.`),
+      triage: vulnerabilityPriority(event),
     }
   }
   const fixedVersions = event.advisory.fixedVersions.slice(0, 4).map(item => display(item)).join(', ')
@@ -142,8 +206,9 @@ function vulnerabilityStatusIncident(event: VulnerabilityEvent, state: RadarStat
     project: display(event.project.name),
     summary,
     nextStep: analysisNextStep(state, event.incidentId, fixedVersions.length === 0
-      ? `No published fix is recorded; ask the DSH Agent to assess containment or replacement for ${packageLabel(event.plugin)}.`
+      ? `No published fix is recorded; ask the DSH Agent to assess containment or replacement for ${vulnerabilityPluginScope(event)}.`
       : `Review ${event.affected.name} fixed version(s) ${fixedVersions} with the DSH Agent before changing the plugin.`),
+    triage: vulnerabilityPriority(event),
   }
 }
 
@@ -181,7 +246,7 @@ function statusIncident(event: RadarEvent, state: RadarState): RadarStatusIncide
   return vulnerabilityStatusIncident(event, state)
 }
 
-function priorityRank(priority: RadarStatusIncident['priority']): number {
+function priorityRank(priority: RadarSeverity | 'attention'): number {
   if (priority === 'critical') return 6
   if (priority === 'high') return 5
   if (priority === 'medium') return 4
@@ -191,16 +256,48 @@ function priorityRank(priority: RadarStatusIncident['priority']): number {
   return 0
 }
 
-function activeIncidentSummary(state: RadarState): { incidents: RadarStatusIncident[]; overflow: number } {
+function triageSortKey(incident: RadarStatusIncident): [number, number, number, number] {
+  return [
+    incident.triage?.knownExploited === true ? 1 : 0,
+    incident.triage?.epssScore ?? -1,
+    incident.triage === undefined ? 0 : priorityRank(incident.triage.severity),
+    priorityRank(incident.priority),
+  ]
+}
+
+function compareActiveIncidents(left: RadarStatusIncident, right: RadarStatusIncident): number {
+  const leftKey = triageSortKey(left)
+  const rightKey = triageSortKey(right)
+  return rightKey[0] - leftKey[0]
+    || rightKey[1] - leftKey[1]
+    || rightKey[2] - leftKey[2]
+    || rightKey[3] - leftKey[3]
+    || left.project.localeCompare(right.project)
+    || left.incidentId.localeCompare(right.incidentId)
+}
+
+function statusIncidentWithState(event: RadarEvent, state: RadarState, now: Date): RadarStatusIncident {
+  const incident = statusIncident(event, state)
+  const mute = state.incidentMutes?.[event.incidentId]
+  const storedFollowUp = state.incidentTriage?.[event.incidentId]
+  const followUp = storedFollowUp?.eventId === event.id ? storedFollowUp : undefined
+  const followUpOverdue = followUp?.dueAt !== undefined
+    && Number.isFinite(Date.parse(followUp.dueAt))
+    && Date.parse(followUp.dueAt) <= now.getTime()
+  return {
+    ...incident,
+    ...(mute === undefined || !isRadarIncidentMuted(state, event, now) ? {} : { mutedUntil: mute.mutedUntil }),
+    ...(followUp === undefined ? {} : { followUp }),
+    ...(followUpOverdue ? { followUpOverdue: true } : {}),
+  }
+}
+
+function activeIncidentSummary(state: RadarState, now: Date): { incidents: RadarStatusIncident[]; overflow: number } {
   const all = [
-    ...Object.values(state.activeVulnerabilities).map(item => statusIncident(item.event, state)),
-    ...Object.values(state.activeCompatibility).map(item => statusIncident(item.event, state)),
-    ...Object.values(state.activeSourceHealth ?? {}).map(item => statusIncident(item.event, state)),
-  ].sort((left, right) => (
-    priorityRank(right.priority) - priorityRank(left.priority)
-      || left.project.localeCompare(right.project)
-      || left.incidentId.localeCompare(right.incidentId)
-  ))
+    ...Object.values(state.activeVulnerabilities).map(item => statusIncidentWithState(item.event, state, now)),
+    ...Object.values(state.activeCompatibility).map(item => statusIncidentWithState(item.event, state, now)),
+    ...Object.values(state.activeSourceHealth ?? {}).map(item => statusIncidentWithState(item.event, state, now)),
+  ].sort(compareActiveIncidents)
   const incidents = all.slice(0, 32)
   return { incidents, overflow: all.length - incidents.length }
 }
@@ -211,6 +308,8 @@ export function createRadarStatus(
   state: RadarState,
   options: CreateRadarStatusOptions,
 ): RadarStatusReport {
+  const now = options.now ?? new Date()
+  if (!Number.isFinite(now.getTime())) throw new Error('radar status time is invalid')
   const sources = RADAR_SOURCES.map(source => sourceStatus(source, state.sourceHealth?.[source]))
   const observedSources = sources.filter(source => source.status !== 'not-run')
   const monitoring: RadarMonitoringStatus = observedSources.length === 0
@@ -244,7 +343,13 @@ export function createRadarStatus(
     (hostRuntime): hostRuntime is NonNullable<typeof hostRuntime> => hostRuntime !== undefined,
   )
   const dshHostRuntimeSources = [...new Set(dshHostRuntimeGraphs.map(hostRuntime => hostRuntime.source))].sort()
-  const activeSummary = activeIncidentSummary(state)
+  const activeSummary = activeIncidentSummary(state, now)
+  const notificationPolicies = createNotificationPolicyMap(config.projects)
+  const notificationPolicyHeldTasks = countPolicyHeldAnalysisTasks(
+    state.pendingAnalysisTasks,
+    notificationPolicies,
+    now,
+  )
   return {
     schema: RADAR_STATUS_SCHEMA,
     configFile: options.configFile,
@@ -267,10 +372,57 @@ export function createRadarStatus(
     activeCompatibility: Object.keys(state.activeCompatibility).length,
     activeSourceHealth: Object.keys(state.activeSourceHealth ?? {}).length,
     pendingAnalysisTasks: state.pendingAnalysisTasks.length,
+    notificationPolicyHeldTasks,
     analysisDeliveries: Object.keys(state.analysisDeliveries ?? {}).length,
     analysisResults: Object.keys(state.analysisResults ?? {}).length,
     activeIncidents: activeSummary.incidents,
     activeIncidentOverflow: activeSummary.overflow,
+  }
+}
+
+function shellArgument(value: string): string {
+  return `'${value.replaceAll("'", "'\\''")}'`
+}
+
+/** Build the one-action handoff shown after a user sees the first alert. */
+export function createRadarNext(report: RadarStatusReport, state: RadarState): RadarNextReport {
+  const activeIncident = report.activeIncidents[0]
+  const pendingTask = activeIncident === undefined
+    ? undefined
+    : state.pendingAnalysisTasks.find(task => task.event.incidentId === activeIncident.incidentId)
+  const verifiedAnalysis = activeIncident === undefined
+    ? undefined
+    : state.analysisResults?.[activeIncident.incidentId]
+  const triageCommand = activeIncident === undefined || activeIncident.followUp !== undefined
+    ? undefined
+    : `upstream-radar triage ${shellArgument(report.stateFile)} ${shellArgument(activeIncident.incidentId)} --status in-progress`
+  const nextCommand = activeIncident === undefined
+    ? `upstream-radar radar check ${shellArgument(report.configFile)}`
+    : verifiedAnalysis !== undefined
+      ? `upstream-radar analysis show ${shellArgument(report.stateFile)} ${shellArgument(activeIncident.incidentId)}`
+      : pendingTask !== undefined
+        ? `upstream-radar task show ${shellArgument(report.stateFile)} ${shellArgument(pendingTask.id)}`
+        : report.analysisDeliveries > 0
+          ? `upstream-radar radar status ${shellArgument(report.configFile)} --state ${shellArgument(report.stateFile)}`
+          : `upstream-radar radar check ${shellArgument(report.configFile)} --state ${shellArgument(report.stateFile)}`
+  return {
+    schema: RADAR_NEXT_SCHEMA,
+    configFile: report.configFile,
+    stateFile: report.stateFile,
+    stateExists: report.stateExists,
+    monitoring: report.monitoring,
+    coverage: report.coverage,
+    ...(activeIncident === undefined ? {} : { activeIncident }),
+    ...(pendingTask === undefined ? {} : { pendingAnalysisTaskId: pendingTask.id }),
+    ...(verifiedAnalysis === undefined ? {} : { verifiedAnalysis }),
+    nextCommand,
+    ...(pendingTask === undefined ? {} : {
+      acknowledgeCommand: `upstream-radar task ack ${shellArgument(report.stateFile)} ${shellArgument(pendingTask.id)}`,
+    }),
+    ...(activeIncident?.mutedUntil === undefined ? {} : {
+      unmuteCommand: `upstream-radar unmute ${shellArgument(report.stateFile)} ${shellArgument(activeIncident.incidentId)}`,
+    }),
+    ...(triageCommand === undefined ? {} : { triageCommand }),
   }
 }
 
@@ -287,6 +439,26 @@ function plural(value: number, singular: string, multiple = `${singular}s`): str
 
 function hostRuntimeSourceLabel(source: DependencyHostRuntimeSource): string {
   return source === 'dsh-process' ? 'running DSH process' : 'profile fallback'
+}
+
+function renderTriage(triage: RadarStatusTriage | undefined): string | undefined {
+  if (triage === undefined) return undefined
+  return renderVulnerabilityPriority(triage)
+}
+
+function triageStatusLabel(status: RadarIncidentTriage['status']): string {
+  if (status === 'in-progress') return 'in progress'
+  if (status === 'accepted-risk') return 'accepted risk'
+  return status
+}
+
+function renderIncidentFollowUp(followUp: RadarIncidentTriage, overdue = false): string {
+  const owner = followUp.owner === undefined ? '' : `; owner: ${display(followUp.owner)}`
+  const note = followUp.note === undefined ? '' : `; note: ${display(followUp.note, 1_024)}`
+  const due = followUp.dueAt === undefined
+    ? ''
+    : `; due: ${display(followUp.dueAt)}${overdue ? ' (overdue)' : ''}`
+  return `${triageStatusLabel(followUp.status)}${owner}${note}${due}`
 }
 
 /** Render the status snapshot for a human checking the first run. */
@@ -322,11 +494,21 @@ export function renderRadarStatus(report: RadarStatusReport): string {
   }
   lines.push(
     '',
-    report.activeIncidents.length === 0 ? 'Attention: none' : 'Attention:',
+    report.activeIncidents.length === 0
+      ? 'Attention: none'
+      : 'Attention (ordered by CISA KEV, EPSS, then severity):',
   )
   for (const incident of report.activeIncidents) {
+    const triage = renderTriage(incident.triage)
     lines.push(
       `  [${incident.priority.toUpperCase()}] ${display(incident.project)}: ${display(incident.summary)}`,
+      ...(triage === undefined ? [] : [`    Triage: ${triage}`]),
+      ...(incident.mutedUntil === undefined ? [] : [
+        `    Delivery: muted until ${display(incident.mutedUntil)}; active evidence remains visible`,
+      ]),
+      ...(incident.followUp === undefined ? [] : [
+        `    Follow-up: ${renderIncidentFollowUp(incident.followUp, incident.followUpOverdue === true)}`,
+      ]),
       `    Next: ${display(incident.nextStep)}`,
     )
   }
@@ -339,6 +521,7 @@ export function renderRadarStatus(report: RadarStatusReport): string {
     `Active compatibility incidents: ${report.activeCompatibility}`,
     `Source-health incidents: ${report.activeSourceHealth}`,
     `Pending DSH analysis tasks: ${report.pendingAnalysisTasks}`,
+    `Held by notification policy: ${report.notificationPolicyHeldTasks}`,
     `Awaiting DSH analysis results: ${report.analysisDeliveries}`,
     `Verified DSH analysis results: ${report.analysisResults}`,
   )
@@ -350,5 +533,55 @@ export function renderRadarStatus(report: RadarStatusReport): string {
   } else if (report.analysisDeliveries > 0) {
     lines.push('', 'DSH analysis is in progress; results will appear here only after strict response validation.')
   }
+  return `${lines.join('\n')}\n`
+}
+
+/** Render one short, read-only action handoff for a person who just saw an alert. */
+export function renderRadarNext(report: RadarNextReport): string {
+  const lines = [
+    'Upstream Radar next action',
+    `Monitoring: ${report.monitoring.replace('-', ' ')}`,
+    `Coverage: ${report.coverage}`,
+  ]
+  const incident = report.activeIncident
+  if (incident === undefined) {
+    lines.push('', 'No active incident is currently recorded.', `Next command: ${report.nextCommand}`)
+    return `${lines.join('\n')}\n`
+  }
+  lines.push(
+    '',
+    `[${incident.priority.toUpperCase()}] ${display(incident.project)}: ${display(incident.summary)}`,
+    ...(incident.triage === undefined ? [] : [`Triage: ${renderVulnerabilityPriority(incident.triage)}`]),
+    ...(incident.mutedUntil === undefined ? [] : [
+      `Delivery: muted until ${display(incident.mutedUntil)}; active evidence remains visible`,
+    ]),
+    ...(incident.followUp === undefined ? [] : [
+      `Follow-up: ${renderIncidentFollowUp(incident.followUp, incident.followUpOverdue === true)}`,
+    ]),
+    `Next step: ${display(incident.nextStep)}`,
+  )
+  if (incident.followUp === undefined && report.triageCommand !== undefined) {
+    lines.push(`Follow-up: open; record an owner/status with: ${report.triageCommand}`)
+  }
+  if (report.pendingAnalysisTaskId !== undefined) {
+    lines.push(`DSH follow-up: queued (${display(report.pendingAnalysisTaskId)})`)
+  } else if (report.verifiedAnalysis !== undefined) {
+    const analysis = report.verifiedAnalysis
+    const evidence = analysis.evidence.slice(0, 8).map(item => display(item, 512)).join(', ')
+    lines.push(
+      `DSH analysis: verified (${analysis.project_exposure}; ${analysis.confidence} confidence)`,
+      `Recommendation (${analysis.urgency}): ${display(analysis.recommended_action, 2_048)}`,
+      `Evidence: ${evidence === '' ? '(none recorded)' : evidence}`,
+    )
+  } else if (report.monitoring === 'degraded') {
+    lines.push('DSH follow-up: not currently recorded; restore the degraded monitoring path before relying on a clean result.')
+  } else {
+    lines.push('DSH follow-up: not currently queued in this state.')
+  }
+  lines.push(`Next command: ${report.nextCommand}`)
+  if (report.acknowledgeCommand !== undefined) {
+    lines.push(`After reviewing the task, acknowledge it with: ${report.acknowledgeCommand}`)
+  }
+  if (report.unmuteCommand !== undefined) lines.push(`To resume delivery: ${report.unmuteCommand}`)
   return `${lines.join('\n')}\n`
 }

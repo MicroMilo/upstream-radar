@@ -1,20 +1,25 @@
 import { access, readFile, readdir, realpath, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path'
+import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
 import { inspectNpmPackage, type InspectNpmOptions } from './npm.js'
 import { parseInstalledNodeModulesGraph } from './installed-graph.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
+import { discoverDshRuntimePackageFromNodeModulesDirectory } from './dsh-runtime.js'
 import {
   INVENTORY_SCHEMA,
   RADAR_CONFIG_SCHEMA,
   type DependencyGraph,
   type DependencyHostRuntimeSource,
+  type PackageCoordinate,
   type PackageManifestSnapshot,
   type PluginInstallation,
   type RadarConfig,
+  type RadarNotificationPolicy,
 } from './radar-types.js'
 
 const MAX_JSON_BYTES = 8 * 1024 * 1024
+const MAX_LOCKFILE_JSON_BYTES = 256 * 1024 * 1024
 
 type InitInspection = {
   evidence: {
@@ -35,11 +40,50 @@ export interface DshInitOptions {
   repository?: string
   workspace?: string
   channels?: string[]
+  webhookUrlEnv?: string
+  webhookSecretEnv?: string
+  notificationPolicy?: RadarNotificationPolicy
   registry?: string
   inspect?: InitInspector
   /** Optional DSH process dependency plane discovered without importing DSH code. */
   hostNodeModulesDirectory?: string
   hostRuntimeSource?: DependencyHostRuntimeSource
+  /** Exact DSH executable package owning the shared host plane. */
+  hostRuntimePackage?: PackageCoordinate
+  /** Directory containing the exact DSH executable package when its dependency plane is nested. */
+  hostRuntimePackageDirectory?: string
+}
+
+export interface PnpmLockInitOptions {
+  lockfile: string
+  root: {
+    name: string
+    version: string
+  }
+  projectId?: string
+  projectName?: string
+  repository?: string
+  workspace?: string
+  channels?: string[]
+  webhookUrlEnv?: string
+  webhookSecretEnv?: string
+  notificationPolicy?: RadarNotificationPolicy
+}
+
+export interface NpmLockInitOptions {
+  lockfile: string
+  root: {
+    name: string
+    version: string
+  }
+  projectId?: string
+  projectName?: string
+  repository?: string
+  workspace?: string
+  channels?: string[]
+  webhookUrlEnv?: string
+  webhookSecretEnv?: string
+  notificationPolicy?: RadarNotificationPolicy
 }
 
 export interface WriteRadarConfigOptions {
@@ -56,6 +100,7 @@ export interface WriteDshPatchOptions {
   runOnStart?: boolean
   registry?: string
   deepCandidates?: boolean
+  threatIntel?: boolean
   force?: boolean
 }
 
@@ -69,9 +114,9 @@ function requiredString(value: unknown, label: string): string {
   return value
 }
 
-async function readJson(path: string): Promise<unknown> {
+async function readJson(path: string, maxBytes = MAX_JSON_BYTES): Promise<unknown> {
   const contents = await readFile(path, 'utf8')
-  if (Buffer.byteLength(contents) > MAX_JSON_BYTES) throw new Error(`${path} exceeds the ${MAX_JSON_BYTES} byte limit`)
+  if (Buffer.byteLength(contents) > maxBytes) throw new Error(`${path} exceeds the ${maxBytes} byte limit`)
   try {
     return JSON.parse(contents) as unknown
   } catch {
@@ -183,6 +228,10 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
   const inspect = options.inspect ?? inspectNpmPackage
   const hostNodeModulesDirectory = options.hostNodeModulesDirectory ?? join(dirname(profileDirectory), 'node_modules')
   const hostRuntimeSource = options.hostRuntimeSource ?? 'dsh-profile-fallback'
+  const hostRuntimePackage = options.hostRuntimePackage
+    ?? discoverDshRuntimePackageFromNodeModulesDirectory(hostNodeModulesDirectory)
+  const hostRuntimePackageDirectory = options.hostRuntimePackageDirectory
+    ?? (hostRuntimePackage === undefined ? undefined : resolve(hostNodeModulesDirectory, '@deepseek-ai', 'dsh'))
   const plugins: PluginInstallation[] = []
   for (const packageName of bundles) {
     if (isDshInfrastructure(packageName)) continue
@@ -204,6 +253,8 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
           // into every profile.
           hostNodeModulesDirectory,
           hostRuntimeSource,
+          ...(hostRuntimePackage === undefined ? {} : { hostRuntimePackage }),
+          ...(hostRuntimePackageDirectory === undefined ? {} : { hostRuntimePackageDirectory }),
         })
     if (graph === undefined) throw new Error(`could not resolve the exact dependency graph for ${manifest.name}@${manifest.version}`)
     plugins.push({
@@ -212,7 +263,9 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
       graph,
     })
   }
-  if (plugins.length === 0) throw new Error('DSH profile has no third-party bundles to monitor')
+  if (plugins.length === 0) {
+    throw new Error('DSH profile has no third-party bundles to monitor; install one with `dsh plugin --profile <name> add <package>@<exact-version>`, then rerun setup')
+  }
 
   const config: RadarConfig = {
     schema: RADAR_CONFIG_SCHEMA,
@@ -224,13 +277,63 @@ export async function createRadarConfigFromDshProfile(options: DshInitOptions): 
         ...(options.repository === undefined ? {} : { repository: options.repository }),
         workspace,
         ...(options.channels === undefined || options.channels.length === 0 ? {} : { channels: options.channels }),
+        ...(options.webhookUrlEnv === undefined ? {} : { webhookUrlEnv: options.webhookUrlEnv }),
+        ...(options.webhookSecretEnv === undefined ? {} : { webhookSecretEnv: options.webhookSecretEnv }),
       },
       environment: { nodeVersion: process.versions.node },
+      ...(options.notificationPolicy === undefined ? {} : { notificationPolicy: options.notificationPolicy }),
       plugins,
     }],
   }
   parseRadarConfig(config)
   return config
+}
+
+function createStaticLockConfig(
+  graph: DependencyGraph,
+  root: { name: string; version: string },
+  options: Pick<PnpmLockInitOptions, 'projectId' | 'projectName' | 'repository' | 'workspace' | 'channels' | 'webhookUrlEnv' | 'webhookSecretEnv' | 'notificationPolicy'>,
+): RadarConfig {
+  const workspace = options.workspace ?? '.'
+  const projectId = options.projectId ?? defaultProjectId(workspace)
+  const projectName = options.projectName ?? defaultProjectName(workspace)
+  const config: RadarConfig = {
+    schema: RADAR_CONFIG_SCHEMA,
+    projects: [{
+      schema: INVENTORY_SCHEMA,
+      project: {
+        id: projectId,
+        name: projectName,
+        ...(options.repository === undefined ? {} : { repository: options.repository }),
+        workspace,
+        ...(options.channels === undefined || options.channels.length === 0 ? {} : { channels: options.channels }),
+        ...(options.webhookUrlEnv === undefined ? {} : { webhookUrlEnv: options.webhookUrlEnv }),
+        ...(options.webhookSecretEnv === undefined ? {} : { webhookSecretEnv: options.webhookSecretEnv }),
+      },
+      environment: { nodeVersion: process.versions.node },
+      ...(options.notificationPolicy === undefined ? {} : { notificationPolicy: options.notificationPolicy }),
+      plugins: [{
+        package: { ecosystem: 'npm', name: root.name, version: root.version },
+        graph,
+      }],
+    }],
+  }
+  parseRadarConfig(config)
+  return config
+}
+
+/** Build a static Radar inventory from a pnpm lockfile without installing packages. */
+export async function createRadarConfigFromPnpmLock(options: PnpmLockInitOptions): Promise<RadarConfig> {
+  const lockfile = resolve(options.lockfile)
+  const graph = parsePnpmLockGraph(await readFile(lockfile, 'utf8'), options.root)
+  return createStaticLockConfig(graph, options.root, options)
+}
+
+/** Build a static Radar inventory from an npm lockfile without installing packages. */
+export async function createRadarConfigFromNpmLock(options: NpmLockInitOptions): Promise<RadarConfig> {
+  const lockfile = resolve(options.lockfile)
+  const graph = parseNpmLockGraph(await readJson(lockfile, MAX_LOCKFILE_JSON_BYTES), options.root)
+  return createStaticLockConfig(graph, options.root, options)
 }
 
 /**
@@ -241,7 +344,7 @@ export async function refreshRadarConfigFromDshProfile(
   config: RadarConfig,
   profile: string,
   dshHome?: string,
-  options: Pick<DshInitOptions, 'hostNodeModulesDirectory' | 'hostRuntimeSource'> = {},
+  options: Pick<DshInitOptions, 'hostNodeModulesDirectory' | 'hostRuntimeSource' | 'hostRuntimePackage' | 'hostRuntimePackageDirectory'> = {},
 ): Promise<RadarConfig> {
   if (config.dshProfile?.name !== profile) return config
   if (config.projects.length !== 1) throw new Error('DSH profile refresh requires exactly one configured project')
@@ -254,6 +357,8 @@ export async function refreshRadarConfigFromDshProfile(
     ...(project.project.repository === undefined ? {} : { repository: project.project.repository }),
     ...(project.project.workspace === undefined ? {} : { workspace: project.project.workspace }),
     ...(project.project.channels === undefined ? {} : { channels: project.project.channels }),
+    ...(project.project.webhookUrlEnv === undefined ? {} : { webhookUrlEnv: project.project.webhookUrlEnv }),
+    ...(project.project.webhookSecretEnv === undefined ? {} : { webhookSecretEnv: project.project.webhookSecretEnv }),
     ...options,
   })
   const refreshedProject = refreshed.projects[0]
@@ -262,6 +367,7 @@ export async function refreshRadarConfigFromDshProfile(
     ...config,
     projects: [{
       ...refreshedProject,
+      ...(project.notificationPolicy === undefined ? {} : { notificationPolicy: project.notificationPolicy }),
       project: { ...project.project },
     }],
   }
@@ -330,6 +436,7 @@ export async function writeDshPatch(options: WriteDshPatchOptions): Promise<stri
     `    runOnStart: ${runOnStart}`,
     ...(options.registry === undefined ? [] : [`    registry: ${JSON.stringify(options.registry)}`]),
     ...(options.deepCandidates === undefined ? [] : [`    deepCandidates: ${options.deepCandidates}`]),
+    ...(options.threatIntel === undefined ? [`    threatIntel: true`] : [`    threatIntel: ${options.threatIntel}`]),
     '',
   ].join('\n')
   await writeFile(output, patch, { mode: 0o600 })

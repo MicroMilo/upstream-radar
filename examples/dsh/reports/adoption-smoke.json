@@ -1,0 +1,41 @@
+{
+  "schema": "upstream-radar.dsh-adoption-showcase/v1alpha1",
+  "dshVersion": "0.1.0-rc.6",
+  "plugin": "dsh-cloudflare-browser-run@0.1.1",
+  "install": {
+    "packagePackScriptsDisabled": true,
+    "profile": "headless",
+    "radarBundleRegistered": true
+  },
+  "setup": {
+    "status": "completed",
+    "graphSource": "installed-node-modules",
+    "dshRuntimePackage": {
+      "ecosystem": "npm",
+      "name": "@deepseek-ai/dsh",
+      "version": "0.1.0-rc.6"
+    },
+    "dependencyNodes": 516,
+    "dshHostPackages": 510,
+    "optionalDependenciesNotInstalled": 65
+  },
+  "check": {
+    "packagesQueried": 512,
+    "releasePackagesQueried": 189,
+    "events": 0,
+    "sourceErrors": 0,
+    "activeVulnerabilities": 0
+  },
+  "doctor": {
+    "beforeFirstCheck": "ready-with-warnings",
+    "afterFirstCheck": "ready"
+  },
+  "status": {
+    "monitoring": "healthy",
+    "coverage": "complete",
+    "activeVulnerabilities": 0,
+    "activeCompatibility": 0,
+    "sourceHealthIncidents": 0
+  },
+  "boundary": "Uses a disposable DSH_HOME and exact published packages. Both package tarballs were packed with lifecycle scripts disabled; the DSH host is bootstrapped with --help. It does not start an Agent, call a model, or execute plugin business actions; it proves install, graph, doctor, and real upstream checks."
+}

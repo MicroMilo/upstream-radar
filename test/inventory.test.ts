@@ -29,6 +29,23 @@ describe('radar inventory parsing', () => {
     assert.equal(parsed.projects[0]?.plugins[0]?.graph.nodes[1]?.version, '2.9.0')
   })
 
+  it('preserves project webhook environment routing and validates its names', () => {
+    const candidate = structuredClone(valid)
+    candidate.projects[0]!.project.webhookUrlEnv = 'RADAR_PAYMENTS_URL'
+    candidate.projects[0]!.project.webhookSecretEnv = 'RADAR_PAYMENTS_SECRET'
+    const parsed = parseRadarConfig(candidate)
+    assert.equal(parsed.projects[0]?.project.webhookUrlEnv, 'RADAR_PAYMENTS_URL')
+    assert.equal(parsed.projects[0]?.project.webhookSecretEnv, 'RADAR_PAYMENTS_SECRET')
+
+    const invalidName = structuredClone(candidate)
+    invalidName.projects[0]!.project.webhookUrlEnv = 'RADAR-PAYMENTS-URL'
+    assert.throws(() => parseRadarConfig(invalidName), /webhookUrlEnv must be a valid environment variable name/)
+
+    const secretWithoutUrl = structuredClone(valid)
+    secretWithoutUrl.projects[0]!.project.webhookSecretEnv = 'RADAR_PAYMENTS_SECRET'
+    assert.throws(() => parseRadarConfig(secretWithoutUrl), /webhookSecretEnv requires webhookUrlEnv/)
+  })
+
   it('preserves npm optional peer metadata in manifests', () => {
     const candidate = structuredClone(valid)
     candidate.projects[0]!.plugins[0]!.manifest = {
@@ -69,12 +86,53 @@ describe('radar inventory parsing', () => {
     candidate.projects[0]!.plugins[0]!.graph.hostRuntime = {
       source: 'dsh-process',
       resolvedNodes: 3,
+      package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
     }
     const parsed = parseRadarConfig(candidate)
     assert.deepEqual(parsed.projects[0]?.plugins[0]?.graph.hostRuntime, {
       source: 'dsh-process',
       resolvedNodes: 3,
+      package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.6' },
     })
+  })
+
+  it('preserves the explicit host-runtime boundary edge', () => {
+    const candidate = structuredClone(valid)
+    candidate.projects[0]!.plugins[0]!.graph.nodes.push({
+      id: 'dsh-host/runtime',
+      name: '@deepseek-ai/dsh',
+      version: '0.1.0-rc.6',
+      source: 'dsh-host',
+    })
+    candidate.projects[0]!.plugins[0]!.graph.edges.push({
+      from: 'plugin',
+      to: 'dsh-host/runtime',
+      kind: 'host-runtime',
+    })
+    const parsed = parseRadarConfig(candidate)
+    assert.deepEqual(parsed.projects[0]?.plugins[0]?.graph.edges.at(-1), {
+      from: 'plugin',
+      to: 'dsh-host/runtime',
+      kind: 'host-runtime',
+    })
+  })
+
+  it('accepts a delivery-only notification policy without changing the inventory graph', () => {
+    const candidate = structuredClone(valid)
+    candidate.projects[0]!.notificationPolicy = {
+      minimumSeverity: 'high',
+      quietHours: { timezone: 'Asia/Shanghai', start: '22:00', end: '08:00' },
+    }
+    const parsed = parseRadarConfig(candidate)
+    assert.deepEqual(parsed.projects[0]?.notificationPolicy, candidate.projects[0]!.notificationPolicy)
+  })
+
+  it('rejects ambiguous notification windows', () => {
+    const candidate = structuredClone(valid)
+    candidate.projects[0]!.notificationPolicy = {
+      quietHours: { timezone: 'Asia/Shanghai', start: '08:00', end: '08:00' },
+    }
+    assert.throws(() => parseRadarConfig(candidate), /start and end must be different/)
   })
 
   it('rejects edges to missing nodes', () => {

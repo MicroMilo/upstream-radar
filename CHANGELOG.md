@@ -2,6 +2,75 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [Unreleased]
+
+### Added
+
+- Add per-incident follow-up records with owner, status, and handoff notes bound to the exact event version; show a copyable `triage` command in `radar next` without resolving or suppressing the active evidence.
+- Add optional follow-up deadlines and mark overdue work in `radar status` and `radar next` without changing the underlying incident or delivery policy.
+- Add project-specific HTTPS/Feishu webhook routes through environment-variable names, with project filtering, independent endpoint outboxes, conflict checks, and a global broadcast-compatible fallback.
+- Make `radar next` show a verified DSH conclusion's urgency, recommendation, and bounded evidence inline, so the first action does not require opening a second report.
+- Add bounded per-incident `mute`/`unmute` controls for DSH and webhook delivery, keep muted incidents visible in `radar status`/`radar next`, preserve mutes across polling, and automatically resume delivery when the exact event version expires or changes.
+- Add an independent GitHub Advisory Database source for exact npm versions, merge OSV/GHSA/CVE duplicates into one durable incident, retain confirmed findings during a source outage, and expose per-source health through CLI and DSH.
+- Add a network-free `showcase:github-advisories` proving two-source deduplication, three-failure source-health escalation, and recovery without a false vulnerability resolution; run it in CI and publish preflight.
+- Retry one bounded transient GitHub Advisory transport, rate-limit, or 5xx failure so a single network hiccup does not block the first real DSH check; permanent responses remain visible errors.
+- Preserve advisory source provenance through Radar state, merged incidents, terminal output, and webhook payloads, so OSV-only and OSV/GitHub cross-confirmed findings are visibly distinguishable.
+- Surface severity and fixed-version disagreements between OSV and GitHub Advisory Database as explicit source conflicts, and keep the previous incident identity and evidence during a partial source outage.
+- Make the network-free `demo` show the same cross-source provenance and fixed-version conflict that a real Radar event exposes, so the first run demonstrates the DSH-specific value without contacting upstream feeds.
+- Add a read-only `quickstart` CLI that detects an existing Radar config, a single supported lockfile, or eligible DSH profiles, then prints one honest copy/paste path with explicit side-effect labels; ambiguous profiles and lockfiles remain user decisions.
+- Coalesce the same shared DSH host-runtime vulnerability across all affected plugins in one project-level event, while retaining every plugin root and bounded exact path; migrate legacy per-plugin host keys without a fake resolve/new alert pair.
+- Show the complete affected plugin scope for shared-host events in GitHub Job Summaries, and run the host-alert deduplication showcase in CI and the publish preflight.
+- Walk the exact DSH executable package through a synthetic `host-runtime` boundary and its reachable host dependency closure, so advisories in DSH core's own transitive packages keep an exact path and source attribution instead of disappearing outside the plugin graph.
+- Keep installed-package graph collection tolerant of non-semantic empty/non-string `main` and `type` metadata found in real DSH host packages without weakening the strict parser used for Radar configuration and release metadata.
+- Record the exact `@deepseek-ai/dsh` executable package that owns the shared host plane, monitor its OSV vulnerabilities and npm releases, and render a DSH-core finding as an explicit host-runtime boundary rather than a fabricated plugin dependency edge.
+- Keep a bounded, deduplicated transition ledger in the Radar state and expose it through the network-free `radar history` command, so resolved incidents and source recovery remain auditable.
+- Write a concise escaped GitHub Job Summary from the reusable Action, including the exact path, published fix versions, and a suggested next step while preserving the raw JSON report and the original policy/source exit code.
+- Send changed-event text directly to Feishu/Lark V2 custom bots, with optional signature generation from an environment-only secret; keep the existing provider-neutral webhook envelope for other endpoints.
+- Extend the network-free `doctor` check to validate the environment webhook route before the first poll, reject retired Feishu/Lark V1 URLs, and warn about unused signing secrets without printing them.
+- Make the primary DSH quickstart omit `--profile` when the machine has exactly one eligible profile; keep the explicit flag for multi-profile installations.
+- Re-open a project-specific DSH analysis task when an existing advisory later gains its first fixed version, preserving the updated dependency evidence.
+- Document the npm-native `npx` launcher alongside the pnpm quickstart, while recommending exact versions for reproducible team use.
+- Add a packaged `upstream-radar demo` command that shows the exact-path-to-DSH handoff without network access, a DSH profile, or plugin installation.
+- Add a repeatable real-plugin DSH adoption showcase that packs the packages with lifecycle scripts disabled, then validates setup, doctor, frozen upstream checks, and status in a disposable DSH profile.
+- Add command-specific `--help` for setup, inspection, lockfile, DSH, radar, task, and analysis paths, plus concrete next-step guidance in text admission reports.
+- Make a missing DSH executable during `setup` explain the exact prerequisite and recovery command instead of exposing a raw process-spawn error.
+- Explain how to prepare a profile when `setup` finds DSH but no third-party plugin to monitor.
+- Add a post-publish npm artifact smoke that installs the exact public tarball with scripts disabled and runs the packaged CLI demo.
+- Add an opt-in GitHub Action pre-install artifact gate for one exact npm plugin, with an admission verdict, coverage, findings, next step, and `inspect-verdict` output.
+- Add delivery-only per-project notification controls for minimum vulnerability severity and timezone-aware quiet hours; critical and malicious-package events bypass the controls, while DSH tasks and webhook events remain durable for retry.
+- Let `setup` and all `init` modes configure those notification controls directly, with validation for severity values, IANA timezones, and quiet-hour ranges; generated configs no longer require hand-editing JSON for the common path.
+- Add opt-in `setup --start` to launch the selected DSH profile only after the generated wiring passes the local doctor check; the default remains review-first and does not start DSH.
+- Add an explicit next-action line to CLI vulnerability, compatibility, and source-health events so the first check tells the user what to do next; keep the doctor gate distinct from human review and safety admission.
+- Make the repository's consumer smoke use the current local CLI by default, with an explicit `try:consumer:published` path for checking the public npm artifact before a release announcement.
+- Add a structured DSH trial feedback form and place a redacted-result link in the English and Chinese README first-run paths.
+- Document the real `create-dsh-plugin` to pnpm lockfile graph and GitHub Action path, so DSH plugin authors can review dependencies before installation and keep the same gate in CI.
+- Order the read-only `radar status` Attention list by CISA KEV, EPSS, and advisory severity, and show the evidence used for each vulnerability's position.
+- Reuse the same short priority evidence in DSH event text, Feishu/HTTPS webhook summaries, and GitHub Action Job Summaries.
+- Add a read-only `radar next` handoff that selects the first status incident and points to its queued DSH task, verified analysis, or next check command.
+
+## [0.33.0] - 2026-08-16
+
+### Added
+
+- Add CISA KEV and FIRST EPSS prioritization signals to native DSH monitoring, with explicit CLI and GitHub Action opt-in, source-health tracking, durable state validation, and an offline showcase.
+- Compare active vulnerability ids and aliases with complete candidate dependency graphs, report `removed`/`still-affected`/`unknown` evidence, and identify the first non-blocked top-level plugin candidate that removes all checked paths without calling it safe.
+- Add an optional provider-neutral HTTPS webhook for changed vulnerability, compatibility, malware, and source-health events from both the native DSH adapter and CLI `radar check/watch`.
+- Deduplicate webhook event ids per endpoint, persist only the endpoint fingerprint, and retry failed deliveries on a later cycle.
+- Add a read-only `graph pnpm-lock` CLI command for pnpm v6/v9 lockfile dependency graphs, including project-root importers and explicit ambiguous peer references.
+- Add `init --pnpm-lock` to turn a lockfile graph into a static Radar config that can run the normal OSV check before DSH installation; it infers the root from an adjacent `package.json` and accepts `--root` as an explicit override.
+- Add the matching `graph npm-lock` and `init --npm-lock` path, including npm project roots from `package-lock.json` `packages[""]`.
+- Let the reusable GitHub Action optionally build that config from `pnpm-lock` or `npm-lock`, with an optional `root` override, while preserving the reviewed-config mode by default.
+- Treat an npm registry `404` for an unpublished plugin as a skipped release comparison rather than blocking its exact dependency vulnerability check; other registry and OSV failures remain visible errors.
+
+### Validation
+
+- Add a real DSH host-runtime showcase that refreshes a plugin's graph from the running process, matches a deterministic local OSV advisory against `@deepseek-ai/cordis`, and proves `dsh-host` event persistence plus Agent writeback.
+- Run the host-runtime proof in CI and the npm publish preflight, with a checked-in JSON result and one-command documentation.
+
+### Usability
+
+- Make `setup` generate `upstream-radar.dsh.yml` by default, so the first DSH run does not require users to understand environment-variable wiring.
+
 ## [0.32.0] - 2026-08-16
 
 ### Added

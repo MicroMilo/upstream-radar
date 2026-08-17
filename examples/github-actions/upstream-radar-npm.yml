@@ -1,0 +1,21 @@
+name: Upstream Radar from npm lockfile
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 6 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: MicroMilo/upstream-radar@v0.33.0
+        with:
+          npm-lock: package-lock.json
+          fail-on: high
+          fail-on-compatibility: breaking

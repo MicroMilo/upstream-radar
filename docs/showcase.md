@@ -40,6 +40,7 @@ Paths:
   plugin@1.0.0 -> logger@4.0.2 -> parser@2.9.0
 Fixed versions: 3.0.0
 Route: payments-platform via feishu:payments-security
+Next: Review parser@2.9.0 fixed version(s) 3.0.0 with the DSH Agent before changing the plugin.
 ```
 
 Running the same unchanged feed again produces no event. A changed advisory produces `updated`; removing the match produces `resolved`.
@@ -69,12 +70,15 @@ The candidate `plugin@2.0.0` changes:
 
 Radar identifies the mathematically incompatible environment and peer range, labels structural changes as needing analysis, and creates a separate DSH compatibility task.
 
-The same npm metadata also contains `plugin@1.1.0`, `plugin@1.2.0`, and `plugin@1.3.0`. Radar checks those exact candidate versions against OSV without installing them, then checks their bounded transitive graphs with lifecycle scripts disabled. `1.1.0` is blocked because its graph contains `logger@4.1.0 -> parser@2.9.0` with a known advisory, `1.2.0` by the Node.js requirement, and `1.3.0` becomes the first checked version worth handing to DSH. That wording is deliberate: it is a candidate for project analysis, not a safety certificate.
+The same npm metadata also contains `plugin@1.1.0`, `plugin@1.2.0`, and `plugin@1.3.0`. Radar checks those exact candidate versions against OSV without installing them, then checks their bounded transitive graphs with lifecycle scripts disabled. `1.1.0` is blocked because its graph contains `logger@4.1.0 -> parser@2.9.0` with a known advisory, `1.2.0` by the Node.js requirement, and `1.3.0` becomes the first checked version worth handing to DSH. That wording is deliberate: it is a candidate for project analysis, not a safety certificate. When an active vulnerability is known for this plugin, Radar also compares its advisory id and aliases against each complete candidate graph. A candidate can then be reported as removing all checked paths, still affected, or unknown; removing a known path is not a safety or compatibility certificate.
 
 ```text
 First candidate without a deterministic blocker: plugin@1.3.0 (still requires project analysis)
 Candidate OSV check: complete
 Candidate dependency graph check: complete
+Vulnerability remediation check: complete
+First checked candidate removing all known vulnerability paths: plugin@1.3.0 (still requires project analysis)
+  GHSA-demo-2026-parser: removed; The complete candidate graph has no OSV finding matching GHSA-demo-2026-parser.
 Upgrade candidates evaluated: 4; deterministic blockers: 3
 Blocked candidate samples:
   plugin@1.1.0: candidate-dependency-vulnerability
@@ -121,7 +125,15 @@ After three consecutive failed OSV checks, Radar creates one project-routed `sou
 dsh --profile web --patch ./upstream-radar.dsh.yml
 ```
 
-The setup command does not start DSH or execute plugin business actions; the user still reviews both generated files before launching the profile. Use `--no-install` when the bundle is already present.
+The setup command does not start DSH or execute plugin business actions; the user still reviews both generated files before launching the profile. Use `--no-install` when the bundle is already present. If the user explicitly wants the one-command path, `setup --start` runs the same local doctor first and starts the selected profile only when that check is not blocked; the doctor is a wiring check, not a human review or package-safety certificate.
+
+The one-command path is covered by a separate network-free proof:
+
+```bash
+pnpm run showcase:setup-start
+```
+
+It records the important boundary: Radar is installed into DSH, the local wiring check passes, and the DSH start command is invoked; no network request or plugin business code is executed by the showcase.
 
 ## Scene 10 — confirm the first run without another network request
 
@@ -130,6 +142,16 @@ After DSH has started, the read-only status command reads the same config and du
 ```bash
 pnpm dlx --package=upstream-radar@latest upstream-radar radar status ./upstream-radar.config.json
 ```
+
+When active vulnerabilities are present, the Attention list is already ordered by known exploitation in CISA KEV, then FIRST EPSS score, then advisory severity. Each vulnerability includes the signals that were actually observed; an absent signal is not treated as proof that the package is safe.
+
+For the shortest first-response path, run:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar radar next ./upstream-radar.config.json
+```
+
+This is still local-only. It selects the first item from the same ordering and prints one next command for the queued DSH task, verified analysis, or another check. Once a DSH result is verified, the same short output includes its urgency, recommendation, and bounded evidence list, turning the status view into a usable handoff rather than another place to look.
 
 It reports whether monitoring has started, the last successful check for OSV/npm/GitHub Releases, active vulnerability and compatibility incidents, source-health incidents, pending DSH analysis tasks, in-flight deliveries, and verified DSH conclusions. When an incident is active, it also shows the exact affected path or candidate signal and one suggested next step. Once the matching model response passes validation, that next step includes the stored exposure/confidence and recommended action:
 
@@ -143,11 +165,19 @@ For the full structured conclusion, use `upstream-radar analysis show <state.jso
 
 It does not poll any upstream source, so it is safe to use for a quick local diagnosis. The next step is guidance; it is not an automatic upgrade or a safety verdict.
 
+The same durable state also keeps the recent transition ledger. This makes a resolved incident auditable instead of making it disappear from the current status summary:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar radar history ./upstream-radar.config.json
+```
+
+The command is network-free, shows `new`, `updated`, `resolved`, and source-health transitions, and keeps a bounded tail of the latest 1,000 event ids. The runnable showcase prints this ledger as its final scene.
+
 The status output also shows `Coverage: incomplete` when the installed profile contains a dependency declaration that DSH cannot currently resolve. Optional peers remain visible without being counted as required gaps. If a required `@deepseek-ai/dsh-*` or Cordis peer is absent from both the profile and the exposed DSH host plane, status calls it out as a DSH host dependency that was not observed; that is a configuration gap, not a clean result.
 
 ## Scene 11 — diagnose the wiring before blaming the feeds
 
-The local doctor checks the reviewed config, the selected DSH profile, the generated overlay, the durable state file, and required dependency coverage without contacting OSV, npm, or GitHub:
+The local doctor checks the reviewed config, the selected DSH profile, the generated overlay, the durable state file, required dependency coverage, and the environment-based webhook route without contacting OSV, npm, or GitHub:
 
 ```bash
 pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.config.json \
@@ -155,7 +185,7 @@ pnpm dlx --package=upstream-radar@latest upstream-radar doctor ./upstream-radar.
   --patch ./upstream-radar.dsh.yml
 ```
 
-It reports `READY`, `READY WITH WARNINGS`, or `BLOCKED`. A missing first-run state is a warning; a profile without the Radar bundle, a mismatched overlay, an invalid config, or a corrupt state file is blocked. The same report can be emitted as JSON for CI or a future DSH status surface.
+It reports `READY`, `READY WITH WARNINGS`, or `BLOCKED`. A missing first-run state is a warning; a profile without the Radar bundle, a mismatched overlay, an invalid config, a corrupt state file, an invalid HTTPS webhook, or a retired Feishu V1 route is blocked. The same report can be emitted as JSON for CI or a future DSH status surface. The check never contacts the endpoint or prints its URL/token.
 
 ## Scene 12 — the graph follows the installed DSH profile
 
@@ -180,7 +210,7 @@ When the native DSH adapter is running, it additionally verifies the exact `@dee
 For a runner that does not have DSH installed, commit the generated config after review and run one frozen check:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.32.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.33.0 upstream-radar radar check \
   ./upstream-radar.config.json \
   --frozen --state :memory: --fail-on high --json
 ```
@@ -194,7 +224,7 @@ The published Action packages the same frozen check so a DSH plugin project does
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.32.0
+  - uses: MicroMilo/upstream-radar@v0.33.0
     with:
       config: upstream-radar.config.json
       fail-on: high
@@ -227,7 +257,7 @@ It packs without lifecycle scripts, runs one temporary DSH profile per version, 
 The package includes a no-network compatibility benchmark for the deterministic gate itself:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.32.0 upstream-radar benchmark compatibility
+pnpm dlx --package=upstream-radar@0.33.0 upstream-radar benchmark compatibility
 ```
 
 It covers a safe patch, analysis-only structural change, DSH peer exclusion, explicit publisher breaking language, a vulnerable candidate dependency, and incomplete candidate coverage. A passing benchmark means the rule contract has not regressed; it does not mean a real plugin is runtime-compatible. The real DSH consumer workflow below remains the integration proof.
@@ -241,7 +271,7 @@ The repository also carries a copyable consumer smoke under [`examples/github-ac
 The `probe dsh-load` command gives the compatibility question its own bounded surface. It takes one exact `.tgz`, uses one exact DSH version, and creates a disposable `headless` profile:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.32.0 upstream-radar probe dsh-load \
+pnpm dlx --package=upstream-radar@0.33.0 upstream-radar probe dsh-load \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.6 --json
 ```
@@ -257,6 +287,66 @@ pnpm run showcase:dsh-probe
 This is a runtime compatibility proof for one DSH version, not a package-security admission, a plugin capability benchmark, or a test of business actions.
 
 The same showcase also runs the loadable fixture against DSH `0.1.0-rc.3` and `0.1.0-rc.6`. The matrix is green only because both exact versions complete all five stages; if one version timed out or could not be loaded, the aggregate would remain `unknown` rather than silently passing.
+
+## Scene 18 — observe the dependency plane of the running DSH
+
+The broader headless smoke proves that Radar can hand an event to a DSH Agent. The host-runtime showcase proves which dependency graph is being monitored when a plugin relies on packages supplied by DSH itself:
+
+```bash
+pnpm run showcase:dsh-runtime
+```
+
+It creates a temporary plugin with a peer on the exact `@deepseek-ai/cordis` version installed by `@deepseek-ai/dsh@0.1.0-rc.6`, installs both the current Radar bundle and that plugin into a disposable profile, and starts the real DSH process. A local HTTPS OSV-compatible server returns one deterministic advisory only for that host version. Radar first records the profile fallback, then the native adapter refreshes the graph from the running process and persists:
+
+```text
+profile fallback -> running DSH process
+affected: @deepseek-ai/cordis@4.0.1
+affectedSources: dsh-host
+path: showcase-dsh-host-peer -> @deepseek-ai/cordis
+```
+
+The local model accepts the resulting analysis task, so the report covers the whole path from runtime discovery to Agent writeback. The checked-in [result](../examples/dsh/reports/dsh-runtime-host.json) is synthetic evidence of integration; it is not a claim that the real DSH release is vulnerable.
+
+## Scene 19 — send one changed event to an external endpoint
+
+The optional webhook path is provider-neutral and does not require a real Feishu or Slack account. It also recognizes Feishu/Lark V2 custom-bot URLs and converts the same event text to Feishu's native `msg_type: "text"` body; set `UPSTREAM_RADAR_FEISHU_SECRET` only when signature validation is enabled:
+
+```bash
+pnpm run showcase:webhook
+```
+
+The deterministic receiver proves one delivery, duplicate suppression, retry after a failed request, that the persisted ledger contains only an endpoint fingerprint—not the URL or token, and that a Feishu V2 endpoint receives a native signed text body instead of the generic envelope. Its local vulnerability fixture also prints the exact Feishu text priority hint (`CISA KEV known exploited; EPSS 97.2%; severity high`). Production DSH runs opt in with `UPSTREAM_RADAR_WEBHOOK_URL`; set `UPSTREAM_RADAR_FEISHU_SECRET` when Feishu signature validation is enabled. CLI runs can pass the same HTTPS endpoint with `radar check/watch --webhook`.
+
+For vulnerability events, the human-readable text carries one consistent handling hint: known exploitation in CISA KEV first, then EPSS, then advisory severity. It is a prioritization aid; it does not replace the exact dependency match or the DSH Agent's project analysis.
+
+The same command now also proves project-level routing without making a network request. Payments and Platform resolve different environment-backed endpoints, receive only their own event, and keep independent outboxes; acknowledging Payments leaves Platform pending. The checked state contains neither endpoint URL nor Feishu secret.
+
+## Scene 20 — quiet one incident without losing the trail
+
+After `radar next` identifies a noisy active incident, pause only that exact event version for a bounded period:
+
+```bash
+upstream-radar mute './upstream-radar.config.json.state.json' \
+  '<incident-id-from-radar-next>' \
+  --until '2026-08-17T12:00:00Z'
+```
+
+The DSH task and webhook delivery stay queued, while `radar status` and `radar next` continue to show the active path and the expiry. At expiry, delivery resumes automatically. If Radar observes a new event version first, that new event is delivered immediately because the mute is bound to the old event id. `unmute` resumes delivery early; critical and malware events require `--force` to mute.
+
+## Scene 21 — hand off one incident without pretending it is fixed
+
+After `radar next` identifies the incident to handle, record the human owner and current work state next to that exact event version:
+
+```bash
+upstream-radar triage './upstream-radar.config.json.state.json' \
+  '<incident-id-from-radar-next>' \
+  --status in-progress \
+  --owner security-team \
+  --note 'Trace the parser input path' \
+  --due '2026-08-17T12:00:00Z'
+```
+
+The allowed states are `open`, `in-progress`, `blocked`, and `accepted-risk`; the last two require a note. `--due` is an optional human deadline; after it passes, both read-only views mark the follow-up overdue. The record is only a handoff note: the active vulnerability, evidence, DSH task, and delivery policy remain unchanged. When an advisory changes and Radar creates a new event id, the old follow-up is ignored and `radar next` asks for a fresh review. This keeps a stale “accepted risk” from silently covering a newly published upstream fact.
 
 ## Live sources
 

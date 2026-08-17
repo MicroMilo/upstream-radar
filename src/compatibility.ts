@@ -5,16 +5,25 @@ import {
   type CompatibilityDependencyCheck,
   type CompatibilityDependencyStatus,
   type CompatibilityEvent,
+  type CompatibilityRemediationCoverage,
   type CompatibilityUpgradeCandidate,
   type CompatibilityUpgradePath,
+  type CompatibilityVulnerabilityRemediation,
   type CompatibilityVulnerabilityStatus,
   type CompatibilitySignal,
   type PackageManifestSnapshot,
   type PluginInstallation,
   type ProjectInventory,
   type VulnerabilityAdvisory,
+  type VulnerabilityEvent,
 } from './radar-types.js'
 import { packageKey } from './osv.js'
+
+function isDshRuntimePackage(name: string): boolean {
+  return name === '@deepseek-ai/dsh'
+    || name === '@deepseek-ai/cordis'
+    || name.startsWith('@deepseek-ai/dsh-')
+}
 
 export interface CompatibilityChangeInput {
   previous: PackageManifestSnapshot
@@ -29,6 +38,8 @@ export interface CompatibilityChangeInput {
   /** OSV results for the bounded transitive graphs of candidate versions. */
   candidateDependencyChecks?: ReadonlyMap<string, CompatibilityDependencyCheck>
   candidateDependencyStatus?: CompatibilityDependencyStatus
+  /** Active vulnerability events for this installed plugin, used only for candidate remediation evidence. */
+  activeVulnerabilities?: readonly VulnerabilityEvent[]
   detectedAt: string
 }
 
@@ -127,7 +138,7 @@ function collectCompatibilitySignals(
   const previousPeers = previous.peerDependencies ?? {}
   const candidatePeers = candidate.peerDependencies ?? {}
   for (const [name, range] of Object.entries(candidatePeers).sort(([left], [right]) => left.localeCompare(right))) {
-    if (!(name.startsWith('@deepseek-ai/dsh-') || name === '@deepseek-ai/cordis')) continue
+    if (!isDshRuntimePackage(name)) continue
     const installed = installation.graph.nodes
       .filter(node => node.name === name)
       .map(node => node.version)
@@ -171,7 +182,7 @@ function collectCompatibilitySignals(
     })
   }
 
-  if (candidate.name.startsWith('@deepseek-ai/dsh-')
+  if (isDshRuntimePackage(candidate.name)
     && previous.version.startsWith('0.')
     && previous.version !== candidate.version) {
     signals.push({
@@ -236,6 +247,124 @@ function isDeterministicallyBlocked(signals: readonly CompatibilitySignal[]): bo
   return signals.some(signal => signal.confidence === 'confirmed' || signal.confidence === 'strong')
 }
 
+function advisoryIdentifiers(advisory: VulnerabilityAdvisory): Set<string> {
+  return new Set([advisory.id, ...advisory.aliases])
+}
+
+function advisoriesMatch(left: VulnerabilityAdvisory, right: VulnerabilityAdvisory): boolean {
+  const leftIds = advisoryIdentifiers(left)
+  for (const identifier of advisoryIdentifiers(right)) {
+    if (leftIds.has(identifier)) return true
+  }
+  return false
+}
+
+function remediationCoverage(
+  activeVulnerabilities: readonly VulnerabilityEvent[],
+  previous: PackageManifestSnapshot,
+  vulnerabilityStatus: CompatibilityVulnerabilityStatus,
+  dependencyStatus: CompatibilityDependencyStatus,
+  findingsTruncated: boolean,
+): CompatibilityRemediationCoverage | undefined {
+  if (activeVulnerabilities.length === 0) return undefined
+  if (vulnerabilityStatus === 'unavailable') return 'unavailable'
+  if (activeVulnerabilities.some(event => event.affectedSources?.includes('dsh-host') === true)) return 'unavailable'
+  if (findingsTruncated) return 'partial'
+  const hasTransitiveIncident = activeVulnerabilities.some(event => event.affected.name !== previous.name)
+  if (hasTransitiveIncident) {
+    if (dependencyStatus === 'unavailable') return 'unavailable'
+    if (dependencyStatus === 'partial') return 'partial'
+    if (dependencyStatus === 'not-requested') return 'not-requested'
+  }
+  if (dependencyStatus !== 'not-requested') return dependencyStatus
+  return vulnerabilityStatus === 'checked' ? 'checked' : 'not-requested'
+}
+
+function assessVulnerabilityRemediation(
+  active: VulnerabilityEvent,
+  candidate: PackageManifestSnapshot,
+  candidateVulnerabilities: readonly VulnerabilityAdvisory[],
+  vulnerabilityStatus: CompatibilityVulnerabilityStatus,
+  candidateDependencyCheck: CompatibilityDependencyCheck | undefined,
+): CompatibilityVulnerabilityRemediation {
+  const base = {
+    incidentId: active.incidentId,
+    advisoryId: active.advisory.id,
+    affected: { ...active.affected },
+  }
+
+  // A plugin release cannot prove that it removes a path supplied by DSH's
+  // shared host runtime. Keep the result unknown instead of treating a clean
+  // plugin-local graph as proof that the host path disappeared.
+  if (active.affectedSources?.includes('dsh-host') === true) {
+    return {
+      ...base,
+      status: 'unknown',
+      reason: 'The active vulnerability includes a DSH host-runtime path; this plugin candidate does not prove that shared host path is removed.',
+    }
+  }
+
+  if (candidateDependencyCheck !== undefined) {
+    if (candidateDependencyCheck.status !== 'checked') {
+      return {
+        ...base,
+        status: 'unknown',
+        reason: `The candidate dependency graph is ${candidateDependencyCheck.status}; all affected paths cannot be checked.`,
+      }
+    }
+    if (candidateDependencyCheck.findingsTruncated === true) {
+      return {
+        ...base,
+        status: 'unknown',
+        reason: 'The candidate vulnerability findings were truncated by the bounded result limit; absence is not proof that every path was removed.',
+      }
+    }
+    const matches = candidateDependencyCheck.findings.filter(finding => advisoriesMatch(active.advisory, finding.advisory))
+    if (matches.length > 0) {
+      const paths = [...new Map(
+        matches.flatMap(finding => finding.paths.map(path => [JSON.stringify(path), path] as const)),
+      ).values()].slice(0, 4)
+      return {
+        ...base,
+        status: 'still-affected',
+        reason: `The complete candidate graph still contains a path matched to ${active.advisory.id}.`,
+        ...(paths.length === 0 ? {} : { remainingPaths: paths }),
+      }
+    }
+    return {
+      ...base,
+      status: 'removed',
+      reason: `The complete candidate graph has no OSV finding matching ${active.advisory.id}.`,
+    }
+  }
+
+  // Without a candidate graph, only a vulnerability on the candidate's own
+  // package can be checked from the direct OSV query. Transitive removal is
+  // deliberately unknown.
+  if (active.affected.name !== candidate.name || vulnerabilityStatus !== 'checked') {
+    return {
+      ...base,
+      status: 'unknown',
+      reason: active.affected.name === candidate.name
+        ? 'The direct candidate vulnerability query is incomplete or unavailable.'
+        : 'No complete candidate dependency graph was provided for this transitive path.',
+    }
+  }
+  const matches = candidateVulnerabilities.filter(advisory => advisoriesMatch(active.advisory, advisory))
+  if (matches.length > 0) {
+    return {
+      ...base,
+      status: 'still-affected',
+      reason: `The candidate package is still matched to ${active.advisory.id}.`,
+    }
+  }
+  return {
+    ...base,
+    status: 'removed',
+    reason: `The complete direct OSV query has no finding matching ${active.advisory.id}.`,
+  }
+}
+
 function assessUpgradePath(
   inventory: ProjectInventory,
   installation: PluginInstallation,
@@ -247,6 +376,7 @@ function assessUpgradePath(
   vulnerabilityStatus: CompatibilityVulnerabilityStatus = 'not-requested',
   candidateDependencyChecks: ReadonlyMap<string, CompatibilityDependencyCheck> = new Map(),
   dependencyStatus: CompatibilityDependencyStatus = 'not-requested',
+  activeVulnerabilities: readonly VulnerabilityEvent[] = [],
 ): CompatibilityUpgradePath | undefined {
   const unique = new Map<string, PackageManifestSnapshot>()
   for (const candidate of candidates) {
@@ -261,8 +391,15 @@ function assessUpgradePath(
   if (ordered.length === 0) return undefined
 
   let firstCandidate: CompatibilityUpgradeCandidate | undefined
+  let firstCandidateRemovingAllPaths: CompatibilityUpgradeCandidate | undefined
   const blocked: CompatibilityUpgradeCandidate[] = []
   let blockedCount = 0
+  const findingsTruncated = ordered.some(candidate => candidateDependencyChecks.get(packageKey({
+    ecosystem: 'npm',
+    name: candidate.name,
+    version: candidate.version,
+  }))?.findingsTruncated === true)
+  const coverage = remediationCoverage(activeVulnerabilities, previous, vulnerabilityStatus, dependencyStatus, findingsTruncated)
   for (const candidate of ordered) {
     const signals = collectCompatibilitySignals(
       inventory,
@@ -283,16 +420,31 @@ function assessUpgradePath(
       signals,
       ...(dependencyCheck === undefined ? {} : { dependencyCheck }),
     }
+    const remediations = activeVulnerabilities.map(active => assessVulnerabilityRemediation(
+      active,
+      candidate,
+      candidateVulnerabilities.get(packageKey({ ecosystem: 'npm', name: candidate.name, version: candidate.version })) ?? [],
+      vulnerabilityStatus,
+      dependencyCheck,
+    ))
+    if (remediations.length > 0) assessed.vulnerabilityRemediation = remediations
     if (isDeterministicallyBlocked(signals)) {
       blockedCount += 1
       if (blocked.length < 8) blocked.push(assessed)
-    } else if (firstCandidate === undefined
-      && vulnerabilityStatus !== 'unavailable'
-      && dependencyStatus !== 'unavailable'
-      && (dependencyCheck === undefined
-        ? dependencyStatus === 'not-requested'
-        : dependencyCheck.status === 'checked')) {
-      firstCandidate = assessed
+    } else {
+      if (firstCandidate === undefined
+        && vulnerabilityStatus !== 'unavailable'
+        && dependencyStatus !== 'unavailable'
+        && (dependencyCheck === undefined
+          ? dependencyStatus === 'not-requested'
+          : dependencyCheck.status === 'checked')) {
+        firstCandidate = assessed
+      }
+      if (firstCandidateRemovingAllPaths === undefined
+        && remediations.length > 0
+        && remediations.every(remediation => remediation.status === 'removed')) {
+        firstCandidateRemovingAllPaths = assessed
+      }
     }
   }
   const uncheckedCount = dependencyStatus === 'not-requested'
@@ -309,6 +461,8 @@ function assessUpgradePath(
     dependencyStatus,
     uncheckedCount,
     ...(firstCandidate === undefined ? {} : { firstCandidate }),
+    ...(coverage === undefined ? {} : { remediationCoverage: coverage }),
+    ...(firstCandidateRemovingAllPaths === undefined ? {} : { firstCandidateRemovingAllPaths }),
     blocked,
   }
 }
@@ -330,9 +484,11 @@ export function assessCompatibilityChanges(
   if (!Number.isFinite(Date.parse(change.detectedAt))) throw new Error('compatibility change has an invalid detection time')
   const versionOrder = compareSemverValues(change.candidate.version, change.previous.version)
   if (versionOrder !== undefined && versionOrder <= 0) return []
-  const installations = inventory.plugins.filter(plugin => plugin.graph.nodes.some(node => (
-    node.name === change.previous.name && node.version === change.previous.version
-  )))
+  const installations = inventory.plugins.filter(plugin => (
+    plugin.graph.nodes.some(node => node.name === change.previous.name && node.version === change.previous.version)
+    || (plugin.graph.hostRuntime?.package?.name === change.previous.name
+      && plugin.graph.hostRuntime.package.version === change.previous.version)
+  ))
   if (installations.length === 0) return []
 
   return installations.flatMap((installation) => {
@@ -364,6 +520,13 @@ export function assessCompatibilityChanges(
         change.candidateVulnerabilityStatus ?? 'not-requested',
         change.candidateDependencyChecks ?? new Map(),
         change.candidateDependencyStatus ?? 'not-requested',
+        (change.activeVulnerabilities ?? []).filter(event => (
+          event.project.id === inventory.project.id
+          && (event.affectedPlugins ?? [event.plugin]).some(plugin => (
+            plugin.name === installation.package.name
+            && plugin.version === installation.package.version
+          ))
+        )),
       )
     const eventSeed = [inventory.project.id, installation.package.name, installation.package.version, change.previous.name, change.previous.version, change.candidate.version, change.detectedAt].join('\0')
     const incidentSeed = [inventory.project.id, installation.package.name, installation.package.version, change.previous.name, change.previous.version].join('\0')

@@ -6,8 +6,10 @@ import {
   ANALYSIS_TASK_SCHEMA,
   ANALYSIS_DELIVERY_SCHEMA,
   ANALYSIS_RESULT_SCHEMA,
+  MAX_RADAR_HISTORY_EVENTS,
   RADAR_EVENT_SCHEMA,
   RADAR_STATE_SCHEMA,
+  WEBHOOK_DELIVERY_SCHEMA,
   type AnalysisDelivery,
   type AgentAnalysisResult,
   type StoredAnalysisResult,
@@ -26,6 +28,72 @@ function validAffectedSources(value: unknown): boolean {
   return new Set(value).size === value.length && value.every(item => typeof item === 'string' && allowed.has(item))
 }
 
+function validAdvisorySources(value: unknown): boolean {
+  if (value === undefined) return true
+  if (!Array.isArray(value) || value.length === 0 || value.length > 2) return false
+  const allowed = new Set(['osv', 'github-advisories'])
+  return new Set(value).size === value.length && value.every(item => typeof item === 'string' && allowed.has(item))
+}
+
+function validAdvisoryConflicts(value: unknown, sourcesValue: unknown): boolean {
+  if (value === undefined) return true
+  if (!Array.isArray(sourcesValue)) return false
+  if (!Array.isArray(value) || value.length === 0 || value.length > 2) return false
+  const fields = value.map(raw => asRecord(raw)?.field)
+  if (new Set(fields).size !== fields.length
+    || fields.some(field => field !== 'severity' && field !== 'fixed-versions')) return false
+  const allowedSources = new Set(['osv', 'github-advisories'])
+  const declaredSources = new Set(sourcesValue)
+  return value.every(raw => {
+    const conflict = asRecord(raw)
+    const claims = conflict?.claims
+    if (!Array.isArray(claims) || claims.length < 2 || claims.length > 2) return false
+    const sources = claims.map(claim => asRecord(claim)?.source)
+    return new Set(sources).size === sources.length
+      && sources.every(source => typeof source === 'string' && allowedSources.has(source))
+      && sources.every(source => declaredSources.has(source))
+      && claims.every(claim => {
+        const item = asRecord(claim)
+        return typeof item?.value === 'string' && item.value.length > 0 && item.value.length <= 1_024
+      })
+  })
+}
+
+function validAdvisoryRiskSignals(value: unknown): boolean {
+  if (value === undefined) return true
+  const signals = asRecord(value)
+  if (signals === undefined) return false
+  const cisaKev = signals.cisaKev === undefined ? undefined : asRecord(signals.cisaKev)
+  const epss = signals.epss === undefined ? undefined : asRecord(signals.epss)
+  if (cisaKev === undefined && epss === undefined) return false
+  if (cisaKev !== undefined) {
+    if (cisaKev.knownExploited !== true
+      || (cisaKev.dateAdded !== undefined && (typeof cisaKev.dateAdded !== 'string' || cisaKev.dateAdded.length > 128))
+      || (cisaKev.dueDate !== undefined && (typeof cisaKev.dueDate !== 'string' || cisaKev.dueDate.length > 128))
+      || (cisaKev.knownRansomwareCampaignUse !== undefined
+        && (typeof cisaKev.knownRansomwareCampaignUse !== 'string' || cisaKev.knownRansomwareCampaignUse.length > 128))
+      || (cisaKev.requiredAction !== undefined
+        && (typeof cisaKev.requiredAction !== 'string' || cisaKev.requiredAction.length > 8_192))
+      || (cisaKev.notes !== undefined
+        && (typeof cisaKev.notes !== 'string' || cisaKev.notes.length > 8_192))) return false
+  }
+  if (epss !== undefined) {
+    if (typeof epss.score !== 'number' || !Number.isFinite(epss.score) || epss.score < 0 || epss.score > 1
+      || typeof epss.percentile !== 'number' || !Number.isFinite(epss.percentile) || epss.percentile < 0 || epss.percentile > 1
+      || (epss.date !== undefined && (typeof epss.date !== 'string' || epss.date.length > 64))) return false
+  }
+  return true
+}
+
+function validAffectedPlugins(value: unknown): boolean {
+  if (value === undefined) return true
+  if (!Array.isArray(value) || value.length === 0 || value.length > 1_000) return false
+  const keys = value.map(item => validPackageCoordinate(item)
+    ? `${(item as { ecosystem: string }).ecosystem}:${(item as { name: string }).name}@${(item as { version: string }).version}`
+    : undefined)
+  return keys.every(key => key !== undefined) && new Set(keys).size === keys.length
+}
+
 function validPackageCoordinate(value: unknown): boolean {
   const coordinate = asRecord(value)
   return coordinate?.ecosystem === 'npm'
@@ -40,6 +108,7 @@ function validCompatibilityDependencyCheck(value: unknown): boolean {
     || typeof check.nodeCount !== 'number' || !Number.isSafeInteger(check.nodeCount) || check.nodeCount < 0 || check.nodeCount > 1_000_000
     || typeof check.unresolvedCount !== 'number' || !Number.isSafeInteger(check.unresolvedCount) || check.unresolvedCount < 0 || check.unresolvedCount > 1_000_000
     || !Array.isArray(findings) || findings.length > 32
+    || (check.findingsTruncated !== undefined && typeof check.findingsTruncated !== 'boolean')
     || (check.error !== undefined && (typeof check.error !== 'string' || check.error.length > 2_048))) return false
   return findings.every(rawFinding => {
     const finding = asRecord(rawFinding)
@@ -60,9 +129,26 @@ function validCompatibilityDependencyCheck(value: unknown): boolean {
       && advisory.fixedVersions.every(item => typeof item === 'string' && item.length <= 256)
       && Array.isArray(advisory.references) && advisory.references.length <= 100
       && advisory.references.every(item => typeof item === 'string' && item.length <= 4_096)
+      && validAdvisorySources(advisory.sources)
+      && validAdvisoryConflicts(advisory.conflicts, advisory.sources)
+      && validAdvisoryRiskSignals(advisory.riskSignals)
       && Array.isArray(paths) && paths.length <= 4
       && paths.every(path => Array.isArray(path) && path.length > 0 && path.length <= 64 && path.every(validPackageCoordinate))
   })
+}
+
+function validCompatibilityVulnerabilityRemediation(value: unknown): boolean {
+  const remediation = asRecord(value)
+  const remainingPaths = remediation?.remainingPaths
+  if (typeof remediation?.incidentId !== 'string' || remediation.incidentId.length === 0 || remediation.incidentId.length > 512
+    || typeof remediation.advisoryId !== 'string' || remediation.advisoryId.length === 0 || remediation.advisoryId.length > 512
+    || !validPackageCoordinate(remediation.affected)
+    || (remediation.status !== 'removed' && remediation.status !== 'still-affected' && remediation.status !== 'unknown')
+    || typeof remediation.reason !== 'string' || remediation.reason.length > 2_048
+    || (remainingPaths !== undefined && (!Array.isArray(remainingPaths) || remainingPaths.length > 4))) return false
+  return remainingPaths === undefined || remainingPaths.every(path => (
+    Array.isArray(path) && path.length > 0 && path.length <= 64 && path.every(validPackageCoordinate)
+  ))
 }
 
 function validCompatibilityUpgradeCandidate(value: unknown): boolean {
@@ -70,11 +156,15 @@ function validCompatibilityUpgradeCandidate(value: unknown): boolean {
   const coordinate = asRecord(candidate?.candidate)
   const signals = candidate?.signals
   const dependencyCheck = candidate?.dependencyCheck
+  const vulnerabilityRemediation = candidate?.vulnerabilityRemediation
   if (coordinate?.ecosystem !== 'npm'
     || typeof coordinate.name !== 'string' || coordinate.name.length === 0 || coordinate.name.length > 512
     || typeof coordinate.version !== 'string' || coordinate.version.length === 0 || coordinate.version.length > 512
     || !Array.isArray(signals) || signals.length > 64) return false
   if (dependencyCheck !== undefined && !validCompatibilityDependencyCheck(dependencyCheck)) return false
+  if (vulnerabilityRemediation !== undefined
+    && (!Array.isArray(vulnerabilityRemediation) || vulnerabilityRemediation.length > 32
+      || !vulnerabilityRemediation.every(validCompatibilityVulnerabilityRemediation))) return false
   return signals.every(rawSignal => {
     const signal = asRecord(rawSignal)
     return typeof signal?.code === 'string' && signal.code.length > 0 && signal.code.length <= 256
@@ -94,6 +184,7 @@ function validCompatibilityUpgradePath(value: unknown): boolean {
   const vulnerabilityStatus = path?.vulnerabilityStatus
   const dependencyStatus = path?.dependencyStatus
   const uncheckedCount = path?.uncheckedCount
+  const remediationCoverage = path?.remediationCoverage
   if (typeof evaluated !== 'number' || !Number.isSafeInteger(evaluated) || evaluated < 0 || evaluated > 1_000_000
     || typeof blockedCount !== 'number' || !Number.isSafeInteger(blockedCount) || blockedCount < 0 || blockedCount > evaluated
     // 0.17.0 upgrade paths did not have this field; treat those persisted paths as legacy.
@@ -101,10 +192,13 @@ function validCompatibilityUpgradePath(value: unknown): boolean {
       && vulnerabilityStatus !== 'checked' && vulnerabilityStatus !== 'unavailable' && vulnerabilityStatus !== 'not-requested')
     || (dependencyStatus !== undefined
       && dependencyStatus !== 'checked' && dependencyStatus !== 'partial' && dependencyStatus !== 'unavailable' && dependencyStatus !== 'not-requested')
+    || (remediationCoverage !== undefined
+      && remediationCoverage !== 'checked' && remediationCoverage !== 'partial' && remediationCoverage !== 'unavailable' && remediationCoverage !== 'not-requested')
     || (uncheckedCount !== undefined
       && (typeof uncheckedCount !== 'number' || !Number.isSafeInteger(uncheckedCount) || uncheckedCount < 0 || uncheckedCount > evaluated))
     || !Array.isArray(blocked) || blocked.length > 8
-    || (path?.firstCandidate !== undefined && !validCompatibilityUpgradeCandidate(path.firstCandidate))) return false
+    || (path?.firstCandidate !== undefined && !validCompatibilityUpgradeCandidate(path.firstCandidate))
+    || (path?.firstCandidateRemovingAllPaths !== undefined && !validCompatibilityUpgradeCandidate(path.firstCandidateRemovingAllPaths))) return false
   return blocked.every(validCompatibilityUpgradeCandidate)
 }
 
@@ -186,6 +280,140 @@ function validStoredAnalysisResult(value: unknown): value is StoredAnalysisResul
     && validAnalysisResultFields(result)
 }
 
+function validWebhookDeliveryState(value: unknown): boolean {
+  const webhook = asRecord(value)
+  const delivered = asRecord(webhook?.deliveredEventIds)
+  const pending = webhook?.pendingEvents
+  const expectedKeys = new Set([
+    'schema',
+    'endpointHash',
+    'deliveredEventIds',
+    ...(pending === undefined ? [] : ['pendingEvents']),
+  ])
+  if (webhook === undefined || Object.keys(webhook).length !== expectedKeys.size
+    || Object.keys(webhook).some(key => !expectedKeys.has(key))
+    || webhook.schema !== WEBHOOK_DELIVERY_SCHEMA
+    || typeof webhook.endpointHash !== 'string' || !/^[a-f0-9]{64}$/.test(webhook.endpointHash)
+    || delivered === undefined || Object.keys(delivered).length > 10_000
+    || (pending !== undefined && (!Array.isArray(pending) || pending.length > 10_000))) return false
+  if (pending !== undefined && !pending.every(validHistoryEvent)) return false
+  return Object.entries(delivered).every(([eventId, deliveredAt]) => (
+    eventId.length > 0 && eventId.length <= 512
+      && typeof deliveredAt === 'string' && deliveredAt.length > 0 && deliveredAt.length <= 256
+  ))
+}
+
+function validWebhookDeliveryStateMap(value: unknown): boolean {
+  if (value === undefined) return true
+  const routes = asRecord(value)
+  if (routes === undefined || Object.keys(routes).length > 1_000) return false
+  return Object.entries(routes).every(([endpointHash, rawState]) => (
+    /^[a-f0-9]{64}$/.test(endpointHash)
+      && validWebhookDeliveryState(rawState)
+      && asRecord(rawState)?.endpointHash === endpointHash
+  ))
+}
+
+function validIncidentMutes(value: unknown): boolean {
+  if (value === undefined) return true
+  const mutes = asRecord(value)
+  if (mutes === undefined || Object.keys(mutes).length > 100_000) return false
+  return Object.entries(mutes).every(([incidentId, rawMute]) => {
+    const mute = asRecord(rawMute)
+    const mutedUntil = mute?.mutedUntil
+    const eventId = mute?.eventId
+    return incidentId.length > 0 && incidentId.length <= 512
+      && typeof eventId === 'string' && eventId.length > 0 && eventId.length <= 512
+      && typeof mutedUntil === 'string' && mutedUntil.length > 0 && mutedUntil.length <= 256
+      && Number.isFinite(Date.parse(mutedUntil))
+  })
+}
+
+function validIncidentTriage(value: unknown): boolean {
+  if (value === undefined) return true
+  const triage = asRecord(value)
+  if (triage === undefined || Object.keys(triage).length > 100_000) return false
+  const statuses = new Set(['open', 'in-progress', 'blocked', 'accepted-risk'])
+  return Object.entries(triage).every(([incidentId, rawRecord]) => {
+    const record = asRecord(rawRecord)
+    if (record === undefined) return false
+    const expectedKeys = new Set([
+      'eventId',
+      'status',
+      'updatedAt',
+      ...(record.owner === undefined ? [] : ['owner']),
+      ...(record.note === undefined ? [] : ['note']),
+      ...(record.dueAt === undefined ? [] : ['dueAt']),
+    ])
+    if (Object.keys(record).length !== expectedKeys.size || Object.keys(record).some(key => !expectedKeys.has(key))) return false
+    const note = record.note
+    return incidentId.length > 0 && incidentId.length <= 512
+      && typeof record.eventId === 'string' && record.eventId.length > 0 && record.eventId.length <= 512
+      && typeof record.status === 'string' && statuses.has(record.status)
+      && typeof record.updatedAt === 'string' && record.updatedAt.length > 0 && record.updatedAt.length <= 256
+      && Number.isFinite(Date.parse(record.updatedAt))
+      && (record.owner === undefined || (typeof record.owner === 'string' && record.owner.length > 0 && record.owner.length <= 512))
+      && (note === undefined || (typeof note === 'string' && note.length > 0 && note.length <= 2_048))
+      && (record.dueAt === undefined
+        || (typeof record.dueAt === 'string' && record.dueAt.length > 0 && record.dueAt.length <= 256
+          && Number.isFinite(Date.parse(record.dueAt))))
+      && ((record.status !== 'blocked' && record.status !== 'accepted-risk') || note !== undefined)
+  })
+}
+
+function validHistoryEvent(value: unknown): boolean {
+  const event = asRecord(value)
+  const project = asRecord(event?.project)
+  const route = asRecord(event?.route)
+  if (event?.schema !== RADAR_EVENT_SCHEMA
+    || typeof event.id !== 'string' || event.id.length === 0 || event.id.length > 512
+    || typeof event.incidentId !== 'string' || event.incidentId.length === 0 || event.incidentId.length > 512
+    || (event.change !== 'new' && event.change !== 'updated' && event.change !== 'resolved')
+    || typeof event.detectedAt !== 'string' || event.detectedAt.length === 0 || event.detectedAt.length > 256
+    || project?.id === undefined || typeof project.id !== 'string' || project.id.length === 0 || project.id.length > 512
+    || project.name === undefined || typeof project.name !== 'string' || project.name.length === 0 || project.name.length > 2_048
+    || !Array.isArray(route?.channels) || route.channels.length > 64
+    || !route.channels.every(item => typeof item === 'string' && item.length > 0 && item.length <= 512)) return false
+
+  if (event.kind === 'vulnerability' || event.kind === 'malware') {
+    const advisory = asRecord(event.advisory)
+    const paths = event.paths
+    return validPackageCoordinate(event.plugin)
+      && validAffectedPlugins(event.affectedPlugins)
+      && validPackageCoordinate(event.affected)
+      && Array.isArray(paths) && paths.length <= 64
+      && paths.every(path => Array.isArray(path) && path.length > 0 && path.length <= 128 && path.every(validPackageCoordinate))
+      && advisory?.id !== undefined && typeof advisory.id === 'string' && advisory.id.length > 0 && advisory.id.length <= 512
+      && advisory.modified !== undefined && typeof advisory.modified === 'string' && advisory.modified.length > 0 && advisory.modified.length <= 256
+      && (advisory.severity === 'unknown' || advisory.severity === 'info' || advisory.severity === 'low'
+        || advisory.severity === 'medium' || advisory.severity === 'high' || advisory.severity === 'critical')
+      && validAdvisorySources(advisory.sources)
+      && validAdvisoryConflicts(advisory.conflicts, advisory.sources)
+      && validAdvisoryRiskSignals(advisory.riskSignals)
+  }
+  if (event.kind === 'compatibility') {
+    return validPackageCoordinate(event.plugin)
+      && validPackageCoordinate(event.installed)
+      && validPackageCoordinate(event.candidate)
+      && Array.isArray(event.signals) && event.signals.length <= 64
+      && event.signals.every(signal => {
+        const item = asRecord(signal)
+        return typeof item?.summary === 'string' && item.summary.length <= 2_048
+      })
+      && validCompatibilityUpgradePath(event.upgradePath)
+  }
+  if (event.kind === 'source-health') {
+    return (event.source === 'osv' || event.source === 'github-advisories' || event.source === 'cisa-kev'
+      || event.source === 'epss' || event.source === 'npm-releases'
+      || event.source === 'npm-candidate-graphs' || event.source === 'github-releases')
+      && (event.status === 'degraded' || event.status === 'healthy')
+      && typeof event.failureCount === 'number' && Number.isSafeInteger(event.failureCount)
+      && event.failureCount >= 0 && event.failureCount <= 1_000_000
+      && typeof event.lastAttemptedAt === 'string' && event.lastAttemptedAt.length > 0 && event.lastAttemptedAt.length <= 256
+  }
+  return false
+}
+
 export function parseRadarState(value: unknown): RadarState {
   const root = asRecord(value)
   if (root?.schema !== RADAR_STATE_SCHEMA) throw new Error('radar state has an unsupported schema')
@@ -201,13 +429,30 @@ export function parseRadarState(value: unknown): RadarState {
   if (analysisDeliveries === undefined) throw new Error('radar state has an invalid analysis delivery map')
   const analysisResults = root.analysisResults === undefined ? {} : asRecord(root.analysisResults)
   if (analysisResults === undefined) throw new Error('radar state has an invalid analysis result map')
+  const history = root.history === undefined ? [] : root.history
+  if (!Array.isArray(history) || history.length > MAX_RADAR_HISTORY_EVENTS
+    || history.some(event => !validHistoryEvent(event))) {
+    throw new Error('radar state has an invalid event history')
+  }
+  if (root.webhook !== undefined && !validWebhookDeliveryState(root.webhook)) {
+    throw new Error('radar state has an invalid webhook delivery state')
+  }
+  if (!validWebhookDeliveryStateMap(root.webhookRoutes)) {
+    throw new Error('radar state has an invalid webhook route map')
+  }
+  if (!validIncidentMutes(root.incidentMutes)) {
+    throw new Error('radar state has an invalid incident mute map')
+  }
+  if (!validIncidentTriage(root.incidentTriage)) {
+    throw new Error('radar state has an invalid incident triage map')
+  }
   if (Object.keys(sourceHealth).length > 10 || Object.keys(activeSourceHealth).length > 1_000_000) {
     throw new Error('radar state exceeds the source health limit')
   }
   if (Object.keys(analysisDeliveries).length > 100_000 || Object.keys(analysisResults).length > 100_000) {
     throw new Error('radar state exceeds the analysis record limit')
   }
-  const sourceNames = new Set(['osv', 'npm-releases', 'npm-candidate-graphs', 'github-releases'])
+  const sourceNames = new Set(['osv', 'github-advisories', 'cisa-kev', 'epss', 'npm-releases', 'npm-candidate-graphs', 'github-releases'])
   for (const [source, rawStatus] of Object.entries(sourceHealth)) {
     const status = asRecord(rawStatus)
     const failures = status?.consecutiveFailures
@@ -233,7 +478,8 @@ export function parseRadarState(value: unknown): RadarState {
       || (event.kind !== 'vulnerability' && event.kind !== 'malware' && event.kind !== 'compatibility' && event.kind !== 'source-health')) {
       throw new Error('radar state contains an invalid pending analysis task')
     }
-    if (!validAffectedSources(event.affectedSources)) throw new Error('radar state contains invalid affected package origins')
+    if (!validAffectedSources(event.affectedSources)
+      || !validAffectedPlugins(event.affectedPlugins)) throw new Error('radar state contains invalid vulnerability scope')
     if (!validCompatibilityUpgradePath(event.upgradePath)) throw new Error('radar state contains an invalid compatibility upgrade path')
   }
   for (const [key, rawDelivery] of Object.entries(analysisDeliveries)) {
@@ -257,7 +503,11 @@ export function parseRadarState(value: unknown): RadarState {
     if (stored?.key !== key || event?.schema !== RADAR_EVENT_SCHEMA || typeof event.incidentId !== 'string'
       || (event.kind !== 'vulnerability' && event.kind !== 'malware')
       || typeof advisory?.id !== 'string' || typeof advisory.modified !== 'string'
-      || !validAffectedSources(event.affectedSources)) {
+      || !validAdvisorySources(advisory.sources)
+      || !validAdvisoryConflicts(advisory.conflicts, advisory.sources)
+      || !validAdvisoryRiskSignals(advisory.riskSignals)
+      || !validAffectedSources(event.affectedSources)
+      || !validAffectedPlugins(event.affectedPlugins)) {
       throw new Error(`radar state contains an invalid active match: ${key.slice(0, 256)}`)
     }
   }

@@ -1,0 +1,69 @@
+name: DSH trial feedback
+description: Tell us whether the first Upstream Radar path worked for your DSH project.
+title: "trial: "
+labels: [feedback]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for trying Upstream Radar. Please remove secrets, private source, local usernames, and proprietary paths before submitting. Use the security policy for a security-sensitive report.
+  - type: input
+    id: radar_version
+    attributes:
+      label: Upstream Radar version
+      placeholder: 0.33.0
+    validations:
+      required: true
+  - type: input
+    id: dsh_version
+    attributes:
+      label: DSH version
+      placeholder: 0.1.0-rc.6
+    validations:
+      required: true
+  - type: input
+    id: plugin
+    attributes:
+      label: DSH plugin and version
+      placeholder: dsh-example-plugin@1.2.3
+    validations:
+      required: true
+  - type: dropdown
+    id: path
+    attributes:
+      label: Which path did you try?
+      options:
+        - Native DSH setup
+        - GitHub Action
+        - Inspect or lockfile check
+        - Network-free demo
+    validations:
+      required: true
+  - type: dropdown
+    id: outcome
+    attributes:
+      label: What happened?
+      options:
+        - Worked as expected
+        - Blocked during setup
+        - Alert was not useful
+        - False positive
+        - Missing alert
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Redacted result
+      description: Paste the shortest sanitized command output or describe the exact step that worked or failed. Do not paste project source or secrets.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: next_step
+    attributes:
+      label: What would make this more useful?
+      description: For example, a clearer next action, another notification destination, or a different DSH profile layout.
+    validations:
+      required: false
