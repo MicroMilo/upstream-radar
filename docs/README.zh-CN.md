@@ -56,6 +56,7 @@ npx --yes upstream-radar@latest quickstart
 | 直接扫描公开 DSH 插件仓库 | `scan https://github.com/owner/repository` | 一条命令浅克隆公开仓库到临时目录，不安装、不运行，直接输出可修问题。 |
 | 从 GitHub Actions 立即扫描 | [一次性扫描 workflow](../examples/github-actions/upstream-scan-minimal.yml) | 输入公开仓库 URL，马上看到结果并下载 JSON，不需要本地安装。 |
 | 审查一个精确的发布物 | `upstream-radar inspect <包名>@<精确版本> --deep` | 查看单个版本的包、依赖、漏洞和 provenance 证据。 |
+| 用两个 DSH 版本检查一个插件 | [可复制的 review workflow](../examples/github-actions/dsh-plugin-review-minimal.yml) | 输入 `package@version` 和两个 DSH 版本，同时得到发布物审计与真实 bundle-load 矩阵，不需要本地 DSH profile 或 LLM。 |
 | 发布和维护 DSH 插件 | [插件作者路径](#dsh-插件作者) | 从真实 DSH 脚手架开始，先审查锁定的依赖图，再在用户安装前接入两步 CI 门禁。 |
 | 把变化通知到飞书 | [飞书与 HTTPS 通知](#飞书与-https-通知) | 原生飞书 V2 文本、只从环境读取密钥、持久确认和失败重试。 |
 
@@ -100,6 +101,8 @@ npx --yes upstream-radar@0.33.12 inspect dsh-feishu-bot@0.15.4 --deep
 
 它会直接输出简短的准入结论、覆盖情况、依赖数量、漏洞数量和下一步，不需要先
 创建项目配置或启动 DSH。
+
+如果希望团队成员直接点击链接看到同样结果，可以复制[一次性 DSH 插件 review workflow](../examples/github-actions/dsh-plugin-review-minimal.yml) 到任意仓库，手动输入精确的 `package@version` 和两个 DSH 版本。它会在 Job Summary 显示发布物/依赖审计和一次性 bundle-load 矩阵，并保留两份 JSON 报告 14 天；不需要本地 DSH profile、插件源码仓库或 LLM。
 
 想直接看到一个真实、可以交给作者修的问题？这个精确版本的 DSH 插件在干净的
 npm 解析环境中目前无法建立完整依赖图：

@@ -61,6 +61,7 @@ It looks only at the current directory and local DSH profile metadata. It recomm
 | Scan a public DSH plugin repository | `scan https://github.com/owner/repository` | One command shallow-clones the public repo into a temporary directory and reports concrete problems without installing or running it. |
 | Scan one from GitHub Actions | [One-shot scan workflow](examples/github-actions/upstream-scan-minimal.yml) | Enter a public repository URL, see the result immediately, and download the JSON report without setting up a local environment. |
 | Review one exact published artifact | `upstream-radar inspect <package>@<exact-version> --deep` | Package, dependency, vulnerability, and provenance evidence for one release. |
+| Review one plugin against DSH releases | [Copyable review workflow](examples/github-actions/dsh-plugin-review-minimal.yml) | Enter `package@version` and two DSH versions; get artifact review plus a real bundle-load matrix without a local DSH profile or LLM. |
 | Publish and maintain a DSH plugin | [Plugin author path](#for-dsh-plugin-authors) | Start from a real DSH scaffold, review its locked graph, and add a two-step CI gate before users install it. |
 | Send changed events to Feishu | [Feishu or HTTPS webhook](#notify-feishu-or-an-https-endpoint) | Native Feishu V2 text, environment-only secrets, durable acknowledgement, and retry. |
 
@@ -111,6 +112,14 @@ npx --yes upstream-radar@0.33.12 inspect dsh-feishu-bot@0.15.4 --deep
 
 This runs from an otherwise empty directory and returns a short admission,
 coverage, dependency-count, vulnerability-count, and next-step summary.
+
+Want the same result as a link anyone on your team can click? Copy the
+[one-shot DSH plugin review workflow](examples/github-actions/dsh-plugin-review-minimal.yml)
+into a repository, run it manually, and enter an exact `package@version` plus
+two DSH versions. It produces an artifact/dependency verdict and a disposable
+bundle-load matrix in the Job Summary and keeps both JSON reports for 14 days.
+It does not need a local DSH profile, a checked-out plugin repository, or an
+LLM.
 
 Want to see a real author-actionable result? This exact published DSH plugin
 currently cannot produce a complete dependency graph in a clean npm resolver:
