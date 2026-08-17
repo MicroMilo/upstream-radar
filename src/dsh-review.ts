@@ -231,6 +231,7 @@ export function renderDshPluginReview(report: DshPluginReviewReport): string {
     lines.push(`Findings: ${report.inspection.findings.length}`)
     for (const finding of report.inspection.findings.slice(0, 8)) {
       lines.push(`  [${finding.severity.toUpperCase()}] ${display(finding.code)}: ${display(finding.summary)}`)
+      if (finding.remediation !== undefined) lines.push(`  Fix: ${display(finding.remediation, 2_048)}`)
     }
   }
   lines.push(

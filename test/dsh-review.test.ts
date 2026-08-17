@@ -115,6 +115,14 @@ describe('DSH plugin review', () => {
       package: 'protobufjs@7.6.5',
       scripts: [{ name: 'postinstall', command: 'node scripts/postinstall' }],
     }]
+    report.inspection.findings = [{
+      code: 'dependency-install-script-present',
+      severity: 'high',
+      summary: 'Resolved dependency graph contains install-time scripts',
+      detail: 'The exact graph includes a postinstall script.',
+      remediation: 'Review the package before allowing a normal install.',
+    }]
     assert.match(renderDshPluginReview(report), /protobufjs@7\.6\.5 postinstall: node scripts\/postinstall/)
+    assert.match(renderDshPluginReview(report), /Fix: Review the package before allowing a normal install\./)
   })
 })
