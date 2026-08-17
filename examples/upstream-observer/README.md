@@ -17,6 +17,11 @@ only meaningful changes become DSH Agent tasks
 The sample target points at the public Upstream Radar repository because Radar
 is itself a DSH bundle. Replace it with the repositories your team depends on.
 
+For a real end-to-end replay against a public DSH/Feishu plugin, see
+[`cases/dsh-feishu-bot.md`](cases/dsh-feishu-bot.md). It demonstrates baseline →
+real upstream commit → dependency graph diff → pending DSH task without a DSH
+LLM configuration.
+
 Run it locally from the repository root:
 
 ```bash

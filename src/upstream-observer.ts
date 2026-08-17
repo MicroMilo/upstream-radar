@@ -775,8 +775,19 @@ export class UpstreamObserverClient implements ObserverSource {
       redirect: 'error',
       signal: AbortSignal.timeout(this.timeoutMs),
     })
-    if (!response.ok) throw new Error(`GitHub raw file ${path} returned HTTP ${response.status}`)
-    return { text: await boundedBody(response, MAX_SOURCE_FILE_BYTES, `GitHub raw file ${path}`), url }
+    if (response.ok) return { text: await boundedBody(response, MAX_SOURCE_FILE_BYTES, `GitHub raw file ${path}`), url }
+    if (this.githubToken === undefined || (response.status !== 403 && response.status !== 429)) {
+      throw new Error(`GitHub raw file ${path} returned HTTP ${response.status}`)
+    }
+    const apiPath = `repos/${githubPath(repository, `contents/${path}`)}?ref=${encodeURIComponent(ref)}`
+    const payload = asRecord(await this.fetchGitHubJson(apiPath))
+    const encoded = typeof payload?.content === 'string' ? payload.content.replace(/\s/g, '') : undefined
+    if (encoded === undefined || payload?.encoding !== 'base64') {
+      throw new Error(`GitHub Contents API returned no base64 content for ${path}`)
+    }
+    const contents = Buffer.from(encoded, 'base64')
+    if (contents.length > MAX_SOURCE_FILE_BYTES) throw new Error(`GitHub Contents API file ${path} exceeds ${MAX_SOURCE_FILE_BYTES} bytes`)
+    return { text: contents.toString('utf8'), url: `https://api.github.com/${apiPath}` }
   }
 
   private async fetchNpmObservation(name: string): Promise<ObserverPackageObservation | undefined> {
@@ -879,36 +890,58 @@ export class UpstreamObserverClient implements ObserverSource {
     const repository = parseGitHubRepository(repositoryValue)
     try {
       const payload = asRecord(await this.fetchGitHubJson(`repos/${githubPath(repository, `compare/${beforeCommit}...${afterCommit}`)}`))
-      const rawFiles = Array.isArray(payload?.files) ? payload.files : []
-      const changedFiles = rawFiles
-        .flatMap(item => {
-          const file = asRecord(item)
-          return typeof file?.filename === 'string' ? [file.filename] : []
-        })
-        .filter((item, index, list) => list.indexOf(item) === index)
-        .slice(0, MAX_CHANGED_FILES)
-      const truncated = rawFiles.length > MAX_CHANGED_FILES || payload?.files !== undefined && rawFiles.length >= 300
-      const nonRuntimeFiles = changedFiles.filter(file => !isRuntimeFile(file))
-      const runtimeFiles = changedFiles.filter(file => isRuntimeFile(file))
-      return {
-        beforeCommit,
-        afterCommit,
-        comparison: 'complete',
-        changedFiles,
-        runtimeFiles,
-        nonRuntimeFiles,
-        ...(truncated ? { truncated: true } : {}),
-      }
+      if (payload === undefined) throw new Error('GitHub compare response is not an object')
+      return sourceChangeFromGitHubFiles(beforeCommit, afterCommit, payload)
     } catch {
-      return {
-        beforeCommit,
-        afterCommit,
-        comparison: 'unavailable',
-        changedFiles: [],
-        runtimeFiles: [],
-        nonRuntimeFiles: [],
+      try {
+        const commitPayload = asRecord(await this.fetchGitHubJson(`repos/${githubPath(repository, `commits/${afterCommit}`)}`))
+        if (commitPayload === undefined) throw new Error('GitHub commit response is not an object')
+        const parents = Array.isArray(commitPayload?.parents)
+          ? commitPayload.parents.flatMap(item => {
+              const parent = asRecord(item)
+              return typeof parent?.sha === 'string' ? [parent.sha] : []
+            })
+          : []
+        if (!parents.includes(beforeCommit)) throw new Error('after commit is not a direct child of before commit')
+        return sourceChangeFromGitHubFiles(beforeCommit, afterCommit, commitPayload)
+      } catch {
+        return {
+          beforeCommit,
+          afterCommit,
+          comparison: 'unavailable',
+          changedFiles: [],
+          runtimeFiles: [],
+          nonRuntimeFiles: [],
+        }
       }
     }
+  }
+}
+
+function sourceChangeFromGitHubFiles(
+  beforeCommit: string,
+  afterCommit: string,
+  payload: Record<string, unknown>,
+): ObserverSourceChange {
+  const rawFiles = Array.isArray(payload.files) ? payload.files : []
+  const changedFiles = rawFiles
+    .flatMap(item => {
+      const file = asRecord(item)
+      return typeof file?.filename === 'string' ? [file.filename] : []
+    })
+    .filter((item, index, list) => list.indexOf(item) === index)
+    .slice(0, MAX_CHANGED_FILES)
+  const truncated = rawFiles.length > MAX_CHANGED_FILES || payload.files !== undefined && rawFiles.length >= 300
+  const nonRuntimeFiles = changedFiles.filter(file => !isRuntimeFile(file))
+  const runtimeFiles = changedFiles.filter(file => isRuntimeFile(file))
+  return {
+    beforeCommit,
+    afterCommit,
+    comparison: 'complete',
+    changedFiles,
+    runtimeFiles,
+    nonRuntimeFiles,
+    ...(truncated ? { truncated: true } : {}),
   }
 }
 

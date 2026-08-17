@@ -7,6 +7,7 @@ import { describe, it } from 'node:test'
 import {
   OBSERVER_TARGETS_SCHEMA,
   OBSERVATION_STATE_SCHEMA,
+  UpstreamObserverClient,
   emptyObservationState,
   parseObserverConfigText,
   parseObservationState,
@@ -71,6 +72,26 @@ function snapshot(commit: string, version: string, digest: string): ObserverSnap
 }
 
 describe('upstream observer', () => {
+  it('falls back to the after-commit file list when GitHub compare is unavailable', async () => {
+    const source = new UpstreamObserverClient({
+      fetch: async input => {
+        const url = String(input)
+        if (url.includes('/compare/')) {
+          return new Response(JSON.stringify({ message: 'Not Found' }), { status: 404 })
+        }
+        return new Response(JSON.stringify({
+          parents: [{ sha: 'commit-1' }],
+          files: [{ filename: 'package.json' }, { filename: 'README.md' }],
+        }), { status: 200 })
+      },
+    })
+    const result = await source.compare('acme/dsh-demo', 'commit-1', 'commit-2')
+    assert.equal(result.comparison, 'complete')
+    assert.deepEqual(result.changedFiles, ['package.json', 'README.md'])
+    assert.deepEqual(result.runtimeFiles, ['package.json'])
+    assert.deepEqual(result.nonRuntimeFiles, ['README.md'])
+  })
+
   it('parses the small targets.yml format and normalizes aliases', () => {
     const config = parseObserverConfigText(`
 schema: ${OBSERVER_TARGETS_SCHEMA}

@@ -1,0 +1,10 @@
+schema: upstream-radar.observer-targets/v1alpha1
+targets:
+  - id: dsh-feishu-bot
+    ecosystem: dsh
+    repository: PlutoKeating/dsh-lark-bot
+    ref: c2f8cf77b0ec2cb3ced400da4a4b67dffb27c2ee
+    package: dsh-feishu-bot
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
