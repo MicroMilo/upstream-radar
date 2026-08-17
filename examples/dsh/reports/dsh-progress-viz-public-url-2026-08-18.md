@@ -1,0 +1,44 @@
+# Public GitHub URL case: nested DSH plugin discovery
+
+This is a real end-to-end static scan of a public DSH plugin repository. The
+repository root does not contain `package.json`; the plugin is under `plugin/`.
+
+## Reproduction
+
+```bash
+npx --yes upstream-radar@0.33.6 scan \
+  https://github.com/2008924/dsh-progress-viz \
+  --fail-on never
+```
+
+The command shallow-clones the current public branch into a temporary directory,
+finds the unique DSH package within three levels, and scans `plugin/`. It does
+not install dependencies, run lifecycle scripts, load plugin code, start DSH,
+or call an LLM.
+
+## Observed result
+
+```text
+Reading 2008924/dsh-progress-viz (plugin directory: plugin) without installing dependencies or running code...
+Upstream Radar 0.33.6
+Target: dsh-progress-viz-plugin@0.1.0
+Artifact: sha256:c9b6b2dc31a458b480587f6200772fe72d4af5451b1e71d41594c5017be929c5
+DSH bundle: yes (./cordis.patch.yml)
+Admission verdict: REVIEW
+Risk verdict: ALLOW
+Coverage verdict: INCOMPLETE
+
+No findings in the implemented static checks.
+
+Next step: Coverage is incomplete; do not treat an empty finding list as an allow decision.
+```
+
+## What this proves
+
+- A user can give Radar a GitHub repository URL without manually cloning it or
+  knowing the plugin subdirectory.
+- The scanner correctly separates “no current static finding” from “safe”: the
+  dependency graph is still manifest-only, so the final admission remains
+  `REVIEW`.
+- The repository shape is handled without installing or executing untrusted
+  code.

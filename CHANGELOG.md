@@ -2,6 +2,12 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.33.6] - 2026-08-18
+
+### Usability
+
+- When a public GitHub repository has no root `package.json`, find one unique DSH plugin directory up to three levels deep and scan it without asking the user to clone or guess the subdirectory.
+
 ## [0.33.5] - 2026-08-18
 
 ### Usability

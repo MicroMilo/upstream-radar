@@ -40,7 +40,7 @@ The optional probe is load-only. It packs with `--ignore-scripts`, uses a tempor
 For your project, generate the config from the actual DSH profile instead of copying this package's snapshot:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.33.5 upstream-radar init \
+pnpm dlx --package=upstream-radar@0.33.6 upstream-radar init \
   --profile <dsh-profile> \
   --project-id <project-id> \
   --project-name "Your project" \

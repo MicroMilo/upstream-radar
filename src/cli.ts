@@ -1883,7 +1883,8 @@ async function main(args: readonly string[]): Promise<number> {
     ? await materializeGitHubRepository(target)
     : undefined
   if (remoteRepository !== undefined) {
-    process.stderr.write(`Reading ${remoteRepository.target.owner}/${remoteRepository.target.repository} without installing dependencies or running code...\n`)
+    const location = remoteRepository.relativeRoot === '.' ? '' : ` (plugin directory: ${remoteRepository.relativeRoot})`
+    process.stderr.write(`Reading ${remoteRepository.target.owner}/${remoteRepository.target.repository}${location} without installing dependencies or running code...\n`)
   }
 
   let report
