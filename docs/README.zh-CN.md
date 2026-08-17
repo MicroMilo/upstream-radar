@@ -372,6 +372,8 @@ node dist/src/cli.js observe \
 只改 README、文档或测试时，Radar 只推进观察点，不唤醒 Agent。运行时代码、
 DSH bundle、入口文件、依赖图、npm 版本或 npm integrity 变化时，才生成 old → new
 任务。如果没有配置 Agent，任务会留在 `observations.json`，不会安装或执行被观察的插件。
+即使已配置的模型暂时调用失败，静态观察仍会正常结束；失败信息会写进报告，任务保留在
+pending 状态，下一次可用 `--retry-pending` 重试。只有源码观察本身失败时才返回非零退出码。
 定时 workflow 会使用 `--retry-pending`：如果 Agent 暂时不可用，任务会在下一次运行
 自动重试，不需要上游再次提交新 commit。
 
@@ -387,7 +389,7 @@ upstream-radar observe ./targets.yml \
 Radar 只读取这次调用需要的接口地址、API key 和模型名，不会把 key 或接口地址写进
 观察状态或报告。只有运行时代码、依赖图、DSH bundle、入口或 npm 发布物发生重要变化
 时才调用模型；建立基线和文档变更不会调用。接口不可用时，确定性的变化任务仍会保留
-为 pending，可用 `--retry-pending` 重试。
+为 pending，可用 `--retry-pending` 重试；这不会把静态观察结果变成失败。
 即使模型暂时不可用，报告仍会展示 pending 任务对应的仓库、commit 范围、源码/已发布版本、运行时文件和新增依赖边；如果源码 manifest 版本与 npm 版本不一致，也会单独标出，方便作者核对发布来源。
 
 `.env` 可以使用 issue-locator 的 `ISSUE_LOCATOR_LLM_*`，也可以使用常见的

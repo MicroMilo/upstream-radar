@@ -47,6 +47,7 @@ import {
   OBSERVER_TARGETS_SCHEMA,
   parseObserverConfig,
   parseObserverConfigText,
+  observerExitCode,
   renderObserverReport,
   runDshAgentCommand,
   runOpenAiCompatibleAgent,
@@ -265,8 +266,10 @@ to three directory levels deep; pass --package-path when the repository is
 ambiguous. --lockfile remains available when you want to pin the graph file.
 
 The Agent executable receives one read-only task prompt on stdin and should
-return one JSON conclusion on stdout. If it is not configured, the task stays
-in observations.json for a later explicit retry. As a simpler alternative,
+return one JSON conclusion on stdout. If it is not configured or temporarily
+unavailable, the static observation still succeeds and the task stays in
+observations.json for a later explicit retry. Source observation errors still
+return a non-zero exit code. As a simpler alternative,
 --llm-env-file reads an OpenAI-compatible issue-locator/.env-style file for
 only the model call. It accepts ISSUE_LOCATOR_LLM_*, OPENAI_*, or MODEL/CODEX_MODEL
 keys; it never writes the key or endpoint to observations.json.
@@ -1560,8 +1563,11 @@ async function runObserve(args: readonly string[]): Promise<number> {
     await writeFile(resolve(reportPath), reportPath.endsWith('.json') ? reportJson : renderObserverReport(result.report))
   }
   process.stdout.write(json ? reportJson : renderObserverReport(result.report))
-  if (result.report.errors.length > 0 || result.report.agent.failed > 0) return 1
-  return 0
+  const observerExit = observerExitCode(result.report)
+  if (result.report.agent.failed > 0) {
+    process.stderr.write('upstream-radar: static observation completed; DSH Agent/model analysis remains pending. See the report and rerun with --retry-pending.\n')
+  }
+  return observerExit
 }
 
 async function runQuickstart(args: readonly string[]): Promise<number> {

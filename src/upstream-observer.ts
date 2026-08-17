@@ -1698,6 +1698,16 @@ export async function runObserver(
   }
 }
 
+/**
+ * A source observation error means the run did not establish a trustworthy
+ * observation point. Agent/model failure is different: the static change is
+ * still durable and the pending task can be retried, so it must not hide the
+ * useful report behind a failed process exit.
+ */
+export function observerExitCode(report: ObserverReport): 0 | 1 {
+  return report.errors.length > 0 ? 1 : 0
+}
+
 function displayPackage(value: ObserverPackageObservation | undefined): string {
   return value === undefined ? 'not observed' : `${value.name}@${value.version}`
 }

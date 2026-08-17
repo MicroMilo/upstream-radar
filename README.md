@@ -482,8 +482,11 @@ This uses the published CLI; pin the exact version in CI rather than relying on
 
 README/docs/tests-only changes advance the observation point without waking the
 Agent. Runtime source, DSH bundle, package entry, dependency graph, npm version,
-or npm integrity changes create an old → new task. If the Agent is not configured,
-the task stays in `observations.json`; no plugin is installed or executed.
+or npm integrity changes create an old → new task. If the Agent is not configured
+or temporarily unavailable, the static observation still succeeds and the task
+stays in `observations.json`; no plugin is installed or executed. Source
+observation errors still return a non-zero exit code, while a model failure is
+visible in the report and can be retried with `--retry-pending`.
 
 If you do not have a DSH wrapper configured yet, you can point the observer at
 an existing issue-locator/OpenAI-compatible `.env` file instead:

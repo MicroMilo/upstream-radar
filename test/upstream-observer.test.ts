@@ -9,6 +9,7 @@ import {
   OBSERVATION_STATE_SCHEMA,
   UpstreamObserverClient,
   emptyObservationState,
+  observerExitCode,
   parseObserverConfigText,
   parseObservationState,
   renderUpstreamChangeAgentPrompt,
@@ -626,5 +627,40 @@ targets:
       await rm(notFoundRoot, { recursive: true, force: true })
       await new Promise<void>((resolve, reject) => notFoundServer.close(error => error === undefined ? resolve() : reject(error)))
     }
+  })
+
+  it('does not turn a failed optional Agent/model attempt into a failed static observation', async () => {
+    const before = snapshot('commit-1', '1.0.0', 'graph-v1')
+    const after = snapshot('commit-2', '1.1.0', 'graph-v2')
+    const source: ObserverSource = {
+      observe: async () => after,
+      compare: async (repository, beforeCommit, afterCommit) => ({
+        beforeCommit,
+        afterCommit,
+        comparison: 'complete',
+        changedFiles: ['src/index.ts'],
+        runtimeFiles: ['src/index.ts'],
+        nonRuntimeFiles: [],
+      }),
+    }
+    const run = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, {
+      schema: OBSERVATION_STATE_SCHEMA,
+      targets: { [target.id]: before },
+      pendingTasks: [],
+    }, { source, now: new Date('2026-08-17T07:00:00.000Z') })
+    const report = {
+      ...run.report,
+      agent: {
+        configured: true,
+        attempted: 1,
+        succeeded: 0,
+        failed: 1,
+        skipped: 0,
+        invocations: [{ taskId: run.state.pendingTasks[0]!.id, status: 'failed' as const, error: 'LLM endpoint returned HTTP 404' }],
+      },
+    }
+    assert.equal(observerExitCode(report), 0)
+    assert.equal(observerExitCode({ ...report, errors: [{ targetId: target.id, message: 'source unavailable' }] }), 1)
+    assert.equal(report.pendingTasks.length, 1)
   })
 })
