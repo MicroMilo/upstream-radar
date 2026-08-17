@@ -1888,6 +1888,7 @@ export function renderObserverReport(report: ObserverReport): string {
       }
       for (const finding of review.findings.slice(0, 8)) {
         lines.push(`Artifact finding: [${finding.severity.toUpperCase()}] ${finding.code} — ${finding.summary}`)
+        if (finding.remediation !== undefined) lines.push(`Artifact remediation: ${finding.remediation}`)
       }
       if (review.error !== undefined) lines.push(`Artifact review error: ${review.error}`)
     }
@@ -1934,6 +1935,7 @@ export function renderObserverReport(report: ObserverReport): string {
         }
         for (const finding of review.findings.slice(0, 8)) {
           lines.push(`Artifact finding: [${finding.severity.toUpperCase()}] ${finding.code} — ${finding.summary}`)
+          if (finding.remediation !== undefined) lines.push(`Artifact remediation: ${finding.remediation}`)
         }
         if (review.error !== undefined) lines.push(`Artifact review error: ${review.error}`)
       }

@@ -374,6 +374,7 @@ targets:
     assert.equal(firstRun.state.pendingTasks[0]?.change.artifactReview?.installScriptPackages[0], 'logger@1.0.0')
     assert.match(renderObserverReport(firstRun.report), /Exact artifact review: REVIEW/)
     assert.match(renderObserverReport(firstRun.report), /Artifact install scripts: logger@1\.0\.0 postinstall: node scripts\/postinstall\.js/)
+    assert.match(renderObserverReport(firstRun.report), /Artifact remediation: Review the package before allowing a normal install\./)
     const prompt = renderUpstreamChangeAgentPrompt(firstRun.state.pendingTasks[0]!)
     assert.match(prompt, /artifactReview/)
     assert.match(prompt, /dependency-install-script-present/)
