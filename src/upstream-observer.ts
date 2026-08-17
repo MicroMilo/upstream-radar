@@ -2,6 +2,7 @@ import { createHash, randomUUID } from 'node:crypto'
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { spawn } from 'node:child_process'
 import { dirname, resolve } from 'node:path'
+import type { DshLoadMatrixReport } from './dsh-probe.js'
 import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
 import { parsePackageManifestSnapshot } from './inventory.js'
 import type { DependencyGraph, PackageManifestSnapshot } from './radar-types.js'
@@ -31,11 +32,13 @@ const MAX_AGENT_OUTPUT_BYTES = 2 * 1024 * 1024
 const MAX_LLM_ENV_FILE_BYTES = 64 * 1024
 const MAX_AUTO_DISCOVERY_PACKAGE_FILES = 64
 const MAX_AUTO_DISCOVERY_PATH_DEPTH = 3
+const MAX_DSH_VERSIONS = 8
 const DEFAULT_AGENT_TIMEOUT_MS = 120_000
 const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org/'
 const OBSERVER_REQUEST_ATTEMPTS = 2
 const OBSERVER_RETRY_DELAY_MS = 150
 const EXACT_NPM_PACKAGE_NAME = /^(?:@[^/\s]+\/[^/\s]+|[^/@\s]+)$/
+const EXACT_DSH_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const SAFE_TARGET_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/
 
 type FetchLike = (input: string | URL, init?: RequestInit) => Promise<Response>
@@ -54,6 +57,8 @@ export interface ObserverTarget {
   packagePath?: string
   lockfile?: string
   lockfileType?: ObserverLockfileType
+  /** Exact DSH releases to load-test when this target has a meaningful change. */
+  dshVersions?: string[]
 }
 
 export interface ObserverConfig {
@@ -141,6 +146,17 @@ export interface ObserverArtifactReviewFinding {
   remediation?: string
 }
 
+export interface ObserverDshCompatibility {
+  result: DshLoadMatrixReport['result']
+  versions: string[]
+  summary: DshLoadMatrixReport['summary']
+  reports: Array<{
+    dshVersion: string
+    result: DshLoadMatrixReport['reports'][number]['result']
+    reason: string
+  }>
+}
+
 export interface ObserverArtifactReview {
   spec: string
   verdict: Verdict
@@ -159,6 +175,7 @@ export interface ObserverArtifactReview {
   installScriptPackages: string[]
   installScriptDetails: NpmInstallScriptPackage[]
   findings: ObserverArtifactReviewFinding[]
+  dshCompatibility?: ObserverDshCompatibility
   error?: string
 }
 
@@ -294,7 +311,7 @@ export interface RunObserverOptions {
   now?: Date
   source?: ObserverSource
   /** Review the exact current npm artifact without executing plugin code. */
-  artifactReviewer?: (packageSpec: string) => Promise<ObserverArtifactReview>
+  artifactReviewer?: (packageSpec: string, target: ObserverTarget) => Promise<ObserverArtifactReview>
   agent?: (task: UpstreamChangeTask, prompt: string) => Promise<ObserverAgentInvocation>
   retryPending?: boolean
 }
@@ -441,7 +458,27 @@ function normalizeTargetKey(key: string): string {
   if (key === 'package') return 'packageName'
   if (key === 'package-path') return 'packagePath'
   if (key === 'lockfile-type') return 'lockfileType'
+  if (key === 'dsh-versions') return 'dshVersions'
   return key
+}
+
+function parseDshVersions(value: unknown, label: string): string[] | undefined {
+  if (value === undefined) return undefined
+  const values = Array.isArray(value)
+    ? value
+    : typeof value === 'string'
+      ? value.split(',').map(item => item.trim()).filter(item => item !== '')
+      : undefined
+  if (values === undefined || values.length < 2 || values.length > MAX_DSH_VERSIONS) {
+    throw new Error(`${label} must contain between 2 and ${MAX_DSH_VERSIONS} exact DSH versions`)
+  }
+  const normalized = values.map((item, index) => boundedString(item, `${label}[${index}]`, 128))
+  if (normalized.some(version => !EXACT_DSH_VERSION.test(version))) {
+    throw new Error(`${label} must contain exact semantic versions`)
+  }
+  const unique = [...new Set(normalized)]
+  if (unique.length !== normalized.length) throw new Error(`${label} must not contain duplicate versions`)
+  return unique
 }
 
 function parseYamlTargets(text: string): unknown {
@@ -544,6 +581,10 @@ function target(value: unknown, index: number): ObserverTarget {
   const packagePath = source.packagePath === undefined
     ? undefined
     : validateRelativePath(source.packagePath, `targets[${index}].packagePath`)
+  const dshVersions = parseDshVersions(source.dshVersions, `targets[${index}].dshVersions`)
+  if (dshVersions !== undefined && ecosystem !== 'dsh') {
+    throw new Error(`targets[${index}].dshVersions is only valid for dsh targets`)
+  }
   return {
     id,
     ecosystem,
@@ -553,6 +594,7 @@ function target(value: unknown, index: number): ObserverTarget {
     ...(packagePath === undefined ? {} : { packagePath }),
     ...(lockfile === undefined ? {} : { lockfile }),
     ...(lockfileType === undefined ? {} : { lockfileType }),
+    ...(dshVersions === undefined ? {} : { dshVersions }),
   }
 }
 
@@ -1707,7 +1749,7 @@ export async function runObserver(
         try {
           reviewedChange = {
             ...change,
-            artifactReview: await options.artifactReviewer(packageSpec),
+            artifactReview: await options.artifactReviewer(packageSpec, configuredTarget),
           }
         } catch (error: unknown) {
           // Artifact review is useful evidence, but it must not turn a valid
@@ -1797,6 +1839,14 @@ function displayPackage(value: ObserverPackageObservation | undefined): string {
 
 function displayGraph(value: ObserverSnapshotSummary['graph'] | undefined): string {
   return value === undefined ? 'not observed' : `${value.nodes} nodes, ${value.edges} edges${value.unresolved === 0 ? '' : `, ${value.unresolved} unresolved`}`
+}
+
+function renderObserverDshCompatibility(lines: string[], compatibility: ObserverDshCompatibility | undefined): void {
+  if (compatibility === undefined) return
+  lines.push(`DSH load matrix: ${compatibility.result.toUpperCase()} (${compatibility.summary.compatible}/${compatibility.summary.total} versions loaded)`)
+  for (const item of compatibility.reports.slice(0, MAX_DSH_VERSIONS)) {
+    lines.push(`  DSH ${item.dshVersion}: ${item.result.toUpperCase()} — ${item.reason}`)
+  }
 }
 
 function summarizePendingTask(task: UpstreamChangeTask): ObserverPendingTaskSummary {
@@ -1890,6 +1940,7 @@ export function renderObserverReport(report: ObserverReport): string {
         lines.push(`Artifact finding: [${finding.severity.toUpperCase()}] ${finding.code} — ${finding.summary}`)
         if (finding.remediation !== undefined) lines.push(`Artifact remediation: ${finding.remediation}`)
       }
+      renderObserverDshCompatibility(lines, review.dshCompatibility)
       if (review.error !== undefined) lines.push(`Artifact review error: ${review.error}`)
     }
     if (change.current.graph !== undefined && change.current.graph.unresolved > 0) {
@@ -1937,6 +1988,7 @@ export function renderObserverReport(report: ObserverReport): string {
           lines.push(`Artifact finding: [${finding.severity.toUpperCase()}] ${finding.code} — ${finding.summary}`)
           if (finding.remediation !== undefined) lines.push(`Artifact remediation: ${finding.remediation}`)
         }
+        renderObserverDshCompatibility(lines, review.dshCompatibility)
         if (review.error !== undefined) lines.push(`Artifact review error: ${review.error}`)
       }
       lines.push('Next: make the DSH Agent or model available, then rerun the same command with --retry-pending.')

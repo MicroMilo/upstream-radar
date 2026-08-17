@@ -9,6 +9,9 @@ All notable changes to Upstream Radar are documented here.
 - Make exact DSH plugin reviews explain incomplete dependency coverage directly:
   resolved package count, unresolved edges, registry signature/provenance state,
   and the next author action now appear in the CLI and GitHub Job Summary.
+- Let `observe` run the exact published artifact through a configured DSH release
+  matrix on the same meaningful upstream change, then keep that result beside
+  the dependency review and pending task.
 
 ## [0.33.12] - 2026-08-18
 

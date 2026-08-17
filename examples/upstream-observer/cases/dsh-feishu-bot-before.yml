@@ -8,3 +8,4 @@ targets:
     packagePath: package.json
     lockfile: pnpm-lock.yaml
     lockfileType: pnpm
+    dshVersions: ["0.1.0-rc.6", "0.1.0-rc.7"]

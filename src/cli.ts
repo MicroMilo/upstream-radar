@@ -6,7 +6,7 @@ import { access, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { renderCompatibilityBenchmark, runCompatibilityBenchmark } from './compatibility-benchmark.js'
 import { assessCompatibilityChange } from './compatibility.js'
-import { probeDshLoad, probeDshLoadMatrix, renderDshLoadMatrix, renderDshLoadProbe } from './dsh-probe.js'
+import { probeDshLoad, probeDshLoadMatrix, renderDshLoadMatrix, renderDshLoadProbe, type DshLoadMatrixReport } from './dsh-probe.js'
 import { renderDshPluginReview, reviewDshPlugin } from './dsh-review.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { createDshCaseReport, renderDshCase } from './dsh-case.js'
@@ -56,6 +56,8 @@ import {
   UpstreamObserverClient,
   type ObserverAgentCommandOptions,
   type ObserverArtifactReview,
+  type ObserverDshCompatibility,
+  type ObserverTarget,
 } from './upstream-observer.js'
 import type { Verdict } from './types.js'
 import type {
@@ -250,7 +252,8 @@ should remain visible without failing CI.
 
 Usage:
   upstream-radar observe <targets.yml|github-url> [--state <observations.json>]
-    [--report <report.md>] [--dsh-agent-command <executable>]
+    [--report <report.md>] [--dsh-version <v1>,<v2>,...]
+    [--dsh-agent-command <executable>]
     [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending]
     [--ecosystem <dsh|codex|pi>] [--id <id>] [--package <name>]
     [--package-path <path>] [--lockfile <path>] [--lockfile-type <npm|pnpm>]
@@ -261,7 +264,9 @@ npm metadata, package manifests, and an optional npm/pnpm dependency graph. A
 meaningful change with a published npm version also triggers a deep review of
 that exact artifact: Radar resolves its reachable dependency graph with npm
 scripts disabled, checks known vulnerabilities, and records install-time
-scripts and incomplete coverage. A DSH Agent is called only for meaningful
+scripts and incomplete coverage. If exact DSH versions are supplied, the same
+changed artifact is loaded in disposable profiles and the compatibility matrix
+is added to the same report. A DSH Agent is called only for meaningful
 changes. Safety: Radar does not install the observed plugin, run its lifecycle
 scripts, load plugin code, or invoke a shell.
 
@@ -505,7 +510,7 @@ Usage:
   upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory-or-github-url> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect [npm:]<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
-  upstream-radar observe <targets.yml|github-url> [--state <observations.json>] [--report <report.md>] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending] [--ecosystem <dsh|codex|pi>] [--id <id>] [--package <name>] [--package-path <path>] [--lockfile <path>] [--lockfile-type <npm|pnpm>] [--ref <branch>] [--json]
+  upstream-radar observe <targets.yml|github-url> [--state <observations.json>] [--report <report.md>] [--dsh-version <v1>,<v2>,...] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending] [--ecosystem <dsh|codex|pi>] [--id <id>] [--package <name>] [--package-path <path>] [--lockfile <path>] [--lockfile-type <npm|pnpm>] [--ref <branch>] [--json]
   upstream-radar graph <npm-lock|pnpm-lock> <lockfile> [--root <package>@<exact-version>] [--json]
   upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
@@ -1470,7 +1475,24 @@ async function runRadar(args: readonly string[]): Promise<number> {
   return 0
 }
 
-function summarizeObserverArtifactReview(spec: string, report: Awaited<ReturnType<typeof inspectNpmPackage>>): ObserverArtifactReview {
+function summarizeObserverDshCompatibility(report: DshLoadMatrixReport): ObserverDshCompatibility {
+  return {
+    result: report.result,
+    versions: report.dshVersions.slice(0, 8),
+    summary: { ...report.summary },
+    reports: report.reports.slice(0, 8).map(item => ({
+      dshVersion: item.dshVersion,
+      result: item.result,
+      reason: item.reason.slice(0, 2_048),
+    })),
+  }
+}
+
+function summarizeObserverArtifactReview(
+  spec: string,
+  report: Awaited<ReturnType<typeof inspectNpmPackage>>,
+  dshCompatibility?: DshLoadMatrixReport,
+): ObserverArtifactReview {
   const npm = report.evidence.npm
   const audit = npm?.dependencyAudit
   const installScriptDetails = (audit?.installScriptDetails ?? []).slice(0, 32).map(detail => ({
@@ -1504,6 +1526,49 @@ function summarizeObserverArtifactReview(spec: string, report: Awaited<ReturnTyp
       detail: finding.detail.slice(0, 4_096),
       ...(finding.remediation === undefined ? {} : { remediation: finding.remediation.slice(0, 4_096) }),
     })),
+    ...(dshCompatibility === undefined ? {} : { dshCompatibility: summarizeObserverDshCompatibility(dshCompatibility) }),
+  }
+}
+
+async function reviewObserverArtifact(
+  spec: string,
+  target: ObserverTarget,
+  registry: string | undefined,
+): Promise<ObserverArtifactReview> {
+  const inspection = await inspectNpmPackage(spec, {
+    deep: true,
+    ...(registry === undefined ? {} : { registry }),
+  })
+  if (target.dshVersions === undefined) return summarizeObserverArtifactReview(spec, inspection)
+  try {
+    const combined = await reviewDshPlugin(spec, {
+      dshVersions: target.dshVersions,
+      ...(registry === undefined ? {} : { registry }),
+      inspect: async () => inspection,
+    })
+    const summary = summarizeObserverArtifactReview(spec, combined.inspection, combined.compatibility)
+    if (combined.artifact.matched) return summary
+    return {
+      ...summary,
+      verdict: 'review',
+      riskVerdict: 'review',
+      coverageVerdict: 'incomplete',
+      findings: [
+        ...summary.findings,
+        {
+          code: 'inspection-probe-artifact-mismatch',
+          severity: 'high' as const,
+          summary: 'The artifact inspected for dependency evidence differs from the artifact loaded by the DSH probe.',
+          detail: 'Repeat the review against one exact registry artifact before treating the compatibility result as evidence for the inspected bytes.',
+          remediation: 'Pin the exact package version and registry, then rerun the observer review until the artifact digests match.',
+        },
+      ].slice(0, 32),
+    }
+  } catch (error: unknown) {
+    return {
+      ...summarizeObserverArtifactReview(spec, inspection),
+      error: safeErrorMessage(error instanceof Error ? error.message : String(error)),
+    }
   }
 }
 
@@ -1525,6 +1590,7 @@ async function runObserve(args: readonly string[]): Promise<number> {
   let inlineLockfile: string | undefined
   let inlineLockfileType: string | undefined
   let inlineRef: string | undefined
+  let inlineDshVersions: string[] | undefined
   let inlineOptionsUsed = false
   for (let index = 1; index < args.length; index += 1) {
     const argument = args[index]
@@ -1532,7 +1598,7 @@ async function runObserve(args: readonly string[]): Promise<number> {
       json = true
     } else if (argument === '--retry-pending') {
       retryPending = true
-    } else if (argument === '--ecosystem' || argument === '--id' || argument === '--package' || argument === '--package-path' || argument === '--lockfile' || argument === '--lockfile-type' || argument === '--ref' || argument === '--state' || argument === '--report' || argument === '--dsh-agent-command' || argument === '--dsh-agent-arg' || argument === '--llm-env-file' || argument === '--registry') {
+    } else if (argument === '--ecosystem' || argument === '--id' || argument === '--package' || argument === '--package-path' || argument === '--lockfile' || argument === '--lockfile-type' || argument === '--ref' || argument === '--dsh-version' || argument === '--state' || argument === '--report' || argument === '--dsh-agent-command' || argument === '--dsh-agent-arg' || argument === '--llm-env-file' || argument === '--registry') {
       const value = args[index + 1]
       if (value === undefined || (value.startsWith('-') && argument !== '--dsh-agent-arg')) throw new Error(`${argument} requires a value`)
       if (argument === '--ecosystem') inlineEcosystem = value
@@ -1542,6 +1608,7 @@ async function runObserve(args: readonly string[]): Promise<number> {
       else if (argument === '--lockfile') inlineLockfile = value
       else if (argument === '--lockfile-type') inlineLockfileType = value
       else if (argument === '--ref') inlineRef = value
+      else if (argument === '--dsh-version') inlineDshVersions = value.split(',').map(item => item.trim()).filter(item => item !== '')
       else if (argument === '--state') statePath = value
       else if (argument === '--report') reportPath = value
       else if (argument === '--dsh-agent-command') agentCommand = value
@@ -1572,11 +1639,12 @@ async function runObserve(args: readonly string[]): Promise<number> {
         ...(inlinePackagePath === undefined ? {} : { packagePath: inlinePackagePath }),
         ...(inlineLockfile === undefined ? {} : { lockfile: inlineLockfile }),
         ...(inlineLockfileType === undefined ? {} : { lockfileType: inlineLockfileType }),
+        ...(inlineDshVersions === undefined ? {} : { dshVersions: inlineDshVersions }),
       }],
     })
   } else {
     if (/^https?:\/\//i.test(targetsPath)) throw new Error('observe URL must be an HTTPS GitHub repository URL')
-    if (inlineOptionsUsed) throw new Error('--ecosystem, --id, --package, --package-path, --lockfile, --lockfile-type and --ref require a GitHub URL target')
+    if (inlineOptionsUsed) throw new Error('--ecosystem, --id, --package, --package-path, --lockfile, --lockfile-type, --ref and --dsh-version require a GitHub URL target')
     const targetText = await readBoundedFile(targetsPath, 256 * 1024)
     config = parseObserverConfigText(targetText)
   }
@@ -1598,10 +1666,7 @@ async function runObserve(args: readonly string[]): Promise<number> {
   const result = await runObserver(config, previousState, {
     source,
     retryPending,
-    artifactReviewer: async spec => summarizeObserverArtifactReview(spec, await inspectNpmPackage(spec, {
-      deep: true,
-      ...(registry === undefined ? {} : { registry }),
-    })),
+    artifactReviewer: async (spec, target) => reviewObserverArtifact(spec, target, registry),
     ...(agentOptions === undefined ? {} : {
       agent: (task, prompt) => runDshAgentCommand(task, prompt, agentOptions),
     }),

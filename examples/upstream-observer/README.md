@@ -11,7 +11,9 @@ observations.json
   ↓
 old → new comparison
   ↓
-only meaningful changes become DSH Agent tasks
+only meaningful changes review the exact artifact and optionally load it across DSH releases
+  ↓
+DSH Agent task
 ```
 
 The sample target points at the real public DSH/Feishu plugin
@@ -63,6 +65,12 @@ The deterministic closed-loop result is recorded in
 the same old → new run now reviews `dsh-feishu-bot@0.15.8`, finds its reachable
 `protobufjs@7.6.5` install script, and keeps the DSH task pending because no
 DSH LLM is configured.
+
+The checked-in DSH target also sets `dshVersions` to `0.1.0-rc.6` and
+`0.1.0-rc.7`. On a meaningful change, the observer loads the same exact npm
+artifact in both disposable profiles and writes the matrix into the same
+report. The live replay loaded both versions successfully (`2/2`); this is a
+bundle-load compatibility result, not a safety certificate.
 
 Run it from any directory with the published CLI:
 

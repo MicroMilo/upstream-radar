@@ -253,9 +253,10 @@ targets:
     package-path: plugin/package.json
     lockfile: plugin/pnpm-lock.yaml
     lockfile-type: pnpm
+    dsh-versions: ["0.1.0-rc.6", "0.1.0-rc.7"]
 `)
     assert.equal(config.schema, OBSERVER_TARGETS_SCHEMA)
-    assert.deepEqual(config.targets[0], target)
+    assert.deepEqual(config.targets[0], { ...target, dshVersions: ['0.1.0-rc.6', '0.1.0-rc.7'] })
   })
 
   it('creates a baseline, calls the Agent on a meaningful change, and stays quiet without a new change', async () => {
@@ -354,15 +355,26 @@ targets:
         detail: 'The exact graph includes a postinstall script.',
         remediation: 'Review the package before allowing a normal install.',
       }],
+      dshCompatibility: {
+        result: 'compatible',
+        versions: ['0.1.0-rc.6', '0.1.0-rc.7'],
+        summary: { total: 2, compatible: 2, incompatible: 0, unknown: 0 },
+        reports: [
+          { dshVersion: '0.1.0-rc.6', result: 'compatible', reason: 'bundle registered and loaded' },
+          { dshVersion: '0.1.0-rc.7', result: 'compatible', reason: 'bundle registered and loaded' },
+        ],
+      },
     })
-    const firstRun = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, {
+    const targetWithMatrix: ObserverTarget = { ...target, dshVersions: ['0.1.0-rc.6', '0.1.0-rc.7'] }
+    const firstRun = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [targetWithMatrix] }, {
       schema: OBSERVATION_STATE_SCHEMA,
       targets: { [target.id]: before },
       pendingTasks: [],
     }, {
       source,
-      artifactReviewer: async spec => {
+      artifactReviewer: async (spec, observedTarget) => {
         calls.push(spec)
+        assert.deepEqual(observedTarget.dshVersions, ['0.1.0-rc.6', '0.1.0-rc.7'])
         return review(spec)
       },
       now: new Date('2026-08-17T02:30:00.000Z'),
@@ -375,6 +387,8 @@ targets:
     assert.match(renderObserverReport(firstRun.report), /Exact artifact review: REVIEW/)
     assert.match(renderObserverReport(firstRun.report), /Artifact install scripts: logger@1\.0\.0 postinstall: node scripts\/postinstall\.js/)
     assert.match(renderObserverReport(firstRun.report), /Artifact remediation: Review the package before allowing a normal install\./)
+    assert.match(renderObserverReport(firstRun.report), /DSH load matrix: COMPATIBLE \(2\/2 versions loaded\)/)
+    assert.match(renderObserverReport(firstRun.report), /DSH 0\.1\.0-rc\.7: COMPATIBLE/)
     const prompt = renderUpstreamChangeAgentPrompt(firstRun.state.pendingTasks[0]!)
     assert.match(prompt, /artifactReview/)
     assert.match(prompt, /dependency-install-script-present/)

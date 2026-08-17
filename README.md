@@ -427,6 +427,7 @@ targets:
     packagePath: plugin/package.json
     lockfile: plugin/pnpm-lock.yaml
     lockfileType: pnpm
+    dshVersions: ["0.1.0-rc.6", "0.1.0-rc.7"]
 ```
 
 For one public repository, skip YAML and pass its GitHub URL directly. The
@@ -438,6 +439,11 @@ the official DSH repository works with the shortest command. Add
 `--package-path` when a repository contains more than one candidate,
 `--package` when the npm name differs from the source manifest, or
 `--lockfile` when you want to choose a particular lockfile:
+
+For a DSH plugin, add two exact releases with `dshVersions` in `targets.yml`,
+or pass `--dsh-version 0.1.0-rc.6,0.1.0-rc.7` when observing a GitHub URL. On a
+meaningful upstream change, the observer performs the dependency review and
+the DSH load matrix in the same run; unchanged runs remain quiet.
 
 ```bash
 npx --yes upstream-radar@0.33.12 observe \

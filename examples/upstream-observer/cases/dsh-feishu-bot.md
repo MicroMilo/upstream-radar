@@ -56,6 +56,9 @@ Artifact resolution: strict
 Artifact install scripts: protobufjs@7.6.5 postinstall: node scripts/postinstall
 Artifact finding: [HIGH] dependency-install-script-present
 Artifact remediation: Review each listed package and its published artifact; prefer a version with no install-time script, or require explicit approval before allowing the DSH install path to run it.
+DSH load matrix: COMPATIBLE (2/2 versions loaded)
+  DSH 0.1.0-rc.6: COMPATIBLE
+  DSH 0.1.0-rc.7: COMPATIBLE
 DSH Agent: not configured; meaningful tasks remain pending
 ```
 
