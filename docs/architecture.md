@@ -81,6 +81,15 @@ response is treated as a meaningful change rather than as proof that nothing
 changed. The observer stores the full static graph in the observation point, but
 the task and report carry only bounded summaries and differences.
 
+When a meaningful change has a published npm version, the observer also calls
+the exact-version npm artifact inspector. That inspector resolves the package in
+a temporary directory with lifecycle scripts disabled, builds the reachable
+graph, runs registry/signature and advisory checks, and returns bounded
+author-facing findings such as a known vulnerable dependency, an install-time
+script, relaxed peer resolution, or incomplete graph coverage. This deterministic
+review is independent of the model boundary; a missing or failed Agent cannot
+erase it. The observer does not import or execute the observed plugin.
+
 The model boundary is deliberately explicit. `--dsh-agent-command` starts one
 reviewed executable with `shell: false`, sends the prompt on stdin, and accepts
 only the eight-field JSON conclusion on stdout. No plugin is installed or

@@ -55,6 +55,7 @@ import {
   saveObservationState,
   UpstreamObserverClient,
   type ObserverAgentCommandOptions,
+  type ObserverArtifactReview,
 } from './upstream-observer.js'
 import type { Verdict } from './types.js'
 import type {
@@ -257,7 +258,12 @@ Usage:
 
 The first run creates a baseline. Later runs compare source commits, published
 npm metadata, package manifests, and an optional npm/pnpm dependency graph. A
-DSH Agent is called only for meaningful changes. Safety: does not install packages, run lifecycle scripts, load plugin code, or invoke a shell.
+meaningful change with a published npm version also triggers a deep review of
+that exact artifact: Radar resolves its reachable dependency graph with npm
+scripts disabled, checks known vulnerabilities, and records install-time
+scripts and incomplete coverage. A DSH Agent is called only for meaningful
+changes. Safety: Radar does not install the observed plugin, run its lifecycle
+scripts, load plugin code, or invoke a shell.
 
 When the target is an HTTPS GitHub repository URL, Radar builds one target in
 memory and does not require a targets.yml file. For a DSH target with no
@@ -275,6 +281,11 @@ only the model call. It accepts ISSUE_LOCATOR_LLM_*, OPENAI_*, or MODEL/CODEX_MO
 keys; it never writes the key or endpoint to observations.json.
 If a ModelBest-style base URL ends in /llm/v1, a 404 also retries the known
 /llm/openai/v1 path.
+
+The exact npm artifact review is independent of the DSH Agent/model. It runs
+when a meaningful change has a published package, and its dependency findings
+remain in the report even when no model is configured or the model endpoint is
+unavailable.
 `,
     graph: `Upstream Radar — read a lockfile into the canonical dependency graph
 
@@ -1459,6 +1470,43 @@ async function runRadar(args: readonly string[]): Promise<number> {
   return 0
 }
 
+function summarizeObserverArtifactReview(spec: string, report: Awaited<ReturnType<typeof inspectNpmPackage>>): ObserverArtifactReview {
+  const npm = report.evidence.npm
+  const audit = npm?.dependencyAudit
+  const installScriptDetails = (audit?.installScriptDetails ?? []).slice(0, 32).map(detail => ({
+    package: detail.package.slice(0, 512),
+    scripts: detail.scripts.slice(0, 16).map(script => ({
+      name: script.name,
+      command: script.command.slice(0, 4_096),
+    })),
+  }))
+  return {
+    spec,
+    verdict: report.verdict,
+    riskVerdict: report.riskVerdict,
+    coverageVerdict: report.coverageVerdict,
+    artifactIntegrity: report.coverage.artifactIntegrity,
+    registrySignature: npm?.registrySignature.status ?? report.coverage.registrySignature,
+    provenance: npm?.provenance.status ?? report.coverage.provenance,
+    dependencyResolution: report.coverage.dependencyResolution,
+    dependencyAuditStatus: audit?.status ?? 'not-run',
+    ...(audit?.resolutionMode === undefined ? {} : { resolutionMode: audit.resolutionMode }),
+    ...(audit?.graphDigest === undefined ? {} : { graphDigest: audit.graphDigest }),
+    packages: audit?.packages ?? null,
+    unresolved: audit?.graph?.unresolved?.length ?? 0,
+    vulnerabilities: audit?.vulnerabilities ?? null,
+    installScriptPackages: (audit?.installScriptPackages ?? []).slice(0, 32),
+    installScriptDetails,
+    findings: report.findings.slice(0, 32).map(finding => ({
+      code: finding.code,
+      severity: finding.severity,
+      summary: finding.summary.slice(0, 2_048),
+      detail: finding.detail.slice(0, 4_096),
+      ...(finding.remediation === undefined ? {} : { remediation: finding.remediation.slice(0, 4_096) }),
+    })),
+  }
+}
+
 async function runObserve(args: readonly string[]): Promise<number> {
   const targetsPath = args[0]
   if (targetsPath === undefined || targetsPath.startsWith('-')) throw new Error('observe requires a targets.yml file or an HTTPS GitHub repository URL')
@@ -1550,6 +1598,10 @@ async function runObserve(args: readonly string[]): Promise<number> {
   const result = await runObserver(config, previousState, {
     source,
     retryPending,
+    artifactReviewer: async spec => summarizeObserverArtifactReview(spec, await inspectNpmPackage(spec, {
+      deep: true,
+      ...(registry === undefined ? {} : { registry }),
+    })),
     ...(agentOptions === undefined ? {} : {
       agent: (task, prompt) => runDshAgentCommand(task, prompt, agentOptions),
     }),

@@ -20,6 +20,7 @@ import {
   type ObserverSnapshot,
   type ObserverSource,
   type ObserverTarget,
+  type ObserverArtifactReview,
 } from '../src/upstream-observer.js'
 
 const target: ObserverTarget = {
@@ -309,6 +310,103 @@ targets:
     })
     assert.equal(thirdRun.report.changes.length, 0)
     assert.equal(thirdRun.report.agent.attempted, 0)
+  })
+
+  it('reviews the exact published artifact only for a meaningful change and carries author findings into the task', async () => {
+    const before = snapshot('commit-1', '1.0.0', 'graph-v1')
+    const after = snapshot('commit-2', '1.1.0', 'graph-v2')
+    const source: ObserverSource = {
+      observe: async () => after,
+      compare: async (repository, beforeCommit, afterCommit) => ({
+        beforeCommit,
+        afterCommit,
+        comparison: 'complete',
+        changedFiles: ['src/index.ts'],
+        runtimeFiles: ['src/index.ts'],
+        nonRuntimeFiles: [],
+      }),
+    }
+    const calls: string[] = []
+    const review = (spec: string): ObserverArtifactReview => ({
+      spec,
+      verdict: 'review',
+      riskVerdict: 'review',
+      coverageVerdict: 'complete',
+      artifactIntegrity: 'verified',
+      registrySignature: 'verified',
+      provenance: 'missing',
+      dependencyResolution: 'resolved',
+      dependencyAuditStatus: 'findings',
+      resolutionMode: 'strict',
+      graphDigest: 'sha256:artifact-graph',
+      packages: 12,
+      unresolved: 0,
+      vulnerabilities: { info: 0, low: 0, moderate: 0, high: 0, critical: 0, total: 0 },
+      installScriptPackages: ['logger@1.0.0'],
+      installScriptDetails: [{
+        package: 'logger@1.0.0',
+        scripts: [{ name: 'postinstall', command: 'node scripts/postinstall.js' }],
+      }],
+      findings: [{
+        code: 'dependency-install-script-present',
+        severity: 'high',
+        summary: 'Resolved dependency graph contains install-time scripts',
+        detail: 'The exact graph includes a postinstall script.',
+        remediation: 'Review the package before allowing a normal install.',
+      }],
+    })
+    const firstRun = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, {
+      schema: OBSERVATION_STATE_SCHEMA,
+      targets: { [target.id]: before },
+      pendingTasks: [],
+    }, {
+      source,
+      artifactReviewer: async spec => {
+        calls.push(spec)
+        return review(spec)
+      },
+      now: new Date('2026-08-17T02:30:00.000Z'),
+    })
+    const change = firstRun.report.changes[0]
+    assert.ok(change)
+    assert.deepEqual(calls, ['npm:dsh-demo@1.1.0'])
+    assert.equal(change.artifactReview?.spec, 'npm:dsh-demo@1.1.0')
+    assert.equal(firstRun.state.pendingTasks[0]?.change.artifactReview?.installScriptPackages[0], 'logger@1.0.0')
+    assert.match(renderObserverReport(firstRun.report), /Exact artifact review: REVIEW/)
+    assert.match(renderObserverReport(firstRun.report), /Artifact install scripts: logger@1\.0\.0 postinstall: node scripts\/postinstall\.js/)
+    const prompt = renderUpstreamChangeAgentPrompt(firstRun.state.pendingTasks[0]!)
+    assert.match(prompt, /artifactReview/)
+    assert.match(prompt, /dependency-install-script-present/)
+  })
+
+  it('keeps the upstream change when exact artifact review fails', async () => {
+    const before = snapshot('commit-1', '1.0.0', 'graph-v1')
+    const after = snapshot('commit-2', '1.1.0', 'graph-v2')
+    const source: ObserverSource = {
+      observe: async () => after,
+      compare: async (repository, beforeCommit, afterCommit) => ({
+        beforeCommit,
+        afterCommit,
+        comparison: 'complete',
+        changedFiles: ['src/index.ts'],
+        runtimeFiles: ['src/index.ts'],
+        nonRuntimeFiles: [],
+      }),
+    }
+    const result = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, {
+      schema: OBSERVATION_STATE_SCHEMA,
+      targets: { [target.id]: before },
+      pendingTasks: [],
+    }, {
+      source,
+      artifactReviewer: async () => { throw new Error('registry temporarily unavailable') },
+      now: new Date('2026-08-17T02:45:00.000Z'),
+    })
+    assert.equal(result.report.errors.length, 0)
+    assert.equal(result.report.changes.length, 1)
+    assert.equal(result.report.changes[0]?.artifactReview?.verdict, 'review')
+    assert.match(result.report.changes[0]?.artifactReview?.error ?? '', /registry temporarily unavailable/)
+    assert.equal(result.state.pendingTasks.length, 1)
   })
 
   it('advances the observation point for docs-only changes without waking the Agent', async () => {

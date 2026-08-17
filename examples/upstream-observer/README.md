@@ -58,6 +58,12 @@ The latest replay with the available issue-locator `.env` is recorded in
 It shows the exact author-review output and records the model endpoint failure
 without treating the pending task as a successful analysis.
 
+The deterministic closed-loop result is recorded in
+[`reports/dsh-feishu-bot-artifact-review-2026-08-18.md`](reports/dsh-feishu-bot-artifact-review-2026-08-18.md):
+the same old → new run now reviews `dsh-feishu-bot@0.15.8`, finds its reachable
+`protobufjs@7.6.5` install script, and keeps the DSH task pending because no
+DSH LLM is configured.
+
 Run it from any directory with the published CLI:
 
 ```bash
@@ -77,7 +83,12 @@ version/integrity, package manifest, and the auto-detected or explicit lockfile
 graph. A change
 limited to README/docs/tests advances the observation point without creating a
 DSH task. A runtime, DSH bundle, package entry, lockfile, dependency, or npm
-integrity change creates one. The scheduled workflow also uses
+integrity change creates one. When that change has a published npm version, the
+same run performs a deep static review of the exact artifact: it resolves the
+dependency graph with lifecycle scripts disabled, checks known vulnerabilities,
+and records reachable
+install-time scripts and unresolved edges in the report and pending task. The
+scheduled workflow also uses
 `--retry-pending`, so a task left behind by a temporarily unavailable Agent is
 retried on the next run without needing a new upstream commit.
 

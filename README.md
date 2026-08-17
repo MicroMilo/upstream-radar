@@ -354,6 +354,12 @@ The observer has also replayed a complete maintainer loop: the
 detects the source fix before npm is republished, keeps the task pending, and
 will re-check the exact published artifact when the release appears.
 
+The [Feishu plugin artifact replay](examples/upstream-observer/reports/dsh-feishu-bot-artifact-review-2026-08-18.md)
+closes the deterministic old → new path on a real DSH plugin: the same run
+reviews `dsh-feishu-bot@0.15.8`, finds a reachable `protobufjs@7.6.5`
+install-time script, reports zero known vulnerabilities but incomplete graph
+coverage, and keeps the DSH task pending because no DSH LLM is configured.
+
 The [DSH core nested-workspace case](examples/dsh/reports/dsh-core-nested-workspace-2026-08-18.md)
 shows the same observer against `deepseek-ai/deepseek-harness`: it selects the
 `apps/cli` importer automatically, resolves the external part of the graph, and
@@ -487,6 +493,14 @@ or temporarily unavailable, the static observation still succeeds and the task
 stays in `observations.json`; no plugin is installed or executed. Source
 observation errors still return a non-zero exit code, while a model failure is
 visible in the report and can be retried with `--retry-pending`.
+
+For every meaningful change that has a published npm version, the same run also
+reviews that exact artifact with the deep npm inspector internally. It resolves
+the published dependency graph with lifecycle scripts disabled, checks known
+vulnerabilities, records reachable install-time scripts and unresolved edges,
+and copies bounded findings into both the Markdown report and the pending DSH
+task. This deterministic dependency evidence does not require a DSH LLM and
+never executes the observed plugin.
 
 If you do not have a DSH wrapper configured yet, you can point the observer at
 an existing issue-locator/OpenAI-compatible `.env` file instead:

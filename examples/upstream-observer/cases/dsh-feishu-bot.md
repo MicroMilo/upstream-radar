@@ -14,11 +14,12 @@ Run the two observations with the same state file:
 
 ```bash
 export GITHUB_TOKEN='a read-only GitHub token'
-npx --yes upstream-radar@0.33.12 observe \
+pnpm run build
+node dist/src/cli.js observe \
   examples/upstream-observer/cases/dsh-feishu-bot-before.yml \
   --state /tmp/upstream-radar-dsh-feishu-bot.json
 
-npx --yes upstream-radar@0.33.12 observe \
+node dist/src/cli.js observe \
   examples/upstream-observer/cases/dsh-feishu-bot-after.yml \
   --state /tmp/upstream-radar-dsh-feishu-bot.json
 ```
@@ -36,12 +37,32 @@ Added runtime dependency edges:
   dsh-lark-bot@0.5.1 -> @deepseek-ai/dsh-tools@0.1.0-rc.6
 Runtime files include:
   package.json, pnpm-lock.yaml, src/adapters/dsh/*, src/notify/*
-DSH task: upstream-task-b958af9ee8c9cc9eac36fb33
+DSH task: upstream-task-c6134ba72fae177456a80d27
 Exact artifact check:
-  npx --yes upstream-radar@latest inspect npm:dsh-feishu-bot@0.15.3 --deep
+  npx --yes upstream-radar@latest inspect npm:dsh-feishu-bot@0.15.8 --deep
 Coverage warning: 7 dependency edge(s) are unresolved; an empty vulnerability
 list would be incomplete.
 ```
+
+With the current observer implementation, the second run also performs that
+exact artifact review in the same process. The current public package is
+`dsh-feishu-bot@0.15.8`, and the additional result is:
+
+```text
+Exact artifact review: REVIEW (risk REVIEW; coverage INCOMPLETE)
+Artifact authenticity: integrity verified; npm signature verified; provenance verified
+Artifact dependency audit: findings; 89 packages; known vulnerabilities: 0; unresolved: 12
+Artifact resolution: strict
+Artifact install scripts: protobufjs@7.6.5 postinstall: node scripts/postinstall
+Artifact finding: [HIGH] dependency-install-script-present
+DSH Agent: not configured; meaningful tasks remain pending
+```
+
+The review verified the exact artifact integrity, npm registry signature and
+provenance. `REVIEW` is caused by the reachable `protobufjs@7.6.5` install-time
+script and incomplete dependency coverage, not by a confirmed vulnerability.
+The observer records this evidence in `observations.json` and in the pending
+task without installing or executing the plugin.
 
 The observer reported `DSH Agent: not configured` and kept the task pending.
 That is intentional: this case proves the static observation and routing path,

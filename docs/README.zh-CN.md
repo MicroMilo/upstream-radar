@@ -265,6 +265,8 @@ OpenAI-compatible 模型，先设置
 
 我们还用 observer 重放了一条真正闭环的维护者案例：[Sanqi 修复重放](../examples/upstream-observer/reports/sanqi-maintainer-repair-live.md)。它在源码修复进入仓库、但 npm 仍未发布新版本时记录 old → new 变化并保留 pending 任务，后续发布出现时再复查精确发布物。
 
+[飞书插件精确发布物重放](../examples/upstream-observer/reports/dsh-feishu-bot-artifact-review-2026-08-18.md)则把确定性闭环补齐：同一轮真实 old → new 变化审查 `dsh-feishu-bot@0.15.8`，发现可达的 `protobufjs@7.6.5` 安装脚本；已知漏洞为 0，但依赖图覆盖不完整。由于没有配置 DSH LLM，任务明确保留为 pending，不冒充模型已经分析。
+
 [DSH 核心的 nested workspace 案例](../examples/dsh/reports/dsh-core-nested-workspace-2026-08-18.md)则验证了官方仓库的 `apps/cli`：observer 会自动找到正确 importer，解析外部依赖，并把本地 workspace link 明确留下为未解析边，不会误把仓库根依赖当成 DSH CLI 依赖。 [一条命令的重放报告](../examples/upstream-observer/reports/dsh-core-auto-discovery-2026-08-18.md)记录了不传 `--package` 和 `--package-path` 的结果。
 [源码与发布物的 old → new 重放报告](../examples/upstream-observer/reports/dsh-core-release-rc6-rc7-2026-08-18.md)则用官方 DSH 的真实提交验证了第二步：发现源码从 `rc.6` 走到 `rc.7`，保留 70 条本地 workspace 未解析边，并且不会因为根包版本变化就把没有变化的依赖边误报成新增和删除。整个结果来自静态 observer，没有调用 DSH LLM。
 [DSH `rc.7` 精确发布物报告](../examples/dsh/reports/dsh-core-artifact-rc7-2026-08-18.md)又验证了依赖审计本身：严格 npm peer 解析超时后，Radar 自动转入明确标注的 legacy-peer 模式，拿到 568 个节点、262 条未解析 peer/optional 边和 0 个 npm audit 已知漏洞；它不会把超时伪装成“安全”，也不会把 fallback 当成完整 peer 兼容性证明。
@@ -376,6 +378,11 @@ DSH bundle、入口文件、依赖图、npm 版本或 npm integrity 变化时，
 pending 状态，下一次可用 `--retry-pending` 重试。只有源码观察本身失败时才返回非零退出码。
 定时 workflow 会使用 `--retry-pending`：如果 Agent 暂时不可用，任务会在下一次运行
 自动重试，不需要上游再次提交新 commit。
+
+只要这次重要变化对应一个已发布的 npm 版本，同一轮 observer 还会自动审查这个精确发布物。
+它在关闭 lifecycle script 的前提下解析发布包的真实依赖图，查询已知漏洞，记录可达依赖中的
+安装脚本和未解析边，并把有界结果同时写进 Markdown 报告和 pending DSH 任务。这部分是确定性
+依赖证据，不需要 DSH LLM，也不会执行被观察插件。
 
 如果你还没有配置 DSH wrapper，可以直接复用现有的 issue-locator/OpenAI 兼容 `.env`
 文件作为模型入口：

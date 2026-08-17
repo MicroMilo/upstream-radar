@@ -5,6 +5,15 @@ import { dirname, resolve } from 'node:path'
 import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
 import { parsePackageManifestSnapshot } from './inventory.js'
 import type { DependencyGraph, PackageManifestSnapshot } from './radar-types.js'
+import type {
+  CoverageVerdict,
+  Finding,
+  NpmEvidence,
+  NpmInstallScriptPackage,
+  ScanReport,
+  Verdict,
+  VulnerabilitySummary,
+} from './types.js'
 
 export const OBSERVER_TARGETS_SCHEMA = 'upstream-radar.observer-targets/v1alpha1' as const
 export const OBSERVATION_STATE_SCHEMA = 'upstream-radar.observation-state/v1alpha1' as const
@@ -119,6 +128,40 @@ export interface ObserverManifestChange {
   fields: string[]
 }
 
+/**
+ * Bounded evidence from reviewing the exact published npm artifact. The full
+ * dependency graph remains in the npm review output; observer state keeps only
+ * the fields needed to explain an author-facing result and to retry the Agent.
+ */
+export interface ObserverArtifactReviewFinding {
+  code: string
+  severity: Finding['severity']
+  summary: string
+  detail: string
+  remediation?: string
+}
+
+export interface ObserverArtifactReview {
+  spec: string
+  verdict: Verdict
+  riskVerdict: Verdict
+  coverageVerdict: CoverageVerdict
+  artifactIntegrity: ScanReport['coverage']['artifactIntegrity']
+  registrySignature: NpmEvidence['registrySignature']['status']
+  provenance: NpmEvidence['provenance']['status']
+  dependencyResolution: ScanReport['coverage']['dependencyResolution']
+  dependencyAuditStatus: NpmEvidence['dependencyAudit']['status']
+  resolutionMode?: NpmEvidence['dependencyAudit']['resolutionMode']
+  graphDigest?: string
+  packages: number | null
+  unresolved: number
+  vulnerabilities: VulnerabilitySummary | null
+  installScriptPackages: string[]
+  installScriptDetails: NpmInstallScriptPackage[]
+  findings: ObserverArtifactReviewFinding[]
+  error?: string
+}
+
 export interface ObserverGraphChange {
   addedNodes: string[]
   removedNodes: string[]
@@ -139,6 +182,7 @@ export interface ObserverChange {
   graph?: ObserverGraphChange
   reasons: string[]
   meaningful: boolean
+  artifactReview?: ObserverArtifactReview
   taskId?: string
 }
 
@@ -204,6 +248,7 @@ export interface ObserverPendingTaskSummary {
   removedEdges: string[]
   addedUnresolved: string[]
   removedUnresolved: string[]
+  artifactReview?: ObserverArtifactReview
 }
 
 export interface ObserverAgentCommandOptions {
@@ -248,6 +293,8 @@ export interface ObserverSource {
 export interface RunObserverOptions {
   now?: Date
   source?: ObserverSource
+  /** Review the exact current npm artifact without executing plugin code. */
+  artifactReviewer?: (packageSpec: string) => Promise<ObserverArtifactReview>
   agent?: (task: UpstreamChangeTask, prompt: string) => Promise<ObserverAgentInvocation>
   retryPending?: boolean
 }
@@ -1654,9 +1701,45 @@ export async function runObserver(
         : await source.compare(current.source.repository, before.source.commit, current.source.commit)
       const change = createChange(configuredTarget, before, current, sourceChange)
       if (change.reasons.length === 0) continue
-      changes.push(change)
-      if (!change.meaningful || change.taskId === undefined) continue
-      const task = createUpstreamChangeTask(configuredTarget, change, checkedAt)
+      let reviewedChange = change
+      if (change.meaningful && current.package !== undefined && options.artifactReviewer !== undefined) {
+        const packageSpec = `npm:${current.package.name}@${current.package.version}`
+        try {
+          reviewedChange = {
+            ...change,
+            artifactReview: await options.artifactReviewer(packageSpec),
+          }
+        } catch (error: unknown) {
+          // Artifact review is useful evidence, but it must not turn a valid
+          // source observation into a source-observation error. Keep the
+          // change and make the incomplete review explicit for the author and
+          // for a later retry of the whole scheduled run.
+          reviewedChange = {
+            ...change,
+            artifactReview: {
+              spec: packageSpec,
+              verdict: 'review',
+              riskVerdict: 'review',
+              coverageVerdict: 'incomplete',
+              artifactIntegrity: 'not-checked',
+              registrySignature: 'not-checked',
+              provenance: 'not-checked',
+              dependencyResolution: 'manifest-only',
+              dependencyAuditStatus: 'failed',
+              packages: null,
+              unresolved: 0,
+              vulnerabilities: null,
+              installScriptPackages: [],
+              installScriptDetails: [],
+              findings: [],
+              error: safeError(error),
+            },
+          }
+        }
+      }
+      changes.push(reviewedChange)
+      if (!reviewedChange.meaningful || reviewedChange.taskId === undefined) continue
+      const task = createUpstreamChangeTask(configuredTarget, reviewedChange, checkedAt)
       newTasks.push(task)
       if (!taskAlreadyPending(pendingTasks, task.id)) pendingTasks.push(task)
     } catch (error: unknown) {
@@ -1740,6 +1823,7 @@ function summarizePendingTask(task: UpstreamChangeTask): ObserverPendingTaskSumm
     removedEdges: (change.graph?.removedEdges ?? []).slice(0, 24),
     addedUnresolved: (change.graph?.addedUnresolved ?? []).slice(0, 24),
     removedUnresolved: (change.graph?.removedUnresolved ?? []).slice(0, 24),
+    ...(change.artifactReview === undefined ? {} : { artifactReview: structuredClone(change.artifactReview) }),
   }
 }
 
@@ -1789,6 +1873,24 @@ export function renderObserverReport(report: ObserverReport): string {
     if (change.current.package !== undefined) {
       lines.push(`Exact artifact check: npx --yes upstream-radar@latest inspect npm:${change.current.package.name}@${change.current.package.version} --deep`)
     }
+    if (change.artifactReview !== undefined) {
+      const review = change.artifactReview
+      const vulnerabilityCount = review.vulnerabilities === null ? 'unknown' : String(review.vulnerabilities.total)
+      lines.push(`Exact artifact review: ${review.verdict.toUpperCase()} (risk ${review.riskVerdict.toUpperCase()}; coverage ${review.coverageVerdict.toUpperCase()})`)
+      lines.push(`Artifact authenticity: integrity ${review.artifactIntegrity}; npm signature ${review.registrySignature}; provenance ${review.provenance}`)
+      lines.push(`Artifact dependency audit: ${review.dependencyAuditStatus}; ${review.packages ?? 'unknown'} packages; known vulnerabilities: ${vulnerabilityCount}; unresolved: ${review.unresolved}`)
+      if (review.resolutionMode !== undefined) lines.push(`Artifact resolution: ${review.resolutionMode}`)
+      if (review.installScriptDetails.length > 0) {
+        const scripts = review.installScriptDetails
+          .flatMap(detail => detail.scripts.map(script => `${detail.package} ${script.name}: ${script.command}`))
+          .slice(0, 8)
+        lines.push(`Artifact install scripts: ${scripts.join('; ')}`)
+      }
+      for (const finding of review.findings.slice(0, 8)) {
+        lines.push(`Artifact finding: [${finding.severity.toUpperCase()}] ${finding.code} — ${finding.summary}`)
+      }
+      if (review.error !== undefined) lines.push(`Artifact review error: ${review.error}`)
+    }
     if (change.current.graph !== undefined && change.current.graph.unresolved > 0) {
       lines.push(`Coverage warning: ${change.current.graph.unresolved} dependency edge(s) are unresolved; an empty vulnerability list would be incomplete.`)
     }
@@ -1819,6 +1921,22 @@ export function renderObserverReport(report: ObserverReport): string {
       if (task.addedUnresolved.length > 0) lines.push(`New unresolved dependency edges: ${task.addedUnresolved.join(', ')}`)
       if (task.removedUnresolved.length > 0) lines.push(`Resolved dependency edges: ${task.removedUnresolved.join(', ')}`)
       if (task.reasons.length > 0) lines.push(`Reasons: ${task.reasons.join('; ')}`)
+      if (task.artifactReview !== undefined) {
+        const review = task.artifactReview
+        const vulnerabilityCount = review.vulnerabilities === null ? 'unknown' : String(review.vulnerabilities.total)
+        lines.push(`Exact artifact review: ${review.verdict.toUpperCase()} (risk ${review.riskVerdict.toUpperCase()}; coverage ${review.coverageVerdict.toUpperCase()}); ${review.packages ?? 'unknown'} packages; known vulnerabilities: ${vulnerabilityCount}`)
+        lines.push(`Artifact authenticity: integrity ${review.artifactIntegrity}; npm signature ${review.registrySignature}; provenance ${review.provenance}`)
+        if (review.installScriptDetails.length > 0) {
+          const scripts = review.installScriptDetails
+            .flatMap(detail => detail.scripts.map(script => `${detail.package} ${script.name}: ${script.command}`))
+            .slice(0, 8)
+          lines.push(`Artifact install scripts: ${scripts.join('; ')}`)
+        }
+        for (const finding of review.findings.slice(0, 8)) {
+          lines.push(`Artifact finding: [${finding.severity.toUpperCase()}] ${finding.code} — ${finding.summary}`)
+        }
+        if (review.error !== undefined) lines.push(`Artifact review error: ${review.error}`)
+      }
       lines.push('Next: make the DSH Agent or model available, then rerun the same command with --retry-pending.')
       lines.push('')
     }
