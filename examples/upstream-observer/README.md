@@ -19,6 +19,21 @@ The sample target points at the real public DSH/Feishu plugin
 first run produces a real dependency graph instead of a synthetic fixture.
 Replace it with the repositories your team depends on.
 
+For one repository, the shortest path skips YAML entirely:
+
+```bash
+npx --yes upstream-radar@0.33.8 observe \
+  https://github.com/PlutoKeating/dsh-lark-bot \
+  --package dsh-feishu-bot \
+  --lockfile pnpm-lock.yaml --lockfile-type pnpm \
+  --state /tmp/upstream-radar-observations.json \
+  --report /tmp/upstream-radar-observer.md
+```
+
+The first run creates the baseline. Re-run the same command from a scheduled
+job to compare the latest `main` commit. Use `--package-path` for a nested
+plugin, and `--ref` when replaying a specific commit.
+
 For a real end-to-end replay against a public DSH/Feishu plugin, see
 [`cases/dsh-feishu-bot.md`](cases/dsh-feishu-bot.md). It demonstrates baseline →
 real upstream commit → dependency graph diff → pending DSH task without a DSH
@@ -28,7 +43,7 @@ Run it from any directory with the published CLI:
 
 ```bash
 export GITHUB_TOKEN='a read-only token with repository metadata access'
-npx --yes upstream-radar@0.33.7 observe \
+npx --yes upstream-radar@0.33.8 observe \
   /path/to/targets.yml \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md

@@ -2,6 +2,13 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.33.8] - 2026-08-18
+
+### Usability
+
+- Let `observe` accept one public GitHub repository URL directly, with optional package path and committed npm/pnpm lockfile arguments, so a first upstream baseline does not require writing YAML.
+- Retry pending upstream-change tasks in the scheduled observer workflow when a model or Agent was temporarily unavailable.
+
 ## [0.33.7] - 2026-08-18
 
 ### Usability

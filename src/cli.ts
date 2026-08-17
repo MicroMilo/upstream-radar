@@ -37,11 +37,13 @@ import { createRadarHistory, renderRadarHistory } from './radar-history.js'
 import { loadRadarState, saveRadarState } from './radar-state.js'
 import { createRadarNext, createRadarStatus, renderRadarNext, renderRadarStatus } from './radar-status.js'
 import { renderTextReport } from './render.js'
-import { materializeGitHubRepository } from './repository.js'
+import { materializeGitHubRepository, parseGitHubRepositoryUrl } from './repository.js'
 import { scanDirectory } from './scan.js'
 import { CisaKevClient, EpssClient } from './threat-intel.js'
 import {
   loadObservationState,
+  OBSERVER_TARGETS_SCHEMA,
+  parseObserverConfig,
   parseObserverConfigText,
   renderObserverReport,
   runDshAgentCommand,
@@ -243,13 +245,21 @@ should remain visible without failing CI.
     observe: `Upstream Radar — watch DSH plugin repositories and packages for meaningful upstream changes
 
 Usage:
-  upstream-radar observe <targets.yml> [--state <observations.json>]
+  upstream-radar observe <targets.yml|github-url> [--state <observations.json>]
     [--report <report.md>] [--dsh-agent-command <executable>]
-    [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending] [--json]
+    [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending]
+    [--ecosystem <dsh|codex|pi>] [--id <id>] [--package <name>]
+    [--package-path <path>] [--lockfile <path>] [--lockfile-type <npm|pnpm>]
+    [--ref <branch>] [--json]
 
 The first run creates a baseline. Later runs compare source commits, published
 npm metadata, package manifests, and an optional npm/pnpm dependency graph. A
 DSH Agent is called only for meaningful changes. Safety: does not install packages, run lifecycle scripts, load plugin code, or invoke a shell.
+
+When the target is an HTTPS GitHub repository URL, Radar builds one target in
+memory and does not require a targets.yml file. The default package path is
+package.json; pass --package-path for a nested plugin and --lockfile to include
+the committed npm/pnpm graph.
 
 The Agent executable receives one read-only task prompt on stdin and should
 return one JSON conclusion on stdout. If it is not configured, the task stays
@@ -456,7 +466,7 @@ Usage:
   upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory-or-github-url> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect [npm:]<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
-  upstream-radar observe <targets.yml> [--state <observations.json>] [--report <report.md>] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending] [--json]
+  upstream-radar observe <targets.yml|github-url> [--state <observations.json>] [--report <report.md>] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending] [--ecosystem <dsh|codex|pi>] [--id <id>] [--package <name>] [--package-path <path>] [--lockfile <path>] [--lockfile-type <npm|pnpm>] [--ref <branch>] [--json]
   upstream-radar graph <npm-lock|pnpm-lock> <lockfile> [--root <package>@<exact-version>] [--json]
   upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
@@ -1362,7 +1372,7 @@ async function runRadar(args: readonly string[]): Promise<number> {
 
 async function runObserve(args: readonly string[]): Promise<number> {
   const targetsPath = args[0]
-  if (targetsPath === undefined || targetsPath.startsWith('-')) throw new Error('observe requires a targets.yml file')
+  if (targetsPath === undefined || targetsPath.startsWith('-')) throw new Error('observe requires a targets.yml file or an HTTPS GitHub repository URL')
   let statePath = 'observations.json'
   let reportPath: string | undefined
   let agentCommand: string | undefined
@@ -1371,29 +1381,68 @@ async function runObserve(args: readonly string[]): Promise<number> {
   let registry: string | undefined
   let retryPending = false
   let json = false
+  let inlineEcosystem: string | undefined
+  let inlineId: string | undefined
+  let inlinePackage: string | undefined
+  let inlinePackagePath: string | undefined
+  let inlineLockfile: string | undefined
+  let inlineLockfileType: string | undefined
+  let inlineRef: string | undefined
+  let inlineOptionsUsed = false
   for (let index = 1; index < args.length; index += 1) {
     const argument = args[index]
     if (argument === '--json') {
       json = true
     } else if (argument === '--retry-pending') {
       retryPending = true
-    } else if (argument === '--state' || argument === '--report' || argument === '--dsh-agent-command' || argument === '--dsh-agent-arg' || argument === '--llm-env-file' || argument === '--registry') {
+    } else if (argument === '--ecosystem' || argument === '--id' || argument === '--package' || argument === '--package-path' || argument === '--lockfile' || argument === '--lockfile-type' || argument === '--ref' || argument === '--state' || argument === '--report' || argument === '--dsh-agent-command' || argument === '--dsh-agent-arg' || argument === '--llm-env-file' || argument === '--registry') {
       const value = args[index + 1]
       if (value === undefined || (value.startsWith('-') && argument !== '--dsh-agent-arg')) throw new Error(`${argument} requires a value`)
-      if (argument === '--state') statePath = value
+      if (argument === '--ecosystem') inlineEcosystem = value
+      else if (argument === '--id') inlineId = value
+      else if (argument === '--package') inlinePackage = value
+      else if (argument === '--package-path') inlinePackagePath = value
+      else if (argument === '--lockfile') inlineLockfile = value
+      else if (argument === '--lockfile-type') inlineLockfileType = value
+      else if (argument === '--ref') inlineRef = value
+      else if (argument === '--state') statePath = value
       else if (argument === '--report') reportPath = value
       else if (argument === '--dsh-agent-command') agentCommand = value
       else if (argument === '--dsh-agent-arg') agentArgs.push(value)
       else if (argument === '--llm-env-file') llmEnvFile = value
       else registry = value
+      if (argument !== '--state' && argument !== '--report' && argument !== '--dsh-agent-command' && argument !== '--dsh-agent-arg' && argument !== '--llm-env-file' && argument !== '--registry') inlineOptionsUsed = true
       index += 1
     } else {
       throw new Error(`unknown option for observe: ${argument}`)
     }
   }
 
-  const targetText = await readBoundedFile(targetsPath, 256 * 1024)
-  const config = parseObserverConfigText(targetText)
+  const githubTarget = parseGitHubRepositoryUrl(targetsPath)
+  let config
+  if (githubTarget !== undefined) {
+    if (inlineLockfileType !== undefined && inlineLockfile === undefined) {
+      throw new Error('--lockfile-type requires --lockfile when observe receives a GitHub URL')
+    }
+    config = parseObserverConfig({
+      schema: OBSERVER_TARGETS_SCHEMA,
+      targets: [{
+        id: inlineId ?? `${githubTarget.owner}-${githubTarget.repository}`,
+        ecosystem: inlineEcosystem ?? 'dsh',
+        repository: `${githubTarget.owner}/${githubTarget.repository}`,
+        ref: inlineRef ?? 'main',
+        packageName: inlinePackage,
+        packagePath: inlinePackagePath ?? 'package.json',
+        ...(inlineLockfile === undefined ? {} : { lockfile: inlineLockfile }),
+        ...(inlineLockfileType === undefined ? {} : { lockfileType: inlineLockfileType }),
+      }],
+    })
+  } else {
+    if (/^https?:\/\//i.test(targetsPath)) throw new Error('observe URL must be an HTTPS GitHub repository URL')
+    if (inlineOptionsUsed) throw new Error('--ecosystem, --id, --package, --package-path, --lockfile, --lockfile-type and --ref require a GitHub URL target')
+    const targetText = await readBoundedFile(targetsPath, 256 * 1024)
+    config = parseObserverConfigText(targetText)
+  }
   const previousState = await loadObservationState(statePath)
   const source = new UpstreamObserverClient({
     ...(process.env.GITHUB_TOKEN === undefined ? {} : { githubToken: process.env.GITHUB_TOKEN }),

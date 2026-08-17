@@ -33,7 +33,7 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /triage <state\.json> <incident-id> --status .*--due <ISO-8601>/)
     assert.match(help.stdout, /graph <npm-lock\|pnpm-lock> <lockfile> \[--root <package>@<exact-version>\]/)
     assert.match(help.stdout, /profile-check \[profile-directory\] \[--patch <path>\] \[--report <path>\] \[--summary\] \[--json\]/)
-    assert.match(help.stdout, /observe <targets\.yml>/)
+    assert.match(help.stdout, /observe <targets\.yml\|github-url>/)
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
     assert.match(help.stdout, /--frozen\s+radar check\/watch: use the reviewed graph/)
     assert.match(help.stdout, /--fail-on <value>\s+scan\/inspect verdict or radar severity/)
