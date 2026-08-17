@@ -156,6 +156,15 @@ pnpm dlx --package=upstream-radar@latest upstream-radar profile-check \
   "$DSH_HOME/profiles/web" --summary
 ```
 
+如果 `DSH_HOME` 里只有一个包含第三方 bundle 的 profile，也可以省略路径：
+
+```bash
+npx --yes upstream-radar@latest profile-check --summary
+```
+
+如果没有可用 profile，或者存在多个 profile，Radar 会打印发现的名称并要求显式指定，
+不会在多个 profile 之间猜测。
+
 它只打印状态、关键证据、原因和下一步修复；profile 被阻断时仍返回退出码 `2`，
 通过时返回 `0`。
 

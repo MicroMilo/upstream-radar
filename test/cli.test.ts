@@ -31,7 +31,7 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /radar history <config\.json>/)
     assert.match(help.stdout, /triage <state\.json> <incident-id> --status .*--due <ISO-8601>/)
     assert.match(help.stdout, /graph <npm-lock\|pnpm-lock> <lockfile> \[--root <package>@<exact-version>\]/)
-    assert.match(help.stdout, /profile-check <profile-directory> \[--patch <path>\] \[--report <path>\] \[--summary\] \[--json\]/)
+    assert.match(help.stdout, /profile-check \[profile-directory\] \[--patch <path>\] \[--report <path>\] \[--summary\] \[--json\]/)
     assert.match(help.stdout, /observe <targets\.yml>/)
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
     assert.match(help.stdout, /--frozen\s+radar check\/watch: use the reviewed graph/)
@@ -50,6 +50,7 @@ describe('CLI option parsing', () => {
     assert.equal(profileHelp.status, 0)
     assert.match(profileHelp.stdout, /missing packages and duplicate loader ids/)
     assert.match(profileHelp.stdout, /DSH Agent\/model/)
+    assert.match(profileHelp.stdout, /directory is omitted/)
     assert.match(profileHelp.stdout, /--summary/)
 
     const demo = spawnSync(process.execPath, [cli, 'demo'], { encoding: 'utf8' })
@@ -102,6 +103,46 @@ describe('CLI option parsing', () => {
     const memoryWebhook = spawnSync(process.execPath, [cli, 'radar', 'watch', 'missing.json', '--once', '--state', ':memory:', '--webhook', 'https://hooks.example.test/incoming'], { encoding: 'utf8' })
     assert.equal(memoryWebhook.status, 1)
     assert.match(memoryWebhook.stderr, /requires a persistent --state file/)
+  })
+
+  it('auto-selects the only DSH profile for a profile check', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-profile-check-cli-'))
+    try {
+      const dshHome = join(root, 'dsh-home')
+      const profile = join(dshHome, 'profiles', 'web')
+      await mkdir(join(profile, 'node_modules', 'demo-plugin'), { recursive: true })
+      await writeFile(join(profile, 'package.json'), JSON.stringify({
+        name: 'dsh-profile-web',
+        version: '1.0.0',
+        dsh: { profile: { bundles: ['demo-plugin'] } },
+      }))
+      await writeFile(join(profile, 'node_modules', 'demo-plugin', 'package.json'), JSON.stringify({
+        name: 'demo-plugin',
+        version: '1.0.0',
+      }))
+      await writeFile(join(profile, 'pnpm-lock.yaml'), [
+        "lockfileVersion: '9.0'",
+        'importers:',
+        '  .:',
+        '    dependencies:',
+        '      demo-plugin: 1.0.0',
+        'packages:',
+        '  demo-plugin@1.0.0: {}',
+        'snapshots:',
+        '  demo-plugin@1.0.0: {}',
+        '',
+      ].join('\n'))
+
+      const result = spawnSync(process.execPath, [cli, 'profile-check', '--summary'], {
+        encoding: 'utf8',
+        env: { ...process.env, DSH_HOME: dshHome },
+      })
+      assert.equal(result.status, 0)
+      assert.match(result.stdout, /DSH profile dsh-profile-web@1\.0\.0: PASS/)
+      assert.match(result.stdout, /static profile files only/)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
   })
 
   it('offers self-contained help for the first-use commands', () => {

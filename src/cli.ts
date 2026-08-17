@@ -261,13 +261,14 @@ load plugin code, or query vulnerability sources.
     'profile-check': `Upstream Radar — check one DSH profile before starting it
 
 Usage:
-  upstream-radar profile-check <profile-directory> [--patch <path>] [--report <path>] [--summary] [--json]
+  upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
 
 Reads the profile package manifest, lockfile, node_modules package metadata,
 pnpm release-age policy, and cordis.patch.yml. It reports loader rows that
 refer to missing packages and duplicate loader ids. It never installs packages,
 starts DSH, loads plugin code, contacts a vulnerability source, or invokes a
-DSH Agent/model.
+DSH Agent/model. When the directory is omitted, the only DSH profile with
+third-party bundles is selected automatically.
 `,
     probe: `Upstream Radar — test whether a DSH bundle loads in disposable profiles
 
@@ -446,7 +447,7 @@ Usage:
   upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
   upstream-radar observe <targets.yml> [--state <observations.json>] [--report <report.md>] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--retry-pending] [--json]
   upstream-radar graph <npm-lock|pnpm-lock> <lockfile> [--root <package>@<exact-version>] [--json]
-  upstream-radar profile-check <profile-directory> [--patch <path>] [--report <path>] [--summary] [--json]
+  upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar demo [--json]
@@ -607,15 +608,17 @@ async function runGraph(args: readonly string[]): Promise<number> {
 }
 
 async function runDshProfileCheck(args: readonly string[]): Promise<number> {
-  const profileDirectory = args[0]
-  if (profileDirectory === undefined || profileDirectory.startsWith('-')) {
-    throw new Error('profile-check requires a DSH profile directory')
+  let profileDirectory: string | undefined
+  let firstOption = 0
+  if (args[0] !== undefined && !args[0].startsWith('-')) {
+    profileDirectory = args[0]
+    firstOption = 1
   }
   let json = false
   let summary = false
   let reportPath: string | undefined
   let patchPath: string | undefined
-  for (let index = 1; index < args.length; index += 1) {
+  for (let index = firstOption; index < args.length; index += 1) {
     const argument = args[index]
     if (argument === '--json') {
       json = true
@@ -630,6 +633,16 @@ async function runDshProfileCheck(args: readonly string[]): Promise<number> {
     } else {
       throw new Error(`unknown option for profile-check: ${argument}`)
     }
+  }
+  if (profileDirectory === undefined) {
+    const profiles = await discoverDshProfiles()
+    if (profiles.length === 0) {
+      throw new Error('profile-check could not find a DSH profile with third-party bundles; pass <profile-directory> explicitly')
+    }
+    if (profiles.length > 1) {
+      throw new Error(`profile-check found multiple DSH profiles with third-party bundles (${profiles.join(', ')}); pass <profile-directory> explicitly`)
+    }
+    profileDirectory = resolveDshProfileDirectory(profiles[0]!)
   }
   const report = await checkDshProfile({ profileDirectory, ...(patchPath === undefined ? {} : { patchFile: patchPath }) })
   const jsonText = `${JSON.stringify(report, null, 2)}\n`

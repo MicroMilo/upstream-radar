@@ -6,6 +6,7 @@ All notable changes to Upstream Radar are documented here.
 
 ### Added
 
+- Allow `profile-check --summary` to auto-select the only DSH profile with third-party bundles, while keeping explicit selection for ambiguous installations.
 - Add a concise `profile-check --summary` result and a reproducible DSH web-ui case showcase that turns static findings into an author-facing repair story; optional `issue-locator` model output never changes the deterministic result.
 - Correct GitHub Advisory Database matching so an exact version at or above `first_patched_version` is no longer reported as affected; add a regression test for open-ended vulnerable ranges.
 - Add per-incident follow-up records with owner, status, and handoff notes bound to the exact event version; show a copyable `triage` command in `radar next` without resolving or suppressing the active evidence.

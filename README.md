@@ -165,6 +165,16 @@ pnpm dlx --package=upstream-radar@latest upstream-radar profile-check \
   "$DSH_HOME/profiles/web" --summary
 ```
 
+When `DSH_HOME` contains exactly one profile with third-party bundles, the
+directory can be omitted:
+
+```bash
+npx --yes upstream-radar@latest profile-check --summary
+```
+
+With no eligible profile, or more than one, Radar prints the names it found and
+asks for an explicit directory; it never guesses between multiple profiles.
+
 It prints only the status, the important evidence, the reason, and the next
 repair. The exit code remains `2` for a blocked profile and `0` for a pass.
 
