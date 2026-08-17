@@ -837,6 +837,8 @@ function addNpmEvidenceFindings(evidence: NpmEvidence, findings: Finding[]): voi
       'medium',
       'npm artifact has no build provenance',
       'The published bytes are not cryptographically linked to a declared source commit and build workflow.',
+      undefined,
+      'Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version.',
     ))
   } else if (evidence.provenance.status === 'invalid') {
     findings.push(makeFinding(

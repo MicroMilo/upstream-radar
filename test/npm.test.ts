@@ -126,6 +126,7 @@ describe('npm artifact inspection', () => {
     assert.equal(report.coverage.artifactIntegrity, 'verified')
     assert.equal(report.coverage.registrySignature, 'verified')
     assert.equal(report.coverage.provenance, 'missing')
+    assert.match(report.findings.find(finding => finding.code === 'npm-provenance-missing')?.remediation ?? '', /NPM_CONFIG_PROVENANCE=true/)
     assert.equal(report.evidence.npm?.tarball, 'https://registry.npmjs.org/demo-plugin/-/demo-plugin-1.0.0.tgz')
     assert.equal(report.riskVerdict, 'warn')
     assert.equal(report.verdict, 'review')
