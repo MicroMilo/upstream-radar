@@ -145,6 +145,8 @@ The showcase also exercises the matrix form against DSH `0.1.0-rc.3` and `0.1.0-
 
 The real public baseline [dsh-feishu-bot@0.15.4 matrix result](reports/dsh-feishu-bot-0.15.4-matrix.md) passes on both DSH `rc.6` and `rc.7`.
 
+The first author-actionable dependency result is [the Sanqi plugin resolution feedback](reports/sanqi-market-plugin-dependency-resolution.md): its published DSH client peer path reaches an unpublished `@deepseek-ai/dsh-compact` package, so a clean graph cannot be resolved.
+
 ## Webhook delivery proof
 
 To prove the provider-neutral notification path without sending data outside the process, run:
