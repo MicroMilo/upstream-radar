@@ -8,6 +8,7 @@ All notable changes to Upstream Radar are documented here.
 
 - Add `observe --llm-env-file` as an explicit OpenAI-compatible issue-locator model entry point for installations that do not yet have a DSH Agent wrapper; model failures leave deterministic upstream tasks pending for retry.
 - Make the scheduled upstream-observer workflow optionally forward issue-locator model secrets without making static observation depend on an LLM configuration.
+- Show the concrete unresolved dependency edges behind an incomplete npm artifact review, and accept common `MODEL`/`CODEX_MODEL` env names for observer model calls.
 - Allow `profile-check --summary` to auto-select the only DSH profile with third-party bundles, while keeping explicit selection for ambiguous installations.
 - Add a concise `profile-check --summary` result and a reproducible DSH web-ui case showcase that turns static findings into an author-facing repair story; optional `issue-locator` model output never changes the deterministic result.
 - Correct GitHub Advisory Database matching so an exact version at or above `first_patched_version` is no longer reported as affected; add a regression test for open-ended vulnerable ranges.

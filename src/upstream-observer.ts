@@ -1209,12 +1209,12 @@ export async function runOpenAiCompatibleAgent(
   }
   const baseUrl = values.ISSUE_LOCATOR_LLM_BASE_URL ?? values.OPENAI_BASE_URL
   const apiKey = values.ISSUE_LOCATOR_LLM_API_KEY ?? values.OPENAI_API_KEY
-  const model = values.ISSUE_LOCATOR_LLM_MODEL ?? values.OPENAI_MODEL
+  const model = values.ISSUE_LOCATOR_LLM_MODEL ?? values.OPENAI_MODEL ?? values.MODEL ?? values.CODEX_MODEL
   if (baseUrl === undefined || apiKey === undefined || model === undefined || baseUrl === '' || apiKey === '' || model === '') {
     return {
       taskId: task.id,
       status: 'failed',
-      error: 'LLM env file must define ISSUE_LOCATOR_LLM_BASE_URL, ISSUE_LOCATOR_LLM_API_KEY and ISSUE_LOCATOR_LLM_MODEL (or OPENAI equivalents)',
+      error: 'LLM env file must define a base URL, API key, and model (ISSUE_LOCATOR_LLM_*, OPENAI_*, or MODEL/CODEX_MODEL)',
     }
   }
   const endpoint = `${baseUrl.replace(/\/$/, '')}/chat/completions`

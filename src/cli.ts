@@ -250,7 +250,8 @@ The Agent executable receives one read-only task prompt on stdin and should
 return one JSON conclusion on stdout. If it is not configured, the task stays
 in observations.json for a later explicit retry. As a simpler alternative,
 --llm-env-file reads an OpenAI-compatible issue-locator/.env-style file for
-only the model call; it never writes the key or endpoint to observations.json.
+only the model call. It accepts ISSUE_LOCATOR_LLM_*, OPENAI_*, or MODEL/CODEX_MODEL
+keys; it never writes the key or endpoint to observations.json.
 `,
     graph: `Upstream Radar — read a lockfile into the canonical dependency graph
 

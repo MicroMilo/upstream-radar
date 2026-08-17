@@ -263,6 +263,10 @@ Radar 只读取这次调用需要的接口地址、API key 和模型名，不会
 时才调用模型；建立基线和文档变更不会调用。接口不可用时，确定性的变化任务仍会保留
 为 pending，可用 `--retry-pending` 重试。
 
+`.env` 可以使用 issue-locator 的 `ISSUE_LOCATOR_LLM_*`，也可以使用常见的
+`OPENAI_BASE_URL`、`OPENAI_API_KEY`、`OPENAI_MODEL`；模型名还兼容 `MODEL` 或
+`CODEX_MODEL`。
+
 可复制的定时 workflow 是
 [examples/github-actions/upstream-observer.yml](../examples/github-actions/upstream-observer.yml)。
 仓库里这份 workflow 是 Radar 自己的 dogfood 示例：它先 checkout 并构建 Radar，
@@ -498,6 +502,16 @@ jobs:
 ```
 
 Action 会自动识别唯一的 `pnpm-lock.yaml`，检查同一棵精确依赖图，并把结果写入 Job Summary。这是安装前和 CI 门禁，不会把插件安装进 DSH；图审查通过后，再使用正常的 `dsh plugin` 流程安装，并用 `upstream-radar setup` 开始面向项目的持续监控。
+
+也可以直接检查一个真实发布的 DSH 包：
+
+```bash
+npx --yes upstream-radar@0.33.0 inspect npm:dsh-feishu-bot@0.14.0 --deep
+```
+
+这次检查的结论是 `REVIEW`：registry 完整性、签名、provenance 和 89 个已解析包都
+通过；已知漏洞为 `0`，但仍有 12 条可选依赖边未解析。作者可以看到“没有发现已知
+漏洞”和“覆盖还不完整”是两件事，而不是被一个空 finding 列表误导成 `ALLOW`。
 
 ## 先看一个真实事件
 

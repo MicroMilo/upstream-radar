@@ -1,10 +1,23 @@
 import type { ScanReport } from './types.js'
 
+type UnresolvedEdge = NonNullable<
+  NonNullable<NonNullable<ScanReport['evidence']['npm']>['dependencyAudit']['graph']>['unresolved']
+>[number]
+
 function display(value: string, maxLength = 512): string {
   const escaped = value.replace(/[\u0000-\u001f\u007f-\u009f]/g, character => (
     `\\u${character.codePointAt(0)?.toString(16).padStart(4, '0') ?? '0000'}`
   ))
   return escaped.length <= maxLength ? escaped : `${escaped.slice(0, maxLength)}…`
+}
+
+function displayUnresolvedEdge(
+  graph: NonNullable<NonNullable<ScanReport['evidence']['npm']>['dependencyAudit']['graph']>,
+  edge: UnresolvedEdge,
+): string {
+  const parent = graph.nodes.find(node => node.id === edge.from)
+  const parentName = parent === undefined ? edge.from : `${parent.name}@${parent.version}`
+  return `  ${display(parentName, 256)} -> ${display(edge.name, 256)} (${display(edge.spec, 256)}) [${display(edge.kind, 32)}]`
 }
 
 export function renderTextReport(report: ScanReport): string {
@@ -45,8 +58,16 @@ export function renderTextReport(report: ScanReport): string {
     if (npm.provenance.sourceCommit !== undefined) lines.push(`  source commit: ${display(npm.provenance.sourceCommit)}`)
     if (npm.provenance.workflow !== undefined) lines.push(`  build workflow: ${display(npm.provenance.workflow)}`)
     if (npm.dependencyAudit.graphDigest !== undefined) lines.push(`  graph digest: ${npm.dependencyAudit.graphDigest}`)
-    if (npm.dependencyAudit.graph?.unresolved !== undefined) {
-      lines.push(`  unresolved dependency edges: ${npm.dependencyAudit.graph.unresolved.length}`)
+    const unresolved = npm.dependencyAudit.graph?.unresolved
+    if (unresolved !== undefined) {
+      const optional = unresolved.filter(edge => edge.kind === 'optional').length
+      lines.push(`  unresolved dependency edges: ${unresolved.length}${optional === 0 ? '' : ` (${optional} optional)`}`)
+      if (unresolved.length > 0) {
+        lines.push('  unresolved edge details:')
+        for (const edge of unresolved.slice(0, 12)) lines.push(displayUnresolvedEdge(npm.dependencyAudit.graph!, edge))
+        if (unresolved.length > 12) lines.push(`  ... ${unresolved.length - 12} more unresolved edge(s)`)
+        lines.push('  note: optional edges can be platform choices; they explain incomplete coverage, not a confirmed vulnerability.')
+      }
     }
     if (npm.dependencyAudit.vulnerabilities !== null) {
       const vulnerabilities = npm.dependencyAudit.vulnerabilities

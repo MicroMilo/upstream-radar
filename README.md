@@ -286,6 +286,10 @@ called only after a meaningful upstream change; a baseline or docs-only change
 does not call it. If the endpoint is unavailable, the deterministic change
 record remains pending and can be retried with `--retry-pending`.
 
+The env file may use the issue-locator names (`ISSUE_LOCATOR_LLM_*`), the common
+OpenAI names (`OPENAI_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_MODEL`), or `MODEL` /
+`CODEX_MODEL` for the model name.
+
 The scheduled workflow is [examples/github-actions/upstream-observer.yml](examples/github-actions/upstream-observer.yml).
 The checked-in workflow is a dogfood workflow for this repository: it checks out
 and builds Radar before running the observer. It persists only the observation
@@ -524,6 +528,18 @@ jobs:
 ```
 
 The Action auto-detects the one `pnpm-lock.yaml`, checks the same exact graph, and writes the result to the Job Summary. This is a pre-install and CI gate; it does not install the plugin into DSH. After the graph is reviewed, use the normal `dsh plugin` flow to install it and `upstream-radar setup` to start project-aware monitoring.
+
+To check a real published DSH artifact directly, run one command:
+
+```bash
+npx --yes upstream-radar@0.33.0 inspect npm:dsh-feishu-bot@0.14.0 --deep
+```
+
+The checked result is `REVIEW`: registry integrity, signature, provenance, and
+89 resolved packages are verified; known vulnerabilities are `0`, while 12
+optional dependency edges remain unresolved. That is a useful author result:
+the empty vulnerability list is visible, but it is not mislabeled as a full
+`ALLOW` decision.
 
 ## See one incident
 

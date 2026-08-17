@@ -326,7 +326,7 @@ targets:
       await writeFile(envFile, [
         `ISSUE_LOCATOR_LLM_BASE_URL=http://127.0.0.1:${address.port}/v1`,
         'ISSUE_LOCATOR_LLM_API_KEY=test-only',
-        'ISSUE_LOCATOR_LLM_MODEL=test-model',
+        'MODEL=test-model',
         '',
       ].join('\n'))
       const invocation = await runOpenAiCompatibleAgent(task, 'read-only task prompt', { envFile })
