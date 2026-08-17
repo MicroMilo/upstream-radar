@@ -83,6 +83,7 @@ function parseModelJson(text) {
 
 async function askModel(config, facts) {
   if (!config.configured) return { status: 'not-configured' }
+  const endpoint = `${config.baseUrl.replace(/\/$/, '')}/chat/completions`
   const prompt = [
     '你是 DSH 插件维护者的故障分析助手。下面的事实由静态检查器直接得到。',
     '不要改变 blocked/pass 判断，不要把推测写成事实；只解释根因、用户影响、作者修复和为什么值得持续监控。',
@@ -90,7 +91,7 @@ async function askModel(config, facts) {
     JSON.stringify(facts, null, 2),
   ].join('\n\n')
   try {
-    const response = await fetch(`${config.baseUrl.replace(/\/$/, '')}/chat/completions`, {
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         authorization: `Bearer ${config.apiKey}`,
@@ -107,13 +108,26 @@ async function askModel(config, facts) {
       }),
       signal: AbortSignal.timeout(120_000),
     })
-    if (!response.ok) return { status: 'unavailable', httpStatus: response.status }
+    if (!response.ok) return { status: 'unavailable', httpStatus: response.status, endpoint }
     const body = await response.json()
     const text = body?.choices?.[0]?.message?.content
-    if (typeof text !== 'string') return { status: 'unavailable', error: 'model response has no message content' }
+    if (typeof text !== 'string') return { status: 'unavailable', error: 'model response has no message content', endpoint }
     return { status: 'used', result: parseModelJson(text) }
   } catch (error) {
-    return { status: 'unavailable', error: error instanceof Error ? error.message : String(error) }
+    return { status: 'unavailable', error: error instanceof Error ? error.message : String(error), endpoint }
+  }
+}
+
+function safeEndpoint(value) {
+  try {
+    const url = new URL(value)
+    url.username = ''
+    url.password = ''
+    url.search = ''
+    url.hash = ''
+    return url.toString()
+  } catch {
+    return undefined
   }
 }
 
@@ -179,6 +193,7 @@ const output = {
     configured: config.configured,
     source: config.source,
     ...(config.model === undefined ? {} : { model: config.model }),
+    ...(model.endpoint === undefined ? {} : { endpoint: safeEndpoint(model.endpoint) }),
     ...(model.httpStatus === undefined ? {} : { httpStatus: model.httpStatus }),
     ...(model.error === undefined ? {} : { error: model.error }),
   },
@@ -203,5 +218,5 @@ console.log(`Maintainer fix replay: ${fixed?.report.status.toUpperCase()} — ${
 console.log(`Analysis: ${output.analysisSource}`)
 console.log(`Root cause: ${analysis.root_cause}`)
 console.log(`Author fix: ${analysis.maintainer_fix}`)
-console.log(`Model: ${model.status}${model.httpStatus === undefined ? '' : ` (HTTP ${model.httpStatus})`}`)
+console.log(`Model: ${model.status}${model.httpStatus === undefined ? '' : ` (HTTP ${model.httpStatus})`}${model.endpoint === undefined ? '' : ` — ${safeEndpoint(model.endpoint) ?? 'configured endpoint'}`}`)
 if (writeReport) console.log(`Report: ${DEFAULT_REPORT}`)
