@@ -15,6 +15,13 @@ package-lock.json packages[""].version: 0.1.0
 pnpm-lock.yaml               present
 ```
 
+From a clean checkout, the finding is reproducible without installing or
+executing the plugin:
+
+```bash
+npx --yes upstream-radar@0.33.3 scan . --json
+```
+
 The current static scan reports:
 
 ```text
@@ -43,4 +50,6 @@ If pnpm is canonical, remove the stale npm lockfile instead of publishing two
 competing dependency graphs.
 
 This draft is ready to turn into an upstream issue or PR after maintainer
-confirmation. No third-party repository was modified by this scan.
+confirmation. The neutral confirmation issue is now published as
+[13071301808/dsh-composer-expand#1](https://github.com/13071301808/dsh-composer-expand/issues/1).
+No third-party repository files were modified by this scan.

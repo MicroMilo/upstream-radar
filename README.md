@@ -232,6 +232,9 @@ dependencies mixed into source lockfiles, three plugin lockfiles whose root
 version lagged the source manifest, and a tarball format the scanner could not
 parse. The [batch report](examples/dsh/reports/dsh-batch-50-2026-08-17.md)
 keeps those results honest; it is not marketed as a vulnerability hit list.
+The three repeated lockfile-metadata cases are rechecked in the
+[follow-up report](examples/dsh/reports/lockfile-metadata-follow-up-2026-08-18.md),
+with an author-ready issue draft for the first maintainer.
 
 ## Observe DSH plugin upstream changes
 
