@@ -19,6 +19,11 @@
 | [dsh-feed](https://github.com/863683348/dsh-feed) | `.github/workflows/publish.yml` | `dsh-feed@0.1.0` | registry signature 已验证，provenance 缺失，18 个依赖，已知漏洞 0 |
 | [dsh-inline-images](https://github.com/3403473060/dsh-inline-images) | `.github/workflows/ci.yml` | `dsh-inline-images@1.0.0` 不存在（npm 404） | 发布前修复项，不能把它写成已发布包问题 |
 
+作者可直接复制的 Issue 草案：
+
+- [dsh-feed provenance issue draft](dsh-feed-provenance-issue-draft.md)
+- [dsh-inline-images provenance issue draft](dsh-inline-images-provenance-issue-draft.md)
+
 两个源码 workflow 都直接执行 `npm publish`，但没有 `--provenance`、
 `NPM_CONFIG_PROVENANCE=true` 或 GitHub OIDC 的 `id-token: write`。扫描器给出的统一修复是：
 
