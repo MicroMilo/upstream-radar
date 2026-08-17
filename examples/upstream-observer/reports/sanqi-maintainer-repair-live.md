@@ -52,6 +52,11 @@ At commit `8b32828`, a clean resolver with lifecycle scripts disabled selected
 `@deepseek-ai/dsh-client-ui-slots@0.1.0-rc.7`, and
 `@deepseek-ai/cordis@4.0.1`; it did not pull `@deepseek-ai/dsh-compact`.
 
+I also retried the pending task with the configured issue-locator environment.
+The model endpoint returned HTTP 404 on every supported OpenAI-compatible path,
+so Radar kept the task pending and wrote no model conclusion. The static result
+remains usable without a model; a later scheduled run can retry the same task.
+
 The npm `latest` tag remains `0.5.4`, so the next scheduled observer run will
 detect the release separately. This is the intended always-on loop:
 
