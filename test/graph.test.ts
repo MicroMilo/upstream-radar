@@ -123,6 +123,33 @@ snapshots:
     )
   })
 
+  it('parses pnpm explicit mapping keys used for long peer-context locators', () => {
+    const graph = parsePnpmLockGraph(`
+lockfileVersion: '9.0'
+
+packages:
+  ? 'plugin@1.0.0'
+  : {}
+  ? 'parser@1.0.0(peer@2.0.0)'
+  : {}
+
+snapshots:
+  ? 'plugin@1.0.0'
+  : dependencies:
+      parser: 1.0.0(peer@2.0.0)
+  ? 'parser@1.0.0(peer@2.0.0)'
+  : {}
+`, { name: 'plugin', version: '1.0.0' })
+
+    assert.equal(graph.nodes.length, 2)
+    assert.deepEqual(graph.edges, [{
+      from: 'pnpm:plugin@1.0.0',
+      to: 'pnpm:parser@1.0.0(peer@2.0.0)',
+      kind: 'runtime',
+    }])
+    assert.equal(graph.unresolved, undefined)
+  })
+
   it('parses pnpm v6 slash locators and peer-context references', () => {
     const graph = parsePnpmLockGraph(`
 lockfileVersion: 6.0

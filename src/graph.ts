@@ -306,7 +306,43 @@ function preparePnpmYamlLines(text: string): PnpmYamlLine[] {
     if (indent > 256) throw new Error(`pnpm lockfile indentation is too deep on line ${index + 1}`)
     lines.push({ indent, content: content.slice(indent), line: index + 1 })
   }
-  return lines
+  const normalized: PnpmYamlLine[] = []
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index]
+    if (line === undefined || !line.content.startsWith('? ')) {
+      if (line !== undefined) normalized.push(line)
+      continue
+    }
+
+    // pnpm may emit YAML's explicit mapping-key form for long peer-context
+    // locators:
+    //
+    //   ? 'package@version(peer@version)'
+    //   : dependencies:
+    //       peer: version
+    //
+    // The rest of Radar's bounded parser works on ordinary `key:` mappings.
+    // Normalize this legal YAML spelling without evaluating arbitrary YAML.
+    const next = lines[index + 1]
+    if (next === undefined || next.indent !== line.indent || !next.content.startsWith(':')) {
+      normalized.push(line)
+      continue
+    }
+    const key = line.content.slice(2).trim()
+    const value = next.content.slice(1).trim()
+    if (key === '' || value === '') {
+      normalized.push(line)
+      continue
+    }
+    if (value === '{}' || !value.endsWith(':')) {
+      normalized.push({ indent: line.indent, content: `${key}: ${value}`, line: line.line })
+    } else {
+      normalized.push({ indent: line.indent, content: `${key}:`, line: line.line })
+      normalized.push({ indent: line.indent + 2, content: value, line: next.line })
+    }
+    index += 1
+  }
+  return normalized
 }
 
 function pnpmSectionRange(lines: readonly PnpmYamlLine[], section: string): { start: number; end: number } {
