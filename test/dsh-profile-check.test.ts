@@ -37,7 +37,10 @@ describe('DSH profile check', () => {
   })
 
   it('turns the manual package workaround into a duplicate-loader finding', async () => {
-    const report = await checkDshProfile({ profileDirectory: resolve(caseRoot, 'manual-add') })
+    const report = await checkDshProfile({
+      profileDirectory: resolve(caseRoot, 'manual-add'),
+      checkedAt: '2026-08-17T08:01:00.000Z',
+    })
     assert.equal(report.status, 'blocked')
     assert.ok(report.findings.some(finding => finding.code === 'duplicate-loader-id'))
     assert.equal(report.findings.find(finding => finding.code === 'missing-loader-package'), undefined)
