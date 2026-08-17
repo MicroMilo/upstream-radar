@@ -124,6 +124,8 @@ export interface ObserverGraphChange {
   removedNodes: string[]
   addedEdges: string[]
   removedEdges: string[]
+  addedUnresolved: string[]
+  removedUnresolved: string[]
 }
 
 export interface ObserverChange {
@@ -200,6 +202,8 @@ export interface ObserverPendingTaskSummary {
   removedDependencies: string[]
   addedEdges: string[]
   removedEdges: string[]
+  addedUnresolved: string[]
+  removedUnresolved: string[]
 }
 
 export interface ObserverAgentCommandOptions {
@@ -1182,20 +1186,42 @@ function manifestChanges(before: PackageManifestSnapshot, after: PackageManifest
 function graphEdgeKey(graph: DependencyGraph, from: string, to: string, kind: string): string {
   const fromNode = graph.nodes.find(node => node.id === from)
   const toNode = graph.nodes.find(node => node.id === to)
-  return `${fromNode?.name ?? from}@${fromNode?.version ?? '?'} -> ${toNode?.name ?? to}@${toNode?.version ?? '?'} (${kind})`
+  const fromCoordinate = from === graph.rootNodeId
+    ? `${fromNode?.name ?? from}@<root>`
+    : `${fromNode?.name ?? from}@${fromNode?.version ?? '?'}`
+  const toCoordinate = `${toNode?.name ?? to}@${toNode?.version ?? '?'}`
+  return `${fromCoordinate} -> ${toCoordinate} (${kind})`
 }
 
 function graphChanges(before: DependencyGraph | undefined, after: DependencyGraph | undefined): ObserverGraphChange | undefined {
   if (before === undefined || after === undefined) return undefined
-  const beforeNodes = new Set(before.nodes.map(node => `${node.name}@${node.version}`))
-  const afterNodes = new Set(after.nodes.map(node => `${node.name}@${node.version}`))
+  // The root package version is already reported as a manifest/package change.
+  // Excluding it here prevents every unchanged root dependency edge from being
+  // presented as added and removed when a DSH release bumps only the root.
+  const beforeNodes = new Set(before.nodes
+    .filter(node => node.id !== before.rootNodeId)
+    .map(node => `${node.name}@${node.version}`))
+  const afterNodes = new Set(after.nodes
+    .filter(node => node.id !== after.rootNodeId)
+    .map(node => `${node.name}@${node.version}`))
   const beforeEdges = new Set(before.edges.map(edge => graphEdgeKey(before, edge.from, edge.to, edge.kind)))
   const afterEdges = new Set(after.edges.map(edge => graphEdgeKey(after, edge.from, edge.to, edge.kind)))
+  const unresolvedKey = (graph: DependencyGraph, edge: NonNullable<DependencyGraph['unresolved']>[number]): string => {
+    const fromNode = graph.nodes.find(node => node.id === edge.from)
+    const fromCoordinate = edge.from === graph.rootNodeId
+      ? `${fromNode?.name ?? edge.from}@<root>`
+      : `${fromNode?.name ?? edge.from}@${fromNode?.version ?? '?'}`
+    return `${fromCoordinate} -> ${edge.name}@${edge.spec} (${edge.kind})`
+  }
+  const beforeUnresolved = new Set((before.unresolved ?? []).map(edge => unresolvedKey(before, edge)))
+  const afterUnresolved = new Set((after.unresolved ?? []).map(edge => unresolvedKey(after, edge)))
   return {
     addedNodes: [...afterNodes].filter(node => !beforeNodes.has(node)).sort(),
     removedNodes: [...beforeNodes].filter(node => !afterNodes.has(node)).sort(),
     addedEdges: [...afterEdges].filter(edge => !beforeEdges.has(edge)).sort(),
     removedEdges: [...beforeEdges].filter(edge => !afterEdges.has(edge)).sort(),
+    addedUnresolved: [...afterUnresolved].filter(edge => !beforeUnresolved.has(edge)).sort(),
+    removedUnresolved: [...beforeUnresolved].filter(edge => !afterUnresolved.has(edge)).sort(),
   }
 }
 
@@ -1206,8 +1232,16 @@ function packageChanged(before: ObserverSnapshot, after: ObserverSnapshot): bool
 
 function graphChanged(before: ObserverSnapshot, after: ObserverSnapshot): boolean {
   if (before.graphError !== after.graphError) return true
-  if (before.graph?.digest !== after.graph?.digest) return true
-  return before.graph === undefined && after.graph !== undefined || before.graph !== undefined && after.graph === undefined
+  if (before.graph === undefined || after.graph === undefined) return before.graph !== after.graph
+  const changes = graphChanges(before.graph, after.graph)
+  return changes !== undefined && (
+    changes.addedNodes.length > 0
+    || changes.removedNodes.length > 0
+    || changes.addedEdges.length > 0
+    || changes.removedEdges.length > 0
+    || changes.addedUnresolved.length > 0
+    || changes.removedUnresolved.length > 0
+  )
 }
 
 function meaningfulChange(sourceChange: ObserverSourceChange, before: ObserverSnapshot, after: ObserverSnapshot): { meaningful: boolean; reasons: string[] } {
@@ -1694,6 +1728,8 @@ function summarizePendingTask(task: UpstreamChangeTask): ObserverPendingTaskSumm
     removedDependencies: (change.graph?.removedNodes ?? []).slice(0, 24),
     addedEdges: (change.graph?.addedEdges ?? []).slice(0, 24),
     removedEdges: (change.graph?.removedEdges ?? []).slice(0, 24),
+    addedUnresolved: (change.graph?.addedUnresolved ?? []).slice(0, 24),
+    removedUnresolved: (change.graph?.removedUnresolved ?? []).slice(0, 24),
   }
 }
 
@@ -1725,10 +1761,18 @@ export function renderObserverReport(report: ObserverReport): string {
     if (change.source.changedFiles.length > 0) lines.push(`Changed files: ${change.source.changedFiles.slice(0, 12).join(', ')}`)
     if (change.manifest.fields.length > 0) lines.push(`Manifest fields: ${change.manifest.fields.join(', ')}`)
     if (change.graph !== undefined) {
+      const addedUnresolved = change.graph.addedUnresolved ?? []
+      const removedUnresolved = change.graph.removedUnresolved ?? []
       if (change.graph.addedNodes.length > 0) lines.push(`Added dependencies: ${change.graph.addedNodes.slice(0, 12).join(', ')}`)
       if (change.graph.removedNodes.length > 0) lines.push(`Removed dependencies: ${change.graph.removedNodes.slice(0, 12).join(', ')}`)
       if (change.graph.addedEdges.length > 0) {
         lines.push(`Author next step: review added dependency edges: ${change.graph.addedEdges.slice(0, 8).join(', ')}`)
+      }
+      if (addedUnresolved.length > 0) {
+        lines.push(`Coverage change: new unresolved dependency edges: ${addedUnresolved.slice(0, 8).join(', ')}`)
+      }
+      if (removedUnresolved.length > 0) {
+        lines.push(`Coverage change: resolved dependency edges: ${removedUnresolved.slice(0, 8).join(', ')}`)
       }
     }
     if (change.reasons.length > 0) lines.push(`Reasons: ${change.reasons.join('; ')}`)
@@ -1762,6 +1806,8 @@ export function renderObserverReport(report: ObserverReport): string {
       if (task.removedDependencies.length > 0) lines.push(`Removed dependencies: ${task.removedDependencies.join(', ')}`)
       if (task.addedEdges.length > 0) lines.push(`Added dependency edges: ${task.addedEdges.join(', ')}`)
       if (task.removedEdges.length > 0) lines.push(`Removed dependency edges: ${task.removedEdges.join(', ')}`)
+      if (task.addedUnresolved.length > 0) lines.push(`New unresolved dependency edges: ${task.addedUnresolved.join(', ')}`)
+      if (task.removedUnresolved.length > 0) lines.push(`Resolved dependency edges: ${task.removedUnresolved.join(', ')}`)
       if (task.reasons.length > 0) lines.push(`Reasons: ${task.reasons.join('; ')}`)
       lines.push('Next: make the DSH Agent or model available, then rerun the same command with --retry-pending.')
       lines.push('')

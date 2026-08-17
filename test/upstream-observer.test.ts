@@ -340,6 +340,39 @@ targets:
     assert.equal(result.state.targets[target.id]?.source.commit, 'commit-2')
   })
 
+  it('does not report unchanged root edges as dependency changes when the root version bumps', async () => {
+    const before = snapshot('commit-1', '1.0.0', 'graph-v1')
+    const after = snapshot('commit-2', '1.1.0', 'graph-v1')
+    const source: ObserverSource = {
+      observe: async () => after,
+      compare: async (repository, beforeCommit, afterCommit) => ({
+        beforeCommit,
+        afterCommit,
+        comparison: 'complete',
+        changedFiles: ['package.json'],
+        runtimeFiles: ['package.json'],
+        nonRuntimeFiles: [],
+      }),
+    }
+    const result = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, {
+      schema: OBSERVATION_STATE_SCHEMA,
+      targets: { [target.id]: before },
+      pendingTasks: [],
+    }, { source, now: new Date('2026-08-17T03:30:00.000Z') })
+    const change = result.report.changes[0]
+    assert.ok(change)
+    assert.deepEqual(change.graph, {
+      addedNodes: [],
+      removedNodes: [],
+      addedEdges: [],
+      removedEdges: [],
+      addedUnresolved: [],
+      removedUnresolved: [],
+    })
+    assert.doesNotMatch(change.reasons.join('\n'), /dependency graph changed/)
+    assert.match(change.reasons.join('\n'), /source manifest identity changed/)
+  })
+
   it('keeps a task when no Agent is configured and accepts the state shape again', async () => {
     const before = snapshot('commit-1', '1.0.0', 'graph-v1')
     const after = snapshot('commit-2', '1.1.0', 'graph-v2')

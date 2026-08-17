@@ -302,6 +302,11 @@ shows the same observer against `deepseek-ai/deepseek-harness`: it selects the
 leaves local workspace links explicitly unresolved instead of monitoring the
 repository root by mistake. The [one-command replay](examples/upstream-observer/reports/dsh-core-auto-discovery-2026-08-18.md)
 proves that this works without `--package` or `--package-path`.
+The [source-versus-published release replay](examples/upstream-observer/reports/dsh-core-release-rc6-rc7-2026-08-18.md)
+then shows the old → new path on real DSH commits: it detects the source
+manifest moving from `rc.6` to `rc.7`, keeps 70 local workspace edges visible,
+and does not invent dependency-edge changes when only the graph root version
+changes.
 
 ## Observe DSH plugin upstream changes
 
