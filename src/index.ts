@@ -62,6 +62,15 @@ export {
   type DshProbeStage,
 } from './dsh-probe.js'
 export {
+  DSH_PLUGIN_REVIEW_SCHEMA,
+  renderDshPluginReview,
+  reviewDshPlugin,
+  type DshPluginReviewArtifact,
+  type DshPluginReviewOptions,
+  type DshPluginReviewReport,
+  type DshPluginReviewStatus,
+} from './dsh-review.js'
+export {
   COMPATIBILITY_BENCHMARK_SCHEMA,
   renderCompatibilityBenchmark,
   runCompatibilityBenchmark,

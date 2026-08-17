@@ -61,6 +61,7 @@ It looks only at the current directory and local DSH profile metadata. It recomm
 | Scan a public DSH plugin repository | `scan https://github.com/owner/repository` | One command shallow-clones the public repo into a temporary directory and reports concrete problems without installing or running it. |
 | Scan one from GitHub Actions | [One-shot scan workflow](examples/github-actions/upstream-scan-minimal.yml) | Enter a public repository URL, see the result immediately, and download the JSON report without setting up a local environment. |
 | Review one exact published artifact | `upstream-radar inspect <package>@<exact-version> --deep` | Package, dependency, vulnerability, and provenance evidence for one release. |
+| Review one DSH plugin in one command | `upstream-radar review dsh-plugin ... --dsh-version ...` | Combines exact artifact/dependency evidence with a real DSH release load matrix. |
 | Review one plugin against DSH releases | [Copyable review workflow](examples/github-actions/dsh-plugin-review-minimal.yml) | Enter `package@version` and two DSH versions; get artifact review plus a real bundle-load matrix without a local DSH profile or LLM. |
 | Publish and maintain a DSH plugin | [Plugin author path](#for-dsh-plugin-authors) | Start from a real DSH scaffold, review its locked graph, and add a two-step CI gate before users install it. |
 | Send changed events to Feishu | [Feishu or HTTPS webhook](#notify-feishu-or-an-https-endpoint) | Native Feishu V2 text, environment-only secrets, durable acknowledgement, and retry. |
@@ -112,6 +113,21 @@ npx --yes upstream-radar@0.33.12 inspect dsh-feishu-bot@0.15.4 --deep
 
 This runs from an otherwise empty directory and returns a short admission,
 coverage, dependency-count, vulnerability-count, and next-step summary.
+
+Want the artifact review and DSH compatibility check as one local command?
+
+```bash
+npx --yes upstream-radar@0.33.12 review dsh-plugin \
+  dsh-cloudflare-browser-run@0.1.1 \
+  --dsh-version 0.1.0-rc.6,0.1.0-rc.7
+```
+
+The command reports the exact bytes used by both checks, dependency coverage,
+known vulnerabilities, and one line for each DSH version. A real run loaded the
+bundle on both versions (`2/2`) while still showing `REVIEW` because coverage
+was incomplete. It is report-first by default: the author sees the evidence
+even when the result needs review. It packs with scripts disabled and does not
+execute plugin code, business actions, or an LLM.
 
 Want the same result as a link anyone on your team can click? Copy the
 [one-shot DSH plugin review workflow](examples/github-actions/dsh-plugin-review-minimal.yml)

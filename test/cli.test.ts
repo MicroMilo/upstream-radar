@@ -45,6 +45,7 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /--no-dsh-patch\s+setup: keep the legacy UPSTREAM_RADAR_\* environment-variable wiring/)
     assert.match(help.stdout, /probe dsh-load <package\.tgz>/)
     assert.match(help.stdout, /probe dsh-matrix <package\.tgz>/)
+    assert.match(help.stdout, /review dsh-plugin .*--dsh-version/)
     assert.match(help.stdout, /demo \[--json\]/)
     assert.match(help.stdout, /case dsh-web-ui \[--json\]/)
 
@@ -104,6 +105,10 @@ describe('CLI option parsing', () => {
     const incompleteProbeMatrix = spawnSync(process.execPath, [cli, 'probe', 'dsh-matrix', 'missing.tgz', '--dsh-version', '0.1.0-rc.6'], { encoding: 'utf8' })
     assert.equal(incompleteProbeMatrix.status, 1)
     assert.match(incompleteProbeMatrix.stderr, /at least two exact DSH versions/)
+
+    const incompleteReview = spawnSync(process.execPath, [cli, 'review', 'dsh-plugin', 'demo-plugin@1.0.0'], { encoding: 'utf8' })
+    assert.equal(incompleteReview.status, 1)
+    assert.match(incompleteReview.stderr, /requires at least two exact DSH versions/)
 
     const blockedDoctor = spawnSync(process.execPath, [cli, 'doctor', resolve(tmpdir(), `upstream-radar-missing-${process.pid}.json`)], { encoding: 'utf8' })
     assert.equal(blockedDoctor.status, 1)

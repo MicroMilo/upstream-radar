@@ -7,6 +7,7 @@ import { dirname, join, resolve } from 'node:path'
 import { renderCompatibilityBenchmark, runCompatibilityBenchmark } from './compatibility-benchmark.js'
 import { assessCompatibilityChange } from './compatibility.js'
 import { probeDshLoad, probeDshLoadMatrix, renderDshLoadMatrix, renderDshLoadProbe } from './dsh-probe.js'
+import { renderDshPluginReview, reviewDshPlugin } from './dsh-review.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { createDshCaseReport, renderDshCase } from './dsh-case.js'
 import { createDoctorReport, renderDoctorReport } from './doctor.js'
@@ -302,6 +303,18 @@ Usage:
 The probe is bounded and isolated. It is a compatibility/load check, not a
 semantic safety review or a substitute for dependency monitoring.
 `,
+    review: `Upstream Radar — review one exact published DSH plugin in one command
+
+Usage:
+  upstream-radar review dsh-plugin [npm:]<package>@<exact-version>
+    --dsh-version <v1>,<v2>,... [--registry <https-url>] [--timeout <seconds>] [--json]
+
+This combines exact npm artifact/dependency inspection with a bounded DSH load
+matrix. It packs with lifecycle scripts disabled, uses a temporary profile for
+each requested DSH version, and prints one result that an author can act on.
+It does not execute plugin code or business actions and does not call an LLM.
+The default command reports findings without turning them into an extra gate.
+`,
     demo: `Upstream Radar — show the exact-path-to-DSH handoff without side effects
 
 Usage:
@@ -483,6 +496,7 @@ Usage:
   upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
+  upstream-radar review dsh-plugin [npm:]<package>@<exact-version> --dsh-version <v1>,<v2>,... [--json]
   upstream-radar demo [--json]
   upstream-radar case dsh-web-ui [--json]
   upstream-radar quickstart [directory] [--json]
@@ -513,6 +527,7 @@ Commands:
   graph    read a lockfile into the canonical dependency graph without installing packages
   profile-check  check a DSH profile's lockfile and patch rows without starting DSH
   probe    run a bounded DSH bundle-load check or version matrix in disposable profiles
+  review   combine exact npm dependency review and DSH load compatibility in one command
   demo     show the exact-path-to-DSH handoff without network, DSH, or plugin installation
   case     replay a real DSH profile failure and its repair without side effects
   quickstart choose the smallest first-use path without changing the environment
@@ -1076,6 +1091,50 @@ async function runProbe(args: readonly string[]): Promise<number> {
   })
   process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDshLoadMatrix(report))
   return report.result === 'compatible' ? 0 : report.result === 'incompatible' ? 2 : 1
+}
+
+async function runDshPluginReview(args: readonly string[]): Promise<number> {
+  if (args[0] !== 'dsh-plugin') throw new Error('review requires dsh-plugin')
+  const target = args[1]
+  if (target === undefined || target.startsWith('-')) throw new Error('review dsh-plugin requires an exact npm package')
+  const dshVersions: string[] = []
+  let registry: string | undefined
+  let timeoutSeconds = 120
+  let json = false
+  for (let index = 2; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === '--json') {
+      json = true
+    } else if (argument === '--dsh-version' || argument === '--registry' || argument === '--timeout') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
+      if (argument === '--dsh-version') {
+        dshVersions.push(...value.split(',').map(item => item.trim()).filter(item => item !== ''))
+      } else if (argument === '--registry') {
+        registry = value
+      } else {
+        const parsed = Number(value)
+        if (!Number.isSafeInteger(parsed) || parsed < 30 || parsed > 600) {
+          throw new Error('--timeout must be an integer between 30 and 600 seconds')
+        }
+        timeoutSeconds = parsed
+      }
+      index += 1
+    } else {
+      throw new Error(`unknown option for review dsh-plugin: ${argument}`)
+    }
+  }
+  if (dshVersions.length < 2) throw new Error('review dsh-plugin requires at least two exact DSH versions in --dsh-version')
+  const report = await reviewDshPlugin(target, {
+    dshVersions,
+    ...(registry === undefined ? {} : { registry }),
+    timeoutMs: timeoutSeconds * 1_000,
+  })
+  process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDshPluginReview(report))
+  // This command is intentionally report-first: a review result is useful even
+  // when it says review, block, incompatible, or unknown. CI callers can gate
+  // on the JSON status without hiding the evidence from the author.
+  return 0
 }
 
 async function fileExists(path: string): Promise<boolean> {
@@ -1920,6 +1979,7 @@ async function main(args: readonly string[]): Promise<number> {
   if (command === 'graph') return runGraph(args.slice(1))
   if (command === 'profile-check') return runDshProfileCheck(args.slice(1))
   if (command === 'probe') return runProbe(args.slice(1))
+  if (command === 'review') return runDshPluginReview(args.slice(1))
   if (command === 'demo') return runDemo(args.slice(1))
   if (command === 'case') return runDshCase(args.slice(1))
   if (command === 'observe') return runObserve(args.slice(1))

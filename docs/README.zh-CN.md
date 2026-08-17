@@ -650,6 +650,16 @@ npx --yes upstream-radar@0.33.12 inspect dsh-feishu-bot@0.15.4 --deep
 同一个精确 tarball 在 DSH `0.1.0-rc.6` 和 `0.1.0-rc.7` 的一次性 profile
 中都能登记并加载。完整命令和边界见[真实兼容性 probe](../examples/dsh/reports/dsh-feishu-bot-0.15.4-probe.md)。
 
+如果不想分别执行 `inspect`、打包和 `probe`，可以用一个命令完成一次 DSH 插件审查：
+
+```bash
+pnpm dlx --package=upstream-radar@0.33.12 upstream-radar review dsh-plugin \
+  dsh-cloudflare-browser-run@0.1.1 \
+  --dsh-version 0.1.0-rc.6,0.1.0-rc.7
+```
+
+它会使用同一个精确发布物，同时输出依赖漏洞、覆盖情况和每个 DSH 版本的加载结果。默认只展示结果，不额外设置失败门禁；不会运行 lifecycle script、插件业务代码或模型。
+
 ## 先看一个真实事件
 
 同一个插件里安装了两个 `parser` 版本，而公告只影响其中一个时，Radar 会报告真正命中的路径：
