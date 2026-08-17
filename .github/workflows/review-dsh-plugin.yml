@@ -39,24 +39,47 @@ jobs:
           RADAR_DSH_VERSIONS: ${{ inputs.dsh_versions }}
           RADAR_INSPECT_VERDICT: ${{ steps.radar.outputs.inspect-verdict }}
           RADAR_PROBE_RESULT: ${{ steps.radar.outputs.probe-result }}
+          RADAR_INSPECT_REPORT: ${{ runner.temp }}/upstream-radar/inspect-report.json
+          RADAR_PROBE_REPORT: ${{ runner.temp }}/upstream-radar-dsh-probe/report.json
         shell: bash
         run: |
           node - <<'NODE' >> "$GITHUB_STEP_SUMMARY"
+          const { existsSync, readFileSync } = require('node:fs')
+          const readJson = path => {
+            if (!existsSync(path)) return undefined
+            try { return JSON.parse(readFileSync(path, 'utf8')) } catch { return undefined }
+          }
+          const inline = value => String(value ?? 'unknown').replace(/[\`\r\n]/g, ' ').slice(0, 240)
           const plugin = process.env.RADAR_PLUGIN
           const versions = process.env.RADAR_DSH_VERSIONS
           const inspect = process.env.RADAR_INSPECT_VERDICT || 'unknown'
           const probe = process.env.RADAR_PROBE_RESULT || 'unknown'
-          process.stdout.write([
+          const inspectReport = readJson(process.env.RADAR_INSPECT_REPORT)
+          const probeReport = readJson(process.env.RADAR_PROBE_REPORT)
+          const lines = [
             '## Upstream Radar — DSH plugin review',
             '',
             `- Plugin: \`${plugin}\``,
             `- DSH versions: \`${versions}\``,
             `- Artifact/dependency review: \`${inspect}\``,
             `- Bundle-load matrix: \`${probe}\``,
-            '',
-            'The load result only says whether DSH registered and loaded the bundle. It is not a security certificate or a business-action test.',
-            '',
-          ].join('\n'))
+          ]
+          if (inspectReport !== undefined) {
+            const vulnerabilities = inspectReport.evidence?.npm?.dependencyAudit?.vulnerabilities?.total ?? 'unknown'
+            const findings = inspectReport.findings ?? []
+            lines.push(`- Risk: \`${inline(inspectReport.riskVerdict)}\``, `- Coverage: \`${inline(inspectReport.coverageVerdict)}\``, `- Known vulnerabilities: \`${inline(vulnerabilities)}\``)
+            if (findings.length === 0) lines.push('- Findings: none')
+            else {
+              lines.push('- Findings:')
+              for (const finding of findings.slice(0, 8)) lines.push(`  - **${inline(finding.code)}**: ${inline(finding.detail ?? finding.summary)}`)
+            }
+          }
+          if (probeReport !== undefined) {
+            lines.push(`- Matrix summary: \`${inline(probeReport.result)}\` (${probeReport.summary?.compatible ?? 0}/${probeReport.summary?.total ?? 0} versions loaded)`)
+            for (const report of probeReport.reports ?? []) lines.push(`  - DSH \`${inline(report.dshVersion)}\`: \`${inline(report.result)}\``)
+          }
+          lines.push('', 'The load result only says whether DSH registered and loaded the bundle. It is not a security certificate or a business-action test.', '')
+          process.stdout.write(lines.join('\n'))
           NODE
 
       - name: Keep the machine-readable reports
