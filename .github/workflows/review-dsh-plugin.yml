@@ -54,8 +54,8 @@ jobs:
           const versions = process.env.RADAR_DSH_VERSIONS
           const inspect = process.env.RADAR_INSPECT_VERDICT || 'unknown'
           const probe = process.env.RADAR_PROBE_RESULT || 'unknown'
-          const inspectReport = readJson(process.env.RADAR_INSPECT_REPORT)
-          const probeReport = readJson(process.env.RADAR_PROBE_REPORT)
+            const inspectReport = readJson(process.env.RADAR_INSPECT_REPORT)
+            const probeReport = readJson(process.env.RADAR_PROBE_REPORT)
           const lines = [
             '## Upstream Radar — DSH plugin review',
             '',
@@ -66,8 +66,9 @@ jobs:
           ]
           if (inspectReport !== undefined) {
             const vulnerabilities = inspectReport.evidence?.npm?.dependencyAudit?.vulnerabilities?.total ?? 'unknown'
+            const installScripts = inspectReport.evidence?.npm?.dependencyAudit?.installScriptPackages
             const findings = inspectReport.findings ?? []
-            lines.push(`- Risk: \`${inline(inspectReport.riskVerdict)}\``, `- Coverage: \`${inline(inspectReport.coverageVerdict)}\``, `- Known vulnerabilities: \`${inline(vulnerabilities)}\``)
+            lines.push(`- Risk: \`${inline(inspectReport.riskVerdict)}\``, `- Coverage: \`${inline(inspectReport.coverageVerdict)}\``, `- Known vulnerabilities: \`${inline(vulnerabilities)}\``, `- Install-time dependency scripts: \`${inline(installScripts === undefined ? 'not checked' : installScripts.length === 0 ? '0' : installScripts.join(', '))}\``)
             if (findings.length === 0) lines.push('- Findings: none')
             else {
               lines.push('- Findings:')

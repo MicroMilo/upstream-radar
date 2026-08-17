@@ -129,6 +129,10 @@ was incomplete. It is report-first by default: the author sees the evidence
 even when the result needs review. It packs with scripts disabled and does not
 execute plugin code, business actions, or an LLM.
 
+The first real negative case is [`dsh-feishu-bot@0.14.0`](examples/dsh/reports/dsh-feishu-bot-0.14.0-review-2026-08-18.md): both DSH versions load the
+bundle, but the exact graph exposes `protobufjs@7.6.5`'s install-time script.
+That is why the result is `REVIEW` instead of a misleading clean approval.
+
 Want the same result as a link anyone on your team can click? Copy the
 [one-shot DSH plugin review workflow](examples/github-actions/dsh-plugin-review-minimal.yml)
 into a repository, run it manually, and enter an exact `package@version` plus

@@ -67,6 +67,20 @@ pnpm run showcase:dsh-adoption
 ```
 
 This uses exact `@deepseek-ai/dsh@0.1.0-rc.6`, `upstream-radar` from the current package build, and three real published plugins in a disposable `DSH_HOME`: `dsh-cloudflare-browser-run@0.1.1`, `@open-agfs/dsh-agfs@0.1.9`, and `dsh-feishu-bot@0.14.0`. It packs every tarball with lifecycle scripts disabled, lets DSH establish its own host runtime, runs `setup --no-install`, confirms the generated overlay with `doctor`, performs one frozen OSV/npm/GitHub check, and then reads `radar status`. The latest run installed and monitored the Cloudflare and AGFS plugins; it recorded the Feishu bridge as blocked because DSH/pnpm stopped at the transitive `protobufjs` build script. This is exactly the kind of adoption and supply-chain boundary the product should surface, not hide. It does not start DSH, call a model, or execute plugin business actions. The checked-in [result](reports/adoption-smoke.json) is generated with `pnpm run showcase:dsh-adoption:report`.
+
+The corresponding one-command review makes the same Feishu boundary visible
+before installation:
+
+```bash
+pnpm run build && node dist/src/cli.js review dsh-plugin \
+  dsh-feishu-bot@0.14.0 \
+  --dsh-version 0.1.0-rc.6,0.1.0-rc.7
+```
+
+It reports `REVIEW`, finds `protobufjs@7.6.5`'s install-time script, and still
+shows that the exact bundle loads on both DSH versions. See the [negative
+case report](reports/dsh-feishu-bot-0.14.0-review-2026-08-18.md). This is a
+dependency/install-risk result, not a claim that the package is malicious.
 The generated inventories record the exact `@deepseek-ai/dsh@0.1.0-rc.6` executable package that owns the shared host plane. The latest snapshot contains 516 dependency nodes for each installed plugin, including 510 DSH host packages, and checks 513 exact package versions plus 190 npm release streams. That includes the DSH core and its reachable host closure even though they are not plugin dependency edges. An empty finding list remains a monitoring result, not a package safety certificate.
 
 ## Optional: real DSH handoff smoke test

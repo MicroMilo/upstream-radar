@@ -207,6 +207,7 @@ function display(value: string, maxLength = 1_024): string {
 
 export function renderDshPluginReview(report: DshPluginReviewReport): string {
   const vulnerabilities = report.inspection.evidence.npm?.dependencyAudit.vulnerabilities
+  const installScriptPackages = report.inspection.evidence.npm?.dependencyAudit.installScriptPackages
   const lines = [
     'Upstream Radar — DSH plugin review',
     `Plugin: ${display(`${report.target.name}@${report.target.version}`)}`,
@@ -214,6 +215,7 @@ export function renderDshPluginReview(report: DshPluginReviewReport): string {
     `Exact artifact: ${report.artifact.matched ? 'same bytes for inspection and DSH probe' : 'MISMATCH'}`,
     `Dependency review: ${report.inspection.verdict.toUpperCase()} (coverage ${report.inspection.coverageVerdict})`,
     `Known vulnerabilities: ${vulnerabilities === null || vulnerabilities === undefined ? 'not checked' : vulnerabilities.total}`,
+    `Install-time dependency scripts: ${installScriptPackages === undefined ? 'not checked' : installScriptPackages.length === 0 ? '0' : installScriptPackages.join(', ')}`,
     `DSH load matrix: ${report.compatibility.result.toUpperCase()} (${report.compatibility.summary.compatible}/${report.compatibility.summary.total} versions loaded)`,
   ]
   for (const item of report.compatibility.reports) {

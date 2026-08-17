@@ -6,14 +6,38 @@ import {
 } from 'node:crypto'
 import { describe, it } from 'node:test'
 import {
+  collectNpmInstallScriptPackages,
   inspectNpmPackage,
   parseNpmSpec,
   verifyIntegrity,
   verifyRegistrySignatures,
 } from '../src/npm.js'
+import type { DependencyGraph } from '../src/radar-types.js'
 import { makeTarball } from './helpers/tar.js'
 
 describe('npm artifact inspection', () => {
+  it('reports install-time scripts only for reachable exact lockfile packages', () => {
+    const graph: DependencyGraph = {
+      schema: 'upstream-radar.dependency-graph/v1alpha1',
+      rootNodeId: 'node_modules/demo-plugin',
+      nodes: [
+        { id: 'node_modules/demo-plugin', name: 'demo-plugin', version: '1.0.0' },
+        { id: 'node_modules/protobufjs', name: 'protobufjs', version: '7.6.5' },
+        { id: 'node_modules/unused', name: 'unused', version: '1.0.0' },
+      ],
+      edges: [],
+    }
+    const result = collectNpmInstallScriptPackages({
+      packages: {
+        'node_modules/demo-plugin': { version: '1.0.0', hasInstallScript: false },
+        'node_modules/protobufjs': { version: '7.6.5', hasInstallScript: true },
+        'node_modules/unused': { version: '1.0.0', hasInstallScript: true },
+        'node_modules/unreachable': { version: '9.9.9', hasInstallScript: true },
+      },
+    }, graph)
+    assert.deepEqual(result, ['protobufjs@7.6.5', 'unused@1.0.0'])
+  })
+
   it('requires an exact npm version', () => {
     assert.deepEqual(parseNpmSpec('npm:@scope/plugin@1.2.3-rc.1'), {
       name: '@scope/plugin',

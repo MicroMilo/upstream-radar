@@ -88,6 +88,8 @@ export interface NpmEvidence {
     resolutionMode?: NpmDependencyResolutionMode
     graphDigest?: string
     graph?: DependencyGraph
+    /** Exact reachable packages whose npm lock entry declares an install-time script. */
+    installScriptPackages?: string[]
     invalidSignatures: string[]
     missingSignatures: string[]
     vulnerabilities: VulnerabilitySummary | null

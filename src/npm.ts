@@ -530,6 +530,26 @@ function packageLabels(value: unknown): string[] {
   })
 }
 
+/**
+ * Return only reachable packages whose exact npm lock entry declares an
+ * install-time lifecycle script. The review never executes these scripts;
+ * this is evidence about what a normal install may run or block on.
+ */
+export function collectNpmInstallScriptPackages(lockfile: unknown, graph: DependencyGraph): string[] {
+  const packages = asRecord(asRecord(lockfile)?.packages)
+  if (packages === undefined) return []
+  const nodes = new Map(graph.nodes.map(node => [node.id, node]))
+  const labels: string[] = []
+  for (const [path, rawItem] of Object.entries(packages)) {
+    if (!nodes.has(path)) continue
+    const item = asRecord(rawItem)
+    if (item?.hasInstallScript !== true) continue
+    const node = nodes.get(path)
+    if (node !== undefined) labels.push(`${node.name}@${node.version}`)
+  }
+  return [...new Set(labels)].sort((left, right) => left.localeCompare(right)).slice(0, 100)
+}
+
 function vulnerabilitySummary(audit: unknown): VulnerabilitySummary | null {
   const root = asRecord(audit)
   const metadata = asRecord(root?.metadata)
@@ -662,6 +682,7 @@ async function deepAuditNpmPackage(
 
     const lockfile = JSON.parse(await readFile(join(root, 'package-lock.json'), 'utf8')) as unknown
     const dependencyGraph = parseNpmLockGraph(lockfile, spec)
+    const installScriptPackages = collectNpmInstallScriptPackages(lockfile, dependencyGraph)
     const graphDigest = dependencyGraph.digest
     if (graphDigest === undefined) throw new Error('resolved dependency graph has no digest')
     let signatures = await runProcess(npm, [
@@ -692,6 +713,7 @@ async function deepAuditNpmPackage(
           resolutionMode,
           graphDigest,
           graph: dependencyGraph,
+          installScriptPackages,
           invalidSignatures,
           missingSignatures,
           vulnerabilities: null,
@@ -710,6 +732,7 @@ async function deepAuditNpmPackage(
           resolutionMode,
           graphDigest,
           graph: dependencyGraph,
+          installScriptPackages,
           invalidSignatures,
           missingSignatures,
           vulnerabilities: null,
@@ -727,6 +750,7 @@ async function deepAuditNpmPackage(
           resolutionMode,
           graphDigest,
           graph: dependencyGraph,
+          installScriptPackages,
           invalidSignatures,
           missingSignatures,
           vulnerabilities: null,
@@ -735,7 +759,10 @@ async function deepAuditNpmPackage(
         provenance,
       }
     }
-    const status = invalidSignatures.length > 0 || missingSignatures.length > 0 || (vulnerabilities?.total ?? 0) > 0
+    const status = installScriptPackages.length > 0
+      || invalidSignatures.length > 0
+      || missingSignatures.length > 0
+      || (vulnerabilities?.total ?? 0) > 0
       ? 'findings' as const
       : signatures.code === 0 ? 'verified' as const : 'findings' as const
 
@@ -746,6 +773,7 @@ async function deepAuditNpmPackage(
         resolutionMode,
         graphDigest,
         graph: dependencyGraph,
+        installScriptPackages,
         invalidSignatures,
         missingSignatures,
         vulnerabilities,
@@ -899,6 +927,18 @@ function addNpmEvidenceFindings(evidence: NpmEvidence, findings: Finding[]): voi
       'Resolved dependencies include unsigned packages',
       'At least one dependency has no verifiable registry signature.',
       { packages: evidence.dependencyAudit.missingSignatures },
+    ))
+  }
+
+  const installScriptPackages = evidence.dependencyAudit.installScriptPackages ?? []
+  if (installScriptPackages.length > 0) {
+    findings.push(makeFinding(
+      'dependency-install-script-present',
+      'high',
+      'Resolved dependency graph contains install-time scripts',
+      'The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.',
+      { packages: installScriptPackages },
+      'Review each listed package and its published artifact; prefer a version with no install-time script, or require explicit approval before allowing the DSH install path to run it.',
     ))
   }
 
