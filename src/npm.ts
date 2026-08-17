@@ -453,6 +453,14 @@ function parseJsonOutput(output: string): unknown {
   }
 }
 
+function processFailureDetail(stderr: string): string | undefined {
+  const detail = stderr
+    .replace(/[\u0000-\u001f\u007f-\u009f]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return detail === '' ? undefined : detail.slice(0, 2_048)
+}
+
 export interface NpmDependencyGraphOptions {
   registry?: string
   timeoutMs?: number
@@ -633,7 +641,8 @@ async function deepAuditNpmPackage(
         : install.outputExceeded
           ? 'npm dependency resolution exceeded output budget'
           : `npm dependency resolution failed with exit code ${install.code}`
-      return failed(reason)
+      const detail = processFailureDetail(install.stderr)
+      return failed(detail === undefined ? reason : `${reason}: ${detail}`)
     }
 
     const lockfile = JSON.parse(await readFile(join(root, 'package-lock.json'), 'utf8')) as unknown
