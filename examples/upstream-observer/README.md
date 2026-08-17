@@ -42,7 +42,9 @@ The first run creates a baseline. Later runs compare the source commit, npm
 version/integrity, package manifest, and the optional lockfile graph. A change
 limited to README/docs/tests advances the observation point without creating a
 DSH task. A runtime, DSH bundle, package entry, lockfile, dependency, or npm
-integrity change creates one.
+integrity change creates one. The scheduled workflow also uses
+`--retry-pending`, so a task left behind by a temporarily unavailable Agent is
+retried on the next run without needing a new upstream commit.
 
 At the time this example was recorded, the target resolved to 242 dependency
 nodes and 380 edges. Radar also reported that the source manifest is named

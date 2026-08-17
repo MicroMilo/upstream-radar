@@ -51,6 +51,7 @@ jobs:
             examples/upstream-observer/targets.yml
             --state observations.json
             --report "$OBSERVER_REPORT"
+            --retry-pending
             --json
           )
           if [[ -n "${ISSUE_LOCATOR_LLM_BASE_URL:-}" && -n "${ISSUE_LOCATOR_LLM_API_KEY:-}" && -n "${ISSUE_LOCATOR_LLM_MODEL:-}" ]]; then

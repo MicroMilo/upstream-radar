@@ -111,6 +111,7 @@ describe('reusable GitHub Action', () => {
     assert.match(observerWorkflow, /contents: write/)
     assert.match(observerWorkflow, /observe \\\n\s+examples\/upstream-observer\/targets\.yml/)
     assert.match(observerWorkflow, /observations\.json/)
+    assert.match(observerWorkflow, /--retry-pending/)
     assert.match(observerWorkflow, /git diff --cached --quiet/)
     assert.match(observerWorkflow, /secrets\.ISSUE_LOCATOR_LLM_BASE_URL/)
     assert.match(observerWorkflow, /secrets\.ISSUE_LOCATOR_LLM_API_KEY/)

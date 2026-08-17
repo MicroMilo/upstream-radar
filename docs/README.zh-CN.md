@@ -296,6 +296,8 @@ node dist/src/cli.js observe \
 只改 README、文档或测试时，Radar 只推进观察点，不唤醒 Agent。运行时代码、
 DSH bundle、入口文件、依赖图、npm 版本或 npm integrity 变化时，才生成 old → new
 任务。如果没有配置 Agent，任务会留在 `observations.json`，不会安装或执行被观察的插件。
+定时 workflow 会使用 `--retry-pending`：如果 Agent 暂时不可用，任务会在下一次运行
+自动重试，不需要上游再次提交新 commit。
 
 如果你还没有配置 DSH wrapper，可以直接复用现有的 issue-locator/OpenAI 兼容 `.env`
 文件作为模型入口：
