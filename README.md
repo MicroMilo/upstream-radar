@@ -291,6 +291,13 @@ The checked-in workflow is a dogfood workflow for this repository: it checks out
 and builds Radar before running the observer. It persists only the observation
 point. A quiet run does not create a daily commit.
 
+The workflow also supports three optional repository secrets—
+`ISSUE_LOCATOR_LLM_BASE_URL`, `ISSUE_LOCATOR_LLM_API_KEY`, and
+`ISSUE_LOCATOR_LLM_MODEL`. When all three exist, the job sends meaningful tasks
+to the issue-locator/OpenAI-compatible model. When they do not exist, static
+upstream observation still runs and the job does not pretend that model analysis
+was performed.
+
 ### The DSH Agent boundary
 
 The observer accepts an explicit executable through `--dsh-agent-command`. It

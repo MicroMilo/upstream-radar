@@ -38,14 +38,34 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           OBSERVER_REPORT: ${{ runner.temp }}/upstream-radar-observer.md
           OBSERVER_JSON: ${{ runner.temp }}/upstream-radar-observer.json
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
         shell: bash
         run: |
           set +e
-          node dist/src/cli.js observe \
-            examples/upstream-observer/targets.yml \
-            --state observations.json \
-            --report "$OBSERVER_REPORT" \
-            --json | tee "$OBSERVER_JSON"
+          llm_env_file="$RUNNER_TEMP/issue-locator.env"
+          trap 'rm -f "$llm_env_file"' EXIT
+          observe_args=(
+            node dist/src/cli.js observe \
+            examples/upstream-observer/targets.yml
+            --state observations.json
+            --report "$OBSERVER_REPORT"
+            --json
+          )
+          if [[ -n "${ISSUE_LOCATOR_LLM_BASE_URL:-}" && -n "${ISSUE_LOCATOR_LLM_API_KEY:-}" && -n "${ISSUE_LOCATOR_LLM_MODEL:-}" ]]; then
+            umask 077
+            {
+              printf 'ISSUE_LOCATOR_LLM_BASE_URL=%s\n' "$ISSUE_LOCATOR_LLM_BASE_URL"
+              printf 'ISSUE_LOCATOR_LLM_API_KEY=%s\n' "$ISSUE_LOCATOR_LLM_API_KEY"
+              printf 'ISSUE_LOCATOR_LLM_MODEL=%s\n' "$ISSUE_LOCATOR_LLM_MODEL"
+            } > "$llm_env_file"
+            observe_args+=(--llm-env-file "$llm_env_file")
+            echo 'Optional issue-locator model: configured'
+          else
+            echo 'Optional issue-locator model: not configured; static observation will still run'
+          fi
+          "${observe_args[@]}" | tee "$OBSERVER_JSON"
           observer_exit=${PIPESTATUS[0]}
           set -e
           if [[ -n "${GITHUB_STEP_SUMMARY:-}" && -s "$OBSERVER_REPORT" ]]; then

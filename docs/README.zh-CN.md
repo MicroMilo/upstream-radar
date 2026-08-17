@@ -268,6 +268,11 @@ Radar 只读取这次调用需要的接口地址、API key 和模型名，不会
 仓库里这份 workflow 是 Radar 自己的 dogfood 示例：它先 checkout 并构建 Radar，
 再执行观察器。它只提交观察点；没有变化时不会每天制造一条 commit。
 
+这个 workflow 支持三个可选的 repository secret：
+`ISSUE_LOCATOR_LLM_BASE_URL`、`ISSUE_LOCATOR_LLM_API_KEY` 和
+`ISSUE_LOCATOR_LLM_MODEL`。三个值都有时，重要变化会交给 issue-locator/OpenAI 兼容
+模型；没有配置时仍然执行静态上游观察，并明确不声称完成了模型分析。
+
 ### DSH Agent 接口
 
 观察器通过 `--dsh-agent-command` 接收一个明确的可执行文件：把一条有界的、只读的
