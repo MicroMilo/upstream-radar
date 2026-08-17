@@ -22,6 +22,8 @@ const MAX_AGENT_OUTPUT_BYTES = 2 * 1024 * 1024
 const MAX_LLM_ENV_FILE_BYTES = 64 * 1024
 const DEFAULT_AGENT_TIMEOUT_MS = 120_000
 const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org/'
+const OBSERVER_REQUEST_ATTEMPTS = 2
+const OBSERVER_RETRY_DELAY_MS = 150
 const EXACT_NPM_PACKAGE_NAME = /^(?:@[^/\s]+\/[^/\s]+|[^/@\s]+)$/
 const SAFE_TARGET_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/
 
@@ -252,6 +254,17 @@ function optionalBoundedString(value: unknown, label: string, max = 4_096): stri
 function safeError(error: unknown, max = 2_048): string {
   const message = error instanceof Error ? error.message : String(error)
   return message.replace(/[\u0000-\u001f\u007f-\u009f]/g, '?').slice(0, max)
+}
+
+function isRetryableObserverRequestError(error: unknown): boolean {
+  if (error instanceof DOMException && (error.name === 'AbortError' || error.name === 'TimeoutError')) return true
+  if (error instanceof Error && (error.name === 'AbortError' || error.name === 'TimeoutError')) return true
+  if (error instanceof TypeError && /fetch failed|network|socket|connect/i.test(error.message)) return true
+  return false
+}
+
+async function waitForObserverRetry(): Promise<void> {
+  await new Promise<void>(resolve => setTimeout(resolve, OBSERVER_RETRY_DELAY_MS))
 }
 
 function hash(value: string): string {
@@ -756,11 +769,31 @@ export class UpstreamObserverClient implements ObserverSource {
     }
   }
 
+  private async fetchWithRetry(input: string | URL, init: Omit<RequestInit, 'signal'>): Promise<Response> {
+    let lastError: unknown
+    for (let attempt = 1; attempt <= OBSERVER_REQUEST_ATTEMPTS; attempt += 1) {
+      try {
+        const response = await this.fetcher(input, {
+          ...init,
+          signal: AbortSignal.timeout(this.timeoutMs),
+        })
+        if (response.ok || attempt === OBSERVER_REQUEST_ATTEMPTS) return response
+        if (response.status < 500 || response.status > 599) return response
+        await response.body?.cancel()
+        await waitForObserverRetry()
+      } catch (error: unknown) {
+        lastError = error
+        if (!isRetryableObserverRequestError(error) || attempt === OBSERVER_REQUEST_ATTEMPTS) throw error
+        await waitForObserverRetry()
+      }
+    }
+    throw lastError instanceof Error ? lastError : new Error('observer request failed')
+  }
+
   private async fetchGitHubJson(path: string): Promise<unknown> {
-    const response = await this.fetcher(`https://api.github.com/${path}`, {
+    const response = await this.fetchWithRetry(`https://api.github.com/${path}`, {
       headers: this.githubHeaders(),
       redirect: 'error',
-      signal: AbortSignal.timeout(this.timeoutMs),
     })
     if (response.status === 401 || response.status === 403) {
       throw new Error(`GitHub API returned HTTP ${response.status}; set GITHUB_TOKEN for authenticated repository metadata and rate limits`)
@@ -770,10 +803,9 @@ export class UpstreamObserverClient implements ObserverSource {
 
   private async fetchRaw(repository: GitHubRepository, ref: string, path: string): Promise<{ text: string; url: string }> {
     const url = `https://raw.githubusercontent.com/${githubPath(repository, ref)}/${sourcePath(path)}`
-    const response = await this.fetcher(url, {
+    const response = await this.fetchWithRetry(url, {
       headers: { accept: 'text/plain', 'user-agent': 'upstream-radar/upstream-observer' },
       redirect: 'error',
-      signal: AbortSignal.timeout(this.timeoutMs),
     })
     if (response.ok) return { text: await boundedBody(response, MAX_SOURCE_FILE_BYTES, `GitHub raw file ${path}`), url }
     if (this.githubToken === undefined || (response.status !== 403 && response.status !== 429)) {
@@ -792,10 +824,9 @@ export class UpstreamObserverClient implements ObserverSource {
 
   private async fetchNpmObservation(name: string): Promise<ObserverPackageObservation | undefined> {
     const url = new URL(encodeURIComponent(name), this.registry)
-    const response = await this.fetcher(url, {
+    const response = await this.fetchWithRetry(url, {
       headers: { accept: 'application/vnd.npm.install-v1+json, application/json', 'user-agent': 'upstream-radar/upstream-observer' },
       redirect: 'follow',
-      signal: AbortSignal.timeout(this.timeoutMs),
     })
     if (response.status === 404) return undefined
     const root = asRecord(await boundedJson(response, MAX_API_RESPONSE_BYTES, 'npm registry'))

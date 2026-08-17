@@ -73,6 +73,25 @@ function snapshot(commit: string, version: string, digest: string): ObserverSnap
 }
 
 describe('upstream observer', () => {
+  it('retries one transient upstream request failure before reporting an error', async () => {
+    let attempts = 0
+    const source = new UpstreamObserverClient({
+      fetch: async () => {
+        attempts += 1
+        if (attempts === 1) {
+          const error = new Error('request timed out')
+          error.name = 'TimeoutError'
+          throw error
+        }
+        return new Response(JSON.stringify({ files: [{ filename: 'package.json' }] }), { status: 200 })
+      },
+    })
+    const result = await source.compare('acme/dsh-demo', 'commit-1', 'commit-2')
+    assert.equal(attempts, 2)
+    assert.equal(result.comparison, 'complete')
+    assert.deepEqual(result.changedFiles, ['package.json'])
+  })
+
   it('falls back to the after-commit file list when GitHub compare is unavailable', async () => {
     const source = new UpstreamObserverClient({
       fetch: async input => {

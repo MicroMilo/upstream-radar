@@ -2,6 +2,12 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.33.3] - 2026-08-18
+
+### Reliability
+
+- Retry one transient GitHub, raw-file, or npm registry request failure so a single upstream timeout does not hide a real DSH plugin change; permanent errors remain visible.
+
 ## [0.33.2] - 2026-08-18
 
 ### Usability

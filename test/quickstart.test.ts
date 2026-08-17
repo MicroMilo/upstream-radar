@@ -12,7 +12,7 @@ describe('quickstart guidance', () => {
       const report = await createQuickstartReport(root, { dshHome: join(root, 'no-dsh') })
       assert.equal(report.mode, 'demo')
       assert.equal(report.steps.length, 1)
-      assert.match(report.steps[0]?.command ?? '', / upstream-radar@0\.33\.2 demo$/)
+      assert.match(report.steps[0]?.command ?? '', / upstream-radar@0\.33\.3 demo$/)
       assert.match(renderQuickstartReport(report), /only inspected local files/)
     } finally {
       await rm(root, { recursive: true, force: true })
