@@ -2,6 +2,12 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.33.10] - 2026-08-18
+
+### Adoption
+
+- Add a copy-paste GitHub Actions workflow for observing one public repository with the published npm CLI, without checking out or building Radar; it persists the observation point and only runs optional model analysis when all configured secrets are present.
+
 ## [0.33.9] - 2026-08-18
 
 ### Usability
