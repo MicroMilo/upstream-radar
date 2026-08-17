@@ -293,7 +293,39 @@ targets:
     assert.equal(result.report.agent.configured, false)
     assert.equal(result.report.agent.skipped, 1)
     assert.equal(result.state.pendingTasks.length, 1)
+    assert.equal(result.report.pendingTaskDetails.length, 1)
+    assert.equal(result.report.pendingTaskDetails[0]?.beforeCommit, 'commit-1')
+    assert.equal(result.report.pendingTaskDetails[0]?.afterCommit, 'commit-2')
+    assert.equal(result.report.pendingTaskDetails[0]?.sourceManifestBefore, 'dsh-demo@1.0.0')
+    assert.equal(result.report.pendingTaskDetails[0]?.sourceManifestAfter, 'dsh-demo@1.1.0')
+    assert.match(result.report.pendingTaskDetails[0]?.reasons.join('\n') ?? '', /runtime source changed/)
     assert.doesNotThrow(() => parseObservationState(result.state))
+  })
+
+  it('turns source and published version drift into an author-facing task', async () => {
+    const before = snapshot('commit-1', '1.0.0', 'graph-v1')
+    const after = snapshot('commit-2', '1.0.0', 'graph-v1')
+    after.package = { ...after.package!, version: '2.0.0' }
+    const source: ObserverSource = {
+      observe: async () => after,
+      compare: async (repository, beforeCommit, afterCommit) => ({
+        beforeCommit,
+        afterCommit,
+        comparison: 'complete',
+        changedFiles: ['README.md'],
+        runtimeFiles: [],
+        nonRuntimeFiles: ['README.md'],
+      }),
+    }
+    const result = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, {
+      schema: OBSERVATION_STATE_SCHEMA,
+      targets: { [target.id]: before },
+      pendingTasks: [],
+    }, { source, now: new Date('2026-08-17T04:30:00.000Z') })
+    assert.equal(result.report.changes.length, 1)
+    assert.match(result.report.changes[0]?.reasons.join('\n') ?? '', /source\/published version drift/)
+    assert.equal(result.report.pendingTaskDetails[0]?.sourceManifestAfter, 'dsh-demo@1.0.0')
+    assert.equal(result.report.pendingTaskDetails[0]?.publishedPackageAfter, 'dsh-demo@2.0.0')
   })
 
   it('renders an explicit read-only contract for the DSH Agent', () => {
@@ -408,6 +440,9 @@ targets:
       },
     })
     assert.match(failedReport, /Agent failure .*HTTP 404/)
+    assert.match(failedReport, /Pending task details/)
+    assert.match(failedReport, /Source: commit-1 → commit-2/)
+    assert.match(failedReport, /--retry-pending/)
 
     const requestBodies: string[] = []
     const server = createServer((request, response) => {

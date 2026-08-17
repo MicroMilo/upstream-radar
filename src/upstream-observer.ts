@@ -178,6 +178,28 @@ export interface ObserverAgentInvocation {
   error?: string
 }
 
+export interface ObserverPendingTaskSummary {
+  id: string
+  targetId: string
+  ecosystem: ObserverEcosystem
+  repository: string
+  beforeCommit: string
+  afterCommit: string
+  sourceManifestBefore: string
+  sourceManifestAfter: string
+  publishedPackageBefore?: string
+  publishedPackageAfter?: string
+  graphBefore?: string
+  graphAfter?: string
+  changedFiles: string[]
+  runtimeFiles: string[]
+  reasons: string[]
+  addedDependencies: string[]
+  removedDependencies: string[]
+  addedEdges: string[]
+  removedEdges: string[]
+}
+
 export interface ObserverAgentCommandOptions {
   /** Executable only; the observer never invokes a shell. */
   command: string
@@ -200,6 +222,7 @@ export interface ObserverReport {
   baselineTargets: string[]
   changes: ObserverChange[]
   pendingTasks: string[]
+  pendingTaskDetails: ObserverPendingTaskSummary[]
   agent: {
     configured: boolean
     attempted: number
@@ -1108,6 +1131,12 @@ function meaningfulChange(sourceChange: ObserverSourceChange, before: ObserverSn
   if (packageChanged(before, after)) reasons.push('npm package version or integrity changed')
   if (graphChanged(before, after)) reasons.push('dependency graph changed or became unavailable')
   if (manifest.fields.length > 0) reasons.push(`package manifest changed: ${manifest.fields.join(', ')}`)
+  if (before.manifest.name !== after.manifest.name || before.manifest.version !== after.manifest.version) {
+    reasons.push(`source manifest identity changed: ${before.manifest.name}@${before.manifest.version} → ${after.manifest.name}@${after.manifest.version}`)
+  }
+  if (after.package !== undefined && after.manifest.version !== after.package.version) {
+    reasons.push(`source/published version drift: source ${after.manifest.name}@${after.manifest.version}, npm ${after.package.name}@${after.package.version}`)
+  }
   if (sourceChange.beforeCommit !== sourceChange.afterCommit) {
     if (sourceChange.comparison === 'unavailable') reasons.push('source commit changed and file comparison was unavailable')
     else if (sourceChange.runtimeFiles.length > 0) reasons.push(`runtime source changed: ${sourceChange.runtimeFiles.slice(0, 8).join(', ')}`)
@@ -1533,6 +1562,7 @@ export async function runObserver(
     baselineTargets,
     changes,
     pendingTasks: pendingTasks.map(task => task.id),
+    pendingTaskDetails: pendingTasks.map(summarizePendingTask),
     agent: {
       configured: options.agent !== undefined,
       attempted: invocations.length,
@@ -1555,6 +1585,31 @@ function displayPackage(value: ObserverPackageObservation | undefined): string {
 
 function displayGraph(value: ObserverSnapshotSummary['graph'] | undefined): string {
   return value === undefined ? 'not observed' : `${value.nodes} nodes, ${value.edges} edges${value.unresolved === 0 ? '' : `, ${value.unresolved} unresolved`}`
+}
+
+function summarizePendingTask(task: UpstreamChangeTask): ObserverPendingTaskSummary {
+  const change = task.change
+  return {
+    id: task.id,
+    targetId: change.targetId,
+    ecosystem: change.ecosystem,
+    repository: change.repository,
+    beforeCommit: change.source.beforeCommit,
+    afterCommit: change.source.afterCommit,
+    sourceManifestBefore: `${change.previous.manifest.name}@${change.previous.manifest.version}`,
+    sourceManifestAfter: `${change.current.manifest.name}@${change.current.manifest.version}`,
+    ...(change.previous.package === undefined ? {} : { publishedPackageBefore: `${change.previous.package.name}@${change.previous.package.version}` }),
+    ...(change.current.package === undefined ? {} : { publishedPackageAfter: `${change.current.package.name}@${change.current.package.version}` }),
+    ...(change.previous.graph === undefined ? {} : { graphBefore: displayGraph(change.previous.graph) }),
+    ...(change.current.graph === undefined ? {} : { graphAfter: displayGraph(change.current.graph) }),
+    changedFiles: change.source.changedFiles.slice(0, 24),
+    runtimeFiles: change.source.runtimeFiles.slice(0, 24),
+    reasons: change.reasons.slice(0, 24),
+    addedDependencies: (change.graph?.addedNodes ?? []).slice(0, 24),
+    removedDependencies: (change.graph?.removedNodes ?? []).slice(0, 24),
+    addedEdges: (change.graph?.addedEdges ?? []).slice(0, 24),
+    removedEdges: (change.graph?.removedEdges ?? []).slice(0, 24),
+  }
 }
 
 export function renderObserverReport(report: ObserverReport): string {
@@ -1600,6 +1655,32 @@ export function renderObserverReport(report: ObserverReport): string {
     }
     if (change.taskId !== undefined) lines.push(`DSH task: ${change.taskId}`)
     lines.push('')
+  }
+  if (report.pendingTaskDetails.length > 0) {
+    lines.push('## Pending task details')
+    lines.push('')
+    for (const task of report.pendingTaskDetails) {
+      lines.push(`### ${task.id} — ${task.targetId} (${task.ecosystem})`)
+      lines.push('')
+      lines.push(`Repository: ${task.repository}`)
+      lines.push(`Source: ${task.beforeCommit} → ${task.afterCommit}`)
+      lines.push(`Source manifest: ${task.sourceManifestBefore} → ${task.sourceManifestAfter}`)
+      if (task.publishedPackageBefore !== undefined || task.publishedPackageAfter !== undefined) {
+        lines.push(`Published npm: ${task.publishedPackageBefore ?? 'not observed'} → ${task.publishedPackageAfter ?? 'not observed'}`)
+      }
+      if (task.graphBefore !== undefined || task.graphAfter !== undefined) {
+        lines.push(`Graph: ${task.graphBefore ?? 'not observed'} → ${task.graphAfter ?? 'not observed'}`)
+      }
+      if (task.changedFiles.length > 0) lines.push(`Changed files: ${task.changedFiles.join(', ')}`)
+      if (task.runtimeFiles.length > 0) lines.push(`Runtime files: ${task.runtimeFiles.join(', ')}`)
+      if (task.addedDependencies.length > 0) lines.push(`Added dependencies: ${task.addedDependencies.join(', ')}`)
+      if (task.removedDependencies.length > 0) lines.push(`Removed dependencies: ${task.removedDependencies.join(', ')}`)
+      if (task.addedEdges.length > 0) lines.push(`Added dependency edges: ${task.addedEdges.join(', ')}`)
+      if (task.removedEdges.length > 0) lines.push(`Removed dependency edges: ${task.removedEdges.join(', ')}`)
+      if (task.reasons.length > 0) lines.push(`Reasons: ${task.reasons.join('; ')}`)
+      lines.push('Next: make the DSH Agent or model available, then rerun the same command with --retry-pending.')
+      lines.push('')
+    }
   }
   if (report.errors.length > 0) {
     lines.push('## Errors')

@@ -2,6 +2,13 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.33.12] - 2026-08-18
+
+### Usability
+
+- Keep a bounded summary of every pending upstream task in JSON and Markdown reports, including the source and published versions, commit range, changed runtime files, dependency edges, and the exact `--retry-pending` next step.
+- Surface source-versus-published npm version drift as an author-facing review reason instead of hiding it inside a generic runtime change.
+
 ## [0.33.11] - 2026-08-18
 
 ### Diagnostics

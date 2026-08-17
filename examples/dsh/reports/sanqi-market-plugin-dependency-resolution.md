@@ -91,6 +91,6 @@ than a code-change PR:
 - [Sanqi-normal/dsh-webui-market-plugin#5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)
 - Status at the last check: **open**, with no maintainer or bot reply yet.
 
-The issue includes the exact `upstream-radar@0.33.11` reproduction command and
+The issue includes the exact `upstream-radar@0.33.12` reproduction command and
 asks whether the intended contract is public-registry resolution or a DSH
 profile-supplied host plane.
