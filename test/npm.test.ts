@@ -20,6 +20,16 @@ describe('npm artifact inspection', () => {
       version: '1.2.3-rc.1',
       canonical: 'npm:@scope/plugin@1.2.3-rc.1',
     })
+    assert.deepEqual(parseNpmSpec('@scope/plugin@1.2.3-rc.1'), {
+      name: '@scope/plugin',
+      version: '1.2.3-rc.1',
+      canonical: 'npm:@scope/plugin@1.2.3-rc.1',
+    })
+    assert.deepEqual(parseNpmSpec('plugin@1.2.3'), {
+      name: 'plugin',
+      version: '1.2.3',
+      canonical: 'npm:plugin@1.2.3',
+    })
     assert.throws(() => parseNpmSpec('npm:plugin@latest'), /must be exact/)
     assert.throws(() => parseNpmSpec('npm:plugin@^1.0.0'), /must be exact/)
     assert.throws(() => parseNpmSpec(`npm:${'a'.repeat(215)}@1.0.0`), /exceeds 214 bytes/)

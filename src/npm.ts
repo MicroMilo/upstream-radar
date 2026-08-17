@@ -152,8 +152,7 @@ function publicUrl(input: string): string {
 }
 
 export function parseNpmSpec(input: string): ParsedNpmSpec {
-  if (!input.startsWith('npm:')) throw new Error('npm package spec must start with npm:')
-  const value = input.slice(4)
+  const value = input.startsWith('npm:') ? input.slice(4) : input
   const separator = value.lastIndexOf('@')
   if (separator <= 0) throw new Error('npm package spec must include an exact version')
   const name = value.slice(0, separator)

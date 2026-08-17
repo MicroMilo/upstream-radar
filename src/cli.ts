@@ -225,7 +225,7 @@ are recorded as bounded evidence.
     inspect: `Upstream Radar — inspect one exact npm artifact before installation
 
 Usage:
-  upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json]
+  upstream-radar inspect [npm:]<package>@<exact-version> [--deep] [--json]
     [--registry <https-url>] [--fail-on <warn|review|block|never>]
 
 --deep downloads the exact tarball, verifies npm integrity/signatures and
@@ -450,7 +450,7 @@ Usage:
   upstream-radar init --npm-lock <package-lock.json> [--root <package>@<exact-version>] [options]
   upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
-  upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
+  upstream-radar inspect [npm:]<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
   upstream-radar observe <targets.yml> [--state <observations.json>] [--report <report.md>] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending] [--json]
   upstream-radar graph <npm-lock|pnpm-lock> <lockfile> [--root <package>@<exact-version>] [--json]
   upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]

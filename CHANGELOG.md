@@ -2,6 +2,12 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.33.2] - 2026-08-18
+
+### Usability
+
+- Accept the natural `package@exact-version` form in `inspect` alongside the explicit `npm:` form, while keeping one canonical report identity.
+
 ## [0.33.1] - 2026-08-18
 
 ### Fixed
