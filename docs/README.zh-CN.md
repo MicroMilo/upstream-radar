@@ -48,6 +48,7 @@ npx --yes upstream-radar@latest quickstart
 | --- | --- | --- |
 | 让在线 DSH Agent 持续跟进 | [`setup`](#安装到-dsh) | 自动刷新 profile 里的实际依赖图，只把有变化的事件交给对应项目的 Agent。 |
 | 观察 DSH 插件上游变化 | [`observe`](#观察-dsh-插件的上游变化) | 定时比较 GitHub commit、npm 发布物、manifest 和可选锁文件依赖图，只把重要变化交给 Agent。 |
+| 30 秒开始监控一个公开插件 | [最小 GitHub Actions workflow](../examples/github-actions/upstream-observer-minimal.yml) | 复制一个文件、改仓库地址，每天得到报告，不需要安装或构建 Radar。 |
 | 收到第一条告警后知道先做什么 | [`radar next`](#安装到-dsh) | 一个只读命令选出最高优先级事件，并指向 DSH task、已验证分析或下一轮检查。 |
 | 启动 DSH 前检查 profile | [`profile-check`](#启动-dsh-前先检查-profile) | 读取实际锁文件和 patch，提前拦住缺失 loader 包、重复 loader id 以及 release-age 回退风险。 |
 | 加一个定时 CI 门禁 | [GitHub Actions 示例](../examples/github-actions/upstream-radar.yml) | 基于审查过的配置或唯一锁文件执行冻结检查，同时输出简短 Job Summary 和机器可读 JSON。 |

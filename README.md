@@ -53,6 +53,7 @@ It looks only at the current directory and local DSH profile metadata. It recomm
 | --- | --- | --- |
 | Keep a live DSH Agent informed | [`setup`](#install-in-dsh) | A profile-aware monitor that refreshes the installed graph and routes only changed incidents to the matching Agent. |
 | Observe DSH plugin upstream changes | [`observe`](#observe-dsh-plugin-upstream-changes) | A scheduled old → new comparison of GitHub commits, npm releases, manifests, and optional lockfile graphs; only meaningful changes wake an Agent. |
+| Start monitoring one public plugin in 30 seconds | [Minimal GitHub Actions workflow](examples/github-actions/upstream-observer-minimal.yml) | Copy one file, change the repository URL, and get a daily report without installing or building Radar. |
 | Respond to the first alert | [`radar next`](#install-in-dsh) | One read-only command selects the highest-priority incident and points to the DSH task, verified analysis, or next check. |
 | Check a DSH profile before starting it | [`profile-check`](#check-a-dsh-profile-before-starting-it) | Reads the actual lockfile and patch rows and blocks missing loader packages, duplicate loader ids, and release-age rollback risk. |
 | Add a scheduled CI gate | [GitHub Actions example](examples/github-actions/upstream-radar.yml) | A frozen check from a reviewed config or one lockfile, with a concise Job Summary and a machine-readable JSON report. |
