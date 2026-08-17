@@ -252,6 +252,8 @@ OpenAI-compatible 模型，先设置
 
 我们还用 observer 重放了一条真正闭环的维护者案例：[Sanqi 修复重放](../examples/upstream-observer/reports/sanqi-maintainer-repair-live.md)。它在源码修复进入仓库、但 npm 仍未发布新版本时记录 old → new 变化并保留 pending 任务，后续发布出现时再复查精确发布物。
 
+[DSH 核心的 nested workspace 案例](../examples/dsh/reports/dsh-core-nested-workspace-2026-08-18.md)则验证了官方仓库的 `apps/cli`：observer 会从 `packagePath` 选择正确 importer，解析外部依赖，并把本地 workspace link 明确留下为未解析边，不会误把仓库根依赖当成 DSH CLI 依赖。
+
 ## 观察 DSH 插件的上游变化
 
 这是新的上游变化闭环：Radar 不在每轮都重复做一次大扫描，而是为每个

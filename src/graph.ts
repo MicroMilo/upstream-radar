@@ -12,6 +12,11 @@ interface RootPackage {
   version: string
 }
 
+export interface PnpmLockGraphOptions {
+  /** pnpm v9 importer path for a nested workspace package, such as `apps/cli`. */
+  importer?: string
+}
+
 function asRecord(value: unknown): Record<string, unknown> | undefined {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return undefined
   return value as Record<string, unknown>
@@ -498,13 +503,13 @@ function parsePnpmTopLevelDependencyMap(lines: readonly PnpmYamlLine[], section:
   return result
 }
 
-function parsePnpmRootImporter(lines: readonly PnpmYamlLine[]): PnpmEntry | undefined {
+function parsePnpmImporter(lines: readonly PnpmYamlLine[], importerPath = '.'): PnpmEntry | undefined {
   if (!pnpmTopLevelSectionExists(lines, 'importers')) return undefined
   const range = pnpmSectionRange(lines, 'importers')
   let start = -1
   for (let index = range.start + 1; index < range.end; index += 1) {
     const line = lines[index]
-    if (line?.indent === 2 && parsePnpmMapping(line)?.key === '.') {
+    if (line?.indent === 2 && parsePnpmMapping(line)?.key === importerPath) {
       start = index
       break
     }
@@ -643,7 +648,11 @@ function pnpmRecordCoordinateKey(name: string, version: string): string {
 }
 
 /** Parse pnpm lockfile v6/v9 package snapshots without installing or executing package code. */
-export function parsePnpmLockGraph(text: string, rootPackage: RootPackage): DependencyGraph {
+export function parsePnpmLockGraph(
+  text: string,
+  rootPackage: RootPackage,
+  options: PnpmLockGraphOptions = {},
+): DependencyGraph {
   const lines = preparePnpmYamlLines(text)
   const packageEntries = parsePnpmSectionEntries(lines, 'packages')
   const snapshotEntries = lines.some(line => line.indent === 0 && parsePnpmMapping(line)?.key === 'snapshots')
@@ -681,8 +690,7 @@ export function parsePnpmLockGraph(text: string, rootPackage: RootPackage): Depe
   const roots = [...records.values()]
     .filter(record => record.name === rootPackage.name && record.version === rootPackage.version)
     .sort((left, right) => left.suffix.length - right.suffix.length || left.key.localeCompare(right.key))
-  const root = roots[0] ?? (() => {
-    const importer = parsePnpmRootImporter(lines)
+  const makeSyntheticRoot = (importer: PnpmEntry, allowEmpty: boolean): PnpmPackageRecord | undefined => {
     const legacyImporter: PnpmEntry = {
       dependencies: parsePnpmTopLevelDependencyMap(lines, 'dependencies'),
       devDependencies: parsePnpmTopLevelDependencyMap(lines, 'devDependencies'),
@@ -690,20 +698,30 @@ export function parsePnpmLockGraph(text: string, rootPackage: RootPackage): Depe
       peerDependencies: {},
       optionalPeers: new Set(),
     }
-    const hasImporterDependencies = importer !== undefined && pnpmDependencyEntries(importer).length > 0
+    const hasImporterDependencies = pnpmDependencyEntries(importer).length > 0
     const hasLegacyDependencies = pnpmDependencyEntries(legacyImporter).length > 0
-    if (!hasImporterDependencies && !hasLegacyDependencies) return undefined
+    if (!allowEmpty && !hasImporterDependencies && !hasLegacyDependencies) return undefined
     const synthetic: PnpmPackageRecord = {
       key: `workspace-root:${rootPackage.name}@${rootPackage.version}`,
       name: rootPackage.name,
       version: rootPackage.version,
       suffix: '',
       id: `pnpm:workspace-root:${rootPackage.name}@${rootPackage.version}`,
-      entry: hasImporterDependencies ? importer! : legacyImporter,
+      entry: hasImporterDependencies || allowEmpty ? importer : legacyImporter,
     }
     records.set(synthetic.key, synthetic)
     return synthetic
-  })()
+  }
+  const emptyImporter: PnpmEntry = {
+    dependencies: {},
+    devDependencies: {},
+    optionalDependencies: {},
+    peerDependencies: {},
+    optionalPeers: new Set(),
+  }
+  const root = options.importer === undefined
+    ? roots[0] ?? makeSyntheticRoot(parsePnpmImporter(lines) ?? emptyImporter, false)
+    : makeSyntheticRoot(parsePnpmImporter(lines, options.importer) ?? emptyImporter, true)
   if (root === undefined) {
     throw new Error(`requested root package is not present in pnpm lockfile: ${rootPackage.name}@${rootPackage.version}`)
   }

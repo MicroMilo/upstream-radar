@@ -946,7 +946,9 @@ export class UpstreamObserverClient implements ObserverSource {
           lockfileUrl = discovered.url
           if (discovered.warning !== undefined) warnings.push(discovered.warning)
           if (discovered.type === 'pnpm') {
-            graph = parsePnpmLockGraph(discovered.text, { name: manifest.name, version: manifest.version })
+            graph = parsePnpmLockGraph(discovered.text, { name: manifest.name, version: manifest.version }, {
+              importer: dirname(packagePath).replaceAll('\\', '/') || '.',
+            })
           } else {
             let rawLockfile: unknown
             try {
@@ -965,7 +967,9 @@ export class UpstreamObserverClient implements ObserverSource {
         const lockfile = await this.fetchRaw(targetRepository, commit, targetValue.lockfile)
         lockfileUrl = lockfile.url
         if (targetValue.lockfileType === 'pnpm') {
-          graph = parsePnpmLockGraph(lockfile.text, { name: manifest.name, version: manifest.version })
+          graph = parsePnpmLockGraph(lockfile.text, { name: manifest.name, version: manifest.version }, {
+            importer: dirname(packagePath).replaceAll('\\', '/') || '.',
+          })
         } else {
           let rawLockfile: unknown
           try {

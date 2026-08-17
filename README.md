@@ -296,6 +296,12 @@ The observer has also replayed a complete maintainer loop: the
 detects the source fix before npm is republished, keeps the task pending, and
 will re-check the exact published artifact when the release appears.
 
+The [DSH core nested-workspace case](examples/dsh/reports/dsh-core-nested-workspace-2026-08-18.md)
+shows the same observer against `deepseek-ai/deepseek-harness`: it selects the
+`apps/cli` importer from `packagePath`, resolves the external part of the graph,
+and leaves local workspace links explicitly unresolved instead of monitoring
+the repository root by mistake.
+
 ## Observe DSH plugin upstream changes
 
 This is the upstream-change loop: instead of polling every vulnerability source on
