@@ -1,13 +1,12 @@
 schema: upstream-radar.observer-targets/v1alpha1
 targets:
-  # This repository is itself a DSH bundle, so the example can observe a real
-  # public repository without inventing a plugin URL. Replace it with the
-  # plugin repositories your team actually depends on.
-  - id: upstream-radar
+  # A real public DSH/Feishu plugin. Replace it with the plugin repositories
+  # your team actually depends on.
+  - id: dsh-feishu-bot
     ecosystem: dsh
-    repository: MicroMilo/upstream-radar
+    repository: PlutoKeating/dsh-lark-bot
     ref: main
-    package: upstream-radar
+    package: dsh-feishu-bot
     packagePath: package.json
     lockfile: pnpm-lock.yaml
     lockfileType: pnpm

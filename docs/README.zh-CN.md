@@ -231,7 +231,7 @@ old → new 变化比较
 只有重要变化 → DSH Agent 任务 → 报告
 ```
 
-可以从[可复制的 targets 示例](../examples/upstream-observer/targets.yml)开始：
+可以从[可复制的真实 targets 示例](../examples/upstream-observer/targets.yml)开始。它默认观察公开的 DSH/飞书插件 `PlutoKeating/dsh-lark-bot`，不是模拟项目：
 
 ```yaml
 schema: upstream-radar.observer-targets/v1alpha1
@@ -293,8 +293,8 @@ Radar 只读取这次调用需要的接口地址、API key 和模型名，不会
 
 可复制的定时 workflow 是
 [examples/github-actions/upstream-observer.yml](../examples/github-actions/upstream-observer.yml)。
-仓库里这份 workflow 是 Radar 自己的 dogfood 示例：它先 checkout 并构建 Radar，
-再执行观察器。它只提交观察点；没有变化时不会每天制造一条 commit。
+仓库里这份 workflow 会先 checkout 并构建 Radar，再观察这个公开的 DSH/飞书插件，
+所以既是 dogfood 也是一个真实插件示例。它只提交观察点；没有变化时不会每天制造一条 commit。
 
 这个 workflow 支持三个可选的 repository secret：
 `ISSUE_LOCATOR_LLM_BASE_URL`、`ISSUE_LOCATOR_LLM_API_KEY` 和

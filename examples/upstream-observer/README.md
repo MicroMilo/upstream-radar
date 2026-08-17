@@ -14,8 +14,10 @@ old → new comparison
 only meaningful changes become DSH Agent tasks
 ```
 
-The sample target points at the public Upstream Radar repository because Radar
-is itself a DSH bundle. Replace it with the repositories your team depends on.
+The sample target points at the real public DSH/Feishu plugin
+[`PlutoKeating/dsh-lark-bot`](https://github.com/PlutoKeating/dsh-lark-bot), so a
+first run produces a real dependency graph instead of a synthetic fixture.
+Replace it with the repositories your team depends on.
 
 For a real end-to-end replay against a public DSH/Feishu plugin, see
 [`cases/dsh-feishu-bot.md`](cases/dsh-feishu-bot.md). It demonstrates baseline →
@@ -32,7 +34,7 @@ npx --yes upstream-radar@0.33.3 observe \
   --report /tmp/upstream-radar-observer.md
 ```
 
-For this repository's checked-in target, replace `/path/to/targets.yml` with
+For the checked-in public target, replace `/path/to/targets.yml` with
 `examples/upstream-observer/targets.yml`. Contributors can use `pnpm run build`
 and `node dist/src/cli.js observe` instead.
 
@@ -42,13 +44,19 @@ limited to README/docs/tests advances the observation point without creating a
 DSH task. A runtime, DSH bundle, package entry, lockfile, dependency, or npm
 integrity change creates one.
 
+At the time this example was recorded, the target resolved to 242 dependency
+nodes and 380 edges. Radar also reported that the source manifest is named
+`dsh-lark-bot` while the published package is `dsh-feishu-bot`; it keeps that
+fact as a warning instead of silently treating the two names as identical.
+
 The copyable scheduled workflow is
 [`../github-actions/upstream-observer.yml`](../github-actions/upstream-observer.yml).
-The checked-in workflow is a dogfood example for the Radar repository itself: it
-checks out and builds the local Radar source before running `observe`. For an
-external repository, use a released version that contains `observe` and pin that
-exact version. The workflow persists only `observations.json`; the report goes to
-the GitHub Job Summary, so a quiet run does not create a daily commit.
+The checked-in workflow runs the local Radar source against this external public
+target, so it is both a dogfood workflow and a real plugin example. For a
+different external repository, use a released version that contains `observe`
+and pin that exact version. The workflow persists only `observations.json`; the
+report goes to the GitHub Job Summary, so a quiet run does not create a daily
+commit.
 
 ## DSH Agent adapter
 
