@@ -82,6 +82,7 @@ export function renderTextReport(report: ScanReport): string {
     for (const finding of report.findings) {
       lines.push(`  [${finding.severity.toUpperCase()}] ${display(finding.code)}: ${display(finding.summary)}`)
       lines.push(`    ${display(finding.detail, 2_048)}`)
+      if (finding.remediation !== undefined) lines.push(`    Fix: ${display(finding.remediation, 2_048)}`)
     }
   }
 

@@ -2,6 +2,12 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.33.4] - 2026-08-18
+
+### Usability
+
+- Show each finding's concrete remediation in the normal terminal scan report, so authors can move from a detected issue to the repair without switching to JSON.
+
 ## [0.33.3] - 2026-08-18
 
 ### Reliability

@@ -38,6 +38,20 @@ describe('text report rendering', () => {
     assert.match(rendered, /Next step: Do not install this package until the blocking finding is resolved\./)
   })
 
+  it('prints the concrete fix for a monitoring-quality finding', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-render-remediation-'))
+    await writeFile(join(root, 'package.json'), '{"name":"stale-lock","version":"1.0.0"}')
+    await writeFile(join(root, 'package-lock.json'), JSON.stringify({
+      name: 'stale-lock',
+      version: '0.9.0',
+      lockfileVersion: 3,
+      packages: { '': { name: 'stale-lock', version: '0.9.0' } },
+    }))
+    const rendered = renderTextReport(await scanDirectory(root))
+    assert.match(rendered, /package-lock root metadata does not match package\.json/)
+    assert.match(rendered, /Fix: Regenerate package-lock\.json from the intended package\.json/)
+  })
+
   it('shows the dependency edges that make an artifact review incomplete', async () => {
     const root = await mkdtemp(join(tmpdir(), 'upstream-radar-render-coverage-'))
     await writeFile(join(root, 'package.json'), '{"name":"coverage-example","version":"1.0.0"}')

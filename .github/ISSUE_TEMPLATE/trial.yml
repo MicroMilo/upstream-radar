@@ -11,7 +11,7 @@ body:
     id: radar_version
     attributes:
       label: Upstream Radar version
-      placeholder: 0.33.3
+      placeholder: 0.33.4
     validations:
       required: true
   - type: input
