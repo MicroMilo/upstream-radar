@@ -90,7 +90,7 @@ The useful part is the exact path and project-specific next step—not another g
 Want to try it on a real published DSH plugin immediately?
 
 ```bash
-npx --yes upstream-radar@0.33.0 inspect npm:dsh-feishu-bot@0.14.0 --deep
+npx --yes upstream-radar@0.33.0 inspect npm:dsh-feishu-bot@0.15.4 --deep
 ```
 
 This runs from an otherwise empty directory and returns a short admission,
@@ -542,7 +542,7 @@ The Action auto-detects the one `pnpm-lock.yaml`, checks the same exact graph, a
 To check a real published DSH artifact directly, run one command:
 
 ```bash
-npx --yes upstream-radar@0.33.0 inspect npm:dsh-feishu-bot@0.14.0 --deep
+npx --yes upstream-radar@0.33.0 inspect npm:dsh-feishu-bot@0.15.4 --deep
 ```
 
 The checked result is `REVIEW`: registry integrity, signature, provenance, and
@@ -550,6 +550,10 @@ The checked result is `REVIEW`: registry integrity, signature, provenance, and
 optional dependency edges remain unresolved. That is a useful author result:
 the empty vulnerability list is visible, but it is not mislabeled as a full
 `ALLOW` decision.
+
+The same exact tarball loads in both DSH `0.1.0-rc.6` and `0.1.0-rc.7` disposable
+profiles. See the [real compatibility probe](examples/dsh/reports/dsh-feishu-bot-0.15.4-probe.md)
+for the command and boundary.
 
 ## See one incident
 

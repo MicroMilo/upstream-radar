@@ -84,7 +84,7 @@ FIRST EPSS estimated exploitation probability: 97.2% (percentile 100.0%)
 想立即检查一个真实发布的 DSH 插件，可以在空目录直接运行：
 
 ```bash
-npx --yes upstream-radar@0.33.0 inspect npm:dsh-feishu-bot@0.14.0 --deep
+npx --yes upstream-radar@0.33.0 inspect npm:dsh-feishu-bot@0.15.4 --deep
 ```
 
 它会直接输出简短的准入结论、覆盖情况、依赖数量、漏洞数量和下一步，不需要先
@@ -517,12 +517,15 @@ Action 会自动识别唯一的 `pnpm-lock.yaml`，检查同一棵精确依赖�
 也可以直接检查一个真实发布的 DSH 包：
 
 ```bash
-npx --yes upstream-radar@0.33.0 inspect npm:dsh-feishu-bot@0.14.0 --deep
+npx --yes upstream-radar@0.33.0 inspect npm:dsh-feishu-bot@0.15.4 --deep
 ```
 
 这次检查的结论是 `REVIEW`：registry 完整性、签名、provenance 和 89 个已解析包都
 通过；已知漏洞为 `0`，但仍有 12 条可选依赖边未解析。作者可以看到“没有发现已知
 漏洞”和“覆盖还不完整”是两件事，而不是被一个空 finding 列表误导成 `ALLOW`。
+
+同一个精确 tarball 在 DSH `0.1.0-rc.6` 和 `0.1.0-rc.7` 的一次性 profile
+中都能登记并加载。完整命令和边界见[真实兼容性 probe](../examples/dsh/reports/dsh-feishu-bot-0.15.4-probe.md)。
 
 ## 先看一个真实事件
 
