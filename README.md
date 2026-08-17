@@ -87,6 +87,15 @@ Next: Review the fixed version with the DSH Agent in this project.
 
 The useful part is the exact path and project-specific next step—not another generic list of vulnerable package names.
 
+Want to try it on a real published DSH plugin immediately?
+
+```bash
+npx --yes upstream-radar@0.33.0 inspect npm:dsh-feishu-bot@0.14.0 --deep
+```
+
+This runs from an otherwise empty directory and returns a short admission,
+coverage, dependency-count, vulnerability-count, and next-step summary.
+
 Tried the demo or a real DSH setup? [Share a short trial result](https://github.com/MicroMilo/upstream-radar/issues/new?template=trial.yml) with the versions, path, and redacted outcome. Never include source code, secrets, or private paths.
 
 Every command has its own short guide: `npx --yes upstream-radar@latest setup --help`, `npx --yes upstream-radar@latest inspect --help`, and `npx --yes upstream-radar@latest radar status --help` are useful starting points when you are not sure which path to choose.

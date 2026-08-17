@@ -81,6 +81,15 @@ FIRST EPSS estimated exploitation probability: 97.2% (percentile 100.0%)
 
 真正有用的不是再列一遍“哪些包有漏洞”，而是指出准确路径，并给出结合当前项目的下一步。
 
+想立即检查一个真实发布的 DSH 插件，可以在空目录直接运行：
+
+```bash
+npx --yes upstream-radar@0.33.0 inspect npm:dsh-feishu-bot@0.14.0 --deep
+```
+
+它会直接输出简短的准入结论、覆盖情况、依赖数量、漏洞数量和下一步，不需要先
+创建项目配置或启动 DSH。
+
 已经试过 demo 或真实 DSH 配置？可以[分享一条试用结果](https://github.com/MicroMilo/upstream-radar/issues/new?template=trial.yml)，只需填写版本、入口和脱敏后的结果。不要提交源码、密钥或私有路径。
 
 每个命令都有自己的短帮助：不确定从哪里开始时，可以先运行 `npx --yes upstream-radar@latest setup --help`、`npx --yes upstream-radar@latest inspect --help` 或 `npx --yes upstream-radar@latest radar status --help`。
