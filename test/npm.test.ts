@@ -7,6 +7,7 @@ import {
 import { describe, it } from 'node:test'
 import {
   collectNpmInstallScriptPackages,
+  extractNpmLifecycleScripts,
   inspectNpmPackage,
   parseNpmSpec,
   verifyIntegrity,
@@ -16,6 +17,21 @@ import type { DependencyGraph } from '../src/radar-types.js'
 import { makeTarball } from './helpers/tar.js'
 
 describe('npm artifact inspection', () => {
+  it('extracts only lifecycle script names and commands from a package manifest', () => {
+    assert.deepEqual(extractNpmLifecycleScripts({
+      scripts: {
+        preinstall: 'echo before',
+        install: 'node build-native.js',
+        postinstall: 'node scripts/postinstall',
+        test: 'node test.js',
+      },
+    }), [
+      { name: 'preinstall', command: 'echo before' },
+      { name: 'install', command: 'node build-native.js' },
+      { name: 'postinstall', command: 'node scripts/postinstall' },
+    ])
+  })
+
   it('reports install-time scripts only for reachable exact lockfile packages', () => {
     const graph: DependencyGraph = {
       schema: 'upstream-radar.dependency-graph/v1alpha1',

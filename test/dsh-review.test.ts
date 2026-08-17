@@ -110,6 +110,11 @@ describe('DSH plugin review', () => {
     assert.equal(report.execution.llm, false)
     assert.equal(cleaned, true)
     assert.match(renderDshPluginReview(report), /DSH load matrix: COMPATIBLE \(2\/2 versions loaded\)/)
+    report.inspection.evidence.npm!.dependencyAudit.installScriptPackages = ['protobufjs@7.6.5']
+    report.inspection.evidence.npm!.dependencyAudit.installScriptDetails = [{
+      package: 'protobufjs@7.6.5',
+      scripts: [{ name: 'postinstall', command: 'node scripts/postinstall' }],
+    }]
+    assert.match(renderDshPluginReview(report), /protobufjs@7\.6\.5 postinstall: node scripts\/postinstall/)
   })
 })
-

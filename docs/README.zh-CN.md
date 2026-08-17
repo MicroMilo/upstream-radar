@@ -658,7 +658,7 @@ pnpm dlx --package=upstream-radar@0.33.12 upstream-radar review dsh-plugin \
   --dsh-version 0.1.0-rc.6,0.1.0-rc.7
 ```
 
-它会使用同一个精确发布物，同时输出依赖漏洞、覆盖情况和每个 DSH 版本的加载结果。默认只展示结果，不额外设置失败门禁；不会运行 lifecycle script、插件业务代码或模型。
+它会使用同一个精确发布物，同时输出依赖漏洞、覆盖情况和每个 DSH 版本的加载结果。默认只展示结果，不额外设置失败门禁；不会运行 lifecycle script、插件业务代码或模型。若精确依赖图含有安装脚本，还会直接显示脚本名称和命令。
 
 真实负例见[Feishu 插件审查结果](../examples/dsh/reports/dsh-feishu-bot-0.14.0-review-2026-08-18.md)：`dsh-feishu-bot@0.14.0` 在 DSH `rc.6` 和 `rc.7` 都能加载，但精确依赖图发现 `protobufjs@7.6.5` 带有安装脚本，因此结论是 `REVIEW`，不是“安全”。这项结果只说明安装时可能执行或卡在该依赖脚本，不等于认定它是恶意包。
 

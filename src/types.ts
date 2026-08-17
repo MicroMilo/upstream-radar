@@ -30,6 +30,11 @@ export interface LifecycleScriptEvidence {
   command: string
 }
 
+export interface NpmInstallScriptPackage {
+  package: string
+  scripts: LifecycleScriptEvidence[]
+}
+
 export interface DshEvidence {
   isBundle: boolean
   patch?: string
@@ -90,6 +95,8 @@ export interface NpmEvidence {
     graph?: DependencyGraph
     /** Exact reachable packages whose npm lock entry declares an install-time script. */
     installScriptPackages?: string[]
+    /** The exact lifecycle names and commands read from those package manifests. */
+    installScriptDetails?: NpmInstallScriptPackage[]
     invalidSignatures: string[]
     missingSignatures: string[]
     vulnerabilities: VulnerabilitySummary | null

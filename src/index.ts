@@ -267,6 +267,7 @@ export {
   type Finding,
   type LifecycleScriptEvidence,
   type NpmEvidence,
+  type NpmInstallScriptPackage,
   type NpmProvenanceEvidence,
   type ScanReport,
   type Severity,

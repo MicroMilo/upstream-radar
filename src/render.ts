@@ -101,7 +101,15 @@ export function renderTextReport(report: ScanReport): string {
     if (npm.dependencyAudit.installScriptPackages !== undefined) {
       const installScripts = npm.dependencyAudit.installScriptPackages
       lines.push(`  install-time dependency scripts: ${installScripts.length}`)
-      for (const packageLabel of installScripts.slice(0, 12)) lines.push(`    ${display(packageLabel, 512)}`)
+      const details = npm.dependencyAudit.installScriptDetails ?? []
+      for (const packageLabel of installScripts.slice(0, 12)) {
+        const detail = details.find(item => item.package === packageLabel)
+        if (detail === undefined || detail.scripts.length === 0) {
+          lines.push(`    ${display(packageLabel, 512)}`)
+        } else {
+          for (const script of detail.scripts) lines.push(`    ${display(`${packageLabel} ${script.name}: ${script.command}`, 2_048)}`)
+        }
+      }
       if (installScripts.length > 12) lines.push(`    ... ${installScripts.length - 12} more`)
     }
     if (npm.provenance.sourceRepository !== undefined) lines.push(`  source repository: ${display(npm.provenance.sourceRepository)}`)

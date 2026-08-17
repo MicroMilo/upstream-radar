@@ -128,6 +128,9 @@ bundle on both versions (`2/2`) while still showing `REVIEW` because coverage
 was incomplete. It is report-first by default: the author sees the evidence
 even when the result needs review. It packs with scripts disabled and does not
 execute plugin code, business actions, or an LLM.
+When the exact dependency graph contains an install-time script, it also prints
+the lifecycle name and command, so the author sees what needs review instead
+of only a package name.
 
 The first real negative case is [`dsh-feishu-bot@0.14.0`](examples/dsh/reports/dsh-feishu-bot-0.14.0-review-2026-08-18.md): both DSH versions load the
 bundle, but the exact graph exposes `protobufjs@7.6.5`'s install-time script.
@@ -331,6 +334,10 @@ The [provenance follow-up](examples/dsh/reports/dsh-batch-50-provenance-follow-u
 re-runs the same 50 repositories with release-workflow analysis: it keeps one
 published artifact finding, one pre-publish finding, and removes an OIDC
 trusted-publishing false positive.
+The [install-script follow-up](examples/dsh/reports/dsh-batch-50-install-scripts-2026-08-18.md)
+then finds three exact transitive install behaviors, shows their real commands and dependency
+paths, and verifies all three bundles on DSH `rc.6` and `rc.7`; it does not call any of them a
+vulnerability without evidence.
 
 The [DSH-TUI source-vs-npm report](examples/dsh/reports/dsh-tui-source-vs-npm-2026-08-18.md)
 shows why both inputs matter: its source tree contains a 363-node pnpm graph and

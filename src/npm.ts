@@ -19,6 +19,7 @@ import {
   type Finding,
   type NpmEvidence,
   type NpmDependencyResolutionMode,
+  type NpmInstallScriptPackage,
   type NpmProvenanceEvidence,
   type ScanReport,
   type Severity,
@@ -34,6 +35,9 @@ const MAX_PROCESS_OUTPUT_BYTES = 32 * 1024 * 1024
 const MAX_RESOLUTION_LOCKFILE_BYTES = 64 * 1024 * 1024
 const MISSING_PUBLISH_TIME_CUTOFF = '2015-01-01T00:00:00.000Z'
 const EXACT_VERSION = /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/
+const NPM_LIFECYCLE_SCRIPT_NAMES = [
+  'preinstall', 'install', 'postinstall', 'prepare',
+] as const
 
 type FetchLike = (input: string | URL, init?: RequestInit) => Promise<Response>
 
@@ -550,6 +554,46 @@ export function collectNpmInstallScriptPackages(lockfile: unknown, graph: Depend
   return [...new Set(labels)].sort((left, right) => left.localeCompare(right)).slice(0, 100)
 }
 
+/** Read lifecycle names and commands from package manifests without executing them. */
+export function extractNpmLifecycleScripts(manifest: unknown): Array<{ name: string; command: string }> {
+  const scripts = asRecord(asRecord(manifest)?.scripts)
+  if (scripts === undefined) return []
+  return NPM_LIFECYCLE_SCRIPT_NAMES.flatMap(name => {
+    const command = asString(scripts[name])
+    return command === undefined ? [] : [{ name, command }]
+  })
+}
+
+async function collectNpmInstallScriptDetails(
+  root: string,
+  lockfile: unknown,
+  graph: DependencyGraph,
+): Promise<NpmInstallScriptPackage[]> {
+  const packages = asRecord(asRecord(lockfile)?.packages)
+  if (packages === undefined) return []
+  const nodes = new Map(graph.nodes.map(node => [node.id, node]))
+  const details: NpmInstallScriptPackage[] = []
+  for (const [packagePath, rawItem] of Object.entries(packages)) {
+    if (!nodes.has(packagePath) || asRecord(rawItem)?.hasInstallScript !== true) continue
+    const node = nodes.get(packagePath)
+    if (node === undefined) continue
+    const manifestPath = resolve(root, packagePath, 'package.json')
+    const rootPrefix = `${resolve(root)}${sep}`
+    let scripts: Array<{ name: string; command: string }> = []
+    if (manifestPath.startsWith(rootPrefix)) {
+      try {
+        scripts = extractNpmLifecycleScripts(JSON.parse(await readFile(manifestPath, 'utf8')) as unknown)
+      } catch {
+        // The lockfile flag remains useful even if a package manifest is unreadable.
+      }
+    }
+    details.push({ package: `${node.name}@${node.version}`, scripts })
+  }
+  return details
+    .sort((left, right) => left.package.localeCompare(right.package))
+    .slice(0, 100)
+}
+
 function vulnerabilitySummary(audit: unknown): VulnerabilitySummary | null {
   const root = asRecord(audit)
   const metadata = asRecord(root?.metadata)
@@ -682,7 +726,8 @@ async function deepAuditNpmPackage(
 
     const lockfile = JSON.parse(await readFile(join(root, 'package-lock.json'), 'utf8')) as unknown
     const dependencyGraph = parseNpmLockGraph(lockfile, spec)
-    const installScriptPackages = collectNpmInstallScriptPackages(lockfile, dependencyGraph)
+    const installScriptDetails = await collectNpmInstallScriptDetails(root, lockfile, dependencyGraph)
+    const installScriptPackages = installScriptDetails.map(detail => detail.package)
     const graphDigest = dependencyGraph.digest
     if (graphDigest === undefined) throw new Error('resolved dependency graph has no digest')
     let signatures = await runProcess(npm, [
@@ -714,6 +759,7 @@ async function deepAuditNpmPackage(
           graphDigest,
           graph: dependencyGraph,
           installScriptPackages,
+          installScriptDetails,
           invalidSignatures,
           missingSignatures,
           vulnerabilities: null,
@@ -733,6 +779,7 @@ async function deepAuditNpmPackage(
           graphDigest,
           graph: dependencyGraph,
           installScriptPackages,
+          installScriptDetails,
           invalidSignatures,
           missingSignatures,
           vulnerabilities: null,
@@ -751,6 +798,7 @@ async function deepAuditNpmPackage(
           graphDigest,
           graph: dependencyGraph,
           installScriptPackages,
+          installScriptDetails,
           invalidSignatures,
           missingSignatures,
           vulnerabilities: null,
@@ -774,6 +822,7 @@ async function deepAuditNpmPackage(
         graphDigest,
         graph: dependencyGraph,
         installScriptPackages,
+        installScriptDetails,
         invalidSignatures,
         missingSignatures,
         vulnerabilities,
@@ -932,12 +981,17 @@ function addNpmEvidenceFindings(evidence: NpmEvidence, findings: Finding[]): voi
 
   const installScriptPackages = evidence.dependencyAudit.installScriptPackages ?? []
   if (installScriptPackages.length > 0) {
+    const installScriptDetails = evidence.dependencyAudit.installScriptDetails ?? []
+    const commands = installScriptDetails.flatMap(detail => detail.scripts.map(script => `${detail.package} ${script.name}: ${script.command}`))
     findings.push(makeFinding(
       'dependency-install-script-present',
       'high',
       'Resolved dependency graph contains install-time scripts',
       'The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.',
-      { packages: installScriptPackages },
+      {
+        packages: installScriptPackages,
+        ...(commands.length === 0 ? {} : { scripts: commands.slice(0, 100) }),
+      },
       'Review each listed package and its published artifact; prefer a version with no install-time script, or require explicit approval before allowing the DSH install path to run it.',
     ))
   }

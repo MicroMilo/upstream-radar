@@ -81,6 +81,9 @@ It reports `REVIEW`, finds `protobufjs@7.6.5`'s install-time script, and still
 shows that the exact bundle loads on both DSH versions. See the [negative
 case report](reports/dsh-feishu-bot-0.14.0-review-2026-08-18.md). This is a
 dependency/install-risk result, not a claim that the package is malicious.
+The [batch follow-up](reports/dsh-batch-50-install-scripts-2026-08-18.md)
+shows the same evidence on three additional published plugins, including the
+exact lifecycle command and dependency path.
 The generated inventories record the exact `@deepseek-ai/dsh@0.1.0-rc.6` executable package that owns the shared host plane. The latest snapshot contains 516 dependency nodes for each installed plugin, including 510 DSH host packages, and checks 513 exact package versions plus 190 npm release streams. That includes the DSH core and its reachable host closure even though they are not plugin dependency edges. An empty finding list remains a monitoring result, not a package safety certificate.
 
 ## Optional: real DSH handoff smoke test

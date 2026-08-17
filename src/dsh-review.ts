@@ -208,6 +208,7 @@ function display(value: string, maxLength = 1_024): string {
 export function renderDshPluginReview(report: DshPluginReviewReport): string {
   const vulnerabilities = report.inspection.evidence.npm?.dependencyAudit.vulnerabilities
   const installScriptPackages = report.inspection.evidence.npm?.dependencyAudit.installScriptPackages
+  const installScriptDetails = report.inspection.evidence.npm?.dependencyAudit.installScriptDetails
   const lines = [
     'Upstream Radar — DSH plugin review',
     `Plugin: ${display(`${report.target.name}@${report.target.version}`)}`,
@@ -220,6 +221,9 @@ export function renderDshPluginReview(report: DshPluginReviewReport): string {
   ]
   for (const item of report.compatibility.reports) {
     lines.push(`  DSH ${display(item.dshVersion, 128)}: ${item.result.toUpperCase()} — ${display(item.reason, 1_024)}`)
+  }
+  for (const detail of installScriptDetails ?? []) {
+    for (const script of detail.scripts) lines.push(`  ${display(`${detail.package} ${script.name}: ${script.command}`, 2_048)}`)
   }
   if (report.inspection.findings.length === 0) {
     lines.push('Findings: none in the implemented static checks')
