@@ -53,6 +53,11 @@ For a real end-to-end replay against a public DSH/Feishu plugin, see
 real upstream commit → dependency graph diff → pending DSH task without a DSH
 LLM configuration.
 
+The latest replay with the available issue-locator `.env` is recorded in
+[`reports/dsh-feishu-bot-model-replay-2026-08-18.md`](reports/dsh-feishu-bot-model-replay-2026-08-18.md).
+It shows the exact author-review output and records the model endpoint failure
+without treating the pending task as a successful analysis.
+
 Run it from any directory with the published CLI:
 
 ```bash
