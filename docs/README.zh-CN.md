@@ -90,6 +90,19 @@ npx --yes upstream-radar@0.33.0 inspect npm:dsh-feishu-bot@0.15.4 --deep
 它会直接输出简短的准入结论、覆盖情况、依赖数量、漏洞数量和下一步，不需要先
 创建项目配置或启动 DSH。
 
+想直接看到一个真实、可以交给作者修的问题？这个精确版本的 DSH 插件在干净的
+npm 解析环境中目前无法建立完整依赖图：
+
+```bash
+npx --yes upstream-radar@0.33.0 inspect \
+  npm:@sanqi-normal/dsh-webui-market-plugin@0.5.4 \
+  --deep --fail-on never
+```
+
+结果是 `review / incomplete`，具体原因是
+`@deepseek-ai/dsh-compact@^0.0.1-rc.1` 没有发布。这个检查不需要 DSH
+profile、插件执行或 LLM。完整证据见[作者修复报告](../examples/dsh/reports/sanqi-market-plugin-dependency-resolution.md)。
+
 已经试过 demo 或真实 DSH 配置？可以[分享一条试用结果](https://github.com/MicroMilo/upstream-radar/issues/new?template=trial.yml)，只需填写版本、入口和脱敏后的结果。不要提交源码、密钥或私有路径。
 
 每个命令都有自己的短帮助：不确定从哪里开始时，可以先运行 `npx --yes upstream-radar@latest setup --help`、`npx --yes upstream-radar@latest inspect --help` 或 `npx --yes upstream-radar@latest radar status --help`。

@@ -96,6 +96,19 @@ npx --yes upstream-radar@0.33.0 inspect npm:dsh-feishu-bot@0.15.4 --deep
 This runs from an otherwise empty directory and returns a short admission,
 coverage, dependency-count, vulnerability-count, and next-step summary.
 
+Want to see a real author-actionable result? This exact published DSH plugin
+currently cannot produce a complete dependency graph in a clean npm resolver:
+
+```bash
+npx --yes upstream-radar@0.33.0 inspect \
+  npm:@sanqi-normal/dsh-webui-market-plugin@0.5.4 \
+  --deep --fail-on never
+```
+
+The result is `review / incomplete`, with the concrete cause
+`@deepseek-ai/dsh-compact@^0.0.1-rc.1` not published. No DSH profile, plugin
+execution, or LLM is required. See the [reproducible author report](examples/dsh/reports/sanqi-market-plugin-dependency-resolution.md).
+
 Tried the demo or a real DSH setup? [Share a short trial result](https://github.com/MicroMilo/upstream-radar/issues/new?template=trial.yml) with the versions, path, and redacted outcome. Never include source code, secrets, or private paths.
 
 Every command has its own short guide: `npx --yes upstream-radar@latest setup --help`, `npx --yes upstream-radar@latest inspect --help`, and `npx --yes upstream-radar@latest radar status --help` are useful starting points when you are not sure which path to choose.
