@@ -130,7 +130,18 @@ even when the result needs review. It packs with scripts disabled and does not
 execute plugin code, business actions, or an LLM.
 When the exact dependency graph contains an install-time script, it also prints
 the lifecycle name and command, so the author sees what needs review instead
-of only a package name.
+of only a package name. It also prints the exact unresolved dependency edges
+when the graph is incomplete, so `REVIEW` is not a dead-end label.
+
+Two current public packages make the output concrete:
+
+- `dsh-cloudflare-browser-run@0.1.1`: `18` resolved packages, `2` unresolved
+  optional Cordis edges, verified npm signature and provenance, `0` known
+  vulnerabilities, and `2/2` DSH versions loaded. There is no static risk
+  finding; the next step is to understand those two optional edges.
+- `@open-agfs/dsh-agfs@0.1.9`: `34` resolved packages, `1` unresolved optional
+  edge, `0` known vulnerabilities, `2/2` DSH versions loaded, and one
+  author-fix finding: publish the next version with npm provenance enabled.
 
 The first real negative case is [`dsh-feishu-bot@0.14.0`](examples/dsh/reports/dsh-feishu-bot-0.14.0-review-2026-08-18.md): both DSH versions load the
 bundle, but the exact graph exposes `protobufjs@7.6.5`'s install-time script.

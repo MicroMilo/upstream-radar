@@ -150,9 +150,41 @@ function nextStepFor(
   if (status === 'incompatible') return 'Do not admit this bundle to the affected DSH release; inspect the failed matrix stage and compare the plugin patch with the DSH release.'
   if (status === 'unknown') return 'Resolve the incomplete artifact, dependency, or DSH load evidence before treating this plugin as compatible.'
   if (status === 'block') return 'Do not install this artifact until the blocking finding is resolved.'
+  if (inspection.coverageVerdict === 'incomplete' && inspection.findings.length === 0) {
+    const unresolved = inspection.evidence.npm?.dependencyAudit.graph?.unresolved ?? []
+    const provenance = inspection.evidence.npm?.provenance.status
+    const gaps = [
+      ...(unresolved.length === 0 ? [] : [`${unresolved.length} unresolved dependency edge(s)`]),
+      ...(provenance !== undefined && provenance !== 'verified' ? [`npm provenance ${provenance}`] : []),
+    ]
+    return gaps.length === 0
+      ? 'No implemented risk finding was reported, but coverage is incomplete; inspect the raw evidence before treating the result as a clean approval.'
+      : `No implemented risk finding was reported; complete ${gaps.join(' and ')} before treating the result as a clean approval.`
+  }
   if (inspection.coverageVerdict === 'incomplete') return 'Review the findings and complete the missing dependency or provenance evidence before treating the result as a clean approval.'
   if (status === 'review' || status === 'warn') return 'Review the listed findings before admitting the plugin; the DSH load matrix alone is not a security approval.'
   return `The bundle loaded on all ${compatibility.summary.total} requested DSH versions; continue with normal dependency monitoring before upgrading production.`
+}
+
+function renderDependencyCoverage(lines: string[], inspection: ScanReport): void {
+  const npm = inspection.evidence.npm
+  const audit = npm?.dependencyAudit
+  if (audit === undefined) return
+  lines.push(
+    `Dependency graph: ${audit.packages ?? 'not resolved'} packages`,
+    `Unresolved dependency edges: ${audit.graph?.unresolved?.length ?? 0}`,
+    `npm registry signature: ${npm?.registrySignature.status ?? 'not-checked'}`,
+    `npm provenance: ${npm?.provenance.status ?? 'not-checked'}`,
+  )
+  const unresolved = audit.graph?.unresolved ?? []
+  if (unresolved.length === 0) return
+  const nodes = new Map((audit.graph?.nodes ?? []).map(node => [node.id, node]))
+  for (const edge of unresolved.slice(0, 3)) {
+    const parent = nodes.get(edge.from)
+    const parentLabel = parent === undefined ? edge.from : `${parent.name}@${parent.version}`
+    lines.push(`  Unresolved: ${display(parentLabel, 512)} -> ${display(`${edge.name}@${edge.spec}`, 512)} [${display(edge.kind, 32)}]`)
+  }
+  if (unresolved.length > 3) lines.push(`  ... ${unresolved.length - 3} more unresolved edge(s)`)
 }
 
 export async function reviewDshPlugin(input: string, options: DshPluginReviewOptions): Promise<DshPluginReviewReport> {
@@ -219,6 +251,7 @@ export function renderDshPluginReview(report: DshPluginReviewReport): string {
     `Install-time dependency scripts: ${installScriptPackages === undefined ? 'not checked' : installScriptPackages.length === 0 ? '0' : installScriptPackages.join(', ')}`,
     `DSH load matrix: ${report.compatibility.result.toUpperCase()} (${report.compatibility.summary.compatible}/${report.compatibility.summary.total} versions loaded)`,
   ]
+  renderDependencyCoverage(lines, report.inspection)
   for (const item of report.compatibility.reports) {
     lines.push(`  DSH ${display(item.dshVersion, 128)}: ${item.result.toUpperCase()} — ${display(item.reason, 1_024)}`)
   }

@@ -125,4 +125,31 @@ describe('DSH plugin review', () => {
     assert.match(renderDshPluginReview(report), /protobufjs@7\.6\.5 postinstall: node scripts\/postinstall/)
     assert.match(renderDshPluginReview(report), /Fix: Review the package before allowing a normal install\./)
   })
+
+  it('explains incomplete coverage when no static risk finding exists', () => {
+    const report = scanReport()
+    report.verdict = 'review'
+    report.coverageVerdict = 'incomplete'
+    report.evidence.npm!.dependencyAudit.graph = {
+      schema: 'upstream-radar.dependency-graph/v1alpha1',
+      rootNodeId: 'root',
+      nodes: [{ id: 'root', name: 'demo-plugin', version: '1.0.0' }],
+      edges: [],
+      unresolved: [{ from: 'root', name: 'optional-peer', spec: '^1.0.0', kind: 'optional' }],
+    }
+    const rendered = renderDshPluginReview({
+      schema: 'upstream-radar.dsh-plugin-review/v1alpha1',
+      target: { name: 'demo-plugin', version: '1.0.0', spec: 'demo-plugin@1.0.0' },
+      inspection: report,
+      compatibility: matrixReport(),
+      artifact: { inspectionDigest: `sha256:${digest}`, probeSha256: digest, matched: true },
+      status: 'review',
+      nextStep: 'No static risk finding was reported; complete 1 unresolved dependency edge(s) before treating the result as a clean approval.',
+      execution: { npmPackLifecycleScripts: false, pluginCode: false, dshBusinessActions: false, llm: false },
+    })
+    assert.match(rendered, /Dependency graph: 2 packages/)
+    assert.match(rendered, /Unresolved dependency edges: 1/)
+    assert.match(rendered, /Unresolved: demo-plugin@1\.0\.0 -> optional-peer@\^1\.0\.0 \[optional\]/)
+    assert.match(rendered, /No static risk finding was reported; complete 1 unresolved dependency edge\(s\)/)
+  })
 })
