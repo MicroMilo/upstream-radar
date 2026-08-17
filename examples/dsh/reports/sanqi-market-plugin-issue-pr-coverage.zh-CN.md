@@ -124,3 +124,14 @@ lifecycle scripts: none
 3. 在发布前保留一条失败测试：缺失宿主包时必须明确失败，不能输出空漏洞列表或“已检查”。
 
 非目标：本轮不修改插件源码、不执行插件业务行为，也不把 provenance 缺失作为单独的安全漏洞提交。
+
+## 上游反馈
+
+由于责任方可能是 DSH 宿主发布链，而不是插件作者，本轮先提交了确认型 issue，
+没有直接提交猜测性的代码 PR：
+
+- [Sanqi-normal/dsh-webui-market-plugin#5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)
+- 当前状态：**open**；最近一次检查没有机器人或维护者回复。
+
+Issue 中包含 `upstream-radar@0.33.1` 的精确复现命令，并请维护者确认插件应依赖
+公开 npm 宿主包，还是由 DSH profile 在宿主平面提供这些包。
