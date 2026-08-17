@@ -289,6 +289,7 @@ record remains pending and can be retried with `--retry-pending`.
 The env file may use the issue-locator names (`ISSUE_LOCATOR_LLM_*`), the common
 OpenAI names (`OPENAI_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_MODEL`), or `MODEL` /
 `CODEX_MODEL` for the model name.
+For ModelBest-style URLs, a 404 on `/llm/v1` also retries `/llm/openai/v1`.
 
 The scheduled workflow is [examples/github-actions/upstream-observer.yml](examples/github-actions/upstream-observer.yml).
 The checked-in workflow is a dogfood workflow for this repository: it checks out

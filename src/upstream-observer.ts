@@ -1183,6 +1183,17 @@ function extractJsonObject(text: string): string {
   return trimmed.slice(start, end + 1)
 }
 
+function llmCompletionEndpoints(baseUrl: string): string[] {
+  const normalized = baseUrl.replace(/\/$/, '')
+  const bases = [normalized]
+  if (normalized.endsWith('/llm/v1')) {
+    bases.push(`${normalized.slice(0, -'/llm/v1'.length)}/llm/openai/v1`)
+  } else if (normalized.endsWith('/llm/openai/v1')) {
+    bases.push(`${normalized.slice(0, -'/llm/openai/v1'.length)}/llm/v1`)
+  }
+  return [...new Set(bases)].map(base => `${base}/chat/completions`)
+}
+
 /**
  * Call an explicit OpenAI-compatible model without requiring users to write a
  * DSH wrapper. The env file is read for this invocation only; the key and
@@ -1217,45 +1228,50 @@ export async function runOpenAiCompatibleAgent(
       error: 'LLM env file must define a base URL, API key, and model (ISSUE_LOCATOR_LLM_*, OPENAI_*, or MODEL/CODEX_MODEL)',
     }
   }
-  const endpoint = `${baseUrl.replace(/\/$/, '')}/chat/completions`
-  try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        authorization: `Bearer ${apiKey}`,
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model,
-        messages: [
-          { role: 'system', content: '只返回严格 JSON，不要输出 Markdown。' },
-          { role: 'user', content: prompt },
-        ],
-        temperature: 0,
-        response_format: { type: 'json_object' },
-      }),
-      signal: AbortSignal.timeout(timeoutMs),
-    })
-    if (!response.ok) {
-      return {
-        taskId: task.id,
-        status: 'failed',
-        error: `LLM endpoint returned HTTP ${response.status}: ${safeLlmEndpoint(endpoint)}`,
+  const endpoints = llmCompletionEndpoints(baseUrl)
+  for (let index = 0; index < endpoints.length; index += 1) {
+    const endpoint = endpoints[index]!
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${apiKey}`,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: '只返回严格 JSON，不要输出 Markdown。' },
+            { role: 'user', content: prompt },
+          ],
+          temperature: 0,
+          response_format: { type: 'json_object' },
+        }),
+        signal: AbortSignal.timeout(timeoutMs),
+      })
+      if (response.status === 404 && index < endpoints.length - 1) continue
+      if (!response.ok) {
+        return {
+          taskId: task.id,
+          status: 'failed',
+          error: `LLM endpoint returned HTTP ${response.status}: ${safeLlmEndpoint(endpoint)}`,
+        }
       }
+      const body = await response.json() as { choices?: Array<{ message?: { content?: unknown } }> }
+      const content = body.choices?.[0]?.message?.content
+      if (typeof content !== 'string') {
+        return { taskId: task.id, status: 'failed', error: `LLM response had no message content: ${safeLlmEndpoint(endpoint)}` }
+      }
+      const parsed = parseAgentOutput(extractJsonObject(content))
+      if (parsed.value === undefined) {
+        return { taskId: task.id, status: 'failed', error: parsed.error ?? 'LLM returned an invalid conclusion' }
+      }
+      return { taskId: task.id, status: 'succeeded', parsedOutput: parsed.value }
+    } catch (error: unknown) {
+      return { taskId: task.id, status: 'failed', error: `LLM request failed at ${safeLlmEndpoint(endpoint)}: ${safeError(error)}` }
     }
-    const body = await response.json() as { choices?: Array<{ message?: { content?: unknown } }> }
-    const content = body.choices?.[0]?.message?.content
-    if (typeof content !== 'string') {
-      return { taskId: task.id, status: 'failed', error: `LLM response had no message content: ${safeLlmEndpoint(endpoint)}` }
-    }
-    const parsed = parseAgentOutput(extractJsonObject(content))
-    if (parsed.value === undefined) {
-      return { taskId: task.id, status: 'failed', error: parsed.error ?? 'LLM returned an invalid conclusion' }
-    }
-    return { taskId: task.id, status: 'succeeded', parsedOutput: parsed.value }
-  } catch (error: unknown) {
-    return { taskId: task.id, status: 'failed', error: `LLM request failed at ${safeLlmEndpoint(endpoint)}: ${safeError(error)}` }
   }
+  return { taskId: task.id, status: 'failed', error: 'LLM endpoint returned HTTP 404 for all known OpenAI-compatible paths' }
 }
 
 export function runDshAgentCommand(

@@ -252,6 +252,8 @@ in observations.json for a later explicit retry. As a simpler alternative,
 --llm-env-file reads an OpenAI-compatible issue-locator/.env-style file for
 only the model call. It accepts ISSUE_LOCATOR_LLM_*, OPENAI_*, or MODEL/CODEX_MODEL
 keys; it never writes the key or endpoint to observations.json.
+If a ModelBest-style base URL ends in /llm/v1, a 404 also retries the known
+/llm/openai/v1 path.
 `,
     graph: `Upstream Radar — read a lockfile into the canonical dependency graph
 

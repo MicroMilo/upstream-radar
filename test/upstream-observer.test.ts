@@ -295,10 +295,17 @@ targets:
     const task = run.state.pendingTasks[0]
     assert.ok(task)
 
-    let requestBody = ''
+    const requestBodies: string[] = []
     const server = createServer((request, response) => {
+      let requestBody = ''
       request.on('data', chunk => { requestBody += chunk.toString('utf8') })
       request.on('end', () => {
+        if (request.url === '/llm/v1/chat/completions') {
+          response.writeHead(404)
+          response.end()
+          return
+        }
+        requestBodies.push(requestBody)
         response.writeHead(200, { 'content-type': 'application/json' })
         response.end(JSON.stringify({
           choices: [{ message: { content: JSON.stringify({
@@ -324,7 +331,7 @@ targets:
     try {
       const envFile = join(root, 'issue-locator.env')
       await writeFile(envFile, [
-        `ISSUE_LOCATOR_LLM_BASE_URL=http://127.0.0.1:${address.port}/v1`,
+        `ISSUE_LOCATOR_LLM_BASE_URL=http://127.0.0.1:${address.port}/llm/v1`,
         'ISSUE_LOCATOR_LLM_API_KEY=test-only',
         'MODEL=test-model',
         '',
@@ -332,8 +339,9 @@ targets:
       const invocation = await runOpenAiCompatibleAgent(task, 'read-only task prompt', { envFile })
       assert.equal(invocation.status, 'succeeded')
       assert.equal((invocation.parsedOutput as { impact: string }).impact, 'likely_affected')
-      assert.equal(JSON.parse(requestBody).model, 'test-model')
-      assert.match(JSON.parse(requestBody).messages[1].content, /read-only task prompt/)
+      assert.equal(requestBodies.length, 1)
+      assert.equal(JSON.parse(requestBodies[0]!).model, 'test-model')
+      assert.match(JSON.parse(requestBodies[0]!).messages[1].content, /read-only task prompt/)
     } finally {
       await rm(root, { recursive: true, force: true })
       await new Promise<void>((resolve, reject) => server.close(error => error === undefined ? resolve() : reject(error)))

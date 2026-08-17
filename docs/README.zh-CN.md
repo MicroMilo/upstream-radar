@@ -266,6 +266,8 @@ Radar 只读取这次调用需要的接口地址、API key 和模型名，不会
 `.env` 可以使用 issue-locator 的 `ISSUE_LOCATOR_LLM_*`，也可以使用常见的
 `OPENAI_BASE_URL`、`OPENAI_API_KEY`、`OPENAI_MODEL`；模型名还兼容 `MODEL` 或
 `CODEX_MODEL`。
+如果是 ModelBest 风格的地址，`/llm/v1` 返回 404 时还会自动重试已知的
+`/llm/openai/v1` 路径。
 
 可复制的定时 workflow 是
 [examples/github-actions/upstream-observer.yml](../examples/github-actions/upstream-observer.yml)。
