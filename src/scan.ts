@@ -500,6 +500,10 @@ async function inspectNpmPublishProvenance(
   const allText = [...publishingWorkflows, ...publisherTexts].map(item => item.text ?? '').join('\n')
   const provenanceDeclared = /--provenance\b/i.test(allText)
     || /\b(?:NPM_CONFIG_PROVENANCE|npm_config_provenance)\s*[:=]\s*['"]?(?:true|1)\b/i.test(allText)
+    // npm trusted publishing uses GitHub's short-lived OIDC token and
+    // automatically attaches provenance. Treat the explicit permission as a
+    // separate valid publication path instead of requiring --provenance.
+    || /\bid-token\s*:\s*['"]?write\b/i.test(allText)
   if (provenanceDeclared) return
 
   const workflowPaths = publishingWorkflows.map(({ file }) => file.path)

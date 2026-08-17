@@ -138,6 +138,18 @@ describe('directory scanner', () => {
     assert.equal(report.findings.some(item => item.code === 'npm-publish-provenance-not-declared'), false)
   })
 
+  it('accepts a GitHub OIDC trusted-publishing path', async () => {
+    const root = await fixture(
+      { name: 'trusted-release', version: '1.0.0' },
+      {
+        '.github/workflows/release.yml': 'permissions:\n  id-token: write\njobs:\n  publish:\n    steps:\n      - run: npm publish --access public\n',
+      },
+    )
+
+    const report = await scanDirectory(root)
+    assert.equal(report.findings.some(item => item.code === 'npm-publish-provenance-not-declared'), false)
+  })
+
   it('reads a committed npm lockfile into the scan report without installing anything', async () => {
     const root = await fixture(
       {

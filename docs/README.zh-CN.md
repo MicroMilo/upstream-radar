@@ -247,6 +247,7 @@ OpenAI-compatible 模型，先设置
 3 个插件的锁文件根版本落后于源码 manifest，以及一个扫描器暂时无法解析的 tar
 格式。[完整报告](../examples/dsh/reports/dsh-batch-50-2026-08-17.md)保留了这些
 结果；我们不会把它包装成“发现了 50 个漏洞”。其中 3 个重复出现的锁文件根版本问题已经重新复核，见[后续报告](../examples/dsh/reports/lockfile-metadata-follow-up-2026-08-18.md)，里面也保留了第一位维护者可以直接确认的 issue 草稿。
+新增的[provenance 后续复核](../examples/dsh/reports/dsh-batch-50-provenance-follow-up-2026-08-18.md)又重跑了这 50 个仓库：保留 1 个已发布物问题、1 个发布前问题，并排除了一个已经使用 OIDC trusted publishing 的误报。
 
 另一个更直观的对比是 [DSH-TUI 源码与 npm 发布物报告](../examples/dsh/reports/dsh-tui-source-vs-npm-2026-08-18.md)：源码仓库能建立 363 个节点、1497 条边的 pnpm 图，但含有 `prepare` 构建脚本；实际发布的 `0.8.0` 没有 lifecycle script，provenance 已验证，120 个依赖解析成功，已知漏洞为 0。Radar 把源码风险和用户真正安装的发布物分开记录，不会只看一边就给插件贴“危险”标签。
 

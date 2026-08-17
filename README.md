@@ -283,6 +283,10 @@ keeps those results honest; it is not marketed as a vulnerability hit list.
 The three repeated lockfile-metadata cases are rechecked in the
 [follow-up report](examples/dsh/reports/lockfile-metadata-follow-up-2026-08-18.md),
 with an author-ready issue draft for the first maintainer.
+The [provenance follow-up](examples/dsh/reports/dsh-batch-50-provenance-follow-up-2026-08-18.md)
+re-runs the same 50 repositories with release-workflow analysis: it keeps one
+published artifact finding, one pre-publish finding, and removes an OIDC
+trusted-publishing false positive.
 
 The [DSH-TUI source-vs-npm report](examples/dsh/reports/dsh-tui-source-vs-npm-2026-08-18.md)
 shows why both inputs matter: its source tree contains a 363-node pnpm graph and
