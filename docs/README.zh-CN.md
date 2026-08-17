@@ -96,7 +96,7 @@ FIRST EPSS estimated exploitation probability: 97.2% (percentile 100.0%)
 想立即检查一个真实发布的 DSH 插件，可以在空目录直接运行：
 
 ```bash
-npx --yes upstream-radar@0.33.12 inspect dsh-feishu-bot@0.15.4 --deep
+npx --yes upstream-radar@0.33.12 inspect dsh-feishu-bot@0.15.8 --deep
 ```
 
 它会直接输出简短的准入结论、覆盖情况、依赖数量、漏洞数量和下一步，不需要先
@@ -640,7 +640,7 @@ Action 会自动识别唯一的 `pnpm-lock.yaml`，检查同一棵精确依赖�
 也可以直接检查一个真实发布的 DSH 包：
 
 ```bash
-npx --yes upstream-radar@0.33.12 inspect dsh-feishu-bot@0.15.4 --deep
+npx --yes upstream-radar@0.33.12 inspect dsh-feishu-bot@0.15.8 --deep
 ```
 
 这次检查的结论是 `REVIEW`：registry 完整性、签名、provenance 和 89 个已解析包都
@@ -648,7 +648,7 @@ npx --yes upstream-radar@0.33.12 inspect dsh-feishu-bot@0.15.4 --deep
 漏洞”和“覆盖还不完整”是两件事，而不是被一个空 finding 列表误导成 `ALLOW`。
 
 同一个精确 tarball 在 DSH `0.1.0-rc.6` 和 `0.1.0-rc.7` 的一次性 profile
-中都能登记并加载。完整命令和边界见[真实兼容性 probe](../examples/dsh/reports/dsh-feishu-bot-0.15.4-probe.md)。
+中都能登记并加载。完整命令、安装脚本和边界见[最新审查报告](../examples/dsh/reports/dsh-feishu-bot-0.15.8-review-2026-08-18.md)。
 
 如果不想分别执行 `inspect`、打包和 `probe`，可以用一个命令完成一次 DSH 插件审查：
 
@@ -661,6 +661,7 @@ pnpm dlx --package=upstream-radar@0.33.12 upstream-radar review dsh-plugin \
 它会使用同一个精确发布物，同时输出依赖漏洞、覆盖情况和每个 DSH 版本的加载结果。默认只展示结果，不额外设置失败门禁；不会运行 lifecycle script、插件业务代码或模型。若精确依赖图含有安装脚本，还会直接显示脚本名称和命令。
 
 真实负例见[Feishu 插件审查结果](../examples/dsh/reports/dsh-feishu-bot-0.14.0-review-2026-08-18.md)：`dsh-feishu-bot@0.14.0` 在 DSH `rc.6` 和 `rc.7` 都能加载，但精确依赖图发现 `protobufjs@7.6.5` 带有安装脚本，因此结论是 `REVIEW`，不是“安全”。这项结果只说明安装时可能执行或卡在该依赖脚本，不等于认定它是恶意包。
+最新发布的 `dsh-feishu-bot@0.15.8` 也有[可复核的审查报告](../examples/dsh/reports/dsh-feishu-bot-0.15.8-review-2026-08-18.md)：两个 DSH 版本都能加载，npm provenance 已验证，已知漏洞为 0，但仍明确报告 `protobufjs@7.6.5` 的安装脚本和 12 条可选依赖未解析边，结论仍是 `REVIEW`。
 
 ## 先看一个真实事件
 

@@ -108,7 +108,7 @@ The useful part is the exact path and project-specific next step—not another g
 Want to try it on a real published DSH plugin immediately?
 
 ```bash
-npx --yes upstream-radar@0.33.12 inspect dsh-feishu-bot@0.15.4 --deep
+npx --yes upstream-radar@0.33.12 inspect dsh-feishu-bot@0.15.8 --deep
 ```
 
 This runs from an otherwise empty directory and returns a short admission,
@@ -135,6 +135,9 @@ of only a package name.
 The first real negative case is [`dsh-feishu-bot@0.14.0`](examples/dsh/reports/dsh-feishu-bot-0.14.0-review-2026-08-18.md): both DSH versions load the
 bundle, but the exact graph exposes `protobufjs@7.6.5`'s install-time script.
 That is why the result is `REVIEW` instead of a misleading clean approval.
+The same check against the current published [`dsh-feishu-bot@0.15.8`](examples/dsh/reports/dsh-feishu-bot-0.15.8-review-2026-08-18.md)
+still loads on DSH `rc.6` and `rc.7`, verifies npm provenance, finds zero known
+vulnerabilities, and keeps the install-time script visible as an author action.
 
 Want the same result as a link anyone on your team can click? Copy the
 [one-shot DSH plugin review workflow](examples/github-actions/dsh-plugin-review-minimal.yml)
@@ -756,7 +759,7 @@ The Action auto-detects the one `pnpm-lock.yaml`, checks the same exact graph, a
 To check a real published DSH artifact directly, run one command:
 
 ```bash
-npx --yes upstream-radar@0.33.12 inspect dsh-feishu-bot@0.15.4 --deep
+npx --yes upstream-radar@0.33.12 inspect dsh-feishu-bot@0.15.8 --deep
 ```
 
 The checked result is `REVIEW`: registry integrity, signature, provenance, and
@@ -766,8 +769,8 @@ the empty vulnerability list is visible, but it is not mislabeled as a full
 `ALLOW` decision.
 
 The same exact tarball loads in both DSH `0.1.0-rc.6` and `0.1.0-rc.7` disposable
-profiles. See the [real compatibility probe](examples/dsh/reports/dsh-feishu-bot-0.15.4-probe.md)
-for the command and boundary.
+profiles. See the [latest review report](examples/dsh/reports/dsh-feishu-bot-0.15.8-review-2026-08-18.md)
+for the exact command, provenance, dependency script, and boundary.
 
 ## See one incident
 

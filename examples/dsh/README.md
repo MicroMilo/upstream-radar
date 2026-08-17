@@ -73,14 +73,15 @@ before installation:
 
 ```bash
 pnpm run build && node dist/src/cli.js review dsh-plugin \
-  dsh-feishu-bot@0.14.0 \
+  dsh-feishu-bot@0.15.8 \
   --dsh-version 0.1.0-rc.6,0.1.0-rc.7
 ```
 
-It reports `REVIEW`, finds `protobufjs@7.6.5`'s install-time script, and still
-shows that the exact bundle loads on both DSH versions. See the [negative
-case report](reports/dsh-feishu-bot-0.14.0-review-2026-08-18.md). This is a
-dependency/install-risk result, not a claim that the package is malicious.
+It reports `REVIEW`, verifies npm provenance, finds zero known vulnerabilities,
+keeps `protobufjs@7.6.5`'s install-time script visible, and still shows that the
+exact bundle loads on both DSH versions. See the [latest review report](reports/dsh-feishu-bot-0.15.8-review-2026-08-18.md).
+This is a dependency/install-risk result, not a claim that the package is
+malicious.
 The [batch follow-up](reports/dsh-batch-50-install-scripts-2026-08-18.md)
 shows the same evidence on three additional published plugins, including the
 exact lifecycle command and dependency path.
@@ -160,7 +161,7 @@ That showcase reports `compatible`, `incompatible`, and `unknown` independently.
 
 The showcase also exercises the matrix form against DSH `0.1.0-rc.3` and `0.1.0-rc.6`. The aggregate result is compatible only when both independent profiles load the same artifact.
 
-The real public baseline [dsh-feishu-bot@0.15.4 matrix result](reports/dsh-feishu-bot-0.15.4-matrix.md) passes on both DSH `rc.6` and `rc.7`.
+The latest public review [dsh-feishu-bot@0.15.8](reports/dsh-feishu-bot-0.15.8-review-2026-08-18.md) passes the DSH load boundary on both `rc.6` and `rc.7`, while keeping its install-time dependency script and optional unresolved edges visible.
 
 The first author-actionable dependency result is [the Sanqi plugin resolution feedback](reports/sanqi-market-plugin-dependency-resolution.md): its published DSH client peer path reaches an unpublished `@deepseek-ai/dsh-compact` package, so a clean graph cannot be resolved.
 
