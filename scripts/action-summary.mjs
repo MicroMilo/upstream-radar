@@ -150,6 +150,7 @@ if (report.schema === 'upstream-radar.scan/v1alpha1') {
     lines.push('', `### Findings (${findings.length})`, '')
     for (const finding of findings.slice(0, 32)) {
       lines.push(`- ${text(String(finding?.severity ?? 'unknown').toUpperCase())} · ${code(finding?.code ?? 'finding')} · ${text(finding?.summary ?? 'unclassified finding', 1_024)}`)
+      if (finding?.remediation !== undefined) lines.push(`  - Fix: ${text(finding.remediation, 2_048)}`)
     }
     if (findings.length > 32) lines.push(`- … ${findings.length - 32} more finding(s) are in the raw JSON log.`)
   }

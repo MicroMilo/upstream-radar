@@ -91,6 +91,7 @@ describe('GitHub Action summary', () => {
           code: 'dependency-graph-incomplete',
           severity: 'high',
           summary: 'One required dependency edge could not be resolved.',
+          remediation: 'Review the missing package and regenerate the lockfile before installation.',
         }],
       }))
       const result = spawnSync(process.execPath, [summaryScript, report], { encoding: 'utf8' })
@@ -101,6 +102,7 @@ describe('GitHub Action summary', () => {
       assert.match(result.stdout, /risk: `REVIEW` · coverage: `INCOMPLETE`/)
       assert.match(result.stdout, /18 packages/)
       assert.match(result.stdout, /dependency-graph-incomplete/)
+      assert.match(result.stdout, /Fix: Review the missing package and regenerate the lockfile before installation\./)
       assert.match(result.stdout, /Review .*findings and incomplete coverage before installing it/)
     } finally {
       await rm(root, { recursive: true, force: true })

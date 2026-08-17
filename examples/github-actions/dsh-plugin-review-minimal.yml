@@ -71,7 +71,10 @@ jobs:
             if (findings.length === 0) lines.push('- Findings: none')
             else {
               lines.push('- Findings:')
-              for (const finding of findings.slice(0, 8)) lines.push(`  - **${inline(finding.code)}**: ${inline(finding.detail ?? finding.summary)}`)
+              for (const finding of findings.slice(0, 8)) {
+                lines.push(`  - **${inline(finding.code)}**: ${inline(finding.detail ?? finding.summary)}`)
+                if (finding.remediation !== undefined) lines.push(`    - Fix: ${inline(finding.remediation)}`)
+              }
             }
           }
           if (probeReport !== undefined) {
