@@ -6,6 +6,7 @@ import {
   readlink,
 } from 'node:fs/promises'
 import { dirname, isAbsolute, relative, resolve, sep } from 'node:path'
+import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
 import { decideVerdict, stricterVerdict } from './policy.js'
 import {
   REPORT_SCHEMA,
@@ -16,13 +17,16 @@ import {
   type ScanReport,
   type Severity,
 } from './types.js'
+import type { DependencyGraph } from './radar-types.js'
 import { TOOL_VERSION } from './version.js'
 
 const MAX_FILES = 10_000
 const MAX_TOTAL_BYTES = 64 * 1024 * 1024
 const MAX_MANIFEST_BYTES = 1024 * 1024
+const MAX_GRAPH_FILE_BYTES = 64 * 1024 * 1024
 const EXCLUDED_DIRECTORIES = new Set(['.git', 'node_modules'])
 const LOCKFILES = ['pnpm-lock.yaml', 'package-lock.json', 'yarn.lock', 'bun.lock', 'bun.lockb']
+const GRAPH_LOCKFILES = ['pnpm-lock.yaml', 'package-lock.json'] as const
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare'] as const
 const NATIVE_SUFFIXES = ['.node', '.dll', '.dylib', '.so', '.exe']
 
@@ -82,6 +86,70 @@ function asRecord(value: unknown): Record<string, unknown> | undefined {
 
 function asString(value: unknown): string | undefined {
   return typeof value === 'string' ? value : undefined
+}
+
+interface DependencyGraphEvidence {
+  graph?: DependencyGraph
+  error?: string
+}
+
+async function readDependencyGraph(
+  root: string,
+  manifest: PackageManifest,
+  lockfiles: readonly string[],
+  scannedFiles: readonly ScannedFile[],
+): Promise<DependencyGraphEvidence> {
+  const graphLockfiles = lockfiles.filter((lockfile): lockfile is typeof GRAPH_LOCKFILES[number] => (
+    (GRAPH_LOCKFILES as readonly string[]).includes(lockfile)
+  ))
+  if (graphLockfiles.length === 0) return {}
+  if (graphLockfiles.length > 1) return { error: `multiple supported lockfiles found: ${graphLockfiles.join(', ')}` }
+
+  const lockfile = graphLockfiles[0]
+  if (lockfile === undefined) return {}
+  const scanned = scannedFiles.find(file => file.path === lockfile)
+  if (scanned === undefined || scanned.symlinkTarget !== undefined) {
+    return { error: `${lockfile} is not a reviewed regular file` }
+  }
+  if (scanned.size > MAX_GRAPH_FILE_BYTES) return { error: `${lockfile} exceeds the ${MAX_GRAPH_FILE_BYTES} byte safety limit` }
+
+  const name = asString(manifest.name)
+  const version = asString(manifest.version)
+  if (name === undefined || version === undefined) {
+    return { error: 'package.json must declare both name and version before a lockfile graph can be mapped' }
+  }
+
+  try {
+    const contents = await readFile(resolve(root, lockfile), 'utf8')
+    if (lockfile === 'pnpm-lock.yaml') {
+      return { graph: parsePnpmLockGraph(contents, { name, version }) }
+    }
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(contents) as unknown
+    } catch {
+      return { error: 'package-lock.json is not valid JSON' }
+    }
+    return { graph: parseNpmLockGraph(parsed, { name, version }) }
+  } catch (error: unknown) {
+    return { error: error instanceof Error ? error.message : String(error) }
+  }
+}
+
+function inspectDependencyGraphCompleteness(graph: DependencyGraph, findings: Finding[]): void {
+  const unresolved = graph.unresolved ?? []
+  const required = unresolved.filter(edge => edge.kind !== 'optional')
+  if (required.length === 0) return
+  const optional = unresolved.length - required.length
+  addFinding(
+    findings,
+    'dependency-graph-incomplete',
+    'info',
+    'Committed dependency graph has unresolved edges',
+    `The lockfile was parsed, but ${required.length} required dependency edge(s) could not be mapped${optional === 0 ? '' : `; ${optional} optional edge(s) are also unresolved`}. Vulnerability coverage for those paths is incomplete.`,
+    { unresolvedCount: unresolved.length, requiredUnresolvedCount: required.length, optionalUnresolvedCount: optional },
+    'Regenerate the lockfile with the intended package manager and review the complete dependency diff before relying on monitoring results.',
+  )
 }
 
 function insideRoot(root: string, candidate: string): boolean {
@@ -511,9 +579,24 @@ export async function scanDirectory(input: string, options: ScanOptions = {}): P
   const lockfiles = LOCKFILES.filter(lockfile => fileNames.has(lockfile))
   const lifecycleScripts = collectLifecycleScripts(manifest)
   const dependencies = collectDependencies(manifest)
+  const dependencyGraphEvidence = await readDependencyGraph(root, manifest, lockfiles, walk.files)
 
   inspectLifecycleScripts(lifecycleScripts, findings)
   inspectDependencySpecs(dependencies, lockfiles.length > 0, options.dependencyGraphResolved ?? false, findings)
+  if (dependencyGraphEvidence.error !== undefined) {
+    const graphLockfile = lockfiles.find(lockfile => (GRAPH_LOCKFILES as readonly string[]).includes(lockfile))
+    addFinding(
+      findings,
+      'dependency-graph-unavailable',
+      'info',
+      'Committed dependency graph could not be established',
+      dependencyGraphEvidence.error,
+      graphLockfile === undefined ? undefined : { lockfile: graphLockfile },
+      'Fix or regenerate the supported lockfile, then rerun the scan so vulnerability paths can be checked against exact versions.',
+    )
+  } else if (dependencyGraphEvidence.graph !== undefined) {
+    inspectDependencyGraphCompleteness(dependencyGraphEvidence.graph, findings)
+  }
   await inspectNpmLockfileRoot(root, manifest, walk.files, findings)
   inspectBundledDependencies(manifest, findings)
   inspectFiles(root, walk.files, findings)
@@ -545,12 +628,16 @@ export async function scanDirectory(input: string, options: ScanOptions = {}): P
       packageManager: asString(manifest.packageManager) ?? null,
       lifecycleScripts,
       dependencies,
+      ...(dependencyGraphEvidence.graph === undefined ? {} : { dependencyGraph: dependencyGraphEvidence.graph }),
+      ...(dependencyGraphEvidence.error === undefined ? {} : { dependencyGraphError: dependencyGraphEvidence.error }),
     },
     coverage: {
       staticSource: walk.incomplete ? 'incomplete' : 'complete',
       artifactIntegrity: 'locally-hashed',
       registrySignature: 'not-checked',
-      dependencyResolution: options.dependencyGraphResolved === true ? 'resolved' : 'manifest-only',
+      dependencyResolution: dependencyGraphEvidence.graph !== undefined || options.dependencyGraphResolved === true
+        ? 'resolved'
+        : 'manifest-only',
       provenance: 'not-checked',
       sourceArtifactMatch: 'not-checked',
       sandboxDetonation: 'not-run',

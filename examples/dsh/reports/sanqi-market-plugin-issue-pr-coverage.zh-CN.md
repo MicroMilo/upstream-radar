@@ -133,5 +133,5 @@ lifecycle scripts: none
 - [Sanqi-normal/dsh-webui-market-plugin#5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)
 - 当前状态：**open**；最近一次检查没有机器人或维护者回复。
 
-Issue 中包含 `upstream-radar@0.33.6` 的精确复现命令，并请维护者确认插件应依赖
+Issue 中包含 `upstream-radar@0.33.7` 的精确复现命令，并请维护者确认插件应依赖
 公开 npm 宿主包，还是由 DSH profile 在宿主平面提供这些包。

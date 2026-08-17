@@ -52,6 +52,28 @@ describe('text report rendering', () => {
     assert.match(rendered, /Fix: Regenerate package-lock\.json from the intended package\.json/)
   })
 
+  it('shows the real lockfile graph in a public-repository scan', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-render-graph-'))
+    await writeFile(join(root, 'package.json'), JSON.stringify({
+      name: 'graph-example',
+      version: '1.0.0',
+      dependencies: { direct: '1.0.0' },
+    }))
+    await writeFile(join(root, 'package-lock.json'), JSON.stringify({
+      lockfileVersion: 3,
+      packages: {
+        '': { name: 'graph-example', version: '1.0.0', dependencies: { direct: '1.0.0' } },
+        'node_modules/direct': { version: '1.0.0' },
+      },
+    }))
+
+    const rendered = renderTextReport(await scanDirectory(root))
+    assert.match(rendered, /Dependency graph:/)
+    assert.match(rendered, /root: graph-example@1\.0\.0/)
+    assert.match(rendered, /nodes: 2/)
+    assert.match(rendered, /graph-example@1\.0\.0 -> direct@1\.0\.0 \[runtime\]/)
+  })
+
   it('shows the dependency edges that make an artifact review incomplete', async () => {
     const root = await mkdtemp(join(tmpdir(), 'upstream-radar-render-coverage-'))
     await writeFile(join(root, 'package.json'), '{"name":"coverage-example","version":"1.0.0"}')

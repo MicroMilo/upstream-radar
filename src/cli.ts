@@ -223,7 +223,9 @@ Use this for an unpacked plugin before installation. A public GitHub URL is
 shallow-cloned into a temporary directory; dependencies are not installed,
 lifecycle scripts are not run, and plugin code is not loaded. Lifecycle scripts,
 remote shell patterns, unsafe symlinks, mutable dependencies, and DSH bundle
-metadata are recorded as bounded evidence.
+metadata are recorded as bounded evidence. A unique committed npm or pnpm
+lockfile is also parsed into an exact dependency graph; if more than one is
+present, Radar stops instead of guessing.
 `,
     inspect: `Upstream Radar — inspect one exact npm artifact before installation
 

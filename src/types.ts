@@ -114,6 +114,8 @@ export interface ScanReport {
     packageManager: string | null
     lifecycleScripts: LifecycleScriptEvidence[]
     dependencies: DependencyEvidence[]
+    dependencyGraph?: DependencyGraph
+    dependencyGraphError?: string
     npm?: NpmEvidence
   }
   coverage: Coverage

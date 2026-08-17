@@ -1,4 +1,5 @@
 import type { ScanReport } from './types.js'
+import type { DependencyGraph } from './radar-types.js'
 
 type UnresolvedEdge = NonNullable<
   NonNullable<NonNullable<ScanReport['evidence']['npm']>['dependencyAudit']['graph']>['unresolved']
@@ -18,6 +19,42 @@ function displayUnresolvedEdge(
   const parent = graph.nodes.find(node => node.id === edge.from)
   const parentName = parent === undefined ? edge.from : `${parent.name}@${parent.version}`
   return `  ${display(parentName, 256)} -> ${display(edge.name, 256)} (${display(edge.spec, 256)}) [${display(edge.kind, 32)}]`
+}
+
+function displayGraphEdge(graph: DependencyGraph, from: string, to: string, kind: string): string {
+  const nodes = new Map(graph.nodes.map(node => [node.id, node]))
+  const parent = nodes.get(from)
+  const child = nodes.get(to)
+  const parentName = parent === undefined ? from : `${parent.name}@${parent.version}`
+  const childName = child === undefined ? to : `${child.name}@${child.version}`
+  return `  ${display(parentName, 256)} -> ${display(childName, 256)} [${display(kind, 32)}]`
+}
+
+function renderDependencyGraph(lines: string[], graph: DependencyGraph): void {
+  const nodes = new Map(graph.nodes.map(node => [node.id, node]))
+  const root = nodes.get(graph.rootNodeId)
+  const unresolved = graph.unresolved ?? []
+  lines.push(
+    '',
+    'Dependency graph:',
+    `  source: ${display(graph.source ?? 'lockfile', 64)}`,
+    `  root: ${display(root === undefined ? graph.rootNodeId : `${root.name}@${root.version}`, 512)}`,
+    `  nodes: ${graph.nodes.length}`,
+    `  edges: ${graph.edges.length}`,
+    `  unresolved: ${unresolved.length}`,
+    `  digest: ${display(graph.digest ?? '(none)', 128)}`,
+  )
+  const directEdges = graph.edges.filter(edge => edge.from === graph.rootNodeId)
+  if (directEdges.length > 0) {
+    lines.push(`  direct dependencies: ${directEdges.length}`)
+    for (const edge of directEdges.slice(0, 12)) lines.push(displayGraphEdge(graph, edge.from, edge.to, edge.kind))
+    if (directEdges.length > 12) lines.push(`  ... ${directEdges.length - 12} more direct dependencies`)
+  }
+  if (unresolved.length > 0) {
+    lines.push('  unresolved edge details:')
+    for (const edge of unresolved.slice(0, 12)) lines.push(displayUnresolvedEdge(graph, edge))
+    if (unresolved.length > 12) lines.push(`  ... ${unresolved.length - 12} more unresolved edge(s)`)
+  }
 }
 
 export function renderTextReport(report: ScanReport): string {
@@ -41,6 +78,12 @@ export function renderTextReport(report: ScanReport): string {
     '',
     `Evidence: ${report.evidence.filesScanned} ${report.evidence.filesScanned === 1 ? 'file' : 'files'}, ${report.evidence.bytesHashed} bytes, ${report.evidence.dependencies.length} dependency declarations`,
   ]
+
+  if (report.evidence.dependencyGraph !== undefined) {
+    renderDependencyGraph(lines, report.evidence.dependencyGraph)
+  } else if (report.evidence.dependencyGraphError !== undefined) {
+    lines.push('', 'Dependency graph: unavailable', `  reason: ${display(report.evidence.dependencyGraphError, 2_048)}`)
+  }
 
   if (report.evidence.npm !== undefined) {
     const npm = report.evidence.npm

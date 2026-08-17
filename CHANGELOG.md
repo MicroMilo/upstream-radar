@@ -2,6 +2,12 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.33.7] - 2026-08-18
+
+### Usability
+
+- Make `scan` reconstruct the unique committed npm or pnpm lockfile graph, show direct edges and unresolved paths in text output, and explain when the graph cannot be established without guessing.
+
 ## [0.33.6] - 2026-08-18
 
 ### Usability
