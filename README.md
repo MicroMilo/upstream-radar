@@ -284,6 +284,13 @@ The three repeated lockfile-metadata cases are rechecked in the
 [follow-up report](examples/dsh/reports/lockfile-metadata-follow-up-2026-08-18.md),
 with an author-ready issue draft for the first maintainer.
 
+The [DSH-TUI source-vs-npm report](examples/dsh/reports/dsh-tui-source-vs-npm-2026-08-18.md)
+shows why both inputs matter: its source tree contains a 363-node pnpm graph and
+an install-time build hook, while the exact published `0.8.0` artifact has no
+lifecycle script, verified provenance, 120 resolved packages, and zero known
+vulnerabilities. Radar keeps those facts separate instead of calling the plugin
+unsafe based on only one side.
+
 The observer has also replayed a complete maintainer loop: the
 [Sanqi repair replay](examples/upstream-observer/reports/sanqi-maintainer-repair-live.md)
 detects the source fix before npm is republished, keeps the task pending, and
