@@ -86,6 +86,14 @@ export {
 } from './dsh-profile-check.js'
 export { DEMO_SCHEMA, createDemoEvent, createDemoReport, renderDemo, type DemoReport } from './demo.js'
 export {
+  DSH_CASE_SCHEMA,
+  createDshCaseReport,
+  renderDshCase,
+  type DshCaseCheck,
+  type DshCaseFinding,
+  type DshCaseReport,
+} from './dsh-case.js'
+export {
   QUICKSTART_SCHEMA,
   createQuickstartReport,
   renderQuickstartReport,

@@ -71,6 +71,14 @@ npx --yes upstream-radar@latest demo
 
 它会打印一条准确的传递依赖路径、独立漏洞源证据（包括明确标出的来源冲突）、CISA KEV/EPSS 优先级证据、只读 DSH Agent 交接任务和下一步安装命令。它只使用本地 fixture，不会读取你的仓库、安装插件，也不声称 demo 公告是真实漏洞；需要机器可读结果时加 `--json`。
 
+如果你想直接看到真实 DSH 配置从故障到修复的完整案例，而不是抽象的依赖演示，可以运行：
+
+```bash
+npx --yes upstream-radar@latest case dsh-web-ui
+```
+
+它会展示公开 `dsh-web-ui` 案例的三个状态：启动前缺少 loader、手动补包后出现重复 loader id、维护者修复后通过。这个命令不联网、不安装插件、不启动 DSH、不执行插件代码，也不调用 LLM；需要给 CI 或展示页面使用时加 `--json`。
+
 它的核心结果大致是这样（demo 使用本地 fixture，省略了部分字段）：
 
 ```text

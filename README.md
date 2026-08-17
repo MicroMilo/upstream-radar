@@ -76,6 +76,19 @@ npx --yes upstream-radar@latest demo
 
 It prints one exact transitive path, independent advisory-source evidence (including an explicit source conflict), CISA KEV/EPSS prioritization evidence, the read-only DSH Agent handoff, and the next setup command. It uses a local fixture only; it does not inspect your repository, install a plugin, or claim that the demo advisory is real. Use `--json` when you want the same proof as a machine-readable artifact.
 
+Want to see a real DSH profile failure and repair instead of a synthetic
+dependency path? Run the packaged case replay:
+
+```bash
+npx --yes upstream-radar@latest case dsh-web-ui
+```
+
+It shows three concrete states from the public `dsh-web-ui` case: the profile
+is blocked by a missing loader, manually adding that package creates a duplicate
+loader id, and the bundled-carrier fix passes. This command is network-free and
+does not install a plugin, start DSH, execute plugin code, or call an LLM. Use
+`--json` when you want the same evidence for a CI artifact or demo page.
+
 The core result looks like this (the demo uses a local fixture; fields are abbreviated):
 
 ```text

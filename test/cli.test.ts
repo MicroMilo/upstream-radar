@@ -46,6 +46,7 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /probe dsh-load <package\.tgz>/)
     assert.match(help.stdout, /probe dsh-matrix <package\.tgz>/)
     assert.match(help.stdout, /demo \[--json\]/)
+    assert.match(help.stdout, /case dsh-web-ui \[--json\]/)
 
     const profileHelp = spawnSync(process.execPath, [cli, 'profile-check', '--help'], { encoding: 'utf8' })
     assert.equal(profileHelp.status, 0)
@@ -66,6 +67,25 @@ describe('CLI option parsing', () => {
     assert.equal(demoReport.schema, 'upstream-radar.demo/v1alpha1')
     assert.equal(demoReport.networkFree, true)
     assert.equal(demoReport.analysisTask.constraints.readOnly, true)
+
+    const dshCase = spawnSync(process.execPath, [cli, 'case', 'dsh-web-ui'], { encoding: 'utf8' })
+    assert.equal(dshCase.status, 0)
+    assert.match(dshCase.stdout, /Before DSH starts: BLOCKED/)
+    assert.match(dshCase.stdout, /Manual package workaround: BLOCKED.*duplicate-loader-id/)
+    assert.match(dshCase.stdout, /Maintainer fix replay: PASS/)
+    assert.match(dshCase.stdout, /no install, plugin execution, DSH start, Agent, or LLM/)
+
+    const dshCaseJson = spawnSync(process.execPath, [cli, 'case', 'dsh-web-ui', '--json'], { encoding: 'utf8' })
+    assert.equal(dshCaseJson.status, 0)
+    const caseReport = JSON.parse(dshCaseJson.stdout) as { schema: string; networkFree: boolean; checks: Array<{ id: string; status: string }>; execution: { llm: boolean } }
+    assert.equal(caseReport.schema, 'upstream-radar.dsh-case/v1alpha1')
+    assert.equal(caseReport.networkFree, true)
+    assert.deepEqual(caseReport.checks.map(item => [item.id, item.status]), [['before', 'blocked'], ['manual-add', 'blocked'], ['fixed', 'pass']])
+    assert.equal(caseReport.execution.llm, false)
+
+    const invalidCase = spawnSync(process.execPath, [cli, 'case', 'unknown'], { encoding: 'utf8' })
+    assert.equal(invalidCase.status, 1)
+    assert.match(invalidCase.stderr, /case requires dsh-web-ui/)
 
     const invalidDemo = spawnSync(process.execPath, [cli, 'demo', '--unexpected'], { encoding: 'utf8' })
     assert.equal(invalidDemo.status, 1)

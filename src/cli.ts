@@ -8,6 +8,7 @@ import { renderCompatibilityBenchmark, runCompatibilityBenchmark } from './compa
 import { assessCompatibilityChange } from './compatibility.js'
 import { probeDshLoad, probeDshLoadMatrix, renderDshLoadMatrix, renderDshLoadProbe } from './dsh-probe.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
+import { createDshCaseReport, renderDshCase } from './dsh-case.js'
 import { createDoctorReport, renderDoctorReport } from './doctor.js'
 import { checkDshProfile, renderDshProfileCheck, renderDshProfileCheckSummary } from './dsh-profile-check.js'
 import { createDemoReport, renderDemo } from './demo.js'
@@ -309,6 +310,16 @@ Usage:
 The demo is network-free and uses only a local fixture. It does not inspect your
 repository, install a plugin, start DSH, or claim that its advisory is real.
 `,
+    case: `Upstream Radar — replay a real DSH profile failure and its repair
+
+Usage:
+  upstream-radar case dsh-web-ui [--json]
+
+This network-free case checks a broken DSH web-ui profile, the tempting manual
+package workaround, and the corrected bundled-carrier layout. It reads only
+packaged fixtures; it does not install packages, start DSH, execute plugin code,
+or call an Agent/model.
+`,
     quickstart: `Upstream Radar — choose the smallest honest first-use path
 
 Usage:
@@ -473,6 +484,7 @@ Usage:
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar demo [--json]
+  upstream-radar case dsh-web-ui [--json]
   upstream-radar quickstart [directory] [--json]
   upstream-radar benchmark compatibility [--json]
   upstream-radar radar check <config.json> [--state <state.json>] [--webhook <https-url>] [--threat-intel] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
@@ -502,6 +514,7 @@ Commands:
   profile-check  check a DSH profile's lockfile and patch rows without starting DSH
   probe    run a bounded DSH bundle-load check or version matrix in disposable profiles
   demo     show the exact-path-to-DSH handoff without network, DSH, or plugin installation
+  case     replay a real DSH profile failure and its repair without side effects
   quickstart choose the smallest first-use path without changing the environment
   benchmark run offline compatibility-rule contracts without network or plugin execution
   radar    monitor vulnerability changes, watch continuously, find the next action, inspect status/history, or assess a candidate compatibility change
@@ -992,6 +1005,19 @@ function runDemo(args: readonly string[]): number {
   }
   const report = createDemoReport()
   process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDemo(report))
+  return 0
+}
+
+async function runDshCase(args: readonly string[]): Promise<number> {
+  const caseId = args[0]
+  if (caseId !== 'dsh-web-ui') throw new Error('case requires dsh-web-ui')
+  let json = false
+  for (const argument of args.slice(1)) {
+    if (argument === '--json') json = true
+    else throw new Error(`unknown option for case: ${argument}`)
+  }
+  const report = await createDshCaseReport()
+  process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDshCase(report))
   return 0
 }
 
@@ -1895,6 +1921,7 @@ async function main(args: readonly string[]): Promise<number> {
   if (command === 'profile-check') return runDshProfileCheck(args.slice(1))
   if (command === 'probe') return runProbe(args.slice(1))
   if (command === 'demo') return runDemo(args.slice(1))
+  if (command === 'case') return runDshCase(args.slice(1))
   if (command === 'observe') return runObserve(args.slice(1))
   if (command === 'benchmark') return runBenchmark(args.slice(1))
   if (command === 'radar') return runRadar(args.slice(1))
