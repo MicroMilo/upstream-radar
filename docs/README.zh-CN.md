@@ -248,6 +248,8 @@ OpenAI-compatible 模型，先设置
 格式。[完整报告](../examples/dsh/reports/dsh-batch-50-2026-08-17.md)保留了这些
 结果；我们不会把它包装成“发现了 50 个漏洞”。其中 3 个重复出现的锁文件根版本问题已经重新复核，见[后续报告](../examples/dsh/reports/lockfile-metadata-follow-up-2026-08-18.md)，里面也保留了第一位维护者可以直接确认的 issue 草稿。
 
+我们还用 observer 重放了一条真正闭环的维护者案例：[Sanqi 修复重放](../examples/upstream-observer/reports/sanqi-maintainer-repair-live.md)。它在源码修复进入仓库、但 npm 仍未发布新版本时记录 old → new 变化并保留 pending 任务，后续发布出现时再复查精确发布物。
+
 ## 观察 DSH 插件的上游变化
 
 这是新的上游变化闭环：Radar 不在每轮都重复做一次大扫描，而是为每个
@@ -302,6 +304,11 @@ npx --yes upstream-radar@0.33.12 observe \
   --lockfile pnpm-lock.yaml --lockfile-type pnpm \
   --state ./observations.json --report ./upstream-radar-observer.md
 ```
+
+提交的 targets 示例还包含一个没有锁文件的真实案例
+[`Sanqi-normal/dsh-webui-market-plugin`](../examples/upstream-observer/targets.yml)。
+它的 peer 修复先进入源码，npm 仍是 `0.5.4` 时 observer 不会冒充“发布物已修复”，
+而是留下待处理任务；完整结果见[observer 重放报告](../examples/upstream-observer/reports/sanqi-maintainer-repair-live.md)。
 
 执行一次检查：
 

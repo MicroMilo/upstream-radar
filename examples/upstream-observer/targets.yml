@@ -10,3 +10,12 @@ targets:
     packagePath: package.json
     lockfile: pnpm-lock.yaml
     lockfileType: pnpm
+
+  # A real maintainer-repair case. This repository has no committed lockfile;
+  # the observer still watches the source manifest and the published npm release.
+  - id: dsh-webui-market-plugin
+    ecosystem: dsh
+    repository: Sanqi-normal/dsh-webui-market-plugin
+    ref: master
+    package: '@sanqi-normal/dsh-webui-market-plugin'
+    packagePath: package.json

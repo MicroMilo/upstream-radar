@@ -284,6 +284,11 @@ The three repeated lockfile-metadata cases are rechecked in the
 [follow-up report](examples/dsh/reports/lockfile-metadata-follow-up-2026-08-18.md),
 with an author-ready issue draft for the first maintainer.
 
+The observer has also replayed a complete maintainer loop: the
+[Sanqi repair replay](examples/upstream-observer/reports/sanqi-maintainer-repair-live.md)
+detects the source fix before npm is republished, keeps the task pending, and
+will re-check the exact published artifact when the release appears.
+
 ## Observe DSH plugin upstream changes
 
 This is the upstream-change loop: instead of polling every vulnerability source on
@@ -341,6 +346,12 @@ npx --yes upstream-radar@0.33.12 observe \
   --lockfile pnpm-lock.yaml --lockfile-type pnpm \
   --state ./observations.json --report ./upstream-radar-observer.md
 ```
+
+The checked-in targets also include a real maintainer-repair case with no
+committed lockfile: [`Sanqi-normal/dsh-webui-market-plugin`](examples/upstream-observer/targets.yml).
+Its source peer-range fix was observed while npm still served `0.5.4`, so the
+observer left a pending task instead of claiming the published artifact was
+fixed. See the [live replay](examples/upstream-observer/reports/sanqi-maintainer-repair-live.md).
 
 Then run one cycle:
 
