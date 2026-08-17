@@ -385,7 +385,10 @@ point. A quiet run does not create a daily commit.
 
 For the shortest copy-paste setup, use the [minimal one-repository workflow](examples/github-actions/upstream-observer-minimal.yml).
 It uses the published npm CLI, needs no Radar checkout or build, and only asks
-you to change the repository URL (or enter one through `workflow_dispatch`).
+you to change the repository URL (or enter one through `workflow_dispatch`). Each
+run keeps the concise Job Summary and uploads the full Markdown/JSON report as a
+14-day downloadable artifact; it does not add another check or change the
+observation exit code.
 
 The workflow also supports three optional repository secrets—
 `ISSUE_LOCATOR_LLM_BASE_URL`, `ISSUE_LOCATOR_LLM_API_KEY`, and

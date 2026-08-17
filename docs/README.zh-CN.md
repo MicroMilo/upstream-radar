@@ -351,7 +351,8 @@ Radar 只读取这次调用需要的接口地址、API key 和模型名，不会
 
 如果想要最短的复制路径，使用[单仓库最小 workflow](../examples/github-actions/upstream-observer-minimal.yml)。
 它直接使用已发布的 npm CLI，不需要 checkout 或构建 Radar；只需修改仓库 URL，或者在
-`workflow_dispatch` 时填写 URL。
+`workflow_dispatch` 时填写 URL。每次运行会保留简短的 Job Summary，并上传完整的
+Markdown/JSON 报告作为 14 天可下载 artifact；它不会增加额外检查，也不会改变观察命令的退出码。
 
 这个 workflow 支持三个可选的 repository secret：
 `ISSUE_LOCATOR_LLM_BASE_URL`、`ISSUE_LOCATOR_LLM_API_KEY` 和
