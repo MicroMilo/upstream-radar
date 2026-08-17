@@ -39,6 +39,10 @@ Added runtime dependency edges:
 Runtime files include:
   package.json, pnpm-lock.yaml, src/adapters/dsh/*, src/notify/*
 DSH task: upstream-task-b958af9ee8c9cc9eac36fb33
+Exact artifact check:
+  npx --yes upstream-radar@latest inspect npm:dsh-feishu-bot@0.15.3 --deep
+Coverage warning: 7 dependency edge(s) are unresolved; an empty vulnerability
+list would be incomplete.
 ```
 
 The observer reported `DSH Agent: not configured` and kept the task pending.

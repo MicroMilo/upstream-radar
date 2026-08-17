@@ -1491,8 +1491,17 @@ export function renderObserverReport(report: ObserverReport): string {
     if (change.graph !== undefined) {
       if (change.graph.addedNodes.length > 0) lines.push(`Added dependencies: ${change.graph.addedNodes.slice(0, 12).join(', ')}`)
       if (change.graph.removedNodes.length > 0) lines.push(`Removed dependencies: ${change.graph.removedNodes.slice(0, 12).join(', ')}`)
+      if (change.graph.addedEdges.length > 0) {
+        lines.push(`Author next step: review added dependency edges: ${change.graph.addedEdges.slice(0, 8).join(', ')}`)
+      }
     }
     if (change.reasons.length > 0) lines.push(`Reasons: ${change.reasons.join('; ')}`)
+    if (change.current.package !== undefined) {
+      lines.push(`Exact artifact check: npx --yes upstream-radar@latest inspect npm:${change.current.package.name}@${change.current.package.version} --deep`)
+    }
+    if (change.current.graph !== undefined && change.current.graph.unresolved > 0) {
+      lines.push(`Coverage warning: ${change.current.graph.unresolved} dependency edge(s) are unresolved; an empty vulnerability list would be incomplete.`)
+    }
     if (change.taskId !== undefined) lines.push(`DSH task: ${change.taskId}`)
     lines.push('')
   }

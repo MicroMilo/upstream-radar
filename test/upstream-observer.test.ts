@@ -12,6 +12,7 @@ import {
   parseObserverConfigText,
   parseObservationState,
   renderUpstreamChangeAgentPrompt,
+  renderObserverReport,
   runDshAgentCommand,
   runOpenAiCompatibleAgent,
   runObserver,
@@ -148,6 +149,9 @@ targets:
     assert.equal(secondRun.report.agent.succeeded, 1)
     assert.equal(agentCalls, 1)
     assert.equal(secondRun.state.pendingTasks.length, 0)
+    const rendered = renderObserverReport(secondRun.report)
+    assert.match(rendered, /Author next step: review added dependency edges/)
+    assert.match(rendered, /Exact artifact check: npx --yes upstream-radar@latest inspect npm:dsh-demo@1\.1\.0 --deep/)
 
     const thirdRun = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, secondRun.state, {
       source,
