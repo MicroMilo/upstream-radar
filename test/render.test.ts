@@ -89,6 +89,7 @@ describe('text report rendering', () => {
       dependencyAudit: {
         status: 'verified',
         packages: 2,
+        resolutionMode: 'legacy-peer-deps',
         graphDigest: 'sha256:graph',
         graph: {
           schema: 'upstream-radar.dependency-graph/v1alpha1',
@@ -111,6 +112,7 @@ describe('text report rendering', () => {
       },
     }
     const rendered = renderTextReport(report)
+    assert.match(rendered, /dependency resolution mode: legacy-peer-deps/)
     assert.match(rendered, /unresolved dependency edges: 2 \(1 optional\)/)
     assert.match(rendered, /coverage-example@1\.0\.0 -> optional-native \(\^1\.0\.0\) \[optional\]/)
     assert.match(rendered, /required@1\.0\.0 -> required-missing \(1\.0\.0\) \[runtime\]/)

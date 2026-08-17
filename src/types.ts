@@ -64,6 +64,8 @@ export interface NpmProvenanceEvidence {
   builder?: string
 }
 
+export type NpmDependencyResolutionMode = 'strict' | 'legacy-peer-deps'
+
 export interface NpmEvidence {
   registry: string
   tarball: string
@@ -83,6 +85,7 @@ export interface NpmEvidence {
   dependencyAudit: {
     status: 'not-run' | 'verified' | 'findings' | 'failed'
     packages: number | null
+    resolutionMode?: NpmDependencyResolutionMode
     graphDigest?: string
     graph?: DependencyGraph
     invalidSignatures: string[]

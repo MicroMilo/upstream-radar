@@ -308,6 +308,12 @@ manifest moving from `rc.6` to `rc.7`, keeps 70 local workspace edges visible,
 and does not invent dependency-edge changes when only the graph root version
 changes.
 
+The [exact DSH `rc.7` artifact review](examples/dsh/reports/dsh-core-artifact-rc7-2026-08-18.md)
+adds the package side of the same story: strict npm peer resolution timed out,
+so Radar retried with a clearly labelled legacy-peer mode and returned a
+568-node graph, 262 unresolved peer/optional edges, and zero known npm-audit
+vulnerabilities instead of silently returning an empty result.
+
 ## Observe DSH plugin upstream changes
 
 This is the upstream-change loop: instead of polling every vulnerability source on

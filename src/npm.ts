@@ -18,6 +18,7 @@ import {
   type CheckStatus,
   type Finding,
   type NpmEvidence,
+  type NpmDependencyResolutionMode,
   type NpmProvenanceEvidence,
   type ScanReport,
   type Severity,
@@ -630,18 +631,33 @@ async function deepAuditNpmPackage(
     const environment = safeEnvironment(root)
     const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
 
-    const install = await runProcess(npm, [
+    const installArgs = [
       'install', '--ignore-scripts', '--no-audit', '--no-fund', '--save-exact', '--loglevel=error',
       '--registry', registry,
-    ], root, environment, timeoutMs)
-    if (install.code !== 0 || install.timedOut || install.outputExceeded) {
-      const reason = install.timedOut
-        ? 'npm dependency resolution timed out'
-        : install.outputExceeded
-          ? 'npm dependency resolution exceeded output budget'
-          : `npm dependency resolution failed with exit code ${install.code}`
-      const detail = processFailureDetail(install.stderr)
-      return failed(detail === undefined ? reason : `${reason}: ${detail}`)
+    ]
+    let install = await runProcess(npm, installArgs, root, environment, timeoutMs)
+    let resolutionMode: NpmDependencyResolutionMode = 'strict'
+    if (install.outputExceeded) {
+      return failed('npm dependency resolution exceeded output budget')
+    }
+    if (install.code !== 0 || install.timedOut) {
+      // Some real DSH releases contain peer combinations that make npm's
+      // strict resolver spend the whole bounded window without producing a
+      // lockfile. Retry only the resolver with npm's legacy peer mode. Scripts
+      // remain disabled and the resulting graph is called out in the report.
+      const legacyInstall = await runProcess(npm, [...installArgs, '--legacy-peer-deps'], root, environment, timeoutMs)
+      if (legacyInstall.code === 0 && !legacyInstall.timedOut && !legacyInstall.outputExceeded) {
+        install = legacyInstall
+        resolutionMode = 'legacy-peer-deps'
+      } else {
+        const reason = install.timedOut
+          ? 'npm dependency resolution timed out'
+          : install.outputExceeded
+            ? 'npm dependency resolution exceeded output budget'
+            : `npm dependency resolution failed with exit code ${install.code}`
+        const detail = processFailureDetail(legacyInstall.stderr) ?? processFailureDetail(install.stderr)
+        return failed(detail === undefined ? reason : `${reason}: ${detail}`)
+      }
     }
 
     const lockfile = JSON.parse(await readFile(join(root, 'package-lock.json'), 'utf8')) as unknown
@@ -673,6 +689,7 @@ async function deepAuditNpmPackage(
         dependencyAudit: {
           status: 'failed',
           packages: dependencyGraph.nodes.length,
+          resolutionMode,
           graphDigest,
           graph: dependencyGraph,
           invalidSignatures,
@@ -690,6 +707,7 @@ async function deepAuditNpmPackage(
         dependencyAudit: {
           status: 'failed',
           packages: dependencyGraph.nodes.length,
+          resolutionMode,
           graphDigest,
           graph: dependencyGraph,
           invalidSignatures,
@@ -706,6 +724,7 @@ async function deepAuditNpmPackage(
         dependencyAudit: {
           status: 'failed',
           packages: dependencyGraph.nodes.length,
+          resolutionMode,
           graphDigest,
           graph: dependencyGraph,
           invalidSignatures,
@@ -724,6 +743,7 @@ async function deepAuditNpmPackage(
       dependencyAudit: {
         status,
         packages: dependencyGraph.nodes.length,
+        resolutionMode,
         graphDigest,
         graph: dependencyGraph,
         invalidSignatures,
@@ -847,6 +867,17 @@ function addNpmEvidenceFindings(evidence: NpmEvidence, findings: Finding[]): voi
       'high',
       'Resolved dependency audit did not complete',
       evidence.dependencyAudit.error ?? 'The dependency graph lacks complete signature and vulnerability evidence.',
+    ))
+  }
+
+  if (evidence.dependencyAudit.resolutionMode === 'legacy-peer-deps') {
+    findings.push(makeFinding(
+      'dependency-peer-resolution-relaxed',
+      'medium',
+      'Dependency graph used npm legacy peer resolution',
+      'Strict npm peer resolution did not finish within the bounded window. The fallback produced a usable dependency inventory with scripts disabled, but peer compatibility was not fully enforced during resolution.',
+      { mode: 'legacy-peer-deps' },
+      'Review peer dependency ranges separately before installation; keep the exact graph and vulnerability results as the current evidence.',
     ))
   }
 

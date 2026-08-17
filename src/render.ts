@@ -97,6 +97,7 @@ export function renderTextReport(report: ScanReport): string {
       `  dependency audit: ${npm.dependencyAudit.status}`,
       `  resolved packages: ${npm.dependencyAudit.packages ?? 'not resolved'}`,
     )
+    if (npm.dependencyAudit.resolutionMode !== undefined) lines.push(`  dependency resolution mode: ${npm.dependencyAudit.resolutionMode}`)
     if (npm.provenance.sourceRepository !== undefined) lines.push(`  source repository: ${display(npm.provenance.sourceRepository)}`)
     if (npm.provenance.sourceCommit !== undefined) lines.push(`  source commit: ${display(npm.provenance.sourceCommit)}`)
     if (npm.provenance.workflow !== undefined) lines.push(`  build workflow: ${display(npm.provenance.workflow)}`)
