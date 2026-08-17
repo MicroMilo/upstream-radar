@@ -8,7 +8,7 @@ release.
 ## Rechecked with the public CLI
 
 Each repository was cloned at its current public `main` commit and scanned with
-`upstream-radar@0.33.10`. No package was installed, loaded, or executed.
+`upstream-radar@0.33.11`. No package was installed, loaded, or executed.
 
 | Repository | Commit | `package.json` | `package-lock.json` root | Result |
 | --- | --- | ---: | ---: | --- |

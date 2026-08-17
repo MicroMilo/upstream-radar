@@ -460,5 +460,34 @@ targets:
       await rm(root, { recursive: true, force: true })
       await new Promise<void>((resolve, reject) => server.close(error => error === undefined ? resolve() : reject(error)))
     }
+
+    const notFoundServer = createServer((request, response) => {
+      response.writeHead(404)
+      response.end()
+    })
+    await new Promise<void>((resolve, reject) => {
+      notFoundServer.once('error', reject)
+      notFoundServer.listen(0, '127.0.0.1', () => resolve())
+    })
+    const notFoundAddress = notFoundServer.address()
+    if (notFoundAddress === null || typeof notFoundAddress === 'string') throw new Error('404 test server did not expose an address')
+    const notFoundRoot = await mkdtemp(join(tmpdir(), 'upstream-radar-llm-404-'))
+    try {
+      const notFoundEnvFile = join(notFoundRoot, 'issue-locator.env')
+      await writeFile(notFoundEnvFile, [
+        `ISSUE_LOCATOR_LLM_BASE_URL=http://127.0.0.1:${notFoundAddress.port}/llm/v1`,
+        'ISSUE_LOCATOR_LLM_API_KEY=test-only',
+        'ISSUE_LOCATOR_LLM_MODEL=test-model',
+        '',
+      ].join('\n'))
+      const invocation = await runOpenAiCompatibleAgent(task, '404 task prompt', { envFile: notFoundEnvFile })
+      assert.equal(invocation.status, 'failed')
+      assert.match(invocation.error ?? '', /all known OpenAI-compatible paths/)
+      assert.match(invocation.error ?? '', /\/llm\/v1\/chat\/completions/)
+      assert.match(invocation.error ?? '', /\/llm\/openai\/v1\/chat\/completions/)
+    } finally {
+      await rm(notFoundRoot, { recursive: true, force: true })
+      await new Promise<void>((resolve, reject) => notFoundServer.close(error => error === undefined ? resolve() : reject(error)))
+    }
   })
 })

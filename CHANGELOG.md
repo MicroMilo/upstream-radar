@@ -2,6 +2,12 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.33.11] - 2026-08-18
+
+### Diagnostics
+
+- Report every known OpenAI-compatible endpoint attempted when an observer model call receives HTTP 404, so a misconfigured DSH/issue-locator endpoint can be corrected from the report instead of appearing as an opaque model failure.
+
 ## [0.33.10] - 2026-08-18
 
 ### Adoption

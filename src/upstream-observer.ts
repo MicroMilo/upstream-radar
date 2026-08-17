@@ -1374,7 +1374,7 @@ export async function runOpenAiCompatibleAgent(
         }),
         signal: AbortSignal.timeout(timeoutMs),
       })
-      if (response.status === 404 && index < endpoints.length - 1) continue
+      if (response.status === 404) continue
       if (!response.ok) {
         return {
           taskId: task.id,
@@ -1396,7 +1396,11 @@ export async function runOpenAiCompatibleAgent(
       return { taskId: task.id, status: 'failed', error: `LLM request failed at ${safeLlmEndpoint(endpoint)}: ${safeError(error)}` }
     }
   }
-  return { taskId: task.id, status: 'failed', error: 'LLM endpoint returned HTTP 404 for all known OpenAI-compatible paths' }
+  return {
+    taskId: task.id,
+    status: 'failed',
+    error: `LLM endpoint returned HTTP 404 for all known OpenAI-compatible paths: ${endpoints.map(safeLlmEndpoint).join(', ')}`,
+  }
 }
 
 export function runDshAgentCommand(
