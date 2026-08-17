@@ -38,13 +38,14 @@ async function loadLlmConfig() {
       await access(envFile)
       Object.assign(values, parseEnv(await readFile(envFile, 'utf8')))
     } catch (error) {
-      return { configured: false, source: envFile, error: `cannot read env file: ${error instanceof Error ? error.message : String(error)}` }
+      return { configured: false, source: 'explicit issue-locator env file', error: `cannot read env file: ${error instanceof Error ? error.message : String(error)}` }
     }
   }
   const configured = Boolean(values.ISSUE_LOCATOR_LLM_BASE_URL && values.ISSUE_LOCATOR_LLM_API_KEY && values.ISSUE_LOCATOR_LLM_MODEL)
   return {
     configured,
-    source: envFile ?? 'process environment',
+    // Never persist the caller's absolute path in the checked-in case report.
+    source: envFile === undefined ? 'process environment' : 'explicit issue-locator env file',
     ...(configured
       ? {
           baseUrl: values.ISSUE_LOCATOR_LLM_BASE_URL,
@@ -83,39 +84,51 @@ function parseModelJson(text) {
 
 async function askModel(config, facts) {
   if (!config.configured) return { status: 'not-configured' }
-  const endpoint = `${config.baseUrl.replace(/\/$/, '')}/chat/completions`
+  const normalizedBaseUrl = config.baseUrl.replace(/\/$/, '')
+  const baseUrls = [normalizedBaseUrl]
+  if (normalizedBaseUrl.endsWith('/llm/v1')) {
+    baseUrls.push(`${normalizedBaseUrl.slice(0, -'/llm/v1'.length)}/llm/openai/v1`)
+  } else if (normalizedBaseUrl.endsWith('/llm/openai/v1')) {
+    baseUrls.push(`${normalizedBaseUrl.slice(0, -'/llm/openai/v1'.length)}/llm/v1`)
+  }
+  const endpoints = [...new Set(baseUrls)].map(baseUrl => `${baseUrl}/chat/completions`)
   const prompt = [
     '你是 DSH 插件维护者的故障分析助手。下面的事实由静态检查器直接得到。',
     '不要改变 blocked/pass 判断，不要把推测写成事实；只解释根因、用户影响、作者修复和为什么值得持续监控。',
     '只输出一个 JSON 对象，字段必须是 root_cause、user_impact、maintainer_fix、why_monitoring_matters、confidence。',
     JSON.stringify(facts, null, 2),
   ].join('\n\n')
-  try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        authorization: `Bearer ${config.apiKey}`,
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: config.model,
-        messages: [
-          { role: 'system', content: '只返回合法 JSON。' },
-          { role: 'user', content: prompt },
-        ],
-        temperature: 0,
-        response_format: { type: 'json_object' },
-      }),
-      signal: AbortSignal.timeout(120_000),
-    })
-    if (!response.ok) return { status: 'unavailable', httpStatus: response.status, endpoint }
-    const body = await response.json()
-    const text = body?.choices?.[0]?.message?.content
-    if (typeof text !== 'string') return { status: 'unavailable', error: 'model response has no message content', endpoint }
-    return { status: 'used', result: parseModelJson(text) }
-  } catch (error) {
-    return { status: 'unavailable', error: error instanceof Error ? error.message : String(error), endpoint }
+  for (let index = 0; index < endpoints.length; index += 1) {
+    const endpoint = endpoints[index]
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${config.apiKey}`,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: config.model,
+          messages: [
+            { role: 'system', content: '只返回合法 JSON。' },
+            { role: 'user', content: prompt },
+          ],
+          temperature: 0,
+          response_format: { type: 'json_object' },
+        }),
+        signal: AbortSignal.timeout(120_000),
+      })
+      if (response.status === 404 && index < endpoints.length - 1) continue
+      if (!response.ok) return { status: 'unavailable', httpStatus: response.status, endpoint }
+      const body = await response.json()
+      const text = body?.choices?.[0]?.message?.content
+      if (typeof text !== 'string') return { status: 'unavailable', error: 'model response has no message content', endpoint }
+      return { status: 'used', result: parseModelJson(text) }
+    } catch (error) {
+      return { status: 'unavailable', error: error instanceof Error ? error.message : String(error), endpoint }
+    }
   }
+  return { status: 'unavailable', httpStatus: 404, endpoint: endpoints.at(-1) }
 }
 
 function safeEndpoint(value) {
