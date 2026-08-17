@@ -128,10 +128,15 @@ lifecycle scripts: none
 ## 上游反馈
 
 由于责任方可能是 DSH 宿主发布链，而不是插件作者，本轮先提交了确认型 issue，
-没有直接提交猜测性的代码 PR：
+没有直接提交猜测性的代码 PR。维护者随后确认问题并完成了源码修复：
 
 - [Sanqi-normal/dsh-webui-market-plugin#5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)
-- 当前状态：**open**；最近一次检查没有机器人或维护者回复。
+- [修复提交 `8b32828`](https://github.com/Sanqi-normal/dsh-webui-market-plugin/commit/8b328289ce5268451bd4414fa3ae41ee2f515649)
+- 当前状态：**源码已修复，npm 发布待跟进**；npm `latest` 仍是 `0.5.4`。
 
-Issue 中包含 `upstream-radar@0.33.12` 的精确复现命令，并请维护者确认插件应依赖
-公开 npm 宿主包，还是由 DSH profile 在宿主平面提供这些包。
+维护者把 DSH peer 从 `*` 收窄到测试过的范围，并说明这些包由 DSH web profile
+提供。我重新克隆 `8b32828` 后执行
+`npm install --package-lock-only --ignore-scripts --no-audit --no-fund`，解析成功：
+`dsh-client-runtime@0.1.0-rc.7`、`dsh-client-ui-slots@0.1.0-rc.7`、
+`cordis@4.0.1`，且不再拉取未发布的 `dsh-compact`。因此这条案例已经完成
+“发现 → 作者确认 → 作者修复 → 独立复验 → 等待发布”的闭环。

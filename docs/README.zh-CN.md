@@ -105,6 +105,10 @@ npx --yes upstream-radar@0.33.12 inspect \
 结果是 `review / incomplete`，具体原因是
 `@deepseek-ai/dsh-compact@^0.0.1-rc.1` 没有发布。这个检查不需要 DSH
 profile、插件执行或 LLM。完整证据见[作者修复报告](../examples/dsh/reports/sanqi-market-plugin-dependency-resolution.md)。
+这条案例已经闭环：维护者确认了宿主依赖约定，并提交了[修复
+`8b32828`](https://github.com/Sanqi-normal/dsh-webui-market-plugin/commit/8b328289ce5268451bd4414fa3ae41ee2f515649)；
+我在该源码提交上用禁用脚本的干净解析重新验证，已经不再拉取 `dsh-compact`。
+npm 发布物还没有更新，所以报告仍明确区分“源码已修复”和“发布版本待跟进”。
 
 如果你手里的是公开 DSH 插件仓库，不需要先手动 clone：
 

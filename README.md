@@ -111,6 +111,11 @@ npx --yes upstream-radar@0.33.12 inspect \
 The result is `review / incomplete`, with the concrete cause
 `@deepseek-ai/dsh-compact@^0.0.1-rc.1` not published. No DSH profile, plugin
 execution, or LLM is required. See the [reproducible author report](examples/dsh/reports/sanqi-market-plugin-dependency-resolution.md).
+This case also closed the loop: the maintainer confirmed the host contract and
+landed [commit `8b32828`](https://github.com/Sanqi-normal/dsh-webui-market-plugin/commit/8b328289ce5268451bd4414fa3ae41ee2f515649);
+a clean, scripts-disabled resolver on that source commit succeeds without
+pulling `dsh-compact`. The npm release is still pending, so the published
+artifact remains visibly separate from the repaired source.
 
 Want to scan a public DSH plugin repository without cloning it yourself? Give
 `scan` the GitHub URL:

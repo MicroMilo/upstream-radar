@@ -82,15 +82,34 @@ This is a dependency publication and DSH host-compatibility finding, not a
 confirmed vulnerability. The evidence is based on the exact npm artifact,
 registry metadata, and a scripts-disabled resolver; no plugin code was run.
 
-## Upstream feedback
+## Upstream feedback and repair verification
 
-Because ownership may belong to the DSH host publication chain rather than this
-plugin, the first upstream contact was a semantics-confirmation issue rather
-than a code-change PR:
+The maintainer confirmed the host-profile contract in
+[Issue #5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5) and
+implemented a source fix in
+[commit `8b32828`](https://github.com/Sanqi-normal/dsh-webui-market-plugin/commit/8b328289ce5268451bd4414fa3ae41ee2f515649):
 
-- [Sanqi-normal/dsh-webui-market-plugin#5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)
-- Status at the last check: **open**, with no maintainer or bot reply yet.
+- replaced the three floating DSH peer ranges with tested ranges;
+- documented that the peers are supplied by the DSH web profile;
+- excluded the known-broken `0.0.1-rc.1` host-runtime range.
 
-The issue includes the exact `upstream-radar@0.33.12` reproduction command and
-asks whether the intended contract is public-registry resolution or a DSH
-profile-supplied host plane.
+I re-cloned that commit and ran:
+
+```bash
+npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+```
+
+The clean resolver completed successfully and selected:
+
+```text
+@deepseek-ai/dsh-client-runtime   0.1.0-rc.7
+@deepseek-ai/dsh-client-ui-slots  0.1.0-rc.7
+@deepseek-ai/cordis                4.0.1
+@deepseek-ai/dsh-compact           absent
+```
+
+The npm `latest` tag is still `0.5.4`, so the exact published artifact analysed
+above remains the pre-fix release until the maintainer publishes the source
+fix. This is now a complete feedback loop with a clear release follow-up:
+Radar found the unresolvable path, the author confirmed and fixed it, and the
+repair is independently re-checkable before release.
