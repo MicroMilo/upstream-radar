@@ -59,6 +59,7 @@ It looks only at the current directory and local DSH profile metadata. It recomm
 | Add a scheduled CI gate | [GitHub Actions example](examples/github-actions/upstream-radar.yml) | A frozen check from a reviewed config or one lockfile, with a concise Job Summary and a machine-readable JSON report. |
 | Check a plugin before installing it | [`graph` / `init` for npm or pnpm lockfiles](#inspect-an-npm-or-pnpm-lockfile-before-installation) | Exact dependency paths and OSV/GitHub Advisory results without running the plugin or its lifecycle scripts. |
 | Scan a public DSH plugin repository | `scan https://github.com/owner/repository` | One command shallow-clones the public repo into a temporary directory and reports concrete problems without installing or running it. |
+| Scan one from GitHub Actions | [One-shot scan workflow](examples/github-actions/upstream-scan-minimal.yml) | Enter a public repository URL, see the result immediately, and download the JSON report without setting up a local environment. |
 | Review one exact published artifact | `upstream-radar inspect <package>@<exact-version> --deep` | Package, dependency, vulnerability, and provenance evidence for one release. |
 | Publish and maintain a DSH plugin | [Plugin author path](#for-dsh-plugin-authors) | Start from a real DSH scaffold, review its locked graph, and add a two-step CI gate before users install it. |
 | Send changed events to Feishu | [Feishu or HTTPS webhook](#notify-feishu-or-an-https-endpoint) | Native Feishu V2 text, environment-only secrets, durable acknowledgement, and retry. |
@@ -135,6 +136,13 @@ levels deep for one unique package declaring a DSH bundle. For example,
 same command reports `plugin` as the selected directory and scans it without
 installing or running anything. Multiple DSH plugin directories are reported as
 ambiguous instead of guessed.
+
+If you want an immediate result without waiting for an observation baseline,
+copy the [one-shot GitHub Actions workflow](examples/github-actions/upstream-scan-minimal.yml)
+into `.github/workflows/upstream-radar-scan.yml`. Run it manually, enter a public
+repository URL, and the Job Summary shows the verdict and findings while the
+full JSON result is kept as a 14-day artifact. This scan is read-only: it does
+not install dependencies, execute lifecycle scripts, load plugin code, or start DSH.
 
 When the selected directory contains exactly one supported lockfile,
 `package-lock.json` or `pnpm-lock.yaml`, the same scan also reconstructs its

@@ -54,6 +54,7 @@ npx --yes upstream-radar@latest quickstart
 | 加一个定时 CI 门禁 | [GitHub Actions 示例](../examples/github-actions/upstream-radar.yml) | 基于审查过的配置或唯一锁文件执行冻结检查，同时输出简短 Job Summary 和机器可读 JSON。 |
 | 安装插件前先检查它 | [npm/pnpm 锁文件的 `graph` / `init`](#安装前先检查-npm-或-pnpm-锁文件) | 不运行插件或 lifecycle script，直接得到精确依赖路径和 OSV/GitHub Advisory 结果。 |
 | 直接扫描公开 DSH 插件仓库 | `scan https://github.com/owner/repository` | 一条命令浅克隆公开仓库到临时目录，不安装、不运行，直接输出可修问题。 |
+| 从 GitHub Actions 立即扫描 | [一次性扫描 workflow](../examples/github-actions/upstream-scan-minimal.yml) | 输入公开仓库 URL，马上看到结果并下载 JSON，不需要本地安装。 |
 | 审查一个精确的发布物 | `upstream-radar inspect <包名>@<精确版本> --deep` | 查看单个版本的包、依赖、漏洞和 provenance 证据。 |
 | 发布和维护 DSH 插件 | [插件作者路径](#dsh-插件作者) | 从真实 DSH 脚手架开始，先审查锁定的依赖图，再在用户安装前接入两步 CI 门禁。 |
 | 把变化通知到飞书 | [飞书与 HTTPS 通知](#飞书与-https-通知) | 原生飞书 V2 文本、只从环境读取密钥、持久确认和失败重试。 |
@@ -129,6 +130,8 @@ DSH bundle 的包。例如 `https://github.com/2008924/dsh-progress-viz` 把插�
 直接依赖和未解析边。它仍然不会安装依赖或请求漏洞源；需要漏洞结果时使用
 `inspect --deep` 或 Radar 检查。如果两个受支持的锁文件同时存在，Radar 会解释歧义并
 停止，不会静默选择其中一个。
+
+如果不想先等第一次 baseline，可以复制[一次性扫描 workflow](../examples/github-actions/upstream-scan-minimal.yml)。手动输入公开 DSH 插件仓库 URL，Job Summary 会立即显示 verdict 和 findings，同时保留完整 JSON 14 天。它只读源码和锁文件，不安装依赖、不运行 lifecycle script、不加载插件，也不启动 DSH。
 
 已经试过 demo 或真实 DSH 配置？可以[分享一条试用结果](https://github.com/MicroMilo/upstream-radar/issues/new?template=trial.yml)，只需填写版本、入口和脱敏后的结果。不要提交源码、密钥或私有路径。
 
