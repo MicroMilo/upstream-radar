@@ -22,16 +22,19 @@ For a real end-to-end replay against a public DSH/Feishu plugin, see
 real upstream commit → dependency graph diff → pending DSH task without a DSH
 LLM configuration.
 
-Run it locally from the repository root:
+Run it from any directory with the published CLI:
 
 ```bash
 export GITHUB_TOKEN='a read-only token with repository metadata access'
-pnpm run build
-node dist/src/cli.js observe \
-  examples/upstream-observer/targets.yml \
+npx --yes upstream-radar@0.33.1 observe \
+  /path/to/targets.yml \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md
 ```
+
+For this repository's checked-in target, replace `/path/to/targets.yml` with
+`examples/upstream-observer/targets.yml`. Contributors can use `pnpm run build`
+and `node dist/src/cli.js observe` instead.
 
 The first run creates a baseline. Later runs compare the source commit, npm
 version/integrity, package manifest, and the optional lockfile graph. A change

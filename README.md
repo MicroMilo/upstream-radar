@@ -270,18 +270,14 @@ Then run one cycle:
 
 ```bash
 export GITHUB_TOKEN='a read-only GitHub token'
-pnpm run build
-node dist/src/cli.js observe \
+npx --yes upstream-radar@0.33.1 observe \
   ./targets.yml \
   --state ./observations.json \
   --report ./upstream-radar-observer.md
 ```
 
-This command uses the checked-out source so it is runnable before the next npm
-release. After a release includes `observe`, pin that exact version in CI rather
-than relying on `latest`.
-
-The first cycle only creates a baseline. Later cycles compare:
+This uses the published CLI; pin the exact version in CI rather than relying on
+`latest`. The first cycle only creates a baseline. Later cycles compare:
 
 - the source commit and changed files;
 - the published npm version and integrity value;
