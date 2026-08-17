@@ -60,6 +60,66 @@ function parseJson(result, label) {
   }
 }
 
+function samePackage(left, right) {
+  return left?.ecosystem === right?.ecosystem
+    && left?.name === right?.name
+    && left?.version === right?.version
+}
+
+async function probeDshMatrix(plugin, dshVersions) {
+  const result = await run(process.execPath, [
+    CLI,
+    'probe',
+    'dsh-matrix',
+    plugin.tarball,
+    '--dsh-version',
+    dshVersions.join(','),
+    '--json',
+  ])
+  if (result.stdout.trim() === '') {
+    return {
+      plugin: plugin.spec,
+      dshVersions,
+      result: 'unknown',
+      exitCode: result.code,
+      reason: 'the compatibility probe returned no machine-readable result',
+      error: result.stderr.trim().split(/\r?\n/).at(-1) ?? 'no stderr detail',
+    }
+  }
+  let report
+  try {
+    report = JSON.parse(result.stdout)
+  } catch (error) {
+    return {
+      plugin: plugin.spec,
+      dshVersions,
+      result: 'unknown',
+      exitCode: result.code,
+      reason: 'the compatibility probe returned invalid JSON',
+      error: error instanceof Error ? error.message : String(error),
+    }
+  }
+  return {
+    plugin: plugin.spec,
+    pluginPackage: {
+      ecosystem: 'npm',
+      name: report.artifact?.name,
+      version: report.artifact?.version,
+    },
+    artifact: {
+      name: report.artifact?.name,
+      version: report.artifact?.version,
+      sha256: report.artifact?.sha256,
+    },
+    dshVersions: report.dshVersions ?? dshVersions,
+    result: report.result ?? 'unknown',
+    summary: report.summary,
+    reason: report.reason,
+    exitCode: result.code,
+    boundary: report.boundary,
+  }
+}
+
 function checkStatus(report, id) {
   return report.checks.find(check => check.id === id)?.status
 }
@@ -76,9 +136,9 @@ function summarizeInstallFailure(result) {
   return signals
 }
 
-function summarizeEvent(event) {
+function summarizeEvent(event, compatibilityProbes = []) {
   if (event.kind === 'compatibility') {
-    return {
+    const summary = {
       id: event.id,
       incidentId: event.incidentId,
       kind: event.kind,
@@ -104,6 +164,21 @@ function summarizeEvent(event) {
       }),
       ...(event.releaseNotesUrl === undefined ? {} : { releaseNotesUrl: event.releaseNotesUrl }),
     }
+    const probe = compatibilityProbes.find(item => {
+      return samePackage(event.plugin, item.pluginPackage)
+    })
+    return probe === undefined
+      ? summary
+      : {
+          ...summary,
+          compatibilityProbe: {
+            result: probe.result,
+            dshVersions: probe.dshVersions,
+            ...(probe.summary === undefined ? {} : { summary: probe.summary }),
+            ...(probe.reason === undefined ? {} : { reason: probe.reason }),
+            ...(probe.artifact?.sha256 === undefined ? {} : { artifactSha256: probe.artifact.sha256 }),
+          },
+        }
   }
   if (event.kind === 'vulnerability' || event.kind === 'malware') {
     return {
@@ -257,6 +332,24 @@ async function main() {
     ], { cwd: project, env }), 'real DSH dependency check'), 'real DSH dependency check')
     if (check.sourceErrors.length !== 0) throw new Error(`real DSH check reported source errors: ${JSON.stringify(check.sourceErrors)}`)
 
+    // The observer's candidate dependency graph may be unavailable for a
+    // prerelease DSH update. Use the exact published plugin tarball and the
+    // same installed/candidate DSH versions to add a bounded load-only fact.
+    // This is deliberately a follow-up proof, not a safety verdict.
+    const candidateDshVersions = check.events
+      .filter(event => event.kind === 'compatibility'
+        && event.installed?.name === '@deepseek-ai/dsh'
+        && event.candidate?.name === '@deepseek-ai/dsh')
+      .flatMap(event => [event.installed?.version, event.candidate?.version])
+      .filter(version => typeof version === 'string')
+    const compatibilityDshVersions = [...new Set([DSH_VERSION, ...candidateDshVersions])]
+    const installedTarballs = pluginTarballs.filter(plugin => installedPluginSpecs.includes(plugin.spec))
+    const compatibilityProbes = []
+    for (const plugin of installedTarballs) {
+      if (compatibilityDshVersions.length < 2) break
+      compatibilityProbes.push(await probeDshMatrix(plugin, compatibilityDshVersions))
+    }
+
     const doctorAfter = parseJson(requireSuccess(await run(process.execPath, [
       CLI, 'doctor', configName, '--profile', 'headless', '--patch', patchName, '--json',
     ], { cwd: project, env }), 'doctor after first check'), 'doctor after first check')
@@ -300,10 +393,11 @@ async function main() {
         packagesQueried: check.packagesQueried,
         releasePackagesQueried: check.releasePackagesQueried,
         events: check.events.length,
-        eventSummaries: check.events.map(summarizeEvent),
+        eventSummaries: check.events.map(event => summarizeEvent(event, compatibilityProbes)),
         sourceErrors: check.sourceErrors.length,
         activeVulnerabilities: Object.keys(check.state.activeVulnerabilities).length,
       },
+      compatibilityProbes,
       doctor: {
         beforeFirstCheck: doctorBefore.status,
         afterFirstCheck: doctorAfter.status,
