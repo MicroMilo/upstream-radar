@@ -21,6 +21,7 @@ describe('CLI option parsing', () => {
     assert.equal(help.status, 0)
     assert.match(help.stdout, /setup \[--profile <name>\]/)
     assert.match(help.stdout, /doctor \[config\.json\]/)
+    assert.match(help.stdout, /scan <directory-or-github-url>/)
     assert.match(help.stdout, /init --pnpm-lock <pnpm-lock\.yaml> \[--root <package>@<exact-version>\]/)
     assert.match(help.stdout, /init --npm-lock <package-lock\.json> \[--root <package>@<exact-version>\]/)
     assert.match(help.stdout, /--pnpm-lock <path>\s+init: build a static inventory from a pnpm v6\/v9 lockfile/)

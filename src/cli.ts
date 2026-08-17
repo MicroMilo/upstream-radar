@@ -37,6 +37,7 @@ import { createRadarHistory, renderRadarHistory } from './radar-history.js'
 import { loadRadarState, saveRadarState } from './radar-state.js'
 import { createRadarNext, createRadarStatus, renderRadarNext, renderRadarStatus } from './radar-status.js'
 import { renderTextReport } from './render.js'
+import { materializeGitHubRepository } from './repository.js'
 import { scanDirectory } from './scan.js'
 import { CisaKevClient, EpssClient } from './threat-intel.js'
 import {
@@ -213,14 +214,16 @@ Checks:
   dependency coverage, and local webhook configuration. It does not contact
   OSV, npm, GitHub, DSH, or a model.
 `,
-    scan: `Upstream Radar — inspect a local package directory without running it
+    scan: `Upstream Radar — inspect a local package directory or public GitHub repository without running it
 
 Usage:
-  upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
+  upstream-radar scan <directory-or-github-url> [--json] [--fail-on <warn|review|block|never>]
 
-Use this for an unpacked plugin before installation. Lifecycle scripts, remote
-shell patterns, unsafe symlinks, mutable dependencies, and DSH bundle metadata
-are recorded as bounded evidence.
+Use this for an unpacked plugin before installation. A public GitHub URL is
+shallow-cloned into a temporary directory; dependencies are not installed,
+lifecycle scripts are not run, and plugin code is not loaded. Lifecycle scripts,
+remote shell patterns, unsafe symlinks, mutable dependencies, and DSH bundle
+metadata are recorded as bounded evidence.
 `,
     inspect: `Upstream Radar — inspect one exact npm artifact before installation
 
@@ -449,7 +452,7 @@ Usage:
   upstream-radar init --pnpm-lock <pnpm-lock.yaml> [--root <package>@<exact-version>] [options]
   upstream-radar init --npm-lock <package-lock.json> [--root <package>@<exact-version>] [options]
   upstream-radar doctor [config.json] [options]
-  upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
+  upstream-radar scan <directory-or-github-url> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect [npm:]<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
   upstream-radar observe <targets.yml> [--state <observations.json>] [--report <report.md>] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending] [--json]
   upstream-radar graph <npm-lock|pnpm-lock> <lockfile> [--root <package>@<exact-version>] [--json]
@@ -479,7 +482,7 @@ Commands:
   setup    install the exact Radar bundle, generate DSH wiring, and run doctor
   init     discover third-party bundles in DSH or initialize a reviewable lockfile inventory
   doctor   check local Radar/DSH wiring without polling upstream sources
-  scan     bounded, read-only inspection of a local package directory
+  scan     bounded, read-only inspection of a local directory or public GitHub repository
   inspect  fetch and verify the exact npm artifact before inspecting its contents
   observe  compare upstream DSH plugin repositories and route only meaningful changes to a DSH Agent
   graph    read a lockfile into the canonical dependency graph without installing packages
@@ -1876,12 +1879,24 @@ async function main(args: readonly string[]): Promise<number> {
     throw new Error(`invalid --fail-on value: ${thresholdValue}`)
   }
 
-  const report = command === 'scan'
-    ? await scanDirectory(target)
-    : await inspectNpmPackage(target, {
-        deep,
-        ...(registry === undefined ? {} : { registry }),
-      })
+  const remoteRepository = command === 'scan' && /^https?:\/\//i.test(target)
+    ? await materializeGitHubRepository(target)
+    : undefined
+  if (remoteRepository !== undefined) {
+    process.stderr.write(`Reading ${remoteRepository.target.owner}/${remoteRepository.target.repository} without installing dependencies or running code...\n`)
+  }
+
+  let report
+  try {
+    report = command === 'scan'
+      ? await scanDirectory(remoteRepository?.root ?? target)
+      : await inspectNpmPackage(target, {
+          deep,
+          ...(registry === undefined ? {} : { registry }),
+        })
+  } finally {
+    await remoteRepository?.cleanup()
+  }
   if (json) {
     process.stdout.write(`${JSON.stringify(report, null, 2)}\n`)
   } else {

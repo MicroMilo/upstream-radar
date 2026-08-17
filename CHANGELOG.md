@@ -2,6 +2,12 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.33.5] - 2026-08-18
+
+### Usability
+
+- Let `scan` accept a public GitHub repository URL, shallow-clone it into a temporary directory, and print the same concrete static findings without installing or running the plugin.
+
 ## [0.33.4] - 2026-08-18
 
 ### Usability

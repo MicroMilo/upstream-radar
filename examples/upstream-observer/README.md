@@ -28,7 +28,7 @@ Run it from any directory with the published CLI:
 
 ```bash
 export GITHUB_TOKEN='a read-only token with repository metadata access'
-npx --yes upstream-radar@0.33.4 observe \
+npx --yes upstream-radar@0.33.5 observe \
   /path/to/targets.yml \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md
