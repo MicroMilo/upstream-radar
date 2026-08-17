@@ -170,6 +170,75 @@ describe('upstream observer', () => {
     assert.equal(requested.some(url => url.endsWith('/commit-1/pnpm-lock.yaml')), true)
   })
 
+  it('auto-discovers the only nested DSH runtime package for a GitHub target', async () => {
+    const requested: string[] = []
+    const source = new UpstreamObserverClient({
+      fetch: async input => {
+        const url = String(input)
+        requested.push(url)
+        if (url.includes('/commits/main')) {
+          return new Response(JSON.stringify({ sha: 'commit-1' }), { status: 200 })
+        }
+        if (url.includes('/git/trees/commit-1?recursive=1')) {
+          return new Response(JSON.stringify({ tree: [
+            { path: 'package.json', type: 'blob' },
+            { path: 'apps/cli/package.json', type: 'blob' },
+          ] }), { status: 200 })
+        }
+        if (url.endsWith('/commit-1/package.json')) {
+          return new Response(JSON.stringify({
+            name: 'deepseek-harness',
+            version: '0.0.0',
+            packageManager: 'pnpm@11.3.0',
+          }), { status: 200 })
+        }
+        if (url.endsWith('/commit-1/apps/cli/package.json')) {
+          return new Response(JSON.stringify({
+            name: '@deepseek-ai/dsh',
+            version: '0.1.0-rc.7',
+            packageManager: 'pnpm@11.3.0',
+          }), { status: 200 })
+        }
+        if (url.startsWith('https://registry.npmjs.org/')) {
+          return new Response('', { status: 404 })
+        }
+        if (url.endsWith('/commit-1/pnpm-lock.yaml')) {
+          return new Response([
+            "lockfileVersion: '9.0'",
+            '',
+            'importers:',
+            '  .: {}',
+            '  apps/cli:',
+            '    dependencies:',
+            '      logger: 1.0.0',
+            '',
+            'packages:',
+            '  logger@1.0.0: {}',
+            '',
+            'snapshots:',
+            '  logger@1.0.0: {}',
+            '',
+          ].join('\n'), { status: 200 })
+        }
+        if (url.endsWith('/commit-1/package-lock.json')) {
+          return new Response('', { status: 404 })
+        }
+        throw new Error(`unexpected request: ${url}`)
+      },
+    })
+    const result = await source.observe({
+      id: 'dsh-core',
+      ecosystem: 'dsh',
+      repository: 'acme/dsh-core',
+      ref: 'main',
+    }, '2026-08-17T00:00:00.000Z')
+    assert.equal(result.source.packagePath, 'apps/cli/package.json')
+    assert.equal(result.manifest.name, '@deepseek-ai/dsh')
+    assert.equal(result.graph?.rootNodeId, 'pnpm:workspace-root:@deepseek-ai/dsh@0.1.0-rc.7')
+    assert.equal(result.graph?.nodes.some(node => node.name === 'logger' && node.version === '1.0.0'), true)
+    assert.equal(requested.some(url => url.includes('/git/trees/commit-1?recursive=1')), true)
+  })
+
   it('parses the small targets.yml format and normalizes aliases', () => {
     const config = parseObserverConfigText(`
 schema: ${OBSERVER_TARGETS_SCHEMA}

@@ -20,6 +20,8 @@ const MAX_CHANGED_FILES = 2_000
 const MAX_PENDING_TASKS = 10_000
 const MAX_AGENT_OUTPUT_BYTES = 2 * 1024 * 1024
 const MAX_LLM_ENV_FILE_BYTES = 64 * 1024
+const MAX_AUTO_DISCOVERY_PACKAGE_FILES = 64
+const MAX_AUTO_DISCOVERY_PATH_DEPTH = 3
 const DEFAULT_AGENT_TIMEOUT_MS = 120_000
 const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org/'
 const OBSERVER_REQUEST_ATTEMPTS = 2
@@ -488,13 +490,16 @@ function target(value: unknown, index: number): ObserverTarget {
   if (lockfile !== undefined && lockfileType === undefined) throw new Error(`targets[${index}].lockfile needs lockfileType npm or pnpm`)
   const ref = optionalBoundedString(source.ref, `targets[${index}].ref`, 256) ?? 'main'
   if (ref.includes('\n') || ref.includes('\r')) throw new Error(`targets[${index}].ref must be one line`)
+  const packagePath = source.packagePath === undefined
+    ? undefined
+    : validateRelativePath(source.packagePath, `targets[${index}].packagePath`)
   return {
     id,
     ecosystem,
     repository: validateRepository(source.repository, `targets[${index}].repository`),
     ref,
     ...(packageName === undefined ? {} : { packageName }),
-    packagePath: validateRelativePath(source.packagePath, `targets[${index}].packagePath`, 'package.json'),
+    ...(packagePath === undefined ? {} : { packagePath }),
     ...(lockfile === undefined ? {} : { lockfile }),
     ...(lockfileType === undefined ? {} : { lockfileType }),
   }
@@ -881,6 +886,82 @@ export class UpstreamObserverClient implements ObserverSource {
     }
   }
 
+  private async discoverPackagePath(
+    repository: GitHubRepository,
+    commit: string,
+    ecosystem: ObserverEcosystem,
+  ): Promise<string | undefined> {
+    if (ecosystem !== 'dsh') return undefined
+
+    const rootFile = await this.fetchRaw(repository, commit, 'package.json', { allowMissing: true })
+    if (rootFile !== undefined) {
+      try {
+        const rootManifest = asRecord(JSON.parse(rootFile.text) as unknown)
+        const rootBundle = asRecord(asRecord(rootManifest?.dsh)?.bundle)
+        if (typeof rootBundle?.patch === 'string' && rootBundle.patch.length > 0) return 'package.json'
+      } catch {
+        // The normal manifest fetch below reports the useful JSON error.
+      }
+    }
+
+    const treePayload = asRecord(await this.fetchGitHubJson(`repos/${githubPath(repository, `git/trees/${commit}`)}?recursive=1`))
+    const tree = Array.isArray(treePayload?.tree) ? treePayload.tree : []
+    const packagePaths = tree.flatMap(item => {
+      const entry = asRecord(item)
+      const path = typeof entry?.path === 'string' ? entry.path : undefined
+      if (path === undefined || !path.endsWith('/package.json')) return []
+      const directory = path.slice(0, -'/package.json'.length)
+      const depth = directory === '' ? 0 : directory.split('/').length
+      return depth <= MAX_AUTO_DISCOVERY_PATH_DEPTH ? [path] : []
+    }).sort((left, right) => {
+      const score = (path: string): number => {
+        const normalized = path.toLowerCase()
+        if (normalized === 'apps/cli/package.json') return 100
+        if (normalized === 'packages/cli/package.json') return 90
+        if (normalized === 'cli/package.json') return 80
+        if (normalized.includes('/dsh') || normalized.startsWith('dsh/')) return 70
+        return 0
+      }
+      return score(right) - score(left) || left.localeCompare(right)
+    }).slice(0, MAX_AUTO_DISCOVERY_PACKAGE_FILES)
+
+    const candidates: Array<{ path: string; isDshBundle: boolean; isDshRuntime: boolean }> = []
+    for (const path of packagePaths) {
+      let file
+      try {
+        file = await this.fetchRaw(repository, commit, path, { allowMissing: true })
+      } catch {
+        continue
+      }
+      if (file === undefined) continue
+      try {
+        const manifest = asRecord(JSON.parse(file.text) as unknown)
+        if (manifest === undefined) continue
+        const bundle = asRecord(asRecord(manifest.dsh)?.bundle)
+        const isDshBundle = typeof bundle?.patch === 'string' && bundle.patch.length > 0
+        const isDshRuntime = manifest.name === '@deepseek-ai/dsh'
+        candidates.push({ path, isDshBundle, isDshRuntime })
+        if (isDshRuntime) return path
+      } catch {
+        continue
+      }
+    }
+    const dshBundles = candidates.flatMap(candidate => candidate?.isDshBundle === true ? [candidate.path] : [])
+    if (dshBundles.length === 1) return dshBundles[0]
+    if (dshBundles.length > 1) {
+      throw new Error(`automatic DSH package discovery found multiple plugin packages (${dshBundles.join(', ')}); pass --package-path explicitly`)
+    }
+    const dshRuntimes = candidates.flatMap(candidate => candidate?.isDshRuntime === true ? [candidate.path] : [])
+    if (dshRuntimes.length === 1) return dshRuntimes[0]
+    if (dshRuntimes.length > 1) {
+      throw new Error(`automatic DSH package discovery found multiple @deepseek-ai/dsh packages (${dshRuntimes.join(', ')}); pass --package-path explicitly`)
+    }
+    if (treePayload?.truncated === true || packagePaths.length === MAX_AUTO_DISCOVERY_PACKAGE_FILES) {
+      throw new Error(`automatic DSH package discovery could not find one package in the first ${MAX_AUTO_DISCOVERY_PACKAGE_FILES} candidates; pass --package-path explicitly`)
+    }
+    return undefined
+  }
+
   private async fetchNpmObservation(name: string): Promise<ObserverPackageObservation | undefined> {
     const url = new URL(encodeURIComponent(name), this.registry)
     const response = await this.fetchWithRetry(url, {
@@ -916,7 +997,7 @@ export class UpstreamObserverClient implements ObserverSource {
     const commitPayload = asRecord(await this.fetchGitHubJson(`repos/${githubPath(targetRepository, `commits/${targetValueRef}`)}`))
     const commit = typeof commitPayload?.sha === 'string' ? commitPayload.sha : undefined
     if (commit === undefined) throw new Error(`GitHub commit response has no sha for ${targetRepository.fullName}@${targetValueRef}`)
-    const packagePath = targetValue.packagePath ?? 'package.json'
+    const packagePath = targetValue.packagePath ?? await this.discoverPackagePath(targetRepository, commit, targetValue.ecosystem) ?? 'package.json'
     const packageFile = await this.fetchRaw(targetRepository, commit, packagePath)
     let rawManifest: unknown
     try {

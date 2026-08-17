@@ -252,7 +252,7 @@ OpenAI-compatible 模型，先设置
 
 我们还用 observer 重放了一条真正闭环的维护者案例：[Sanqi 修复重放](../examples/upstream-observer/reports/sanqi-maintainer-repair-live.md)。它在源码修复进入仓库、但 npm 仍未发布新版本时记录 old → new 变化并保留 pending 任务，后续发布出现时再复查精确发布物。
 
-[DSH 核心的 nested workspace 案例](../examples/dsh/reports/dsh-core-nested-workspace-2026-08-18.md)则验证了官方仓库的 `apps/cli`：observer 会从 `packagePath` 选择正确 importer，解析外部依赖，并把本地 workspace link 明确留下为未解析边，不会误把仓库根依赖当成 DSH CLI 依赖。
+[DSH 核心的 nested workspace 案例](../examples/dsh/reports/dsh-core-nested-workspace-2026-08-18.md)则验证了官方仓库的 `apps/cli`：observer 会自动找到正确 importer，解析外部依赖，并把本地 workspace link 明确留下为未解析边，不会误把仓库根依赖当成 DSH CLI 依赖。 [一条命令的重放报告](../examples/upstream-observer/reports/dsh-core-auto-discovery-2026-08-18.md)记录了不传 `--package` 和 `--package-path` 的结果。
 
 ## 观察 DSH 插件的上游变化
 
@@ -289,14 +289,29 @@ targets:
 如果只观察一个公开仓库，可以跳过 YAML，直接传 GitHub URL。第一次运行建立基线，
 之后每次运行比较上一次观察到的 commit。Radar 会自动寻找提交到仓库里的
 `pnpm-lock.yaml` 或 `package-lock.json`，并把真实依赖图纳入比较；插件在子目录时加
-`--package-path`，npm 名称和源码 manifest 不一致时加 `--package`，想明确选择锁文件时
-再加 `--lockfile`：
+`--package-path`，但 DSH 仓库如果只有一个 DSH bundle 或一个 `@deepseek-ai/dsh`，
+Radar 会在三层目录内自动找到它；npm 名称和源码 manifest 不一致时加 `--package`，
+想明确选择锁文件时再加 `--lockfile`：
 
 ```bash
 npx --yes upstream-radar@0.33.12 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --state ./observations.json --report ./upstream-radar-observer.md
 ```
+
+官方 DSH CLI 也可以直接观察，不需要猜 `apps/cli` 路径：
+
+```bash
+npx --yes upstream-radar@latest observe \
+  https://github.com/deepseek-ai/deepseek-harness \
+  --ref master \
+  --state ./dsh-core-observations.json \
+  --report ./dsh-core-observer.md
+```
+
+当前分支的真实结果是：自动选择 `apps/cli/package.json`，识别
+`@deepseek-ai/dsh@0.1.0-rc.7`，建立 32 个节点、40 条边的图，并把 70 条本地
+workspace 边保留为未解析证据；不会安装或启动 DSH。
 
 这个公开示例的源码名是 `dsh-lark-bot`，但 npm 发布名是 `dsh-feishu-bot`，所以完整写法
 会额外指定 `--package`：

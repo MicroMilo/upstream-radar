@@ -298,9 +298,10 @@ will re-check the exact published artifact when the release appears.
 
 The [DSH core nested-workspace case](examples/dsh/reports/dsh-core-nested-workspace-2026-08-18.md)
 shows the same observer against `deepseek-ai/deepseek-harness`: it selects the
-`apps/cli` importer from `packagePath`, resolves the external part of the graph,
-and leaves local workspace links explicitly unresolved instead of monitoring
-the repository root by mistake.
+`apps/cli` importer automatically, resolves the external part of the graph, and
+leaves local workspace links explicitly unresolved instead of monitoring the
+repository root by mistake. The [one-command replay](examples/upstream-observer/reports/dsh-core-auto-discovery-2026-08-18.md)
+proves that this works without `--package` or `--package-path`.
 
 ## Observe DSH plugin upstream changes
 
@@ -338,7 +339,10 @@ targets:
 For one public repository, skip YAML and pass its GitHub URL directly. The
 first run creates a baseline; later runs compare the ref you provide. The
 observer automatically looks for `pnpm-lock.yaml` or `package-lock.json` and
-uses the real committed graph. Add `--package-path` for a nested plugin,
+uses the real committed graph. For a DSH repository, it also looks up to three
+directory levels deep for one DSH bundle or one `@deepseek-ai/dsh` package, so
+the official DSH repository works with the shortest command. Add
+`--package-path` when a repository contains more than one candidate,
 `--package` when the npm name differs from the source manifest, or
 `--lockfile` when you want to choose a particular lockfile:
 
@@ -347,6 +351,21 @@ npx --yes upstream-radar@0.33.12 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --state ./observations.json --report ./upstream-radar-observer.md
 ```
+
+The official DSH CLI is also a one-command target; Radar finds
+`apps/cli/package.json` and its `apps/cli` lockfile importer automatically:
+
+```bash
+npx --yes upstream-radar@latest observe \
+  https://github.com/deepseek-ai/deepseek-harness \
+  --ref master \
+  --state ./dsh-core-observations.json \
+  --report ./dsh-core-observer.md
+```
+
+The first run records `@deepseek-ai/dsh@0.1.0-rc.7`, a 32-node/40-edge graph,
+and 70 local workspace edges as unresolved evidence. It does not install or
+run DSH. Use an exact release after reviewing this branch's implementation.
 
 The public example below supplies `--package` because this repository's source
 manifest is `dsh-lark-bot`, while its published npm package is

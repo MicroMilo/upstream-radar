@@ -42,9 +42,11 @@ npx --yes upstream-radar@0.33.12 observe \
 ```
 
 The first run creates the baseline. Re-run the same command from a scheduled
-job to compare the latest `main` commit. Use `--package-path` for a nested
-plugin, `--package` when its npm name differs from `package.json`, and `--ref`
-when replaying a specific commit.
+job to compare the latest `main` commit. For a DSH repository, Radar looks up
+to three directory levels deep for one DSH bundle or one `@deepseek-ai/dsh`
+package; use `--package-path` when the repository is ambiguous, `--package`
+when its npm name differs from `package.json`, and `--ref` when replaying a
+specific commit. See the [official DSH one-command case](reports/dsh-core-auto-discovery-2026-08-18.md).
 
 For a real end-to-end replay against a public DSH/Feishu plugin, see
 [`cases/dsh-feishu-bot.md`](cases/dsh-feishu-bot.md). It demonstrates baseline →

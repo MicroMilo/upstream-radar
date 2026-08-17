@@ -257,9 +257,10 @@ npm metadata, package manifests, and an optional npm/pnpm dependency graph. A
 DSH Agent is called only for meaningful changes. Safety: does not install packages, run lifecycle scripts, load plugin code, or invoke a shell.
 
 When the target is an HTTPS GitHub repository URL, Radar builds one target in
-memory and does not require a targets.yml file. The default package path is
-package.json; pass --package-path for a nested plugin and --lockfile to include
-the committed npm/pnpm graph.
+memory and does not require a targets.yml file. For a DSH target with no
+--package-path, it looks for one DSH bundle or one @deepseek-ai/dsh package up
+to three directory levels deep; pass --package-path when the repository is
+ambiguous. --lockfile remains available when you want to pin the graph file.
 
 The Agent executable receives one read-only task prompt on stdin and should
 return one JSON conclusion on stdout. If it is not configured, the task stays
@@ -1432,7 +1433,7 @@ async function runObserve(args: readonly string[]): Promise<number> {
         repository: `${githubTarget.owner}/${githubTarget.repository}`,
         ref: inlineRef ?? 'main',
         packageName: inlinePackage,
-        packagePath: inlinePackagePath ?? 'package.json',
+        ...(inlinePackagePath === undefined ? {} : { packagePath: inlinePackagePath }),
         ...(inlineLockfile === undefined ? {} : { lockfile: inlineLockfile }),
         ...(inlineLockfileType === undefined ? {} : { lockfileType: inlineLockfileType }),
       }],
