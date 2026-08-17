@@ -76,6 +76,60 @@ function summarizeInstallFailure(result) {
   return signals
 }
 
+function summarizeEvent(event) {
+  if (event.kind === 'compatibility') {
+    return {
+      id: event.id,
+      incidentId: event.incidentId,
+      kind: event.kind,
+      change: event.change,
+      plugin: event.plugin,
+      installed: event.installed,
+      candidate: event.candidate,
+      signals: event.signals.map(signal => ({
+        code: signal.code,
+        confidence: signal.confidence,
+        summary: signal.summary,
+        ...(signal.before === undefined ? {} : { before: signal.before }),
+        ...(signal.after === undefined ? {} : { after: signal.after }),
+      })),
+      ...(event.upgradePath === undefined ? {} : {
+        upgradePath: {
+          evaluated: event.upgradePath.evaluated,
+          blockedCount: event.upgradePath.blockedCount,
+          vulnerabilityStatus: event.upgradePath.vulnerabilityStatus,
+          ...(event.upgradePath.dependencyStatus === undefined ? {} : { dependencyStatus: event.upgradePath.dependencyStatus }),
+          ...(event.upgradePath.firstCandidate === undefined ? {} : { firstCandidate: event.upgradePath.firstCandidate.candidate }),
+        },
+      }),
+      ...(event.releaseNotesUrl === undefined ? {} : { releaseNotesUrl: event.releaseNotesUrl }),
+    }
+  }
+  if (event.kind === 'vulnerability' || event.kind === 'malware') {
+    return {
+      id: event.id,
+      incidentId: event.incidentId,
+      kind: event.kind,
+      change: event.change,
+      plugin: event.plugin,
+      affected: event.affected,
+      advisory: {
+        id: event.advisory.id,
+        severity: event.advisory.severity,
+        summary: event.advisory.summary,
+      },
+    }
+  }
+  return {
+    id: event.id,
+    incidentId: event.incidentId,
+    kind: event.kind,
+    change: event.change,
+    source: event.source,
+    error: event.error,
+  }
+}
+
 async function main() {
   const scratch = await mkdtemp(join(tmpdir(), 'upstream-radar-dsh-adoption-'))
   const dshHome = join(scratch, 'dsh-home')
@@ -246,6 +300,7 @@ async function main() {
         packagesQueried: check.packagesQueried,
         releasePackagesQueried: check.releasePackagesQueried,
         events: check.events.length,
+        eventSummaries: check.events.map(summarizeEvent),
         sourceErrors: check.sourceErrors.length,
         activeVulnerabilities: Object.keys(check.state.activeVulnerabilities).length,
       },
