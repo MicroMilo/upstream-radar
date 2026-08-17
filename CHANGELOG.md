@@ -2,6 +2,17 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.33.1] - 2026-08-18
+
+### Fixed
+
+- Preserve the concrete npm resolver stderr in dependency-audit findings, so a DSH plugin report names the missing package instead of only saying that resolution failed.
+
+### Usability
+
+- Add a copyable real DSH plugin finding to the English and Chinese first-run paths, with an explicit no-LLM boundary and author report.
+- Record the public DSH profile case with `model: not-configured` when no model is available, so deterministic evidence is not mistaken for a successful LLM analysis.
+
 ## [Unreleased]
 
 ### Added
