@@ -2,13 +2,14 @@
 
 import process from 'node:process'
 import { spawnSync } from 'node:child_process'
-import { access, readFile } from 'node:fs/promises'
+import { access, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { renderCompatibilityBenchmark, runCompatibilityBenchmark } from './compatibility-benchmark.js'
 import { assessCompatibilityChange } from './compatibility.js'
 import { probeDshLoad, probeDshLoadMatrix, renderDshLoadMatrix, renderDshLoadProbe } from './dsh-probe.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { createDoctorReport, renderDoctorReport } from './doctor.js'
+import { checkDshProfile, renderDshProfileCheck, renderDshProfileCheckSummary } from './dsh-profile-check.js'
 import { createDemoReport, renderDemo } from './demo.js'
 import { GitHubReleaseClient } from './github-release.js'
 import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
@@ -38,6 +39,16 @@ import { createRadarNext, createRadarStatus, renderRadarNext, renderRadarStatus 
 import { renderTextReport } from './render.js'
 import { scanDirectory } from './scan.js'
 import { CisaKevClient, EpssClient } from './threat-intel.js'
+import {
+  loadObservationState,
+  parseObserverConfigText,
+  renderObserverReport,
+  runDshAgentCommand,
+  runObserver,
+  saveObservationState,
+  UpstreamObserverClient,
+  type ObserverAgentCommandOptions,
+} from './upstream-observer.js'
 import type { Verdict } from './types.js'
 import type {
   RadarEvent,
@@ -223,6 +234,21 @@ a safety certificate; check the coverage verdict before admitting the package.
 The default gate exits 2 for review or block; use --fail-on block when review
 should remain visible without failing CI.
 `,
+    observe: `Upstream Radar — watch DSH plugin repositories and packages for meaningful upstream changes
+
+Usage:
+  upstream-radar observe <targets.yml> [--state <observations.json>]
+    [--report <report.md>] [--dsh-agent-command <executable>]
+    [--dsh-agent-arg <argument>] [--retry-pending] [--json]
+
+The first run creates a baseline. Later runs compare source commits, published
+npm metadata, package manifests, and an optional npm/pnpm dependency graph. A
+DSH Agent is called only for meaningful changes. Safety: does not install packages, run lifecycle scripts, load plugin code, or invoke a shell.
+
+The Agent executable receives one read-only task prompt on stdin and should
+return one JSON conclusion on stdout. If it is not configured, the task stays
+in observations.json for a later explicit retry.
+`,
     graph: `Upstream Radar — read a lockfile into the canonical dependency graph
 
 Usage:
@@ -231,6 +257,17 @@ Usage:
 
 This command is offline and does not install packages, run lifecycle scripts,
 load plugin code, or query vulnerability sources.
+`,
+    'profile-check': `Upstream Radar — check one DSH profile before starting it
+
+Usage:
+  upstream-radar profile-check <profile-directory> [--patch <path>] [--report <path>] [--summary] [--json]
+
+Reads the profile package manifest, lockfile, node_modules package metadata,
+pnpm release-age policy, and cordis.patch.yml. It reports loader rows that
+refer to missing packages and duplicate loader ids. It never installs packages,
+starts DSH, loads plugin code, contacts a vulnerability source, or invokes a
+DSH Agent/model.
 `,
     probe: `Upstream Radar — test whether a DSH bundle loads in disposable profiles
 
@@ -407,7 +444,9 @@ Usage:
   upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
+  upstream-radar observe <targets.yml> [--state <observations.json>] [--report <report.md>] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--retry-pending] [--json]
   upstream-radar graph <npm-lock|pnpm-lock> <lockfile> [--root <package>@<exact-version>] [--json]
+  upstream-radar profile-check <profile-directory> [--patch <path>] [--report <path>] [--summary] [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar demo [--json]
@@ -435,7 +474,9 @@ Commands:
   doctor   check local Radar/DSH wiring without polling upstream sources
   scan     bounded, read-only inspection of a local package directory
   inspect  fetch and verify the exact npm artifact before inspecting its contents
+  observe  compare upstream DSH plugin repositories and route only meaningful changes to a DSH Agent
   graph    read a lockfile into the canonical dependency graph without installing packages
+  profile-check  check a DSH profile's lockfile and patch rows without starting DSH
   probe    run a bounded DSH bundle-load check or version matrix in disposable profiles
   demo     show the exact-path-to-DSH handoff without network, DSH, or plugin installation
   quickstart choose the smallest first-use path without changing the environment
@@ -563,6 +604,40 @@ async function runGraph(args: readonly string[]): Promise<number> {
     ]),
   ].join('\n') + '\n')
   return 0
+}
+
+async function runDshProfileCheck(args: readonly string[]): Promise<number> {
+  const profileDirectory = args[0]
+  if (profileDirectory === undefined || profileDirectory.startsWith('-')) {
+    throw new Error('profile-check requires a DSH profile directory')
+  }
+  let json = false
+  let summary = false
+  let reportPath: string | undefined
+  let patchPath: string | undefined
+  for (let index = 1; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === '--json') {
+      json = true
+    } else if (argument === '--summary') {
+      summary = true
+    } else if (argument === '--patch' || argument === '--report') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
+      if (argument === '--patch') patchPath = value
+      else reportPath = value
+      index += 1
+    } else {
+      throw new Error(`unknown option for profile-check: ${argument}`)
+    }
+  }
+  const report = await checkDshProfile({ profileDirectory, ...(patchPath === undefined ? {} : { patchFile: patchPath }) })
+  const jsonText = `${JSON.stringify(report, null, 2)}\n`
+  if (reportPath !== undefined) {
+    await writeFile(resolve(reportPath), reportPath.endsWith('.json') ? jsonText : summary ? renderDshProfileCheckSummary(report) : renderDshProfileCheck(report))
+  }
+  process.stdout.write(json ? jsonText : summary ? renderDshProfileCheckSummary(report) : renderDshProfileCheck(report))
+  return report.status === 'blocked' ? 2 : 0
 }
 
 async function runTask(args: readonly string[]): Promise<number> {
@@ -1261,6 +1336,67 @@ async function runRadar(args: readonly string[]): Promise<number> {
   return 0
 }
 
+async function runObserve(args: readonly string[]): Promise<number> {
+  const targetsPath = args[0]
+  if (targetsPath === undefined || targetsPath.startsWith('-')) throw new Error('observe requires a targets.yml file')
+  let statePath = 'observations.json'
+  let reportPath: string | undefined
+  let agentCommand: string | undefined
+  let agentArgs: string[] = []
+  let registry: string | undefined
+  let retryPending = false
+  let json = false
+  for (let index = 1; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === '--json') {
+      json = true
+    } else if (argument === '--retry-pending') {
+      retryPending = true
+    } else if (argument === '--state' || argument === '--report' || argument === '--dsh-agent-command' || argument === '--dsh-agent-arg' || argument === '--registry') {
+      const value = args[index + 1]
+      if (value === undefined || (value.startsWith('-') && argument !== '--dsh-agent-arg')) throw new Error(`${argument} requires a value`)
+      if (argument === '--state') statePath = value
+      else if (argument === '--report') reportPath = value
+      else if (argument === '--dsh-agent-command') agentCommand = value
+      else if (argument === '--dsh-agent-arg') agentArgs.push(value)
+      else registry = value
+      index += 1
+    } else {
+      throw new Error(`unknown option for observe: ${argument}`)
+    }
+  }
+
+  const targetText = await readBoundedFile(targetsPath, 256 * 1024)
+  const config = parseObserverConfigText(targetText)
+  const previousState = await loadObservationState(statePath)
+  const source = new UpstreamObserverClient({
+    ...(process.env.GITHUB_TOKEN === undefined ? {} : { githubToken: process.env.GITHUB_TOKEN }),
+    ...(registry === undefined ? {} : { registry }),
+  })
+  let agentOptions: ObserverAgentCommandOptions | undefined
+  if (agentCommand !== undefined) {
+    agentOptions = {
+      command: agentCommand,
+      ...(agentArgs.length === 0 ? {} : { args: agentArgs }),
+    }
+  }
+  const result = await runObserver(config, previousState, {
+    source,
+    retryPending,
+    ...(agentOptions === undefined ? {} : {
+      agent: (task, prompt) => runDshAgentCommand(task, prompt, agentOptions),
+    }),
+  })
+  await saveObservationState(statePath, result.state)
+  const reportJson = `${JSON.stringify(result.report, null, 2)}\n`
+  if (reportPath !== undefined) {
+    await writeFile(resolve(reportPath), reportPath.endsWith('.json') ? reportJson : renderObserverReport(result.report))
+  }
+  process.stdout.write(json ? reportJson : renderObserverReport(result.report))
+  if (result.report.errors.length > 0 || result.report.agent.failed > 0) return 1
+  return 0
+}
+
 async function runQuickstart(args: readonly string[]): Promise<number> {
   let directory = process.cwd()
   let json = false
@@ -1674,8 +1810,10 @@ async function main(args: readonly string[]): Promise<number> {
   if (command === 'init') return runInit(args.slice(1))
   if (command === 'doctor') return runDoctor(args.slice(1))
   if (command === 'graph') return runGraph(args.slice(1))
+  if (command === 'profile-check') return runDshProfileCheck(args.slice(1))
   if (command === 'probe') return runProbe(args.slice(1))
   if (command === 'demo') return runDemo(args.slice(1))
+  if (command === 'observe') return runObserve(args.slice(1))
   if (command === 'benchmark') return runBenchmark(args.slice(1))
   if (command === 'radar') return runRadar(args.slice(1))
   if (command === 'task') return runTask(args.slice(1))

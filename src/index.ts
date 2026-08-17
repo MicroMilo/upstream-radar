@@ -69,6 +69,21 @@ export {
   type CompatibilityBenchmarkReport,
 } from './compatibility-benchmark.js'
 export { createAnalysisTask, renderAgentAnalysisGroupPrompt, renderAgentAnalysisPrompt, renderDshAnalysisPrompt } from './dsh-analysis.js'
+export {
+  DSH_PROFILE_CHECK_SCHEMA,
+  checkDshProfile,
+  renderDshProfileCheck,
+  renderDshProfileCheckSummary,
+  type DshPatchLoaderEntry,
+  type DshProfileBundleObservation,
+  type DshProfileCheckReport,
+  type DshProfileCheckOptions,
+  type DshProfileCheckStatus,
+  type DshProfileFinding,
+  type DshProfileFindingCode,
+  type DshProfileFindingSeverity,
+  type DshReleaseAgePolicy,
+} from './dsh-profile-check.js'
 export { DEMO_SCHEMA, createDemoEvent, createDemoReport, renderDemo, type DemoReport } from './demo.js'
 export {
   QUICKSTART_SCHEMA,
@@ -86,6 +101,44 @@ export {
   renderAnalysisTaskMarker,
 } from './dsh-analysis-result.js'
 export { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
+export {
+  OBSERVER_REPORT_SCHEMA,
+  OBSERVER_TARGETS_SCHEMA,
+  OBSERVATION_STATE_SCHEMA,
+  UPSTREAM_CHANGE_TASK_SCHEMA,
+  UpstreamObserverClient,
+  createUpstreamChangeTask,
+  emptyObservationState,
+  loadObservationState,
+  parseObservationState,
+  parseObserverConfig,
+  parseObserverConfigText,
+  renderObserverReport,
+  renderUpstreamChangeAgentPrompt,
+  runDshAgentCommand,
+  runObserver,
+  saveObservationState,
+  type ObserverAgentCommandOptions,
+  type ObserverAgentInvocation,
+  type ObserverChange,
+  type ObserverConfig,
+  type ObserverEcosystem,
+  type ObserverGraphChange,
+  type ObserverLockfileType,
+  type ObserverManifestChange,
+  type ObserverPackageObservation,
+  type ObserverReport,
+  type ObserverSnapshot,
+  type ObserverSnapshotSummary,
+  type ObserverSource,
+  type ObserverSourceChange,
+  type ObserverSourceObservation,
+  type ObserverTarget,
+  type ObservationState,
+  type RunObserverOptions,
+  type UpstreamChangeTask,
+  type UpstreamObserverClientOptions,
+} from './upstream-observer.js'
 export {
   countPolicyHeldAnalysisTasks,
   createNotificationPolicyMap,

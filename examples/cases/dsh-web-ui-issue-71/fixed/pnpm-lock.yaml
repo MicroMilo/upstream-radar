@@ -1,0 +1,18 @@
+lockfileVersion: '9.0'
+
+importers:
+  .:
+    dependencies:
+      '@linxin666/dsh-web-ui-all': 0.1.7
+      '@linxin666/dsh-client-ui-skin-center': 0.1.7
+      '@linxin666/dsh-skins': 0.1.7
+
+packages:
+  '@linxin666/dsh-client-ui-skin-center@0.1.7': {}
+  '@linxin666/dsh-skins@0.1.7': {}
+  '@linxin666/dsh-web-ui-all@0.1.7': {}
+
+snapshots:
+  '@linxin666/dsh-client-ui-skin-center@0.1.7': {}
+  '@linxin666/dsh-skins@0.1.7': {}
+  '@linxin666/dsh-web-ui-all@0.1.7': {}

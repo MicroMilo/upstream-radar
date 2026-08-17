@@ -1,0 +1,73 @@
+name: Upstream Radar observer
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 6 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: upstream-radar-observer
+  cancel-in-progress: false
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 11.3.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install and build the checked-out Radar
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+      - name: Observe DSH plugin upstream changes
+        id: observe
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          OBSERVER_REPORT: ${{ runner.temp }}/upstream-radar-observer.md
+          OBSERVER_JSON: ${{ runner.temp }}/upstream-radar-observer.json
+        shell: bash
+        run: |
+          set +e
+          node dist/src/cli.js observe \
+            examples/upstream-observer/targets.yml \
+            --state observations.json \
+            --report "$OBSERVER_REPORT" \
+            --json | tee "$OBSERVER_JSON"
+          observer_exit=${PIPESTATUS[0]}
+          set -e
+          if [[ -n "${GITHUB_STEP_SUMMARY:-}" && -s "$OBSERVER_REPORT" ]]; then
+            cat "$OBSERVER_REPORT" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "exit=$observer_exit" >> "$GITHUB_OUTPUT"
+          exit "$observer_exit"
+      - name: Persist observation point
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -f observations.json ]]; then
+            echo 'observations.json was not produced; nothing to persist.'
+            exit 0
+          fi
+          git config user.name 'upstream-radar[bot]'
+          git config user.email 'upstream-radar[bot]@users.noreply.github.com'
+          git add observations.json
+          if git diff --cached --quiet; then
+            echo 'No observation point changed; no commit created.'
+            exit 0
+          fi
+          git commit -m 'chore: update upstream observation point [skip ci]'
+          git push

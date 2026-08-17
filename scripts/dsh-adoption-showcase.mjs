@@ -5,7 +5,14 @@ import { join, resolve } from 'node:path'
 
 const ROOT = resolve(import.meta.dirname, '..')
 const DSH_VERSION = '0.1.0-rc.6'
-const PLUGIN_SPEC = 'dsh-cloudflare-browser-run@0.1.1'
+const DEFAULT_PLUGIN_SPECS = [
+  'dsh-cloudflare-browser-run@0.1.1',
+  '@open-agfs/dsh-agfs@0.1.9',
+  'dsh-feishu-bot@0.14.0',
+]
+const PLUGIN_SPECS = (process.env.DSH_ADOPTION_PLUGINS === undefined
+  ? DEFAULT_PLUGIN_SPECS
+  : process.env.DSH_ADOPTION_PLUGINS.split(',').map(spec => spec.trim()).filter(Boolean))
 const PNPM = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
 const CLI = join(ROOT, 'dist/src/cli.js')
 const WRITE_REPORT = process.argv.includes('--write-report')
@@ -57,6 +64,18 @@ function checkStatus(report, id) {
   return report.checks.find(check => check.id === id)?.status
 }
 
+function summarizeInstallFailure(result) {
+  const text = `${result.stdout}\n${result.stderr}`
+  const signals = []
+  if (text.includes('ERR_PNPM_IGNORED_BUILDS') || text.includes('Ignored build scripts')) {
+    signals.push('DSH/pnpm stopped on an unapproved dependency build script')
+  }
+  if (text.includes('Issues with peer dependencies')) signals.push('peer dependency warnings were reported')
+  if (text.includes('pnpm failed in profile directory')) signals.push('the DSH profile install was not completed')
+  if (signals.length === 0) signals.push('the DSH profile install command failed')
+  return signals
+}
+
 async function main() {
   const scratch = await mkdtemp(join(tmpdir(), 'upstream-radar-dsh-adoption-'))
   const dshHome = join(scratch, 'dsh-home')
@@ -78,11 +97,15 @@ async function main() {
       }), 'Radar pack').stdout,
       'Radar pack',
     )
-    const pluginPack = requireSuccess(await run('npm', [
-      'pack', '--ignore-scripts', '--pack-destination', packages, PLUGIN_SPEC,
-    ]), 'real DSH plugin pack')
-    const pluginTarball = join(packages, pluginPack.stdout.trim().split('\n').map(line => line.trim()).filter(line => line.endsWith('.tgz')).at(-1) ?? '')
-    if (!pluginTarball.endsWith('.tgz')) throw new Error('real DSH plugin pack did not produce a tarball')
+    const pluginTarballs = []
+    for (const pluginSpec of PLUGIN_SPECS) {
+      const pluginPack = requireSuccess(await run('npm', [
+        'pack', '--ignore-scripts', '--pack-destination', packages, pluginSpec,
+      ]), `real DSH plugin pack (${pluginSpec})`)
+      const pluginTarball = join(packages, pluginPack.stdout.trim().split('\n').map(line => line.trim()).filter(line => line.endsWith('.tgz')).at(-1) ?? '')
+      if (!pluginTarball.endsWith('.tgz')) throw new Error(`real DSH plugin pack did not produce a tarball: ${pluginSpec}`)
+      pluginTarballs.push({ spec: pluginSpec, tarball: pluginTarball })
+    }
 
     // DSH creates its shared host dependency plane on first CLI startup. Help
     // is enough to initialize that plane without starting an Agent, loading a
@@ -93,9 +116,29 @@ async function main() {
     requireSuccess(await run(PNPM, [
       'dlx', `@deepseek-ai/dsh@${DSH_VERSION}`, 'plugin', '--profile', 'headless', 'add', radarTarball,
     ], { env }), 'Radar DSH install')
-    requireSuccess(await run(PNPM, [
-      'dlx', `@deepseek-ai/dsh@${DSH_VERSION}`, 'plugin', '--profile', 'headless', 'add', pluginTarball,
-    ], { env }), 'real DSH plugin install')
+    const pluginInstallations = []
+    for (const plugin of pluginTarballs) {
+      const result = await run(PNPM, [
+        'dlx', `@deepseek-ai/dsh@${DSH_VERSION}`, 'plugin', '--profile', 'headless', 'add', plugin.tarball,
+      ], { env })
+      if (result.code === 0) {
+        pluginInstallations.push({ spec: plugin.spec, status: 'installed' })
+      } else {
+        pluginInstallations.push({
+          spec: plugin.spec,
+          status: 'blocked',
+          exitCode: result.code,
+          signals: summarizeInstallFailure(result),
+        })
+      }
+    }
+
+    const installedPluginSpecs = pluginInstallations
+      .filter(plugin => plugin.status === 'installed')
+      .map(plugin => plugin.spec)
+    if (installedPluginSpecs.length === 0) {
+      throw new Error(`none of the real DSH plugins could be installed: ${JSON.stringify(pluginInstallations)}`)
+    }
 
     const configName = 'upstream-radar.config.json'
     const patchName = 'upstream-radar.dsh.yml'
@@ -120,17 +163,24 @@ async function main() {
     const patchPath = join(project, patchName)
     const statePath = join(project, stateName)
     const config = JSON.parse(await readFile(configPath, 'utf8'))
-    const plugin = config.projects?.[0]?.plugins?.[0]
-    if (plugin?.package?.name !== 'dsh-cloudflare-browser-run' || plugin.package.version !== '0.1.1') {
-      throw new Error(`setup did not discover the expected real DSH plugin: ${JSON.stringify(plugin?.package)}`)
+    const plugins = config.projects?.[0]?.plugins ?? []
+    const pluginsBySpec = new Map(plugins.map(plugin => [
+      `${plugin.package?.name}@${plugin.package?.version}`,
+      plugin,
+    ]))
+    for (const pluginSpec of installedPluginSpecs) {
+      const plugin = pluginsBySpec.get(pluginSpec)
+      if (plugin === undefined) throw new Error(`setup did not discover the expected real DSH plugin: ${pluginSpec}`)
+      if (plugin.graph?.source !== 'installed-node-modules') throw new Error(`setup did not use the installed DSH graph: ${pluginSpec}`)
+      if ((plugin.graph?.hostRuntime?.resolvedNodes ?? 0) < 1) throw new Error(`setup did not observe the DSH host dependency plane: ${pluginSpec}`)
+      if (plugin.graph?.hostRuntime?.package?.name !== '@deepseek-ai/dsh'
+        || plugin.graph.hostRuntime.package.version !== DSH_VERSION) {
+        throw new Error(`setup did not record the exact DSH executable package for ${pluginSpec}: ${JSON.stringify(plugin.graph?.hostRuntime?.package)}`)
+      }
+      if ((plugin.graph?.unresolved ?? []).some(item => item.kind !== 'optional')) {
+        throw new Error(`real DSH graph has a required unresolved dependency: ${pluginSpec}`)
+      }
     }
-    if (plugin.graph?.source !== 'installed-node-modules') throw new Error('setup did not use the installed DSH graph')
-    if ((plugin.graph?.hostRuntime?.resolvedNodes ?? 0) < 1) throw new Error('setup did not observe the DSH host dependency plane')
-    if (plugin.graph?.hostRuntime?.package?.name !== '@deepseek-ai/dsh'
-      || plugin.graph.hostRuntime.package.version !== DSH_VERSION) {
-      throw new Error(`setup did not record the exact DSH executable package: ${JSON.stringify(plugin.graph?.hostRuntime?.package)}`)
-    }
-    if ((plugin.graph?.unresolved ?? []).some(item => item.kind !== 'optional')) throw new Error('real DSH graph has a required unresolved dependency')
 
     const doctorBefore = parseJson(requireSuccess(await run(process.execPath, [
       CLI, 'doctor', configName, '--profile', 'headless', '--patch', patchName, '--json',
@@ -170,19 +220,27 @@ async function main() {
     const report = {
       schema: 'upstream-radar.dsh-adoption-showcase/v1alpha1',
       dshVersion: DSH_VERSION,
-      plugin: PLUGIN_SPEC,
+      plugins: PLUGIN_SPECS,
       install: {
         packagePackScriptsDisabled: true,
         profile: 'headless',
         radarBundleRegistered: checkStatus(doctorAfter, 'dsh-profile') === 'pass',
+        pluginInstallations,
       },
       setup: {
         status: setup.stdout.includes('Local wiring check:') ? 'completed' : 'unknown',
-        graphSource: plugin.graph.source,
-        dshRuntimePackage: plugin.graph.hostRuntime.package,
-        dependencyNodes: plugin.graph.nodes.length,
-        dshHostPackages: plugin.graph.hostRuntime.resolvedNodes,
-        optionalDependenciesNotInstalled: (plugin.graph.unresolved ?? []).filter(item => item.kind === 'optional').length,
+        pluginCount: plugins.length,
+        plugins: installedPluginSpecs.map(pluginSpec => {
+          const plugin = pluginsBySpec.get(pluginSpec)
+          return {
+            package: plugin.package,
+            graphSource: plugin.graph.source,
+            dshRuntimePackage: plugin.graph.hostRuntime.package,
+            dependencyNodes: plugin.graph.nodes.length,
+            dshHostPackages: plugin.graph.hostRuntime.resolvedNodes,
+            unresolvedOptionalDependencies: (plugin.graph.unresolved ?? []).filter(item => item.kind === 'optional').length,
+          }
+        }),
       },
       check: {
         packagesQueried: check.packagesQueried,
@@ -202,7 +260,7 @@ async function main() {
         activeCompatibility: status.activeCompatibility,
         sourceHealthIncidents: status.activeSourceHealth,
       },
-      boundary: 'Uses a disposable DSH_HOME and exact published packages. Both package tarballs were packed with lifecycle scripts disabled; the DSH host is bootstrapped with --help. It does not start an Agent, call a model, or execute plugin business actions; it proves install, graph, doctor, and real upstream checks.',
+      boundary: 'Uses a disposable DSH_HOME and exact published packages. Radar and all real plugin tarballs were packed with lifecycle scripts disabled; the DSH host is bootstrapped with --help. It does not start an Agent, call a model, or execute plugin business actions; it proves multi-plugin install, graph, doctor, and real upstream checks.',
     }
     if (WRITE_REPORT) {
       await writeFile(REPORT_PATH, `${JSON.stringify(report, null, 2)}\n`)

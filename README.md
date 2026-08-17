@@ -29,6 +29,7 @@
   <a href="#see-one-incident">See one incident</a> ·
   <a href="#install-in-dsh">Install in DSH</a> ·
   <a href="#notify-feishu-or-an-https-endpoint">Notify Feishu</a> ·
+  <a href="#observe-dsh-plugin-upstream-changes">Observe upstream changes</a> ·
   <a href="#run-the-proof">Run the proof</a> ·
   <a href="#run-it-in-github-actions">Run in GitHub Actions</a> ·
   <a href="https://github.com/MicroMilo/upstream-radar/issues/new?template=trial.yml">Share feedback</a> ·
@@ -51,7 +52,9 @@ It looks only at the current directory and local DSH profile metadata. It recomm
 | Your goal | Start here | What you get |
 | --- | --- | --- |
 | Keep a live DSH Agent informed | [`setup`](#install-in-dsh) | A profile-aware monitor that refreshes the installed graph and routes only changed incidents to the matching Agent. |
+| Observe DSH plugin upstream changes | [`observe`](#observe-dsh-plugin-upstream-changes) | A scheduled old → new comparison of GitHub commits, npm releases, manifests, and optional lockfile graphs; only meaningful changes wake an Agent. |
 | Respond to the first alert | [`radar next`](#install-in-dsh) | One read-only command selects the highest-priority incident and points to the DSH task, verified analysis, or next check. |
+| Check a DSH profile before starting it | [`profile-check`](#check-a-dsh-profile-before-starting-it) | Reads the actual lockfile and patch rows and blocks missing loader packages, duplicate loader ids, and release-age rollback risk. |
 | Add a scheduled CI gate | [GitHub Actions example](examples/github-actions/upstream-radar.yml) | A frozen check from a reviewed config or one lockfile, with a concise Job Summary and a machine-readable JSON report. |
 | Check a plugin before installing it | [`graph` / `init` for npm or pnpm lockfiles](#inspect-an-npm-or-pnpm-lockfile-before-installation) | Exact dependency paths and OSV/GitHub Advisory results without running the plugin or its lifecycle scripts. |
 | Review one exact published artifact | `upstream-radar inspect npm:<package>@<exact-version> --deep` | Package, dependency, vulnerability, and provenance evidence for one release. |
@@ -143,6 +146,144 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar watch ./upstream-r
 ```
 
 Remove `--once` to keep a local monitor alive. This is a lightweight CLI surface for demos, CI, and diagnosis; the native DSH bundle remains the recommended always-on path because it can deliver the task to a live Agent.
+
+## Check a DSH profile before starting it
+
+When the concern is “will this profile boot with the packages and patch rows it
+actually has?”, use the static profile check first:
+
+```bash
+pnpm run build
+node dist/src/cli.js profile-check "$DSH_HOME/profiles/web" \
+  --report ./dsh-profile-check.md
+```
+
+For the shortest answer, add `--summary`:
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar profile-check \
+  "$DSH_HOME/profiles/web" --summary
+```
+
+It prints only the status, the important evidence, the reason, and the next
+repair. The exit code remains `2` for a blocked profile and `0` for a pass.
+
+It reads the profile manifest, pnpm/npm lockfile, package metadata,
+`pnpm-workspace.yaml`, and `cordis.patch.yml`. It catches the two concrete
+failure shapes from [dsh-web-ui #71](https://github.com/zhu1090093659/dsh-web-ui/issues/71)
+and [#35](https://github.com/zhu1090093659/dsh-web-ui/issues/35): a loader row
+that names a package absent from the locked profile, and the same loader id
+being inserted twice. It also points out a pnpm `minimumReleaseAge` policy that
+does not exempt the plugin, because that can keep a newly fixed plugin on an
+older release during its cooling window.
+
+This is deliberately a pre-start check: no network, installation, plugin code,
+DSH process, Agent, or LLM is involved. A blocked result exits with code `2`.
+The complete replay is `pnpm run showcase:dsh-profile-check`; it runs the
+public case before the fix, after the manual package workaround, and after the
+correct bundled-carrier fix.
+
+The short, author-facing result is `pnpm run showcase:dsh-case`. It turns the
+same three static checks into one repair story: the old profile is blocked,
+manually adding the missing package creates a duplicate loader, and the
+bundled-carrier update reaches `pass`. If an OpenAI-compatible `issue-locator`
+model is available, pass its env file with
+`ISSUE_LOCATOR_ENV_FILE=/path/to/issue-locator/.env`; the model only explains
+the already-checked facts. If the endpoint is unavailable, the command still
+prints the deterministic evidence explanation and records that the fallback was
+used. Add `:report` to write the [case analysis result](examples/dsh/reports/dsh-web-ui-issue-71-analysis.json).
+
+We also ran the current static checks against the first 50 entries in the DSH
+plugin registry. That batch found **0 confirmed runtime dependency
+vulnerabilities**. It did find real monitoring-quality problems—development-only
+dependencies mixed into source lockfiles, three plugin lockfiles whose root
+version lagged the source manifest, and a tarball format the scanner could not
+parse. The [batch report](examples/dsh/reports/dsh-batch-50-2026-08-17.md)
+keeps those results honest; it is not marketed as a vulnerability hit list.
+
+## Observe DSH plugin upstream changes
+
+This is the upstream-change loop: instead of polling every vulnerability source on
+every run, Radar remembers one observation point per plugin and asks what changed
+since then.
+
+```text
+targets.yml
+  ↓
+GitHub commit + npm package metadata + optional lockfile
+  ↓
+observations.json
+  ↓
+old → new comparison
+  ↓
+only meaningful changes → DSH Agent task → report
+```
+
+Start from the [copyable target example](examples/upstream-observer/targets.yml):
+
+```yaml
+schema: upstream-radar.observer-targets/v1alpha1
+targets:
+  - id: my-dsh-plugin
+    ecosystem: dsh
+    repository: acme/my-dsh-plugin
+    ref: main
+    package: my-dsh-plugin
+    packagePath: plugin/package.json
+    lockfile: plugin/pnpm-lock.yaml
+    lockfileType: pnpm
+```
+
+Then run one cycle:
+
+```bash
+export GITHUB_TOKEN='a read-only GitHub token'
+pnpm run build
+node dist/src/cli.js observe \
+  ./targets.yml \
+  --state ./observations.json \
+  --report ./upstream-radar-observer.md
+```
+
+This command uses the checked-out source so it is runnable before the next npm
+release. After a release includes `observe`, pin that exact version in CI rather
+than relying on `latest`.
+
+The first cycle only creates a baseline. Later cycles compare:
+
+- the source commit and changed files;
+- the published npm version and integrity value;
+- the package entrypoint, exports, Node requirement, DSH bundle metadata and dependency declarations;
+- the real npm or pnpm lockfile graph, when a lockfile is configured.
+
+README/docs/tests-only changes advance the observation point without waking the
+Agent. Runtime source, DSH bundle, package entry, dependency graph, npm version,
+or npm integrity changes create an old → new task. If the Agent is not configured,
+the task stays in `observations.json`; no plugin is installed or executed.
+
+The scheduled workflow is [examples/github-actions/upstream-observer.yml](examples/github-actions/upstream-observer.yml).
+The checked-in workflow is a dogfood workflow for this repository: it checks out
+and builds Radar before running the observer. It persists only the observation
+point. A quiet run does not create a daily commit.
+
+### The DSH Agent boundary
+
+The observer accepts an explicit executable through `--dsh-agent-command`. It
+writes one bounded, read-only task prompt to stdin and expects one JSON conclusion
+on stdout. The command is started without a shell, and the prompt treats every
+remote repository string and release field as untrusted evidence.
+
+```bash
+upstream-radar observe ./targets.yml \
+  --state ./observations.json \
+  --dsh-agent-command /path/to/reviewed-dsh-agent-wrapper \
+  --dsh-agent-arg --json
+```
+
+Radar does not guess an undocumented `dsh` CLI subcommand. A reviewed DSH
+headless wrapper is the integration boundary; this keeps the observer usable in
+GitHub Actions and lets the DSH adapter evolve without changing observation or
+diff logic. Use `--retry-pending` to deliver tasks left by a previous run.
 
 ## Notify Feishu or an HTTPS endpoint
 
@@ -483,7 +624,9 @@ To demonstrate the host-runtime dependency path specifically, run `pnpm run show
 
 To see why one shared host bug should not page every plugin separately, run `pnpm run showcase:dsh-host-alert`. Two plugin roots share the same exact `@deepseek-ai/cordis` version; Radar emits one project event, keeps both exact paths, and creates one DSH analysis task. Add `:report` to refresh the checked-in [deduplication result](examples/dsh/reports/dsh-host-alert-dedup.json).
 
-To validate the actual first-use path against the real published [`dsh-cloudflare-browser-run@0.1.1`](https://www.npmjs.com/package/dsh-cloudflare-browser-run), run `pnpm run showcase:dsh-adoption`. It creates a disposable `DSH_HOME`, packs the exact Radar and plugin tarballs with lifecycle scripts disabled, lets DSH build its own host runtime, runs `setup --no-install`, `doctor`, a frozen OSV/npm/GitHub check, and the human-readable status surface. It does not start a DSH Agent or call a model, and it does not treat an empty finding list as a safety certificate. The checked-in [adoption result](examples/dsh/reports/adoption-smoke.json) records the last run's package counts and boundaries.
+To validate the actual first-use path against several real published DSH plugins, run `pnpm run showcase:dsh-adoption`. It creates a disposable `DSH_HOME`, packs exact Radar and plugin tarballs with lifecycle scripts disabled, lets DSH build its own host runtime, runs `setup --no-install`, `doctor`, a frozen OSV/npm/GitHub check, and the human-readable status surface. The checked-in trial covers [`dsh-cloudflare-browser-run@0.1.1`](https://www.npmjs.com/package/dsh-cloudflare-browser-run), [`@open-agfs/dsh-agfs@0.1.9`](https://www.npmjs.com/package/@open-agfs/dsh-agfs), and [`dsh-feishu-bot@0.14.0`](https://www.npmjs.com/package/dsh-feishu-bot). The first two install and become monitorable; the Feishu bridge is intentionally recorded as blocked because a clean DSH profile stops on its transitive `protobufjs` build script until a human approves it. A blocked install is not reported as a clean security result. The showcase does not start a DSH Agent or call a model; the separate `try:dsh` proof covers that handoff. The checked-in [adoption result](examples/dsh/reports/adoption-smoke.json) records each plugin's install state, graph coverage, source health, and boundary.
+
+The DSH Agent handoff is optional for dependency analysis. If you want to smoke-test that integration with a real published plugin, run `pnpm run try:dsh:real`. It installs the exact published `dsh-find-plugin@0.3.6` into a disposable headless profile and proves that a real DSH Agent receives, consumes, and writes back a Radar analysis task. The model is still a local deterministic stub; no plugin business action or paid endpoint is called. Set `DSH_REAL_PLUGINS` to another exact package only after checking its required profile and credentials.
 
 To see the two-source vulnerability contract without contacting the network, run `pnpm run showcase:github-advisories`. It feeds the same parser issue through OSV and a deterministic GitHub Advisory Database client, proves that two reports become one Radar incident with explicit source provenance and a visible fixed-version conflict, then simulates three GitHub failures and recovery. The existing vulnerability remains active throughout; only the GitHub source-health incident changes.
 

@@ -63,6 +63,29 @@ describe('GitHub Advisory Database source', () => {
     assert.equal(new URL(calls[0]?.url ?? '').searchParams.get('affects'), 'parser@2.9.0')
   })
 
+  it('does not report the first patched version as affected when the range is open ended', async () => {
+    const client = new GitHubAdvisoryClient({
+      includeUnreviewed: false,
+      fetch: async () => Response.json([{
+        ghsa_id: 'GHSA-parser-boundary',
+        summary: 'Parser issue',
+        description: 'Fixed at the first patched version.',
+        severity: 'high',
+        updated_at: '2026-08-14T01:00:00Z',
+        vulnerabilities: [{
+          package: { ecosystem: 'npm', name: 'parser' },
+          vulnerable_version_range: '>=2.0.0',
+          first_patched_version: { identifier: '3.0.0' },
+        }],
+      }]),
+    })
+
+    const affected = await client.query([{ ...coordinate, version: '2.9.0' }])
+    const fixed = await client.query([{ ...coordinate, version: '3.0.0' }])
+    assert.equal(affected.get('npm:parser@2.9.0')?.length, 1)
+    assert.deepEqual(fixed.get('npm:parser@3.0.0'), [])
+  })
+
   it('keeps empty exact-package results and ignores withdrawn advisories', async () => {
     const client = new GitHubAdvisoryClient({
       includeUnreviewed: false,

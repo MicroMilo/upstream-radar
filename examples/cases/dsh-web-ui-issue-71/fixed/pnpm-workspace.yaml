@@ -1,0 +1,8 @@
+packages:
+  - 'node_modules/*'
+minimumReleaseAge: 14400
+minimumReleaseAgeExclude:
+  - '@deepseek-ai/dsh@0.1.0-rc.6'
+  - '@linxin666/dsh-web-ui-all'
+  - '@linxin666/dsh-client-ui-skin-center'
+  - '@linxin666/dsh-skins'

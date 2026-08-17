@@ -30,10 +30,14 @@ describe('reusable GitHub Action', () => {
   it('keeps the published Action thin, pinned, and frozen', async () => {
     const actionPath = fileURLToPath(new URL('../../action.yml', import.meta.url))
     const examplePath = fileURLToPath(new URL('../../examples/github-actions/upstream-radar.yml', import.meta.url))
+    const observerWorkflowPath = fileURLToPath(new URL('../../examples/github-actions/upstream-observer.yml', import.meta.url))
+    const observerTargetsPath = fileURLToPath(new URL('../../examples/upstream-observer/targets.yml', import.meta.url))
     const detectorPath = fileURLToPath(new URL('../../scripts/detect-action-input.mjs', import.meta.url))
     const packagePath = fileURLToPath(new URL('../../package.json', import.meta.url))
     const action = await readFile(actionPath, 'utf8')
     const example = await readFile(examplePath, 'utf8')
+    const observerWorkflow = await readFile(observerWorkflowPath, 'utf8')
+    const observerTargets = await readFile(observerTargetsPath, 'utf8')
     const detector = await readFile(detectorPath, 'utf8')
     const packageJson = JSON.parse(await readFile(packagePath, 'utf8')) as { version?: unknown }
 
@@ -103,6 +107,13 @@ describe('reusable GitHub Action', () => {
     assert.match(example, /auto-detects one pnpm-lock\.yaml or package-lock\.json/)
     assert.doesNotMatch(example, /^\s+config:\s/m)
     assert.match(example, /fail-on-compatibility: breaking/)
+    assert.match(observerWorkflow, /schedule:/)
+    assert.match(observerWorkflow, /contents: write/)
+    assert.match(observerWorkflow, /observe \\\n\s+examples\/upstream-observer\/targets\.yml/)
+    assert.match(observerWorkflow, /observations\.json/)
+    assert.match(observerWorkflow, /git diff --cached --quiet/)
+    assert.match(observerTargets, /observer-targets\/v1alpha1/)
+    assert.match(observerTargets, /ecosystem: dsh/)
   })
 
   it('executes the same zero-config detector used by the Action', async () => {

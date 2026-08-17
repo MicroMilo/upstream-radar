@@ -1,5 +1,31 @@
 # DSH headless showcase
 
+## Profile pre-start case replay
+
+The static profile gate is a separate path from the DSH Agent smoke test:
+
+```bash
+pnpm run showcase:dsh-profile-check
+```
+
+For the concise maintainer-facing conclusion, run:
+
+```bash
+ISSUE_LOCATOR_ENV_FILE=/path/to/issue-locator/.env pnpm run showcase:dsh-case
+```
+
+The command checks the public case before DSH starts, after the manual package
+workaround, and after the bundled-carrier fix. The optional model explains
+those facts; it does not decide the static `blocked`/`pass` result. The checked-in
+[analysis result](reports/dsh-web-ui-issue-71-analysis.json) remains useful when
+the model endpoint is unavailable because the evidence fallback is explicit.
+
+It replays the public `dsh-web-ui` release-age / skin-loader incident. The
+first state reports a missing loader package, the manual “install that package”
+state reports a duplicate loader id, and the corrected bundled-carrier state
+passes. The run does not configure or call a DSH LLM; it reads only checked-in
+manifest, lockfile, policy, and patch evidence.
+
 Run a real DeepSeek Harness `headless` profile with the Upstream Radar bundle installed:
 
 ```bash
@@ -40,8 +66,26 @@ To validate the beginner-facing setup path against a real published DSH plugin, 
 pnpm run showcase:dsh-adoption
 ```
 
-This uses exact `@deepseek-ai/dsh@0.1.0-rc.6`, `upstream-radar` from the current package build, and `dsh-cloudflare-browser-run@0.1.1` in a disposable `DSH_HOME`. It packs both tarballs with lifecycle scripts disabled, lets DSH establish its own host runtime, runs `setup --no-install`, confirms the generated overlay with `doctor`, performs one frozen OSV/npm/GitHub check, and then reads `radar status`. It does not start DSH, call a model, or execute plugin business actions. It is an adoption and graph-coverage proof, not a package safety certificate or a claim that the real plugin has no vulnerabilities. The checked-in [result](reports/adoption-smoke.json) is generated with `pnpm run showcase:dsh-adoption:report`.
-The generated inventory also records the exact `@deepseek-ai/dsh@0.1.0-rc.6` executable package that owns the shared host plane. The current snapshot contains 516 dependency nodes, including 510 DSH host packages, and checks 512 exact package versions plus 189 npm release streams. That includes the DSH core and its reachable host closure even though they are not plugin dependency edges.
+This uses exact `@deepseek-ai/dsh@0.1.0-rc.6`, `upstream-radar` from the current package build, and three real published plugins in a disposable `DSH_HOME`: `dsh-cloudflare-browser-run@0.1.1`, `@open-agfs/dsh-agfs@0.1.9`, and `dsh-feishu-bot@0.14.0`. It packs every tarball with lifecycle scripts disabled, lets DSH establish its own host runtime, runs `setup --no-install`, confirms the generated overlay with `doctor`, performs one frozen OSV/npm/GitHub check, and then reads `radar status`. The latest run installed and monitored the Cloudflare and AGFS plugins; it recorded the Feishu bridge as blocked because DSH/pnpm stopped at the transitive `protobufjs` build script. This is exactly the kind of adoption and supply-chain boundary the product should surface, not hide. It does not start DSH, call a model, or execute plugin business actions. The checked-in [result](reports/adoption-smoke.json) is generated with `pnpm run showcase:dsh-adoption:report`.
+The generated inventories record the exact `@deepseek-ai/dsh@0.1.0-rc.6` executable package that owns the shared host plane. The latest snapshot contains 516 dependency nodes for each installed plugin, including 510 DSH host packages, and checks 513 exact package versions plus 190 npm release streams. That includes the DSH core and its reachable host closure even though they are not plugin dependency edges. An empty finding list remains a monitoring result, not a package safety certificate.
+
+## Optional: real DSH handoff smoke test
+
+Dependency analysis does not require this step. Use it only when you want to verify the optional DSH Agent handoff against a real published plugin that does not require external credentials or a web-only profile:
+
+```bash
+pnpm run try:dsh:real
+```
+
+This adds `dsh-find-plugin@0.3.6` to the disposable DSH `headless` profile, starts the real DSH Agent, feeds it the Radar task, and checks that the task source, durable queue, model result, and DSH host-runtime observation all survive the run. Only the model endpoint is replaced with a local deterministic stub; the plugin is installed from its exact npm tarball with lifecycle scripts disabled. The checked-in `try:dsh` proof still uses no third-party plugin; this command makes the third-party handoff explicit.
+
+To try another exact plugin, override the list and understand its profile/configuration requirements first:
+
+```bash
+DSH_REAL_PLUGINS='dsh-find-plugin@0.3.6' pnpm run try:dsh:real
+```
+
+For example, the real adoption trial records that Cloudflare Browser Run needs `cf_api_token` and `cf_account_id` before startup, while AGFS waits for the DSH `webServer` service. Those are visible integration boundaries, not reasons to insert fake credentials into a proof.
 
 ## Host-runtime dependency graph proof
 

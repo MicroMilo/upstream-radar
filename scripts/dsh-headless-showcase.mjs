@@ -8,6 +8,12 @@ import process from 'node:process'
 const { writeDshPatch } = await import('../dist/src/init.js')
 const { discoverDshRuntimeNodeModulesDirectory } = await import('../dist/src/dsh-runtime.js')
 const DSH_PACKAGE = '@deepseek-ai/dsh@0.1.0-rc.6'
+const DSH_PROFILE = process.env.DSH_PROFILE ?? 'headless'
+const REAL_PLUGIN_SPECS = process.env.DSH_REAL_PLUGINS === undefined
+  ? (process.argv.includes('--real-plugins')
+    ? ['dsh-find-plugin@0.3.6']
+    : [])
+  : process.env.DSH_REAL_PLUGINS.split(',').map(spec => spec.trim()).filter(Boolean)
 const ROOT = resolve(import.meta.dirname, '..')
 const WRITE_REPORT = process.argv.includes('--write-report')
 const LIVE_FEEDS = process.argv.includes('--live-feeds')
@@ -190,10 +196,20 @@ async function main() {
       DSH_SMOKE_API_KEY: 'local-smoke-key',
       DSH_TELEMETRY_MODE: 'DISABLED',
     }
-    await run('pnpm', ['dlx', DSH_PACKAGE, '--profile', 'headless', '--help'], { env: baseEnv })
-    await run('pnpm', ['dlx', DSH_PACKAGE, 'plugin', '--profile', 'headless', 'add', tarball], { env: baseEnv })
+    await run('pnpm', ['dlx', DSH_PACKAGE, '--profile', DSH_PROFILE, '--help'], { env: baseEnv })
+    await run('pnpm', ['dlx', DSH_PACKAGE, 'plugin', '--profile', DSH_PROFILE, 'add', tarball], { env: baseEnv })
+    for (const pluginSpec of REAL_PLUGIN_SPECS) {
+      const pluginPack = await run('npm', [
+        'pack', '--ignore-scripts', '--pack-destination', packDirectory, pluginSpec,
+      ])
+      const pluginTarball = pluginPack.stdout.trim().split('\n').map(line => line.trim()).filter(line => line.endsWith('.tgz')).at(-1)
+      if (!pluginTarball?.endsWith('.tgz')) throw new Error(`npm pack did not return a tarball path for ${pluginSpec}`)
+      await run('pnpm', [
+        'dlx', DSH_PACKAGE, 'plugin', '--profile', DSH_PROFILE, 'add', join(packDirectory, pluginTarball),
+      ], { env: baseEnv })
+    }
 
-    const profileManifestPath = join(dshHome, 'profiles/headless/package.json')
+    const profileManifestPath = join(dshHome, 'profiles', DSH_PROFILE, 'package.json')
     const profileManifest = JSON.parse(await readFile(profileManifestPath, 'utf8'))
     const bundleInstalled = profileManifest.dsh?.profile?.bundles?.includes('upstream-radar') === true
     if (!bundleInstalled) throw new Error('DSH profile did not register the upstream-radar bundle')
@@ -236,7 +252,7 @@ async function main() {
       output: radarOverlayFile,
       configFile: join(ROOT, LIVE_FEEDS ? 'examples/dsh/live-config.json' : 'examples/radar/config.json'),
       stateFile,
-      profile: 'headless',
+      profile: DSH_PROFILE,
       intervalSeconds: 300,
       runOnStart: LIVE_FEEDS,
     })
@@ -254,7 +270,7 @@ async function main() {
 
     const execution = await run('pnpm', [
       'dlx', DSH_PACKAGE,
-      '--profile', 'headless',
+      '--profile', DSH_PROFILE,
       '--patch', overlayFile,
       '--patch', radarOverlayFile,
       'Wait for the Upstream Radar plugin notice, then answer that notice.',
@@ -300,7 +316,7 @@ async function main() {
     }
     const report = {
       dshPackage: DSH_PACKAGE,
-      profile: 'headless',
+      profile: DSH_PROFILE,
       model: 'local deterministic DeepSeek-compatible stub',
       feedMode: LIVE_FEEDS ? 'live OSV + live npm' : 'checked-in deterministic event',
       bundleInstalled,
@@ -312,6 +328,7 @@ async function main() {
       modelRequests: model.requests.length,
       dshEntrypointObserved,
       dshHostRuntimePlaneDiscovered,
+      realPlugins: REAL_PLUGIN_SPECS,
       finalAssistant,
     }
     if (WRITE_REPORT) {

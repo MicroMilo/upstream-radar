@@ -27,6 +27,7 @@
 <p align="center">
   <a href="#60-秒开始">60 秒开始</a> ·
   <a href="#安装到-dsh">安装到 DSH</a> ·
+  <a href="#观察-dsh-插件的上游变化">观察上游变化</a> ·
   <a href="https://github.com/MicroMilo/upstream-radar/issues/new?template=trial.yml">分享试用反馈</a> ·
   <a href="#在-github-actions-中运行">GitHub Actions</a>
 </p>
@@ -46,7 +47,9 @@ npx --yes upstream-radar@latest quickstart
 | 你的目标 | 从这里开始 | 你会得到什么 |
 | --- | --- | --- |
 | 让在线 DSH Agent 持续跟进 | [`setup`](#安装到-dsh) | 自动刷新 profile 里的实际依赖图，只把有变化的事件交给对应项目的 Agent。 |
+| 观察 DSH 插件上游变化 | [`observe`](#观察-dsh-插件的上游变化) | 定时比较 GitHub commit、npm 发布物、manifest 和可选锁文件依赖图，只把重要变化交给 Agent。 |
 | 收到第一条告警后知道先做什么 | [`radar next`](#安装到-dsh) | 一个只读命令选出最高优先级事件，并指向 DSH task、已验证分析或下一轮检查。 |
+| 启动 DSH 前检查 profile | [`profile-check`](#启动-dsh-前先检查-profile) | 读取实际锁文件和 patch，提前拦住缺失 loader 包、重复 loader id 以及 release-age 回退风险。 |
 | 加一个定时 CI 门禁 | [GitHub Actions 示例](../examples/github-actions/upstream-radar.yml) | 基于审查过的配置或唯一锁文件执行冻结检查，同时输出简短 Job Summary 和机器可读 JSON。 |
 | 安装插件前先检查它 | [npm/pnpm 锁文件的 `graph` / `init`](#安装前先检查-npm-或-pnpm-锁文件) | 不运行插件或 lifecycle script，直接得到精确依赖路径和 OSV/GitHub Advisory 结果。 |
 | 审查一个精确的发布物 | `upstream-radar inspect npm:<包名>@<精确版本> --deep` | 查看单个版本的包、依赖、漏洞和 provenance 证据。 |
@@ -135,6 +138,130 @@ pnpm dlx --package=upstream-radar@latest upstream-radar radar watch ./upstream-r
 ```
 
 去掉 `--once` 就会持续运行。这个入口适合演示、CI 和排查；需要把任务交给在线 Agent 时，仍然应该安装 DSH bundle。
+
+## 启动 DSH 前先检查 profile
+
+如果你关心的是“这个 profile 里实际存在的包和 patch 行，能不能一起启动”，先运行只读检查：
+
+```bash
+pnpm run build
+node dist/src/cli.js profile-check "$DSH_HOME/profiles/web" \
+  --report ./dsh-profile-check.md
+```
+
+只想看结论时加 `--summary`：
+
+```bash
+pnpm dlx --package=upstream-radar@latest upstream-radar profile-check \
+  "$DSH_HOME/profiles/web" --summary
+```
+
+它只打印状态、关键证据、原因和下一步修复；profile 被阻断时仍返回退出码 `2`，
+通过时返回 `0`。
+
+它只读取 profile manifest、pnpm/npm 锁文件、包的 manifest、
+`pnpm-workspace.yaml` 和 `cordis.patch.yml`，检查两个真实的失败形状：
+[dsh-web-ui #71](https://github.com/zhu1090093659/dsh-web-ui/issues/71) 中
+patch 引用了锁定依赖图里不存在的皮肤包，以及 [#35](https://github.com/zhu1090093659/dsh-web-ui/issues/35)
+中同一个 loader id 被插入两次。它还会指出 `minimumReleaseAge` 没有排除插件包的情况，
+因为这可能让刚发布的修复版本在冷却期内根本装不上。
+
+这一步不联网、不安装、不启动 DSH、不加载插件代码，也不调用 DSH Agent 或模型。
+阻断结果返回退出码 `2`。完整回放可以运行 `pnpm run showcase:dsh-profile-check`，
+它依次展示修复前、手动补包后、正确修复后的结果。
+
+想直接看作者能拿去修的结论，可以运行 `pnpm run showcase:dsh-case`。它把同一
+个真实案例压成一条短故事：旧 profile 在启动前被阻断，手动补包变成重复 loader，
+正确的 bundled-carrier 修复回到 `pass`。如果要用 `issue-locator/.env` 里的
+OpenAI-compatible 模型，先设置
+`ISSUE_LOCATOR_ENV_FILE=/path/to/issue-locator/.env`；模型只负责解释静态检查已经
+确认的事实，模型不可用时仍然输出确定性的修复结论。加上 `:report` 会写入[案例分析结果](../examples/dsh/reports/dsh-web-ui-issue-71-analysis.json)。
+
+我们还用当前静态能力扫了 DSH 插件注册表的第一批 50 个条目，确认的运行时依赖
+漏洞数是 **0**。但这批样本发现了真实的监控质量问题：源码锁文件混入开发依赖、
+3 个插件的锁文件根版本落后于源码 manifest，以及一个扫描器暂时无法解析的 tar
+格式。[完整报告](../examples/dsh/reports/dsh-batch-50-2026-08-17.md)保留了这些
+结果；我们不会把它包装成“发现了 50 个漏洞”。
+
+## 观察 DSH 插件的上游变化
+
+这是新的上游变化闭环：Radar 不在每轮都重复做一次大扫描，而是为每个
+插件保存一个观察点，然后回答“从上次观察到现在到底变了什么”。
+
+```text
+targets.yml
+  ↓
+GitHub commit + npm 包元数据 + 可选锁文件
+  ↓
+observations.json
+  ↓
+old → new 变化比较
+  ↓
+只有重要变化 → DSH Agent 任务 → 报告
+```
+
+可以从[可复制的 targets 示例](../examples/upstream-observer/targets.yml)开始：
+
+```yaml
+schema: upstream-radar.observer-targets/v1alpha1
+targets:
+  - id: my-dsh-plugin
+    ecosystem: dsh
+    repository: acme/my-dsh-plugin
+    ref: main
+    package: my-dsh-plugin
+    packagePath: plugin/package.json
+    lockfile: plugin/pnpm-lock.yaml
+    lockfileType: pnpm
+```
+
+执行一次检查：
+
+```bash
+export GITHUB_TOKEN='一个只读 GitHub token'
+pnpm run build
+node dist/src/cli.js observe \
+  ./targets.yml \
+  --state ./observations.json \
+  --report ./upstream-radar-observer.md
+```
+
+这个命令使用当前 checkout 的源码，所以在下一次 npm 发布之前也能运行。
+等包含 `observe` 的版本发布后，CI 应该固定那个确切版本，不要依赖 `latest`。
+
+第一次只建立基线。之后每次比较：
+
+- 源码 commit 和实际变化的文件；
+- npm 发布版本和 integrity；
+- package entry、exports、Node 要求、DSH bundle 元数据和依赖声明；
+- 配置了锁文件时，真实的 npm 或 pnpm 依赖图。
+
+只改 README、文档或测试时，Radar 只推进观察点，不唤醒 Agent。运行时代码、
+DSH bundle、入口文件、依赖图、npm 版本或 npm integrity 变化时，才生成 old → new
+任务。如果没有配置 Agent，任务会留在 `observations.json`，不会安装或执行被观察的插件。
+
+可复制的定时 workflow 是
+[examples/github-actions/upstream-observer.yml](../examples/github-actions/upstream-observer.yml)。
+仓库里这份 workflow 是 Radar 自己的 dogfood 示例：它先 checkout 并构建 Radar，
+再执行观察器。它只提交观察点；没有变化时不会每天制造一条 commit。
+
+### DSH Agent 接口
+
+观察器通过 `--dsh-agent-command` 接收一个明确的可执行文件：把一条有界的、只读的
+任务提示写入 stdin，并从 stdout 读取一份 JSON 结论。它不会经过 shell，提示中的远程
+仓库文本和发布信息都被当成不可信证据。
+
+```bash
+upstream-radar observe ./targets.yml \
+  --state ./observations.json \
+  --dsh-agent-command /path/to/reviewed-dsh-agent-wrapper \
+  --dsh-agent-arg --json
+```
+
+Radar 不猜一个未经确认的 `dsh` CLI 子命令，而是把经过审查的 DSH headless wrapper
+作为接入边界。这样 GitHub Actions 可以先稳定运行观察和 diff，未来 DSH 接口变化时只
+替换 wrapper，不需要重写观察逻辑。上一次没有成功交给 Agent 的任务，可以用
+`--retry-pending` 重试。
 
 ## 飞书与 HTTPS 通知
 
@@ -489,8 +616,9 @@ pnpm run try:dsh
 
 如果要看“同一个宿主漏洞不要给每个插件重复报警”，运行 `pnpm run showcase:dsh-host-alert`。两个插件根共享同一个精确版本的 `@deepseek-ai/cordis`，Radar 只生成一条项目事件，同时保留两条准确路径，并只创建一个 DSH 分析任务。加上 `:report` 可以更新已提交的[去重结果](../examples/dsh/reports/dsh-host-alert-dedup.json)。
 
-如果要验证真实插件的首用路径，可以运行 `pnpm run showcase:dsh-adoption`。它会在一次性 `DSH_HOME` 中准备精确版本的 Radar 和真实 [`dsh-cloudflare-browser-run@0.1.1`](https://www.npmjs.com/package/dsh-cloudflare-browser-run) tarball，打包时禁用 lifecycle script，同时让 DSH 正常建立自己的宿主运行时，然后执行 `setup --no-install`、`doctor`、冻结的 OSV/npm/GitHub 检查和状态输出。它不会启动 DSH Agent 或调用模型，也不会把“没有发现漏洞”当成安全证明。使用 `pnpm run showcase:dsh-adoption:report` 可以更新[真实插件采用结果](../examples/dsh/reports/adoption-smoke.json)。
-生成的清单还会记录拥有宿主平面的精确 `@deepseek-ai/dsh@0.1.0-rc.6`；当前结果包含 516 个依赖节点，其中 510 个是 DSH 宿主包，并查询 512 个精确版本和 189 条 npm release stream，包含没有出现在插件依赖边上的 DSH 核心及其可达宿主闭包。
+如果要验证真实插件的首用路径，可以运行 `pnpm run showcase:dsh-adoption`。它会在一次性 `DSH_HOME` 中准备精确版本的 Radar 和三个真实插件：[`dsh-cloudflare-browser-run@0.1.1`](https://www.npmjs.com/package/dsh-cloudflare-browser-run)、[`@open-agfs/dsh-agfs@0.1.9`](https://www.npmjs.com/package/@open-agfs/dsh-agfs)、[`dsh-feishu-bot@0.14.0`](https://www.npmjs.com/package/dsh-feishu-bot)，打包时禁用 lifecycle script，同时让 DSH 正常建立自己的宿主运行时，然后执行 `setup --no-install`、`doctor`、冻结的 OSV/npm/GitHub 检查和状态输出。最近一次试用中，前两个插件安装并进入监控；Feishu 桥接插件被明确记录为 blocked，因为干净的 DSH profile 会在它的传递依赖 `protobufjs` 构建脚本处停止，必须由人明确批准后才能继续。这个阻塞不会被伪装成“没有漏洞”。它不会启动 DSH Agent 或调用模型；单独的 `try:dsh` proof 负责验证任务投递。使用 `pnpm run showcase:dsh-adoption:report` 可以更新[真实插件采用结果](../examples/dsh/reports/adoption-smoke.json)。
+依赖分析本身不需要启动 DSH Agent。如果要额外验证“真实第三方插件能否接住 DSH 任务”，可以运行 `pnpm run try:dsh:real` 作为可选 smoke test。它会把精确版本的 `dsh-find-plugin@0.3.6` 安装进一次性 headless profile，启动真实 DSH Agent，并验证 Radar 任务被接收、消费和写回；模型端点仍是本地确定性 stub，不会执行插件业务动作，也不会调用付费服务。只有在确认目标插件的 profile 和凭证要求后，才通过 `DSH_REAL_PLUGINS` 换成其他精确包。
+生成的清单还会记录拥有宿主平面的精确 `@deepseek-ai/dsh@0.1.0-rc.6`；当前结果每个已安装插件都观察到 516 个依赖节点，其中 510 个是 DSH 宿主包，并查询 513 个精确版本和 190 条 npm release stream，包含没有出现在插件依赖边上的 DSH 核心及其可达宿主闭包。
 
 ## 验证兼容性规则
 

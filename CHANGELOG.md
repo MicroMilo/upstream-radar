@@ -6,6 +6,8 @@ All notable changes to Upstream Radar are documented here.
 
 ### Added
 
+- Add a concise `profile-check --summary` result and a reproducible DSH web-ui case showcase that turns static findings into an author-facing repair story; optional `issue-locator` model output never changes the deterministic result.
+- Correct GitHub Advisory Database matching so an exact version at or above `first_patched_version` is no longer reported as affected; add a regression test for open-ended vulnerable ranges.
 - Add per-incident follow-up records with owner, status, and handoff notes bound to the exact event version; show a copyable `triage` command in `radar next` without resolving or suppressing the active evidence.
 - Add optional follow-up deadlines and mark overdue work in `radar status` and `radar next` without changing the underlying incident or delivery policy.
 - Add project-specific HTTPS/Feishu webhook routes through environment-variable names, with project filtering, independent endpoint outboxes, conflict checks, and a global broadcast-compatible fallback.

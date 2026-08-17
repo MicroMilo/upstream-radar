@@ -31,6 +31,8 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /radar history <config\.json>/)
     assert.match(help.stdout, /triage <state\.json> <incident-id> --status .*--due <ISO-8601>/)
     assert.match(help.stdout, /graph <npm-lock\|pnpm-lock> <lockfile> \[--root <package>@<exact-version>\]/)
+    assert.match(help.stdout, /profile-check <profile-directory> \[--patch <path>\] \[--report <path>\] \[--summary\] \[--json\]/)
+    assert.match(help.stdout, /observe <targets\.yml>/)
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
     assert.match(help.stdout, /--frozen\s+radar check\/watch: use the reviewed graph/)
     assert.match(help.stdout, /--fail-on <value>\s+scan\/inspect verdict or radar severity/)
@@ -43,6 +45,12 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /probe dsh-load <package\.tgz>/)
     assert.match(help.stdout, /probe dsh-matrix <package\.tgz>/)
     assert.match(help.stdout, /demo \[--json\]/)
+
+    const profileHelp = spawnSync(process.execPath, [cli, 'profile-check', '--help'], { encoding: 'utf8' })
+    assert.equal(profileHelp.status, 0)
+    assert.match(profileHelp.stdout, /missing packages and duplicate loader ids/)
+    assert.match(profileHelp.stdout, /DSH Agent\/model/)
+    assert.match(profileHelp.stdout, /--summary/)
 
     const demo = spawnSync(process.execPath, [cli, 'demo'], { encoding: 'utf8' })
     assert.equal(demo.status, 0)
@@ -128,6 +136,11 @@ describe('CLI option parsing', () => {
     assert.equal(inspectHelp.status, 0)
     assert.match(inspectHelp.stdout, /inspect one exact npm artifact before installation/)
     assert.match(inspectHelp.stdout, /empty finding list is not\s+a safety certificate/)
+
+    const observeHelp = spawnSync(process.execPath, [cli, 'observe', '--help'], { encoding: 'utf8' })
+    assert.equal(observeHelp.status, 0)
+    assert.match(observeHelp.stdout, /watch DSH plugin repositories and packages/)
+    assert.match(observeHelp.stdout, /does not install packages, run lifecycle scripts, load plugin code, or invoke a shell/)
 
     const statusHelp = spawnSync(process.execPath, [cli, 'radar', 'status', '--help'], { encoding: 'utf8' })
     assert.equal(statusHelp.status, 0)

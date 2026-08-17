@@ -95,6 +95,10 @@
 - [x] Add an opt-in Action input that deeply inspects one exact npm plugin artifact before installation and writes its admission result to the Job Summary.
 - [x] Add an opt-in compatibility-change gate for breaking DSH/plugin updates.
 - [x] Provide an offline compatibility-rule benchmark covering deterministic and analysis-only outcomes.
+- [x] Add a DSH-first upstream observer for GitHub commits, npm package metadata, manifests, and optional lockfile graphs.
+- [x] Persist one observation point per target and generate old → new tasks only for meaningful changes.
+- [x] Keep docs/tests-only changes quiet and route meaningful tasks through an explicit, no-shell DSH Agent adapter.
+- [ ] Connect the adapter to the official DSH headless invocation once that interface is stable and documented.
 - [ ] Re-check the installed and proposed graph in GitHub Actions.
 - [ ] Attach project evidence to a GitHub Issue only after routing policy permits it.
 - [ ] Generate an upgrade branch or Pull Request behind explicit approval.

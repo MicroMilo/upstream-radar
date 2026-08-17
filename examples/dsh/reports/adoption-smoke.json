@@ -1,27 +1,77 @@
 {
   "schema": "upstream-radar.dsh-adoption-showcase/v1alpha1",
   "dshVersion": "0.1.0-rc.6",
-  "plugin": "dsh-cloudflare-browser-run@0.1.1",
+  "plugins": [
+    "dsh-cloudflare-browser-run@0.1.1",
+    "@open-agfs/dsh-agfs@0.1.9",
+    "dsh-feishu-bot@0.14.0"
+  ],
   "install": {
     "packagePackScriptsDisabled": true,
     "profile": "headless",
-    "radarBundleRegistered": true
+    "radarBundleRegistered": true,
+    "pluginInstallations": [
+      {
+        "spec": "dsh-cloudflare-browser-run@0.1.1",
+        "status": "installed"
+      },
+      {
+        "spec": "@open-agfs/dsh-agfs@0.1.9",
+        "status": "installed"
+      },
+      {
+        "spec": "dsh-feishu-bot@0.14.0",
+        "status": "blocked",
+        "exitCode": 1,
+        "signals": [
+          "DSH/pnpm stopped on an unapproved dependency build script",
+          "peer dependency warnings were reported",
+          "the DSH profile install was not completed"
+        ]
+      }
+    ]
   },
   "setup": {
     "status": "completed",
-    "graphSource": "installed-node-modules",
-    "dshRuntimePackage": {
-      "ecosystem": "npm",
-      "name": "@deepseek-ai/dsh",
-      "version": "0.1.0-rc.6"
-    },
-    "dependencyNodes": 516,
-    "dshHostPackages": 510,
-    "optionalDependenciesNotInstalled": 65
+    "pluginCount": 2,
+    "plugins": [
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "dsh-cloudflare-browser-run",
+          "version": "0.1.1"
+        },
+        "graphSource": "installed-node-modules",
+        "dshRuntimePackage": {
+          "ecosystem": "npm",
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.0-rc.6"
+        },
+        "dependencyNodes": 516,
+        "dshHostPackages": 510,
+        "unresolvedOptionalDependencies": 65
+      },
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "@open-agfs/dsh-agfs",
+          "version": "0.1.9"
+        },
+        "graphSource": "installed-node-modules",
+        "dshRuntimePackage": {
+          "ecosystem": "npm",
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.0-rc.6"
+        },
+        "dependencyNodes": 516,
+        "dshHostPackages": 510,
+        "unresolvedOptionalDependencies": 65
+      }
+    ]
   },
   "check": {
-    "packagesQueried": 512,
-    "releasePackagesQueried": 189,
+    "packagesQueried": 513,
+    "releasePackagesQueried": 190,
     "events": 0,
     "sourceErrors": 0,
     "activeVulnerabilities": 0
@@ -37,5 +87,5 @@
     "activeCompatibility": 0,
     "sourceHealthIncidents": 0
   },
-  "boundary": "Uses a disposable DSH_HOME and exact published packages. Both package tarballs were packed with lifecycle scripts disabled; the DSH host is bootstrapped with --help. It does not start an Agent, call a model, or execute plugin business actions; it proves install, graph, doctor, and real upstream checks."
+  "boundary": "Uses a disposable DSH_HOME and exact published packages. Radar and all real plugin tarballs were packed with lifecycle scripts disabled; the DSH host is bootstrapped with --help. It does not start an Agent, call a model, or execute plugin business actions; it proves multi-plugin install, graph, doctor, and real upstream checks."
 }
