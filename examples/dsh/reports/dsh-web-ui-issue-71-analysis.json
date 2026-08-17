@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-case-analysis/v1alpha1",
-  "generatedAt": "2026-08-17T16:28:49.575Z",
+  "generatedAt": "2026-08-17T22:14:50.472Z",
   "case": "dsh-web-ui release-age / skin-loader mismatch",
   "sources": [
     "https://github.com/zhu1090093659/dsh-web-ui/issues/71",
@@ -110,12 +110,15 @@
   },
   "analysisSource": "deterministic-evidence-fallback",
   "model": {
-    "status": "not-configured",
-    "configured": false,
-    "source": "process environment"
+    "status": "unavailable",
+    "configured": true,
+    "source": "explicit issue-locator env file",
+    "model": "glm-5.1",
+    "endpoint": "https://llm-center.ali.modelbest.cn/llm/openai/v1/chat/completions",
+    "httpStatus": 404
   },
   "execution": {
-    "network": false,
+    "network": true,
     "installs": false,
     "pluginCode": false,
     "dshAgent": false,
