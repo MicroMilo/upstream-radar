@@ -313,6 +313,10 @@ adds the package side of the same story: strict npm peer resolution timed out,
 so Radar retried with a clearly labelled legacy-peer mode and returned a
 568-node graph, 262 unresolved peer/optional edges, and zero known npm-audit
 vulnerabilities instead of silently returning an empty result.
+The accompanying [maintainer feedback draft](examples/dsh/reports/dsh-core-npm-provenance-feedback.md)
+turns the artifact's missing npm provenance into a concrete release-workflow
+patch and a next-release verification step. It is a supply-chain gap, not a
+claim that the DSH package is malicious.
 
 ## Observe DSH plugin upstream changes
 
