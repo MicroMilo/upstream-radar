@@ -24,7 +24,7 @@ Replace it with the repositories your team depends on.
 For one repository, the shortest path skips YAML and lockfile configuration entirely:
 
 ```bash
-npx --yes upstream-radar@0.33.12 observe \
+npx --yes upstream-radar@0.34.0 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md
@@ -35,7 +35,7 @@ Radar automatically chooses the committed `pnpm-lock.yaml` or
 the explicit form below adds `--package`:
 
 ```bash
-npx --yes upstream-radar@0.33.12 observe \
+npx --yes upstream-radar@0.34.0 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --package dsh-feishu-bot \
   --lockfile pnpm-lock.yaml --lockfile-type pnpm \
@@ -76,7 +76,7 @@ Run it from any directory with the published CLI:
 
 ```bash
 export GITHUB_TOKEN='a read-only token with repository metadata access'
-npx --yes upstream-radar@0.33.12 observe \
+npx --yes upstream-radar@0.34.0 observe \
   /path/to/targets.yml \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md

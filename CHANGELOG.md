@@ -2,10 +2,13 @@
 
 All notable changes to Upstream Radar are documented here.
 
-## [Unreleased]
+## [0.34.0] - 2026-08-18
 
 ### Usability
 
+- Add `graph reverse` to build a deterministic dependency-to-affected-plugin
+  index from saved scan, exact-review, or Radar config JSON, preserving exact
+  paths, edge kinds, source observations, and incomplete coverage.
 - Make the OpenAI-compatible DSH Agent path tolerate common GLM JSON shape
   differences while keeping the eight-field conclusion contract validated.
 - Make exact DSH plugin reviews explain incomplete dependency coverage directly:

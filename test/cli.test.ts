@@ -32,6 +32,7 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /radar history <config\.json>/)
     assert.match(help.stdout, /triage <state\.json> <incident-id> --status .*--due <ISO-8601>/)
     assert.match(help.stdout, /graph <npm-lock\|pnpm-lock> <lockfile> \[--root <package>@<exact-version>\]/)
+    assert.match(help.stdout, /graph reverse <reports-directory> \[--package <name>@<exact-version>\]/)
     assert.match(help.stdout, /profile-check \[profile-directory\] \[--patch <path>\] \[--report <path>\] \[--summary\] \[--json\]/)
     assert.match(help.stdout, /observe <targets\.yml\|github-url>/)
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
@@ -97,6 +98,18 @@ describe('CLI option parsing', () => {
     const benchmarkReport = JSON.parse(benchmark.stdout) as { mode: string; summary: { total: number; failed: number } }
     assert.equal(benchmarkReport.mode, 'offline-rules')
     assert.deepEqual(benchmarkReport.summary, { total: 6, passed: 6, failed: 0 })
+
+    const reverse = spawnSync(process.execPath, [cli, 'graph', 'reverse', resolve(repository, 'examples/radar'), '--package', 'parser@2.9.0'], { encoding: 'utf8' })
+    assert.equal(reverse.status, 0)
+    assert.match(reverse.stdout, /Query: parser@2\.9\.0/)
+    assert.match(reverse.stdout, /plugin@1\.0\.0 \[Payments API\]/)
+
+    const reverseJson = spawnSync(process.execPath, [cli, 'graph', 'reverse', resolve(repository, 'examples/radar'), '--package', 'parser@2.9.0', '--json'], { encoding: 'utf8' })
+    assert.equal(reverseJson.status, 0)
+    const reverseReport = JSON.parse(reverseJson.stdout) as { schema: string; dependencies: Array<{ dependency: { name: string; version: string }; dependents: unknown[] }> }
+    assert.equal(reverseReport.schema, 'upstream-radar.reverse-dependency-index/v1alpha1')
+    assert.deepEqual(reverseReport.dependencies.map(item => `${item.dependency.name}@${item.dependency.version}`), ['parser@2.9.0'])
+    assert.equal(reverseReport.dependencies[0]?.dependents.length, 1)
 
     const invalidProbeVersion = spawnSync(process.execPath, [cli, 'probe', 'dsh-load', 'missing.tgz', '--dsh-version', 'latest'], { encoding: 'utf8' })
     assert.equal(invalidProbeVersion.status, 1)

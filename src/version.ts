@@ -1,1 +1,1 @@
-export const TOOL_VERSION = '0.33.12'
+export const TOOL_VERSION = '0.34.0'

@@ -21,7 +21,7 @@ Reproduce it with:
 
 ```bash
 npm pack --ignore-scripts --pack-destination /tmp dsh-feishu-bot@0.15.4
-pnpm dlx --package=upstream-radar@0.33.12 upstream-radar probe dsh-matrix \
+pnpm dlx --package=upstream-radar@0.34.0 upstream-radar probe dsh-matrix \
   /tmp/dsh-feishu-bot-0.15.4.tgz \
   --dsh-version 0.1.0-rc.6,0.1.0-rc.7
 ```

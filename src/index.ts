@@ -12,6 +12,20 @@ export {
 } from './npm.js'
 export { renderTextReport } from './render.js'
 export { dependencyGraphDigest, findDependencyPaths, parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
+export {
+  REVERSE_DEPENDENCY_INDEX_SCHEMA,
+  buildReverseDependencyIndex,
+  findReverseDependencyEntry,
+  parseReverseDependencyObservations,
+  type ReverseDependencyEntry,
+  type ReverseDependencyIndex,
+  type ReverseDependencyIndexInputs,
+  type ReverseDependencyObservation,
+  type ReverseDependencyPath,
+  type ReverseDependencyPlugin,
+  type ReverseDependencyPluginObservation,
+  type ReverseDependencyUse,
+} from './dependency-index.js'
 export { parseInstalledNodeModulesGraph } from './installed-graph.js'
 export {
   discoverDshRuntimeNodeModulesDirectory,

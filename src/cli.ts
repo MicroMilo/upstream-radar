@@ -2,7 +2,7 @@
 
 import process from 'node:process'
 import { spawnSync } from 'node:child_process'
-import { access, readFile, writeFile } from 'node:fs/promises'
+import { access, readFile, readdir, stat, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { renderCompatibilityBenchmark, runCompatibilityBenchmark } from './compatibility-benchmark.js'
 import { assessCompatibilityChange } from './compatibility.js'
@@ -15,6 +15,7 @@ import { checkDshProfile, renderDshProfileCheck, renderDshProfileCheckSummary } 
 import { createDemoReport, renderDemo } from './demo.js'
 import { GitHubReleaseClient } from './github-release.js'
 import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
+import { buildReverseDependencyIndex, findReverseDependencyEntry, parseReverseDependencyObservations, type ReverseDependencyIndex } from './dependency-index.js'
 import { createRadarConfigFromDshProfile, createRadarConfigFromNpmLock, createRadarConfigFromPnpmLock, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 import { inspectNpmPackage } from './npm.js'
@@ -297,9 +298,12 @@ unavailable.
 Usage:
   upstream-radar graph pnpm-lock <pnpm-lock.yaml> [--root <package>@<exact-version>] [--json]
   upstream-radar graph npm-lock <package-lock.json> [--root <package>@<exact-version>] [--json]
+  upstream-radar graph reverse <reports-directory> [--package <name>@<exact-version>] [--output <index.json>] [--json]
 
 This command is offline and does not install packages, run lifecycle scripts,
-load plugin code, or query vulnerability sources.
+load plugin code, or query vulnerability sources. The reverse form reads saved
+scan, exact-review, or Radar config JSON and builds a deterministic
+dependency -> affected-plugin index.
 `,
     'profile-check': `Upstream Radar — check one DSH profile before starting it
 
@@ -512,6 +516,7 @@ Usage:
   upstream-radar inspect [npm:]<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
   upstream-radar observe <targets.yml|github-url> [--state <observations.json>] [--report <report.md>] [--dsh-version <v1>,<v2>,...] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending] [--ecosystem <dsh|codex|pi>] [--id <id>] [--package <name>] [--package-path <path>] [--lockfile <path>] [--lockfile-type <npm|pnpm>] [--ref <branch>] [--json]
   upstream-radar graph <npm-lock|pnpm-lock> <lockfile> [--root <package>@<exact-version>] [--json]
+  upstream-radar graph reverse <reports-directory> [--package <name>@<exact-version>] [--output <index.json>] [--json]
   upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
@@ -543,7 +548,7 @@ Commands:
   scan     bounded, read-only inspection of a local directory or public GitHub repository
   inspect  fetch and verify the exact npm artifact before inspecting its contents
   observe  compare upstream DSH plugin repositories and route only meaningful changes to a DSH Agent
-  graph    read a lockfile into the canonical dependency graph without installing packages
+  graph    read lockfiles or build the dependency -> affected-plugin index without installing packages
   profile-check  check a DSH profile's lockfile and patch rows without starting DSH
   probe    run a bounded DSH bundle-load check or version matrix in disposable profiles
   review   combine exact npm dependency review and DSH load compatibility in one command
@@ -620,9 +625,119 @@ async function inferLockfileRoot(lockfile: string, kind: 'npm' | 'pnpm'): Promis
   }
 }
 
+const MAX_REVERSE_INDEX_FILES = 2_000
+const MAX_REVERSE_INDEX_DEPTH = 8
+
+async function collectReverseIndexFiles(path: string, depth = 0): Promise<string[]> {
+  if (depth > MAX_REVERSE_INDEX_DEPTH) throw new Error(`reverse index input exceeds the ${MAX_REVERSE_INDEX_DEPTH}-level directory limit: ${path}`)
+  const metadata = await stat(resolve(path))
+  if (metadata.isFile()) return path.endsWith('.json') ? [resolve(path)] : []
+  if (!metadata.isDirectory()) return []
+  const files: string[] = []
+  const entries = await readdir(resolve(path), { withFileTypes: true })
+  for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
+    if (entry.name === '.git' || entry.name === 'node_modules' || entry.name.startsWith('.')) continue
+    const child = join(path, entry.name)
+    if (entry.isDirectory()) files.push(...await collectReverseIndexFiles(child, depth + 1))
+    else if (entry.isFile() && entry.name.endsWith('.json')) files.push(resolve(child))
+    if (files.length > MAX_REVERSE_INDEX_FILES) throw new Error(`reverse index input exceeds the ${MAX_REVERSE_INDEX_FILES}-file limit`)
+  }
+  return files
+}
+
+function renderReverseDependencyIndex(index: ReverseDependencyIndex, packageFilter?: { name: string; version: string }): string {
+  const selected = packageFilter === undefined
+    ? undefined
+    : findReverseDependencyEntry(index, { ecosystem: 'npm', ...packageFilter })
+  const dependencies = selected === undefined && packageFilter !== undefined
+    ? []
+    : selected === undefined
+      ? [...index.dependencies].sort((left, right) => (
+        right.dependents.length - left.dependents.length
+        || `${left.dependency.name}@${left.dependency.version}`.localeCompare(`${right.dependency.name}@${right.dependency.version}`)
+      )).slice(0, 20)
+      : [selected]
+  const lines = [
+    'Upstream Radar — reverse dependency index',
+    `Observations: ${index.observations}`,
+    `Plugins: ${index.plugins.length}`,
+    `Dependencies: ${index.dependencies.length}`,
+    `Coverage: ${index.coverage.completeObservations} complete, ${index.coverage.incompleteObservations} incomplete, ${index.coverage.unresolvedEdges} unresolved edge(s)`,
+    `Input files: ${index.inputs.files} (${index.inputs.loadedFiles} loaded, ${index.inputs.skipped.length} skipped)`,
+  ]
+  if (packageFilter !== undefined) lines.push(`Query: ${packageFilter.name}@${packageFilter.version}`)
+  lines.push('', dependencies.length === 0
+    ? (packageFilter === undefined ? 'Dependencies:\n  (none)' : 'Dependents:\n  (none)')
+    : `${packageFilter === undefined ? 'Top dependencies by affected plugin count' : 'Dependents'}:`)
+  for (const dependency of dependencies) {
+    if (packageFilter === undefined) lines.push(`  ${dependency.dependency.name}@${dependency.dependency.version} ← ${dependency.dependents.length} plugin(s)`)
+    for (const dependent of dependency.dependents) {
+      const project = dependent.project === undefined ? '' : ` [${dependent.project.name}]`
+      lines.push(`    ${dependent.plugin.name}@${dependent.plugin.version}${project} (${dependent.coverage})`)
+      for (const path of dependent.paths.slice(0, 2)) lines.push(`      ${path.nodes.join(' → ')}`)
+      if (dependent.paths.length > 2) lines.push(`      ... ${dependent.paths.length - 2} more path(s)`)
+    }
+  }
+  if (index.inputs.skipped.length > 0) {
+    lines.push('', 'Skipped input files:')
+    for (const item of index.inputs.skipped.slice(0, 20)) lines.push(`  ${item.source}: ${item.reason}`)
+  }
+  return `${lines.join('\n')}\n`
+}
+
+async function runReverseDependencyIndex(args: readonly string[]): Promise<number> {
+  const input = args[0]
+  if (input === undefined || input.startsWith('-')) throw new Error('graph reverse requires a reports directory or JSON file')
+  let json = false
+  let output: string | undefined
+  let packageFilter: { name: string; version: string } | undefined
+  for (let index = 1; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === '--json') json = true
+    else if (argument === '--output') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error('--output requires a path')
+      output = value
+      index += 1
+    } else if (argument === '--package') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error('--package requires an exact package coordinate')
+      packageFilter = parseExactPackageCoordinate(value)
+      index += 1
+    } else {
+      throw new Error(`unknown option for graph reverse: ${argument}`)
+    }
+  }
+  const files = await collectReverseIndexFiles(input)
+  if (files.length === 0) throw new Error(`graph reverse found no JSON reports under ${input}`)
+  const observations = []
+  const skipped: Array<{ source: string; reason: string }> = []
+  for (const file of files) {
+    try {
+      observations.push(...parseReverseDependencyObservations(await readJson(file), file))
+    } catch (error: unknown) {
+      skipped.push({ source: file, reason: safeErrorMessage(error instanceof Error ? error.message : String(error)) })
+    }
+  }
+  if (observations.length === 0) throw new Error(`graph reverse could not load a supported graph from ${files.length} JSON file(s)`)
+  const index = buildReverseDependencyIndex(observations, {
+    inputs: { files: files.length, loadedFiles: files.length - skipped.length, skipped },
+  })
+  if (output !== undefined) await writeFile(resolve(output), `${JSON.stringify(index, null, 2)}\n`)
+  if (json) {
+    if (packageFilter === undefined) process.stdout.write(`${JSON.stringify(index, null, 2)}\n`)
+    else process.stdout.write(`${JSON.stringify({ ...index, dependencies: index.dependencies.filter(item => item.dependency.name === packageFilter!.name && item.dependency.version === packageFilter!.version) }, null, 2)}\n`)
+  } else {
+    process.stdout.write(renderReverseDependencyIndex(index, packageFilter))
+    if (output !== undefined) process.stdout.write(`Index written to ${resolve(output)}\n`)
+  }
+  return 0
+}
+
 async function runGraph(args: readonly string[]): Promise<number> {
   const kind = args[0]
-  if (kind !== 'npm-lock' && kind !== 'pnpm-lock') throw new Error('graph requires the npm-lock or pnpm-lock subcommand')
+  if (kind === 'reverse') return runReverseDependencyIndex(args.slice(1))
+  if (kind !== 'npm-lock' && kind !== 'pnpm-lock') throw new Error('graph requires the npm-lock, pnpm-lock, or reverse subcommand')
   const lockfile = args[1]
   if (lockfile === undefined || lockfile.startsWith('-')) throw new Error(`graph ${kind} requires a lockfile path`)
   let rootSpec: string | undefined
