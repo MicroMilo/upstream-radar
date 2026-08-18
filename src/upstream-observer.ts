@@ -5,6 +5,7 @@ import { dirname, resolve } from 'node:path'
 import type { DshLoadMatrixReport } from './dsh-probe.js'
 import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
 import { parsePackageManifestSnapshot } from './inventory.js'
+import { buildUpstreamDownstreamIR, parseUpstreamDownstreamIR, type UpstreamDownstreamIR } from './upstream-alignment.js'
 import type { DependencyGraph, PackageManifestSnapshot } from './radar-types.js'
 import type {
   CoverageVerdict,
@@ -97,6 +98,7 @@ export interface ObserverSnapshot {
   graph?: DependencyGraph
   graphError?: string
   warnings?: string[]
+  alignment?: UpstreamDownstreamIR
 }
 
 export interface ObserverSnapshotSummary {
@@ -118,6 +120,7 @@ export interface ObserverSnapshotSummary {
   }
   graphError?: string
   warnings?: string[]
+  alignment?: UpstreamDownstreamIR
 }
 
 export interface ObserverSourceChange {
@@ -289,6 +292,10 @@ export interface ObserverReport {
   checkedAt: string
   targetsChecked: number
   baselineTargets: string[]
+  alignmentFindings: Array<{
+    targetId: string
+    alignment: UpstreamDownstreamIR
+  }>
   changes: ObserverChange[]
   pendingTasks: string[]
   pendingTaskDetails: ObserverPendingTaskSummary[]
@@ -680,6 +687,7 @@ function parseSnapshot(value: unknown, label: string): ObserverSnapshot {
     : Array.isArray(source.warnings) && source.warnings.length <= 100
       ? source.warnings.map((item, index) => boundedString(item, `${label}.warnings[${index}]`, 2_048))
       : (() => { throw new Error(`${label}.warnings must be a bounded string array`) })()
+  const alignment = source.alignment === undefined ? undefined : parseUpstreamDownstreamIR(source.alignment, `${label}.alignment`)
   return {
     targetId,
     ecosystem,
@@ -690,6 +698,7 @@ function parseSnapshot(value: unknown, label: string): ObserverSnapshot {
     ...(source.graph === undefined ? {} : { graph: source.graph as DependencyGraph }),
     ...(graphError === undefined ? {} : { graphError }),
     ...(warnings === undefined ? {} : { warnings }),
+    ...(alignment === undefined ? {} : { alignment }),
   }
 }
 
@@ -1158,6 +1167,24 @@ export class UpstreamObserverClient implements ObserverSource {
         graphError = safeError(error)
       }
     }
+    const alignment = buildUpstreamDownstreamIR({
+      targetId: targetValue.id,
+      ecosystem: targetValue.ecosystem,
+      source: {
+        repository: targetRepository.fullName,
+        commit,
+        packagePath,
+      },
+      manifest,
+      ...(packageObservation === undefined ? {} : {
+        package: {
+          name: packageObservation.name,
+          version: packageObservation.version,
+        },
+      }),
+      ...(graph === undefined ? {} : { graph }),
+      ...(graphError === undefined ? {} : { graphError }),
+    })
     return {
       targetId: targetValue.id,
       ecosystem: targetValue.ecosystem,
@@ -1177,6 +1204,7 @@ export class UpstreamObserverClient implements ObserverSource {
       ...(graph === undefined ? {} : { graph }),
       ...(graphError === undefined ? {} : { graphError }),
       ...(warnings.length === 0 ? {} : { warnings }),
+      alignment,
     }
   }
 
@@ -1264,7 +1292,21 @@ function summary(snapshot: ObserverSnapshot): ObserverSnapshotSummary {
     }),
     ...(snapshot.graphError === undefined ? {} : { graphError: snapshot.graphError }),
     ...(snapshot.warnings === undefined ? {} : { warnings: [...snapshot.warnings] }),
+    ...(snapshot.alignment === undefined ? {} : { alignment: structuredClone(snapshot.alignment) }),
   }
+}
+
+function alignmentSignature(value: UpstreamDownstreamIR | undefined): string {
+  if (value === undefined) return ''
+  return JSON.stringify({
+    status: value.status,
+    checks: value.checks.map(check => ({
+      code: check.code,
+      status: check.status,
+      upstream: check.upstream,
+      downstream: check.downstream,
+    })),
+  })
 }
 
 function manifestChanges(before: PackageManifestSnapshot, after: PackageManifestSnapshot): ObserverManifestChange {
@@ -1345,6 +1387,13 @@ function meaningfulChange(sourceChange: ObserverSourceChange, before: ObserverSn
   }
   if (after.package !== undefined && after.manifest.version !== after.package.version) {
     reasons.push(`source/published version drift: source ${after.manifest.name}@${after.manifest.version}, npm ${after.package.name}@${after.package.version}`)
+  }
+  // Legacy observation files predate the IR. Populate the new field on the
+  // next run without manufacturing a fake upstream change; only compare two
+  // already-established alignment records.
+  if (before.alignment !== undefined && after.alignment !== undefined
+    && alignmentSignature(before.alignment) !== alignmentSignature(after.alignment)) {
+    reasons.push(`upstream/downstream alignment changed: ${after.alignment?.status ?? 'not observed'}`)
   }
   if (sourceChange.beforeCommit !== sourceChange.afterCommit) {
     if (sourceChange.comparison === 'unavailable') reasons.push('source commit changed and file comparison was unavailable')
@@ -1746,6 +1795,7 @@ export async function runObserver(
   let pendingTasks = [...previousState.pendingTasks]
   const changes: ObserverChange[] = []
   const baselineTargets: string[] = []
+  const alignmentFindings: ObserverReport['alignmentFindings'] = []
   const errors: Array<{ targetId: string; message: string }> = []
   const newTasks: UpstreamChangeTask[] = []
 
@@ -1756,7 +1806,14 @@ export async function runObserver(
       nextTargets[configuredTarget.id] = current
       if (before === undefined) {
         baselineTargets.push(configuredTarget.id)
+        if (current.alignment !== undefined) alignmentFindings.push({ targetId: configuredTarget.id, alignment: structuredClone(current.alignment) })
         continue
+      }
+      if (before.alignment === undefined && current.alignment !== undefined) {
+        // Upgrade legacy state into the IR and show its first finding once.
+        // This is evidence for the author, not a fake upstream change and not
+        // a reason to wake the Agent on every subsequent scheduled run.
+        alignmentFindings.push({ targetId: configuredTarget.id, alignment: structuredClone(current.alignment) })
       }
       const sourceChange = before.source.commit === current.source.commit
         ? {
@@ -1831,6 +1888,7 @@ export async function runObserver(
     checkedAt,
     targetsChecked: config.targets.length,
     baselineTargets,
+    alignmentFindings,
     changes,
     pendingTasks: pendingTasks.map(task => task.id),
     pendingTaskDetails: pendingTasks.map(summarizePendingTask),
@@ -1904,9 +1962,21 @@ function summarizePendingTask(task: UpstreamChangeTask): ObserverPendingTaskSumm
   }
 }
 
+function renderAlignment(lines: string[], alignment: UpstreamDownstreamIR, label: string): void {
+  lines.push(`${label}: ${alignment.status.toUpperCase()}`)
+  for (const check of alignment.checks.filter(item => item.status !== 'aligned')) {
+    lines.push(`${label} ${check.status}: ${check.code} — ${check.summary}`)
+    if (check.upstream !== undefined || check.downstream !== undefined) {
+      lines.push(`  Upstream: ${check.upstream ?? 'unknown'}; downstream: ${check.downstream ?? 'unknown'}`)
+    }
+    if (check.remediation !== undefined) lines.push(`  Alignment next step: ${check.remediation}`)
+  }
+}
+
 export function renderObserverReport(report: ObserverReport): string {
   const lines: string[] = []
-  if (report.changes.length === 0 && report.errors.length === 0 && report.pendingTasks.length === 0) {
+  const alignmentFindings = report.alignmentFindings.filter(item => item.alignment.status !== 'aligned')
+  if (report.changes.length === 0 && report.errors.length === 0 && report.pendingTasks.length === 0 && alignmentFindings.length === 0) {
     lines.push(`No meaningful upstream changes. Checked ${report.targetsChecked} target(s); DSH Agent was not called.`)
     if (report.baselineTargets.length > 0) lines.push(`Created baseline for: ${report.baselineTargets.join(', ')}.`)
     return `${lines.join('\n')}\n`
@@ -1920,6 +1990,15 @@ export function renderObserverReport(report: ObserverReport): string {
     lines.push(`Baseline created: ${report.baselineTargets.join(', ')}`)
     lines.push('')
   }
+  if (alignmentFindings.length > 0) {
+    lines.push('## Upstream/downstream alignment findings')
+    lines.push('')
+    for (const item of alignmentFindings) {
+      lines.push(`### ${item.targetId}`)
+      renderAlignment(lines, item.alignment, 'Alignment')
+      lines.push('')
+    }
+  }
   for (const change of report.changes) {
     lines.push(`## ${change.targetId} (${change.ecosystem})`)
     lines.push('')
@@ -1928,6 +2007,7 @@ export function renderObserverReport(report: ObserverReport): string {
     lines.push(`Package: ${displayPackage(change.previous.package)} → ${displayPackage(change.current.package)}`)
     lines.push(`Graph: ${displayGraph(change.previous.graph)} → ${displayGraph(change.current.graph)}`)
     lines.push(`Meaningful: ${change.meaningful ? 'yes' : 'no'}`)
+    if (change.current.alignment !== undefined) renderAlignment(lines, change.current.alignment, 'Upstream/downstream alignment')
     for (const warning of change.current.warnings ?? []) lines.push(`Warning: ${warning}`)
     if (change.source.changedFiles.length > 0) lines.push(`Changed files: ${change.source.changedFiles.slice(0, 12).join(', ')}`)
     if (change.manifest.fields.length > 0) lines.push(`Manifest fields: ${change.manifest.fields.join(', ')}`)

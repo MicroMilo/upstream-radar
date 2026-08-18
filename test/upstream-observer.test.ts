@@ -22,6 +22,7 @@ import {
   type ObserverTarget,
   type ObserverArtifactReview,
 } from '../src/upstream-observer.js'
+import { buildUpstreamDownstreamIR } from '../src/upstream-alignment.js'
 
 const target: ObserverTarget = {
   id: 'dsh-demo',
@@ -311,6 +312,69 @@ targets:
     })
     assert.equal(thirdRun.report.changes.length, 0)
     assert.equal(thirdRun.report.agent.attempted, 0)
+  })
+
+  it('shows baseline identity alignment findings without waking the Agent', async () => {
+    const observed = snapshot('commit-1', '0.15.8', 'graph-v1')
+    observed.manifest = { ...observed.manifest, name: 'dsh-lark-bot' }
+    observed.package = { name: 'dsh-feishu-bot', version: '0.15.8' }
+    observed.alignment = buildUpstreamDownstreamIR({
+      targetId: observed.targetId,
+      ecosystem: observed.ecosystem,
+      source: {
+        repository: observed.source.repository,
+        commit: observed.source.commit,
+        packagePath: observed.source.packagePath,
+      },
+      manifest: observed.manifest,
+      package: observed.package,
+      ...(observed.graph === undefined ? {} : { graph: observed.graph }),
+    })
+    const result = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, emptyObservationState(), {
+      source: { observe: async () => observed, compare: async () => { throw new Error('compare must not run for a baseline') } },
+      now: new Date('2026-08-17T01:30:00.000Z'),
+      agent: async () => { throw new Error('baseline alignment must not call Agent') },
+    })
+    assert.equal(result.report.changes.length, 0)
+    assert.equal(result.report.alignmentFindings[0]?.alignment.status, 'mismatch')
+    assert.match(renderObserverReport(result.report), /Upstream\/downstream alignment findings/)
+    assert.match(renderObserverReport(result.report), /source-published-identity/)
+    assert.equal(result.state.targets[target.id]?.alignment?.status, 'mismatch')
+  })
+
+  it('upgrades a legacy observation point and reports the IR once without creating a task', async () => {
+    const legacy = snapshot('commit-1', '1.0.0', 'graph-v1')
+    const current = structuredClone(legacy)
+    current.alignment = buildUpstreamDownstreamIR({
+      targetId: current.targetId,
+      ecosystem: current.ecosystem,
+      source: {
+        repository: current.source.repository,
+        commit: current.source.commit,
+        packagePath: current.source.packagePath,
+      },
+      manifest: current.manifest,
+      ...(current.package === undefined ? {} : { package: current.package }),
+      ...(current.graph === undefined ? {} : { graph: current.graph }),
+    })
+    const source: ObserverSource = {
+      observe: async () => current,
+      compare: async () => { throw new Error('compare must not run for an unchanged legacy point') },
+    }
+    const first = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, {
+      schema: OBSERVATION_STATE_SCHEMA,
+      targets: { [target.id]: legacy },
+      pendingTasks: [],
+    }, { source, now: new Date('2026-08-17T01:45:00.000Z') })
+    assert.equal(first.report.changes.length, 0)
+    assert.equal(first.report.alignmentFindings.length, 1)
+    assert.equal(first.report.pendingTasks.length, 0)
+    const second = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, first.state, {
+      source,
+      now: new Date('2026-08-17T02:00:00.000Z'),
+    })
+    assert.equal(second.report.alignmentFindings.length, 0)
+    assert.equal(second.report.changes.length, 0)
   })
 
   it('reviews the exact published artifact only for a meaningful change and carries author findings into the task', async () => {

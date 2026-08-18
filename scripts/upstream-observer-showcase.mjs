@@ -5,6 +5,7 @@ const {
   emptyObservationState,
   runObserver,
 } = await import('../dist/src/upstream-observer.js')
+const { buildUpstreamDownstreamIR } = await import('../dist/src/upstream-alignment.js')
 
 const target = {
   id: 'dsh-showcase',
@@ -18,6 +19,28 @@ const target = {
 }
 
 function snapshot(commit, version, graphDigest) {
+  const manifest = {
+    name: 'dsh-lark-bot',
+    version,
+    main: './dist/index.js',
+    dsh: { bundle: { patch: './cordis.patch.yml' } },
+  }
+  const packageObservation = {
+    name: 'dsh-feishu-bot',
+    version,
+    integrity: `sha512-${version}`,
+  }
+  const graph = {
+    schema: 'upstream-radar.dependency-graph/v1alpha1',
+    rootNodeId: 'root',
+    nodes: [
+      { id: 'root', name: 'dsh-lark-bot', version },
+      { id: 'parser', name: 'parser', version: graphDigest === 'sha256:graph-v2' ? '2.0.0' : '1.0.0' },
+    ],
+    edges: [{ from: 'root', to: 'parser', kind: 'runtime' }],
+    source: 'pnpm-lock',
+    digest: graphDigest,
+  }
   return {
     targetId: target.id,
     ecosystem: target.ecosystem,
@@ -32,28 +55,21 @@ function snapshot(commit, version, graphDigest) {
       packageUrl: `https://raw.githubusercontent.com/${target.repository}/${commit}/plugin/package.json`,
       lockfileUrl: `https://raw.githubusercontent.com/${target.repository}/${commit}/plugin/pnpm-lock.yaml`,
     },
-    manifest: {
-      name: 'dsh-showcase',
-      version,
-      main: './dist/index.js',
-      dsh: { bundle: { patch: './cordis.patch.yml' } },
-    },
-    package: {
-      name: 'dsh-showcase',
-      version,
-      integrity: `sha512-${version}`,
-    },
-    graph: {
-      schema: 'upstream-radar.dependency-graph/v1alpha1',
-      rootNodeId: 'root',
-      nodes: [
-        { id: 'root', name: 'dsh-showcase', version },
-        { id: 'parser', name: 'parser', version: graphDigest === 'sha256:graph-v2' ? '2.0.0' : '1.0.0' },
-      ],
-      edges: [{ from: 'root', to: 'parser', kind: 'runtime' }],
-      source: 'pnpm-lock',
-      digest: graphDigest,
-    },
+    manifest,
+    package: packageObservation,
+    graph,
+    alignment: buildUpstreamDownstreamIR({
+      targetId: target.id,
+      ecosystem: target.ecosystem,
+      source: {
+        repository: target.repository,
+        commit,
+        packagePath: target.packagePath,
+      },
+      manifest,
+      package: packageObservation,
+      graph,
+    }),
   }
 }
 
@@ -105,6 +121,7 @@ process.stdout.write(`${JSON.stringify({
   repository: resolve(import.meta.dirname, '..'),
   baseline: {
     targets: baseline.report.baselineTargets,
+    alignmentFindings: baseline.report.alignmentFindings.map(item => ({ targetId: item.targetId, status: item.alignment.status })),
     agentCalls: baseline.report.agent.attempted,
   },
   changed: {
@@ -112,6 +129,7 @@ process.stdout.write(`${JSON.stringify({
       targetId: item.targetId,
       meaningful: item.meaningful,
       reasons: item.reasons,
+      alignment: item.current.alignment?.status,
       taskId: item.taskId,
     })),
     agentCalls: changed.report.agent.attempted,

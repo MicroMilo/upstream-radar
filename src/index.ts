@@ -133,6 +133,18 @@ export {
 } from './dsh-analysis-result.js'
 export { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 export {
+  UPSTREAM_DOWNSTREAM_IR_SCHEMA,
+  buildUpstreamDownstreamIR,
+  parseUpstreamDownstreamIR,
+  type AlignmentCheck,
+  type AlignmentCheckCode,
+  type AlignmentCoordinate,
+  type AlignmentGraphStatus,
+  type AlignmentStatus,
+  type UpstreamDownstreamAlignmentInput,
+  type UpstreamDownstreamIR,
+} from './upstream-alignment.js'
+export {
   OBSERVER_REPORT_SCHEMA,
   OBSERVER_TARGETS_SCHEMA,
   OBSERVATION_STATE_SCHEMA,

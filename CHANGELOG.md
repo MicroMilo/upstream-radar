@@ -2,6 +2,17 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.35.0] - 2026-08-18
+
+### Supply-chain alignment
+
+- Add a versioned upstream/downstream IR that compares the Git source package,
+  observed npm package, lockfile graph root, and dependency coverage.
+- Surface source/published identity mismatches and incomplete graphs in the
+  first observer baseline with concrete author repair steps.
+- Persist the alignment IR in `observations.json` and validate it before reuse;
+  legacy observation points are upgraded without manufacturing Agent tasks.
+
 ## [0.34.0] - 2026-08-18
 
 ### Usability
