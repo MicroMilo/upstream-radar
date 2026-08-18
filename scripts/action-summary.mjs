@@ -133,6 +133,8 @@ if (report.schema === 'upstream-radar.scan/v1alpha1') {
           : '⚠️ admission result unknown'
   const npm = typeof report.evidence?.npm === 'object' && report.evidence.npm !== null ? report.evidence.npm : undefined
   const dependencyAudit = typeof npm?.dependencyAudit === 'object' && npm.dependencyAudit !== null ? npm.dependencyAudit : undefined
+  const unresolved = Array.isArray(dependencyAudit?.graph?.unresolved) ? dependencyAudit.graph.unresolved : []
+  const optionalUnresolved = unresolved.filter(edge => edge?.kind === 'optional').length
   const lines = [
     '## Upstream Radar · plugin admission',
     '',
@@ -142,7 +144,16 @@ if (report.schema === 'upstream-radar.scan/v1alpha1') {
     `- dependency graph: ${code(report.coverage?.dependencyResolution ?? 'unknown')}${dependencyAudit?.packages == null ? '' : ` (${text(dependencyAudit.packages)} packages)`}`,
     `- registry signature: ${code(npm?.registrySignature?.status ?? report.coverage?.registrySignature ?? 'unknown')}`,
     `- provenance: ${code(npm?.provenance?.status ?? report.coverage?.provenance ?? 'unknown')}`,
+    `- unresolved dependency edges: ${text(unresolved.length)}${optionalUnresolved === 0 ? '' : ` (${text(optionalUnresolved)} optional)`}`,
   ]
+  for (const edge of unresolved.slice(0, 3)) {
+    const parent = Array.isArray(dependencyAudit?.graph?.nodes)
+      ? dependencyAudit.graph.nodes.find(node => node?.id === edge?.from)
+      : undefined
+    const parentLabel = parent === undefined ? edge?.from : `${parent.name}@${parent.version}`
+    lines.push(`  - unresolved: ${code(`${parentLabel} → ${edge?.name}@${edge?.spec} [${edge?.kind}]`, 1_024)}`)
+  }
+  if (unresolved.length > 3) lines.push(`  - … ${unresolved.length - 3} more unresolved edge(s) are in the raw JSON log.`)
   const findings = Array.isArray(report.findings) ? report.findings : []
   if (findings.length === 0) {
     lines.push('', 'No implemented static findings were reported.')
@@ -150,13 +161,18 @@ if (report.schema === 'upstream-radar.scan/v1alpha1') {
     lines.push('', `### Findings (${findings.length})`, '')
     for (const finding of findings.slice(0, 32)) {
       lines.push(`- ${text(String(finding?.severity ?? 'unknown').toUpperCase())} · ${code(finding?.code ?? 'finding')} · ${text(finding?.summary ?? 'unclassified finding', 1_024)}`)
+      if (finding?.remediation !== undefined) lines.push(`  - Fix: ${text(finding.remediation, 2_048)}`)
     }
     if (findings.length > 32) lines.push(`- … ${findings.length - 32} more finding(s) are in the raw JSON log.`)
   }
   const next = report.verdict === 'block'
     ? `Do not install ${target} until the blocking finding is resolved.`
     : report.verdict === 'review'
-      ? `Review ${target}'s findings and incomplete coverage before installing it.`
+      ? findings.length === 0 && report.coverageVerdict === 'incomplete'
+        ? unresolved.length === 0 && report.coverage?.provenance !== 'verified'
+          ? `No implemented static risk finding was reported for ${target}; complete the missing coverage evidence before installing it.`
+          : `No implemented static risk finding was reported for ${target}; complete the ${unresolved.length === 0 ? 'missing coverage evidence' : `${unresolved.length} unresolved dependency edge(s)`} before installing it.`
+        : `Review ${target}'s findings and incomplete coverage before installing it.`
       : report.verdict === 'warn'
         ? `Review the warnings for ${target} before installing it.`
         : report.verdict === 'allow'

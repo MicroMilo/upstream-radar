@@ -123,6 +123,33 @@ snapshots:
     )
   })
 
+  it('parses pnpm explicit mapping keys used for long peer-context locators', () => {
+    const graph = parsePnpmLockGraph(`
+lockfileVersion: '9.0'
+
+packages:
+  ? 'plugin@1.0.0'
+  : {}
+  ? 'parser@1.0.0(peer@2.0.0)'
+  : {}
+
+snapshots:
+  ? 'plugin@1.0.0'
+  : dependencies:
+      parser: 1.0.0(peer@2.0.0)
+  ? 'parser@1.0.0(peer@2.0.0)'
+  : {}
+`, { name: 'plugin', version: '1.0.0' })
+
+    assert.equal(graph.nodes.length, 2)
+    assert.deepEqual(graph.edges, [{
+      from: 'pnpm:plugin@1.0.0',
+      to: 'pnpm:parser@1.0.0(peer@2.0.0)',
+      kind: 'runtime',
+    }])
+    assert.equal(graph.unresolved, undefined)
+  })
+
   it('parses pnpm v6 slash locators and peer-context references', () => {
     const graph = parsePnpmLockGraph(`
 lockfileVersion: 6.0
@@ -200,6 +227,45 @@ snapshots:
       from: 'pnpm:workspace-root:my-dsh-plugin@1.0.0',
       to: 'pnpm:plugin@1.0.0',
       kind: 'runtime',
+    }])
+  })
+
+  it('selects a nested pnpm workspace importer for a package-path target', () => {
+    const graph = parsePnpmLockGraph(`
+lockfileVersion: '9.0'
+
+importers:
+  .:
+    dependencies:
+      root-only:
+        specifier: 1.0.0
+        version: 1.0.0
+  apps/cli:
+    dependencies:
+      external:
+        specifier: ^2.0.0
+        version: 2.0.0
+      local-package:
+        specifier: workspace:^
+        version: link:../../packages/local-package
+
+packages:
+  'external@2.0.0': {}
+snapshots:
+  'external@2.0.0': {}
+`, { name: '@deepseek-ai/dsh', version: '0.1.0-rc.7' }, { importer: 'apps/cli' })
+
+    assert.equal(graph.rootNodeId, 'pnpm:workspace-root:@deepseek-ai/dsh@0.1.0-rc.7')
+    assert.deepEqual(graph.edges, [{
+      from: 'pnpm:workspace-root:@deepseek-ai/dsh@0.1.0-rc.7',
+      to: 'pnpm:external@2.0.0',
+      kind: 'runtime',
+    }])
+    assert.deepEqual(graph.unresolved, [{
+      from: 'pnpm:workspace-root:@deepseek-ai/dsh@0.1.0-rc.7',
+      name: 'local-package',
+      kind: 'runtime',
+      spec: 'link:../../packages/local-package',
     }])
   })
 })

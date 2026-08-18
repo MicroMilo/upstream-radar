@@ -84,13 +84,20 @@ describe('GitHub Action summary', () => {
           npm: {
             registrySignature: { status: 'verified' },
             provenance: { status: 'missing' },
-            dependencyAudit: { packages: 18 },
+            dependencyAudit: {
+              packages: 18,
+              graph: {
+                nodes: [{ id: 'root', name: 'demo-plugin', version: '1.0.0' }],
+                unresolved: [{ from: 'root', name: 'optional-peer', spec: '^1.0.0', kind: 'optional' }],
+              },
+            },
           },
         },
         findings: [{
           code: 'dependency-graph-incomplete',
           severity: 'high',
           summary: 'One required dependency edge could not be resolved.',
+          remediation: 'Review the missing package and regenerate the lockfile before installation.',
         }],
       }))
       const result = spawnSync(process.execPath, [summaryScript, report], { encoding: 'utf8' })
@@ -100,7 +107,10 @@ describe('GitHub Action summary', () => {
       assert.match(result.stdout, /demo-plugin@1\.0\.0/)
       assert.match(result.stdout, /risk: `REVIEW` · coverage: `INCOMPLETE`/)
       assert.match(result.stdout, /18 packages/)
+      assert.match(result.stdout, /unresolved dependency edges: 1 \(1 optional\)/)
+      assert.match(result.stdout, /unresolved: `demo-plugin@1\.0\.0 → optional-peer@\^1\.0\.0/)
       assert.match(result.stdout, /dependency-graph-incomplete/)
+      assert.match(result.stdout, /Fix: Review the missing package and regenerate the lockfile before installation\./)
       assert.match(result.stdout, /Review .*findings and incomplete coverage before installing it/)
     } finally {
       await rm(root, { recursive: true, force: true })

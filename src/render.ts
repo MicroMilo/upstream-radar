@@ -1,10 +1,60 @@
 import type { ScanReport } from './types.js'
+import type { DependencyGraph } from './radar-types.js'
+
+type UnresolvedEdge = NonNullable<
+  NonNullable<NonNullable<ScanReport['evidence']['npm']>['dependencyAudit']['graph']>['unresolved']
+>[number]
 
 function display(value: string, maxLength = 512): string {
   const escaped = value.replace(/[\u0000-\u001f\u007f-\u009f]/g, character => (
     `\\u${character.codePointAt(0)?.toString(16).padStart(4, '0') ?? '0000'}`
   ))
   return escaped.length <= maxLength ? escaped : `${escaped.slice(0, maxLength)}…`
+}
+
+function displayUnresolvedEdge(
+  graph: NonNullable<NonNullable<ScanReport['evidence']['npm']>['dependencyAudit']['graph']>,
+  edge: UnresolvedEdge,
+): string {
+  const parent = graph.nodes.find(node => node.id === edge.from)
+  const parentName = parent === undefined ? edge.from : `${parent.name}@${parent.version}`
+  return `  ${display(parentName, 256)} -> ${display(edge.name, 256)} (${display(edge.spec, 256)}) [${display(edge.kind, 32)}]`
+}
+
+function displayGraphEdge(graph: DependencyGraph, from: string, to: string, kind: string): string {
+  const nodes = new Map(graph.nodes.map(node => [node.id, node]))
+  const parent = nodes.get(from)
+  const child = nodes.get(to)
+  const parentName = parent === undefined ? from : `${parent.name}@${parent.version}`
+  const childName = child === undefined ? to : `${child.name}@${child.version}`
+  return `  ${display(parentName, 256)} -> ${display(childName, 256)} [${display(kind, 32)}]`
+}
+
+function renderDependencyGraph(lines: string[], graph: DependencyGraph): void {
+  const nodes = new Map(graph.nodes.map(node => [node.id, node]))
+  const root = nodes.get(graph.rootNodeId)
+  const unresolved = graph.unresolved ?? []
+  lines.push(
+    '',
+    'Dependency graph:',
+    `  source: ${display(graph.source ?? 'lockfile', 64)}`,
+    `  root: ${display(root === undefined ? graph.rootNodeId : `${root.name}@${root.version}`, 512)}`,
+    `  nodes: ${graph.nodes.length}`,
+    `  edges: ${graph.edges.length}`,
+    `  unresolved: ${unresolved.length}`,
+    `  digest: ${display(graph.digest ?? '(none)', 128)}`,
+  )
+  const directEdges = graph.edges.filter(edge => edge.from === graph.rootNodeId)
+  if (directEdges.length > 0) {
+    lines.push(`  direct dependencies: ${directEdges.length}`)
+    for (const edge of directEdges.slice(0, 12)) lines.push(displayGraphEdge(graph, edge.from, edge.to, edge.kind))
+    if (directEdges.length > 12) lines.push(`  ... ${directEdges.length - 12} more direct dependencies`)
+  }
+  if (unresolved.length > 0) {
+    lines.push('  unresolved edge details:')
+    for (const edge of unresolved.slice(0, 12)) lines.push(displayUnresolvedEdge(graph, edge))
+    if (unresolved.length > 12) lines.push(`  ... ${unresolved.length - 12} more unresolved edge(s)`)
+  }
 }
 
 export function renderTextReport(report: ScanReport): string {
@@ -29,6 +79,12 @@ export function renderTextReport(report: ScanReport): string {
     `Evidence: ${report.evidence.filesScanned} ${report.evidence.filesScanned === 1 ? 'file' : 'files'}, ${report.evidence.bytesHashed} bytes, ${report.evidence.dependencies.length} dependency declarations`,
   ]
 
+  if (report.evidence.dependencyGraph !== undefined) {
+    renderDependencyGraph(lines, report.evidence.dependencyGraph)
+  } else if (report.evidence.dependencyGraphError !== undefined) {
+    lines.push('', 'Dependency graph: unavailable', `  reason: ${display(report.evidence.dependencyGraphError, 2_048)}`)
+  }
+
   if (report.evidence.npm !== undefined) {
     const npm = report.evidence.npm
     lines.push(
@@ -41,12 +97,35 @@ export function renderTextReport(report: ScanReport): string {
       `  dependency audit: ${npm.dependencyAudit.status}`,
       `  resolved packages: ${npm.dependencyAudit.packages ?? 'not resolved'}`,
     )
+    if (npm.dependencyAudit.resolutionMode !== undefined) lines.push(`  dependency resolution mode: ${npm.dependencyAudit.resolutionMode}`)
+    if (npm.dependencyAudit.installScriptPackages !== undefined) {
+      const installScripts = npm.dependencyAudit.installScriptPackages
+      lines.push(`  install-time dependency scripts: ${installScripts.length}`)
+      const details = npm.dependencyAudit.installScriptDetails ?? []
+      for (const packageLabel of installScripts.slice(0, 12)) {
+        const detail = details.find(item => item.package === packageLabel)
+        if (detail === undefined || detail.scripts.length === 0) {
+          lines.push(`    ${display(packageLabel, 512)}`)
+        } else {
+          for (const script of detail.scripts) lines.push(`    ${display(`${packageLabel} ${script.name}: ${script.command}`, 2_048)}`)
+        }
+      }
+      if (installScripts.length > 12) lines.push(`    ... ${installScripts.length - 12} more`)
+    }
     if (npm.provenance.sourceRepository !== undefined) lines.push(`  source repository: ${display(npm.provenance.sourceRepository)}`)
     if (npm.provenance.sourceCommit !== undefined) lines.push(`  source commit: ${display(npm.provenance.sourceCommit)}`)
     if (npm.provenance.workflow !== undefined) lines.push(`  build workflow: ${display(npm.provenance.workflow)}`)
     if (npm.dependencyAudit.graphDigest !== undefined) lines.push(`  graph digest: ${npm.dependencyAudit.graphDigest}`)
-    if (npm.dependencyAudit.graph?.unresolved !== undefined) {
-      lines.push(`  unresolved dependency edges: ${npm.dependencyAudit.graph.unresolved.length}`)
+    const unresolved = npm.dependencyAudit.graph?.unresolved
+    if (unresolved !== undefined) {
+      const optional = unresolved.filter(edge => edge.kind === 'optional').length
+      lines.push(`  unresolved dependency edges: ${unresolved.length}${optional === 0 ? '' : ` (${optional} optional)`}`)
+      if (unresolved.length > 0) {
+        lines.push('  unresolved edge details:')
+        for (const edge of unresolved.slice(0, 12)) lines.push(displayUnresolvedEdge(npm.dependencyAudit.graph!, edge))
+        if (unresolved.length > 12) lines.push(`  ... ${unresolved.length - 12} more unresolved edge(s)`)
+        lines.push('  note: optional edges can be platform choices; they explain incomplete coverage, not a confirmed vulnerability.')
+      }
     }
     if (npm.dependencyAudit.vulnerabilities !== null) {
       const vulnerabilities = npm.dependencyAudit.vulnerabilities
@@ -61,6 +140,7 @@ export function renderTextReport(report: ScanReport): string {
     for (const finding of report.findings) {
       lines.push(`  [${finding.severity.toUpperCase()}] ${display(finding.code)}: ${display(finding.summary)}`)
       lines.push(`    ${display(finding.detail, 2_048)}`)
+      if (finding.remediation !== undefined) lines.push(`    Fix: ${display(finding.remediation, 2_048)}`)
     }
   }
 

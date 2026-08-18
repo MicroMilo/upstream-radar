@@ -1,0 +1,155 @@
+{
+  "schema": "upstream-radar.dsh-profile-case-showcase/v1alpha1",
+  "case": {
+    "name": "dsh-web-ui release-age / skin loader mismatch",
+    "source": [
+      "https://github.com/zhu1090093659/dsh-web-ui/issues/71",
+      "https://github.com/zhu1090093659/dsh-web-ui/issues/35"
+    ],
+    "claim": "Replay only: the checked-in profile facts mirror the versions and patch rows described by the public issues; no plugin or DSH process is started."
+  },
+  "results": [
+    {
+      "id": "issue-71-before",
+      "status": "blocked",
+      "packageManager": "pnpm",
+      "lockfile": "pnpm-lock.yaml",
+      "graph": {
+        "nodes": [
+          "dsh-profile-web@0.1.0",
+          "@linxin666/dsh-client-ui-skin-center@0.1.4",
+          "@linxin666/dsh-skins@0.1.5",
+          "@linxin666/dsh-web-ui-all@0.1.5"
+        ],
+        "edges": 3,
+        "digest": "sha256:3031727addf8da33a25209c7e7d4ddcbed3b4444bbf4c5e5e984bc15e69c5388"
+      },
+      "loaderEntries": [
+        {
+          "id": "ui-skin-qq98",
+          "operation": "insert",
+          "sourceFile": "cordis.patch.yml",
+          "line": 3,
+          "name": "@linxin666/dsh-client-ui-skin-qq98"
+        }
+      ],
+      "findings": [
+        {
+          "code": "minimum-release-age-unexcluded",
+          "severity": "review",
+          "summary": "pnpm can silently hold a DSH plugin below its newest release",
+          "detail": "pnpm-workspace.yaml sets minimumReleaseAge=14400, but these profile bundles are not excluded: @linxin666/dsh-web-ui-all, @linxin666/dsh-client-ui-skin-center. A newly published fix can therefore be unavailable during the cooling window, leaving the profile on an older broken layout.",
+          "remediation": "Either pin and review the intended versions, or add the exact plugin package names to minimumReleaseAgeExclude and re-run this check after updating the lockfile."
+        },
+        {
+          "code": "missing-loader-package",
+          "severity": "block",
+          "summary": "loader ui-skin-qq98 imports a package that is not in the profile",
+          "detail": "cordis.patch.yml:3 names @linxin666/dsh-client-ui-skin-qq98, but @linxin666/dsh-client-ui-skin-qq98 is absent from the locked dependency graph. DSH will fail when it imports this loader; adding the package separately can create a second registration for the same id.",
+          "remediation": "Align the patch with the installed bundle layout: remove this insert when the feature is bundled, or add the exact package to the profile and ensure it is registered only once."
+        }
+      ],
+      "execution": {
+        "network": false,
+        "installs": false,
+        "pluginCode": false,
+        "dshAgent": false,
+        "llm": false
+      }
+    },
+    {
+      "id": "issue-35-manual-add",
+      "status": "blocked",
+      "packageManager": "pnpm",
+      "lockfile": "pnpm-lock.yaml",
+      "graph": {
+        "nodes": [
+          "dsh-profile-web@0.1.0",
+          "@linxin666/dsh-client-ui-skin-center@0.1.4",
+          "@linxin666/dsh-client-ui-skin-qq98@0.1.3",
+          "@linxin666/dsh-skins@0.1.5",
+          "@linxin666/dsh-web-ui-all@0.1.5"
+        ],
+        "edges": 4,
+        "digest": "sha256:595a95e89d7086cf07499797085e016945492db98164f30e975c5d3d53ea8071"
+      },
+      "loaderEntries": [
+        {
+          "id": "ui-skin-qq98",
+          "operation": "insert",
+          "sourceFile": "cordis.patch.yml",
+          "line": 3,
+          "name": "@linxin666/dsh-client-ui-skin-qq98"
+        },
+        {
+          "id": "ui-skin-qq98",
+          "operation": "insert",
+          "sourceFile": "node_modules/@linxin666/dsh-client-ui-skin-qq98/cordis.patch.yml",
+          "line": 2,
+          "name": "@linxin666/dsh-client-ui-skin-qq98"
+        }
+      ],
+      "findings": [
+        {
+          "code": "duplicate-loader-id",
+          "severity": "block",
+          "summary": "loader id ui-skin-qq98 appears more than once",
+          "detail": "cordis.patch.yml:3, node_modules/@linxin666/dsh-client-ui-skin-qq98/cordis.patch.yml:2 all contribute an active row. At least one is an insert, so DSH may reject the profile with a duplicate loader entry or load the wrong implementation.",
+          "remediation": "Keep one active registration for ui-skin-qq98; if the row is already supplied by a bundle, remove the generated insert instead of installing another package."
+        },
+        {
+          "code": "minimum-release-age-unexcluded",
+          "severity": "review",
+          "summary": "pnpm can silently hold a DSH plugin below its newest release",
+          "detail": "pnpm-workspace.yaml sets minimumReleaseAge=14400, but these profile bundles are not excluded: @linxin666/dsh-web-ui-all, @linxin666/dsh-client-ui-skin-center, @linxin666/dsh-client-ui-skin-qq98. A newly published fix can therefore be unavailable during the cooling window, leaving the profile on an older broken layout.",
+          "remediation": "Either pin and review the intended versions, or add the exact plugin package names to minimumReleaseAgeExclude and re-run this check after updating the lockfile."
+        }
+      ],
+      "execution": {
+        "network": false,
+        "installs": false,
+        "pluginCode": false,
+        "dshAgent": false,
+        "llm": false
+      }
+    },
+    {
+      "id": "issue-71-fixed",
+      "status": "pass",
+      "packageManager": "pnpm",
+      "lockfile": "pnpm-lock.yaml",
+      "graph": {
+        "nodes": [
+          "dsh-profile-web@0.1.0",
+          "@linxin666/dsh-client-ui-skin-center@0.1.7",
+          "@linxin666/dsh-skins@0.1.7",
+          "@linxin666/dsh-web-ui-all@0.1.7"
+        ],
+        "edges": 3,
+        "digest": "sha256:a52e485a4ba60ce0ab62736d39919c7840eb49ec1e0dea3ae6ef97baea1646d5"
+      },
+      "loaderEntries": [
+        {
+          "id": "ui-skin-qq98",
+          "operation": "row",
+          "sourceFile": "cordis.patch.yml",
+          "line": 3
+        }
+      ],
+      "findings": [],
+      "execution": {
+        "network": false,
+        "installs": false,
+        "pluginCode": false,
+        "dshAgent": false,
+        "llm": false
+      }
+    }
+  ],
+  "conclusion": {
+    "detectedBeforeStart": true,
+    "correctFixReachesPass": true,
+    "dshAgentCalls": 0,
+    "llmCalls": 0
+  }
+}

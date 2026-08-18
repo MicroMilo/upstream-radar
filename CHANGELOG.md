@@ -2,10 +2,112 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.34.0] - 2026-08-18
+
+### Usability
+
+- Add `graph reverse` to build a deterministic dependency-to-affected-plugin
+  index from saved scan, exact-review, or Radar config JSON, preserving exact
+  paths, edge kinds, source observations, and incomplete coverage.
+- Make the OpenAI-compatible DSH Agent path tolerate common GLM JSON shape
+  differences while keeping the eight-field conclusion contract validated.
+- Make exact DSH plugin reviews explain incomplete dependency coverage directly:
+  resolved package count, unresolved edges, registry signature/provenance state,
+  and the next author action now appear in the CLI and GitHub Job Summary.
+- Let `observe` run the exact published artifact through a configured DSH release
+  matrix on the same meaningful upstream change, then keep that result beside
+  the dependency review and pending task.
+
+## [0.33.12] - 2026-08-18
+
+### Usability
+
+- Keep a bounded summary of every pending upstream task in JSON and Markdown reports, including the source and published versions, commit range, changed runtime files, dependency edges, and the exact `--retry-pending` next step.
+- Surface source-versus-published npm version drift as an author-facing review reason instead of hiding it inside a generic runtime change.
+
+## [0.33.11] - 2026-08-18
+
+### Diagnostics
+
+- Report every known OpenAI-compatible endpoint attempted when an observer model call receives HTTP 404, so a misconfigured DSH/issue-locator endpoint can be corrected from the report instead of appearing as an opaque model failure.
+
+## [0.33.10] - 2026-08-18
+
+### Adoption
+
+- Add a copy-paste GitHub Actions workflow for observing one public repository with the published npm CLI, without checking out or building Radar; it persists the observation point and only runs optional model analysis when all configured secrets are present.
+
+## [0.33.9] - 2026-08-18
+
+### Usability
+
+- Auto-discover a committed `pnpm-lock.yaml` or `package-lock.json` when `observe` receives a GitHub repository URL without explicit lockfile options, so the one-command path includes the real dependency graph.
+
+## [0.33.8] - 2026-08-18
+
+### Usability
+
+- Let `observe` accept one public GitHub repository URL directly, with optional package path and committed npm/pnpm lockfile arguments, so a first upstream baseline does not require writing YAML.
+- Retry pending upstream-change tasks in the scheduled observer workflow when a model or Agent was temporarily unavailable.
+
+## [0.33.7] - 2026-08-18
+
+### Usability
+
+- Make `scan` reconstruct the unique committed npm or pnpm lockfile graph, show direct edges and unresolved paths in text output, and explain when the graph cannot be established without guessing.
+
+## [0.33.6] - 2026-08-18
+
+### Usability
+
+- When a public GitHub repository has no root `package.json`, find one unique DSH plugin directory up to three levels deep and scan it without asking the user to clone or guess the subdirectory.
+
+## [0.33.5] - 2026-08-18
+
+### Usability
+
+- Let `scan` accept a public GitHub repository URL, shallow-clone it into a temporary directory, and print the same concrete static findings without installing or running the plugin.
+
+## [0.33.4] - 2026-08-18
+
+### Usability
+
+- Show each finding's concrete remediation in the normal terminal scan report, so authors can move from a detected issue to the repair without switching to JSON.
+
+## [0.33.3] - 2026-08-18
+
+### Reliability
+
+- Retry one transient GitHub, raw-file, or npm registry request failure so a single upstream timeout does not hide a real DSH plugin change; permanent errors remain visible.
+
+## [0.33.2] - 2026-08-18
+
+### Usability
+
+- Accept the natural `package@exact-version` form in `inspect` alongside the explicit `npm:` form, while keeping one canonical report identity.
+
+## [0.33.1] - 2026-08-18
+
+### Fixed
+
+- Preserve the concrete npm resolver stderr in dependency-audit findings, so a DSH plugin report names the missing package instead of only saying that resolution failed.
+
+### Usability
+
+- Add a copyable real DSH plugin finding to the English and Chinese first-run paths, with an explicit no-LLM boundary and author report.
+- Record the public DSH profile case with `model: not-configured` when no model is available, so deterministic evidence is not mistaken for a successful LLM analysis.
+
 ## [Unreleased]
 
 ### Added
 
+- Add `observe --llm-env-file` as an explicit OpenAI-compatible issue-locator model entry point for installations that do not yet have a DSH Agent wrapper; model failures leave deterministic upstream tasks pending for retry.
+- Make the scheduled upstream-observer workflow optionally forward issue-locator model secrets without making static observation depend on an LLM configuration.
+- Show the concrete unresolved dependency edges behind an incomplete npm artifact review, and accept common `MODEL`/`CODEX_MODEL` env names for observer model calls.
+- Retry the alternate ModelBest OpenAI-compatible path when the configured `/llm/v1` path returns 404.
+- Allow `profile-check --summary` to auto-select the only DSH profile with third-party bundles, while keeping explicit selection for ambiguous installations.
+- Add a concise `profile-check --summary` result and a reproducible DSH web-ui case showcase that turns static findings into an author-facing repair story; optional `issue-locator` model output never changes the deterministic result.
+- Correct GitHub Advisory Database matching so an exact version at or above `first_patched_version` is no longer reported as affected; add a regression test for open-ended vulnerable ranges.
 - Add per-incident follow-up records with owner, status, and handoff notes bound to the exact event version; show a copyable `triage` command in `radar next` without resolving or suppressing the active evidence.
 - Add optional follow-up deadlines and mark overdue work in `radar status` and `radar next` without changing the underlying incident or delivery policy.
 - Add project-specific HTTPS/Feishu webhook routes through environment-variable names, with project filtering, independent endpoint outboxes, conflict checks, and a global broadcast-compatible fallback.

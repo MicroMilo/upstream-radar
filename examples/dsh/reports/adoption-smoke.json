@@ -1,31 +1,251 @@
 {
   "schema": "upstream-radar.dsh-adoption-showcase/v1alpha1",
   "dshVersion": "0.1.0-rc.6",
-  "plugin": "dsh-cloudflare-browser-run@0.1.1",
+  "plugins": [
+    "dsh-cloudflare-browser-run@0.1.1",
+    "@open-agfs/dsh-agfs@0.1.9",
+    "dsh-feishu-bot@0.14.0"
+  ],
   "install": {
     "packagePackScriptsDisabled": true,
     "profile": "headless",
-    "radarBundleRegistered": true
+    "radarBundleRegistered": true,
+    "pluginInstallations": [
+      {
+        "spec": "dsh-cloudflare-browser-run@0.1.1",
+        "status": "installed"
+      },
+      {
+        "spec": "@open-agfs/dsh-agfs@0.1.9",
+        "status": "installed"
+      },
+      {
+        "spec": "dsh-feishu-bot@0.14.0",
+        "status": "blocked",
+        "exitCode": 1,
+        "signals": [
+          "DSH/pnpm stopped on an unapproved dependency build script",
+          "peer dependency warnings were reported",
+          "the DSH profile install was not completed"
+        ]
+      }
+    ]
   },
   "setup": {
     "status": "completed",
-    "graphSource": "installed-node-modules",
-    "dshRuntimePackage": {
-      "ecosystem": "npm",
-      "name": "@deepseek-ai/dsh",
-      "version": "0.1.0-rc.6"
-    },
-    "dependencyNodes": 516,
-    "dshHostPackages": 510,
-    "optionalDependenciesNotInstalled": 65
+    "pluginCount": 2,
+    "plugins": [
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "dsh-cloudflare-browser-run",
+          "version": "0.1.1"
+        },
+        "graphSource": "installed-node-modules",
+        "dshRuntimePackage": {
+          "ecosystem": "npm",
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.0-rc.6"
+        },
+        "dependencyNodes": 516,
+        "dshHostPackages": 510,
+        "unresolvedOptionalDependencies": 65
+      },
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "@open-agfs/dsh-agfs",
+          "version": "0.1.9"
+        },
+        "graphSource": "installed-node-modules",
+        "dshRuntimePackage": {
+          "ecosystem": "npm",
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.0-rc.6"
+        },
+        "dependencyNodes": 516,
+        "dshHostPackages": 510,
+        "unresolvedOptionalDependencies": 65
+      }
+    ]
   },
   "check": {
-    "packagesQueried": 512,
-    "releasePackagesQueried": 189,
-    "events": 0,
+    "packagesQueried": 513,
+    "releasePackagesQueried": 190,
+    "events": 2,
+    "eventSummaries": [
+      {
+        "id": "event-a14c4b8eb899cb0e80dea15d",
+        "incidentId": "incident-060856fa669804e331bcc7ea",
+        "kind": "compatibility",
+        "change": "new",
+        "plugin": {
+          "ecosystem": "npm",
+          "name": "dsh-cloudflare-browser-run",
+          "version": "0.1.1"
+        },
+        "installed": {
+          "ecosystem": "npm",
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.0-rc.6"
+        },
+        "candidate": {
+          "ecosystem": "npm",
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.0-rc.7"
+        },
+        "signals": [
+          {
+            "code": "dsh-developer-preview-change",
+            "confidence": "strong",
+            "summary": "A pre-1.0 DSH package changed; compatibility must be verified against installed plugins.",
+            "before": "0.1.0-rc.6",
+            "after": "0.1.0-rc.7"
+          },
+          {
+            "code": "candidate-dependency-check-unavailable",
+            "confidence": "needs-analysis",
+            "summary": "The candidate dependency graph or its vulnerability query was unavailable; transitive dependency risk is unknown."
+          }
+        ],
+        "upgradePath": {
+          "evaluated": 1,
+          "blockedCount": 1,
+          "vulnerabilityStatus": "checked",
+          "dependencyStatus": "unavailable"
+        },
+        "compatibilityProbe": {
+          "result": "compatible",
+          "dshVersions": [
+            "0.1.0-rc.6",
+            "0.1.0-rc.7"
+          ],
+          "summary": {
+            "total": 2,
+            "compatible": 2,
+            "incompatible": 0,
+            "unknown": 0
+          },
+          "reason": "all tested DSH versions registered and loaded the bundle",
+          "artifactSha256": "27fe660b2fe40b15b70a206310b883ca15722d8ffaacab63232b71128d28701f"
+        }
+      },
+      {
+        "id": "event-f1606327eb3426f45bc7f0d7",
+        "incidentId": "incident-d6662a92ca0020d94132985e",
+        "kind": "compatibility",
+        "change": "new",
+        "plugin": {
+          "ecosystem": "npm",
+          "name": "@open-agfs/dsh-agfs",
+          "version": "0.1.9"
+        },
+        "installed": {
+          "ecosystem": "npm",
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.0-rc.6"
+        },
+        "candidate": {
+          "ecosystem": "npm",
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.0-rc.7"
+        },
+        "signals": [
+          {
+            "code": "dsh-developer-preview-change",
+            "confidence": "strong",
+            "summary": "A pre-1.0 DSH package changed; compatibility must be verified against installed plugins.",
+            "before": "0.1.0-rc.6",
+            "after": "0.1.0-rc.7"
+          },
+          {
+            "code": "candidate-dependency-check-unavailable",
+            "confidence": "needs-analysis",
+            "summary": "The candidate dependency graph or its vulnerability query was unavailable; transitive dependency risk is unknown."
+          }
+        ],
+        "upgradePath": {
+          "evaluated": 1,
+          "blockedCount": 1,
+          "vulnerabilityStatus": "checked",
+          "dependencyStatus": "unavailable"
+        },
+        "compatibilityProbe": {
+          "result": "compatible",
+          "dshVersions": [
+            "0.1.0-rc.6",
+            "0.1.0-rc.7"
+          ],
+          "summary": {
+            "total": 2,
+            "compatible": 2,
+            "incompatible": 0,
+            "unknown": 0
+          },
+          "reason": "all tested DSH versions registered and loaded the bundle",
+          "artifactSha256": "bfbb878b8c69cf1822dfed27dfb75aaf31fe06fe56ad1542c185f261f963229a"
+        }
+      }
+    ],
     "sourceErrors": 0,
     "activeVulnerabilities": 0
   },
+  "compatibilityProbes": [
+    {
+      "plugin": "dsh-cloudflare-browser-run@0.1.1",
+      "pluginPackage": {
+        "ecosystem": "npm",
+        "name": "dsh-cloudflare-browser-run",
+        "version": "0.1.1"
+      },
+      "artifact": {
+        "name": "dsh-cloudflare-browser-run",
+        "version": "0.1.1",
+        "sha256": "27fe660b2fe40b15b70a206310b883ca15722d8ffaacab63232b71128d28701f"
+      },
+      "dshVersions": [
+        "0.1.0-rc.6",
+        "0.1.0-rc.7"
+      ],
+      "result": "compatible",
+      "summary": {
+        "total": 2,
+        "compatible": 2,
+        "incompatible": 0,
+        "unknown": 0
+      },
+      "reason": "all tested DSH versions registered and loaded the bundle",
+      "exitCode": 0,
+      "boundary": "Compatible means only that the DSH profile registered and loaded the bundle. This probe does not run plugin business actions, test model behavior, or prove package safety."
+    },
+    {
+      "plugin": "@open-agfs/dsh-agfs@0.1.9",
+      "pluginPackage": {
+        "ecosystem": "npm",
+        "name": "@open-agfs/dsh-agfs",
+        "version": "0.1.9"
+      },
+      "artifact": {
+        "name": "@open-agfs/dsh-agfs",
+        "version": "0.1.9",
+        "sha256": "bfbb878b8c69cf1822dfed27dfb75aaf31fe06fe56ad1542c185f261f963229a"
+      },
+      "dshVersions": [
+        "0.1.0-rc.6",
+        "0.1.0-rc.7"
+      ],
+      "result": "compatible",
+      "summary": {
+        "total": 2,
+        "compatible": 2,
+        "incompatible": 0,
+        "unknown": 0
+      },
+      "reason": "all tested DSH versions registered and loaded the bundle",
+      "exitCode": 0,
+      "boundary": "Compatible means only that the DSH profile registered and loaded the bundle. This probe does not run plugin business actions, test model behavior, or prove package safety."
+    }
+  ],
   "doctor": {
     "beforeFirstCheck": "ready-with-warnings",
     "afterFirstCheck": "ready"
@@ -34,8 +254,8 @@
     "monitoring": "healthy",
     "coverage": "complete",
     "activeVulnerabilities": 0,
-    "activeCompatibility": 0,
+    "activeCompatibility": 2,
     "sourceHealthIncidents": 0
   },
-  "boundary": "Uses a disposable DSH_HOME and exact published packages. Both package tarballs were packed with lifecycle scripts disabled; the DSH host is bootstrapped with --help. It does not start an Agent, call a model, or execute plugin business actions; it proves install, graph, doctor, and real upstream checks."
+  "boundary": "Uses a disposable DSH_HOME and exact published packages. Radar and all real plugin tarballs were packed with lifecycle scripts disabled; the DSH host is bootstrapped with --help. It does not start an Agent, call a model, or execute plugin business actions; it proves multi-plugin install, graph, doctor, and real upstream checks."
 }

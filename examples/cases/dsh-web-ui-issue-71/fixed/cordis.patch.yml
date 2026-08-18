@@ -1,0 +1,3 @@
+# Fixed bundled-carrier layout: activate the existing row, do not insert a
+# second package loader for a per-skin package.
+- id: ui-skin-qq98

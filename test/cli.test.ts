@@ -21,6 +21,7 @@ describe('CLI option parsing', () => {
     assert.equal(help.status, 0)
     assert.match(help.stdout, /setup \[--profile <name>\]/)
     assert.match(help.stdout, /doctor \[config\.json\]/)
+    assert.match(help.stdout, /scan <directory-or-github-url>/)
     assert.match(help.stdout, /init --pnpm-lock <pnpm-lock\.yaml> \[--root <package>@<exact-version>\]/)
     assert.match(help.stdout, /init --npm-lock <package-lock\.json> \[--root <package>@<exact-version>\]/)
     assert.match(help.stdout, /--pnpm-lock <path>\s+init: build a static inventory from a pnpm v6\/v9 lockfile/)
@@ -31,6 +32,9 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /radar history <config\.json>/)
     assert.match(help.stdout, /triage <state\.json> <incident-id> --status .*--due <ISO-8601>/)
     assert.match(help.stdout, /graph <npm-lock\|pnpm-lock> <lockfile> \[--root <package>@<exact-version>\]/)
+    assert.match(help.stdout, /graph reverse <reports-directory> \[--package <name>@<exact-version>\]/)
+    assert.match(help.stdout, /profile-check \[profile-directory\] \[--patch <path>\] \[--report <path>\] \[--summary\] \[--json\]/)
+    assert.match(help.stdout, /observe <targets\.yml\|github-url>/)
     assert.match(help.stdout, /--once\s+run one watch cycle and exit/)
     assert.match(help.stdout, /--frozen\s+radar check\/watch: use the reviewed graph/)
     assert.match(help.stdout, /--fail-on <value>\s+scan\/inspect verdict or radar severity/)
@@ -42,7 +46,16 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /--no-dsh-patch\s+setup: keep the legacy UPSTREAM_RADAR_\* environment-variable wiring/)
     assert.match(help.stdout, /probe dsh-load <package\.tgz>/)
     assert.match(help.stdout, /probe dsh-matrix <package\.tgz>/)
+    assert.match(help.stdout, /review dsh-plugin .*--dsh-version/)
     assert.match(help.stdout, /demo \[--json\]/)
+    assert.match(help.stdout, /case dsh-web-ui \[--json\]/)
+
+    const profileHelp = spawnSync(process.execPath, [cli, 'profile-check', '--help'], { encoding: 'utf8' })
+    assert.equal(profileHelp.status, 0)
+    assert.match(profileHelp.stdout, /missing packages and duplicate loader ids/)
+    assert.match(profileHelp.stdout, /DSH Agent\/model/)
+    assert.match(profileHelp.stdout, /directory is omitted/)
+    assert.match(profileHelp.stdout, /--summary/)
 
     const demo = spawnSync(process.execPath, [cli, 'demo'], { encoding: 'utf8' })
     assert.equal(demo.status, 0)
@@ -57,6 +70,25 @@ describe('CLI option parsing', () => {
     assert.equal(demoReport.networkFree, true)
     assert.equal(demoReport.analysisTask.constraints.readOnly, true)
 
+    const dshCase = spawnSync(process.execPath, [cli, 'case', 'dsh-web-ui'], { encoding: 'utf8' })
+    assert.equal(dshCase.status, 0)
+    assert.match(dshCase.stdout, /Before DSH starts: BLOCKED/)
+    assert.match(dshCase.stdout, /Manual package workaround: BLOCKED.*duplicate-loader-id/)
+    assert.match(dshCase.stdout, /Maintainer fix replay: PASS/)
+    assert.match(dshCase.stdout, /no install, plugin execution, DSH start, Agent, or LLM/)
+
+    const dshCaseJson = spawnSync(process.execPath, [cli, 'case', 'dsh-web-ui', '--json'], { encoding: 'utf8' })
+    assert.equal(dshCaseJson.status, 0)
+    const caseReport = JSON.parse(dshCaseJson.stdout) as { schema: string; networkFree: boolean; checks: Array<{ id: string; status: string }>; execution: { llm: boolean } }
+    assert.equal(caseReport.schema, 'upstream-radar.dsh-case/v1alpha1')
+    assert.equal(caseReport.networkFree, true)
+    assert.deepEqual(caseReport.checks.map(item => [item.id, item.status]), [['before', 'blocked'], ['manual-add', 'blocked'], ['fixed', 'pass']])
+    assert.equal(caseReport.execution.llm, false)
+
+    const invalidCase = spawnSync(process.execPath, [cli, 'case', 'unknown'], { encoding: 'utf8' })
+    assert.equal(invalidCase.status, 1)
+    assert.match(invalidCase.stderr, /case requires dsh-web-ui/)
+
     const invalidDemo = spawnSync(process.execPath, [cli, 'demo', '--unexpected'], { encoding: 'utf8' })
     assert.equal(invalidDemo.status, 1)
     assert.match(invalidDemo.stderr, /unknown option for demo/)
@@ -67,6 +99,18 @@ describe('CLI option parsing', () => {
     assert.equal(benchmarkReport.mode, 'offline-rules')
     assert.deepEqual(benchmarkReport.summary, { total: 6, passed: 6, failed: 0 })
 
+    const reverse = spawnSync(process.execPath, [cli, 'graph', 'reverse', resolve(repository, 'examples/radar'), '--package', 'parser@2.9.0'], { encoding: 'utf8' })
+    assert.equal(reverse.status, 0)
+    assert.match(reverse.stdout, /Query: parser@2\.9\.0/)
+    assert.match(reverse.stdout, /plugin@1\.0\.0 \[Payments API\]/)
+
+    const reverseJson = spawnSync(process.execPath, [cli, 'graph', 'reverse', resolve(repository, 'examples/radar'), '--package', 'parser@2.9.0', '--json'], { encoding: 'utf8' })
+    assert.equal(reverseJson.status, 0)
+    const reverseReport = JSON.parse(reverseJson.stdout) as { schema: string; dependencies: Array<{ dependency: { name: string; version: string }; dependents: unknown[] }> }
+    assert.equal(reverseReport.schema, 'upstream-radar.reverse-dependency-index/v1alpha1')
+    assert.deepEqual(reverseReport.dependencies.map(item => `${item.dependency.name}@${item.dependency.version}`), ['parser@2.9.0'])
+    assert.equal(reverseReport.dependencies[0]?.dependents.length, 1)
+
     const invalidProbeVersion = spawnSync(process.execPath, [cli, 'probe', 'dsh-load', 'missing.tgz', '--dsh-version', 'latest'], { encoding: 'utf8' })
     assert.equal(invalidProbeVersion.status, 1)
     assert.match(invalidProbeVersion.stderr, /DSH version must be an exact semantic version/)
@@ -74,6 +118,10 @@ describe('CLI option parsing', () => {
     const incompleteProbeMatrix = spawnSync(process.execPath, [cli, 'probe', 'dsh-matrix', 'missing.tgz', '--dsh-version', '0.1.0-rc.6'], { encoding: 'utf8' })
     assert.equal(incompleteProbeMatrix.status, 1)
     assert.match(incompleteProbeMatrix.stderr, /at least two exact DSH versions/)
+
+    const incompleteReview = spawnSync(process.execPath, [cli, 'review', 'dsh-plugin', 'demo-plugin@1.0.0'], { encoding: 'utf8' })
+    assert.equal(incompleteReview.status, 1)
+    assert.match(incompleteReview.stderr, /requires at least two exact DSH versions/)
 
     const blockedDoctor = spawnSync(process.execPath, [cli, 'doctor', resolve(tmpdir(), `upstream-radar-missing-${process.pid}.json`)], { encoding: 'utf8' })
     assert.equal(blockedDoctor.status, 1)
@@ -94,6 +142,46 @@ describe('CLI option parsing', () => {
     const memoryWebhook = spawnSync(process.execPath, [cli, 'radar', 'watch', 'missing.json', '--once', '--state', ':memory:', '--webhook', 'https://hooks.example.test/incoming'], { encoding: 'utf8' })
     assert.equal(memoryWebhook.status, 1)
     assert.match(memoryWebhook.stderr, /requires a persistent --state file/)
+  })
+
+  it('auto-selects the only DSH profile for a profile check', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-profile-check-cli-'))
+    try {
+      const dshHome = join(root, 'dsh-home')
+      const profile = join(dshHome, 'profiles', 'web')
+      await mkdir(join(profile, 'node_modules', 'demo-plugin'), { recursive: true })
+      await writeFile(join(profile, 'package.json'), JSON.stringify({
+        name: 'dsh-profile-web',
+        version: '1.0.0',
+        dsh: { profile: { bundles: ['demo-plugin'] } },
+      }))
+      await writeFile(join(profile, 'node_modules', 'demo-plugin', 'package.json'), JSON.stringify({
+        name: 'demo-plugin',
+        version: '1.0.0',
+      }))
+      await writeFile(join(profile, 'pnpm-lock.yaml'), [
+        "lockfileVersion: '9.0'",
+        'importers:',
+        '  .:',
+        '    dependencies:',
+        '      demo-plugin: 1.0.0',
+        'packages:',
+        '  demo-plugin@1.0.0: {}',
+        'snapshots:',
+        '  demo-plugin@1.0.0: {}',
+        '',
+      ].join('\n'))
+
+      const result = spawnSync(process.execPath, [cli, 'profile-check', '--summary'], {
+        encoding: 'utf8',
+        env: { ...process.env, DSH_HOME: dshHome },
+      })
+      assert.equal(result.status, 0)
+      assert.match(result.stdout, /DSH profile dsh-profile-web@1\.0\.0: PASS/)
+      assert.match(result.stdout, /static profile files only/)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
   })
 
   it('offers self-contained help for the first-use commands', () => {
@@ -128,6 +216,14 @@ describe('CLI option parsing', () => {
     assert.equal(inspectHelp.status, 0)
     assert.match(inspectHelp.stdout, /inspect one exact npm artifact before installation/)
     assert.match(inspectHelp.stdout, /empty finding list is not\s+a safety certificate/)
+
+    const observeHelp = spawnSync(process.execPath, [cli, 'observe', '--help'], { encoding: 'utf8' })
+    assert.equal(observeHelp.status, 0)
+    assert.match(observeHelp.stdout, /watch DSH plugin repositories and packages/)
+    assert.match(observeHelp.stdout, /Radar does not install the observed plugin/)
+    assert.match(observeHelp.stdout, /--llm-env-file <path>/)
+    assert.match(observeHelp.stdout, /issue-locator\/\.env-style file/)
+    assert.match(observeHelp.stdout, /MODEL\/CODEX_MODEL/)
 
     const statusHelp = spawnSync(process.execPath, [cli, 'radar', 'status', '--help'], { encoding: 'utf8' })
     assert.equal(statusHelp.status, 0)

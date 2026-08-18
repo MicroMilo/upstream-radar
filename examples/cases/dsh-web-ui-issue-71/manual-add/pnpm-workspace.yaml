@@ -1,0 +1,5 @@
+packages:
+  - 'node_modules/*'
+minimumReleaseAge: 14400
+minimumReleaseAgeExclude:
+  - '@deepseek-ai/dsh@0.1.0-rc.6'

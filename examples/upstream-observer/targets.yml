@@ -1,0 +1,22 @@
+schema: upstream-radar.observer-targets/v1alpha1
+targets:
+  # A real public DSH/Feishu plugin. Replace it with the plugin repositories
+  # your team actually depends on.
+  - id: dsh-feishu-bot
+    ecosystem: dsh
+    repository: PlutoKeating/dsh-lark-bot
+    ref: main
+    package: dsh-feishu-bot
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+    dshVersions: ["0.1.0-rc.6", "0.1.0-rc.7"]
+
+  # A real maintainer-repair case. This repository has no committed lockfile;
+  # the observer still watches the source manifest and the published npm release.
+  - id: dsh-webui-market-plugin
+    ecosystem: dsh
+    repository: Sanqi-normal/dsh-webui-market-plugin
+    ref: master
+    package: '@sanqi-normal/dsh-webui-market-plugin'
+    packagePath: package.json

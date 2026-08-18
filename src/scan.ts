@@ -6,6 +6,7 @@ import {
   readlink,
 } from 'node:fs/promises'
 import { dirname, isAbsolute, relative, resolve, sep } from 'node:path'
+import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
 import { decideVerdict, stricterVerdict } from './policy.js'
 import {
   REPORT_SCHEMA,
@@ -16,13 +17,17 @@ import {
   type ScanReport,
   type Severity,
 } from './types.js'
+import type { DependencyGraph } from './radar-types.js'
 import { TOOL_VERSION } from './version.js'
 
 const MAX_FILES = 10_000
 const MAX_TOTAL_BYTES = 64 * 1024 * 1024
 const MAX_MANIFEST_BYTES = 1024 * 1024
+const MAX_GRAPH_FILE_BYTES = 64 * 1024 * 1024
+const MAX_TEXT_EVIDENCE_BYTES = 512 * 1024
 const EXCLUDED_DIRECTORIES = new Set(['.git', 'node_modules'])
 const LOCKFILES = ['pnpm-lock.yaml', 'package-lock.json', 'yarn.lock', 'bun.lock', 'bun.lockb']
+const GRAPH_LOCKFILES = ['pnpm-lock.yaml', 'package-lock.json'] as const
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare'] as const
 const NATIVE_SUFFIXES = ['.node', '.dll', '.dylib', '.so', '.exe']
 
@@ -82,6 +87,70 @@ function asRecord(value: unknown): Record<string, unknown> | undefined {
 
 function asString(value: unknown): string | undefined {
   return typeof value === 'string' ? value : undefined
+}
+
+interface DependencyGraphEvidence {
+  graph?: DependencyGraph
+  error?: string
+}
+
+async function readDependencyGraph(
+  root: string,
+  manifest: PackageManifest,
+  lockfiles: readonly string[],
+  scannedFiles: readonly ScannedFile[],
+): Promise<DependencyGraphEvidence> {
+  const graphLockfiles = lockfiles.filter((lockfile): lockfile is typeof GRAPH_LOCKFILES[number] => (
+    (GRAPH_LOCKFILES as readonly string[]).includes(lockfile)
+  ))
+  if (graphLockfiles.length === 0) return {}
+  if (graphLockfiles.length > 1) return { error: `multiple supported lockfiles found: ${graphLockfiles.join(', ')}` }
+
+  const lockfile = graphLockfiles[0]
+  if (lockfile === undefined) return {}
+  const scanned = scannedFiles.find(file => file.path === lockfile)
+  if (scanned === undefined || scanned.symlinkTarget !== undefined) {
+    return { error: `${lockfile} is not a reviewed regular file` }
+  }
+  if (scanned.size > MAX_GRAPH_FILE_BYTES) return { error: `${lockfile} exceeds the ${MAX_GRAPH_FILE_BYTES} byte safety limit` }
+
+  const name = asString(manifest.name)
+  const version = asString(manifest.version)
+  if (name === undefined || version === undefined) {
+    return { error: 'package.json must declare both name and version before a lockfile graph can be mapped' }
+  }
+
+  try {
+    const contents = await readFile(resolve(root, lockfile), 'utf8')
+    if (lockfile === 'pnpm-lock.yaml') {
+      return { graph: parsePnpmLockGraph(contents, { name, version }) }
+    }
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(contents) as unknown
+    } catch {
+      return { error: 'package-lock.json is not valid JSON' }
+    }
+    return { graph: parseNpmLockGraph(parsed, { name, version }) }
+  } catch (error: unknown) {
+    return { error: error instanceof Error ? error.message : String(error) }
+  }
+}
+
+function inspectDependencyGraphCompleteness(graph: DependencyGraph, findings: Finding[]): void {
+  const unresolved = graph.unresolved ?? []
+  const required = unresolved.filter(edge => edge.kind !== 'optional')
+  if (required.length === 0) return
+  const optional = unresolved.length - required.length
+  addFinding(
+    findings,
+    'dependency-graph-incomplete',
+    'info',
+    'Committed dependency graph has unresolved edges',
+    `The lockfile was parsed, but ${required.length} required dependency edge(s) could not be mapped${optional === 0 ? '' : `; ${optional} optional edge(s) are also unresolved`}. Vulnerability coverage for those paths is incomplete.`,
+    { unresolvedCount: unresolved.length, requiredUnresolvedCount: required.length, optionalUnresolvedCount: optional },
+    'Regenerate the lockfile with the intended package manager and review the complete dependency diff before relying on monitoring results.',
+  )
 }
 
 function insideRoot(root: string, candidate: string): boolean {
@@ -320,6 +389,56 @@ function inspectDependencySpecs(
   }
 }
 
+function inspectNpmLockfileRoot(
+  root: string,
+  manifest: PackageManifest,
+  files: readonly ScannedFile[],
+  findings: Finding[],
+): Promise<void> {
+  const lockfile = files.find(file => file.path === 'package-lock.json')
+  const expectedName = asString(manifest.name)
+  const expectedVersion = asString(manifest.version)
+  if (lockfile === undefined || lockfile.size > MAX_MANIFEST_BYTES || expectedName === undefined || expectedVersion === undefined) {
+    return Promise.resolve()
+  }
+
+  return readFile(resolve(root, lockfile.path), 'utf8').then(contents => {
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(contents) as unknown
+    } catch {
+      return
+    }
+    const record = asRecord(parsed)
+    const packages = asRecord(record?.packages)
+    const rootRecord = asRecord(packages?.[''])
+    const actualName = asString(rootRecord?.name) ?? asString(record?.name)
+    const actualVersion = asString(rootRecord?.version) ?? asString(record?.version)
+    if (actualName === undefined || actualVersion === undefined) return
+
+    const mismatches: string[] = []
+    if (actualName !== expectedName) mismatches.push(`name ${actualName} → ${expectedName}`)
+    if (actualVersion !== expectedVersion) mismatches.push(`version ${actualVersion} → ${expectedVersion}`)
+    if (mismatches.length === 0) return
+
+    addFinding(
+      findings,
+      'lockfile-root-metadata-stale',
+      'info',
+      'package-lock root metadata does not match package.json',
+      `The lockfile root is stale (${mismatches.join(', ')}). The dependency tree may still resolve, but source-version tracking and reproducible monitoring can point at the wrong plugin release.`,
+      {
+        path: 'package-lock.json',
+        packageName: expectedName,
+        packageVersion: expectedVersion,
+        lockfileName: actualName,
+        lockfileVersion: actualVersion,
+      },
+      'Regenerate package-lock.json from the intended package.json with lifecycle scripts disabled, then review the complete lockfile diff.',
+    )
+  }).catch(() => undefined)
+}
+
 function inspectFiles(root: string, files: readonly ScannedFile[], findings: Finding[]): void {
   for (const file of files) {
     const lowercase = file.path.toLowerCase()
@@ -349,6 +468,63 @@ function inspectFiles(root: string, files: readonly ScannedFile[], findings: Fin
   }
 
   void root
+}
+
+async function inspectNpmPublishProvenance(
+  root: string,
+  files: readonly ScannedFile[],
+  findings: Finding[],
+): Promise<void> {
+  const workflowFiles = files.filter(file => /^\.github\/workflows\/[^/]+\.ya?ml$/i.test(file.path))
+  if (workflowFiles.length === 0) return
+
+  const readText = async (file: ScannedFile): Promise<string | undefined> => {
+    if (file.symlinkTarget !== undefined || file.size > MAX_TEXT_EVIDENCE_BYTES) return undefined
+    try {
+      return await readFile(resolve(root, file.path), 'utf8')
+    } catch {
+      return undefined
+    }
+  }
+
+  const workflowTexts = await Promise.all(workflowFiles.map(async file => ({ file, text: await readText(file) })))
+  const publishingWorkflows = workflowTexts.filter(({ text }) => (
+    text !== undefined && /\b(?:npm\s+publish|pnpm\s+publish|yarn\s+publish|release:publish)\b/i.test(text)
+  ))
+  if (publishingWorkflows.length === 0) return
+
+  const publisherFiles = files.filter(file => (
+    /^(?:scripts|tools)\//.test(file.path) && /\.(?:cjs|cts|js|mjs|mts|ts)$/i.test(file.path)
+  ))
+  const publisherTexts = await Promise.all(publisherFiles.map(async file => ({ file, text: await readText(file) })))
+  const allText = [...publishingWorkflows, ...publisherTexts].map(item => item.text ?? '').join('\n')
+  const provenanceDeclared = /--provenance\b/i.test(allText)
+    || /\b(?:NPM_CONFIG_PROVENANCE|npm_config_provenance)\s*[:=]\s*['"]?(?:true|1)\b/i.test(allText)
+    // npm trusted publishing uses GitHub's short-lived OIDC token and
+    // automatically attaches provenance. Treat the explicit permission as a
+    // separate valid publication path instead of requiring --provenance.
+    || /\bid-token\s*:\s*['"]?write\b/i.test(allText)
+  if (provenanceDeclared) return
+
+  const workflowPaths = publishingWorkflows.map(({ file }) => file.path)
+  const publisherPaths = publisherTexts
+    .filter(({ text }) => text !== undefined && (
+      /\b(?:npm|pnpm|yarn)\s+publish\b/i.test(text)
+      || /['"](?:npm|pnpm|yarn)['"]\s*,\s*\[\s*['"]publish['"]/.test(text)
+    ))
+    .map(({ file }) => file.path)
+  addFinding(
+    findings,
+    'npm-publish-provenance-not-declared',
+    'medium',
+    'npm publication workflow does not declare build provenance',
+    'The repository contains an npm publication path, but the reviewed workflow and publisher scripts do not enable `--provenance` or `NPM_CONFIG_PROVENANCE=true`. The next artifact may not carry a verifiable source commit and build workflow attestation.',
+    {
+      workflowPaths,
+      ...(publisherPaths.length === 0 ? {} : { publisherPaths }),
+    },
+    'Enable npm provenance with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`, then inspect the next exact artifact with `inspect --deep`.',
+  )
 }
 
 function inspectBundledDependencies(manifest: PackageManifest, findings: Finding[]): void {
@@ -461,11 +637,28 @@ export async function scanDirectory(input: string, options: ScanOptions = {}): P
   const lockfiles = LOCKFILES.filter(lockfile => fileNames.has(lockfile))
   const lifecycleScripts = collectLifecycleScripts(manifest)
   const dependencies = collectDependencies(manifest)
+  const dependencyGraphEvidence = await readDependencyGraph(root, manifest, lockfiles, walk.files)
 
   inspectLifecycleScripts(lifecycleScripts, findings)
   inspectDependencySpecs(dependencies, lockfiles.length > 0, options.dependencyGraphResolved ?? false, findings)
+  if (dependencyGraphEvidence.error !== undefined) {
+    const graphLockfile = lockfiles.find(lockfile => (GRAPH_LOCKFILES as readonly string[]).includes(lockfile))
+    addFinding(
+      findings,
+      'dependency-graph-unavailable',
+      'info',
+      'Committed dependency graph could not be established',
+      dependencyGraphEvidence.error,
+      graphLockfile === undefined ? undefined : { lockfile: graphLockfile },
+      'Fix or regenerate the supported lockfile, then rerun the scan so vulnerability paths can be checked against exact versions.',
+    )
+  } else if (dependencyGraphEvidence.graph !== undefined) {
+    inspectDependencyGraphCompleteness(dependencyGraphEvidence.graph, findings)
+  }
+  await inspectNpmLockfileRoot(root, manifest, walk.files, findings)
   inspectBundledDependencies(manifest, findings)
   inspectFiles(root, walk.files, findings)
+  await inspectNpmPublishProvenance(root, walk.files, findings)
   await inspectNpmrc(root, walk.files, findings)
   const dsh = extractDshEvidence(manifest, root, walk.files, walk.incomplete, findings)
 
@@ -494,12 +687,16 @@ export async function scanDirectory(input: string, options: ScanOptions = {}): P
       packageManager: asString(manifest.packageManager) ?? null,
       lifecycleScripts,
       dependencies,
+      ...(dependencyGraphEvidence.graph === undefined ? {} : { dependencyGraph: dependencyGraphEvidence.graph }),
+      ...(dependencyGraphEvidence.error === undefined ? {} : { dependencyGraphError: dependencyGraphEvidence.error }),
     },
     coverage: {
       staticSource: walk.incomplete ? 'incomplete' : 'complete',
       artifactIntegrity: 'locally-hashed',
       registrySignature: 'not-checked',
-      dependencyResolution: options.dependencyGraphResolved === true ? 'resolved' : 'manifest-only',
+      dependencyResolution: dependencyGraphEvidence.graph !== undefined || options.dependencyGraphResolved === true
+        ? 'resolved'
+        : 'manifest-only',
       provenance: 'not-checked',
       sourceArtifactMatch: 'not-checked',
       sandboxDetonation: 'not-run',

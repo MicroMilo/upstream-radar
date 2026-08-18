@@ -1,0 +1,108 @@
+name: Upstream Radar — review one DSH plugin
+
+on:
+  workflow_dispatch:
+    inputs:
+      plugin:
+        description: Exact npm plugin package, for example dsh-cloudflare-browser-run@0.1.1
+        required: true
+        type: string
+      dsh_versions:
+        description: Comma-separated exact DSH versions to load
+        required: true
+        default: 0.1.0-rc.6,0.1.0-rc.7
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Inspect and load-test the exact plugin
+        id: radar
+        continue-on-error: true
+        uses: MicroMilo/upstream-radar@v0.34.0
+        with:
+          inspect-package: ${{ inputs.plugin }}
+          inspect-fail-on: never
+          probe-package: ${{ inputs.plugin }}
+          probe-dsh-versions: ${{ inputs.dsh_versions }}
+
+      - name: Write the result to the Job Summary
+        if: always()
+        env:
+          RADAR_PLUGIN: ${{ inputs.plugin }}
+          RADAR_DSH_VERSIONS: ${{ inputs.dsh_versions }}
+          RADAR_INSPECT_VERDICT: ${{ steps.radar.outputs.inspect-verdict }}
+          RADAR_PROBE_RESULT: ${{ steps.radar.outputs.probe-result }}
+          RADAR_INSPECT_REPORT: ${{ runner.temp }}/upstream-radar/inspect-report.json
+          RADAR_PROBE_REPORT: ${{ runner.temp }}/upstream-radar-dsh-probe/report.json
+        shell: bash
+        run: |
+          node - <<'NODE' >> "$GITHUB_STEP_SUMMARY"
+          const { existsSync, readFileSync } = require('node:fs')
+          const readJson = path => {
+            if (!existsSync(path)) return undefined
+            try { return JSON.parse(readFileSync(path, 'utf8')) } catch { return undefined }
+          }
+          const inline = value => String(value ?? 'unknown').replace(/[\`\r\n]/g, ' ').slice(0, 240)
+          const plugin = process.env.RADAR_PLUGIN
+          const versions = process.env.RADAR_DSH_VERSIONS
+          const inspect = process.env.RADAR_INSPECT_VERDICT || 'unknown'
+          const probe = process.env.RADAR_PROBE_RESULT || 'unknown'
+            const inspectReport = readJson(process.env.RADAR_INSPECT_REPORT)
+            const probeReport = readJson(process.env.RADAR_PROBE_REPORT)
+          const lines = [
+            '## Upstream Radar — DSH plugin review',
+            '',
+            `- Plugin: \`${plugin}\``,
+            `- DSH versions: \`${versions}\``,
+            `- Artifact/dependency review: \`${inspect}\``,
+            `- Bundle-load matrix: \`${probe}\``,
+          ]
+          if (inspectReport !== undefined) {
+            const vulnerabilities = inspectReport.evidence?.npm?.dependencyAudit?.vulnerabilities?.total ?? 'unknown'
+            const installScripts = inspectReport.evidence?.npm?.dependencyAudit?.installScriptPackages
+            const dependencyAudit = inspectReport.evidence?.npm?.dependencyAudit
+            const unresolved = Array.isArray(dependencyAudit?.graph?.unresolved) ? dependencyAudit.graph.unresolved : []
+            const optionalUnresolved = unresolved.filter(edge => edge?.kind === 'optional').length
+            const findings = inspectReport.findings ?? []
+            lines.push(`- Risk: \`${inline(inspectReport.riskVerdict)}\``, `- Coverage: \`${inline(inspectReport.coverageVerdict)}\``, `- Known vulnerabilities: \`${inline(vulnerabilities)}\``, `- Install-time dependency scripts: \`${inline(installScripts === undefined ? 'not checked' : installScripts.length === 0 ? '0' : installScripts.join(', '))}\``, `- Unresolved dependency edges: \`${inline(`${unresolved.length}${optionalUnresolved === 0 ? '' : ` (${optionalUnresolved} optional)`}`)}\``)
+            for (const edge of unresolved.slice(0, 3)) {
+              const parent = Array.isArray(dependencyAudit?.graph?.nodes) ? dependencyAudit.graph.nodes.find(node => node?.id === edge?.from) : undefined
+              const parentLabel = parent === undefined ? edge?.from : `${parent.name}@${parent.version}`
+              lines.push(`  - Unresolved: ${inline(`${parentLabel} -> ${edge?.name}@${edge?.spec} [${edge?.kind}]`)}`)
+            }
+            if (findings.length === 0) lines.push('- Findings: none')
+            else {
+              lines.push('- Findings:')
+              for (const finding of findings.slice(0, 8)) {
+                lines.push(`  - **${inline(finding.code)}**: ${inline(finding.detail ?? finding.summary)}`)
+                if (finding.remediation !== undefined) lines.push(`    - Fix: ${inline(finding.remediation)}`)
+              }
+            }
+            if (findings.length === 0 && inspectReport.coverageVerdict === 'incomplete') {
+              lines.push(`- Coverage note: ${inline(unresolved.length === 0 ? 'No static risk finding was reported, but the available evidence is incomplete.' : `${unresolved.length} dependency edge(s) remain unresolved; no static risk finding was reported.`)}`)
+            }
+          }
+          if (probeReport !== undefined) {
+            lines.push(`- Matrix summary: \`${inline(probeReport.result)}\` (${probeReport.summary?.compatible ?? 0}/${probeReport.summary?.total ?? 0} versions loaded)`)
+            for (const report of probeReport.reports ?? []) lines.push(`  - DSH \`${inline(report.dshVersion)}\`: \`${inline(report.result)}\``)
+          }
+          lines.push('', 'The load result only says whether DSH registered and loaded the bundle. It is not a security certificate or a business-action test.', '')
+          process.stdout.write(lines.join('\n'))
+          NODE
+
+      - name: Keep the machine-readable reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: upstream-radar-dsh-review-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/upstream-radar/inspect-report.json
+            ${{ runner.temp }}/upstream-radar-dsh-probe/report.json
+          if-no-files-found: ignore
+          retention-days: 14

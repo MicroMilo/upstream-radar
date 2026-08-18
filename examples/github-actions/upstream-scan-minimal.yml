@@ -1,0 +1,55 @@
+name: Upstream Radar — scan one public DSH plugin
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: Public GitHub repository URL of the DSH plugin
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+      - name: Scan the public plugin
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          OBSERVER_REPOSITORY_INPUT: ${{ inputs.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          report="$RUNNER_TEMP/upstream-radar-scan.json"
+          npx --yes upstream-radar@0.34.0 scan \
+            "$OBSERVER_REPOSITORY_INPUT" \
+            --json --fail-on never > "$report"
+          if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
+            node - "$report" <<'NODE' >> "$GITHUB_STEP_SUMMARY"
+          const fs = require('node:fs')
+          const report = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'))
+          const findings = report.findings ?? []
+          const target = report.target ?? {}
+          process.stdout.write(`## Upstream Radar scan\n\n`)
+          process.stdout.write(`- Repository: \\`${target.name ?? 'unknown'}\\`\n`)
+          process.stdout.write(`- Verdict: \\`${report.verdict ?? 'unknown'}\\`\n`)
+          process.stdout.write(`- Risk: \\`${report.riskVerdict ?? 'unknown'}\\`\n`)
+          process.stdout.write(`- Coverage: \\`${report.coverageVerdict ?? 'unknown'}\\`\n`)
+          process.stdout.write(`- Findings: \\`${findings.length}\\`\n\n`)
+          for (const finding of findings) process.stdout.write(`- **${finding.code}**: ${finding.detail ?? finding.summary ?? ''}\n`)
+          NODE
+          fi
+      - name: Keep the scan result
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: upstream-radar-scan-${{ github.run_id }}
+          path: ${{ runner.temp }}/upstream-radar-scan.json
+          if-no-files-found: ignore
+          retention-days: 14

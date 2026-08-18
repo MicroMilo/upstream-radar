@@ -6,19 +6,69 @@ import {
 } from 'node:crypto'
 import { describe, it } from 'node:test'
 import {
+  collectNpmInstallScriptPackages,
+  extractNpmLifecycleScripts,
   inspectNpmPackage,
   parseNpmSpec,
   verifyIntegrity,
   verifyRegistrySignatures,
 } from '../src/npm.js'
+import type { DependencyGraph } from '../src/radar-types.js'
 import { makeTarball } from './helpers/tar.js'
 
 describe('npm artifact inspection', () => {
+  it('extracts only lifecycle script names and commands from a package manifest', () => {
+    assert.deepEqual(extractNpmLifecycleScripts({
+      scripts: {
+        preinstall: 'echo before',
+        install: 'node build-native.js',
+        postinstall: 'node scripts/postinstall',
+        test: 'node test.js',
+      },
+    }), [
+      { name: 'preinstall', command: 'echo before' },
+      { name: 'install', command: 'node build-native.js' },
+      { name: 'postinstall', command: 'node scripts/postinstall' },
+    ])
+  })
+
+  it('reports install-time scripts only for reachable exact lockfile packages', () => {
+    const graph: DependencyGraph = {
+      schema: 'upstream-radar.dependency-graph/v1alpha1',
+      rootNodeId: 'node_modules/demo-plugin',
+      nodes: [
+        { id: 'node_modules/demo-plugin', name: 'demo-plugin', version: '1.0.0' },
+        { id: 'node_modules/protobufjs', name: 'protobufjs', version: '7.6.5' },
+        { id: 'node_modules/unused', name: 'unused', version: '1.0.0' },
+      ],
+      edges: [],
+    }
+    const result = collectNpmInstallScriptPackages({
+      packages: {
+        'node_modules/demo-plugin': { version: '1.0.0', hasInstallScript: false },
+        'node_modules/protobufjs': { version: '7.6.5', hasInstallScript: true },
+        'node_modules/unused': { version: '1.0.0', hasInstallScript: true },
+        'node_modules/unreachable': { version: '9.9.9', hasInstallScript: true },
+      },
+    }, graph)
+    assert.deepEqual(result, ['protobufjs@7.6.5', 'unused@1.0.0'])
+  })
+
   it('requires an exact npm version', () => {
     assert.deepEqual(parseNpmSpec('npm:@scope/plugin@1.2.3-rc.1'), {
       name: '@scope/plugin',
       version: '1.2.3-rc.1',
       canonical: 'npm:@scope/plugin@1.2.3-rc.1',
+    })
+    assert.deepEqual(parseNpmSpec('@scope/plugin@1.2.3-rc.1'), {
+      name: '@scope/plugin',
+      version: '1.2.3-rc.1',
+      canonical: 'npm:@scope/plugin@1.2.3-rc.1',
+    })
+    assert.deepEqual(parseNpmSpec('plugin@1.2.3'), {
+      name: 'plugin',
+      version: '1.2.3',
+      canonical: 'npm:plugin@1.2.3',
     })
     assert.throws(() => parseNpmSpec('npm:plugin@latest'), /must be exact/)
     assert.throws(() => parseNpmSpec('npm:plugin@^1.0.0'), /must be exact/)
@@ -116,6 +166,7 @@ describe('npm artifact inspection', () => {
     assert.equal(report.coverage.artifactIntegrity, 'verified')
     assert.equal(report.coverage.registrySignature, 'verified')
     assert.equal(report.coverage.provenance, 'missing')
+    assert.match(report.findings.find(finding => finding.code === 'npm-provenance-missing')?.remediation ?? '', /NPM_CONFIG_PROVENANCE=true/)
     assert.equal(report.evidence.npm?.tarball, 'https://registry.npmjs.org/demo-plugin/-/demo-plugin-1.0.0.tgz')
     assert.equal(report.riskVerdict, 'warn')
     assert.equal(report.verdict, 'review')

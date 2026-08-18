@@ -2,16 +2,20 @@
 
 import process from 'node:process'
 import { spawnSync } from 'node:child_process'
-import { access, readFile } from 'node:fs/promises'
+import { access, readFile, readdir, stat, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { renderCompatibilityBenchmark, runCompatibilityBenchmark } from './compatibility-benchmark.js'
 import { assessCompatibilityChange } from './compatibility.js'
-import { probeDshLoad, probeDshLoadMatrix, renderDshLoadMatrix, renderDshLoadProbe } from './dsh-probe.js'
+import { probeDshLoad, probeDshLoadMatrix, renderDshLoadMatrix, renderDshLoadProbe, type DshLoadMatrixReport } from './dsh-probe.js'
+import { renderDshPluginReview, reviewDshPlugin } from './dsh-review.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
+import { createDshCaseReport, renderDshCase } from './dsh-case.js'
 import { createDoctorReport, renderDoctorReport } from './doctor.js'
+import { checkDshProfile, renderDshProfileCheck, renderDshProfileCheckSummary } from './dsh-profile-check.js'
 import { createDemoReport, renderDemo } from './demo.js'
 import { GitHubReleaseClient } from './github-release.js'
 import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
+import { buildReverseDependencyIndex, findReverseDependencyEntry, parseReverseDependencyObservations, type ReverseDependencyIndex } from './dependency-index.js'
 import { createRadarConfigFromDshProfile, createRadarConfigFromNpmLock, createRadarConfigFromPnpmLock, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 import { inspectNpmPackage } from './npm.js'
@@ -36,8 +40,26 @@ import { createRadarHistory, renderRadarHistory } from './radar-history.js'
 import { loadRadarState, saveRadarState } from './radar-state.js'
 import { createRadarNext, createRadarStatus, renderRadarNext, renderRadarStatus } from './radar-status.js'
 import { renderTextReport } from './render.js'
+import { materializeGitHubRepository, parseGitHubRepositoryUrl } from './repository.js'
 import { scanDirectory } from './scan.js'
 import { CisaKevClient, EpssClient } from './threat-intel.js'
+import {
+  loadObservationState,
+  OBSERVER_TARGETS_SCHEMA,
+  parseObserverConfig,
+  parseObserverConfigText,
+  observerExitCode,
+  renderObserverReport,
+  runDshAgentCommand,
+  runOpenAiCompatibleAgent,
+  runObserver,
+  saveObservationState,
+  UpstreamObserverClient,
+  type ObserverAgentCommandOptions,
+  type ObserverArtifactReview,
+  type ObserverDshCompatibility,
+  type ObserverTarget,
+} from './upstream-observer.js'
 import type { Verdict } from './types.js'
 import type {
   RadarEvent,
@@ -201,19 +223,23 @@ Checks:
   dependency coverage, and local webhook configuration. It does not contact
   OSV, npm, GitHub, DSH, or a model.
 `,
-    scan: `Upstream Radar — inspect a local package directory without running it
+    scan: `Upstream Radar — inspect a local package directory or public GitHub repository without running it
 
 Usage:
-  upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
+  upstream-radar scan <directory-or-github-url> [--json] [--fail-on <warn|review|block|never>]
 
-Use this for an unpacked plugin before installation. Lifecycle scripts, remote
-shell patterns, unsafe symlinks, mutable dependencies, and DSH bundle metadata
-are recorded as bounded evidence.
+Use this for an unpacked plugin before installation. A public GitHub URL is
+shallow-cloned into a temporary directory; dependencies are not installed,
+lifecycle scripts are not run, and plugin code is not loaded. Lifecycle scripts,
+remote shell patterns, unsafe symlinks, mutable dependencies, and DSH bundle
+metadata are recorded as bounded evidence. A unique committed npm or pnpm
+lockfile is also parsed into an exact dependency graph; if more than one is
+present, Radar stops instead of guessing.
 `,
     inspect: `Upstream Radar — inspect one exact npm artifact before installation
 
 Usage:
-  upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json]
+  upstream-radar inspect [npm:]<package>@<exact-version> [--deep] [--json]
     [--registry <https-url>] [--fail-on <warn|review|block|never>]
 
 --deep downloads the exact tarball, verifies npm integrity/signatures and
@@ -223,14 +249,73 @@ a safety certificate; check the coverage verdict before admitting the package.
 The default gate exits 2 for review or block; use --fail-on block when review
 should remain visible without failing CI.
 `,
+    observe: `Upstream Radar — watch DSH plugin repositories and packages for meaningful upstream changes
+
+Usage:
+  upstream-radar observe <targets.yml|github-url> [--state <observations.json>]
+    [--report <report.md>] [--dsh-version <v1>,<v2>,...]
+    [--dsh-agent-command <executable>]
+    [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending]
+    [--ecosystem <dsh|codex|pi>] [--id <id>] [--package <name>]
+    [--package-path <path>] [--lockfile <path>] [--lockfile-type <npm|pnpm>]
+    [--ref <branch>] [--json]
+
+The first run creates a baseline. Later runs compare source commits, published
+npm metadata, package manifests, and an optional npm/pnpm dependency graph. A
+meaningful change with a published npm version also triggers a deep review of
+that exact artifact: Radar resolves its reachable dependency graph with npm
+scripts disabled, checks known vulnerabilities, and records install-time
+scripts and incomplete coverage. If exact DSH versions are supplied, the same
+changed artifact is loaded in disposable profiles and the compatibility matrix
+is added to the same report. A DSH Agent is called only for meaningful
+changes. Safety: Radar does not install the observed plugin, run its lifecycle
+scripts, load plugin code, or invoke a shell.
+
+When the target is an HTTPS GitHub repository URL, Radar builds one target in
+memory and does not require a targets.yml file. For a DSH target with no
+--package-path, it looks for one DSH bundle or one @deepseek-ai/dsh package up
+to three directory levels deep; pass --package-path when the repository is
+ambiguous. --lockfile remains available when you want to pin the graph file.
+
+The Agent executable receives one read-only task prompt on stdin and should
+return one JSON conclusion on stdout. If it is not configured or temporarily
+unavailable, the static observation still succeeds and the task stays in
+observations.json for a later explicit retry. Source observation errors still
+return a non-zero exit code. As a simpler alternative,
+--llm-env-file reads an OpenAI-compatible issue-locator/.env-style file for
+only the model call. It accepts ISSUE_LOCATOR_LLM_*, OPENAI_*, or MODEL/CODEX_MODEL
+keys; it never writes the key or endpoint to observations.json.
+If a ModelBest-style base URL ends in /llm/v1, a 404 also retries the known
+/llm/openai/v1 path.
+
+The exact npm artifact review is independent of the DSH Agent/model. It runs
+when a meaningful change has a published package, and its dependency findings
+remain in the report even when no model is configured or the model endpoint is
+unavailable.
+`,
     graph: `Upstream Radar — read a lockfile into the canonical dependency graph
 
 Usage:
   upstream-radar graph pnpm-lock <pnpm-lock.yaml> [--root <package>@<exact-version>] [--json]
   upstream-radar graph npm-lock <package-lock.json> [--root <package>@<exact-version>] [--json]
+  upstream-radar graph reverse <reports-directory> [--package <name>@<exact-version>] [--output <index.json>] [--json]
 
 This command is offline and does not install packages, run lifecycle scripts,
-load plugin code, or query vulnerability sources.
+load plugin code, or query vulnerability sources. The reverse form reads saved
+scan, exact-review, or Radar config JSON and builds a deterministic
+dependency -> affected-plugin index.
+`,
+    'profile-check': `Upstream Radar — check one DSH profile before starting it
+
+Usage:
+  upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
+
+Reads the profile package manifest, lockfile, node_modules package metadata,
+pnpm release-age policy, and cordis.patch.yml. It reports loader rows that
+refer to missing packages and duplicate loader ids. It never installs packages,
+starts DSH, loads plugin code, contacts a vulnerability source, or invokes a
+DSH Agent/model. When the directory is omitted, the only DSH profile with
+third-party bundles is selected automatically.
 `,
     probe: `Upstream Radar — test whether a DSH bundle loads in disposable profiles
 
@@ -241,6 +326,18 @@ Usage:
 The probe is bounded and isolated. It is a compatibility/load check, not a
 semantic safety review or a substitute for dependency monitoring.
 `,
+    review: `Upstream Radar — review one exact published DSH plugin in one command
+
+Usage:
+  upstream-radar review dsh-plugin [npm:]<package>@<exact-version>
+    --dsh-version <v1>,<v2>,... [--registry <https-url>] [--timeout <seconds>] [--json]
+
+This combines exact npm artifact/dependency inspection with a bounded DSH load
+matrix. It packs with lifecycle scripts disabled, uses a temporary profile for
+each requested DSH version, and prints one result that an author can act on.
+It does not execute plugin code or business actions and does not call an LLM.
+The default command reports findings without turning them into an extra gate.
+`,
     demo: `Upstream Radar — show the exact-path-to-DSH handoff without side effects
 
 Usage:
@@ -248,6 +345,16 @@ Usage:
 
 The demo is network-free and uses only a local fixture. It does not inspect your
 repository, install a plugin, start DSH, or claim that its advisory is real.
+`,
+    case: `Upstream Radar — replay a real DSH profile failure and its repair
+
+Usage:
+  upstream-radar case dsh-web-ui [--json]
+
+This network-free case checks a broken DSH web-ui profile, the tempting manual
+package workaround, and the corrected bundled-carrier layout. It reads only
+packaged fixtures; it does not install packages, start DSH, execute plugin code,
+or call an Agent/model.
 `,
     quickstart: `Upstream Radar — choose the smallest honest first-use path
 
@@ -405,12 +512,17 @@ Usage:
   upstream-radar init --pnpm-lock <pnpm-lock.yaml> [--root <package>@<exact-version>] [options]
   upstream-radar init --npm-lock <package-lock.json> [--root <package>@<exact-version>] [options]
   upstream-radar doctor [config.json] [options]
-  upstream-radar scan <directory> [--json] [--fail-on <warn|review|block|never>]
-  upstream-radar inspect npm:<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
+  upstream-radar scan <directory-or-github-url> [--json] [--fail-on <warn|review|block|never>]
+  upstream-radar inspect [npm:]<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
+  upstream-radar observe <targets.yml|github-url> [--state <observations.json>] [--report <report.md>] [--dsh-version <v1>,<v2>,...] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending] [--ecosystem <dsh|codex|pi>] [--id <id>] [--package <name>] [--package-path <path>] [--lockfile <path>] [--lockfile-type <npm|pnpm>] [--ref <branch>] [--json]
   upstream-radar graph <npm-lock|pnpm-lock> <lockfile> [--root <package>@<exact-version>] [--json]
+  upstream-radar graph reverse <reports-directory> [--package <name>@<exact-version>] [--output <index.json>] [--json]
+  upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
+  upstream-radar review dsh-plugin [npm:]<package>@<exact-version> --dsh-version <v1>,<v2>,... [--json]
   upstream-radar demo [--json]
+  upstream-radar case dsh-web-ui [--json]
   upstream-radar quickstart [directory] [--json]
   upstream-radar benchmark compatibility [--json]
   upstream-radar radar check <config.json> [--state <state.json>] [--webhook <https-url>] [--threat-intel] [--frozen] [--fail-on <severity>] [--fail-on-compatibility <never|breaking|any>] [--json]
@@ -433,11 +545,15 @@ Commands:
   setup    install the exact Radar bundle, generate DSH wiring, and run doctor
   init     discover third-party bundles in DSH or initialize a reviewable lockfile inventory
   doctor   check local Radar/DSH wiring without polling upstream sources
-  scan     bounded, read-only inspection of a local package directory
+  scan     bounded, read-only inspection of a local directory or public GitHub repository
   inspect  fetch and verify the exact npm artifact before inspecting its contents
-  graph    read a lockfile into the canonical dependency graph without installing packages
+  observe  compare upstream DSH plugin repositories and route only meaningful changes to a DSH Agent
+  graph    read lockfiles or build the dependency -> affected-plugin index without installing packages
+  profile-check  check a DSH profile's lockfile and patch rows without starting DSH
   probe    run a bounded DSH bundle-load check or version matrix in disposable profiles
+  review   combine exact npm dependency review and DSH load compatibility in one command
   demo     show the exact-path-to-DSH handoff without network, DSH, or plugin installation
+  case     replay a real DSH profile failure and its repair without side effects
   quickstart choose the smallest first-use path without changing the environment
   benchmark run offline compatibility-rule contracts without network or plugin execution
   radar    monitor vulnerability changes, watch continuously, find the next action, inspect status/history, or assess a candidate compatibility change
@@ -509,9 +625,119 @@ async function inferLockfileRoot(lockfile: string, kind: 'npm' | 'pnpm'): Promis
   }
 }
 
+const MAX_REVERSE_INDEX_FILES = 2_000
+const MAX_REVERSE_INDEX_DEPTH = 8
+
+async function collectReverseIndexFiles(path: string, depth = 0): Promise<string[]> {
+  if (depth > MAX_REVERSE_INDEX_DEPTH) throw new Error(`reverse index input exceeds the ${MAX_REVERSE_INDEX_DEPTH}-level directory limit: ${path}`)
+  const metadata = await stat(resolve(path))
+  if (metadata.isFile()) return path.endsWith('.json') ? [resolve(path)] : []
+  if (!metadata.isDirectory()) return []
+  const files: string[] = []
+  const entries = await readdir(resolve(path), { withFileTypes: true })
+  for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
+    if (entry.name === '.git' || entry.name === 'node_modules' || entry.name.startsWith('.')) continue
+    const child = join(path, entry.name)
+    if (entry.isDirectory()) files.push(...await collectReverseIndexFiles(child, depth + 1))
+    else if (entry.isFile() && entry.name.endsWith('.json')) files.push(resolve(child))
+    if (files.length > MAX_REVERSE_INDEX_FILES) throw new Error(`reverse index input exceeds the ${MAX_REVERSE_INDEX_FILES}-file limit`)
+  }
+  return files
+}
+
+function renderReverseDependencyIndex(index: ReverseDependencyIndex, packageFilter?: { name: string; version: string }): string {
+  const selected = packageFilter === undefined
+    ? undefined
+    : findReverseDependencyEntry(index, { ecosystem: 'npm', ...packageFilter })
+  const dependencies = selected === undefined && packageFilter !== undefined
+    ? []
+    : selected === undefined
+      ? [...index.dependencies].sort((left, right) => (
+        right.dependents.length - left.dependents.length
+        || `${left.dependency.name}@${left.dependency.version}`.localeCompare(`${right.dependency.name}@${right.dependency.version}`)
+      )).slice(0, 20)
+      : [selected]
+  const lines = [
+    'Upstream Radar — reverse dependency index',
+    `Observations: ${index.observations}`,
+    `Plugins: ${index.plugins.length}`,
+    `Dependencies: ${index.dependencies.length}`,
+    `Coverage: ${index.coverage.completeObservations} complete, ${index.coverage.incompleteObservations} incomplete, ${index.coverage.unresolvedEdges} unresolved edge(s)`,
+    `Input files: ${index.inputs.files} (${index.inputs.loadedFiles} loaded, ${index.inputs.skipped.length} skipped)`,
+  ]
+  if (packageFilter !== undefined) lines.push(`Query: ${packageFilter.name}@${packageFilter.version}`)
+  lines.push('', dependencies.length === 0
+    ? (packageFilter === undefined ? 'Dependencies:\n  (none)' : 'Dependents:\n  (none)')
+    : `${packageFilter === undefined ? 'Top dependencies by affected plugin count' : 'Dependents'}:`)
+  for (const dependency of dependencies) {
+    if (packageFilter === undefined) lines.push(`  ${dependency.dependency.name}@${dependency.dependency.version} ← ${dependency.dependents.length} plugin(s)`)
+    for (const dependent of dependency.dependents) {
+      const project = dependent.project === undefined ? '' : ` [${dependent.project.name}]`
+      lines.push(`    ${dependent.plugin.name}@${dependent.plugin.version}${project} (${dependent.coverage})`)
+      for (const path of dependent.paths.slice(0, 2)) lines.push(`      ${path.nodes.join(' → ')}`)
+      if (dependent.paths.length > 2) lines.push(`      ... ${dependent.paths.length - 2} more path(s)`)
+    }
+  }
+  if (index.inputs.skipped.length > 0) {
+    lines.push('', 'Skipped input files:')
+    for (const item of index.inputs.skipped.slice(0, 20)) lines.push(`  ${item.source}: ${item.reason}`)
+  }
+  return `${lines.join('\n')}\n`
+}
+
+async function runReverseDependencyIndex(args: readonly string[]): Promise<number> {
+  const input = args[0]
+  if (input === undefined || input.startsWith('-')) throw new Error('graph reverse requires a reports directory or JSON file')
+  let json = false
+  let output: string | undefined
+  let packageFilter: { name: string; version: string } | undefined
+  for (let index = 1; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === '--json') json = true
+    else if (argument === '--output') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error('--output requires a path')
+      output = value
+      index += 1
+    } else if (argument === '--package') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error('--package requires an exact package coordinate')
+      packageFilter = parseExactPackageCoordinate(value)
+      index += 1
+    } else {
+      throw new Error(`unknown option for graph reverse: ${argument}`)
+    }
+  }
+  const files = await collectReverseIndexFiles(input)
+  if (files.length === 0) throw new Error(`graph reverse found no JSON reports under ${input}`)
+  const observations = []
+  const skipped: Array<{ source: string; reason: string }> = []
+  for (const file of files) {
+    try {
+      observations.push(...parseReverseDependencyObservations(await readJson(file), file))
+    } catch (error: unknown) {
+      skipped.push({ source: file, reason: safeErrorMessage(error instanceof Error ? error.message : String(error)) })
+    }
+  }
+  if (observations.length === 0) throw new Error(`graph reverse could not load a supported graph from ${files.length} JSON file(s)`)
+  const index = buildReverseDependencyIndex(observations, {
+    inputs: { files: files.length, loadedFiles: files.length - skipped.length, skipped },
+  })
+  if (output !== undefined) await writeFile(resolve(output), `${JSON.stringify(index, null, 2)}\n`)
+  if (json) {
+    if (packageFilter === undefined) process.stdout.write(`${JSON.stringify(index, null, 2)}\n`)
+    else process.stdout.write(`${JSON.stringify({ ...index, dependencies: index.dependencies.filter(item => item.dependency.name === packageFilter!.name && item.dependency.version === packageFilter!.version) }, null, 2)}\n`)
+  } else {
+    process.stdout.write(renderReverseDependencyIndex(index, packageFilter))
+    if (output !== undefined) process.stdout.write(`Index written to ${resolve(output)}\n`)
+  }
+  return 0
+}
+
 async function runGraph(args: readonly string[]): Promise<number> {
   const kind = args[0]
-  if (kind !== 'npm-lock' && kind !== 'pnpm-lock') throw new Error('graph requires the npm-lock or pnpm-lock subcommand')
+  if (kind === 'reverse') return runReverseDependencyIndex(args.slice(1))
+  if (kind !== 'npm-lock' && kind !== 'pnpm-lock') throw new Error('graph requires the npm-lock, pnpm-lock, or reverse subcommand')
   const lockfile = args[1]
   if (lockfile === undefined || lockfile.startsWith('-')) throw new Error(`graph ${kind} requires a lockfile path`)
   let rootSpec: string | undefined
@@ -563,6 +789,52 @@ async function runGraph(args: readonly string[]): Promise<number> {
     ]),
   ].join('\n') + '\n')
   return 0
+}
+
+async function runDshProfileCheck(args: readonly string[]): Promise<number> {
+  let profileDirectory: string | undefined
+  let firstOption = 0
+  if (args[0] !== undefined && !args[0].startsWith('-')) {
+    profileDirectory = args[0]
+    firstOption = 1
+  }
+  let json = false
+  let summary = false
+  let reportPath: string | undefined
+  let patchPath: string | undefined
+  for (let index = firstOption; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === '--json') {
+      json = true
+    } else if (argument === '--summary') {
+      summary = true
+    } else if (argument === '--patch' || argument === '--report') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
+      if (argument === '--patch') patchPath = value
+      else reportPath = value
+      index += 1
+    } else {
+      throw new Error(`unknown option for profile-check: ${argument}`)
+    }
+  }
+  if (profileDirectory === undefined) {
+    const profiles = await discoverDshProfiles()
+    if (profiles.length === 0) {
+      throw new Error('profile-check could not find a DSH profile with third-party bundles; pass <profile-directory> explicitly')
+    }
+    if (profiles.length > 1) {
+      throw new Error(`profile-check found multiple DSH profiles with third-party bundles (${profiles.join(', ')}); pass <profile-directory> explicitly`)
+    }
+    profileDirectory = resolveDshProfileDirectory(profiles[0]!)
+  }
+  const report = await checkDshProfile({ profileDirectory, ...(patchPath === undefined ? {} : { patchFile: patchPath }) })
+  const jsonText = `${JSON.stringify(report, null, 2)}\n`
+  if (reportPath !== undefined) {
+    await writeFile(resolve(reportPath), reportPath.endsWith('.json') ? jsonText : summary ? renderDshProfileCheckSummary(report) : renderDshProfileCheck(report))
+  }
+  process.stdout.write(json ? jsonText : summary ? renderDshProfileCheckSummary(report) : renderDshProfileCheck(report))
+  return report.status === 'blocked' ? 2 : 0
 }
 
 async function runTask(args: readonly string[]): Promise<number> {
@@ -885,6 +1157,19 @@ function runDemo(args: readonly string[]): number {
   return 0
 }
 
+async function runDshCase(args: readonly string[]): Promise<number> {
+  const caseId = args[0]
+  if (caseId !== 'dsh-web-ui') throw new Error('case requires dsh-web-ui')
+  let json = false
+  for (const argument of args.slice(1)) {
+    if (argument === '--json') json = true
+    else throw new Error(`unknown option for case: ${argument}`)
+  }
+  const report = await createDshCaseReport()
+  process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDshCase(report))
+  return 0
+}
+
 async function runProbe(args: readonly string[]): Promise<number> {
   const mode = args[0]
   if (mode !== 'dsh-load' && mode !== 'dsh-matrix') throw new Error('probe requires dsh-load or dsh-matrix')
@@ -940,6 +1225,50 @@ async function runProbe(args: readonly string[]): Promise<number> {
   })
   process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDshLoadMatrix(report))
   return report.result === 'compatible' ? 0 : report.result === 'incompatible' ? 2 : 1
+}
+
+async function runDshPluginReview(args: readonly string[]): Promise<number> {
+  if (args[0] !== 'dsh-plugin') throw new Error('review requires dsh-plugin')
+  const target = args[1]
+  if (target === undefined || target.startsWith('-')) throw new Error('review dsh-plugin requires an exact npm package')
+  const dshVersions: string[] = []
+  let registry: string | undefined
+  let timeoutSeconds = 120
+  let json = false
+  for (let index = 2; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === '--json') {
+      json = true
+    } else if (argument === '--dsh-version' || argument === '--registry' || argument === '--timeout') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
+      if (argument === '--dsh-version') {
+        dshVersions.push(...value.split(',').map(item => item.trim()).filter(item => item !== ''))
+      } else if (argument === '--registry') {
+        registry = value
+      } else {
+        const parsed = Number(value)
+        if (!Number.isSafeInteger(parsed) || parsed < 30 || parsed > 600) {
+          throw new Error('--timeout must be an integer between 30 and 600 seconds')
+        }
+        timeoutSeconds = parsed
+      }
+      index += 1
+    } else {
+      throw new Error(`unknown option for review dsh-plugin: ${argument}`)
+    }
+  }
+  if (dshVersions.length < 2) throw new Error('review dsh-plugin requires at least two exact DSH versions in --dsh-version')
+  const report = await reviewDshPlugin(target, {
+    dshVersions,
+    ...(registry === undefined ? {} : { registry }),
+    timeoutMs: timeoutSeconds * 1_000,
+  })
+  process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDshPluginReview(report))
+  // This command is intentionally report-first: a review result is useful even
+  // when it says review, block, incompatible, or unknown. CI callers can gate
+  // on the JSON status without hiding the evidence from the author.
+  return 0
 }
 
 async function fileExists(path: string): Promise<boolean> {
@@ -1259,6 +1588,218 @@ async function runRadar(args: readonly string[]): Promise<number> {
     ? `${JSON.stringify({ detectedAt, events, analysisTasks }, null, 2)}\n`
     : `${renderRadarEvents(events)}Prepared ${analysisTasks.length} DSH compatibility analysis task(s).\n`)
   return 0
+}
+
+function summarizeObserverDshCompatibility(report: DshLoadMatrixReport): ObserverDshCompatibility {
+  return {
+    result: report.result,
+    versions: report.dshVersions.slice(0, 8),
+    summary: { ...report.summary },
+    reports: report.reports.slice(0, 8).map(item => ({
+      dshVersion: item.dshVersion,
+      result: item.result,
+      reason: item.reason.slice(0, 2_048),
+    })),
+  }
+}
+
+function summarizeObserverArtifactReview(
+  spec: string,
+  report: Awaited<ReturnType<typeof inspectNpmPackage>>,
+  dshCompatibility?: DshLoadMatrixReport,
+): ObserverArtifactReview {
+  const npm = report.evidence.npm
+  const audit = npm?.dependencyAudit
+  const installScriptDetails = (audit?.installScriptDetails ?? []).slice(0, 32).map(detail => ({
+    package: detail.package.slice(0, 512),
+    scripts: detail.scripts.slice(0, 16).map(script => ({
+      name: script.name,
+      command: script.command.slice(0, 4_096),
+    })),
+  }))
+  return {
+    spec,
+    verdict: report.verdict,
+    riskVerdict: report.riskVerdict,
+    coverageVerdict: report.coverageVerdict,
+    artifactIntegrity: report.coverage.artifactIntegrity,
+    registrySignature: npm?.registrySignature.status ?? report.coverage.registrySignature,
+    provenance: npm?.provenance.status ?? report.coverage.provenance,
+    dependencyResolution: report.coverage.dependencyResolution,
+    dependencyAuditStatus: audit?.status ?? 'not-run',
+    ...(audit?.resolutionMode === undefined ? {} : { resolutionMode: audit.resolutionMode }),
+    ...(audit?.graphDigest === undefined ? {} : { graphDigest: audit.graphDigest }),
+    packages: audit?.packages ?? null,
+    unresolved: audit?.graph?.unresolved?.length ?? 0,
+    vulnerabilities: audit?.vulnerabilities ?? null,
+    installScriptPackages: (audit?.installScriptPackages ?? []).slice(0, 32),
+    installScriptDetails,
+    findings: report.findings.slice(0, 32).map(finding => ({
+      code: finding.code,
+      severity: finding.severity,
+      summary: finding.summary.slice(0, 2_048),
+      detail: finding.detail.slice(0, 4_096),
+      ...(finding.remediation === undefined ? {} : { remediation: finding.remediation.slice(0, 4_096) }),
+    })),
+    ...(dshCompatibility === undefined ? {} : { dshCompatibility: summarizeObserverDshCompatibility(dshCompatibility) }),
+  }
+}
+
+async function reviewObserverArtifact(
+  spec: string,
+  target: ObserverTarget,
+  registry: string | undefined,
+): Promise<ObserverArtifactReview> {
+  const inspection = await inspectNpmPackage(spec, {
+    deep: true,
+    ...(registry === undefined ? {} : { registry }),
+  })
+  if (target.dshVersions === undefined) return summarizeObserverArtifactReview(spec, inspection)
+  try {
+    const combined = await reviewDshPlugin(spec, {
+      dshVersions: target.dshVersions,
+      ...(registry === undefined ? {} : { registry }),
+      inspect: async () => inspection,
+    })
+    const summary = summarizeObserverArtifactReview(spec, combined.inspection, combined.compatibility)
+    if (combined.artifact.matched) return summary
+    return {
+      ...summary,
+      verdict: 'review',
+      riskVerdict: 'review',
+      coverageVerdict: 'incomplete',
+      findings: [
+        ...summary.findings,
+        {
+          code: 'inspection-probe-artifact-mismatch',
+          severity: 'high' as const,
+          summary: 'The artifact inspected for dependency evidence differs from the artifact loaded by the DSH probe.',
+          detail: 'Repeat the review against one exact registry artifact before treating the compatibility result as evidence for the inspected bytes.',
+          remediation: 'Pin the exact package version and registry, then rerun the observer review until the artifact digests match.',
+        },
+      ].slice(0, 32),
+    }
+  } catch (error: unknown) {
+    return {
+      ...summarizeObserverArtifactReview(spec, inspection),
+      error: safeErrorMessage(error instanceof Error ? error.message : String(error)),
+    }
+  }
+}
+
+async function runObserve(args: readonly string[]): Promise<number> {
+  const targetsPath = args[0]
+  if (targetsPath === undefined || targetsPath.startsWith('-')) throw new Error('observe requires a targets.yml file or an HTTPS GitHub repository URL')
+  let statePath = 'observations.json'
+  let reportPath: string | undefined
+  let agentCommand: string | undefined
+  let agentArgs: string[] = []
+  let llmEnvFile: string | undefined
+  let registry: string | undefined
+  let retryPending = false
+  let json = false
+  let inlineEcosystem: string | undefined
+  let inlineId: string | undefined
+  let inlinePackage: string | undefined
+  let inlinePackagePath: string | undefined
+  let inlineLockfile: string | undefined
+  let inlineLockfileType: string | undefined
+  let inlineRef: string | undefined
+  let inlineDshVersions: string[] | undefined
+  let inlineOptionsUsed = false
+  for (let index = 1; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === '--json') {
+      json = true
+    } else if (argument === '--retry-pending') {
+      retryPending = true
+    } else if (argument === '--ecosystem' || argument === '--id' || argument === '--package' || argument === '--package-path' || argument === '--lockfile' || argument === '--lockfile-type' || argument === '--ref' || argument === '--dsh-version' || argument === '--state' || argument === '--report' || argument === '--dsh-agent-command' || argument === '--dsh-agent-arg' || argument === '--llm-env-file' || argument === '--registry') {
+      const value = args[index + 1]
+      if (value === undefined || (value.startsWith('-') && argument !== '--dsh-agent-arg')) throw new Error(`${argument} requires a value`)
+      if (argument === '--ecosystem') inlineEcosystem = value
+      else if (argument === '--id') inlineId = value
+      else if (argument === '--package') inlinePackage = value
+      else if (argument === '--package-path') inlinePackagePath = value
+      else if (argument === '--lockfile') inlineLockfile = value
+      else if (argument === '--lockfile-type') inlineLockfileType = value
+      else if (argument === '--ref') inlineRef = value
+      else if (argument === '--dsh-version') inlineDshVersions = value.split(',').map(item => item.trim()).filter(item => item !== '')
+      else if (argument === '--state') statePath = value
+      else if (argument === '--report') reportPath = value
+      else if (argument === '--dsh-agent-command') agentCommand = value
+      else if (argument === '--dsh-agent-arg') agentArgs.push(value)
+      else if (argument === '--llm-env-file') llmEnvFile = value
+      else registry = value
+      if (argument !== '--state' && argument !== '--report' && argument !== '--dsh-agent-command' && argument !== '--dsh-agent-arg' && argument !== '--llm-env-file' && argument !== '--registry') inlineOptionsUsed = true
+      index += 1
+    } else {
+      throw new Error(`unknown option for observe: ${argument}`)
+    }
+  }
+
+  const githubTarget = parseGitHubRepositoryUrl(targetsPath)
+  let config
+  if (githubTarget !== undefined) {
+    if (inlineLockfileType !== undefined && inlineLockfile === undefined) {
+      throw new Error('--lockfile-type requires --lockfile when observe receives a GitHub URL')
+    }
+    config = parseObserverConfig({
+      schema: OBSERVER_TARGETS_SCHEMA,
+      targets: [{
+        id: inlineId ?? `${githubTarget.owner}-${githubTarget.repository}`,
+        ecosystem: inlineEcosystem ?? 'dsh',
+        repository: `${githubTarget.owner}/${githubTarget.repository}`,
+        ref: inlineRef ?? 'main',
+        packageName: inlinePackage,
+        ...(inlinePackagePath === undefined ? {} : { packagePath: inlinePackagePath }),
+        ...(inlineLockfile === undefined ? {} : { lockfile: inlineLockfile }),
+        ...(inlineLockfileType === undefined ? {} : { lockfileType: inlineLockfileType }),
+        ...(inlineDshVersions === undefined ? {} : { dshVersions: inlineDshVersions }),
+      }],
+    })
+  } else {
+    if (/^https?:\/\//i.test(targetsPath)) throw new Error('observe URL must be an HTTPS GitHub repository URL')
+    if (inlineOptionsUsed) throw new Error('--ecosystem, --id, --package, --package-path, --lockfile, --lockfile-type, --ref and --dsh-version require a GitHub URL target')
+    const targetText = await readBoundedFile(targetsPath, 256 * 1024)
+    config = parseObserverConfigText(targetText)
+  }
+  const previousState = await loadObservationState(statePath)
+  const source = new UpstreamObserverClient({
+    ...(process.env.GITHUB_TOKEN === undefined ? {} : { githubToken: process.env.GITHUB_TOKEN }),
+    ...(registry === undefined ? {} : { registry }),
+  })
+  let agentOptions: ObserverAgentCommandOptions | undefined
+  if (agentCommand !== undefined) {
+    agentOptions = {
+      command: agentCommand,
+      ...(agentArgs.length === 0 ? {} : { args: agentArgs }),
+    }
+  }
+  if (agentCommand !== undefined && llmEnvFile !== undefined) {
+    throw new Error('observe accepts either --dsh-agent-command or --llm-env-file, not both')
+  }
+  const result = await runObserver(config, previousState, {
+    source,
+    retryPending,
+    artifactReviewer: async (spec, target) => reviewObserverArtifact(spec, target, registry),
+    ...(agentOptions === undefined ? {} : {
+      agent: (task, prompt) => runDshAgentCommand(task, prompt, agentOptions),
+    }),
+    ...(llmEnvFile === undefined ? {} : {
+      agent: (task, prompt) => runOpenAiCompatibleAgent(task, prompt, { envFile: resolve(llmEnvFile!) }),
+    }),
+  })
+  await saveObservationState(statePath, result.state)
+  const reportJson = `${JSON.stringify(result.report, null, 2)}\n`
+  if (reportPath !== undefined) {
+    await writeFile(resolve(reportPath), reportPath.endsWith('.json') ? reportJson : renderObserverReport(result.report))
+  }
+  process.stdout.write(json ? reportJson : renderObserverReport(result.report))
+  const observerExit = observerExitCode(result.report)
+  if (result.report.agent.failed > 0) {
+    process.stderr.write('upstream-radar: static observation completed; DSH Agent/model analysis remains pending. See the report and rerun with --retry-pending.\n')
+  }
+  return observerExit
 }
 
 async function runQuickstart(args: readonly string[]): Promise<number> {
@@ -1674,8 +2215,12 @@ async function main(args: readonly string[]): Promise<number> {
   if (command === 'init') return runInit(args.slice(1))
   if (command === 'doctor') return runDoctor(args.slice(1))
   if (command === 'graph') return runGraph(args.slice(1))
+  if (command === 'profile-check') return runDshProfileCheck(args.slice(1))
   if (command === 'probe') return runProbe(args.slice(1))
+  if (command === 'review') return runDshPluginReview(args.slice(1))
   if (command === 'demo') return runDemo(args.slice(1))
+  if (command === 'case') return runDshCase(args.slice(1))
+  if (command === 'observe') return runObserve(args.slice(1))
   if (command === 'benchmark') return runBenchmark(args.slice(1))
   if (command === 'radar') return runRadar(args.slice(1))
   if (command === 'task') return runTask(args.slice(1))
@@ -1711,12 +2256,25 @@ async function main(args: readonly string[]): Promise<number> {
     throw new Error(`invalid --fail-on value: ${thresholdValue}`)
   }
 
-  const report = command === 'scan'
-    ? await scanDirectory(target)
-    : await inspectNpmPackage(target, {
-        deep,
-        ...(registry === undefined ? {} : { registry }),
-      })
+  const remoteRepository = command === 'scan' && /^https?:\/\//i.test(target)
+    ? await materializeGitHubRepository(target)
+    : undefined
+  if (remoteRepository !== undefined) {
+    const location = remoteRepository.relativeRoot === '.' ? '' : ` (plugin directory: ${remoteRepository.relativeRoot})`
+    process.stderr.write(`Reading ${remoteRepository.target.owner}/${remoteRepository.target.repository}${location} without installing dependencies or running code...\n`)
+  }
+
+  let report
+  try {
+    report = command === 'scan'
+      ? await scanDirectory(remoteRepository?.root ?? target)
+      : await inspectNpmPackage(target, {
+          deep,
+          ...(registry === undefined ? {} : { registry }),
+        })
+  } finally {
+    await remoteRepository?.cleanup()
+  }
   if (json) {
     process.stdout.write(`${JSON.stringify(report, null, 2)}\n`)
   } else {

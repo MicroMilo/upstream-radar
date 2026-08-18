@@ -1,0 +1,7 @@
+packages:
+  - 'node_modules/*'
+
+# Replay of the pnpm 11 release-age gate reported in dsh-web-ui #71.
+minimumReleaseAge: 14400
+minimumReleaseAgeExclude:
+  - '@deepseek-ai/dsh@0.1.0-rc.6'

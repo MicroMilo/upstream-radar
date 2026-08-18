@@ -30,6 +30,11 @@ export interface LifecycleScriptEvidence {
   command: string
 }
 
+export interface NpmInstallScriptPackage {
+  package: string
+  scripts: LifecycleScriptEvidence[]
+}
+
 export interface DshEvidence {
   isBundle: boolean
   patch?: string
@@ -64,6 +69,8 @@ export interface NpmProvenanceEvidence {
   builder?: string
 }
 
+export type NpmDependencyResolutionMode = 'strict' | 'legacy-peer-deps'
+
 export interface NpmEvidence {
   registry: string
   tarball: string
@@ -83,8 +90,13 @@ export interface NpmEvidence {
   dependencyAudit: {
     status: 'not-run' | 'verified' | 'findings' | 'failed'
     packages: number | null
+    resolutionMode?: NpmDependencyResolutionMode
     graphDigest?: string
     graph?: DependencyGraph
+    /** Exact reachable packages whose npm lock entry declares an install-time script. */
+    installScriptPackages?: string[]
+    /** The exact lifecycle names and commands read from those package manifests. */
+    installScriptDetails?: NpmInstallScriptPackage[]
     invalidSignatures: string[]
     missingSignatures: string[]
     vulnerabilities: VulnerabilitySummary | null
@@ -114,6 +126,8 @@ export interface ScanReport {
     packageManager: string | null
     lifecycleScripts: LifecycleScriptEvidence[]
     dependencies: DependencyEvidence[]
+    dependencyGraph?: DependencyGraph
+    dependencyGraphError?: string
     npm?: NpmEvidence
   }
   coverage: Coverage

@@ -54,6 +54,50 @@ The pre-install `graph npm-lock` and `graph pnpm-lock` commands use bounded, dep
 
 `init --pnpm-lock <path>` and `init --npm-lock <path>` wrap the collectors in a normal static Radar config. When `package.json` is beside the lockfile, the CLI reads the exact root name and version from it; for npm project roots, `packages[""]` becomes a synthetic workspace node and root development dependencies are excluded. `--root <name>@<version>` remains an explicit override for another workspace root. The config can be passed to `radar check` or `radar watch`, which then uses the same exact-version OSV matching and durable event lifecycle as an installed DSH profile. This keeps the pre-install path useful for plugin authors and CI without pretending that it has already loaded the plugin into DSH.
 
+## Upstream observation cycle
+
+The `observe` command is a separate, repository-level loop for DSH, Codex, and Pi
+plugin targets. It does not replace the installed-project vulnerability cycle;
+it answers a different question: what changed upstream since the last scheduled
+run?
+
+```text
+targets.yml
+  -> GitHub commit and compare metadata
+  -> source package.json at the exact commit
+  -> npm latest version, integrity and repository metadata
+  -> optional npm/pnpm lockfile graph at the same commit
+  -> observations.json
+  -> old/new diff
+  -> meaningful change only: explicit DSH Agent adapter
+```
+
+The first observation is a baseline and does not wake the model. A source diff
+limited to documentation or tests advances the baseline without creating a
+task. Runtime files, package entry/export or DSH metadata, package version or
+integrity, and dependency-graph changes create one bounded
+`upstream-radar.upstream-change-task/v1alpha1` task. A missing GitHub compare
+response is treated as a meaningful change rather than as proof that nothing
+changed. The observer stores the full static graph in the observation point, but
+the task and report carry only bounded summaries and differences.
+
+When a meaningful change has a published npm version, the observer also calls
+the exact-version npm artifact inspector. That inspector resolves the package in
+a temporary directory with lifecycle scripts disabled, builds the reachable
+graph, runs registry/signature and advisory checks, and returns bounded
+author-facing findings such as a known vulnerable dependency, an install-time
+script, relaxed peer resolution, or incomplete graph coverage. This deterministic
+review is independent of the model boundary; a missing or failed Agent cannot
+erase it. The observer does not import or execute the observed plugin.
+
+The model boundary is deliberately explicit. `--dsh-agent-command` starts one
+reviewed executable with `shell: false`, sends the prompt on stdin, and accepts
+only the eight-field JSON conclusion on stdout. No plugin is installed or
+executed. Because the DSH CLI's headless invocation is not treated as a guessed
+stable interface, a wrapper is the integration point until the official DSH
+headless contract is fixed; failed conclusions remain pending instead of being
+marked complete.
+
 ## Vulnerability cycle
 
 1. Deduplicate all installed npm `name@version` pairs.

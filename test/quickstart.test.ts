@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, it } from 'node:test'
 import { createQuickstartReport, renderQuickstartReport } from '../src/quickstart.js'
+import { TOOL_VERSION } from '../src/version.js'
 
 describe('quickstart guidance', () => {
   it('starts with the network-free demo in an empty directory', async () => {
@@ -12,7 +13,7 @@ describe('quickstart guidance', () => {
       const report = await createQuickstartReport(root, { dshHome: join(root, 'no-dsh') })
       assert.equal(report.mode, 'demo')
       assert.equal(report.steps.length, 1)
-      assert.match(report.steps[0]?.command ?? '', / upstream-radar@0\.33\.0 demo$/)
+      assert.match(report.steps[0]?.command ?? '', new RegExp(` upstream-radar@${TOOL_VERSION} demo$`))
       assert.match(renderQuickstartReport(report), /only inspected local files/)
     } finally {
       await rm(root, { recursive: true, force: true })

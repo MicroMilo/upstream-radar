@@ -87,6 +87,119 @@ describe('directory scanner', () => {
     assert.ok(report.findings.some(item => item.code === 'mutable-git-dependency'))
   })
 
+  it('reports stale npm lockfile root metadata without treating it as a vulnerability', async () => {
+    const root = await fixture(
+      { name: 'dsh-composer-expand', version: '0.1.2' },
+      {
+        'package-lock.json': JSON.stringify({
+          name: 'dsh-composer-expand',
+          version: '0.1.0',
+          lockfileVersion: 3,
+          packages: { '': { name: 'dsh-composer-expand', version: '0.1.0' } },
+        }),
+      },
+    )
+
+    const report = await scanDirectory(root)
+    const finding = report.findings.find(item => item.code === 'lockfile-root-metadata-stale')
+    assert.equal(finding?.severity, 'info')
+    assert.equal(report.riskVerdict, 'allow')
+    assert.match(finding?.remediation ?? '', /Regenerate package-lock\.json/)
+    assert.equal(report.evidence.dependencyGraph, undefined)
+    assert.match(report.evidence.dependencyGraphError ?? '', /requested root package is not present/)
+  })
+
+  it('finds an npm publication path that does not declare provenance', async () => {
+    const root = await fixture(
+      { name: 'release-example', version: '1.0.0' },
+      {
+        '.github/workflows/release.yml': 'jobs:\n  publish:\n    steps:\n      - run: pnpm run release:publish\n',
+        'scripts/release/publish.ts': "attemptEchoed('npm', ['publish', tarball])\n",
+      },
+    )
+
+    const report = await scanDirectory(root)
+    const finding = report.findings.find(item => item.code === 'npm-publish-provenance-not-declared')
+    assert.equal(finding?.severity, 'medium')
+    assert.match(finding?.remediation ?? '', /id-token: write/)
+    assert.deepEqual(finding?.evidence?.workflowPaths, ['.github/workflows/release.yml'])
+    assert.deepEqual(finding?.evidence?.publisherPaths, ['scripts/release/publish.ts'])
+  })
+
+  it('accepts an npm publication path that explicitly enables provenance', async () => {
+    const root = await fixture(
+      { name: 'release-with-provenance', version: '1.0.0' },
+      {
+        '.github/workflows/release.yml': 'jobs:\n  publish:\n    permissions:\n      id-token: write\n    steps:\n      - run: npm publish --provenance\n',
+      },
+    )
+
+    const report = await scanDirectory(root)
+    assert.equal(report.findings.some(item => item.code === 'npm-publish-provenance-not-declared'), false)
+  })
+
+  it('accepts a GitHub OIDC trusted-publishing path', async () => {
+    const root = await fixture(
+      { name: 'trusted-release', version: '1.0.0' },
+      {
+        '.github/workflows/release.yml': 'permissions:\n  id-token: write\njobs:\n  publish:\n    steps:\n      - run: npm publish --access public\n',
+      },
+    )
+
+    const report = await scanDirectory(root)
+    assert.equal(report.findings.some(item => item.code === 'npm-publish-provenance-not-declared'), false)
+  })
+
+  it('reads a committed npm lockfile into the scan report without installing anything', async () => {
+    const root = await fixture(
+      {
+        name: 'locked-example',
+        version: '1.0.0',
+        dependencies: { direct: '1.0.0' },
+      },
+      {
+        'package-lock.json': JSON.stringify({
+          name: 'locked-example',
+          version: '1.0.0',
+          lockfileVersion: 3,
+          packages: {
+            '': { name: 'locked-example', version: '1.0.0', dependencies: { direct: '1.0.0' } },
+            'node_modules/direct': { version: '1.0.0', dependencies: { transitive: '1.0.0' } },
+            'node_modules/transitive': { version: '1.0.0' },
+          },
+        }),
+      },
+    )
+
+    const report = await scanDirectory(root)
+    assert.equal(report.coverage.dependencyResolution, 'resolved')
+    assert.equal(report.evidence.dependencyGraph?.nodes.length, 3)
+    assert.equal(report.evidence.dependencyGraph?.edges.length, 2)
+    assert.equal(report.evidence.dependencyGraph?.unresolved, undefined)
+    assert.equal(report.findings.some(item => item.code === 'dependency-graph-unavailable'), false)
+  })
+
+  it('keeps unresolved lockfile edges visible as incomplete monitoring coverage', async () => {
+    const root = await fixture(
+      { name: 'incomplete-example', version: '1.0.0', dependencies: { missing: '1.0.0' } },
+      {
+        'package-lock.json': JSON.stringify({
+          name: 'incomplete-example',
+          version: '1.0.0',
+          lockfileVersion: 3,
+          packages: {
+            '': { name: 'incomplete-example', version: '1.0.0', dependencies: { missing: '1.0.0' } },
+          },
+        }),
+      },
+    )
+
+    const report = await scanDirectory(root)
+    assert.equal(report.coverage.dependencyResolution, 'resolved')
+    assert.equal(report.evidence.dependencyGraph?.unresolved?.length, 1)
+    assert.equal(report.findings.find(item => item.code === 'dependency-graph-incomplete')?.severity, 'info')
+  })
+
   it('blocks a symlink that escapes the reviewed root', async () => {
     const root = await fixture({ name: 'escaping-link', version: '1.0.0' })
     await symlink('../outside', join(root, 'outside-link'))

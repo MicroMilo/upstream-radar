@@ -1,0 +1,94 @@
+{
+  "dshPackage": "@deepseek-ai/dsh@0.1.0-rc.6",
+  "profile": "headless",
+  "model": "local deterministic DeepSeek-compatible stub (plumbing proof only)",
+  "feedMode": "public dsh-web-ui #35/#71 replay; static profile facts + real DSH delivery",
+  "case": {
+    "issue35": "https://github.com/zhu1090093659/dsh-web-ui/issues/35",
+    "issue71": "https://github.com/zhu1090093659/dsh-web-ui/issues/71",
+    "staticChecks": [
+      {
+        "id": "before",
+        "status": "blocked",
+        "findingCodes": [
+          "minimum-release-age-unexcluded",
+          "missing-loader-package"
+        ],
+        "execution": {
+          "network": false,
+          "installs": false,
+          "pluginCode": false,
+          "dshAgent": false,
+          "llm": false
+        }
+      },
+      {
+        "id": "manual-add",
+        "status": "blocked",
+        "findingCodes": [
+          "duplicate-loader-id",
+          "minimum-release-age-unexcluded"
+        ],
+        "execution": {
+          "network": false,
+          "installs": false,
+          "pluginCode": false,
+          "dshAgent": false,
+          "llm": false
+        }
+      },
+      {
+        "id": "fixed",
+        "status": "pass",
+        "findingCodes": [],
+        "execution": {
+          "network": false,
+          "installs": false,
+          "pluginCode": false,
+          "dshAgent": false,
+          "llm": false
+        }
+      }
+    ]
+  },
+  "bundleInstalled": true,
+  "radarTaskReachedModel": true,
+  "pluginSourcePreserved": true,
+  "pendingTasksAfterDelivery": 0,
+  "analysisResults": 1,
+  "activeCompatibility": 1,
+  "analysisResult": {
+    "taskId": "analysis-66bdb7fd939ae08241a4",
+    "incidentId": "incident-dsh-web-ui-issue-71",
+    "eventId": "event-dsh-web-ui-issue-71",
+    "project_exposure": "likely_exposed",
+    "confidence": "high",
+    "evidence": [
+      "examples/cases/dsh-web-ui-issue-71/before/cordis.patch.yml",
+      "examples/cases/dsh-web-ui-issue-71/before/pnpm-lock.yaml",
+      "https://github.com/zhu1090093659/dsh-web-ui/issues/35",
+      "https://github.com/zhu1090093659/dsh-web-ui/issues/71"
+    ],
+    "recommended_action": "升级 @linxin666/dsh-web-ui-all、@linxin666/dsh-client-ui-skin-center 与 @linxin666/dsh-skins 到 0.1.7，加入 minimumReleaseAgeExclude，清理旧的 insert 行后重新运行 profile-check。",
+    "urgency": "within_24_hours",
+    "reasoning_summary": "静态复现已确认旧 profile 的 patch 引用了锁文件中不存在的独立皮肤包；手动补包又会产生重复 loader id。公开 Issue #71 的维护者修复采用 bundled carrier，并把 release-age 排除配置补齐。"
+  },
+  "activeVulnerabilities": 0,
+  "modelRequests": 3,
+  "dshEntrypointObserved": true,
+  "dshHostRuntimePlaneDiscovered": true,
+  "realPlugins": [],
+  "finalAssistant": {
+    "project_exposure": "likely_exposed",
+    "confidence": "high",
+    "evidence": [
+      "examples/cases/dsh-web-ui-issue-71/before/cordis.patch.yml",
+      "examples/cases/dsh-web-ui-issue-71/before/pnpm-lock.yaml",
+      "https://github.com/zhu1090093659/dsh-web-ui/issues/35",
+      "https://github.com/zhu1090093659/dsh-web-ui/issues/71"
+    ],
+    "recommended_action": "升级 @linxin666/dsh-web-ui-all、@linxin666/dsh-client-ui-skin-center 与 @linxin666/dsh-skins 到 0.1.7，加入 minimumReleaseAgeExclude，清理旧的 insert 行后重新运行 profile-check。",
+    "urgency": "within_24_hours",
+    "reasoning_summary": "静态复现已确认旧 profile 的 patch 引用了锁文件中不存在的独立皮肤包；手动补包又会产生重复 loader id。公开 Issue #71 的维护者修复采用 bundled carrier，并把 release-age 排除配置补齐。"
+  }
+}

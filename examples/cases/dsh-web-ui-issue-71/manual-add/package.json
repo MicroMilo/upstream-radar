@@ -1,0 +1,13 @@
+{
+  "name": "dsh-profile-web",
+  "version": "0.1.0",
+  "dsh": {
+    "profile": {
+      "bundles": [
+        "@linxin666/dsh-web-ui-all",
+        "@linxin666/dsh-client-ui-skin-center",
+        "@linxin666/dsh-client-ui-skin-qq98"
+      ]
+    }
+  }
+}

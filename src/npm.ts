@@ -18,6 +18,8 @@ import {
   type CheckStatus,
   type Finding,
   type NpmEvidence,
+  type NpmDependencyResolutionMode,
+  type NpmInstallScriptPackage,
   type NpmProvenanceEvidence,
   type ScanReport,
   type Severity,
@@ -33,6 +35,9 @@ const MAX_PROCESS_OUTPUT_BYTES = 32 * 1024 * 1024
 const MAX_RESOLUTION_LOCKFILE_BYTES = 64 * 1024 * 1024
 const MISSING_PUBLISH_TIME_CUTOFF = '2015-01-01T00:00:00.000Z'
 const EXACT_VERSION = /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/
+const NPM_LIFECYCLE_SCRIPT_NAMES = [
+  'preinstall', 'install', 'postinstall', 'prepare',
+] as const
 
 type FetchLike = (input: string | URL, init?: RequestInit) => Promise<Response>
 
@@ -152,8 +157,7 @@ function publicUrl(input: string): string {
 }
 
 export function parseNpmSpec(input: string): ParsedNpmSpec {
-  if (!input.startsWith('npm:')) throw new Error('npm package spec must start with npm:')
-  const value = input.slice(4)
+  const value = input.startsWith('npm:') ? input.slice(4) : input
   const separator = value.lastIndexOf('@')
   if (separator <= 0) throw new Error('npm package spec must include an exact version')
   const name = value.slice(0, separator)
@@ -453,6 +457,14 @@ function parseJsonOutput(output: string): unknown {
   }
 }
 
+function processFailureDetail(stderr: string): string | undefined {
+  const detail = stderr
+    .replace(/[\u0000-\u001f\u007f-\u009f]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return detail === '' ? undefined : detail.slice(0, 2_048)
+}
+
 export interface NpmDependencyGraphOptions {
   registry?: string
   timeoutMs?: number
@@ -520,6 +532,66 @@ function packageLabels(value: unknown): string[] {
     const version = asString(record?.version)
     return version === undefined ? name : `${name}@${version}`
   })
+}
+
+/**
+ * Return only reachable packages whose exact npm lock entry declares an
+ * install-time lifecycle script. The review never executes these scripts;
+ * this is evidence about what a normal install may run or block on.
+ */
+export function collectNpmInstallScriptPackages(lockfile: unknown, graph: DependencyGraph): string[] {
+  const packages = asRecord(asRecord(lockfile)?.packages)
+  if (packages === undefined) return []
+  const nodes = new Map(graph.nodes.map(node => [node.id, node]))
+  const labels: string[] = []
+  for (const [path, rawItem] of Object.entries(packages)) {
+    if (!nodes.has(path)) continue
+    const item = asRecord(rawItem)
+    if (item?.hasInstallScript !== true) continue
+    const node = nodes.get(path)
+    if (node !== undefined) labels.push(`${node.name}@${node.version}`)
+  }
+  return [...new Set(labels)].sort((left, right) => left.localeCompare(right)).slice(0, 100)
+}
+
+/** Read lifecycle names and commands from package manifests without executing them. */
+export function extractNpmLifecycleScripts(manifest: unknown): Array<{ name: string; command: string }> {
+  const scripts = asRecord(asRecord(manifest)?.scripts)
+  if (scripts === undefined) return []
+  return NPM_LIFECYCLE_SCRIPT_NAMES.flatMap(name => {
+    const command = asString(scripts[name])
+    return command === undefined ? [] : [{ name, command }]
+  })
+}
+
+async function collectNpmInstallScriptDetails(
+  root: string,
+  lockfile: unknown,
+  graph: DependencyGraph,
+): Promise<NpmInstallScriptPackage[]> {
+  const packages = asRecord(asRecord(lockfile)?.packages)
+  if (packages === undefined) return []
+  const nodes = new Map(graph.nodes.map(node => [node.id, node]))
+  const details: NpmInstallScriptPackage[] = []
+  for (const [packagePath, rawItem] of Object.entries(packages)) {
+    if (!nodes.has(packagePath) || asRecord(rawItem)?.hasInstallScript !== true) continue
+    const node = nodes.get(packagePath)
+    if (node === undefined) continue
+    const manifestPath = resolve(root, packagePath, 'package.json')
+    const rootPrefix = `${resolve(root)}${sep}`
+    let scripts: Array<{ name: string; command: string }> = []
+    if (manifestPath.startsWith(rootPrefix)) {
+      try {
+        scripts = extractNpmLifecycleScripts(JSON.parse(await readFile(manifestPath, 'utf8')) as unknown)
+      } catch {
+        // The lockfile flag remains useful even if a package manifest is unreadable.
+      }
+    }
+    details.push({ package: `${node.name}@${node.version}`, scripts })
+  }
+  return details
+    .sort((left, right) => left.package.localeCompare(right.package))
+    .slice(0, 100)
 }
 
 function vulnerabilitySummary(audit: unknown): VulnerabilitySummary | null {
@@ -623,21 +695,39 @@ async function deepAuditNpmPackage(
     const environment = safeEnvironment(root)
     const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
 
-    const install = await runProcess(npm, [
+    const installArgs = [
       'install', '--ignore-scripts', '--no-audit', '--no-fund', '--save-exact', '--loglevel=error',
       '--registry', registry,
-    ], root, environment, timeoutMs)
-    if (install.code !== 0 || install.timedOut || install.outputExceeded) {
-      const reason = install.timedOut
-        ? 'npm dependency resolution timed out'
-        : install.outputExceeded
-          ? 'npm dependency resolution exceeded output budget'
-          : `npm dependency resolution failed with exit code ${install.code}`
-      return failed(reason)
+    ]
+    let install = await runProcess(npm, installArgs, root, environment, timeoutMs)
+    let resolutionMode: NpmDependencyResolutionMode = 'strict'
+    if (install.outputExceeded) {
+      return failed('npm dependency resolution exceeded output budget')
+    }
+    if (install.code !== 0 || install.timedOut) {
+      // Some real DSH releases contain peer combinations that make npm's
+      // strict resolver spend the whole bounded window without producing a
+      // lockfile. Retry only the resolver with npm's legacy peer mode. Scripts
+      // remain disabled and the resulting graph is called out in the report.
+      const legacyInstall = await runProcess(npm, [...installArgs, '--legacy-peer-deps'], root, environment, timeoutMs)
+      if (legacyInstall.code === 0 && !legacyInstall.timedOut && !legacyInstall.outputExceeded) {
+        install = legacyInstall
+        resolutionMode = 'legacy-peer-deps'
+      } else {
+        const reason = install.timedOut
+          ? 'npm dependency resolution timed out'
+          : install.outputExceeded
+            ? 'npm dependency resolution exceeded output budget'
+            : `npm dependency resolution failed with exit code ${install.code}`
+        const detail = processFailureDetail(legacyInstall.stderr) ?? processFailureDetail(install.stderr)
+        return failed(detail === undefined ? reason : `${reason}: ${detail}`)
+      }
     }
 
     const lockfile = JSON.parse(await readFile(join(root, 'package-lock.json'), 'utf8')) as unknown
     const dependencyGraph = parseNpmLockGraph(lockfile, spec)
+    const installScriptDetails = await collectNpmInstallScriptDetails(root, lockfile, dependencyGraph)
+    const installScriptPackages = installScriptDetails.map(detail => detail.package)
     const graphDigest = dependencyGraph.digest
     if (graphDigest === undefined) throw new Error('resolved dependency graph has no digest')
     let signatures = await runProcess(npm, [
@@ -665,8 +755,11 @@ async function deepAuditNpmPackage(
         dependencyAudit: {
           status: 'failed',
           packages: dependencyGraph.nodes.length,
+          resolutionMode,
           graphDigest,
           graph: dependencyGraph,
+          installScriptPackages,
+          installScriptDetails,
           invalidSignatures,
           missingSignatures,
           vulnerabilities: null,
@@ -682,8 +775,11 @@ async function deepAuditNpmPackage(
         dependencyAudit: {
           status: 'failed',
           packages: dependencyGraph.nodes.length,
+          resolutionMode,
           graphDigest,
           graph: dependencyGraph,
+          installScriptPackages,
+          installScriptDetails,
           invalidSignatures,
           missingSignatures,
           vulnerabilities: null,
@@ -698,8 +794,11 @@ async function deepAuditNpmPackage(
         dependencyAudit: {
           status: 'failed',
           packages: dependencyGraph.nodes.length,
+          resolutionMode,
           graphDigest,
           graph: dependencyGraph,
+          installScriptPackages,
+          installScriptDetails,
           invalidSignatures,
           missingSignatures,
           vulnerabilities: null,
@@ -708,7 +807,10 @@ async function deepAuditNpmPackage(
         provenance,
       }
     }
-    const status = invalidSignatures.length > 0 || missingSignatures.length > 0 || (vulnerabilities?.total ?? 0) > 0
+    const status = installScriptPackages.length > 0
+      || invalidSignatures.length > 0
+      || missingSignatures.length > 0
+      || (vulnerabilities?.total ?? 0) > 0
       ? 'findings' as const
       : signatures.code === 0 ? 'verified' as const : 'findings' as const
 
@@ -716,8 +818,11 @@ async function deepAuditNpmPackage(
       dependencyAudit: {
         status,
         packages: dependencyGraph.nodes.length,
+        resolutionMode,
         graphDigest,
         graph: dependencyGraph,
+        installScriptPackages,
+        installScriptDetails,
         invalidSignatures,
         missingSignatures,
         vulnerabilities,
@@ -809,6 +914,8 @@ function addNpmEvidenceFindings(evidence: NpmEvidence, findings: Finding[]): voi
       'medium',
       'npm artifact has no build provenance',
       'The published bytes are not cryptographically linked to a declared source commit and build workflow.',
+      undefined,
+      'Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version.',
     ))
   } else if (evidence.provenance.status === 'invalid') {
     findings.push(makeFinding(
@@ -842,6 +949,17 @@ function addNpmEvidenceFindings(evidence: NpmEvidence, findings: Finding[]): voi
     ))
   }
 
+  if (evidence.dependencyAudit.resolutionMode === 'legacy-peer-deps') {
+    findings.push(makeFinding(
+      'dependency-peer-resolution-relaxed',
+      'medium',
+      'Dependency graph used npm legacy peer resolution',
+      'Strict npm peer resolution did not finish within the bounded window. The fallback produced a usable dependency inventory with scripts disabled, but peer compatibility was not fully enforced during resolution.',
+      { mode: 'legacy-peer-deps' },
+      'Review peer dependency ranges separately before installation; keep the exact graph and vulnerability results as the current evidence.',
+    ))
+  }
+
   if (evidence.dependencyAudit.invalidSignatures.length > 0) {
     findings.push(makeFinding(
       'dependency-signature-invalid',
@@ -858,6 +976,23 @@ function addNpmEvidenceFindings(evidence: NpmEvidence, findings: Finding[]): voi
       'Resolved dependencies include unsigned packages',
       'At least one dependency has no verifiable registry signature.',
       { packages: evidence.dependencyAudit.missingSignatures },
+    ))
+  }
+
+  const installScriptPackages = evidence.dependencyAudit.installScriptPackages ?? []
+  if (installScriptPackages.length > 0) {
+    const installScriptDetails = evidence.dependencyAudit.installScriptDetails ?? []
+    const commands = installScriptDetails.flatMap(detail => detail.scripts.map(script => `${detail.package} ${script.name}: ${script.command}`))
+    findings.push(makeFinding(
+      'dependency-install-script-present',
+      'high',
+      'Resolved dependency graph contains install-time scripts',
+      'The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.',
+      {
+        packages: installScriptPackages,
+        ...(commands.length === 0 ? {} : { scripts: commands.slice(0, 100) }),
+      },
+      'Review each listed package and its published artifact; prefer a version with no install-time script, or require explicit approval before allowing the DSH install path to run it.',
     ))
   }
 

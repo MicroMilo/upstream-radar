@@ -5,7 +5,7 @@ import type {
   VulnerabilityAdvisory,
 } from './radar-types.js'
 import { packageKey } from './osv.js'
-import { satisfiesSemverRange } from './semver.js'
+import { compareSemverValues, satisfiesSemverRange } from './semver.js'
 import { TOOL_VERSION } from './version.js'
 
 const DEFAULT_GITHUB_API_BASE_URL = 'https://api.github.com/'
@@ -201,8 +201,12 @@ function advisoryForPackage(
 ): VulnerabilityAdvisory | undefined {
   const vulnerabilities = advisory.vulnerabilities.filter(item => {
     if (item.packageName !== coordinate.name) return false
-    if (item.vulnerableRange === undefined) return true
-    return satisfiesSemverRange(coordinate.version, item.vulnerableRange) !== false
+    if (item.vulnerableRange !== undefined && satisfiesSemverRange(coordinate.version, item.vulnerableRange) === false) return false
+    if (item.firstPatchedVersion !== undefined) {
+      const comparison = compareSemverValues(coordinate.version, item.firstPatchedVersion)
+      if (comparison !== undefined && comparison >= 0) return false
+    }
+    return true
   })
   if (vulnerabilities.length === 0) return undefined
   return {

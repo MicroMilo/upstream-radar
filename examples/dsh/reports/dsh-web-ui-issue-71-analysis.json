@@ -1,0 +1,127 @@
+{
+  "schema": "upstream-radar.dsh-case-analysis/v1alpha1",
+  "generatedAt": "2026-08-17T22:14:50.472Z",
+  "case": "dsh-web-ui release-age / skin-loader mismatch",
+  "sources": [
+    "https://github.com/zhu1090093659/dsh-web-ui/issues/71",
+    "https://github.com/zhu1090093659/dsh-web-ui/issues/35"
+  ],
+  "staticChecks": [
+    {
+      "id": "before",
+      "report": {
+        "status": "blocked",
+        "packageManager": "pnpm",
+        "lockfile": "pnpm-lock.yaml",
+        "dependencyNodes": 4,
+        "loaderEntries": [
+          {
+            "id": "ui-skin-qq98",
+            "operation": "insert",
+            "sourceFile": "cordis.patch.yml",
+            "line": 3,
+            "name": "@linxin666/dsh-client-ui-skin-qq98"
+          }
+        ],
+        "findings": [
+          {
+            "code": "minimum-release-age-unexcluded",
+            "severity": "review",
+            "summary": "pnpm can silently hold a DSH plugin below its newest release",
+            "detail": "pnpm-workspace.yaml sets minimumReleaseAge=14400, but these profile bundles are not excluded: @linxin666/dsh-web-ui-all, @linxin666/dsh-client-ui-skin-center. A newly published fix can therefore be unavailable during the cooling window, leaving the profile on an older broken layout.",
+            "remediation": "Either pin and review the intended versions, or add the exact plugin package names to minimumReleaseAgeExclude and re-run this check after updating the lockfile."
+          },
+          {
+            "code": "missing-loader-package",
+            "severity": "block",
+            "summary": "loader ui-skin-qq98 imports a package that is not in the profile",
+            "detail": "cordis.patch.yml:3 names @linxin666/dsh-client-ui-skin-qq98, but @linxin666/dsh-client-ui-skin-qq98 is absent from the locked dependency graph. DSH will fail when it imports this loader; adding the package separately can create a second registration for the same id.",
+            "remediation": "Align the patch with the installed bundle layout: remove this insert when the feature is bundled, or add the exact package to the profile and ensure it is registered only once."
+          }
+        ]
+      }
+    },
+    {
+      "id": "manual-add",
+      "report": {
+        "status": "blocked",
+        "packageManager": "pnpm",
+        "lockfile": "pnpm-lock.yaml",
+        "dependencyNodes": 5,
+        "loaderEntries": [
+          {
+            "id": "ui-skin-qq98",
+            "operation": "insert",
+            "sourceFile": "cordis.patch.yml",
+            "line": 3,
+            "name": "@linxin666/dsh-client-ui-skin-qq98"
+          },
+          {
+            "id": "ui-skin-qq98",
+            "operation": "insert",
+            "sourceFile": "node_modules/@linxin666/dsh-client-ui-skin-qq98/cordis.patch.yml",
+            "line": 2,
+            "name": "@linxin666/dsh-client-ui-skin-qq98"
+          }
+        ],
+        "findings": [
+          {
+            "code": "duplicate-loader-id",
+            "severity": "block",
+            "summary": "loader id ui-skin-qq98 appears more than once",
+            "detail": "cordis.patch.yml:3, node_modules/@linxin666/dsh-client-ui-skin-qq98/cordis.patch.yml:2 all contribute an active row. At least one is an insert, so DSH may reject the profile with a duplicate loader entry or load the wrong implementation.",
+            "remediation": "Keep one active registration for ui-skin-qq98; if the row is already supplied by a bundle, remove the generated insert instead of installing another package."
+          },
+          {
+            "code": "minimum-release-age-unexcluded",
+            "severity": "review",
+            "summary": "pnpm can silently hold a DSH plugin below its newest release",
+            "detail": "pnpm-workspace.yaml sets minimumReleaseAge=14400, but these profile bundles are not excluded: @linxin666/dsh-web-ui-all, @linxin666/dsh-client-ui-skin-center, @linxin666/dsh-client-ui-skin-qq98. A newly published fix can therefore be unavailable during the cooling window, leaving the profile on an older broken layout.",
+            "remediation": "Either pin and review the intended versions, or add the exact plugin package names to minimumReleaseAgeExclude and re-run this check after updating the lockfile."
+          }
+        ]
+      }
+    },
+    {
+      "id": "fixed",
+      "report": {
+        "status": "pass",
+        "packageManager": "pnpm",
+        "lockfile": "pnpm-lock.yaml",
+        "dependencyNodes": 4,
+        "loaderEntries": [
+          {
+            "id": "ui-skin-qq98",
+            "operation": "row",
+            "sourceFile": "cordis.patch.yml",
+            "line": 3
+          }
+        ],
+        "findings": []
+      }
+    }
+  ],
+  "analysis": {
+    "root_cause": "minimumReleaseAge 让 profile 留在旧的 0.1.5/0.1.4 组合；旧版把 qq98 皮肤放进 bundled carrier，但生成的 patch 仍插入已经不存在的独立包。手动补装独立包后，又会和 carrier 自带的 ui-skin-qq98 重复注册。",
+    "user_impact": "启动前已经可以确定 profile 不一致：修复前会因为缺少 loader 包而失败，手动补包会变成 duplicate loader entry；这不是“启动后再观察”的问题。",
+    "maintainer_fix": "把相关 @linxin666 包升级到 0.1.7，按 bundled carrier 的方式激活已有 loader 行，不再插入独立 qq98 包；同时把这些包加入 minimumReleaseAgeExclude，避免新修复版本被冷却期挡住。",
+    "why_monitoring_matters": "Radar 只需读取 profile 的锁文件、patch 和 release-age 配置，就能在 DSH 启动前复现这条因果链，并把可修复的版本/patch 改动交给作者。",
+    "confidence": "high"
+  },
+  "analysisSource": "deterministic-evidence-fallback",
+  "model": {
+    "status": "unavailable",
+    "configured": true,
+    "source": "explicit issue-locator env file",
+    "model": "glm-5.1",
+    "endpoint": "https://llm-center.ali.modelbest.cn/llm/openai/v1/chat/completions",
+    "httpStatus": 404
+  },
+  "execution": {
+    "network": true,
+    "installs": false,
+    "pluginCode": false,
+    "dshAgent": false,
+    "llm": false
+  }
+}
