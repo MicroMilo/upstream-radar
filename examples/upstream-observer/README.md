@@ -24,7 +24,7 @@ Replace it with the repositories your team depends on.
 For one repository, the shortest path skips YAML and lockfile configuration entirely:
 
 ```bash
-npx --yes upstream-radar@0.34.0 observe \
+npx --yes upstream-radar@0.35.0 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md
@@ -35,7 +35,7 @@ Radar automatically chooses the committed `pnpm-lock.yaml` or
 the explicit form below adds `--package`:
 
 ```bash
-npx --yes upstream-radar@0.34.0 observe \
+npx --yes upstream-radar@0.35.0 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --package dsh-feishu-bot \
   --lockfile pnpm-lock.yaml --lockfile-type pnpm \
@@ -60,6 +60,15 @@ The latest replay with the available issue-locator `.env` is recorded in
 It shows the exact author-review output and records the model endpoint failure
 without treating the pending task as a successful analysis.
 
+Every observation also emits an upstream/downstream alignment IR. It compares
+the Git source coordinate, the observed npm coordinate, and the lockfile graph
+root before an Agent is involved. The live target is intentionally useful here:
+the source says `dsh-lark-bot@0.15.8`, npm publishes
+`dsh-feishu-bot@0.15.8`, and the graph root follows the source name. Radar
+reports `mismatch` with an author-facing mapping fix; it does not call this
+malware or pretend that the bundle is incompatible. A missing lockfile is
+reported as `unknown`, never as a clean dependency graph.
+
 The deterministic closed-loop result is recorded in
 [`reports/dsh-feishu-bot-artifact-review-2026-08-18.md`](reports/dsh-feishu-bot-artifact-review-2026-08-18.md):
 the same old → new run now reviews `dsh-feishu-bot@0.15.8`, finds its reachable
@@ -72,11 +81,16 @@ artifact in both disposable profiles and writes the matrix into the same
 report. The live replay loaded both versions successfully (`2/2`); this is a
 bundle-load compatibility result, not a safety certificate.
 
+To replay the complete state machine without network access, run
+`pnpm run showcase:observer`. It prints a baseline alignment mismatch, one
+meaningful old → new change with one Agent call, and a quiet third run with no
+new task.
+
 Run it from any directory with the published CLI:
 
 ```bash
 export GITHUB_TOKEN='a read-only token with repository metadata access'
-npx --yes upstream-radar@0.34.0 observe \
+npx --yes upstream-radar@0.35.0 observe \
   /path/to/targets.yml \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md

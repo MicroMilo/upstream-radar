@@ -33,19 +33,45 @@ flowchart TD
 
 This is the boundary: Radar decides **what changed and which exact path is involved**; DSH decides **what that means for the project**. A later website can visualize the saved graph, but the evidence and impact index are already useful without one.
 
+## The upstream/downstream alignment IR
+
+Every observer snapshot now carries a small, machine-readable alignment record:
+
+```text
+upstream:   Git commit + package.json coordinate
+downstream: npm coordinate + lockfile graph root + graph coverage
+result:     aligned | mismatch | unknown
+```
+
+This catches a class of problems that a vulnerability scanner cannot: the source
+package, published package, and dependency graph may no longer describe the
+same thing. For example, the public DSH/Feishu target currently reports:
+
+```text
+source:    dsh-lark-bot@0.15.8
+published: dsh-feishu-bot@0.15.8
+graph root: dsh-lark-bot@0.15.8
+result:    mismatch
+```
+
+That is not a claim of malware or runtime incompatibility. It is an evidence
+gap: Radar cannot safely say that the source it watched produced the artifact
+users install. The IR is stored in `observations.json`, rendered in the first
+baseline report, and defined in [`schemas/upstream-downstream-ir.schema.json`](schemas/upstream-downstream-ir.schema.json).
+
 ## Try it in 60 seconds
 
 ```bash
 # No DSH profile, API key, or network state required
-npx --yes upstream-radar@0.34.0 demo
+npx --yes upstream-radar@0.35.0 demo
 
 # Scan a public DSH plugin repository without installing it
-npx --yes upstream-radar@0.34.0 scan \
+npx --yes upstream-radar@0.35.0 scan \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --fail-on never
 
 # Review a real browser plugin users would install, then check two DSH releases
-npx --yes upstream-radar@0.34.0 review dsh-plugin dsh-cloudflare-browser-run@0.1.1 \
+npx --yes upstream-radar@0.35.0 review dsh-plugin dsh-cloudflare-browser-run@0.1.1 \
   --dsh-version 0.1.0-rc.6,0.1.0-rc.7
 ```
 
@@ -81,11 +107,11 @@ Two copies of `parser` are different nodes. An alert names the exact version and
 For a collection of saved reports, build the reverse index that turns an upstream package update into affected plugins:
 
 ```bash
-npx --yes upstream-radar@0.34.0 graph reverse ./reports \
+npx --yes upstream-radar@0.35.0 graph reverse ./reports \
   --output reverse-dependency-index.json
 
 # Ask: which plugins currently depend on this exact package?
-npx --yes upstream-radar@0.34.0 graph reverse ./reports \
+npx --yes upstream-radar@0.35.0 graph reverse ./reports \
   --package parser@2.9.0
 ```
 
@@ -102,7 +128,7 @@ It also preserves whether the graph is complete or has unresolved optional/peer 
 The repository already contains a reusable, composite Action in [`action.yml`](action.yml). It runs the same frozen Radar check in CI and writes a short Job Summary.
 
 ```yaml
-- uses: MicroMilo/upstream-radar@v0.34.0
+- uses: MicroMilo/upstream-radar@v0.35.0
   with:
     config: upstream-radar.config.json
     fail-on: high
@@ -126,7 +152,7 @@ See the [consumer workflow](examples/github-actions/consumer/README.md) for conf
 pnpm add upstream-radar
 
 # Generate a reviewable DSH profile inventory from the installed profile
-npx --yes upstream-radar@0.34.0 setup
+npx --yes upstream-radar@0.35.0 setup
 ```
 
 For Feishu/webhook routing, DSH Agent handoff, observer state, report schemas, and troubleshooting, use the [full Chinese guide](docs/README.zh-CN.md). The [architecture notes](docs/architecture.md) explain the boundaries and evidence model.

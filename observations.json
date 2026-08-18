@@ -4,7 +4,7 @@
     "dsh-feishu-bot": {
       "targetId": "dsh-feishu-bot",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-18T07:50:31.358Z",
+      "observedAt": "2026-08-18T08:09:00.557Z",
       "source": {
         "repository": "PlutoKeating/dsh-lark-bot",
         "ref": "main",
@@ -3236,12 +3236,76 @@
       },
       "warnings": [
         "target package dsh-feishu-bot does not match source manifest dsh-lark-bot"
-      ]
+      ],
+      "alignment": {
+        "schema": "upstream-radar.upstream-downstream-ir/v1alpha1",
+        "targetId": "dsh-feishu-bot",
+        "ecosystem": "dsh",
+        "upstream": {
+          "repository": "PlutoKeating/dsh-lark-bot",
+          "commit": "4ee9739eb6de22a810b5dbb6f93cbf68045cbca8",
+          "packagePath": "package.json",
+          "coordinate": {
+            "name": "dsh-lark-bot",
+            "version": "0.15.8"
+          }
+        },
+        "downstream": {
+          "published": {
+            "name": "dsh-feishu-bot",
+            "version": "0.15.8"
+          },
+          "graph": {
+            "status": "incomplete",
+            "root": {
+              "name": "dsh-lark-bot",
+              "version": "0.15.8"
+            },
+            "digest": "sha256:a71eba82711943f2cd65b122e0b714959fad469ce80ee99cf46edec8a45f2479",
+            "nodes": 242,
+            "edges": 380,
+            "unresolved": 7
+          }
+        },
+        "status": "mismatch",
+        "checks": [
+          {
+            "code": "source-published-identity",
+            "status": "mismatch",
+            "summary": "The source manifest and observed npm package do not identify the same name and version.",
+            "upstream": "dsh-lark-bot@0.15.8",
+            "downstream": "dsh-feishu-bot@0.15.8",
+            "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
+          },
+          {
+            "code": "source-graph-root",
+            "status": "aligned",
+            "summary": "The lockfile graph root matches the source manifest.",
+            "upstream": "dsh-lark-bot@0.15.8",
+            "downstream": "dsh-lark-bot@0.15.8"
+          },
+          {
+            "code": "published-graph-root",
+            "status": "mismatch",
+            "summary": "The dependency graph root does not identify the observed npm package.",
+            "upstream": "dsh-feishu-bot@0.15.8",
+            "downstream": "dsh-lark-bot@0.15.8",
+            "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
+          },
+          {
+            "code": "dependency-graph-coverage",
+            "status": "unknown",
+            "summary": "The dependency graph is incomplete (7 unresolved edges).",
+            "downstream": "incomplete; 242 nodes, 380 edges",
+            "remediation": "Resolve the missing lockfile or peer/optional edges; an empty vulnerability result is not complete coverage while this remains unknown."
+          }
+        ]
+      }
     },
     "dsh-webui-market-plugin": {
       "targetId": "dsh-webui-market-plugin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-18T07:50:31.358Z",
+      "observedAt": "2026-08-18T08:09:00.557Z",
       "source": {
         "repository": "Sanqi-normal/dsh-webui-market-plugin",
         "ref": "master",
@@ -3287,7 +3351,65 @@
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
-      ]
+      ],
+      "alignment": {
+        "schema": "upstream-radar.upstream-downstream-ir/v1alpha1",
+        "targetId": "dsh-webui-market-plugin",
+        "ecosystem": "dsh",
+        "upstream": {
+          "repository": "Sanqi-normal/dsh-webui-market-plugin",
+          "commit": "44cd1ababaeeda11519042ab876c598f5961774d",
+          "packagePath": "package.json",
+          "coordinate": {
+            "name": "@sanqi-normal/dsh-webui-market-plugin",
+            "version": "0.5.5"
+          }
+        },
+        "downstream": {
+          "published": {
+            "name": "@sanqi-normal/dsh-webui-market-plugin",
+            "version": "0.5.5"
+          },
+          "graph": {
+            "status": "unavailable",
+            "nodes": 0,
+            "edges": 0,
+            "unresolved": 0
+          }
+        },
+        "status": "unknown",
+        "checks": [
+          {
+            "code": "source-published-identity",
+            "status": "aligned",
+            "summary": "The source manifest and observed npm package have the same name and version.",
+            "upstream": "@sanqi-normal/dsh-webui-market-plugin@0.5.5",
+            "downstream": "@sanqi-normal/dsh-webui-market-plugin@0.5.5"
+          },
+          {
+            "code": "source-graph-root",
+            "status": "unknown",
+            "summary": "No dependency graph root was observed.",
+            "upstream": "@sanqi-normal/dsh-webui-market-plugin@0.5.5",
+            "remediation": "Commit a supported lockfile or correct the configured package path/importer so the root can be verified."
+          },
+          {
+            "code": "published-graph-root",
+            "status": "unknown",
+            "summary": "The published package cannot be compared with the dependency graph root.",
+            "upstream": "@sanqi-normal/dsh-webui-market-plugin@0.5.5",
+            "downstream": "unknown",
+            "remediation": "Observe both the exact npm package and a complete lockfile graph before using the graph as downstream evidence."
+          },
+          {
+            "code": "dependency-graph-coverage",
+            "status": "unknown",
+            "summary": "The dependency graph is unavailable.",
+            "downstream": "unavailable; 0 nodes, 0 edges",
+            "remediation": "Resolve the missing lockfile or peer/optional edges; an empty vulnerability result is not complete coverage while this remains unknown."
+          }
+        ]
+      }
     }
   },
   "pendingTasks": []
