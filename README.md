@@ -4,13 +4,34 @@
 [![npm](https://img.shields.io/npm/v/upstream-radar)](https://www.npmjs.com/package/upstream-radar)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-**Dependency evidence and upstream-change monitoring for [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) plugins.**
+**The upstream dependency radar built into [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) plugins.**
 
-Upstream Radar answers a practical question before a plugin enters a DSH profile:
+Upstream Radar is not another package-name vulnerability scanner. It follows one DSH plugin from admission to maintenance:
 
-> Which exact dependency versions does this plugin bring in, which vulnerability or upstream release changed them, and which other plugins will be affected?
+| Product job | What Radar establishes |
+| --- | --- |
+| **DSH compatibility / admission** | Whether the exact published bundle can be registered and loaded by the DSH releases you care about. |
+| **Real dependency graph** | Which exact package versions and physical paths the plugin brings into the DSH profile, including unresolved edges. |
+| **Continuous upstream monitoring** | Whether an advisory, npm release, DSH/Cordis change, or breaking signal changes the old → new situation. |
+| **Author-facing repair** | Which plugin, dependency path, version, lockfile, or DSH declaration gives the author a concrete next fix. |
 
-It reads source trees, lockfiles, exact npm artifacts, saved DSH reports, and public advisory feeds. It does not install a plugin or execute its business code during static review.
+The deterministic scanner establishes package, graph, advisory, and compatibility facts. Only a meaningful affected change is handed to the DSH Agent for read-only, project-specific analysis; the model does not guess version matches or replace the evidence.
+
+## The product loop
+
+```mermaid
+flowchart TD
+  A["DSH plugin source or exact npm artifact"] --> B["DSH compatibility / admission check"]
+  B --> C["Build the real plugin → dependency graph"]
+  C --> D["Monitor advisories, npm, DSH and Cordis changes"]
+  D --> E{"Meaningful affected change?"}
+  E -- "No" --> F["Update observation point and stay quiet"]
+  E -- "Yes" --> G["Calculate exact old → new impact paths"]
+  G --> H["Send bounded evidence to the DSH Agent"]
+  H --> I["Return a repairable action to the plugin author"]
+```
+
+This is the boundary: Radar decides **what changed and which exact path is involved**; DSH decides **what that means for the project**. A later website can visualize the saved graph, but the evidence and impact index are already useful without one.
 
 ## Try it in 60 seconds
 
@@ -23,8 +44,8 @@ npx --yes upstream-radar@0.34.0 scan \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --fail-on never
 
-# Review the exact package users would install, then check two DSH releases
-npx --yes upstream-radar@0.34.0 review dsh-plugin dsh-feishu-bot@0.15.8 \
+# Review a real browser plugin users would install, then check two DSH releases
+npx --yes upstream-radar@0.34.0 review dsh-plugin dsh-cloudflare-browser-run@0.1.1 \
   --dsh-version 0.1.0-rc.6,0.1.0-rc.7
 ```
 
@@ -36,6 +57,7 @@ These are real, reproducible cases in this repository—not synthetic “vulnera
 
 | Case | Finding | Why it matters |
 | --- | --- | --- |
+| [`dsh-cloudflare-browser-run@0.1.1`](examples/reports/dsh-cloudflare-browser-run-0.1.1.txt) | 18 resolved packages, 2 unresolved optional Cordis edges, 0 known vulnerabilities, and DSH rc.6/rc.7 both loaded the bundle | A real browser plugin demonstrates the DSH admission boundary and why incomplete edges stay visible. |
 | [50-plugin batch](examples/dsh/reports/dsh-batch-50-2026-08-17.md) | 0 confirmed runtime dependency vulnerabilities; 3 lockfile root-version mismatches | Monitoring can be wrong even when the vulnerability count is zero. |
 | [`dsh-feishu-bot@0.15.8`](examples/dsh/reports/dsh-feishu-bot-0.15.8-review-2026-08-18.md) | 89-package graph, 12 unresolved optional edges, reachable `protobufjs` `postinstall`, DSH rc.6/rc.7 compatible | “No known CVE” is not the same as “no installation trust boundary.” |
 | [DSH-TUI source vs npm](examples/dsh/reports/dsh-tui-source-vs-npm-2026-08-18.md) | Source has `prepare`; published artifact does not | Source-only and artifact-only reviews answer different questions. |
@@ -43,21 +65,18 @@ These are real, reproducible cases in this repository—not synthetic “vulnera
 
 We report a confirmed vulnerability only when the affected exact version and runtime path are supported by the available evidence. Development-only hits, missing data, and advisory-source outages remain visibly different states.
 
-## The core workflow
+## The dependency graph behind every alert
 
 ```text
-DSH plugin source / npm artifact
-          ↓
-exact dependency graph + DSH compatibility evidence
-          ↓
-saved observation point
-          ↓
-upstream commit, package, or advisory changes
-          ↓
-affected-plugin paths and author-facing next action
-          ↓
-optional DSH Agent analysis only when a meaningful change exists
+plugin@1.0.0
+├── framework@2.4.7
+│   ├── parser@3.2.1
+│   └── archive@1.8.0
+└── logger@4.0.2
+    └── parser@2.9.0  ← the affected physical node
 ```
+
+Two copies of `parser` are different nodes. An alert names the exact version and path that entered the DSH profile; it does not page every plugin that happens to use the same package name.
 
 For a collection of saved reports, build the reverse index that turns an upstream package update into affected plugins:
 
