@@ -1,0 +1,3294 @@
+{
+  "schema": "upstream-radar.observation-state/v1alpha1",
+  "targets": {
+    "dsh-feishu-bot": {
+      "targetId": "dsh-feishu-bot",
+      "ecosystem": "dsh",
+      "observedAt": "2026-08-18T07:50:31.358Z",
+      "source": {
+        "repository": "PlutoKeating/dsh-lark-bot",
+        "ref": "main",
+        "commit": "4ee9739eb6de22a810b5dbb6f93cbf68045cbca8",
+        "packagePath": "package.json",
+        "lockfile": "pnpm-lock.yaml",
+        "commitUrl": "https://github.com/PlutoKeating/dsh-lark-bot/commit/4ee9739eb6de22a810b5dbb6f93cbf68045cbca8",
+        "packageUrl": "https://raw.githubusercontent.com/PlutoKeating/dsh-lark-bot/4ee9739eb6de22a810b5dbb6f93cbf68045cbca8/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/PlutoKeating/dsh-lark-bot/4ee9739eb6de22a810b5dbb6f93cbf68045cbca8/pnpm-lock.yaml"
+      },
+      "manifest": {
+        "name": "dsh-lark-bot",
+        "version": "0.15.8",
+        "type": "module",
+        "exports": {
+          ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+          },
+          "./plugin": {
+            "types": "./dist/plugin.d.ts",
+            "import": "./dist/plugin.js"
+          },
+          "./invariant": {
+            "types": "./dist/invariant.d.ts",
+            "import": "./dist/invariant.js"
+          },
+          "./notify": {
+            "types": "./dist/notify.d.ts",
+            "import": "./dist/notify.js"
+          },
+          "./ask": {
+            "types": "./dist/ask.d.ts",
+            "import": "./dist/ask.js"
+          }
+        },
+        "engines": {
+          "node": ">=22.19.0"
+        },
+        "dependencies": {
+          "@agentclientprotocol/sdk": "0.25.1",
+          "@deepseek-ai/cordis": "^4.0.1",
+          "@deepseek-ai/dsh-sdk-client": "0.1.0-rc.6",
+          "@deepseek-ai/dsh-tools": "0.1.0-rc.6",
+          "@larksuite/channel": "^0.4.1",
+          "commander": "^12.1.0",
+          "cross-spawn": "^7.0.6",
+          "qrcode-terminal": "^0.12.0",
+          "yaml": "^2.9.0"
+        },
+        "peerDependencies": {
+          "@deepseek-ai/cordis": "^4.0.1"
+        },
+        "dsh": {
+          "bundle": {
+            "patch": "./cordis.patch.yml"
+          }
+        }
+      },
+      "package": {
+        "name": "dsh-feishu-bot",
+        "version": "0.15.8",
+        "integrity": "sha512-Atmj+JD9i/GcJmkvckUbxT0+lXBCMPB7EiEUe4/qqdHHUMJu5ZklgZdfjGeevEt56kTQ3LLghv30vt0mlyvfnw==",
+        "tarball": "https://registry.npmjs.org/dsh-feishu-bot/-/dsh-feishu-bot-0.15.8.tgz"
+      },
+      "graph": {
+        "schema": "upstream-radar.dependency-graph/v1alpha1",
+        "rootNodeId": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+        "nodes": [
+          {
+            "id": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "name": "dsh-lark-bot",
+            "version": "0.15.8"
+          },
+          {
+            "id": "pnpm:@agentclientprotocol/sdk@0.25.1(zod@4.4.3)",
+            "name": "@agentclientprotocol/sdk",
+            "version": "0.25.1"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "name": "@deepseek-ai/cordis",
+            "version": "4.0.1"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/cosmokit@1.8.2",
+            "name": "@deepseek-ai/cosmokit",
+            "version": "1.8.2"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+            "name": "@deepseek-ai/dsh-agent",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "name": "@deepseek-ai/dsh-attachment",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "name": "@deepseek-ai/dsh-brand",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-code-runtime@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "name": "@deepseek-ai/dsh-code-runtime",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "name": "@deepseek-ai/dsh-invariants",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "name": "@deepseek-ai/dsh-llm",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "name": "@deepseek-ai/dsh-scope",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-sdk-client@0.1.0-rc.6(c229de258ac217f4f8aeecfa07b958b6)",
+            "name": "@deepseek-ai/dsh-sdk-client",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-sdk-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6))(@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b))",
+            "name": "@deepseek-ai/dsh-sdk-protocol",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+            "name": "@deepseek-ai/dsh-session",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b)",
+            "name": "@deepseek-ai/dsh-subagent",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "name": "@deepseek-ai/dsh-system-prompt",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "name": "@deepseek-ai/dsh-timeout",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+            "name": "@deepseek-ai/dsh-tools",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "name": "@deepseek-ai/dsh-typert-protocol",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+            "name": "@deepseek-ai/dsh-user-approval",
+            "version": "0.1.0-rc.6"
+          },
+          {
+            "id": "pnpm:@deepseek-ai/schemastery@3.18.1",
+            "name": "@deepseek-ai/schemastery",
+            "version": "3.18.1"
+          },
+          {
+            "id": "pnpm:@esbuild/aix-ppc64@0.21.5",
+            "name": "@esbuild/aix-ppc64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/aix-ppc64@0.27.7",
+            "name": "@esbuild/aix-ppc64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/android-arm@0.21.5",
+            "name": "@esbuild/android-arm",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/android-arm@0.27.7",
+            "name": "@esbuild/android-arm",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/android-arm64@0.21.5",
+            "name": "@esbuild/android-arm64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/android-arm64@0.27.7",
+            "name": "@esbuild/android-arm64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/android-x64@0.21.5",
+            "name": "@esbuild/android-x64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/android-x64@0.27.7",
+            "name": "@esbuild/android-x64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/darwin-arm64@0.21.5",
+            "name": "@esbuild/darwin-arm64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/darwin-arm64@0.27.7",
+            "name": "@esbuild/darwin-arm64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/darwin-x64@0.21.5",
+            "name": "@esbuild/darwin-x64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/darwin-x64@0.27.7",
+            "name": "@esbuild/darwin-x64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/freebsd-arm64@0.21.5",
+            "name": "@esbuild/freebsd-arm64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/freebsd-arm64@0.27.7",
+            "name": "@esbuild/freebsd-arm64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/freebsd-x64@0.21.5",
+            "name": "@esbuild/freebsd-x64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/freebsd-x64@0.27.7",
+            "name": "@esbuild/freebsd-x64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-arm@0.21.5",
+            "name": "@esbuild/linux-arm",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-arm@0.27.7",
+            "name": "@esbuild/linux-arm",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-arm64@0.21.5",
+            "name": "@esbuild/linux-arm64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-arm64@0.27.7",
+            "name": "@esbuild/linux-arm64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-ia32@0.21.5",
+            "name": "@esbuild/linux-ia32",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-ia32@0.27.7",
+            "name": "@esbuild/linux-ia32",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-loong64@0.21.5",
+            "name": "@esbuild/linux-loong64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-loong64@0.27.7",
+            "name": "@esbuild/linux-loong64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-mips64el@0.21.5",
+            "name": "@esbuild/linux-mips64el",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-mips64el@0.27.7",
+            "name": "@esbuild/linux-mips64el",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-ppc64@0.21.5",
+            "name": "@esbuild/linux-ppc64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-ppc64@0.27.7",
+            "name": "@esbuild/linux-ppc64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-riscv64@0.21.5",
+            "name": "@esbuild/linux-riscv64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-riscv64@0.27.7",
+            "name": "@esbuild/linux-riscv64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-s390x@0.21.5",
+            "name": "@esbuild/linux-s390x",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-s390x@0.27.7",
+            "name": "@esbuild/linux-s390x",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-x64@0.21.5",
+            "name": "@esbuild/linux-x64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/linux-x64@0.27.7",
+            "name": "@esbuild/linux-x64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/netbsd-arm64@0.27.7",
+            "name": "@esbuild/netbsd-arm64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/netbsd-x64@0.21.5",
+            "name": "@esbuild/netbsd-x64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/netbsd-x64@0.27.7",
+            "name": "@esbuild/netbsd-x64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/openbsd-arm64@0.27.7",
+            "name": "@esbuild/openbsd-arm64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/openbsd-x64@0.21.5",
+            "name": "@esbuild/openbsd-x64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/openbsd-x64@0.27.7",
+            "name": "@esbuild/openbsd-x64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/openharmony-arm64@0.27.7",
+            "name": "@esbuild/openharmony-arm64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/sunos-x64@0.21.5",
+            "name": "@esbuild/sunos-x64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/sunos-x64@0.27.7",
+            "name": "@esbuild/sunos-x64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/win32-arm64@0.21.5",
+            "name": "@esbuild/win32-arm64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/win32-arm64@0.27.7",
+            "name": "@esbuild/win32-arm64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/win32-ia32@0.21.5",
+            "name": "@esbuild/win32-ia32",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/win32-ia32@0.27.7",
+            "name": "@esbuild/win32-ia32",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@esbuild/win32-x64@0.21.5",
+            "name": "@esbuild/win32-x64",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:@esbuild/win32-x64@0.27.7",
+            "name": "@esbuild/win32-x64",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:@jridgewell/gen-mapping@0.3.13",
+            "name": "@jridgewell/gen-mapping",
+            "version": "0.3.13"
+          },
+          {
+            "id": "pnpm:@jridgewell/resolve-uri@3.1.2",
+            "name": "@jridgewell/resolve-uri",
+            "version": "3.1.2"
+          },
+          {
+            "id": "pnpm:@jridgewell/sourcemap-codec@1.5.5",
+            "name": "@jridgewell/sourcemap-codec",
+            "version": "1.5.5"
+          },
+          {
+            "id": "pnpm:@jridgewell/trace-mapping@0.3.31",
+            "name": "@jridgewell/trace-mapping",
+            "version": "0.3.31"
+          },
+          {
+            "id": "pnpm:@larksuite/channel@0.4.1",
+            "name": "@larksuite/channel",
+            "version": "0.4.1"
+          },
+          {
+            "id": "pnpm:@larksuiteoapi/node-sdk@1.73.0",
+            "name": "@larksuiteoapi/node-sdk",
+            "version": "1.73.0"
+          },
+          {
+            "id": "pnpm:@napi-rs/lzma-linux-x64-gnu@1.5.1",
+            "name": "@napi-rs/lzma-linux-x64-gnu",
+            "version": "1.5.1"
+          },
+          {
+            "id": "pnpm:@protobufjs/aspromise@1.1.2",
+            "name": "@protobufjs/aspromise",
+            "version": "1.1.2"
+          },
+          {
+            "id": "pnpm:@protobufjs/base64@1.1.2",
+            "name": "@protobufjs/base64",
+            "version": "1.1.2"
+          },
+          {
+            "id": "pnpm:@protobufjs/codegen@2.0.5",
+            "name": "@protobufjs/codegen",
+            "version": "2.0.5"
+          },
+          {
+            "id": "pnpm:@protobufjs/eventemitter@1.1.1",
+            "name": "@protobufjs/eventemitter",
+            "version": "1.1.1"
+          },
+          {
+            "id": "pnpm:@protobufjs/fetch@1.1.1",
+            "name": "@protobufjs/fetch",
+            "version": "1.1.1"
+          },
+          {
+            "id": "pnpm:@protobufjs/float@1.0.2",
+            "name": "@protobufjs/float",
+            "version": "1.0.2"
+          },
+          {
+            "id": "pnpm:@protobufjs/path@1.1.2",
+            "name": "@protobufjs/path",
+            "version": "1.1.2"
+          },
+          {
+            "id": "pnpm:@protobufjs/pool@1.1.0",
+            "name": "@protobufjs/pool",
+            "version": "1.1.0"
+          },
+          {
+            "id": "pnpm:@protobufjs/utf8@1.1.2",
+            "name": "@protobufjs/utf8",
+            "version": "1.1.2"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-android-arm-eabi@4.62.4",
+            "name": "@rollup/rollup-android-arm-eabi",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-android-arm64@4.62.4",
+            "name": "@rollup/rollup-android-arm64",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-darwin-arm64@4.62.4",
+            "name": "@rollup/rollup-darwin-arm64",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-darwin-x64@4.62.4",
+            "name": "@rollup/rollup-darwin-x64",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-freebsd-arm64@4.62.4",
+            "name": "@rollup/rollup-freebsd-arm64",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-freebsd-x64@4.62.4",
+            "name": "@rollup/rollup-freebsd-x64",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-linux-arm-gnueabihf@4.62.4",
+            "name": "@rollup/rollup-linux-arm-gnueabihf",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-linux-arm-musleabihf@4.62.4",
+            "name": "@rollup/rollup-linux-arm-musleabihf",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-linux-arm64-gnu@4.62.4",
+            "name": "@rollup/rollup-linux-arm64-gnu",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-linux-arm64-musl@4.62.4",
+            "name": "@rollup/rollup-linux-arm64-musl",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-linux-loong64-gnu@4.62.4",
+            "name": "@rollup/rollup-linux-loong64-gnu",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-linux-loong64-musl@4.62.4",
+            "name": "@rollup/rollup-linux-loong64-musl",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-linux-ppc64-gnu@4.62.4",
+            "name": "@rollup/rollup-linux-ppc64-gnu",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-linux-ppc64-musl@4.62.4",
+            "name": "@rollup/rollup-linux-ppc64-musl",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-linux-riscv64-gnu@4.62.4",
+            "name": "@rollup/rollup-linux-riscv64-gnu",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-linux-riscv64-musl@4.62.4",
+            "name": "@rollup/rollup-linux-riscv64-musl",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-linux-s390x-gnu@4.62.4",
+            "name": "@rollup/rollup-linux-s390x-gnu",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-linux-x64-gnu@4.62.4",
+            "name": "@rollup/rollup-linux-x64-gnu",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-linux-x64-musl@4.62.4",
+            "name": "@rollup/rollup-linux-x64-musl",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-openbsd-x64@4.62.4",
+            "name": "@rollup/rollup-openbsd-x64",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-openharmony-arm64@4.62.4",
+            "name": "@rollup/rollup-openharmony-arm64",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-win32-arm64-msvc@4.62.4",
+            "name": "@rollup/rollup-win32-arm64-msvc",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-win32-ia32-msvc@4.62.4",
+            "name": "@rollup/rollup-win32-ia32-msvc",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-win32-x64-gnu@4.62.4",
+            "name": "@rollup/rollup-win32-x64-gnu",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@rollup/rollup-win32-x64-msvc@4.62.4",
+            "name": "@rollup/rollup-win32-x64-msvc",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:@standard-schema/spec@1.1.0",
+            "name": "@standard-schema/spec",
+            "version": "1.1.0"
+          },
+          {
+            "id": "pnpm:@types/cross-spawn@6.0.6",
+            "name": "@types/cross-spawn",
+            "version": "6.0.6"
+          },
+          {
+            "id": "pnpm:@types/estree@1.0.9",
+            "name": "@types/estree",
+            "version": "1.0.9"
+          },
+          {
+            "id": "pnpm:@types/node@22.20.1",
+            "name": "@types/node",
+            "version": "22.20.1"
+          },
+          {
+            "id": "pnpm:@types/qrcode-terminal@0.12.2",
+            "name": "@types/qrcode-terminal",
+            "version": "0.12.2"
+          },
+          {
+            "id": "pnpm:@vitest/expect@2.1.9",
+            "name": "@vitest/expect",
+            "version": "2.1.9"
+          },
+          {
+            "id": "pnpm:@vitest/mocker@2.1.9(vite@5.4.21(@types/node@22.20.1))",
+            "name": "@vitest/mocker",
+            "version": "2.1.9"
+          },
+          {
+            "id": "pnpm:@vitest/pretty-format@2.1.9",
+            "name": "@vitest/pretty-format",
+            "version": "2.1.9"
+          },
+          {
+            "id": "pnpm:@vitest/runner@2.1.9",
+            "name": "@vitest/runner",
+            "version": "2.1.9"
+          },
+          {
+            "id": "pnpm:@vitest/snapshot@2.1.9",
+            "name": "@vitest/snapshot",
+            "version": "2.1.9"
+          },
+          {
+            "id": "pnpm:@vitest/spy@2.1.9",
+            "name": "@vitest/spy",
+            "version": "2.1.9"
+          },
+          {
+            "id": "pnpm:@vitest/utils@2.1.9",
+            "name": "@vitest/utils",
+            "version": "2.1.9"
+          },
+          {
+            "id": "pnpm:acorn@8.18.0",
+            "name": "acorn",
+            "version": "8.18.0"
+          },
+          {
+            "id": "pnpm:agent-base@6.0.2",
+            "name": "agent-base",
+            "version": "6.0.2"
+          },
+          {
+            "id": "pnpm:agent-base@9.0.0",
+            "name": "agent-base",
+            "version": "9.0.0"
+          },
+          {
+            "id": "pnpm:any-promise@1.3.0",
+            "name": "any-promise",
+            "version": "1.3.0"
+          },
+          {
+            "id": "pnpm:assertion-error@2.0.1",
+            "name": "assertion-error",
+            "version": "2.0.1"
+          },
+          {
+            "id": "pnpm:asynckit@0.4.0",
+            "name": "asynckit",
+            "version": "0.4.0"
+          },
+          {
+            "id": "pnpm:axios@1.19.0",
+            "name": "axios",
+            "version": "1.19.0"
+          },
+          {
+            "id": "pnpm:bundle-require@5.1.0(esbuild@0.27.7)",
+            "name": "bundle-require",
+            "version": "5.1.0"
+          },
+          {
+            "id": "pnpm:cac@6.7.14",
+            "name": "cac",
+            "version": "6.7.14"
+          },
+          {
+            "id": "pnpm:call-bind-apply-helpers@1.0.2",
+            "name": "call-bind-apply-helpers",
+            "version": "1.0.2"
+          },
+          {
+            "id": "pnpm:call-bound@1.0.4",
+            "name": "call-bound",
+            "version": "1.0.4"
+          },
+          {
+            "id": "pnpm:chai@5.3.3",
+            "name": "chai",
+            "version": "5.3.3"
+          },
+          {
+            "id": "pnpm:check-error@2.1.3",
+            "name": "check-error",
+            "version": "2.1.3"
+          },
+          {
+            "id": "pnpm:chokidar@4.0.3",
+            "name": "chokidar",
+            "version": "4.0.3"
+          },
+          {
+            "id": "pnpm:combined-stream@1.0.8",
+            "name": "combined-stream",
+            "version": "1.0.8"
+          },
+          {
+            "id": "pnpm:commander@12.1.0",
+            "name": "commander",
+            "version": "12.1.0"
+          },
+          {
+            "id": "pnpm:commander@4.1.1",
+            "name": "commander",
+            "version": "4.1.1"
+          },
+          {
+            "id": "pnpm:confbox@0.1.8",
+            "name": "confbox",
+            "version": "0.1.8"
+          },
+          {
+            "id": "pnpm:consola@3.4.2",
+            "name": "consola",
+            "version": "3.4.2"
+          },
+          {
+            "id": "pnpm:cross-spawn@7.0.6",
+            "name": "cross-spawn",
+            "version": "7.0.6"
+          },
+          {
+            "id": "pnpm:debug@4.4.3",
+            "name": "debug",
+            "version": "4.4.3"
+          },
+          {
+            "id": "pnpm:deep-eql@5.0.2",
+            "name": "deep-eql",
+            "version": "5.0.2"
+          },
+          {
+            "id": "pnpm:delayed-stream@1.0.0",
+            "name": "delayed-stream",
+            "version": "1.0.0"
+          },
+          {
+            "id": "pnpm:dunder-proto@1.0.1",
+            "name": "dunder-proto",
+            "version": "1.0.1"
+          },
+          {
+            "id": "pnpm:es-define-property@1.0.1",
+            "name": "es-define-property",
+            "version": "1.0.1"
+          },
+          {
+            "id": "pnpm:es-errors@1.3.0",
+            "name": "es-errors",
+            "version": "1.3.0"
+          },
+          {
+            "id": "pnpm:es-module-lexer@1.7.0",
+            "name": "es-module-lexer",
+            "version": "1.7.0"
+          },
+          {
+            "id": "pnpm:es-object-atoms@1.1.2",
+            "name": "es-object-atoms",
+            "version": "1.1.2"
+          },
+          {
+            "id": "pnpm:es-set-tostringtag@2.1.0",
+            "name": "es-set-tostringtag",
+            "version": "2.1.0"
+          },
+          {
+            "id": "pnpm:esbuild@0.21.5",
+            "name": "esbuild",
+            "version": "0.21.5"
+          },
+          {
+            "id": "pnpm:esbuild@0.27.7",
+            "name": "esbuild",
+            "version": "0.27.7"
+          },
+          {
+            "id": "pnpm:estree-walker@3.0.3",
+            "name": "estree-walker",
+            "version": "3.0.3"
+          },
+          {
+            "id": "pnpm:expect-type@1.4.0",
+            "name": "expect-type",
+            "version": "1.4.0"
+          },
+          {
+            "id": "pnpm:fdir@6.5.0(picomatch@4.0.5)",
+            "name": "fdir",
+            "version": "6.5.0"
+          },
+          {
+            "id": "pnpm:fix-dts-default-cjs-exports@1.0.1",
+            "name": "fix-dts-default-cjs-exports",
+            "version": "1.0.1"
+          },
+          {
+            "id": "pnpm:follow-redirects@1.16.0",
+            "name": "follow-redirects",
+            "version": "1.16.0"
+          },
+          {
+            "id": "pnpm:form-data@4.0.6",
+            "name": "form-data",
+            "version": "4.0.6"
+          },
+          {
+            "id": "pnpm:fsevents@2.3.3",
+            "name": "fsevents",
+            "version": "2.3.3"
+          },
+          {
+            "id": "pnpm:function-bind@1.1.2",
+            "name": "function-bind",
+            "version": "1.1.2"
+          },
+          {
+            "id": "pnpm:get-intrinsic@1.3.0",
+            "name": "get-intrinsic",
+            "version": "1.3.0"
+          },
+          {
+            "id": "pnpm:get-proto@1.0.1",
+            "name": "get-proto",
+            "version": "1.0.1"
+          },
+          {
+            "id": "pnpm:gopd@1.2.0",
+            "name": "gopd",
+            "version": "1.2.0"
+          },
+          {
+            "id": "pnpm:has-symbols@1.1.0",
+            "name": "has-symbols",
+            "version": "1.1.0"
+          },
+          {
+            "id": "pnpm:has-tostringtag@1.0.2",
+            "name": "has-tostringtag",
+            "version": "1.0.2"
+          },
+          {
+            "id": "pnpm:hasown@2.0.4",
+            "name": "hasown",
+            "version": "2.0.4"
+          },
+          {
+            "id": "pnpm:https-proxy-agent@5.0.1",
+            "name": "https-proxy-agent",
+            "version": "5.0.1"
+          },
+          {
+            "id": "pnpm:https-proxy-agent@9.1.0",
+            "name": "https-proxy-agent",
+            "version": "9.1.0"
+          },
+          {
+            "id": "pnpm:isexe@2.0.0",
+            "name": "isexe",
+            "version": "2.0.0"
+          },
+          {
+            "id": "pnpm:joycon@3.1.1",
+            "name": "joycon",
+            "version": "3.1.1"
+          },
+          {
+            "id": "pnpm:lilconfig@3.1.3",
+            "name": "lilconfig",
+            "version": "3.1.3"
+          },
+          {
+            "id": "pnpm:lines-and-columns@1.2.4",
+            "name": "lines-and-columns",
+            "version": "1.2.4"
+          },
+          {
+            "id": "pnpm:load-tsconfig@0.2.5",
+            "name": "load-tsconfig",
+            "version": "0.2.5"
+          },
+          {
+            "id": "pnpm:lodash.identity@3.0.0",
+            "name": "lodash.identity",
+            "version": "3.0.0"
+          },
+          {
+            "id": "pnpm:lodash.merge@4.6.2",
+            "name": "lodash.merge",
+            "version": "4.6.2"
+          },
+          {
+            "id": "pnpm:lodash.pickby@4.6.0",
+            "name": "lodash.pickby",
+            "version": "4.6.0"
+          },
+          {
+            "id": "pnpm:long@5.3.2",
+            "name": "long",
+            "version": "5.3.2"
+          },
+          {
+            "id": "pnpm:loupe@3.2.1",
+            "name": "loupe",
+            "version": "3.2.1"
+          },
+          {
+            "id": "pnpm:magic-string@0.30.21",
+            "name": "magic-string",
+            "version": "0.30.21"
+          },
+          {
+            "id": "pnpm:math-intrinsics@1.1.0",
+            "name": "math-intrinsics",
+            "version": "1.1.0"
+          },
+          {
+            "id": "pnpm:mime-db@1.52.0",
+            "name": "mime-db",
+            "version": "1.52.0"
+          },
+          {
+            "id": "pnpm:mime-types@2.1.35",
+            "name": "mime-types",
+            "version": "2.1.35"
+          },
+          {
+            "id": "pnpm:mlly@1.8.2",
+            "name": "mlly",
+            "version": "1.8.2"
+          },
+          {
+            "id": "pnpm:ms@2.1.3",
+            "name": "ms",
+            "version": "2.1.3"
+          },
+          {
+            "id": "pnpm:mz@2.7.0",
+            "name": "mz",
+            "version": "2.7.0"
+          },
+          {
+            "id": "pnpm:nanoid@3.3.18",
+            "name": "nanoid",
+            "version": "3.3.18"
+          },
+          {
+            "id": "pnpm:object-assign@4.1.1",
+            "name": "object-assign",
+            "version": "4.1.1"
+          },
+          {
+            "id": "pnpm:object-inspect@1.13.4",
+            "name": "object-inspect",
+            "version": "1.13.4"
+          },
+          {
+            "id": "pnpm:path-key@3.1.1",
+            "name": "path-key",
+            "version": "3.1.1"
+          },
+          {
+            "id": "pnpm:pathe@1.1.2",
+            "name": "pathe",
+            "version": "1.1.2"
+          },
+          {
+            "id": "pnpm:pathe@2.0.3",
+            "name": "pathe",
+            "version": "2.0.3"
+          },
+          {
+            "id": "pnpm:pathval@2.0.1",
+            "name": "pathval",
+            "version": "2.0.1"
+          },
+          {
+            "id": "pnpm:picocolors@1.1.1",
+            "name": "picocolors",
+            "version": "1.1.1"
+          },
+          {
+            "id": "pnpm:picomatch@4.0.5",
+            "name": "picomatch",
+            "version": "4.0.5"
+          },
+          {
+            "id": "pnpm:pirates@4.0.7",
+            "name": "pirates",
+            "version": "4.0.7"
+          },
+          {
+            "id": "pnpm:pkg-types@1.3.1",
+            "name": "pkg-types",
+            "version": "1.3.1"
+          },
+          {
+            "id": "pnpm:postcss-load-config@6.0.1(postcss@8.5.26)(yaml@2.9.0)",
+            "name": "postcss-load-config",
+            "version": "6.0.1"
+          },
+          {
+            "id": "pnpm:postcss@8.5.26",
+            "name": "postcss",
+            "version": "8.5.26"
+          },
+          {
+            "id": "pnpm:protobufjs@7.6.5",
+            "name": "protobufjs",
+            "version": "7.6.5"
+          },
+          {
+            "id": "pnpm:proxy-agent-negotiate@1.1.0",
+            "name": "proxy-agent-negotiate",
+            "version": "1.1.0"
+          },
+          {
+            "id": "pnpm:proxy-from-env@2.1.0",
+            "name": "proxy-from-env",
+            "version": "2.1.0"
+          },
+          {
+            "id": "pnpm:qrcode-terminal@0.12.0",
+            "name": "qrcode-terminal",
+            "version": "0.12.0"
+          },
+          {
+            "id": "pnpm:qs@6.15.3",
+            "name": "qs",
+            "version": "6.15.3"
+          },
+          {
+            "id": "pnpm:readdirp@4.1.2",
+            "name": "readdirp",
+            "version": "4.1.2"
+          },
+          {
+            "id": "pnpm:resolve-from@5.0.0",
+            "name": "resolve-from",
+            "version": "5.0.0"
+          },
+          {
+            "id": "pnpm:rollup@4.62.4",
+            "name": "rollup",
+            "version": "4.62.4"
+          },
+          {
+            "id": "pnpm:shebang-command@2.0.0",
+            "name": "shebang-command",
+            "version": "2.0.0"
+          },
+          {
+            "id": "pnpm:shebang-regex@3.0.0",
+            "name": "shebang-regex",
+            "version": "3.0.0"
+          },
+          {
+            "id": "pnpm:side-channel-list@1.0.1",
+            "name": "side-channel-list",
+            "version": "1.0.1"
+          },
+          {
+            "id": "pnpm:side-channel-map@1.0.1",
+            "name": "side-channel-map",
+            "version": "1.0.1"
+          },
+          {
+            "id": "pnpm:side-channel-weakmap@1.0.2",
+            "name": "side-channel-weakmap",
+            "version": "1.0.2"
+          },
+          {
+            "id": "pnpm:side-channel@1.1.1",
+            "name": "side-channel",
+            "version": "1.1.1"
+          },
+          {
+            "id": "pnpm:siginfo@2.0.0",
+            "name": "siginfo",
+            "version": "2.0.0"
+          },
+          {
+            "id": "pnpm:source-map-js@1.2.1",
+            "name": "source-map-js",
+            "version": "1.2.1"
+          },
+          {
+            "id": "pnpm:source-map@0.7.6",
+            "name": "source-map",
+            "version": "0.7.6"
+          },
+          {
+            "id": "pnpm:stackback@0.0.2",
+            "name": "stackback",
+            "version": "0.0.2"
+          },
+          {
+            "id": "pnpm:std-env@3.10.0",
+            "name": "std-env",
+            "version": "3.10.0"
+          },
+          {
+            "id": "pnpm:sucrase@3.35.1",
+            "name": "sucrase",
+            "version": "3.35.1"
+          },
+          {
+            "id": "pnpm:thenify-all@1.6.0",
+            "name": "thenify-all",
+            "version": "1.6.0"
+          },
+          {
+            "id": "pnpm:thenify@3.3.1",
+            "name": "thenify",
+            "version": "3.3.1"
+          },
+          {
+            "id": "pnpm:tinybench@2.9.0",
+            "name": "tinybench",
+            "version": "2.9.0"
+          },
+          {
+            "id": "pnpm:tinyexec@0.3.2",
+            "name": "tinyexec",
+            "version": "0.3.2"
+          },
+          {
+            "id": "pnpm:tinyglobby@0.2.17",
+            "name": "tinyglobby",
+            "version": "0.2.17"
+          },
+          {
+            "id": "pnpm:tinypool@1.1.1",
+            "name": "tinypool",
+            "version": "1.1.1"
+          },
+          {
+            "id": "pnpm:tinyrainbow@1.2.0",
+            "name": "tinyrainbow",
+            "version": "1.2.0"
+          },
+          {
+            "id": "pnpm:tinyspy@3.0.2",
+            "name": "tinyspy",
+            "version": "3.0.2"
+          },
+          {
+            "id": "pnpm:tree-kill@1.2.2",
+            "name": "tree-kill",
+            "version": "1.2.2"
+          },
+          {
+            "id": "pnpm:ts-interface-checker@0.1.13",
+            "name": "ts-interface-checker",
+            "version": "0.1.13"
+          },
+          {
+            "id": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "name": "tsup",
+            "version": "8.5.1"
+          },
+          {
+            "id": "pnpm:typescript@5.9.3",
+            "name": "typescript",
+            "version": "5.9.3"
+          },
+          {
+            "id": "pnpm:ufo@1.6.4",
+            "name": "ufo",
+            "version": "1.6.4"
+          },
+          {
+            "id": "pnpm:undici-types@6.21.0",
+            "name": "undici-types",
+            "version": "6.21.0"
+          },
+          {
+            "id": "pnpm:vite-node@2.1.9(@types/node@22.20.1)",
+            "name": "vite-node",
+            "version": "2.1.9"
+          },
+          {
+            "id": "pnpm:vite@5.4.21(@types/node@22.20.1)",
+            "name": "vite",
+            "version": "5.4.21"
+          },
+          {
+            "id": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "name": "vitest",
+            "version": "2.1.9"
+          },
+          {
+            "id": "pnpm:which@2.0.2",
+            "name": "which",
+            "version": "2.0.2"
+          },
+          {
+            "id": "pnpm:why-is-node-running@2.3.0",
+            "name": "why-is-node-running",
+            "version": "2.3.0"
+          },
+          {
+            "id": "pnpm:ws@8.21.3",
+            "name": "ws",
+            "version": "8.21.3"
+          },
+          {
+            "id": "pnpm:yaml@2.9.0",
+            "name": "yaml",
+            "version": "2.9.0"
+          },
+          {
+            "id": "pnpm:zod@4.4.3",
+            "name": "zod",
+            "version": "4.4.3"
+          }
+        ],
+        "edges": [
+          {
+            "from": "pnpm:@agentclientprotocol/sdk@0.25.1(zod@4.4.3)",
+            "to": "pnpm:zod@4.4.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "to": "pnpm:@deepseek-ai/cosmokit@1.8.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "to": "pnpm:@standard-schema/spec@1.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+            "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+            "to": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+            "to": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+            "to": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+            "to": "pnpm:@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "to": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-code-runtime@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-code-runtime@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "to": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "to": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "to": "pnpm:@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-sdk-client@0.1.0-rc.6(c229de258ac217f4f8aeecfa07b958b6)",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-sdk-client@0.1.0-rc.6(c229de258ac217f4f8aeecfa07b958b6)",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-sdk-client@0.1.0-rc.6(c229de258ac217f4f8aeecfa07b958b6)",
+            "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-sdk-client@0.1.0-rc.6(c229de258ac217f4f8aeecfa07b958b6)",
+            "to": "pnpm:@deepseek-ai/dsh-sdk-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6))(@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-sdk-client@0.1.0-rc.6(c229de258ac217f4f8aeecfa07b958b6)",
+            "to": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-sdk-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6))(@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b))",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-sdk-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6))(@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b))",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-sdk-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6))(@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b))",
+            "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-sdk-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6))(@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b))",
+            "to": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-sdk-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6))(@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b))",
+            "to": "pnpm:@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+            "to": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+            "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+            "to": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+            "to": "pnpm:@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b)",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b)",
+            "to": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b)",
+            "to": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b)",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b)",
+            "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b)",
+            "to": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b)",
+            "to": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b)",
+            "to": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b)",
+            "to": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-subagent@0.1.0-rc.6(7e07de51e8dd21c6540a6cecfa507f4b)",
+            "to": "pnpm:zod@4.4.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "to": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+            "to": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+            "to": "pnpm:@deepseek-ai/dsh-code-runtime@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+            "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+            "to": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+            "to": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+            "to": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+            "to": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+            "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+            "to": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+            "to": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+            "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+            "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+            "to": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+            "to": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+            "to": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+            "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/schemastery@3.18.1",
+            "to": "pnpm:@deepseek-ai/cosmokit@1.8.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/schemastery@3.18.1",
+            "to": "pnpm:@standard-schema/spec@1.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@jridgewell/gen-mapping@0.3.13",
+            "to": "pnpm:@jridgewell/sourcemap-codec@1.5.5",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@jridgewell/gen-mapping@0.3.13",
+            "to": "pnpm:@jridgewell/trace-mapping@0.3.31",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@jridgewell/trace-mapping@0.3.31",
+            "to": "pnpm:@jridgewell/resolve-uri@3.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@jridgewell/trace-mapping@0.3.31",
+            "to": "pnpm:@jridgewell/sourcemap-codec@1.5.5",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@larksuite/channel@0.4.1",
+            "to": "pnpm:@larksuiteoapi/node-sdk@1.73.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@larksuite/channel@0.4.1",
+            "to": "pnpm:https-proxy-agent@9.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@larksuiteoapi/node-sdk@1.73.0",
+            "to": "pnpm:axios@1.19.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@larksuiteoapi/node-sdk@1.73.0",
+            "to": "pnpm:lodash.identity@3.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@larksuiteoapi/node-sdk@1.73.0",
+            "to": "pnpm:lodash.merge@4.6.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@larksuiteoapi/node-sdk@1.73.0",
+            "to": "pnpm:lodash.pickby@4.6.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@larksuiteoapi/node-sdk@1.73.0",
+            "to": "pnpm:protobufjs@7.6.5",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@larksuiteoapi/node-sdk@1.73.0",
+            "to": "pnpm:qs@6.15.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@larksuiteoapi/node-sdk@1.73.0",
+            "to": "pnpm:ws@8.21.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@protobufjs/fetch@1.1.1",
+            "to": "pnpm:@protobufjs/aspromise@1.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@types/cross-spawn@6.0.6",
+            "to": "pnpm:@types/node@22.20.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@types/node@22.20.1",
+            "to": "pnpm:undici-types@6.21.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/expect@2.1.9",
+            "to": "pnpm:@vitest/spy@2.1.9",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/expect@2.1.9",
+            "to": "pnpm:@vitest/utils@2.1.9",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/expect@2.1.9",
+            "to": "pnpm:chai@5.3.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/expect@2.1.9",
+            "to": "pnpm:tinyrainbow@1.2.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/mocker@2.1.9(vite@5.4.21(@types/node@22.20.1))",
+            "to": "pnpm:@vitest/spy@2.1.9",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/mocker@2.1.9(vite@5.4.21(@types/node@22.20.1))",
+            "to": "pnpm:estree-walker@3.0.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/mocker@2.1.9(vite@5.4.21(@types/node@22.20.1))",
+            "to": "pnpm:magic-string@0.30.21",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/mocker@2.1.9(vite@5.4.21(@types/node@22.20.1))",
+            "to": "pnpm:vite@5.4.21(@types/node@22.20.1)",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:@vitest/pretty-format@2.1.9",
+            "to": "pnpm:tinyrainbow@1.2.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/runner@2.1.9",
+            "to": "pnpm:@vitest/utils@2.1.9",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/runner@2.1.9",
+            "to": "pnpm:pathe@1.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/snapshot@2.1.9",
+            "to": "pnpm:@vitest/pretty-format@2.1.9",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/snapshot@2.1.9",
+            "to": "pnpm:magic-string@0.30.21",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/snapshot@2.1.9",
+            "to": "pnpm:pathe@1.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/spy@2.1.9",
+            "to": "pnpm:tinyspy@3.0.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/utils@2.1.9",
+            "to": "pnpm:@vitest/pretty-format@2.1.9",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/utils@2.1.9",
+            "to": "pnpm:loupe@3.2.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:@vitest/utils@2.1.9",
+            "to": "pnpm:tinyrainbow@1.2.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:agent-base@6.0.2",
+            "to": "pnpm:debug@4.4.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:axios@1.19.0",
+            "to": "pnpm:follow-redirects@1.16.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:axios@1.19.0",
+            "to": "pnpm:form-data@4.0.6",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:axios@1.19.0",
+            "to": "pnpm:https-proxy-agent@5.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:axios@1.19.0",
+            "to": "pnpm:proxy-from-env@2.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:bundle-require@5.1.0(esbuild@0.27.7)",
+            "to": "pnpm:esbuild@0.27.7",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:bundle-require@5.1.0(esbuild@0.27.7)",
+            "to": "pnpm:load-tsconfig@0.2.5",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:call-bind-apply-helpers@1.0.2",
+            "to": "pnpm:es-errors@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:call-bind-apply-helpers@1.0.2",
+            "to": "pnpm:function-bind@1.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:call-bound@1.0.4",
+            "to": "pnpm:call-bind-apply-helpers@1.0.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:call-bound@1.0.4",
+            "to": "pnpm:get-intrinsic@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:chai@5.3.3",
+            "to": "pnpm:assertion-error@2.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:chai@5.3.3",
+            "to": "pnpm:check-error@2.1.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:chai@5.3.3",
+            "to": "pnpm:deep-eql@5.0.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:chai@5.3.3",
+            "to": "pnpm:loupe@3.2.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:chai@5.3.3",
+            "to": "pnpm:pathval@2.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:chokidar@4.0.3",
+            "to": "pnpm:readdirp@4.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:combined-stream@1.0.8",
+            "to": "pnpm:delayed-stream@1.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:cross-spawn@7.0.6",
+            "to": "pnpm:path-key@3.1.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:cross-spawn@7.0.6",
+            "to": "pnpm:shebang-command@2.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:cross-spawn@7.0.6",
+            "to": "pnpm:which@2.0.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:debug@4.4.3",
+            "to": "pnpm:ms@2.1.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:dunder-proto@1.0.1",
+            "to": "pnpm:call-bind-apply-helpers@1.0.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:dunder-proto@1.0.1",
+            "to": "pnpm:es-errors@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:dunder-proto@1.0.1",
+            "to": "pnpm:gopd@1.2.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:es-object-atoms@1.1.2",
+            "to": "pnpm:es-errors@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:es-set-tostringtag@2.1.0",
+            "to": "pnpm:es-errors@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:es-set-tostringtag@2.1.0",
+            "to": "pnpm:get-intrinsic@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:es-set-tostringtag@2.1.0",
+            "to": "pnpm:has-tostringtag@1.0.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:es-set-tostringtag@2.1.0",
+            "to": "pnpm:hasown@2.0.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/aix-ppc64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/android-arm@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/android-arm64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/android-x64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/darwin-arm64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/darwin-x64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/freebsd-arm64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/freebsd-x64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/linux-arm@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/linux-arm64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/linux-ia32@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/linux-loong64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/linux-mips64el@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/linux-ppc64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/linux-riscv64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/linux-s390x@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/linux-x64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/netbsd-x64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/openbsd-x64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/sunos-x64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/win32-arm64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/win32-ia32@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.21.5",
+            "to": "pnpm:@esbuild/win32-x64@0.21.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/aix-ppc64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/android-arm@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/android-arm64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/android-x64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/darwin-arm64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/darwin-x64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/freebsd-arm64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/freebsd-x64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/linux-arm@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/linux-arm64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/linux-ia32@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/linux-loong64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/linux-mips64el@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/linux-ppc64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/linux-riscv64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/linux-s390x@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/linux-x64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/netbsd-arm64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/netbsd-x64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/openbsd-arm64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/openbsd-x64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/openharmony-arm64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/sunos-x64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/win32-arm64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/win32-ia32@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:esbuild@0.27.7",
+            "to": "pnpm:@esbuild/win32-x64@0.27.7",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:estree-walker@3.0.3",
+            "to": "pnpm:@types/estree@1.0.9",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:fdir@6.5.0(picomatch@4.0.5)",
+            "to": "pnpm:picomatch@4.0.5",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:fix-dts-default-cjs-exports@1.0.1",
+            "to": "pnpm:magic-string@0.30.21",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:fix-dts-default-cjs-exports@1.0.1",
+            "to": "pnpm:mlly@1.8.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:fix-dts-default-cjs-exports@1.0.1",
+            "to": "pnpm:rollup@4.62.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:form-data@4.0.6",
+            "to": "pnpm:asynckit@0.4.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:form-data@4.0.6",
+            "to": "pnpm:combined-stream@1.0.8",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:form-data@4.0.6",
+            "to": "pnpm:es-set-tostringtag@2.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:form-data@4.0.6",
+            "to": "pnpm:hasown@2.0.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:form-data@4.0.6",
+            "to": "pnpm:mime-types@2.1.35",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:get-intrinsic@1.3.0",
+            "to": "pnpm:call-bind-apply-helpers@1.0.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:get-intrinsic@1.3.0",
+            "to": "pnpm:es-define-property@1.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:get-intrinsic@1.3.0",
+            "to": "pnpm:es-errors@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:get-intrinsic@1.3.0",
+            "to": "pnpm:es-object-atoms@1.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:get-intrinsic@1.3.0",
+            "to": "pnpm:function-bind@1.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:get-intrinsic@1.3.0",
+            "to": "pnpm:get-proto@1.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:get-intrinsic@1.3.0",
+            "to": "pnpm:gopd@1.2.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:get-intrinsic@1.3.0",
+            "to": "pnpm:has-symbols@1.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:get-intrinsic@1.3.0",
+            "to": "pnpm:hasown@2.0.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:get-intrinsic@1.3.0",
+            "to": "pnpm:math-intrinsics@1.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:get-proto@1.0.1",
+            "to": "pnpm:dunder-proto@1.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:get-proto@1.0.1",
+            "to": "pnpm:es-object-atoms@1.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:has-tostringtag@1.0.2",
+            "to": "pnpm:has-symbols@1.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:hasown@2.0.4",
+            "to": "pnpm:function-bind@1.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:https-proxy-agent@5.0.1",
+            "to": "pnpm:agent-base@6.0.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:https-proxy-agent@5.0.1",
+            "to": "pnpm:debug@4.4.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:https-proxy-agent@9.1.0",
+            "to": "pnpm:agent-base@9.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:https-proxy-agent@9.1.0",
+            "to": "pnpm:debug@4.4.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:https-proxy-agent@9.1.0",
+            "to": "pnpm:proxy-agent-negotiate@1.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:magic-string@0.30.21",
+            "to": "pnpm:@jridgewell/sourcemap-codec@1.5.5",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:mime-types@2.1.35",
+            "to": "pnpm:mime-db@1.52.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:mlly@1.8.2",
+            "to": "pnpm:acorn@8.18.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:mlly@1.8.2",
+            "to": "pnpm:pathe@2.0.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:mlly@1.8.2",
+            "to": "pnpm:pkg-types@1.3.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:mlly@1.8.2",
+            "to": "pnpm:ufo@1.6.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:mz@2.7.0",
+            "to": "pnpm:any-promise@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:mz@2.7.0",
+            "to": "pnpm:object-assign@4.1.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:mz@2.7.0",
+            "to": "pnpm:thenify-all@1.6.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:pkg-types@1.3.1",
+            "to": "pnpm:confbox@0.1.8",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:pkg-types@1.3.1",
+            "to": "pnpm:mlly@1.8.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:pkg-types@1.3.1",
+            "to": "pnpm:pathe@2.0.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:postcss-load-config@6.0.1(postcss@8.5.26)(yaml@2.9.0)",
+            "to": "pnpm:lilconfig@3.1.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:postcss-load-config@6.0.1(postcss@8.5.26)(yaml@2.9.0)",
+            "to": "pnpm:postcss@8.5.26",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:postcss-load-config@6.0.1(postcss@8.5.26)(yaml@2.9.0)",
+            "to": "pnpm:yaml@2.9.0",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:postcss@8.5.26",
+            "to": "pnpm:nanoid@3.3.18",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:postcss@8.5.26",
+            "to": "pnpm:picocolors@1.1.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:postcss@8.5.26",
+            "to": "pnpm:source-map-js@1.2.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:protobufjs@7.6.5",
+            "to": "pnpm:@protobufjs/aspromise@1.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:protobufjs@7.6.5",
+            "to": "pnpm:@protobufjs/base64@1.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:protobufjs@7.6.5",
+            "to": "pnpm:@protobufjs/codegen@2.0.5",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:protobufjs@7.6.5",
+            "to": "pnpm:@protobufjs/eventemitter@1.1.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:protobufjs@7.6.5",
+            "to": "pnpm:@protobufjs/fetch@1.1.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:protobufjs@7.6.5",
+            "to": "pnpm:@protobufjs/float@1.0.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:protobufjs@7.6.5",
+            "to": "pnpm:@protobufjs/path@1.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:protobufjs@7.6.5",
+            "to": "pnpm:@protobufjs/pool@1.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:protobufjs@7.6.5",
+            "to": "pnpm:@protobufjs/utf8@1.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:protobufjs@7.6.5",
+            "to": "pnpm:@types/node@22.20.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:protobufjs@7.6.5",
+            "to": "pnpm:long@5.3.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:qs@6.15.3",
+            "to": "pnpm:es-define-property@1.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:qs@6.15.3",
+            "to": "pnpm:side-channel@1.1.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@napi-rs/lzma-linux-x64-gnu@1.5.1",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-android-arm-eabi@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-android-arm64@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-darwin-arm64@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-darwin-x64@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-freebsd-arm64@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-freebsd-x64@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-linux-arm-gnueabihf@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-linux-arm-musleabihf@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-linux-arm64-gnu@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-linux-arm64-musl@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-linux-loong64-gnu@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-linux-loong64-musl@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-linux-ppc64-gnu@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-linux-ppc64-musl@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-linux-riscv64-gnu@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-linux-riscv64-musl@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-linux-s390x-gnu@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-linux-x64-gnu@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-linux-x64-musl@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-openbsd-x64@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-openharmony-arm64@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-win32-arm64-msvc@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-win32-ia32-msvc@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-win32-x64-gnu@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@rollup/rollup-win32-x64-msvc@4.62.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:@types/estree@1.0.9",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:rollup@4.62.4",
+            "to": "pnpm:fsevents@2.3.3",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:shebang-command@2.0.0",
+            "to": "pnpm:shebang-regex@3.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel-list@1.0.1",
+            "to": "pnpm:es-errors@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel-list@1.0.1",
+            "to": "pnpm:object-inspect@1.13.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel-map@1.0.1",
+            "to": "pnpm:call-bound@1.0.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel-map@1.0.1",
+            "to": "pnpm:es-errors@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel-map@1.0.1",
+            "to": "pnpm:get-intrinsic@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel-map@1.0.1",
+            "to": "pnpm:object-inspect@1.13.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel-weakmap@1.0.2",
+            "to": "pnpm:call-bound@1.0.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel-weakmap@1.0.2",
+            "to": "pnpm:es-errors@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel-weakmap@1.0.2",
+            "to": "pnpm:get-intrinsic@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel-weakmap@1.0.2",
+            "to": "pnpm:object-inspect@1.13.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel-weakmap@1.0.2",
+            "to": "pnpm:side-channel-map@1.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel@1.1.1",
+            "to": "pnpm:es-errors@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel@1.1.1",
+            "to": "pnpm:object-inspect@1.13.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel@1.1.1",
+            "to": "pnpm:side-channel-list@1.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel@1.1.1",
+            "to": "pnpm:side-channel-map@1.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:side-channel@1.1.1",
+            "to": "pnpm:side-channel-weakmap@1.0.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:sucrase@3.35.1",
+            "to": "pnpm:@jridgewell/gen-mapping@0.3.13",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:sucrase@3.35.1",
+            "to": "pnpm:commander@4.1.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:sucrase@3.35.1",
+            "to": "pnpm:lines-and-columns@1.2.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:sucrase@3.35.1",
+            "to": "pnpm:mz@2.7.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:sucrase@3.35.1",
+            "to": "pnpm:pirates@4.0.7",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:sucrase@3.35.1",
+            "to": "pnpm:tinyglobby@0.2.17",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:sucrase@3.35.1",
+            "to": "pnpm:ts-interface-checker@0.1.13",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:thenify-all@1.6.0",
+            "to": "pnpm:thenify@3.3.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:thenify@3.3.1",
+            "to": "pnpm:any-promise@1.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tinyglobby@0.2.17",
+            "to": "pnpm:fdir@6.5.0(picomatch@4.0.5)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tinyglobby@0.2.17",
+            "to": "pnpm:picomatch@4.0.5",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:bundle-require@5.1.0(esbuild@0.27.7)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:cac@6.7.14",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:chokidar@4.0.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:consola@3.4.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:debug@4.4.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:esbuild@0.27.7",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:fix-dts-default-cjs-exports@1.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:joycon@3.1.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:picocolors@1.1.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:postcss-load-config@6.0.1(postcss@8.5.26)(yaml@2.9.0)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:postcss@8.5.26",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:resolve-from@5.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:rollup@4.62.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:source-map@0.7.6",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:sucrase@3.35.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:tinyexec@0.3.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:tinyglobby@0.2.17",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:tree-kill@1.2.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "to": "pnpm:typescript@5.9.3",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:vite-node@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:cac@6.7.14",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vite-node@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:debug@4.4.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vite-node@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:es-module-lexer@1.7.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vite-node@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:pathe@1.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vite-node@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:vite@5.4.21(@types/node@22.20.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vite@5.4.21(@types/node@22.20.1)",
+            "to": "pnpm:@types/node@22.20.1",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:vite@5.4.21(@types/node@22.20.1)",
+            "to": "pnpm:esbuild@0.21.5",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vite@5.4.21(@types/node@22.20.1)",
+            "to": "pnpm:fsevents@2.3.3",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:vite@5.4.21(@types/node@22.20.1)",
+            "to": "pnpm:postcss@8.5.26",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vite@5.4.21(@types/node@22.20.1)",
+            "to": "pnpm:rollup@4.62.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:@types/node@22.20.1",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:@vitest/expect@2.1.9",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:@vitest/mocker@2.1.9(vite@5.4.21(@types/node@22.20.1))",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:@vitest/pretty-format@2.1.9",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:@vitest/runner@2.1.9",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:@vitest/snapshot@2.1.9",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:@vitest/spy@2.1.9",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:@vitest/utils@2.1.9",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:chai@5.3.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:debug@4.4.3",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:expect-type@1.4.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:magic-string@0.30.21",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:pathe@1.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:std-env@3.10.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:tinybench@2.9.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:tinyexec@0.3.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:tinypool@1.1.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:tinyrainbow@1.2.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:vite-node@2.1.9(@types/node@22.20.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:vite@5.4.21(@types/node@22.20.1)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "to": "pnpm:why-is-node-running@2.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:which@2.0.2",
+            "to": "pnpm:isexe@2.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:why-is-node-running@2.3.0",
+            "to": "pnpm:siginfo@2.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:why-is-node-running@2.3.0",
+            "to": "pnpm:stackback@0.0.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:@agentclientprotocol/sdk@0.25.1(zod@4.4.3)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:@deepseek-ai/dsh-sdk-client@0.1.0-rc.6(c229de258ac217f4f8aeecfa07b958b6)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:@larksuite/channel@0.4.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:@types/cross-spawn@6.0.6",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:@types/node@22.20.1",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:@types/qrcode-terminal@0.12.2",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:commander@12.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:cross-spawn@7.0.6",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:qrcode-terminal@0.12.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:typescript@5.9.3",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "to": "pnpm:yaml@2.9.0",
+            "kind": "runtime"
+          }
+        ],
+        "source": "pnpm-lock",
+        "digest": "sha256:a71eba82711943f2cd65b122e0b714959fad469ce80ee99cf46edec8a45f2479",
+        "unresolved": [
+          {
+            "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "name": "@deepseek-ai/cordis-plugin-include",
+            "spec": "^1.0.6",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+            "name": "@deepseek-ai/cordis-plugin-loader",
+            "spec": "^1.0.2",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:debug@4.4.3",
+            "name": "supports-color",
+            "spec": "*",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:follow-redirects@1.16.0",
+            "name": "debug",
+            "spec": "*",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:proxy-agent-negotiate@1.1.0",
+            "name": "kerberos",
+            "spec": "^2.0.0",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:ws@8.21.3",
+            "name": "bufferutil",
+            "spec": "^4.0.1",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:ws@8.21.3",
+            "name": "utf-8-validate",
+            "spec": ">=5.0.2",
+            "kind": "optional"
+          }
+        ]
+      },
+      "warnings": [
+        "target package dsh-feishu-bot does not match source manifest dsh-lark-bot"
+      ]
+    },
+    "dsh-webui-market-plugin": {
+      "targetId": "dsh-webui-market-plugin",
+      "ecosystem": "dsh",
+      "observedAt": "2026-08-18T07:50:31.358Z",
+      "source": {
+        "repository": "Sanqi-normal/dsh-webui-market-plugin",
+        "ref": "master",
+        "commit": "44cd1ababaeeda11519042ab876c598f5961774d",
+        "packagePath": "package.json",
+        "commitUrl": "https://github.com/Sanqi-normal/dsh-webui-market-plugin/commit/44cd1ababaeeda11519042ab876c598f5961774d",
+        "packageUrl": "https://raw.githubusercontent.com/Sanqi-normal/dsh-webui-market-plugin/44cd1ababaeeda11519042ab876c598f5961774d/package.json"
+      },
+      "manifest": {
+        "name": "@sanqi-normal/dsh-webui-market-plugin",
+        "version": "0.5.5",
+        "type": "module",
+        "main": "lib/host.js",
+        "exports": {
+          ".": "./lib/host.js",
+          "./client": "./lib/client.js",
+          "./cordis.patch.yml": "./cordis.patch.yml",
+          "./package.json": "./package.json"
+        },
+        "engines": {
+          "node": "^22.19.0 || >=24.0.0"
+        },
+        "peerDependencies": {
+          "react": "^18.2.0",
+          "@deepseek-ai/cordis": "^4.0.1-rc.1",
+          "@deepseek-ai/dsh-client-runtime": ">=0.0.1-rc.2 <0.2.0-0 || >=0.1.0-rc.2 <0.2.0-0",
+          "@deepseek-ai/dsh-client-ui-slots": ">=0.0.1-rc.2 <0.2.0-0 || >=0.1.0-rc.2 <0.2.0-0"
+        },
+        "dsh": {
+          "bundle": {
+            "patch": "./cordis.patch.yml"
+          },
+          "client": {
+            "platform": "web"
+          }
+        }
+      },
+      "package": {
+        "name": "@sanqi-normal/dsh-webui-market-plugin",
+        "version": "0.5.5",
+        "integrity": "sha512-pGHgU3YyfX7OatsUh3pgd+iDQEbwCET+/f1xu3QAQAPNarbhWbhCUuBFklzaCbia7HtoEzVn4yStD2tjuWUlMA==",
+        "tarball": "https://registry.npmjs.org/@sanqi-normal/dsh-webui-market-plugin/-/dsh-webui-market-plugin-0.5.5.tgz"
+      },
+      "warnings": [
+        "no supported lockfile found; dependency graph was not available"
+      ]
+    }
+  },
+  "pendingTasks": []
+}
