@@ -676,8 +676,8 @@ targets:
           choices: [{ message: { content: JSON.stringify({
             impact: 'likely_affected',
             confidence: 'medium',
-            evidence: ['src/index.ts'],
-            breaking_change: 'unknown',
+            evidence: { source: ['src/index.ts'] },
+            breaking_change: 'false',
             dependency_risk: 'low',
             recommended_action: 'Review the changed entrypoint before upgrading.',
             urgency: 'planned',
@@ -704,8 +704,11 @@ targets:
       const invocation = await runOpenAiCompatibleAgent(task, 'read-only task prompt', { envFile })
       assert.equal(invocation.status, 'succeeded')
       assert.equal((invocation.parsedOutput as { impact: string }).impact, 'likely_affected')
+      assert.equal((invocation.parsedOutput as { breaking_change: boolean }).breaking_change, false)
+      assert.deepEqual((invocation.parsedOutput as { evidence: string[] }).evidence, ['source: ["src/index.ts"]'])
       assert.equal(requestBodies.length, 1)
       assert.equal(JSON.parse(requestBodies[0]!).model, 'test-model')
+      assert.equal(JSON.parse(requestBodies[0]!).max_tokens, 2_048)
       assert.match(JSON.parse(requestBodies[0]!).messages[1].content, /read-only task prompt/)
     } finally {
       await rm(root, { recursive: true, force: true })

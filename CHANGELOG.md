@@ -6,6 +6,8 @@ All notable changes to Upstream Radar are documented here.
 
 ### Usability
 
+- Make the OpenAI-compatible DSH Agent path tolerate common GLM JSON shape
+  differences while keeping the eight-field conclusion contract validated.
 - Make exact DSH plugin reviews explain incomplete dependency coverage directly:
   resolved package count, unresolved edges, registry signature/provenance state,
   and the next author action now appear in the CLI and GitHub Job Summary.

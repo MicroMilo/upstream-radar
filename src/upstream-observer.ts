@@ -34,6 +34,7 @@ const MAX_AUTO_DISCOVERY_PACKAGE_FILES = 64
 const MAX_AUTO_DISCOVERY_PATH_DEPTH = 3
 const MAX_DSH_VERSIONS = 8
 const DEFAULT_AGENT_TIMEOUT_MS = 120_000
+const DEFAULT_LLM_MAX_TOKENS = 2_048
 const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org/'
 const OBSERVER_REQUEST_ATTEMPTS = 2
 const OBSERVER_RETRY_DELAY_MS = 150
@@ -1431,6 +1432,11 @@ export function renderUpstreamChangeAgentPrompt(task: UpstreamChangeTask): strin
 expected_output:
 ${JSON.stringify(task.expectedOutput, null, 2)}
 
+类型要求（必须遵守）：
+- evidence 必须是 JSON 字符串数组；没有证据时也要返回包含明确 unknown 说明的数组。
+- breaking_change 必须是 JSON 布尔值 true 或 false；只有无法判断时才返回字符串 "unknown"，不要把 true/false 加引号。
+- 其余枚举值必须使用上面列出的英文原值，不要翻译、改写或增加新值。
+
 target:
 ${JSON.stringify(task.target, null, 2)}
 
@@ -1473,14 +1479,15 @@ function parseAgentOutput(output: string): { value?: ObserverAgentConclusion; er
   if (value === undefined || Object.keys(value).length !== fields.length || fields.some(field => !Object.hasOwn(value, field))) {
     return { error: 'DSH Agent JSON must contain exactly the eight conclusion fields' }
   }
-  const impact = value.impact
-  const confidence = value.confidence
-  const evidence = value.evidence
-  const breakingChange = value.breaking_change
-  const dependencyRisk = value.dependency_risk
-  const recommendedAction = value.recommended_action
-  const urgency = value.urgency
-  const reasoningSummary = value.reasoning_summary
+  const normalized = normalizeAgentShape(value)
+  const impact = normalized.impact
+  const confidence = normalized.confidence
+  const evidence = normalized.evidence
+  const breakingChange = normalized.breaking_change
+  const dependencyRisk = normalized.dependency_risk
+  const recommendedAction = normalized.recommended_action
+  const urgency = normalized.urgency
+  const reasoningSummary = normalized.reasoning_summary
   if ((impact !== 'affected' && impact !== 'likely_affected' && impact !== 'not_affected' && impact !== 'unknown')
     || (confidence !== 'high' && confidence !== 'medium' && confidence !== 'low')
     || !Array.isArray(evidence) || evidence.length > 100 || evidence.some(item => typeof item !== 'string' || item.length > 4_096)
@@ -1543,6 +1550,22 @@ function extractJsonObject(text: string): string {
   const end = trimmed.lastIndexOf('}')
   if (start < 0 || end <= start) throw new Error('model returned no JSON object')
   return trimmed.slice(start, end + 1)
+}
+
+function normalizeAgentShape(parsed: Record<string, unknown>): Record<string, unknown> {
+  const normalized = { ...parsed }
+  if (normalized.breaking_change === 'true') normalized.breaking_change = true
+  if (normalized.breaking_change === 'false') normalized.breaking_change = false
+  if (!Array.isArray(normalized.evidence)) {
+    const evidence = asRecord(normalized.evidence)
+    if (evidence !== undefined) {
+      normalized.evidence = Object.entries(evidence).map(([key, value]) => {
+        const rendered = typeof value === 'string' ? value : JSON.stringify(value)
+        return `${key}: ${rendered ?? 'unknown'}`
+      })
+    }
+  }
+  return normalized
 }
 
 function llmCompletionEndpoints(baseUrl: string): string[] {
@@ -1608,6 +1631,10 @@ export async function runOpenAiCompatibleAgent(
           ],
           temperature: 0,
           response_format: { type: 'json_object' },
+          // GLM-5.1 reports its reasoning tokens against the completion budget;
+          // without an explicit budget it can spend the whole response on
+          // reasoning and return an empty `content` field.
+          max_tokens: DEFAULT_LLM_MAX_TOKENS,
         }),
         signal: AbortSignal.timeout(timeoutMs),
       })
