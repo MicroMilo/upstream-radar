@@ -99,6 +99,7 @@
 - [x] Persist one observation point per target and generate old → new tasks only for meaningful changes.
 - [x] Keep docs/tests-only changes quiet and route meaningful tasks through an explicit, no-shell DSH Agent adapter.
 - [x] Emit an upstream/downstream alignment IR for source identity, published package identity, graph root, and dependency coverage; surface baseline mismatches without waking the Agent every day.
+- [x] Build a reverse dependency index and route upstream package-name version changes to affected downstream plugins with exact paths and coverage status.
 - [ ] Connect the adapter to the official DSH headless invocation once that interface is stable and documented.
 - [ ] Re-check the installed and proposed graph in GitHub Actions.
 - [ ] Attach project evidence to a GitHub Issue only after routing policy permits it.

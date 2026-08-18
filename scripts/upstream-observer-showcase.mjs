@@ -6,6 +6,7 @@ const {
   runObserver,
 } = await import('../dist/src/upstream-observer.js')
 const { buildUpstreamDownstreamIR } = await import('../dist/src/upstream-alignment.js')
+const { buildReverseDependencyIndex } = await import('../dist/src/dependency-index.js')
 
 const target = {
   id: 'dsh-showcase',
@@ -86,15 +87,31 @@ const source = {
   }),
 }
 const config = { schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }
+const reverseDependencyIndex = buildReverseDependencyIndex([{
+  source: 'downstream/dsh-plugin.json',
+  pluginId: 'downstream-plugin@1.0.0',
+  plugin: { ecosystem: 'npm', name: 'downstream-plugin', version: '1.0.0' },
+  graph: {
+    schema: 'upstream-radar.dependency-graph/v1alpha1',
+    rootNodeId: 'downstream-root',
+    nodes: [
+      { id: 'downstream-root', name: 'downstream-plugin', version: '1.0.0' },
+      { id: 'parser', name: 'parser', version: '1.0.0' },
+    ],
+    edges: [{ from: 'downstream-root', to: 'parser', kind: 'runtime' }],
+  },
+}], { generatedAt: '2026-08-17T00:00:00.000Z' })
 
 const baseline = await runObserver(config, emptyObservationState(), {
   source,
+  reverseDependencyIndex,
   now: new Date('2026-08-17T00:00:00.000Z'),
 })
 
 current = snapshot('commit-2', '1.1.0', 'sha256:graph-v2')
 const changed = await runObserver(config, baseline.state, {
   source,
+  reverseDependencyIndex,
   now: new Date('2026-08-17T01:00:00.000Z'),
   agent: async (task, prompt) => ({
     taskId: task.id,
@@ -114,6 +131,7 @@ const changed = await runObserver(config, baseline.state, {
 
 const quiet = await runObserver(config, changed.state, {
   source,
+  reverseDependencyIndex,
   now: new Date('2026-08-17T02:00:00.000Z'),
 })
 
@@ -122,6 +140,7 @@ process.stdout.write(`${JSON.stringify({
   baseline: {
     targets: baseline.report.baselineTargets,
     alignmentFindings: baseline.report.alignmentFindings.map(item => ({ targetId: item.targetId, status: item.alignment.status })),
+    reverseIndex: baseline.report.reverseDependencyIndex,
     agentCalls: baseline.report.agent.attempted,
   },
   changed: {
@@ -130,9 +149,17 @@ process.stdout.write(`${JSON.stringify({
       meaningful: item.meaningful,
       reasons: item.reasons,
       alignment: item.current.alignment?.status,
+      downstreamImpacts: item.reverseDependencyImpacts?.map(impact => ({
+        dependency: impact.dependency.name,
+        from: impact.changedFrom,
+        to: impact.changedTo,
+        plugins: impact.dependents.map(dependent => dependent.pluginId),
+        coverage: impact.coverage,
+      })),
       taskId: item.taskId,
     })),
     agentCalls: changed.report.agent.attempted,
+    reverseIndex: changed.report.reverseDependencyIndex,
     pendingTasks: changed.report.pendingTasks,
   },
   quiet: {

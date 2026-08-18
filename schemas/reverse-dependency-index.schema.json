@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MicroMilo/upstream-radar/blob/main/schemas/reverse-dependency-index.schema.json",
+  "title": "Upstream Radar reverse dependency index",
+  "description": "A deterministic index from exact npm dependency coordinates to downstream plugin graphs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "generatedAt", "observations", "inputs", "coverage", "plugins", "dependencies"],
+  "properties": {
+    "schema": { "const": "upstream-radar.reverse-dependency-index/v1alpha1" },
+    "generatedAt": { "type": "string", "minLength": 1, "maxLength": 128, "format": "date-time" },
+    "observations": { "type": "integer", "minimum": 0 },
+    "inputs": { "$ref": "#/$defs/inputs" },
+    "coverage": { "$ref": "#/$defs/coverage" },
+    "plugins": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/plugin" }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/dependency" }
+    }
+  },
+  "$defs": {
+    "coordinate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ecosystem", "name", "version"],
+      "properties": {
+        "ecosystem": { "const": "npm" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "version": { "type": "string", "minLength": 1, "maxLength": 512 }
+      }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "name": { "type": "string", "minLength": 1, "maxLength": 512 }
+      }
+    },
+    "path": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodes", "kinds"],
+      "properties": {
+        "nodes": { "type": "array", "minItems": 2, "items": { "type": "string", "minLength": 1, "maxLength": 1024 } },
+        "kinds": {
+          "type": "array",
+          "items": { "enum": ["runtime", "development", "optional", "peer", "host-runtime"] }
+        }
+      }
+    },
+    "use": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pluginId", "plugin", "sources", "coverage", "paths"],
+      "properties": {
+        "pluginId": { "type": "string", "minLength": 1, "maxLength": 1024 },
+        "plugin": { "$ref": "#/$defs/coordinate" },
+        "project": { "$ref": "#/$defs/project" },
+        "sources": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 4096 } },
+        "coverage": { "enum": ["complete", "incomplete"] },
+        "paths": { "type": "array", "items": { "$ref": "#/$defs/path" } }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dependency", "dependents"],
+      "properties": {
+        "dependency": { "$ref": "#/$defs/coordinate" },
+        "dependents": { "type": "array", "items": { "$ref": "#/$defs/use" } }
+      }
+    },
+    "pluginObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "coverage", "unresolved"],
+      "properties": {
+        "source": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "graphDigest": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "coverage": { "enum": ["complete", "incomplete"] },
+        "unresolved": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "plugin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "plugin", "observations"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 1024 },
+        "plugin": { "$ref": "#/$defs/coordinate" },
+        "project": { "$ref": "#/$defs/project" },
+        "observations": { "type": "array", "items": { "$ref": "#/$defs/pluginObservation" } }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["files", "loadedFiles", "skipped"],
+      "properties": {
+        "files": { "type": "integer", "minimum": 0 },
+        "loadedFiles": { "type": "integer", "minimum": 0 },
+        "skipped": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["source", "reason"],
+            "properties": {
+              "source": { "type": "string", "minLength": 1, "maxLength": 4096 },
+              "reason": { "type": "string", "minLength": 1, "maxLength": 2048 }
+            }
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["completeObservations", "incompleteObservations", "unresolvedEdges"],
+      "properties": {
+        "completeObservations": { "type": "integer", "minimum": 0 },
+        "incompleteObservations": { "type": "integer", "minimum": 0 },
+        "unresolvedEdges": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

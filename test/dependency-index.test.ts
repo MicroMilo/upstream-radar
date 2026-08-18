@@ -3,6 +3,8 @@ import { describe, it } from 'node:test'
 import {
   buildReverseDependencyIndex,
   findReverseDependencyEntry,
+  findReverseDependencyImpacts,
+  parseReverseDependencyIndex,
   parseReverseDependencyObservations,
 } from '../src/dependency-index.js'
 import type { DependencyGraph } from '../src/radar-types.js'
@@ -107,5 +109,70 @@ describe('reverse dependency index', () => {
       () => parseReverseDependencyObservations({ schema: 'unknown' }, 'unknown.json'),
       /unsupported schema unknown/,
     )
+  })
+
+  it('routes a package-name version change to every downstream plugin, even before the new version is installed', () => {
+    const index = buildReverseDependencyIndex([
+      {
+        source: 'plugin-a.json',
+        pluginId: 'plugin-a@1.0.0',
+        plugin: { ecosystem: 'npm', name: 'plugin-a', version: '1.0.0' },
+        graph: graph('plugin-a', '1.0.0'),
+      },
+      {
+        source: 'plugin-b.json',
+        pluginId: 'plugin-b@1.0.0',
+        plugin: { ecosystem: 'npm', name: 'plugin-b', version: '1.0.0' },
+        graph: graph('plugin-b', '1.0.0', true),
+      },
+      {
+        source: 'plugin-c.json',
+        pluginId: 'plugin-c@1.0.0',
+        plugin: { ecosystem: 'npm', name: 'plugin-c', version: '1.0.0' },
+        graph: {
+          ...graph('plugin-c', '1.0.0'),
+          nodes: graph('plugin-c', '1.0.0').nodes.map(node => node.name === 'shared' ? { ...node, version: '3.0.0' } : node),
+        },
+      },
+    ])
+    assert.deepEqual(parseReverseDependencyIndex(JSON.parse(JSON.stringify(index)) as unknown), index)
+
+    const impacts = findReverseDependencyImpacts(index, [{
+      ecosystem: 'npm',
+      name: 'shared',
+      beforeVersions: ['2.0.0'],
+      afterVersions: ['3.0.0'],
+    }])
+    assert.equal(impacts.length, 1)
+    assert.deepEqual(impacts[0], {
+      dependency: { ecosystem: 'npm', name: 'shared' },
+      changedFrom: ['2.0.0'],
+      changedTo: ['3.0.0'],
+      observedVersions: ['2.0.0'],
+      coverage: 'incomplete',
+      truncated: false,
+      dependents: [
+        {
+          pluginId: 'plugin-a@1.0.0',
+          plugin: { ecosystem: 'npm', name: 'plugin-a', version: '1.0.0' },
+          sources: ['plugin-a.json'],
+          coverage: 'complete',
+          paths: [
+            { nodes: ['plugin-a@1.0.0', 'shared@2.0.0'], kinds: ['peer'] },
+            { nodes: ['plugin-a@1.0.0', 'wrapper@1.0.0', 'shared@2.0.0'], kinds: ['runtime', 'runtime'] },
+          ],
+        },
+        {
+          pluginId: 'plugin-b@1.0.0',
+          plugin: { ecosystem: 'npm', name: 'plugin-b', version: '1.0.0' },
+          sources: ['plugin-b.json'],
+          coverage: 'incomplete',
+          paths: [
+            { nodes: ['plugin-b@1.0.0', 'shared@2.0.0'], kinds: ['peer'] },
+            { nodes: ['plugin-b@1.0.0', 'wrapper@1.0.0', 'shared@2.0.0'], kinds: ['runtime', 'runtime'] },
+          ],
+        },
+      ],
+    })
   })
 })

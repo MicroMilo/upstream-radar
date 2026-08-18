@@ -2,6 +2,15 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.36.0] - 2026-08-18
+
+### Downstream impact routing
+
+- Add a persisted reverse dependency index schema and parser.
+- Match upstream package-name version changes to downstream DSH plugins even before they upgrade.
+- Route exact downstream paths and incomplete-coverage status into always-on observer reports and DSH tasks.
+- Add `observe --reverse-index` and a network-free downstream-impact showcase.
+
 ## [0.35.0] - 2026-08-18
 
 ### Supply-chain alignment

@@ -63,15 +63,15 @@ baseline report, and defined in [`schemas/upstream-downstream-ir.schema.json`](s
 
 ```bash
 # No DSH profile, API key, or network state required
-npx --yes upstream-radar@0.35.0 demo
+npx --yes upstream-radar@0.36.0 demo
 
 # Scan a public DSH plugin repository without installing it
-npx --yes upstream-radar@0.35.0 scan \
+npx --yes upstream-radar@0.36.0 scan \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --fail-on never
 
 # Review a real browser plugin users would install, then check two DSH releases
-npx --yes upstream-radar@0.35.0 review dsh-plugin dsh-cloudflare-browser-run@0.1.1 \
+npx --yes upstream-radar@0.36.0 review dsh-plugin dsh-cloudflare-browser-run@0.1.1 \
   --dsh-version 0.1.0-rc.6,0.1.0-rc.7
 ```
 
@@ -107,11 +107,11 @@ Two copies of `parser` are different nodes. An alert names the exact version and
 For a collection of saved reports, build the reverse index that turns an upstream package update into affected plugins:
 
 ```bash
-npx --yes upstream-radar@0.35.0 graph reverse ./reports \
+npx --yes upstream-radar@0.36.0 graph reverse ./reports \
   --output reverse-dependency-index.json
 
 # Ask: which plugins currently depend on this exact package?
-npx --yes upstream-radar@0.35.0 graph reverse ./reports \
+npx --yes upstream-radar@0.36.0 graph reverse ./reports \
   --package parser@2.9.0
 ```
 
@@ -123,12 +123,30 @@ plugin@1.0.0 → logger@4.0.2 → parser@2.9.0
 
 It also preserves whether the graph is complete or has unresolved optional/peer edges. A later website can visualize this index; the index and evidence remain the product foundation.
 
+To route an upstream old → new change to that index, pass it to the always-on
+observer:
+
+```bash
+npx --yes upstream-radar@0.36.0 observe ./targets.yml \
+  --reverse-index ./reverse-dependency-index.json \
+  --state ./observations.json \
+  --report ./upstream-radar-observer.md
+```
+
+The observer matches by package name, not only by the new exact version. If
+`parser@1.0.0` becomes `parser@2.0.0` upstream while a downstream plugin still
+uses `parser@1.0.0`, the report names that plugin and its path as a possible
+impact. `complete` or `incomplete` coverage stays attached to the result; this
+is an evidence-based routing signal, not a claim that the plugin is already
+broken. See the persisted index definition in
+[`schemas/reverse-dependency-index.schema.json`](schemas/reverse-dependency-index.schema.json).
+
 ## GitHub Action
 
 The repository already contains a reusable, composite Action in [`action.yml`](action.yml). It runs the same frozen Radar check in CI and writes a short Job Summary.
 
 ```yaml
-- uses: MicroMilo/upstream-radar@v0.35.0
+- uses: MicroMilo/upstream-radar@v0.36.0
   with:
     config: upstream-radar.config.json
     fail-on: high
@@ -152,7 +170,7 @@ See the [consumer workflow](examples/github-actions/consumer/README.md) for conf
 pnpm add upstream-radar
 
 # Generate a reviewable DSH profile inventory from the installed profile
-npx --yes upstream-radar@0.35.0 setup
+npx --yes upstream-radar@0.36.0 setup
 ```
 
 For Feishu/webhook routing, DSH Agent handoff, observer state, report schemas, and troubleshooting, use the [full Chinese guide](docs/README.zh-CN.md). The [architecture notes](docs/architecture.md) explain the boundaries and evidence model.

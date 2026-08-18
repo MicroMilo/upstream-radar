@@ -116,6 +116,8 @@ describe('reusable GitHub Action', () => {
     assert.match(observerWorkflow, /schedule:/)
     assert.match(observerWorkflow, /contents: write/)
     assert.match(observerWorkflow, /observe \\\n\s+examples\/upstream-observer\/targets\.yml/)
+    assert.match(observerWorkflow, /graph reverse examples\/radar/)
+    assert.match(observerWorkflow, /--reverse-index "\$RUNNER_TEMP\/reverse-dependency-index\.json"/)
     assert.match(observerWorkflow, /observations\.json/)
     assert.match(observerWorkflow, /--retry-pending/)
     assert.match(observerWorkflow, /git diff --cached --quiet/)

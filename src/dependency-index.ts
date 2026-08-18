@@ -69,6 +69,25 @@ export interface ReverseDependencyIndex {
   dependencies: ReverseDependencyEntry[]
 }
 
+/** A package-name change extracted from an upstream old -> new graph diff. */
+export interface ReverseDependencyPackageChange {
+  ecosystem: 'npm'
+  name: string
+  beforeVersions: string[]
+  afterVersions: string[]
+}
+
+/** Downstream plugins that may be affected by one changed upstream package name. */
+export interface ReverseDependencyImpact {
+  dependency: { ecosystem: 'npm'; name: string }
+  changedFrom: string[]
+  changedTo: string[]
+  observedVersions: string[]
+  coverage: 'complete' | 'incomplete'
+  dependents: ReverseDependencyUse[]
+  truncated: boolean
+}
+
 function asRecord(value: unknown): JsonRecord | undefined {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return undefined
   return value as JsonRecord
@@ -106,6 +125,144 @@ function observationsFromScan(value: JsonRecord, source: string, project?: { id:
   if (plugin === undefined || graph === undefined) return []
   const pluginId = project === undefined ? `${plugin.name}@${plugin.version}` : `${project.id}:${plugin.name}@${plugin.version}`
   return [{ source, pluginId, plugin, ...(project === undefined ? {} : { project }), graph }]
+}
+
+function parsePackageCoordinate(value: unknown, label: string): PackageCoordinate {
+  const record = asRecord(value)
+  const ecosystem = asString(record?.ecosystem)
+  const name = asString(record?.name)
+  const version = asString(record?.version)
+  if (ecosystem !== 'npm' || name === undefined || version === undefined) throw new Error(`${label} is not an npm package coordinate`)
+  return { ecosystem: 'npm', name, version }
+}
+
+function parseProject(value: unknown, label: string): { id: string; name: string } | undefined {
+  if (value === undefined) return undefined
+  const record = asRecord(value)
+  const id = asString(record?.id)
+  const name = asString(record?.name)
+  if (id === undefined || name === undefined) throw new Error(`${label} is not a project identity`)
+  return { id, name }
+}
+
+function parseReverseDependencyPath(value: unknown, label: string): ReverseDependencyPath {
+  const record = asRecord(value)
+  if (!Array.isArray(record?.nodes) || !Array.isArray(record?.kinds) || record.nodes.length !== record.kinds.length + 1) {
+    throw new Error(`${label} is not a dependency path`)
+  }
+  const nodes = record.nodes.map((item, index) => {
+    if (typeof item !== 'string' || item.length === 0) throw new Error(`${label}.nodes[${index}] is invalid`)
+    return item
+  })
+  const allowedKinds = new Set<DependencyKind>(['runtime', 'development', 'optional', 'peer', 'host-runtime'])
+  const kinds = record.kinds.map((item, index) => {
+    if (typeof item !== 'string' || !allowedKinds.has(item as DependencyKind)) throw new Error(`${label}.kinds[${index}] is invalid`)
+    return item as DependencyKind
+  })
+  return { nodes, kinds }
+}
+
+function parseReverseDependencyUse(value: unknown, label: string): ReverseDependencyUse {
+  const record = asRecord(value)
+  const pluginId = asString(record?.pluginId)
+  if (pluginId === undefined || !Array.isArray(record?.sources) || !Array.isArray(record?.paths)) throw new Error(`${label} is not a dependent plugin record`)
+  const sources = record.sources.map((item, index) => {
+    if (typeof item !== 'string' || item.length === 0) throw new Error(`${label}.sources[${index}] is invalid`)
+    return item
+  })
+  const paths = record.paths.map((item, index) => parseReverseDependencyPath(item, `${label}.paths[${index}]`))
+  const coverage = record.coverage
+  if (coverage !== 'complete' && coverage !== 'incomplete') throw new Error(`${label}.coverage is invalid`)
+  const project = parseProject(record.project, `${label}.project`)
+  return {
+    pluginId,
+    plugin: parsePackageCoordinate(record.plugin, `${label}.plugin`),
+    ...(project === undefined ? {} : { project }),
+    sources,
+    coverage,
+    paths,
+  }
+}
+
+/** Parse a persisted reverse index before using it to route upstream changes. */
+export function parseReverseDependencyIndex(value: unknown, source = 'reverse dependency index'): ReverseDependencyIndex {
+  const record = asRecord(value)
+  if (record === undefined || record.schema !== REVERSE_DEPENDENCY_INDEX_SCHEMA) throw new Error(`${source} has an unsupported schema`)
+  const generatedAt = asString(record.generatedAt)
+  if (generatedAt === undefined || !Number.isFinite(Date.parse(generatedAt))) throw new Error(`${source}.generatedAt is invalid`)
+  const observations = typeof record.observations === 'number' ? record.observations : Number.NaN
+  if (!Number.isInteger(observations) || observations < 0) throw new Error(`${source}.observations is invalid`)
+  const inputs = asRecord(record.inputs)
+  const files = typeof inputs?.files === 'number' ? inputs.files : Number.NaN
+  const loadedFiles = typeof inputs?.loadedFiles === 'number' ? inputs.loadedFiles : Number.NaN
+  const skippedValue = inputs?.skipped
+  if (!Number.isInteger(files) || files < 0 || !Number.isInteger(loadedFiles) || loadedFiles < 0 || !Array.isArray(skippedValue)) {
+    throw new Error(`${source}.inputs is invalid`)
+  }
+  const skipped = skippedValue.map((item, index) => {
+    const record = asRecord(item)
+    const skippedSource = asString(record?.source)
+    const reason = asString(record?.reason)
+    if (skippedSource === undefined || reason === undefined) throw new Error(`${source}.inputs.skipped[${index}] is invalid`)
+    return { source: skippedSource, reason }
+  })
+  const coverageValue = asRecord(record.coverage)
+  const completeObservations = typeof coverageValue?.completeObservations === 'number' ? coverageValue.completeObservations : Number.NaN
+  const incompleteObservations = typeof coverageValue?.incompleteObservations === 'number' ? coverageValue.incompleteObservations : Number.NaN
+  const unresolvedEdges = typeof coverageValue?.unresolvedEdges === 'number' ? coverageValue.unresolvedEdges : Number.NaN
+  if (!Number.isInteger(completeObservations) || completeObservations < 0
+    || !Number.isInteger(incompleteObservations) || incompleteObservations < 0
+    || !Number.isInteger(unresolvedEdges) || unresolvedEdges < 0) {
+    throw new Error(`${source}.coverage is invalid`)
+  }
+  if (!Array.isArray(record.plugins) || !Array.isArray(record.dependencies)) throw new Error(`${source} is missing plugins or dependencies`)
+  const plugins = record.plugins.map((item, index) => {
+    const pluginRecord = asRecord(item)
+    const id = asString(pluginRecord?.id)
+    if (id === undefined || !Array.isArray(pluginRecord?.observations)) throw new Error(`${source}.plugins[${index}] is invalid`)
+    const pluginObservations = pluginRecord.observations.map((observation, observationIndex) => {
+      const observationRecord = asRecord(observation)
+      const observationSource = asString(observationRecord?.source)
+      const graphDigest = observationRecord?.graphDigest === undefined ? undefined : asString(observationRecord.graphDigest)
+      const coverage = observationRecord?.coverage
+      const unresolved = typeof observationRecord?.unresolved === 'number' ? observationRecord.unresolved : Number.NaN
+      if (observationSource === undefined || (graphDigest === undefined && observationRecord?.graphDigest !== undefined)
+        || (coverage !== 'complete' && coverage !== 'incomplete') || !Number.isInteger(unresolved) || unresolved < 0) {
+        throw new Error(`${source}.plugins[${index}].observations[${observationIndex}] is invalid`)
+      }
+      const observationCoverage = coverage as 'complete' | 'incomplete'
+      return {
+        source: observationSource,
+        ...(graphDigest === undefined ? {} : { graphDigest }),
+        coverage: observationCoverage,
+        unresolved,
+      }
+    })
+    const project = parseProject(pluginRecord?.project, `${source}.plugins[${index}].project`)
+    return {
+      id,
+      plugin: parsePackageCoordinate(pluginRecord?.plugin, `${source}.plugins[${index}].plugin`),
+      ...(project === undefined ? {} : { project }),
+      observations: pluginObservations,
+    }
+  })
+  const dependencies = record.dependencies.map((item, index) => {
+    const dependencyRecord = asRecord(item)
+    if (!Array.isArray(dependencyRecord?.dependents)) throw new Error(`${source}.dependencies[${index}] is invalid`)
+    return {
+      dependency: parsePackageCoordinate(dependencyRecord.dependency, `${source}.dependencies[${index}].dependency`),
+      dependents: dependencyRecord.dependents.map((dependent, dependentIndex) => parseReverseDependencyUse(dependent, `${source}.dependencies[${index}].dependents[${dependentIndex}]`)),
+    }
+  })
+  return {
+    schema: REVERSE_DEPENDENCY_INDEX_SCHEMA,
+    generatedAt,
+    observations,
+    inputs: { files, loadedFiles, skipped },
+    coverage: { completeObservations, incompleteObservations, unresolvedEdges },
+    plugins,
+    dependencies,
+  }
 }
 
 /** Convert supported scan, exact-review, or Radar config JSON into index observations. */
@@ -173,6 +330,16 @@ function labelsForPath(path: Array<{ name: string; version: string }>): string[]
 
 function addUnique<T>(items: T[], value: T): void {
   if (!items.some(item => JSON.stringify(item) === JSON.stringify(value))) items.push(value)
+}
+
+function addUniqueString(items: string[], values: readonly string[]): void {
+  for (const value of values) if (!items.includes(value)) items.push(value)
+}
+
+function mergeReverseDependencyUse(target: ReverseDependencyUse, source: ReverseDependencyUse): void {
+  addUniqueString(target.sources, source.sources)
+  if (source.coverage === 'incomplete') target.coverage = 'incomplete'
+  for (const path of source.paths) addUnique(target.paths, path)
 }
 
 /** Build a deterministic dependency -> plugin index from bounded graph observations. */
@@ -266,4 +433,77 @@ export function findReverseDependencyEntry(
   packageCoordinate: PackageCoordinate,
 ): ReverseDependencyEntry | undefined {
   return index.dependencies.find(item => packageKey(item.dependency) === packageKey(packageCoordinate))
+}
+
+/**
+ * Find downstream plugins by package name, not exact version.
+ *
+ * An upstream release usually changes `parser@1` to `parser@2`, while a
+ * downstream graph still records the old exact version until its author
+ * republishes. Matching only the exact new coordinate would therefore miss
+ * the very plugins that need attention. This function intentionally returns
+ * evidence and paths, not a claim that every matched plugin is broken.
+ */
+export function findReverseDependencyImpacts(
+  index: ReverseDependencyIndex,
+  changes: readonly ReverseDependencyPackageChange[],
+): ReverseDependencyImpact[] {
+  const byName = new Map<string, ReverseDependencyPackageChange>()
+  for (const change of changes) {
+    if (change.ecosystem !== 'npm' || change.name === '') continue
+    const existing = byName.get(change.name)
+    if (existing === undefined) {
+      byName.set(change.name, {
+        ecosystem: 'npm',
+        name: change.name,
+        beforeVersions: [...new Set(change.beforeVersions)].sort(),
+        afterVersions: [...new Set(change.afterVersions)].sort(),
+      })
+      continue
+    }
+    addUniqueString(existing.beforeVersions, change.beforeVersions)
+    addUniqueString(existing.afterVersions, change.afterVersions)
+    existing.beforeVersions.sort()
+    existing.afterVersions.sort()
+  }
+
+  const impacts: ReverseDependencyImpact[] = []
+  for (const change of [...byName.values()].sort((left, right) => left.name.localeCompare(right.name))) {
+    const beforeVersions = new Set(change.beforeVersions)
+    const entries = index.dependencies
+      .filter(entry => entry.dependency.ecosystem === 'npm'
+        && entry.dependency.name === change.name
+        // A plugin already on the new version is not downstream impact from
+        // this old -> new change. For a newly introduced package there is no
+        // old coordinate, so package-name matching is the only available
+        // evidence and remains explicitly a possible impact.
+        && (beforeVersions.size === 0 || beforeVersions.has(entry.dependency.version)))
+      .sort((left, right) => left.dependency.version.localeCompare(right.dependency.version))
+    if (entries.length === 0) continue
+
+    const dependentMap = new Map<string, ReverseDependencyUse>()
+    for (const entry of entries) {
+      for (const dependent of entry.dependents) {
+        const existing = dependentMap.get(dependent.pluginId)
+        if (existing === undefined) {
+          dependentMap.set(dependent.pluginId, structuredClone(dependent))
+        } else {
+          mergeReverseDependencyUse(existing, dependent)
+        }
+      }
+    }
+    const allDependents = [...dependentMap.values()].sort((left, right) => left.pluginId.localeCompare(right.pluginId))
+    const dependents = allDependents.slice(0, 256)
+    const coverage = allDependents.some(item => item.coverage === 'incomplete') ? 'incomplete' : 'complete'
+    impacts.push({
+      dependency: { ecosystem: 'npm', name: change.name },
+      changedFrom: [...change.beforeVersions],
+      changedTo: [...change.afterVersions],
+      observedVersions: entries.map(entry => entry.dependency.version),
+      coverage,
+      dependents,
+      truncated: dependents.length < allDependents.length,
+    })
+  }
+  return impacts
 }

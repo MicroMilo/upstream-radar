@@ -15,7 +15,7 @@ import { checkDshProfile, renderDshProfileCheck, renderDshProfileCheckSummary } 
 import { createDemoReport, renderDemo } from './demo.js'
 import { GitHubReleaseClient } from './github-release.js'
 import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
-import { buildReverseDependencyIndex, findReverseDependencyEntry, parseReverseDependencyObservations, type ReverseDependencyIndex } from './dependency-index.js'
+import { buildReverseDependencyIndex, findReverseDependencyEntry, parseReverseDependencyIndex, parseReverseDependencyObservations, type ReverseDependencyIndex } from './dependency-index.js'
 import { createRadarConfigFromDshProfile, createRadarConfigFromNpmLock, createRadarConfigFromPnpmLock, discoverDshProfiles, refreshRadarConfigFromConfiguredProfile, resolveDshProfileDirectory, writeDshPatch, writeRadarConfig } from './init.js'
 import { parsePackageManifestSnapshot, parseRadarConfig } from './inventory.js'
 import { inspectNpmPackage } from './npm.js'
@@ -254,6 +254,7 @@ should remain visible without failing CI.
 Usage:
   upstream-radar observe <targets.yml|github-url> [--state <observations.json>]
     [--report <report.md>] [--dsh-version <v1>,<v2>,...]
+    [--reverse-index <index.json>]
     [--dsh-agent-command <executable>]
     [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending]
     [--ecosystem <dsh|codex|pi>] [--id <id>] [--package <name>]
@@ -514,7 +515,7 @@ Usage:
   upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory-or-github-url> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect [npm:]<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
-  upstream-radar observe <targets.yml|github-url> [--state <observations.json>] [--report <report.md>] [--dsh-version <v1>,<v2>,...] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending] [--ecosystem <dsh|codex|pi>] [--id <id>] [--package <name>] [--package-path <path>] [--lockfile <path>] [--lockfile-type <npm|pnpm>] [--ref <branch>] [--json]
+  upstream-radar observe <targets.yml|github-url> [--state <observations.json>] [--report <report.md>] [--dsh-version <v1>,<v2>,...] [--reverse-index <index.json>] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending] [--ecosystem <dsh|codex|pi>] [--id <id>] [--package <name>] [--package-path <path>] [--lockfile <path>] [--lockfile-type <npm|pnpm>] [--ref <branch>] [--json]
   upstream-radar graph <npm-lock|pnpm-lock> <lockfile> [--root <package>@<exact-version>] [--json]
   upstream-radar graph reverse <reports-directory> [--package <name>@<exact-version>] [--output <index.json>] [--json]
   upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
@@ -1695,6 +1696,7 @@ async function runObserve(args: readonly string[]): Promise<number> {
   let agentCommand: string | undefined
   let agentArgs: string[] = []
   let llmEnvFile: string | undefined
+  let reverseIndexPath: string | undefined
   let registry: string | undefined
   let retryPending = false
   let json = false
@@ -1713,7 +1715,7 @@ async function runObserve(args: readonly string[]): Promise<number> {
       json = true
     } else if (argument === '--retry-pending') {
       retryPending = true
-    } else if (argument === '--ecosystem' || argument === '--id' || argument === '--package' || argument === '--package-path' || argument === '--lockfile' || argument === '--lockfile-type' || argument === '--ref' || argument === '--dsh-version' || argument === '--state' || argument === '--report' || argument === '--dsh-agent-command' || argument === '--dsh-agent-arg' || argument === '--llm-env-file' || argument === '--registry') {
+    } else if (argument === '--ecosystem' || argument === '--id' || argument === '--package' || argument === '--package-path' || argument === '--lockfile' || argument === '--lockfile-type' || argument === '--ref' || argument === '--dsh-version' || argument === '--state' || argument === '--report' || argument === '--reverse-index' || argument === '--dsh-agent-command' || argument === '--dsh-agent-arg' || argument === '--llm-env-file' || argument === '--registry') {
       const value = args[index + 1]
       if (value === undefined || (value.startsWith('-') && argument !== '--dsh-agent-arg')) throw new Error(`${argument} requires a value`)
       if (argument === '--ecosystem') inlineEcosystem = value
@@ -1726,11 +1728,12 @@ async function runObserve(args: readonly string[]): Promise<number> {
       else if (argument === '--dsh-version') inlineDshVersions = value.split(',').map(item => item.trim()).filter(item => item !== '')
       else if (argument === '--state') statePath = value
       else if (argument === '--report') reportPath = value
+      else if (argument === '--reverse-index') reverseIndexPath = value
       else if (argument === '--dsh-agent-command') agentCommand = value
       else if (argument === '--dsh-agent-arg') agentArgs.push(value)
       else if (argument === '--llm-env-file') llmEnvFile = value
       else registry = value
-      if (argument !== '--state' && argument !== '--report' && argument !== '--dsh-agent-command' && argument !== '--dsh-agent-arg' && argument !== '--llm-env-file' && argument !== '--registry') inlineOptionsUsed = true
+      if (argument !== '--state' && argument !== '--report' && argument !== '--reverse-index' && argument !== '--dsh-agent-command' && argument !== '--dsh-agent-arg' && argument !== '--llm-env-file' && argument !== '--registry') inlineOptionsUsed = true
       index += 1
     } else {
       throw new Error(`unknown option for observe: ${argument}`)
@@ -1764,6 +1767,9 @@ async function runObserve(args: readonly string[]): Promise<number> {
     config = parseObserverConfigText(targetText)
   }
   const previousState = await loadObservationState(statePath)
+  const reverseDependencyIndex = reverseIndexPath === undefined
+    ? undefined
+    : parseReverseDependencyIndex(await readJson(reverseIndexPath), reverseIndexPath)
   const source = new UpstreamObserverClient({
     ...(process.env.GITHUB_TOKEN === undefined ? {} : { githubToken: process.env.GITHUB_TOKEN }),
     ...(registry === undefined ? {} : { registry }),
@@ -1780,6 +1786,7 @@ async function runObserve(args: readonly string[]): Promise<number> {
   }
   const result = await runObserver(config, previousState, {
     source,
+    ...(reverseDependencyIndex === undefined ? {} : { reverseDependencyIndex }),
     retryPending,
     artifactReviewer: async (spec, target) => reviewObserverArtifact(spec, target, registry),
     ...(agentOptions === undefined ? {} : {
