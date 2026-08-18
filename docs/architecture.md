@@ -81,6 +81,14 @@ response is treated as a meaningful change rather than as proof that nothing
 changed. The observer stores the full static graph in the observation point, but
 the task and report carry only bounded summaries and differences.
 
+An optional reverse dependency index is built from saved downstream plugin
+graphs. On an upstream old → new graph change, the observer matches changed
+package names against that index instead of waiting for downstream plugins to
+upgrade first. It carries the exact downstream paths and whether each graph is
+complete; it is an impact-routing signal, not a claim that every matched
+plugin is broken. This is the bridge from one upstream observer to a growing
+set of DSH plugin observations.
+
 When a meaningful change has a published npm version, the observer also calls
 the exact-version npm artifact inspector. That inspector resolves the package in
 a temporary directory with lifecycle scripts disabled, builds the reachable

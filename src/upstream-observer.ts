@@ -2,6 +2,7 @@ import { createHash, randomUUID } from 'node:crypto'
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { spawn } from 'node:child_process'
 import { dirname, resolve } from 'node:path'
+import { findReverseDependencyImpacts, type ReverseDependencyImpact, type ReverseDependencyIndex, type ReverseDependencyPackageChange } from './dependency-index.js'
 import type { DshLoadMatrixReport } from './dsh-probe.js'
 import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
 import { parsePackageManifestSnapshot } from './inventory.js'
@@ -203,6 +204,7 @@ export interface ObserverChange {
   graph?: ObserverGraphChange
   reasons: string[]
   meaningful: boolean
+  reverseDependencyImpacts?: ReverseDependencyImpact[]
   artifactReview?: ObserverArtifactReview
   taskId?: string
 }
@@ -269,6 +271,7 @@ export interface ObserverPendingTaskSummary {
   removedEdges: string[]
   addedUnresolved: string[]
   removedUnresolved: string[]
+  reverseDependencyImpacts?: ReverseDependencyImpact[]
   artifactReview?: ObserverArtifactReview
 }
 
@@ -296,6 +299,14 @@ export interface ObserverReport {
     targetId: string
     alignment: UpstreamDownstreamIR
   }>
+  reverseDependencyIndex?: {
+    observations: number
+    plugins: number
+    dependencies: number
+    completeObservations: number
+    incompleteObservations: number
+    unresolvedEdges: number
+  }
   changes: ObserverChange[]
   pendingTasks: string[]
   pendingTaskDetails: ObserverPendingTaskSummary[]
@@ -320,6 +331,8 @@ export interface RunObserverOptions {
   source?: ObserverSource
   /** Review the exact current npm artifact without executing plugin code. */
   artifactReviewer?: (packageSpec: string, target: ObserverTarget) => Promise<ObserverArtifactReview>
+  /** Optional static index of downstream plugin graphs used for impact routing. */
+  reverseDependencyIndex?: ReverseDependencyIndex
   agent?: (task: UpstreamChangeTask, prompt: string) => Promise<ObserverAgentInvocation>
   retryPending?: boolean
 }
@@ -1357,6 +1370,48 @@ function graphChanges(before: DependencyGraph | undefined, after: DependencyGrap
   }
 }
 
+function addObservedPackageVersion(
+  versions: Map<string, { before: Set<string>; after: Set<string> }>,
+  side: 'before' | 'after',
+  name: string | undefined,
+  version: string | undefined,
+): void {
+  if (name === undefined || version === undefined || name === '' || version === '') return
+  const entry = versions.get(name) ?? { before: new Set<string>(), after: new Set<string>() }
+  entry[side].add(version)
+  versions.set(name, entry)
+}
+
+function addSnapshotPackages(
+  versions: Map<string, { before: Set<string>; after: Set<string> }>,
+  side: 'before' | 'after',
+  snapshot: ObserverSnapshot,
+): void {
+  addObservedPackageVersion(versions, side, snapshot.manifest.name, snapshot.manifest.version)
+  addObservedPackageVersion(versions, side, snapshot.package?.name, snapshot.package?.version)
+  for (const node of snapshot.graph?.nodes ?? []) addObservedPackageVersion(versions, side, node.name, node.version)
+}
+
+/** Convert two complete snapshots into package-name changes for downstream lookup. */
+function reverseDependencyChanges(before: ObserverSnapshot, after: ObserverSnapshot): ReverseDependencyPackageChange[] {
+  const versions = new Map<string, { before: Set<string>; after: Set<string> }>()
+  addSnapshotPackages(versions, 'before', before)
+  addSnapshotPackages(versions, 'after', after)
+  return [...versions.entries()]
+    .filter(([, value]) => {
+      const beforeVersions = [...value.before].sort()
+      const afterVersions = [...value.after].sort()
+      return JSON.stringify(beforeVersions) !== JSON.stringify(afterVersions)
+    })
+    .map(([name, value]) => ({
+      ecosystem: 'npm' as const,
+      name,
+      beforeVersions: [...value.before].sort(),
+      afterVersions: [...value.after].sort(),
+    }))
+    .sort((left, right) => left.name.localeCompare(right.name))
+}
+
 function packageChanged(before: ObserverSnapshot, after: ObserverSnapshot): boolean {
   if (before.package?.name !== after.package?.name || before.package?.version !== after.package?.version) return true
   return before.package?.integrity !== after.package?.integrity
@@ -1412,10 +1467,14 @@ function createChange(
   before: ObserverSnapshot,
   after: ObserverSnapshot,
   sourceChange: ObserverSourceChange,
+  reverseDependencyIndex?: ReverseDependencyIndex,
 ): ObserverChange {
   const manifest = manifestChanges(before.manifest, after.manifest)
   const graph = graphChanges(before.graph, after.graph)
   const decision = meaningfulChange(sourceChange, before, after)
+  const reverseDependencyImpacts = reverseDependencyIndex === undefined
+    ? []
+    : findReverseDependencyImpacts(reverseDependencyIndex, reverseDependencyChanges(before, after))
   const taskId = decision.meaningful
     ? createTaskId(target.id, before.source.commit, after.source.commit, after.package?.version, after.graph?.digest)
     : undefined
@@ -1430,6 +1489,7 @@ function createChange(
     ...(graph === undefined ? {} : { graph }),
     reasons: decision.reasons,
     meaningful: decision.meaningful,
+    ...(reverseDependencyImpacts.length === 0 ? {} : { reverseDependencyImpacts }),
     ...(taskId === undefined ? {} : { taskId }),
   }
 }
@@ -1476,7 +1536,8 @@ export function renderUpstreamChangeAgentPrompt(task: UpstreamChangeTask): strin
 3. 如果需要项目代码证据，只读取当前项目已经存在的文件；不要为了验证结论安装包或执行上游代码。
 4. 区分源码变化、发布包变化、依赖图变化和模型判断。只有明确指出文件、配置、符号或“不知道缺少什么证据”，结论才算完整。
 5. breaking_change 只能在有明确入口、导出、DSH bundle、peer/API 或发布说明证据时判断；不因为版本号变化就直接断言。
-6. 返回严格 JSON 对象，字段只能是 impact、confidence、evidence、breaking_change、dependency_risk、recommended_action、urgency、reasoning_summary。
+6. 如果 change_json.reverseDependencyImpacts 存在，它表示静态反向索引找到的下游插件和依赖路径；把它当作影响范围证据，不要把“可能受影响”写成“已经损坏”。
+7. 返回严格 JSON 对象，字段只能是 impact、confidence、evidence、breaking_change、dependency_risk、recommended_action、urgency、reasoning_summary。
 
 expected_output:
 ${JSON.stringify(task.expectedOutput, null, 2)}
@@ -1825,7 +1886,7 @@ export async function runObserver(
             nonRuntimeFiles: [],
           }
         : await source.compare(current.source.repository, before.source.commit, current.source.commit)
-      const change = createChange(configuredTarget, before, current, sourceChange)
+      const change = createChange(configuredTarget, before, current, sourceChange, options.reverseDependencyIndex)
       if (change.reasons.length === 0) continue
       let reviewedChange = change
       if (change.meaningful && current.package !== undefined && options.artifactReviewer !== undefined) {
@@ -1889,6 +1950,16 @@ export async function runObserver(
     targetsChecked: config.targets.length,
     baselineTargets,
     alignmentFindings,
+    ...(options.reverseDependencyIndex === undefined ? {} : {
+      reverseDependencyIndex: {
+        observations: options.reverseDependencyIndex.observations,
+        plugins: options.reverseDependencyIndex.plugins.length,
+        dependencies: options.reverseDependencyIndex.dependencies.length,
+        completeObservations: options.reverseDependencyIndex.coverage.completeObservations,
+        incompleteObservations: options.reverseDependencyIndex.coverage.incompleteObservations,
+        unresolvedEdges: options.reverseDependencyIndex.coverage.unresolvedEdges,
+      },
+    }),
     changes,
     pendingTasks: pendingTasks.map(task => task.id),
     pendingTaskDetails: pendingTasks.map(summarizePendingTask),
@@ -1958,6 +2029,7 @@ function summarizePendingTask(task: UpstreamChangeTask): ObserverPendingTaskSumm
     removedEdges: (change.graph?.removedEdges ?? []).slice(0, 24),
     addedUnresolved: (change.graph?.addedUnresolved ?? []).slice(0, 24),
     removedUnresolved: (change.graph?.removedUnresolved ?? []).slice(0, 24),
+    ...(change.reverseDependencyImpacts === undefined ? {} : { reverseDependencyImpacts: structuredClone(change.reverseDependencyImpacts) }),
     ...(change.artifactReview === undefined ? {} : { artifactReview: structuredClone(change.artifactReview) }),
   }
 }
@@ -1973,11 +2045,29 @@ function renderAlignment(lines: string[], alignment: UpstreamDownstreamIR, label
   }
 }
 
+function renderReverseDependencyImpacts(lines: string[], impacts: readonly ReverseDependencyImpact[], label = 'Downstream impact'): void {
+  for (const impact of impacts.slice(0, 32)) {
+    const from = impact.changedFrom.length === 0 ? 'not observed' : impact.changedFrom.join(', ')
+    const to = impact.changedTo.length === 0 ? 'not observed' : impact.changedTo.join(', ')
+    lines.push(`${label}: ${impact.dependency.name} (${from} → ${to}); ${impact.dependents.length}${impact.truncated ? '+' : ''} downstream plugin(s); coverage ${impact.coverage}`)
+    for (const dependent of impact.dependents.slice(0, 8)) {
+      const project = dependent.project === undefined ? '' : ` [${dependent.project.name}]`
+      lines.push(`  ${dependent.plugin.name}@${dependent.plugin.version}${project} (${dependent.coverage})`)
+      for (const path of dependent.paths.slice(0, 2)) lines.push(`    ${path.nodes.join(' → ')}`)
+      if (dependent.paths.length > 2) lines.push(`    ... ${dependent.paths.length - 2} more path(s)`)
+    }
+    if (impact.truncated) lines.push('  ... additional downstream plugins omitted from this bounded report')
+  }
+}
+
 export function renderObserverReport(report: ObserverReport): string {
   const lines: string[] = []
   const alignmentFindings = report.alignmentFindings.filter(item => item.alignment.status !== 'aligned')
   if (report.changes.length === 0 && report.errors.length === 0 && report.pendingTasks.length === 0 && alignmentFindings.length === 0) {
     lines.push(`No meaningful upstream changes. Checked ${report.targetsChecked} target(s); DSH Agent was not called.`)
+    if (report.reverseDependencyIndex !== undefined) {
+      lines.push(`Loaded downstream reverse index: ${report.reverseDependencyIndex.plugins} plugin(s), ${report.reverseDependencyIndex.dependencies} dependency coordinate(s); coverage ${report.reverseDependencyIndex.completeObservations} complete / ${report.reverseDependencyIndex.incompleteObservations} incomplete.`)
+    }
     if (report.baselineTargets.length > 0) lines.push(`Created baseline for: ${report.baselineTargets.join(', ')}.`)
     return `${lines.join('\n')}\n`
   }
@@ -1985,6 +2075,9 @@ export function renderObserverReport(report: ObserverReport): string {
   lines.push('')
   lines.push(`Checked at: ${report.checkedAt}`)
   lines.push(`Targets: ${report.targetsChecked}; baselines: ${report.baselineTargets.length}; changes: ${report.changes.length}`)
+  if (report.reverseDependencyIndex !== undefined) {
+    lines.push(`Downstream reverse index: ${report.reverseDependencyIndex.plugins} plugin(s), ${report.reverseDependencyIndex.dependencies} dependency coordinate(s); coverage ${report.reverseDependencyIndex.completeObservations} complete / ${report.reverseDependencyIndex.incompleteObservations} incomplete.`)
+  }
   lines.push('')
   if (report.baselineTargets.length > 0) {
     lines.push(`Baseline created: ${report.baselineTargets.join(', ')}`)
@@ -2026,6 +2119,7 @@ export function renderObserverReport(report: ObserverReport): string {
         lines.push(`Coverage change: resolved dependency edges: ${removedUnresolved.slice(0, 8).join(', ')}`)
       }
     }
+    if (change.reverseDependencyImpacts !== undefined) renderReverseDependencyImpacts(lines, change.reverseDependencyImpacts)
     if (change.reasons.length > 0) lines.push(`Reasons: ${change.reasons.join('; ')}`)
     if (change.current.package !== undefined) {
       lines.push(`Exact artifact check: npx --yes upstream-radar@latest inspect npm:${change.current.package.name}@${change.current.package.version} --deep`)
@@ -2079,6 +2173,7 @@ export function renderObserverReport(report: ObserverReport): string {
       if (task.removedEdges.length > 0) lines.push(`Removed dependency edges: ${task.removedEdges.join(', ')}`)
       if (task.addedUnresolved.length > 0) lines.push(`New unresolved dependency edges: ${task.addedUnresolved.join(', ')}`)
       if (task.removedUnresolved.length > 0) lines.push(`Resolved dependency edges: ${task.removedUnresolved.join(', ')}`)
+      if (task.reverseDependencyImpacts !== undefined) renderReverseDependencyImpacts(lines, task.reverseDependencyImpacts, 'Downstream impact')
       if (task.reasons.length > 0) lines.push(`Reasons: ${task.reasons.join('; ')}`)
       if (task.artifactReview !== undefined) {
         const review = task.artifactReview

@@ -43,6 +43,14 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm build
 
+      - name: Build downstream reverse dependency index
+        run: |
+          # Replace examples/radar with the directory of saved DSH plugin
+          # scan/review/config JSON in the repository using this workflow.
+          node dist/src/cli.js graph reverse examples/radar \
+            --output "$RUNNER_TEMP/reverse-dependency-index.json" \
+            --json > /dev/null
+
       - name: Observe upstream changes
         id: observe
         env:
@@ -62,6 +70,7 @@ jobs:
             examples/upstream-observer/targets.yml
             --state observations.json
             --report "$OBSERVER_REPORT"
+            --reverse-index "$RUNNER_TEMP/reverse-dependency-index.json"
             --retry-pending
             --json
           )

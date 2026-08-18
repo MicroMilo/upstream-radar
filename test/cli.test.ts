@@ -222,6 +222,7 @@ describe('CLI option parsing', () => {
     assert.match(observeHelp.stdout, /watch DSH plugin repositories and packages/)
     assert.match(observeHelp.stdout, /Radar does not install the observed plugin/)
     assert.match(observeHelp.stdout, /--llm-env-file <path>/)
+    assert.match(observeHelp.stdout, /--reverse-index <index\.json>/)
     assert.match(observeHelp.stdout, /issue-locator\/\.env-style file/)
     assert.match(observeHelp.stdout, /MODEL\/CODEX_MODEL/)
 

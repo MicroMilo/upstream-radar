@@ -23,6 +23,7 @@ import {
   type ObserverArtifactReview,
 } from '../src/upstream-observer.js'
 import { buildUpstreamDownstreamIR } from '../src/upstream-alignment.js'
+import { buildReverseDependencyIndex } from '../src/dependency-index.js'
 
 const target: ObserverTarget = {
   id: 'dsh-demo',
@@ -312,6 +313,59 @@ targets:
     })
     assert.equal(thirdRun.report.changes.length, 0)
     assert.equal(thirdRun.report.agent.attempted, 0)
+  })
+
+  it('routes an upstream dependency version change to downstream plugins from the reverse index', async () => {
+    const first = snapshot('commit-1', '1.0.0', 'graph-v1')
+    const second = snapshot('commit-2', '1.1.0', 'graph-v2')
+    const reverseIndex = buildReverseDependencyIndex([{
+      source: 'downstream-plugin.json',
+      pluginId: 'downstream-plugin@1.0.0',
+      plugin: { ecosystem: 'npm', name: 'downstream-plugin', version: '1.0.0' },
+      graph: first.graph!,
+    }])
+    let current = first
+    const source: ObserverSource = {
+      observe: async () => current,
+      compare: async (repository, beforeCommit, afterCommit) => ({
+        beforeCommit,
+        afterCommit,
+        comparison: 'complete',
+        changedFiles: ['pnpm-lock.yaml'],
+        runtimeFiles: ['pnpm-lock.yaml'],
+        nonRuntimeFiles: [],
+      }),
+    }
+    const config = { schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }
+    const baseline = await runObserver(config, emptyObservationState(), {
+      source,
+      reverseDependencyIndex: reverseIndex,
+      now: new Date('2026-08-17T05:00:00.000Z'),
+    })
+    assert.equal(baseline.report.changes.length, 0)
+
+    current = second
+    const changed = await runObserver(config, baseline.state, {
+      source,
+      reverseDependencyIndex: reverseIndex,
+      now: new Date('2026-08-17T06:00:00.000Z'),
+    })
+    const impact = changed.report.changes[0]?.reverseDependencyImpacts?.[0]
+    assert.ok(impact)
+    assert.deepEqual(changed.report.reverseDependencyIndex, {
+      observations: 1,
+      plugins: 1,
+      dependencies: 1,
+      completeObservations: 1,
+      incompleteObservations: 0,
+      unresolvedEdges: 0,
+    })
+    assert.equal(impact.dependency.name, 'logger')
+    assert.deepEqual(impact.changedFrom, ['1.0.0'])
+    assert.deepEqual(impact.changedTo, ['2.0.0'])
+    assert.deepEqual(impact.dependents.map(item => item.pluginId), ['downstream-plugin@1.0.0'])
+    assert.match(renderObserverReport(changed.report), /Downstream impact: logger \(1\.0\.0 → 2\.0\.0\); 1 downstream plugin\(s\)/)
+    assert.match(renderUpstreamChangeAgentPrompt(changed.state.pendingTasks[0]!), /reverseDependencyImpacts/)
   })
 
   it('shows baseline identity alignment findings without waking the Agent', async () => {

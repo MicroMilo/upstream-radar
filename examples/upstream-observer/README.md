@@ -24,7 +24,7 @@ Replace it with the repositories your team depends on.
 For one repository, the shortest path skips YAML and lockfile configuration entirely:
 
 ```bash
-npx --yes upstream-radar@0.35.0 observe \
+npx --yes upstream-radar@0.36.0 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md
@@ -35,7 +35,7 @@ Radar automatically chooses the committed `pnpm-lock.yaml` or
 the explicit form below adds `--package`:
 
 ```bash
-npx --yes upstream-radar@0.35.0 observe \
+npx --yes upstream-radar@0.36.0 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --package dsh-feishu-bot \
   --lockfile pnpm-lock.yaml --lockfile-type pnpm \
@@ -69,6 +69,25 @@ reports `mismatch` with an author-facing mapping fix; it does not call this
 malware or pretend that the bundle is incompatible. A missing lockfile is
 reported as `unknown`, never as a clean dependency graph.
 
+## Route upstream changes to downstream plugins
+
+Build one index from saved DSH plugin scan/review/config JSON, then give it to
+the observer:
+
+```bash
+npx --yes upstream-radar@0.36.0 graph reverse ./plugin-reports \
+  --output ./reverse-dependency-index.json
+npx --yes upstream-radar@0.36.0 observe ./targets.yml \
+  --reverse-index ./reverse-dependency-index.json \
+  --state /tmp/upstream-radar-observations.json \
+  --report /tmp/upstream-radar-observer.md
+```
+
+The match is by package name, so an upstream `parser@1.0.0` → `parser@2.0.0`
+change can find plugins that still use `parser@1.0.0`. The report includes the
+exact downstream path and whether that plugin's graph was complete. It is a
+static impact signal, not a claim that the plugin is already broken.
+
 The deterministic closed-loop result is recorded in
 [`reports/dsh-feishu-bot-artifact-review-2026-08-18.md`](reports/dsh-feishu-bot-artifact-review-2026-08-18.md):
 the same old → new run now reviews `dsh-feishu-bot@0.15.8`, finds its reachable
@@ -83,14 +102,14 @@ bundle-load compatibility result, not a safety certificate.
 
 To replay the complete state machine without network access, run
 `pnpm run showcase:observer`. It prints a baseline alignment mismatch, one
-meaningful old → new change with one Agent call, and a quiet third run with no
-new task.
+meaningful old → new change with one Agent call, the downstream `parser`
+impact, and a quiet third run with no new task.
 
 Run it from any directory with the published CLI:
 
 ```bash
 export GITHUB_TOKEN='a read-only token with repository metadata access'
-npx --yes upstream-radar@0.35.0 observe \
+npx --yes upstream-radar@0.36.0 observe \
   /path/to/targets.yml \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md

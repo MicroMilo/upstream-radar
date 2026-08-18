@@ -195,6 +195,7 @@ async function checkPackContents() {
     'schemas/analysis-result.schema.json',
     'schemas/dsh-load-matrix.schema.json',
     'schemas/quickstart.schema.json',
+    'schemas/reverse-dependency-index.schema.json',
     'schemas/upstream-downstream-ir.schema.json',
     'schemas/webhook.schema.json',
     'cordis.patch.yml',
