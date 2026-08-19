@@ -4,20 +4,20 @@
     "dsh-feishu-bot": {
       "targetId": "dsh-feishu-bot",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-18T08:09:00.557Z",
+      "observedAt": "2026-08-19T07:11:33.239Z",
       "source": {
         "repository": "PlutoKeating/dsh-lark-bot",
         "ref": "main",
-        "commit": "4ee9739eb6de22a810b5dbb6f93cbf68045cbca8",
+        "commit": "5ef10251d8e43ede65dfbd6cadce352b8dd9de87",
         "packagePath": "package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/PlutoKeating/dsh-lark-bot/commit/4ee9739eb6de22a810b5dbb6f93cbf68045cbca8",
-        "packageUrl": "https://raw.githubusercontent.com/PlutoKeating/dsh-lark-bot/4ee9739eb6de22a810b5dbb6f93cbf68045cbca8/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/PlutoKeating/dsh-lark-bot/4ee9739eb6de22a810b5dbb6f93cbf68045cbca8/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/PlutoKeating/dsh-lark-bot/commit/5ef10251d8e43ede65dfbd6cadce352b8dd9de87",
+        "packageUrl": "https://raw.githubusercontent.com/PlutoKeating/dsh-lark-bot/5ef10251d8e43ede65dfbd6cadce352b8dd9de87/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/PlutoKeating/dsh-lark-bot/5ef10251d8e43ede65dfbd6cadce352b8dd9de87/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "dsh-lark-bot",
-        "version": "0.15.8",
+        "version": "0.15.9",
         "type": "module",
         "exports": {
           ".": {
@@ -66,18 +66,18 @@
       },
       "package": {
         "name": "dsh-feishu-bot",
-        "version": "0.15.8",
-        "integrity": "sha512-Atmj+JD9i/GcJmkvckUbxT0+lXBCMPB7EiEUe4/qqdHHUMJu5ZklgZdfjGeevEt56kTQ3LLghv30vt0mlyvfnw==",
-        "tarball": "https://registry.npmjs.org/dsh-feishu-bot/-/dsh-feishu-bot-0.15.8.tgz"
+        "version": "0.15.9",
+        "integrity": "sha512-JCpm5TputieyDFKBhWXWQudR87xyvgwfLox2PH0V8EQ0KE840jJepp14MEPUpEpMC42MnbFueopYojBZv/tDbw==",
+        "tarball": "https://registry.npmjs.org/dsh-feishu-bot/-/dsh-feishu-bot-0.15.9.tgz"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+        "rootNodeId": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
         "nodes": [
           {
-            "id": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "id": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "name": "dsh-lark-bot",
-            "version": "0.15.8"
+            "version": "0.15.9"
           },
           {
             "id": "pnpm:@agentclientprotocol/sdk@0.25.1(zod@4.4.3)",
@@ -3112,83 +3112,83 @@
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:@agentclientprotocol/sdk@0.25.1(zod@4.4.3)",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:@deepseek-ai/cordis@4.0.1",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:@deepseek-ai/dsh-sdk-client@0.1.0-rc.6(c229de258ac217f4f8aeecfa07b958b6)",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:@larksuite/channel@0.4.1",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:@types/cross-spawn@6.0.6",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:@types/node@22.20.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:@types/qrcode-terminal@0.12.2",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:commander@12.1.0",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:cross-spawn@7.0.6",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:qrcode-terminal@0.12.0",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:typescript@5.9.3",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.8",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.15.9",
             "to": "pnpm:yaml@2.9.0",
             "kind": "runtime"
           }
         ],
         "source": "pnpm-lock",
-        "digest": "sha256:a71eba82711943f2cd65b122e0b714959fad469ce80ee99cf46edec8a45f2479",
+        "digest": "sha256:955917107c702a3ccecc4c65f74d1ee980be9d3b42f98b1b4fa4cc55ea3638e4",
         "unresolved": [
           {
             "from": "pnpm:@deepseek-ai/cordis@4.0.1",
@@ -3243,25 +3243,25 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "PlutoKeating/dsh-lark-bot",
-          "commit": "4ee9739eb6de22a810b5dbb6f93cbf68045cbca8",
+          "commit": "5ef10251d8e43ede65dfbd6cadce352b8dd9de87",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-lark-bot",
-            "version": "0.15.8"
+            "version": "0.15.9"
           }
         },
         "downstream": {
           "published": {
             "name": "dsh-feishu-bot",
-            "version": "0.15.8"
+            "version": "0.15.9"
           },
           "graph": {
             "status": "incomplete",
             "root": {
               "name": "dsh-lark-bot",
-              "version": "0.15.8"
+              "version": "0.15.9"
             },
-            "digest": "sha256:a71eba82711943f2cd65b122e0b714959fad469ce80ee99cf46edec8a45f2479",
+            "digest": "sha256:955917107c702a3ccecc4c65f74d1ee980be9d3b42f98b1b4fa4cc55ea3638e4",
             "nodes": 242,
             "edges": 380,
             "unresolved": 7
@@ -3273,23 +3273,23 @@
             "code": "source-published-identity",
             "status": "mismatch",
             "summary": "The source manifest and observed npm package do not identify the same name and version.",
-            "upstream": "dsh-lark-bot@0.15.8",
-            "downstream": "dsh-feishu-bot@0.15.8",
+            "upstream": "dsh-lark-bot@0.15.9",
+            "downstream": "dsh-feishu-bot@0.15.9",
             "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
           },
           {
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "dsh-lark-bot@0.15.8",
-            "downstream": "dsh-lark-bot@0.15.8"
+            "upstream": "dsh-lark-bot@0.15.9",
+            "downstream": "dsh-lark-bot@0.15.9"
           },
           {
             "code": "published-graph-root",
             "status": "mismatch",
             "summary": "The dependency graph root does not identify the observed npm package.",
-            "upstream": "dsh-feishu-bot@0.15.8",
-            "downstream": "dsh-lark-bot@0.15.8",
+            "upstream": "dsh-feishu-bot@0.15.9",
+            "downstream": "dsh-lark-bot@0.15.9",
             "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
           },
           {
@@ -3305,7 +3305,7 @@
     "dsh-webui-market-plugin": {
       "targetId": "dsh-webui-market-plugin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-18T08:09:00.557Z",
+      "observedAt": "2026-08-19T07:11:33.239Z",
       "source": {
         "repository": "Sanqi-normal/dsh-webui-market-plugin",
         "ref": "master",
@@ -3412,5 +3412,417 @@
       }
     }
   },
-  "pendingTasks": []
+  "pendingTasks": [
+    {
+      "schema": "upstream-radar.upstream-change-task/v1alpha1",
+      "id": "upstream-task-0469cf52b45988853a4a4681",
+      "createdAt": "2026-08-19T07:11:33.239Z",
+      "target": {
+        "id": "dsh-feishu-bot",
+        "ecosystem": "dsh",
+        "repository": "PlutoKeating/dsh-lark-bot",
+        "ref": "main",
+        "packageName": "dsh-feishu-bot",
+        "packagePath": "package.json",
+        "lockfile": "pnpm-lock.yaml",
+        "lockfileType": "pnpm",
+        "dshVersions": [
+          "0.1.0-rc.6",
+          "0.1.0-rc.7"
+        ]
+      },
+      "change": {
+        "targetId": "dsh-feishu-bot",
+        "ecosystem": "dsh",
+        "repository": "PlutoKeating/dsh-lark-bot",
+        "source": {
+          "beforeCommit": "4ee9739eb6de22a810b5dbb6f93cbf68045cbca8",
+          "afterCommit": "5ef10251d8e43ede65dfbd6cadce352b8dd9de87",
+          "comparison": "complete",
+          "changedFiles": [
+            ".env.example",
+            "README.md",
+            "README_EN.md",
+            "docs/API.md",
+            "docs/ARCHITECTURE.md",
+            "docs/QUICK_START.md",
+            "package.json",
+            "release-highlights/v0.15.9.md",
+            "src/bridge/channel.ts",
+            "src/bridge/group-message-poller.ts",
+            "src/bridge/scope-directory.ts",
+            "src/cli/commands/doctor.ts",
+            "src/cli/commands/run.ts",
+            "src/config/env.ts",
+            "test/bridge/channel.test.ts",
+            "test/bridge/group-message-poller.test.ts",
+            "test/bridge/scope-directory.test.ts",
+            "test/cli/commands/doctor.test.ts",
+            "test/config/env.test.ts"
+          ],
+          "runtimeFiles": [
+            ".env.example",
+            "package.json",
+            "src/bridge/channel.ts",
+            "src/bridge/group-message-poller.ts",
+            "src/bridge/scope-directory.ts",
+            "src/cli/commands/doctor.ts",
+            "src/cli/commands/run.ts",
+            "src/config/env.ts"
+          ],
+          "nonRuntimeFiles": [
+            "README.md",
+            "README_EN.md",
+            "docs/API.md",
+            "docs/ARCHITECTURE.md",
+            "docs/QUICK_START.md",
+            "release-highlights/v0.15.9.md",
+            "test/bridge/channel.test.ts",
+            "test/bridge/group-message-poller.test.ts",
+            "test/bridge/scope-directory.test.ts",
+            "test/cli/commands/doctor.test.ts",
+            "test/config/env.test.ts"
+          ]
+        },
+        "previous": {
+          "commit": "4ee9739eb6de22a810b5dbb6f93cbf68045cbca8",
+          "package": {
+            "name": "dsh-feishu-bot",
+            "version": "0.15.8",
+            "integrity": "sha512-Atmj+JD9i/GcJmkvckUbxT0+lXBCMPB7EiEUe4/qqdHHUMJu5ZklgZdfjGeevEt56kTQ3LLghv30vt0mlyvfnw==",
+            "tarball": "https://registry.npmjs.org/dsh-feishu-bot/-/dsh-feishu-bot-0.15.8.tgz"
+          },
+          "manifest": {
+            "name": "dsh-lark-bot",
+            "version": "0.15.8",
+            "exports": {
+              ".": {
+                "types": "./dist/index.d.ts",
+                "import": "./dist/index.js"
+              },
+              "./plugin": {
+                "types": "./dist/plugin.d.ts",
+                "import": "./dist/plugin.js"
+              },
+              "./invariant": {
+                "types": "./dist/invariant.d.ts",
+                "import": "./dist/invariant.js"
+              },
+              "./notify": {
+                "types": "./dist/notify.d.ts",
+                "import": "./dist/notify.js"
+              },
+              "./ask": {
+                "types": "./dist/ask.d.ts",
+                "import": "./dist/ask.js"
+              }
+            },
+            "engines": {
+              "node": ">=22.19.0"
+            },
+            "dsh": {
+              "bundle": {
+                "patch": "./cordis.patch.yml"
+              }
+            }
+          },
+          "graph": {
+            "digest": "sha256:a71eba82711943f2cd65b122e0b714959fad469ce80ee99cf46edec8a45f2479",
+            "nodes": 242,
+            "edges": 380,
+            "unresolved": 7
+          },
+          "warnings": [
+            "target package dsh-feishu-bot does not match source manifest dsh-lark-bot"
+          ],
+          "alignment": {
+            "schema": "upstream-radar.upstream-downstream-ir/v1alpha1",
+            "targetId": "dsh-feishu-bot",
+            "ecosystem": "dsh",
+            "upstream": {
+              "repository": "PlutoKeating/dsh-lark-bot",
+              "commit": "4ee9739eb6de22a810b5dbb6f93cbf68045cbca8",
+              "packagePath": "package.json",
+              "coordinate": {
+                "name": "dsh-lark-bot",
+                "version": "0.15.8"
+              }
+            },
+            "downstream": {
+              "published": {
+                "name": "dsh-feishu-bot",
+                "version": "0.15.8"
+              },
+              "graph": {
+                "status": "incomplete",
+                "root": {
+                  "name": "dsh-lark-bot",
+                  "version": "0.15.8"
+                },
+                "digest": "sha256:a71eba82711943f2cd65b122e0b714959fad469ce80ee99cf46edec8a45f2479",
+                "nodes": 242,
+                "edges": 380,
+                "unresolved": 7
+              }
+            },
+            "status": "mismatch",
+            "checks": [
+              {
+                "code": "source-published-identity",
+                "status": "mismatch",
+                "summary": "The source manifest and observed npm package do not identify the same name and version.",
+                "upstream": "dsh-lark-bot@0.15.8",
+                "downstream": "dsh-feishu-bot@0.15.8",
+                "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
+              },
+              {
+                "code": "source-graph-root",
+                "status": "aligned",
+                "summary": "The lockfile graph root matches the source manifest.",
+                "upstream": "dsh-lark-bot@0.15.8",
+                "downstream": "dsh-lark-bot@0.15.8"
+              },
+              {
+                "code": "published-graph-root",
+                "status": "mismatch",
+                "summary": "The dependency graph root does not identify the observed npm package.",
+                "upstream": "dsh-feishu-bot@0.15.8",
+                "downstream": "dsh-lark-bot@0.15.8",
+                "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
+              },
+              {
+                "code": "dependency-graph-coverage",
+                "status": "unknown",
+                "summary": "The dependency graph is incomplete (7 unresolved edges).",
+                "downstream": "incomplete; 242 nodes, 380 edges",
+                "remediation": "Resolve the missing lockfile or peer/optional edges; an empty vulnerability result is not complete coverage while this remains unknown."
+              }
+            ]
+          }
+        },
+        "current": {
+          "commit": "5ef10251d8e43ede65dfbd6cadce352b8dd9de87",
+          "package": {
+            "name": "dsh-feishu-bot",
+            "version": "0.15.9",
+            "integrity": "sha512-JCpm5TputieyDFKBhWXWQudR87xyvgwfLox2PH0V8EQ0KE840jJepp14MEPUpEpMC42MnbFueopYojBZv/tDbw==",
+            "tarball": "https://registry.npmjs.org/dsh-feishu-bot/-/dsh-feishu-bot-0.15.9.tgz"
+          },
+          "manifest": {
+            "name": "dsh-lark-bot",
+            "version": "0.15.9",
+            "exports": {
+              ".": {
+                "types": "./dist/index.d.ts",
+                "import": "./dist/index.js"
+              },
+              "./plugin": {
+                "types": "./dist/plugin.d.ts",
+                "import": "./dist/plugin.js"
+              },
+              "./invariant": {
+                "types": "./dist/invariant.d.ts",
+                "import": "./dist/invariant.js"
+              },
+              "./notify": {
+                "types": "./dist/notify.d.ts",
+                "import": "./dist/notify.js"
+              },
+              "./ask": {
+                "types": "./dist/ask.d.ts",
+                "import": "./dist/ask.js"
+              }
+            },
+            "engines": {
+              "node": ">=22.19.0"
+            },
+            "dsh": {
+              "bundle": {
+                "patch": "./cordis.patch.yml"
+              }
+            }
+          },
+          "graph": {
+            "digest": "sha256:955917107c702a3ccecc4c65f74d1ee980be9d3b42f98b1b4fa4cc55ea3638e4",
+            "nodes": 242,
+            "edges": 380,
+            "unresolved": 7
+          },
+          "warnings": [
+            "target package dsh-feishu-bot does not match source manifest dsh-lark-bot"
+          ],
+          "alignment": {
+            "schema": "upstream-radar.upstream-downstream-ir/v1alpha1",
+            "targetId": "dsh-feishu-bot",
+            "ecosystem": "dsh",
+            "upstream": {
+              "repository": "PlutoKeating/dsh-lark-bot",
+              "commit": "5ef10251d8e43ede65dfbd6cadce352b8dd9de87",
+              "packagePath": "package.json",
+              "coordinate": {
+                "name": "dsh-lark-bot",
+                "version": "0.15.9"
+              }
+            },
+            "downstream": {
+              "published": {
+                "name": "dsh-feishu-bot",
+                "version": "0.15.9"
+              },
+              "graph": {
+                "status": "incomplete",
+                "root": {
+                  "name": "dsh-lark-bot",
+                  "version": "0.15.9"
+                },
+                "digest": "sha256:955917107c702a3ccecc4c65f74d1ee980be9d3b42f98b1b4fa4cc55ea3638e4",
+                "nodes": 242,
+                "edges": 380,
+                "unresolved": 7
+              }
+            },
+            "status": "mismatch",
+            "checks": [
+              {
+                "code": "source-published-identity",
+                "status": "mismatch",
+                "summary": "The source manifest and observed npm package do not identify the same name and version.",
+                "upstream": "dsh-lark-bot@0.15.9",
+                "downstream": "dsh-feishu-bot@0.15.9",
+                "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
+              },
+              {
+                "code": "source-graph-root",
+                "status": "aligned",
+                "summary": "The lockfile graph root matches the source manifest.",
+                "upstream": "dsh-lark-bot@0.15.9",
+                "downstream": "dsh-lark-bot@0.15.9"
+              },
+              {
+                "code": "published-graph-root",
+                "status": "mismatch",
+                "summary": "The dependency graph root does not identify the observed npm package.",
+                "upstream": "dsh-feishu-bot@0.15.9",
+                "downstream": "dsh-lark-bot@0.15.9",
+                "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
+              },
+              {
+                "code": "dependency-graph-coverage",
+                "status": "unknown",
+                "summary": "The dependency graph is incomplete (7 unresolved edges).",
+                "downstream": "incomplete; 242 nodes, 380 edges",
+                "remediation": "Resolve the missing lockfile or peer/optional edges; an empty vulnerability result is not complete coverage while this remains unknown."
+              }
+            ]
+          }
+        },
+        "manifest": {
+          "fields": []
+        },
+        "graph": {
+          "addedNodes": [],
+          "removedNodes": [],
+          "addedEdges": [],
+          "removedEdges": [],
+          "addedUnresolved": [],
+          "removedUnresolved": []
+        },
+        "reasons": [
+          "npm package version or integrity changed",
+          "source manifest identity changed: dsh-lark-bot@0.15.8 → dsh-lark-bot@0.15.9",
+          "upstream/downstream alignment changed: mismatch",
+          "runtime source changed: .env.example, package.json, src/bridge/channel.ts, src/bridge/group-message-poller.ts, src/bridge/scope-directory.ts, src/cli/commands/doctor.ts, src/cli/commands/run.ts, src/config/env.ts"
+        ],
+        "meaningful": true,
+        "taskId": "upstream-task-0469cf52b45988853a4a4681",
+        "artifactReview": {
+          "spec": "npm:dsh-feishu-bot@0.15.9",
+          "verdict": "review",
+          "riskVerdict": "review",
+          "coverageVerdict": "incomplete",
+          "artifactIntegrity": "verified",
+          "registrySignature": "verified",
+          "provenance": "verified",
+          "dependencyResolution": "resolved",
+          "dependencyAuditStatus": "findings",
+          "resolutionMode": "strict",
+          "graphDigest": "sha256:2336b9e65da74b8947dba405780059417118acf651cdc3071a3832d33da4efd5",
+          "packages": 89,
+          "unresolved": 12,
+          "vulnerabilities": {
+            "info": 0,
+            "low": 0,
+            "moderate": 0,
+            "high": 0,
+            "critical": 0,
+            "total": 0
+          },
+          "installScriptPackages": [
+            "protobufjs@7.6.5"
+          ],
+          "installScriptDetails": [
+            {
+              "package": "protobufjs@7.6.5",
+              "scripts": [
+                {
+                  "name": "postinstall",
+                  "command": "node scripts/postinstall"
+                }
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "code": "dependency-install-script-present",
+              "severity": "high",
+              "summary": "Resolved dependency graph contains install-time scripts",
+              "detail": "The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.",
+              "remediation": "Review each listed package and its published artifact; prefer a version with no install-time script, or require explicit approval before allowing the DSH install path to run it."
+            }
+          ],
+          "dshCompatibility": {
+            "result": "compatible",
+            "versions": [
+              "0.1.0-rc.6",
+              "0.1.0-rc.7"
+            ],
+            "summary": {
+              "total": 2,
+              "compatible": 2,
+              "incompatible": 0,
+              "unknown": 0
+            },
+            "reports": [
+              {
+                "dshVersion": "0.1.0-rc.6",
+                "result": "compatible",
+                "reason": "bundle registered and profile configuration loaded"
+              },
+              {
+                "dshVersion": "0.1.0-rc.7",
+                "result": "compatible",
+                "reason": "bundle registered and profile configuration loaded"
+              }
+            ]
+          }
+        }
+      },
+      "constraints": {
+        "sourceMaterialIsUntrusted": true,
+        "readOnly": true,
+        "doNotInstallOrExecute": true,
+        "requireEvidence": true
+      },
+      "expectedOutput": {
+        "impact": "affected | likely_affected | not_affected | unknown",
+        "confidence": "high | medium | low",
+        "evidence": "array of repository paths, symbols, configuration, or explicit unknowns",
+        "breaking_change": "true | false | unknown",
+        "dependency_risk": "none | low | medium | high | unknown",
+        "recommended_action": "project-specific next action",
+        "urgency": "immediate | within_24_hours | planned | monitor",
+        "reasoning_summary": "short explanation separating facts from model judgment"
+      }
+    }
+  ]
 }
