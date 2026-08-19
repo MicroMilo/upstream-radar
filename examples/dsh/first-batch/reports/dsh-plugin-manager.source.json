@@ -1,0 +1,107 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "@2768651338/dsh-plugin-manager",
+    "version": "0.5.0",
+    "artifactDigest": "sha256:afeda8864371dcc9cf32bf8ba0182bee89f3a7a891d87dd65d5c61de5b468742"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 39,
+    "bytesHashed": 943418,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@types/node",
+        "scope": "devDependency",
+        "spec": "^26.2.0"
+      },
+      {
+        "name": "lightningcss",
+        "scope": "devDependency",
+        "spec": "^1.33.0"
+      },
+      {
+        "name": "tsdown",
+        "scope": "devDependency",
+        "spec": "^0.22.14"
+      },
+      {
+        "name": "typescript",
+        "scope": "devDependency",
+        "spec": "^5.9.3"
+      },
+      {
+        "name": "zod",
+        "scope": "devDependency",
+        "spec": "^4.4.3"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-client-ui-primitives",
+        "scope": "peerDependency",
+        "spec": ">=0.1.0-rc.0"
+      },
+      {
+        "name": "@deepseek-ai/dsh-typert-protocol",
+        "scope": "peerDependency",
+        "spec": ">=0.1.0-rc.0"
+      },
+      {
+        "name": "react",
+        "scope": "peerDependency",
+        "spec": "^18.2.0"
+      }
+    ]
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-graph-unlocked",
+      "severity": "medium",
+      "summary": "Runtime dependency graph is not locked in the reviewed source tree",
+      "detail": "A future resolution of the same manifest may select different transitive artifacts.",
+      "evidence": {
+        "runtimeDependencyCount": 4
+      },
+      "remediation": "Commit a supported lockfile and verify every resolved artifact integrity."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/cordis uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

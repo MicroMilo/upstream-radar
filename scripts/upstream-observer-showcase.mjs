@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 const {
@@ -6,28 +7,37 @@ const {
   runObserver,
 } = await import('../dist/src/upstream-observer.js')
 const { buildUpstreamDownstreamIR } = await import('../dist/src/upstream-alignment.js')
-const { buildReverseDependencyIndex } = await import('../dist/src/dependency-index.js')
+const { parseReverseDependencyIndex } = await import('../dist/src/dependency-index.js')
 
 const target = {
-  id: 'dsh-showcase',
+  id: 'dsh-first-batch-routing',
   ecosystem: 'dsh',
-  repository: 'acme/dsh-showcase',
+  repository: 'deepseek-ai/deepseek-harness',
   ref: 'main',
-  packageName: 'dsh-showcase',
-  packagePath: 'plugin/package.json',
-  lockfile: 'plugin/pnpm-lock.yaml',
+  packageName: '@deepseek-ai/cordis',
+  packagePath: 'packages/cordis/package.json',
+  lockfile: 'pnpm-lock.yaml',
   lockfileType: 'pnpm',
 }
 
+const batchIndexPath = resolve(import.meta.dirname, '../examples/dsh/first-batch/reverse-dependency-index.json')
+const reverseDependencyIndex = parseReverseDependencyIndex(JSON.parse(await readFile(batchIndexPath, 'utf8')), batchIndexPath)
+const realDependency = reverseDependencyIndex.dependencies.find(item => (
+  item.dependency.name === '@deepseek-ai/cordis' && item.dependents.length > 0
+))
+if (realDependency === undefined) throw new Error('first-batch reverse index has no real @deepseek-ai/cordis dependents')
+const upstreamPackage = realDependency.dependency
+const nextVersion = upstreamPackage.version === '4.0.1' ? '4.0.2' : `${upstreamPackage.version}.next`
+
 function snapshot(commit, version, graphDigest) {
   const manifest = {
-    name: 'dsh-lark-bot',
+    name: upstreamPackage.name,
     version,
     main: './dist/index.js',
     dsh: { bundle: { patch: './cordis.patch.yml' } },
   }
   const packageObservation = {
-    name: 'dsh-feishu-bot',
+    name: upstreamPackage.name,
     version,
     integrity: `sha512-${version}`,
   }
@@ -35,10 +45,9 @@ function snapshot(commit, version, graphDigest) {
     schema: 'upstream-radar.dependency-graph/v1alpha1',
     rootNodeId: 'root',
     nodes: [
-      { id: 'root', name: 'dsh-lark-bot', version },
-      { id: 'parser', name: 'parser', version: graphDigest === 'sha256:graph-v2' ? '2.0.0' : '1.0.0' },
+      { id: 'root', name: upstreamPackage.name, version },
     ],
-    edges: [{ from: 'root', to: 'parser', kind: 'runtime' }],
+    edges: [],
     source: 'pnpm-lock',
     digest: graphDigest,
   }
@@ -74,7 +83,7 @@ function snapshot(commit, version, graphDigest) {
   }
 }
 
-let current = snapshot('commit-1', '1.0.0', 'sha256:graph-v1')
+let current = snapshot('commit-1', upstreamPackage.version, 'sha256:graph-v1')
 const source = {
   observe: async () => current,
   compare: async (repository, beforeCommit, afterCommit) => ({
@@ -87,20 +96,6 @@ const source = {
   }),
 }
 const config = { schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }
-const reverseDependencyIndex = buildReverseDependencyIndex([{
-  source: 'downstream/dsh-plugin.json',
-  pluginId: 'downstream-plugin@1.0.0',
-  plugin: { ecosystem: 'npm', name: 'downstream-plugin', version: '1.0.0' },
-  graph: {
-    schema: 'upstream-radar.dependency-graph/v1alpha1',
-    rootNodeId: 'downstream-root',
-    nodes: [
-      { id: 'downstream-root', name: 'downstream-plugin', version: '1.0.0' },
-      { id: 'parser', name: 'parser', version: '1.0.0' },
-    ],
-    edges: [{ from: 'downstream-root', to: 'parser', kind: 'runtime' }],
-  },
-}], { generatedAt: '2026-08-17T00:00:00.000Z' })
 
 const baseline = await runObserver(config, emptyObservationState(), {
   source,
@@ -108,7 +103,7 @@ const baseline = await runObserver(config, emptyObservationState(), {
   now: new Date('2026-08-17T00:00:00.000Z'),
 })
 
-current = snapshot('commit-2', '1.1.0', 'sha256:graph-v2')
+current = snapshot('commit-2', nextVersion, 'sha256:graph-v2')
 const changed = await runObserver(config, baseline.state, {
   source,
   reverseDependencyIndex,
@@ -137,6 +132,8 @@ const quiet = await runObserver(config, changed.state, {
 
 process.stdout.write(`${JSON.stringify({
   repository: resolve(import.meta.dirname, '..'),
+  reverseIndexSource: batchIndexPath,
+  upstreamPackage: `${upstreamPackage.name}@${upstreamPackage.version} -> ${nextVersion}`,
   baseline: {
     targets: baseline.report.baselineTargets,
     alignmentFindings: baseline.report.alignmentFindings.map(item => ({ targetId: item.targetId, status: item.alignment.status })),

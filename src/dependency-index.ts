@@ -1,4 +1,3 @@
-import { findDependencyPaths } from './graph.js'
 import type { DependencyGraph, DependencyKind, PackageCoordinate } from './radar-types.js'
 
 export const REVERSE_DEPENDENCY_INDEX_SCHEMA = 'upstream-radar.reverse-dependency-index/v1alpha1' as const
@@ -312,20 +311,14 @@ function packageKey(packageCoordinate: PackageCoordinate): string {
   return `${packageCoordinate.name}@${packageCoordinate.version}`
 }
 
-function pathKinds(graph: DependencyGraph, path: string[]): DependencyKind[] {
+function pathKinds(path: string[], edgeKinds: Map<string, DependencyKind>): DependencyKind[] {
   const kinds: DependencyKind[] = []
   for (let index = 0; index < path.length - 1; index += 1) {
-    const edge = graph.edges
-      .filter(candidate => candidate.from === path[index] && candidate.to === path[index + 1])
-      .sort((left, right) => left.kind.localeCompare(right.kind))[0]
-    if (edge === undefined) throw new Error('dependency graph path references a missing edge')
-    kinds.push(edge.kind)
+    const kind = edgeKinds.get(`${path[index]}\0${path[index + 1]}`)
+    if (kind === undefined) throw new Error('dependency graph path references a missing edge')
+    kinds.push(kind)
   }
   return kinds
-}
-
-function labelsForPath(path: Array<{ name: string; version: string }>): string[] {
-  return path.map(node => `${node.name}@${node.version}`)
 }
 
 function addUnique<T>(items: T[], value: T): void {
@@ -340,6 +333,66 @@ function mergeReverseDependencyUse(target: ReverseDependencyUse, source: Reverse
   addUniqueString(target.sources, source.sources)
   if (source.coverage === 'incomplete') target.coverage = 'incomplete'
   for (const path of source.paths) addUnique(target.paths, path)
+}
+
+/**
+ * Compute bounded root-to-node paths in one propagation pass.
+ *
+ * Calling a DFS once per node can revisit the same high-branching graph an
+ * exponential number of times. A real DSH profile can contain hundreds of
+ * nodes, so keep at most the same bounded path budget per node while sharing
+ * the traversal across all targets.
+ */
+function boundedPathsByNode(
+  graph: DependencyGraph,
+  maxPaths = MAX_PATHS_PER_DEPENDENCY,
+  maxDepth = MAX_PATH_DEPTH,
+): { pathsByNode: Map<string, string[][]>; edgeKinds: Map<string, DependencyKind> } {
+  const nodes = new Map(graph.nodes.map(node => [node.id, node]))
+  if (!nodes.has(graph.rootNodeId)) throw new Error('dependency graph root node is missing')
+  const outgoing = new Map<string, Array<{ to: string; kind: DependencyKind }>>()
+  const edgeKinds = new Map<string, DependencyKind>()
+  for (const edge of graph.edges) {
+    if (!nodes.has(edge.from) || !nodes.has(edge.to)) throw new Error('dependency graph edge references a missing node')
+    const list = outgoing.get(edge.from) ?? []
+    list.push({ to: edge.to, kind: edge.kind })
+    outgoing.set(edge.from, list)
+    const key = `${edge.from}\0${edge.to}`
+    const previous = edgeKinds.get(key)
+    if (previous === undefined || edge.kind.localeCompare(previous) < 0) edgeKinds.set(key, edge.kind)
+  }
+  for (const list of outgoing.values()) {
+    list.sort((left, right) => {
+      const leftNode = nodes.get(left.to)
+      const rightNode = nodes.get(right.to)
+      return `${leftNode?.name ?? ''}@${leftNode?.version ?? ''}:${left.to}`
+        .localeCompare(`${rightNode?.name ?? ''}@${rightNode?.version ?? ''}:${right.to}`)
+        || left.kind.localeCompare(right.kind)
+    })
+  }
+
+  const pathsByNode = new Map<string, string[][]>([[graph.rootNodeId, [[graph.rootNodeId]]]])
+  const queue = [graph.rootNodeId]
+  for (let cursor = 0; cursor < queue.length; cursor += 1) {
+    const current = queue[cursor]
+    if (current === undefined) continue
+    const paths = pathsByNode.get(current) ?? []
+    if (paths.length === 0) continue
+    for (const path of paths) {
+      if (path.length >= maxDepth) continue
+      const seen = new Set(path)
+      for (const edge of outgoing.get(current) ?? []) {
+        if (seen.has(edge.to)) continue
+        const nextPath = [...path, edge.to]
+        const targetPaths = pathsByNode.get(edge.to) ?? []
+        if (targetPaths.length >= maxPaths || targetPaths.some(item => JSON.stringify(item) === JSON.stringify(nextPath))) continue
+        targetPaths.push(nextPath)
+        pathsByNode.set(edge.to, targetPaths)
+        queue.push(edge.to)
+      }
+    }
+  }
+  return { pathsByNode, edgeKinds }
 }
 
 /** Build a deterministic dependency -> plugin index from bounded graph observations. */
@@ -375,12 +428,11 @@ export function buildReverseDependencyIndex(
 
     const root = observation.graph.nodes.find(node => node.id === observation.graph.rootNodeId)
     if (root === undefined) throw new Error(`${observation.source} graph root node is missing`)
+    const nodesById = new Map(observation.graph.nodes.map(node => [node.id, node]))
+    const { pathsByNode, edgeKinds } = boundedPathsByNode(observation.graph)
     for (const node of observation.graph.nodes) {
       if (node.id === observation.graph.rootNodeId) continue
-      const paths = findDependencyPaths(observation.graph, node.id, {
-        maxPaths: MAX_PATHS_PER_DEPENDENCY,
-        maxDepth: MAX_PATH_DEPTH,
-      })
+      const paths = pathsByNode.get(node.id) ?? []
       if (paths.length === 0) continue
       const dependency = { ecosystem: 'npm' as const, name: node.name, version: node.version }
       const dependencyEntry = dependencies.get(packageKey(dependency)) ?? { dependency, dependents: [] }
@@ -396,8 +448,12 @@ export function buildReverseDependencyIndex(
       addUnique(target.sources, observation.source)
       if (coverage === 'incomplete') target.coverage = 'incomplete'
       for (const path of paths) {
-        const labels = labelsForPath(path)
-        addUnique(target.paths, { nodes: labels, kinds: pathKinds(observation.graph, path.map(item => item.id)) })
+        const labels = path.map(id => {
+          const pathNode = nodesById.get(id)
+          if (pathNode === undefined) throw new Error(`${observation.source} graph path references a missing node`)
+          return `${pathNode.name}@${pathNode.version}`
+        })
+        addUnique(target.paths, { nodes: labels, kinds: pathKinds(path, edgeKinds) })
       }
       if (dependent === undefined) dependencyEntry.dependents.push(target)
       dependencies.set(packageKey(dependency), dependencyEntry)

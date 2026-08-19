@@ -1,0 +1,1522 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-verification-receipt",
+    "version": "0.1.0",
+    "artifactDigest": "sha256:01ab83c4c6af508c3eb8e6cc0bf6d659ee1267f6d542e64d025c9bbd3884c10d"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 26,
+    "bytesHashed": 694020,
+    "lockfiles": [
+      "pnpm-lock.yaml"
+    ],
+    "packageManager": "pnpm@11.19.0",
+    "lifecycleScripts": [
+      {
+        "name": "prepare",
+        "command": "pnpm run build"
+      }
+    ],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "dependency",
+        "spec": "3.18.1"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "devDependency",
+        "spec": "4.0.1"
+      },
+      {
+        "name": "@deepseek-ai/dsh-llm",
+        "scope": "devDependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-session",
+        "scope": "devDependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "devDependency",
+        "spec": "3.18.1"
+      },
+      {
+        "name": "@types/node",
+        "scope": "devDependency",
+        "spec": "^24.0.0"
+      },
+      {
+        "name": "esbuild",
+        "scope": "devDependency",
+        "spec": "0.28.2"
+      },
+      {
+        "name": "publint",
+        "scope": "devDependency",
+        "spec": "^0.3.12"
+      },
+      {
+        "name": "typescript",
+        "scope": "devDependency",
+        "spec": "^6.0.3"
+      },
+      {
+        "name": "vitest",
+        "scope": "devDependency",
+        "spec": "^4.1.8"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.1"
+      },
+      {
+        "name": "@deepseek-ai/dsh-session",
+        "scope": "peerDependency",
+        "spec": ">=0.1.0-rc.5 <0.1.0"
+      },
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "peerDependency",
+        "spec": "^3.18.1"
+      }
+    ],
+    "dependencyGraph": {
+      "schema": "upstream-radar.dependency-graph/v1alpha1",
+      "rootNodeId": "pnpm:workspace-root:dsh-verification-receipt@0.1.0",
+      "nodes": [
+        {
+          "id": "pnpm:workspace-root:dsh-verification-receipt@0.1.0",
+          "name": "dsh-verification-receipt",
+          "version": "0.1.0"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "name": "@deepseek-ai/cordis",
+          "version": "4.0.1"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/cosmokit@1.8.2",
+          "name": "@deepseek-ai/cosmokit",
+          "version": "1.8.2"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "name": "@deepseek-ai/dsh-attachment",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "name": "@deepseek-ai/dsh-brand",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "name": "@deepseek-ai/dsh-invariants",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "name": "@deepseek-ai/dsh-llm",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "name": "@deepseek-ai/dsh-scope",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "name": "@deepseek-ai/dsh-session",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "name": "@deepseek-ai/dsh-timeout",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "name": "@deepseek-ai/dsh-typert-protocol",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "name": "@deepseek-ai/schemastery",
+          "version": "3.18.1"
+        },
+        {
+          "id": "pnpm:@esbuild/aix-ppc64@0.28.2",
+          "name": "@esbuild/aix-ppc64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/android-arm@0.28.2",
+          "name": "@esbuild/android-arm",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/android-arm64@0.28.2",
+          "name": "@esbuild/android-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/android-x64@0.28.2",
+          "name": "@esbuild/android-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/darwin-arm64@0.28.2",
+          "name": "@esbuild/darwin-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/darwin-x64@0.28.2",
+          "name": "@esbuild/darwin-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/freebsd-arm64@0.28.2",
+          "name": "@esbuild/freebsd-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/freebsd-x64@0.28.2",
+          "name": "@esbuild/freebsd-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-arm@0.28.2",
+          "name": "@esbuild/linux-arm",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-arm64@0.28.2",
+          "name": "@esbuild/linux-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-ia32@0.28.2",
+          "name": "@esbuild/linux-ia32",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-loong64@0.28.2",
+          "name": "@esbuild/linux-loong64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-mips64el@0.28.2",
+          "name": "@esbuild/linux-mips64el",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-ppc64@0.28.2",
+          "name": "@esbuild/linux-ppc64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-riscv64@0.28.2",
+          "name": "@esbuild/linux-riscv64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-s390x@0.28.2",
+          "name": "@esbuild/linux-s390x",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-x64@0.28.2",
+          "name": "@esbuild/linux-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/netbsd-arm64@0.28.2",
+          "name": "@esbuild/netbsd-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/netbsd-x64@0.28.2",
+          "name": "@esbuild/netbsd-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/openbsd-arm64@0.28.2",
+          "name": "@esbuild/openbsd-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/openbsd-x64@0.28.2",
+          "name": "@esbuild/openbsd-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/openharmony-arm64@0.28.2",
+          "name": "@esbuild/openharmony-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/sunos-x64@0.28.2",
+          "name": "@esbuild/sunos-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/win32-arm64@0.28.2",
+          "name": "@esbuild/win32-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/win32-ia32@0.28.2",
+          "name": "@esbuild/win32-ia32",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/win32-x64@0.28.2",
+          "name": "@esbuild/win32-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@jridgewell/sourcemap-codec@1.5.5",
+          "name": "@jridgewell/sourcemap-codec",
+          "version": "1.5.5"
+        },
+        {
+          "id": "pnpm:@oxc-project/types@0.144.0",
+          "name": "@oxc-project/types",
+          "version": "0.144.0"
+        },
+        {
+          "id": "pnpm:@publint/pack@0.1.6",
+          "name": "@publint/pack",
+          "version": "0.1.6"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-android-arm64@1.2.4",
+          "name": "@rolldown/binding-android-arm64",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-darwin-arm64@1.2.4",
+          "name": "@rolldown/binding-darwin-arm64",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-darwin-x64@1.2.4",
+          "name": "@rolldown/binding-darwin-x64",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-freebsd-x64@1.2.4",
+          "name": "@rolldown/binding-freebsd-x64",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-linux-arm-gnueabihf@1.2.4",
+          "name": "@rolldown/binding-linux-arm-gnueabihf",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-linux-arm64-gnu@1.2.4",
+          "name": "@rolldown/binding-linux-arm64-gnu",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-linux-arm64-musl@1.2.4",
+          "name": "@rolldown/binding-linux-arm64-musl",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-linux-ppc64-gnu@1.2.4",
+          "name": "@rolldown/binding-linux-ppc64-gnu",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-linux-s390x-gnu@1.2.4",
+          "name": "@rolldown/binding-linux-s390x-gnu",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-linux-x64-gnu@1.2.4",
+          "name": "@rolldown/binding-linux-x64-gnu",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-linux-x64-musl@1.2.4",
+          "name": "@rolldown/binding-linux-x64-musl",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-openharmony-arm64@1.2.4",
+          "name": "@rolldown/binding-openharmony-arm64",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-win32-arm64-msvc@1.2.4",
+          "name": "@rolldown/binding-win32-arm64-msvc",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-win32-x64-msvc@1.2.4",
+          "name": "@rolldown/binding-win32-x64-msvc",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/pluginutils@1.0.1",
+          "name": "@rolldown/pluginutils",
+          "version": "1.0.1"
+        },
+        {
+          "id": "pnpm:@standard-schema/spec@1.1.0",
+          "name": "@standard-schema/spec",
+          "version": "1.1.0"
+        },
+        {
+          "id": "pnpm:@types/chai@5.2.3",
+          "name": "@types/chai",
+          "version": "5.2.3"
+        },
+        {
+          "id": "pnpm:@types/deep-eql@4.0.2",
+          "name": "@types/deep-eql",
+          "version": "4.0.2"
+        },
+        {
+          "id": "pnpm:@types/estree@1.0.9",
+          "name": "@types/estree",
+          "version": "1.0.9"
+        },
+        {
+          "id": "pnpm:@types/node@24.13.3",
+          "name": "@types/node",
+          "version": "24.13.3"
+        },
+        {
+          "id": "pnpm:@vitest/expect@4.1.10",
+          "name": "@vitest/expect",
+          "version": "4.1.10"
+        },
+        {
+          "id": "pnpm:@vitest/mocker@4.1.10(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "name": "@vitest/mocker",
+          "version": "4.1.10"
+        },
+        {
+          "id": "pnpm:@vitest/pretty-format@4.1.10",
+          "name": "@vitest/pretty-format",
+          "version": "4.1.10"
+        },
+        {
+          "id": "pnpm:@vitest/runner@4.1.10",
+          "name": "@vitest/runner",
+          "version": "4.1.10"
+        },
+        {
+          "id": "pnpm:@vitest/snapshot@4.1.10",
+          "name": "@vitest/snapshot",
+          "version": "4.1.10"
+        },
+        {
+          "id": "pnpm:@vitest/spy@4.1.10",
+          "name": "@vitest/spy",
+          "version": "4.1.10"
+        },
+        {
+          "id": "pnpm:@vitest/utils@4.1.10",
+          "name": "@vitest/utils",
+          "version": "4.1.10"
+        },
+        {
+          "id": "pnpm:assertion-error@2.0.1",
+          "name": "assertion-error",
+          "version": "2.0.1"
+        },
+        {
+          "id": "pnpm:chai@6.2.2",
+          "name": "chai",
+          "version": "6.2.2"
+        },
+        {
+          "id": "pnpm:convert-source-map@2.0.0",
+          "name": "convert-source-map",
+          "version": "2.0.0"
+        },
+        {
+          "id": "pnpm:detect-libc@2.1.2",
+          "name": "detect-libc",
+          "version": "2.1.2"
+        },
+        {
+          "id": "pnpm:es-module-lexer@2.3.1",
+          "name": "es-module-lexer",
+          "version": "2.3.1"
+        },
+        {
+          "id": "pnpm:esbuild@0.28.2",
+          "name": "esbuild",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:estree-walker@3.0.3",
+          "name": "estree-walker",
+          "version": "3.0.3"
+        },
+        {
+          "id": "pnpm:expect-type@1.4.0",
+          "name": "expect-type",
+          "version": "1.4.0"
+        },
+        {
+          "id": "pnpm:fdir@6.5.0(picomatch@4.0.5)",
+          "name": "fdir",
+          "version": "6.5.0"
+        },
+        {
+          "id": "pnpm:fsevents@2.3.3",
+          "name": "fsevents",
+          "version": "2.3.3"
+        },
+        {
+          "id": "pnpm:lightningcss-android-arm64@1.33.0",
+          "name": "lightningcss-android-arm64",
+          "version": "1.33.0"
+        },
+        {
+          "id": "pnpm:lightningcss-darwin-arm64@1.33.0",
+          "name": "lightningcss-darwin-arm64",
+          "version": "1.33.0"
+        },
+        {
+          "id": "pnpm:lightningcss-darwin-x64@1.33.0",
+          "name": "lightningcss-darwin-x64",
+          "version": "1.33.0"
+        },
+        {
+          "id": "pnpm:lightningcss-freebsd-x64@1.33.0",
+          "name": "lightningcss-freebsd-x64",
+          "version": "1.33.0"
+        },
+        {
+          "id": "pnpm:lightningcss-linux-arm-gnueabihf@1.33.0",
+          "name": "lightningcss-linux-arm-gnueabihf",
+          "version": "1.33.0"
+        },
+        {
+          "id": "pnpm:lightningcss-linux-arm64-gnu@1.33.0",
+          "name": "lightningcss-linux-arm64-gnu",
+          "version": "1.33.0"
+        },
+        {
+          "id": "pnpm:lightningcss-linux-arm64-musl@1.33.0",
+          "name": "lightningcss-linux-arm64-musl",
+          "version": "1.33.0"
+        },
+        {
+          "id": "pnpm:lightningcss-linux-x64-gnu@1.33.0",
+          "name": "lightningcss-linux-x64-gnu",
+          "version": "1.33.0"
+        },
+        {
+          "id": "pnpm:lightningcss-linux-x64-musl@1.33.0",
+          "name": "lightningcss-linux-x64-musl",
+          "version": "1.33.0"
+        },
+        {
+          "id": "pnpm:lightningcss-win32-arm64-msvc@1.33.0",
+          "name": "lightningcss-win32-arm64-msvc",
+          "version": "1.33.0"
+        },
+        {
+          "id": "pnpm:lightningcss-win32-x64-msvc@1.33.0",
+          "name": "lightningcss-win32-x64-msvc",
+          "version": "1.33.0"
+        },
+        {
+          "id": "pnpm:lightningcss@1.33.0",
+          "name": "lightningcss",
+          "version": "1.33.0"
+        },
+        {
+          "id": "pnpm:magic-string@0.30.21",
+          "name": "magic-string",
+          "version": "0.30.21"
+        },
+        {
+          "id": "pnpm:mri@1.2.0",
+          "name": "mri",
+          "version": "1.2.0"
+        },
+        {
+          "id": "pnpm:nanoid@3.3.18",
+          "name": "nanoid",
+          "version": "3.3.18"
+        },
+        {
+          "id": "pnpm:obug@2.1.4",
+          "name": "obug",
+          "version": "2.1.4"
+        },
+        {
+          "id": "pnpm:package-manager-detector@1.8.0",
+          "name": "package-manager-detector",
+          "version": "1.8.0"
+        },
+        {
+          "id": "pnpm:pathe@2.0.3",
+          "name": "pathe",
+          "version": "2.0.3"
+        },
+        {
+          "id": "pnpm:picocolors@1.1.1",
+          "name": "picocolors",
+          "version": "1.1.1"
+        },
+        {
+          "id": "pnpm:picomatch@4.0.5",
+          "name": "picomatch",
+          "version": "4.0.5"
+        },
+        {
+          "id": "pnpm:postcss@8.5.26",
+          "name": "postcss",
+          "version": "8.5.26"
+        },
+        {
+          "id": "pnpm:publint@0.3.23",
+          "name": "publint",
+          "version": "0.3.23"
+        },
+        {
+          "id": "pnpm:rolldown@1.2.4",
+          "name": "rolldown",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:sade@1.8.1",
+          "name": "sade",
+          "version": "1.8.1"
+        },
+        {
+          "id": "pnpm:siginfo@2.0.0",
+          "name": "siginfo",
+          "version": "2.0.0"
+        },
+        {
+          "id": "pnpm:source-map-js@1.2.1",
+          "name": "source-map-js",
+          "version": "1.2.1"
+        },
+        {
+          "id": "pnpm:stackback@0.0.2",
+          "name": "stackback",
+          "version": "0.0.2"
+        },
+        {
+          "id": "pnpm:std-env@4.2.0",
+          "name": "std-env",
+          "version": "4.2.0"
+        },
+        {
+          "id": "pnpm:tinybench@2.9.0",
+          "name": "tinybench",
+          "version": "2.9.0"
+        },
+        {
+          "id": "pnpm:tinyexec@1.3.0",
+          "name": "tinyexec",
+          "version": "1.3.0"
+        },
+        {
+          "id": "pnpm:tinyglobby@0.2.17",
+          "name": "tinyglobby",
+          "version": "0.2.17"
+        },
+        {
+          "id": "pnpm:tinyrainbow@3.1.1",
+          "name": "tinyrainbow",
+          "version": "3.1.1"
+        },
+        {
+          "id": "pnpm:typescript@6.0.3",
+          "name": "typescript",
+          "version": "6.0.3"
+        },
+        {
+          "id": "pnpm:undici-types@7.18.2",
+          "name": "undici-types",
+          "version": "7.18.2"
+        },
+        {
+          "id": "pnpm:vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)",
+          "name": "vite",
+          "version": "8.2.1"
+        },
+        {
+          "id": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "name": "vitest",
+          "version": "4.1.10"
+        },
+        {
+          "id": "pnpm:why-is-node-running@2.3.0",
+          "name": "why-is-node-running",
+          "version": "2.3.0"
+        }
+      ],
+      "edges": [
+        {
+          "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "to": "pnpm:@deepseek-ai/cosmokit@1.8.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "to": "pnpm:@standard-schema/spec@1.1.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "to": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "to": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "to": "pnpm:@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "to": "pnpm:@deepseek-ai/cosmokit@1.8.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "to": "pnpm:@standard-schema/spec@1.1.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@publint/pack@0.1.6",
+          "to": "pnpm:tinyexec@1.3.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@types/chai@5.2.3",
+          "to": "pnpm:@types/deep-eql@4.0.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@types/chai@5.2.3",
+          "to": "pnpm:assertion-error@2.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@types/node@24.13.3",
+          "to": "pnpm:undici-types@7.18.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/expect@4.1.10",
+          "to": "pnpm:@standard-schema/spec@1.1.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/expect@4.1.10",
+          "to": "pnpm:@types/chai@5.2.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/expect@4.1.10",
+          "to": "pnpm:@vitest/spy@4.1.10",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/expect@4.1.10",
+          "to": "pnpm:@vitest/utils@4.1.10",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/expect@4.1.10",
+          "to": "pnpm:chai@6.2.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/expect@4.1.10",
+          "to": "pnpm:tinyrainbow@3.1.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/mocker@4.1.10(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:@vitest/spy@4.1.10",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/mocker@4.1.10(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:estree-walker@3.0.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/mocker@4.1.10(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:magic-string@0.30.21",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/mocker@4.1.10(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@vitest/pretty-format@4.1.10",
+          "to": "pnpm:tinyrainbow@3.1.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/runner@4.1.10",
+          "to": "pnpm:@vitest/utils@4.1.10",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/runner@4.1.10",
+          "to": "pnpm:pathe@2.0.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/snapshot@4.1.10",
+          "to": "pnpm:@vitest/pretty-format@4.1.10",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/snapshot@4.1.10",
+          "to": "pnpm:@vitest/utils@4.1.10",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/snapshot@4.1.10",
+          "to": "pnpm:magic-string@0.30.21",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/snapshot@4.1.10",
+          "to": "pnpm:pathe@2.0.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/utils@4.1.10",
+          "to": "pnpm:@vitest/pretty-format@4.1.10",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/utils@4.1.10",
+          "to": "pnpm:convert-source-map@2.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/utils@4.1.10",
+          "to": "pnpm:tinyrainbow@3.1.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/aix-ppc64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/android-arm@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/android-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/android-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/darwin-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/darwin-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/freebsd-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/freebsd-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-arm@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-ia32@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-loong64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-mips64el@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-ppc64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-riscv64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-s390x@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/netbsd-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/netbsd-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/openbsd-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/openbsd-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/openharmony-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/sunos-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/win32-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/win32-ia32@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/win32-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:estree-walker@3.0.3",
+          "to": "pnpm:@types/estree@1.0.9",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:fdir@6.5.0(picomatch@4.0.5)",
+          "to": "pnpm:picomatch@4.0.5",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:lightningcss@1.33.0",
+          "to": "pnpm:detect-libc@2.1.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:lightningcss@1.33.0",
+          "to": "pnpm:lightningcss-android-arm64@1.33.0",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:lightningcss@1.33.0",
+          "to": "pnpm:lightningcss-darwin-arm64@1.33.0",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:lightningcss@1.33.0",
+          "to": "pnpm:lightningcss-darwin-x64@1.33.0",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:lightningcss@1.33.0",
+          "to": "pnpm:lightningcss-freebsd-x64@1.33.0",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:lightningcss@1.33.0",
+          "to": "pnpm:lightningcss-linux-arm-gnueabihf@1.33.0",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:lightningcss@1.33.0",
+          "to": "pnpm:lightningcss-linux-arm64-gnu@1.33.0",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:lightningcss@1.33.0",
+          "to": "pnpm:lightningcss-linux-arm64-musl@1.33.0",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:lightningcss@1.33.0",
+          "to": "pnpm:lightningcss-linux-x64-gnu@1.33.0",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:lightningcss@1.33.0",
+          "to": "pnpm:lightningcss-linux-x64-musl@1.33.0",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:lightningcss@1.33.0",
+          "to": "pnpm:lightningcss-win32-arm64-msvc@1.33.0",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:lightningcss@1.33.0",
+          "to": "pnpm:lightningcss-win32-x64-msvc@1.33.0",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:magic-string@0.30.21",
+          "to": "pnpm:@jridgewell/sourcemap-codec@1.5.5",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:postcss@8.5.26",
+          "to": "pnpm:nanoid@3.3.18",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:postcss@8.5.26",
+          "to": "pnpm:picocolors@1.1.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:postcss@8.5.26",
+          "to": "pnpm:source-map-js@1.2.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:publint@0.3.23",
+          "to": "pnpm:@publint/pack@0.1.6",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:publint@0.3.23",
+          "to": "pnpm:package-manager-detector@1.8.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:publint@0.3.23",
+          "to": "pnpm:picocolors@1.1.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:publint@0.3.23",
+          "to": "pnpm:sade@1.8.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@oxc-project/types@0.144.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-android-arm64@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-darwin-arm64@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-darwin-x64@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-freebsd-x64@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-linux-arm-gnueabihf@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-linux-arm64-gnu@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-linux-arm64-musl@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-linux-ppc64-gnu@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-linux-s390x-gnu@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-linux-x64-gnu@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-linux-x64-musl@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-openharmony-arm64@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-win32-arm64-msvc@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-win32-x64-msvc@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/pluginutils@1.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:sade@1.8.1",
+          "to": "pnpm:mri@1.2.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tinyglobby@0.2.17",
+          "to": "pnpm:fdir@6.5.0(picomatch@4.0.5)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tinyglobby@0.2.17",
+          "to": "pnpm:picomatch@4.0.5",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)",
+          "to": "pnpm:@types/node@24.13.3",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)",
+          "to": "pnpm:esbuild@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)",
+          "to": "pnpm:fsevents@2.3.3",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)",
+          "to": "pnpm:lightningcss@1.33.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)",
+          "to": "pnpm:picomatch@4.0.5",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)",
+          "to": "pnpm:postcss@8.5.26",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)",
+          "to": "pnpm:rolldown@1.2.4",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)",
+          "to": "pnpm:tinyglobby@0.2.17",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:@types/node@24.13.3",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:@vitest/expect@4.1.10",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:@vitest/mocker@4.1.10(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:@vitest/pretty-format@4.1.10",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:@vitest/runner@4.1.10",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:@vitest/snapshot@4.1.10",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:@vitest/spy@4.1.10",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:@vitest/utils@4.1.10",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:es-module-lexer@2.3.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:expect-type@1.4.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:magic-string@0.30.21",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:obug@2.1.4",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:pathe@2.0.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:picomatch@4.0.5",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:std-env@4.2.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:tinybench@2.9.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:tinyexec@1.3.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:tinyglobby@0.2.17",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:tinyrainbow@3.1.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "to": "pnpm:why-is-node-running@2.3.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:why-is-node-running@2.3.0",
+          "to": "pnpm:siginfo@2.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:why-is-node-running@2.3.0",
+          "to": "pnpm:stackback@0.0.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-verification-receipt@0.1.0",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-verification-receipt@0.1.0",
+          "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-verification-receipt@0.1.0",
+          "to": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-verification-receipt@0.1.0",
+          "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-verification-receipt@0.1.0",
+          "to": "pnpm:@types/node@24.13.3",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-verification-receipt@0.1.0",
+          "to": "pnpm:esbuild@0.28.2",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-verification-receipt@0.1.0",
+          "to": "pnpm:publint@0.3.23",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-verification-receipt@0.1.0",
+          "to": "pnpm:typescript@6.0.3",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-verification-receipt@0.1.0",
+          "to": "pnpm:vitest@4.1.10(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))",
+          "kind": "development"
+        }
+      ],
+      "source": "pnpm-lock",
+      "digest": "sha256:a463fd998e1af87b5d2e9398991cbfec8ac803b4f8837aedcf886156c0bce29a",
+      "unresolved": [
+        {
+          "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "name": "@deepseek-ai/cordis-plugin-include",
+          "spec": "^1.0.6",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "name": "@deepseek-ai/cordis-plugin-loader",
+          "spec": "^1.0.2",
+          "kind": "optional"
+        }
+      ]
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "resolved",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "lifecycle-script-present",
+      "severity": "high",
+      "summary": "Lifecycle script prepare executes during installation",
+      "detail": "Lifecycle scripts run before a plugin is admitted into DSH and therefore require review.",
+      "evidence": {
+        "script": "prepare",
+        "command": "pnpm run build"
+      },
+      "remediation": "Prefer a prebuilt package with no install-time lifecycle scripts."
+    }
+  ],
+  "riskVerdict": "review",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

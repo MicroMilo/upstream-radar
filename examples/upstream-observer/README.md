@@ -24,7 +24,7 @@ Replace it with the repositories your team depends on.
 For one repository, the shortest path skips YAML and lockfile configuration entirely:
 
 ```bash
-npx --yes upstream-radar@0.36.0 observe \
+npx --yes upstream-radar@0.37.0 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md
@@ -35,7 +35,7 @@ Radar automatically chooses the committed `pnpm-lock.yaml` or
 the explicit form below adds `--package`:
 
 ```bash
-npx --yes upstream-radar@0.36.0 observe \
+npx --yes upstream-radar@0.37.0 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --package dsh-feishu-bot \
   --lockfile pnpm-lock.yaml --lockfile-type pnpm \
@@ -75,9 +75,9 @@ Build one index from saved DSH plugin scan/review/config JSON, then give it to
 the observer:
 
 ```bash
-npx --yes upstream-radar@0.36.0 graph reverse ./plugin-reports \
+npx --yes upstream-radar@0.37.0 graph reverse ./plugin-reports \
   --output ./reverse-dependency-index.json
-npx --yes upstream-radar@0.36.0 observe ./targets.yml \
+npx --yes upstream-radar@0.37.0 observe ./targets.yml \
   --reverse-index ./reverse-dependency-index.json \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md
@@ -87,6 +87,23 @@ The match is by package name, so an upstream `parser@1.0.0` → `parser@2.0.0`
 change can find plugins that still use `parser@1.0.0`. The report includes the
 exact downstream path and whether that plugin's graph was complete. It is a
 static impact signal, not a claim that the plugin is already broken.
+
+This repository also contains the first real 50-plugin DSH corpus collected
+from the public plugin registry. It has 50 source scans, 30 exact npm artifact
+reviews, and a checked-in reverse index for the 37 plugins whose graphs could
+be reconstructed. The 13 skipped targets remain visible as missing evidence,
+not clean results. See [`../dsh/first-batch/README.md`](../dsh/first-batch/README.md)
+and run `pnpm run showcase:observer` to replay a real
+`@deepseek-ai/cordis` old → new route against that index.
+
+The scheduled workflow uses the checked-in index directly:
+
+```bash
+npx --yes upstream-radar@0.37.0 observe ./targets.yml \
+  --reverse-index ../dsh/first-batch/reverse-dependency-index.json \
+  --state /tmp/upstream-radar-observations.json \
+  --report /tmp/upstream-radar-observer.md
+```
 
 The deterministic closed-loop result is recorded in
 [`reports/dsh-feishu-bot-artifact-review-2026-08-18.md`](reports/dsh-feishu-bot-artifact-review-2026-08-18.md):
@@ -109,7 +126,7 @@ Run it from any directory with the published CLI:
 
 ```bash
 export GITHUB_TOKEN='a read-only token with repository metadata access'
-npx --yes upstream-radar@0.36.0 observe \
+npx --yes upstream-radar@0.37.0 observe \
   /path/to/targets.yml \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md

@@ -1,0 +1,92 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-toolbox-web",
+    "version": "0.1.9",
+    "artifactDigest": "sha256:0270256e4b063d239837297bc8cb12fe9892663e612d3dbc7095609a2d03f930"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 25,
+    "bytesHashed": 1351456,
+    "lockfiles": [
+      "package-lock.json"
+    ],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "dependency",
+        "spec": "4.0.1"
+      },
+      {
+        "name": "@deepseek-ai/dsh-settings",
+        "scope": "dependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-typert-protocol",
+        "scope": "dependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "dependency",
+        "spec": "^3.18.1"
+      },
+      {
+        "name": "js-yaml",
+        "scope": "dependency",
+        "spec": "^4.3.1"
+      }
+    ],
+    "dependencyGraphError": "requested root package is not present in npm lockfile: dsh-toolbox-web@0.1.9"
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-graph-unavailable",
+      "severity": "info",
+      "summary": "Committed dependency graph could not be established",
+      "detail": "requested root package is not present in npm lockfile: dsh-toolbox-web@0.1.9",
+      "evidence": {
+        "lockfile": "package-lock.json"
+      },
+      "remediation": "Fix or regenerate the supported lockfile, then rerun the scan so vulnerability paths can be checked against exact versions."
+    },
+    {
+      "code": "lockfile-root-metadata-stale",
+      "severity": "info",
+      "summary": "package-lock root metadata does not match package.json",
+      "detail": "The lockfile root is stale (version 0.1.1 → 0.1.9). The dependency tree may still resolve, but source-version tracking and reproducible monitoring can point at the wrong plugin release.",
+      "evidence": {
+        "path": "package-lock.json",
+        "packageName": "dsh-toolbox-web",
+        "packageVersion": "0.1.9",
+        "lockfileName": "dsh-toolbox-web",
+        "lockfileVersion": "0.1.1"
+      },
+      "remediation": "Regenerate package-lock.json from the intended package.json with lifecycle scripts disabled, then review the complete lockfile diff."
+    }
+  ],
+  "riskVerdict": "allow",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

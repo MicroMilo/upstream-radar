@@ -1,0 +1,233 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "@nn12138/dsh-voice",
+    "version": "0.2.5",
+    "artifactDigest": "sha256:591e9d7bec499d499f36cd8a32c835010f7c1f94a6ee18dc90af2f25ad0a8075",
+    "treeDigest": "sha256:4761fbdf7bc0ffe246b1861296cbf42f394f2039605a29ae506080e6d0df405a",
+    "spec": "npm:@nn12138/dsh-voice@0.2.5"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 44,
+    "bytesHashed": 163614,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [
+      {
+        "name": "prepare",
+        "command": "npm run build"
+      }
+    ],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "dependency",
+        "spec": "^3.18.1"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "devDependency",
+        "spec": "^4.0.1"
+      },
+      {
+        "name": "@types/node",
+        "scope": "devDependency",
+        "spec": "^24.0.0"
+      },
+      {
+        "name": "@types/react",
+        "scope": "devDependency",
+        "spec": "^19.2.18"
+      },
+      {
+        "name": "react",
+        "scope": "devDependency",
+        "spec": "^19.2.8"
+      },
+      {
+        "name": "sherpa-onnx-node",
+        "scope": "devDependency",
+        "spec": "^1.13.5"
+      },
+      {
+        "name": "tsdown",
+        "scope": "devDependency",
+        "spec": "^0.22.14"
+      },
+      {
+        "name": "typescript",
+        "scope": "devDependency",
+        "spec": "^5.8.0"
+      },
+      {
+        "name": "vitest",
+        "scope": "devDependency",
+        "spec": "^3.0.0"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.1"
+      }
+    ],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/@nn12138/dsh-voice/-/dsh-voice-0.2.5.tgz",
+      "compressedBytes": 52673,
+      "unpackedBytes": 163614,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "EU4TXJT6XGnzwBQkBK6SwlcJMu0JE6xRl13mUnb/XOCk+eDI9aJIB9oxlP7G09UtD+ZSpZY9X8FWnFfI0gMnSA==",
+        "actual": "EU4TXJT6XGnzwBQkBK6SwlcJMu0JE6xRl13mUnb/XOCk+eDI9aJIB9oxlP7G09UtD+ZSpZY9X8FWnFfI0gMnSA=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "missing"
+      },
+      "dependencyAudit": {
+        "status": "verified",
+        "packages": 5,
+        "resolutionMode": "strict",
+        "graphDigest": "sha256:d9d2974e3214b3a1b0f426ff3c875d664ae7c0d4a64478829674fd4152844393",
+        "graph": {
+          "schema": "upstream-radar.dependency-graph/v1alpha1",
+          "rootNodeId": "node_modules/@nn12138/dsh-voice",
+          "nodes": [
+            {
+              "id": "node_modules/@nn12138/dsh-voice",
+              "name": "@nn12138/dsh-voice",
+              "version": "0.2.5"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis",
+              "version": "4.0.1"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/cosmokit",
+              "name": "@deepseek-ai/cosmokit",
+              "version": "1.8.2"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/schemastery",
+              "name": "@deepseek-ai/schemastery",
+              "version": "3.18.1"
+            },
+            {
+              "id": "node_modules/@standard-schema/spec",
+              "name": "@standard-schema/spec",
+              "version": "1.1.0"
+            }
+          ],
+          "edges": [
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "to": "node_modules/@deepseek-ai/cosmokit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "to": "node_modules/@standard-schema/spec",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/schemastery",
+              "to": "node_modules/@deepseek-ai/cosmokit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/schemastery",
+              "to": "node_modules/@standard-schema/spec",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@nn12138/dsh-voice",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@nn12138/dsh-voice",
+              "to": "node_modules/@deepseek-ai/schemastery",
+              "kind": "runtime"
+            }
+          ],
+          "source": "npm-lock",
+          "digest": "sha256:d9d2974e3214b3a1b0f426ff3c875d664ae7c0d4a64478829674fd4152844393",
+          "unresolved": [
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis-plugin-include",
+              "spec": "^1.0.6",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis-plugin-loader",
+              "spec": "^1.0.2",
+              "kind": "optional"
+            }
+          ]
+        },
+        "installScriptPackages": [],
+        "installScriptDetails": [],
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "missing",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "lifecycle-script-present",
+      "severity": "high",
+      "summary": "Lifecycle script prepare executes during installation",
+      "detail": "Lifecycle scripts run before a plugin is admitted into DSH and therefore require review.",
+      "evidence": {
+        "script": "prepare",
+        "command": "npm run build"
+      },
+      "remediation": "Prefer a prebuilt package with no install-time lifecycle scripts."
+    },
+    {
+      "code": "npm-provenance-missing",
+      "severity": "medium",
+      "summary": "npm artifact has no build provenance",
+      "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+      "remediation": "Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version."
+    }
+  ],
+  "riskVerdict": "review",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

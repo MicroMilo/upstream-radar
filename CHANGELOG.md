@@ -2,6 +2,15 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.37.0] - 2026-08-19
+
+### Real DSH dependency corpus
+
+- Scan the first 50 public DSH plugin repositories without installing or executing them.
+- Review same-name, same-version npm artifacts when published and preserve missing graphs as explicit evidence gaps.
+- Check in the resulting 37-plugin, 1,025-coordinate reverse dependency index and use it in the always-on observer workflows.
+- Make the observer showcase route a real `@deepseek-ai/cordis` update to 17 downstream DSH plugins.
+
 ## [0.36.0] - 2026-08-18
 
 ### Downstream impact routing

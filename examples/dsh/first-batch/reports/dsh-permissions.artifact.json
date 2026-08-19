@@ -1,0 +1,138 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "dsh-permissions",
+    "version": "1.0.8",
+    "artifactDigest": "sha256:937164a035788a1e6e513032de3210a849066b0964e47b9218a5938eb74bc4e5",
+    "treeDigest": "sha256:bd456223a5da57ded33cd3ae3f7eb8059fe8d6e910820b43177350b80c7e5744",
+    "spec": "npm:dsh-permissions@1.0.8"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 7,
+    "bytesHashed": 66819,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "peerDependency",
+        "spec": "^3.18.1"
+      }
+    ],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/dsh-permissions/-/dsh-permissions-1.0.8.tgz",
+      "compressedBytes": 20605,
+      "unpackedBytes": 66819,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "TXbxemfdXZIgsrsKcjKpmhcqNV+Jw3HtQ9ao10Q/9aq8f6L/yVbBRja2rWjE6QWrGuJ5N8BRl0JI9j1th9pMUg==",
+        "actual": "TXbxemfdXZIgsrsKcjKpmhcqNV+Jw3HtQ9ao10Q/9aq8f6L/yVbBRja2rWjE6QWrGuJ5N8BRl0JI9j1th9pMUg=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "missing"
+      },
+      "dependencyAudit": {
+        "status": "verified",
+        "packages": 4,
+        "resolutionMode": "strict",
+        "graphDigest": "sha256:0977c72bd273ff19394a46a9c9b613776924844801047fab32953e8c312eb951",
+        "graph": {
+          "schema": "upstream-radar.dependency-graph/v1alpha1",
+          "rootNodeId": "node_modules/dsh-permissions",
+          "nodes": [
+            {
+              "id": "node_modules/dsh-permissions",
+              "name": "dsh-permissions",
+              "version": "1.0.8"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/cosmokit",
+              "name": "@deepseek-ai/cosmokit",
+              "version": "1.8.2"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/schemastery",
+              "name": "@deepseek-ai/schemastery",
+              "version": "3.18.1"
+            },
+            {
+              "id": "node_modules/@standard-schema/spec",
+              "name": "@standard-schema/spec",
+              "version": "1.1.0"
+            }
+          ],
+          "edges": [
+            {
+              "from": "node_modules/@deepseek-ai/schemastery",
+              "to": "node_modules/@deepseek-ai/cosmokit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/schemastery",
+              "to": "node_modules/@standard-schema/spec",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dsh-permissions",
+              "to": "node_modules/@deepseek-ai/schemastery",
+              "kind": "peer"
+            }
+          ],
+          "source": "npm-lock",
+          "digest": "sha256:0977c72bd273ff19394a46a9c9b613776924844801047fab32953e8c312eb951"
+        },
+        "installScriptPackages": [],
+        "installScriptDetails": [],
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "missing",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "npm-provenance-missing",
+      "severity": "medium",
+      "summary": "npm artifact has no build provenance",
+      "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+      "remediation": "Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

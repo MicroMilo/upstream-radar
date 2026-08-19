@@ -1,0 +1,80 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-monitor",
+    "version": "0.1.1",
+    "artifactDigest": "sha256:c54dd8195bcb5c285fc5b187a576f62c253870e78b211bc91d22e9d87d140d14"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 7,
+    "bytesHashed": 21799,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "dependency",
+        "spec": "^3.18.1"
+      },
+      {
+        "name": "zod",
+        "scope": "dependency",
+        "spec": "^4.4.3"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.1"
+      },
+      {
+        "name": "@deepseek-ai/dsh-agent",
+        "scope": "peerDependency",
+        "spec": "^0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-llm",
+        "scope": "peerDependency",
+        "spec": "^0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-tools",
+        "scope": "peerDependency",
+        "spec": "^0.1.0-rc.6"
+      }
+    ]
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-graph-unlocked",
+      "severity": "medium",
+      "summary": "Runtime dependency graph is not locked in the reviewed source tree",
+      "detail": "A future resolution of the same manifest may select different transitive artifacts.",
+      "evidence": {
+        "runtimeDependencyCount": 6
+      },
+      "remediation": "Commit a supported lockfile and verify every resolved artifact integrity."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

@@ -1,0 +1,234 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "@1e0zj/dsh-plugin-mall",
+    "version": "0.3.3",
+    "artifactDigest": "sha256:2854052fa161e35b2cff582e6c21dc927ce549456e47b8c7e60d87351ef9e085",
+    "treeDigest": "sha256:7d632c183caf211222df1f7875fc2426427e6186ba130280060c5aa2302ccfbe",
+    "spec": "npm:@1e0zj/dsh-plugin-mall@0.3.3"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 10,
+    "bytesHashed": 639136,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "js-yaml",
+        "scope": "dependency",
+        "spec": "^4.2.0"
+      },
+      {
+        "name": "semver",
+        "scope": "dependency",
+        "spec": "^7.6.3"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.1"
+      },
+      {
+        "name": "@deepseek-ai/dsh-app-boot",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-tools",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "peerDependency",
+        "spec": "*"
+      }
+    ],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/@1e0zj/dsh-plugin-mall/-/dsh-plugin-mall-0.3.3.tgz",
+      "compressedBytes": 174258,
+      "unpackedBytes": 639136,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "2gsISYtgjTgfHGNOnwGcaF7EeAs+h/5iMpd04iCaZdZaxvggbP3Dm3iejT6UES43B0c9dNIYQSyF6Qza2TrtGw==",
+        "actual": "2gsISYtgjTgfHGNOnwGcaF7EeAs+h/5iMpd04iCaZdZaxvggbP3Dm3iejT6UES43B0c9dNIYQSyF6Qza2TrtGw=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "verified",
+        "predicateType": "https://slsa.dev/provenance/v1",
+        "sourceRepository": "https://github.com/1e0zj/dsh-plugin-mall",
+        "sourceRef": "refs/tags/v0.3.3",
+        "sourceCommit": "c4f40148a8b2d5e4bd4eb9f741bab7dce7c462cc",
+        "workflow": ".github/workflows/release.yml",
+        "builder": "https://github.com/actions/runner/github-hosted"
+      },
+      "dependencyAudit": {
+        "status": "verified",
+        "packages": 4,
+        "resolutionMode": "legacy-peer-deps",
+        "graphDigest": "sha256:0c1d6203e9558b930fcfe8b7296912e5f2d56ddfa914eebceefe899fabbf2333",
+        "graph": {
+          "schema": "upstream-radar.dependency-graph/v1alpha1",
+          "rootNodeId": "node_modules/@1e0zj/dsh-plugin-mall",
+          "nodes": [
+            {
+              "id": "node_modules/@1e0zj/dsh-plugin-mall",
+              "name": "@1e0zj/dsh-plugin-mall",
+              "version": "0.3.3"
+            },
+            {
+              "id": "node_modules/argparse",
+              "name": "argparse",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/js-yaml",
+              "name": "js-yaml",
+              "version": "4.3.1"
+            },
+            {
+              "id": "node_modules/semver",
+              "name": "semver",
+              "version": "7.8.5"
+            }
+          ],
+          "edges": [
+            {
+              "from": "node_modules/@1e0zj/dsh-plugin-mall",
+              "to": "node_modules/js-yaml",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@1e0zj/dsh-plugin-mall",
+              "to": "node_modules/semver",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/js-yaml",
+              "to": "node_modules/argparse",
+              "kind": "runtime"
+            }
+          ],
+          "source": "npm-lock",
+          "digest": "sha256:0c1d6203e9558b930fcfe8b7296912e5f2d56ddfa914eebceefe899fabbf2333",
+          "unresolved": [
+            {
+              "from": "node_modules/@1e0zj/dsh-plugin-mall",
+              "name": "@deepseek-ai/cordis",
+              "spec": "^4.0.1",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@1e0zj/dsh-plugin-mall",
+              "name": "@deepseek-ai/dsh-app-boot",
+              "spec": "*",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@1e0zj/dsh-plugin-mall",
+              "name": "@deepseek-ai/dsh-tools",
+              "spec": "*",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@1e0zj/dsh-plugin-mall",
+              "name": "@deepseek-ai/schemastery",
+              "spec": "*",
+              "kind": "peer"
+            }
+          ]
+        },
+        "installScriptPackages": [],
+        "installScriptDetails": [],
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "verified",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-peer-resolution-relaxed",
+      "severity": "medium",
+      "summary": "Dependency graph used npm legacy peer resolution",
+      "detail": "Strict npm peer resolution did not finish within the bounded window. The fallback produced a usable dependency inventory with scripts disabled, but peer compatibility was not fully enforced during resolution.",
+      "evidence": {
+        "mode": "legacy-peer-deps"
+      },
+      "remediation": "Review peer dependency ranges separately before installation; keep the exact graph and vulnerability results as the current evidence."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-app-boot uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-app-boot",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-tools uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-tools",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/schemastery uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/schemastery",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

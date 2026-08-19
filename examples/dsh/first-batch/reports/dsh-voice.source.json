@@ -1,0 +1,2169 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "@nn12138/dsh-voice",
+    "version": "0.2.5",
+    "artifactDigest": "sha256:d1c038e3d0717420bed2c2c1be5e59942e689cfc1173aa2e90c5001785b9b44e"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 48,
+    "bytesHashed": 185629,
+    "lockfiles": [
+      "pnpm-lock.yaml"
+    ],
+    "packageManager": null,
+    "lifecycleScripts": [
+      {
+        "name": "prepare",
+        "command": "npm run build"
+      }
+    ],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "dependency",
+        "spec": "^3.18.1"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "devDependency",
+        "spec": "^4.0.1"
+      },
+      {
+        "name": "@types/node",
+        "scope": "devDependency",
+        "spec": "^24.0.0"
+      },
+      {
+        "name": "@types/react",
+        "scope": "devDependency",
+        "spec": "^19.2.18"
+      },
+      {
+        "name": "react",
+        "scope": "devDependency",
+        "spec": "^19.2.8"
+      },
+      {
+        "name": "sherpa-onnx-node",
+        "scope": "devDependency",
+        "spec": "^1.13.5"
+      },
+      {
+        "name": "tsdown",
+        "scope": "devDependency",
+        "spec": "^0.22.14"
+      },
+      {
+        "name": "typescript",
+        "scope": "devDependency",
+        "spec": "^5.8.0"
+      },
+      {
+        "name": "vitest",
+        "scope": "devDependency",
+        "spec": "^3.0.0"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.1"
+      }
+    ],
+    "dependencyGraph": {
+      "schema": "upstream-radar.dependency-graph/v1alpha1",
+      "rootNodeId": "pnpm:workspace-root:@nn12138/dsh-voice@0.2.5",
+      "nodes": [
+        {
+          "id": "pnpm:workspace-root:@nn12138/dsh-voice@0.2.5",
+          "name": "@nn12138/dsh-voice",
+          "version": "0.2.5"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "name": "@deepseek-ai/cordis",
+          "version": "4.0.1"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/cosmokit@1.8.2",
+          "name": "@deepseek-ai/cosmokit",
+          "version": "1.8.2"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "name": "@deepseek-ai/schemastery",
+          "version": "3.18.1"
+        },
+        {
+          "id": "pnpm:@esbuild/aix-ppc64@0.28.2",
+          "name": "@esbuild/aix-ppc64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/android-arm@0.28.2",
+          "name": "@esbuild/android-arm",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/android-arm64@0.28.2",
+          "name": "@esbuild/android-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/android-x64@0.28.2",
+          "name": "@esbuild/android-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/darwin-arm64@0.28.2",
+          "name": "@esbuild/darwin-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/darwin-x64@0.28.2",
+          "name": "@esbuild/darwin-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/freebsd-arm64@0.28.2",
+          "name": "@esbuild/freebsd-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/freebsd-x64@0.28.2",
+          "name": "@esbuild/freebsd-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-arm@0.28.2",
+          "name": "@esbuild/linux-arm",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-arm64@0.28.2",
+          "name": "@esbuild/linux-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-ia32@0.28.2",
+          "name": "@esbuild/linux-ia32",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-loong64@0.28.2",
+          "name": "@esbuild/linux-loong64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-mips64el@0.28.2",
+          "name": "@esbuild/linux-mips64el",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-ppc64@0.28.2",
+          "name": "@esbuild/linux-ppc64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-riscv64@0.28.2",
+          "name": "@esbuild/linux-riscv64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-s390x@0.28.2",
+          "name": "@esbuild/linux-s390x",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-x64@0.28.2",
+          "name": "@esbuild/linux-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/netbsd-arm64@0.28.2",
+          "name": "@esbuild/netbsd-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/netbsd-x64@0.28.2",
+          "name": "@esbuild/netbsd-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/openbsd-arm64@0.28.2",
+          "name": "@esbuild/openbsd-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/openbsd-x64@0.28.2",
+          "name": "@esbuild/openbsd-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/openharmony-arm64@0.28.2",
+          "name": "@esbuild/openharmony-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/sunos-x64@0.28.2",
+          "name": "@esbuild/sunos-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/win32-arm64@0.28.2",
+          "name": "@esbuild/win32-arm64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/win32-ia32@0.28.2",
+          "name": "@esbuild/win32-ia32",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@esbuild/win32-x64@0.28.2",
+          "name": "@esbuild/win32-x64",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:@jridgewell/sourcemap-codec@1.5.0",
+          "name": "@jridgewell/sourcemap-codec",
+          "version": "1.5.0"
+        },
+        {
+          "id": "pnpm:@napi-rs/lzma-linux-x64-gnu@1.5.1",
+          "name": "@napi-rs/lzma-linux-x64-gnu",
+          "version": "1.5.1"
+        },
+        {
+          "id": "pnpm:@oxc-project/types@0.144.0",
+          "name": "@oxc-project/types",
+          "version": "0.144.0"
+        },
+        {
+          "id": "pnpm:@quansync/fs@1.0.0",
+          "name": "@quansync/fs",
+          "version": "1.0.0"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-android-arm64@1.2.4",
+          "name": "@rolldown/binding-android-arm64",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-darwin-arm64@1.2.4",
+          "name": "@rolldown/binding-darwin-arm64",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-darwin-x64@1.2.4",
+          "name": "@rolldown/binding-darwin-x64",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-freebsd-x64@1.2.4",
+          "name": "@rolldown/binding-freebsd-x64",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-linux-arm-gnueabihf@1.2.4",
+          "name": "@rolldown/binding-linux-arm-gnueabihf",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-linux-arm64-gnu@1.2.4",
+          "name": "@rolldown/binding-linux-arm64-gnu",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-linux-arm64-musl@1.2.4",
+          "name": "@rolldown/binding-linux-arm64-musl",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-linux-ppc64-gnu@1.2.4",
+          "name": "@rolldown/binding-linux-ppc64-gnu",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-linux-s390x-gnu@1.2.4",
+          "name": "@rolldown/binding-linux-s390x-gnu",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-linux-x64-gnu@1.2.4",
+          "name": "@rolldown/binding-linux-x64-gnu",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-linux-x64-musl@1.2.4",
+          "name": "@rolldown/binding-linux-x64-musl",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-openharmony-arm64@1.2.4",
+          "name": "@rolldown/binding-openharmony-arm64",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-win32-arm64-msvc@1.2.4",
+          "name": "@rolldown/binding-win32-arm64-msvc",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/binding-win32-x64-msvc@1.2.4",
+          "name": "@rolldown/binding-win32-x64-msvc",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:@rolldown/pluginutils@1.0.1",
+          "name": "@rolldown/pluginutils",
+          "version": "1.0.1"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-android-arm-eabi@4.62.4",
+          "name": "@rollup/rollup-android-arm-eabi",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-android-arm64@4.62.4",
+          "name": "@rollup/rollup-android-arm64",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-darwin-arm64@4.62.4",
+          "name": "@rollup/rollup-darwin-arm64",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-darwin-x64@4.62.4",
+          "name": "@rollup/rollup-darwin-x64",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-freebsd-arm64@4.62.4",
+          "name": "@rollup/rollup-freebsd-arm64",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-freebsd-x64@4.62.4",
+          "name": "@rollup/rollup-freebsd-x64",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-linux-arm-gnueabihf@4.62.4",
+          "name": "@rollup/rollup-linux-arm-gnueabihf",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-linux-arm-musleabihf@4.62.4",
+          "name": "@rollup/rollup-linux-arm-musleabihf",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-linux-arm64-gnu@4.62.4",
+          "name": "@rollup/rollup-linux-arm64-gnu",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-linux-arm64-musl@4.62.4",
+          "name": "@rollup/rollup-linux-arm64-musl",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-linux-loong64-gnu@4.62.4",
+          "name": "@rollup/rollup-linux-loong64-gnu",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-linux-loong64-musl@4.62.4",
+          "name": "@rollup/rollup-linux-loong64-musl",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-linux-ppc64-gnu@4.62.4",
+          "name": "@rollup/rollup-linux-ppc64-gnu",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-linux-ppc64-musl@4.62.4",
+          "name": "@rollup/rollup-linux-ppc64-musl",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-linux-riscv64-gnu@4.62.4",
+          "name": "@rollup/rollup-linux-riscv64-gnu",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-linux-riscv64-musl@4.62.4",
+          "name": "@rollup/rollup-linux-riscv64-musl",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-linux-s390x-gnu@4.62.4",
+          "name": "@rollup/rollup-linux-s390x-gnu",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-linux-x64-gnu@4.62.4",
+          "name": "@rollup/rollup-linux-x64-gnu",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-linux-x64-musl@4.62.4",
+          "name": "@rollup/rollup-linux-x64-musl",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-openbsd-x64@4.62.4",
+          "name": "@rollup/rollup-openbsd-x64",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-openharmony-arm64@4.62.4",
+          "name": "@rollup/rollup-openharmony-arm64",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-win32-arm64-msvc@4.62.4",
+          "name": "@rollup/rollup-win32-arm64-msvc",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-win32-ia32-msvc@4.62.4",
+          "name": "@rollup/rollup-win32-ia32-msvc",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-win32-x64-gnu@4.62.4",
+          "name": "@rollup/rollup-win32-x64-gnu",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@rollup/rollup-win32-x64-msvc@4.62.4",
+          "name": "@rollup/rollup-win32-x64-msvc",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:@standard-schema/spec@1.1.0",
+          "name": "@standard-schema/spec",
+          "version": "1.1.0"
+        },
+        {
+          "id": "pnpm:@types/chai@5.2.3",
+          "name": "@types/chai",
+          "version": "5.2.3"
+        },
+        {
+          "id": "pnpm:@types/deep-eql@4.0.2",
+          "name": "@types/deep-eql",
+          "version": "4.0.2"
+        },
+        {
+          "id": "pnpm:@types/estree@1.0.9",
+          "name": "@types/estree",
+          "version": "1.0.9"
+        },
+        {
+          "id": "pnpm:@types/node@24.13.3",
+          "name": "@types/node",
+          "version": "24.13.3"
+        },
+        {
+          "id": "pnpm:@types/react@19.2.18",
+          "name": "@types/react",
+          "version": "19.2.18"
+        },
+        {
+          "id": "pnpm:@vitest/expect@3.2.7",
+          "name": "@vitest/expect",
+          "version": "3.2.7"
+        },
+        {
+          "id": "pnpm:@vitest/mocker@3.2.7(vite@7.3.6(@types/node@24.13.3))",
+          "name": "@vitest/mocker",
+          "version": "3.2.7"
+        },
+        {
+          "id": "pnpm:@vitest/pretty-format@3.2.7",
+          "name": "@vitest/pretty-format",
+          "version": "3.2.7"
+        },
+        {
+          "id": "pnpm:@vitest/runner@3.2.7",
+          "name": "@vitest/runner",
+          "version": "3.2.7"
+        },
+        {
+          "id": "pnpm:@vitest/snapshot@3.2.7",
+          "name": "@vitest/snapshot",
+          "version": "3.2.7"
+        },
+        {
+          "id": "pnpm:@vitest/spy@3.2.7",
+          "name": "@vitest/spy",
+          "version": "3.2.7"
+        },
+        {
+          "id": "pnpm:@vitest/utils@3.2.7",
+          "name": "@vitest/utils",
+          "version": "3.2.7"
+        },
+        {
+          "id": "pnpm:@yuku-codegen/binding-android-arm64@0.8.7",
+          "name": "@yuku-codegen/binding-android-arm64",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-codegen/binding-darwin-arm64@0.8.7",
+          "name": "@yuku-codegen/binding-darwin-arm64",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-codegen/binding-darwin-x64@0.8.7",
+          "name": "@yuku-codegen/binding-darwin-x64",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-codegen/binding-freebsd-x64@0.8.7",
+          "name": "@yuku-codegen/binding-freebsd-x64",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-codegen/binding-linux-arm-gnu@0.8.7",
+          "name": "@yuku-codegen/binding-linux-arm-gnu",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-codegen/binding-linux-arm-musl@0.8.7",
+          "name": "@yuku-codegen/binding-linux-arm-musl",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-codegen/binding-linux-arm64-gnu@0.8.7",
+          "name": "@yuku-codegen/binding-linux-arm64-gnu",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-codegen/binding-linux-arm64-musl@0.8.7",
+          "name": "@yuku-codegen/binding-linux-arm64-musl",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-codegen/binding-linux-x64-gnu@0.8.7",
+          "name": "@yuku-codegen/binding-linux-x64-gnu",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-codegen/binding-linux-x64-musl@0.8.7",
+          "name": "@yuku-codegen/binding-linux-x64-musl",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-codegen/binding-win32-arm64@0.8.7",
+          "name": "@yuku-codegen/binding-win32-arm64",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-codegen/binding-win32-x64@0.8.7",
+          "name": "@yuku-codegen/binding-win32-x64",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-parser/binding-android-arm64@0.8.7",
+          "name": "@yuku-parser/binding-android-arm64",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-parser/binding-darwin-arm64@0.8.7",
+          "name": "@yuku-parser/binding-darwin-arm64",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-parser/binding-darwin-x64@0.8.7",
+          "name": "@yuku-parser/binding-darwin-x64",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-parser/binding-freebsd-x64@0.8.7",
+          "name": "@yuku-parser/binding-freebsd-x64",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-parser/binding-linux-arm-gnu@0.8.7",
+          "name": "@yuku-parser/binding-linux-arm-gnu",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-parser/binding-linux-arm-musl@0.8.7",
+          "name": "@yuku-parser/binding-linux-arm-musl",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-parser/binding-linux-arm64-gnu@0.8.7",
+          "name": "@yuku-parser/binding-linux-arm64-gnu",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-parser/binding-linux-arm64-musl@0.8.7",
+          "name": "@yuku-parser/binding-linux-arm64-musl",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-parser/binding-linux-x64-gnu@0.8.7",
+          "name": "@yuku-parser/binding-linux-x64-gnu",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-parser/binding-linux-x64-musl@0.8.7",
+          "name": "@yuku-parser/binding-linux-x64-musl",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-parser/binding-win32-arm64@0.8.7",
+          "name": "@yuku-parser/binding-win32-arm64",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-parser/binding-win32-x64@0.8.7",
+          "name": "@yuku-parser/binding-win32-x64",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:@yuku-toolchain/types@0.8.7",
+          "name": "@yuku-toolchain/types",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:ansis@4.3.1",
+          "name": "ansis",
+          "version": "4.3.1"
+        },
+        {
+          "id": "pnpm:assertion-error@2.0.1",
+          "name": "assertion-error",
+          "version": "2.0.1"
+        },
+        {
+          "id": "pnpm:cac@6.7.14",
+          "name": "cac",
+          "version": "6.7.14"
+        },
+        {
+          "id": "pnpm:cac@7.0.0",
+          "name": "cac",
+          "version": "7.0.0"
+        },
+        {
+          "id": "pnpm:chai@5.2.0",
+          "name": "chai",
+          "version": "5.2.0"
+        },
+        {
+          "id": "pnpm:check-error@2.1.3",
+          "name": "check-error",
+          "version": "2.1.3"
+        },
+        {
+          "id": "pnpm:csstype@3.2.3",
+          "name": "csstype",
+          "version": "3.2.3"
+        },
+        {
+          "id": "pnpm:debug@4.4.3",
+          "name": "debug",
+          "version": "4.4.3"
+        },
+        {
+          "id": "pnpm:deep-eql@5.0.2",
+          "name": "deep-eql",
+          "version": "5.0.2"
+        },
+        {
+          "id": "pnpm:defu@6.1.7",
+          "name": "defu",
+          "version": "6.1.7"
+        },
+        {
+          "id": "pnpm:dts-resolver@3.0.0",
+          "name": "dts-resolver",
+          "version": "3.0.0"
+        },
+        {
+          "id": "pnpm:empathic@2.0.1",
+          "name": "empathic",
+          "version": "2.0.1"
+        },
+        {
+          "id": "pnpm:es-module-lexer@1.7.0",
+          "name": "es-module-lexer",
+          "version": "1.7.0"
+        },
+        {
+          "id": "pnpm:esbuild@0.28.2",
+          "name": "esbuild",
+          "version": "0.28.2"
+        },
+        {
+          "id": "pnpm:estree-walker@3.0.3",
+          "name": "estree-walker",
+          "version": "3.0.3"
+        },
+        {
+          "id": "pnpm:expect-type@1.4.0",
+          "name": "expect-type",
+          "version": "1.4.0"
+        },
+        {
+          "id": "pnpm:fdir@6.5.0(picomatch@4.0.5)",
+          "name": "fdir",
+          "version": "6.5.0"
+        },
+        {
+          "id": "pnpm:fsevents@2.3.3",
+          "name": "fsevents",
+          "version": "2.3.3"
+        },
+        {
+          "id": "pnpm:get-tsconfig@5.0.0-beta.5",
+          "name": "get-tsconfig",
+          "version": "5.0.0-beta.5"
+        },
+        {
+          "id": "pnpm:hookable@6.1.1",
+          "name": "hookable",
+          "version": "6.1.1"
+        },
+        {
+          "id": "pnpm:import-without-cache@0.4.0",
+          "name": "import-without-cache",
+          "version": "0.4.0"
+        },
+        {
+          "id": "pnpm:js-tokens@9.0.1",
+          "name": "js-tokens",
+          "version": "9.0.1"
+        },
+        {
+          "id": "pnpm:loupe@3.2.1",
+          "name": "loupe",
+          "version": "3.2.1"
+        },
+        {
+          "id": "pnpm:magic-string@0.30.17",
+          "name": "magic-string",
+          "version": "0.30.17"
+        },
+        {
+          "id": "pnpm:ms@2.1.3",
+          "name": "ms",
+          "version": "2.1.3"
+        },
+        {
+          "id": "pnpm:nanoid@3.3.18",
+          "name": "nanoid",
+          "version": "3.3.18"
+        },
+        {
+          "id": "pnpm:obug@2.1.4",
+          "name": "obug",
+          "version": "2.1.4"
+        },
+        {
+          "id": "pnpm:pathe@2.0.3",
+          "name": "pathe",
+          "version": "2.0.3"
+        },
+        {
+          "id": "pnpm:pathval@2.0.1",
+          "name": "pathval",
+          "version": "2.0.1"
+        },
+        {
+          "id": "pnpm:picocolors@1.1.1",
+          "name": "picocolors",
+          "version": "1.1.1"
+        },
+        {
+          "id": "pnpm:picomatch@4.0.5",
+          "name": "picomatch",
+          "version": "4.0.5"
+        },
+        {
+          "id": "pnpm:postcss@8.5.26",
+          "name": "postcss",
+          "version": "8.5.26"
+        },
+        {
+          "id": "pnpm:quansync@1.0.0",
+          "name": "quansync",
+          "version": "1.0.0"
+        },
+        {
+          "id": "pnpm:react@19.2.8",
+          "name": "react",
+          "version": "19.2.8"
+        },
+        {
+          "id": "pnpm:resolve-pkg-maps@1.0.0",
+          "name": "resolve-pkg-maps",
+          "version": "1.0.0"
+        },
+        {
+          "id": "pnpm:rolldown-plugin-dts@0.27.14(rolldown@1.2.4)(typescript@5.8.2)",
+          "name": "rolldown-plugin-dts",
+          "version": "0.27.14"
+        },
+        {
+          "id": "pnpm:rolldown@1.2.4",
+          "name": "rolldown",
+          "version": "1.2.4"
+        },
+        {
+          "id": "pnpm:rollup@4.62.4",
+          "name": "rollup",
+          "version": "4.62.4"
+        },
+        {
+          "id": "pnpm:sherpa-onnx-darwin-arm64@1.13.5",
+          "name": "sherpa-onnx-darwin-arm64",
+          "version": "1.13.5"
+        },
+        {
+          "id": "pnpm:sherpa-onnx-darwin-x64@1.13.5",
+          "name": "sherpa-onnx-darwin-x64",
+          "version": "1.13.5"
+        },
+        {
+          "id": "pnpm:sherpa-onnx-linux-arm64@1.13.5",
+          "name": "sherpa-onnx-linux-arm64",
+          "version": "1.13.5"
+        },
+        {
+          "id": "pnpm:sherpa-onnx-linux-x64@1.13.5",
+          "name": "sherpa-onnx-linux-x64",
+          "version": "1.13.5"
+        },
+        {
+          "id": "pnpm:sherpa-onnx-node@1.13.5",
+          "name": "sherpa-onnx-node",
+          "version": "1.13.5"
+        },
+        {
+          "id": "pnpm:sherpa-onnx-win-ia32@1.13.5",
+          "name": "sherpa-onnx-win-ia32",
+          "version": "1.13.5"
+        },
+        {
+          "id": "pnpm:sherpa-onnx-win-x64@1.13.5",
+          "name": "sherpa-onnx-win-x64",
+          "version": "1.13.5"
+        },
+        {
+          "id": "pnpm:siginfo@2.0.0",
+          "name": "siginfo",
+          "version": "2.0.0"
+        },
+        {
+          "id": "pnpm:source-map-js@1.2.1",
+          "name": "source-map-js",
+          "version": "1.2.1"
+        },
+        {
+          "id": "pnpm:stackback@0.0.2",
+          "name": "stackback",
+          "version": "0.0.2"
+        },
+        {
+          "id": "pnpm:std-env@3.9.0",
+          "name": "std-env",
+          "version": "3.9.0"
+        },
+        {
+          "id": "pnpm:strip-literal@3.0.0",
+          "name": "strip-literal",
+          "version": "3.0.0"
+        },
+        {
+          "id": "pnpm:tinybench@2.9.0",
+          "name": "tinybench",
+          "version": "2.9.0"
+        },
+        {
+          "id": "pnpm:tinyexec@0.3.2",
+          "name": "tinyexec",
+          "version": "0.3.2"
+        },
+        {
+          "id": "pnpm:tinyexec@1.3.0",
+          "name": "tinyexec",
+          "version": "1.3.0"
+        },
+        {
+          "id": "pnpm:tinyglobby@0.2.17",
+          "name": "tinyglobby",
+          "version": "0.2.17"
+        },
+        {
+          "id": "pnpm:tinypool@1.1.1",
+          "name": "tinypool",
+          "version": "1.1.1"
+        },
+        {
+          "id": "pnpm:tinyrainbow@2.0.0",
+          "name": "tinyrainbow",
+          "version": "2.0.0"
+        },
+        {
+          "id": "pnpm:tinyspy@4.0.4",
+          "name": "tinyspy",
+          "version": "4.0.4"
+        },
+        {
+          "id": "pnpm:tree-kill@1.2.2",
+          "name": "tree-kill",
+          "version": "1.2.2"
+        },
+        {
+          "id": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "name": "tsdown",
+          "version": "0.22.14"
+        },
+        {
+          "id": "pnpm:typescript@5.8.2",
+          "name": "typescript",
+          "version": "5.8.2"
+        },
+        {
+          "id": "pnpm:unconfig-core@7.5.0",
+          "name": "unconfig-core",
+          "version": "7.5.0"
+        },
+        {
+          "id": "pnpm:undici-types@7.18.2",
+          "name": "undici-types",
+          "version": "7.18.2"
+        },
+        {
+          "id": "pnpm:verkit@0.3.2",
+          "name": "verkit",
+          "version": "0.3.2"
+        },
+        {
+          "id": "pnpm:vite-node@3.2.4(@types/node@24.13.3)",
+          "name": "vite-node",
+          "version": "3.2.4"
+        },
+        {
+          "id": "pnpm:vite@7.3.6(@types/node@24.13.3)",
+          "name": "vite",
+          "version": "7.3.6"
+        },
+        {
+          "id": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "name": "vitest",
+          "version": "3.2.7"
+        },
+        {
+          "id": "pnpm:why-is-node-running@2.3.0",
+          "name": "why-is-node-running",
+          "version": "2.3.0"
+        },
+        {
+          "id": "pnpm:yuku-ast@0.8.7",
+          "name": "yuku-ast",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:yuku-codegen@0.8.7",
+          "name": "yuku-codegen",
+          "version": "0.8.7"
+        },
+        {
+          "id": "pnpm:yuku-parser@0.8.7",
+          "name": "yuku-parser",
+          "version": "0.8.7"
+        }
+      ],
+      "edges": [
+        {
+          "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "to": "pnpm:@deepseek-ai/cosmokit@1.8.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "to": "pnpm:@standard-schema/spec@1.1.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "to": "pnpm:@deepseek-ai/cosmokit@1.8.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "to": "pnpm:@standard-schema/spec@1.1.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@quansync/fs@1.0.0",
+          "to": "pnpm:quansync@1.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@types/chai@5.2.3",
+          "to": "pnpm:@types/deep-eql@4.0.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@types/chai@5.2.3",
+          "to": "pnpm:assertion-error@2.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@types/node@24.13.3",
+          "to": "pnpm:undici-types@7.18.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@types/react@19.2.18",
+          "to": "pnpm:csstype@3.2.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/expect@3.2.7",
+          "to": "pnpm:@types/chai@5.2.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/expect@3.2.7",
+          "to": "pnpm:@vitest/spy@3.2.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/expect@3.2.7",
+          "to": "pnpm:@vitest/utils@3.2.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/expect@3.2.7",
+          "to": "pnpm:chai@5.2.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/expect@3.2.7",
+          "to": "pnpm:tinyrainbow@2.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/mocker@3.2.7(vite@7.3.6(@types/node@24.13.3))",
+          "to": "pnpm:@vitest/spy@3.2.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/mocker@3.2.7(vite@7.3.6(@types/node@24.13.3))",
+          "to": "pnpm:estree-walker@3.0.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/mocker@3.2.7(vite@7.3.6(@types/node@24.13.3))",
+          "to": "pnpm:magic-string@0.30.17",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/mocker@3.2.7(vite@7.3.6(@types/node@24.13.3))",
+          "to": "pnpm:vite@7.3.6(@types/node@24.13.3)",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@vitest/pretty-format@3.2.7",
+          "to": "pnpm:tinyrainbow@2.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/runner@3.2.7",
+          "to": "pnpm:@vitest/utils@3.2.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/runner@3.2.7",
+          "to": "pnpm:pathe@2.0.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/runner@3.2.7",
+          "to": "pnpm:strip-literal@3.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/snapshot@3.2.7",
+          "to": "pnpm:@vitest/pretty-format@3.2.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/snapshot@3.2.7",
+          "to": "pnpm:magic-string@0.30.17",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/snapshot@3.2.7",
+          "to": "pnpm:pathe@2.0.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/spy@3.2.7",
+          "to": "pnpm:tinyspy@4.0.4",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/utils@3.2.7",
+          "to": "pnpm:@vitest/pretty-format@3.2.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/utils@3.2.7",
+          "to": "pnpm:loupe@3.2.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@vitest/utils@3.2.7",
+          "to": "pnpm:tinyrainbow@2.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:chai@5.2.0",
+          "to": "pnpm:assertion-error@2.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:chai@5.2.0",
+          "to": "pnpm:check-error@2.1.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:chai@5.2.0",
+          "to": "pnpm:deep-eql@5.0.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:chai@5.2.0",
+          "to": "pnpm:loupe@3.2.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:chai@5.2.0",
+          "to": "pnpm:pathval@2.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:debug@4.4.3",
+          "to": "pnpm:ms@2.1.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/aix-ppc64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/android-arm@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/android-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/android-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/darwin-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/darwin-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/freebsd-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/freebsd-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-arm@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-ia32@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-loong64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-mips64el@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-ppc64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-riscv64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-s390x@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/linux-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/netbsd-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/netbsd-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/openbsd-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/openbsd-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/openharmony-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/sunos-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/win32-arm64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/win32-ia32@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.28.2",
+          "to": "pnpm:@esbuild/win32-x64@0.28.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:estree-walker@3.0.3",
+          "to": "pnpm:@types/estree@1.0.9",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:fdir@6.5.0(picomatch@4.0.5)",
+          "to": "pnpm:picomatch@4.0.5",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:get-tsconfig@5.0.0-beta.5",
+          "to": "pnpm:resolve-pkg-maps@1.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:magic-string@0.30.17",
+          "to": "pnpm:@jridgewell/sourcemap-codec@1.5.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:postcss@8.5.26",
+          "to": "pnpm:nanoid@3.3.18",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:postcss@8.5.26",
+          "to": "pnpm:picocolors@1.1.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:postcss@8.5.26",
+          "to": "pnpm:source-map-js@1.2.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:rolldown-plugin-dts@0.27.14(rolldown@1.2.4)(typescript@5.8.2)",
+          "to": "pnpm:dts-resolver@3.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:rolldown-plugin-dts@0.27.14(rolldown@1.2.4)(typescript@5.8.2)",
+          "to": "pnpm:get-tsconfig@5.0.0-beta.5",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:rolldown-plugin-dts@0.27.14(rolldown@1.2.4)(typescript@5.8.2)",
+          "to": "pnpm:obug@2.1.4",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:rolldown-plugin-dts@0.27.14(rolldown@1.2.4)(typescript@5.8.2)",
+          "to": "pnpm:rolldown@1.2.4",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:rolldown-plugin-dts@0.27.14(rolldown@1.2.4)(typescript@5.8.2)",
+          "to": "pnpm:typescript@5.8.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown-plugin-dts@0.27.14(rolldown@1.2.4)(typescript@5.8.2)",
+          "to": "pnpm:yuku-ast@0.8.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:rolldown-plugin-dts@0.27.14(rolldown@1.2.4)(typescript@5.8.2)",
+          "to": "pnpm:yuku-codegen@0.8.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:rolldown-plugin-dts@0.27.14(rolldown@1.2.4)(typescript@5.8.2)",
+          "to": "pnpm:yuku-parser@0.8.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@oxc-project/types@0.144.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-android-arm64@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-darwin-arm64@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-darwin-x64@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-freebsd-x64@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-linux-arm-gnueabihf@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-linux-arm64-gnu@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-linux-arm64-musl@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-linux-ppc64-gnu@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-linux-s390x-gnu@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-linux-x64-gnu@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-linux-x64-musl@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-openharmony-arm64@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-win32-arm64-msvc@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/binding-win32-x64-msvc@1.2.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rolldown@1.2.4",
+          "to": "pnpm:@rolldown/pluginutils@1.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@napi-rs/lzma-linux-x64-gnu@1.5.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-android-arm-eabi@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-android-arm64@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-darwin-arm64@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-darwin-x64@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-freebsd-arm64@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-freebsd-x64@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-linux-arm-gnueabihf@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-linux-arm-musleabihf@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-linux-arm64-gnu@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-linux-arm64-musl@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-linux-loong64-gnu@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-linux-loong64-musl@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-linux-ppc64-gnu@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-linux-ppc64-musl@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-linux-riscv64-gnu@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-linux-riscv64-musl@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-linux-s390x-gnu@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-linux-x64-gnu@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-linux-x64-musl@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-openbsd-x64@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-openharmony-arm64@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-win32-arm64-msvc@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-win32-ia32-msvc@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-win32-x64-gnu@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@rollup/rollup-win32-x64-msvc@4.62.4",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:@types/estree@1.0.9",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:rollup@4.62.4",
+          "to": "pnpm:fsevents@2.3.3",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:sherpa-onnx-node@1.13.5",
+          "to": "pnpm:sherpa-onnx-darwin-arm64@1.13.5",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:sherpa-onnx-node@1.13.5",
+          "to": "pnpm:sherpa-onnx-darwin-x64@1.13.5",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:sherpa-onnx-node@1.13.5",
+          "to": "pnpm:sherpa-onnx-linux-arm64@1.13.5",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:sherpa-onnx-node@1.13.5",
+          "to": "pnpm:sherpa-onnx-linux-x64@1.13.5",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:sherpa-onnx-node@1.13.5",
+          "to": "pnpm:sherpa-onnx-win-ia32@1.13.5",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:sherpa-onnx-node@1.13.5",
+          "to": "pnpm:sherpa-onnx-win-x64@1.13.5",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:strip-literal@3.0.0",
+          "to": "pnpm:js-tokens@9.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tinyglobby@0.2.17",
+          "to": "pnpm:fdir@6.5.0(picomatch@4.0.5)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tinyglobby@0.2.17",
+          "to": "pnpm:picomatch@4.0.5",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:ansis@4.3.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:cac@7.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:defu@6.1.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:empathic@2.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:hookable@6.1.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:import-without-cache@0.4.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:obug@2.1.4",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:picomatch@4.0.5",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:rolldown-plugin-dts@0.27.14(rolldown@1.2.4)(typescript@5.8.2)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:rolldown@1.2.4",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:tinyexec@1.3.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:tinyglobby@0.2.17",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:tree-kill@1.2.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:typescript@5.8.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:unconfig-core@7.5.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "to": "pnpm:verkit@0.3.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:unconfig-core@7.5.0",
+          "to": "pnpm:@quansync/fs@1.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:unconfig-core@7.5.0",
+          "to": "pnpm:quansync@1.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite-node@3.2.4(@types/node@24.13.3)",
+          "to": "pnpm:cac@6.7.14",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite-node@3.2.4(@types/node@24.13.3)",
+          "to": "pnpm:debug@4.4.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite-node@3.2.4(@types/node@24.13.3)",
+          "to": "pnpm:es-module-lexer@1.7.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite-node@3.2.4(@types/node@24.13.3)",
+          "to": "pnpm:pathe@2.0.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite-node@3.2.4(@types/node@24.13.3)",
+          "to": "pnpm:vite@7.3.6(@types/node@24.13.3)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite@7.3.6(@types/node@24.13.3)",
+          "to": "pnpm:@types/node@24.13.3",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:vite@7.3.6(@types/node@24.13.3)",
+          "to": "pnpm:esbuild@0.28.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite@7.3.6(@types/node@24.13.3)",
+          "to": "pnpm:fdir@6.5.0(picomatch@4.0.5)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite@7.3.6(@types/node@24.13.3)",
+          "to": "pnpm:fsevents@2.3.3",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:vite@7.3.6(@types/node@24.13.3)",
+          "to": "pnpm:picomatch@4.0.5",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite@7.3.6(@types/node@24.13.3)",
+          "to": "pnpm:postcss@8.5.26",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite@7.3.6(@types/node@24.13.3)",
+          "to": "pnpm:rollup@4.62.4",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vite@7.3.6(@types/node@24.13.3)",
+          "to": "pnpm:tinyglobby@0.2.17",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:@types/chai@5.2.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:@types/node@24.13.3",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:@vitest/expect@3.2.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:@vitest/mocker@3.2.7(vite@7.3.6(@types/node@24.13.3))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:@vitest/pretty-format@3.2.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:@vitest/runner@3.2.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:@vitest/snapshot@3.2.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:@vitest/spy@3.2.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:@vitest/utils@3.2.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:chai@5.2.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:debug@4.4.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:expect-type@1.4.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:magic-string@0.30.17",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:pathe@2.0.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:picomatch@4.0.5",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:std-env@3.9.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:tinybench@2.9.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:tinyexec@0.3.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:tinyglobby@0.2.17",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:tinypool@1.1.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:tinyrainbow@2.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:vite-node@3.2.4(@types/node@24.13.3)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:vite@7.3.6(@types/node@24.13.3)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "to": "pnpm:why-is-node-running@2.3.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:why-is-node-running@2.3.0",
+          "to": "pnpm:siginfo@2.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:why-is-node-running@2.3.0",
+          "to": "pnpm:stackback@0.0.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:workspace-root:@nn12138/dsh-voice@0.2.5",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:@nn12138/dsh-voice@0.2.5",
+          "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:workspace-root:@nn12138/dsh-voice@0.2.5",
+          "to": "pnpm:@types/node@24.13.3",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:@nn12138/dsh-voice@0.2.5",
+          "to": "pnpm:@types/react@19.2.18",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:@nn12138/dsh-voice@0.2.5",
+          "to": "pnpm:react@19.2.8",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:@nn12138/dsh-voice@0.2.5",
+          "to": "pnpm:sherpa-onnx-node@1.13.5",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:@nn12138/dsh-voice@0.2.5",
+          "to": "pnpm:tsdown@0.22.14(typescript@5.8.2)",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:@nn12138/dsh-voice@0.2.5",
+          "to": "pnpm:typescript@5.8.2",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:@nn12138/dsh-voice@0.2.5",
+          "to": "pnpm:vitest@3.2.7(@types/node@24.13.3)",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:yuku-ast@0.8.7",
+          "to": "pnpm:@yuku-toolchain/types@0.8.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:yuku-codegen@0.8.7",
+          "to": "pnpm:@yuku-codegen/binding-android-arm64@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-codegen@0.8.7",
+          "to": "pnpm:@yuku-codegen/binding-darwin-arm64@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-codegen@0.8.7",
+          "to": "pnpm:@yuku-codegen/binding-darwin-x64@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-codegen@0.8.7",
+          "to": "pnpm:@yuku-codegen/binding-freebsd-x64@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-codegen@0.8.7",
+          "to": "pnpm:@yuku-codegen/binding-linux-arm-gnu@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-codegen@0.8.7",
+          "to": "pnpm:@yuku-codegen/binding-linux-arm-musl@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-codegen@0.8.7",
+          "to": "pnpm:@yuku-codegen/binding-linux-arm64-gnu@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-codegen@0.8.7",
+          "to": "pnpm:@yuku-codegen/binding-linux-arm64-musl@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-codegen@0.8.7",
+          "to": "pnpm:@yuku-codegen/binding-linux-x64-gnu@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-codegen@0.8.7",
+          "to": "pnpm:@yuku-codegen/binding-linux-x64-musl@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-codegen@0.8.7",
+          "to": "pnpm:@yuku-codegen/binding-win32-arm64@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-codegen@0.8.7",
+          "to": "pnpm:@yuku-codegen/binding-win32-x64@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-codegen@0.8.7",
+          "to": "pnpm:@yuku-toolchain/types@0.8.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:yuku-parser@0.8.7",
+          "to": "pnpm:@yuku-parser/binding-android-arm64@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-parser@0.8.7",
+          "to": "pnpm:@yuku-parser/binding-darwin-arm64@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-parser@0.8.7",
+          "to": "pnpm:@yuku-parser/binding-darwin-x64@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-parser@0.8.7",
+          "to": "pnpm:@yuku-parser/binding-freebsd-x64@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-parser@0.8.7",
+          "to": "pnpm:@yuku-parser/binding-linux-arm-gnu@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-parser@0.8.7",
+          "to": "pnpm:@yuku-parser/binding-linux-arm-musl@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-parser@0.8.7",
+          "to": "pnpm:@yuku-parser/binding-linux-arm64-gnu@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-parser@0.8.7",
+          "to": "pnpm:@yuku-parser/binding-linux-arm64-musl@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-parser@0.8.7",
+          "to": "pnpm:@yuku-parser/binding-linux-x64-gnu@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-parser@0.8.7",
+          "to": "pnpm:@yuku-parser/binding-linux-x64-musl@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-parser@0.8.7",
+          "to": "pnpm:@yuku-parser/binding-win32-arm64@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-parser@0.8.7",
+          "to": "pnpm:@yuku-parser/binding-win32-x64@0.8.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:yuku-parser@0.8.7",
+          "to": "pnpm:@yuku-toolchain/types@0.8.7",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:yuku-parser@0.8.7",
+          "to": "pnpm:yuku-ast@0.8.7",
+          "kind": "runtime"
+        }
+      ],
+      "source": "pnpm-lock",
+      "digest": "sha256:c40d3c65bf0f9e0bc89fd81acbf8c2250366888a2af930e472e50070a778cd14",
+      "unresolved": [
+        {
+          "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "name": "@deepseek-ai/cordis-plugin-include",
+          "spec": "^1.0.6",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "name": "@deepseek-ai/cordis-plugin-loader",
+          "spec": "^1.0.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:debug@4.4.3",
+          "name": "supports-color",
+          "spec": "*",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:dts-resolver@3.0.0",
+          "name": "oxc-resolver",
+          "spec": ">=11.0.0",
+          "kind": "optional"
+        }
+      ]
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "resolved",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "lifecycle-script-present",
+      "severity": "high",
+      "summary": "Lifecycle script prepare executes during installation",
+      "detail": "Lifecycle scripts run before a plugin is admitted into DSH and therefore require review.",
+      "evidence": {
+        "script": "prepare",
+        "command": "npm run build"
+      },
+      "remediation": "Prefer a prebuilt package with no install-time lifecycle scripts."
+    }
+  ],
+  "riskVerdict": "review",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

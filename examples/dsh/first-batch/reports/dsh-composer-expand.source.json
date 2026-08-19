@@ -1,0 +1,83 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-composer-expand",
+    "version": "0.1.2",
+    "artifactDigest": "sha256:b63d87f3b0a6ca33fadb913093de58e39bf0e33cd39806e58f4b5216324c1e2d"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 14,
+    "bytesHashed": 100653,
+    "lockfiles": [
+      "pnpm-lock.yaml",
+      "package-lock.json"
+    ],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "tsdown",
+        "scope": "devDependency",
+        "spec": "^0.22.14"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.1"
+      },
+      {
+        "name": "react",
+        "scope": "peerDependency",
+        "spec": "^18.2.0"
+      }
+    ],
+    "dependencyGraphError": "multiple supported lockfiles found: pnpm-lock.yaml, package-lock.json"
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-graph-unavailable",
+      "severity": "info",
+      "summary": "Committed dependency graph could not be established",
+      "detail": "multiple supported lockfiles found: pnpm-lock.yaml, package-lock.json",
+      "evidence": {
+        "lockfile": "pnpm-lock.yaml"
+      },
+      "remediation": "Fix or regenerate the supported lockfile, then rerun the scan so vulnerability paths can be checked against exact versions."
+    },
+    {
+      "code": "lockfile-root-metadata-stale",
+      "severity": "info",
+      "summary": "package-lock root metadata does not match package.json",
+      "detail": "The lockfile root is stale (version 0.1.0 → 0.1.2). The dependency tree may still resolve, but source-version tracking and reproducible monitoring can point at the wrong plugin release.",
+      "evidence": {
+        "path": "package-lock.json",
+        "packageName": "dsh-composer-expand",
+        "packageVersion": "0.1.2",
+        "lockfileName": "dsh-composer-expand",
+        "lockfileVersion": "0.1.0"
+      },
+      "remediation": "Regenerate package-lock.json from the intended package.json with lifecycle scripts disabled, then review the complete lockfile diff."
+    }
+  ],
+  "riskVerdict": "allow",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

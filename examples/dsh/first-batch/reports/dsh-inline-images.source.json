@@ -1,0 +1,57 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-inline-images",
+    "version": "1.0.0",
+    "artifactDigest": "sha256:14e7535f4e09fb7007f74397c2704b47775de085d16980369fce87ff23bd474c"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 14,
+    "bytesHashed": 52943,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "esbuild",
+        "scope": "devDependency",
+        "spec": "^0.28.1"
+      }
+    ]
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "npm-publish-provenance-not-declared",
+      "severity": "medium",
+      "summary": "npm publication workflow does not declare build provenance",
+      "detail": "The repository contains an npm publication path, but the reviewed workflow and publisher scripts do not enable `--provenance` or `NPM_CONFIG_PROVENANCE=true`. The next artifact may not carry a verifiable source commit and build workflow attestation.",
+      "evidence": {
+        "workflowPaths": [
+          ".github/workflows/ci.yml"
+        ]
+      },
+      "remediation": "Enable npm provenance with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`, then inspect the next exact artifact with `inspect --deep`."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

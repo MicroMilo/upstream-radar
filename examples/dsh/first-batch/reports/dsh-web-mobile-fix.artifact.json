@@ -1,0 +1,101 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "dsh-web-mobile-fix",
+    "version": "1.0.2",
+    "artifactDigest": "sha256:bc04c4954672a73dab7e6090d7bed3f32bf57316a6642b983891a94d8eb43863",
+    "treeDigest": "sha256:78a49713b4c8218b30bbbe4d1ef0efb3e4e6bd62370de505cea701cfb77d8ca7",
+    "spec": "npm:dsh-web-mobile-fix@1.0.2"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 7,
+    "bytesHashed": 17203,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/dsh-web-mobile-fix/-/dsh-web-mobile-fix-1.0.2.tgz",
+      "compressedBytes": 6446,
+      "unpackedBytes": 17203,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "AQQQDncGw4osPaRIER7AlhY9mWB7qfA+7MNeePWsGM83avhtBg7/kF64Nnf3K34s9+q+YNJQwre/0/tcus7EoQ==",
+        "actual": "AQQQDncGw4osPaRIER7AlhY9mWB7qfA+7MNeePWsGM83avhtBg7/kF64Nnf3K34s9+q+YNJQwre/0/tcus7EoQ=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "missing"
+      },
+      "dependencyAudit": {
+        "status": "verified",
+        "packages": 1,
+        "resolutionMode": "strict",
+        "graphDigest": "sha256:8a8b62cd260a2a902e43a6b19dcfde31b17f5172d12f7bccfdecc2d94854e741",
+        "graph": {
+          "schema": "upstream-radar.dependency-graph/v1alpha1",
+          "rootNodeId": "node_modules/dsh-web-mobile-fix",
+          "nodes": [
+            {
+              "id": "node_modules/dsh-web-mobile-fix",
+              "name": "dsh-web-mobile-fix",
+              "version": "1.0.2"
+            }
+          ],
+          "edges": [],
+          "source": "npm-lock",
+          "digest": "sha256:8a8b62cd260a2a902e43a6b19dcfde31b17f5172d12f7bccfdecc2d94854e741"
+        },
+        "installScriptPackages": [],
+        "installScriptDetails": [],
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "missing",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "npm-provenance-missing",
+      "severity": "medium",
+      "summary": "npm artifact has no build provenance",
+      "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+      "remediation": "Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

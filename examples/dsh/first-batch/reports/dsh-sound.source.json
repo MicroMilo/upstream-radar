@@ -1,0 +1,130 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-sound",
+    "version": "0.3.3",
+    "artifactDigest": "sha256:de626e6b3cf655ca63b0cd4edc7ee8fb4242e27589e3cab42fefaf800e0803f5"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 16,
+    "bytesHashed": 2768742,
+    "lockfiles": [
+      "package-lock.json"
+    ],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "dependency",
+        "spec": "^3.18.1"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.1"
+      }
+    ],
+    "dependencyGraph": {
+      "schema": "upstream-radar.dependency-graph/v1alpha1",
+      "rootNodeId": "npm:workspace-root:dsh-sound@0.3.3",
+      "nodes": [
+        {
+          "id": "npm:workspace-root:dsh-sound@0.3.3",
+          "name": "dsh-sound",
+          "version": "0.3.3"
+        },
+        {
+          "id": "node_modules/@deepseek-ai/cordis",
+          "name": "@deepseek-ai/cordis",
+          "version": "4.0.1"
+        },
+        {
+          "id": "node_modules/@deepseek-ai/cosmokit",
+          "name": "@deepseek-ai/cosmokit",
+          "version": "1.8.2"
+        },
+        {
+          "id": "node_modules/@deepseek-ai/schemastery",
+          "name": "@deepseek-ai/schemastery",
+          "version": "3.18.1"
+        },
+        {
+          "id": "node_modules/@standard-schema/spec",
+          "name": "@standard-schema/spec",
+          "version": "1.1.0"
+        }
+      ],
+      "edges": [
+        {
+          "from": "node_modules/@deepseek-ai/cordis",
+          "to": "node_modules/@deepseek-ai/cosmokit",
+          "kind": "runtime"
+        },
+        {
+          "from": "node_modules/@deepseek-ai/cordis",
+          "to": "node_modules/@standard-schema/spec",
+          "kind": "runtime"
+        },
+        {
+          "from": "node_modules/@deepseek-ai/schemastery",
+          "to": "node_modules/@deepseek-ai/cosmokit",
+          "kind": "runtime"
+        },
+        {
+          "from": "node_modules/@deepseek-ai/schemastery",
+          "to": "node_modules/@standard-schema/spec",
+          "kind": "runtime"
+        },
+        {
+          "from": "npm:workspace-root:dsh-sound@0.3.3",
+          "to": "node_modules/@deepseek-ai/cordis",
+          "kind": "peer"
+        },
+        {
+          "from": "npm:workspace-root:dsh-sound@0.3.3",
+          "to": "node_modules/@deepseek-ai/schemastery",
+          "kind": "runtime"
+        }
+      ],
+      "source": "npm-lock",
+      "digest": "sha256:ce0b66fc7c396115de5a8cbcb4a01931c92376d5155449bce05e0604ef001e3a",
+      "unresolved": [
+        {
+          "from": "node_modules/@deepseek-ai/cordis",
+          "name": "@deepseek-ai/cordis-plugin-include",
+          "spec": "^1.0.6",
+          "kind": "optional"
+        },
+        {
+          "from": "node_modules/@deepseek-ai/cordis",
+          "name": "@deepseek-ai/cordis-plugin-loader",
+          "spec": "^1.0.2",
+          "kind": "optional"
+        }
+      ]
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "resolved",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [],
+  "riskVerdict": "allow",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

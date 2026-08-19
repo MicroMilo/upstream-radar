@@ -1,0 +1,1313 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "dsh-msg-hub",
+    "version": "0.1.7",
+    "artifactDigest": "sha256:16638235e35a5751967c42b0747523efe8fd602b61186a2e54b1b1bda832b120",
+    "treeDigest": "sha256:04c64ce608cdd95c109e5365a6c8eb47514ce61203d68d4608550d5bb24bb1fb",
+    "spec": "npm:dsh-msg-hub@0.1.7"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 48,
+    "bytesHashed": 253170,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/dsh-agent",
+        "scope": "dependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-agent-default-model",
+        "scope": "dependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-llm",
+        "scope": "dependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-session",
+        "scope": "dependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@larksuiteoapi/node-sdk",
+        "scope": "dependency",
+        "spec": "^1.73.0"
+      },
+      {
+        "name": "@tencent-connect/qqbot-connector",
+        "scope": "dependency",
+        "spec": "^1.2.0"
+      },
+      {
+        "name": "@tencent-connect/qqbot-nodejs",
+        "scope": "dependency",
+        "spec": "^1.0.4"
+      },
+      {
+        "name": "qrcode-terminal",
+        "scope": "dependency",
+        "spec": "0.12.0"
+      },
+      {
+        "name": "@types/node",
+        "scope": "devDependency",
+        "spec": "^26.2.0"
+      },
+      {
+        "name": "esbuild",
+        "scope": "devDependency",
+        "spec": "^0.24.0"
+      },
+      {
+        "name": "typescript",
+        "scope": "devDependency",
+        "spec": "^5.8.0"
+      }
+    ],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/dsh-msg-hub/-/dsh-msg-hub-0.1.7.tgz",
+      "compressedBytes": 63219,
+      "unpackedBytes": 253170,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "3OXQzx4qKu4F3BxqA+QTLtSQMiqN8LvbqIi40O5VHT5VJCrOkVX7J3bWXsN8VJBTaKRdWQ6bugIJ37dhDCwDHA==",
+        "actual": "3OXQzx4qKu4F3BxqA+QTLtSQMiqN8LvbqIi40O5VHT5VJCrOkVX7J3bWXsN8VJBTaKRdWQ6bugIJ37dhDCwDHA=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "missing"
+      },
+      "dependencyAudit": {
+        "status": "findings",
+        "packages": 73,
+        "resolutionMode": "strict",
+        "graphDigest": "sha256:646a60724d1b71323e5e4a4de7b1fe05c02f35f4c41f7e173a09f278e14e93d1",
+        "graph": {
+          "schema": "upstream-radar.dependency-graph/v1alpha1",
+          "rootNodeId": "node_modules/dsh-msg-hub",
+          "nodes": [
+            {
+              "id": "node_modules/dsh-msg-hub",
+              "name": "dsh-msg-hub",
+              "version": "0.1.7"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis",
+              "version": "4.0.1"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/cosmokit",
+              "name": "@deepseek-ai/cosmokit",
+              "version": "1.8.2"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-agent",
+              "name": "@deepseek-ai/dsh-agent",
+              "version": "0.1.0-rc.6"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-agent-default-model",
+              "name": "@deepseek-ai/dsh-agent-default-model",
+              "version": "0.1.0-rc.6"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-attachment",
+              "name": "@deepseek-ai/dsh-attachment",
+              "version": "0.1.0-rc.7"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-brand",
+              "name": "@deepseek-ai/dsh-brand",
+              "version": "0.1.0-rc.7"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-invariants",
+              "name": "@deepseek-ai/dsh-invariants",
+              "version": "0.1.0-rc.7"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-llm",
+              "name": "@deepseek-ai/dsh-llm",
+              "version": "0.1.0-rc.7"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-scope",
+              "name": "@deepseek-ai/dsh-scope",
+              "version": "0.1.0-rc.7"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-session",
+              "name": "@deepseek-ai/dsh-session",
+              "version": "0.1.0-rc.6"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-settings",
+              "name": "@deepseek-ai/dsh-settings",
+              "version": "0.1.0-rc.7"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-system-prompt",
+              "name": "@deepseek-ai/dsh-system-prompt",
+              "version": "0.1.0-rc.7"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-timeout",
+              "name": "@deepseek-ai/dsh-timeout",
+              "version": "0.1.0-rc.7"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-typert-protocol",
+              "name": "@deepseek-ai/dsh-typert-protocol",
+              "version": "0.1.0-rc.6"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/schemastery",
+              "name": "@deepseek-ai/schemastery",
+              "version": "3.18.1"
+            },
+            {
+              "id": "node_modules/@larksuiteoapi/node-sdk",
+              "name": "@larksuiteoapi/node-sdk",
+              "version": "1.73.0"
+            },
+            {
+              "id": "node_modules/@protobufjs/aspromise",
+              "name": "@protobufjs/aspromise",
+              "version": "1.1.2"
+            },
+            {
+              "id": "node_modules/@protobufjs/base64",
+              "name": "@protobufjs/base64",
+              "version": "1.1.2"
+            },
+            {
+              "id": "node_modules/@protobufjs/codegen",
+              "name": "@protobufjs/codegen",
+              "version": "2.0.5"
+            },
+            {
+              "id": "node_modules/@protobufjs/eventemitter",
+              "name": "@protobufjs/eventemitter",
+              "version": "1.1.1"
+            },
+            {
+              "id": "node_modules/@protobufjs/fetch",
+              "name": "@protobufjs/fetch",
+              "version": "1.1.1"
+            },
+            {
+              "id": "node_modules/@protobufjs/float",
+              "name": "@protobufjs/float",
+              "version": "1.0.2"
+            },
+            {
+              "id": "node_modules/@protobufjs/path",
+              "name": "@protobufjs/path",
+              "version": "1.1.2"
+            },
+            {
+              "id": "node_modules/@protobufjs/pool",
+              "name": "@protobufjs/pool",
+              "version": "1.1.0"
+            },
+            {
+              "id": "node_modules/@protobufjs/utf8",
+              "name": "@protobufjs/utf8",
+              "version": "1.1.2"
+            },
+            {
+              "id": "node_modules/@standard-schema/spec",
+              "name": "@standard-schema/spec",
+              "version": "1.1.0"
+            },
+            {
+              "id": "node_modules/@tencent-connect/qqbot-connector",
+              "name": "@tencent-connect/qqbot-connector",
+              "version": "1.2.0"
+            },
+            {
+              "id": "node_modules/@tencent-connect/qqbot-nodejs",
+              "name": "@tencent-connect/qqbot-nodejs",
+              "version": "1.0.4"
+            },
+            {
+              "id": "node_modules/@types/node",
+              "name": "@types/node",
+              "version": "26.2.0"
+            },
+            {
+              "id": "node_modules/agent-base",
+              "name": "agent-base",
+              "version": "6.0.2"
+            },
+            {
+              "id": "node_modules/asynckit",
+              "name": "asynckit",
+              "version": "0.4.0"
+            },
+            {
+              "id": "node_modules/axios",
+              "name": "axios",
+              "version": "1.19.0"
+            },
+            {
+              "id": "node_modules/call-bind-apply-helpers",
+              "name": "call-bind-apply-helpers",
+              "version": "1.0.2"
+            },
+            {
+              "id": "node_modules/call-bound",
+              "name": "call-bound",
+              "version": "1.0.4"
+            },
+            {
+              "id": "node_modules/combined-stream",
+              "name": "combined-stream",
+              "version": "1.0.8"
+            },
+            {
+              "id": "node_modules/debug",
+              "name": "debug",
+              "version": "4.4.3"
+            },
+            {
+              "id": "node_modules/delayed-stream",
+              "name": "delayed-stream",
+              "version": "1.0.0"
+            },
+            {
+              "id": "node_modules/dsh-msg-hub/node_modules/@deepseek-ai/dsh-llm",
+              "name": "@deepseek-ai/dsh-llm",
+              "version": "0.1.0-rc.6"
+            },
+            {
+              "id": "node_modules/dunder-proto",
+              "name": "dunder-proto",
+              "version": "1.0.1"
+            },
+            {
+              "id": "node_modules/es-define-property",
+              "name": "es-define-property",
+              "version": "1.0.1"
+            },
+            {
+              "id": "node_modules/es-errors",
+              "name": "es-errors",
+              "version": "1.3.0"
+            },
+            {
+              "id": "node_modules/es-object-atoms",
+              "name": "es-object-atoms",
+              "version": "1.1.2"
+            },
+            {
+              "id": "node_modules/es-set-tostringtag",
+              "name": "es-set-tostringtag",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/follow-redirects",
+              "name": "follow-redirects",
+              "version": "1.16.0"
+            },
+            {
+              "id": "node_modules/form-data",
+              "name": "form-data",
+              "version": "4.0.6"
+            },
+            {
+              "id": "node_modules/function-bind",
+              "name": "function-bind",
+              "version": "1.1.2"
+            },
+            {
+              "id": "node_modules/get-intrinsic",
+              "name": "get-intrinsic",
+              "version": "1.3.0"
+            },
+            {
+              "id": "node_modules/get-proto",
+              "name": "get-proto",
+              "version": "1.0.1"
+            },
+            {
+              "id": "node_modules/gopd",
+              "name": "gopd",
+              "version": "1.2.0"
+            },
+            {
+              "id": "node_modules/has-symbols",
+              "name": "has-symbols",
+              "version": "1.1.0"
+            },
+            {
+              "id": "node_modules/has-tostringtag",
+              "name": "has-tostringtag",
+              "version": "1.0.2"
+            },
+            {
+              "id": "node_modules/hasown",
+              "name": "hasown",
+              "version": "2.0.4"
+            },
+            {
+              "id": "node_modules/https-proxy-agent",
+              "name": "https-proxy-agent",
+              "version": "5.0.1"
+            },
+            {
+              "id": "node_modules/lodash.identity",
+              "name": "lodash.identity",
+              "version": "3.0.0"
+            },
+            {
+              "id": "node_modules/lodash.merge",
+              "name": "lodash.merge",
+              "version": "4.6.2"
+            },
+            {
+              "id": "node_modules/lodash.pickby",
+              "name": "lodash.pickby",
+              "version": "4.6.0"
+            },
+            {
+              "id": "node_modules/long",
+              "name": "long",
+              "version": "5.3.2"
+            },
+            {
+              "id": "node_modules/math-intrinsics",
+              "name": "math-intrinsics",
+              "version": "1.1.0"
+            },
+            {
+              "id": "node_modules/mime-db",
+              "name": "mime-db",
+              "version": "1.52.0"
+            },
+            {
+              "id": "node_modules/mime-types",
+              "name": "mime-types",
+              "version": "2.1.35"
+            },
+            {
+              "id": "node_modules/ms",
+              "name": "ms",
+              "version": "2.1.3"
+            },
+            {
+              "id": "node_modules/object-inspect",
+              "name": "object-inspect",
+              "version": "1.13.4"
+            },
+            {
+              "id": "node_modules/protobufjs",
+              "name": "protobufjs",
+              "version": "7.6.5"
+            },
+            {
+              "id": "node_modules/proxy-from-env",
+              "name": "proxy-from-env",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/qrcode-terminal",
+              "name": "qrcode-terminal",
+              "version": "0.12.0"
+            },
+            {
+              "id": "node_modules/qs",
+              "name": "qs",
+              "version": "6.15.3"
+            },
+            {
+              "id": "node_modules/side-channel",
+              "name": "side-channel",
+              "version": "1.1.1"
+            },
+            {
+              "id": "node_modules/side-channel-list",
+              "name": "side-channel-list",
+              "version": "1.0.1"
+            },
+            {
+              "id": "node_modules/side-channel-map",
+              "name": "side-channel-map",
+              "version": "1.0.1"
+            },
+            {
+              "id": "node_modules/side-channel-weakmap",
+              "name": "side-channel-weakmap",
+              "version": "1.0.2"
+            },
+            {
+              "id": "node_modules/undici-types",
+              "name": "undici-types",
+              "version": "8.3.0"
+            },
+            {
+              "id": "node_modules/ws",
+              "name": "ws",
+              "version": "8.21.3"
+            }
+          ],
+          "edges": [
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "to": "node_modules/@deepseek-ai/cosmokit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "to": "node_modules/@standard-schema/spec",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-agent",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-agent",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-agent",
+              "to": "node_modules/@deepseek-ai/dsh-llm",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-agent",
+              "to": "node_modules/@deepseek-ai/dsh-scope",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-agent",
+              "to": "node_modules/@deepseek-ai/dsh-session",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-agent",
+              "to": "node_modules/@deepseek-ai/dsh-system-prompt",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-agent",
+              "to": "node_modules/@deepseek-ai/dsh-typert-protocol",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-agent-default-model",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-agent-default-model",
+              "to": "node_modules/@deepseek-ai/dsh-agent",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-agent-default-model",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-agent-default-model",
+              "to": "node_modules/@deepseek-ai/dsh-llm",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-agent-default-model",
+              "to": "node_modules/@deepseek-ai/dsh-settings",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-agent-default-model",
+              "to": "node_modules/@deepseek-ai/schemastery",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-attachment",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-attachment",
+              "to": "node_modules/@deepseek-ai/dsh-brand",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-attachment",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-brand",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-brand",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-invariants",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-invariants",
+              "to": "node_modules/@deepseek-ai/schemastery",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/dsh-attachment",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/dsh-brand",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/dsh-timeout",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/schemastery",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-scope",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-scope",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-session",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-session",
+              "to": "node_modules/@deepseek-ai/dsh-brand",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-session",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-session",
+              "to": "node_modules/@deepseek-ai/dsh-llm",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-session",
+              "to": "node_modules/@deepseek-ai/dsh-scope",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-session",
+              "to": "node_modules/@deepseek-ai/dsh-typert-protocol",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-settings",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-settings",
+              "to": "node_modules/@deepseek-ai/dsh-brand",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-settings",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-settings",
+              "to": "node_modules/@deepseek-ai/schemastery",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-system-prompt",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-system-prompt",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-system-prompt",
+              "to": "node_modules/@deepseek-ai/dsh-llm",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-system-prompt",
+              "to": "node_modules/@deepseek-ai/dsh-scope",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-system-prompt",
+              "to": "node_modules/@deepseek-ai/schemastery",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-timeout",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-timeout",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-typert-protocol",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-typert-protocol",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/schemastery",
+              "to": "node_modules/@deepseek-ai/cosmokit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/schemastery",
+              "to": "node_modules/@standard-schema/spec",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@larksuiteoapi/node-sdk",
+              "to": "node_modules/axios",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@larksuiteoapi/node-sdk",
+              "to": "node_modules/lodash.identity",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@larksuiteoapi/node-sdk",
+              "to": "node_modules/lodash.merge",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@larksuiteoapi/node-sdk",
+              "to": "node_modules/lodash.pickby",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@larksuiteoapi/node-sdk",
+              "to": "node_modules/protobufjs",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@larksuiteoapi/node-sdk",
+              "to": "node_modules/qs",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@larksuiteoapi/node-sdk",
+              "to": "node_modules/ws",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@protobufjs/fetch",
+              "to": "node_modules/@protobufjs/aspromise",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@tencent-connect/qqbot-connector",
+              "to": "node_modules/qrcode-terminal",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@tencent-connect/qqbot-nodejs",
+              "to": "node_modules/ws",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@types/node",
+              "to": "node_modules/undici-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/agent-base",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/axios",
+              "to": "node_modules/follow-redirects",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/axios",
+              "to": "node_modules/form-data",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/axios",
+              "to": "node_modules/https-proxy-agent",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/axios",
+              "to": "node_modules/proxy-from-env",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/call-bind-apply-helpers",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/call-bind-apply-helpers",
+              "to": "node_modules/function-bind",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/call-bound",
+              "to": "node_modules/call-bind-apply-helpers",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/call-bound",
+              "to": "node_modules/get-intrinsic",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/combined-stream",
+              "to": "node_modules/delayed-stream",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/debug",
+              "to": "node_modules/ms",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dsh-msg-hub",
+              "to": "node_modules/@deepseek-ai/dsh-agent",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dsh-msg-hub",
+              "to": "node_modules/@deepseek-ai/dsh-agent-default-model",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dsh-msg-hub",
+              "to": "node_modules/@deepseek-ai/dsh-session",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dsh-msg-hub",
+              "to": "node_modules/@larksuiteoapi/node-sdk",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dsh-msg-hub",
+              "to": "node_modules/@tencent-connect/qqbot-connector",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dsh-msg-hub",
+              "to": "node_modules/@tencent-connect/qqbot-nodejs",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dsh-msg-hub",
+              "to": "node_modules/dsh-msg-hub/node_modules/@deepseek-ai/dsh-llm",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dsh-msg-hub",
+              "to": "node_modules/qrcode-terminal",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dsh-msg-hub/node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-msg-hub/node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/dsh-attachment",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-msg-hub/node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/dsh-brand",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-msg-hub/node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-msg-hub/node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/dsh-timeout",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-msg-hub/node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/schemastery",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dunder-proto",
+              "to": "node_modules/call-bind-apply-helpers",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dunder-proto",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dunder-proto",
+              "to": "node_modules/gopd",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/es-object-atoms",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/es-set-tostringtag",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/es-set-tostringtag",
+              "to": "node_modules/get-intrinsic",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/es-set-tostringtag",
+              "to": "node_modules/has-tostringtag",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/es-set-tostringtag",
+              "to": "node_modules/hasown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/form-data",
+              "to": "node_modules/asynckit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/form-data",
+              "to": "node_modules/combined-stream",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/form-data",
+              "to": "node_modules/es-set-tostringtag",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/form-data",
+              "to": "node_modules/hasown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/form-data",
+              "to": "node_modules/mime-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/call-bind-apply-helpers",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/es-define-property",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/es-object-atoms",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/function-bind",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/get-proto",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/gopd",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/has-symbols",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/hasown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/math-intrinsics",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-proto",
+              "to": "node_modules/dunder-proto",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-proto",
+              "to": "node_modules/es-object-atoms",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/has-tostringtag",
+              "to": "node_modules/has-symbols",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/hasown",
+              "to": "node_modules/function-bind",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/https-proxy-agent",
+              "to": "node_modules/agent-base",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/https-proxy-agent",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mime-types",
+              "to": "node_modules/mime-db",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/protobufjs",
+              "to": "node_modules/@protobufjs/aspromise",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/protobufjs",
+              "to": "node_modules/@protobufjs/base64",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/protobufjs",
+              "to": "node_modules/@protobufjs/codegen",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/protobufjs",
+              "to": "node_modules/@protobufjs/eventemitter",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/protobufjs",
+              "to": "node_modules/@protobufjs/fetch",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/protobufjs",
+              "to": "node_modules/@protobufjs/float",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/protobufjs",
+              "to": "node_modules/@protobufjs/path",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/protobufjs",
+              "to": "node_modules/@protobufjs/pool",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/protobufjs",
+              "to": "node_modules/@protobufjs/utf8",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/protobufjs",
+              "to": "node_modules/@types/node",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/protobufjs",
+              "to": "node_modules/long",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/qs",
+              "to": "node_modules/es-define-property",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/qs",
+              "to": "node_modules/side-channel",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel",
+              "to": "node_modules/object-inspect",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel",
+              "to": "node_modules/side-channel-list",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel",
+              "to": "node_modules/side-channel-map",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel",
+              "to": "node_modules/side-channel-weakmap",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-list",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-list",
+              "to": "node_modules/object-inspect",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-map",
+              "to": "node_modules/call-bound",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-map",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-map",
+              "to": "node_modules/get-intrinsic",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-map",
+              "to": "node_modules/object-inspect",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-weakmap",
+              "to": "node_modules/call-bound",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-weakmap",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-weakmap",
+              "to": "node_modules/get-intrinsic",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-weakmap",
+              "to": "node_modules/object-inspect",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-weakmap",
+              "to": "node_modules/side-channel-map",
+              "kind": "runtime"
+            }
+          ],
+          "source": "npm-lock",
+          "digest": "sha256:646a60724d1b71323e5e4a4de7b1fe05c02f35f4c41f7e173a09f278e14e93d1",
+          "unresolved": [
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis-plugin-include",
+              "spec": "^1.0.6",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis-plugin-loader",
+              "spec": "^1.0.2",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/@tencent-connect/qqbot-nodejs",
+              "name": "mpg123-decoder",
+              "spec": "^1.0.3",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/@tencent-connect/qqbot-nodejs",
+              "name": "silk-wasm",
+              "spec": "^3.7.1",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/ws",
+              "name": "bufferutil",
+              "spec": "^4.0.1",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/ws",
+              "name": "utf-8-validate",
+              "spec": ">=5.0.2",
+              "kind": "optional"
+            }
+          ]
+        },
+        "installScriptPackages": [
+          "protobufjs@7.6.5"
+        ],
+        "installScriptDetails": [
+          {
+            "package": "protobufjs@7.6.5",
+            "scripts": [
+              {
+                "name": "postinstall",
+                "command": "node scripts/postinstall"
+              }
+            ]
+          }
+        ],
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "missing",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-install-script-present",
+      "severity": "high",
+      "summary": "Resolved dependency graph contains install-time scripts",
+      "detail": "The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.",
+      "evidence": {
+        "packages": [
+          "protobufjs@7.6.5"
+        ],
+        "scripts": [
+          "protobufjs@7.6.5 postinstall: node scripts/postinstall"
+        ]
+      },
+      "remediation": "Review each listed package and its published artifact; prefer a version with no install-time script, or require explicit approval before allowing the DSH install path to run it."
+    },
+    {
+      "code": "npm-provenance-missing",
+      "severity": "medium",
+      "summary": "npm artifact has no build provenance",
+      "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+      "remediation": "Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version."
+    }
+  ],
+  "riskVerdict": "review",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

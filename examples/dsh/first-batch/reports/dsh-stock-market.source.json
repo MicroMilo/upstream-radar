@@ -1,0 +1,309 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-stock-market",
+    "version": "0.2.0",
+    "artifactDigest": "sha256:28fc1d97508f90b96f9e8eb60d83f92f8a7a67703d2f98fc7591229e8cb2841d"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 82,
+    "bytesHashed": 3112987,
+    "lockfiles": [
+      "package-lock.json"
+    ],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@testing-library/react",
+        "scope": "devDependency",
+        "spec": "16.3.2"
+      },
+      {
+        "name": "@types/node",
+        "scope": "devDependency",
+        "spec": "22.20.0"
+      },
+      {
+        "name": "@types/react",
+        "scope": "devDependency",
+        "spec": "18.3.31"
+      },
+      {
+        "name": "@types/react-dom",
+        "scope": "devDependency",
+        "spec": "18.3.7"
+      },
+      {
+        "name": "jsdom",
+        "scope": "devDependency",
+        "spec": "29.1.1"
+      },
+      {
+        "name": "lightningcss",
+        "scope": "devDependency",
+        "spec": "1.32.0"
+      },
+      {
+        "name": "react",
+        "scope": "devDependency",
+        "spec": "18.3.1"
+      },
+      {
+        "name": "react-dom",
+        "scope": "devDependency",
+        "spec": "18.3.1"
+      },
+      {
+        "name": "tsdown",
+        "scope": "devDependency",
+        "spec": "0.22.2"
+      },
+      {
+        "name": "typescript",
+        "scope": "devDependency",
+        "spec": "6.0.3"
+      },
+      {
+        "name": "vitest",
+        "scope": "devDependency",
+        "spec": "4.1.8"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.1-rc.4"
+      },
+      {
+        "name": "@deepseek-ai/dsh-client-connection",
+        "scope": "peerDependency",
+        "spec": "^0.0.1-rc.5"
+      },
+      {
+        "name": "@deepseek-ai/dsh-client-runtime",
+        "scope": "peerDependency",
+        "spec": "^0.0.1-rc.5"
+      },
+      {
+        "name": "@deepseek-ai/dsh-client-ui-conversation",
+        "scope": "peerDependency",
+        "spec": "^0.0.1-rc.5"
+      },
+      {
+        "name": "@deepseek-ai/dsh-client-ui-primitives",
+        "scope": "peerDependency",
+        "spec": "^0.0.1-rc.5"
+      },
+      {
+        "name": "@deepseek-ai/dsh-client-ui-settings",
+        "scope": "peerDependency",
+        "spec": "^0.0.1-rc.5"
+      },
+      {
+        "name": "@deepseek-ai/dsh-client-ui-settings-plugins",
+        "scope": "peerDependency",
+        "spec": "^0.0.1-rc.5"
+      },
+      {
+        "name": "@deepseek-ai/dsh-client-ui-slots",
+        "scope": "peerDependency",
+        "spec": "^0.0.1-rc.5"
+      },
+      {
+        "name": "@deepseek-ai/dsh-settings",
+        "scope": "peerDependency",
+        "spec": "^0.0.1-rc.5"
+      },
+      {
+        "name": "@deepseek-ai/dsh-tools",
+        "scope": "peerDependency",
+        "spec": "^0.0.1-rc.5"
+      },
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "peerDependency",
+        "spec": "^3.18.1-rc.4"
+      },
+      {
+        "name": "react",
+        "scope": "peerDependency",
+        "spec": "^18.2.0"
+      },
+      {
+        "name": "react-dom",
+        "scope": "peerDependency",
+        "spec": "^18.2.0"
+      }
+    ],
+    "dependencyGraph": {
+      "schema": "upstream-radar.dependency-graph/v1alpha1",
+      "rootNodeId": "npm:workspace-root:dsh-stock-market@0.2.0",
+      "nodes": [
+        {
+          "id": "npm:workspace-root:dsh-stock-market@0.2.0",
+          "name": "dsh-stock-market",
+          "version": "0.2.0"
+        },
+        {
+          "id": "node_modules/js-tokens",
+          "name": "js-tokens",
+          "version": "4.0.0"
+        },
+        {
+          "id": "node_modules/loose-envify",
+          "name": "loose-envify",
+          "version": "1.4.0"
+        },
+        {
+          "id": "node_modules/react",
+          "name": "react",
+          "version": "18.3.1"
+        },
+        {
+          "id": "node_modules/react-dom",
+          "name": "react-dom",
+          "version": "18.3.1"
+        },
+        {
+          "id": "node_modules/scheduler",
+          "name": "scheduler",
+          "version": "0.23.2"
+        }
+      ],
+      "edges": [
+        {
+          "from": "node_modules/loose-envify",
+          "to": "node_modules/js-tokens",
+          "kind": "runtime"
+        },
+        {
+          "from": "node_modules/react",
+          "to": "node_modules/loose-envify",
+          "kind": "runtime"
+        },
+        {
+          "from": "node_modules/react-dom",
+          "to": "node_modules/loose-envify",
+          "kind": "runtime"
+        },
+        {
+          "from": "node_modules/react-dom",
+          "to": "node_modules/react",
+          "kind": "peer"
+        },
+        {
+          "from": "node_modules/react-dom",
+          "to": "node_modules/scheduler",
+          "kind": "runtime"
+        },
+        {
+          "from": "node_modules/scheduler",
+          "to": "node_modules/loose-envify",
+          "kind": "runtime"
+        },
+        {
+          "from": "npm:workspace-root:dsh-stock-market@0.2.0",
+          "to": "node_modules/react",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-stock-market@0.2.0",
+          "to": "node_modules/react-dom",
+          "kind": "optional"
+        }
+      ],
+      "source": "npm-lock",
+      "digest": "sha256:f2806cd14c08d9b58f53f7abc8ce38fe708043d6241cc33d0dab37403164871b",
+      "unresolved": [
+        {
+          "from": "npm:workspace-root:dsh-stock-market@0.2.0",
+          "name": "@deepseek-ai/cordis",
+          "spec": "^4.0.1-rc.4",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-stock-market@0.2.0",
+          "name": "@deepseek-ai/dsh-client-connection",
+          "spec": "^0.0.1-rc.5",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-stock-market@0.2.0",
+          "name": "@deepseek-ai/dsh-client-runtime",
+          "spec": "^0.0.1-rc.5",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-stock-market@0.2.0",
+          "name": "@deepseek-ai/dsh-client-ui-conversation",
+          "spec": "^0.0.1-rc.5",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-stock-market@0.2.0",
+          "name": "@deepseek-ai/dsh-client-ui-primitives",
+          "spec": "^0.0.1-rc.5",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-stock-market@0.2.0",
+          "name": "@deepseek-ai/dsh-client-ui-settings",
+          "spec": "^0.0.1-rc.5",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-stock-market@0.2.0",
+          "name": "@deepseek-ai/dsh-client-ui-settings-plugins",
+          "spec": "^0.0.1-rc.5",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-stock-market@0.2.0",
+          "name": "@deepseek-ai/dsh-client-ui-slots",
+          "spec": "^0.0.1-rc.5",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-stock-market@0.2.0",
+          "name": "@deepseek-ai/dsh-settings",
+          "spec": "^0.0.1-rc.5",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-stock-market@0.2.0",
+          "name": "@deepseek-ai/dsh-tools",
+          "spec": "^0.0.1-rc.5",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-stock-market@0.2.0",
+          "name": "@deepseek-ai/schemastery",
+          "spec": "^3.18.1-rc.4",
+          "kind": "optional"
+        }
+      ]
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "resolved",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [],
+  "riskVerdict": "allow",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

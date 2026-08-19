@@ -1,0 +1,70 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-archived-conversations",
+    "version": "0.3.0",
+    "artifactDigest": "sha256:8d74e229bbd3762d1e632a0b524cde3c26a53f15d4b989834fc57a00893114b5"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 15,
+    "bytesHashed": 106254,
+    "lockfiles": [
+      "package-lock.json"
+    ],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@types/node",
+        "scope": "devDependency",
+        "spec": "^22.0.0"
+      },
+      {
+        "name": "tsdown",
+        "scope": "devDependency",
+        "spec": "^0.22.14"
+      },
+      {
+        "name": "typescript",
+        "scope": "devDependency",
+        "spec": "^6.0.3"
+      }
+    ],
+    "dependencyGraph": {
+      "schema": "upstream-radar.dependency-graph/v1alpha1",
+      "rootNodeId": "npm:workspace-root:dsh-archived-conversations@0.3.0",
+      "nodes": [
+        {
+          "id": "npm:workspace-root:dsh-archived-conversations@0.3.0",
+          "name": "dsh-archived-conversations",
+          "version": "0.3.0"
+        }
+      ],
+      "edges": [],
+      "source": "npm-lock",
+      "digest": "sha256:6680ddaae85cb886159b760e72b379fa725d046fd16cb0098ce56a6fc859be91"
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "resolved",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [],
+  "riskVerdict": "allow",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}
