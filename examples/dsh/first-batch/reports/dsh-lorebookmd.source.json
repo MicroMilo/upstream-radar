@@ -1,0 +1,38 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-lorebookmd",
+    "version": "1.0.0",
+    "artifactDigest": "sha256:feb70726c76048835729a15c8efd57f8e529f51e880f427c85b499d85f6ab1ee"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 28,
+    "bytesHashed": 180245,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": []
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [],
+  "riskVerdict": "allow",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

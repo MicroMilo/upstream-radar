@@ -1,0 +1,244 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-plugin-sync",
+    "version": "1.0.0",
+    "artifactDigest": "sha256:f95d4a8c610154117593f78ef7c4c9617d349630bba23bbb2363a8ed11363658"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 18,
+    "bytesHashed": 1185255,
+    "lockfiles": [
+      "package-lock.json"
+    ],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "zod",
+        "scope": "dependency",
+        "spec": "^4.4.3"
+      },
+      {
+        "name": "esbuild",
+        "scope": "devDependency",
+        "spec": "^0.25.0"
+      },
+      {
+        "name": "typescript",
+        "scope": "devDependency",
+        "spec": "^5.7.0"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.1"
+      },
+      {
+        "name": "@deepseek-ai/dsh-api-remotes",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-client-runtime",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-client-ui-settings",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-client-ui-slots",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-typert-protocol",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-typert-registry",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "react",
+        "scope": "peerDependency",
+        "spec": "^18.2.0"
+      }
+    ],
+    "dependencyGraph": {
+      "schema": "upstream-radar.dependency-graph/v1alpha1",
+      "rootNodeId": "npm:workspace-root:dsh-plugin-sync@1.0.0",
+      "nodes": [
+        {
+          "id": "npm:workspace-root:dsh-plugin-sync@1.0.0",
+          "name": "dsh-plugin-sync",
+          "version": "1.0.0"
+        },
+        {
+          "id": "node_modules/zod",
+          "name": "zod",
+          "version": "4.4.3"
+        }
+      ],
+      "edges": [
+        {
+          "from": "npm:workspace-root:dsh-plugin-sync@1.0.0",
+          "to": "node_modules/zod",
+          "kind": "runtime"
+        }
+      ],
+      "source": "npm-lock",
+      "digest": "sha256:fcde8e9bb05edf13524fba76ac0ec4a16dcf437f360f7ba542e49368c5f42f59",
+      "unresolved": [
+        {
+          "from": "npm:workspace-root:dsh-plugin-sync@1.0.0",
+          "name": "@deepseek-ai/cordis",
+          "spec": "^4.0.1",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-plugin-sync@1.0.0",
+          "name": "@deepseek-ai/dsh-api-remotes",
+          "spec": "*",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-plugin-sync@1.0.0",
+          "name": "@deepseek-ai/dsh-client-runtime",
+          "spec": "*",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-plugin-sync@1.0.0",
+          "name": "@deepseek-ai/dsh-client-ui-settings",
+          "spec": "*",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-plugin-sync@1.0.0",
+          "name": "@deepseek-ai/dsh-client-ui-slots",
+          "spec": "*",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-plugin-sync@1.0.0",
+          "name": "@deepseek-ai/dsh-typert-protocol",
+          "spec": "*",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-plugin-sync@1.0.0",
+          "name": "@deepseek-ai/dsh-typert-registry",
+          "spec": "*",
+          "kind": "optional"
+        },
+        {
+          "from": "npm:workspace-root:dsh-plugin-sync@1.0.0",
+          "name": "react",
+          "spec": "^18.2.0",
+          "kind": "optional"
+        }
+      ]
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "resolved",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-api-remotes uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-api-remotes",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-client-runtime uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-client-runtime",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-client-ui-settings uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-client-ui-settings",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-client-ui-slots uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-client-ui-slots",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-typert-protocol uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-typert-protocol",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-typert-registry uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-typert-registry",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

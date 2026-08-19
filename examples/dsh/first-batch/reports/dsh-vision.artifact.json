@@ -1,0 +1,137 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "dsh-vision-web",
+    "version": "0.1.0",
+    "artifactDigest": "sha256:581427d726f785b7f46934b541186bcf9f38713f1389438f7de7f9be8e89e8a4",
+    "treeDigest": "sha256:432b2c9cb86ba621388b753237a676d434a7c2c331433f9ef82370f27f29d481",
+    "spec": "npm:dsh-vision-web@0.1.0"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 12,
+    "bytesHashed": 401539,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/dsh-llm",
+        "scope": "devDependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-tools",
+        "scope": "devDependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "devDependency",
+        "spec": "^3.18.1"
+      },
+      {
+        "name": "@types/react",
+        "scope": "devDependency",
+        "spec": "^18.3.1"
+      },
+      {
+        "name": "esbuild",
+        "scope": "devDependency",
+        "spec": "^0.24.0"
+      },
+      {
+        "name": "react",
+        "scope": "devDependency",
+        "spec": "^18.2.0"
+      },
+      {
+        "name": "typescript",
+        "scope": "devDependency",
+        "spec": "^5.6.0"
+      }
+    ],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/dsh-vision-web/-/dsh-vision-web-0.1.0.tgz",
+      "compressedBytes": 110560,
+      "unpackedBytes": 401539,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "twfM5JSd09CgEEE1GqaYvCxud6/R9jQy+qDJXV/lR0pN9vinKrM4shRHzkYk7PahUbHzlE95H2T3sIWPwdaYLA==",
+        "actual": "twfM5JSd09CgEEE1GqaYvCxud6/R9jQy+qDJXV/lR0pN9vinKrM4shRHzkYk7PahUbHzlE95H2T3sIWPwdaYLA=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "missing"
+      },
+      "dependencyAudit": {
+        "status": "verified",
+        "packages": 1,
+        "resolutionMode": "strict",
+        "graphDigest": "sha256:35af7b8f7ba12231efcfff0703e25cfdf1fa2a1687bb55905240a9d0f8895be0",
+        "graph": {
+          "schema": "upstream-radar.dependency-graph/v1alpha1",
+          "rootNodeId": "node_modules/dsh-vision-web",
+          "nodes": [
+            {
+              "id": "node_modules/dsh-vision-web",
+              "name": "dsh-vision-web",
+              "version": "0.1.0"
+            }
+          ],
+          "edges": [],
+          "source": "npm-lock",
+          "digest": "sha256:35af7b8f7ba12231efcfff0703e25cfdf1fa2a1687bb55905240a9d0f8895be0"
+        },
+        "installScriptPackages": [],
+        "installScriptDetails": [],
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "missing",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "npm-provenance-missing",
+      "severity": "medium",
+      "summary": "npm artifact has no build provenance",
+      "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+      "remediation": "Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

@@ -63,15 +63,15 @@ baseline report, and defined in [`schemas/upstream-downstream-ir.schema.json`](s
 
 ```bash
 # No DSH profile, API key, or network state required
-npx --yes upstream-radar@0.36.0 demo
+npx --yes upstream-radar@0.37.0 demo
 
 # Scan a public DSH plugin repository without installing it
-npx --yes upstream-radar@0.36.0 scan \
+npx --yes upstream-radar@0.37.0 scan \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --fail-on never
 
 # Review a real browser plugin users would install, then check two DSH releases
-npx --yes upstream-radar@0.36.0 review dsh-plugin dsh-cloudflare-browser-run@0.1.1 \
+npx --yes upstream-radar@0.37.0 review dsh-plugin dsh-cloudflare-browser-run@0.1.1 \
   --dsh-version 0.1.0-rc.6,0.1.0-rc.7
 ```
 
@@ -84,7 +84,7 @@ These are real, reproducible cases in this repository—not synthetic “vulnera
 | Case | Finding | Why it matters |
 | --- | --- | --- |
 | [`dsh-cloudflare-browser-run@0.1.1`](examples/reports/dsh-cloudflare-browser-run-0.1.1.txt) | 18 resolved packages, 2 unresolved optional Cordis edges, 0 known vulnerabilities, and DSH rc.6/rc.7 both loaded the bundle | A real browser plugin demonstrates the DSH admission boundary and why incomplete edges stay visible. |
-| [50-plugin batch](examples/dsh/reports/dsh-batch-50-2026-08-17.md) | 0 confirmed runtime dependency vulnerabilities; 3 lockfile root-version mismatches | Monitoring can be wrong even when the vulnerability count is zero. |
+| [50-plugin batch](examples/dsh/reports/dsh-batch-50-2026-08-17.md) / [real graph corpus](examples/dsh/first-batch/README.md) | 50 source scans, 30 exact npm reviews, 37 real plugin graphs indexed; 13 targets kept as missing evidence | The reverse index is now built from real DSH plugins, and missing graphs are not treated as clean. |
 | [`dsh-feishu-bot@0.15.8`](examples/dsh/reports/dsh-feishu-bot-0.15.8-review-2026-08-18.md) | 89-package graph, 12 unresolved optional edges, reachable `protobufjs` `postinstall`, DSH rc.6/rc.7 compatible | “No known CVE” is not the same as “no installation trust boundary.” |
 | [DSH-TUI source vs npm](examples/dsh/reports/dsh-tui-source-vs-npm-2026-08-18.md) | Source has `prepare`; published artifact does not | Source-only and artifact-only reviews answer different questions. |
 | [dsh-composer-expand](examples/dsh/reports/dsh-composer-expand-lockfile-feedback.md) | Committed lockfile root says `0.1.0` while source says `0.1.2` | A small author-fix can restore the identity of the monitored graph. |
@@ -107,12 +107,15 @@ Two copies of `parser` are different nodes. An alert names the exact version and
 For a collection of saved reports, build the reverse index that turns an upstream package update into affected plugins:
 
 ```bash
-npx --yes upstream-radar@0.36.0 graph reverse ./reports \
+npx --yes upstream-radar@0.37.0 graph reverse ./reports \
   --output reverse-dependency-index.json
 
 # Ask: which plugins currently depend on this exact package?
-npx --yes upstream-radar@0.36.0 graph reverse ./reports \
+npx --yes upstream-radar@0.37.0 graph reverse ./reports \
   --package parser@2.9.0
+
+# Rebuild the checked-in index from the real first 50 DSH plugin reports
+pnpm run refresh:dsh-batch
 ```
 
 The generated JSON preserves exact paths such as:
@@ -127,7 +130,7 @@ To route an upstream old → new change to that index, pass it to the always-on
 observer:
 
 ```bash
-npx --yes upstream-radar@0.36.0 observe ./targets.yml \
+npx --yes upstream-radar@0.37.0 observe ./targets.yml \
   --reverse-index ./reverse-dependency-index.json \
   --state ./observations.json \
   --report ./upstream-radar-observer.md
@@ -141,12 +144,19 @@ is an evidence-based routing signal, not a claim that the plugin is already
 broken. See the persisted index definition in
 [`schemas/reverse-dependency-index.schema.json`](schemas/reverse-dependency-index.schema.json).
 
+The checked-in real-corpus replay makes this concrete: an observed
+`@deepseek-ai/cordis@4.0.1 → 4.0.2` change routes to 17 DSH plugins from the
+first 50-plugin batch. The route is marked `incomplete` because 26 of the 37
+reconstructed graphs contain unresolved edges; the other 13 targets are kept
+outside the index as missing evidence. Run `pnpm run showcase:observer` to
+replay baseline → one Agent task → quiet run without network access.
+
 ## GitHub Action
 
 The repository already contains a reusable, composite Action in [`action.yml`](action.yml). It runs the same frozen Radar check in CI and writes a short Job Summary.
 
 ```yaml
-- uses: MicroMilo/upstream-radar@v0.36.0
+- uses: MicroMilo/upstream-radar@v0.37.0
   with:
     config: upstream-radar.config.json
     fail-on: high
@@ -170,7 +180,7 @@ See the [consumer workflow](examples/github-actions/consumer/README.md) for conf
 pnpm add upstream-radar
 
 # Generate a reviewable DSH profile inventory from the installed profile
-npx --yes upstream-radar@0.36.0 setup
+npx --yes upstream-radar@0.37.0 setup
 ```
 
 For Feishu/webhook routing, DSH Agent handoff, observer state, report schemas, and troubleshooting, use the [full Chinese guide](docs/README.zh-CN.md). The [architecture notes](docs/architecture.md) explain the boundaries and evidence model.

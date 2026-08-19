@@ -1,0 +1,55 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-update-checker",
+    "version": "1.4.5",
+    "artifactDigest": "sha256:ea4a5249c6572842819be7e47db7e03c184ab2b76cb270418fb0e8094ca5bb48"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 26,
+    "bytesHashed": 372786,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "react",
+        "scope": "peerDependency",
+        "spec": "^18.2.0"
+      }
+    ]
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-graph-unlocked",
+      "severity": "medium",
+      "summary": "Runtime dependency graph is not locked in the reviewed source tree",
+      "detail": "A future resolution of the same manifest may select different transitive artifacts.",
+      "evidence": {
+        "runtimeDependencyCount": 1
+      },
+      "remediation": "Commit a supported lockfile and verify every resolved artifact integrity."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

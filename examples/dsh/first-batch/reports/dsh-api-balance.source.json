@@ -1,0 +1,38 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "api-balance",
+    "version": "0.2.1",
+    "artifactDigest": "sha256:c240a5566e5de6e4be963b6df0f236d04fde06d931518a3b808a61dd4cd312e5"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 9,
+    "bytesHashed": 24012,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": []
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [],
+  "riskVerdict": "allow",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

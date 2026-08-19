@@ -1,0 +1,237 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "dsh-telemetry-redactor",
+    "version": "0.1.0",
+    "artifactDigest": "sha256:d23f428e84a352d40eed9f6382ec8e48cc523e6aa771e3602afdf690f0769355",
+    "treeDigest": "sha256:138851e33839cb2e6e6d1dc62834092724d2d815b4361f35f7f282d8f5cd4b24",
+    "spec": "npm:dsh-telemetry-redactor@0.1.0"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 12,
+    "bytesHashed": 32842,
+    "lockfiles": [],
+    "packageManager": "pnpm@11.7.0",
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "dependency",
+        "spec": "3.18.1"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "devDependency",
+        "spec": "4.0.1"
+      },
+      {
+        "name": "@deepseek-ai/cordis-plugin-include",
+        "scope": "devDependency",
+        "spec": "1.0.6"
+      },
+      {
+        "name": "@deepseek-ai/cordis-plugin-loader",
+        "scope": "devDependency",
+        "spec": "1.0.2"
+      },
+      {
+        "name": "@deepseek-ai/dsh-llm",
+        "scope": "devDependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-session",
+        "scope": "devDependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-session-telemetry",
+        "scope": "devDependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@types/js-yaml",
+        "scope": "devDependency",
+        "spec": "4.0.9"
+      },
+      {
+        "name": "@types/node",
+        "scope": "devDependency",
+        "spec": "^22.20.0"
+      },
+      {
+        "name": "js-yaml",
+        "scope": "devDependency",
+        "spec": "4.2.0"
+      },
+      {
+        "name": "publint",
+        "scope": "devDependency",
+        "spec": "0.3.21"
+      },
+      {
+        "name": "tsx",
+        "scope": "devDependency",
+        "spec": "4.22.4"
+      },
+      {
+        "name": "typescript",
+        "scope": "devDependency",
+        "spec": "6.0.3"
+      },
+      {
+        "name": "vitest",
+        "scope": "devDependency",
+        "spec": "4.1.8"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.1"
+      },
+      {
+        "name": "@deepseek-ai/dsh-session-telemetry",
+        "scope": "peerDependency",
+        "spec": ">=0.1.0-rc.5 <0.2.0"
+      }
+    ],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/dsh-telemetry-redactor/-/dsh-telemetry-redactor-0.1.0.tgz",
+      "compressedBytes": 13468,
+      "unpackedBytes": 32842,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "e/C2uA4UKCFAKprwwOk9inaoWb+YLbZMQik3j6nKTyuE1yv0slq5Hm9ql6qY0rt5gKCSWsiosdIUDkwhYsR/VA==",
+        "actual": "e/C2uA4UKCFAKprwwOk9inaoWb+YLbZMQik3j6nKTyuE1yv0slq5Hm9ql6qY0rt5gKCSWsiosdIUDkwhYsR/VA=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "missing"
+      },
+      "dependencyAudit": {
+        "status": "verified",
+        "packages": 4,
+        "resolutionMode": "legacy-peer-deps",
+        "graphDigest": "sha256:b8967c0bdadd5dca80c0331d289afa5ee41d5a8f18f8e5587dc6ca26e761329b",
+        "graph": {
+          "schema": "upstream-radar.dependency-graph/v1alpha1",
+          "rootNodeId": "node_modules/dsh-telemetry-redactor",
+          "nodes": [
+            {
+              "id": "node_modules/dsh-telemetry-redactor",
+              "name": "dsh-telemetry-redactor",
+              "version": "0.1.0"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/cosmokit",
+              "name": "@deepseek-ai/cosmokit",
+              "version": "1.8.2"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/schemastery",
+              "name": "@deepseek-ai/schemastery",
+              "version": "3.18.1"
+            },
+            {
+              "id": "node_modules/@standard-schema/spec",
+              "name": "@standard-schema/spec",
+              "version": "1.1.0"
+            }
+          ],
+          "edges": [
+            {
+              "from": "node_modules/@deepseek-ai/schemastery",
+              "to": "node_modules/@deepseek-ai/cosmokit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/schemastery",
+              "to": "node_modules/@standard-schema/spec",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dsh-telemetry-redactor",
+              "to": "node_modules/@deepseek-ai/schemastery",
+              "kind": "runtime"
+            }
+          ],
+          "source": "npm-lock",
+          "digest": "sha256:b8967c0bdadd5dca80c0331d289afa5ee41d5a8f18f8e5587dc6ca26e761329b",
+          "unresolved": [
+            {
+              "from": "node_modules/dsh-telemetry-redactor",
+              "name": "@deepseek-ai/cordis",
+              "spec": "^4.0.1",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-telemetry-redactor",
+              "name": "@deepseek-ai/dsh-session-telemetry",
+              "spec": ">=0.1.0-rc.5 <0.2.0",
+              "kind": "peer"
+            }
+          ]
+        },
+        "installScriptPackages": [],
+        "installScriptDetails": [],
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "missing",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-peer-resolution-relaxed",
+      "severity": "medium",
+      "summary": "Dependency graph used npm legacy peer resolution",
+      "detail": "Strict npm peer resolution did not finish within the bounded window. The fallback produced a usable dependency inventory with scripts disabled, but peer compatibility was not fully enforced during resolution.",
+      "evidence": {
+        "mode": "legacy-peer-deps"
+      },
+      "remediation": "Review peer dependency ranges separately before installation; keep the exact graph and vulnerability results as the current evidence."
+    },
+    {
+      "code": "npm-provenance-missing",
+      "severity": "medium",
+      "summary": "npm artifact has no build provenance",
+      "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+      "remediation": "Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

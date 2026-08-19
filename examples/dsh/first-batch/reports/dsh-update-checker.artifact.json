@@ -1,0 +1,138 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "dsh-update-checker",
+    "version": "1.4.5",
+    "artifactDigest": "sha256:e0e0e331c13e1b6a025428dc07e4e7978ce5163c8a5cf1297c86f0bab59083bc",
+    "treeDigest": "sha256:43dac38722466a9b07e2c5565cc8b2353f2bcaabf4a73fc126be130603fe8dec",
+    "spec": "npm:dsh-update-checker@1.4.5"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 19,
+    "bytesHashed": 258431,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "react",
+        "scope": "peerDependency",
+        "spec": "^18.2.0"
+      }
+    ],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/dsh-update-checker/-/dsh-update-checker-1.4.5.tgz",
+      "compressedBytes": 72495,
+      "unpackedBytes": 258431,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "jwW4F595wgDf7ghfZhxXgO/xns3s5C9kdiN5TEoq8DrYdncVwd4YE94O88nlD6PgE7G+NJPgfB8Zjh1w3ZQygA==",
+        "actual": "jwW4F595wgDf7ghfZhxXgO/xns3s5C9kdiN5TEoq8DrYdncVwd4YE94O88nlD6PgE7G+NJPgfB8Zjh1w3ZQygA=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "missing"
+      },
+      "dependencyAudit": {
+        "status": "verified",
+        "packages": 4,
+        "resolutionMode": "strict",
+        "graphDigest": "sha256:71bec715ec7050a84779e7c2a7a4ced1dfb08c9db23206176f104b34f6b2b9d5",
+        "graph": {
+          "schema": "upstream-radar.dependency-graph/v1alpha1",
+          "rootNodeId": "node_modules/dsh-update-checker",
+          "nodes": [
+            {
+              "id": "node_modules/dsh-update-checker",
+              "name": "dsh-update-checker",
+              "version": "1.4.5"
+            },
+            {
+              "id": "node_modules/js-tokens",
+              "name": "js-tokens",
+              "version": "4.0.0"
+            },
+            {
+              "id": "node_modules/loose-envify",
+              "name": "loose-envify",
+              "version": "1.4.0"
+            },
+            {
+              "id": "node_modules/react",
+              "name": "react",
+              "version": "18.3.1"
+            }
+          ],
+          "edges": [
+            {
+              "from": "node_modules/dsh-update-checker",
+              "to": "node_modules/react",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/loose-envify",
+              "to": "node_modules/js-tokens",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/react",
+              "to": "node_modules/loose-envify",
+              "kind": "runtime"
+            }
+          ],
+          "source": "npm-lock",
+          "digest": "sha256:71bec715ec7050a84779e7c2a7a4ced1dfb08c9db23206176f104b34f6b2b9d5"
+        },
+        "installScriptPackages": [],
+        "installScriptDetails": [],
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "missing",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "npm-provenance-missing",
+      "severity": "medium",
+      "summary": "npm artifact has no build provenance",
+      "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+      "remediation": "Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

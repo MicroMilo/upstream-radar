@@ -1,0 +1,82 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-feed",
+    "version": "0.1.0",
+    "artifactDigest": "sha256:c011501693c3d90dfe739d6e4d7aa6a05d86d0f26f0f2feab242af085a114852"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 21,
+    "bytesHashed": 34207,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.1"
+      },
+      {
+        "name": "@deepseek-ai/dsh-system-prompt",
+        "scope": "peerDependency",
+        "spec": "^0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-tools",
+        "scope": "peerDependency",
+        "spec": "^0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "peerDependency",
+        "spec": "^3.18.1"
+      }
+    ]
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-graph-unlocked",
+      "severity": "medium",
+      "summary": "Runtime dependency graph is not locked in the reviewed source tree",
+      "detail": "A future resolution of the same manifest may select different transitive artifacts.",
+      "evidence": {
+        "runtimeDependencyCount": 4
+      },
+      "remediation": "Commit a supported lockfile and verify every resolved artifact integrity."
+    },
+    {
+      "code": "npm-publish-provenance-not-declared",
+      "severity": "medium",
+      "summary": "npm publication workflow does not declare build provenance",
+      "detail": "The repository contains an npm publication path, but the reviewed workflow and publisher scripts do not enable `--provenance` or `NPM_CONFIG_PROVENANCE=true`. The next artifact may not carry a verifiable source commit and build workflow attestation.",
+      "evidence": {
+        "workflowPaths": [
+          ".github/workflows/publish.yml"
+        ]
+      },
+      "remediation": "Enable npm provenance with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`, then inspect the next exact artifact with `inspect --deep`."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

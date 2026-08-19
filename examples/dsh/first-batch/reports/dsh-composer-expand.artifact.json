@@ -1,0 +1,190 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "dsh-composer-expand",
+    "version": "0.1.2",
+    "artifactDigest": "sha256:2e7d55b641cae7ecfaa6a32a4caa1532a57813133230047feab71bc20d8d2f16",
+    "treeDigest": "sha256:994e870d5ab61ca4cf1c173fb4edbf04d56a7f2524912219120cb8987d8de5a5",
+    "spec": "npm:dsh-composer-expand@0.1.2"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 9,
+    "bytesHashed": 34208,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "tsdown",
+        "scope": "devDependency",
+        "spec": "^0.22.14"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.1"
+      },
+      {
+        "name": "react",
+        "scope": "peerDependency",
+        "spec": "^18.2.0"
+      }
+    ],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/dsh-composer-expand/-/dsh-composer-expand-0.1.2.tgz",
+      "compressedBytes": 10326,
+      "unpackedBytes": 34208,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "C23hyGoG1mzHKlS/nvnV7d2A/vdXgXMakkSGUGFlrs2o7+7VUl2KJuCSKdI81zJX+6v7dVGKmOhSfq0L5HwnUw==",
+        "actual": "C23hyGoG1mzHKlS/nvnV7d2A/vdXgXMakkSGUGFlrs2o7+7VUl2KJuCSKdI81zJX+6v7dVGKmOhSfq0L5HwnUw=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "verified",
+        "predicateType": "https://slsa.dev/provenance/v1",
+        "sourceRepository": "https://github.com/13071301808/dsh-composer-expand",
+        "sourceRef": "refs/tags/v0.1.2",
+        "sourceCommit": "cb6162753f6f48923b19275008c9d7a87718068a",
+        "workflow": ".github/workflows/publish.yml",
+        "builder": "https://github.com/actions/runner/github-hosted"
+      },
+      "dependencyAudit": {
+        "status": "verified",
+        "packages": 7,
+        "resolutionMode": "strict",
+        "graphDigest": "sha256:e3740660d3687ab46dab850303f7efc2fc0be0b649845776dd7df5fe00074bb7",
+        "graph": {
+          "schema": "upstream-radar.dependency-graph/v1alpha1",
+          "rootNodeId": "node_modules/dsh-composer-expand",
+          "nodes": [
+            {
+              "id": "node_modules/dsh-composer-expand",
+              "name": "dsh-composer-expand",
+              "version": "0.1.2"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis",
+              "version": "4.0.1"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/cosmokit",
+              "name": "@deepseek-ai/cosmokit",
+              "version": "1.8.2"
+            },
+            {
+              "id": "node_modules/@standard-schema/spec",
+              "name": "@standard-schema/spec",
+              "version": "1.1.0"
+            },
+            {
+              "id": "node_modules/js-tokens",
+              "name": "js-tokens",
+              "version": "4.0.0"
+            },
+            {
+              "id": "node_modules/loose-envify",
+              "name": "loose-envify",
+              "version": "1.4.0"
+            },
+            {
+              "id": "node_modules/react",
+              "name": "react",
+              "version": "18.3.1"
+            }
+          ],
+          "edges": [
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "to": "node_modules/@deepseek-ai/cosmokit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "to": "node_modules/@standard-schema/spec",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dsh-composer-expand",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-composer-expand",
+              "to": "node_modules/react",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/loose-envify",
+              "to": "node_modules/js-tokens",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/react",
+              "to": "node_modules/loose-envify",
+              "kind": "runtime"
+            }
+          ],
+          "source": "npm-lock",
+          "digest": "sha256:e3740660d3687ab46dab850303f7efc2fc0be0b649845776dd7df5fe00074bb7",
+          "unresolved": [
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis-plugin-include",
+              "spec": "^1.0.6",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis-plugin-loader",
+              "spec": "^1.0.2",
+              "kind": "optional"
+            }
+          ]
+        },
+        "installScriptPackages": [],
+        "installScriptDetails": [],
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "verified",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [],
+  "riskVerdict": "allow",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

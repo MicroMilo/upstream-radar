@@ -1,0 +1,122 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-msg-hub",
+    "version": "0.1.7",
+    "artifactDigest": "sha256:17925c91e300ae9a74e5c322eb93b7021dcf960624de69406857bb6208fef3a9"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 50,
+    "bytesHashed": 300847,
+    "lockfiles": [
+      "package-lock.json"
+    ],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/dsh-agent",
+        "scope": "dependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-agent-default-model",
+        "scope": "dependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-llm",
+        "scope": "dependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-session",
+        "scope": "dependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@larksuiteoapi/node-sdk",
+        "scope": "dependency",
+        "spec": "^1.73.0"
+      },
+      {
+        "name": "@tencent-connect/qqbot-connector",
+        "scope": "dependency",
+        "spec": "^1.2.0"
+      },
+      {
+        "name": "@tencent-connect/qqbot-nodejs",
+        "scope": "dependency",
+        "spec": "^1.0.4"
+      },
+      {
+        "name": "qrcode-terminal",
+        "scope": "dependency",
+        "spec": "0.12.0"
+      },
+      {
+        "name": "@types/node",
+        "scope": "devDependency",
+        "spec": "^26.2.0"
+      },
+      {
+        "name": "esbuild",
+        "scope": "devDependency",
+        "spec": "^0.24.0"
+      },
+      {
+        "name": "typescript",
+        "scope": "devDependency",
+        "spec": "^5.8.0"
+      }
+    ],
+    "dependencyGraphError": "requested root package is not present in npm lockfile: dsh-msg-hub@0.1.7"
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-graph-unavailable",
+      "severity": "info",
+      "summary": "Committed dependency graph could not be established",
+      "detail": "requested root package is not present in npm lockfile: dsh-msg-hub@0.1.7",
+      "evidence": {
+        "lockfile": "package-lock.json"
+      },
+      "remediation": "Fix or regenerate the supported lockfile, then rerun the scan so vulnerability paths can be checked against exact versions."
+    },
+    {
+      "code": "lockfile-root-metadata-stale",
+      "severity": "info",
+      "summary": "package-lock root metadata does not match package.json",
+      "detail": "The lockfile root is stale (version 0.1.1 → 0.1.7). The dependency tree may still resolve, but source-version tracking and reproducible monitoring can point at the wrong plugin release.",
+      "evidence": {
+        "path": "package-lock.json",
+        "packageName": "dsh-msg-hub",
+        "packageVersion": "0.1.7",
+        "lockfileName": "dsh-msg-hub",
+        "lockfileVersion": "0.1.1"
+      },
+      "remediation": "Regenerate package-lock.json from the intended package.json with lifecycle scripts disabled, then review the complete lockfile diff."
+    }
+  ],
+  "riskVerdict": "allow",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

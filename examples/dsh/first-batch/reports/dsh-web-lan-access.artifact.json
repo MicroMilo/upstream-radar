@@ -1,0 +1,101 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "dsh-web-lan-access",
+    "version": "1.1.0",
+    "artifactDigest": "sha256:3e83c458f8a58fbd3ee1981eb46c588d0a235ef8ff9409cc134db46052ff47c9",
+    "treeDigest": "sha256:f5b970893526dfe175c120ee2855eb15246287f63b4581eda8778cf382b9eb13",
+    "spec": "npm:dsh-web-lan-access@1.1.0"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 6,
+    "bytesHashed": 15098,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/dsh-web-lan-access/-/dsh-web-lan-access-1.1.0.tgz",
+      "compressedBytes": 7108,
+      "unpackedBytes": 15098,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "sX1cedrKDpXmh2k1E15aOz4Pm3c1kSE8nEr3jwLtAhGHAxAwkfp82zERxSvVUqOJqkFaAD8qRbiNzz3YIytjCw==",
+        "actual": "sX1cedrKDpXmh2k1E15aOz4Pm3c1kSE8nEr3jwLtAhGHAxAwkfp82zERxSvVUqOJqkFaAD8qRbiNzz3YIytjCw=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "missing"
+      },
+      "dependencyAudit": {
+        "status": "verified",
+        "packages": 1,
+        "resolutionMode": "strict",
+        "graphDigest": "sha256:6542c089c362afbeae0a6f108f98eace64620b9d8fcbcd2003a4f23dea2740cb",
+        "graph": {
+          "schema": "upstream-radar.dependency-graph/v1alpha1",
+          "rootNodeId": "node_modules/dsh-web-lan-access",
+          "nodes": [
+            {
+              "id": "node_modules/dsh-web-lan-access",
+              "name": "dsh-web-lan-access",
+              "version": "1.1.0"
+            }
+          ],
+          "edges": [],
+          "source": "npm-lock",
+          "digest": "sha256:6542c089c362afbeae0a6f108f98eace64620b9d8fcbcd2003a4f23dea2740cb"
+        },
+        "installScriptPackages": [],
+        "installScriptDetails": [],
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "missing",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "npm-provenance-missing",
+      "severity": "medium",
+      "summary": "npm artifact has no build provenance",
+      "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+      "remediation": "Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

@@ -1,0 +1,80 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "anan-thermal-monitor",
+    "version": "1.0.4",
+    "artifactDigest": "sha256:60291c92aa02796df227578c1233765a07fbe8217d152025f045d6fe33b556d4",
+    "spec": "npm:anan-thermal-monitor@1.0.4"
+  },
+  "dsh": {
+    "isBundle": false
+  },
+  "evidence": {
+    "filesScanned": 0,
+    "bytesHashed": 0,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/anan-thermal-monitor/-/anan-thermal-monitor-1.0.4.tgz",
+      "compressedBytes": 9406354,
+      "unpackedBytes": 0,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "j/rOrSzjIwM1NRaPwoe0AVmT8JwR3DH3N/l2T5aofhFRNbPchNG/Dbt+sCmoAdj0vd4WMmdxET5NfROaF6dXlg==",
+        "actual": "j/rOrSzjIwM1NRaPwoe0AVmT8JwR3DH3N/l2T5aofhFRNbPchNG/Dbt+sCmoAdj0vd4WMmdxET5NfROaF6dXlg=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "missing"
+      },
+      "dependencyAudit": {
+        "status": "not-run",
+        "packages": null,
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": null
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "incomplete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "manifest-only",
+    "provenance": "missing",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "npm-archive-invalid",
+      "severity": "critical",
+      "summary": "npm artifact cannot be parsed safely",
+      "detail": "unsupported PAX size override"
+    },
+    {
+      "code": "npm-provenance-missing",
+      "severity": "medium",
+      "summary": "npm artifact has no build provenance",
+      "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+      "remediation": "Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version."
+    }
+  ],
+  "riskVerdict": "block",
+  "coverageVerdict": "incomplete",
+  "verdict": "block"
+}

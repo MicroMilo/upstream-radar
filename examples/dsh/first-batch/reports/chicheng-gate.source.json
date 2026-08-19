@@ -1,0 +1,65 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "chicheng-gate",
+    "version": "1.0.3",
+    "artifactDigest": "sha256:789e53f210d980e8c80f487df2cfdffff8ed7cbe05cc9f03a5ba6ef1175218ea"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 12,
+    "bytesHashed": 532675,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "schemastery",
+        "scope": "dependency",
+        "spec": "^3.18.0"
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.1"
+      },
+      {
+        "name": "schemastery",
+        "scope": "peerDependency",
+        "spec": "^3.18.0"
+      }
+    ]
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-graph-unlocked",
+      "severity": "medium",
+      "summary": "Runtime dependency graph is not locked in the reviewed source tree",
+      "detail": "A future resolution of the same manifest may select different transitive artifacts.",
+      "evidence": {
+        "runtimeDependencyCount": 3
+      },
+      "remediation": "Commit a supported lockfile and verify every resolved artifact integrity."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

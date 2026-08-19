@@ -45,11 +45,12 @@ jobs:
 
       - name: Build downstream reverse dependency index
         run: |
-          # Replace examples/radar with the directory of saved DSH plugin
-          # scan/review/config JSON in the repository using this workflow.
-          node dist/src/cli.js graph reverse examples/radar \
-            --output "$RUNNER_TEMP/reverse-dependency-index.json" \
-            --json > /dev/null
+          # Use the checked-in index generated from the first-batch corpus of
+          # real DSH plugin reports. Refresh it intentionally with
+          # `pnpm run refresh:dsh-batch`; skipped targets remain visible in the
+          # corpus summary instead of becoming false clean results.
+          cp examples/dsh/first-batch/reverse-dependency-index.json \
+            "$RUNNER_TEMP/reverse-dependency-index.json"
 
       - name: Observe upstream changes
         id: observe

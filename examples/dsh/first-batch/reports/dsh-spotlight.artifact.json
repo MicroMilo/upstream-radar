@@ -1,0 +1,238 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "@0xsline/dsh-spotlight",
+    "version": "0.0.2",
+    "artifactDigest": "sha256:d68ef1ec060b2b6a2eeac1430d5c9748abc01fb3d8a008412bac841f8d4a165e",
+    "treeDigest": "sha256:dfe165544f89c329fa4ca0daa66d59abef975a1ea395dd377d4c77787a8f960e",
+    "spec": "npm:@0xsline/dsh-spotlight@0.0.2"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 39,
+    "bytesHashed": 104210,
+    "lockfiles": [],
+    "packageManager": "pnpm@11.7.0",
+    "lifecycleScripts": [
+      {
+        "name": "prepare",
+        "command": "node scripts/prepare.mjs"
+      }
+    ],
+    "dependencies": [
+      {
+        "name": "@cordisjs/plugin-loader",
+        "scope": "devDependency",
+        "spec": "^1.0.0-rc.5"
+      },
+      {
+        "name": "@types/node",
+        "scope": "devDependency",
+        "spec": "^22.20.0"
+      },
+      {
+        "name": "cordis",
+        "scope": "devDependency",
+        "spec": "^4.0.0-rc.7"
+      },
+      {
+        "name": "happy-dom",
+        "scope": "devDependency",
+        "spec": "^20.11.2"
+      },
+      {
+        "name": "schemastery",
+        "scope": "devDependency",
+        "spec": "^3.18.0"
+      },
+      {
+        "name": "tsdown",
+        "scope": "devDependency",
+        "spec": "^0.22.2"
+      },
+      {
+        "name": "typescript",
+        "scope": "devDependency",
+        "spec": "^6.0.3"
+      },
+      {
+        "name": "unrun",
+        "scope": "devDependency",
+        "spec": "^0.3.1"
+      },
+      {
+        "name": "vitest",
+        "scope": "devDependency",
+        "spec": "^4.1.8"
+      },
+      {
+        "name": "cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.0-rc.7"
+      },
+      {
+        "name": "schemastery",
+        "scope": "peerDependency",
+        "spec": "^3.18.0"
+      }
+    ],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/@0xsline/dsh-spotlight/-/dsh-spotlight-0.0.2.tgz",
+      "compressedBytes": 30903,
+      "unpackedBytes": 104210,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "xqJyEjLjFShNgliG1TCHJf0umTZzW12byg4YKAJ8r+SeZsJ+D733+lPmzHkX7mKu6rjF35d5e1iypesiEkaqTQ==",
+        "actual": "xqJyEjLjFShNgliG1TCHJf0umTZzW12byg4YKAJ8r+SeZsJ+D733+lPmzHkX7mKu6rjF35d5e1iypesiEkaqTQ=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "missing"
+      },
+      "dependencyAudit": {
+        "status": "verified",
+        "packages": 5,
+        "resolutionMode": "strict",
+        "graphDigest": "sha256:a94b0ceb450e28d940c591e06c24d80f7e6e982409e44941ac6cff76820ad3cd",
+        "graph": {
+          "schema": "upstream-radar.dependency-graph/v1alpha1",
+          "rootNodeId": "node_modules/@0xsline/dsh-spotlight",
+          "nodes": [
+            {
+              "id": "node_modules/@0xsline/dsh-spotlight",
+              "name": "@0xsline/dsh-spotlight",
+              "version": "0.0.2"
+            },
+            {
+              "id": "node_modules/@standard-schema/spec",
+              "name": "@standard-schema/spec",
+              "version": "1.1.0"
+            },
+            {
+              "id": "node_modules/cordis",
+              "name": "cordis",
+              "version": "4.0.0-rc.8"
+            },
+            {
+              "id": "node_modules/cosmokit",
+              "name": "cosmokit",
+              "version": "1.8.1"
+            },
+            {
+              "id": "node_modules/schemastery",
+              "name": "schemastery",
+              "version": "3.18.0"
+            }
+          ],
+          "edges": [
+            {
+              "from": "node_modules/@0xsline/dsh-spotlight",
+              "to": "node_modules/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@0xsline/dsh-spotlight",
+              "to": "node_modules/schemastery",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/cordis",
+              "to": "node_modules/@standard-schema/spec",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/cordis",
+              "to": "node_modules/cosmokit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/schemastery",
+              "to": "node_modules/@standard-schema/spec",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/schemastery",
+              "to": "node_modules/cosmokit",
+              "kind": "runtime"
+            }
+          ],
+          "source": "npm-lock",
+          "digest": "sha256:a94b0ceb450e28d940c591e06c24d80f7e6e982409e44941ac6cff76820ad3cd",
+          "unresolved": [
+            {
+              "from": "node_modules/cordis",
+              "name": "@cordisjs/plugin-include",
+              "spec": "^1.0.4",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/cordis",
+              "name": "@cordisjs/plugin-loader",
+              "spec": "^1.0.0-rc.5",
+              "kind": "optional"
+            }
+          ]
+        },
+        "installScriptPackages": [],
+        "installScriptDetails": [],
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "missing",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "lifecycle-script-present",
+      "severity": "high",
+      "summary": "Lifecycle script prepare executes during installation",
+      "detail": "Lifecycle scripts run before a plugin is admitted into DSH and therefore require review.",
+      "evidence": {
+        "script": "prepare",
+        "command": "node scripts/prepare.mjs"
+      },
+      "remediation": "Prefer a prebuilt package with no install-time lifecycle scripts."
+    },
+    {
+      "code": "npm-provenance-missing",
+      "severity": "medium",
+      "summary": "npm artifact has no build provenance",
+      "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+      "remediation": "Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version."
+    }
+  ],
+  "riskVerdict": "review",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

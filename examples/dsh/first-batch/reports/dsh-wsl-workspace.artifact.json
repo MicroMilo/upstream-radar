@@ -1,0 +1,791 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "dsh-wsl-workspace",
+    "version": "0.2.3",
+    "artifactDigest": "sha256:831b9bab04b9eed73203fd9024cf4f335f5c0f079cd7de3191611ea73edf6081",
+    "treeDigest": "sha256:84229678d067feb5e08e374f382bb8a7f71c57d89471e573a228bb48f41ec70c",
+    "spec": "npm:dsh-wsl-workspace@0.2.3"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 39,
+    "bytesHashed": 2521149,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-fs",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-fs-local",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-shell",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-subprocess",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-timeout",
+        "scope": "peerDependency",
+        "spec": "*"
+      }
+    ],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/dsh-wsl-workspace/-/dsh-wsl-workspace-0.2.3.tgz",
+      "compressedBytes": 2217261,
+      "unpackedBytes": 2521149,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "3L8zcNFLi8WU3OM0nVrm2wLG/6gtKKRzKMPznRIxJ1iAmzALLzkaO/HmVDKJWC0uzdRjZ+f3aKuGk/dVJfwY8g==",
+        "actual": "3L8zcNFLi8WU3OM0nVrm2wLG/6gtKKRzKMPznRIxJ1iAmzALLzkaO/HmVDKJWC0uzdRjZ+f3aKuGk/dVJfwY8g=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "missing"
+      },
+      "dependencyAudit": {
+        "status": "findings",
+        "packages": 35,
+        "resolutionMode": "strict",
+        "graphDigest": "sha256:7fe43989a3d45f7495038a4cbceeb646e03480b3f7de5b154d0e64426a2b4fcf",
+        "graph": {
+          "schema": "upstream-radar.dependency-graph/v1alpha1",
+          "rootNodeId": "node_modules/dsh-wsl-workspace",
+          "nodes": [
+            {
+              "id": "node_modules/dsh-wsl-workspace",
+              "name": "dsh-wsl-workspace",
+              "version": "0.2.3"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis",
+              "version": "4.0.1"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/cosmokit",
+              "name": "@deepseek-ai/cosmokit",
+              "version": "1.8.2"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-attachment",
+              "name": "@deepseek-ai/dsh-attachment",
+              "version": "0.0.1-rc.5"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-brand",
+              "name": "@deepseek-ai/dsh-brand",
+              "version": "0.0.1-rc.5"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-fs",
+              "name": "@deepseek-ai/dsh-fs",
+              "version": "0.0.1-rc.1"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-fs-local",
+              "name": "@deepseek-ai/dsh-fs-local",
+              "version": "0.0.1-rc.1"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-invariants",
+              "name": "@deepseek-ai/dsh-invariants",
+              "version": "0.0.1-rc.5"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-llm",
+              "name": "@deepseek-ai/dsh-llm",
+              "version": "0.0.1-rc.5"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-sandbox",
+              "name": "@deepseek-ai/dsh-sandbox",
+              "version": "0.0.1-rc.5"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-scope",
+              "name": "@deepseek-ai/dsh-scope",
+              "version": "0.0.1-rc.5"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-session",
+              "name": "@deepseek-ai/dsh-session",
+              "version": "0.0.1-rc.5"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-settings",
+              "name": "@deepseek-ai/dsh-settings",
+              "version": "0.0.1-rc.5"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-shell",
+              "name": "@deepseek-ai/dsh-shell",
+              "version": "0.0.1-rc.5"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-subprocess",
+              "name": "@deepseek-ai/dsh-subprocess",
+              "version": "0.0.1-rc.5"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-timeout",
+              "name": "@deepseek-ai/dsh-timeout",
+              "version": "0.0.1-rc.5"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/dsh-typert-protocol",
+              "name": "@deepseek-ai/dsh-typert-protocol",
+              "version": "0.0.1-rc.5"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/schemastery",
+              "name": "@deepseek-ai/schemastery",
+              "version": "3.18.1"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-darwin-arm64",
+              "name": "@koromix/koffi-darwin-arm64",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-darwin-x64",
+              "name": "@koromix/koffi-darwin-x64",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-freebsd-arm64",
+              "name": "@koromix/koffi-freebsd-arm64",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-freebsd-ia32",
+              "name": "@koromix/koffi-freebsd-ia32",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-freebsd-x64",
+              "name": "@koromix/koffi-freebsd-x64",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-linux-arm64",
+              "name": "@koromix/koffi-linux-arm64",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-linux-ia32",
+              "name": "@koromix/koffi-linux-ia32",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-linux-loong64",
+              "name": "@koromix/koffi-linux-loong64",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-linux-riscv64",
+              "name": "@koromix/koffi-linux-riscv64",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-linux-x64",
+              "name": "@koromix/koffi-linux-x64",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-openbsd-ia32",
+              "name": "@koromix/koffi-openbsd-ia32",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-openbsd-x64",
+              "name": "@koromix/koffi-openbsd-x64",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-win32-arm64",
+              "name": "@koromix/koffi-win32-arm64",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-win32-ia32",
+              "name": "@koromix/koffi-win32-ia32",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@koromix/koffi-win32-x64",
+              "name": "@koromix/koffi-win32-x64",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/@standard-schema/spec",
+              "name": "@standard-schema/spec",
+              "version": "1.1.0"
+            },
+            {
+              "id": "node_modules/koffi",
+              "name": "koffi",
+              "version": "3.1.5"
+            }
+          ],
+          "edges": [
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "to": "node_modules/@deepseek-ai/cosmokit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "to": "node_modules/@standard-schema/spec",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-attachment",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-attachment",
+              "to": "node_modules/@deepseek-ai/dsh-brand",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-attachment",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-brand",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-brand",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-fs",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-fs",
+              "to": "node_modules/@deepseek-ai/dsh-brand",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-fs",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-fs",
+              "to": "node_modules/@deepseek-ai/dsh-llm",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-fs",
+              "to": "node_modules/@deepseek-ai/dsh-sandbox",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-fs-local",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-fs-local",
+              "to": "node_modules/@deepseek-ai/dsh-fs",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-fs-local",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-fs-local",
+              "to": "node_modules/@deepseek-ai/schemastery",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-fs-local",
+              "to": "node_modules/koffi",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-invariants",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-invariants",
+              "to": "node_modules/@deepseek-ai/schemastery",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/dsh-attachment",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/dsh-brand",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/dsh-timeout",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-llm",
+              "to": "node_modules/@deepseek-ai/schemastery",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-sandbox",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-sandbox",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-sandbox",
+              "to": "node_modules/@deepseek-ai/dsh-llm",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-sandbox",
+              "to": "node_modules/@deepseek-ai/dsh-session",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-scope",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-scope",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-session",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-session",
+              "to": "node_modules/@deepseek-ai/dsh-brand",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-session",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-session",
+              "to": "node_modules/@deepseek-ai/dsh-llm",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-session",
+              "to": "node_modules/@deepseek-ai/dsh-scope",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-session",
+              "to": "node_modules/@deepseek-ai/dsh-typert-protocol",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-settings",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-settings",
+              "to": "node_modules/@deepseek-ai/dsh-brand",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-settings",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-settings",
+              "to": "node_modules/@deepseek-ai/schemastery",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-shell",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-shell",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-shell",
+              "to": "node_modules/@deepseek-ai/dsh-sandbox",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-shell",
+              "to": "node_modules/@deepseek-ai/dsh-settings",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-shell",
+              "to": "node_modules/@deepseek-ai/dsh-subprocess",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-subprocess",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-subprocess",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-timeout",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-timeout",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-typert-protocol",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/dsh-typert-protocol",
+              "to": "node_modules/@deepseek-ai/dsh-invariants",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/schemastery",
+              "to": "node_modules/@deepseek-ai/cosmokit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/schemastery",
+              "to": "node_modules/@standard-schema/spec",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dsh-wsl-workspace",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-wsl-workspace",
+              "to": "node_modules/@deepseek-ai/dsh-fs",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-wsl-workspace",
+              "to": "node_modules/@deepseek-ai/dsh-fs-local",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-wsl-workspace",
+              "to": "node_modules/@deepseek-ai/dsh-shell",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-wsl-workspace",
+              "to": "node_modules/@deepseek-ai/dsh-subprocess",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-wsl-workspace",
+              "to": "node_modules/@deepseek-ai/dsh-timeout",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-darwin-arm64",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-darwin-x64",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-freebsd-arm64",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-freebsd-ia32",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-freebsd-x64",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-linux-arm64",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-linux-ia32",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-linux-loong64",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-linux-riscv64",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-linux-x64",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-openbsd-ia32",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-openbsd-x64",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-win32-arm64",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-win32-ia32",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/koffi",
+              "to": "node_modules/@koromix/koffi-win32-x64",
+              "kind": "optional"
+            }
+          ],
+          "source": "npm-lock",
+          "digest": "sha256:7fe43989a3d45f7495038a4cbceeb646e03480b3f7de5b154d0e64426a2b4fcf",
+          "unresolved": [
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis-plugin-include",
+              "spec": "^1.0.6",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis-plugin-loader",
+              "spec": "^1.0.2",
+              "kind": "optional"
+            }
+          ]
+        },
+        "installScriptPackages": [
+          "koffi@3.1.5"
+        ],
+        "installScriptDetails": [
+          {
+            "package": "koffi@3.1.5",
+            "scripts": [
+              {
+                "name": "install",
+                "command": "node ./cnoke.cjs -P . -D src/koffi --prebuild --release"
+              }
+            ]
+          }
+        ],
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "missing",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-install-script-present",
+      "severity": "high",
+      "summary": "Resolved dependency graph contains install-time scripts",
+      "detail": "The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.",
+      "evidence": {
+        "packages": [
+          "koffi@3.1.5"
+        ],
+        "scripts": [
+          "koffi@3.1.5 install: node ./cnoke.cjs -P . -D src/koffi --prebuild --release"
+        ]
+      },
+      "remediation": "Review each listed package and its published artifact; prefer a version with no install-time script, or require explicit approval before allowing the DSH install path to run it."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/cordis uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-fs uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-fs",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-fs-local uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-fs-local",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-shell uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-shell",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-subprocess uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-subprocess",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-timeout uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-timeout",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "npm-provenance-missing",
+      "severity": "medium",
+      "summary": "npm artifact has no build provenance",
+      "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+      "remediation": "Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version."
+    }
+  ],
+  "riskVerdict": "review",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

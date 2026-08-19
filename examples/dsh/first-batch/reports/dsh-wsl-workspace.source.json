@@ -1,0 +1,152 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-wsl-workspace",
+    "version": "0.2.3",
+    "artifactDigest": "sha256:ef63492e49e30e8caec27101365a9000bc4188ac3f14d229683c996bfa518c74"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 48,
+    "bytesHashed": 2577994,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-fs",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-fs-local",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-shell",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-subprocess",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      {
+        "name": "@deepseek-ai/dsh-timeout",
+        "scope": "peerDependency",
+        "spec": "*"
+      }
+    ]
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-graph-unlocked",
+      "severity": "medium",
+      "summary": "Runtime dependency graph is not locked in the reviewed source tree",
+      "detail": "A future resolution of the same manifest may select different transitive artifacts.",
+      "evidence": {
+        "runtimeDependencyCount": 6
+      },
+      "remediation": "Commit a supported lockfile and verify every resolved artifact integrity."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/cordis uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-fs uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-fs",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-fs-local uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-fs-local",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-shell uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-shell",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-subprocess uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-subprocess",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    },
+    {
+      "code": "floating-dependency-spec",
+      "severity": "medium",
+      "summary": "Dependency @deepseek-ai/dsh-timeout uses a floating version",
+      "detail": "The same manifest can resolve to a different artifact without a source change.",
+      "evidence": {
+        "dependency": "@deepseek-ai/dsh-timeout",
+        "scope": "peerDependency",
+        "spec": "*"
+      },
+      "remediation": "Use a bounded version and a verified lockfile."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

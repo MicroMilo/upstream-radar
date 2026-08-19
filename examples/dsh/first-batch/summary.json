@@ -1,0 +1,854 @@
+{
+  "schema": "upstream-radar.dsh-batch-result/v1alpha1",
+  "generatedAt": "2026-08-19T06:33:37.287Z",
+  "input": "targets.json",
+  "targets": [
+    {
+      "id": "dsh-status-rotator",
+      "repository": "01Virex/dsh-status-rotator",
+      "category": "ui",
+      "source": "https://github.com/01Virex/dsh-status-rotator",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-status-rotator@0.4.0",
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: npm version not found: dsh-status-rotator@0.4.0"
+    },
+    {
+      "id": "dsh-api-balance",
+      "repository": "02Muller25/dsh-api-balance",
+      "category": "usage",
+      "source": "https://github.com/02Muller25/dsh-api-balance",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "api-balance@0.2.1",
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/api-balance"
+    },
+    {
+      "id": "dsh-telemetry-redactor",
+      "repository": "030611/dsh-telemetry-redactor",
+      "category": "dev",
+      "source": "https://github.com/030611/dsh-telemetry-redactor",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-telemetry-redactor@0.1.0",
+      "sourceGraph": {
+        "source": "pnpm-lock",
+        "nodes": 125,
+        "edges": 194,
+        "unresolved": 0
+      },
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-telemetry-redactor@0.1.0",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 4,
+        "edges": 3,
+        "unresolved": 2
+      }
+    },
+    {
+      "id": "dsh-verification-receipt",
+      "repository": "030611/dsh-verification-receipt",
+      "category": "dev",
+      "source": "https://github.com/030611/dsh-verification-receipt",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-verification-receipt@0.1.0",
+      "sourceGraph": {
+        "source": "pnpm-lock",
+        "nodes": 115,
+        "edges": 160,
+        "unresolved": 2
+      },
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-verification-receipt@0.1.0",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 4,
+        "edges": 3,
+        "unresolved": 2
+      }
+    },
+    {
+      "id": "dsh-neo-skin",
+      "repository": "0nt-one/dsh-neo-skin",
+      "category": "theme",
+      "source": "https://github.com/0nt-one/dsh-neo-skin",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-neo-skin@0.6.1",
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: npm version not found: dsh-neo-skin@0.6.1"
+    },
+    {
+      "id": "dsh-voice-input",
+      "repository": "0nt-one/dsh-voice-input",
+      "category": "tools",
+      "source": "https://github.com/0nt-one/dsh-voice-input",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-voice-input-web@0.1.3",
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: npm version not found: dsh-voice-input-web@0.1.3"
+    },
+    {
+      "id": "dsh-spotlight",
+      "repository": "0xsline/dsh-spotlight",
+      "category": "ui",
+      "source": "https://github.com/0xsline/dsh-spotlight",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "@0xsline/dsh-spotlight@0.0.2",
+      "sourceGraph": {
+        "source": "pnpm-lock",
+        "nodes": 128,
+        "edges": 173,
+        "unresolved": 4
+      },
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "@0xsline/dsh-spotlight@0.0.2",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 5,
+        "edges": 6,
+        "unresolved": 2
+      }
+    },
+    {
+      "id": "dsh-plan-lattice",
+      "repository": "1052326311/dsh-plan-lattice",
+      "category": "workflow",
+      "source": "https://github.com/1052326311/dsh-plan-lattice",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-plan-lattice@0.4.0-rc.7",
+      "sourceGraph": {
+        "source": "pnpm-lock",
+        "nodes": 156,
+        "edges": 354,
+        "unresolved": 3
+      },
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/dsh-plan-lattice"
+    },
+    {
+      "id": "dsh-web-restart",
+      "repository": "1123762794/dsh-web-restart",
+      "category": "ui",
+      "source": "https://github.com/1123762794/dsh-web-restart",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-web-restart@0.1.0",
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/dsh-web-restart"
+    },
+    {
+      "id": "dsh-perlica-ding",
+      "repository": "117BS/dsh-perlica-ding",
+      "category": "notify",
+      "source": "https://github.com/117BS/dsh-perlica-ding",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-perlica-ding@0.1.0",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-perlica-ding@0.1.0",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 1,
+        "edges": 0,
+        "unresolved": 2
+      }
+    },
+    {
+      "id": "dsh-composer-expand",
+      "repository": "13071301808/dsh-composer-expand",
+      "category": "ui",
+      "source": "https://github.com/13071301808/dsh-composer-expand",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-composer-expand@0.1.2",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-composer-expand@0.1.2",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 7,
+        "edges": 6,
+        "unresolved": 2
+      }
+    },
+    {
+      "id": "dsh-plugin-tavily",
+      "repository": "1624318455/dsh-plugin-tavily",
+      "category": "tools",
+      "source": "https://github.com/1624318455/dsh-plugin-tavily",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "@dsh-external/dsh-plugin-tavily@0.3.1",
+      "sourceGraph": {
+        "source": "pnpm-lock",
+        "nodes": 497,
+        "edges": 1724,
+        "unresolved": 5
+      },
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/%40dsh-external%2Fdsh-plugin-tavily"
+    },
+    {
+      "id": "dsh-plugin-tts",
+      "repository": "1624318455/dsh-plugin-tts",
+      "category": "ui",
+      "source": "https://github.com/1624318455/dsh-plugin-tts",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "@dsh-external/dsh-plugin-tts@0.3.0",
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/%40dsh-external%2Fdsh-plugin-tts"
+    },
+    {
+      "id": "dsh-plugin-mall",
+      "repository": "1e0zj/dsh-plugin-mall",
+      "category": "market",
+      "source": "https://github.com/1e0zj/dsh-plugin-mall",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "@1e0zj/dsh-plugin-mall@0.3.3",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "@1e0zj/dsh-plugin-mall@0.3.3",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 4,
+        "edges": 3,
+        "unresolved": 4
+      }
+    },
+    {
+      "id": "dsh-hdc-bridge",
+      "repository": "1na-ko/dsh-hdc-bridge",
+      "category": "tools",
+      "source": "https://github.com/1na-ko/dsh-hdc-bridge",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-hdc-bridge@0.7.2",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-hdc-bridge@0.7.2",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 250,
+        "edges": 485,
+        "unresolved": 3
+      }
+    },
+    {
+      "id": "dsh-token-billing",
+      "repository": "2006spy/dsh-token-billing",
+      "category": "notify",
+      "source": "https://github.com/2006spy/dsh-token-billing",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-token-billing@0.5.0",
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/dsh-token-billing"
+    },
+    {
+      "id": "dsh-progress-viz",
+      "repository": "2008924/dsh-progress-viz",
+      "category": "dev",
+      "source": "https://github.com/2008924/dsh-progress-viz",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-progress-viz-plugin@0.1.0",
+      "sourceGraph": {
+        "source": "pnpm-lock",
+        "nodes": 16,
+        "edges": 35,
+        "unresolved": 2
+      },
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/dsh-progress-viz-plugin"
+    },
+    {
+      "id": "dsh-plugin-manager",
+      "repository": "2768651338/dsh-plugin-manager",
+      "category": "market",
+      "source": "https://github.com/2768651338/dsh-plugin-manager",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "@2768651338/dsh-plugin-manager@0.5.0",
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/%402768651338%2Fdsh-plugin-manager"
+    },
+    {
+      "id": "dsh-heatmap",
+      "repository": "283Gawin/dsh-heatmap",
+      "category": "usage",
+      "source": "https://github.com/283Gawin/dsh-heatmap",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "@linxin666/dsh-client-ui-activity-heatmap@0.1.0",
+      "sourceGraph": {
+        "source": "pnpm-lock",
+        "nodes": 306,
+        "edges": 685,
+        "unresolved": 5
+      },
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/%40linxin666%2Fdsh-client-ui-activity-heatmap"
+    },
+    {
+      "id": "dsh-plugin-open-app",
+      "repository": "2nd1st/dsh-plugin-open-app",
+      "category": "ui",
+      "source": "https://github.com/2nd1st/dsh-plugin-open-app",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "@2nd1st/dsh-plugin-open-app@0.1.2",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "@2nd1st/dsh-plugin-open-app@0.1.2",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 1,
+        "edges": 0,
+        "unresolved": 0
+      }
+    },
+    {
+      "id": "dsh-voice",
+      "repository": "3274375092/dsh-voice",
+      "category": "session",
+      "source": "https://github.com/3274375092/dsh-voice",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "@nn12138/dsh-voice@0.2.5",
+      "sourceGraph": {
+        "source": "pnpm-lock",
+        "nodes": 182,
+        "edges": 223,
+        "unresolved": 4
+      },
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "@nn12138/dsh-voice@0.2.5",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 5,
+        "edges": 6,
+        "unresolved": 2
+      }
+    },
+    {
+      "id": "dsh-inline-images",
+      "repository": "3403473060/dsh-inline-images",
+      "category": "session",
+      "source": "https://github.com/3403473060/dsh-inline-images",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-inline-images@1.0.0",
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/dsh-inline-images"
+    },
+    {
+      "id": "chicheng-gate",
+      "repository": "534119219/chicheng-gate",
+      "category": "dev",
+      "source": "https://github.com/534119219/chicheng-gate",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "chicheng-gate@1.0.3",
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/chicheng-gate"
+    },
+    {
+      "id": "dsh-vision",
+      "repository": "54xkeee/dsh-vision",
+      "category": "vision",
+      "source": "https://github.com/54xkeee/dsh-vision",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-vision-web@0.1.0",
+      "sourceGraph": {
+        "source": "pnpm-lock",
+        "nodes": 51,
+        "edges": 98,
+        "unresolved": 2
+      },
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-vision-web@0.1.0",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 1,
+        "edges": 0,
+        "unresolved": 0
+      }
+    },
+    {
+      "id": "dsh-youreyes",
+      "repository": "54xkeee/dsh-youreyes",
+      "category": "vision",
+      "source": "https://github.com/54xkeee/dsh-youreyes",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-youreyes@0.1.0",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-youreyes@0.1.0",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 1,
+        "edges": 0,
+        "unresolved": 0
+      }
+    },
+    {
+      "id": "dsh-lorebookmd",
+      "repository": "609476965/dsh-LorebookMD",
+      "category": "fun",
+      "source": "https://github.com/609476965/dsh-LorebookMD",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-lorebookmd@1.0.0",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-lorebookmd@1.0.0",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 1,
+        "edges": 0,
+        "unresolved": 0
+      }
+    },
+    {
+      "id": "dsh-wsl-workspace",
+      "repository": "6Mikao9/dsh-wsl-workspace",
+      "category": "tools",
+      "source": "https://github.com/6Mikao9/dsh-wsl-workspace",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-wsl-workspace@0.2.3",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-wsl-workspace@0.2.3",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 35,
+        "edges": 75,
+        "unresolved": 2
+      }
+    },
+    {
+      "id": "dsh-feed",
+      "repository": "863683348/dsh-feed",
+      "category": "market",
+      "source": "https://github.com/863683348/dsh-feed",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-feed@0.1.0",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-feed@0.1.0",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 18,
+        "edges": 66,
+        "unresolved": 2
+      }
+    },
+    {
+      "id": "dsh-gov",
+      "repository": "863683348/dsh-gov",
+      "category": "dev",
+      "source": "https://github.com/863683348/dsh-gov",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-gov@0.1.0",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-gov@0.1.0",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 24,
+        "edges": 98,
+        "unresolved": 2
+      }
+    },
+    {
+      "id": "dsh-permissions",
+      "repository": "940842546/dsh-permissions",
+      "category": "workflow",
+      "source": "https://github.com/940842546/dsh-permissions",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-permissions@1.0.8",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-permissions@1.0.8",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 4,
+        "edges": 3,
+        "unresolved": 0
+      }
+    },
+    {
+      "id": "dsh-usage-billing",
+      "repository": "940842546/dsh-usage-billing",
+      "category": "usage",
+      "source": "https://github.com/940842546/dsh-usage-billing",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-usage-billing@0.4.0",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-usage-billing@0.4.0",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 18,
+        "edges": 63,
+        "unresolved": 2
+      }
+    },
+    {
+      "id": "dsh-computer-use",
+      "repository": "988hj7tczd-oss/dsh-computer-use",
+      "category": "tools",
+      "source": "https://github.com/988hj7tczd-oss/dsh-computer-use",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-computer-use@0.1.0",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-computer-use@0.1.0",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 18,
+        "edges": 64,
+        "unresolved": 2
+      }
+    },
+    {
+      "id": "dsh-sound",
+      "repository": "AI-Galaxy-GPU/dsh-sound",
+      "category": "notify",
+      "source": "https://github.com/AI-Galaxy-GPU/dsh-sound",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-sound@0.3.3",
+      "sourceGraph": {
+        "source": "npm-lock",
+        "nodes": 5,
+        "edges": 6,
+        "unresolved": 2
+      },
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: npm version not found: dsh-sound@0.3.3"
+    },
+    {
+      "id": "dsh-drag-and-drop",
+      "repository": "AKIRACOD/dsh-drag-and-drop",
+      "category": "ui",
+      "source": "https://github.com/AKIRACOD/dsh-drag-and-drop",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "@omdsh-dev/dsh-drag-and-drop@0.2.0",
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/%40omdsh-dev%2Fdsh-drag-and-drop"
+    },
+    {
+      "id": "dsh-archived-conversations",
+      "repository": "AKS1st/dsh-archived-conversations",
+      "category": "ui",
+      "source": "https://github.com/AKS1st/dsh-archived-conversations",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-archived-conversations@0.3.0",
+      "sourceGraph": {
+        "source": "npm-lock",
+        "nodes": 1,
+        "edges": 0,
+        "unresolved": 0
+      },
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/dsh-archived-conversations"
+    },
+    {
+      "id": "dsh-cyber-particle",
+      "repository": "AKS1st/dsh-cyber-particle",
+      "category": "theme",
+      "source": "https://github.com/AKS1st/dsh-cyber-particle",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "cyber-particle@0.2.3",
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/cyber-particle"
+    },
+    {
+      "id": "dsh-msg-hub",
+      "repository": "AbcdefgXW/dsh-msg-hub",
+      "category": "notify",
+      "source": "https://github.com/AbcdefgXW/dsh-msg-hub",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-msg-hub@0.1.7",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-msg-hub@0.1.7",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 73,
+        "edges": 146,
+        "unresolved": 6
+      }
+    },
+    {
+      "id": "dsh-toolbox-web",
+      "repository": "AbcdefgXW/dsh-toolbox-web",
+      "category": "tools",
+      "source": "https://github.com/AbcdefgXW/dsh-toolbox-web",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-toolbox-web@0.1.9",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-toolbox-web@0.1.9",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 11,
+        "edges": 20,
+        "unresolved": 2
+      }
+    },
+    {
+      "id": "dsh-monitor",
+      "repository": "AbnerAI/dsh-monitor",
+      "category": "tools",
+      "source": "https://github.com/AbnerAI/dsh-monitor",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-monitor@0.1.1",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-monitor@0.1.1",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 19,
+        "edges": 68,
+        "unresolved": 2
+      }
+    },
+    {
+      "id": "dsh-web-lan-access",
+      "repository": "AcidGr/dsh-web-lan-access",
+      "category": "ui",
+      "source": "https://github.com/AcidGr/dsh-web-lan-access",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-web-lan-access@1.1.0",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-web-lan-access@1.1.0",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 1,
+        "edges": 0,
+        "unresolved": 0
+      }
+    },
+    {
+      "id": "dsh-web-mobile-fix",
+      "repository": "AcidGr/dsh-web-mobile-fix",
+      "category": "ui",
+      "source": "https://github.com/AcidGr/dsh-web-mobile-fix",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-web-mobile-fix@1.0.2",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-web-mobile-fix@1.0.2",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 1,
+        "edges": 0,
+        "unresolved": 0
+      }
+    },
+    {
+      "id": "dsh-auto-memory",
+      "repository": "Aik358/dsh-auto-memory",
+      "category": "memory",
+      "source": "https://github.com/Aik358/dsh-auto-memory",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "@a9i5k4/dsh-auto-memory@0.1.28",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "@a9i5k4/dsh-auto-memory@0.1.28",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 4,
+        "edges": 3,
+        "unresolved": 2
+      }
+    },
+    {
+      "id": "dsh-alive",
+      "repository": "AikenFra/dsh-alive",
+      "category": "ui",
+      "source": "https://github.com/AikenFra/dsh-alive",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-alive@0.1.1",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-alive@0.1.1",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 1,
+        "edges": 0,
+        "unresolved": 0
+      }
+    },
+    {
+      "id": "dsh-update-checker",
+      "repository": "Airmetro/dsh-update-checker",
+      "category": "dev",
+      "source": "https://github.com/Airmetro/dsh-update-checker",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-update-checker@1.4.5",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-update-checker@1.4.5",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 4,
+        "edges": 3,
+        "unresolved": 0
+      }
+    },
+    {
+      "id": "dsh-speak",
+      "repository": "Alan2Z/dsh-speak",
+      "category": "notify",
+      "source": "https://github.com/Alan2Z/dsh-speak",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-speak@1.5.0",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-speak@1.5.0",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 1,
+        "edges": 0,
+        "unresolved": 0
+      }
+    },
+    {
+      "id": "anan-thermal-monitor",
+      "repository": "AmeKrance/anan-thermal-monitor",
+      "category": "fun",
+      "source": "https://github.com/AmeKrance/anan-thermal-monitor",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "anan-thermal-monitor@1.0.4",
+      "artifactStatus": "reviewed-without-graph",
+      "artifactCoordinate": "anan-thermal-monitor@1.0.4",
+      "artifactVerdict": "block"
+    },
+    {
+      "id": "dsh-douyin",
+      "repository": "AnacondaKC/dsh-douyin",
+      "category": "fun",
+      "source": "https://github.com/AnacondaKC/dsh-douyin",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-douyin@0.2.0",
+      "sourceGraph": {
+        "source": "pnpm-lock",
+        "nodes": 126,
+        "edges": 164,
+        "unresolved": 1
+      },
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/dsh-douyin"
+    },
+    {
+      "id": "dsh-stock-market",
+      "repository": "AnacondaKC/dsh-stock-market",
+      "category": "fun",
+      "source": "https://github.com/AnacondaKC/dsh-stock-market",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-stock-market@0.2.0",
+      "sourceGraph": {
+        "source": "npm-lock",
+        "nodes": 6,
+        "edges": 8,
+        "unresolved": 11
+      },
+      "artifactStatus": "not-found",
+      "artifactError": "upstream-radar: HTTP 404 while fetching https://registry.npmjs.org/dsh-stock-market"
+    },
+    {
+      "id": "dsh-plugin-sync",
+      "repository": "AngLi1997/dsh-plugin-sync",
+      "category": "tools",
+      "source": "https://github.com/AngLi1997/dsh-plugin-sync",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-plugin-sync@1.0.0",
+      "sourceGraph": {
+        "source": "npm-lock",
+        "nodes": 2,
+        "edges": 1,
+        "unresolved": 8
+      },
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-plugin-sync@1.0.0",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 2,
+        "edges": 1,
+        "unresolved": 8
+      }
+    },
+    {
+      "id": "dsh-multi-folder",
+      "repository": "AngelosZou/dsh-multi-folder",
+      "category": "tools",
+      "source": "https://github.com/AngelosZou/dsh-multi-folder",
+      "sourceStatus": "scanned",
+      "sourceVerdict": "review",
+      "sourceCoordinate": "dsh-multi-folder@0.1.4",
+      "artifactStatus": "reviewed",
+      "artifactCoordinate": "dsh-multi-folder@0.1.4",
+      "artifactVerdict": "review",
+      "artifactGraph": {
+        "source": "npm-lock",
+        "nodes": 4,
+        "edges": 3,
+        "unresolved": 2
+      }
+    }
+  ],
+  "index": {
+    "observations": 37,
+    "plugins": 37,
+    "dependencies": 1025,
+    "completeObservations": 11,
+    "incompleteObservations": 26,
+    "unresolvedEdges": 80,
+    "skipped": 13
+  }
+}

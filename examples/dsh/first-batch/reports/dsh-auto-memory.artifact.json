@@ -1,0 +1,152 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "@a9i5k4/dsh-auto-memory",
+    "version": "0.1.28",
+    "artifactDigest": "sha256:61b90a691cf8617d2e1b4d656b980f646739ee5215f127a4f09263236fb90c49",
+    "treeDigest": "sha256:e2bb469db251abd9d3d39d3932d477f4207c547be1ae496556f6256072873a89",
+    "spec": "npm:@a9i5k4/dsh-auto-memory@0.1.28"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 7,
+    "bytesHashed": 400520,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/cordis",
+        "scope": "peerDependency",
+        "spec": "^4.0.1"
+      }
+    ],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/@a9i5k4/dsh-auto-memory/-/dsh-auto-memory-0.1.28.tgz",
+      "compressedBytes": 118459,
+      "unpackedBytes": 400520,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "K6qGAkr5xy/FC8gtHY65D2cvxrOmrBhZIQjCj3wNyUzBLoMNbOIGjwRMlPq46P+d28pMMZNxK/INs6cO40EdCw==",
+        "actual": "K6qGAkr5xy/FC8gtHY65D2cvxrOmrBhZIQjCj3wNyUzBLoMNbOIGjwRMlPq46P+d28pMMZNxK/INs6cO40EdCw=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "missing"
+      },
+      "dependencyAudit": {
+        "status": "verified",
+        "packages": 4,
+        "resolutionMode": "strict",
+        "graphDigest": "sha256:0f865a4f9c6280cf00594100d8c0e8db2960ef27797af46b9f092f9a3b192f36",
+        "graph": {
+          "schema": "upstream-radar.dependency-graph/v1alpha1",
+          "rootNodeId": "node_modules/@a9i5k4/dsh-auto-memory",
+          "nodes": [
+            {
+              "id": "node_modules/@a9i5k4/dsh-auto-memory",
+              "name": "@a9i5k4/dsh-auto-memory",
+              "version": "0.1.28"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis",
+              "version": "4.0.1"
+            },
+            {
+              "id": "node_modules/@deepseek-ai/cosmokit",
+              "name": "@deepseek-ai/cosmokit",
+              "version": "1.8.2"
+            },
+            {
+              "id": "node_modules/@standard-schema/spec",
+              "name": "@standard-schema/spec",
+              "version": "1.1.0"
+            }
+          ],
+          "edges": [
+            {
+              "from": "node_modules/@a9i5k4/dsh-auto-memory",
+              "to": "node_modules/@deepseek-ai/cordis",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "to": "node_modules/@deepseek-ai/cosmokit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "to": "node_modules/@standard-schema/spec",
+              "kind": "runtime"
+            }
+          ],
+          "source": "npm-lock",
+          "digest": "sha256:0f865a4f9c6280cf00594100d8c0e8db2960ef27797af46b9f092f9a3b192f36",
+          "unresolved": [
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis-plugin-include",
+              "spec": "^1.0.6",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/@deepseek-ai/cordis",
+              "name": "@deepseek-ai/cordis-plugin-loader",
+              "spec": "^1.0.2",
+              "kind": "optional"
+            }
+          ]
+        },
+        "installScriptPackages": [],
+        "installScriptDetails": [],
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "missing",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "npm-provenance-missing",
+      "severity": "medium",
+      "summary": "npm artifact has no build provenance",
+      "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+      "remediation": "Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

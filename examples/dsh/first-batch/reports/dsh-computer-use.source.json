@@ -1,0 +1,60 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-computer-use",
+    "version": "0.1.0",
+    "artifactDigest": "sha256:4538d1b30189d8674850e342aa392afb55f5cbd47ce523c35b853a85b9640177"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 21,
+    "bytesHashed": 90445,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/dsh-tools",
+        "scope": "dependency",
+        "spec": "^0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "dependency",
+        "spec": "^3.0.0"
+      }
+    ]
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "manifest-only",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-graph-unlocked",
+      "severity": "medium",
+      "summary": "Runtime dependency graph is not locked in the reviewed source tree",
+      "detail": "A future resolution of the same manifest may select different transitive artifacts.",
+      "evidence": {
+        "runtimeDependencyCount": 2
+      },
+      "remediation": "Commit a supported lockfile and verify every resolved artifact integrity."
+    }
+  ],
+  "riskVerdict": "warn",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

@@ -1,0 +1,845 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "directory",
+    "name": "dsh-vision-web",
+    "version": "0.1.0",
+    "artifactDigest": "sha256:c4c628d304b9de91c9cd594eb42760494d440d5dcf6bc7ae82d73df5b72e9ed6"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 19,
+    "bytesHashed": 162802,
+    "lockfiles": [
+      "pnpm-lock.yaml"
+    ],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deepseek-ai/dsh-llm",
+        "scope": "devDependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/dsh-tools",
+        "scope": "devDependency",
+        "spec": "0.1.0-rc.6"
+      },
+      {
+        "name": "@deepseek-ai/schemastery",
+        "scope": "devDependency",
+        "spec": "^3.18.1"
+      },
+      {
+        "name": "@types/react",
+        "scope": "devDependency",
+        "spec": "^18.3.1"
+      },
+      {
+        "name": "esbuild",
+        "scope": "devDependency",
+        "spec": "^0.24.0"
+      },
+      {
+        "name": "react",
+        "scope": "devDependency",
+        "spec": "^18.2.0"
+      },
+      {
+        "name": "typescript",
+        "scope": "devDependency",
+        "spec": "^5.6.0"
+      }
+    ],
+    "dependencyGraph": {
+      "schema": "upstream-radar.dependency-graph/v1alpha1",
+      "rootNodeId": "pnpm:workspace-root:dsh-vision-web@0.1.0",
+      "nodes": [
+        {
+          "id": "pnpm:workspace-root:dsh-vision-web@0.1.0",
+          "name": "dsh-vision-web",
+          "version": "0.1.0"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "name": "@deepseek-ai/cordis",
+          "version": "4.0.1"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/cosmokit@1.8.2",
+          "name": "@deepseek-ai/cosmokit",
+          "version": "1.8.2"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+          "name": "@deepseek-ai/dsh-agent",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "name": "@deepseek-ai/dsh-attachment",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "name": "@deepseek-ai/dsh-brand",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-code-runtime@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "name": "@deepseek-ai/dsh-code-runtime",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "name": "@deepseek-ai/dsh-invariants",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "name": "@deepseek-ai/dsh-llm",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "name": "@deepseek-ai/dsh-scope",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "name": "@deepseek-ai/dsh-session",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "name": "@deepseek-ai/dsh-system-prompt",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "name": "@deepseek-ai/dsh-timeout",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+          "name": "@deepseek-ai/dsh-tools",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "name": "@deepseek-ai/dsh-typert-protocol",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+          "name": "@deepseek-ai/dsh-user-approval",
+          "version": "0.1.0-rc.6"
+        },
+        {
+          "id": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "name": "@deepseek-ai/schemastery",
+          "version": "3.18.1"
+        },
+        {
+          "id": "pnpm:@esbuild/aix-ppc64@0.24.2",
+          "name": "@esbuild/aix-ppc64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/android-arm@0.24.2",
+          "name": "@esbuild/android-arm",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/android-arm64@0.24.2",
+          "name": "@esbuild/android-arm64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/android-x64@0.24.2",
+          "name": "@esbuild/android-x64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/darwin-arm64@0.24.2",
+          "name": "@esbuild/darwin-arm64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/darwin-x64@0.24.2",
+          "name": "@esbuild/darwin-x64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/freebsd-arm64@0.24.2",
+          "name": "@esbuild/freebsd-arm64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/freebsd-x64@0.24.2",
+          "name": "@esbuild/freebsd-x64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-arm@0.24.2",
+          "name": "@esbuild/linux-arm",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-arm64@0.24.2",
+          "name": "@esbuild/linux-arm64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-ia32@0.24.2",
+          "name": "@esbuild/linux-ia32",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-loong64@0.24.2",
+          "name": "@esbuild/linux-loong64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-mips64el@0.24.2",
+          "name": "@esbuild/linux-mips64el",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-ppc64@0.24.2",
+          "name": "@esbuild/linux-ppc64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-riscv64@0.24.2",
+          "name": "@esbuild/linux-riscv64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-s390x@0.24.2",
+          "name": "@esbuild/linux-s390x",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/linux-x64@0.24.2",
+          "name": "@esbuild/linux-x64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/netbsd-arm64@0.24.2",
+          "name": "@esbuild/netbsd-arm64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/netbsd-x64@0.24.2",
+          "name": "@esbuild/netbsd-x64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/openbsd-arm64@0.24.2",
+          "name": "@esbuild/openbsd-arm64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/openbsd-x64@0.24.2",
+          "name": "@esbuild/openbsd-x64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/sunos-x64@0.24.2",
+          "name": "@esbuild/sunos-x64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/win32-arm64@0.24.2",
+          "name": "@esbuild/win32-arm64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/win32-ia32@0.24.2",
+          "name": "@esbuild/win32-ia32",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@esbuild/win32-x64@0.24.2",
+          "name": "@esbuild/win32-x64",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:@standard-schema/spec@1.1.0",
+          "name": "@standard-schema/spec",
+          "version": "1.1.0"
+        },
+        {
+          "id": "pnpm:@types/prop-types@15.7.15",
+          "name": "@types/prop-types",
+          "version": "15.7.15"
+        },
+        {
+          "id": "pnpm:@types/react@18.3.31",
+          "name": "@types/react",
+          "version": "18.3.31"
+        },
+        {
+          "id": "pnpm:csstype@3.2.3",
+          "name": "csstype",
+          "version": "3.2.3"
+        },
+        {
+          "id": "pnpm:esbuild@0.24.2",
+          "name": "esbuild",
+          "version": "0.24.2"
+        },
+        {
+          "id": "pnpm:js-tokens@4.0.0",
+          "name": "js-tokens",
+          "version": "4.0.0"
+        },
+        {
+          "id": "pnpm:loose-envify@1.4.0",
+          "name": "loose-envify",
+          "version": "1.4.0"
+        },
+        {
+          "id": "pnpm:react@18.3.1",
+          "name": "react",
+          "version": "18.3.1"
+        },
+        {
+          "id": "pnpm:typescript@5.9.3",
+          "name": "typescript",
+          "version": "5.9.3"
+        }
+      ],
+      "edges": [
+        {
+          "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "to": "pnpm:@deepseek-ai/cosmokit@1.8.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "to": "pnpm:@standard-schema/spec@1.1.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+          "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+          "to": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+          "to": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+          "to": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+          "to": "pnpm:@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-code-runtime@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-code-runtime@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "to": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "to": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "to": "pnpm:@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+          "to": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+          "to": "pnpm:@deepseek-ai/dsh-code-runtime@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+          "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+          "to": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+          "to": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+          "to": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+          "to": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+          "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+          "to": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+          "to": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.6(b0514d7a320728b6d8f5a31eb3960e10)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+          "to": "pnpm:@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+          "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+          "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+          "to": "pnpm:@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+          "to": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+          "to": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/dsh-user-approval@0.1.0-rc.6(dbdaba06c174c5e30e3a58edf3cc27a9)",
+          "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "to": "pnpm:@deepseek-ai/cosmokit@1.8.2",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "to": "pnpm:@standard-schema/spec@1.1.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@types/react@18.3.31",
+          "to": "pnpm:@types/prop-types@15.7.15",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:@types/react@18.3.31",
+          "to": "pnpm:csstype@3.2.3",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/aix-ppc64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/android-arm@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/android-arm64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/android-x64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/darwin-arm64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/darwin-x64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/freebsd-arm64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/freebsd-x64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/linux-arm@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/linux-arm64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/linux-ia32@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/linux-loong64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/linux-mips64el@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/linux-ppc64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/linux-riscv64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/linux-s390x@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/linux-x64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/netbsd-arm64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/netbsd-x64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/openbsd-arm64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/openbsd-x64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/sunos-x64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/win32-arm64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/win32-ia32@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:esbuild@0.24.2",
+          "to": "pnpm:@esbuild/win32-x64@0.24.2",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:loose-envify@1.4.0",
+          "to": "pnpm:js-tokens@4.0.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:react@18.3.1",
+          "to": "pnpm:loose-envify@1.4.0",
+          "kind": "runtime"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-vision-web@0.1.0",
+          "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-vision-web@0.1.0",
+          "to": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.6(f8724372086ccc1457fc84e7becee2e0)",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-vision-web@0.1.0",
+          "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-vision-web@0.1.0",
+          "to": "pnpm:@types/react@18.3.31",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-vision-web@0.1.0",
+          "to": "pnpm:esbuild@0.24.2",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-vision-web@0.1.0",
+          "to": "pnpm:react@18.3.1",
+          "kind": "development"
+        },
+        {
+          "from": "pnpm:workspace-root:dsh-vision-web@0.1.0",
+          "to": "pnpm:typescript@5.9.3",
+          "kind": "development"
+        }
+      ],
+      "source": "pnpm-lock",
+      "digest": "sha256:eb32b0d2c62f6359bc97201797df1162e7411c0a2e9bbc516d49ee1c3df32cf4",
+      "unresolved": [
+        {
+          "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "name": "@deepseek-ai/cordis-plugin-include",
+          "spec": "^1.0.6",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/cordis@4.0.1",
+          "name": "@deepseek-ai/cordis-plugin-loader",
+          "spec": "^1.0.2",
+          "kind": "optional"
+        }
+      ]
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "locally-hashed",
+    "registrySignature": "not-checked",
+    "dependencyResolution": "resolved",
+    "provenance": "not-checked",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [],
+  "riskVerdict": "allow",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}

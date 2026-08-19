@@ -1,0 +1,3830 @@
+{
+  "schema": "upstream-radar.scan/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.37.0"
+  },
+  "target": {
+    "kind": "npm",
+    "name": "dsh-hdc-bridge",
+    "version": "0.7.2",
+    "artifactDigest": "sha256:0c86a66448efdc1d331a3d8c9d664b0d3087c7e039d0ec6d7b99f421326617be",
+    "treeDigest": "sha256:076196413209cf000af7359836bde33a6041516cc0054a3a99da6a2fca40550a",
+    "spec": "npm:dsh-hdc-bridge@0.7.2"
+  },
+  "dsh": {
+    "isBundle": true,
+    "patch": "./cordis.patch.yml"
+  },
+  "evidence": {
+    "filesScanned": 49,
+    "bytesHashed": 2025883,
+    "lockfiles": [],
+    "packageManager": null,
+    "lifecycleScripts": [],
+    "dependencies": [
+      {
+        "name": "@deveco/deveco-cli",
+        "scope": "optionalDependency",
+        "spec": "^1.2.2"
+      }
+    ],
+    "npm": {
+      "registry": "https://registry.npmjs.org/",
+      "tarball": "https://registry.npmjs.org/dsh-hdc-bridge/-/dsh-hdc-bridge-0.7.2.tgz",
+      "compressedBytes": 404318,
+      "unpackedBytes": 2025883,
+      "integrity": {
+        "status": "verified",
+        "algorithm": "sha512",
+        "expected": "k0uXupSnCpOxQKAc9/oUSBzF6M9f1K5TXIQd4pQKXiMkT98xt44R0HmJeT2gtFtQx+uEGBwHrIXG+WTNP5M7lw==",
+        "actual": "k0uXupSnCpOxQKAc9/oUSBzF6M9f1K5TXIQd4pQKXiMkT98xt44R0HmJeT2gtFtQx+uEGBwHrIXG+WTNP5M7lw=="
+      },
+      "registrySignature": {
+        "status": "verified",
+        "keyIds": [
+          "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        ]
+      },
+      "provenance": {
+        "status": "missing"
+      },
+      "dependencyAudit": {
+        "status": "findings",
+        "packages": 250,
+        "resolutionMode": "strict",
+        "graphDigest": "sha256:fe667d8d6b75c4a7ba3f04f8b7735ba28e62c5cb67d5f756a1cfaca3b0c5f374",
+        "graph": {
+          "schema": "upstream-radar.dependency-graph/v1alpha1",
+          "rootNodeId": "node_modules/dsh-hdc-bridge",
+          "nodes": [
+            {
+              "id": "node_modules/dsh-hdc-bridge",
+              "name": "dsh-hdc-bridge",
+              "version": "0.7.2"
+            },
+            {
+              "id": "node_modules/@deveco/deveco-cli",
+              "name": "@deveco/deveco-cli",
+              "version": "1.3.0"
+            },
+            {
+              "id": "node_modules/@hono/node-server",
+              "name": "@hono/node-server",
+              "version": "2.1.1"
+            },
+            {
+              "id": "node_modules/@modelcontextprotocol/sdk",
+              "name": "@modelcontextprotocol/sdk",
+              "version": "1.30.0"
+            },
+            {
+              "id": "node_modules/@sec-ant/readable-stream",
+              "name": "@sec-ant/readable-stream",
+              "version": "0.4.1"
+            },
+            {
+              "id": "node_modules/@sindresorhus/merge-streams",
+              "name": "@sindresorhus/merge-streams",
+              "version": "4.0.0"
+            },
+            {
+              "id": "node_modules/@socket.io/component-emitter",
+              "name": "@socket.io/component-emitter",
+              "version": "3.1.2"
+            },
+            {
+              "id": "node_modules/@sqlite.org/sqlite-wasm",
+              "name": "@sqlite.org/sqlite-wasm",
+              "version": "3.49.1-build4"
+            },
+            {
+              "id": "node_modules/@types/debug",
+              "name": "@types/debug",
+              "version": "4.1.13"
+            },
+            {
+              "id": "node_modules/@types/mdast",
+              "name": "@types/mdast",
+              "version": "4.0.4"
+            },
+            {
+              "id": "node_modules/@types/ms",
+              "name": "@types/ms",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/@types/unist",
+              "name": "@types/unist",
+              "version": "3.0.3"
+            },
+            {
+              "id": "node_modules/accepts",
+              "name": "accepts",
+              "version": "2.0.0"
+            },
+            {
+              "id": "node_modules/adm-zip",
+              "name": "adm-zip",
+              "version": "0.6.0"
+            },
+            {
+              "id": "node_modules/agent-base",
+              "name": "agent-base",
+              "version": "6.0.2"
+            },
+            {
+              "id": "node_modules/ajv",
+              "name": "ajv",
+              "version": "8.20.0"
+            },
+            {
+              "id": "node_modules/ajv-formats",
+              "name": "ajv-formats",
+              "version": "3.0.1"
+            },
+            {
+              "id": "node_modules/ansi-regex",
+              "name": "ansi-regex",
+              "version": "6.3.0"
+            },
+            {
+              "id": "node_modules/asynckit",
+              "name": "asynckit",
+              "version": "0.4.0"
+            },
+            {
+              "id": "node_modules/axios",
+              "name": "axios",
+              "version": "1.19.0"
+            },
+            {
+              "id": "node_modules/bail",
+              "name": "bail",
+              "version": "2.0.2"
+            },
+            {
+              "id": "node_modules/body-parser",
+              "name": "body-parser",
+              "version": "2.3.0"
+            },
+            {
+              "id": "node_modules/body-parser/node_modules/content-type",
+              "name": "content-type",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/bytes",
+              "name": "bytes",
+              "version": "3.1.2"
+            },
+            {
+              "id": "node_modules/call-bind-apply-helpers",
+              "name": "call-bind-apply-helpers",
+              "version": "1.0.2"
+            },
+            {
+              "id": "node_modules/call-bound",
+              "name": "call-bound",
+              "version": "1.0.4"
+            },
+            {
+              "id": "node_modules/ccount",
+              "name": "ccount",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/chalk",
+              "name": "chalk",
+              "version": "5.6.2"
+            },
+            {
+              "id": "node_modules/character-entities",
+              "name": "character-entities",
+              "version": "2.0.2"
+            },
+            {
+              "id": "node_modules/cli-cursor",
+              "name": "cli-cursor",
+              "version": "5.0.0"
+            },
+            {
+              "id": "node_modules/cli-spinners",
+              "name": "cli-spinners",
+              "version": "3.4.0"
+            },
+            {
+              "id": "node_modules/colorette",
+              "name": "colorette",
+              "version": "2.0.20"
+            },
+            {
+              "id": "node_modules/combined-stream",
+              "name": "combined-stream",
+              "version": "1.0.8"
+            },
+            {
+              "id": "node_modules/commander",
+              "name": "commander",
+              "version": "13.1.0"
+            },
+            {
+              "id": "node_modules/content-disposition",
+              "name": "content-disposition",
+              "version": "1.1.0"
+            },
+            {
+              "id": "node_modules/content-type",
+              "name": "content-type",
+              "version": "1.0.5"
+            },
+            {
+              "id": "node_modules/cookie",
+              "name": "cookie",
+              "version": "0.7.2"
+            },
+            {
+              "id": "node_modules/cookie-signature",
+              "name": "cookie-signature",
+              "version": "1.2.2"
+            },
+            {
+              "id": "node_modules/core-util-is",
+              "name": "core-util-is",
+              "version": "1.0.3"
+            },
+            {
+              "id": "node_modules/cors",
+              "name": "cors",
+              "version": "2.8.6"
+            },
+            {
+              "id": "node_modules/cross-spawn",
+              "name": "cross-spawn",
+              "version": "7.0.6"
+            },
+            {
+              "id": "node_modules/debug",
+              "name": "debug",
+              "version": "4.4.3"
+            },
+            {
+              "id": "node_modules/decode-named-character-reference",
+              "name": "decode-named-character-reference",
+              "version": "1.3.0"
+            },
+            {
+              "id": "node_modules/define-data-property",
+              "name": "define-data-property",
+              "version": "1.1.4"
+            },
+            {
+              "id": "node_modules/define-properties",
+              "name": "define-properties",
+              "version": "1.2.1"
+            },
+            {
+              "id": "node_modules/delayed-stream",
+              "name": "delayed-stream",
+              "version": "1.0.0"
+            },
+            {
+              "id": "node_modules/depd",
+              "name": "depd",
+              "version": "2.0.0"
+            },
+            {
+              "id": "node_modules/dequal",
+              "name": "dequal",
+              "version": "2.0.3"
+            },
+            {
+              "id": "node_modules/devlop",
+              "name": "devlop",
+              "version": "1.1.0"
+            },
+            {
+              "id": "node_modules/dunder-proto",
+              "name": "dunder-proto",
+              "version": "1.0.1"
+            },
+            {
+              "id": "node_modules/ee-first",
+              "name": "ee-first",
+              "version": "1.1.1"
+            },
+            {
+              "id": "node_modules/encodeurl",
+              "name": "encodeurl",
+              "version": "2.0.0"
+            },
+            {
+              "id": "node_modules/engine.io-client",
+              "name": "engine.io-client",
+              "version": "6.6.6"
+            },
+            {
+              "id": "node_modules/engine.io-parser",
+              "name": "engine.io-parser",
+              "version": "5.2.3"
+            },
+            {
+              "id": "node_modules/es-define-property",
+              "name": "es-define-property",
+              "version": "1.0.1"
+            },
+            {
+              "id": "node_modules/es-errors",
+              "name": "es-errors",
+              "version": "1.3.0"
+            },
+            {
+              "id": "node_modules/es-object-atoms",
+              "name": "es-object-atoms",
+              "version": "1.1.2"
+            },
+            {
+              "id": "node_modules/es-set-tostringtag",
+              "name": "es-set-tostringtag",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/escape-html",
+              "name": "escape-html",
+              "version": "1.0.3"
+            },
+            {
+              "id": "node_modules/escape-string-regexp",
+              "name": "escape-string-regexp",
+              "version": "4.0.0"
+            },
+            {
+              "id": "node_modules/etag",
+              "name": "etag",
+              "version": "1.8.1"
+            },
+            {
+              "id": "node_modules/eventsource",
+              "name": "eventsource",
+              "version": "3.0.7"
+            },
+            {
+              "id": "node_modules/eventsource-parser",
+              "name": "eventsource-parser",
+              "version": "3.1.1"
+            },
+            {
+              "id": "node_modules/execa",
+              "name": "execa",
+              "version": "9.6.1"
+            },
+            {
+              "id": "node_modules/express",
+              "name": "express",
+              "version": "5.2.1"
+            },
+            {
+              "id": "node_modules/express-rate-limit",
+              "name": "express-rate-limit",
+              "version": "8.6.2"
+            },
+            {
+              "id": "node_modules/extend",
+              "name": "extend",
+              "version": "3.0.2"
+            },
+            {
+              "id": "node_modules/fast-deep-equal",
+              "name": "fast-deep-equal",
+              "version": "3.1.3"
+            },
+            {
+              "id": "node_modules/fast-uri",
+              "name": "fast-uri",
+              "version": "3.1.5"
+            },
+            {
+              "id": "node_modules/figures",
+              "name": "figures",
+              "version": "6.1.0"
+            },
+            {
+              "id": "node_modules/finalhandler",
+              "name": "finalhandler",
+              "version": "2.1.1"
+            },
+            {
+              "id": "node_modules/follow-redirects",
+              "name": "follow-redirects",
+              "version": "1.16.0"
+            },
+            {
+              "id": "node_modules/form-data",
+              "name": "form-data",
+              "version": "4.0.6"
+            },
+            {
+              "id": "node_modules/form-data/node_modules/mime-db",
+              "name": "mime-db",
+              "version": "1.52.0"
+            },
+            {
+              "id": "node_modules/form-data/node_modules/mime-types",
+              "name": "mime-types",
+              "version": "2.1.35"
+            },
+            {
+              "id": "node_modules/forwarded",
+              "name": "forwarded",
+              "version": "0.2.0"
+            },
+            {
+              "id": "node_modules/fresh",
+              "name": "fresh",
+              "version": "2.0.0"
+            },
+            {
+              "id": "node_modules/fs-extra",
+              "name": "fs-extra",
+              "version": "11.4.0"
+            },
+            {
+              "id": "node_modules/function-bind",
+              "name": "function-bind",
+              "version": "1.1.2"
+            },
+            {
+              "id": "node_modules/get-east-asian-width",
+              "name": "get-east-asian-width",
+              "version": "1.6.0"
+            },
+            {
+              "id": "node_modules/get-intrinsic",
+              "name": "get-intrinsic",
+              "version": "1.3.0"
+            },
+            {
+              "id": "node_modules/get-proto",
+              "name": "get-proto",
+              "version": "1.0.1"
+            },
+            {
+              "id": "node_modules/get-stream",
+              "name": "get-stream",
+              "version": "9.0.1"
+            },
+            {
+              "id": "node_modules/global-agent",
+              "name": "global-agent",
+              "version": "4.1.3"
+            },
+            {
+              "id": "node_modules/globalthis",
+              "name": "globalthis",
+              "version": "1.0.4"
+            },
+            {
+              "id": "node_modules/gopd",
+              "name": "gopd",
+              "version": "1.2.0"
+            },
+            {
+              "id": "node_modules/graceful-fs",
+              "name": "graceful-fs",
+              "version": "4.2.11"
+            },
+            {
+              "id": "node_modules/has-property-descriptors",
+              "name": "has-property-descriptors",
+              "version": "1.0.2"
+            },
+            {
+              "id": "node_modules/has-symbols",
+              "name": "has-symbols",
+              "version": "1.1.0"
+            },
+            {
+              "id": "node_modules/has-tostringtag",
+              "name": "has-tostringtag",
+              "version": "1.0.2"
+            },
+            {
+              "id": "node_modules/hasown",
+              "name": "hasown",
+              "version": "2.0.4"
+            },
+            {
+              "id": "node_modules/hono",
+              "name": "hono",
+              "version": "4.13.3"
+            },
+            {
+              "id": "node_modules/http-errors",
+              "name": "http-errors",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/https-proxy-agent",
+              "name": "https-proxy-agent",
+              "version": "5.0.1"
+            },
+            {
+              "id": "node_modules/human-signals",
+              "name": "human-signals",
+              "version": "8.0.1"
+            },
+            {
+              "id": "node_modules/iconv-lite",
+              "name": "iconv-lite",
+              "version": "0.7.3"
+            },
+            {
+              "id": "node_modules/if-async",
+              "name": "if-async",
+              "version": "3.7.4"
+            },
+            {
+              "id": "node_modules/inherits",
+              "name": "inherits",
+              "version": "2.0.4"
+            },
+            {
+              "id": "node_modules/ip-address",
+              "name": "ip-address",
+              "version": "10.5.0"
+            },
+            {
+              "id": "node_modules/ipaddr.js",
+              "name": "ipaddr.js",
+              "version": "1.9.1"
+            },
+            {
+              "id": "node_modules/is-interactive",
+              "name": "is-interactive",
+              "version": "2.0.0"
+            },
+            {
+              "id": "node_modules/is-plain-obj",
+              "name": "is-plain-obj",
+              "version": "4.1.0"
+            },
+            {
+              "id": "node_modules/is-promise",
+              "name": "is-promise",
+              "version": "4.0.0"
+            },
+            {
+              "id": "node_modules/is-stream",
+              "name": "is-stream",
+              "version": "4.0.1"
+            },
+            {
+              "id": "node_modules/is-unicode-supported",
+              "name": "is-unicode-supported",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/isarray",
+              "name": "isarray",
+              "version": "0.0.1"
+            },
+            {
+              "id": "node_modules/isexe",
+              "name": "isexe",
+              "version": "2.0.0"
+            },
+            {
+              "id": "node_modules/jieba-wasm",
+              "name": "jieba-wasm",
+              "version": "2.4.0"
+            },
+            {
+              "id": "node_modules/jose",
+              "name": "jose",
+              "version": "6.2.9"
+            },
+            {
+              "id": "node_modules/json-schema-traverse",
+              "name": "json-schema-traverse",
+              "version": "1.0.0"
+            },
+            {
+              "id": "node_modules/json-schema-typed",
+              "name": "json-schema-typed",
+              "version": "8.0.2"
+            },
+            {
+              "id": "node_modules/json5",
+              "name": "json5",
+              "version": "2.2.3"
+            },
+            {
+              "id": "node_modules/jsonfile",
+              "name": "jsonfile",
+              "version": "6.2.1"
+            },
+            {
+              "id": "node_modules/log-symbols",
+              "name": "log-symbols",
+              "version": "7.0.1"
+            },
+            {
+              "id": "node_modules/longest-streak",
+              "name": "longest-streak",
+              "version": "3.1.0"
+            },
+            {
+              "id": "node_modules/markdown-table",
+              "name": "markdown-table",
+              "version": "3.0.4"
+            },
+            {
+              "id": "node_modules/matcher",
+              "name": "matcher",
+              "version": "4.0.0"
+            },
+            {
+              "id": "node_modules/math-intrinsics",
+              "name": "math-intrinsics",
+              "version": "1.1.0"
+            },
+            {
+              "id": "node_modules/mdast-util-find-and-replace",
+              "name": "mdast-util-find-and-replace",
+              "version": "3.0.2"
+            },
+            {
+              "id": "node_modules/mdast-util-find-and-replace/node_modules/escape-string-regexp",
+              "name": "escape-string-regexp",
+              "version": "5.0.0"
+            },
+            {
+              "id": "node_modules/mdast-util-from-markdown",
+              "name": "mdast-util-from-markdown",
+              "version": "2.0.3"
+            },
+            {
+              "id": "node_modules/mdast-util-gfm",
+              "name": "mdast-util-gfm",
+              "version": "3.1.0"
+            },
+            {
+              "id": "node_modules/mdast-util-gfm-autolink-literal",
+              "name": "mdast-util-gfm-autolink-literal",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/mdast-util-gfm-footnote",
+              "name": "mdast-util-gfm-footnote",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/mdast-util-gfm-strikethrough",
+              "name": "mdast-util-gfm-strikethrough",
+              "version": "2.0.0"
+            },
+            {
+              "id": "node_modules/mdast-util-gfm-table",
+              "name": "mdast-util-gfm-table",
+              "version": "2.0.0"
+            },
+            {
+              "id": "node_modules/mdast-util-gfm-task-list-item",
+              "name": "mdast-util-gfm-task-list-item",
+              "version": "2.0.0"
+            },
+            {
+              "id": "node_modules/mdast-util-phrasing",
+              "name": "mdast-util-phrasing",
+              "version": "4.1.0"
+            },
+            {
+              "id": "node_modules/mdast-util-to-markdown",
+              "name": "mdast-util-to-markdown",
+              "version": "2.1.2"
+            },
+            {
+              "id": "node_modules/mdast-util-to-string",
+              "name": "mdast-util-to-string",
+              "version": "4.0.0"
+            },
+            {
+              "id": "node_modules/media-typer",
+              "name": "media-typer",
+              "version": "1.1.1"
+            },
+            {
+              "id": "node_modules/merge-descriptors",
+              "name": "merge-descriptors",
+              "version": "2.0.0"
+            },
+            {
+              "id": "node_modules/micromark",
+              "name": "micromark",
+              "version": "4.0.2"
+            },
+            {
+              "id": "node_modules/micromark-core-commonmark",
+              "name": "micromark-core-commonmark",
+              "version": "2.0.3"
+            },
+            {
+              "id": "node_modules/micromark-extension-gfm",
+              "name": "micromark-extension-gfm",
+              "version": "3.0.0"
+            },
+            {
+              "id": "node_modules/micromark-extension-gfm-autolink-literal",
+              "name": "micromark-extension-gfm-autolink-literal",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/micromark-extension-gfm-footnote",
+              "name": "micromark-extension-gfm-footnote",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/micromark-extension-gfm-strikethrough",
+              "name": "micromark-extension-gfm-strikethrough",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/micromark-extension-gfm-table",
+              "name": "micromark-extension-gfm-table",
+              "version": "2.1.1"
+            },
+            {
+              "id": "node_modules/micromark-extension-gfm-tagfilter",
+              "name": "micromark-extension-gfm-tagfilter",
+              "version": "2.0.0"
+            },
+            {
+              "id": "node_modules/micromark-extension-gfm-task-list-item",
+              "name": "micromark-extension-gfm-task-list-item",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/micromark-factory-destination",
+              "name": "micromark-factory-destination",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-factory-label",
+              "name": "micromark-factory-label",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-factory-space",
+              "name": "micromark-factory-space",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-factory-title",
+              "name": "micromark-factory-title",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-factory-whitespace",
+              "name": "micromark-factory-whitespace",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-util-character",
+              "name": "micromark-util-character",
+              "version": "2.1.1"
+            },
+            {
+              "id": "node_modules/micromark-util-chunked",
+              "name": "micromark-util-chunked",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-util-classify-character",
+              "name": "micromark-util-classify-character",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-util-combine-extensions",
+              "name": "micromark-util-combine-extensions",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-util-decode-numeric-character-reference",
+              "name": "micromark-util-decode-numeric-character-reference",
+              "version": "2.0.2"
+            },
+            {
+              "id": "node_modules/micromark-util-decode-string",
+              "name": "micromark-util-decode-string",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-util-encode",
+              "name": "micromark-util-encode",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-util-html-tag-name",
+              "name": "micromark-util-html-tag-name",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-util-normalize-identifier",
+              "name": "micromark-util-normalize-identifier",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-util-resolve-all",
+              "name": "micromark-util-resolve-all",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-util-sanitize-uri",
+              "name": "micromark-util-sanitize-uri",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-util-subtokenize",
+              "name": "micromark-util-subtokenize",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/micromark-util-symbol",
+              "name": "micromark-util-symbol",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/micromark-util-types",
+              "name": "micromark-util-types",
+              "version": "2.0.2"
+            },
+            {
+              "id": "node_modules/mime-db",
+              "name": "mime-db",
+              "version": "1.54.0"
+            },
+            {
+              "id": "node_modules/mime-types",
+              "name": "mime-types",
+              "version": "3.0.2"
+            },
+            {
+              "id": "node_modules/mimic-function",
+              "name": "mimic-function",
+              "version": "5.0.1"
+            },
+            {
+              "id": "node_modules/ms",
+              "name": "ms",
+              "version": "2.1.3"
+            },
+            {
+              "id": "node_modules/negotiator",
+              "name": "negotiator",
+              "version": "1.0.0"
+            },
+            {
+              "id": "node_modules/node-forge",
+              "name": "node-forge",
+              "version": "1.4.0"
+            },
+            {
+              "id": "node_modules/npm-run-path",
+              "name": "npm-run-path",
+              "version": "6.0.0"
+            },
+            {
+              "id": "node_modules/npm-run-path/node_modules/path-key",
+              "name": "path-key",
+              "version": "4.0.0"
+            },
+            {
+              "id": "node_modules/object-assign",
+              "name": "object-assign",
+              "version": "4.1.1"
+            },
+            {
+              "id": "node_modules/object-inspect",
+              "name": "object-inspect",
+              "version": "1.13.4"
+            },
+            {
+              "id": "node_modules/object-keys",
+              "name": "object-keys",
+              "version": "1.1.1"
+            },
+            {
+              "id": "node_modules/on-finished",
+              "name": "on-finished",
+              "version": "2.4.1"
+            },
+            {
+              "id": "node_modules/once",
+              "name": "once",
+              "version": "1.4.0"
+            },
+            {
+              "id": "node_modules/onetime",
+              "name": "onetime",
+              "version": "7.0.0"
+            },
+            {
+              "id": "node_modules/ora",
+              "name": "ora",
+              "version": "9.4.1"
+            },
+            {
+              "id": "node_modules/p-limit",
+              "name": "p-limit",
+              "version": "5.0.0"
+            },
+            {
+              "id": "node_modules/parse-ms",
+              "name": "parse-ms",
+              "version": "4.0.0"
+            },
+            {
+              "id": "node_modules/parseurl",
+              "name": "parseurl",
+              "version": "1.3.3"
+            },
+            {
+              "id": "node_modules/path-key",
+              "name": "path-key",
+              "version": "3.1.1"
+            },
+            {
+              "id": "node_modules/path-to-regexp",
+              "name": "path-to-regexp",
+              "version": "8.4.2"
+            },
+            {
+              "id": "node_modules/pend",
+              "name": "pend",
+              "version": "1.2.0"
+            },
+            {
+              "id": "node_modules/pkce-challenge",
+              "name": "pkce-challenge",
+              "version": "5.0.1"
+            },
+            {
+              "id": "node_modules/pretty-ms",
+              "name": "pretty-ms",
+              "version": "9.3.0"
+            },
+            {
+              "id": "node_modules/proper-lockfile",
+              "name": "proper-lockfile",
+              "version": "4.1.2"
+            },
+            {
+              "id": "node_modules/proper-lockfile/node_modules/signal-exit",
+              "name": "signal-exit",
+              "version": "3.0.7"
+            },
+            {
+              "id": "node_modules/proxy-addr",
+              "name": "proxy-addr",
+              "version": "2.0.7"
+            },
+            {
+              "id": "node_modules/proxy-from-env",
+              "name": "proxy-from-env",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/qs",
+              "name": "qs",
+              "version": "6.15.3"
+            },
+            {
+              "id": "node_modules/range-parser",
+              "name": "range-parser",
+              "version": "1.3.0"
+            },
+            {
+              "id": "node_modules/raw-body",
+              "name": "raw-body",
+              "version": "3.0.2"
+            },
+            {
+              "id": "node_modules/readable-stream",
+              "name": "readable-stream",
+              "version": "1.0.34"
+            },
+            {
+              "id": "node_modules/regedit",
+              "name": "regedit",
+              "version": "5.1.4"
+            },
+            {
+              "id": "node_modules/remark-gfm",
+              "name": "remark-gfm",
+              "version": "4.0.1"
+            },
+            {
+              "id": "node_modules/remark-parse",
+              "name": "remark-parse",
+              "version": "11.0.0"
+            },
+            {
+              "id": "node_modules/remark-stringify",
+              "name": "remark-stringify",
+              "version": "11.0.0"
+            },
+            {
+              "id": "node_modules/require-from-string",
+              "name": "require-from-string",
+              "version": "2.0.2"
+            },
+            {
+              "id": "node_modules/restore-cursor",
+              "name": "restore-cursor",
+              "version": "5.1.0"
+            },
+            {
+              "id": "node_modules/retry",
+              "name": "retry",
+              "version": "0.12.0"
+            },
+            {
+              "id": "node_modules/router",
+              "name": "router",
+              "version": "2.2.0"
+            },
+            {
+              "id": "node_modules/safer-buffer",
+              "name": "safer-buffer",
+              "version": "2.1.2"
+            },
+            {
+              "id": "node_modules/semver",
+              "name": "semver",
+              "version": "7.8.5"
+            },
+            {
+              "id": "node_modules/send",
+              "name": "send",
+              "version": "1.2.1"
+            },
+            {
+              "id": "node_modules/serialize-error",
+              "name": "serialize-error",
+              "version": "8.1.0"
+            },
+            {
+              "id": "node_modules/serve-static",
+              "name": "serve-static",
+              "version": "2.2.1"
+            },
+            {
+              "id": "node_modules/setprototypeof",
+              "name": "setprototypeof",
+              "version": "1.2.0"
+            },
+            {
+              "id": "node_modules/shebang-command",
+              "name": "shebang-command",
+              "version": "2.0.0"
+            },
+            {
+              "id": "node_modules/shebang-regex",
+              "name": "shebang-regex",
+              "version": "3.0.0"
+            },
+            {
+              "id": "node_modules/side-channel",
+              "name": "side-channel",
+              "version": "1.1.1"
+            },
+            {
+              "id": "node_modules/side-channel-list",
+              "name": "side-channel-list",
+              "version": "1.0.1"
+            },
+            {
+              "id": "node_modules/side-channel-map",
+              "name": "side-channel-map",
+              "version": "1.0.1"
+            },
+            {
+              "id": "node_modules/side-channel-weakmap",
+              "name": "side-channel-weakmap",
+              "version": "1.0.2"
+            },
+            {
+              "id": "node_modules/signal-exit",
+              "name": "signal-exit",
+              "version": "4.1.0"
+            },
+            {
+              "id": "node_modules/smol-toml",
+              "name": "smol-toml",
+              "version": "1.8.0"
+            },
+            {
+              "id": "node_modules/socket.io-client",
+              "name": "socket.io-client",
+              "version": "4.8.3"
+            },
+            {
+              "id": "node_modules/socket.io-parser",
+              "name": "socket.io-parser",
+              "version": "4.2.7"
+            },
+            {
+              "id": "node_modules/statuses",
+              "name": "statuses",
+              "version": "2.0.2"
+            },
+            {
+              "id": "node_modules/stdin-discarder",
+              "name": "stdin-discarder",
+              "version": "0.3.2"
+            },
+            {
+              "id": "node_modules/stream-slicer",
+              "name": "stream-slicer",
+              "version": "0.0.6"
+            },
+            {
+              "id": "node_modules/string_decoder",
+              "name": "string_decoder",
+              "version": "0.10.31"
+            },
+            {
+              "id": "node_modules/string-width",
+              "name": "string-width",
+              "version": "8.2.2"
+            },
+            {
+              "id": "node_modules/strip-ansi",
+              "name": "strip-ansi",
+              "version": "7.2.0"
+            },
+            {
+              "id": "node_modules/strip-final-newline",
+              "name": "strip-final-newline",
+              "version": "4.0.0"
+            },
+            {
+              "id": "node_modules/through2",
+              "name": "through2",
+              "version": "0.6.5"
+            },
+            {
+              "id": "node_modules/toidentifier",
+              "name": "toidentifier",
+              "version": "1.0.1"
+            },
+            {
+              "id": "node_modules/trough",
+              "name": "trough",
+              "version": "2.2.0"
+            },
+            {
+              "id": "node_modules/type-fest",
+              "name": "type-fest",
+              "version": "0.20.2"
+            },
+            {
+              "id": "node_modules/type-is",
+              "name": "type-is",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/type-is/node_modules/content-type",
+              "name": "content-type",
+              "version": "2.1.0"
+            },
+            {
+              "id": "node_modules/unicorn-magic",
+              "name": "unicorn-magic",
+              "version": "0.3.0"
+            },
+            {
+              "id": "node_modules/unified",
+              "name": "unified",
+              "version": "11.0.5"
+            },
+            {
+              "id": "node_modules/unist-util-is",
+              "name": "unist-util-is",
+              "version": "6.0.1"
+            },
+            {
+              "id": "node_modules/unist-util-stringify-position",
+              "name": "unist-util-stringify-position",
+              "version": "4.0.0"
+            },
+            {
+              "id": "node_modules/unist-util-visit",
+              "name": "unist-util-visit",
+              "version": "5.1.0"
+            },
+            {
+              "id": "node_modules/unist-util-visit-parents",
+              "name": "unist-util-visit-parents",
+              "version": "6.0.2"
+            },
+            {
+              "id": "node_modules/universalify",
+              "name": "universalify",
+              "version": "2.0.1"
+            },
+            {
+              "id": "node_modules/unpipe",
+              "name": "unpipe",
+              "version": "1.0.0"
+            },
+            {
+              "id": "node_modules/vary",
+              "name": "vary",
+              "version": "1.1.2"
+            },
+            {
+              "id": "node_modules/vfile",
+              "name": "vfile",
+              "version": "6.0.3"
+            },
+            {
+              "id": "node_modules/vfile-message",
+              "name": "vfile-message",
+              "version": "4.0.3"
+            },
+            {
+              "id": "node_modules/which",
+              "name": "which",
+              "version": "2.0.2"
+            },
+            {
+              "id": "node_modules/wrappy",
+              "name": "wrappy",
+              "version": "1.0.2"
+            },
+            {
+              "id": "node_modules/ws",
+              "name": "ws",
+              "version": "8.21.3"
+            },
+            {
+              "id": "node_modules/xmlhttprequest-ssl",
+              "name": "xmlhttprequest-ssl",
+              "version": "2.1.2"
+            },
+            {
+              "id": "node_modules/xtend",
+              "name": "xtend",
+              "version": "4.0.2"
+            },
+            {
+              "id": "node_modules/yauzl",
+              "name": "yauzl",
+              "version": "3.4.0"
+            },
+            {
+              "id": "node_modules/yocto-queue",
+              "name": "yocto-queue",
+              "version": "1.2.2"
+            },
+            {
+              "id": "node_modules/yoctocolors",
+              "name": "yoctocolors",
+              "version": "2.2.0"
+            },
+            {
+              "id": "node_modules/zod",
+              "name": "zod",
+              "version": "4.4.3"
+            },
+            {
+              "id": "node_modules/zod-to-json-schema",
+              "name": "zod-to-json-schema",
+              "version": "3.25.2"
+            },
+            {
+              "id": "node_modules/zwitch",
+              "name": "zwitch",
+              "version": "2.0.4"
+            }
+          ],
+          "edges": [
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/@modelcontextprotocol/sdk",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/@sqlite.org/sqlite-wasm",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/adm-zip",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/axios",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/colorette",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/commander",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/execa",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/fs-extra",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/global-agent",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/jieba-wasm",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/json5",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/mdast-util-to-string",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/node-forge",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/ora",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/p-limit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/proper-lockfile",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/regedit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/remark-gfm",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/remark-parse",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/semver",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/smol-toml",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/socket.io-client",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/unified",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/yauzl",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@deveco/deveco-cli",
+              "to": "node_modules/zod",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@hono/node-server",
+              "to": "node_modules/hono",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/@hono/node-server",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/ajv",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/ajv-formats",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/content-type",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/cors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/cross-spawn",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/eventsource",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/eventsource-parser",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/express",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/express-rate-limit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/hono",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/jose",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/json-schema-typed",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/pkce-challenge",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/raw-body",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/zod",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "to": "node_modules/zod-to-json-schema",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@types/debug",
+              "to": "node_modules/@types/ms",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/@types/mdast",
+              "to": "node_modules/@types/unist",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/accepts",
+              "to": "node_modules/mime-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/accepts",
+              "to": "node_modules/negotiator",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/agent-base",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/ajv",
+              "to": "node_modules/fast-deep-equal",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/ajv",
+              "to": "node_modules/fast-uri",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/ajv",
+              "to": "node_modules/json-schema-traverse",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/ajv",
+              "to": "node_modules/require-from-string",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/ajv-formats",
+              "to": "node_modules/ajv",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/axios",
+              "to": "node_modules/follow-redirects",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/axios",
+              "to": "node_modules/form-data",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/axios",
+              "to": "node_modules/https-proxy-agent",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/axios",
+              "to": "node_modules/proxy-from-env",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/body-parser",
+              "to": "node_modules/body-parser/node_modules/content-type",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/body-parser",
+              "to": "node_modules/bytes",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/body-parser",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/body-parser",
+              "to": "node_modules/http-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/body-parser",
+              "to": "node_modules/iconv-lite",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/body-parser",
+              "to": "node_modules/on-finished",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/body-parser",
+              "to": "node_modules/qs",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/body-parser",
+              "to": "node_modules/raw-body",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/body-parser",
+              "to": "node_modules/type-is",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/call-bind-apply-helpers",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/call-bind-apply-helpers",
+              "to": "node_modules/function-bind",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/call-bound",
+              "to": "node_modules/call-bind-apply-helpers",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/call-bound",
+              "to": "node_modules/get-intrinsic",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/cli-cursor",
+              "to": "node_modules/restore-cursor",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/combined-stream",
+              "to": "node_modules/delayed-stream",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/cors",
+              "to": "node_modules/object-assign",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/cors",
+              "to": "node_modules/vary",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/cross-spawn",
+              "to": "node_modules/path-key",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/cross-spawn",
+              "to": "node_modules/shebang-command",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/cross-spawn",
+              "to": "node_modules/which",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/debug",
+              "to": "node_modules/ms",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/decode-named-character-reference",
+              "to": "node_modules/character-entities",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/define-data-property",
+              "to": "node_modules/es-define-property",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/define-data-property",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/define-data-property",
+              "to": "node_modules/gopd",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/define-properties",
+              "to": "node_modules/define-data-property",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/define-properties",
+              "to": "node_modules/has-property-descriptors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/define-properties",
+              "to": "node_modules/object-keys",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/devlop",
+              "to": "node_modules/dequal",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dsh-hdc-bridge",
+              "to": "node_modules/@deveco/deveco-cli",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/dunder-proto",
+              "to": "node_modules/call-bind-apply-helpers",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dunder-proto",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/dunder-proto",
+              "to": "node_modules/gopd",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/engine.io-client",
+              "to": "node_modules/@socket.io/component-emitter",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/engine.io-client",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/engine.io-client",
+              "to": "node_modules/engine.io-parser",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/engine.io-client",
+              "to": "node_modules/ws",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/engine.io-client",
+              "to": "node_modules/xmlhttprequest-ssl",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/es-object-atoms",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/es-set-tostringtag",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/es-set-tostringtag",
+              "to": "node_modules/get-intrinsic",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/es-set-tostringtag",
+              "to": "node_modules/has-tostringtag",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/es-set-tostringtag",
+              "to": "node_modules/hasown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/eventsource",
+              "to": "node_modules/eventsource-parser",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/execa",
+              "to": "node_modules/@sindresorhus/merge-streams",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/execa",
+              "to": "node_modules/cross-spawn",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/execa",
+              "to": "node_modules/figures",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/execa",
+              "to": "node_modules/get-stream",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/execa",
+              "to": "node_modules/human-signals",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/execa",
+              "to": "node_modules/is-plain-obj",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/execa",
+              "to": "node_modules/is-stream",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/execa",
+              "to": "node_modules/npm-run-path",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/execa",
+              "to": "node_modules/pretty-ms",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/execa",
+              "to": "node_modules/signal-exit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/execa",
+              "to": "node_modules/strip-final-newline",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/execa",
+              "to": "node_modules/yoctocolors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/accepts",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/body-parser",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/content-disposition",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/content-type",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/cookie",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/cookie-signature",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/depd",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/encodeurl",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/escape-html",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/etag",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/finalhandler",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/fresh",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/http-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/merge-descriptors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/mime-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/on-finished",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/once",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/parseurl",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/proxy-addr",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/qs",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/range-parser",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/router",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/send",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/serve-static",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/statuses",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/type-is",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express",
+              "to": "node_modules/vary",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express-rate-limit",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/express-rate-limit",
+              "to": "node_modules/express",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/express-rate-limit",
+              "to": "node_modules/ip-address",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/figures",
+              "to": "node_modules/is-unicode-supported",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/finalhandler",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/finalhandler",
+              "to": "node_modules/encodeurl",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/finalhandler",
+              "to": "node_modules/escape-html",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/finalhandler",
+              "to": "node_modules/on-finished",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/finalhandler",
+              "to": "node_modules/parseurl",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/finalhandler",
+              "to": "node_modules/statuses",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/form-data",
+              "to": "node_modules/asynckit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/form-data",
+              "to": "node_modules/combined-stream",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/form-data",
+              "to": "node_modules/es-set-tostringtag",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/form-data",
+              "to": "node_modules/form-data/node_modules/mime-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/form-data",
+              "to": "node_modules/hasown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/form-data/node_modules/mime-types",
+              "to": "node_modules/form-data/node_modules/mime-db",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/fs-extra",
+              "to": "node_modules/graceful-fs",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/fs-extra",
+              "to": "node_modules/jsonfile",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/fs-extra",
+              "to": "node_modules/universalify",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/call-bind-apply-helpers",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/es-define-property",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/es-object-atoms",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/function-bind",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/get-proto",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/gopd",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/has-symbols",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/hasown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-intrinsic",
+              "to": "node_modules/math-intrinsics",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-proto",
+              "to": "node_modules/dunder-proto",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-proto",
+              "to": "node_modules/es-object-atoms",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-stream",
+              "to": "node_modules/@sec-ant/readable-stream",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/get-stream",
+              "to": "node_modules/is-stream",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/global-agent",
+              "to": "node_modules/globalthis",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/global-agent",
+              "to": "node_modules/matcher",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/global-agent",
+              "to": "node_modules/semver",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/global-agent",
+              "to": "node_modules/serialize-error",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/globalthis",
+              "to": "node_modules/define-properties",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/globalthis",
+              "to": "node_modules/gopd",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/has-property-descriptors",
+              "to": "node_modules/es-define-property",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/has-tostringtag",
+              "to": "node_modules/has-symbols",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/hasown",
+              "to": "node_modules/function-bind",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/http-errors",
+              "to": "node_modules/depd",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/http-errors",
+              "to": "node_modules/inherits",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/http-errors",
+              "to": "node_modules/setprototypeof",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/http-errors",
+              "to": "node_modules/statuses",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/http-errors",
+              "to": "node_modules/toidentifier",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/https-proxy-agent",
+              "to": "node_modules/agent-base",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/https-proxy-agent",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/iconv-lite",
+              "to": "node_modules/safer-buffer",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/jsonfile",
+              "to": "node_modules/graceful-fs",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/jsonfile",
+              "to": "node_modules/universalify",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/log-symbols",
+              "to": "node_modules/is-unicode-supported",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/log-symbols",
+              "to": "node_modules/yoctocolors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/matcher",
+              "to": "node_modules/escape-string-regexp",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-find-and-replace",
+              "to": "node_modules/@types/mdast",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-find-and-replace",
+              "to": "node_modules/mdast-util-find-and-replace/node_modules/escape-string-regexp",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-find-and-replace",
+              "to": "node_modules/unist-util-is",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-find-and-replace",
+              "to": "node_modules/unist-util-visit-parents",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-from-markdown",
+              "to": "node_modules/@types/mdast",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-from-markdown",
+              "to": "node_modules/@types/unist",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-from-markdown",
+              "to": "node_modules/decode-named-character-reference",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-from-markdown",
+              "to": "node_modules/devlop",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-from-markdown",
+              "to": "node_modules/mdast-util-to-string",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-from-markdown",
+              "to": "node_modules/micromark",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-from-markdown",
+              "to": "node_modules/micromark-util-decode-numeric-character-reference",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-from-markdown",
+              "to": "node_modules/micromark-util-decode-string",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-from-markdown",
+              "to": "node_modules/micromark-util-normalize-identifier",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-from-markdown",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-from-markdown",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-from-markdown",
+              "to": "node_modules/unist-util-stringify-position",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm",
+              "to": "node_modules/mdast-util-from-markdown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm",
+              "to": "node_modules/mdast-util-gfm-autolink-literal",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm",
+              "to": "node_modules/mdast-util-gfm-footnote",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm",
+              "to": "node_modules/mdast-util-gfm-strikethrough",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm",
+              "to": "node_modules/mdast-util-gfm-table",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm",
+              "to": "node_modules/mdast-util-gfm-task-list-item",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm",
+              "to": "node_modules/mdast-util-to-markdown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-autolink-literal",
+              "to": "node_modules/@types/mdast",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-autolink-literal",
+              "to": "node_modules/ccount",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-autolink-literal",
+              "to": "node_modules/devlop",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-autolink-literal",
+              "to": "node_modules/mdast-util-find-and-replace",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-autolink-literal",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-footnote",
+              "to": "node_modules/@types/mdast",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-footnote",
+              "to": "node_modules/devlop",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-footnote",
+              "to": "node_modules/mdast-util-from-markdown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-footnote",
+              "to": "node_modules/mdast-util-to-markdown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-footnote",
+              "to": "node_modules/micromark-util-normalize-identifier",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-strikethrough",
+              "to": "node_modules/@types/mdast",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-strikethrough",
+              "to": "node_modules/mdast-util-from-markdown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-strikethrough",
+              "to": "node_modules/mdast-util-to-markdown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-table",
+              "to": "node_modules/@types/mdast",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-table",
+              "to": "node_modules/devlop",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-table",
+              "to": "node_modules/markdown-table",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-table",
+              "to": "node_modules/mdast-util-from-markdown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-table",
+              "to": "node_modules/mdast-util-to-markdown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-task-list-item",
+              "to": "node_modules/@types/mdast",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-task-list-item",
+              "to": "node_modules/devlop",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-task-list-item",
+              "to": "node_modules/mdast-util-from-markdown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-gfm-task-list-item",
+              "to": "node_modules/mdast-util-to-markdown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-phrasing",
+              "to": "node_modules/@types/mdast",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-phrasing",
+              "to": "node_modules/unist-util-is",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-to-markdown",
+              "to": "node_modules/@types/mdast",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-to-markdown",
+              "to": "node_modules/@types/unist",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-to-markdown",
+              "to": "node_modules/longest-streak",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-to-markdown",
+              "to": "node_modules/mdast-util-phrasing",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-to-markdown",
+              "to": "node_modules/mdast-util-to-string",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-to-markdown",
+              "to": "node_modules/micromark-util-classify-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-to-markdown",
+              "to": "node_modules/micromark-util-decode-string",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-to-markdown",
+              "to": "node_modules/unist-util-visit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-to-markdown",
+              "to": "node_modules/zwitch",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mdast-util-to-string",
+              "to": "node_modules/@types/mdast",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/@types/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/decode-named-character-reference",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/devlop",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/micromark-core-commonmark",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/micromark-factory-space",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/micromark-util-chunked",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/micromark-util-combine-extensions",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/micromark-util-decode-numeric-character-reference",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/micromark-util-encode",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/micromark-util-normalize-identifier",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/micromark-util-resolve-all",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/micromark-util-sanitize-uri",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/micromark-util-subtokenize",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/decode-named-character-reference",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/devlop",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/micromark-factory-destination",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/micromark-factory-label",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/micromark-factory-space",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/micromark-factory-title",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/micromark-factory-whitespace",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/micromark-util-chunked",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/micromark-util-classify-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/micromark-util-html-tag-name",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/micromark-util-normalize-identifier",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/micromark-util-resolve-all",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/micromark-util-subtokenize",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-core-commonmark",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm",
+              "to": "node_modules/micromark-extension-gfm-autolink-literal",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm",
+              "to": "node_modules/micromark-extension-gfm-footnote",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm",
+              "to": "node_modules/micromark-extension-gfm-strikethrough",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm",
+              "to": "node_modules/micromark-extension-gfm-table",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm",
+              "to": "node_modules/micromark-extension-gfm-tagfilter",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm",
+              "to": "node_modules/micromark-extension-gfm-task-list-item",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm",
+              "to": "node_modules/micromark-util-combine-extensions",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-autolink-literal",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-autolink-literal",
+              "to": "node_modules/micromark-util-sanitize-uri",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-autolink-literal",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-autolink-literal",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-footnote",
+              "to": "node_modules/devlop",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-footnote",
+              "to": "node_modules/micromark-core-commonmark",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-footnote",
+              "to": "node_modules/micromark-factory-space",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-footnote",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-footnote",
+              "to": "node_modules/micromark-util-normalize-identifier",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-footnote",
+              "to": "node_modules/micromark-util-sanitize-uri",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-footnote",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-footnote",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-strikethrough",
+              "to": "node_modules/devlop",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-strikethrough",
+              "to": "node_modules/micromark-util-chunked",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-strikethrough",
+              "to": "node_modules/micromark-util-classify-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-strikethrough",
+              "to": "node_modules/micromark-util-resolve-all",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-strikethrough",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-strikethrough",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-table",
+              "to": "node_modules/devlop",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-table",
+              "to": "node_modules/micromark-factory-space",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-table",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-table",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-table",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-tagfilter",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-task-list-item",
+              "to": "node_modules/devlop",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-task-list-item",
+              "to": "node_modules/micromark-factory-space",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-task-list-item",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-task-list-item",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-extension-gfm-task-list-item",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-destination",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-destination",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-destination",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-label",
+              "to": "node_modules/devlop",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-label",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-label",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-label",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-space",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-space",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-title",
+              "to": "node_modules/micromark-factory-space",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-title",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-title",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-title",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-whitespace",
+              "to": "node_modules/micromark-factory-space",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-whitespace",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-whitespace",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-factory-whitespace",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-character",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-character",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-chunked",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-classify-character",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-classify-character",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-classify-character",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-combine-extensions",
+              "to": "node_modules/micromark-util-chunked",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-combine-extensions",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-decode-numeric-character-reference",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-decode-string",
+              "to": "node_modules/decode-named-character-reference",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-decode-string",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-decode-string",
+              "to": "node_modules/micromark-util-decode-numeric-character-reference",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-decode-string",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-normalize-identifier",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-resolve-all",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-sanitize-uri",
+              "to": "node_modules/micromark-util-character",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-sanitize-uri",
+              "to": "node_modules/micromark-util-encode",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-sanitize-uri",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-subtokenize",
+              "to": "node_modules/devlop",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-subtokenize",
+              "to": "node_modules/micromark-util-chunked",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-subtokenize",
+              "to": "node_modules/micromark-util-symbol",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/micromark-util-subtokenize",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/mime-types",
+              "to": "node_modules/mime-db",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/npm-run-path",
+              "to": "node_modules/npm-run-path/node_modules/path-key",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/npm-run-path",
+              "to": "node_modules/unicorn-magic",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/on-finished",
+              "to": "node_modules/ee-first",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/once",
+              "to": "node_modules/wrappy",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/onetime",
+              "to": "node_modules/mimic-function",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/ora",
+              "to": "node_modules/chalk",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/ora",
+              "to": "node_modules/cli-cursor",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/ora",
+              "to": "node_modules/cli-spinners",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/ora",
+              "to": "node_modules/is-interactive",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/ora",
+              "to": "node_modules/is-unicode-supported",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/ora",
+              "to": "node_modules/log-symbols",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/ora",
+              "to": "node_modules/stdin-discarder",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/ora",
+              "to": "node_modules/string-width",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/p-limit",
+              "to": "node_modules/yocto-queue",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/pretty-ms",
+              "to": "node_modules/parse-ms",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/proper-lockfile",
+              "to": "node_modules/graceful-fs",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/proper-lockfile",
+              "to": "node_modules/proper-lockfile/node_modules/signal-exit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/proper-lockfile",
+              "to": "node_modules/retry",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/proxy-addr",
+              "to": "node_modules/forwarded",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/proxy-addr",
+              "to": "node_modules/ipaddr.js",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/qs",
+              "to": "node_modules/es-define-property",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/qs",
+              "to": "node_modules/side-channel",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/raw-body",
+              "to": "node_modules/bytes",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/raw-body",
+              "to": "node_modules/http-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/raw-body",
+              "to": "node_modules/iconv-lite",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/raw-body",
+              "to": "node_modules/unpipe",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/readable-stream",
+              "to": "node_modules/core-util-is",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/readable-stream",
+              "to": "node_modules/inherits",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/readable-stream",
+              "to": "node_modules/isarray",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/readable-stream",
+              "to": "node_modules/string_decoder",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/regedit",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/regedit",
+              "to": "node_modules/if-async",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/regedit",
+              "to": "node_modules/stream-slicer",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/regedit",
+              "to": "node_modules/through2",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/remark-gfm",
+              "to": "node_modules/@types/mdast",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/remark-gfm",
+              "to": "node_modules/mdast-util-gfm",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/remark-gfm",
+              "to": "node_modules/micromark-extension-gfm",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/remark-gfm",
+              "to": "node_modules/remark-parse",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/remark-gfm",
+              "to": "node_modules/remark-stringify",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/remark-gfm",
+              "to": "node_modules/unified",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/remark-parse",
+              "to": "node_modules/@types/mdast",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/remark-parse",
+              "to": "node_modules/mdast-util-from-markdown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/remark-parse",
+              "to": "node_modules/micromark-util-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/remark-parse",
+              "to": "node_modules/unified",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/remark-stringify",
+              "to": "node_modules/@types/mdast",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/remark-stringify",
+              "to": "node_modules/mdast-util-to-markdown",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/remark-stringify",
+              "to": "node_modules/unified",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/restore-cursor",
+              "to": "node_modules/onetime",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/restore-cursor",
+              "to": "node_modules/signal-exit",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/router",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/router",
+              "to": "node_modules/depd",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/router",
+              "to": "node_modules/is-promise",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/router",
+              "to": "node_modules/parseurl",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/router",
+              "to": "node_modules/path-to-regexp",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/send",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/send",
+              "to": "node_modules/encodeurl",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/send",
+              "to": "node_modules/escape-html",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/send",
+              "to": "node_modules/etag",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/send",
+              "to": "node_modules/fresh",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/send",
+              "to": "node_modules/http-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/send",
+              "to": "node_modules/mime-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/send",
+              "to": "node_modules/ms",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/send",
+              "to": "node_modules/on-finished",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/send",
+              "to": "node_modules/range-parser",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/send",
+              "to": "node_modules/statuses",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/serialize-error",
+              "to": "node_modules/type-fest",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/serve-static",
+              "to": "node_modules/encodeurl",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/serve-static",
+              "to": "node_modules/escape-html",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/serve-static",
+              "to": "node_modules/parseurl",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/serve-static",
+              "to": "node_modules/send",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/shebang-command",
+              "to": "node_modules/shebang-regex",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel",
+              "to": "node_modules/object-inspect",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel",
+              "to": "node_modules/side-channel-list",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel",
+              "to": "node_modules/side-channel-map",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel",
+              "to": "node_modules/side-channel-weakmap",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-list",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-list",
+              "to": "node_modules/object-inspect",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-map",
+              "to": "node_modules/call-bound",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-map",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-map",
+              "to": "node_modules/get-intrinsic",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-map",
+              "to": "node_modules/object-inspect",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-weakmap",
+              "to": "node_modules/call-bound",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-weakmap",
+              "to": "node_modules/es-errors",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-weakmap",
+              "to": "node_modules/get-intrinsic",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-weakmap",
+              "to": "node_modules/object-inspect",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/side-channel-weakmap",
+              "to": "node_modules/side-channel-map",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/socket.io-client",
+              "to": "node_modules/@socket.io/component-emitter",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/socket.io-client",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/socket.io-client",
+              "to": "node_modules/engine.io-client",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/socket.io-client",
+              "to": "node_modules/socket.io-parser",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/socket.io-parser",
+              "to": "node_modules/@socket.io/component-emitter",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/socket.io-parser",
+              "to": "node_modules/debug",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/string-width",
+              "to": "node_modules/get-east-asian-width",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/string-width",
+              "to": "node_modules/strip-ansi",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/strip-ansi",
+              "to": "node_modules/ansi-regex",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/through2",
+              "to": "node_modules/readable-stream",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/through2",
+              "to": "node_modules/xtend",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/type-is",
+              "to": "node_modules/media-typer",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/type-is",
+              "to": "node_modules/mime-types",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/type-is",
+              "to": "node_modules/type-is/node_modules/content-type",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/unified",
+              "to": "node_modules/@types/unist",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/unified",
+              "to": "node_modules/bail",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/unified",
+              "to": "node_modules/devlop",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/unified",
+              "to": "node_modules/extend",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/unified",
+              "to": "node_modules/is-plain-obj",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/unified",
+              "to": "node_modules/trough",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/unified",
+              "to": "node_modules/vfile",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/unist-util-is",
+              "to": "node_modules/@types/unist",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/unist-util-stringify-position",
+              "to": "node_modules/@types/unist",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/unist-util-visit",
+              "to": "node_modules/@types/unist",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/unist-util-visit",
+              "to": "node_modules/unist-util-is",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/unist-util-visit",
+              "to": "node_modules/unist-util-visit-parents",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/unist-util-visit-parents",
+              "to": "node_modules/@types/unist",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/unist-util-visit-parents",
+              "to": "node_modules/unist-util-is",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/vfile",
+              "to": "node_modules/@types/unist",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/vfile",
+              "to": "node_modules/vfile-message",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/vfile-message",
+              "to": "node_modules/@types/unist",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/vfile-message",
+              "to": "node_modules/unist-util-stringify-position",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/which",
+              "to": "node_modules/isexe",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/yauzl",
+              "to": "node_modules/pend",
+              "kind": "runtime"
+            },
+            {
+              "from": "node_modules/zod-to-json-schema",
+              "to": "node_modules/zod",
+              "kind": "peer"
+            }
+          ],
+          "source": "npm-lock",
+          "digest": "sha256:fe667d8d6b75c4a7ba3f04f8b7735ba28e62c5cb67d5f756a1cfaca3b0c5f374",
+          "unresolved": [
+            {
+              "from": "node_modules/@modelcontextprotocol/sdk",
+              "name": "@cfworker/json-schema",
+              "spec": "^4.1.1",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/ws",
+              "name": "bufferutil",
+              "spec": "^4.0.1",
+              "kind": "optional"
+            },
+            {
+              "from": "node_modules/ws",
+              "name": "utf-8-validate",
+              "spec": ">=5.0.2",
+              "kind": "optional"
+            }
+          ]
+        },
+        "installScriptPackages": [
+          "@deveco/deveco-cli@1.3.0"
+        ],
+        "installScriptDetails": [
+          {
+            "package": "@deveco/deveco-cli@1.3.0",
+            "scripts": [
+              {
+                "name": "postinstall",
+                "command": "node scripts/postinstall.mjs"
+              },
+              {
+                "name": "prepare",
+                "command": "husky"
+              }
+            ]
+          }
+        ],
+        "invalidSignatures": [],
+        "missingSignatures": [],
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "coverage": {
+    "staticSource": "complete",
+    "artifactIntegrity": "verified",
+    "registrySignature": "verified",
+    "dependencyResolution": "resolved",
+    "provenance": "missing",
+    "sourceArtifactMatch": "not-checked",
+    "sandboxDetonation": "not-run"
+  },
+  "findings": [
+    {
+      "code": "dependency-install-script-present",
+      "severity": "high",
+      "summary": "Resolved dependency graph contains install-time scripts",
+      "detail": "The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.",
+      "evidence": {
+        "packages": [
+          "@deveco/deveco-cli@1.3.0"
+        ],
+        "scripts": [
+          "@deveco/deveco-cli@1.3.0 postinstall: node scripts/postinstall.mjs",
+          "@deveco/deveco-cli@1.3.0 prepare: husky"
+        ]
+      },
+      "remediation": "Review each listed package and its published artifact; prefer a version with no install-time script, or require explicit approval before allowing the DSH install path to run it."
+    },
+    {
+      "code": "npm-provenance-missing",
+      "severity": "medium",
+      "summary": "npm artifact has no build provenance",
+      "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+      "remediation": "Enable npm provenance at publication with `npm publish --provenance` or `NPM_CONFIG_PROVENANCE=true`; GitHub Actions publishers also need `id-token: write`. Re-run `inspect --deep` on the next exact version."
+    }
+  ],
+  "riskVerdict": "review",
+  "coverageVerdict": "incomplete",
+  "verdict": "review"
+}
