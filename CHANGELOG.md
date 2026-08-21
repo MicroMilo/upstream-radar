@@ -2,7 +2,17 @@
 
 All notable changes to Upstream Radar are documented here.
 
-## Unreleased
+## [0.40.0] - 2026-08-21
+
+### Awesome DSH cohort
+
+- Import a commit-pinned, eight-repository cohort from `awesome-dsh-plugin`,
+  monitor all eight source/lockfile streams, and add the six independently
+  matched npm artifacts to the isolated DSH compatibility matrix.
+- Support explicit GitHub-only observer targets so repository-installed plugins
+  are never silently mapped to an unrelated same-name npm package.
+
+### Isolated compatibility contracts
 
 - Stop isolated DSH plugin observations before code execution when the exact npm
   artifact's declared Node range excludes the runner, and report the pair as
@@ -14,6 +24,15 @@ All notable changes to Upstream Radar are documented here.
 - Include the standard Node-gyp Python/C++ toolchain in the disposable observer
   image so an explicitly approved native build is not confused with a plugin
   compatibility failure.
+
+### Live validation
+
+- Test nine exact public plugin artifacts against DSH `0.1.1-rc.1` in separate
+  disposable GitHub-hosted VMs: eight satisfy their recorded install contracts,
+  while OpenPencil is correctly stopped before execution because its Node
+  `>=24.11.0` contract excludes the Node 22 runner.
+- Prove the steady-state always-on path across 13 targets: no upstream changes,
+  no Agent invocation, no install matrix, and no timestamp-only state commit.
 
 ## [0.39.0] - 2026-08-21
 
@@ -163,8 +182,6 @@ All notable changes to Upstream Radar are documented here.
 
 ### Added
 
-- Import a commit-pinned, eight-repository cohort from `awesome-dsh-plugin`, monitor all eight source/lockfile streams, and add the six independently matched npm artifacts to the isolated DSH compatibility matrix.
-- Support explicit GitHub-only observer targets so repository-installed plugins are never silently mapped to an unrelated same-name npm package.
 - Add `observe --llm-env-file` as an explicit OpenAI-compatible issue-locator model entry point for installations that do not yet have a DSH Agent wrapper; model failures leave deterministic upstream tasks pending for retry.
 - Make the scheduled upstream-observer workflow optionally forward issue-locator model secrets without making static observation depend on an LLM configuration.
 - Show the concrete unresolved dependency edges behind an incomplete npm artifact review, and accept common `MODEL`/`CODEX_MODEL` env names for observer model calls.

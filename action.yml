@@ -49,7 +49,7 @@ inputs:
   version:
     description: Exact upstream-radar npm version to execute.
     required: false
-    default: 0.39.0
+    default: 0.40.0
   node-version:
     description: Node.js version used to run the CLI.
     required: false
