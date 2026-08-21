@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { describe, it } from 'node:test'
 import {
@@ -195,6 +195,13 @@ snapshots:
 `)
       }
 
+      if (command.phase === 'load') {
+        assert.equal(command.command, process.execPath)
+        const probe = await readFile(command.args[0] as string, 'utf8')
+        assert.match(probe, /await import\("example-plugin"\)/)
+        assert.match(probe, /"--profile","headless","--help"/)
+      }
+
       if (command.tracePath !== undefined) {
         await writeFile(command.tracePath, TRACE.replaceAll('/sandbox', command.sandboxRoot))
       }
@@ -257,7 +264,7 @@ snapshots:
     assert.equal(report.observations.install.fileWrites.length >= 1, true)
     assert.equal(report.filesystem.install.created.some(path => path.endsWith('/generated/install.txt')), true)
     assert.equal(calls.map(call => call.phase).join(','), 'runtime,artifact,profile,install,load')
-    assert.deepEqual(calls.find(call => call.phase === 'load')?.args.slice(-3), ['--profile', 'headless', '--help'])
+    assert.match(calls.find(call => call.phase === 'load')?.args[0] ?? '', /\.upstream-radar-load-probe\.mjs$/)
     assert.match(renderDshInstallObservation(report), /COMPATIBLE/)
     assert.match(renderDshInstallObservation(report), /pnpm 11\.7\.0/)
     assert.match(renderDshInstallObservation(report), /Plugin Node requirement: >=18\.0\.0/)

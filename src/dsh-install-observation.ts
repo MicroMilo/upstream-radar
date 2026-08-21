@@ -969,6 +969,45 @@ function isLexicallyInside(root: string, candidate: string): boolean {
   return child === '' || (!child.startsWith(`..${sep}`) && child !== '..')
 }
 
+/**
+ * Run the plugin's real ESM entry from the profile resolution anchor, then
+ * boot DSH. The config dumper intentionally skips `!!js` and module imports;
+ * this tiny trusted wrapper proves that the installed plugin can resolve its
+ * own direct imports before the DSH headless app exits through `--help`.
+ */
+async function writeProfileLoadProbe(
+  dshHome: string,
+  pluginName: string,
+  dshVersion: string,
+  pnpmCommand: string,
+): Promise<{ path: string, profileDirectory: string }> {
+  const profileDirectory = join(dshHome, 'profiles', PROFILE)
+  const profileMetadata = await lstat(profileDirectory)
+  if (!profileMetadata.isDirectory() || profileMetadata.isSymbolicLink()) {
+    throw new Error('the DSH profile directory is not a regular directory for the load probe')
+  }
+  const [homeReal, profileReal] = await Promise.all([realpath(dshHome), realpath(profileDirectory)])
+  if (!isLexicallyInside(homeReal, profileReal)) {
+    throw new Error('the DSH profile directory escaped the controlled DSH home')
+  }
+  const probePath = join(profileDirectory, '.upstream-radar-load-probe.mjs')
+  const dshBootArgs = dshArgs(dshVersion, ['--profile', PROFILE, '--help'])
+  const contents = [
+    "import { spawn } from 'node:child_process'",
+    `await import(${JSON.stringify(pluginName)})`,
+    `const child = spawn(${JSON.stringify(pnpmCommand)}, ${JSON.stringify(dshBootArgs)}, { cwd: process.cwd(), env: process.env, stdio: 'inherit' })`,
+    "const exitCode = await new Promise(resolve => {",
+    "  child.once('error', error => { console.error(error.message); resolve(1) })",
+    "  child.once('close', code => resolve(code ?? 1))",
+    '})',
+    'process.exitCode = exitCode',
+    '',
+  ].join('\n')
+  // Never overwrite a path a target package may have planted in the profile.
+  await writeFile(probePath, contents, { encoding: 'utf8', mode: 0o600, flag: 'wx' })
+  return { path: probePath, profileDirectory }
+}
+
 interface ExactDshRuntime {
   packageDirectory: string
   nodeModulesDirectory: string
@@ -1405,16 +1444,18 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
         : { status: 'failed', detail: `the DSH profile did not register ${spec.name}` }
       if (!registered) return finishReport(report, 'install-failed', 'DSH accepted the install command but did not register the plugin bundle')
 
+      const loadProbe = await writeProfileLoadProbe(
+        environment.DSH_HOME as string,
+        spec.name,
+        options.dshVersion,
+        pnpmCommand,
+      )
       const loadTracePath = join(traceDirectory, 'load.strace')
       const loadResult = await runSafely(runner, {
         phase: 'load',
-        command: pnpmCommand,
-        // `--dump-config` deliberately avoids evaluating bundle code, so it
-        // cannot prove that a registered plugin can boot. Passing `--help`
-        // through to the headless app still makes the one-shot profile exit,
-        // while forcing the DSH loader to resolve and mount every bundle.
-        args: dshArgs(options.dshVersion, ['--profile', PROFILE, '--help']),
-        cwd: artifactDirectory,
+        command: process.execPath,
+        args: [loadProbe.path],
+        cwd: loadProbe.profileDirectory,
         env: scriptsEnvironment,
         timeoutMs,
         sandboxRoot,

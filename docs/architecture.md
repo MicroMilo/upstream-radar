@@ -123,12 +123,14 @@ then runs inside a restricted container that receives no repository/model
 secret, host workspace, or Docker socket. Radar first packs the exact npm
 coordinate with lifecycle scripts disabled and verifies its identity and DSH
 bundle declaration. DSH installs that local tarball with lifecycle scripts
-enabled, registers it, then boots the `headless` profile with `--help`; this
-forces the Cordis loader to resolve and mount the bundle while asking the
-one-shot surface to exit. `--dump-config` is intentionally not used as the
-runtime check because it composes patches without evaluating bundle code. Linux
-`strace` evidence and before/after filesystem snapshots are kept separately
-for install and boot.
+enabled, registers it, then runs a trusted one-shot wrapper from the profile:
+it imports the plugin from the profile's real Node resolution anchor and boots
+the `headless` profile with `--help`. This forces both direct plugin imports
+and the Cordis loader to resolve the bundle while asking the one-shot surface
+to exit. `--dump-config` is intentionally not used as the runtime check
+because it composes patches without evaluating bundle code. Linux `strace`
+evidence and before/after filesystem snapshots are kept separately for install
+and boot.
 
 ```text
 desired plugin × DSH × runtime-policy cell
