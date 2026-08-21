@@ -816,7 +816,7 @@ targets:
       await writeFile(envFile, [
         `ISSUE_LOCATOR_LLM_BASE_URL=http://127.0.0.1:${address.port}/llm/v1`,
         'ISSUE_LOCATOR_LLM_API_KEY=test-only',
-        'MODEL=test-model',
+        'MODEL=deepseek-v4-flash',
         '',
       ].join('\n'))
       const invocation = await runOpenAiCompatibleAgent(task, 'read-only task prompt', { envFile })
@@ -825,7 +825,9 @@ targets:
       assert.equal((invocation.parsedOutput as { breaking_change: boolean }).breaking_change, false)
       assert.deepEqual((invocation.parsedOutput as { evidence: string[] }).evidence, ['source: ["src/index.ts"]'])
       assert.equal(requestBodies.length, 1)
-      assert.equal(JSON.parse(requestBodies[0]!).model, 'test-model')
+      assert.equal(JSON.parse(requestBodies[0]!).model, 'deepseek-v4-flash')
+      assert.deepEqual(JSON.parse(requestBodies[0]!).thinking, { type: 'disabled' })
+      assert.match(JSON.parse(requestBodies[0]!).messages[0].content, /严格 JSON 对象/)
       assert.equal(JSON.parse(requestBodies[0]!).max_tokens, 2_048)
       assert.match(JSON.parse(requestBodies[0]!).messages[1].content, /read-only task prompt/)
     } finally {
