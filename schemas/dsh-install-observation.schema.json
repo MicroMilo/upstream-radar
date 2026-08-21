@@ -187,7 +187,8 @@
               }
             }
           }
-        }
+        },
+        "runtimeGraphError": { "type": "string", "minLength": 1, "maxLength": 512 }
       }
     },
     "stage": {

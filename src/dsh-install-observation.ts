@@ -208,6 +208,8 @@ export interface DshInstallObservationReport {
     profileLockfile?: DshInstallProfileLockfileEvidence
     /** The final profile plus shared-DSH-host graph observed after loading. */
     runtimeGraph?: DshInstallRuntimeGraphEvidence
+    /** Bounded collector diagnostic when the effective graph could not be read. */
+    runtimeGraphError?: string
   }
   result: DshInstallObservationResult
   reason: string
@@ -924,7 +926,7 @@ async function profileResolutionEvidence(dshHome: string): Promise<DshInstallObs
 async function runtimeGraphEvidence(
   dshHome: string,
   rootPackage: { name: string, version: string },
-): Promise<Pick<DshInstallObservationReport['resolution'], 'runtimeGraph'>> {
+): Promise<Pick<DshInstallObservationReport['resolution'], 'runtimeGraph' | 'runtimeGraphError'>> {
   try {
     const graph = await parseInstalledNodeModulesGraph(
       join(dshHome, 'profiles', PROFILE),
@@ -952,8 +954,10 @@ async function runtimeGraphEvidence(
         }),
       },
     }
-  } catch {
-    return {}
+  } catch (error: unknown) {
+    return {
+      runtimeGraphError: bounded(error instanceof Error ? error.message : String(error), 512),
+    }
   }
 }
 
@@ -1254,6 +1258,7 @@ export function renderDshInstallObservation(report: DshInstallObservationReport)
     `Final filesystem delta: install +${report.filesystem.install.totals.created} ~${report.filesystem.install.totals.modified} -${report.filesystem.install.totals.deleted}; load +${report.filesystem.load.totals.created} ~${report.filesystem.load.totals.modified} -${report.filesystem.load.totals.deleted}`,
     `Resolved profile graph: ${report.resolution.profileLockfile?.graphDigest ?? 'not established'}${report.resolution.profileLockfile === undefined ? '' : ` (lock sha256:${report.resolution.profileLockfile.sha256.slice(0, 12)}…)`}`,
     `Effective DSH runtime graph: ${report.resolution.runtimeGraph?.digest ?? 'not established'}${report.resolution.runtimeGraph === undefined ? '' : ` (${report.resolution.runtimeGraph.nodes} nodes, ${report.resolution.runtimeGraph.edges} edges, ${report.resolution.runtimeGraph.unresolved} unresolved)`}`,
+    `Effective graph collector: ${report.resolution.runtimeGraphError ?? 'captured'}`,
     '',
   ]
   for (const [name, stage] of Object.entries(report.stages)) {
