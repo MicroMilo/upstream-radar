@@ -4,7 +4,7 @@
     "dsh-feishu-bot": {
       "targetId": "dsh-feishu-bot",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-21T07:13:53.323Z",
+      "observedAt": "2026-08-21T08:36:27.290Z",
       "source": {
         "repository": "PlutoKeating/dsh-lark-bot",
         "ref": "main",
@@ -5198,7 +5198,7 @@
     "dsh-webui-market-plugin": {
       "targetId": "dsh-webui-market-plugin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-21T07:13:53.323Z",
+      "observedAt": "2026-08-21T08:36:27.290Z",
       "source": {
         "repository": "Sanqi-normal/dsh-webui-market-plugin",
         "ref": "master",
@@ -5291,6 +5291,1175 @@
             "status": "unknown",
             "summary": "The published package cannot be compared with the dependency graph root.",
             "upstream": "@sanqi-normal/dsh-webui-market-plugin@0.5.5",
+            "downstream": "unknown",
+            "remediation": "Observe both the exact npm package and a complete lockfile graph before using the graph as downstream evidence."
+          },
+          {
+            "code": "dependency-graph-coverage",
+            "status": "unknown",
+            "summary": "The dependency graph is unavailable.",
+            "downstream": "unavailable; 0 nodes, 0 edges",
+            "remediation": "Resolve the missing lockfile or peer/optional edges; an empty vulnerability result is not complete coverage while this remains unknown."
+          }
+        ]
+      }
+    },
+    "deepseek-harness": {
+      "targetId": "deepseek-harness",
+      "ecosystem": "dsh",
+      "observedAt": "2026-08-21T08:36:27.290Z",
+      "source": {
+        "repository": "deepseek-ai/deepseek-harness",
+        "ref": "master",
+        "commit": "528c682e061696f5a160f363f236ecbf53cbd006",
+        "packagePath": "apps/cli/package.json",
+        "lockfile": "pnpm-lock.yaml",
+        "commitUrl": "https://github.com/deepseek-ai/deepseek-harness/commit/528c682e061696f5a160f363f236ecbf53cbd006",
+        "packageUrl": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/528c682e061696f5a160f363f236ecbf53cbd006/apps/cli/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/528c682e061696f5a160f363f236ecbf53cbd006/pnpm-lock.yaml"
+      },
+      "manifest": {
+        "name": "@deepseek-ai/dsh",
+        "version": "0.1.1-rc.1",
+        "type": "module",
+        "dependencies": {
+          "@deepseek-ai/cordis-plugin-hmr": "workspace:^",
+          "@deepseek-ai/cordis-plugin-include": "workspace:^",
+          "@deepseek-ai/cordis-plugin-loader": "workspace:^",
+          "@deepseek-ai/cordis-plugin-timer": "workspace:^",
+          "@deepseek-ai/dsh-agent-tool-presentation": "workspace:^",
+          "@deepseek-ai/dsh-app-boot": "workspace:^",
+          "@deepseek-ai/dsh-base": "workspace:^",
+          "@deepseek-ai/dsh-cordis-client-runner": "workspace:^",
+          "@deepseek-ai/dsh-client-ui-agent-preset": "workspace:^",
+          "@deepseek-ai/dsh-client-ui-cordis": "workspace:^",
+          "@deepseek-ai/dsh-command-compact": "workspace:^",
+          "@deepseek-ai/dsh-command-goal": "workspace:^",
+          "@deepseek-ai/dsh-compaction-basic": "workspace:^",
+          "@deepseek-ai/dsh-compaction-tool-result-pruner": "workspace:^",
+          "@deepseek-ai/dsh-goal": "workspace:^",
+          "@deepseek-ai/dsh-goal-round-driver": "workspace:^",
+          "@deepseek-ai/dsh-cmdline": "workspace:^",
+          "@deepseek-ai/dsh-launch-environment": "workspace:^",
+          "@deepseek-ai/dsh-fs-local": "workspace:^",
+          "@deepseek-ai/dsh-headless": "workspace:^",
+          "@deepseek-ai/dsh-mcp-client": "workspace:^",
+          "@deepseek-ai/dsh-home-paths": "workspace:^",
+          "@deepseek-ai/dsh-persona": "workspace:^",
+          "@deepseek-ai/dsh-plan-mode": "workspace:^",
+          "@deepseek-ai/dsh-terminal": "workspace:^",
+          "@deepseek-ai/dsh-terminal-bash": "workspace:^",
+          "@deepseek-ai/dsh-pwsh-local": "workspace:^",
+          "@deepseek-ai/dsh-pwsh-sandbox": "workspace:^",
+          "@deepseek-ai/dsh-session-projection": "workspace:^",
+          "@deepseek-ai/dsh-session-reference": "workspace:^",
+          "@deepseek-ai/dsh-time-context": "workspace:^",
+          "@deepseek-ai/dsh-skill": "workspace:^",
+          "@deepseek-ai/dsh-skill-filesystem": "workspace:^",
+          "@deepseek-ai/dsh-jobs-local": "workspace:^",
+          "@deepseek-ai/dsh-tmux-context": "workspace:^",
+          "@deepseek-ai/dsh-token-meter": "workspace:^",
+          "@deepseek-ai/dsh-tool-ask-user": "workspace:^",
+          "@deepseek-ai/dsh-tool-bash": "workspace:^",
+          "@deepseek-ai/dsh-tool-bash-persistent": "workspace:^",
+          "@deepseek-ai/dsh-tool-pwsh-persistent": "workspace:^",
+          "@deepseek-ai/dsh-tool-cordis": "workspace:^",
+          "@deepseek-ai/dsh-tool-fs": "workspace:^",
+          "@deepseek-ai/dsh-tool-fs-search": "workspace:^",
+          "@deepseek-ai/dsh-tool-goal": "workspace:^",
+          "@deepseek-ai/dsh-tool-pwsh": "workspace:^",
+          "@deepseek-ai/dsh-tool-ralph": "workspace:^",
+          "@deepseek-ai/dsh-schedule": "workspace:^",
+          "@deepseek-ai/dsh-tool-skill": "workspace:^",
+          "@deepseek-ai/dsh-tool-str-replace-editor": "workspace:^",
+          "@deepseek-ai/dsh-tool-subagent": "workspace:^",
+          "@deepseek-ai/dsh-tool-subagent-control": "workspace:^",
+          "@deepseek-ai/dsh-tool-jobs": "workspace:^",
+          "@deepseek-ai/dsh-tool-todo": "workspace:^",
+          "@deepseek-ai/dsh-tool-web": "workspace:^",
+          "@deepseek-ai/dsh-tool-workflow": "workspace:^",
+          "@deepseek-ai/dsh-web-app": "workspace:^",
+          "@deepseek-ai/dsh-workflow-worker-thread": "workspace:^",
+          "@deepseek-ai/dsh-agent-instructions": "workspace:^",
+          "commander": "^15.0.0",
+          "@deepseek-ai/cordis": "workspace:^",
+          "js-yaml": "^4.2.0",
+          "node-addon-require-builtin": "^0.1.4"
+        }
+      },
+      "package": {
+        "name": "@deepseek-ai/dsh",
+        "version": "0.1.0-rc.7",
+        "integrity": "sha512-ZceDCJ8FAywih+USW/OMk9jEhunlvJBGEz4kqrhau23hPzbciOazZrywH0nBRsaalSeAJ1JGBmjtw4OSjToStw==",
+        "tarball": "https://registry.npmjs.org/@deepseek-ai/dsh/-/dsh-0.1.0-rc.7.tgz"
+      },
+      "graph": {
+        "schema": "upstream-radar.dependency-graph/v1alpha1",
+        "rootNodeId": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+        "nodes": [
+          {
+            "id": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.1"
+          },
+          {
+            "id": "pnpm:@sec-ant/readable-stream@0.4.1",
+            "name": "@sec-ant/readable-stream",
+            "version": "0.4.1"
+          },
+          {
+            "id": "pnpm:@sindresorhus/merge-streams@4.0.0",
+            "name": "@sindresorhus/merge-streams",
+            "version": "4.0.0"
+          },
+          {
+            "id": "pnpm:@types/js-yaml@4.0.9",
+            "name": "@types/js-yaml",
+            "version": "4.0.9"
+          },
+          {
+            "id": "pnpm:argparse@2.0.1",
+            "name": "argparse",
+            "version": "2.0.1"
+          },
+          {
+            "id": "pnpm:commander@15.0.0",
+            "name": "commander",
+            "version": "15.0.0"
+          },
+          {
+            "id": "pnpm:execa@10.0.0",
+            "name": "execa",
+            "version": "10.0.0"
+          },
+          {
+            "id": "pnpm:figures@6.1.0",
+            "name": "figures",
+            "version": "6.1.0"
+          },
+          {
+            "id": "pnpm:get-stream@9.0.1",
+            "name": "get-stream",
+            "version": "9.0.1"
+          },
+          {
+            "id": "pnpm:human-signals@8.0.1",
+            "name": "human-signals",
+            "version": "8.0.1"
+          },
+          {
+            "id": "pnpm:is-plain-obj@4.1.0",
+            "name": "is-plain-obj",
+            "version": "4.1.0"
+          },
+          {
+            "id": "pnpm:is-stream@4.0.1",
+            "name": "is-stream",
+            "version": "4.0.1"
+          },
+          {
+            "id": "pnpm:is-unicode-supported@2.1.0",
+            "name": "is-unicode-supported",
+            "version": "2.1.0"
+          },
+          {
+            "id": "pnpm:js-yaml@4.2.0",
+            "name": "js-yaml",
+            "version": "4.2.0"
+          },
+          {
+            "id": "pnpm:node-addon-native-custom-loader@0.1.4",
+            "name": "node-addon-native-custom-loader",
+            "version": "0.1.4"
+          },
+          {
+            "id": "pnpm:node-addon-require-builtin-darwin-arm64@0.1.4",
+            "name": "node-addon-require-builtin-darwin-arm64",
+            "version": "0.1.4"
+          },
+          {
+            "id": "pnpm:node-addon-require-builtin-darwin-x64@0.1.4",
+            "name": "node-addon-require-builtin-darwin-x64",
+            "version": "0.1.4"
+          },
+          {
+            "id": "pnpm:node-addon-require-builtin-linux-arm64-gnu@0.1.4",
+            "name": "node-addon-require-builtin-linux-arm64-gnu",
+            "version": "0.1.4"
+          },
+          {
+            "id": "pnpm:node-addon-require-builtin-linux-x64-gnu@0.1.4",
+            "name": "node-addon-require-builtin-linux-x64-gnu",
+            "version": "0.1.4"
+          },
+          {
+            "id": "pnpm:node-addon-require-builtin-win32-arm64-msvc@0.1.4",
+            "name": "node-addon-require-builtin-win32-arm64-msvc",
+            "version": "0.1.4"
+          },
+          {
+            "id": "pnpm:node-addon-require-builtin-win32-ia32-msvc@0.1.4",
+            "name": "node-addon-require-builtin-win32-ia32-msvc",
+            "version": "0.1.4"
+          },
+          {
+            "id": "pnpm:node-addon-require-builtin-win32-x64-msvc@0.1.4",
+            "name": "node-addon-require-builtin-win32-x64-msvc",
+            "version": "0.1.4"
+          },
+          {
+            "id": "pnpm:node-addon-require-builtin@0.1.4",
+            "name": "node-addon-require-builtin",
+            "version": "0.1.4"
+          },
+          {
+            "id": "pnpm:npm-run-path@6.0.0",
+            "name": "npm-run-path",
+            "version": "6.0.0"
+          },
+          {
+            "id": "pnpm:parse-ms@4.0.0",
+            "name": "parse-ms",
+            "version": "4.0.0"
+          },
+          {
+            "id": "pnpm:path-key@4.0.0",
+            "name": "path-key",
+            "version": "4.0.0"
+          },
+          {
+            "id": "pnpm:pretty-ms@9.3.0",
+            "name": "pretty-ms",
+            "version": "9.3.0"
+          },
+          {
+            "id": "pnpm:signal-exit@4.1.0",
+            "name": "signal-exit",
+            "version": "4.1.0"
+          },
+          {
+            "id": "pnpm:strip-final-newline@4.0.0",
+            "name": "strip-final-newline",
+            "version": "4.0.0"
+          },
+          {
+            "id": "pnpm:unicorn-magic@0.3.0",
+            "name": "unicorn-magic",
+            "version": "0.3.0"
+          },
+          {
+            "id": "pnpm:which-command@0.1.0",
+            "name": "which-command",
+            "version": "0.1.0"
+          },
+          {
+            "id": "pnpm:yoctocolors@2.1.2",
+            "name": "yoctocolors",
+            "version": "2.1.2"
+          }
+        ],
+        "edges": [
+          {
+            "from": "pnpm:execa@10.0.0",
+            "to": "pnpm:@sindresorhus/merge-streams@4.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:execa@10.0.0",
+            "to": "pnpm:figures@6.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:execa@10.0.0",
+            "to": "pnpm:get-stream@9.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:execa@10.0.0",
+            "to": "pnpm:human-signals@8.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:execa@10.0.0",
+            "to": "pnpm:is-plain-obj@4.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:execa@10.0.0",
+            "to": "pnpm:is-stream@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:execa@10.0.0",
+            "to": "pnpm:npm-run-path@6.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:execa@10.0.0",
+            "to": "pnpm:path-key@4.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:execa@10.0.0",
+            "to": "pnpm:pretty-ms@9.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:execa@10.0.0",
+            "to": "pnpm:signal-exit@4.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:execa@10.0.0",
+            "to": "pnpm:strip-final-newline@4.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:execa@10.0.0",
+            "to": "pnpm:which-command@0.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:execa@10.0.0",
+            "to": "pnpm:yoctocolors@2.1.2",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:figures@6.1.0",
+            "to": "pnpm:is-unicode-supported@2.1.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:get-stream@9.0.1",
+            "to": "pnpm:@sec-ant/readable-stream@0.4.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:get-stream@9.0.1",
+            "to": "pnpm:is-stream@4.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:js-yaml@4.2.0",
+            "to": "pnpm:argparse@2.0.1",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin-darwin-arm64@0.1.4",
+            "to": "pnpm:node-addon-native-custom-loader@0.1.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin-darwin-x64@0.1.4",
+            "to": "pnpm:node-addon-native-custom-loader@0.1.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin-linux-arm64-gnu@0.1.4",
+            "to": "pnpm:node-addon-native-custom-loader@0.1.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin-linux-x64-gnu@0.1.4",
+            "to": "pnpm:node-addon-native-custom-loader@0.1.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin-win32-arm64-msvc@0.1.4",
+            "to": "pnpm:node-addon-native-custom-loader@0.1.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin-win32-ia32-msvc@0.1.4",
+            "to": "pnpm:node-addon-native-custom-loader@0.1.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin-win32-x64-msvc@0.1.4",
+            "to": "pnpm:node-addon-native-custom-loader@0.1.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin@0.1.4",
+            "to": "pnpm:node-addon-native-custom-loader@0.1.4",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin@0.1.4",
+            "to": "pnpm:node-addon-require-builtin-darwin-arm64@0.1.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin@0.1.4",
+            "to": "pnpm:node-addon-require-builtin-darwin-x64@0.1.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin@0.1.4",
+            "to": "pnpm:node-addon-require-builtin-linux-arm64-gnu@0.1.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin@0.1.4",
+            "to": "pnpm:node-addon-require-builtin-linux-x64-gnu@0.1.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin@0.1.4",
+            "to": "pnpm:node-addon-require-builtin-win32-arm64-msvc@0.1.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin@0.1.4",
+            "to": "pnpm:node-addon-require-builtin-win32-ia32-msvc@0.1.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:node-addon-require-builtin@0.1.4",
+            "to": "pnpm:node-addon-require-builtin-win32-x64-msvc@0.1.4",
+            "kind": "optional"
+          },
+          {
+            "from": "pnpm:npm-run-path@6.0.0",
+            "to": "pnpm:path-key@4.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:npm-run-path@6.0.0",
+            "to": "pnpm:unicorn-magic@0.3.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:pretty-ms@9.3.0",
+            "to": "pnpm:parse-ms@4.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "to": "pnpm:@types/js-yaml@4.0.9",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "to": "pnpm:commander@15.0.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "to": "pnpm:execa@10.0.0",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "to": "pnpm:js-yaml@4.2.0",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "to": "pnpm:node-addon-require-builtin@0.1.4",
+            "kind": "runtime"
+          }
+        ],
+        "source": "pnpm-lock",
+        "digest": "sha256:53d09dca32778569398e7b72ddefb6ed52aa7379d9e26c15345c29c9c9d11a08",
+        "unresolved": [
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/cordis",
+            "spec": "link:../../vendor/cordis",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/cordis-plugin-hmr",
+            "spec": "link:../../vendor/hmr",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/cordis-plugin-include",
+            "spec": "link:../../vendor/include",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/cordis-plugin-loader",
+            "spec": "link:../../vendor/loader",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/cordis-plugin-timer",
+            "spec": "link:../../vendor/timer",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-agent",
+            "spec": "link:../../packages/core/agent",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-agent-instructions",
+            "spec": "link:../../packages/context/agent-instructions",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-agent-tool-presentation",
+            "spec": "link:../../packages/core/agent-tool-presentation",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-app-boot",
+            "spec": "link:../../packages/boot/app-boot",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-base",
+            "spec": "link:../../packages/bundle/base",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-client-ui-agent-preset",
+            "spec": "link:../../packages/client/ui-agent-preset",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-client-ui-cordis",
+            "spec": "link:../../packages/extensions/ui-cordis",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-cmdline",
+            "spec": "link:../../packages/boot/cmdline",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-command-compact",
+            "spec": "link:../../packages/compaction/command-compact",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-command-goal",
+            "spec": "link:../../packages/goal/command-goal",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-compaction-basic",
+            "spec": "link:../../packages/compaction/compaction-basic",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-compaction-tool-result-pruner",
+            "spec": "link:../../packages/compaction/compaction-tool-result-pruner",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-cordis-client-runner",
+            "spec": "link:../../packages/extensions/cordis-client-runner",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-fs-local",
+            "spec": "link:../../packages/fs/fs-local",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-goal",
+            "spec": "link:../../packages/goal/goal",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-goal-round-driver",
+            "spec": "link:../../packages/goal/goal-round-driver",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-headless",
+            "spec": "link:../../packages/bundle/headless",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-home-paths",
+            "spec": "link:../../packages/util/home-paths",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-host-apiproxy",
+            "spec": "link:../../packages/host/apiproxy",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-host-frontend-static",
+            "spec": "link:../../packages/host/frontend-static",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-host-webserver",
+            "spec": "link:../../packages/host/webserver",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-jobs-local",
+            "spec": "link:../../packages/jobs/jobs-local",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-launch-environment",
+            "spec": "link:../../packages/util/launch-environment",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-llm",
+            "spec": "link:../../packages/llm/llm",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-llm-mock-server",
+            "spec": "link:../../packages/test-support/llm-mock-server",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-loader-smoke",
+            "spec": "link:../../packages/test-support/loader-smoke",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-mcp-client",
+            "spec": "link:../../packages/mcp/mcp-client",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-persona",
+            "spec": "link:../../packages/preset/persona",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-plan-mode",
+            "spec": "link:../../packages/plan/plan-mode",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-pwsh-local",
+            "spec": "link:../../packages/shell/pwsh-local",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-pwsh-sandbox",
+            "spec": "link:../../packages/shell/pwsh-sandbox",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-schedule",
+            "spec": "link:../../packages/schedule/schedule",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-session",
+            "spec": "link:../../packages/core/session",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-session-projection",
+            "spec": "link:../../packages/session/session-projection",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-session-reference",
+            "spec": "link:../../packages/context/session-reference",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-settings",
+            "spec": "link:../../packages/settings/settings",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-skill",
+            "spec": "link:../../packages/skill/skill",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-skill-filesystem",
+            "spec": "link:../../packages/skill/skill-filesystem",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-subagent",
+            "spec": "link:../../packages/subagent/subagent",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-system-prompt",
+            "spec": "link:../../packages/core/system-prompt",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-terminal",
+            "spec": "link:../../packages/terminal/terminal",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-terminal-bash",
+            "spec": "link:../../packages/terminal/terminal-bash",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-time-context",
+            "spec": "link:../../packages/context/time-context",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tmux-context",
+            "spec": "link:../../packages/context/tmux-context",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-token-meter",
+            "spec": "link:../../packages/llm/token-meter",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-ask-user",
+            "spec": "link:../../packages/interaction/tool-ask-user",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-bash",
+            "spec": "link:../../packages/shell/tool-bash",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-bash-persistent",
+            "spec": "link:../../packages/shell/tool-bash-persistent",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-cordis",
+            "spec": "link:../../packages/extensions/tool-cordis",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-fs",
+            "spec": "link:../../packages/fs/tool-fs",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-fs-search",
+            "spec": "link:../../packages/fs/tool-fs-search",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-goal",
+            "spec": "link:../../packages/goal/tool-goal",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-jobs",
+            "spec": "link:../../packages/jobs/tool-jobs",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-pwsh",
+            "spec": "link:../../packages/shell/tool-pwsh",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-pwsh-persistent",
+            "spec": "link:../../packages/shell/tool-pwsh-persistent",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-ralph",
+            "spec": "link:../../packages/workflow/tool-ralph",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-skill",
+            "spec": "link:../../packages/skill/tool-skill",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-str-replace-editor",
+            "spec": "link:../../packages/fs/tool-str-replace-editor",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-subagent",
+            "spec": "link:../../packages/subagent/tool-subagent",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-subagent-control",
+            "spec": "link:../../packages/subagent/tool-subagent-control",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-todo",
+            "spec": "link:../../packages/todo/tool-todo",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-web",
+            "spec": "link:../../packages/web/tool-web",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tool-workflow",
+            "spec": "link:../../packages/workflow/tool-workflow",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-tools",
+            "spec": "link:../../packages/core/tools",
+            "kind": "development"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-web-app",
+            "spec": "link:../../packages/bundle/web-app",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@deepseek-ai/dsh@0.1.1-rc.1",
+            "name": "@deepseek-ai/dsh-workflow-worker-thread",
+            "spec": "link:../../packages/workflow/workflow-worker-thread",
+            "kind": "runtime"
+          }
+        ]
+      },
+      "alignment": {
+        "schema": "upstream-radar.upstream-downstream-ir/v1alpha1",
+        "targetId": "deepseek-harness",
+        "ecosystem": "dsh",
+        "upstream": {
+          "repository": "deepseek-ai/deepseek-harness",
+          "commit": "528c682e061696f5a160f363f236ecbf53cbd006",
+          "packagePath": "apps/cli/package.json",
+          "coordinate": {
+            "name": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.1"
+          }
+        },
+        "downstream": {
+          "published": {
+            "name": "@deepseek-ai/dsh",
+            "version": "0.1.0-rc.7"
+          },
+          "graph": {
+            "status": "incomplete",
+            "root": {
+              "name": "@deepseek-ai/dsh",
+              "version": "0.1.1-rc.1"
+            },
+            "digest": "sha256:53d09dca32778569398e7b72ddefb6ed52aa7379d9e26c15345c29c9c9d11a08",
+            "nodes": 32,
+            "edges": 40,
+            "unresolved": 71
+          }
+        },
+        "status": "mismatch",
+        "checks": [
+          {
+            "code": "source-published-identity",
+            "status": "mismatch",
+            "summary": "The source manifest and observed npm package do not identify the same name and version.",
+            "upstream": "@deepseek-ai/dsh@0.1.1-rc.1",
+            "downstream": "@deepseek-ai/dsh@0.1.0-rc.7",
+            "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
+          },
+          {
+            "code": "source-graph-root",
+            "status": "aligned",
+            "summary": "The lockfile graph root matches the source manifest.",
+            "upstream": "@deepseek-ai/dsh@0.1.1-rc.1",
+            "downstream": "@deepseek-ai/dsh@0.1.1-rc.1"
+          },
+          {
+            "code": "published-graph-root",
+            "status": "mismatch",
+            "summary": "The dependency graph root does not identify the observed npm package.",
+            "upstream": "@deepseek-ai/dsh@0.1.0-rc.7",
+            "downstream": "@deepseek-ai/dsh@0.1.1-rc.1",
+            "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
+          },
+          {
+            "code": "dependency-graph-coverage",
+            "status": "unknown",
+            "summary": "The dependency graph is incomplete (71 unresolved edges).",
+            "downstream": "incomplete; 32 nodes, 40 edges",
+            "remediation": "Resolve the missing lockfile or peer/optional edges; an empty vulnerability result is not complete coverage while this remains unknown."
+          }
+        ]
+      }
+    },
+    "dsh-cloudflare-browser-run": {
+      "targetId": "dsh-cloudflare-browser-run",
+      "ecosystem": "dsh",
+      "observedAt": "2026-08-21T08:36:27.290Z",
+      "source": {
+        "repository": "RealAlexandreAI/dsh-cloudflare-browser-run",
+        "ref": "main",
+        "commit": "6f4432eac58fbf1d43a76a276854efb6cced22be",
+        "packagePath": "package.json",
+        "lockfile": "package-lock.json",
+        "commitUrl": "https://github.com/RealAlexandreAI/dsh-cloudflare-browser-run/commit/6f4432eac58fbf1d43a76a276854efb6cced22be",
+        "packageUrl": "https://raw.githubusercontent.com/RealAlexandreAI/dsh-cloudflare-browser-run/6f4432eac58fbf1d43a76a276854efb6cced22be/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/RealAlexandreAI/dsh-cloudflare-browser-run/6f4432eac58fbf1d43a76a276854efb6cced22be/package-lock.json"
+      },
+      "manifest": {
+        "name": "dsh-cloudflare-browser-run",
+        "version": "0.1.3",
+        "type": "module",
+        "main": "dist/index.js",
+        "exports": {
+          ".": "./dist/index.js"
+        },
+        "engines": {
+          "node": ">=20.0.0"
+        },
+        "dependencies": {
+          "@deepseek-ai/cordis": "^4.0.1",
+          "@deepseek-ai/dsh-tools": "^0.1.0-rc.7",
+          "@deepseek-ai/schemastery": "^3.18.0"
+        },
+        "dsh": {
+          "bundle": {
+            "patch": "./cordis.patch.yml"
+          }
+        }
+      },
+      "package": {
+        "name": "dsh-cloudflare-browser-run",
+        "version": "0.1.3",
+        "integrity": "sha512-sAHB3qfpkplJzaDhxawH1eqyRi665G/b/Cpoy3LsFtN784PoS/NOn0hGRQOarVUQ5zYFlflbYcNw2zUd5Ppveg==",
+        "tarball": "https://registry.npmjs.org/dsh-cloudflare-browser-run/-/dsh-cloudflare-browser-run-0.1.3.tgz"
+      },
+      "graphError": "requested root package is not present in npm lockfile: dsh-cloudflare-browser-run@0.1.3",
+      "alignment": {
+        "schema": "upstream-radar.upstream-downstream-ir/v1alpha1",
+        "targetId": "dsh-cloudflare-browser-run",
+        "ecosystem": "dsh",
+        "upstream": {
+          "repository": "RealAlexandreAI/dsh-cloudflare-browser-run",
+          "commit": "6f4432eac58fbf1d43a76a276854efb6cced22be",
+          "packagePath": "package.json",
+          "coordinate": {
+            "name": "dsh-cloudflare-browser-run",
+            "version": "0.1.3"
+          }
+        },
+        "downstream": {
+          "published": {
+            "name": "dsh-cloudflare-browser-run",
+            "version": "0.1.3"
+          },
+          "graph": {
+            "status": "unavailable",
+            "nodes": 0,
+            "edges": 0,
+            "unresolved": 0
+          }
+        },
+        "status": "unknown",
+        "checks": [
+          {
+            "code": "source-published-identity",
+            "status": "aligned",
+            "summary": "The source manifest and observed npm package have the same name and version.",
+            "upstream": "dsh-cloudflare-browser-run@0.1.3",
+            "downstream": "dsh-cloudflare-browser-run@0.1.3"
+          },
+          {
+            "code": "source-graph-root",
+            "status": "unknown",
+            "summary": "The dependency graph could not be established: requested root package is not present in npm lockfile: dsh-cloudflare-browser-run@0.1.3",
+            "upstream": "dsh-cloudflare-browser-run@0.1.3",
+            "remediation": "Commit a supported lockfile or correct the configured package path/importer so the root can be verified."
+          },
+          {
+            "code": "published-graph-root",
+            "status": "unknown",
+            "summary": "The published package cannot be compared with the dependency graph root.",
+            "upstream": "dsh-cloudflare-browser-run@0.1.3",
+            "downstream": "unknown",
+            "remediation": "Observe both the exact npm package and a complete lockfile graph before using the graph as downstream evidence."
+          },
+          {
+            "code": "dependency-graph-coverage",
+            "status": "unknown",
+            "summary": "The dependency graph is unavailable.",
+            "downstream": "unavailable; 0 nodes, 0 edges",
+            "remediation": "Resolve the missing lockfile or peer/optional edges; an empty vulnerability result is not complete coverage while this remains unknown."
+          }
+        ]
+      }
+    },
+    "dsh-wsl-workspace": {
+      "targetId": "dsh-wsl-workspace",
+      "ecosystem": "dsh",
+      "observedAt": "2026-08-21T08:36:27.290Z",
+      "source": {
+        "repository": "6Mikao9/dsh-wsl-workspace",
+        "ref": "main",
+        "commit": "a1cc69d9838e7258d7d6e75a3b797d88f9c1af56",
+        "packagePath": "package.json",
+        "commitUrl": "https://github.com/6Mikao9/dsh-wsl-workspace/commit/a1cc69d9838e7258d7d6e75a3b797d88f9c1af56",
+        "packageUrl": "https://raw.githubusercontent.com/6Mikao9/dsh-wsl-workspace/a1cc69d9838e7258d7d6e75a3b797d88f9c1af56/package.json"
+      },
+      "manifest": {
+        "name": "dsh-wsl-workspace",
+        "version": "0.2.4",
+        "type": "module",
+        "main": "lib/index.js",
+        "exports": {
+          ".": "./lib/index.js",
+          "./shell": "./lib/shell.js",
+          "./fs": "./lib/fs.js",
+          "./client": "./lib/client.js",
+          "./package.json": "./package.json"
+        },
+        "peerDependencies": {
+          "@deepseek-ai/cordis": "*",
+          "@deepseek-ai/dsh-fs": "*",
+          "@deepseek-ai/dsh-fs-local": "*",
+          "@deepseek-ai/dsh-shell": "*",
+          "@deepseek-ai/dsh-subprocess": "*",
+          "@deepseek-ai/dsh-timeout": "*"
+        },
+        "dsh": {
+          "bundle": {
+            "patch": "./cordis.patch.yml"
+          },
+          "client": {
+            "platform": "web",
+            "inject": [
+              "@deepseek-ai/dsh-client-runtime",
+              "@deepseek-ai/dsh-client-locale",
+              "@deepseek-ai/dsh-client-ui-sidebar"
+            ]
+          }
+        }
+      },
+      "package": {
+        "name": "dsh-wsl-workspace",
+        "version": "0.2.3",
+        "integrity": "sha512-3L8zcNFLi8WU3OM0nVrm2wLG/6gtKKRzKMPznRIxJ1iAmzALLzkaO/HmVDKJWC0uzdRjZ+f3aKuGk/dVJfwY8g==",
+        "tarball": "https://registry.npmjs.org/dsh-wsl-workspace/-/dsh-wsl-workspace-0.2.3.tgz"
+      },
+      "warnings": [
+        "no supported lockfile found; dependency graph was not available"
+      ],
+      "alignment": {
+        "schema": "upstream-radar.upstream-downstream-ir/v1alpha1",
+        "targetId": "dsh-wsl-workspace",
+        "ecosystem": "dsh",
+        "upstream": {
+          "repository": "6Mikao9/dsh-wsl-workspace",
+          "commit": "a1cc69d9838e7258d7d6e75a3b797d88f9c1af56",
+          "packagePath": "package.json",
+          "coordinate": {
+            "name": "dsh-wsl-workspace",
+            "version": "0.2.4"
+          }
+        },
+        "downstream": {
+          "published": {
+            "name": "dsh-wsl-workspace",
+            "version": "0.2.3"
+          },
+          "graph": {
+            "status": "unavailable",
+            "nodes": 0,
+            "edges": 0,
+            "unresolved": 0
+          }
+        },
+        "status": "mismatch",
+        "checks": [
+          {
+            "code": "source-published-identity",
+            "status": "mismatch",
+            "summary": "The source manifest and observed npm package do not identify the same name and version.",
+            "upstream": "dsh-wsl-workspace@0.2.4",
+            "downstream": "dsh-wsl-workspace@0.2.3",
+            "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
+          },
+          {
+            "code": "source-graph-root",
+            "status": "unknown",
+            "summary": "No dependency graph root was observed.",
+            "upstream": "dsh-wsl-workspace@0.2.4",
+            "remediation": "Commit a supported lockfile or correct the configured package path/importer so the root can be verified."
+          },
+          {
+            "code": "published-graph-root",
+            "status": "unknown",
+            "summary": "The published package cannot be compared with the dependency graph root.",
+            "upstream": "dsh-wsl-workspace@0.2.3",
             "downstream": "unknown",
             "remediation": "Observe both the exact npm package and a complete lockfile graph before using the graph as downstream evidence."
           },
