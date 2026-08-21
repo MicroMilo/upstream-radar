@@ -4,7 +4,7 @@
     "dsh-feishu-bot": {
       "targetId": "dsh-feishu-bot",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-21T03:58:31.713Z",
+      "observedAt": "2026-08-21T04:00:33.748Z",
       "source": {
         "repository": "PlutoKeating/dsh-lark-bot",
         "ref": "main",
@@ -5198,7 +5198,7 @@
     "dsh-webui-market-plugin": {
       "targetId": "dsh-webui-market-plugin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-21T03:58:31.713Z",
+      "observedAt": "2026-08-21T04:00:33.748Z",
       "source": {
         "repository": "Sanqi-normal/dsh-webui-market-plugin",
         "ref": "master",
