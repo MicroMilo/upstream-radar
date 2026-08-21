@@ -333,7 +333,7 @@ async function main() {
     // profile-only inspection deliberately refuses to follow that untrusted
     // external link. Once the real DSH process gives us its exact package
     // root, the earlier `exact` graph supplies a bounded, verified host plane.
-    let staticProfileBoundary: 'refused-external-host-link' | undefined
+    let staticProfileBoundary
     try {
       await createRadarConfigFromDshProfile({
         profileDirectory,
