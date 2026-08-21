@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MicroMilo/upstream-radar/blob/main/schemas/dsh-install-observation.schema.json",
+  "title": "Upstream Radar DSH install observation",
+  "description": "Bounded process, network and filesystem evidence from installing and loading one exact npm artifact under one exact DSH version in an externally supplied disposable environment.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "tool", "probe", "scope", "startedAt", "completedAt", "dshVersion", "artifact", "stages", "observations", "filesystem", "result", "reason", "boundary"],
+  "properties": {
+    "schema": { "const": "upstream-radar.dsh-install-observation/v1alpha1" },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "const": "upstream-radar" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 256 }
+      }
+    },
+    "probe": { "const": "dsh-install" },
+    "scope": { "const": "install-and-load-behavior" },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "completedAt": { "type": "string", "format": "date-time" },
+    "dshVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" },
+    "artifact": { "$ref": "#/$defs/artifact" },
+    "stages": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact", "profile", "install", "registration", "load"],
+      "properties": {
+        "artifact": { "$ref": "#/$defs/stage" },
+        "profile": { "$ref": "#/$defs/stage" },
+        "install": { "$ref": "#/$defs/stage" },
+        "registration": { "$ref": "#/$defs/stage" },
+        "load": { "$ref": "#/$defs/stage" }
+      }
+    },
+    "observations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["install", "load"],
+      "properties": {
+        "install": { "$ref": "#/$defs/trace" },
+        "load": { "$ref": "#/$defs/trace" }
+      }
+    },
+    "filesystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["install", "load"],
+      "properties": {
+        "install": { "$ref": "#/$defs/filesystemDiff" },
+        "load": { "$ref": "#/$defs/filesystemDiff" }
+      }
+    },
+    "result": { "enum": ["compatible", "install-failed", "load-failed", "unknown"] },
+    "reason": { "type": "string", "maxLength": 4096 },
+    "boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["isolationProviderClaim", "isolationVerifiedByRadar", "disposableEnvironmentRequired", "lifecycleScriptsEnabledForPluginInstall", "pluginCodeMayExecuteDuringLoad", "inheritedHostSecrets", "note"],
+      "properties": {
+        "isolationProviderClaim": { "enum": ["github-actions-hosted-runner", "firecracker", "other"] },
+        "isolationVerifiedByRadar": { "const": false },
+        "disposableEnvironmentRequired": { "const": true },
+        "lifecycleScriptsEnabledForPluginInstall": { "const": true },
+        "pluginCodeMayExecuteDuringLoad": { "const": true },
+        "inheritedHostSecrets": { "const": false },
+        "note": { "type": "string", "maxLength": 4096 }
+      }
+    }
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["spec", "name", "version", "lifecycleScripts"],
+      "properties": {
+        "spec": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "name": { "type": "string", "minLength": 1, "maxLength": 214 },
+        "version": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "integrity": { "type": "string", "maxLength": 1024 },
+        "bytes": { "type": "integer", "minimum": 0, "maximum": 67108864 },
+        "bundlePatch": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "lifecycleScripts": {
+          "type": "array",
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": { "enum": ["preinstall", "install", "postinstall", "prepare"] }
+        }
+      }
+    },
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["passed", "failed", "skipped"] },
+        "code": { "type": ["integer", "null"] },
+        "detail": { "type": "string", "maxLength": 8192 },
+        "timedOut": { "type": "boolean" },
+        "outputExceeded": { "type": "boolean" }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "tracer", "traceFiles", "bytes", "lines", "parsedEvents", "otherLines", "tamperResistance"],
+      "properties": {
+        "status": { "enum": ["captured", "missing", "truncated"] },
+        "tracer": { "const": "strace" },
+        "traceFiles": { "type": "integer", "minimum": 0 },
+        "bytes": { "type": "integer", "minimum": 0, "maximum": 16777216 },
+        "lines": { "type": "integer", "minimum": 0, "maximum": 100000 },
+        "parsedEvents": { "type": "integer", "minimum": 0 },
+        "otherLines": { "type": "integer", "minimum": 0 },
+        "tamperResistance": { "const": "best-effort-same-container" }
+      }
+    },
+    "process": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["executable", "arguments", "succeeded", "count"],
+      "properties": {
+        "executable": { "type": "string", "maxLength": 1024 },
+        "arguments": { "type": "array", "maxItems": 16, "items": { "type": "string", "maxLength": 512 } },
+        "succeeded": { "type": "boolean" },
+        "count": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "network": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation", "family", "address", "succeeded", "count"],
+      "properties": {
+        "operation": { "enum": ["connect", "sendto", "sendmsg"] },
+        "family": { "type": "string", "maxLength": 64 },
+        "address": { "type": "string", "maxLength": 1024 },
+        "port": { "type": "integer", "minimum": 0, "maximum": 65535 },
+        "succeeded": { "type": "boolean" },
+        "count": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "fileWrite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation", "path", "succeeded", "count"],
+      "properties": {
+        "operation": { "type": "string", "maxLength": 64 },
+        "path": { "type": "string", "maxLength": 1024 },
+        "sourcePath": { "type": "string", "maxLength": 1024 },
+        "succeeded": { "type": "boolean" },
+        "count": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coverage", "processes", "network", "fileWrites"],
+      "properties": {
+        "coverage": { "$ref": "#/$defs/coverage" },
+        "processes": { "type": "array", "maxItems": 512, "items": { "$ref": "#/$defs/process" } },
+        "network": { "type": "array", "maxItems": 512, "items": { "$ref": "#/$defs/network" } },
+        "fileWrites": { "type": "array", "maxItems": 512, "items": { "$ref": "#/$defs/fileWrite" } }
+      }
+    },
+    "filesystemDiff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["created", "modified", "deleted", "totals", "truncated", "snapshotErrors"],
+      "properties": {
+        "created": { "type": "array", "maxItems": 512, "items": { "type": "string", "maxLength": 4096 } },
+        "modified": { "type": "array", "maxItems": 512, "items": { "type": "string", "maxLength": 4096 } },
+        "deleted": { "type": "array", "maxItems": 512, "items": { "type": "string", "maxLength": 4096 } },
+        "totals": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["created", "modified", "deleted"],
+          "properties": {
+            "created": { "type": "integer", "minimum": 0 },
+            "modified": { "type": "integer", "minimum": 0 },
+            "deleted": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "truncated": { "type": "boolean" },
+        "snapshotErrors": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

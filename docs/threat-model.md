@@ -9,6 +9,7 @@ Upstream Radar protects two connected outcomes:
 3. A model conclusion is written back only when it is tied to the exact Radar delivery and DSH session, is emitted by the model, and matches the fixed JSON result contract.
 4. An optional external notification receives only changed events, with delivery failures remaining visible and retryable.
 5. Human follow-up does not silently cover a newer upstream fact; an optional deadline is visible when it expires.
+6. Explicit dynamic install/load evidence is collected only in a disposable, secret-free execution job and stays bound to the exact npm artifact and DSH release.
 
 The supporting pre-install scanner additionally protects exact-artifact evidence collection.
 
@@ -40,6 +41,7 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 12. A malicious package attacks the supporting static scanner through archives, paths, links, parsers, lifecycle scripts, or native code.
 13. A configured notification endpoint is unavailable, redirects unexpectedly, or receives more data than the operator intended.
 14. A long-running monitor grows its local state without bound, or a retry records the same transition repeatedly.
+15. Executed package code escapes its container, steals a runner credential, persists into another target, or tampers with same-container evidence.
 
 ## Trust boundaries
 
@@ -48,6 +50,7 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 - **Model analysis plane:** DSH and its tools. It may interpret project context but may not redefine the deterministic match.
 - **Operator configuration:** project locations, owners, channels, polling interval, and alternate OSV endpoint. Configuration errors fail visibly.
 - **Notification boundary:** an operator-selected HTTPS endpoint receives bounded event summaries; the endpoint is not trusted to influence Radar state or DSH analysis.
+- **Dynamic execution plane:** an explicitly selected exact tarball runs in a fresh hosted VM and restricted container with no Agent/model secret. This plane may produce evidence; it never becomes the deterministic matcher or a safety certificate.
 
 ## Security invariants
 
@@ -62,7 +65,7 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 9. Missing, malformed, or failed source/state checks cannot silently become clean.
 10. Compatibility heuristics retain their confidence class.
 11. Network bodies, graph sizes, path counts, state size, text length, and time are bounded.
-12. Target-controlled package code and lifecycle scripts are not executed during collection.
+12. Static graph, advisory, artifact, and repository collection never executes target-controlled code. The separately named `probe dsh-install` path requires explicit execution consent and an externally supplied disposable boundary.
 13. Webhook URLs must use HTTPS and are read from runtime configuration or an explicit CLI argument; only a SHA-256 fingerprint, delivered event ids, and a bounded copy of waiting event evidence are persisted. A Feishu/Lark V2 signing secret is read only from `UPSTREAM_RADAR_FEISHU_SECRET`, never from config or state.
 14. A webhook is sent only for a changed event, and a non-2xx response or notification policy hold does not mark it delivered; delivery is at-least-once across a crash window.
 15. The transition ledger is bounded and deduplicated by stable event id; losing old history never changes the active incident state.
@@ -71,6 +74,7 @@ The supporting pre-install scanner additionally protects exact-artifact evidence
 18. A project webhook target receives only events for its declared project ids; the global endpoint is the only explicit broadcast path.
 19. A project webhook route is rejected when its URL variable is missing, its URL is not HTTPS, or the same Feishu endpoint is paired with conflicting secrets.
 20. Project webhook ledgers are keyed by endpoint fingerprint and processed independently, so acknowledging one endpoint cannot acknowledge another project's event.
+21. A dynamic install job receives no repository write token, model key, host workspace, or Docker socket; each selected plugin uses a fresh hosted VM, and only bounded report files cross out of the target container.
 
 ## Delivery semantics
 
@@ -96,3 +100,4 @@ The optional webhook follows the same bias: Radar persists the changed incident 
 - The prompt establishes a read-only contract, but enforcement still depends on the DSH Agent's configured tools and permission policy.
 - Feed failures are reported by the cycle; OSV failures preserve the last confirmed matches and pending tasks, and three consecutive failures create a durable source-health alert. The local transition ledger is intentionally bounded to the most recent 1,000 events; it is an audit convenience, not a complete historical database. Provider-native Feishu V2 text formatting is supported; the generic endpoint remains the stable JSON contract, and delivery acknowledgement stays endpoint-fingerprint based. Global and project-specific webhook routes are supported, but URL variables and secrets must be present in the process environment at runtime. Notification policy is currently limited to per-project minimum vulnerability severity and quiet hours; explicit external owner routing and dev-only scopes remain future work. Follow-up deadlines are currently surfaced by the local `status`/`next` views rather than emitted as a new vulnerability event.
 - The scanner uses the host npm CLI with scripts disabled; it is not a microVM detonation boundary.
+- The dynamic observer's first backend is a restricted container inside a disposable GitHub-hosted VM. Containers share the VM kernel, and same-container `strace`/report files are best-effort rather than adversarially tamper-proof; Firecracker-grade guest/collector separation remains future work.

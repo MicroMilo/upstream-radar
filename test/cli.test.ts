@@ -46,6 +46,7 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /--no-dsh-patch\s+setup: keep the legacy UPSTREAM_RADAR_\* environment-variable wiring/)
     assert.match(help.stdout, /probe dsh-load <package\.tgz>/)
     assert.match(help.stdout, /probe dsh-matrix <package\.tgz>/)
+    assert.match(help.stdout, /probe dsh-install \[npm:\]<package>@<exact-version>/)
     assert.match(help.stdout, /review dsh-plugin .*--dsh-version/)
     assert.match(help.stdout, /demo \[--json\]/)
     assert.match(help.stdout, /case dsh-web-ui \[--json\]/)
@@ -118,6 +119,14 @@ describe('CLI option parsing', () => {
     const incompleteProbeMatrix = spawnSync(process.execPath, [cli, 'probe', 'dsh-matrix', 'missing.tgz', '--dsh-version', '0.1.0-rc.6'], { encoding: 'utf8' })
     assert.equal(incompleteProbeMatrix.status, 1)
     assert.match(incompleteProbeMatrix.stderr, /at least two exact DSH versions/)
+
+    const installWithoutConsent = spawnSync(process.execPath, [cli, 'probe', 'dsh-install', 'demo-plugin@1.0.0', '--dsh-version', '0.1.0-rc.8', '--isolation-provider', 'other'], { encoding: 'utf8' })
+    assert.equal(installWithoutConsent.status, 1)
+    assert.match(installWithoutConsent.stderr, /requires --execute/)
+
+    const installWithoutIsolation = spawnSync(process.execPath, [cli, 'probe', 'dsh-install', 'demo-plugin@1.0.0', '--dsh-version', '0.1.0-rc.8', '--isolation-provider', 'other', '--execute'], { encoding: 'utf8' })
+    assert.equal(installWithoutIsolation.status, 1)
+    assert.match(installWithoutIsolation.stderr, /UPSTREAM_RADAR_ISOLATED_RUNNER=1/)
 
     const incompleteReview = spawnSync(process.execPath, [cli, 'review', 'dsh-plugin', 'demo-plugin@1.0.0'], { encoding: 'utf8' })
     assert.equal(incompleteReview.status, 1)
@@ -225,6 +234,11 @@ describe('CLI option parsing', () => {
     assert.match(observeHelp.stdout, /--reverse-index <index\.json>/)
     assert.match(observeHelp.stdout, /issue-locator\/\.env-style file/)
     assert.match(observeHelp.stdout, /MODEL\/CODEX_MODEL/)
+
+    const probeHelp = spawnSync(process.execPath, [cli, 'probe', '--help'], { encoding: 'utf8' })
+    assert.equal(probeHelp.status, 0)
+    assert.match(probeHelp.stdout, /executes the exact plugin's lifecycle scripts/)
+    assert.match(probeHelp.stdout, /disposable, secret-free Linux environment/)
 
     const statusHelp = spawnSync(process.execPath, [cli, 'radar', 'status', '--help'], { encoding: 'utf8' })
     assert.equal(statusHelp.status, 0)

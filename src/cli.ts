@@ -2,11 +2,16 @@
 
 import process from 'node:process'
 import { spawnSync } from 'node:child_process'
-import { access, readFile, readdir, stat, writeFile } from 'node:fs/promises'
+import { access, mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { renderCompatibilityBenchmark, runCompatibilityBenchmark } from './compatibility-benchmark.js'
 import { assessCompatibilityChange } from './compatibility.js'
 import { probeDshLoad, probeDshLoadMatrix, renderDshLoadMatrix, renderDshLoadProbe, type DshLoadMatrixReport } from './dsh-probe.js'
+import {
+  observeDshPluginInstall,
+  renderDshInstallObservation,
+  type InstallObservationIsolationProvider,
+} from './dsh-install-observation.js'
 import { renderDshPluginReview, reviewDshPlugin } from './dsh-review.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { createDshCaseReport, renderDshCase } from './dsh-case.js'
@@ -323,9 +328,16 @@ third-party bundles is selected automatically.
 Usage:
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>,<v2>,... [--json]
+  upstream-radar probe dsh-install [npm:]<package>@<exact-version>
+    --dsh-version <exact-version> --isolation-provider <provider> --execute
+    [--timeout <seconds>] [--report <report.json>] [--json]
 
-The probe is bounded and isolated. It is a compatibility/load check, not a
-semantic safety review or a substitute for dependency monitoring.
+The load probes disable lifecycle scripts and check bundle registration/load.
+The dsh-install probe deliberately executes the exact plugin's lifecycle scripts
+and loads the bundle while recording Linux process, network, and file-change
+evidence. Run it only inside a disposable, secret-free Linux environment. It
+requires both --execute and UPSTREAM_RADAR_ISOLATED_RUNNER=1.
+Radar records the caller's isolation-provider claim but cannot verify it.
 `,
     review: `Upstream Radar — review one exact published DSH plugin in one command
 
@@ -521,6 +533,7 @@ Usage:
   upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
+  upstream-radar probe dsh-install [npm:]<package>@<exact-version> --dsh-version <exact-version> --isolation-provider <github-actions-hosted-runner|firecracker|other> --execute [--timeout <seconds>] [--report <report.json>] [--json]
   upstream-radar review dsh-plugin [npm:]<package>@<exact-version> --dsh-version <v1>,<v2>,... [--json]
   upstream-radar demo [--json]
   upstream-radar case dsh-web-ui [--json]
@@ -1173,6 +1186,7 @@ async function runDshCase(args: readonly string[]): Promise<number> {
 
 async function runProbe(args: readonly string[]): Promise<number> {
   const mode = args[0]
+  if (mode === 'dsh-install') return runDshInstallObservation(args.slice(1))
   if (mode !== 'dsh-load' && mode !== 'dsh-matrix') throw new Error('probe requires dsh-load or dsh-matrix')
   const packagePath = args[1]
   if (packagePath === undefined || packagePath.startsWith('-')) throw new Error(`probe ${mode} requires a package.tgz file`)
@@ -1226,6 +1240,70 @@ async function runProbe(args: readonly string[]): Promise<number> {
   })
   process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDshLoadMatrix(report))
   return report.result === 'compatible' ? 0 : report.result === 'incompatible' ? 2 : 1
+}
+
+async function runDshInstallObservation(args: readonly string[]): Promise<number> {
+  const packageSpec = args[0]
+  if (packageSpec === undefined || packageSpec.startsWith('-')) {
+    throw new Error('probe dsh-install requires an exact npm package')
+  }
+  let dshVersion: string | undefined
+  let isolationProvider: InstallObservationIsolationProvider | undefined
+  let timeoutSeconds = 180
+  let reportPath: string | undefined
+  let execute = false
+  let json = false
+  for (let index = 1; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === '--execute') {
+      execute = true
+    } else if (argument === '--json') {
+      json = true
+    } else if (argument === '--dsh-version' || argument === '--isolation-provider' || argument === '--timeout' || argument === '--report') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
+      if (argument === '--dsh-version') {
+        if (dshVersion !== undefined) throw new Error('probe dsh-install accepts only one --dsh-version')
+        dshVersion = value
+      } else if (argument === '--isolation-provider') {
+        if (value !== 'github-actions-hosted-runner' && value !== 'firecracker' && value !== 'other') {
+          throw new Error('--isolation-provider must be github-actions-hosted-runner, firecracker or other')
+        }
+        isolationProvider = value
+      } else if (argument === '--timeout') {
+        const parsed = Number(value)
+        if (!Number.isSafeInteger(parsed) || parsed < 30 || parsed > 600) {
+          throw new Error('--timeout must be an integer between 30 and 600 seconds')
+        }
+        timeoutSeconds = parsed
+      } else {
+        reportPath = value
+      }
+      index += 1
+    } else {
+      throw new Error(`unknown option for probe dsh-install: ${argument}`)
+    }
+  }
+  if (dshVersion === undefined) throw new Error('probe dsh-install requires one exact --dsh-version')
+  if (isolationProvider === undefined) throw new Error('probe dsh-install requires --isolation-provider')
+  if (!execute) throw new Error('probe dsh-install requires --execute because third-party code may run')
+  if (process.env.UPSTREAM_RADAR_ISOLATED_RUNNER !== '1') {
+    throw new Error('probe dsh-install requires UPSTREAM_RADAR_ISOLATED_RUNNER=1 in the disposable environment')
+  }
+  const report = await observeDshPluginInstall({
+    packageSpec,
+    dshVersion,
+    allowExecution: true,
+    isolationProvider,
+    timeoutMs: timeoutSeconds * 1_000,
+  })
+  if (reportPath !== undefined) {
+    const absoluteReportPath = resolve(reportPath)
+    await mkdir(dirname(absoluteReportPath), { recursive: true })
+    await writeFile(absoluteReportPath, `${JSON.stringify(report, null, 2)}\n`, { mode: 0o600 })
+  }
+  process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDshInstallObservation(report))
+  return report.result === 'compatible' ? 0 : report.result === 'unknown' ? 1 : 2
 }
 
 async function runDshPluginReview(args: readonly string[]): Promise<number> {
