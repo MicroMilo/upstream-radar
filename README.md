@@ -120,6 +120,10 @@ reports never turn green: they remain unsatisfied and are selected again.
 | Exact-version advisory matching and dependency paths | Every matched plugin is exploitable |
 | Exact-pair compatibility results with explicit coverage | One successful load covers every plugin business action |
 
+An external symlink in a DSH profile never expands static read scope. Radar only
+uses an outside host plane after it has been discovered from the verified DSH
+process that is actually running the profile.
+
 ## Use it in DSH or CI
 
 ```bash

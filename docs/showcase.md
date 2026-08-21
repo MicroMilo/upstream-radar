@@ -296,10 +296,11 @@ The broader headless smoke proves that Radar can hand an event to a DSH Agent. T
 pnpm run showcase:dsh-runtime
 ```
 
-It creates a temporary plugin with a peer on the exact `@deepseek-ai/cordis` version installed by `@deepseek-ai/dsh@0.1.0-rc.6`, installs both the current Radar bundle and that plugin into a disposable profile, and starts the real DSH process. A local HTTPS OSV-compatible server returns one deterministic advisory only for that host version. Radar first records the profile fallback, then the native adapter refreshes the graph from the running process and persists:
+It creates a temporary plugin with a peer on the exact `@deepseek-ai/cordis` version installed by `@deepseek-ai/dsh@0.1.0-rc.6`, installs both the current Radar bundle and that plugin into a disposable profile, and starts the real DSH process. A local HTTPS OSV-compatible server returns one deterministic advisory only for that host version. The profile-only reader first refuses to follow the profile's external host symlink; after DSH exposes its exact entrypoint, the native adapter constructs the bounded process host plane and persists:
 
 ```text
-profile fallback -> running DSH process
+static profile link: refused outside its trust boundary
+verified running DSH process -> bounded host plane
 affected: @deepseek-ai/cordis@4.0.1
 affectedSources: dsh-host
 path: showcase-dsh-host-peer -> @deepseek-ai/cordis
