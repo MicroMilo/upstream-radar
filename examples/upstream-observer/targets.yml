@@ -48,3 +48,75 @@ targets:
     ref: master
     package: '@sanqi-normal/dsh-webui-market-plugin'
     packagePath: package.json
+
+  # First maintained cohort imported from awesome-dsh-plugin at the immutable
+  # commit recorded in examples/dsh/awesome-observer/cohort.json.
+  - id: dsh-browser
+    ecosystem: dsh
+    repository: Lum1104/dsh-browser
+    ref: main
+    npm: false
+    packagePath: packages/browser/bridge-browser/package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+
+  - id: dsh-better-sidebar
+    ecosystem: dsh
+    repository: omdsh-dev/DSH-better-sidebar
+    ref: main
+    package: dsh-better-sidebar
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+
+  - id: dsh-market
+    ecosystem: dsh
+    repository: dsh-market/dsh-market
+    ref: main
+    package: dshmarket
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+
+  - id: dsh-openpencil
+    ecosystem: dsh
+    repository: ZSeven-W/dsh-openpencil
+    ref: main
+    package: '@zseven-w/dsh-openpencil'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+
+  - id: dsh-context
+    ecosystem: dsh
+    repository: bowenliang123/dsh-context
+    ref: main
+    package: dsh-context
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+
+  - id: dsh-agent-teams
+    ecosystem: dsh
+    repository: NanmiCoder/dsh-agent-teams
+    ref: main
+    package: '@nanmicoder/dsh-agent-teams'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+
+  - id: dsh-cost-meter
+    ecosystem: dsh
+    repository: Han-1413141/dsh-cost-meter
+    ref: master
+    package: dsh-cost-meter
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+
+  - id: aegis
+    ecosystem: dsh
+    repository: GanyuanRan/Aegis
+    ref: main
+    npm: false
+    packagePath: package.json

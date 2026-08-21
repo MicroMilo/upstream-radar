@@ -150,6 +150,8 @@ All notable changes to Upstream Radar are documented here.
 
 ### Added
 
+- Import a commit-pinned, eight-repository cohort from `awesome-dsh-plugin`, monitor all eight source/lockfile streams, and add the six independently matched npm artifacts to the isolated DSH compatibility matrix.
+- Support explicit GitHub-only observer targets so repository-installed plugins are never silently mapped to an unrelated same-name npm package.
 - Add `observe --llm-env-file` as an explicit OpenAI-compatible issue-locator model entry point for installations that do not yet have a DSH Agent wrapper; model failures leave deterministic upstream tasks pending for retry.
 - Make the scheduled upstream-observer workflow optionally forward issue-locator model secrets without making static observation depend on an LLM configuration.
 - Show the concrete unresolved dependency edges behind an incomplete npm artifact review, and accept common `MODEL`/`CODEX_MODEL` env names for observer model calls.

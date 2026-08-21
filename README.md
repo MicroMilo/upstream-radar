@@ -102,9 +102,12 @@ it is not intended as a normal laptop command.
 
 This lane is wired into the always-on observer. Radar now watches the official
 `@deepseek-ai/dsh` `next` release channel (current DSH releases are prereleases
-rather than npm `latest`). A new exact DSH publication fans out the small
-[maintained plugin corpus](examples/dsh/install-observer/targets.json), one fresh
-VM per plugin. A mapped plugin publication retests only that plugin. Unchanged
+rather than npm `latest`). A new exact DSH publication fans out the
+[nine-plugin maintained corpus](examples/dsh/install-observer/targets.json), one
+fresh VM per plugin. Six of those targets come from an identity-checked,
+[commit-pinned `awesome-dsh-plugin` cohort](examples/dsh/awesome-observer/README.md);
+two additional catalog targets are source-only because their real distribution
+is GitHub rather than npm. A mapped plugin publication retests only that plugin. Unchanged
 evidence keeps `observations.json` byte-stable, persistent source/publish drift
 does not wake the Agent again, and the DSH Agent/API key never enters the execution job.
 Build-script approvals are exact package names stored in the maintained target

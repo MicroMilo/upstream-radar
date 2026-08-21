@@ -40,6 +40,8 @@ export interface UpstreamDownstreamIR {
     coordinate: AlignmentCoordinate
   }
   downstream: {
+    /** False when the repository itself is the declared distribution. Defaults to true. */
+    npmExpected?: boolean
     published?: AlignmentCoordinate
     graph: {
       status: AlignmentGraphStatus
@@ -67,6 +69,8 @@ export interface UpstreamDownstreamAlignmentInput {
     name: string
     version: string
   }
+  /** Whether an npm publication is part of this target's distribution contract. Defaults to true. */
+  npmExpected?: boolean
   graph?: DependencyGraph
   graphError?: string
 }
@@ -96,6 +100,8 @@ function overallStatus(checks: readonly AlignmentCheck[]): AlignmentStatus {
 /** Build the IR without fetching, installing, or executing anything. */
 export function buildUpstreamDownstreamIR(input: UpstreamDownstreamAlignmentInput): UpstreamDownstreamIR {
   const upstream = coordinateFromManifest(input.manifest)
+  const npmExpected = input.npmExpected ?? true
+  if (!npmExpected && input.package !== undefined) throw new Error('a source-only alignment cannot contain an npm package observation')
   const published = input.package === undefined
     ? undefined
     : { name: input.package.name, version: input.package.version }
@@ -110,7 +116,15 @@ export function buildUpstreamDownstreamIR(input: UpstreamDownstreamAlignmentInpu
       : 'complete'
   const checks: AlignmentCheck[] = []
 
-  if (published === undefined) {
+  if (!npmExpected) {
+    checks.push({
+      code: 'source-published-identity',
+      status: 'aligned',
+      summary: 'This target is explicitly source-only; no npm publication is part of its distribution contract.',
+      upstream: coordinateText(upstream),
+      downstream: 'source repository',
+    })
+  } else if (published === undefined) {
     checks.push({
       code: 'source-published-identity',
       status: 'unknown',
@@ -166,7 +180,15 @@ export function buildUpstreamDownstreamIR(input: UpstreamDownstreamAlignmentInpu
     })
   }
 
-  if (published === undefined || graphRoot === undefined) {
+  if (!npmExpected) {
+    checks.push({
+      code: 'published-graph-root',
+      status: 'aligned',
+      summary: 'No npm-to-graph comparison is required for an explicitly source-only target.',
+      upstream: 'source repository',
+      downstream: coordinateText(graphRoot),
+    })
+  } else if (published === undefined || graphRoot === undefined) {
     checks.push({
       code: 'published-graph-root',
       status: 'unknown',
@@ -219,6 +241,7 @@ export function buildUpstreamDownstreamIR(input: UpstreamDownstreamAlignmentInpu
       coordinate: upstream,
     },
     downstream: {
+      ...(npmExpected ? {} : { npmExpected: false }),
       ...(published === undefined ? {} : { published }),
       graph: {
         status: graphStatus,
@@ -270,7 +293,10 @@ export function parseUpstreamDownstreamIR(value: unknown, label = 'alignment'): 
     coordinate: parseCoordinate(upstreamValue.coordinate, `${label}.upstream.coordinate`),
   }
   const downstreamValue = record(source.downstream, `${label}.downstream`)
+  const npmExpected = downstreamValue.npmExpected === undefined ? true : downstreamValue.npmExpected
+  if (typeof npmExpected !== 'boolean') throw new Error(`${label}.downstream.npmExpected must be true or false`)
   const published = downstreamValue.published === undefined ? undefined : parseCoordinate(downstreamValue.published, `${label}.downstream.published`)
+  if (!npmExpected && published !== undefined) throw new Error(`${label}.downstream cannot contain a published package when npmExpected is false`)
   const graphValue = record(downstreamValue.graph, `${label}.downstream.graph`)
   const graphStatus = boundedString(graphValue.status, `${label}.downstream.graph.status`, 16) as AlignmentGraphStatus
   if (graphStatus !== 'complete' && graphStatus !== 'incomplete' && graphStatus !== 'unavailable') throw new Error(`${label}.downstream.graph.status is invalid`)
@@ -310,6 +336,7 @@ export function parseUpstreamDownstreamIR(value: unknown, label = 'alignment'): 
     ecosystem,
     upstream: upstreamSource,
     downstream: {
+      ...(npmExpected ? {} : { npmExpected: false }),
       ...(published === undefined ? {} : { published }),
       graph: {
         status: graphStatus,
