@@ -153,6 +153,7 @@ describe('DSH install observation', () => {
         await writeFile(join(profileDirectory, 'package.json'), JSON.stringify({
           dsh: { profile: { bundles: ['example-plugin'] } },
         }))
+        await writeFile(join(profileDirectory, 'pnpm-lock.yaml'), 'lockfileVersion: 9.0\n')
       }
 
       if (command.tracePath !== undefined) {
@@ -164,6 +165,7 @@ describe('DSH install observation', () => {
     const report = await observeDshPluginInstall({
       packageSpec: 'example-plugin@1.0.0',
       dshVersion: '0.1.0-rc.8',
+      caseId: 'example-node22',
       allowExecution: true,
       isolationProvider: 'github-actions-hosted-runner',
       hostEnvironment: {
@@ -175,12 +177,14 @@ describe('DSH install observation', () => {
     })
 
     assert.equal(report.result, 'compatible')
+    assert.equal(report.caseId, 'example-node22')
     assert.equal(report.artifact.name, 'example-plugin')
     assert.equal(report.artifact.version, '1.0.0')
     assert.equal(report.artifact.nodeEngine, '>=18.0.0')
     assert.match(report.artifact.sha256 ?? '', /^[0-9a-f]{64}$/)
     assert.deepEqual(report.artifact.lifecycleScripts, ['postinstall'])
     assert.equal(report.runtime.packageManager.version, '11.7.0')
+    assert.match(report.resolution.profileLockfile?.sha256 ?? '', /^[a-f0-9]{64}$/)
     assert.deepEqual(report.boundary.approvedDependencyBuilds, [])
     assert.equal(report.stages.registration.status, 'passed')
     assert.equal(report.observations.install.processes.length, 1)

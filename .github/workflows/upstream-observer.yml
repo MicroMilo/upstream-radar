@@ -100,7 +100,7 @@ jobs:
           echo "exit=$observer_exit" >> "$GITHUB_OUTPUT"
           exit "$observer_exit"
 
-      - name: Plan isolated install observations only for changed coordinates
+      - name: Reconcile the current DSH compatibility matrix
         id: install-plan
         env:
           OBSERVER_JSON: ${{ runner.temp }}/upstream-radar-observer.json
@@ -108,7 +108,8 @@ jobs:
           node scripts/write-dsh-install-plan.mjs \
             examples/dsh/install-observer/targets.json \
             observations.json \
-            "$OBSERVER_JSON"
+            "$OBSERVER_JSON" \
+            compatibility-ledger.json
 
       # The state is written even when an upstream source or the optional
       # Agent fails. Pending tasks and the last trustworthy observations must
@@ -124,7 +125,7 @@ jobs:
           fi
           git config user.name 'upstream-radar[bot]'
           git config user.email 'upstream-radar[bot]@users.noreply.github.com'
-          git add observations.json
+          git add -- observations.json
           if git diff --cached --quiet; then
             echo 'No observation point changed; no commit created.'
             exit 0
@@ -132,8 +133,10 @@ jobs:
           git commit -m 'chore: update upstream observation point [skip ci]'
           git push
 
-  # Every matrix entry gets a fresh GitHub-hosted VM. The reusable workflow
-  # adds a restricted container and never receives the observer's model key.
+  # Every selected matrix entry gets a fresh GitHub-hosted VM. The reusable
+  # workflow adds a restricted container and never receives the model key.
+  # Selection is reconciliation-driven: missing, stale, or invalidated cells
+  # run even when neither package published a new version.
   install-observation:
     needs: observe
     if: needs.observe.outputs.run_install_observation == 'true'
@@ -147,5 +150,103 @@ jobs:
       plugin: ${{ matrix.plugin }}
       dsh_version: ${{ needs.observe.outputs.install_dsh_version }}
       case_id: ${{ matrix.id }}
+      node_major: ${{ matrix.nodeMajor }}
       timeout_seconds: '180'
       allow_builds: ${{ matrix.allowedBuilds }}
+
+  # Dynamic reports are useful only if they become durable, comparable
+  # evidence. This job accepts reports only when their exact case, plugin,
+  # DSH version, runtime major, and build-approval policy match the static
+  # matrix that scheduled them. Missing reports remain unsatisfied and will be
+  # selected again on the next daily reconciliation.
+  reconcile-install-observations:
+    needs: [observe, install-observation]
+    if: always() && needs.observe.result == 'success' && needs.observe.outputs.run_install_observation == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the latest durable observation state
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 1
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 11.3.0
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Build the checked-out Radar
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: Materialize the exact scheduled matrix
+        env:
+          INSTALL_MATRIX: ${{ needs.observe.outputs.install_matrix }}
+          INSTALL_MATRIX_PATH: ${{ runner.temp }}/upstream-radar-install-matrix.json
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFile } from 'node:fs/promises'
+          const matrix = JSON.parse(process.env.INSTALL_MATRIX ?? '')
+          await writeFile(process.env.INSTALL_MATRIX_PATH, `${JSON.stringify(matrix, null, 2)}\n`, 'utf8')
+          NODE
+
+      - name: Download isolated observation reports
+        id: download-reports
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: upstream-radar-install-*-${{ github.run_id }}
+          path: ${{ runner.temp }}/upstream-radar-install-reports
+
+      - name: Reconcile dynamic evidence into the compatibility ledger
+        id: ledger
+        env:
+          INSTALL_MATRIX_PATH: ${{ runner.temp }}/upstream-radar-install-matrix.json
+          INSTALL_REPORTS_PATH: ${{ runner.temp }}/upstream-radar-install-reports
+          LEDGER_REPORT: ${{ runner.temp }}/upstream-radar-compatibility-ledger.md
+        run: |
+          node scripts/merge-dsh-compatibility-ledger.mjs \
+            compatibility-ledger.json \
+            "$INSTALL_MATRIX_PATH" \
+            "$INSTALL_REPORTS_PATH" \
+            "$LEDGER_REPORT"
+          cat "$LEDGER_REPORT" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep the compatibility-ledger report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: upstream-radar-compatibility-ledger-${{ github.run_id }}
+          path: ${{ runner.temp }}/upstream-radar-compatibility-ledger.md
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Persist compatibility evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -f compatibility-ledger.json ]]; then
+            echo 'compatibility-ledger.json was not produced; nothing to persist.'
+            exit 0
+          fi
+          git config user.name 'upstream-radar[bot]'
+          git config user.email 'upstream-radar[bot]@users.noreply.github.com'
+          git add -- compatibility-ledger.json
+          if git diff --cached --quiet; then
+            echo 'No compatibility evidence changed; no commit created.'
+            exit 0
+          fi
+          git commit -m 'chore: update DSH compatibility ledger [skip ci]'
+          git push

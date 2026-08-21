@@ -67,15 +67,15 @@ or inspect the [first 50-plugin corpus](examples/dsh/first-batch/README.md).
 
 ```bash
 # Network-free product walkthrough
-npx --yes upstream-radar@0.40.0 demo
+npx --yes upstream-radar@0.41.0 demo
 
 # Static review of a public DSH plugin; no install or plugin execution
-npx --yes upstream-radar@0.40.0 scan \
+npx --yes upstream-radar@0.41.0 scan \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --fail-on never
 
 # Exact artifact review plus a DSH load matrix
-npx --yes upstream-radar@0.40.0 review dsh-plugin \
+npx --yes upstream-radar@0.41.0 review dsh-plugin \
   dsh-cloudflare-browser-run@0.1.3 \
   --dsh-version 0.1.0-rc.8,0.1.1-rc.1
 ```
@@ -84,18 +84,24 @@ The code-executing path is deliberately separate. Run **Actions → Observe one
 DSH plugin install** to give one exact pair its own secret-free GitHub-hosted VM
 and restricted container.
 
-## Always-on today
+## Always-on now
 
-The scheduled observer watches 13 DSH/core/plugin targets and stores the last
-trusted source, npm, lockfile, and alignment observations. A new exact DSH
-publication selects the maintained plugin matrix; a mapped plugin publication
-selects that plugin. Only affected pairs enter the isolated runtime lane.
+The scheduled observer watches DSH, plugin source/npm/lockfile evidence every
+day, then reconciles a checked-in **compatibility ledger** against the desired
+current matrix. An isolated run is selected when its exact cell is missing,
+older than seven days, or invalidated by a DSH/plugin coordinate, source graph,
+runtime, or build-policy change. A package update therefore accelerates a
+retest; it is no longer the only trigger.
 
-When nothing changed, Radar stays quiet: the verified steady-state run produced
-no Agent call, no install job, and no timestamp-only state commit.
+Every report must prove its exact plugin × DSH × Node runtime × build-approval
+cell before it can update the ledger. A Node-engine mismatch stops before plugin
+execution, then asks a configured alternative runtime (for example Node 24)
+to establish whether the result is a real incompatibility or a conditional one.
+The isolated profile's lockfile digest is compared on every retest, so a changed
+transitive resolution is reported even if install and load still succeed.
 
-**Current boundary:** unchanged plugin/DSH pairs retain their previous evidence;
-the current scheduler does not yet periodically re-run every existing pair.
+When all cells are current, the runtime lane stays quiet. Missing or malformed
+reports never turn green: they remain unsatisfied and are selected again.
 
 ## Safety boundary
 
@@ -110,7 +116,7 @@ the current scheduler does not yet periodically re-run every existing pair.
 
 ```bash
 # Generate a reviewable DSH inventory and wiring
-npx --yes upstream-radar@0.40.0 setup
+npx --yes upstream-radar@0.41.0 setup
 ```
 
 The repository also ships a [reusable GitHub Action](action.yml), maintained

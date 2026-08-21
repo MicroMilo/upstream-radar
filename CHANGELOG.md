@@ -2,6 +2,34 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.41.0] - 2026-08-21
+
+### Continuously reconciled DSH compatibility
+
+- Replace the change-only install plan with a compatibility ledger. The daily
+  static lane now forms the current plugin × DSH × Node/runtime-policy matrix
+  and selects only cells that are missing, stale, or invalidated by static
+  evidence or execution-contract drift.
+- Treat a new DSH/plugin publication as an immediate retest signal, rather than
+  the only way a dynamic compatibility check can run. Existing evidence is
+  revalidated after a reviewed seven-day window.
+- Bind every dynamic report to a scheduled case id, exact plugin coordinate,
+  DSH release, Node major, and approved dependency-build list before accepting
+  it into durable state. Missing or malformed reports remain unsatisfied.
+
+### Static + dynamic evidence
+
+- Record the bounded SHA-256 and, when parsable, dependency-graph digest of the
+  DSH profile lockfile produced by the real isolated install.
+- Surface `resolution-drift` when the same exact plugin/DSH/runtime contract
+  resolves to a different profile dependency graph on a later clean install.
+- Add configured Node runtime profiles. A static Node-engine mismatch prevents
+  plugin execution on the wrong runtime and automatically schedules a
+  potentially matching alternative profile once, avoiding a false global
+  incompatibility claim.
+- Add a final Actions reconciliation job that collects per-VM reports, updates
+  `compatibility-ledger.json`, and writes only new/changed compatibility facts.
+
 ## [0.40.0] - 2026-08-21
 
 ### Awesome DSH cohort

@@ -85,6 +85,7 @@ export {
   parseDshInstallTrace,
   renderDshInstallObservation,
   type DshInstallObservationOptions,
+  type DshInstallProfileLockfileEvidence,
   type DshInstallObservationReport,
   type DshInstallObservationResult,
   type InstallFilesystemDiff,
@@ -100,10 +101,28 @@ export {
   type InstallTraceProcess,
 } from './dsh-install-observation.js'
 export {
+  DSH_COMPATIBILITY_LEDGER_SCHEMA,
+  createDshCompatibilityContractFingerprint,
+  createDshCompatibilityStaticFingerprint,
+  dshCompatibilityCaseId,
+  emptyDshCompatibilityLedger,
+  mergeDshCompatibilityLedger,
+  parseDshCompatibilityLedger,
+  renderDshCompatibilityLedgerMerge,
+  type DshCompatibilityExpectedCase,
+  type DshCompatibilityLedger,
+  type DshCompatibilityLedgerEntry,
+  type DshCompatibilityLedgerMerge,
+  type DshCompatibilityProfileLockfile,
+  type DshCompatibilityTransition,
+  type DshCompatibilityTransitionStatus,
+} from './dsh-compatibility-ledger.js'
+export {
   DSH_INSTALL_TARGETS_SCHEMA,
   buildDshInstallPlan,
   parseDshInstallTargets,
   type DshInstallPlan,
+  type DshInstallRuntimeProfile,
   type DshInstallTarget,
   type DshInstallTargets,
 } from './dsh-install-plan.js'

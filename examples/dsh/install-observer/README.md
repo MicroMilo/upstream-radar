@@ -1,9 +1,9 @@
 # DSH isolated install observer
 
 This directory is the maintained dynamic-test corpus for Upstream Radar. It is
-small on purpose: static checks can cover the wider plugin inventory every day;
-code execution happens only after an exact DSH or mapped plugin publication
-changes. The corpus currently contains nine published plugins: the original
+small on purpose: static checks cover the wider plugin inventory every day;
+dynamic code execution establishes behavior evidence for the current active
+matrix. The corpus currently contains nine published plugins: the original
 three behavior cases plus six identity-checked targets imported from the
 [`awesome-dsh-plugin` cohort](../awesome-observer/README.md).
 
@@ -28,7 +28,8 @@ Inside the restricted container, Radar:
 8. verifies that DSH registered the bundle;
 9. loads the profile with `--dump-config`;
 10. records install and load process execution, network destinations, write-like
-   file syscalls, and final filesystem changes; and
+   file syscalls, final filesystem changes, and the resulting DSH profile
+   lockfile/graph digest; and
 11. destroys the container and hosted VM after preserving bounded JSON.
 
 The container is read-only except for a memory-backed sandbox and one output
@@ -43,7 +44,9 @@ toolchain.
 ## When the matrix runs
 
 [`targets.json`](targets.json) is not a popularity list. It is the set of exact
-plugins whose install/load behavior we commit to retesting.
+plugins whose install/load behavior we commit to retesting. The durable
+[`compatibility-ledger.json`](../../../compatibility-ledger.json) holds the most
+recent evidence for every active plugin × DSH × Node/runtime-policy cell.
 
 An entry may declare `allowedBuilds` when the plugin's documented installation
 contract explicitly approves named dependency scripts. The names become pnpm
@@ -51,15 +54,22 @@ contract explicitly approves named dependency scripts. The names become pnpm
 An absent list means no dependency build is approved; Radar never turns one
 blocked script into a global “allow all” policy.
 
-- A new exact `@deepseek-ai/dsh` package tests every enabled corpus entry at
-  its latest successfully observed npm coordinate; the checked-in exact spec
-  is the fallback when no trustworthy observation exists yet.
-- A new exact package for a plugin mapped by `observerTargetId` tests only that
-  plugin, using the newly observed version.
-- A source-only commit, unchanged package coordinate, baseline, or unrelated
-  target does not execute plugin code.
-- Every selected plugin receives a separate hosted VM through the workflow
-  matrix.
+- Every daily static pass builds the desired current matrix from the observed
+  DSH/plugin coordinates, source/lockfile graph facts, and the reviewed runtime
+  contract.
+- A cell runs when it is missing, has become older than `refreshAfterHours`, or
+  its static evidence, runtime image, or allowed-build policy differs from the
+  record in the ledger. DSH and mapped plugin publications are immediate
+  invalidation signals, not the sole source of work.
+- A `runtime-incompatible` result records the artifact's Node engine before any
+  plugin code runs. If another configured runtime could satisfy that range,
+  Radar adds one alternate-runtime cell rather than calling the plugin globally
+  incompatible.
+- Every selected cell receives a separate hosted VM through the workflow
+  matrix. The ledger accepts a report only when its case label, tarball, DSH
+  version, Node major, and explicit build approvals match the static plan.
+- A missing or malformed report is never saved as compatible. It remains
+  unsatisfied and will be selected again on the next reconciliation.
 
 ## Result semantics
 

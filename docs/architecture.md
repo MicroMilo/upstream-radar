@@ -109,10 +109,14 @@ marked complete.
 ## Isolated install/load observation
 
 The upstream observer's static job and the dynamic execution job are separate
-trust domains. The static job watches the official `@deepseek-ai/dsh` package
-and maintained plugin coordinates. A baseline, source-only commit, or unchanged
-published coordinate does nothing. A new exact DSH publication selects the
-maintained plugin corpus; a mapped plugin publication selects only that plugin.
+trust domains. The static job watches the official `@deepseek-ai/dsh` package,
+maintained plugin coordinates, source/lockfile graph facts, and the reviewed
+execution contract. It reconciles those facts against a durable compatibility
+ledger. A cell is selected not only after a DSH/plugin publication, but also
+when it has no evidence, its evidence is older than the corpus refresh window,
+or its static facts, runtime profile, or approved-build policy no longer match.
+Package changes are therefore an immediate invalidation signal rather than the
+sole trigger for code execution.
 
 Each selected matrix entry starts on a fresh GitHub-hosted VM. The target code
 then runs inside a restricted container that receives no repository/model
@@ -123,19 +127,28 @@ enabled, registers it, and loads it with `--dump-config`. Linux `strace` evidenc
 and before/after filesystem snapshots are kept separately for install and load.
 
 ```text
-exact DSH/plugin coordinate change
-  -> deterministic install plan
+desired plugin × DSH × runtime-policy cell
+  -> static reconciliation against the compatibility ledger
+  -> missing / stale / invalidated cell only
   -> one fresh hosted VM per plugin
   -> restricted container
   -> exact tarball SHA-256
   -> traced DSH install
   -> registration check
   -> traced DSH load
-  -> bounded JSON artifact
+  -> bounded JSON artifact + resolved profile-lockfile digest
+  -> exact-cell ledger merge
 ```
 
 The result vocabulary separates `install-failed`, `load-failed`, `compatible`,
-and `unknown`; missing or truncated tracing never becomes a clean result. This
+and `unknown`; missing or truncated tracing never becomes a clean result. A
+static Node-engine mismatch is recorded before plugin execution and may open a
+configured alternate runtime cell, so a Node 22 failure is not prematurely
+called a global plugin failure. The ledger accepts a dynamic report only if its
+case id, plugin tarball, DSH version, Node major, and build approvals match the
+static plan. It also compares the resulting profile-lockfile digest on each
+retest; an exact pair that resolves a different transitive graph is reported as
+`resolution-drift` even if its install/load result remains compatible. This
 backend is useful compatibility and behavior evidence, not hostile-code proof.
 Docker shares the hosted VM kernel, and code in the same container may attempt
 to tamper with its trace/output. Moving the collector outside a Firecracker

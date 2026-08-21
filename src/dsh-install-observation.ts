@@ -4,6 +4,7 @@ import { constants } from 'node:fs'
 import { lstat, mkdir, mkdtemp, open, readdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { basename, join, relative, resolve, sep } from 'node:path'
+import { parsePnpmLockGraph } from './graph.js'
 import { parseNpmSpec } from './npm.js'
 import { satisfiesSemverRange } from './semver.js'
 import { parseNpmTarball } from './tar.js'
@@ -22,6 +23,7 @@ const MAX_TRACE_EVENTS = 512
 const MAX_SNAPSHOT_ENTRIES = 25_000
 const MAX_DIFF_PATHS = 512
 const MAX_ALLOWED_BUILDS = 16
+const MAX_PROFILE_LOCKFILE_BYTES = 16 * 1024 * 1024
 const PROFILE = 'headless'
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare'] as const
 
@@ -112,6 +114,15 @@ export interface InstallFilesystemDiff {
   snapshotErrors: number
 }
 
+export interface DshInstallProfileLockfileEvidence {
+  sha256: string
+  bytes: number
+  graphDigest?: string
+  nodes?: number
+  edges?: number
+  unresolved?: number
+}
+
 export interface DshInstallObservationReport {
   schema: typeof DSH_INSTALL_OBSERVATION_SCHEMA
   tool: { name: 'upstream-radar'; version: string }
@@ -119,6 +130,7 @@ export interface DshInstallObservationReport {
   scope: 'install-and-load-behavior'
   startedAt: string
   completedAt: string
+  caseId?: string
   dshVersion: string
   runtime: {
     platform: string
@@ -156,6 +168,10 @@ export interface DshInstallObservationReport {
     install: InstallFilesystemDiff
     load: InstallFilesystemDiff
   }
+  resolution: {
+    /** The exact DSH profile lockfile produced by the isolated install, never its contents. */
+    profileLockfile?: DshInstallProfileLockfileEvidence
+  }
   result: DshInstallObservationResult
   reason: string
   boundary: {
@@ -173,6 +189,7 @@ export interface DshInstallObservationReport {
 export interface DshInstallObservationOptions {
   packageSpec: string
   dshVersion: string
+  caseId?: string
   allowExecution: boolean
   isolationProvider: InstallObservationIsolationProvider
   allowedBuilds?: readonly string[]
@@ -783,6 +800,37 @@ async function registeredBundle(dshHome: string, packageName: string): Promise<b
   }
 }
 
+async function profileResolutionEvidence(dshHome: string): Promise<DshInstallObservationReport['resolution']> {
+  const profileDirectory = join(dshHome, 'profiles', PROFILE)
+  let lockfile: Buffer
+  try {
+    lockfile = await readRegularFileNoFollow(join(profileDirectory, 'pnpm-lock.yaml'), MAX_PROFILE_LOCKFILE_BYTES)
+  } catch {
+    return {}
+  }
+  const profileLockfile: DshInstallProfileLockfileEvidence = {
+    sha256: createHash('sha256').update(lockfile).digest('hex'),
+    bytes: lockfile.length,
+  }
+  try {
+    const manifestBuffer = await readRegularFileNoFollow(join(profileDirectory, 'package.json'), 4 * 1024 * 1024)
+    const manifest = JSON.parse(manifestBuffer.toString('utf8')) as Record<string, unknown>
+    if (typeof manifest.name !== 'string' || typeof manifest.version !== 'string') return { profileLockfile }
+    const graph = parsePnpmLockGraph(lockfile.toString('utf8'), { name: manifest.name, version: manifest.version })
+    return {
+      profileLockfile: {
+        ...profileLockfile,
+        ...(graph.digest === undefined ? {} : { graphDigest: graph.digest }),
+        nodes: graph.nodes.length,
+        edges: graph.edges.length,
+        unresolved: graph.unresolved?.length ?? 0,
+      },
+    }
+  } catch {
+    return { profileLockfile }
+  }
+}
+
 function finishReport(report: DshInstallObservationReport, result: DshInstallObservationResult, reason: string): DshInstallObservationReport {
   report.completedAt = new Date().toISOString()
   report.result = result
@@ -793,6 +841,9 @@ function finishReport(report: DshInstallObservationReport, result: DshInstallObs
 export async function observeDshPluginInstall(options: DshInstallObservationOptions): Promise<DshInstallObservationReport> {
   const spec = parseNpmSpec(options.packageSpec)
   if (!EXACT_VERSION.test(options.dshVersion)) throw new Error('DSH version must be an exact semantic version')
+  if (options.caseId !== undefined && !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(options.caseId)) {
+    throw new Error('DSH install observation caseId must be a short lowercase label')
+  }
   const allowedBuilds = normalizeAllowedBuilds(options.allowedBuilds)
   if (!options.allowExecution) throw new Error('DSH install observation requires explicit execution consent')
   if (!['github-actions-hosted-runner', 'firecracker', 'other'].includes(options.isolationProvider)) {
@@ -816,6 +867,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
     scope: 'install-and-load-behavior',
     startedAt,
     completedAt: startedAt,
+    ...(options.caseId === undefined ? {} : { caseId: options.caseId }),
     dshVersion: options.dshVersion,
     runtime: {
       platform: process.platform,
@@ -839,6 +891,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
     },
     observations: { install: emptyTraceObservation(), load: emptyTraceObservation() },
     filesystem: { install: emptyFilesystemDiff(), load: emptyFilesystemDiff() },
+    resolution: {},
     result: 'unknown',
     reason: 'observation did not complete',
     boundary: {
@@ -981,6 +1034,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       const afterInstall = await snapshotSandbox(sandboxRoot, environment)
       report.observations.install = await readTrace(installTracePath, sandboxRoot)
       report.filesystem.install = diffSnapshots(beforeInstall, afterInstall)
+      report.resolution = await profileResolutionEvidence(environment.DSH_HOME as string)
       report.stages.install = commandStage(installResult)
       if (installResult.timedOut || installResult.outputExceeded || installResult.launchError !== undefined) {
         return finishReport(report, 'unknown', 'the plugin install did not produce a bounded command result')
@@ -1045,6 +1099,7 @@ export function renderDshInstallObservation(report: DshInstallObservationReport)
   const lifecycle = report.artifact.lifecycleScripts.length === 0 ? 'none' : report.artifact.lifecycleScripts.join(', ')
   const lines = [
     'DSH isolated install observation',
+    ...(report.caseId === undefined ? [] : [`Case: ${report.caseId}`]),
     `Artifact: ${report.artifact.name}@${report.artifact.version}${report.artifact.sha256 === undefined ? '' : ` (sha256:${report.artifact.sha256.slice(0, 12)}…)`}`,
     `DSH: ${report.dshVersion}`,
     `Runtime: Node ${report.runtime.nodeVersion} (${report.runtime.platform}/${report.runtime.architecture}), pnpm ${report.runtime.packageManager.version ?? 'unknown'}`,
@@ -1057,6 +1112,7 @@ export function renderDshInstallObservation(report: DshInstallObservationReport)
     `Install evidence: ${install.processes.length} process, ${install.network.length} network, ${install.fileWrites.length} file-write event(s); trace ${install.coverage.status}`,
     `Load evidence: ${load.processes.length} process, ${load.network.length} network, ${load.fileWrites.length} file-write event(s); trace ${load.coverage.status}`,
     `Final filesystem delta: install +${report.filesystem.install.totals.created} ~${report.filesystem.install.totals.modified} -${report.filesystem.install.totals.deleted}; load +${report.filesystem.load.totals.created} ~${report.filesystem.load.totals.modified} -${report.filesystem.load.totals.deleted}`,
+    `Resolved profile graph: ${report.resolution.profileLockfile?.graphDigest ?? 'not established'}${report.resolution.profileLockfile === undefined ? '' : ` (lock sha256:${report.resolution.profileLockfile.sha256.slice(0, 12)}…)`}`,
     '',
   ]
   for (const [name, stage] of Object.entries(report.stages)) {

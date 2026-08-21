@@ -5,7 +5,7 @@
   "description": "Bounded process, network and filesystem evidence from installing and loading one exact npm artifact under one exact DSH version in an externally supplied disposable environment.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "tool", "probe", "scope", "startedAt", "completedAt", "dshVersion", "runtime", "artifact", "stages", "observations", "filesystem", "result", "reason", "boundary"],
+  "required": ["schema", "tool", "probe", "scope", "startedAt", "completedAt", "dshVersion", "runtime", "artifact", "stages", "observations", "filesystem", "resolution", "result", "reason", "boundary"],
   "properties": {
     "schema": { "const": "upstream-radar.dsh-install-observation/v1alpha1" },
     "tool": {
@@ -21,6 +21,7 @@
     "scope": { "const": "install-and-load-behavior" },
     "startedAt": { "type": "string", "format": "date-time" },
     "completedAt": { "type": "string", "format": "date-time" },
+    "caseId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$" },
     "dshVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" },
     "runtime": {
       "type": "object",
@@ -73,6 +74,7 @@
         "load": { "$ref": "#/$defs/filesystemDiff" }
       }
     },
+    "resolution": { "$ref": "#/$defs/resolution" },
     "result": { "enum": ["compatible", "runtime-incompatible", "install-failed", "load-failed", "unknown"] },
     "reason": { "type": "string", "maxLength": 4096 },
     "boundary": {
@@ -115,6 +117,25 @@
           "maxItems": 4,
           "uniqueItems": true,
           "items": { "enum": ["preinstall", "install", "postinstall", "prepare"] }
+        }
+      }
+    },
+    "resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profileLockfile": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sha256", "bytes"],
+          "properties": {
+            "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "bytes": { "type": "integer", "minimum": 0, "maximum": 16777216 },
+            "graphDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+            "nodes": { "type": "integer", "minimum": 0, "maximum": 100000 },
+            "edges": { "type": "integer", "minimum": 0, "maximum": 250000 },
+            "unresolved": { "type": "integer", "minimum": 0, "maximum": 250000 }
+          }
         }
       }
     },

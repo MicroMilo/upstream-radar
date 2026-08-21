@@ -1,5 +1,10 @@
 {
   "schema": "upstream-radar.dsh-install-targets/v1alpha1",
+  "refreshAfterHours": 168,
+  "runtimeProfiles": [
+    { "id": "node22", "nodeMajor": 22 },
+    { "id": "node24", "nodeMajor": 24 }
+  ],
   "plugins": [
     {
       "id": "feishu-bot",
