@@ -1,10 +1,15 @@
 import { createHash } from 'node:crypto'
 import { spawn } from 'node:child_process'
 import { constants } from 'node:fs'
-import { lstat, mkdir, mkdtemp, open, readdir, rm, writeFile } from 'node:fs/promises'
+import { lstat, mkdir, mkdtemp, open, readdir, realpath, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { basename, join, relative, resolve, sep } from 'node:path'
 import { parsePnpmLockGraph } from './graph.js'
+import {
+  discoverDshRuntimeNodeModulesDirectory,
+  discoverDshRuntimePackage,
+  discoverDshRuntimePackageDirectory,
+} from './dsh-runtime.js'
 import { parseInstalledNodeModulesGraph } from './installed-graph.js'
 import { parseNpmSpec } from './npm.js'
 import type { DependencyKind } from './radar-types.js'
@@ -27,6 +32,8 @@ const MAX_DIFF_PATHS = 512
 const MAX_ALLOWED_BUILDS = 16
 const MAX_PROFILE_LOCKFILE_BYTES = 16 * 1024 * 1024
 const MAX_PROFILE_GRAPH_GAPS = 32
+const MAX_RUNTIME_DISCOVERY_DIRECTORIES = 12_000
+const MAX_RUNTIME_DISCOVERY_DEPTH = 16
 const PROFILE = 'headless'
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare'] as const
 const PROFILE_LOCKFILE_CANDIDATES = [
@@ -895,6 +902,82 @@ function graphGaps(graph: { unresolved?: readonly DshInstallProfileGraphGap[] })
   }))
 }
 
+function isLexicallyInside(root: string, candidate: string): boolean {
+  const child = relative(resolve(root), resolve(candidate))
+  return child === '' || (!child.startsWith(`..${sep}`) && child !== '..')
+}
+
+interface ExactDshRuntime {
+  packageDirectory: string
+  nodeModulesDirectory: string
+  package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: string }
+}
+
+/**
+ * `pnpm dlx` owns the DSH host dependency plane, rather than a plugin-created
+ * symlink in the profile. Discover the exact cached DSH package by manifest,
+ * with bounded directory traversal and no symlink following.
+ */
+async function discoverExactDshRuntime(cacheHome: string, dshVersion: string): Promise<ExactDshRuntime> {
+  const root = resolve(cacheHome, 'pnpm', 'dlx')
+  const rootReal = await realpath(root)
+  const queue: Array<{ path: string, depth: number }> = [{ path: root, depth: 0 }]
+  const candidates = new Set<string>()
+  let visited = 0
+  while (queue.length > 0) {
+    const current = queue.shift()
+    if (current === undefined) break
+    if (visited >= MAX_RUNTIME_DISCOVERY_DIRECTORIES) {
+      throw new Error(`DSH runtime discovery exceeds ${MAX_RUNTIME_DISCOVERY_DIRECTORIES} directories`)
+    }
+    visited += 1
+    let entries
+    try {
+      entries = await readdir(current.path, { withFileTypes: true })
+    } catch (error: unknown) {
+      if (isNotFound(error)) continue
+      throw error
+    }
+    for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
+      const child = join(current.path, entry.name)
+      if (entry.isDirectory()) {
+        if (current.depth < MAX_RUNTIME_DISCOVERY_DEPTH) queue.push({ path: child, depth: current.depth + 1 })
+        continue
+      }
+      if (!entry.isFile() || entry.name !== 'package.json') continue
+      let manifest: unknown
+      try {
+        manifest = JSON.parse((await readRegularFileNoFollow(child, 1 * 1024 * 1024)).toString('utf8')) as unknown
+      } catch {
+        continue
+      }
+      if (typeof manifest !== 'object' || manifest === null || Array.isArray(manifest)) continue
+      const item = manifest as Record<string, unknown>
+      if (item.name === '@deepseek-ai/dsh' && item.version === dshVersion) candidates.add(child)
+    }
+  }
+  if (candidates.size === 0) throw new Error(`exact @deepseek-ai/dsh@${dshVersion} was not found in the controlled pnpm dlx cache`)
+  if (candidates.size > 1) throw new Error(`multiple exact @deepseek-ai/dsh@${dshVersion} packages were found in the controlled pnpm dlx cache`)
+  const manifestPath = [...candidates][0] as string
+  const packageDirectory = discoverDshRuntimePackageDirectory(manifestPath)
+  const packageCoordinate = discoverDshRuntimePackage(manifestPath)
+  const nodeModulesDirectory = discoverDshRuntimeNodeModulesDirectory(manifestPath)
+  if (packageDirectory === undefined || packageCoordinate === undefined || nodeModulesDirectory === undefined) {
+    throw new Error('the exact DSH package did not expose a usable dependency plane')
+  }
+  if (!isLexicallyInside(rootReal, packageDirectory) || !isLexicallyInside(rootReal, nodeModulesDirectory)) {
+    throw new Error('the exact DSH dependency plane escaped the controlled pnpm dlx cache')
+  }
+  if (packageCoordinate.name !== '@deepseek-ai/dsh' || packageCoordinate.version !== dshVersion) {
+    throw new Error('the discovered DSH package does not match the requested exact version')
+  }
+  return {
+    packageDirectory,
+    nodeModulesDirectory,
+    package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: packageCoordinate.version },
+  }
+}
+
 async function profileResolutionEvidence(dshHome: string): Promise<DshInstallObservationReport['resolution']> {
   const profileDirectory = join(dshHome, 'profiles', PROFILE)
   const lockfile = await readProfileLockfile(dshHome)
@@ -926,14 +1009,19 @@ async function profileResolutionEvidence(dshHome: string): Promise<DshInstallObs
 async function runtimeGraphEvidence(
   dshHome: string,
   rootPackage: { name: string, version: string },
+  dshVersion: string,
+  cacheHome: string,
 ): Promise<Pick<DshInstallObservationReport['resolution'], 'runtimeGraph' | 'runtimeGraphError'>> {
   try {
+    const dshRuntime = await discoverExactDshRuntime(cacheHome, dshVersion)
     const graph = await parseInstalledNodeModulesGraph(
       join(dshHome, 'profiles', PROFILE),
       rootPackage,
       {
-        hostNodeModulesDirectory: join(dshHome, 'profiles', 'node_modules'),
-        hostRuntimeSource: 'dsh-profile-fallback',
+        hostNodeModulesDirectory: dshRuntime.nodeModulesDirectory,
+        hostRuntimeSource: 'dsh-process',
+        hostRuntimePackage: dshRuntime.package,
+        hostRuntimePackageDirectory: dshRuntime.packageDirectory,
       },
     )
     if (graph.digest === undefined) return {}
@@ -964,10 +1052,12 @@ async function runtimeGraphEvidence(
 async function resolutionEvidence(
   dshHome: string,
   rootPackage: { name: string, version: string },
+  dshVersion: string,
+  cacheHome: string,
 ): Promise<DshInstallObservationReport['resolution']> {
   const [profile, runtime] = await Promise.all([
     profileResolutionEvidence(dshHome),
-    runtimeGraphEvidence(dshHome, rootPackage),
+    runtimeGraphEvidence(dshHome, rootPackage, dshVersion, cacheHome),
   ])
   return { ...profile, ...runtime }
 }
@@ -1175,7 +1265,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       const afterInstall = await snapshotSandbox(sandboxRoot, environment)
       report.observations.install = await readTrace(installTracePath, sandboxRoot)
       report.filesystem.install = diffSnapshots(beforeInstall, afterInstall)
-      report.resolution = await resolutionEvidence(environment.DSH_HOME as string, spec)
+      report.resolution = await resolutionEvidence(environment.DSH_HOME as string, spec, options.dshVersion, environment.XDG_CACHE_HOME as string)
       report.stages.install = commandStage(installResult)
       if (installResult.timedOut || installResult.outputExceeded || installResult.launchError !== undefined) {
         return finishReport(report, 'unknown', 'the plugin install did not produce a bounded command result')
@@ -1214,7 +1304,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       report.filesystem.load = diffSnapshots(afterInstall, afterLoad)
       // Loading may trigger one final DSH profile reconciliation. Preserve the
       // final resolved graph rather than only the state immediately after add.
-      report.resolution = await resolutionEvidence(environment.DSH_HOME as string, spec)
+      report.resolution = await resolutionEvidence(environment.DSH_HOME as string, spec, options.dshVersion, environment.XDG_CACHE_HOME as string)
       report.stages.load = commandStage(loadResult)
       if (loadResult.timedOut || loadResult.outputExceeded || loadResult.launchError !== undefined) {
         return finishReport(report, 'unknown', 'the plugin load did not produce a bounded command result')

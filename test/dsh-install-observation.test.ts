@@ -160,8 +160,16 @@ describe('DSH install observation', () => {
           version: '1.0.0',
           peerDependencies: { 'host-runtime': '^2.0.0' },
         }))
-        await mkdir(join(dshHome as string, 'profiles', 'node_modules', 'host-runtime'), { recursive: true })
-        await writeFile(join(dshHome as string, 'profiles', 'node_modules', 'host-runtime', 'package.json'), JSON.stringify({
+        const cacheHome = command.env.XDG_CACHE_HOME
+        assert.equal(typeof cacheHome, 'string')
+        const dshRuntimeNodeModules = join(cacheHome as string, 'pnpm', 'dlx', 'fixture', 'node_modules')
+        await mkdir(join(dshRuntimeNodeModules, '@deepseek-ai', 'dsh'), { recursive: true })
+        await writeFile(join(dshRuntimeNodeModules, '@deepseek-ai', 'dsh', 'package.json'), JSON.stringify({
+          name: '@deepseek-ai/dsh',
+          version: '0.1.0-rc.8',
+        }))
+        await mkdir(join(dshRuntimeNodeModules, 'host-runtime'), { recursive: true })
+        await writeFile(join(dshRuntimeNodeModules, 'host-runtime', 'package.json'), JSON.stringify({
           name: 'host-runtime',
           version: '2.1.0',
         }))
@@ -226,13 +234,15 @@ snapshots:
       spec: '1.0.0',
       kind: 'runtime',
     }])
+    assert.equal(report.resolution.runtimeGraphError, undefined)
     assert.match(report.resolution.runtimeGraph?.digest ?? '', /^sha256:[a-f0-9]{64}$/)
-    assert.equal(report.resolution.runtimeGraph?.nodes, 2)
-    assert.equal(report.resolution.runtimeGraph?.edges, 1)
+    assert.equal(report.resolution.runtimeGraph?.nodes, 3)
+    assert.equal(report.resolution.runtimeGraph?.edges, 2)
     assert.equal(report.resolution.runtimeGraph?.unresolved, 0)
     assert.deepEqual(report.resolution.runtimeGraph?.hostRuntime, {
-      source: 'dsh-profile-fallback',
-      resolvedNodes: 1,
+      source: 'dsh-process',
+      resolvedNodes: 2,
+      dshVersion: '0.1.0-rc.8',
     })
     assert.deepEqual(report.boundary.approvedDependencyBuilds, [])
     assert.equal(report.stages.registration.status, 'passed')
