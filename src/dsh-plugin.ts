@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { renderAgentAnalysisGroupPrompt, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import {
-  discoverDshRuntimeNodeModulesDirectory,
+  discoverDshRuntimeHostNodeModulesDirectory,
   discoverDshRuntimePackage,
   discoverDshRuntimePackageDirectory,
 } from './dsh-runtime.js'
@@ -565,7 +565,11 @@ export function apply(ctx: DshRadarContext, config: Config = {}): void {
   const feishuSecret = process.env.UPSTREAM_RADAR_FEISHU_SECRET?.trim() || undefined
   const dshHostNodeModulesDirectory = config.profile === undefined || config.refreshProfile === false
     ? undefined
-    : discoverDshRuntimeNodeModulesDirectory()
+    // A package-local node_modules directory is enough for a flat npm
+    // installation, but pnpm's actual dependency links may resolve through
+    // the enclosing .pnpm virtual store. The host-plane variant deliberately
+    // includes that controlled outer directory.
+    : discoverDshRuntimeHostNodeModulesDirectory()
   const dshHostRuntimePackage = config.profile === undefined || config.refreshProfile === false
     ? undefined
     : discoverDshRuntimePackage()

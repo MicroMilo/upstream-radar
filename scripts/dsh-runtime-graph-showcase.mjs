@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import process from 'node:process'
 
-const { createRadarConfigFromDshProfile, discoverDshRuntimeNodeModulesDirectory, writeDshPatch, writeRadarConfig } = await import('../dist/src/index.js')
+const { createRadarConfigFromDshProfile, discoverDshRuntimeHostNodeModulesDirectory, writeDshPatch, writeRadarConfig } = await import('../dist/src/index.js')
 const { emptyRadarState } = await import('../dist/src/radar.js')
 const { saveRadarState } = await import('../dist/src/radar-state.js')
 
@@ -268,7 +268,10 @@ async function main() {
     const captured = JSON.parse(await readFile(captureFile, 'utf8'))
     const entrypoint = captured?.argv?.[1]
     if (typeof entrypoint !== 'string') throw new Error('real DSH entrypoint was not captured')
-    const hostNodeModulesDirectory = discoverDshRuntimeNodeModulesDirectory(entrypoint)
+    // The exact runtime may be installed by pnpm dlx. In that topology the
+    // package-local node_modules misses sibling dependencies in `.pnpm`; the
+    // host plane is the bounded directory that contains both.
+    const hostNodeModulesDirectory = discoverDshRuntimeHostNodeModulesDirectory(entrypoint)
     if (hostNodeModulesDirectory === undefined) throw new Error('real DSH host dependency plane was not discovered')
     const hostManifest = JSON.parse(await readFile(hostManifestPath(hostNodeModulesDirectory, HOST_PACKAGE_NAME), 'utf8'))
     const hostPackageVersion = hostManifest.version

@@ -56,6 +56,10 @@ describe('DSH runtime dependency discovery', () => {
       await writeFile(join(dshRoot, 'lib', 'bin.js'), '')
 
       assert.equal(
+        discoverDshRuntimeNodeModulesDirectory(join(dshRoot, 'lib', 'bin.js')),
+        await realpath(join(dshRoot, '..', '..')),
+      )
+      assert.equal(
         discoverDshRuntimeHostNodeModulesDirectory(join(dshRoot, 'lib', 'bin.js')),
         await realpath(hostNodeModules),
       )

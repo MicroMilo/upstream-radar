@@ -32,6 +32,7 @@ export {
 } from './dependency-index.js'
 export { parseInstalledNodeModulesGraph } from './installed-graph.js'
 export {
+  discoverDshRuntimeHostNodeModulesDirectory,
   discoverDshRuntimeNodeModulesDirectory,
   discoverDshRuntimePackage,
   discoverDshRuntimePackageDirectory,
