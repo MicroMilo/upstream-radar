@@ -9,7 +9,7 @@
     },
     {
       "id": "cloudflare-browser",
-      "spec": "dsh-cloudflare-browser-run@0.1.1",
+      "spec": "dsh-cloudflare-browser-run@0.1.3",
       "observerTargetId": "dsh-cloudflare-browser-run",
       "reason": "A browser-facing plugin already used by the public static and load-only showcase."
     },

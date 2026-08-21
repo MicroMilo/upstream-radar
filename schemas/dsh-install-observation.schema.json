@@ -5,7 +5,7 @@
   "description": "Bounded process, network and filesystem evidence from installing and loading one exact npm artifact under one exact DSH version in an externally supplied disposable environment.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "tool", "probe", "scope", "startedAt", "completedAt", "dshVersion", "artifact", "stages", "observations", "filesystem", "result", "reason", "boundary"],
+  "required": ["schema", "tool", "probe", "scope", "startedAt", "completedAt", "dshVersion", "runtime", "artifact", "stages", "observations", "filesystem", "result", "reason", "boundary"],
   "properties": {
     "schema": { "const": "upstream-radar.dsh-install-observation/v1alpha1" },
     "tool": {
@@ -22,12 +22,32 @@
     "startedAt": { "type": "string", "format": "date-time" },
     "completedAt": { "type": "string", "format": "date-time" },
     "dshVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform", "architecture", "nodeVersion", "packageManager"],
+      "properties": {
+        "platform": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "architecture": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "nodeVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" },
+        "packageManager": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name"],
+          "properties": {
+            "name": { "const": "pnpm" },
+            "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" }
+          }
+        }
+      }
+    },
     "artifact": { "$ref": "#/$defs/artifact" },
     "stages": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["artifact", "profile", "install", "registration", "load"],
+      "required": ["runtime", "artifact", "profile", "install", "registration", "load"],
       "properties": {
+        "runtime": { "$ref": "#/$defs/stage" },
         "artifact": { "$ref": "#/$defs/stage" },
         "profile": { "$ref": "#/$defs/stage" },
         "install": { "$ref": "#/$defs/stage" },

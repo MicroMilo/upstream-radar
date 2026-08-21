@@ -24,7 +24,7 @@ const PROFILE = 'headless'
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare'] as const
 
 export type DshInstallObservationResult = 'compatible' | 'install-failed' | 'load-failed' | 'unknown'
-export type InstallObservationPhase = 'artifact' | 'profile' | 'install' | 'load'
+export type InstallObservationPhase = 'runtime' | 'artifact' | 'profile' | 'install' | 'load'
 export type InstallObservationIsolationProvider = 'github-actions-hosted-runner' | 'firecracker' | 'other'
 
 export interface InstallObservationCommand {
@@ -118,6 +118,15 @@ export interface DshInstallObservationReport {
   startedAt: string
   completedAt: string
   dshVersion: string
+  runtime: {
+    platform: string
+    architecture: string
+    nodeVersion: string
+    packageManager: {
+      name: 'pnpm'
+      version?: string
+    }
+  }
   artifact: {
     spec: string
     name: string
@@ -129,6 +138,7 @@ export interface DshInstallObservationReport {
     lifecycleScripts: string[]
   }
   stages: {
+    runtime: InstallObservationStage
     artifact: InstallObservationStage
     profile: InstallObservationStage
     install: InstallObservationStage
@@ -776,6 +786,12 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
     startedAt,
     completedAt: startedAt,
     dshVersion: options.dshVersion,
+    runtime: {
+      platform: process.platform,
+      architecture: process.arch,
+      nodeVersion: process.version.replace(/^v/, ''),
+      packageManager: { name: 'pnpm' },
+    },
     artifact: {
       spec: spec.canonical,
       name: spec.name,
@@ -783,6 +799,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       lifecycleScripts: [],
     },
     stages: {
+      runtime: { status: 'skipped' },
       artifact: { status: 'skipped' },
       profile: { status: 'skipped' },
       install: { status: 'skipped' },
@@ -828,6 +845,27 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       writeFile(join(sandboxRoot, 'controlled-global.npmrc'), '', { mode: 0o600 }),
       writeFile(join(sandboxRoot, 'controlled.gitconfig'), '', { mode: 0o600 }),
     ])
+
+    const runtimeResult = await runSafely(runner, {
+      phase: 'runtime',
+      command: pnpmCommand,
+      args: ['--version'],
+      cwd: sandboxRoot,
+      env: noScriptsEnvironment,
+      timeoutMs,
+      sandboxRoot,
+    })
+    report.stages.runtime = commandStage(runtimeResult)
+    const packageManagerVersion = runtimeResult.stdout.trim()
+    if (report.stages.runtime.status !== 'passed' || !EXACT_VERSION.test(packageManagerVersion)) {
+      report.stages.runtime = {
+        ...report.stages.runtime,
+        status: 'failed',
+        detail: report.stages.runtime.detail ?? 'pnpm did not return one exact semantic version',
+      }
+      return finishReport(report, 'unknown', 'the package-manager runtime could not be established before execution')
+    }
+    report.runtime.packageManager.version = packageManagerVersion
 
     const artifactResult = await runSafely(runner, {
       phase: 'artifact',
@@ -937,7 +975,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       return finishReport(report, 'compatible', 'the exact artifact installed, registered and loaded under the requested DSH version')
     } catch (error: unknown) {
       const detail = bounded(error instanceof Error ? error.message : String(error))
-      const currentStage = (['profile', 'install', 'registration', 'load'] as const)
+      const currentStage = (['runtime', 'profile', 'install', 'registration', 'load'] as const)
         .find(name => report.stages[name].status === 'skipped')
       if (currentStage !== undefined) report.stages[currentStage] = { status: 'failed', detail }
       return finishReport(report, 'unknown', `the bounded observer failed while collecting ${currentStage ?? 'runtime'} evidence`)
@@ -955,6 +993,7 @@ export function renderDshInstallObservation(report: DshInstallObservationReport)
     'DSH isolated install observation',
     `Artifact: ${report.artifact.name}@${report.artifact.version}${report.artifact.sha256 === undefined ? '' : ` (sha256:${report.artifact.sha256.slice(0, 12)}…)`}`,
     `DSH: ${report.dshVersion}`,
+    `Runtime: Node ${report.runtime.nodeVersion} (${report.runtime.platform}/${report.runtime.architecture}), pnpm ${report.runtime.packageManager.version ?? 'unknown'}`,
     `Isolation claim: ${report.boundary.isolationProviderClaim} (provided externally; not verified by Radar)`,
     '',
     `Result: ${report.result.toUpperCase()} — ${report.reason}`,

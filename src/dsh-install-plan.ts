@@ -102,12 +102,15 @@ function coordinateChanged(before: PackageCoordinate | undefined, after: Package
   )
 }
 
-function observedDshVersion(stateInput: unknown): string | undefined {
+function observedPackage(stateInput: unknown, targetId: string): PackageCoordinate | undefined {
   if (typeof stateInput !== 'object' || stateInput === null || Array.isArray(stateInput)) return undefined
   const targets = (stateInput as Record<string, unknown>).targets
   if (typeof targets !== 'object' || targets === null || Array.isArray(targets)) return undefined
-  const target = (targets as Record<string, unknown>)[DSH_TARGET_ID]
-  const coordinate = snapshotPackage(target)
+  return snapshotPackage((targets as Record<string, unknown>)[targetId])
+}
+
+function observedDshVersion(stateInput: unknown): string | undefined {
+  const coordinate = observedPackage(stateInput, DSH_TARGET_ID)
   return coordinate?.name === DSH_PACKAGE ? coordinate.version : undefined
 }
 
@@ -129,7 +132,16 @@ export function buildDshInstallPlan(corpusInput: unknown, stateInput: unknown, r
 
   if (dshPackageChanged) {
     triggers.add(DSH_TARGET_ID)
-    for (const target of corpus.plugins) selected.set(target.id, { id: target.id, plugin: target.spec })
+    for (const target of corpus.plugins) {
+      const expected = parseNpmSpec(target.spec)
+      const observed = target.observerTargetId === undefined
+        ? undefined
+        : observedPackage(stateInput, target.observerTargetId)
+      const plugin = observed?.name === expected.name
+        ? `${observed.name}@${observed.version}`
+        : target.spec
+      selected.set(target.id, { id: target.id, plugin })
+    }
   }
 
   for (const target of corpus.plugins) {

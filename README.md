@@ -87,10 +87,12 @@ therefore uses a separate, deliberately untrusted lane:
 fresh GitHub-hosted VM (no secrets, read-only repository token)
   → restricted container (no host workspace or Docker socket)
   → npm pack exact package@version with scripts disabled
+  → record the exact Node and pnpm runtime used by the check
   → DSH installs that same tarball with scripts enabled
   → strace records child processes, network destinations and file writes
   → DSH loads the registered bundle under the same exact release
-  → bounded JSON report survives; the container and VM are discarded
+  → bounded JSON report survives and a non-compatible pair fails the check
+  → the container and VM are discarded
 ```
 
 Use **Actions → Observe one DSH plugin install** and supply one exact plugin and

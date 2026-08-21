@@ -169,6 +169,7 @@ jobs:
               lines.push(
                 `- Result: \`${inline(report.result)}\` — ${inline(report.reason)}`,
                 `- Exact artifact: \`sha256:${inline(report.artifact?.sha256)}\``,
+                `- Runtime: Node \`${inline(report.runtime?.nodeVersion)}\` on \`${inline(`${report.runtime?.platform}/${report.runtime?.architecture}`)}\`; pnpm \`${inline(report.runtime?.packageManager?.version)}\``,
                 `- Declared lifecycle scripts: \`${inline(report.artifact?.lifecycleScripts?.join(', ') || 'none')}\``,
                 `- Install behavior: ${count(report.observations?.install?.processes)} process exec(s), ${count(report.observations?.install?.network)} network attempt(s), ${count(report.observations?.install?.fileWrites)} file-write syscall(s)`,
                 `- Load behavior: ${count(report.observations?.load?.processes)} process exec(s), ${count(report.observations?.load?.network)} network attempt(s), ${count(report.observations?.load?.fileWrites)} file-write syscall(s)`,
@@ -194,3 +195,27 @@ jobs:
           path: ${{ runner.temp }}/upstream-radar-install-observation
           if-no-files-found: warn
           retention-days: 30
+
+      - name: Fail the check unless the exact pair installed and loaded
+        if: always()
+        shell: bash
+        env:
+          RADAR_REPORT: ${{ runner.temp }}/upstream-radar-install-observation/report.json
+        run: |
+          node --input-type=module <<'NODE'
+          import { existsSync, readFileSync } from 'node:fs'
+          if (!existsSync(process.env.RADAR_REPORT)) {
+            console.error('No machine-readable install observation survived the run.')
+            process.exit(1)
+          }
+          let report
+          try { report = JSON.parse(readFileSync(process.env.RADAR_REPORT, 'utf8')) } catch {
+            console.error('The machine-readable install observation is invalid JSON.')
+            process.exit(1)
+          }
+          if (report.result !== 'compatible') {
+            console.error(`DSH install observation: ${report.result ?? 'unknown'} — ${report.reason ?? 'no reason recorded'}`)
+            process.exit(1)
+          }
+          console.log(`Compatible: ${report.artifact?.spec} with DSH ${report.dshVersion}`)
+          NODE
