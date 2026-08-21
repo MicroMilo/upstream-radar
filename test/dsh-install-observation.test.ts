@@ -14,6 +14,7 @@ import { makeTarball } from './helpers/tar.js'
 const TRACE = `420 execve("/usr/bin/node", ["node", "scripts/postinstall.js"], 0x7ffe) = 0
 420 connect(18, {sa_family=AF_INET, sin_port=htons(443), sin_addr=inet_addr("203.0.113.10")}, 16) = 0
 420 openat(AT_FDCWD, "/sandbox/dsh-home/profiles/headless/install.log", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 18
+420 openat2(AT_FDCWD, "/sandbox/dsh-home/profiles/headless/read-only.json", {flags=O_RDONLY, resolve=RESOLVE_CACHED}, 24) = 19
 420 mkdir("/sandbox/dsh-home/profiles/headless/generated", 0777) = 0
 420 unlink("/sandbox/dsh-home/profiles/headless/temporary", 0) = -1 ENOENT (No such file or directory)
 `
@@ -40,6 +41,7 @@ describe('DSH install observation', () => {
     assert.equal(observation.network[0]?.port, 443)
     assert.equal(observation.fileWrites[0]?.path, '$SANDBOX/dsh-home/profiles/headless/install.log')
     assert.equal(observation.fileWrites[0]?.operation, 'openat')
+    assert.equal(observation.fileWrites.some(event => event.path.endsWith('/read-only.json')), false)
     assert.equal(observation.fileWrites.some(event => event.operation === 'unlink' && event.succeeded === false), true)
   })
 

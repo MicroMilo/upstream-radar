@@ -301,7 +301,7 @@ export function parseDshInstallTrace(
       const operation = line.match(/\b(openat2?|open|creat|renameat2?|rename|unlink(?:at)?|mkdir(?:at)?|rmdir|symlink(?:at)?|link(?:at)?|truncate|ftruncate|chmod|fchmodat|chown|fchownat)\(/)?.[1]
       if (operation !== undefined) {
         const isOpen = operation === 'open' || operation === 'openat' || operation === 'openat2'
-        const writes = !isOpen || /\b(?:O_WRONLY|O_RDWR|O_CREAT|O_TRUNC|O_APPEND|RESOLVE_CACHED)\b/.test(line)
+        const writes = !isOpen || /\b(?:O_WRONLY|O_RDWR|O_CREAT|O_TRUNC|O_APPEND)\b/.test(line)
         if (writes) {
           const values = quotedValues(line, 4)
           const first = values[0]
