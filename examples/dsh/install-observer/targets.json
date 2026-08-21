@@ -30,6 +30,7 @@
       "id": "better-sidebar",
       "spec": "dsh-better-sidebar@0.14.0",
       "observerTargetId": "dsh-better-sidebar",
+      "allowedBuilds": ["node-pty"],
       "reason": "A high-adoption UI workbench with a broad DSH peer surface and a native terminal dependency."
     },
     {

@@ -19,15 +19,17 @@ Inside the restricted container, Radar:
 1. downloads one exact npm artifact with lifecycle scripts disabled;
 2. verifies the tarball's package identity and DSH bundle declaration;
 3. binds the report to the tarball SHA-256;
-4. records the exact Node and pnpm runtime used by the observation;
-5. initializes one exact DSH release with scripts disabled;
-6. installs the local tarball through DSH with lifecycle scripts enabled and
+4. checks the package's declared Node requirement against the exact isolated
+   runtime before any plugin or dependency code may run;
+5. records the exact Node and pnpm runtime used by the observation;
+6. initializes one exact DSH release with scripts disabled;
+7. installs the local tarball through DSH with lifecycle scripts enabled and
    only the dependency-build approvals explicitly declared for that target;
-7. verifies that DSH registered the bundle;
-8. loads the profile with `--dump-config`;
-9. records install and load process execution, network destinations, write-like
+8. verifies that DSH registered the bundle;
+9. loads the profile with `--dump-config`;
+10. records install and load process execution, network destinations, write-like
    file syscalls, and final filesystem changes; and
-10. destroys the container and hosted VM after preserving bounded JSON.
+11. destroys the container and hosted VM after preserving bounded JSON.
 
 The container is read-only except for a memory-backed sandbox and one output
 directory. It runs without the host workspace, without a Docker socket, with a
@@ -60,6 +62,7 @@ blocked script into a global “allow all” policy.
 | Result | Meaning |
 | --- | --- |
 | `compatible` | The exact tarball installed, registered, and loaded under the exact DSH release and recorded build-approval set, with readable bounded traces. |
+| `runtime-incompatible` | The exact tarball requires a Node version that excludes the isolated runtime. No plugin or dependency code is executed. |
 | `install-failed` | The traced install failed or DSH did not register the plugin. |
 | `load-failed` | Installation and registration passed, but the traced profile load failed. |
 | `unknown` | The artifact, DSH bootstrap, timeout/output bound, tracer, or collector could not establish a reliable result. |

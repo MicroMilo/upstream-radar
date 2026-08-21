@@ -206,6 +206,7 @@ jobs:
                 `- Result: \`${inline(report.result)}\` — ${inline(report.reason)}`,
                 `- Exact artifact: \`sha256:${inline(report.artifact?.sha256)}\``,
                 `- Runtime: Node \`${inline(report.runtime?.nodeVersion)}\` on \`${inline(`${report.runtime?.platform}/${report.runtime?.architecture}`)}\`; pnpm \`${inline(report.runtime?.packageManager?.version)}\``,
+                `- Plugin Node requirement: \`${inline(report.artifact?.nodeEngine ?? 'not declared')}\``,
                 `- Approved dependency builds: \`${inline(report.boundary?.approvedDependencyBuilds?.join(', ') || 'none')}\``,
                 `- Declared lifecycle scripts: \`${inline(report.artifact?.lifecycleScripts?.join(', ') || 'none')}\``,
                 `- Install behavior: ${count(report.observations?.install?.processes)} process exec(s), ${count(report.observations?.install?.network)} network attempt(s), ${count(report.observations?.install?.fileWrites)} file-write syscall(s)`,
