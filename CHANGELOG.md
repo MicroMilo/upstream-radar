@@ -2,6 +2,23 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [Unreleased]
+
+### DSH contract evidence
+
+- Materialize the exact plugin-to-DSH-host compatibility frontier into
+  `compatibility-ir.json` and a host-package reverse index after every accepted
+  isolated observation.
+- Resolve every non-optional plugin peer from the real DSH profile before the
+  direct plugin import and headless boot. A missing or out-of-range host peer
+  is no longer hidden by a successful install/load stage.
+- Preserve bounded static evidence beside each peer relation: runtime literal
+  import observed, type-only reference observed, no literal reference observed,
+  or scan incomplete. This keeps a declaration drift distinct from an already
+  reproduced runtime crash.
+- Maintain the OpenPencil cell on Node 24, matching its published Node engine,
+  and add a reproducible current-DSH contract-drift case.
+
 ## [0.41.0] - 2026-08-21
 
 ### Continuously reconciled DSH compatibility

@@ -26,10 +26,13 @@ Inside the restricted container, Radar:
 7. installs the local tarball through DSH with lifecycle scripts enabled and
    only the dependency-build approvals explicitly declared for that target;
 8. verifies that DSH registered the bundle;
-9. loads the profile with `--dump-config`;
+9. runs a trusted one-shot wrapper from the real profile that resolves every
+   declared non-optional peer with `import.meta.resolve()`, imports the plugin,
+   and boots DSH headless with `--help`;
 10. records install and load process execution, network destinations, write-like
    file syscalls, final filesystem changes, the resulting DSH profile lockfile,
-   and the effective profile-plus-DSH-host graph; and
+   the effective profile-plus-DSH-host graph, and static literal-import evidence
+   for every declared peer; and
 11. destroys the container and hosted VM after preserving bounded JSON.
 
 The container is read-only except for a memory-backed sandbox and one output
@@ -47,6 +50,11 @@ toolchain.
 plugins whose install/load behavior we commit to retesting. The durable
 [`compatibility-ledger.json`](../../../compatibility-ledger.json) holds the most
 recent evidence for every active plugin × DSH × Node/runtime-policy cell.
+The same reconciliation writes a compact
+[`compatibility-ir.json`](../../../compatibility-ir.json) and
+[`compatibility-reverse-index.json`](../../../compatibility-reverse-index.json):
+one exact peer declaration paired with the concrete host version DSH resolved,
+then the inverse `host package → affected plugin cell` lookup.
 
 An entry may declare `allowedBuilds` when the plugin's documented installation
 contract explicitly approves named dependency scripts. The names become pnpm
@@ -71,10 +79,12 @@ blocked script into a global “allow all” policy.
 - A missing or malformed report is never saved as compatible. It remains
   unsatisfied and will be selected again on the next reconciliation.
 - A `compatible` result only closes its matrix cell when the final effective
-  profile-plus-DSH-host graph is complete. A green install/load with missing or
-  unresolved graph evidence remains an explicit evidence gap. The report keeps
-  a bounded sample of unresolved edges so authors can distinguish a missing
-  plugin dependency from an absent DSH host peer.
+  profile-plus-DSH-host graph is complete and every direct required peer
+  resolves inside the real profile with a version satisfying the declared
+  range. A green install/load with missing, out-of-range, or unresolved
+  contract evidence remains an explicit evidence gap. The report keeps a
+  bounded sample of unresolved edges and labels static peer use as runtime,
+  type-only, no literal reference observed, or scan-incomplete.
 
 ## Result semantics
 
@@ -82,6 +92,7 @@ blocked script into a global “allow all” policy.
 | --- | --- |
 | `compatible` | The exact tarball installed, registered, and loaded under the exact DSH release and recorded build-approval set, with readable bounded traces. |
 | `runtime-incompatible` | The exact tarball requires a Node version that excludes the isolated runtime. No plugin or dependency code is executed. |
+| `peer-contract-incompatible` | Install and load passed, but a declared required peer is missing from the actual DSH profile or its resolved version is outside the declared range. This is not by itself proof that every UI/business path fails. |
 | `install-failed` | The traced install failed or DSH did not register the plugin. |
 | `load-failed` | Installation and registration passed, but the traced profile load failed. |
 | `unknown` | The artifact, DSH bootstrap, timeout/output bound, tracer, or collector could not establish a reliable result. |
@@ -91,6 +102,11 @@ coverage. A failed attempt is not silently converted into a compatibility
 result. The JSON artifact and Job Summary are written first, then the GitHub
 check fails unless the result is `compatible`, so a scheduled regression is
 visible without somebody opening the artifact by hand.
+
+The [OpenPencil current-DSH case](reports/2026-08-22-openpencil-node24.md)
+shows the full distinction in practice: headless load passed, but one
+type-only peer declaration was absent from DSH and one runtime `react-dom`
+import resolved outside the plugin's declared range.
 
 ## Security boundary
 

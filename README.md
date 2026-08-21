@@ -7,11 +7,10 @@
 
 **Compatibility evidence for the [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) plugin ecosystem.**
 
-A plugin repository can look healthy while its published artifact cannot install
-on the current DSH runtime. Upstream Radar binds the exact plugin artifact, DSH
-release, Node runtime, dependency graph, and install policy into one reviewable
-compatibility record—then identifies which plugins and authors are affected when
-that evidence changes.
+A plugin repository can look healthy while its published artifact has drifted
+from the DSH host it actually runs in. Upstream Radar joins what a plugin
+declares with what an isolated DSH profile really resolves, then keeps that
+relationship current as DSH and plugins change.
 
 The core object is an exact environment, not a package name or a diff:
 
@@ -23,27 +22,28 @@ plugin tarball SHA-256 × DSH version × Node/pnpm baseline × approved dependen
 
 ```mermaid
 flowchart TB
-  Input["DSH releases · plugin source/npm · advisory feeds"] --> IR["Exact-coordinate compatibility IR"]
-  IR --> Static["Static lane<br/>identity · graph · vulnerabilities"]
-  IR --> Runtime["Isolated lane on a fresh VM<br/>install → register → load"]
-  Static --> Evidence["Versioned exact-pair evidence"]
-  Runtime --> Evidence
-  Evidence --> Action["Verdict · reverse impact · author fix · optional Agent"]
+  Artifact["Exact plugin tarball"] --> Static["Static: peer declaration + literal import evidence"]
+  DSH["Exact DSH + Node runtime"] --> Runtime["Fresh VM + restricted container"]
+  Static --> Runtime
+  Runtime --> Resolve["Dynamic: install → register → profile resolver → import → headless boot"]
+  Resolve --> IR["Compatibility IR: declared range ↔ resolved host version"]
+  IR --> Ledger["Current-cell ledger"]
+  IR --> Impact["Reverse impact index + author-facing repair"]
 ```
 
-Radar establishes deterministic facts; the Agent interprets project impact. A
-model never decides whether versions match, invents a dependency path, or turns
-missing evidence into a green result.
+Radar establishes deterministic facts; an optional Agent may explain project
+impact afterward. A model never decides whether versions match or turns missing
+evidence into a green result.
 
 ## What it answers
 
 | Question | Evidence returned |
 | --- | --- |
-| Does this exact plugin work with this DSH release? | Tarball identity, Node contract, install, registration, and load result. |
-| Why did it fail? | The failed stage, bounded command evidence, required build approval, or incompatible runtime range. |
-| What enters the DSH profile? | Exact npm/pnpm nodes, duplicate versions, root-to-dependency paths, and unresolved edges. |
-| Which plugins are exposed to an upstream change? | A reverse index with every known downstream path and its coverage status. |
-| What can the author repair? | The concrete package, version, lockfile, DSH declaration, or installation contract involved. |
+| Does the declared plugin contract align with this DSH release? | Exact tarball, Node contract, install/registration/load evidence, and every direct peer's resolved host version. |
+| Is it a runtime break or a declaration drift? | Static literal-import classification beside the dynamic resolver result. |
+| What enters the DSH profile? | Exact npm/pnpm nodes, host-plane joins, duplicate versions, paths, and unresolved edges. |
+| Which plugins are exposed to an upstream dependency change? | A materialized reverse index from host package to exact plugin cells. |
+| What can the author repair? | One package/range/API boundary with the evidence needed to reproduce it. |
 
 ## Proven on real DSH plugins
 
@@ -51,10 +51,11 @@ missing evidence into a green result.
   [`awesome-dsh-plugin`](examples/dsh/awesome-observer/README.md); 6 independently
   matched npm artifacts enter the isolated matrix and 2 remain correctly
   GitHub-only.
-- Tested **9 exact artifacts** against DSH `0.1.1-rc.1` in separate disposable
-  VMs. Eight installed, registered, and loaded under their recorded contracts.
-- Stopped `@zseven-w/dsh-openpencil@0.1.0-rc.1` before plugin execution because
-  its artifact requires Node `>=24.11.0` while the runner provides Node `22.23.2`.
+- In a fresh VM, tested `@zseven-w/dsh-openpencil@0.1.0-rc.1` against current
+  DSH `0.1.1-rc.1` on Node 24. Install, registration, direct import, and
+  headless boot passed; the exact host-contract check found **12/14** peers
+  aligned, one type-only peer declaration missing, and one runtime `react-dom`
+  range drift. [Read the reproducible case.](examples/dsh/install-observer/reports/2026-08-22-openpencil-node24.md)
 - Proved `dsh-better-sidebar@0.14.0` succeeds only after the documented
   `node-pty` build is explicitly approved and the native toolchain is present.
 - Built a reverse index from **37 real plugin graphs and 1,025 dependency
@@ -94,16 +95,18 @@ runtime, or build-policy change. A package update therefore accelerates a
 retest; it is no longer the only trigger.
 
 Every report must prove its exact plugin × DSH × Node runtime × build-approval
-cell before it can update the ledger. A Node-engine mismatch stops before plugin
-execution, then asks a configured alternative runtime (for example Node 24)
-to establish whether the result is a real incompatibility or a conditional one.
-The isolated profile's lockfile digest is compared on every retest, so a changed
-transitive resolution is reported even if install and load still succeed.
-After loading, Radar also builds the **effective runtime graph**: the plugin
-profile joined with DSH's shared host dependency plane. This distinguishes a
-normal DSH-provided peer from an actually missing dependency. An install/load
-green result is not sufficient to close a matrix cell: that effective graph
-must be complete, or Radar keeps the cell as an explicit evidence gap.
+cell before it can update the [ledger](compatibility-ledger.json). The Action
+also materializes a bounded [compatibility IR](compatibility-ir.json) and
+[reverse index](compatibility-reverse-index.json). The IR does not copy the
+entire pnpm tree: it preserves the compatibility frontier—the plugin's declared
+non-optional peer range, static use evidence, and concrete package version that
+the final DSH profile resolves.
+
+A Node-engine mismatch stops before plugin execution; a maintained target can
+also select its required Node profile explicitly. The profile lockfile and
+effective profile-plus-DSH-host graph are compared on every retest. An
+install/load green result cannot close a cell while a required direct host peer
+is missing, outside its declared range, or indeterminate.
 
 When all cells are current, the runtime lane stays quiet. Missing or malformed
 reports never turn green: they remain unsatisfied and are selected again.

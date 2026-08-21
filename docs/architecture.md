@@ -122,15 +122,22 @@ Each selected matrix entry starts on a fresh GitHub-hosted VM. The target code
 then runs inside a restricted container that receives no repository/model
 secret, host workspace, or Docker socket. Radar first packs the exact npm
 coordinate with lifecycle scripts disabled and verifies its identity and DSH
-bundle declaration. DSH installs that local tarball with lifecycle scripts
-enabled, registers it, then runs a trusted one-shot wrapper from the profile:
-it imports the plugin from the profile's real Node resolution anchor and boots
-the `headless` profile with `--help`. This forces both direct plugin imports
-and the Cordis loader to resolve the bundle while asking the one-shot surface
-to exit. `--dump-config` is intentionally not used as the runtime check
-because it composes patches without evaluating bundle code. Linux `strace`
-evidence and before/after filesystem snapshots are kept separately for install
-and boot.
+bundle declaration. From that same tarball it records every non-optional peer
+range and performs a bounded, syntax-only scan for literal runtime imports,
+type-only references, or no observed literal reference. This is deliberately
+not a proof that a dynamic import cannot exist.
+
+DSH installs the local tarball with lifecycle scripts enabled, registers it,
+then runs a trusted one-shot wrapper from the profile. The wrapper first calls
+`import.meta.resolve()` for every declared required peer, records the result in
+a new controlled file, imports the plugin from the profile's real Node
+resolution anchor, and boots the `headless` profile with `--help`. Radar then
+reads the concrete package manifest that Node resolved and compares the actual
+version to the declared range. This forces both direct plugin imports and the
+Cordis loader to resolve the bundle while asking the one-shot surface to exit.
+`--dump-config` is intentionally not used as the runtime check because it
+composes patches without evaluating bundle code. Linux `strace` evidence and
+before/after filesystem snapshots are kept separately for install and boot.
 
 ```text
 desired plugin × DSH × runtime-policy cell
@@ -139,11 +146,13 @@ desired plugin × DSH × runtime-policy cell
   -> one fresh hosted VM per plugin
   -> restricted container
   -> exact tarball SHA-256
+  -> static peer declarations + literal-use classification
   -> traced DSH install
   -> registration check
+  -> per-peer profile resolution
   -> traced DSH headless boot
   -> bounded JSON artifact + complete profile-plus-DSH-host graph
-  -> exact-cell ledger merge
+  -> exact-cell ledger merge + compatibility IR + reverse index
 ```
 
 The result vocabulary separates `install-failed`, `load-failed`,
@@ -161,8 +170,14 @@ behind a green install result. The collector separates missing optional
 platform binaries from required runtime/peer edges, then compares every direct
 required plugin peer with the concrete version exposed by DSH. A missing or
 out-of-range host peer is `peer-contract-incompatible` even if a superficial
-configuration composition succeeded. This backend is useful compatibility and
-behavior evidence, not hostile-code proof.
+configuration composition succeeded. The static-use tag prevents a missing
+type-only declaration from being presented as a reproduced runtime crash; a
+runtime import plus an out-of-range host version is a stronger follow-up signal
+but still does not claim every client path has executed. The ledger materializes
+these direct relations into a compact compatibility IR and host-package reverse
+index, so a later DSH host dependency change can be routed directly to exact
+plugin cells. This backend is useful compatibility and behavior evidence, not
+hostile-code proof.
 Docker shares the hosted VM kernel, and code in the same container may attempt
 to tamper with its trace/output. Moving the collector outside a Firecracker
 guest is the later high-assurance boundary.
