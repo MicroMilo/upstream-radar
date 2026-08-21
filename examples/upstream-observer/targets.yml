@@ -7,6 +7,7 @@ targets:
     repository: deepseek-ai/deepseek-harness
     ref: master
     package: '@deepseek-ai/dsh'
+    package-tag: next
     packagePath: apps/cli/package.json
     lockfile: pnpm-lock.yaml
     lockfileType: pnpm
