@@ -73,11 +73,12 @@
           "dependency": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["name", "required", "status"],
+            "required": ["name", "required", "status", "staticUsage"],
             "properties": {
               "name": { "type": "string", "minLength": 1, "maxLength": 214 },
               "required": { "type": "string", "minLength": 1, "maxLength": 512 },
               "status": { "enum": ["satisfied", "mismatched", "indeterminate", "missing"] },
+              "staticUsage": { "enum": ["runtime-import-observed", "type-only-reference-observed", "no-literal-reference-observed", "scan-incomplete"] },
               "resolvedVersion": { "type": "string", "minLength": 1, "maxLength": 256 }
             }
           }

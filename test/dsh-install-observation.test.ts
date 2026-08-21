@@ -141,6 +141,7 @@ describe('DSH install observation', () => {
             dsh: { bundle: { patch: './cordis.patch.yml' } },
           }) },
           { path: 'package/cordis.patch.yml', contents: '[]\n' },
+          { path: 'package/lib/index.js', contents: 'module.exports = require("host-runtime")\n' },
         ]))
         return passed({ stdout: JSON.stringify([{ filename: 'example-plugin-1.0.0.tgz', integrity: 'sha512-demo' }]) })
       }
@@ -266,6 +267,7 @@ snapshots:
         name: 'host-runtime',
         required: '^2.0.0',
         status: 'satisfied',
+        staticUsage: 'runtime-import-observed',
         resolvedVersion: '2.1.0',
       }],
     })
@@ -301,6 +303,7 @@ snapshots:
             dsh: { bundle: { patch: 'cordis.patch.yml' } },
           }) },
           { path: 'package/cordis.patch.yml', contents: '[]\n' },
+          { path: 'package/src/types.ts', contents: "import type { Service } from 'host-runtime'\nexport type Host = Service\n" },
         ]))
         return passed({ stdout: JSON.stringify([{ filename: 'mismatch-plugin-1.0.0.tgz' }]) })
       }
@@ -362,12 +365,14 @@ snapshots:
         name: 'host-runtime',
         required: '^3.0.0',
         status: 'mismatched',
+        staticUsage: 'type-only-reference-observed',
         resolvedVersion: '2.1.0',
       }],
       issues: [{
         name: 'host-runtime',
         required: '^3.0.0',
         status: 'mismatched',
+        staticUsage: 'type-only-reference-observed',
         resolvedVersion: '2.1.0',
       }],
     })

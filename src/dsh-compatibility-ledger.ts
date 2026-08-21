@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { parseNpmSpec } from './npm.js'
-import type { DshInstallObservationResult } from './dsh-install-observation.js'
+import type { DshInstallObservationResult, DshInstallPeerStaticUsage } from './dsh-install-observation.js'
 
 /**
  * Durable, current-state evidence for the exact plugin/DSH/runtime cells that
@@ -55,6 +55,7 @@ export interface DshCompatibilityPeerContractIssue {
   name: string
   required: string
   status: 'mismatched' | 'indeterminate' | 'missing'
+  staticUsage: DshInstallPeerStaticUsage
   resolvedVersion?: string
 }
 
@@ -63,6 +64,7 @@ export interface DshCompatibilityPeerContractRelation {
   name: string
   required: string
   status: 'satisfied' | 'mismatched' | 'indeterminate' | 'missing'
+  staticUsage: DshInstallPeerStaticUsage
   resolvedVersion?: string
 }
 
@@ -201,6 +203,15 @@ function positiveInteger(value: unknown, label: string, maximum = Number.MAX_SAF
   return value as number
 }
 
+function peerStaticUsage(value: unknown, label: string): DshInstallPeerStaticUsage {
+  const usage = boundedString(value, label, 64)
+  if (usage !== 'runtime-import-observed' && usage !== 'type-only-reference-observed'
+    && usage !== 'no-literal-reference-observed' && usage !== 'scan-incomplete') {
+    throw new Error(`${label} is unsupported`)
+  }
+  return usage
+}
+
 function optionalDigest(value: unknown, label: string): string | undefined {
   if (value === undefined) return undefined
   const digest = boundedString(value, label, 128)
@@ -287,6 +298,7 @@ function parsePluginPeerContracts(value: unknown, label: string): DshCompatibili
       name: boundedString(relation.name, `${label}.relations[${index}].name`, 214),
       required: boundedString(relation.required, `${label}.relations[${index}].required`, 512),
       status,
+      staticUsage: peerStaticUsage(relation.staticUsage, `${label}.relations[${index}].staticUsage`),
       ...(resolvedVersion === undefined ? {} : { resolvedVersion }),
     }
   }).sort((left, right) => left.name.localeCompare(right.name))
@@ -323,6 +335,7 @@ function parsePluginPeerContracts(value: unknown, label: string): DshCompatibili
       name: boundedString(issue.name, `${label}.issues[${index}].name`, 214),
       required: boundedString(issue.required, `${label}.issues[${index}].required`, 512),
       status,
+      staticUsage: peerStaticUsage(issue.staticUsage, `${label}.issues[${index}].staticUsage`),
       ...(resolvedVersion === undefined ? {} : { resolvedVersion }),
     }
   })

@@ -15,7 +15,7 @@ import { parseInstalledNodeModulesGraph } from './installed-graph.js'
 import { parseNpmSpec } from './npm.js'
 import type { DependencyKind, RootPeerContract } from './radar-types.js'
 import { satisfiesSemverRange } from './semver.js'
-import { parseNpmTarball } from './tar.js'
+import { parseNpmTarball, type TarEntry } from './tar.js'
 import { TOOL_VERSION } from './version.js'
 
 export const DSH_INSTALL_OBSERVATION_SCHEMA = 'upstream-radar.dsh-install-observation/v1alpha1' as const
@@ -34,6 +34,7 @@ const MAX_ALLOWED_BUILDS = 16
 const MAX_PROFILE_LOCKFILE_BYTES = 16 * 1024 * 1024
 const MAX_PROFILE_GRAPH_GAPS = 32
 const MAX_PLUGIN_PEERS = 64
+const MAX_STATIC_PEER_SCAN_BYTES = 8 * 1024 * 1024
 const MAX_RUNTIME_DISCOVERY_DIRECTORIES = 12_000
 const MAX_RUNTIME_DISCOVERY_DEPTH = 16
 const PROFILE = 'headless'
@@ -154,14 +155,28 @@ export interface DshInstallPeerContractIssue {
   name: string
   required: string
   status: 'mismatched' | 'indeterminate' | 'missing'
+  /** Static evidence explains whether a literal runtime import was observed. */
+  staticUsage: DshInstallPeerStaticUsage
   resolvedVersion?: string
 }
+
+/**
+ * What the packed artifact itself reveals about a declared peer. This is
+ * intentionally syntactic evidence, not a claim that an unobserved import can
+ * never happen at runtime.
+ */
+export type DshInstallPeerStaticUsage =
+  | 'runtime-import-observed'
+  | 'type-only-reference-observed'
+  | 'no-literal-reference-observed'
+  | 'scan-incomplete'
 
 /** One direct plugin peer requirement aligned to its exact runtime resolution. */
 export interface DshInstallPeerContractRelation {
   name: string
   required: string
   status: 'satisfied' | 'mismatched' | 'indeterminate' | 'missing'
+  staticUsage: DshInstallPeerStaticUsage
   resolvedVersion?: string
 }
 
@@ -319,14 +334,52 @@ interface ParsedArtifact {
   bundlePatch: string
   nodeEngine?: string
   lifecycleScripts: string[]
-  requiredPeerDependencies: Array<{ name: string, required: string }>
+  requiredPeerDependencies: ProfilePeerRequirement[]
 }
 
 function isNpmPackageName(value: string): boolean {
   return /^(?:@[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*|[a-z0-9][a-z0-9._-]*)$/.test(value)
 }
 
-function requiredPeerDependencies(manifest: Record<string, unknown>): Array<{ name: string, required: string }> {
+function staticPeerUsage(entries: readonly TarEntry[], requirements: readonly { name: string, required: string }[]): DshInstallPeerStaticUsage[] {
+  const state = new Map(requirements.map(requirement => [requirement.name, 'no-literal-reference-observed' as DshInstallPeerStaticUsage]))
+  let scanned = 0
+  let incomplete = false
+  for (const entry of entries) {
+    if (entry.type !== 'file' || entry.contents === undefined
+      || !/\.(?:[cm]?[jt]sx?|vue|svelte)$/i.test(entry.path)) continue
+    if (scanned + entry.contents.length > MAX_STATIC_PEER_SCAN_BYTES) {
+      incomplete = true
+      continue
+    }
+    scanned += entry.contents.length
+    const text = entry.contents.toString('utf8')
+    const declarationFile = /\.d\.(?:[cm]?ts)$/i.test(entry.path)
+    for (const requirement of requirements) {
+      if (state.get(requirement.name) === 'runtime-import-observed') continue
+      const escaped = requirement.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const literal = `['"]${escaped}(?:/[^'"]*)?['"]`
+      const typeOnly = new RegExp(`\\bimport\\s+type\\b[\\s\\S]{0,1024}?\\bfrom\\s*${literal}`)
+      const runtime = new RegExp([
+        `\\bimport\\s+(?!type\\b)(?:[\\s\\S]{0,1024}?\\s+from\\s+)?${literal}`,
+        `\\bexport\\s+(?!type\\b)[\\s\\S]{0,1024}?\\s+from\\s+${literal}`,
+        `\\b(?:require|import)\\s*\\(\\s*${literal}`,
+      ].join('|'))
+      const literalReference = new RegExp(literal)
+      if (!declarationFile && runtime.test(text)) {
+        state.set(requirement.name, 'runtime-import-observed')
+      } else if (declarationFile ? literalReference.test(text) : typeOnly.test(text)) {
+        state.set(requirement.name, 'type-only-reference-observed')
+      }
+    }
+  }
+  return requirements.map(requirement => {
+    const observed = state.get(requirement.name) ?? 'no-literal-reference-observed'
+    return observed === 'no-literal-reference-observed' && incomplete ? 'scan-incomplete' : observed
+  })
+}
+
+function requiredPeerDependencies(manifest: Record<string, unknown>, entries: readonly TarEntry[]): ProfilePeerRequirement[] {
   const peers = typeof manifest.peerDependencies === 'object' && manifest.peerDependencies !== null && !Array.isArray(manifest.peerDependencies)
     ? manifest.peerDependencies as Record<string, unknown>
     : {}
@@ -347,7 +400,11 @@ function requiredPeerDependencies(manifest: Record<string, unknown>): Array<{ na
   if (requirements.length > MAX_PLUGIN_PEERS) {
     throw new Error(`packed artifact declares more than ${MAX_PLUGIN_PEERS} required peer dependencies`)
   }
-  return requirements
+  const usages = staticPeerUsage(entries, requirements)
+  return requirements.map((requirement, index) => ({
+    ...requirement,
+    staticUsage: usages[index] ?? 'scan-incomplete',
+  }))
 }
 
 function bounded(value: string, maximum = MAX_REPORT_DETAIL_BYTES): string {
@@ -775,7 +832,7 @@ async function parsePackedArtifact(
   }
   const nodeEngine = rawNodeEngine === undefined || rawNodeEngine === '' ? undefined : bounded(rawNodeEngine, 512)
   const integrity = typeof item.integrity === 'string' ? bounded(item.integrity, 1_024) : undefined
-  const peerRequirements = requiredPeerDependencies(manifest)
+  const peerRequirements = requiredPeerDependencies(manifest, parsed.entries)
   return {
     path,
     filename,
@@ -972,10 +1029,10 @@ function graphGaps(graph: { unresolved?: readonly DshInstallProfileGraphGap[] })
   }))
 }
 
-function pluginPeerContractEvidence(contracts: readonly RootPeerContract[] | undefined): DshInstallPluginPeerContracts {
+function pluginPeerContractEvidence(contracts: readonly ObservedPeerContract[] | undefined): DshInstallPluginPeerContracts {
   const entries = [...(contracts ?? [])].sort((left, right) => left.name.localeCompare(right.name))
   const issues = entries
-    .filter((entry): entry is RootPeerContract & { status: DshInstallPeerContractIssue['status'] } => entry.status !== 'satisfied')
+    .filter((entry): entry is ObservedPeerContract & { status: DshInstallPeerContractIssue['status'] } => entry.status !== 'satisfied')
     .sort((left, right) => left.name.localeCompare(right.name))
   return {
     declared: entries.length,
@@ -987,6 +1044,7 @@ function pluginPeerContractEvidence(contracts: readonly RootPeerContract[] | und
       name: bounded(entry.name, 214),
       required: bounded(entry.required, 512),
       status: entry.status,
+      staticUsage: entry.staticUsage,
       ...(entry.resolvedVersion === undefined ? {} : { resolvedVersion: bounded(entry.resolvedVersion, 256) }),
     })),
     ...(issues.length === 0 ? {} : {
@@ -994,6 +1052,7 @@ function pluginPeerContractEvidence(contracts: readonly RootPeerContract[] | und
         name: bounded(issue.name, 214),
         required: bounded(issue.required, 512),
         status: issue.status,
+        staticUsage: issue.staticUsage,
         ...(issue.resolvedVersion === undefined ? {} : { resolvedVersion: bounded(issue.resolvedVersion, 256) }),
       })),
     }),
@@ -1021,6 +1080,11 @@ function isLexicallyInside(root: string, candidate: string): boolean {
 interface ProfilePeerRequirement {
   name: string
   required: string
+  staticUsage: DshInstallPeerStaticUsage
+}
+
+interface ObservedPeerContract extends RootPeerContract {
+  staticUsage: DshInstallPeerStaticUsage
 }
 
 interface ProfilePeerResolutionRecord {
@@ -1031,12 +1095,8 @@ interface ProfilePeerResolutionRecord {
 
 const PROFILE_PEER_RESOLUTION_SCHEMA = 'upstream-radar.profile-peer-resolution/v1alpha1'
 
-function indeterminatePeerContracts(requirements: readonly ProfilePeerRequirement[]): RootPeerContract[] {
-  return requirements.map(requirement => ({
-    name: requirement.name,
-    required: requirement.required,
-    status: 'indeterminate',
-  }))
+function indeterminatePeerContracts(requirements: readonly ProfilePeerRequirement[]): ObservedPeerContract[] {
+  return requirements.map(requirement => ({ ...requirement, status: 'indeterminate' }))
 }
 
 async function peerVersionFromResolvedModule(
@@ -1081,7 +1141,7 @@ async function readProfilePeerContracts(
   path: string,
   requirements: readonly ProfilePeerRequirement[],
   sandboxRoot: string,
-): Promise<RootPeerContract[]> {
+): Promise<ObservedPeerContract[]> {
   if (requirements.length === 0) return []
   let records: ProfilePeerResolutionRecord[]
   try {
@@ -1113,7 +1173,7 @@ async function readProfilePeerContracts(
   if (byName.size !== requirements.length || requirements.some(requirement => !byName.has(requirement.name))) {
     return indeterminatePeerContracts(requirements)
   }
-  const contracts: RootPeerContract[] = []
+  const contracts: ObservedPeerContract[] = []
   for (const requirement of requirements) {
     const record = byName.get(requirement.name)
     if (record === undefined || record.status === 'missing') {
@@ -1290,7 +1350,7 @@ async function runtimeGraphEvidence(
   rootPackage: { name: string, version: string },
   dshVersion: string,
   cacheHome: string,
-  profileResolvedPeerContracts?: readonly RootPeerContract[],
+  profileResolvedPeerContracts?: readonly ObservedPeerContract[],
 ): Promise<Pick<DshInstallObservationReport['resolution'], 'runtimeGraph' | 'runtimeGraphError'>> {
   try {
     const dshRuntime = await discoverExactDshRuntime(cacheHome, dshVersion)
@@ -1306,7 +1366,10 @@ async function runtimeGraphEvidence(
     )
     if (graph.digest === undefined) return {}
     const gaps = graphGapPartitions(graph)
-    const contracts = profileResolvedPeerContracts ?? graph.rootPeerContracts
+    const contracts = profileResolvedPeerContracts ?? graph.rootPeerContracts?.map(contract => ({
+      ...contract,
+      staticUsage: 'scan-incomplete' as const,
+    }))
     const concretelyResolvedRootPeers = new Set((contracts ?? [])
       .filter(contract => contract.status === 'satisfied' || contract.status === 'mismatched')
       .map(contract => contract.name))
@@ -1350,7 +1413,7 @@ async function resolutionEvidence(
   rootPackage: { name: string, version: string },
   dshVersion: string,
   cacheHome: string,
-  profileResolvedPeerContracts?: readonly RootPeerContract[],
+  profileResolvedPeerContracts?: readonly ObservedPeerContract[],
 ): Promise<DshInstallObservationReport['resolution']> {
   const [profile, runtime] = await Promise.all([
     profileResolutionEvidence(dshHome),
@@ -1389,8 +1452,8 @@ function finalCompatibilityConclusion(
     const detail = firstIssue === undefined
       ? `${contracts.mismatched + contracts.missing} required plugin peer contract(s) do not match the DSH runtime`
       : firstIssue.status === 'missing'
-        ? `${firstIssue.name}@${firstIssue.required} was not resolved by the DSH runtime`
-        : `${firstIssue.name}@${firstIssue.resolvedVersion ?? 'unknown'} does not satisfy ${firstIssue.required}`
+        ? `${firstIssue.name}@${firstIssue.required} was not resolved by the DSH runtime (${firstIssue.staticUsage})`
+        : `${firstIssue.name}@${firstIssue.resolvedVersion ?? 'unknown'} does not satisfy ${firstIssue.required} (${firstIssue.staticUsage})`
     return {
       result: 'peer-contract-incompatible',
       reason: `the exact artifact installed and loaded, but ${detail}`,
@@ -1720,6 +1783,13 @@ export function renderDshInstallObservation(report: DshInstallObservationReport)
   ]
   for (const [name, stage] of Object.entries(report.stages)) {
     lines.push(`  ${name}: ${stage.status}${stage.detail === undefined ? '' : ` (${stage.detail})`}`)
+  }
+  const peerIssues = report.resolution.runtimeGraph?.pluginPeerContracts.issues ?? []
+  if (peerIssues.length > 0) {
+    lines.push('', 'Direct peer-contract findings:')
+    for (const issue of peerIssues) {
+      lines.push(`  ${issue.name}: ${issue.status}; requires ${issue.required}${issue.resolvedVersion === undefined ? '' : `, resolved ${issue.resolvedVersion}`}; static use ${issue.staticUsage}`)
+    }
   }
   lines.push('', report.boundary.note)
   return `${lines.join('\n')}\n`

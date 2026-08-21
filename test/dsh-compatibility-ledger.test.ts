@@ -246,12 +246,14 @@ describe('DSH compatibility ledger', () => {
                 name: 'host-runtime',
                 required: '^3.0.0',
                 status: 'mismatched',
+                staticUsage: 'runtime-import-observed',
                 resolvedVersion: '2.1.0',
               }],
               issues: [{
                 name: 'host-runtime',
                 required: '^3.0.0',
                 status: 'mismatched',
+                staticUsage: 'runtime-import-observed',
                 resolvedVersion: '2.1.0',
               }],
             },
@@ -265,6 +267,7 @@ describe('DSH compatibility ledger', () => {
       name: 'host-runtime',
       required: '^3.0.0',
       status: 'mismatched',
+      staticUsage: 'runtime-import-observed',
       resolvedVersion: '2.1.0',
     }])
     assert.equal(merged.ledger.entries[0]?.resolution?.runtimeGraph?.optionalUnavailable, 7)

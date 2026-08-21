@@ -89,6 +89,7 @@ export {
   type DshInstallPluginPeerContracts,
   type DshInstallPeerContractIssue,
   type DshInstallPeerContractRelation,
+  type DshInstallPeerStaticUsage,
   type DshInstallRuntimeGraphEvidence,
   type DshInstallObservationReport,
   type DshInstallObservationResult,

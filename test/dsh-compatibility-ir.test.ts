@@ -53,17 +53,20 @@ function ledger(): DshCompatibilityLedger {
                 name: '@deepseek-ai/dsh-client-ui-slots',
                 required: '^0.1.0-rc.6',
                 status: 'missing',
+                staticUsage: 'type-only-reference-observed',
               },
               {
                 name: '@deepseek-ai/dsh-tools',
                 required: '^0.1.0-rc.6',
                 status: 'satisfied',
+                staticUsage: 'runtime-import-observed',
                 resolvedVersion: '0.1.0-rc.8',
               },
               {
                 name: 'react-dom',
                 required: '^18.2.0',
                 status: 'mismatched',
+                staticUsage: 'runtime-import-observed',
                 resolvedVersion: '19.2.8',
               },
             ],
@@ -72,11 +75,13 @@ function ledger(): DshCompatibilityLedger {
                 name: '@deepseek-ai/dsh-client-ui-slots',
                 required: '^0.1.0-rc.6',
                 status: 'missing',
+                staticUsage: 'type-only-reference-observed',
               },
               {
                 name: 'react-dom',
                 required: '^18.2.0',
                 status: 'mismatched',
+                staticUsage: 'runtime-import-observed',
                 resolvedVersion: '19.2.8',
               },
             ],
@@ -103,11 +108,12 @@ describe('DSH compatibility IR', () => {
     assert.deepEqual(ir.relations.map(relation => ({
       name: relation.dependency.name,
       status: relation.dependency.status,
+      staticUsage: relation.dependency.staticUsage,
       resolvedVersion: relation.dependency.resolvedVersion,
     })), [
-      { name: '@deepseek-ai/dsh-client-ui-slots', status: 'missing', resolvedVersion: undefined },
-      { name: '@deepseek-ai/dsh-tools', status: 'satisfied', resolvedVersion: '0.1.0-rc.8' },
-      { name: 'react-dom', status: 'mismatched', resolvedVersion: '19.2.8' },
+      { name: '@deepseek-ai/dsh-client-ui-slots', status: 'missing', staticUsage: 'type-only-reference-observed', resolvedVersion: undefined },
+      { name: '@deepseek-ai/dsh-tools', status: 'satisfied', staticUsage: 'runtime-import-observed', resolvedVersion: '0.1.0-rc.8' },
+      { name: 'react-dom', status: 'mismatched', staticUsage: 'runtime-import-observed', resolvedVersion: '19.2.8' },
     ])
     assert.deepEqual(parseDshCompatibilityIR(ir), ir)
 
@@ -122,6 +128,7 @@ describe('DSH compatibility IR', () => {
       nodeMajor: 24,
       required: '^18.2.0',
       status: 'mismatched',
+      staticUsage: 'runtime-import-observed',
       resolvedVersion: '19.2.8',
     }])
   })

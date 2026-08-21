@@ -254,7 +254,7 @@ jobs:
               }
               if (peerIssues.length > 0) {
                 lines.push('- Direct plugin peer-contract findings:')
-                for (const issue of peerIssues) lines.push(`  - \`${inline(issue.name)}\`: ${inline(issue.status)}; requires \`${inline(issue.required)}\`${issue.resolvedVersion === undefined ? '' : `, resolved \`${inline(issue.resolvedVersion)}\``}`)
+                for (const issue of peerIssues) lines.push(`  - \`${inline(issue.name)}\`: ${inline(issue.status)}; requires \`${inline(issue.required)}\`${issue.resolvedVersion === undefined ? '' : `, resolved \`${inline(issue.resolvedVersion)}\``}; static use: \`${inline(issue.staticUsage ?? 'unknown')}\``)
               }
             }
           }

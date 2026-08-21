@@ -67,6 +67,7 @@ export interface DshCompatibilityIrRelation {
     name: string
     required: string
     status: DshCompatibilityPeerStatus
+    staticUsage: DshCompatibilityPeerContractRelation['staticUsage']
     /** Concrete version from `import.meta.resolve()` inside the DSH profile. */
     resolvedVersion?: string
   }
@@ -87,6 +88,7 @@ export interface DshCompatibilityReverseImpact {
   nodeMajor: number
   required: string
   status: DshCompatibilityPeerStatus
+  staticUsage: DshCompatibilityPeerContractRelation['staticUsage']
   resolvedVersion?: string
 }
 
@@ -134,6 +136,15 @@ function peerStatus(value: unknown, label: string): DshCompatibilityPeerStatus {
   return status
 }
 
+function peerStaticUsage(value: unknown, label: string): DshCompatibilityPeerContractRelation['staticUsage'] {
+  const usage = boundedString(value, label, 64)
+  if (usage !== 'runtime-import-observed' && usage !== 'type-only-reference-observed'
+    && usage !== 'no-literal-reference-observed' && usage !== 'scan-incomplete') {
+    throw new Error(`${label} is unsupported`)
+  }
+  return usage
+}
+
 function result(value: unknown, label: string): DshCompatibilityLedgerEntry['result'] {
   const parsed = boundedString(value, label, 64)
   if (parsed !== 'compatible' && parsed !== 'runtime-incompatible' && parsed !== 'peer-contract-incompatible'
@@ -177,6 +188,7 @@ function relationId(cellId: string, relation: DshCompatibilityPeerContractRelati
     name: relation.name,
     required: relation.required,
     status: relation.status,
+    staticUsage: relation.staticUsage,
     ...(relation.resolvedVersion === undefined ? {} : { resolvedVersion: relation.resolvedVersion }),
   })
 }
@@ -254,6 +266,7 @@ export function buildDshCompatibilityIR(ledgerInput: DshCompatibilityLedger | un
           name: relation.name,
           required: relation.required,
           status: relation.status,
+          staticUsage: relation.staticUsage,
           ...(relation.resolvedVersion === undefined ? {} : { resolvedVersion: relation.resolvedVersion }),
         },
       })
@@ -282,6 +295,7 @@ export function buildDshCompatibilityReverseIndex(irInput: DshCompatibilityIR | 
       nodeMajor: cell.runtime.nodeMajor,
       required: relation.dependency.required,
       status: relation.dependency.status,
+      staticUsage: relation.dependency.staticUsage,
       ...(relation.dependency.resolvedVersion === undefined ? {} : { resolvedVersion: relation.dependency.resolvedVersion }),
     })
     dependencies.set(relation.dependency.name, impacts)
@@ -370,6 +384,7 @@ function parseRelation(value: unknown, index: number): DshCompatibilityIrRelatio
       name: packageName(dependency.name, `relations[${index}].dependency.name`),
       required: boundedString(dependency.required, `relations[${index}].dependency.required`, 512),
       status,
+      staticUsage: peerStaticUsage(dependency.staticUsage, `relations[${index}].dependency.staticUsage`),
       ...(resolvedVersion === undefined ? {} : { resolvedVersion }),
     },
   }
@@ -451,6 +466,7 @@ export function parseDshCompatibilityReverseIndex(input: unknown): DshCompatibil
         nodeMajor: boundedInteger(impact.nodeMajor, `dependencies[${index}].impacts[${impactIndex}].nodeMajor`, 40),
         required: boundedString(impact.required, `dependencies[${index}].impacts[${impactIndex}].required`, 512),
         status,
+        staticUsage: peerStaticUsage(impact.staticUsage, `dependencies[${index}].impacts[${impactIndex}].staticUsage`),
         ...(resolvedVersion === undefined ? {} : { resolvedVersion }),
       }
     })
