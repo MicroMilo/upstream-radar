@@ -1,0 +1,98 @@
+name: DSH known finding watch
+
+on:
+  workflow_dispatch:
+  schedule:
+    # The watch is deliberately independent from the broader upstream
+    # observer: it checks the seven already-reported findings every day.
+    - cron: '41 6 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: upstream-radar-dsh-finding-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out the watch and its targets
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 11.3.0
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Build the checked-out Radar
+        run: |
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm build
+
+      - name: Check known findings
+        id: watch
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          WATCH_REPORT: ${{ runner.temp }}/dsh-finding-watch.md
+          WATCH_JSON: ${{ runner.temp }}/dsh-finding-watch.json
+        shell: bash
+        run: |
+          set +e
+          node scripts/monitor-dsh-findings.mjs \
+            --state examples/dsh/finding-watch/state.json \
+            --report "$WATCH_REPORT" \
+            --json-report "$WATCH_JSON"
+          watch_exit=$?
+          set -e
+          if [[ -s "$WATCH_REPORT" ]]; then
+            cat "$WATCH_REPORT" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "exit=$watch_exit" >> "$GITHUB_OUTPUT"
+          exit "$watch_exit"
+        continue-on-error: true
+
+      - name: Upload the machine report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: dsh-finding-watch
+          path: |
+            ${{ runner.temp }}/dsh-finding-watch.md
+            ${{ runner.temp }}/dsh-finding-watch.json
+          if-no-files-found: error
+          retention-days: 30
+
+      # A finding is not a workflow failure. The state is committed so the
+      # next run can classify added, resolved, changed and persisting evidence.
+      # Unknown checks also advance only the trusted half of a target; they do
+      # not erase the last successful artifact observation.
+      - name: Persist trusted observation state
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -f examples/dsh/finding-watch/state.json ]]; then
+            echo 'state.json was not produced; nothing to persist.'
+            exit 0
+          fi
+          git config user.name 'upstream-radar[bot]'
+          git config user.email 'upstream-radar[bot]@users.noreply.github.com'
+          git add examples/dsh/finding-watch/state.json
+          if git diff --cached --quiet; then
+            echo 'No trusted observation changed; no commit created.'
+            exit 0
+          fi
+          git commit -m 'chore: update DSH finding watch state [skip ci]'
+          git push

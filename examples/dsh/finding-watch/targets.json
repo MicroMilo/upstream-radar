@@ -1,0 +1,76 @@
+{
+  "schema": "upstream-radar.finding-watch/v1alpha1",
+  "description": "Known supply-chain findings from the first real DSH plugin batch. Each code is observed separately on the source repository and the exact published npm artifact.",
+  "targets": [
+    {
+      "id": "anan-thermal-monitor",
+      "repository": "AmeKrance/anan-thermal-monitor",
+      "package": "anan-thermal-monitor",
+      "watch": [
+        "npm-archive-invalid",
+        "native-binary-present",
+        "npm-provenance-missing"
+      ]
+    },
+    {
+      "id": "dsh-hdc-bridge",
+      "repository": "1na-ko/dsh-hdc-bridge",
+      "package": "dsh-hdc-bridge",
+      "watch": [
+        "dependency-install-script-present",
+        "custom-registry-config",
+        "dependency-graph-unlocked",
+        "npm-provenance-missing"
+      ]
+    },
+    {
+      "id": "dsh-msg-hub",
+      "repository": "AbcdefgXW/dsh-msg-hub",
+      "package": "dsh-msg-hub",
+      "watch": [
+        "dependency-install-script-present",
+        "dependency-graph-unavailable",
+        "lockfile-root-metadata-stale",
+        "npm-provenance-missing"
+      ]
+    },
+    {
+      "id": "dsh-spotlight",
+      "repository": "0xsline/dsh-spotlight",
+      "package": "@0xsline/dsh-spotlight",
+      "watch": [
+        "lifecycle-script-present",
+        "npm-provenance-missing"
+      ]
+    },
+    {
+      "id": "dsh-verification-receipt",
+      "repository": "030611/dsh-verification-receipt",
+      "package": "dsh-verification-receipt",
+      "watch": [
+        "lifecycle-script-present",
+        "npm-provenance-missing"
+      ]
+    },
+    {
+      "id": "dsh-voice",
+      "repository": "3274375092/dsh-voice",
+      "package": "@nn12138/dsh-voice",
+      "watch": [
+        "lifecycle-script-present",
+        "npm-provenance-missing"
+      ]
+    },
+    {
+      "id": "dsh-wsl-workspace",
+      "repository": "6Mikao9/dsh-wsl-workspace",
+      "package": "dsh-wsl-workspace",
+      "watch": [
+        "dependency-install-script-present",
+        "floating-dependency-spec",
+        "dependency-graph-unlocked",
+        "npm-provenance-missing"
+      ]
+    }
+  ]
+}

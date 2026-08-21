@@ -2,6 +2,14 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [0.38.0] - 2026-08-21
+
+### Always-on known finding watch
+
+- Add a focused watch for seven real DSH plugin supply-chain findings, checking source and the exact npm artifact separately.
+- Persist trusted observations and classify findings as added, resolved, changed, persisting, or unknown without treating network failures as fixes.
+- Add a daily GitHub Actions workflow, machine-readable report, author-facing Markdown report, bounded retries, and proxy-aware npm checks.
+
 ## [0.37.0] - 2026-08-19
 
 ### Real DSH dependency corpus

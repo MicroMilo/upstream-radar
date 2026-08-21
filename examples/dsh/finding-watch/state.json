@@ -1,0 +1,989 @@
+{
+  "schema": "upstream-radar.finding-watch-state/v1alpha1",
+  "targets": {
+    "anan-thermal-monitor": {
+      "id": "anan-thermal-monitor",
+      "repository": "AmeKrance/anan-thermal-monitor",
+      "package": "anan-thermal-monitor",
+      "watch": [
+        "npm-archive-invalid",
+        "native-binary-present",
+        "npm-provenance-missing"
+      ],
+      "source": {
+        "name": "anan-thermal-monitor",
+        "version": "1.0.4",
+        "digest": "sha256:34a515e6395fe13735b88d1f7a10324068ec4c90d579b4d851c356c51da2063b",
+        "findings": [
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/ja/Microsoft.Win32.TaskScheduler.resources.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/ja/Microsoft.Win32.TaskScheduler.resources.dll",
+              "sha256": "e282404035693502882bca0b88e988fe0bff8ace799ce67582bbb1485751b5dd",
+              "size": 10240
+            },
+            "fingerprint": "sha256:05617fc31b4dc9542cf376cdf28b7177d9c99da6da4444959982629092e7ee0d"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/Aga.Controls.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/Aga.Controls.dll",
+              "sha256": "e9f4eb385359a6d51fcf88153c597e3d75b6e64d5f1c3766eaa2deee739e855f",
+              "size": 145920
+            },
+            "fingerprint": "sha256:130dcf195026c91eb52e6851fd3e163c5a0e06f35ba2b1c069e5b81eedb89819"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.Text.Encodings.Web.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.Text.Encodings.Web.dll",
+              "sha256": "43e6dfb4aa333848be5066dcb3d490afc417d0f896aada2f17b5db5fcbb819fc",
+              "size": 87816
+            },
+            "fingerprint": "sha256:18cc4801aa237e5460cf69ad625faeaa551bc1383d6465a19c26b6c4c1d45084"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/OxyPlot.WindowsForms.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/OxyPlot.WindowsForms.dll",
+              "sha256": "0758b8a4c129730e4585e717d4183d48b1167a78e4955ce704d9e6cc204148b2",
+              "size": 32768
+            },
+            "fingerprint": "sha256:1a7ea3562a15ed7ce6f0ea7d330d51cda823483fea420b5ba173b5cc45ef3051"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/RAMSPDToolkit-NDD.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/RAMSPDToolkit-NDD.dll",
+              "sha256": "b6882354c7c8ec186617e421507743dbfae09c5c1fc24cef76a1d0c0c26651de",
+              "size": 233472
+            },
+            "fingerprint": "sha256:2152ef1580b43c942c60d1cdcec836d1c03e2a95a62c6fb08a2652229ab81008"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.Security.Principal.Windows.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.Security.Principal.Windows.dll",
+              "sha256": "b4d8e15adc235d0e858e39b5133e5d00a4baa8c94f4f39e3b5e791b0f9c0c806",
+              "size": 18312
+            },
+            "fingerprint": "sha256:2e611e20bd9090473a01664d6516d4df2585dff5c5066e132755b9527c886361"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/tr/Microsoft.Win32.TaskScheduler.resources.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/tr/Microsoft.Win32.TaskScheduler.resources.dll",
+              "sha256": "1429cd58467aea880302b369eb802a55411aba008895bd0023376526538fb462",
+              "size": 10240
+            },
+            "fingerprint": "sha256:2fda6f4527c9ddf6883d844f488298c8a3858f6a8fe310b5aae0e52de58d0d11"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/sv/Microsoft.Win32.TaskScheduler.resources.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/sv/Microsoft.Win32.TaskScheduler.resources.dll",
+              "sha256": "84ede4a0234ee6cd52329939e696b8bc2758b313dd7225d7a46828ed626d5e36",
+              "size": 9728
+            },
+            "fingerprint": "sha256:300664462284548f477901c79336909593da31a24a07c2ede91f26eda7615711"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/zh-CN/Microsoft.Win32.TaskScheduler.resources.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/zh-CN/Microsoft.Win32.TaskScheduler.resources.dll",
+              "sha256": "9f1f40400b3184e162f6606cce12820fabbb7f2a9b67202e91c01595b6dee26a",
+              "size": 9728
+            },
+            "fingerprint": "sha256:3212721ce843e3b8b7bbb9384fd138116ac9ce38cdfe6430cab7bb2ab96b72fd"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/LibreHardwareMonitorLib.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/LibreHardwareMonitorLib.dll",
+              "sha256": "6ebc194316536ba61af5be24508ad9fcbb2ecc685e716c12e787c79530f66bf0",
+              "size": 1203200
+            },
+            "fingerprint": "sha256:3cf40484fe9d0e17eab5127a262493335d5fb0ff7d251f10f18d53397cbdcec1"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.Runtime.CompilerServices.Unsafe.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.Runtime.CompilerServices.Unsafe.dll",
+              "sha256": "08cbd7278b66f1e68425a82d4b97181a4130d93e3dd91831407aba7212ccdacf",
+              "size": 19256
+            },
+            "fingerprint": "sha256:4368aaca91de839d1cf7b4e41b8f1f1a2c90f59b4137e05ca536cb45099ec6fc"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.Collections.Immutable.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.Collections.Immutable.dll",
+              "sha256": "8c0f09a8b1fd730da3f3d2c4c831cdd76e3fca6bc588523d8f7eacf16d5a24e9",
+              "size": 253232
+            },
+            "fingerprint": "sha256:4a5a2fc1f8484268bfdfab8e03aa53a5ec86092746e94013d914107c3a1a7f7f"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.Formats.Nrbf.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.Formats.Nrbf.dll",
+              "sha256": "27514fbffb0776c37ede88ec371310844f7bec55a017627aad60180f268769e4",
+              "size": 71472
+            },
+            "fingerprint": "sha256:535dbea0ce7fbd954344dfed9b390a3ce7656777d2f5679fb66ff0c3a8f03695"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.Resources.Extensions.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.Resources.Extensions.dll",
+              "sha256": "c3748f17d2f5209cc795a88ad4946c12c3f6ef73b3015dc92c43f932a342b17c",
+              "size": 115984
+            },
+            "fingerprint": "sha256:58b43a6924affc4c97ae071f102589feb50c571cabd116a497ae9ee6153cf69b"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/fr/Microsoft.Win32.TaskScheduler.resources.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/fr/Microsoft.Win32.TaskScheduler.resources.dll",
+              "sha256": "4b282ddf1f09e09242ca11a22fd7dfdd069ede751961bdf8d771258071823b51",
+              "size": 10240
+            },
+            "fingerprint": "sha256:5a3aeb5b2166144ddfce749bce9f1e1af93050b8bc1fc7b8ec91aa58c32a3d2a"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/OxyPlot.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/OxyPlot.dll",
+              "sha256": "da767e3d8c10674e6ffa72670952d1274544b453b68e774b29f03b5160a4a034",
+              "size": 700928
+            },
+            "fingerprint": "sha256:5aa8a28453958873a5c6d8940d8c8eee06e3160e75daba302078143f9e07b1f8"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.Reflection.Metadata.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.Reflection.Metadata.dll",
+              "sha256": "6c1fe5d140f0f21fac0eea7b1d3e3bc2526c0027e857bcf5227af722a9b32a0d",
+              "size": 515336
+            },
+            "fingerprint": "sha256:6a44b4e342d42dd4f2de351a9cb596b2ae2029450894b8fbf5fc00d89ed7d64f"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/es/Microsoft.Win32.TaskScheduler.resources.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/es/Microsoft.Win32.TaskScheduler.resources.dll",
+              "sha256": "b417b6a5b5dc7349122a00c43c06897aedf414046af83ba14ba28838f243ca42",
+              "size": 10240
+            },
+            "fingerprint": "sha256:79eead350099350b443ad0a290d29d3f4ba0a7fb4cc018e87236492e22bfccc4"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/LibreHardwareMonitor.exe",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/LibreHardwareMonitor.exe",
+              "sha256": "fe216a48a48a6048156a133a39b960437d781a4c9214e5abc0f26f666f61ba22",
+              "size": 4458496
+            },
+            "fingerprint": "sha256:7e5cdb157f1c702ebe018deb7362625abe565ff03c00a7ddde554aa9a0e0d0fb"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.Threading.Tasks.Extensions.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.Threading.Tasks.Extensions.dll",
+              "sha256": "af4e13ef418fd89b432de20cd1dfb7fa10a7179c8dd049c9856316e50c5949ca",
+              "size": 27960
+            },
+            "fingerprint": "sha256:83a9e53861e9170ff6bf925ff59bc537d041a21eedf6b14dbe49d34a67ca021a"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/BlackSharp.Core.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/BlackSharp.Core.dll",
+              "sha256": "cafb93afcc8d8a367e21f619673d05c06887d8964867fed1371f02ded1cd3e23",
+              "size": 32768
+            },
+            "fingerprint": "sha256:86b8d459acc1fd55a886a59d20c2a2233793ed0a4399280e7ff5c0d4fc7c28fd"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.Security.AccessControl.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.Security.AccessControl.dll",
+              "sha256": "ff14c5f628b9a6798d173aefbba0a43d61e66f715108e2576ac0d3dfab9071d0",
+              "size": 35952
+            },
+            "fingerprint": "sha256:880b38cab026845f22a67613137a1c386ea7a4432e7cdea8c8cb5ce87ca9ffca"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/it/Microsoft.Win32.TaskScheduler.resources.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/it/Microsoft.Win32.TaskScheduler.resources.dll",
+              "sha256": "24a3040b55de26ce6c8f36f60e1d728ead14416875c01d160d9ffcfbeaa8dcd5",
+              "size": 10240
+            },
+            "fingerprint": "sha256:8bb31a5348007b1b635dc6ffec966bb0596a2667da357a5d39a71b4b8129f093"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.Text.Json.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.Text.Json.dll",
+              "sha256": "7a7f2e0b942782739551b37546efc842f53c7fce3a8f0f56ad45a5cf78e2c214",
+              "size": 778504
+            },
+            "fingerprint": "sha256:997b98337d88bb4f575a0253d9961f36d6d8e30c173d481978470ed63d4193f3"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/pl/Microsoft.Win32.TaskScheduler.resources.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/pl/Microsoft.Win32.TaskScheduler.resources.dll",
+              "sha256": "2ddd5ed4d84e8732334b5f6e08b3d61190da58762d33db72f7e229eb7e4791f0",
+              "size": 10240
+            },
+            "fingerprint": "sha256:a475e17fcc50f0e261f1a16e884f19c008256940b1cb94cf29607156a2acb2fe"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/Microsoft.Bcl.HashCode.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/Microsoft.Bcl.HashCode.dll",
+              "sha256": "3a4e851ee5fc0f6182aa5a3d65dc56fcd6979b65334b5c3b92fbdc791457c0ab",
+              "size": 26920
+            },
+            "fingerprint": "sha256:a8500ac783bb39e6380dac50f7528035f42834683d8307c0244d38d961a77cf1"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/HidSharp.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/HidSharp.dll",
+              "sha256": "d86690efde30ea9179f669320f39148853793b743a98b531afeaf30598e22f54",
+              "size": 262792
+            },
+            "fingerprint": "sha256:b012080312c3e71d31f6a1a2cbdba7e1b4dcafb9f3a4e412cd5011e82a62f74b"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.CodeDom.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.CodeDom.dll",
+              "sha256": "e9bca8ecab5f02df389ee4b306c32a93d7822b524a6eca90e449e13d4b4283a3",
+              "size": 34064
+            },
+            "fingerprint": "sha256:b903638d6d88f5f6b0303b8450496eda3a534cbb29d65f16b789a644a505c205"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.Memory.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.Memory.dll",
+              "sha256": "d5e8e4866f9cfa66f7765660f84b210198893e55335487afe5ebda342c0e913d",
+              "size": 145200
+            },
+            "fingerprint": "sha256:bef1e999ffad33162de3aad55765849744e298019001e800dae9ae1fa0762978"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.IO.Pipelines.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.IO.Pipelines.dll",
+              "sha256": "52a813c62932462d8f070f001acd1f264c0766a11a78c6d3c4f81ee3b1d67223",
+              "size": 85768
+            },
+            "fingerprint": "sha256:c046375018a043eff573db137dc4b3ff05d179da2d02c64f8bc6089c17c1473d"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/DiskInfoToolkit.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/DiskInfoToolkit.dll",
+              "sha256": "1acbf51b3c10c51c986cf43021680d34a2e38d9a5ba652bcfa9a1b5f7fc09800",
+              "size": 903680
+            },
+            "fingerprint": "sha256:d04b70b2250a83cdcca7ad421fdb2954a30b1f10d114eb13791ff1139b77a9f3"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/de/Microsoft.Win32.TaskScheduler.resources.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/de/Microsoft.Win32.TaskScheduler.resources.dll",
+              "sha256": "f54e8a38be8e27f178ac519e7eafa613d0341037bd0f723bf128fcdb94b7b540",
+              "size": 9728
+            },
+            "fingerprint": "sha256:d9cdedf7d3f2535fd9cdfbd7719467a9749b471937bbe74bac7ae9dfa196d6ce"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/ru/Microsoft.Win32.TaskScheduler.resources.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/ru/Microsoft.Win32.TaskScheduler.resources.dll",
+              "sha256": "b15e736a0e3c1051becdefaadfeaab68163c2203381e1e782316372a58fcb0c6",
+              "size": 10752
+            },
+            "fingerprint": "sha256:dd6264bda56a9b6af6f72ed113db78a685d0362dcfc5cf83d7b38755b76a9d81"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/zh-Hant/Microsoft.Win32.TaskScheduler.resources.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/zh-Hant/Microsoft.Win32.TaskScheduler.resources.dll",
+              "sha256": "a065c666fea783efd1c535bea0f409cdaeeda0f279d339bb120a32537766e1aa",
+              "size": 9728
+            },
+            "fingerprint": "sha256:ee39f4e9a9cb38386ac8ac13952323642d62a306c90ce983a5b9af7c9ab829c5"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.Numerics.Vectors.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.Numerics.Vectors.dll",
+              "sha256": "20c2fa81b8c70d651099d762954f285fd4f942e63b2d7217c145dab8d4b2f4c9",
+              "size": 110344
+            },
+            "fingerprint": "sha256:efbb36263d34a476e9a81f7c561970fba1b95db71ae865913fcde226034f55ff"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.Threading.AccessControl.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.Threading.AccessControl.dll",
+              "sha256": "5e3a3902f04f840c0fc1f9c2f249f804f6cfdf7901b2e06778bc2a4603ae4694",
+              "size": 34568
+            },
+            "fingerprint": "sha256:f058f83e7e910a0ae2da8024ff293b9dd4b66bc77c9b989172701f7e67e27e99"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/Microsoft.Win32.TaskScheduler.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/Microsoft.Win32.TaskScheduler.dll",
+              "sha256": "5e64f2b0912f3fd60d62c4907229033ef22a349791843c0a0e748b3260e3fcae",
+              "size": 333312
+            },
+            "fingerprint": "sha256:f19a5c86e379ff74a9993a0cb1c419e674b65248ae94f019eb1a5dddf6994423"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/Microsoft.Bcl.AsyncInterfaces.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/Microsoft.Bcl.AsyncInterfaces.dll",
+              "sha256": "bda069b17261a50f36b3a79a88b0243d7b9f6508725598adf88d42471977720e",
+              "size": 27960
+            },
+            "fingerprint": "sha256:fbbd517238a716d7905f9db2f01517f989c68eff9eb5367ba34a80789c2aaa18"
+          },
+          {
+            "code": "native-binary-present",
+            "severity": "high",
+            "summary": "Native executable artifact found: assets/LibreHardwareMonitor/System.Buffers.dll",
+            "detail": "Native artifacts cannot be fully explained by JavaScript source review and require provenance or sandbox analysis.",
+            "evidence": {
+              "path": "assets/LibreHardwareMonitor/System.Buffers.dll",
+              "sha256": "2d78d770c9cb997199154ae8c018b9f1d1efbc86729f7264dde6dbad2a12cac3",
+              "size": 23816
+            },
+            "fingerprint": "sha256:fddf4ddfb0a1ad59218a609fa1b6e067ae3764073136e9ef514278b8b8d7f67b"
+          }
+        ]
+      },
+      "artifact": {
+        "spec": "npm:anan-thermal-monitor@1.0.4",
+        "name": "anan-thermal-monitor",
+        "version": "1.0.4",
+        "digest": "sha256:60291c92aa02796df227578c1233765a07fbe8217d152025f045d6fe33b556d4",
+        "findings": [
+          {
+            "code": "npm-archive-invalid",
+            "severity": "critical",
+            "summary": "npm artifact cannot be parsed safely",
+            "detail": "unsupported PAX size override",
+            "fingerprint": "sha256:23c35d6fa774e6e7368f99181161640380284af919bed398802c901b2e343988"
+          },
+          {
+            "code": "npm-provenance-missing",
+            "severity": "medium",
+            "summary": "npm artifact has no build provenance",
+            "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+            "fingerprint": "sha256:8213fb7b557a0549cc2f89474f4fdcb1010c8775a30a819d060589744662c58f"
+          }
+        ]
+      }
+    },
+    "dsh-hdc-bridge": {
+      "id": "dsh-hdc-bridge",
+      "repository": "1na-ko/dsh-hdc-bridge",
+      "package": "dsh-hdc-bridge",
+      "watch": [
+        "dependency-install-script-present",
+        "custom-registry-config",
+        "dependency-graph-unlocked",
+        "npm-provenance-missing"
+      ],
+      "source": {
+        "name": "dsh-hdc-bridge",
+        "version": "0.7.2",
+        "digest": "sha256:2a26a4a2fc3dd0f58cad501e437278809f7398b6d8f3bd33ba2e983de10a2f91",
+        "findings": [
+          {
+            "code": "custom-registry-config",
+            "severity": "medium",
+            "summary": "Package configures a custom npm registry",
+            "detail": "Dependency provenance depends on a registry selected by package-local configuration.",
+            "evidence": {
+              "path": ".npmrc"
+            },
+            "fingerprint": "sha256:8afb78a4e5afa427a6ed3c9f472731f151df40c88d335e6d0399f4d8bf407c4c"
+          },
+          {
+            "code": "dependency-graph-unlocked",
+            "severity": "medium",
+            "summary": "Runtime dependency graph is not locked in the reviewed source tree",
+            "detail": "A future resolution of the same manifest may select different transitive artifacts.",
+            "evidence": {
+              "runtimeDependencyCount": 1
+            },
+            "fingerprint": "sha256:30fb4ab431a5c730344ea899eaed18698e7aa6c77fff4ad01b821eed3ddc256d"
+          }
+        ]
+      },
+      "artifact": {
+        "spec": "npm:dsh-hdc-bridge@0.7.2",
+        "name": "dsh-hdc-bridge",
+        "version": "0.7.2",
+        "digest": "sha256:0c86a66448efdc1d331a3d8c9d664b0d3087c7e039d0ec6d7b99f421326617be",
+        "findings": [
+          {
+            "code": "dependency-install-script-present",
+            "severity": "high",
+            "summary": "Resolved dependency graph contains install-time scripts",
+            "detail": "The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.",
+            "evidence": {
+              "packages": [
+                "@deveco/deveco-cli@1.3.0"
+              ],
+              "scripts": [
+                "@deveco/deveco-cli@1.3.0 postinstall: node scripts/postinstall.mjs",
+                "@deveco/deveco-cli@1.3.0 prepare: husky"
+              ]
+            },
+            "fingerprint": "sha256:3c013c563c024e16451b6d20c902f72a2a9b44b2df6924c331f4a581a3b77d6a"
+          },
+          {
+            "code": "npm-provenance-missing",
+            "severity": "medium",
+            "summary": "npm artifact has no build provenance",
+            "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+            "fingerprint": "sha256:8213fb7b557a0549cc2f89474f4fdcb1010c8775a30a819d060589744662c58f"
+          }
+        ]
+      }
+    },
+    "dsh-msg-hub": {
+      "id": "dsh-msg-hub",
+      "repository": "AbcdefgXW/dsh-msg-hub",
+      "package": "dsh-msg-hub",
+      "watch": [
+        "dependency-install-script-present",
+        "dependency-graph-unavailable",
+        "lockfile-root-metadata-stale",
+        "npm-provenance-missing"
+      ],
+      "source": {
+        "name": "dsh-msg-hub",
+        "version": "0.1.8",
+        "digest": "sha256:2b04fa077cf4b61ccce4937328c1b75a41d04dde626c61d7fedd1ddd92897e15",
+        "findings": []
+      },
+      "artifact": {
+        "spec": "npm:dsh-msg-hub@0.1.8",
+        "name": "dsh-msg-hub",
+        "version": "0.1.8",
+        "digest": "sha256:dc1251f3ce953a57a92e7abcb7a0644eaca09d0c7a6ba4876f95bbf3049c934a",
+        "findings": [
+          {
+            "code": "dependency-install-script-present",
+            "severity": "high",
+            "summary": "Resolved dependency graph contains install-time scripts",
+            "detail": "The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.",
+            "evidence": {
+              "packages": [
+                "protobufjs@7.6.5"
+              ],
+              "scripts": [
+                "protobufjs@7.6.5 postinstall: node scripts/postinstall"
+              ]
+            },
+            "fingerprint": "sha256:e52d9339a71c4614955dd2bfb04751dc5d287d2e8ef2355acc450f575c287fe3"
+          },
+          {
+            "code": "npm-provenance-missing",
+            "severity": "medium",
+            "summary": "npm artifact has no build provenance",
+            "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+            "fingerprint": "sha256:8213fb7b557a0549cc2f89474f4fdcb1010c8775a30a819d060589744662c58f"
+          }
+        ]
+      }
+    },
+    "dsh-spotlight": {
+      "id": "dsh-spotlight",
+      "repository": "0xsline/dsh-spotlight",
+      "package": "@0xsline/dsh-spotlight",
+      "watch": [
+        "lifecycle-script-present",
+        "npm-provenance-missing"
+      ],
+      "source": {
+        "name": "@0xsline/dsh-spotlight",
+        "version": "0.0.2",
+        "digest": "sha256:cebe7dd8cd5df591b5d48101f13072274a48b3f9b518fc21208bdf8726f4ad72",
+        "findings": [
+          {
+            "code": "lifecycle-script-present",
+            "severity": "high",
+            "summary": "Lifecycle script prepare executes during installation",
+            "detail": "Lifecycle scripts run before a plugin is admitted into DSH and therefore require review.",
+            "evidence": {
+              "script": "prepare",
+              "command": "node scripts/prepare.mjs"
+            },
+            "fingerprint": "sha256:ac290e7268074bbd0e416ccf8258071435cecf5331d87dfb65cc8246948aefb4"
+          }
+        ]
+      },
+      "artifact": {
+        "spec": "npm:@0xsline/dsh-spotlight@0.0.2",
+        "name": "@0xsline/dsh-spotlight",
+        "version": "0.0.2",
+        "digest": "sha256:d68ef1ec060b2b6a2eeac1430d5c9748abc01fb3d8a008412bac841f8d4a165e",
+        "findings": [
+          {
+            "code": "lifecycle-script-present",
+            "severity": "high",
+            "summary": "Lifecycle script prepare executes during installation",
+            "detail": "Lifecycle scripts run before a plugin is admitted into DSH and therefore require review.",
+            "evidence": {
+              "script": "prepare",
+              "command": "node scripts/prepare.mjs"
+            },
+            "fingerprint": "sha256:ac290e7268074bbd0e416ccf8258071435cecf5331d87dfb65cc8246948aefb4"
+          },
+          {
+            "code": "npm-provenance-missing",
+            "severity": "medium",
+            "summary": "npm artifact has no build provenance",
+            "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+            "fingerprint": "sha256:8213fb7b557a0549cc2f89474f4fdcb1010c8775a30a819d060589744662c58f"
+          }
+        ]
+      }
+    },
+    "dsh-verification-receipt": {
+      "id": "dsh-verification-receipt",
+      "repository": "030611/dsh-verification-receipt",
+      "package": "dsh-verification-receipt",
+      "watch": [
+        "lifecycle-script-present",
+        "npm-provenance-missing"
+      ],
+      "source": {
+        "name": "dsh-verification-receipt",
+        "version": "0.1.0",
+        "digest": "sha256:01ab83c4c6af508c3eb8e6cc0bf6d659ee1267f6d542e64d025c9bbd3884c10d",
+        "findings": [
+          {
+            "code": "lifecycle-script-present",
+            "severity": "high",
+            "summary": "Lifecycle script prepare executes during installation",
+            "detail": "Lifecycle scripts run before a plugin is admitted into DSH and therefore require review.",
+            "evidence": {
+              "script": "prepare",
+              "command": "pnpm run build"
+            },
+            "fingerprint": "sha256:51f89a0e546a2dd68c1e9b27aa40daa0766b3fb9d9f5b87993deb7c6004b6ca6"
+          }
+        ]
+      },
+      "artifact": {
+        "spec": "npm:dsh-verification-receipt@0.1.0",
+        "name": "dsh-verification-receipt",
+        "version": "0.1.0",
+        "digest": "sha256:8179996503491b2e8cc757eeaf779e92995c7d3bace732f76e56c6d0812a1a0d",
+        "findings": [
+          {
+            "code": "lifecycle-script-present",
+            "severity": "high",
+            "summary": "Lifecycle script prepare executes during installation",
+            "detail": "Lifecycle scripts run before a plugin is admitted into DSH and therefore require review.",
+            "evidence": {
+              "script": "prepare",
+              "command": "pnpm run build"
+            },
+            "fingerprint": "sha256:51f89a0e546a2dd68c1e9b27aa40daa0766b3fb9d9f5b87993deb7c6004b6ca6"
+          },
+          {
+            "code": "npm-provenance-missing",
+            "severity": "medium",
+            "summary": "npm artifact has no build provenance",
+            "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+            "fingerprint": "sha256:8213fb7b557a0549cc2f89474f4fdcb1010c8775a30a819d060589744662c58f"
+          }
+        ]
+      }
+    },
+    "dsh-voice": {
+      "id": "dsh-voice",
+      "repository": "3274375092/dsh-voice",
+      "package": "@nn12138/dsh-voice",
+      "watch": [
+        "lifecycle-script-present",
+        "npm-provenance-missing"
+      ],
+      "source": {
+        "name": "@nn12138/dsh-voice",
+        "version": "0.2.5",
+        "digest": "sha256:d1c038e3d0717420bed2c2c1be5e59942e689cfc1173aa2e90c5001785b9b44e",
+        "findings": [
+          {
+            "code": "lifecycle-script-present",
+            "severity": "high",
+            "summary": "Lifecycle script prepare executes during installation",
+            "detail": "Lifecycle scripts run before a plugin is admitted into DSH and therefore require review.",
+            "evidence": {
+              "script": "prepare",
+              "command": "npm run build"
+            },
+            "fingerprint": "sha256:bc52e50bc84e4ea3f23e710f580b338850e9e0f46e15886daa702389f34c5751"
+          }
+        ]
+      },
+      "artifact": {
+        "spec": "npm:@nn12138/dsh-voice@0.2.5",
+        "name": "@nn12138/dsh-voice",
+        "version": "0.2.5",
+        "digest": "sha256:591e9d7bec499d499f36cd8a32c835010f7c1f94a6ee18dc90af2f25ad0a8075",
+        "findings": [
+          {
+            "code": "lifecycle-script-present",
+            "severity": "high",
+            "summary": "Lifecycle script prepare executes during installation",
+            "detail": "Lifecycle scripts run before a plugin is admitted into DSH and therefore require review.",
+            "evidence": {
+              "script": "prepare",
+              "command": "npm run build"
+            },
+            "fingerprint": "sha256:bc52e50bc84e4ea3f23e710f580b338850e9e0f46e15886daa702389f34c5751"
+          },
+          {
+            "code": "npm-provenance-missing",
+            "severity": "medium",
+            "summary": "npm artifact has no build provenance",
+            "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+            "fingerprint": "sha256:8213fb7b557a0549cc2f89474f4fdcb1010c8775a30a819d060589744662c58f"
+          }
+        ]
+      }
+    },
+    "dsh-wsl-workspace": {
+      "id": "dsh-wsl-workspace",
+      "repository": "6Mikao9/dsh-wsl-workspace",
+      "package": "dsh-wsl-workspace",
+      "watch": [
+        "dependency-install-script-present",
+        "floating-dependency-spec",
+        "dependency-graph-unlocked",
+        "npm-provenance-missing"
+      ],
+      "source": {
+        "name": "dsh-wsl-workspace",
+        "version": "0.2.3",
+        "digest": "sha256:ef63492e49e30e8caec27101365a9000bc4188ac3f14d229683c996bfa518c74",
+        "findings": [
+          {
+            "code": "dependency-graph-unlocked",
+            "severity": "medium",
+            "summary": "Runtime dependency graph is not locked in the reviewed source tree",
+            "detail": "A future resolution of the same manifest may select different transitive artifacts.",
+            "evidence": {
+              "runtimeDependencyCount": 6
+            },
+            "fingerprint": "sha256:e7f8d9d424f38b21a49bb290700f8cc277f2b4d6009c036c97f84b93a212f635"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-timeout uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-timeout",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:1090ff2f221f8f8180999b51b6b65a2efdabbef3d01f14ce368820bd4987ce8a"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-fs-local uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-fs-local",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:25835acc9ed96b843a0b7724dc8080b1398124f3da94468d781c0ee50bc8236b"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-fs uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-fs",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:495b59a339e6b1e949a28eb783839abf550e2bf4575421a704e49f4452bf8c36"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-shell uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-shell",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:57d05d8789b8ef53a0ccdaef41333a5bdc499f3469dd0c443b77a642502c1152"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/cordis uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/cordis",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:6b16a9d4b248e07468c2ff6317daea5cd65d0d2fb4c2f006ce94479ed1a5684e"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-subprocess uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-subprocess",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:886a6bbf60fecf14541260fa486768c39fab22f5c1b420176aac2082a33c1dee"
+          }
+        ]
+      },
+      "artifact": {
+        "spec": "npm:dsh-wsl-workspace@0.2.3",
+        "name": "dsh-wsl-workspace",
+        "version": "0.2.3",
+        "digest": "sha256:831b9bab04b9eed73203fd9024cf4f335f5c0f079cd7de3191611ea73edf6081",
+        "findings": [
+          {
+            "code": "dependency-install-script-present",
+            "severity": "high",
+            "summary": "Resolved dependency graph contains install-time scripts",
+            "detail": "The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.",
+            "evidence": {
+              "packages": [
+                "koffi@3.1.6"
+              ],
+              "scripts": [
+                "koffi@3.1.6 install: node ./cnoke.cjs -P . -D src/koffi --prebuild --release"
+              ]
+            },
+            "fingerprint": "sha256:19464641cb76149ddfd541b25cfd61d4ed02ca435ec7a21051b417ff35cc6dea"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-timeout uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-timeout",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:1090ff2f221f8f8180999b51b6b65a2efdabbef3d01f14ce368820bd4987ce8a"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-fs-local uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-fs-local",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:25835acc9ed96b843a0b7724dc8080b1398124f3da94468d781c0ee50bc8236b"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-fs uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-fs",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:495b59a339e6b1e949a28eb783839abf550e2bf4575421a704e49f4452bf8c36"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-shell uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-shell",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:57d05d8789b8ef53a0ccdaef41333a5bdc499f3469dd0c443b77a642502c1152"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/cordis uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/cordis",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:6b16a9d4b248e07468c2ff6317daea5cd65d0d2fb4c2f006ce94479ed1a5684e"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-subprocess uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-subprocess",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:886a6bbf60fecf14541260fa486768c39fab22f5c1b420176aac2082a33c1dee"
+          },
+          {
+            "code": "npm-provenance-missing",
+            "severity": "medium",
+            "summary": "npm artifact has no build provenance",
+            "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
+            "fingerprint": "sha256:8213fb7b557a0549cc2f89474f4fdcb1010c8775a30a819d060589744662c58f"
+          }
+        ]
+      }
+    }
+  }
+}

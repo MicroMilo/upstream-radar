@@ -63,15 +63,15 @@ baseline report, and defined in [`schemas/upstream-downstream-ir.schema.json`](s
 
 ```bash
 # No DSH profile, API key, or network state required
-npx --yes upstream-radar@0.37.0 demo
+npx --yes upstream-radar@0.38.0 demo
 
 # Scan a public DSH plugin repository without installing it
-npx --yes upstream-radar@0.37.0 scan \
+npx --yes upstream-radar@0.38.0 scan \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --fail-on never
 
 # Review a real browser plugin users would install, then check two DSH releases
-npx --yes upstream-radar@0.37.0 review dsh-plugin dsh-cloudflare-browser-run@0.1.1 \
+npx --yes upstream-radar@0.38.0 review dsh-plugin dsh-cloudflare-browser-run@0.1.1 \
   --dsh-version 0.1.0-rc.6,0.1.0-rc.7
 ```
 
@@ -91,6 +91,30 @@ These are real, reproducible cases in this repository—not synthetic “vulnera
 
 We report a confirmed vulnerability only when the affected exact version and runtime path are supported by the available evidence. Development-only hits, missing data, and advisory-source outages remain visibly different states.
 
+## Monitor the findings we already found
+
+The repository now has a focused watch for seven real DSH plugins from the first
+batch. It re-runs the source scan and the exact npm artifact review, then stores
+only trusted observations in [`state.json`](examples/dsh/finding-watch/state.json)
+and writes the current author-facing result to
+[`report.md`](examples/dsh/finding-watch/report.md).
+
+```bash
+pnpm run monitor:dsh-findings
+```
+
+The watch distinguishes `persisting`, `added`, `resolved`, `changed`, and
+`unknown`. A failed registry request never becomes “resolved”; a source fix also
+does not erase a finding that remains in the published npm artifact. The same
+loop runs daily in [the dedicated GitHub Actions workflow](.github/workflows/dsh-finding-watch.yml)
+and commits the state only when a trusted observation changes. It does not install
+plugins, execute lifecycle scripts, load DSH, or call an LLM.
+
+The current run is already useful: `dsh-msg-hub@0.1.8` has removed the old source
+lockfile findings, but its npm artifact still reaches `protobufjs@7.6.5` with a
+`postinstall`; `dsh-wsl-workspace` now resolves `koffi@3.1.6`, while the native
+install step remains. The other reviewed install/lifecycle findings persist.
+
 ## The dependency graph behind every alert
 
 ```text
@@ -107,11 +131,11 @@ Two copies of `parser` are different nodes. An alert names the exact version and
 For a collection of saved reports, build the reverse index that turns an upstream package update into affected plugins:
 
 ```bash
-npx --yes upstream-radar@0.37.0 graph reverse ./reports \
+npx --yes upstream-radar@0.38.0 graph reverse ./reports \
   --output reverse-dependency-index.json
 
 # Ask: which plugins currently depend on this exact package?
-npx --yes upstream-radar@0.37.0 graph reverse ./reports \
+npx --yes upstream-radar@0.38.0 graph reverse ./reports \
   --package parser@2.9.0
 
 # Rebuild the checked-in index from the real first 50 DSH plugin reports
@@ -130,7 +154,7 @@ To route an upstream old → new change to that index, pass it to the always-on
 observer:
 
 ```bash
-npx --yes upstream-radar@0.37.0 observe ./targets.yml \
+npx --yes upstream-radar@0.38.0 observe ./targets.yml \
   --reverse-index ./reverse-dependency-index.json \
   --state ./observations.json \
   --report ./upstream-radar-observer.md
@@ -156,7 +180,7 @@ replay baseline → one Agent task → quiet run without network access.
 The repository already contains a reusable, composite Action in [`action.yml`](action.yml). It runs the same frozen Radar check in CI and writes a short Job Summary.
 
 ```yaml
-- uses: MicroMilo/upstream-radar@v0.37.0
+- uses: MicroMilo/upstream-radar@v0.38.0
   with:
     config: upstream-radar.config.json
     fail-on: high
@@ -180,7 +204,7 @@ See the [consumer workflow](examples/github-actions/consumer/README.md) for conf
 pnpm add upstream-radar
 
 # Generate a reviewable DSH profile inventory from the installed profile
-npx --yes upstream-radar@0.37.0 setup
+npx --yes upstream-radar@0.38.0 setup
 ```
 
 For Feishu/webhook routing, DSH Agent handoff, observer state, report schemas, and troubleshooting, use the [full Chinese guide](docs/README.zh-CN.md). The [architecture notes](docs/architecture.md) explain the boundaries and evidence model.
