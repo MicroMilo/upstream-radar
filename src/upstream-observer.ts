@@ -58,6 +58,8 @@ export interface ObserverTarget {
   ref?: string
   /** npm package name. When omitted, the source package.json name is used. */
   packageName?: string
+  /** Whether this target has an npm release stream. Defaults to true. */
+  observeNpm?: boolean
   /** npm dist-tag to observe. Defaults to latest. */
   packageTag?: string
   packagePath?: string
@@ -481,6 +483,7 @@ function yamlMapping(line: YamlLine): { key: string; value: unknown } | undefine
 
 function normalizeTargetKey(key: string): string {
   if (key === 'package') return 'packageName'
+  if (key === 'npm') return 'observeNpm'
   if (key === 'package-tag') return 'packageTag'
   if (key === 'package-path') return 'packagePath'
   if (key === 'lockfile-type') return 'lockfileType'
@@ -593,10 +596,14 @@ function target(value: unknown, index: number): ObserverTarget {
   if (packageName !== undefined && !EXACT_NPM_PACKAGE_NAME.test(packageName)) {
     throw new Error(`targets[${index}].package must be an npm package name`)
   }
+  const observeNpm = source.observeNpm === undefined ? true : source.observeNpm
+  if (typeof observeNpm !== 'boolean') throw new Error(`targets[${index}].npm must be true or false`)
   const packageTag = optionalBoundedString(source.packageTag, `targets[${index}].packageTag`, 128)
   if (packageTag !== undefined && !SAFE_NPM_DIST_TAG.test(packageTag)) {
     throw new Error(`targets[${index}].packageTag must be a lowercase npm dist-tag`)
   }
+  if (!observeNpm && packageName !== undefined) throw new Error(`targets[${index}].package cannot be set when npm is false`)
+  if (!observeNpm && packageTag !== undefined) throw new Error(`targets[${index}].packageTag cannot be set when npm is false`)
   const lockfile = source.lockfile === undefined ? undefined : validateRelativePath(source.lockfile, `targets[${index}].lockfile`)
   const rawLockfileType = optionalBoundedString(source.lockfileType, `targets[${index}].lockfileType`, 16)
   const lockfileType = rawLockfileType === undefined
@@ -621,6 +628,7 @@ function target(value: unknown, index: number): ObserverTarget {
     repository: validateRepository(source.repository, `targets[${index}].repository`),
     ref,
     ...(packageName === undefined ? {} : { packageName }),
+    ...(observeNpm ? {} : { observeNpm: false }),
     ...(packageTag === undefined ? {} : { packageTag }),
     ...(packagePath === undefined ? {} : { packagePath }),
     ...(lockfile === undefined ? {} : { lockfile }),
@@ -1141,8 +1149,12 @@ export class UpstreamObserverClient implements ObserverSource {
     if (targetValue.packageName !== undefined && targetValue.packageName !== manifest.name) {
       warnings.push(`target package ${targetValue.packageName} does not match source manifest ${manifest.name}`)
     }
-    const packageObservation = await this.fetchNpmObservation(packageName, targetValue.packageTag)
-    if (packageObservation === undefined) warnings.push(`${packageName} was not found on the configured npm registry`)
+    const packageObservation = targetValue.observeNpm === false
+      ? undefined
+      : await this.fetchNpmObservation(packageName, targetValue.packageTag)
+    if (targetValue.observeNpm !== false && packageObservation === undefined) {
+      warnings.push(`${packageName} was not found on the configured npm registry`)
+    }
     let graph: DependencyGraph | undefined
     let graphError: string | undefined
     let lockfileUrl: string | undefined

@@ -3,7 +3,9 @@
 This directory is the maintained dynamic-test corpus for Upstream Radar. It is
 small on purpose: static checks can cover the wider plugin inventory every day;
 code execution happens only after an exact DSH or mapped plugin publication
-changes.
+changes. The corpus currently contains nine published plugins: the original
+three behavior cases plus six identity-checked targets imported from the
+[`awesome-dsh-plugin` cohort](../awesome-observer/README.md).
 
 ## What runs where
 

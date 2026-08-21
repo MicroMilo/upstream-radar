@@ -19,6 +19,42 @@
       "spec": "dsh-wsl-workspace@0.2.3",
       "observerTargetId": "dsh-wsl-workspace",
       "reason": "A plugin whose native dependency makes install behavior materially different from manifest-only review."
+    },
+    {
+      "id": "agent-teams",
+      "spec": "@nanmicoder/dsh-agent-teams@0.1.10",
+      "observerTargetId": "dsh-agent-teams",
+      "reason": "A popular multi-agent workflow plugin imported from the awesome-dsh-plugin maintained cohort."
+    },
+    {
+      "id": "better-sidebar",
+      "spec": "dsh-better-sidebar@0.14.0",
+      "observerTargetId": "dsh-better-sidebar",
+      "reason": "A high-adoption UI workbench with a broad DSH peer surface and a native terminal dependency."
+    },
+    {
+      "id": "context",
+      "spec": "dsh-context@0.19.2",
+      "observerTargetId": "dsh-context",
+      "reason": "A context lifecycle plugin that exercises host, session and client integration boundaries."
+    },
+    {
+      "id": "cost-meter",
+      "spec": "dsh-cost-meter@1.5.31",
+      "observerTargetId": "dsh-cost-meter",
+      "reason": "A cost and budget plugin that reads DSH credential and home-path services."
+    },
+    {
+      "id": "dsh-market",
+      "spec": "dshmarket@1.17.1",
+      "observerTargetId": "dsh-market",
+      "reason": "The in-product plugin market is a high-leverage downstream consumer of DSH compatibility changes."
+    },
+    {
+      "id": "openpencil",
+      "spec": "@zseven-w/dsh-openpencil@0.1.0-rc.1",
+      "observerTargetId": "dsh-openpencil",
+      "reason": "A Node 24-targeted design plugin that exercises host tools and a broad web-client peer surface."
     }
   ]
 }

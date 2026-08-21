@@ -262,6 +262,34 @@ targets:
     assert.deepEqual(config.targets[0], { ...target, packageTag: 'next', dshVersions: ['0.1.0-rc.6', '0.1.0-rc.7'] })
   })
 
+  it('keeps a GitHub-only target out of the npm namespace', () => {
+    const config = parseObserverConfigText(`
+schema: ${OBSERVER_TARGETS_SCHEMA}
+targets:
+  - id: source-only
+    ecosystem: dsh
+    repository: acme/source-only
+    npm: false
+    package-path: packages/plugin/package.json
+`)
+    assert.deepEqual(config.targets[0], {
+      id: 'source-only',
+      ecosystem: 'dsh',
+      repository: 'acme/source-only',
+      ref: 'main',
+      observeNpm: false,
+      packagePath: 'packages/plugin/package.json',
+    })
+    assert.throws(() => parseObserverConfigText(`
+targets:
+  - id: contradictory
+    ecosystem: dsh
+    repository: acme/source-only
+    npm: false
+    package: unrelated-name
+`), /package cannot be set when npm is false/)
+  })
+
   it('observes the configured npm release channel instead of assuming latest', async () => {
     const source = new UpstreamObserverClient({
       fetch: async input => {
@@ -299,6 +327,50 @@ targets:
     assert.equal(result.package?.version, '2.0.0-rc.1')
     assert.equal(result.package?.distTag, 'next')
     assert.equal(result.package?.integrity, 'sha512-next')
+  })
+
+  it('observes GitHub-only source and lockfile evidence without querying npm', async () => {
+    const source = new UpstreamObserverClient({
+      fetch: async input => {
+        const url = String(input)
+        if (url.includes('/commits/main')) return new Response(JSON.stringify({ sha: 'commit-1' }), { status: 200 })
+        if (url.endsWith('/commit-1/plugin/package.json')) {
+          return new Response(JSON.stringify({
+            name: 'source-only-plugin',
+            version: '1.0.0',
+            dsh: { bundle: { patch: './cordis.patch.yml' } },
+          }), { status: 200 })
+        }
+        if (url.endsWith('/commit-1/pnpm-lock.yaml')) {
+          return new Response([
+            "lockfileVersion: '9.0'",
+            '',
+            'importers:',
+            '  plugin: {}',
+            '',
+            'packages: {}',
+            '',
+            'snapshots: {}',
+            '',
+          ].join('\n'), { status: 200 })
+        }
+        if (url.startsWith('https://registry.npmjs.org/')) throw new Error('npm must not be queried')
+        throw new Error(`unexpected request: ${url}`)
+      },
+    })
+    const result = await source.observe({
+      id: 'source-only',
+      ecosystem: 'dsh',
+      repository: 'acme/source-only',
+      ref: 'main',
+      observeNpm: false,
+      packagePath: 'plugin/package.json',
+      lockfile: 'pnpm-lock.yaml',
+      lockfileType: 'pnpm',
+    }, '2026-08-21T00:00:00.000Z')
+    assert.equal(result.package, undefined)
+    assert.equal(result.graph?.rootNodeId, 'pnpm:workspace-root:source-only-plugin@1.0.0')
+    assert.deepEqual(result.warnings, undefined)
   })
 
   it('creates a baseline, calls the Agent on a meaningful change, and stays quiet without a new change', async () => {

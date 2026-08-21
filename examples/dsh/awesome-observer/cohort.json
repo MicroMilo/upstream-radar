@@ -1,0 +1,189 @@
+{
+  "schema": "upstream-radar.awesome-dsh-cohort/v1alpha1",
+  "selectedAt": "2026-08-21T09:04:58Z",
+  "source": {
+    "repository": "awesome-dsh-plugin/awesome-dsh-plugin",
+    "commit": "7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82",
+    "commitUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82",
+    "entryDirectory": "data/plugins",
+    "entryCount": 1837,
+    "license": "CC0-1.0"
+  },
+  "selection": {
+    "strategy": "small-diverse-maintained-cohort",
+    "reason": "Exercise browser, UI, market, context, multi-agent, cost and skill integration surfaces before expanding execution.",
+    "trustBoundary": "The catalog discovers repositories only. Repository identity, source package identity and npm distribution identity are observed independently."
+  },
+  "plugins": [
+    {
+      "id": "dsh-browser",
+      "catalogEntry": "data/plugins/Lum1104__dsh-browser--packages-browser-bridge-browser.yml",
+      "repository": "Lum1104/dsh-browser",
+      "ref": "main",
+      "category": "browser",
+      "packagePath": "packages/browser/bridge-browser/package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "@yuxianglin/dsh-bridge-browser",
+        "version": "0.0.3",
+        "private": true
+      },
+      "distribution": {
+        "kind": "repository-installer",
+        "reason": "The bridge package is private and its README uses the repository installer; the unrelated dsh-browser npm name must not be substituted."
+      }
+    },
+    {
+      "id": "dsh-better-sidebar",
+      "catalogEntry": "data/plugins/omdsh-dev__DSH-better-sidebar.yml",
+      "repository": "omdsh-dev/DSH-better-sidebar",
+      "ref": "main",
+      "category": "ui",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-better-sidebar",
+        "version": "0.14.1"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-better-sidebar",
+        "selectedVersion": "0.14.0",
+        "distTag": "latest"
+      }
+    },
+    {
+      "id": "dsh-market",
+      "catalogEntry": "data/plugins/dsh-market__dsh-market.yml",
+      "repository": "dsh-market/dsh-market",
+      "ref": "main",
+      "category": "market",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dshmarket",
+        "version": "1.17.1"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dshmarket",
+        "selectedVersion": "1.17.1",
+        "distTag": "latest"
+      }
+    },
+    {
+      "id": "dsh-openpencil",
+      "catalogEntry": "data/plugins/ZSeven-W__dsh-openpencil.yml",
+      "repository": "ZSeven-W/dsh-openpencil",
+      "ref": "main",
+      "category": "ui",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "@zseven-w/dsh-openpencil",
+        "version": "0.1.0-rc.1"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@zseven-w/dsh-openpencil",
+        "selectedVersion": "0.1.0-rc.1",
+        "distTag": "latest"
+      }
+    },
+    {
+      "id": "dsh-context",
+      "catalogEntry": "data/plugins/bowenliang123__dsh-context.yml",
+      "repository": "bowenliang123/dsh-context",
+      "ref": "main",
+      "category": "usage",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-context",
+        "version": "0.19.2"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-context",
+        "selectedVersion": "0.19.2",
+        "distTag": "latest"
+      }
+    },
+    {
+      "id": "dsh-agent-teams",
+      "catalogEntry": "data/plugins/NanmiCoder__dsh-agent-teams.yml",
+      "repository": "NanmiCoder/dsh-agent-teams",
+      "ref": "main",
+      "category": "workflow",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "@nanmicoder/dsh-agent-teams",
+        "version": "0.1.10"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@nanmicoder/dsh-agent-teams",
+        "selectedVersion": "0.1.10",
+        "distTag": "latest"
+      }
+    },
+    {
+      "id": "dsh-cost-meter",
+      "catalogEntry": "data/plugins/Han-1413141__dsh-cost-meter.yml",
+      "repository": "Han-1413141/dsh-cost-meter",
+      "ref": "master",
+      "category": "usage",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-cost-meter",
+        "version": "1.5.31"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-cost-meter",
+        "selectedVersion": "1.5.31",
+        "distTag": "latest"
+      }
+    },
+    {
+      "id": "aegis",
+      "catalogEntry": "data/plugins/GanyuanRan__Aegis.yml",
+      "repository": "GanyuanRan/Aegis",
+      "ref": "main",
+      "category": "skill",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "aegis",
+        "version": "2.8.4"
+      },
+      "distribution": {
+        "kind": "github",
+        "installSpec": "github:GanyuanRan/Aegis",
+        "reason": "The matching DSH install path is GitHub; the aegis npm coordinate belongs to a different project."
+      }
+    }
+  ]
+}
