@@ -1689,6 +1689,15 @@ function llmCompletionEndpoints(baseUrl: string): string[] {
   return [...new Set(bases)].map(base => `${base}/chat/completions`)
 }
 
+function isDeepSeekJsonModel(baseUrl: string, model: string): boolean {
+  if (model === 'deepseek-v4-flash' || model === 'deepseek-v4-pro' || model === 'deepseek-chat' || model === 'deepseek-reasoner') return true
+  try {
+    return new URL(baseUrl).hostname === 'api.deepseek.com'
+  } catch {
+    return false
+  }
+}
+
 /**
  * Call an explicit OpenAI-compatible model without requiring users to write a
  * DSH wrapper. The env file is read for this invocation only; the key and
@@ -1736,14 +1745,17 @@ export async function runOpenAiCompatibleAgent(
         body: JSON.stringify({
           model,
           messages: [
-            { role: 'system', content: '只返回严格 JSON，不要输出 Markdown。' },
+            { role: 'system', content: '只返回一个严格 JSON 对象。不要输出 Markdown、解释、前缀或后缀；输出必须以 { 开始并以 } 结束。' },
             { role: 'user', content: prompt },
           ],
           temperature: 0,
+          // DeepSeek V4 enables thinking by default. For this machine-readable
+          // contract, disable it so the output budget is reserved for the JSON
+          // conclusion instead of an optional reasoning stream.
+          ...(isDeepSeekJsonModel(baseUrl, model) ? { thinking: { type: 'disabled' } } : {}),
           response_format: { type: 'json_object' },
-          // GLM-5.1 reports its reasoning tokens against the completion budget;
-          // without an explicit budget it can spend the whole response on
-          // reasoning and return an empty `content` field.
+          // Keep an explicit output budget so the JSON conclusion is not
+          // truncated by a provider default.
           max_tokens: DEFAULT_LLM_MAX_TOKENS,
         }),
         signal: AbortSignal.timeout(timeoutMs),
