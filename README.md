@@ -119,6 +119,7 @@ These are real, reproducible cases in this repository—not synthetic “vulnera
 
 | Case | Finding | Why it matters |
 | --- | --- | --- |
+| [Live DSH `0.1.1-rc.1` isolated matrix](examples/dsh/install-observer/reports/2026-08-21-dsh-0.1.1-rc.1.md) | Two current plugins install/register/load; `dsh-feishu-bot@0.16.0` reproducibly stops at pnpm's unapproved `protobufjs@7.6.5` build | This is the first always-on behavior result: an exact failure turns the GitHub check red while preserving the report, and old/new controls prevent calling it an `rc.8` regression. |
 | [`dsh-cloudflare-browser-run@0.1.1`](examples/reports/dsh-cloudflare-browser-run-0.1.1.txt) | 18 resolved packages, 2 unresolved optional Cordis edges, 0 known vulnerabilities, and DSH rc.6/rc.7 both loaded the bundle | A real browser plugin demonstrates the DSH admission boundary and why incomplete edges stay visible. |
 | [50-plugin batch](examples/dsh/reports/dsh-batch-50-2026-08-17.md) / [real graph corpus](examples/dsh/first-batch/README.md) | 50 source scans, 30 exact npm reviews, 37 real plugin graphs indexed; 13 targets kept as missing evidence | The reverse index is now built from real DSH plugins, and missing graphs are not treated as clean. |
 | [`dsh-feishu-bot@0.15.8`](examples/dsh/reports/dsh-feishu-bot-0.15.8-review-2026-08-18.md) | 89-package graph, 12 unresolved optional edges, reachable `protobufjs` `postinstall`, DSH rc.6/rc.7 compatible | “No known CVE” is not the same as “no installation trust boundary.” |
