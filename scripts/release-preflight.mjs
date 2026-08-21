@@ -193,6 +193,7 @@ async function checkPackContents() {
     'dist/src/index.js',
     'dist/src/dsh-plugin.js',
     'schemas/analysis-result.schema.json',
+    'schemas/dsh-install-observation.schema.json',
     'schemas/dsh-load-matrix.schema.json',
     'schemas/quickstart.schema.json',
     'schemas/reverse-dependency-index.schema.json',

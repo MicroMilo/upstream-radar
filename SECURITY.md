@@ -14,6 +14,7 @@ Report vulnerabilities through GitHub's **Security → Report a vulnerability** 
 - unchanged events produce an unbounded alert or model-call loop;
 - a compatibility heuristic is promoted to a confirmed break without evidence;
 - target package code executes during graph or static collection;
+- target package code escapes the explicit install-observation container, receives a repository/model secret, or persists onto another plugin's worker;
 - archive/path/symlink escape in the supporting scanner;
 - credentials, proprietary source, or local paths leak into an unintended report or destination;
 - configured bounds can be bypassed to exhaust disk, memory, network, or model quota.
@@ -26,4 +27,11 @@ A compatibility signal establishes a manifest/version difference or definite ran
 
 DSH Agent analysis is model-generated reasoning. It must cite project evidence and preserve uncertainty; it is not a replacement for deterministic matching or tests.
 
-Deep npm collection runs in a fresh temporary project with lifecycle scripts disabled, a scrubbed environment, and controlled npm/Git configuration. It is not a hardened sandbox and should process public artifacts only until disposable worker isolation lands.
+Deep npm collection remains static: it runs in a fresh temporary project with lifecycle scripts disabled, a scrubbed environment, and controlled npm/Git configuration.
+
+The separately named `probe dsh-install` path intentionally executes package
+and load code. Its supported workflow gives each target a fresh GitHub-hosted
+VM plus a restricted container, passes no model/repository secret into that
+container, and binds evidence to one exact tarball. This is bounded behavior
+evidence, not a hardened malware-analysis claim: the container shares the VM
+kernel and same-container trace/output evidence is not tamper-proof.

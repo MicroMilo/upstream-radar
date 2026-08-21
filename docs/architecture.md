@@ -106,6 +106,41 @@ stable interface, a wrapper is the integration point until the official DSH
 headless contract is fixed; failed conclusions remain pending instead of being
 marked complete.
 
+## Isolated install/load observation
+
+The upstream observer's static job and the dynamic execution job are separate
+trust domains. The static job watches the official `@deepseek-ai/dsh` package
+and maintained plugin coordinates. A baseline, source-only commit, or unchanged
+published coordinate does nothing. A new exact DSH publication selects the
+maintained plugin corpus; a mapped plugin publication selects only that plugin.
+
+Each selected matrix entry starts on a fresh GitHub-hosted VM. The target code
+then runs inside a restricted container that receives no repository/model
+secret, host workspace, or Docker socket. Radar first packs the exact npm
+coordinate with lifecycle scripts disabled and verifies its identity and DSH
+bundle declaration. DSH installs that local tarball with lifecycle scripts
+enabled, registers it, and loads it with `--dump-config`. Linux `strace` evidence
+and before/after filesystem snapshots are kept separately for install and load.
+
+```text
+exact DSH/plugin coordinate change
+  -> deterministic install plan
+  -> one fresh hosted VM per plugin
+  -> restricted container
+  -> exact tarball SHA-256
+  -> traced DSH install
+  -> registration check
+  -> traced DSH load
+  -> bounded JSON artifact
+```
+
+The result vocabulary separates `install-failed`, `load-failed`, `compatible`,
+and `unknown`; missing or truncated tracing never becomes a clean result. This
+backend is useful compatibility and behavior evidence, not hostile-code proof.
+Docker shares the hosted VM kernel, and code in the same container may attempt
+to tamper with its trace/output. Moving the collector outside a Firecracker
+guest is the later high-assurance boundary.
+
 ## Vulnerability cycle
 
 1. Deduplicate all installed npm `name@version` pairs.

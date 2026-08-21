@@ -58,6 +58,7 @@ npx --yes upstream-radar@latest quickstart
 | 从 GitHub Actions 立即扫描 | [一次性扫描 workflow](../examples/github-actions/upstream-scan-minimal.yml) | 输入公开仓库 URL，马上看到结果并下载 JSON，不需要本地安装。 |
 | 审查一个精确的发布物 | `upstream-radar inspect <包名>@<精确版本> --deep` | 查看单个版本的包、依赖、漏洞和 provenance 证据。 |
 | 用两个 DSH 版本检查一个插件 | [可复制的 review workflow](../examples/github-actions/dsh-plugin-review-minimal.yml) | 输入 `package@version` 和两个 DSH 版本，同时得到发布物审计与真实 bundle-load 矩阵，不需要本地 DSH profile 或 LLM。 |
+| 在隔离环境真实安装/加载插件 | [隔离安装 workflow](../.github/workflows/observe-dsh-plugin-install.yml) | 每个插件使用一台新的 GitHub 托管虚拟机和受限容器，开启安装脚本并记录进程、联网、文件写入、登记和加载结果；模型密钥不会进入执行环境。 |
 | 发布和维护 DSH 插件 | [插件作者路径](#dsh-插件作者) | 从真实 DSH 脚手架开始，先审查锁定的依赖图，再在用户安装前接入两步 CI 门禁。 |
 | 把变化通知到飞书 | [飞书与 HTTPS 通知](#飞书与-https-通知) | 原生飞书 V2 文本、只从环境读取密钥、持久确认和失败重试。 |
 
@@ -97,7 +98,7 @@ FIRST EPSS estimated exploitation probability: 97.2% (percentile 100.0%)
 想立即检查一个真实发布的 DSH 插件，可以在空目录直接运行：
 
 ```bash
-npx --yes upstream-radar@0.38.0 inspect dsh-feishu-bot@0.15.8 --deep
+npx --yes upstream-radar@0.39.0 inspect dsh-feishu-bot@0.15.8 --deep
 ```
 
 它会直接输出简短的准入结论、覆盖情况、依赖数量、漏洞数量和下一步，不需要先
@@ -110,7 +111,7 @@ npx --yes upstream-radar@0.38.0 inspect dsh-feishu-bot@0.15.8 --deep
 npm 解析环境中目前无法建立完整依赖图：
 
 ```bash
-npx --yes upstream-radar@0.38.0 inspect \
+npx --yes upstream-radar@0.39.0 inspect \
   @sanqi-normal/dsh-webui-market-plugin@0.5.4 \
   --deep --fail-on never
 ```
@@ -335,9 +336,9 @@ npm：     dsh-feishu-bot@0.15.8
 会继续显示为 `incomplete`，不会被当成已经确认的故障。
 
 ```bash
-npx --yes upstream-radar@0.38.0 graph reverse ./plugin-reports \
+npx --yes upstream-radar@0.39.0 graph reverse ./plugin-reports \
   --output ./reverse-dependency-index.json
-npx --yes upstream-radar@0.38.0 observe ./targets.yml \
+npx --yes upstream-radar@0.39.0 observe ./targets.yml \
   --reverse-index ./reverse-dependency-index.json \
   --state ./observations.json --report ./upstream-radar-observer.md
 ```
@@ -375,7 +376,7 @@ Radar 会在三层目录内自动找到它；npm 名称和源码 manifest 不一
 想明确选择锁文件时再加 `--lockfile`：
 
 ```bash
-npx --yes upstream-radar@0.38.0 observe \
+npx --yes upstream-radar@0.39.0 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --state ./observations.json --report ./upstream-radar-observer.md
 ```
@@ -398,7 +399,7 @@ workspace 边保留为未解析证据；不会安装或启动 DSH。
 会额外指定 `--package`：
 
 ```bash
-npx --yes upstream-radar@0.38.0 observe \
+npx --yes upstream-radar@0.39.0 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --package dsh-feishu-bot \
   --lockfile pnpm-lock.yaml --lockfile-type pnpm \
@@ -676,7 +677,7 @@ cd my-dsh-plugin
 pnpm install --ignore-scripts
 
 # 把插件放进 DSH profile 前，先读取精确依赖图。
-pnpm dlx --package=upstream-radar@0.38.0 upstream-radar graph pnpm-lock pnpm-lock.yaml --json
+pnpm dlx --package=upstream-radar@0.39.0 upstream-radar graph pnpm-lock pnpm-lock.yaml --json
 ```
 
 这棵图会保留精确的 DSH 包版本，也会把未解析的可选 peer 明确显示出来；它不会加载生成的插件，也不会运行 lifecycle script。审查后，把下面这个完整 workflow 复制到 `.github/workflows/upstream-radar.yml`：
@@ -698,7 +699,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: MicroMilo/upstream-radar@v0.38.0
+      - uses: MicroMilo/upstream-radar@v0.39.0
         with:
           fail-on: high
           fail-on-compatibility: breaking
@@ -709,7 +710,7 @@ Action 会自动识别唯一的 `pnpm-lock.yaml`，检查同一棵精确依赖�
 也可以直接检查一个真实发布的 DSH 包：
 
 ```bash
-npx --yes upstream-radar@0.38.0 inspect dsh-feishu-bot@0.15.8 --deep
+npx --yes upstream-radar@0.39.0 inspect dsh-feishu-bot@0.15.8 --deep
 ```
 
 这次检查的结论是 `REVIEW`：registry 完整性、签名、provenance 和 89 个已解析包都
@@ -722,7 +723,7 @@ npx --yes upstream-radar@0.38.0 inspect dsh-feishu-bot@0.15.8 --deep
 如果不想分别执行 `inspect`、打包和 `probe`，可以用一个命令完成一次 DSH 插件审查：
 
 ```bash
-pnpm dlx --package=upstream-radar@0.38.0 upstream-radar review dsh-plugin \
+pnpm dlx --package=upstream-radar@0.39.0 upstream-radar review dsh-plugin \
   dsh-cloudflare-browser-run@0.1.1 \
   --dsh-version 0.1.0-rc.6,0.1.0-rc.7
 ```
@@ -888,7 +889,7 @@ pnpm run try:dsh
 在把项目接入兼容性门禁前，可以先运行离线规则 benchmark：
 
 ```bash
-pnpm dlx --package=upstream-radar@0.38.0 upstream-radar benchmark compatibility
+pnpm dlx --package=upstream-radar@0.39.0 upstream-radar benchmark compatibility
 ```
 
 它覆盖六类契约：安全补丁、只需要项目分析的变化、不兼容的 DSH peer、发布者明确声明 breaking、候选传递依赖漏洞，以及候选依赖图不完整。这个命令不会联网、安装包、加载插件或启动 DSH；它验证的是 Radar 的确定性规则以及 `breaking`/`any` 门禁行为，不是运行时兼容性证明。
@@ -901,7 +902,7 @@ pnpm dlx --package=upstream-radar@0.38.0 upstream-radar benchmark compatibility
 # 打包精确版本，并明确不运行它的 lifecycle script。
 npm pack --ignore-scripts dsh-plugin@1.2.3
 
-pnpm dlx --package=upstream-radar@0.38.0 upstream-radar probe dsh-load \
+pnpm dlx --package=upstream-radar@0.39.0 upstream-radar probe dsh-load \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.6
 ```
@@ -927,7 +928,7 @@ pnpm run showcase:dsh-probe
 如果要比较多个 DSH 版本，可以使用矩阵入口：
 
 ```bash
-pnpm dlx --package=upstream-radar@0.38.0 upstream-radar probe dsh-matrix \
+pnpm dlx --package=upstream-radar@0.39.0 upstream-radar probe dsh-matrix \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.3 \
   --dsh-version 0.1.0-rc.6 \
@@ -945,7 +946,7 @@ JSON 结果结构见[矩阵结果 schema](../schemas/dsh-load-matrix.schema.json
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.38.0
+  - uses: MicroMilo/upstream-radar@v0.39.0
     with:
       fail-on: high
       # 可选：把确定性的 DSH/插件兼容性破坏也作为 CI 失败条件
@@ -954,12 +955,12 @@ steps:
       threat-intel: true
 ```
 
-这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --fail-on-compatibility breaking --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。`threat-intel` 默认是 `false`，这样普通 CI 门禁不会因为额外查询变重；设置为 `true` 后，Job Summary 和原始 JSON 会包含 CISA KEV 与 FIRST EPSS 的优先级证据。每次运行彼此独立；发现达到阈值的漏洞或选择的兼容性变化时返回 `2`，运行或漏洞源出错时返回 `1`。`breaking` 只拦截有 confirmed/strong 信号的兼容性事件，`any` 会拦截所有活动兼容性事件，默认值是 `never`。除了原始 JSON 日志，Action 还会把经过转义的简短摘要写入 GitHub Job Summary，定时任务失败时可以直接看到受影响的包、准确依赖路径、已经发布的修复版本（如果有）、一行优先级证据和建议的下一步。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.38.0` 的发布标签，并根据团队策略固定 checkout Action。
+这个 Action 只是 `radar check --frozen --state :memory: --fail-on high --fail-on-compatibility breaking --json` 的薄封装。`--frozen` 是有意的：它只使用配置文件里的依赖图，不会尝试读取 runner 上不存在的本地 DSH profile。`threat-intel` 默认是 `false`，这样普通 CI 门禁不会因为额外查询变重；设置为 `true` 后，Job Summary 和原始 JSON 会包含 CISA KEV 与 FIRST EPSS 的优先级证据。每次运行彼此独立；发现达到阈值的漏洞或选择的兼容性变化时返回 `2`，运行或漏洞源出错时返回 `1`。`breaking` 只拦截有 confirmed/strong 信号的兼容性事件，`any` 会拦截所有活动兼容性事件，默认值是 `never`。除了原始 JSON 日志，Action 还会把经过转义的简短摘要写入 GitHub Job Summary，定时任务失败时可以直接看到受影响的包、准确依赖路径、已经发布的修复版本（如果有）、一行优先级证据和建议的下一步。这个入口不会投递 DSH Agent 任务，也不会修改分支；需要持续监控和项目级分析时，仍使用原生 DSH bundle。建议把 Action 固定到类似 `v0.39.0` 的发布标签，并根据团队策略固定 checkout Action。
 
 如果仓库还没有提交 Radar 配置，最短接入方式是省略 `config`、`pnpm-lock` 和 `npm-lock`。checkout 之后，Action 会自动使用唯一存在的 `pnpm-lock.yaml` 或 `package-lock.json`，生成临时的审查清单，再执行同一个 frozen 检查：
 
 ```yaml
-- uses: MicroMilo/upstream-radar@v0.38.0
+- uses: MicroMilo/upstream-radar@v0.39.0
   with:
     fail-on: high
 ```
@@ -969,7 +970,7 @@ steps:
 如果要在插件进入 DSH 前审查精确发布物，可以增加 `inspect-package`：
 
 ```yaml
-- uses: MicroMilo/upstream-radar@v0.38.0
+- uses: MicroMilo/upstream-radar@v0.39.0
   with:
     inspect-package: dsh-cloudflare-browser-run@0.1.1
     # review 是安全默认值；只有允许覆盖不完整时才使用 block
@@ -981,7 +982,7 @@ steps:
 如果仓库只有 pnpm 锁文件，还没有提交 Radar 配置，可以让 Action 在同一个 job 中生成配置；可直接复制[pnpm workflow 示例](../examples/github-actions/upstream-radar-pnpm.yml)：
 
 ```yaml
-- uses: MicroMilo/upstream-radar@v0.38.0
+- uses: MicroMilo/upstream-radar@v0.39.0
   with:
     pnpm-lock: pnpm-lock.yaml
     fail-on: high
@@ -995,7 +996,7 @@ npm 项目可以改用 `npm-lock: package-lock.json`；`pnpm-lock` 和 `npm-lock
 调用方需要先 checkout 仓库。这个 Action 不会安装项目依赖，也不会执行项目的 lifecycle script；它只读取提交到仓库的依赖图并查询配置中的上游漏洞源。如果需要完全显式的底层命令，等价写法是：
 
 ```bash
-pnpm dlx --package=upstream-radar@0.38.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.39.0 upstream-radar radar check \
   ./upstream-radar.config.json --frozen --state :memory: --fail-on high \
   --fail-on-compatibility breaking --json
 ```
@@ -1003,7 +1004,7 @@ pnpm dlx --package=upstream-radar@0.38.0 upstream-radar radar check \
 如果还要检查一个已发布插件能否跨多个 DSH 版本加载，可以增加三个 input：
 
 ```yaml
-- uses: MicroMilo/upstream-radar@v0.38.0
+- uses: MicroMilo/upstream-radar@v0.39.0
   id: radar
   with:
     config: upstream-radar.config.json

@@ -80,6 +80,34 @@ export {
   type DshProbeStage,
 } from './dsh-probe.js'
 export {
+  DSH_INSTALL_OBSERVATION_SCHEMA,
+  observeDshPluginInstall,
+  parseDshInstallTrace,
+  renderDshInstallObservation,
+  type DshInstallObservationOptions,
+  type DshInstallObservationReport,
+  type DshInstallObservationResult,
+  type InstallFilesystemDiff,
+  type InstallObservationCommand,
+  type InstallObservationCommandResult,
+  type InstallObservationIsolationProvider,
+  type InstallObservationPhase,
+  type InstallObservationRunner,
+  type InstallObservationStage,
+  type InstallTraceFileWrite,
+  type InstallTraceNetwork,
+  type InstallTraceObservation,
+  type InstallTraceProcess,
+} from './dsh-install-observation.js'
+export {
+  DSH_INSTALL_TARGETS_SCHEMA,
+  buildDshInstallPlan,
+  parseDshInstallTargets,
+  type DshInstallPlan,
+  type DshInstallTarget,
+  type DshInstallTargets,
+} from './dsh-install-plan.js'
+export {
   DSH_PLUGIN_REVIEW_SCHEMA,
   renderDshPluginReview,
   reviewDshPlugin,

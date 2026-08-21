@@ -1,0 +1,9 @@
+*
+!.npmrc
+!package.json
+!pnpm-lock.yaml
+!tsconfig.json
+!src
+!src/**
+!test
+!test/**

@@ -1,0 +1,23 @@
+{
+  "schema": "upstream-radar.dsh-install-targets/v1alpha1",
+  "plugins": [
+    {
+      "id": "feishu-bot",
+      "spec": "dsh-feishu-bot@0.16.0",
+      "observerTargetId": "dsh-feishu-bot",
+      "reason": "A real messaging plugin with a large DSH dependency surface and a reachable protobuf build step."
+    },
+    {
+      "id": "cloudflare-browser",
+      "spec": "dsh-cloudflare-browser-run@0.1.1",
+      "observerTargetId": "dsh-cloudflare-browser-run",
+      "reason": "A browser-facing plugin already used by the public static and load-only showcase."
+    },
+    {
+      "id": "wsl-workspace",
+      "spec": "dsh-wsl-workspace@0.2.3",
+      "observerTargetId": "dsh-wsl-workspace",
+      "reason": "A plugin whose native dependency makes install behavior materially different from manifest-only review."
+    }
+  ]
+}

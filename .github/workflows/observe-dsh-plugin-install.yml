@@ -1,0 +1,196 @@
+name: Observe one DSH plugin install
+
+on:
+  workflow_dispatch:
+    inputs:
+      plugin:
+        description: Exact npm plugin package, for example dsh-feishu-bot@0.16.0
+        required: true
+        default: dsh-feishu-bot@0.16.0
+        type: string
+      dsh_version:
+        description: Exact DSH version used for the install and load
+        required: true
+        default: 0.1.0-rc.8
+        type: string
+      case_id:
+        description: Short artifact label
+        required: true
+        default: manual
+        type: string
+      timeout_seconds:
+        description: Per-stage timeout from 30 to 600 seconds
+        required: true
+        default: '180'
+        type: string
+  workflow_call:
+    inputs:
+      plugin:
+        required: true
+        type: string
+      dsh_version:
+        required: true
+        type: string
+      case_id:
+        required: true
+        type: string
+      timeout_seconds:
+        required: false
+        default: '180'
+        type: string
+
+# The target package executes arbitrary lifecycle and load code. This workflow
+# deliberately has no write permission and declares no secrets.
+permissions:
+  contents: read
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out only the trusted observer implementation
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Validate exact coordinates
+        shell: bash
+        env:
+          RADAR_PLUGIN: ${{ inputs.plugin }}
+          RADAR_DSH_VERSION: ${{ inputs.dsh_version }}
+          RADAR_CASE_ID: ${{ inputs.case_id }}
+          RADAR_TIMEOUT_SECONDS: ${{ inputs.timeout_seconds }}
+        run: |
+          set -euo pipefail
+          exact_package='^(@[^/@[:space:]]+/[^@/[:space:]]+|[^@/[:space:]]+)@[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'
+          exact_version='^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'
+          case_id='^[a-z0-9][a-z0-9._-]{0,63}$'
+          if [[ ! "$RADAR_PLUGIN" =~ $exact_package ]]; then
+            echo 'plugin must be an exact npm package such as dsh-feishu-bot@0.16.0' >&2
+            exit 1
+          fi
+          if [[ ! "$RADAR_DSH_VERSION" =~ $exact_version ]]; then
+            echo 'dsh_version must be an exact semantic version' >&2
+            exit 1
+          fi
+          if [[ ! "$RADAR_CASE_ID" =~ $case_id ]]; then
+            echo 'case_id must be a short lowercase label' >&2
+            exit 1
+          fi
+          if [[ ! "$RADAR_TIMEOUT_SECONDS" =~ ^[0-9]+$ ]] || (( RADAR_TIMEOUT_SECONDS < 30 || RADAR_TIMEOUT_SECONDS > 600 )); then
+            echo 'timeout_seconds must be an integer between 30 and 600' >&2
+            exit 1
+          fi
+
+      - name: Build the pinned observer image
+        shell: bash
+        run: docker build --file docker/dsh-install-observer.Dockerfile --tag upstream-radar-install-observer:${{ github.run_id }} .
+
+      - name: Install and load inside the restricted container
+        id: observe
+        continue-on-error: true
+        shell: bash
+        env:
+          RADAR_PLUGIN: ${{ inputs.plugin }}
+          RADAR_DSH_VERSION: ${{ inputs.dsh_version }}
+          RADAR_TIMEOUT_SECONDS: ${{ inputs.timeout_seconds }}
+          RADAR_IMAGE: upstream-radar-install-observer:${{ github.run_id }}
+          RADAR_REPORT_DIRECTORY: ${{ runner.temp }}/upstream-radar-install-observation
+          RADAR_CONTAINER_NAME: upstream-radar-install-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RADAR_REPORT_DIRECTORY"
+          chmod 0777 "$RADAR_REPORT_DIRECTORY"
+          cleanup() {
+            docker rm --force "$RADAR_CONTAINER_NAME" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+          set +e
+          timeout --signal=KILL 15m docker run --rm \
+            --name "$RADAR_CONTAINER_NAME" \
+            --read-only \
+            --user "$(id -u):$(id -g)" \
+            --network bridge \
+            --cap-drop ALL \
+            --cap-add SYS_PTRACE \
+            --security-opt no-new-privileges=true \
+            --pids-limit 256 \
+            --memory 4g \
+            --cpus 2 \
+            --ulimit nofile=4096:4096 \
+            --tmpfs /sandbox:rw,exec,nosuid,nodev,size=4g,mode=1777 \
+            --mount "type=bind,src=$RADAR_REPORT_DIRECTORY,dst=/output" \
+            --env UPSTREAM_RADAR_ISOLATED_RUNNER=1 \
+            --env TMPDIR=/sandbox \
+            --env LANG=C.UTF-8 \
+            "$RADAR_IMAGE" \
+            "$RADAR_PLUGIN" \
+            --dsh-version "$RADAR_DSH_VERSION" \
+            --isolation-provider github-actions-hosted-runner \
+            --timeout "$RADAR_TIMEOUT_SECONDS" \
+            --execute \
+            --report /output/report.json \
+            --json | tee "$RADAR_REPORT_DIRECTORY/stdout.json"
+          observer_exit=${PIPESTATUS[0]}
+          set -e
+          printf 'exit=%s\n' "$observer_exit" >> "$GITHUB_OUTPUT"
+          exit "$observer_exit"
+
+      - name: Write bounded evidence to the Job Summary
+        if: always()
+        shell: bash
+        env:
+          RADAR_PLUGIN: ${{ inputs.plugin }}
+          RADAR_DSH_VERSION: ${{ inputs.dsh_version }}
+          RADAR_OBSERVER_EXIT: ${{ steps.observe.outputs.exit }}
+          RADAR_REPORT: ${{ runner.temp }}/upstream-radar-install-observation/report.json
+        run: |
+          node --input-type=module <<'NODE' >> "$GITHUB_STEP_SUMMARY"
+          import { existsSync, readFileSync } from 'node:fs'
+          const inline = value => String(value ?? 'unknown').replace(/[\u0000-\u001f\u007f`]/g, ' ').slice(0, 300)
+          const count = events => Array.isArray(events) ? events.reduce((sum, event) => sum + Number(event?.count ?? 0), 0) : 0
+          const lines = [
+            '## Upstream Radar — isolated DSH install observation',
+            '',
+            `- Plugin: \`${inline(process.env.RADAR_PLUGIN)}\``,
+            `- DSH: \`${inline(process.env.RADAR_DSH_VERSION)}\``,
+            `- Observer exit: \`${inline(process.env.RADAR_OBSERVER_EXIT)}\``,
+          ]
+          if (!existsSync(process.env.RADAR_REPORT)) {
+            lines.push('- Result: `unknown` — no machine-readable report survived the bounded run.')
+          } else {
+            let report
+            try { report = JSON.parse(readFileSync(process.env.RADAR_REPORT, 'utf8')) } catch {}
+            if (report === undefined) {
+              lines.push('- Result: `unknown` — report JSON was invalid.')
+            } else {
+              lines.push(
+                `- Result: \`${inline(report.result)}\` — ${inline(report.reason)}`,
+                `- Exact artifact: \`sha256:${inline(report.artifact?.sha256)}\``,
+                `- Declared lifecycle scripts: \`${inline(report.artifact?.lifecycleScripts?.join(', ') || 'none')}\``,
+                `- Install behavior: ${count(report.observations?.install?.processes)} process exec(s), ${count(report.observations?.install?.network)} network attempt(s), ${count(report.observations?.install?.fileWrites)} file-write syscall(s)`,
+                `- Load behavior: ${count(report.observations?.load?.processes)} process exec(s), ${count(report.observations?.load?.network)} network attempt(s), ${count(report.observations?.load?.fileWrites)} file-write syscall(s)`,
+                `- Trace coverage: install \`${inline(report.observations?.install?.coverage?.status)}\`, load \`${inline(report.observations?.load?.coverage?.status)}\``,
+                `- Isolation: \`${inline(report.boundary?.isolationProviderClaim)}\`; no repository secrets were passed into the container.`,
+              )
+              const endpoints = (report.observations?.install?.network ?? []).slice(0, 5)
+              if (endpoints.length > 0) {
+                lines.push('- First observed install destinations:')
+                for (const event of endpoints) lines.push(`  - \`${inline(`${event.address}${event.port === undefined ? '' : `:${event.port}`}`)}\` (${inline(event.operation)}, count ${inline(event.count)})`)
+              }
+            }
+          }
+          lines.push('', 'This is bounded behavior evidence from a disposable VM plus restricted container. It is not a proof that adversarial code is safe.', '')
+          process.stdout.write(lines.join('\n'))
+          NODE
+
+      - name: Keep the machine-readable observation
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: upstream-radar-install-${{ inputs.case_id }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/upstream-radar-install-observation
+          if-no-files-found: warn
+          retention-days: 30

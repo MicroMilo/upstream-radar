@@ -1,0 +1,164 @@
+import assert from 'node:assert/strict'
+import { mkdir, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
+import { describe, it } from 'node:test'
+import {
+  observeDshPluginInstall,
+  parseDshInstallTrace,
+  renderDshInstallObservation,
+  type InstallObservationCommand,
+  type InstallObservationCommandResult,
+} from '../src/dsh-install-observation.js'
+import { makeTarball } from './helpers/tar.js'
+
+const TRACE = `420 execve("/usr/bin/node", ["node", "scripts/postinstall.js"], 0x7ffe) = 0
+420 connect(18, {sa_family=AF_INET, sin_port=htons(443), sin_addr=inet_addr("203.0.113.10")}, 16) = 0
+420 openat(AT_FDCWD, "/sandbox/dsh-home/profiles/headless/install.log", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 18
+420 mkdir("/sandbox/dsh-home/profiles/headless/generated", 0777) = 0
+420 unlink("/sandbox/dsh-home/profiles/headless/temporary", 0) = -1 ENOENT (No such file or directory)
+`
+
+function passed(overrides: Partial<InstallObservationCommandResult> = {}): InstallObservationCommandResult {
+  return {
+    code: 0,
+    timedOut: false,
+    outputExceeded: false,
+    stdout: '',
+    stderr: '',
+    ...overrides,
+  }
+}
+
+describe('DSH install observation', () => {
+  it('turns bounded strace evidence into process, network and file-write events', () => {
+    const observation = parseDshInstallTrace([TRACE], '/sandbox')
+
+    assert.equal(observation.coverage.status, 'captured')
+    assert.equal(observation.processes[0]?.executable, '/usr/bin/node')
+    assert.deepEqual(observation.processes[0]?.arguments, ['node', 'scripts/postinstall.js'])
+    assert.equal(observation.network[0]?.address, '203.0.113.10')
+    assert.equal(observation.network[0]?.port, 443)
+    assert.equal(observation.fileWrites[0]?.path, '$SANDBOX/dsh-home/profiles/headless/install.log')
+    assert.equal(observation.fileWrites[0]?.operation, 'openat')
+    assert.equal(observation.fileWrites.some(event => event.operation === 'unlink' && event.succeeded === false), true)
+  })
+
+  it('refuses execution unless the caller explicitly accepts third-party code', async () => {
+    let calls = 0
+    await assert.rejects(
+      observeDshPluginInstall({
+        packageSpec: 'example-plugin@1.0.0',
+        dshVersion: '0.1.0-rc.8',
+        allowExecution: false,
+        isolationProvider: 'github-actions-hosted-runner',
+        runner: async () => {
+          calls += 1
+          return passed()
+        },
+      }),
+      /explicit execution consent/,
+    )
+    assert.equal(calls, 0)
+  })
+
+  it('observes one exact artifact through DSH install and load without inheriting host secrets', async () => {
+    const calls: InstallObservationCommand[] = []
+    const runner = async (command: InstallObservationCommand): Promise<InstallObservationCommandResult> => {
+      calls.push(command)
+      assert.equal(command.env.GITHUB_TOKEN, undefined)
+      assert.equal(command.env.ISSUE_LOCATOR_LLM_API_KEY, undefined)
+
+      if (command.phase === 'artifact') {
+        const artifactPath = join(command.cwd, 'example-plugin-1.0.0.tgz')
+        await writeFile(artifactPath, makeTarball([
+          { path: 'package/package.json', contents: JSON.stringify({
+            name: 'example-plugin',
+            version: '1.0.0',
+            scripts: { postinstall: 'node scripts/postinstall.js' },
+            dsh: { bundle: { patch: './cordis.patch.yml' } },
+          }) },
+          { path: 'package/cordis.patch.yml', contents: '[]\n' },
+        ]))
+        return passed({ stdout: JSON.stringify([{ filename: 'example-plugin-1.0.0.tgz', integrity: 'sha512-demo' }]) })
+      }
+
+      if (command.phase === 'install') {
+        assert.equal(command.env.NPM_CONFIG_IGNORE_SCRIPTS, 'false')
+        assert.equal(command.args.includes('example-plugin-1.0.0.tgz'), true)
+        const dshHome = command.env.DSH_HOME
+        assert.equal(typeof dshHome, 'string')
+        const profileDirectory = join(dshHome as string, 'profiles', 'headless')
+        await mkdir(join(profileDirectory, 'generated'), { recursive: true })
+        await writeFile(join(profileDirectory, 'generated', 'install.txt'), 'created during install\n')
+        await writeFile(join(profileDirectory, 'package.json'), JSON.stringify({
+          dsh: { profile: { bundles: ['example-plugin'] } },
+        }))
+      }
+
+      if (command.tracePath !== undefined) {
+        await writeFile(command.tracePath, TRACE.replaceAll('/sandbox', command.sandboxRoot))
+      }
+      return passed()
+    }
+
+    const report = await observeDshPluginInstall({
+      packageSpec: 'example-plugin@1.0.0',
+      dshVersion: '0.1.0-rc.8',
+      allowExecution: true,
+      isolationProvider: 'github-actions-hosted-runner',
+      hostEnvironment: {
+        PATH: '/usr/bin:/bin',
+        GITHUB_TOKEN: 'must-not-cross-boundary',
+        ISSUE_LOCATOR_LLM_API_KEY: 'must-not-cross-boundary',
+      },
+      runner,
+    })
+
+    assert.equal(report.result, 'compatible')
+    assert.equal(report.artifact.name, 'example-plugin')
+    assert.equal(report.artifact.version, '1.0.0')
+    assert.match(report.artifact.sha256 ?? '', /^[0-9a-f]{64}$/)
+    assert.deepEqual(report.artifact.lifecycleScripts, ['postinstall'])
+    assert.equal(report.stages.registration.status, 'passed')
+    assert.equal(report.observations.install.processes.length, 1)
+    assert.equal(report.observations.install.fileWrites.length >= 1, true)
+    assert.equal(report.filesystem.install.created.some(path => path.endsWith('/generated/install.txt')), true)
+    assert.equal(calls.map(call => call.phase).join(','), 'artifact,profile,install,load')
+    assert.match(renderDshInstallObservation(report), /COMPATIBLE/)
+    assert.match(renderDshInstallObservation(report), /Lifecycle scripts declared: postinstall/)
+  })
+
+  it('keeps an observed install failure distinct from missing trace evidence', async () => {
+    const artifact = makeTarball([
+      { path: 'package/package.json', contents: JSON.stringify({
+        name: 'broken-plugin',
+        version: '1.2.3',
+        dsh: { bundle: { patch: 'cordis.patch.yml' } },
+      }) },
+      { path: 'package/cordis.patch.yml', contents: '[]\n' },
+    ])
+    const runner = async (command: InstallObservationCommand): Promise<InstallObservationCommandResult> => {
+      if (command.phase === 'artifact') {
+        await writeFile(join(command.cwd, 'broken-plugin-1.2.3.tgz'), artifact)
+        return passed({ stdout: JSON.stringify([{ filename: 'broken-plugin-1.2.3.tgz' }]) })
+      }
+      if (command.phase === 'install') {
+        if (command.tracePath !== undefined) await writeFile(command.tracePath, TRACE)
+        return passed({ code: 1, stderr: 'dependency build failed' })
+      }
+      return passed()
+    }
+
+    const report = await observeDshPluginInstall({
+      packageSpec: 'broken-plugin@1.2.3',
+      dshVersion: '0.1.0-rc.8',
+      allowExecution: true,
+      isolationProvider: 'other',
+      runner,
+    })
+
+    assert.equal(report.result, 'install-failed')
+    assert.equal(report.stages.install.status, 'failed')
+    assert.match(report.reason, /install command failed/)
+  })
+})

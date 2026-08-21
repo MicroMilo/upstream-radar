@@ -10,7 +10,7 @@ Upstream Radar is not another package-name vulnerability scanner. It follows one
 
 | Product job | What Radar establishes |
 | --- | --- |
-| **DSH compatibility / admission** | Whether the exact published bundle can be registered and loaded by the DSH releases you care about. |
+| **DSH compatibility / admission** | Whether the exact published bundle can be installed, registered, and loaded by the DSH releases you care about, with an isolated execution lane for behavior evidence. |
 | **Real dependency graph** | Which exact package versions and physical paths the plugin brings into the DSH profile, including unresolved edges. |
 | **Continuous upstream monitoring** | Whether an advisory, npm release, DSH/Cordis change, or breaking signal changes the old → new situation. |
 | **Author-facing repair** | Which plugin, dependency path, version, lockfile, or DSH declaration gives the author a concrete next fix. |
@@ -21,7 +21,7 @@ The deterministic scanner establishes package, graph, advisory, and compatibilit
 
 ```mermaid
 flowchart TD
-  A["DSH plugin source or exact npm artifact"] --> B["DSH compatibility / admission check"]
+  A["DSH plugin source or exact npm artifact"] --> B["Static review + DSH compatibility check"]
   B --> C["Build the real plugin → dependency graph"]
   C --> D["Monitor advisories, npm, DSH and Cordis changes"]
   D --> E{"Meaningful affected change?"}
@@ -63,19 +63,53 @@ baseline report, and defined in [`schemas/upstream-downstream-ir.schema.json`](s
 
 ```bash
 # No DSH profile, API key, or network state required
-npx --yes upstream-radar@0.38.0 demo
+npx --yes upstream-radar@0.39.0 demo
 
 # Scan a public DSH plugin repository without installing it
-npx --yes upstream-radar@0.38.0 scan \
+npx --yes upstream-radar@0.39.0 scan \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --fail-on never
 
 # Review a real browser plugin users would install, then check two DSH releases
-npx --yes upstream-radar@0.38.0 review dsh-plugin dsh-cloudflare-browser-run@0.1.1 \
+npx --yes upstream-radar@0.39.0 review dsh-plugin dsh-cloudflare-browser-run@0.1.1 \
   --dsh-version 0.1.0-rc.6,0.1.0-rc.7
 ```
 
 The important output is evidence, not a green badge: exact package identity, dependency paths, unresolved edges, install-time scripts, npm integrity/signature/provenance, advisory matches, and DSH load results.
+
+## The isolated execution lane
+
+Static metadata tells us that a lifecycle script exists; it cannot tell us what
+actually ran. The new [`dsh-install` workflow](.github/workflows/observe-dsh-plugin-install.yml)
+therefore uses a separate, deliberately untrusted lane:
+
+```text
+fresh GitHub-hosted VM (no secrets, read-only repository token)
+  → restricted container (no host workspace or Docker socket)
+  → npm pack exact package@version with scripts disabled
+  → DSH installs that same tarball with scripts enabled
+  → strace records child processes, network destinations and file writes
+  → DSH loads the registered bundle under the same exact release
+  → bounded JSON report survives; the container and VM are discarded
+```
+
+Use **Actions → Observe one DSH plugin install** and supply one exact plugin and
+one exact DSH version. The CLI also exposes `probe dsh-install`, but it refuses
+to run unless both `--execute` and `UPSTREAM_RADAR_ISOLATED_RUNNER=1` are present;
+it is not intended as a normal laptop command.
+
+This lane is wired into the always-on observer. Radar now watches the official
+`@deepseek-ai/dsh` coordinate. A new exact DSH publication fans out the small
+[maintained plugin corpus](examples/dsh/install-observer/targets.json), one fresh
+VM per plugin. A mapped plugin publication retests only that plugin. Unchanged
+commits stay quiet, and the DSH Agent/API key never enters the execution job.
+
+The first implementation is intentionally honest about its limit: a container
+shares the hosted VM's kernel, and same-container `strace` evidence is not
+tamper-proof against determined malicious code. The outer VM is disposable and
+secret-free; a Firecracker collector is the later high-assurance backend, not a
+claim made by this report. See the [execution boundary and result semantics](examples/dsh/install-observer/README.md)
+and [`dsh-install-observation.schema.json`](schemas/dsh-install-observation.schema.json).
 
 ## What we have already found
 
@@ -131,11 +165,11 @@ Two copies of `parser` are different nodes. An alert names the exact version and
 For a collection of saved reports, build the reverse index that turns an upstream package update into affected plugins:
 
 ```bash
-npx --yes upstream-radar@0.38.0 graph reverse ./reports \
+npx --yes upstream-radar@0.39.0 graph reverse ./reports \
   --output reverse-dependency-index.json
 
 # Ask: which plugins currently depend on this exact package?
-npx --yes upstream-radar@0.38.0 graph reverse ./reports \
+npx --yes upstream-radar@0.39.0 graph reverse ./reports \
   --package parser@2.9.0
 
 # Rebuild the checked-in index from the real first 50 DSH plugin reports
@@ -154,7 +188,7 @@ To route an upstream old → new change to that index, pass it to the always-on
 observer:
 
 ```bash
-npx --yes upstream-radar@0.38.0 observe ./targets.yml \
+npx --yes upstream-radar@0.39.0 observe ./targets.yml \
   --reverse-index ./reverse-dependency-index.json \
   --state ./observations.json \
   --report ./upstream-radar-observer.md
@@ -180,7 +214,7 @@ replay baseline → one Agent task → quiet run without network access.
 The repository already contains a reusable, composite Action in [`action.yml`](action.yml). It runs the same frozen Radar check in CI and writes a short Job Summary.
 
 ```yaml
-- uses: MicroMilo/upstream-radar@v0.38.0
+- uses: MicroMilo/upstream-radar@v0.39.0
   with:
     config: upstream-radar.config.json
     fail-on: high
@@ -194,8 +228,9 @@ See the [consumer workflow](examples/github-actions/consumer/README.md) for conf
 | --- | --- |
 | Reconstruct exact npm/pnpm dependency paths | An empty finding list is a safety certificate |
 | Query OSV and GitHub Advisory evidence for exact versions | A missing provenance statement proves maliciousness |
-| Compare source and published artifact evidence | Static review replaces sandboxing or runtime testing |
-| Check DSH bundle/profile compatibility without business execution | “Compatible” means the plugin is secure |
+| Compare source and published artifact evidence | Static review replaces runtime evidence |
+| Observe exact install/load behavior in a disposable VM and restricted container | One observed run proves adversarial code is safe |
+| Check DSH bundle/profile compatibility without business actions | “Compatible” means the plugin is secure |
 | Monitor old → new upstream observations | An LLM can repair evidence that was never collected |
 
 ## Install and connect to DSH
@@ -204,7 +239,7 @@ See the [consumer workflow](examples/github-actions/consumer/README.md) for conf
 pnpm add upstream-radar
 
 # Generate a reviewable DSH profile inventory from the installed profile
-npx --yes upstream-radar@0.38.0 setup
+npx --yes upstream-radar@0.39.0 setup
 ```
 
 For Feishu/webhook routing, DSH Agent handoff, observer state, report schemas, and troubleshooting, use the [full Chinese guide](docs/README.zh-CN.md). The [architecture notes](docs/architecture.md) explain the boundaries and evidence model.
