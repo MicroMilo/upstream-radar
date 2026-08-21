@@ -73,7 +73,7 @@
         "load": { "$ref": "#/$defs/filesystemDiff" }
       }
     },
-    "result": { "enum": ["compatible", "install-failed", "load-failed", "unknown"] },
+    "result": { "enum": ["compatible", "runtime-incompatible", "install-failed", "load-failed", "unknown"] },
     "reason": { "type": "string", "maxLength": 4096 },
     "boundary": {
       "type": "object",
@@ -109,6 +109,7 @@
         "integrity": { "type": "string", "maxLength": 1024 },
         "bytes": { "type": "integer", "minimum": 0, "maximum": 67108864 },
         "bundlePatch": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "nodeEngine": { "type": "string", "minLength": 1, "maxLength": 512 },
         "lifecycleScripts": {
           "type": "array",
           "maxItems": 4,

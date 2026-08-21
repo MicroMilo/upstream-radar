@@ -81,6 +81,43 @@ describe('DSH install observation', () => {
     assert.deepEqual(phases, ['runtime'])
   })
 
+  it('stops before DSH or plugin execution when the exact artifact excludes the isolated Node runtime', async () => {
+    const phases: InstallObservationCommand['phase'][] = []
+    const report = await observeDshPluginInstall({
+      packageSpec: 'future-plugin@1.0.0',
+      dshVersion: '0.1.1-rc.1',
+      allowExecution: true,
+      isolationProvider: 'github-actions-hosted-runner',
+      runner: async command => {
+        phases.push(command.phase)
+        if (command.phase === 'runtime') return passed({ stdout: '11.7.0\n' })
+        if (command.phase === 'artifact') {
+          await writeFile(join(command.cwd, 'future-plugin-1.0.0.tgz'), makeTarball([
+            { path: 'package/package.json', contents: JSON.stringify({
+              name: 'future-plugin',
+              version: '1.0.0',
+              engines: { node: '>=999.0.0' },
+              dsh: { bundle: { patch: 'cordis.patch.yml' } },
+            }) },
+            { path: 'package/cordis.patch.yml', contents: '[]\n' },
+          ]))
+          return passed({ stdout: JSON.stringify([{ filename: 'future-plugin-1.0.0.tgz' }]) })
+        }
+        throw new Error(`unexpected execution phase: ${command.phase}`)
+      },
+    })
+
+    assert.equal(report.result, 'runtime-incompatible')
+    assert.equal(report.artifact.nodeEngine, '>=999.0.0')
+    assert.equal(report.stages.artifact.status, 'passed')
+    assert.equal(report.stages.profile.status, 'skipped')
+    assert.equal(report.stages.install.status, 'skipped')
+    assert.equal(report.stages.load.status, 'skipped')
+    assert.deepEqual(phases, ['runtime', 'artifact'])
+    assert.match(report.reason, /declares Node >=999\.0\.0/)
+    assert.match(renderDshInstallObservation(report), /RUNTIME-INCOMPATIBLE/)
+  })
+
   it('observes one exact artifact through DSH install and load without inheriting host secrets', async () => {
     const calls: InstallObservationCommand[] = []
     const runner = async (command: InstallObservationCommand): Promise<InstallObservationCommandResult> => {
@@ -96,6 +133,7 @@ describe('DSH install observation', () => {
           { path: 'package/package.json', contents: JSON.stringify({
             name: 'example-plugin',
             version: '1.0.0',
+            engines: { node: '>=18.0.0' },
             scripts: { postinstall: 'node scripts/postinstall.js' },
             dsh: { bundle: { patch: './cordis.patch.yml' } },
           }) },
@@ -139,6 +177,7 @@ describe('DSH install observation', () => {
     assert.equal(report.result, 'compatible')
     assert.equal(report.artifact.name, 'example-plugin')
     assert.equal(report.artifact.version, '1.0.0')
+    assert.equal(report.artifact.nodeEngine, '>=18.0.0')
     assert.match(report.artifact.sha256 ?? '', /^[0-9a-f]{64}$/)
     assert.deepEqual(report.artifact.lifecycleScripts, ['postinstall'])
     assert.equal(report.runtime.packageManager.version, '11.7.0')
@@ -150,6 +189,7 @@ describe('DSH install observation', () => {
     assert.equal(calls.map(call => call.phase).join(','), 'runtime,artifact,profile,install,load')
     assert.match(renderDshInstallObservation(report), /COMPATIBLE/)
     assert.match(renderDshInstallObservation(report), /pnpm 11\.7\.0/)
+    assert.match(renderDshInstallObservation(report), /Plugin Node requirement: >=18\.0\.0/)
     assert.match(renderDshInstallObservation(report), /Approved dependency builds: none/)
     assert.match(renderDshInstallObservation(report), /Lifecycle scripts declared: postinstall/)
   })

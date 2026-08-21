@@ -5,6 +5,7 @@ import { lstat, mkdir, mkdtemp, open, readdir, rm, writeFile } from 'node:fs/pro
 import { tmpdir } from 'node:os'
 import { basename, join, relative, resolve, sep } from 'node:path'
 import { parseNpmSpec } from './npm.js'
+import { satisfiesSemverRange } from './semver.js'
 import { parseNpmTarball } from './tar.js'
 import { TOOL_VERSION } from './version.js'
 
@@ -24,7 +25,7 @@ const MAX_ALLOWED_BUILDS = 16
 const PROFILE = 'headless'
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare'] as const
 
-export type DshInstallObservationResult = 'compatible' | 'install-failed' | 'load-failed' | 'unknown'
+export type DshInstallObservationResult = 'compatible' | 'runtime-incompatible' | 'install-failed' | 'load-failed' | 'unknown'
 export type InstallObservationPhase = 'runtime' | 'artifact' | 'profile' | 'install' | 'load'
 export type InstallObservationIsolationProvider = 'github-actions-hosted-runner' | 'firecracker' | 'other'
 
@@ -136,6 +137,7 @@ export interface DshInstallObservationReport {
     integrity?: string
     bytes?: number
     bundlePatch?: string
+    nodeEngine?: string
     lifecycleScripts: string[]
   }
   stages: {
@@ -213,6 +215,7 @@ interface ParsedArtifact {
   integrity?: string
   bytes: number
   bundlePatch: string
+  nodeEngine?: string
   lifecycleScripts: string[]
 }
 
@@ -632,6 +635,14 @@ async function parsePackedArtifact(
     ? manifest.scripts as Record<string, unknown>
     : {}
   const lifecycleScripts = LIFECYCLE_SCRIPTS.filter(name => typeof scripts[name] === 'string')
+  const engines = typeof manifest.engines === 'object' && manifest.engines !== null && !Array.isArray(manifest.engines)
+    ? manifest.engines as Record<string, unknown>
+    : undefined
+  const rawNodeEngine = typeof engines?.node === 'string' ? engines.node.trim() : undefined
+  if (rawNodeEngine !== undefined && rawNodeEngine.length > 512) {
+    throw new Error('packed artifact Node engine requirement exceeds 512 characters')
+  }
+  const nodeEngine = rawNodeEngine === undefined || rawNodeEngine === '' ? undefined : bounded(rawNodeEngine, 512)
   const integrity = typeof item.integrity === 'string' ? bounded(item.integrity, 1_024) : undefined
   return {
     path,
@@ -640,6 +651,7 @@ async function parsePackedArtifact(
     ...(integrity === undefined ? {} : { integrity }),
     bytes: compressed.length,
     bundlePatch,
+    ...(nodeEngine === undefined ? {} : { nodeEngine }),
     lifecycleScripts,
   }
 }
@@ -913,9 +925,28 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       ...(artifact.integrity === undefined ? {} : { integrity: artifact.integrity }),
       bytes: artifact.bytes,
       bundlePatch: artifact.bundlePatch,
+      ...(artifact.nodeEngine === undefined ? {} : { nodeEngine: artifact.nodeEngine }),
       lifecycleScripts: artifact.lifecycleScripts,
     }
     report.stages.artifact = { status: 'passed', code: artifactResult.code }
+
+    if (artifact.nodeEngine !== undefined) {
+      const runtimeMatches = satisfiesSemverRange(report.runtime.nodeVersion, artifact.nodeEngine)
+      if (runtimeMatches === false) {
+        return finishReport(
+          report,
+          'runtime-incompatible',
+          `the plugin declares Node ${artifact.nodeEngine}, but the isolated runtime is Node ${report.runtime.nodeVersion}`,
+        )
+      }
+      if (runtimeMatches === undefined) {
+        return finishReport(
+          report,
+          'unknown',
+          `the observer could not safely evaluate the plugin Node requirement ${artifact.nodeEngine}`,
+        )
+      }
+    }
 
     try {
       const profileResult = await runSafely(runner, {
@@ -1017,6 +1048,7 @@ export function renderDshInstallObservation(report: DshInstallObservationReport)
     `Artifact: ${report.artifact.name}@${report.artifact.version}${report.artifact.sha256 === undefined ? '' : ` (sha256:${report.artifact.sha256.slice(0, 12)}…)`}`,
     `DSH: ${report.dshVersion}`,
     `Runtime: Node ${report.runtime.nodeVersion} (${report.runtime.platform}/${report.runtime.architecture}), pnpm ${report.runtime.packageManager.version ?? 'unknown'}`,
+    `Plugin Node requirement: ${report.artifact.nodeEngine ?? 'not declared'}`,
     `Isolation claim: ${report.boundary.isolationProviderClaim} (provided externally; not verified by Radar)`,
     `Approved dependency builds: ${report.boundary.approvedDependencyBuilds.length === 0 ? 'none' : report.boundary.approvedDependencyBuilds.join(', ')}`,
     '',

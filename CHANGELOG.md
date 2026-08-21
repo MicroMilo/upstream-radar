@@ -2,6 +2,19 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## Unreleased
+
+- Stop isolated DSH plugin observations before code execution when the exact npm
+  artifact's declared Node range excludes the runner, and report the pair as
+  `runtime-incompatible` instead of a false compatibility success.
+- Record each artifact's Node requirement in JSON, text output, and GitHub Job
+  Summaries.
+- Approve only `node-pty` for the maintained Better Sidebar install case, matching
+  the plugin's documented native dependency instead of allowing all builds.
+- Include the standard Node-gyp Python/C++ toolchain in the disposable observer
+  image so an explicitly approved native build is not confused with a plugin
+  compatibility failure.
+
 ## [0.39.0] - 2026-08-21
 
 ### Isolated DSH install and load observation

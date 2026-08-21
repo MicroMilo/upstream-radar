@@ -16,7 +16,7 @@ FROM node:22-bookworm-slim AS runtime
 
 # DSH rc.7 and rc.8 declare pnpm@11.7.0 in the official source tree.
 RUN apt-get update \
-  && apt-get install --yes --no-install-recommends ca-certificates git strace \
+  && apt-get install --yes --no-install-recommends ca-certificates git strace python3 make g++ \
   && rm -rf /var/lib/apt/lists/* \
   && npm install --global --ignore-scripts pnpm@11.7.0 \
   && useradd --create-home --uid 10001 --shell /usr/sbin/nologin observer
