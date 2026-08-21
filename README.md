@@ -87,6 +87,7 @@ therefore uses a separate, deliberately untrusted lane:
 fresh GitHub-hosted VM (no secrets, read-only repository token)
   → restricted container (no host workspace or Docker socket)
   → npm pack exact package@version with scripts disabled
+  → enforce the artifact's declared Node range before plugin code can run
   → record the exact Node and pnpm runtime used by the check
   → DSH installs that same tarball with only the declared dependency-build approvals
   → strace records child processes, network destinations and file writes
@@ -126,7 +127,7 @@ These are real, reproducible cases in this repository—not synthetic “vulnera
 
 | Case | Finding | Why it matters |
 | --- | --- | --- |
-| [Live DSH `0.1.1-rc.1` isolated matrix](examples/dsh/install-observer/reports/2026-08-21-dsh-0.1.1-rc.1.md) | All three maintained plugins install/register/load under their recorded contracts; Feishu's raw control fails until its documented `protobufjs` approval is supplied | This is the first always-on behavior result: Radar preserves a red negative control without mislabeling a documented install policy as a new author defect. |
+| [Live DSH `0.1.1-rc.1` isolated matrix](examples/dsh/install-observer/reports/2026-08-21-dsh-0.1.1-rc.1.md) | Eight exact artifacts install/register/load under their recorded contracts; OpenPencil is stopped before execution because it requires Node ≥24.11 while the isolated runner is Node 22.23; Better Sidebar passes only with its documented `node-pty` build approval and a real native toolchain | The imported awesome cohort found both a genuine runtime-pair incompatibility and a test-environment defect, while preserving the evidence that distinguishes them. |
 | [`dsh-cloudflare-browser-run@0.1.1`](examples/reports/dsh-cloudflare-browser-run-0.1.1.txt) | 18 resolved packages, 2 unresolved optional Cordis edges, 0 known vulnerabilities, and DSH rc.6/rc.7 both loaded the bundle | A real browser plugin demonstrates the DSH admission boundary and why incomplete edges stay visible. |
 | [50-plugin batch](examples/dsh/reports/dsh-batch-50-2026-08-17.md) / [real graph corpus](examples/dsh/first-batch/README.md) | 50 source scans, 30 exact npm reviews, 37 real plugin graphs indexed; 13 targets kept as missing evidence | The reverse index is now built from real DSH plugins, and missing graphs are not treated as clean. |
 | [`dsh-feishu-bot@0.15.8`](examples/dsh/reports/dsh-feishu-bot-0.15.8-review-2026-08-18.md) | 89-package graph, 12 unresolved optional edges, reachable `protobufjs` `postinstall`, DSH rc.6/rc.7 compatible | “No known CVE” is not the same as “no installation trust boundary.” |
