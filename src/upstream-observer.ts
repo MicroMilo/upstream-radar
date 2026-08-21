@@ -1215,6 +1215,7 @@ export class UpstreamObserverClient implements ObserverSource {
         packagePath,
       },
       manifest,
+      npmExpected: targetValue.observeNpm !== false,
       ...(packageObservation === undefined ? {} : {
         package: {
           name: packageObservation.name,

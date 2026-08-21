@@ -115,12 +115,12 @@
       },
       "sourceCoordinateAtSelection": {
         "name": "dsh-context",
-        "version": "0.19.2"
+        "version": "0.20.0"
       },
       "distribution": {
         "kind": "npm",
         "name": "dsh-context",
-        "selectedVersion": "0.19.2",
+        "selectedVersion": "0.20.0",
         "distTag": "latest"
       }
     },

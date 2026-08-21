@@ -34,7 +34,7 @@
     },
     {
       "id": "context",
-      "spec": "dsh-context@0.19.2",
+      "spec": "dsh-context@0.20.0",
       "observerTargetId": "dsh-context",
       "reason": "A context lifecycle plugin that exercises host, session and client integration boundaries."
     },

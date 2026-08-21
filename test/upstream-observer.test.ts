@@ -371,6 +371,10 @@ targets:
     assert.equal(result.package, undefined)
     assert.equal(result.graph?.rootNodeId, 'pnpm:workspace-root:source-only-plugin@1.0.0')
     assert.deepEqual(result.warnings, undefined)
+    assert.ok(result.alignment)
+    assert.equal(result.alignment.downstream.npmExpected, false)
+    assert.equal(result.alignment.checks.find(check => check.code === 'source-published-identity')?.status, 'aligned')
+    assert.equal(result.alignment.checks.some(check => check.remediation?.includes('npm package')), false)
   })
 
   it('creates a baseline, calls the Agent on a meaningful change, and stays quiet without a new change', async () => {

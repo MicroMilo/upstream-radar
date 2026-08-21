@@ -81,6 +81,19 @@ describe('upstream/downstream alignment IR', () => {
     assert.match(report.checks.find(check => check.code === 'dependency-graph-coverage')?.remediation ?? '', /empty vulnerability result is not complete coverage/)
   })
 
+  it('treats an explicitly source-only distribution as intentional instead of demanding npm', () => {
+    const report = buildUpstreamDownstreamIR(input({
+      npmExpected: false,
+      package: undefined,
+    }))
+    assert.equal(report.status, 'aligned')
+    assert.equal(report.downstream.npmExpected, false)
+    assert.equal(report.checks.find(check => check.code === 'source-published-identity')?.status, 'aligned')
+    assert.equal(report.checks.some(check => check.remediation?.includes('npm package')), false)
+    assert.deepEqual(parseUpstreamDownstreamIR(report), report)
+    assert.throws(() => buildUpstreamDownstreamIR(input({ npmExpected: false })), /source-only alignment/)
+  })
+
   it('validates persisted IR before it is reused', () => {
     const report = buildUpstreamDownstreamIR(input())
     assert.deepEqual(parseUpstreamDownstreamIR(report), report)
