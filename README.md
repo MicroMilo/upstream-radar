@@ -23,23 +23,12 @@ plugin tarball SHA-256 × DSH version × Node/pnpm baseline × approved dependen
 
 ```mermaid
 flowchart TB
-  DSH["DSH releases"] --> IR["Exact-coordinate compatibility IR"]
-  Plugin["Plugin source and npm artifacts"] --> IR
-  Feed["Advisories and dependency releases"] --> StaticLane["Static evidence lane"]
-
-  IR --> StaticLane
-  IR --> RuntimeLane["Isolated runtime lane"]
-
-  StaticLane --> StaticFacts["Identity alignment<br/>dependency graph<br/>known vulnerabilities"]
-  RuntimeLane --> RuntimeFacts["Fresh VM<br/>install → register → load<br/>bounded behavior trace"]
-
-  StaticFacts --> Evidence["Versioned compatibility evidence"]
-  RuntimeFacts --> Evidence
-
-  Evidence --> Verdict["Exact-pair verdict and history"]
-  Verdict --> Impact["Reverse impact: upstream → affected plugins"]
-  Impact --> Repair["Author-fixable finding"]
-  Impact --> Agent["Optional DSH Agent project analysis"]
+  Input["DSH releases · plugin source/npm · advisory feeds"] --> IR["Exact-coordinate compatibility IR"]
+  IR --> Static["Static lane<br/>identity · graph · vulnerabilities"]
+  IR --> Runtime["Isolated lane on a fresh VM<br/>install → register → load"]
+  Static --> Evidence["Versioned exact-pair evidence"]
+  Runtime --> Evidence
+  Evidence --> Action["Verdict · reverse impact · author fix · optional Agent"]
 ```
 
 Radar establishes deterministic facts; the Agent interprets project impact. A
