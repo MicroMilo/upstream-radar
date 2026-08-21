@@ -795,8 +795,8 @@
       ],
       "source": {
         "name": "dsh-wsl-workspace",
-        "version": "0.2.3",
-        "digest": "sha256:ef63492e49e30e8caec27101365a9000bc4188ac3f14d229683c996bfa518c74",
+        "version": "0.2.4",
+        "digest": "sha256:4cc71abe211312cb13e45091e7d3d7c74c1e4273ed7e7d0be587d27d1bf205b3",
         "findings": [
           {
             "code": "dependency-graph-unlocked",
