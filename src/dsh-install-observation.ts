@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os'
 import { basename, join, relative, resolve, sep } from 'node:path'
 import { parsePnpmLockGraph } from './graph.js'
 import { parseNpmSpec } from './npm.js'
+import type { DependencyKind } from './radar-types.js'
 import { satisfiesSemverRange } from './semver.js'
 import { parseNpmTarball } from './tar.js'
 import { TOOL_VERSION } from './version.js'
@@ -24,6 +25,7 @@ const MAX_SNAPSHOT_ENTRIES = 25_000
 const MAX_DIFF_PATHS = 512
 const MAX_ALLOWED_BUILDS = 16
 const MAX_PROFILE_LOCKFILE_BYTES = 16 * 1024 * 1024
+const MAX_PROFILE_GRAPH_GAPS = 32
 const PROFILE = 'headless'
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare'] as const
 const PROFILE_LOCKFILE_CANDIDATES = [
@@ -126,6 +128,15 @@ export interface DshInstallProfileLockfileEvidence {
   nodes?: number
   edges?: number
   unresolved?: number
+  /** A bounded, normalized sample of graph edges that could not be resolved. */
+  unresolvedDependencies?: DshInstallProfileGraphGap[]
+}
+
+export interface DshInstallProfileGraphGap {
+  from: string
+  name: string
+  spec: string
+  kind: DependencyKind
 }
 
 export interface DshInstallObservationReport {
@@ -851,6 +862,16 @@ function profileGraphRoot(manifest: Record<string, unknown>): { name: string, ve
     : SYNTHETIC_PROFILE_GRAPH_ROOT
 }
 
+function profileGraphGaps(graph: ReturnType<typeof parsePnpmLockGraph>): DshInstallProfileGraphGap[] | undefined {
+  if (graph.unresolved === undefined || graph.unresolved.length === 0) return undefined
+  return graph.unresolved.slice(0, MAX_PROFILE_GRAPH_GAPS).map(gap => ({
+    from: bounded(gap.from, 512),
+    name: bounded(gap.name, 214),
+    spec: bounded(gap.spec, 512),
+    kind: gap.kind,
+  }))
+}
+
 async function profileResolutionEvidence(dshHome: string): Promise<DshInstallObservationReport['resolution']> {
   const profileDirectory = join(dshHome, 'profiles', PROFILE)
   const lockfile = await readProfileLockfile(dshHome)
@@ -863,6 +884,7 @@ async function profileResolutionEvidence(dshHome: string): Promise<DshInstallObs
     const manifestBuffer = await readRegularFileNoFollow(join(profileDirectory, 'package.json'), 4 * 1024 * 1024)
     const manifest = JSON.parse(manifestBuffer.toString('utf8')) as Record<string, unknown>
     const graph = parsePnpmLockGraph(lockfile.toString('utf8'), profileGraphRoot(manifest))
+    const graphGaps = profileGraphGaps(graph)
     return {
       profileLockfile: {
         ...profileLockfile,
@@ -870,6 +892,7 @@ async function profileResolutionEvidence(dshHome: string): Promise<DshInstallObs
         nodes: graph.nodes.length,
         edges: graph.edges.length,
         unresolved: graph.unresolved?.length ?? 0,
+        ...(graphGaps === undefined ? {} : { unresolvedDependencies: graphGaps }),
       },
     }
   } catch {

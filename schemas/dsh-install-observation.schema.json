@@ -134,7 +134,22 @@
             "graphDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
             "nodes": { "type": "integer", "minimum": 0, "maximum": 100000 },
             "edges": { "type": "integer", "minimum": 0, "maximum": 250000 },
-            "unresolved": { "type": "integer", "minimum": 0, "maximum": 250000 }
+            "unresolved": { "type": "integer", "minimum": 0, "maximum": 250000 },
+            "unresolvedDependencies": {
+              "type": "array",
+              "maxItems": 32,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["from", "name", "spec", "kind"],
+                "properties": {
+                  "from": { "type": "string", "minLength": 1, "maxLength": 512 },
+                  "name": { "type": "string", "minLength": 1, "maxLength": 214 },
+                  "spec": { "type": "string", "minLength": 1, "maxLength": 512 },
+                  "kind": { "enum": ["runtime", "development", "optional", "peer", "host-runtime"] }
+                }
+              }
+            }
           }
         }
       }

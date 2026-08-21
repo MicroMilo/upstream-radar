@@ -170,7 +170,9 @@ packages:
   'example-plugin@1.0.0': {}
 
 snapshots:
-  'example-plugin@1.0.0': {}
+  'example-plugin@1.0.0':
+    dependencies:
+      missing-dependency: 1.0.0
 `)
       }
 
@@ -206,7 +208,13 @@ snapshots:
     assert.match(report.resolution.profileLockfile?.graphDigest ?? '', /^sha256:[a-f0-9]{64}$/)
     assert.equal(report.resolution.profileLockfile?.nodes, 2)
     assert.equal(report.resolution.profileLockfile?.edges, 1)
-    assert.equal(report.resolution.profileLockfile?.unresolved, 0)
+    assert.equal(report.resolution.profileLockfile?.unresolved, 1)
+    assert.deepEqual(report.resolution.profileLockfile?.unresolvedDependencies, [{
+      from: 'pnpm:example-plugin@1.0.0',
+      name: 'missing-dependency',
+      spec: '1.0.0',
+      kind: 'runtime',
+    }])
     assert.deepEqual(report.boundary.approvedDependencyBuilds, [])
     assert.equal(report.stages.registration.status, 'passed')
     assert.equal(report.observations.install.processes.length, 1)

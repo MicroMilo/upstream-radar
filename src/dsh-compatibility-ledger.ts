@@ -24,6 +24,14 @@ export interface DshCompatibilityProfileLockfile {
   nodes?: number
   edges?: number
   unresolved?: number
+  unresolvedDependencies?: DshCompatibilityProfileGraphGap[]
+}
+
+export interface DshCompatibilityProfileGraphGap {
+  from: string
+  name: string
+  spec: string
+  kind: 'runtime' | 'development' | 'optional' | 'peer' | 'host-runtime'
 }
 
 export interface DshCompatibilityLedgerEntry {
@@ -182,6 +190,26 @@ function parseProfileLockfile(value: unknown, label: string): DshCompatibilityPr
   const nodes = item.nodes === undefined ? undefined : positiveInteger(item.nodes, `${label}.nodes`, 100_000)
   const edges = item.edges === undefined ? undefined : positiveInteger(item.edges, `${label}.edges`, 250_000)
   const unresolved = item.unresolved === undefined ? undefined : positiveInteger(item.unresolved, `${label}.unresolved`, 250_000)
+  const rawGaps = item.unresolvedDependencies
+  if (rawGaps !== undefined && (!Array.isArray(rawGaps) || rawGaps.length > 32)) {
+    throw new Error(`${label}.unresolvedDependencies must be an array of at most 32 graph gaps`)
+  }
+  const unresolvedDependencies = rawGaps?.map((value, index): DshCompatibilityProfileGraphGap => {
+    const gap = record(value, `${label}.unresolvedDependencies[${index}]`)
+    const kind = boundedString(gap.kind, `${label}.unresolvedDependencies[${index}].kind`, 32)
+    if (!['runtime', 'development', 'optional', 'peer', 'host-runtime'].includes(kind)) {
+      throw new Error(`${label}.unresolvedDependencies[${index}].kind is unsupported`)
+    }
+    return {
+      from: boundedString(gap.from, `${label}.unresolvedDependencies[${index}].from`, 512),
+      name: boundedString(gap.name, `${label}.unresolvedDependencies[${index}].name`, 214),
+      spec: boundedString(gap.spec, `${label}.unresolvedDependencies[${index}].spec`, 512),
+      kind: kind as DshCompatibilityProfileGraphGap['kind'],
+    }
+  })
+  if (unresolvedDependencies !== undefined && unresolved !== undefined && unresolvedDependencies.length > unresolved) {
+    throw new Error(`${label}.unresolvedDependencies cannot exceed unresolved`)
+  }
   return {
     sha256,
     bytes: positiveInteger(item.bytes, `${label}.bytes`, 64 * 1024 * 1024),
@@ -189,6 +217,7 @@ function parseProfileLockfile(value: unknown, label: string): DshCompatibilityPr
     ...(nodes === undefined ? {} : { nodes }),
     ...(edges === undefined ? {} : { edges }),
     ...(unresolved === undefined ? {} : { unresolved }),
+    ...(unresolvedDependencies === undefined ? {} : { unresolvedDependencies }),
   }
 }
 

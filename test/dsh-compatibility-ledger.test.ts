@@ -136,4 +136,35 @@ describe('DSH compatibility ledger', () => {
     assert.equal(drifted.transitions[0]?.status, 'resolution-drift')
     assert.match(renderDshCompatibilityLedgerMerge(drifted), /resolution-drift/)
   })
+
+  it('retains bounded unresolved profile edges so an incomplete graph is explainable', () => {
+    const merged = mergeDshCompatibilityLedger({
+      ledger: emptyDshCompatibilityLedger(),
+      expected: [expected],
+      reports: [report({
+        resolution: {
+          profileLockfile: {
+            sha256: 'd'.repeat(64),
+            bytes: 1234,
+            graphDigest: `sha256:${'e'.repeat(64)}`,
+            nodes: 2,
+            edges: 1,
+            unresolved: 1,
+            unresolvedDependencies: [{
+              from: 'pnpm:example@1.0.0',
+              name: 'host-only',
+              spec: '^2.0.0',
+              kind: 'peer',
+            }],
+          },
+        },
+      })],
+    })
+    assert.deepEqual(merged.ledger.entries[0]?.resolution?.profileLockfile?.unresolvedDependencies, [{
+      from: 'pnpm:example@1.0.0',
+      name: 'host-only',
+      spec: '^2.0.0',
+      kind: 'peer',
+    }])
+  })
 })
