@@ -63,7 +63,7 @@ missing evidence into a green result.
 Read the [live isolated matrix and negative controls](examples/dsh/install-observer/reports/2026-08-21-dsh-0.1.1-rc.1.md)
 or inspect the [first 50-plugin corpus](examples/dsh/first-batch/README.md).
 
-## Try it
+## Try it in 60 seconds
 
 ```bash
 # Network-free product walkthrough
