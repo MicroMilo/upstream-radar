@@ -303,7 +303,7 @@ snapshots:
             dsh: { bundle: { patch: 'cordis.patch.yml' } },
           }) },
           { path: 'package/cordis.patch.yml', contents: '[]\n' },
-          { path: 'package/src/types.ts', contents: "import type { Service } from 'host-runtime'\nexport type Host = Service\n" },
+          { path: 'package/src/types.ts', contents: "import { nothing } from 'unrelated-runtime'\nimport type { Service } from 'host-runtime'\nexport type Host = Service\n" },
         ]))
         return passed({ stdout: JSON.stringify([{ filename: 'mismatch-plugin-1.0.0.tgz' }]) })
       }

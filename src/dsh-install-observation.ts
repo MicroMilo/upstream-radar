@@ -359,10 +359,14 @@ function staticPeerUsage(entries: readonly TarEntry[], requirements: readonly { 
       if (state.get(requirement.name) === 'runtime-import-observed') continue
       const escaped = requirement.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       const literal = `['"]${escaped}(?:/[^'"]*)?['"]`
-      const typeOnly = new RegExp(`\\bimport\\s+type\\b[\\s\\S]{0,1024}?\\bfrom\\s*${literal}`)
+      // Stay within one statement line. A wider expression can start at an
+      // unrelated runtime import and accidentally consume a later `import
+      // type`, which would turn declaration-only evidence into a false runtime
+      // claim. Missing a heavily formatted import is safer than that claim.
+      const typeOnly = new RegExp(`(?:^|[;\\n])[\\t ]*import[\\t ]+type\\b[^;\\n]{0,1024}?\\bfrom[\\t ]*${literal}`)
       const runtime = new RegExp([
-        `\\bimport\\s+(?!type\\b)(?:[\\s\\S]{0,1024}?\\s+from\\s+)?${literal}`,
-        `\\bexport\\s+(?!type\\b)[\\s\\S]{0,1024}?\\s+from\\s+${literal}`,
+        `(?:^|[;\\n])[\\t ]*import[\\t ]+(?!type\\b)(?:[^;\\n]{0,1024}?[\\t ]+from[\\t ]+)?${literal}`,
+        `(?:^|[;\\n])[\\t ]*export[\\t ]+(?!type\\b)[^;\\n]{0,1024}?[\\t ]+from[\\t ]+${literal}`,
         `\\b(?:require|import)\\s*\\(\\s*${literal}`,
       ].join('|'))
       const literalReference = new RegExp(literal)
