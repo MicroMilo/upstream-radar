@@ -1409,7 +1409,11 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       const loadResult = await runSafely(runner, {
         phase: 'load',
         command: pnpmCommand,
-        args: dshArgs(options.dshVersion, ['--profile', PROFILE, '--dump-config']),
+        // `--dump-config` deliberately avoids evaluating bundle code, so it
+        // cannot prove that a registered plugin can boot. Passing `--help`
+        // through to the headless app still makes the one-shot profile exit,
+        // while forcing the DSH loader to resolve and mount every bundle.
+        args: dshArgs(options.dshVersion, ['--profile', PROFILE, '--help']),
         cwd: artifactDirectory,
         env: scriptsEnvironment,
         timeoutMs,

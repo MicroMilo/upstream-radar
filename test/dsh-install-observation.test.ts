@@ -257,6 +257,7 @@ snapshots:
     assert.equal(report.observations.install.fileWrites.length >= 1, true)
     assert.equal(report.filesystem.install.created.some(path => path.endsWith('/generated/install.txt')), true)
     assert.equal(calls.map(call => call.phase).join(','), 'runtime,artifact,profile,install,load')
+    assert.deepEqual(calls.find(call => call.phase === 'load')?.args.slice(-3), ['--profile', 'headless', '--help'])
     assert.match(renderDshInstallObservation(report), /COMPATIBLE/)
     assert.match(renderDshInstallObservation(report), /pnpm 11\.7\.0/)
     assert.match(renderDshInstallObservation(report), /Plugin Node requirement: >=18\.0\.0/)

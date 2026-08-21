@@ -123,8 +123,12 @@ then runs inside a restricted container that receives no repository/model
 secret, host workspace, or Docker socket. Radar first packs the exact npm
 coordinate with lifecycle scripts disabled and verifies its identity and DSH
 bundle declaration. DSH installs that local tarball with lifecycle scripts
-enabled, registers it, and loads it with `--dump-config`. Linux `strace` evidence
-and before/after filesystem snapshots are kept separately for install and load.
+enabled, registers it, then boots the `headless` profile with `--help`; this
+forces the Cordis loader to resolve and mount the bundle while asking the
+one-shot surface to exit. `--dump-config` is intentionally not used as the
+runtime check because it composes patches without evaluating bundle code. Linux
+`strace` evidence and before/after filesystem snapshots are kept separately
+for install and boot.
 
 ```text
 desired plugin × DSH × runtime-policy cell
@@ -135,13 +139,13 @@ desired plugin × DSH × runtime-policy cell
   -> exact tarball SHA-256
   -> traced DSH install
   -> registration check
-  -> traced DSH load
+  -> traced DSH headless boot
   -> bounded JSON artifact + complete profile-plus-DSH-host graph
   -> exact-cell ledger merge
 ```
 
-The result vocabulary separates `install-failed`, `load-failed`, `compatible`,
-and `unknown`; missing or truncated tracing never becomes a clean result. A
+The result vocabulary separates `install-failed`, `load-failed`,
+`peer-contract-incompatible`, `compatible`, and `unknown`; missing or truncated tracing never becomes a clean result. A
 static Node-engine mismatch is recorded before plugin execution and may open a
 configured alternate runtime cell, so a Node 22 failure is not prematurely
 called a global plugin failure. The ledger accepts a dynamic report only if its
@@ -151,10 +155,12 @@ retest; an exact pair that resolves a different transitive graph is reported as
 `resolution-drift` even if its install/load result remains compatible. This
 same pair is not considered covered when its final effective profile-plus-host
 graph cannot be completed: that is retained as an evidence gap, not hidden
-behind a green install result. The dynamic collector reads the shared host
-plane without importing it, so a DSH-provided peer is represented as a host
-edge instead of falsely reported as missing. This backend is useful
-compatibility and behavior evidence, not hostile-code proof.
+behind a green install result. The collector separates missing optional
+platform binaries from required runtime/peer edges, then compares every direct
+required plugin peer with the concrete version exposed by DSH. A missing or
+out-of-range host peer is `peer-contract-incompatible` even if a superficial
+configuration composition succeeded. This backend is useful compatibility and
+behavior evidence, not hostile-code proof.
 Docker shares the hosted VM kernel, and code in the same container may attempt
 to tamper with its trace/output. Moving the collector outside a Firecracker
 guest is the later high-assurance boundary.
