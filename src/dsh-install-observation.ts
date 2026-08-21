@@ -879,7 +879,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       const installResult = await runSafely(runner, {
         phase: 'install',
         command: pnpmCommand,
-        args: dshArgs(options.dshVersion, ['plugin', '--profile', PROFILE, 'add', artifact.filename]),
+        args: dshArgs(options.dshVersion, ['plugin', '--profile', PROFILE, 'add', join(artifactDirectory, artifact.filename)]),
         cwd: artifactDirectory,
         env: scriptsEnvironment,
         timeoutMs,

@@ -86,7 +86,7 @@ describe('DSH install observation', () => {
 
       if (command.phase === 'install') {
         assert.equal(command.env.NPM_CONFIG_IGNORE_SCRIPTS, 'false')
-        assert.equal(command.args.includes('example-plugin-1.0.0.tgz'), true)
+        assert.equal(command.args.at(-1), join(command.cwd, 'example-plugin-1.0.0.tgz'))
         const dshHome = command.env.DSH_HOME
         assert.equal(typeof dshHome, 'string')
         const profileDirectory = join(dshHome as string, 'profiles', 'headless')
