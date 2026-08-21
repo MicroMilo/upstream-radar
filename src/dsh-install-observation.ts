@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import { basename, join, relative, resolve, sep } from 'node:path'
 import { parsePnpmLockGraph } from './graph.js'
 import {
-  discoverDshRuntimeNodeModulesDirectory,
+  discoverDshRuntimeHostNodeModulesDirectory,
   discoverDshRuntimePackage,
   discoverDshRuntimePackageDirectory,
 } from './dsh-runtime.js'
@@ -961,7 +961,7 @@ async function discoverExactDshRuntime(cacheHome: string, dshVersion: string): P
   const manifestPath = [...candidates][0] as string
   const packageDirectory = discoverDshRuntimePackageDirectory(manifestPath)
   const packageCoordinate = discoverDshRuntimePackage(manifestPath)
-  const nodeModulesDirectory = discoverDshRuntimeNodeModulesDirectory(manifestPath)
+  const nodeModulesDirectory = discoverDshRuntimeHostNodeModulesDirectory(manifestPath)
   if (packageDirectory === undefined || packageCoordinate === undefined || nodeModulesDirectory === undefined) {
     throw new Error('the exact DSH package did not expose a usable dependency plane')
   }
