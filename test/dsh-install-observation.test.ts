@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { describe, it } from 'node:test'
 import {
   observeDshPluginInstall,
@@ -120,6 +121,7 @@ describe('DSH install observation', () => {
 
   it('observes one exact artifact through DSH install and load without inheriting host secrets', async () => {
     const calls: InstallObservationCommand[] = []
+    let hostRuntimeEntry: string | undefined
     const runner = async (command: InstallObservationCommand): Promise<InstallObservationCommandResult> => {
       calls.push(command)
       assert.equal(command.env.GITHUB_TOKEN, undefined)
@@ -134,6 +136,7 @@ describe('DSH install observation', () => {
             name: 'example-plugin',
             version: '1.0.0',
             engines: { node: '>=18.0.0' },
+            peerDependencies: { 'host-runtime': '^2.0.0' },
             scripts: { postinstall: 'node scripts/postinstall.js' },
             dsh: { bundle: { patch: './cordis.patch.yml' } },
           }) },
@@ -173,6 +176,8 @@ describe('DSH install observation', () => {
           name: 'host-runtime',
           version: '2.1.0',
         }))
+        hostRuntimeEntry = join(dshRuntimeNodeModules, 'host-runtime', 'index.js')
+        await writeFile(hostRuntimeEntry, 'export {}\n')
         // DSH currently keeps the resolved profile graph in pnpm's virtual
         // store rather than beside the profile manifest.
         await writeFile(join(profileDirectory, 'node_modules', '.pnpm', 'lock.yaml'), `
@@ -200,6 +205,11 @@ snapshots:
         const probe = await readFile(command.args[0] as string, 'utf8')
         assert.match(probe, /await import\("example-plugin"\)/)
         assert.match(probe, /"--profile","headless","--help"/)
+        assert.notEqual(hostRuntimeEntry, undefined)
+        await writeFile(join(command.cwd, '.upstream-radar-peer-resolution.json'), JSON.stringify({
+          schema: 'upstream-radar.profile-peer-resolution/v1alpha1',
+          peers: [{ name: 'host-runtime', status: 'resolved', url: pathToFileURL(hostRuntimeEntry as string).href }],
+        }))
       }
 
       if (command.tracePath !== undefined) {
@@ -273,6 +283,7 @@ snapshots:
   })
 
   it('does not call a successful load compatible when the DSH host violates a required plugin peer range', async () => {
+    let hostRuntimeEntry: string | undefined
     const runner = async (command: InstallObservationCommand): Promise<InstallObservationCommandResult> => {
       if (command.phase === 'runtime') return passed({ stdout: '11.7.0\n' })
       if (command.phase === 'artifact') {
@@ -280,6 +291,7 @@ snapshots:
           { path: 'package/package.json', contents: JSON.stringify({
             name: 'mismatch-plugin',
             version: '1.0.0',
+            peerDependencies: { 'host-runtime': '^3.0.0' },
             dsh: { bundle: { patch: 'cordis.patch.yml' } },
           }) },
           { path: 'package/cordis.patch.yml', contents: '[]\n' },
@@ -308,6 +320,15 @@ snapshots:
         await writeFile(join(dshRuntimeNodeModules, 'host-runtime', 'package.json'), JSON.stringify({
           name: 'host-runtime',
           version: '2.1.0',
+        }))
+        hostRuntimeEntry = join(dshRuntimeNodeModules, 'host-runtime', 'index.js')
+        await writeFile(hostRuntimeEntry, 'export {}\n')
+      }
+      if (command.phase === 'load') {
+        assert.notEqual(hostRuntimeEntry, undefined)
+        await writeFile(join(command.cwd, '.upstream-radar-peer-resolution.json'), JSON.stringify({
+          schema: 'upstream-radar.profile-peer-resolution/v1alpha1',
+          peers: [{ name: 'host-runtime', status: 'resolved', url: pathToFileURL(hostRuntimeEntry as string).href }],
         }))
       }
       if (command.tracePath !== undefined) await writeFile(command.tracePath, TRACE.replaceAll('/sandbox', command.sandboxRoot))

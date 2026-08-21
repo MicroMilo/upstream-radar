@@ -3,7 +3,8 @@ import { spawn } from 'node:child_process'
 import { constants } from 'node:fs'
 import { lstat, mkdir, mkdtemp, open, readdir, realpath, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { basename, join, relative, resolve, sep } from 'node:path'
+import { basename, dirname, join, relative, resolve, sep } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { parsePnpmLockGraph } from './graph.js'
 import {
   discoverDshRuntimeHostNodeModulesDirectory,
@@ -307,6 +308,32 @@ interface ParsedArtifact {
   bundlePatch: string
   nodeEngine?: string
   lifecycleScripts: string[]
+  requiredPeerDependencies: Array<{ name: string, required: string }>
+}
+
+function isNpmPackageName(value: string): boolean {
+  return /^(?:@[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*|[a-z0-9][a-z0-9._-]*)$/.test(value)
+}
+
+function requiredPeerDependencies(manifest: Record<string, unknown>): Array<{ name: string, required: string }> {
+  const peers = typeof manifest.peerDependencies === 'object' && manifest.peerDependencies !== null && !Array.isArray(manifest.peerDependencies)
+    ? manifest.peerDependencies as Record<string, unknown>
+    : {}
+  const metadata = typeof manifest.peerDependenciesMeta === 'object' && manifest.peerDependenciesMeta !== null && !Array.isArray(manifest.peerDependenciesMeta)
+    ? manifest.peerDependenciesMeta as Record<string, unknown>
+    : {}
+  const requirements: Array<{ name: string, required: string }> = []
+  for (const [name, rawRange] of Object.entries(peers).sort(([left], [right]) => left.localeCompare(right))) {
+    if (!isNpmPackageName(name)) throw new Error(`packed artifact has an invalid peer dependency name: ${name}`)
+    if (typeof rawRange !== 'string' || rawRange.trim() === '' || rawRange.length > 512) {
+      throw new Error(`packed artifact has an invalid peer dependency range for ${name}`)
+    }
+    const peerMetadata = metadata[name]
+    const optional = typeof peerMetadata === 'object' && peerMetadata !== null && !Array.isArray(peerMetadata)
+      && (peerMetadata as Record<string, unknown>).optional === true
+    if (!optional) requirements.push({ name, required: bounded(rawRange.trim(), 512) })
+  }
+  return requirements
 }
 
 function bounded(value: string, maximum = MAX_REPORT_DETAIL_BYTES): string {
@@ -734,6 +761,7 @@ async function parsePackedArtifact(
   }
   const nodeEngine = rawNodeEngine === undefined || rawNodeEngine === '' ? undefined : bounded(rawNodeEngine, 512)
   const integrity = typeof item.integrity === 'string' ? bounded(item.integrity, 1_024) : undefined
+  const peerRequirements = requiredPeerDependencies(manifest)
   return {
     path,
     filename,
@@ -743,6 +771,7 @@ async function parsePackedArtifact(
     bundlePatch,
     ...(nodeEngine === undefined ? {} : { nodeEngine }),
     lifecycleScripts,
+    requiredPeerDependencies: peerRequirements,
   }
 }
 
@@ -969,6 +998,125 @@ function isLexicallyInside(root: string, candidate: string): boolean {
   return child === '' || (!child.startsWith(`..${sep}`) && child !== '..')
 }
 
+interface ProfilePeerRequirement {
+  name: string
+  required: string
+}
+
+interface ProfilePeerResolutionRecord {
+  name: string
+  status: 'resolved' | 'missing'
+  url?: string
+}
+
+const PROFILE_PEER_RESOLUTION_SCHEMA = 'upstream-radar.profile-peer-resolution/v1alpha1'
+
+function indeterminatePeerContracts(requirements: readonly ProfilePeerRequirement[]): RootPeerContract[] {
+  return requirements.map(requirement => ({
+    name: requirement.name,
+    required: requirement.required,
+    status: 'indeterminate',
+  }))
+}
+
+async function peerVersionFromResolvedModule(
+  url: string,
+  expectedName: string,
+  sandboxRoot: string,
+): Promise<string | undefined> {
+  let resolvedModule: string
+  try {
+    const parsed = new URL(url)
+    if (parsed.protocol !== 'file:') return undefined
+    resolvedModule = await realpath(fileURLToPath(parsed))
+  } catch {
+    return undefined
+  }
+  let sandboxReal: string
+  try {
+    sandboxReal = await realpath(sandboxRoot)
+  } catch {
+    return undefined
+  }
+  if (!isLexicallyInside(sandboxReal, resolvedModule)) return undefined
+  let cursor = dirname(resolvedModule)
+  for (let depth = 0; depth < 32 && isLexicallyInside(sandboxReal, cursor); depth += 1) {
+    try {
+      const manifest = JSON.parse((await readRegularFileNoFollow(join(cursor, 'package.json'), 1 * 1024 * 1024)).toString('utf8')) as unknown
+      if (typeof manifest === 'object' && manifest !== null && !Array.isArray(manifest)) {
+        const item = manifest as Record<string, unknown>
+        if (item.name === expectedName && typeof item.version === 'string' && EXACT_VERSION.test(item.version)) return item.version
+      }
+    } catch {
+      // Continue toward the package root; a module may live in a nested directory.
+    }
+    const parent = dirname(cursor)
+    if (parent === cursor) break
+    cursor = parent
+  }
+  return undefined
+}
+
+async function readProfilePeerContracts(
+  path: string,
+  requirements: readonly ProfilePeerRequirement[],
+  sandboxRoot: string,
+): Promise<RootPeerContract[]> {
+  if (requirements.length === 0) return []
+  let records: ProfilePeerResolutionRecord[]
+  try {
+    const raw = JSON.parse((await readRegularFileNoFollow(path, 64 * 1024)).toString('utf8')) as unknown
+    if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) return indeterminatePeerContracts(requirements)
+    const item = raw as Record<string, unknown>
+    if (item.schema !== PROFILE_PEER_RESOLUTION_SCHEMA || !Array.isArray(item.peers) || item.peers.length !== requirements.length) {
+      return indeterminatePeerContracts(requirements)
+    }
+    records = item.peers.map((value): ProfilePeerResolutionRecord => {
+      if (typeof value !== 'object' || value === null || Array.isArray(value)) throw new Error('invalid peer resolver record')
+      const peer = value as Record<string, unknown>
+      if (typeof peer.name !== 'string' || (peer.status !== 'resolved' && peer.status !== 'missing')) {
+        throw new Error('invalid peer resolver record')
+      }
+      if (peer.status === 'resolved' && (typeof peer.url !== 'string' || peer.url.length === 0 || peer.url.length > 4_096)) {
+        throw new Error('resolved peer has no bounded URL')
+      }
+      return {
+        name: peer.name,
+        status: peer.status,
+        ...(typeof peer.url === 'string' ? { url: peer.url } : {}),
+      }
+    })
+  } catch {
+    return indeterminatePeerContracts(requirements)
+  }
+  const byName = new Map(records.map(record => [record.name, record]))
+  if (byName.size !== requirements.length || requirements.some(requirement => !byName.has(requirement.name))) {
+    return indeterminatePeerContracts(requirements)
+  }
+  const contracts: RootPeerContract[] = []
+  for (const requirement of requirements) {
+    const record = byName.get(requirement.name)
+    if (record === undefined || record.status === 'missing') {
+      contracts.push({ ...requirement, status: 'missing' })
+      continue
+    }
+    const resolvedVersion = record.url === undefined
+      ? undefined
+      : await peerVersionFromResolvedModule(record.url, requirement.name, sandboxRoot)
+    if (resolvedVersion === undefined) {
+      contracts.push({ ...requirement, status: 'indeterminate' })
+      continue
+    }
+    const evaluation = satisfiesSemverRange(resolvedVersion, requirement.required)
+    contracts.push({
+      ...requirement,
+      status: evaluation === true ? 'satisfied' : evaluation === false ? 'mismatched' : 'indeterminate',
+      resolvedVersion,
+    })
+  }
+  return contracts
+}
+
 /**
  * Run the plugin's real ESM entry from the profile resolution anchor, then
  * boot DSH. The config dumper intentionally skips `!!js` and module imports;
@@ -980,7 +1128,8 @@ async function writeProfileLoadProbe(
   pluginName: string,
   dshVersion: string,
   pnpmCommand: string,
-): Promise<{ path: string, profileDirectory: string }> {
+  peerRequirements: readonly ProfilePeerRequirement[],
+): Promise<{ path: string, peerResolutionPath: string, profileDirectory: string }> {
   const profileDirectory = join(dshHome, 'profiles', PROFILE)
   const profileMetadata = await lstat(profileDirectory)
   if (!profileMetadata.isDirectory() || profileMetadata.isSymbolicLink()) {
@@ -991,9 +1140,18 @@ async function writeProfileLoadProbe(
     throw new Error('the DSH profile directory escaped the controlled DSH home')
   }
   const probePath = join(profileDirectory, '.upstream-radar-load-probe.mjs')
+  const peerResolutionPath = join(profileDirectory, '.upstream-radar-peer-resolution.json')
   const dshBootArgs = dshArgs(dshVersion, ['--profile', PROFILE, '--help'])
   const contents = [
     "import { spawn } from 'node:child_process'",
+    "import { writeFile } from 'node:fs/promises'",
+    `const peerRequirements = ${JSON.stringify(peerRequirements)}`,
+    'const peers = []',
+    'for (const peer of peerRequirements) {',
+    '  try { peers.push({ name: peer.name, status: \'resolved\', url: import.meta.resolve(peer.name) }) }',
+    '  catch { peers.push({ name: peer.name, status: \'missing\' }) }',
+    '}',
+    `await writeFile(${JSON.stringify(peerResolutionPath)}, JSON.stringify({ schema: ${JSON.stringify(PROFILE_PEER_RESOLUTION_SCHEMA)}, peers }), { encoding: 'utf8', mode: 0o600, flag: 'wx' })`,
     `await import(${JSON.stringify(pluginName)})`,
     `const child = spawn(${JSON.stringify(pnpmCommand)}, ${JSON.stringify(dshBootArgs)}, { cwd: process.cwd(), env: process.env, stdio: 'inherit' })`,
     "const exitCode = await new Promise(resolve => {",
@@ -1005,7 +1163,7 @@ async function writeProfileLoadProbe(
   ].join('\n')
   // Never overwrite a path a target package may have planted in the profile.
   await writeFile(probePath, contents, { encoding: 'utf8', mode: 0o600, flag: 'wx' })
-  return { path: probePath, profileDirectory }
+  return { path: probePath, peerResolutionPath, profileDirectory }
 }
 
 interface ExactDshRuntime {
@@ -1112,6 +1270,7 @@ async function runtimeGraphEvidence(
   rootPackage: { name: string, version: string },
   dshVersion: string,
   cacheHome: string,
+  profileResolvedPeerContracts?: readonly RootPeerContract[],
 ): Promise<Pick<DshInstallObservationReport['resolution'], 'runtimeGraph' | 'runtimeGraphError'>> {
   try {
     const dshRuntime = await discoverExactDshRuntime(cacheHome, dshVersion)
@@ -1127,20 +1286,29 @@ async function runtimeGraphEvidence(
     )
     if (graph.digest === undefined) return {}
     const gaps = graphGapPartitions(graph)
-    const requiredGaps = graphGaps({ unresolved: gaps.required })
+    const contracts = profileResolvedPeerContracts ?? graph.rootPeerContracts
+    const concretelyResolvedRootPeers = new Set((contracts ?? [])
+      .filter(contract => contract.status === 'satisfied' || contract.status === 'mismatched')
+      .map(contract => contract.name))
+    const effectiveRequiredGaps = gaps.required.filter(gap => !(
+      gap.from === graph.rootNodeId
+      && gap.kind === 'peer'
+      && concretelyResolvedRootPeers.has(gap.name)
+    ))
+    const requiredGaps = graphGaps({ unresolved: effectiveRequiredGaps })
     const optionalGaps = graphGaps({ unresolved: gaps.optional })
     return {
       runtimeGraph: {
         digest: graph.digest,
         nodes: graph.nodes.length,
         edges: graph.edges.length,
-        unresolved: gaps.required.length,
+        unresolved: effectiveRequiredGaps.length,
         ...(requiredGaps === undefined ? {} : { unresolvedDependencies: requiredGaps }),
         ...(gaps.optional.length === 0 ? {} : {
           optionalUnavailable: gaps.optional.length,
           ...(optionalGaps === undefined ? {} : { optionalUnavailableDependencies: optionalGaps }),
         }),
-        pluginPeerContracts: pluginPeerContractEvidence(graph.rootPeerContracts),
+        pluginPeerContracts: pluginPeerContractEvidence(contracts),
         ...(graph.hostRuntime === undefined ? {} : {
           hostRuntime: {
             source: graph.hostRuntime.source,
@@ -1162,10 +1330,11 @@ async function resolutionEvidence(
   rootPackage: { name: string, version: string },
   dshVersion: string,
   cacheHome: string,
+  profileResolvedPeerContracts?: readonly RootPeerContract[],
 ): Promise<DshInstallObservationReport['resolution']> {
   const [profile, runtime] = await Promise.all([
     profileResolutionEvidence(dshHome),
-    runtimeGraphEvidence(dshHome, rootPackage, dshVersion, cacheHome),
+    runtimeGraphEvidence(dshHome, rootPackage, dshVersion, cacheHome, profileResolvedPeerContracts),
   ])
   return { ...profile, ...runtime }
 }
@@ -1449,6 +1618,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
         spec.name,
         options.dshVersion,
         pnpmCommand,
+        artifact.requiredPeerDependencies,
       )
       const loadTracePath = join(traceDirectory, 'load.strace')
       const loadResult = await runSafely(runner, {
@@ -1464,9 +1634,20 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       const afterLoad = await snapshotSandbox(sandboxRoot, environment)
       report.observations.load = await readTrace(loadTracePath, sandboxRoot)
       report.filesystem.load = diffSnapshots(afterInstall, afterLoad)
+      const profilePeerContracts = await readProfilePeerContracts(
+        loadProbe.peerResolutionPath,
+        artifact.requiredPeerDependencies,
+        sandboxRoot,
+      )
       // Loading may trigger one final DSH profile reconciliation. Preserve the
       // final resolved graph rather than only the state immediately after add.
-      report.resolution = await resolutionEvidence(environment.DSH_HOME as string, spec, options.dshVersion, environment.XDG_CACHE_HOME as string)
+      report.resolution = await resolutionEvidence(
+        environment.DSH_HOME as string,
+        spec,
+        options.dshVersion,
+        environment.XDG_CACHE_HOME as string,
+        profilePeerContracts,
+      )
       report.stages.load = commandStage(loadResult)
       if (loadResult.timedOut || loadResult.outputExceeded || loadResult.launchError !== undefined) {
         return finishReport(report, 'unknown', 'the plugin load did not produce a bounded command result')
