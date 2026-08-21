@@ -9,7 +9,7 @@ All notable changes to Upstream Radar are documented here.
 - Add an explicit `probe dsh-install` lane that binds one exact npm tarball to one exact DSH release, then records install and load process, network, file-write, registration, and filesystem evidence.
 - Require explicit execution consent and an externally declared disposable Linux boundary; keep ordinary graph, artifact, and observer collection non-executing.
 - Add a secret-free reusable GitHub Actions workflow using a fresh hosted VM and restricted container for each plugin, with bounded JSON evidence and honest trace-coverage states.
-- Record the exact Node/pnpm runtime, preserve the report before failing a non-compatible check, and install the authenticated local tarball rather than resolving its filename from the registry.
+- Record the exact Node/pnpm runtime and explicit dependency-build allowlist, preserve the report before failing a non-compatible check, and install the authenticated local tarball rather than resolving its filename from the registry.
 - Observe the official `@deepseek-ai/dsh` coordinate and fan out a maintained three-plugin matrix only when DSH or a mapped plugin's exact published coordinate changes, using each mapped plugin's latest observed exact package.
 - Add the dynamic result schema, tested plan builder, public execution-boundary documentation, and a Firecracker migration boundary for future adversarial tamper resistance.
 

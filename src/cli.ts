@@ -330,7 +330,7 @@ Usage:
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>,<v2>,... [--json]
   upstream-radar probe dsh-install [npm:]<package>@<exact-version>
     --dsh-version <exact-version> --isolation-provider <provider> --execute
-    [--timeout <seconds>] [--report <report.json>] [--json]
+    [--allow-build <package>]... [--timeout <seconds>] [--report <report.json>] [--json]
 
 The load probes disable lifecycle scripts and check bundle registration/load.
 The dsh-install probe deliberately executes the exact plugin's lifecycle scripts
@@ -533,7 +533,7 @@ Usage:
   upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
-  upstream-radar probe dsh-install [npm:]<package>@<exact-version> --dsh-version <exact-version> --isolation-provider <github-actions-hosted-runner|firecracker|other> --execute [--timeout <seconds>] [--report <report.json>] [--json]
+  upstream-radar probe dsh-install [npm:]<package>@<exact-version> --dsh-version <exact-version> --isolation-provider <github-actions-hosted-runner|firecracker|other> --execute [--allow-build <package>]... [--timeout <seconds>] [--report <report.json>] [--json]
   upstream-radar review dsh-plugin [npm:]<package>@<exact-version> --dsh-version <v1>,<v2>,... [--json]
   upstream-radar demo [--json]
   upstream-radar case dsh-web-ui [--json]
@@ -1251,6 +1251,7 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
   let isolationProvider: InstallObservationIsolationProvider | undefined
   let timeoutSeconds = 180
   let reportPath: string | undefined
+  const allowedBuilds: string[] = []
   let execute = false
   let json = false
   for (let index = 1; index < args.length; index += 1) {
@@ -1259,7 +1260,7 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
       execute = true
     } else if (argument === '--json') {
       json = true
-    } else if (argument === '--dsh-version' || argument === '--isolation-provider' || argument === '--timeout' || argument === '--report') {
+    } else if (argument === '--dsh-version' || argument === '--isolation-provider' || argument === '--allow-build' || argument === '--timeout' || argument === '--report') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--dsh-version') {
@@ -1276,6 +1277,8 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
           throw new Error('--timeout must be an integer between 30 and 600 seconds')
         }
         timeoutSeconds = parsed
+      } else if (argument === '--allow-build') {
+        allowedBuilds.push(value)
       } else {
         reportPath = value
       }
@@ -1295,6 +1298,7 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
     dshVersion,
     allowExecution: true,
     isolationProvider,
+    allowedBuilds,
     timeoutMs: timeoutSeconds * 1_000,
   })
   if (reportPath !== undefined) {

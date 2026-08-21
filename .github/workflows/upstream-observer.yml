@@ -148,3 +148,4 @@ jobs:
       dsh_version: ${{ needs.observe.outputs.install_dsh_version }}
       case_id: ${{ matrix.id }}
       timeout_seconds: '180'
+      allow_builds: ${{ matrix.allowedBuilds }}

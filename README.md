@@ -88,7 +88,7 @@ fresh GitHub-hosted VM (no secrets, read-only repository token)
   → restricted container (no host workspace or Docker socket)
   → npm pack exact package@version with scripts disabled
   → record the exact Node and pnpm runtime used by the check
-  → DSH installs that same tarball with scripts enabled
+  → DSH installs that same tarball with only the declared dependency-build approvals
   → strace records child processes, network destinations and file writes
   → DSH loads the registered bundle under the same exact release
   → bounded JSON report survives and a non-compatible pair fails the check
@@ -105,6 +105,8 @@ This lane is wired into the always-on observer. Radar now watches the official
 [maintained plugin corpus](examples/dsh/install-observer/targets.json), one fresh
 VM per plugin. A mapped plugin publication retests only that plugin. Unchanged
 commits stay quiet, and the DSH Agent/API key never enters the execution job.
+Build-script approvals are exact package names stored in the maintained target
+and copied into every report; an absent list approves nothing.
 
 The first implementation is intentionally honest about its limit: a container
 shares the hosted VM's kernel, and same-container `strace` evidence is not

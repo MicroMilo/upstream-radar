@@ -20,6 +20,7 @@ const MAX_TRACE_LINES = 100_000
 const MAX_TRACE_EVENTS = 512
 const MAX_SNAPSHOT_ENTRIES = 25_000
 const MAX_DIFF_PATHS = 512
+const MAX_ALLOWED_BUILDS = 16
 const PROFILE = 'headless'
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare'] as const
 
@@ -162,6 +163,7 @@ export interface DshInstallObservationReport {
     lifecycleScriptsEnabledForPluginInstall: true
     pluginCodeMayExecuteDuringLoad: true
     inheritedHostSecrets: false
+    approvedDependencyBuilds: string[]
     note: string
   }
 }
@@ -171,6 +173,7 @@ export interface DshInstallObservationOptions {
   dshVersion: string
   allowExecution: boolean
   isolationProvider: InstallObservationIsolationProvider
+  allowedBuilds?: readonly string[]
   timeoutMs?: number
   hostEnvironment?: NodeJS.ProcessEnv
   runner?: InstallObservationRunner
@@ -186,6 +189,21 @@ interface TreeSnapshot {
   entries: Map<string, SnapshotEntry>
   truncated: boolean
   errors: number
+}
+
+function normalizeAllowedBuilds(values: readonly string[] | undefined): string[] {
+  if (values === undefined) return []
+  if (values.length > MAX_ALLOWED_BUILDS) {
+    throw new Error(`DSH install observation accepts at most ${MAX_ALLOWED_BUILDS} approved dependency builds`)
+  }
+  const names = new Set<string>()
+  for (const value of values) {
+    if (value.length > 214 || !/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/.test(value)) {
+      throw new Error(`invalid approved dependency build package name: ${JSON.stringify(value)}`)
+    }
+    names.add(value)
+  }
+  return [...names].sort()
 }
 
 interface ParsedArtifact {
@@ -763,6 +781,7 @@ function finishReport(report: DshInstallObservationReport, result: DshInstallObs
 export async function observeDshPluginInstall(options: DshInstallObservationOptions): Promise<DshInstallObservationReport> {
   const spec = parseNpmSpec(options.packageSpec)
   if (!EXACT_VERSION.test(options.dshVersion)) throw new Error('DSH version must be an exact semantic version')
+  const allowedBuilds = normalizeAllowedBuilds(options.allowedBuilds)
   if (!options.allowExecution) throw new Error('DSH install observation requires explicit execution consent')
   if (!['github-actions-hosted-runner', 'firecracker', 'other'].includes(options.isolationProvider)) {
     throw new Error('unsupported isolation provider')
@@ -817,6 +836,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       lifecycleScriptsEnabledForPluginInstall: true,
       pluginCodeMayExecuteDuringLoad: true,
       inheritedHostSecrets: false,
+      approvedDependencyBuilds: allowedBuilds,
       note: 'Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate.',
     },
   }
@@ -917,7 +937,10 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       const installResult = await runSafely(runner, {
         phase: 'install',
         command: pnpmCommand,
-        args: dshArgs(options.dshVersion, ['plugin', '--profile', PROFILE, 'add', join(artifactDirectory, artifact.filename)]),
+        args: dshArgs(options.dshVersion, [
+          'plugin', '--profile', PROFILE, 'add', join(artifactDirectory, artifact.filename),
+          ...allowedBuilds.map(name => `--allow-build=${name}`),
+        ]),
         cwd: artifactDirectory,
         env: scriptsEnvironment,
         timeoutMs,
@@ -995,6 +1018,7 @@ export function renderDshInstallObservation(report: DshInstallObservationReport)
     `DSH: ${report.dshVersion}`,
     `Runtime: Node ${report.runtime.nodeVersion} (${report.runtime.platform}/${report.runtime.architecture}), pnpm ${report.runtime.packageManager.version ?? 'unknown'}`,
     `Isolation claim: ${report.boundary.isolationProviderClaim} (provided externally; not verified by Radar)`,
+    `Approved dependency builds: ${report.boundary.approvedDependencyBuilds.length === 0 ? 'none' : report.boundary.approvedDependencyBuilds.join(', ')}`,
     '',
     `Result: ${report.result.toUpperCase()} — ${report.reason}`,
     `Lifecycle scripts declared: ${lifecycle}`,

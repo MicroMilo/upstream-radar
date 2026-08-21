@@ -142,6 +142,7 @@ describe('DSH install observation', () => {
     assert.match(report.artifact.sha256 ?? '', /^[0-9a-f]{64}$/)
     assert.deepEqual(report.artifact.lifecycleScripts, ['postinstall'])
     assert.equal(report.runtime.packageManager.version, '11.7.0')
+    assert.deepEqual(report.boundary.approvedDependencyBuilds, [])
     assert.equal(report.stages.registration.status, 'passed')
     assert.equal(report.observations.install.processes.length, 1)
     assert.equal(report.observations.install.fileWrites.length >= 1, true)
@@ -149,6 +150,7 @@ describe('DSH install observation', () => {
     assert.equal(calls.map(call => call.phase).join(','), 'runtime,artifact,profile,install,load')
     assert.match(renderDshInstallObservation(report), /COMPATIBLE/)
     assert.match(renderDshInstallObservation(report), /pnpm 11\.7\.0/)
+    assert.match(renderDshInstallObservation(report), /Approved dependency builds: none/)
     assert.match(renderDshInstallObservation(report), /Lifecycle scripts declared: postinstall/)
   })
 
@@ -185,5 +187,49 @@ describe('DSH install observation', () => {
     assert.equal(report.result, 'install-failed')
     assert.equal(report.stages.install.status, 'failed')
     assert.match(report.reason, /install command failed/)
+  })
+
+  it('passes only explicit validated dependency build approvals to pnpm', async () => {
+    let installArgs: string[] = []
+    const runner = async (command: InstallObservationCommand): Promise<InstallObservationCommandResult> => {
+      if (command.phase === 'runtime') return passed({ stdout: '11.7.0\n' })
+      if (command.phase === 'artifact') {
+        await writeFile(join(command.cwd, 'approved-plugin-1.0.0.tgz'), makeTarball([
+          { path: 'package/package.json', contents: JSON.stringify({
+            name: 'approved-plugin',
+            version: '1.0.0',
+            dsh: { bundle: { patch: 'cordis.patch.yml' } },
+          }) },
+          { path: 'package/cordis.patch.yml', contents: '[]\n' },
+        ]))
+        return passed({ stdout: JSON.stringify([{ filename: 'approved-plugin-1.0.0.tgz' }]) })
+      }
+      if (command.phase === 'install') {
+        installArgs = command.args
+        if (command.tracePath !== undefined) await writeFile(command.tracePath, TRACE)
+        return passed({ code: 1, stderr: 'controlled stop after argument capture' })
+      }
+      return passed()
+    }
+
+    const report = await observeDshPluginInstall({
+      packageSpec: 'approved-plugin@1.0.0',
+      dshVersion: '0.1.1-rc.1',
+      allowExecution: true,
+      isolationProvider: 'other',
+      allowedBuilds: ['protobufjs', 'protobufjs'],
+      runner,
+    })
+
+    assert.equal(installArgs.includes('--allow-build=protobufjs'), true)
+    assert.deepEqual(report.boundary.approvedDependencyBuilds, ['protobufjs'])
+    await assert.rejects(observeDshPluginInstall({
+      packageSpec: 'approved-plugin@1.0.0',
+      dshVersion: '0.1.1-rc.1',
+      allowExecution: true,
+      isolationProvider: 'other',
+      allowedBuilds: ['--config.dangerouslyAllowAllBuilds=true'],
+      runner,
+    }), /invalid approved dependency build/)
   })
 })

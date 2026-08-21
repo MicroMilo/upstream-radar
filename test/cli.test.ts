@@ -47,6 +47,7 @@ describe('CLI option parsing', () => {
     assert.match(help.stdout, /probe dsh-load <package\.tgz>/)
     assert.match(help.stdout, /probe dsh-matrix <package\.tgz>/)
     assert.match(help.stdout, /probe dsh-install \[npm:\]<package>@<exact-version>/)
+    assert.match(help.stdout, /--allow-build <package>/)
     assert.match(help.stdout, /review dsh-plugin .*--dsh-version/)
     assert.match(help.stdout, /demo \[--json\]/)
     assert.match(help.stdout, /case dsh-web-ui \[--json\]/)
@@ -127,6 +128,13 @@ describe('CLI option parsing', () => {
     const installWithoutIsolation = spawnSync(process.execPath, [cli, 'probe', 'dsh-install', 'demo-plugin@1.0.0', '--dsh-version', '0.1.0-rc.8', '--isolation-provider', 'other', '--execute'], { encoding: 'utf8' })
     assert.equal(installWithoutIsolation.status, 1)
     assert.match(installWithoutIsolation.stderr, /UPSTREAM_RADAR_ISOLATED_RUNNER=1/)
+
+    const installWithInvalidBuildApproval = spawnSync(process.execPath, [cli, 'probe', 'dsh-install', 'demo-plugin@1.0.0', '--dsh-version', '0.1.0-rc.8', '--isolation-provider', 'other', '--allow-build', '../escape', '--execute'], {
+      encoding: 'utf8',
+      env: { ...process.env, UPSTREAM_RADAR_ISOLATED_RUNNER: '1' },
+    })
+    assert.equal(installWithInvalidBuildApproval.status, 1)
+    assert.match(installWithInvalidBuildApproval.stderr, /invalid approved dependency build/)
 
     const incompleteReview = spawnSync(process.execPath, [cli, 'review', 'dsh-plugin', 'demo-plugin@1.0.0'], { encoding: 'utf8' })
     assert.equal(incompleteReview.status, 1)

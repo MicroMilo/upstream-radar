@@ -5,6 +5,7 @@
       "id": "feishu-bot",
       "spec": "dsh-feishu-bot@0.16.0",
       "observerTargetId": "dsh-feishu-bot",
+      "allowedBuilds": ["protobufjs"],
       "reason": "A real messaging plugin with a large DSH dependency surface and a reachable protobuf build step."
     },
     {

@@ -23,6 +23,11 @@ on:
         required: true
         default: '180'
         type: string
+      allow_builds:
+        description: Comma-separated dependency packages explicitly approved to run build scripts
+        required: false
+        default: ''
+        type: string
   workflow_call:
     inputs:
       plugin:
@@ -37,6 +42,10 @@ on:
       timeout_seconds:
         required: false
         default: '180'
+        type: string
+      allow_builds:
+        required: false
+        default: ''
         type: string
 
 # The target package executes arbitrary lifecycle and load code. This workflow
@@ -62,6 +71,7 @@ jobs:
           RADAR_DSH_VERSION: ${{ inputs.dsh_version }}
           RADAR_CASE_ID: ${{ inputs.case_id }}
           RADAR_TIMEOUT_SECONDS: ${{ inputs.timeout_seconds }}
+          RADAR_ALLOW_BUILDS: ${{ inputs.allow_builds }}
         run: |
           set -euo pipefail
           exact_package='^(@[^/@[:space:]]+/[^@/[:space:]]+|[^@/[:space:]]+)@[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'
@@ -83,6 +93,23 @@ jobs:
             echo 'timeout_seconds must be an integer between 30 and 600' >&2
             exit 1
           fi
+          if (( ${#RADAR_ALLOW_BUILDS} > 4096 )); then
+            echo 'allow_builds is too long' >&2
+            exit 1
+          fi
+          if [[ -n "$RADAR_ALLOW_BUILDS" ]]; then
+            IFS=',' read -r -a approved <<< "$RADAR_ALLOW_BUILDS"
+            if (( ${#approved[@]} > 16 )); then
+              echo 'allow_builds accepts at most 16 package names' >&2
+              exit 1
+            fi
+            for package_name in "${approved[@]}"; do
+              if [[ ! "$package_name" =~ ^(@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*$ ]]; then
+                echo "invalid allow_builds package name: $package_name" >&2
+                exit 1
+              fi
+            done
+          fi
 
       - name: Build the pinned observer image
         shell: bash
@@ -99,6 +126,7 @@ jobs:
           RADAR_IMAGE: upstream-radar-install-observer:${{ github.run_id }}
           RADAR_REPORT_DIRECTORY: ${{ runner.temp }}/upstream-radar-install-observation
           RADAR_CONTAINER_NAME: upstream-radar-install-${{ github.run_id }}-${{ github.run_attempt }}
+          RADAR_ALLOW_BUILDS: ${{ inputs.allow_builds }}
         run: |
           set -euo pipefail
           mkdir -p "$RADAR_REPORT_DIRECTORY"
@@ -107,6 +135,13 @@ jobs:
             docker rm --force "$RADAR_CONTAINER_NAME" >/dev/null 2>&1 || true
           }
           trap cleanup EXIT
+          allow_build_args=()
+          if [[ -n "$RADAR_ALLOW_BUILDS" ]]; then
+            IFS=',' read -r -a approved <<< "$RADAR_ALLOW_BUILDS"
+            for package_name in "${approved[@]}"; do
+              allow_build_args+=(--allow-build "$package_name")
+            done
+          fi
           set +e
           timeout --signal=KILL 15m docker run --rm \
             --name "$RADAR_CONTAINER_NAME" \
@@ -131,6 +166,7 @@ jobs:
             --isolation-provider github-actions-hosted-runner \
             --timeout "$RADAR_TIMEOUT_SECONDS" \
             --execute \
+            "${allow_build_args[@]}" \
             --report /output/report.json \
             --json | tee "$RADAR_REPORT_DIRECTORY/stdout.json"
           observer_exit=${PIPESTATUS[0]}
@@ -170,6 +206,7 @@ jobs:
                 `- Result: \`${inline(report.result)}\` — ${inline(report.reason)}`,
                 `- Exact artifact: \`sha256:${inline(report.artifact?.sha256)}\``,
                 `- Runtime: Node \`${inline(report.runtime?.nodeVersion)}\` on \`${inline(`${report.runtime?.platform}/${report.runtime?.architecture}`)}\`; pnpm \`${inline(report.runtime?.packageManager?.version)}\``,
+                `- Approved dependency builds: \`${inline(report.boundary?.approvedDependencyBuilds?.join(', ') || 'none')}\``,
                 `- Declared lifecycle scripts: \`${inline(report.artifact?.lifecycleScripts?.join(', ') || 'none')}\``,
                 `- Install behavior: ${count(report.observations?.install?.processes)} process exec(s), ${count(report.observations?.install?.network)} network attempt(s), ${count(report.observations?.install?.fileWrites)} file-write syscall(s)`,
                 `- Load behavior: ${count(report.observations?.load?.processes)} process exec(s), ${count(report.observations?.load?.network)} network attempt(s), ${count(report.observations?.load?.fileWrites)} file-write syscall(s)`,
