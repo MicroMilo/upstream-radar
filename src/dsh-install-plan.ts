@@ -12,6 +12,7 @@ export interface DshInstallTarget {
   spec: string
   reason: string
   observerTargetId?: string
+  allowedBuilds?: string[]
 }
 
 export interface DshInstallTargets {
@@ -23,7 +24,7 @@ export interface DshInstallPlan {
   run: boolean
   dshVersion?: string
   matrix: {
-    include: Array<{ id: string; plugin: string }>
+    include: Array<{ id: string; plugin: string; allowedBuilds: string }>
   }
   triggers: string[]
   reason: string
@@ -65,7 +66,28 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
       if (observerIds.has(observerTargetId)) throw new Error(`duplicate observerTargetId in DSH install targets: ${observerTargetId}`)
       observerIds.add(observerTargetId)
     }
-    return { id, spec, reason, ...(observerTargetId === undefined ? {} : { observerTargetId }) }
+    const rawAllowedBuilds = item.allowedBuilds
+    if (rawAllowedBuilds !== undefined && (!Array.isArray(rawAllowedBuilds) || rawAllowedBuilds.length > 16)) {
+      throw new Error(`plugins[${index}].allowedBuilds must be an array of at most 16 package names`)
+    }
+    const allowedBuilds = rawAllowedBuilds === undefined
+      ? []
+      : rawAllowedBuilds.map((value, buildIndex) => {
+          const name = boundedString(value, `plugins[${index}].allowedBuilds[${buildIndex}]`, 214)
+          if (!/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/.test(name)) {
+            throw new Error(`plugins[${index}].allowedBuilds[${buildIndex}] must be an npm package name`)
+          }
+          return name
+        })
+    if (new Set(allowedBuilds).size !== allowedBuilds.length) throw new Error(`plugins[${index}].allowedBuilds must be unique`)
+    allowedBuilds.sort()
+    return {
+      id,
+      spec,
+      reason,
+      ...(observerTargetId === undefined ? {} : { observerTargetId }),
+      ...(allowedBuilds.length === 0 ? {} : { allowedBuilds }),
+    }
   })
   plugins.sort((left, right) => left.id.localeCompare(right.id))
   return { schema: DSH_INSTALL_TARGETS_SCHEMA, plugins }
@@ -102,12 +124,15 @@ function coordinateChanged(before: PackageCoordinate | undefined, after: Package
   )
 }
 
-function observedDshVersion(stateInput: unknown): string | undefined {
+function observedPackage(stateInput: unknown, targetId: string): PackageCoordinate | undefined {
   if (typeof stateInput !== 'object' || stateInput === null || Array.isArray(stateInput)) return undefined
   const targets = (stateInput as Record<string, unknown>).targets
   if (typeof targets !== 'object' || targets === null || Array.isArray(targets)) return undefined
-  const target = (targets as Record<string, unknown>)[DSH_TARGET_ID]
-  const coordinate = snapshotPackage(target)
+  return snapshotPackage((targets as Record<string, unknown>)[targetId])
+}
+
+function observedDshVersion(stateInput: unknown): string | undefined {
+  const coordinate = observedPackage(stateInput, DSH_TARGET_ID)
   return coordinate?.name === DSH_PACKAGE ? coordinate.version : undefined
 }
 
@@ -124,12 +149,21 @@ export function buildDshInstallPlan(corpusInput: unknown, stateInput: unknown, r
   const dshAfter = dshChange === undefined ? undefined : snapshotPackage(dshChange.value.current)
   const dshPackageChanged = dshAfter?.name === DSH_PACKAGE && coordinateChanged(dshBefore, dshAfter)
   const dshVersion = dshPackageChanged ? dshAfter.version : observedDshVersion(stateInput)
-  const selected = new Map<string, { id: string; plugin: string }>()
+  const selected = new Map<string, { id: string; plugin: string; allowedBuilds: string }>()
   const triggers = new Set<string>()
 
   if (dshPackageChanged) {
     triggers.add(DSH_TARGET_ID)
-    for (const target of corpus.plugins) selected.set(target.id, { id: target.id, plugin: target.spec })
+    for (const target of corpus.plugins) {
+      const expected = parseNpmSpec(target.spec)
+      const observed = target.observerTargetId === undefined
+        ? undefined
+        : observedPackage(stateInput, target.observerTargetId)
+      const plugin = observed?.name === expected.name
+        ? `${observed.name}@${observed.version}`
+        : target.spec
+      selected.set(target.id, { id: target.id, plugin, allowedBuilds: target.allowedBuilds?.join(',') ?? '' })
+    }
   }
 
   for (const target of corpus.plugins) {
@@ -142,7 +176,11 @@ export function buildDshInstallPlan(corpusInput: unknown, stateInput: unknown, r
     const expected = parseNpmSpec(target.spec)
     if (after.name !== expected.name) continue
     triggers.add(target.observerTargetId)
-    selected.set(target.id, { id: target.id, plugin: `${after.name}@${after.version}` })
+    selected.set(target.id, {
+      id: target.id,
+      plugin: `${after.name}@${after.version}`,
+      allowedBuilds: target.allowedBuilds?.join(',') ?? '',
+    })
   }
 
   const include = [...selected.values()].sort((left, right) => left.id.localeCompare(right.id))

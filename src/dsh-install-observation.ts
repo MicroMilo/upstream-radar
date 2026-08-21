@@ -20,11 +20,12 @@ const MAX_TRACE_LINES = 100_000
 const MAX_TRACE_EVENTS = 512
 const MAX_SNAPSHOT_ENTRIES = 25_000
 const MAX_DIFF_PATHS = 512
+const MAX_ALLOWED_BUILDS = 16
 const PROFILE = 'headless'
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare'] as const
 
 export type DshInstallObservationResult = 'compatible' | 'install-failed' | 'load-failed' | 'unknown'
-export type InstallObservationPhase = 'artifact' | 'profile' | 'install' | 'load'
+export type InstallObservationPhase = 'runtime' | 'artifact' | 'profile' | 'install' | 'load'
 export type InstallObservationIsolationProvider = 'github-actions-hosted-runner' | 'firecracker' | 'other'
 
 export interface InstallObservationCommand {
@@ -118,6 +119,15 @@ export interface DshInstallObservationReport {
   startedAt: string
   completedAt: string
   dshVersion: string
+  runtime: {
+    platform: string
+    architecture: string
+    nodeVersion: string
+    packageManager: {
+      name: 'pnpm'
+      version?: string
+    }
+  }
   artifact: {
     spec: string
     name: string
@@ -129,6 +139,7 @@ export interface DshInstallObservationReport {
     lifecycleScripts: string[]
   }
   stages: {
+    runtime: InstallObservationStage
     artifact: InstallObservationStage
     profile: InstallObservationStage
     install: InstallObservationStage
@@ -152,6 +163,7 @@ export interface DshInstallObservationReport {
     lifecycleScriptsEnabledForPluginInstall: true
     pluginCodeMayExecuteDuringLoad: true
     inheritedHostSecrets: false
+    approvedDependencyBuilds: string[]
     note: string
   }
 }
@@ -161,6 +173,7 @@ export interface DshInstallObservationOptions {
   dshVersion: string
   allowExecution: boolean
   isolationProvider: InstallObservationIsolationProvider
+  allowedBuilds?: readonly string[]
   timeoutMs?: number
   hostEnvironment?: NodeJS.ProcessEnv
   runner?: InstallObservationRunner
@@ -176,6 +189,21 @@ interface TreeSnapshot {
   entries: Map<string, SnapshotEntry>
   truncated: boolean
   errors: number
+}
+
+function normalizeAllowedBuilds(values: readonly string[] | undefined): string[] {
+  if (values === undefined) return []
+  if (values.length > MAX_ALLOWED_BUILDS) {
+    throw new Error(`DSH install observation accepts at most ${MAX_ALLOWED_BUILDS} approved dependency builds`)
+  }
+  const names = new Set<string>()
+  for (const value of values) {
+    if (value.length > 214 || !/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/.test(value)) {
+      throw new Error(`invalid approved dependency build package name: ${JSON.stringify(value)}`)
+    }
+    names.add(value)
+  }
+  return [...names].sort()
 }
 
 interface ParsedArtifact {
@@ -753,6 +781,7 @@ function finishReport(report: DshInstallObservationReport, result: DshInstallObs
 export async function observeDshPluginInstall(options: DshInstallObservationOptions): Promise<DshInstallObservationReport> {
   const spec = parseNpmSpec(options.packageSpec)
   if (!EXACT_VERSION.test(options.dshVersion)) throw new Error('DSH version must be an exact semantic version')
+  const allowedBuilds = normalizeAllowedBuilds(options.allowedBuilds)
   if (!options.allowExecution) throw new Error('DSH install observation requires explicit execution consent')
   if (!['github-actions-hosted-runner', 'firecracker', 'other'].includes(options.isolationProvider)) {
     throw new Error('unsupported isolation provider')
@@ -776,6 +805,12 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
     startedAt,
     completedAt: startedAt,
     dshVersion: options.dshVersion,
+    runtime: {
+      platform: process.platform,
+      architecture: process.arch,
+      nodeVersion: process.version.replace(/^v/, ''),
+      packageManager: { name: 'pnpm' },
+    },
     artifact: {
       spec: spec.canonical,
       name: spec.name,
@@ -783,6 +818,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       lifecycleScripts: [],
     },
     stages: {
+      runtime: { status: 'skipped' },
       artifact: { status: 'skipped' },
       profile: { status: 'skipped' },
       install: { status: 'skipped' },
@@ -800,6 +836,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       lifecycleScriptsEnabledForPluginInstall: true,
       pluginCodeMayExecuteDuringLoad: true,
       inheritedHostSecrets: false,
+      approvedDependencyBuilds: allowedBuilds,
       note: 'Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate.',
     },
   }
@@ -828,6 +865,27 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       writeFile(join(sandboxRoot, 'controlled-global.npmrc'), '', { mode: 0o600 }),
       writeFile(join(sandboxRoot, 'controlled.gitconfig'), '', { mode: 0o600 }),
     ])
+
+    const runtimeResult = await runSafely(runner, {
+      phase: 'runtime',
+      command: pnpmCommand,
+      args: ['--version'],
+      cwd: sandboxRoot,
+      env: noScriptsEnvironment,
+      timeoutMs,
+      sandboxRoot,
+    })
+    report.stages.runtime = commandStage(runtimeResult)
+    const packageManagerVersion = runtimeResult.stdout.trim()
+    if (report.stages.runtime.status !== 'passed' || !EXACT_VERSION.test(packageManagerVersion)) {
+      report.stages.runtime = {
+        ...report.stages.runtime,
+        status: 'failed',
+        detail: report.stages.runtime.detail ?? 'pnpm did not return one exact semantic version',
+      }
+      return finishReport(report, 'unknown', 'the package-manager runtime could not be established before execution')
+    }
+    report.runtime.packageManager.version = packageManagerVersion
 
     const artifactResult = await runSafely(runner, {
       phase: 'artifact',
@@ -879,7 +937,10 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       const installResult = await runSafely(runner, {
         phase: 'install',
         command: pnpmCommand,
-        args: dshArgs(options.dshVersion, ['plugin', '--profile', PROFILE, 'add', join(artifactDirectory, artifact.filename)]),
+        args: dshArgs(options.dshVersion, [
+          'plugin', '--profile', PROFILE, 'add', join(artifactDirectory, artifact.filename),
+          ...allowedBuilds.map(name => `--allow-build=${name}`),
+        ]),
         cwd: artifactDirectory,
         env: scriptsEnvironment,
         timeoutMs,
@@ -937,7 +998,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       return finishReport(report, 'compatible', 'the exact artifact installed, registered and loaded under the requested DSH version')
     } catch (error: unknown) {
       const detail = bounded(error instanceof Error ? error.message : String(error))
-      const currentStage = (['profile', 'install', 'registration', 'load'] as const)
+      const currentStage = (['runtime', 'profile', 'install', 'registration', 'load'] as const)
         .find(name => report.stages[name].status === 'skipped')
       if (currentStage !== undefined) report.stages[currentStage] = { status: 'failed', detail }
       return finishReport(report, 'unknown', `the bounded observer failed while collecting ${currentStage ?? 'runtime'} evidence`)
@@ -955,7 +1016,9 @@ export function renderDshInstallObservation(report: DshInstallObservationReport)
     'DSH isolated install observation',
     `Artifact: ${report.artifact.name}@${report.artifact.version}${report.artifact.sha256 === undefined ? '' : ` (sha256:${report.artifact.sha256.slice(0, 12)}…)`}`,
     `DSH: ${report.dshVersion}`,
+    `Runtime: Node ${report.runtime.nodeVersion} (${report.runtime.platform}/${report.runtime.architecture}), pnpm ${report.runtime.packageManager.version ?? 'unknown'}`,
     `Isolation claim: ${report.boundary.isolationProviderClaim} (provided externally; not verified by Radar)`,
+    `Approved dependency builds: ${report.boundary.approvedDependencyBuilds.length === 0 ? 'none' : report.boundary.approvedDependencyBuilds.join(', ')}`,
     '',
     `Result: ${report.result.toUpperCase()} — ${report.reason}`,
     `Lifecycle scripts declared: ${lifecycle}`,

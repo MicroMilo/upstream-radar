@@ -5,15 +5,16 @@ import { buildDshInstallPlan, parseDshInstallTargets } from '../src/dsh-install-
 const corpus = {
   schema: 'upstream-radar.dsh-install-targets/v1alpha1',
   plugins: [
-    { id: 'feishu', spec: 'dsh-feishu-bot@0.16.0', observerTargetId: 'dsh-feishu-bot', reason: 'messaging plugin' },
+    { id: 'feishu', spec: 'dsh-feishu-bot@0.16.0', observerTargetId: 'dsh-feishu-bot', allowedBuilds: ['protobufjs'], reason: 'messaging plugin' },
     { id: 'browser', spec: 'dsh-browser@1.2.3', reason: 'browser plugin' },
   ],
 }
 
-function state(dshVersion = '0.1.0-rc.8'): unknown {
+function state(dshVersion = '0.1.0-rc.8', feishuVersion = '0.16.1'): unknown {
   return {
     targets: {
       'deepseek-harness': { package: { name: '@deepseek-ai/dsh', version: dshVersion } },
+      'dsh-feishu-bot': { package: { name: 'dsh-feishu-bot', version: feishuVersion } },
     },
   }
 }
@@ -31,7 +32,8 @@ describe('DSH install observation plan', () => {
 
     assert.equal(plan.run, true)
     assert.equal(plan.dshVersion, '0.1.0-rc.9')
-    assert.deepEqual(plan.matrix.include.map(item => item.plugin), ['dsh-browser@1.2.3', 'dsh-feishu-bot@0.16.0'])
+    assert.deepEqual(plan.matrix.include.map(item => item.plugin), ['dsh-browser@1.2.3', 'dsh-feishu-bot@0.16.1'])
+    assert.deepEqual(plan.matrix.include.map(item => item.allowedBuilds), ['', 'protobufjs'])
     assert.deepEqual(plan.triggers, ['deepseek-harness'])
   })
 
@@ -47,7 +49,7 @@ describe('DSH install observation plan', () => {
 
     assert.equal(plan.run, true)
     assert.equal(plan.dshVersion, '0.1.0-rc.8')
-    assert.deepEqual(plan.matrix.include, [{ id: 'feishu', plugin: 'dsh-feishu-bot@0.17.0' }])
+    assert.deepEqual(plan.matrix.include, [{ id: 'feishu', plugin: 'dsh-feishu-bot@0.17.0', allowedBuilds: 'protobufjs' }])
     assert.deepEqual(plan.triggers, ['dsh-feishu-bot'])
   })
 
