@@ -63,15 +63,15 @@ baseline report, and defined in [`schemas/upstream-downstream-ir.schema.json`](s
 
 ```bash
 # No DSH profile, API key, or network state required
-npx --yes upstream-radar@0.39.0 demo
+npx --yes upstream-radar@0.40.0 demo
 
 # Scan a public DSH plugin repository without installing it
-npx --yes upstream-radar@0.39.0 scan \
+npx --yes upstream-radar@0.40.0 scan \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --fail-on never
 
 # Review a real browser plugin users would install, then check two DSH releases
-npx --yes upstream-radar@0.39.0 review dsh-plugin dsh-cloudflare-browser-run@0.1.1 \
+npx --yes upstream-radar@0.40.0 review dsh-plugin dsh-cloudflare-browser-run@0.1.1 \
   --dsh-version 0.1.0-rc.6,0.1.0-rc.7
 ```
 
@@ -176,11 +176,11 @@ Two copies of `parser` are different nodes. An alert names the exact version and
 For a collection of saved reports, build the reverse index that turns an upstream package update into affected plugins:
 
 ```bash
-npx --yes upstream-radar@0.39.0 graph reverse ./reports \
+npx --yes upstream-radar@0.40.0 graph reverse ./reports \
   --output reverse-dependency-index.json
 
 # Ask: which plugins currently depend on this exact package?
-npx --yes upstream-radar@0.39.0 graph reverse ./reports \
+npx --yes upstream-radar@0.40.0 graph reverse ./reports \
   --package parser@2.9.0
 
 # Rebuild the checked-in index from the real first 50 DSH plugin reports
@@ -199,7 +199,7 @@ To route an upstream old → new change to that index, pass it to the always-on
 observer:
 
 ```bash
-npx --yes upstream-radar@0.39.0 observe ./targets.yml \
+npx --yes upstream-radar@0.40.0 observe ./targets.yml \
   --reverse-index ./reverse-dependency-index.json \
   --state ./observations.json \
   --report ./upstream-radar-observer.md
@@ -225,7 +225,7 @@ replay baseline → one Agent task → quiet run without network access.
 The repository already contains a reusable, composite Action in [`action.yml`](action.yml). It runs the same frozen Radar check in CI and writes a short Job Summary.
 
 ```yaml
-- uses: MicroMilo/upstream-radar@v0.39.0
+- uses: MicroMilo/upstream-radar@v0.40.0
   with:
     config: upstream-radar.config.json
     fail-on: high
@@ -250,7 +250,7 @@ See the [consumer workflow](examples/github-actions/consumer/README.md) for conf
 pnpm add upstream-radar
 
 # Generate a reviewable DSH profile inventory from the installed profile
-npx --yes upstream-radar@0.39.0 setup
+npx --yes upstream-radar@0.40.0 setup
 ```
 
 For Feishu/webhook routing, DSH Agent handoff, observer state, report schemas, and troubleshooting, use the [full Chinese guide](docs/README.zh-CN.md). The [architecture notes](docs/architecture.md) explain the boundaries and evidence model.

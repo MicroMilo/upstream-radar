@@ -8,7 +8,7 @@ graph without installing anything.
 ## Reproduction
 
 ```bash
-npx --yes upstream-radar@0.39.0 scan \
+npx --yes upstream-radar@0.40.0 scan \
   https://github.com/2008924/dsh-progress-viz \
   --fail-on never
 ```
@@ -22,7 +22,7 @@ query an advisory service, or call an LLM.
 
 ```text
 Reading 2008924/dsh-progress-viz (plugin directory: plugin) without installing dependencies or running code...
-Upstream Radar 0.39.0
+Upstream Radar 0.40.0
 Target: dsh-progress-viz-plugin@0.1.0
 Artifact: sha256:c9b6b2dc31a458b480587f6200772fe72d4af5451b1e71d41594c5017be929c5
 DSH bundle: yes (./cordis.patch.yml)
