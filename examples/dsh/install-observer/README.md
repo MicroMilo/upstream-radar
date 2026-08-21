@@ -35,6 +35,10 @@ The container is read-only except for a memory-backed sandbox and one output
 directory. It runs without the host workspace, without a Docker socket, with a
 PID limit, memory/CPU limits, `no-new-privileges`, all capabilities dropped
 except the `SYS_PTRACE` capability needed by `strace`, and a hard outer timeout.
+Its declared Linux baseline includes Python 3, `make`, and `g++`, so an approved
+native dependency is tested against a usable build environment instead of being
+misclassified merely because the observer image omitted the standard Node-gyp
+toolchain.
 
 ## When the matrix runs
 

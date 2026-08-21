@@ -11,6 +11,9 @@ All notable changes to Upstream Radar are documented here.
   Summaries.
 - Approve only `node-pty` for the maintained Better Sidebar install case, matching
   the plugin's documented native dependency instead of allowing all builds.
+- Include the standard Node-gyp Python/C++ toolchain in the disposable observer
+  image so an explicitly approved native build is not confused with a plugin
+  compatibility failure.
 
 ## [0.39.0] - 2026-08-21
 
