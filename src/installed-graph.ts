@@ -305,11 +305,15 @@ export async function parseInstalledNodeModulesGraph(
   const unresolved: NonNullable<DependencyGraph['unresolved']> = []
   const rootPeerContracts: RootPeerContract[] = []
   const queue = [root.id]
+  // A pnpm-installed DSH executable can keep its runtime dependencies behind
+  // package-local links in the outer virtual store. A plugin peer is allowed
+  // to be supplied by that verified DSH closure, but an ordinary plugin
+  // dependency is not: it must still resolve from the profile itself.
+  let runtimeRoot: InstalledPackage | undefined
   if (hostNodeModulesDirectoryReal !== undefined && options.hostRuntimePackage !== undefined) {
     const resolvedHostNodeModulesDirectory = hostNodeModulesDirectory
     if (resolvedHostNodeModulesDirectory === undefined) throw new Error('DSH host dependency plane is unexpectedly unavailable')
     const runtimePackageDirectory = options.hostRuntimePackageDirectory
-    let runtimeRoot: InstalledPackage | undefined
     if (runtimePackageDirectory !== undefined) {
       let runtimeDirectoryReal: string | undefined
       try {
@@ -332,20 +336,21 @@ export async function parseInstalledNodeModulesGraph(
       )
     }
     if (runtimeRoot !== undefined) {
+      const runtimeRootId = runtimeRoot.id
       if (runtimeRoot.manifest.name !== options.hostRuntimePackage.name) {
         throw new Error(`DSH runtime package manifest name does not match discovered coordinate: expected ${options.hostRuntimePackage.name}, found ${runtimeRoot.manifest.name}`)
       }
       if (runtimeRoot.manifest.version !== options.hostRuntimePackage.version) {
         throw new Error(`DSH runtime package does not match discovered coordinate: expected @deepseek-ai/dsh@${options.hostRuntimePackage.version}, found ${runtimeRoot.manifest.version}`)
       }
-      if (!packages.has(runtimeRoot.id)) {
+      if (!packages.has(runtimeRootId)) {
         if (packages.size >= MAX_NODES) throw new Error(`installed dependency graph exceeds the ${MAX_NODES} node limit`)
-        packages.set(runtimeRoot.id, runtimeRoot)
-        queue.push(runtimeRoot.id)
+        packages.set(runtimeRootId, runtimeRoot)
+        queue.push(runtimeRootId)
       }
-      if (!edges.some(edge => edge.from === root.id && edge.to === runtimeRoot.id && edge.kind === HOST_RUNTIME_EDGE_KIND)) {
+      if (!edges.some(edge => edge.from === root.id && edge.to === runtimeRootId && edge.kind === HOST_RUNTIME_EDGE_KIND)) {
         if (edges.length >= MAX_EDGES) throw new Error(`installed dependency graph exceeds the ${MAX_EDGES} edge limit`)
-        edges.push({ from: root.id, to: runtimeRoot.id, kind: HOST_RUNTIME_EDGE_KIND })
+        edges.push({ from: root.id, to: runtimeRootId, kind: HOST_RUNTIME_EDGE_KIND })
       }
     } else {
       unresolved.push({
@@ -376,6 +381,18 @@ export async function parseInstalledNodeModulesGraph(
               ? undefined
               : await findHostPackage(
                 hostNodeModulesDirectory,
+                dependency.name,
+                hostNodeModulesDirectory,
+                hostNodeModulesDirectoryReal,
+              ))
+          // DSH is a valid supplier for a plugin's declared required peer.
+          // Start at the exact runtime package so pnpm's package-local link is
+          // followed, while keeping all real paths inside the verified outer
+          // host plane. Do not apply this fallback to ordinary dependencies.
+          ?? (dependency.kind !== 'peer' || runtimeRoot === undefined || hostNodeModulesDirectory === undefined || hostNodeModulesDirectoryReal === undefined
+              ? undefined
+              : await findHostPackage(
+                runtimeRoot.directory,
                 dependency.name,
                 hostNodeModulesDirectory,
                 hostNodeModulesDirectoryReal,

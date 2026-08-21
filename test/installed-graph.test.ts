@@ -237,6 +237,7 @@ describe('installed DSH dependency graph', () => {
       await writeManifest(join(profile, 'node_modules', 'plugin', 'package.json'), {
         name: 'plugin',
         version: '1.0.0',
+        peerDependencies: { '@deepseek-ai/cordis': '^4.0.0' },
       })
       await writeManifest(join(runtimeRoot, 'package.json'), {
         name: '@deepseek-ai/dsh',
@@ -258,8 +259,14 @@ describe('installed DSH dependency graph', () => {
 
       assert.equal(graph.unresolved, undefined)
       assert.equal(graph.nodes.length, 3)
-      assert.deepEqual(graph.edges.map(edge => edge.kind), ['runtime', 'host-runtime'])
+      assert.deepEqual(graph.edges.map(edge => edge.kind), ['runtime', 'peer', 'host-runtime'])
       assert.equal(graph.nodes.find(node => node.name === '@deepseek-ai/cordis')?.version, '4.0.2')
+      assert.deepEqual(graph.rootPeerContracts, [{
+        name: '@deepseek-ai/cordis',
+        required: '^4.0.0',
+        status: 'satisfied',
+        resolvedVersion: '4.0.2',
+      }])
       assert.equal(graph.hostRuntime?.resolvedNodes, 2)
     } finally {
       await rm(root, { recursive: true, force: true })

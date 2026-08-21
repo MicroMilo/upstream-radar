@@ -6,7 +6,14 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import process from 'node:process'
 
-const { createRadarConfigFromDshProfile, discoverDshRuntimeHostNodeModulesDirectory, writeDshPatch, writeRadarConfig } = await import('../dist/src/index.js')
+const {
+  createRadarConfigFromDshProfile,
+  discoverDshRuntimeHostNodeModulesDirectory,
+  discoverDshRuntimePackage,
+  discoverDshRuntimePackageDirectory,
+  writeDshPatch,
+  writeRadarConfig,
+} = await import('../dist/src/index.js')
 const { emptyRadarState } = await import('../dist/src/radar.js')
 const { saveRadarState } = await import('../dist/src/radar-state.js')
 
@@ -236,10 +243,6 @@ async function createLocalCertificate(scratch) {
   return { keyFile, certFile }
 }
 
-function hostManifestPath(nodeModules, packageName) {
-  return join(nodeModules, ...packageName.split('/'), 'package.json')
-}
-
 async function main() {
   const scratch = await mkdtemp(join(tmpdir(), 'upstream-radar-dsh-runtime-'))
   const dshHome = join(scratch, 'dsh-home')
@@ -272,10 +275,12 @@ async function main() {
     // package-local node_modules misses sibling dependencies in `.pnpm`; the
     // host plane is the bounded directory that contains both.
     const hostNodeModulesDirectory = discoverDshRuntimeHostNodeModulesDirectory(entrypoint)
+    const hostRuntimePackage = discoverDshRuntimePackage(entrypoint)
+    const hostRuntimePackageDirectory = discoverDshRuntimePackageDirectory(entrypoint)
     if (hostNodeModulesDirectory === undefined) throw new Error('real DSH host dependency plane was not discovered')
-    const hostManifest = JSON.parse(await readFile(hostManifestPath(hostNodeModulesDirectory, HOST_PACKAGE_NAME), 'utf8'))
-    const hostPackageVersion = hostManifest.version
-    if (typeof hostPackageVersion !== 'string') throw new Error('real DSH host package has no exact version')
+    if (hostRuntimePackage === undefined || hostRuntimePackageDirectory === undefined) {
+      throw new Error('real DSH runtime package was not discovered')
+    }
 
     const pluginDirectory = join(scratch, 'plugin')
     const packDirectory = join(scratch, 'package')
@@ -316,10 +321,13 @@ async function main() {
       workspace: ROOT,
       hostNodeModulesDirectory,
       hostRuntimeSource: 'dsh-process',
+      hostRuntimePackage,
+      hostRuntimePackageDirectory,
     })
     const exactGraph = exact.projects[0]?.plugins[0]?.graph
     const exactHostNode = exactGraph?.nodes.find(node => node.name === HOST_PACKAGE_NAME && node.source === 'dsh-host')
     if (exactHostNode === undefined) throw new Error(`exact preflight graph did not resolve ${HOST_PACKAGE_NAME} from the DSH host plane`)
+    const hostPackageVersion = exactHostNode.version
 
     // The generated config can already use DSH's profile-level fallback plane.
     // The native DSH adapter must refresh it to the stronger process-level
