@@ -19,8 +19,11 @@ All notable changes to Upstream Radar are documented here.
 
 ### Static + dynamic evidence
 
-- Record the bounded SHA-256 and, when parsable, dependency-graph digest of the
-  DSH profile lockfile produced by the real isolated install.
+- Record the bounded SHA-256 and dependency-graph digest of the DSH profile
+  lockfile produced by the real isolated install, including DSH's pnpm virtual
+  store layout. A green install/load does not satisfy a compatibility cell
+  until that graph is complete; missing or unresolved graph evidence stays
+  actionable.
 - Surface `resolution-drift` when the same exact plugin/DSH/runtime contract
   resolves to a different profile dependency graph on a later clean install.
 - Add configured Node runtime profiles. A static Node-engine mismatch prevents

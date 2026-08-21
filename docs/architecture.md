@@ -136,7 +136,7 @@ desired plugin × DSH × runtime-policy cell
   -> traced DSH install
   -> registration check
   -> traced DSH load
-  -> bounded JSON artifact + resolved profile-lockfile digest
+  -> bounded JSON artifact + complete resolved profile graph
   -> exact-cell ledger merge
 ```
 
@@ -149,7 +149,10 @@ case id, plugin tarball, DSH version, Node major, and build approvals match the
 static plan. It also compares the resulting profile-lockfile digest on each
 retest; an exact pair that resolves a different transitive graph is reported as
 `resolution-drift` even if its install/load result remains compatible. This
-backend is useful compatibility and behavior evidence, not hostile-code proof.
+same pair is not considered covered when its final profile lockfile cannot be
+turned into a complete graph: that is retained as an evidence gap, not hidden
+behind a green install result. This backend is useful compatibility and behavior
+evidence, not hostile-code proof.
 Docker shares the hosted VM kernel, and code in the same container may attempt
 to tamper with its trace/output. Moving the collector outside a Firecracker
 guest is the later high-assurance boundary.

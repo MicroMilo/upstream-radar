@@ -49,6 +49,16 @@ function entry(expected: DshCompatibilityExpectedCase, overrides: Partial<DshCom
     result: 'compatible',
     reason: 'the exact artifact installed, registered and loaded',
     artifact: { lifecycleScripts: [] },
+    resolution: {
+      profileLockfile: {
+        sha256: 'c'.repeat(64),
+        bytes: 128,
+        graphDigest: `sha256:${'d'.repeat(64)}`,
+        nodes: 2,
+        edges: 1,
+        unresolved: 0,
+      },
+    },
     observer: { schema: 'upstream-radar.dsh-install-observation/v1alpha1', version: '0.41.0' },
     ...overrides,
   }
@@ -77,6 +87,42 @@ describe('DSH compatibility reconciliation plan', () => {
     assert.equal(plan.dshVersion, '0.1.0-rc.8')
     assert.deepEqual(plan.matrix.include, [])
     assert.match(plan.reason, /fresh evidence/)
+  })
+
+  it('does not let a green install/load satisfy the ledger without a resolved profile graph', () => {
+    const first = baseline()
+    const browser = first.matrix.include.find(item => item.id === 'browser-node22') as DshCompatibilityExpectedCase
+    const feishu = first.matrix.include.find(item => item.id === 'feishu-node22') as DshCompatibilityExpectedCase
+    const ledger = {
+      schema: 'upstream-radar.dsh-compatibility-ledger/v1alpha1',
+      entries: [
+        entry(browser, { resolution: { profileLockfile: { sha256: 'e'.repeat(64), bytes: 128 } } }),
+        entry(feishu),
+      ],
+    }
+    const plan = buildDshInstallPlan(corpus, state(), { changes: [] }, ledger, now)
+    assert.equal(plan.run, true)
+    assert.deepEqual(plan.matrix.include.map(item => item.id), ['browser-node22'])
+    assert.deepEqual(plan.matrix.include[0]?.reasons, ['resolution-graph-missing'])
+  })
+
+  it('does not let an unresolved profile graph satisfy the ledger', () => {
+    const first = baseline()
+    const browser = first.matrix.include.find(item => item.id === 'browser-node22') as DshCompatibilityExpectedCase
+    const feishu = first.matrix.include.find(item => item.id === 'feishu-node22') as DshCompatibilityExpectedCase
+    const ledger = {
+      schema: 'upstream-radar.dsh-compatibility-ledger/v1alpha1',
+      entries: [
+        entry(browser, { resolution: { profileLockfile: {
+          sha256: 'e'.repeat(64), bytes: 128, graphDigest: `sha256:${'f'.repeat(64)}`, nodes: 2, edges: 1, unresolved: 1,
+        } } }),
+        entry(feishu),
+      ],
+    }
+    const plan = buildDshInstallPlan(corpus, state(), { changes: [] }, ledger, now)
+    assert.equal(plan.run, true)
+    assert.deepEqual(plan.matrix.include.map(item => item.id), ['browser-node22'])
+    assert.deepEqual(plan.matrix.include[0]?.reasons, ['resolution-graph-incomplete'])
   })
 
   it('retests the whole maintained default corpus when the official DSH coordinate changes', () => {

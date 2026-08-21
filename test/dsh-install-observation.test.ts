@@ -148,12 +148,30 @@ describe('DSH install observation', () => {
         const dshHome = command.env.DSH_HOME
         assert.equal(typeof dshHome, 'string')
         const profileDirectory = join(dshHome as string, 'profiles', 'headless')
+        await mkdir(join(profileDirectory, 'node_modules', '.pnpm'), { recursive: true })
         await mkdir(join(profileDirectory, 'generated'), { recursive: true })
         await writeFile(join(profileDirectory, 'generated', 'install.txt'), 'created during install\n')
         await writeFile(join(profileDirectory, 'package.json'), JSON.stringify({
           dsh: { profile: { bundles: ['example-plugin'] } },
         }))
-        await writeFile(join(profileDirectory, 'pnpm-lock.yaml'), 'lockfileVersion: 9.0\n')
+        // DSH currently keeps the resolved profile graph in pnpm's virtual
+        // store rather than beside the profile manifest.
+        await writeFile(join(profileDirectory, 'node_modules', '.pnpm', 'lock.yaml'), `
+lockfileVersion: '9.0'
+
+importers:
+  .:
+    dependencies:
+      example-plugin:
+        specifier: 1.0.0
+        version: 1.0.0
+
+packages:
+  'example-plugin@1.0.0': {}
+
+snapshots:
+  'example-plugin@1.0.0': {}
+`)
       }
 
       if (command.tracePath !== undefined) {
@@ -185,6 +203,10 @@ describe('DSH install observation', () => {
     assert.deepEqual(report.artifact.lifecycleScripts, ['postinstall'])
     assert.equal(report.runtime.packageManager.version, '11.7.0')
     assert.match(report.resolution.profileLockfile?.sha256 ?? '', /^[a-f0-9]{64}$/)
+    assert.match(report.resolution.profileLockfile?.graphDigest ?? '', /^sha256:[a-f0-9]{64}$/)
+    assert.equal(report.resolution.profileLockfile?.nodes, 2)
+    assert.equal(report.resolution.profileLockfile?.edges, 1)
+    assert.equal(report.resolution.profileLockfile?.unresolved, 0)
     assert.deepEqual(report.boundary.approvedDependencyBuilds, [])
     assert.equal(report.stages.registration.status, 'passed')
     assert.equal(report.observations.install.processes.length, 1)

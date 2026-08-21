@@ -26,6 +26,11 @@ const MAX_ALLOWED_BUILDS = 16
 const MAX_PROFILE_LOCKFILE_BYTES = 16 * 1024 * 1024
 const PROFILE = 'headless'
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare'] as const
+const PROFILE_LOCKFILE_CANDIDATES = [
+  ['pnpm-lock.yaml'],
+  ['node_modules', '.pnpm', 'lock.yaml'],
+] as const
+const SYNTHETIC_PROFILE_GRAPH_ROOT = { name: 'dsh-profile-headless', version: '0.0.0' } as const
 
 export type DshInstallObservationResult = 'compatible' | 'runtime-incompatible' | 'install-failed' | 'load-failed' | 'unknown'
 export type InstallObservationPhase = 'runtime' | 'artifact' | 'profile' | 'install' | 'load'
@@ -800,14 +805,56 @@ async function registeredBundle(dshHome: string, packageName: string): Promise<b
   }
 }
 
+function isNotFound(error: unknown): boolean {
+  return typeof error === 'object' && error !== null
+    && 'code' in error
+    && (error as { code?: unknown }).code === 'ENOENT'
+}
+
+/**
+ * DSH versions have emitted both a project lockfile and pnpm's virtual-store
+ * lockfile. Read only those fixed descendants, refuse every symlink in their
+ * path, and never retain the lockfile contents outside the disposable runner.
+ */
+async function readProfileLockfile(dshHome: string): Promise<Buffer | undefined> {
+  const profileDirectory = join(dshHome, 'profiles', PROFILE)
+  try {
+    const profileMetadata = await lstat(profileDirectory)
+    if (!profileMetadata.isDirectory() || profileMetadata.isSymbolicLink()) return undefined
+  } catch {
+    return undefined
+  }
+
+  for (const segments of PROFILE_LOCKFILE_CANDIDATES) {
+    let current = profileDirectory
+    try {
+      for (let index = 0; index < segments.length; index += 1) {
+        const segment = segments[index] as string
+        current = join(current, segment)
+        const metadata = await lstat(current)
+        if (metadata.isSymbolicLink()) return undefined
+        if (index < segments.length - 1 && !metadata.isDirectory()) return undefined
+      }
+      return await readRegularFileNoFollow(current, MAX_PROFILE_LOCKFILE_BYTES)
+    } catch (error: unknown) {
+      if (isNotFound(error)) continue
+      return undefined
+    }
+  }
+  return undefined
+}
+
+function profileGraphRoot(manifest: Record<string, unknown>): { name: string, version: string } {
+  return typeof manifest.name === 'string' && manifest.name.length > 0
+    && typeof manifest.version === 'string' && EXACT_VERSION.test(manifest.version)
+    ? { name: manifest.name, version: manifest.version }
+    : SYNTHETIC_PROFILE_GRAPH_ROOT
+}
+
 async function profileResolutionEvidence(dshHome: string): Promise<DshInstallObservationReport['resolution']> {
   const profileDirectory = join(dshHome, 'profiles', PROFILE)
-  let lockfile: Buffer
-  try {
-    lockfile = await readRegularFileNoFollow(join(profileDirectory, 'pnpm-lock.yaml'), MAX_PROFILE_LOCKFILE_BYTES)
-  } catch {
-    return {}
-  }
+  const lockfile = await readProfileLockfile(dshHome)
+  if (lockfile === undefined) return {}
   const profileLockfile: DshInstallProfileLockfileEvidence = {
     sha256: createHash('sha256').update(lockfile).digest('hex'),
     bytes: lockfile.length,
@@ -815,8 +862,7 @@ async function profileResolutionEvidence(dshHome: string): Promise<DshInstallObs
   try {
     const manifestBuffer = await readRegularFileNoFollow(join(profileDirectory, 'package.json'), 4 * 1024 * 1024)
     const manifest = JSON.parse(manifestBuffer.toString('utf8')) as Record<string, unknown>
-    if (typeof manifest.name !== 'string' || typeof manifest.version !== 'string') return { profileLockfile }
-    const graph = parsePnpmLockGraph(lockfile.toString('utf8'), { name: manifest.name, version: manifest.version })
+    const graph = parsePnpmLockGraph(lockfile.toString('utf8'), profileGraphRoot(manifest))
     return {
       profileLockfile: {
         ...profileLockfile,
@@ -1071,6 +1117,9 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       const afterLoad = await snapshotSandbox(sandboxRoot, environment)
       report.observations.load = await readTrace(loadTracePath, sandboxRoot)
       report.filesystem.load = diffSnapshots(afterInstall, afterLoad)
+      // Loading may trigger one final DSH profile reconciliation. Preserve the
+      // final resolved graph rather than only the state immediately after add.
+      report.resolution = await profileResolutionEvidence(environment.DSH_HOME as string)
       report.stages.load = commandStage(loadResult)
       if (loadResult.timedOut || loadResult.outputExceeded || loadResult.launchError !== undefined) {
         return finishReport(report, 'unknown', 'the plugin load did not produce a bounded command result')

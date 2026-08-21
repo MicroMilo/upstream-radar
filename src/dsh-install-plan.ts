@@ -314,6 +314,18 @@ function isStale(entry: DshCompatibilityLedger['entries'][number], refreshAfterH
 }
 
 /**
+ * A successful install/load alone does not establish the dependency relation
+ * that Radar promises to monitor. Keep such a cell pending until its final
+ * DSH profile lockfile produced a complete, digestible graph. Failed installs
+ * deliberately do not use this rule: there may be no final profile to read.
+ */
+function hasCompleteResolutionEvidence(entry: DshCompatibilityLedger['entries'][number]): boolean {
+  if (entry.result !== 'compatible') return true
+  const lockfile = entry.resolution?.profileLockfile
+  return lockfile?.graphDigest !== undefined && (lockfile.unresolved ?? 0) === 0
+}
+
+/**
  * Reconcile the desired current compatibility matrix with durable evidence.
  * Upstream diffs accelerate a retest, but do not decide whether a cell gets
  * tested: missing, stale, or static/contract-invalidated cells are selected
@@ -389,6 +401,10 @@ export function buildDshInstallPlan(
         if (previous.staticFingerprint !== staticFingerprint) reasons.add('static-evidence-changed')
         if (previous.contractFingerprint !== contractFingerprint) reasons.add('execution-contract-changed')
         if (isStale(previous, corpus.refreshAfterHours, now)) reasons.add('stale-evidence')
+        if (!hasCompleteResolutionEvidence(previous)) {
+          if (previous.resolution?.profileLockfile?.graphDigest === undefined) reasons.add('resolution-graph-missing')
+          else reasons.add('resolution-graph-incomplete')
+        }
       }
       if (reasons.size === 0) continue
       selected.set(id, {

@@ -99,6 +99,9 @@ execution, then asks a configured alternative runtime (for example Node 24)
 to establish whether the result is a real incompatibility or a conditional one.
 The isolated profile's lockfile digest is compared on every retest, so a changed
 transitive resolution is reported even if install and load still succeed.
+An install/load green result is not sufficient to close a matrix cell: its final
+profile lockfile must also yield a complete dependency graph. Otherwise Radar
+keeps the cell as an explicit evidence gap for the next reconciliation.
 
 When all cells are current, the runtime lane stays quiet. Missing or malformed
 reports never turn green: they remain unsatisfied and are selected again.

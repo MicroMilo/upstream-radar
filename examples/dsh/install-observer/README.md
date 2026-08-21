@@ -70,6 +70,9 @@ blocked script into a global “allow all” policy.
   version, Node major, and explicit build approvals match the static plan.
 - A missing or malformed report is never saved as compatible. It remains
   unsatisfied and will be selected again on the next reconciliation.
+- A `compatible` result only closes its matrix cell when the final DSH profile
+  lockfile also yields a complete dependency graph. A green install/load with
+  missing or unresolved graph evidence remains an explicit evidence gap.
 
 ## Result semantics
 
