@@ -4,7 +4,7 @@
     "dsh-feishu-bot": {
       "targetId": "dsh-feishu-bot",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-21T08:38:08.881Z",
+      "observedAt": "2026-08-21T08:46:19.939Z",
       "source": {
         "repository": "PlutoKeating/dsh-lark-bot",
         "ref": "main",
@@ -87,6 +87,7 @@
       "package": {
         "name": "dsh-feishu-bot",
         "version": "0.16.0",
+        "distTag": "latest",
         "integrity": "sha512-23cGFU/aOrlveOk6FR189riXDlELX7BlAdLCJ7hg0fUOo0whAfDkLa3VjecviqlcOR9dSxrtAnl5MTtHUoxy9Q==",
         "tarball": "https://registry.npmjs.org/dsh-feishu-bot/-/dsh-feishu-bot-0.16.0.tgz"
       },
@@ -5198,7 +5199,7 @@
     "dsh-webui-market-plugin": {
       "targetId": "dsh-webui-market-plugin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-21T08:38:08.881Z",
+      "observedAt": "2026-08-21T08:46:19.939Z",
       "source": {
         "repository": "Sanqi-normal/dsh-webui-market-plugin",
         "ref": "master",
@@ -5239,6 +5240,7 @@
       "package": {
         "name": "@sanqi-normal/dsh-webui-market-plugin",
         "version": "0.5.5",
+        "distTag": "latest",
         "integrity": "sha512-pGHgU3YyfX7OatsUh3pgd+iDQEbwCET+/f1xu3QAQAPNarbhWbhCUuBFklzaCbia7HtoEzVn4yStD2tjuWUlMA==",
         "tarball": "https://registry.npmjs.org/@sanqi-normal/dsh-webui-market-plugin/-/dsh-webui-market-plugin-0.5.5.tgz"
       },
@@ -5307,7 +5309,7 @@
     "deepseek-harness": {
       "targetId": "deepseek-harness",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-21T08:38:08.881Z",
+      "observedAt": "2026-08-21T08:46:19.939Z",
       "source": {
         "repository": "deepseek-ai/deepseek-harness",
         "ref": "master",
@@ -5389,9 +5391,10 @@
       },
       "package": {
         "name": "@deepseek-ai/dsh",
-        "version": "0.1.0-rc.7",
-        "integrity": "sha512-ZceDCJ8FAywih+USW/OMk9jEhunlvJBGEz4kqrhau23hPzbciOazZrywH0nBRsaalSeAJ1JGBmjtw4OSjToStw==",
-        "tarball": "https://registry.npmjs.org/@deepseek-ai/dsh/-/dsh-0.1.0-rc.7.tgz"
+        "version": "0.1.1-rc.1",
+        "distTag": "next",
+        "integrity": "sha512-HVauMT0F7MWUctkxzBcu5PMFc8j0lm0kX+4IbcUsA7Oh+/xv7xhigEDP0SaSOM/kR48U/BldHbZru116DcZz0w==",
+        "tarball": "https://registry.npmjs.org/@deepseek-ai/dsh/-/dsh-0.1.1-rc.1.tgz"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -6207,7 +6210,7 @@
         "downstream": {
           "published": {
             "name": "@deepseek-ai/dsh",
-            "version": "0.1.0-rc.7"
+            "version": "0.1.1-rc.1"
           },
           "graph": {
             "status": "incomplete",
@@ -6221,15 +6224,14 @@
             "unresolved": 71
           }
         },
-        "status": "mismatch",
+        "status": "unknown",
         "checks": [
           {
             "code": "source-published-identity",
-            "status": "mismatch",
-            "summary": "The source manifest and observed npm package do not identify the same name and version.",
+            "status": "aligned",
+            "summary": "The source manifest and observed npm package have the same name and version.",
             "upstream": "@deepseek-ai/dsh@0.1.1-rc.1",
-            "downstream": "@deepseek-ai/dsh@0.1.0-rc.7",
-            "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
+            "downstream": "@deepseek-ai/dsh@0.1.1-rc.1"
           },
           {
             "code": "source-graph-root",
@@ -6240,11 +6242,10 @@
           },
           {
             "code": "published-graph-root",
-            "status": "mismatch",
-            "summary": "The dependency graph root does not identify the observed npm package.",
-            "upstream": "@deepseek-ai/dsh@0.1.0-rc.7",
-            "downstream": "@deepseek-ai/dsh@0.1.1-rc.1",
-            "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
+            "status": "aligned",
+            "summary": "The dependency graph root matches the observed npm package.",
+            "upstream": "@deepseek-ai/dsh@0.1.1-rc.1",
+            "downstream": "@deepseek-ai/dsh@0.1.1-rc.1"
           },
           {
             "code": "dependency-graph-coverage",
@@ -6259,7 +6260,7 @@
     "dsh-cloudflare-browser-run": {
       "targetId": "dsh-cloudflare-browser-run",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-21T08:38:08.881Z",
+      "observedAt": "2026-08-21T08:46:19.939Z",
       "source": {
         "repository": "RealAlexandreAI/dsh-cloudflare-browser-run",
         "ref": "main",
@@ -6295,6 +6296,7 @@
       "package": {
         "name": "dsh-cloudflare-browser-run",
         "version": "0.1.3",
+        "distTag": "latest",
         "integrity": "sha512-sAHB3qfpkplJzaDhxawH1eqyRi665G/b/Cpoy3LsFtN784PoS/NOn0hGRQOarVUQ5zYFlflbYcNw2zUd5Ppveg==",
         "tarball": "https://registry.npmjs.org/dsh-cloudflare-browser-run/-/dsh-cloudflare-browser-run-0.1.3.tgz"
       },
@@ -6361,18 +6363,18 @@
     "dsh-wsl-workspace": {
       "targetId": "dsh-wsl-workspace",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-21T08:38:08.881Z",
+      "observedAt": "2026-08-21T08:46:19.939Z",
       "source": {
         "repository": "6Mikao9/dsh-wsl-workspace",
         "ref": "main",
-        "commit": "a1cc69d9838e7258d7d6e75a3b797d88f9c1af56",
+        "commit": "3861bd984c3877cfca71fb51f81e688e0ef7f238",
         "packagePath": "package.json",
-        "commitUrl": "https://github.com/6Mikao9/dsh-wsl-workspace/commit/a1cc69d9838e7258d7d6e75a3b797d88f9c1af56",
-        "packageUrl": "https://raw.githubusercontent.com/6Mikao9/dsh-wsl-workspace/a1cc69d9838e7258d7d6e75a3b797d88f9c1af56/package.json"
+        "commitUrl": "https://github.com/6Mikao9/dsh-wsl-workspace/commit/3861bd984c3877cfca71fb51f81e688e0ef7f238",
+        "packageUrl": "https://raw.githubusercontent.com/6Mikao9/dsh-wsl-workspace/3861bd984c3877cfca71fb51f81e688e0ef7f238/package.json"
       },
       "manifest": {
         "name": "dsh-wsl-workspace",
-        "version": "0.2.4",
+        "version": "0.2.3",
         "type": "module",
         "main": "lib/index.js",
         "exports": {
@@ -6407,6 +6409,7 @@
       "package": {
         "name": "dsh-wsl-workspace",
         "version": "0.2.3",
+        "distTag": "latest",
         "integrity": "sha512-3L8zcNFLi8WU3OM0nVrm2wLG/6gtKKRzKMPznRIxJ1iAmzALLzkaO/HmVDKJWC0uzdRjZ+f3aKuGk/dVJfwY8g==",
         "tarball": "https://registry.npmjs.org/dsh-wsl-workspace/-/dsh-wsl-workspace-0.2.3.tgz"
       },
@@ -6419,11 +6422,11 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "6Mikao9/dsh-wsl-workspace",
-          "commit": "a1cc69d9838e7258d7d6e75a3b797d88f9c1af56",
+          "commit": "3861bd984c3877cfca71fb51f81e688e0ef7f238",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-wsl-workspace",
-            "version": "0.2.4"
+            "version": "0.2.3"
           }
         },
         "downstream": {
@@ -6438,21 +6441,20 @@
             "unresolved": 0
           }
         },
-        "status": "mismatch",
+        "status": "unknown",
         "checks": [
           {
             "code": "source-published-identity",
-            "status": "mismatch",
-            "summary": "The source manifest and observed npm package do not identify the same name and version.",
-            "upstream": "dsh-wsl-workspace@0.2.4",
-            "downstream": "dsh-wsl-workspace@0.2.3",
-            "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
+            "status": "aligned",
+            "summary": "The source manifest and observed npm package have the same name and version.",
+            "upstream": "dsh-wsl-workspace@0.2.3",
+            "downstream": "dsh-wsl-workspace@0.2.3"
           },
           {
             "code": "source-graph-root",
             "status": "unknown",
             "summary": "No dependency graph root was observed.",
-            "upstream": "dsh-wsl-workspace@0.2.4",
+            "upstream": "dsh-wsl-workspace@0.2.3",
             "remediation": "Commit a supported lockfile or correct the configured package path/importer so the root can be verified."
           },
           {
