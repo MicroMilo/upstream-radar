@@ -252,13 +252,53 @@ targets:
     repository: acme/dsh-demo
     ref: main
     package: dsh-demo
+    package-tag: next
     package-path: plugin/package.json
     lockfile: plugin/pnpm-lock.yaml
     lockfile-type: pnpm
     dsh-versions: ["0.1.0-rc.6", "0.1.0-rc.7"]
 `)
     assert.equal(config.schema, OBSERVER_TARGETS_SCHEMA)
-    assert.deepEqual(config.targets[0], { ...target, dshVersions: ['0.1.0-rc.6', '0.1.0-rc.7'] })
+    assert.deepEqual(config.targets[0], { ...target, packageTag: 'next', dshVersions: ['0.1.0-rc.6', '0.1.0-rc.7'] })
+  })
+
+  it('observes the configured npm release channel instead of assuming latest', async () => {
+    const source = new UpstreamObserverClient({
+      fetch: async input => {
+        const url = String(input)
+        if (url.includes('/commits/main')) return new Response(JSON.stringify({ sha: 'commit-1' }), { status: 200 })
+        if (url.endsWith('/commit-1/plugin/package.json')) {
+          return new Response(JSON.stringify({ name: 'dsh-demo', version: '2.0.0-rc.1' }), { status: 200 })
+        }
+        if (url.startsWith('https://registry.npmjs.org/')) {
+          return new Response(JSON.stringify({
+            'dist-tags': { latest: '1.0.0', next: '2.0.0-rc.1' },
+            versions: {
+              '1.0.0': { dist: { integrity: 'sha512-latest' } },
+              '2.0.0-rc.1': { dist: { integrity: 'sha512-next' } },
+            },
+          }), { status: 200 })
+        }
+        if (url.endsWith('/commit-1/plugin/pnpm-lock.yaml')) {
+          return new Response([
+            "lockfileVersion: '9.0'",
+            '',
+            'importers:',
+            '  plugin: {}',
+            '',
+            'packages: {}',
+            '',
+            'snapshots: {}',
+            '',
+          ].join('\n'), { status: 200 })
+        }
+        throw new Error(`unexpected request: ${url}`)
+      },
+    })
+    const result = await source.observe({ ...target, packageTag: 'next' }, '2026-08-21T00:00:00.000Z')
+    assert.equal(result.package?.version, '2.0.0-rc.1')
+    assert.equal(result.package?.distTag, 'next')
+    assert.equal(result.package?.integrity, 'sha512-next')
   })
 
   it('creates a baseline, calls the Agent on a meaningful change, and stays quiet without a new change', async () => {
@@ -305,7 +345,7 @@ targets:
     assert.match(rendered, /Exact artifact check: npx --yes upstream-radar@latest inspect npm:dsh-demo@1\.1\.0 --deep/)
 
     const thirdRun = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, secondRun.state, {
-      source,
+      source: { ...source, observe: async () => ({ ...second, observedAt: '2026-08-17T02:00:00.000Z' }) },
       now: new Date('2026-08-17T02:00:00.000Z'),
       agent: async () => {
         throw new Error('Agent must not be called without a change')
@@ -313,6 +353,7 @@ targets:
     })
     assert.equal(thirdRun.report.changes.length, 0)
     assert.equal(thirdRun.report.agent.attempted, 0)
+    assert.equal(thirdRun.state.targets[target.id]?.observedAt, secondRun.state.targets[target.id]?.observedAt)
   })
 
   it('routes an upstream dependency version change to downstream plugins from the reverse index', async () => {
@@ -660,6 +701,18 @@ targets:
     assert.match(result.report.changes[0]?.reasons.join('\n') ?? '', /source\/published version drift/)
     assert.equal(result.report.pendingTaskDetails[0]?.sourceManifestAfter, 'dsh-demo@1.0.0')
     assert.equal(result.report.pendingTaskDetails[0]?.publishedPackageAfter, 'dsh-demo@2.0.0')
+
+    const repeated = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, result.state, {
+      source: {
+        observe: async () => ({ ...after, observedAt: '2026-08-17T05:00:00.000Z' }),
+        compare: async () => { throw new Error('compare must not run for unchanged drift') },
+      },
+      now: new Date('2026-08-17T05:00:00.000Z'),
+      agent: async () => { throw new Error('persistent drift must not wake the Agent again') },
+    })
+    assert.equal(repeated.report.changes.length, 0)
+    assert.equal(repeated.report.agent.attempted, 0)
+    assert.equal(repeated.state.targets[target.id]?.observedAt, result.state.targets[target.id]?.observedAt)
   })
 
   it('renders an explicit read-only contract for the DSH Agent', () => {

@@ -43,6 +43,7 @@ const OBSERVER_RETRY_DELAY_MS = 150
 const EXACT_NPM_PACKAGE_NAME = /^(?:@[^/\s]+\/[^/\s]+|[^/@\s]+)$/
 const EXACT_DSH_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const SAFE_TARGET_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/
+const SAFE_NPM_DIST_TAG = /^[a-z][a-z0-9._-]{0,127}$/
 
 type FetchLike = (input: string | URL, init?: RequestInit) => Promise<Response>
 
@@ -57,6 +58,8 @@ export interface ObserverTarget {
   ref?: string
   /** npm package name. When omitted, the source package.json name is used. */
   packageName?: string
+  /** npm dist-tag to observe. Defaults to latest. */
+  packageTag?: string
   packagePath?: string
   lockfile?: string
   lockfileType?: ObserverLockfileType
@@ -72,6 +75,7 @@ export interface ObserverConfig {
 export interface ObserverPackageObservation {
   name: string
   version: string
+  distTag?: string
   integrity?: string
   tarball?: string
   repository?: string
@@ -477,6 +481,7 @@ function yamlMapping(line: YamlLine): { key: string; value: unknown } | undefine
 
 function normalizeTargetKey(key: string): string {
   if (key === 'package') return 'packageName'
+  if (key === 'package-tag') return 'packageTag'
   if (key === 'package-path') return 'packagePath'
   if (key === 'lockfile-type') return 'lockfileType'
   if (key === 'dsh-versions') return 'dshVersions'
@@ -588,6 +593,10 @@ function target(value: unknown, index: number): ObserverTarget {
   if (packageName !== undefined && !EXACT_NPM_PACKAGE_NAME.test(packageName)) {
     throw new Error(`targets[${index}].package must be an npm package name`)
   }
+  const packageTag = optionalBoundedString(source.packageTag, `targets[${index}].packageTag`, 128)
+  if (packageTag !== undefined && !SAFE_NPM_DIST_TAG.test(packageTag)) {
+    throw new Error(`targets[${index}].packageTag must be a lowercase npm dist-tag`)
+  }
   const lockfile = source.lockfile === undefined ? undefined : validateRelativePath(source.lockfile, `targets[${index}].lockfile`)
   const rawLockfileType = optionalBoundedString(source.lockfileType, `targets[${index}].lockfileType`, 16)
   const lockfileType = rawLockfileType === undefined
@@ -612,6 +621,7 @@ function target(value: unknown, index: number): ObserverTarget {
     repository: validateRepository(source.repository, `targets[${index}].repository`),
     ref,
     ...(packageName === undefined ? {} : { packageName }),
+    ...(packageTag === undefined ? {} : { packageTag }),
     ...(packagePath === undefined ? {} : { packagePath }),
     ...(lockfile === undefined ? {} : { lockfile }),
     ...(lockfileType === undefined ? {} : { lockfileType }),
@@ -662,9 +672,12 @@ function parsePackageObservation(value: unknown, label: string): ObserverPackage
   if (source === undefined) throw new Error(`${label} must be an object`)
   const name = boundedString(source.name, `${label}.name`, 512)
   const version = boundedString(source.version, `${label}.version`, 512)
+  const distTag = optionalBoundedString(source.distTag, `${label}.distTag`, 128)
+  if (distTag !== undefined && !SAFE_NPM_DIST_TAG.test(distTag)) throw new Error(`${label}.distTag is invalid`)
   return {
     name,
     version,
+    ...(distTag === undefined ? {} : { distTag }),
     ...(optionalBoundedString(source.integrity, `${label}.integrity`, 512) === undefined ? {} : { integrity: source.integrity as string }),
     ...(optionalBoundedString(source.tarball, `${label}.tarball`, 4_096) === undefined ? {} : { tarball: source.tarball as string }),
     ...(optionalBoundedString(source.repository, `${label}.repository`, 4_096) === undefined ? {} : { repository: source.repository as string }),
@@ -1078,7 +1091,7 @@ export class UpstreamObserverClient implements ObserverSource {
     return undefined
   }
 
-  private async fetchNpmObservation(name: string): Promise<ObserverPackageObservation | undefined> {
+  private async fetchNpmObservation(name: string, distTag = 'latest'): Promise<ObserverPackageObservation | undefined> {
     const url = new URL(encodeURIComponent(name), this.registry)
     const response = await this.fetchWithRetry(url, {
       headers: { accept: 'application/vnd.npm.install-v1+json, application/json', 'user-agent': 'upstream-radar/upstream-observer' },
@@ -1089,21 +1102,22 @@ export class UpstreamObserverClient implements ObserverSource {
     const tags = asRecord(root?.['dist-tags'])
     const versions = asRecord(root?.versions)
     const times = asRecord(root?.time)
-    const latest = typeof tags?.latest === 'string' ? tags.latest : undefined
-    const rawManifest = latest === undefined ? undefined : versions?.[latest]
+    const selectedVersion = typeof tags?.[distTag] === 'string' ? tags[distTag] as string : undefined
+    const rawManifest = selectedVersion === undefined ? undefined : versions?.[selectedVersion]
     const manifest = asRecord(rawManifest)
-    if (latest === undefined || manifest === undefined) throw new Error(`npm registry has no latest manifest for ${name}`)
+    if (selectedVersion === undefined || manifest === undefined) throw new Error(`npm registry has no ${distTag} manifest for ${name}`)
     const dist = asRecord(manifest.dist)
     const repository = typeof manifest.repository === 'string'
       ? manifest.repository
       : typeof asRecord(manifest.repository)?.url === 'string' ? asRecord(manifest.repository)?.url as string : undefined
     return {
       name,
-      version: latest,
+      version: selectedVersion,
+      distTag,
       ...(typeof dist?.integrity === 'string' ? { integrity: dist.integrity } : {}),
       ...(typeof dist?.tarball === 'string' ? { tarball: dist.tarball } : {}),
       ...(repository === undefined ? {} : { repository: repository.slice(0, 4_096) }),
-      ...(typeof times?.[latest] === 'string' ? { publishedAt: times[latest] as string } : {}),
+      ...(typeof times?.[selectedVersion] === 'string' ? { publishedAt: times[selectedVersion] as string } : {}),
     }
   }
 
@@ -1127,7 +1141,7 @@ export class UpstreamObserverClient implements ObserverSource {
     if (targetValue.packageName !== undefined && targetValue.packageName !== manifest.name) {
       warnings.push(`target package ${targetValue.packageName} does not match source manifest ${manifest.name}`)
     }
-    const packageObservation = await this.fetchNpmObservation(packageName)
+    const packageObservation = await this.fetchNpmObservation(packageName, targetValue.packageTag)
     if (packageObservation === undefined) warnings.push(`${packageName} was not found on the configured npm registry`)
     let graph: DependencyGraph | undefined
     let graphError: string | undefined
@@ -1309,6 +1323,11 @@ function summary(snapshot: ObserverSnapshot): ObserverSnapshotSummary {
   }
 }
 
+function snapshotEvidenceSignature(snapshot: ObserverSnapshot): string {
+  const { observedAt: _observedAt, ...evidence } = snapshot
+  return JSON.stringify(evidence)
+}
+
 function alignmentSignature(value: UpstreamDownstreamIR | undefined): string {
   if (value === undefined) return ''
   return JSON.stringify({
@@ -1417,6 +1436,11 @@ function packageChanged(before: ObserverSnapshot, after: ObserverSnapshot): bool
   return before.package?.integrity !== after.package?.integrity
 }
 
+function sourcePublishedVersionDrift(snapshot: ObserverSnapshot): string | undefined {
+  if (snapshot.package === undefined || snapshot.manifest.version === snapshot.package.version) return undefined
+  return `${snapshot.manifest.name}@${snapshot.manifest.version}|${snapshot.package.name}@${snapshot.package.version}`
+}
+
 function graphChanged(before: ObserverSnapshot, after: ObserverSnapshot): boolean {
   if (before.graphError !== after.graphError) return true
   if (before.graph === undefined || after.graph === undefined) return before.graph !== after.graph
@@ -1440,7 +1464,9 @@ function meaningfulChange(sourceChange: ObserverSourceChange, before: ObserverSn
   if (before.manifest.name !== after.manifest.name || before.manifest.version !== after.manifest.version) {
     reasons.push(`source manifest identity changed: ${before.manifest.name}@${before.manifest.version} → ${after.manifest.name}@${after.manifest.version}`)
   }
-  if (after.package !== undefined && after.manifest.version !== after.package.version) {
+  const beforeDrift = sourcePublishedVersionDrift(before)
+  const afterDrift = sourcePublishedVersionDrift(after)
+  if (afterDrift !== undefined && beforeDrift !== afterDrift && after.package !== undefined) {
     reasons.push(`source/published version drift: source ${after.manifest.name}@${after.manifest.version}, npm ${after.package.name}@${after.package.version}`)
   }
   // Legacy observation files predate the IR. Populate the new field on the
@@ -1876,12 +1902,18 @@ export async function runObserver(
     try {
       const current = await source.observe(configuredTarget, checkedAt)
       const before = previousState.targets[configuredTarget.id]
-      nextTargets[configuredTarget.id] = current
       if (before === undefined) {
+        nextTargets[configuredTarget.id] = current
         baselineTargets.push(configuredTarget.id)
         if (current.alignment !== undefined) alignmentFindings.push({ targetId: configuredTarget.id, alignment: structuredClone(current.alignment) })
         continue
       }
+      // checkedAt belongs in the run report. Keep the durable observation point
+      // byte-stable when its evidence did not change, so a no-op cron run does
+      // not manufacture a commit from a fresh timestamp alone.
+      nextTargets[configuredTarget.id] = snapshotEvidenceSignature(before) === snapshotEvidenceSignature(current)
+        ? before
+        : current
       if (before.alignment === undefined && current.alignment !== undefined) {
         // Upgrade legacy state into the IR and show its first finding once.
         // This is evidence for the author, not a fake upstream change and not
@@ -2002,7 +2034,9 @@ export function observerExitCode(report: ObserverReport): 0 | 1 {
 }
 
 function displayPackage(value: ObserverPackageObservation | undefined): string {
-  return value === undefined ? 'not observed' : `${value.name}@${value.version}`
+  return value === undefined
+    ? 'not observed'
+    : `${value.name}@${value.version}${value.distTag === undefined ? '' : ` via npm tag ${value.distTag}`}`
 }
 
 function displayGraph(value: ObserverSnapshotSummary['graph'] | undefined): string {

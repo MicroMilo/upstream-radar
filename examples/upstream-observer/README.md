@@ -150,6 +150,15 @@ scheduled workflow also uses
 `--retry-pending`, so a task left behind by a temporarily unavailable Agent is
 retried on the next run without needing a new upstream commit.
 
+Targets observe npm's `latest` dist-tag by default. Set `package-tag: next` (or
+another explicit lowercase dist-tag) when the upstream publishes the channel
+you maintain outside `latest`. The checked-in DSH runtime target uses `next` so
+`0.1.1-rc.1` is not silently replaced by the older `latest` value
+`0.1.0-rc.7`. The selected tag is persisted with the exact package coordinate.
+If all evidence is unchanged, the durable snapshot keeps its prior timestamp;
+the run report still has a fresh check time, but cron does not create a noise
+commit or re-report an unchanged drift condition.
+
 At the time this example was recorded, the target resolved to 242 dependency
 nodes and 380 edges. Radar also reported that the source manifest is named
 `dsh-lark-bot` while the published package is `dsh-feishu-bot`; it keeps that

@@ -101,10 +101,12 @@ to run unless both `--execute` and `UPSTREAM_RADAR_ISOLATED_RUNNER=1` are presen
 it is not intended as a normal laptop command.
 
 This lane is wired into the always-on observer. Radar now watches the official
-`@deepseek-ai/dsh` coordinate. A new exact DSH publication fans out the small
+`@deepseek-ai/dsh` `next` release channel (current DSH releases are prereleases
+rather than npm `latest`). A new exact DSH publication fans out the small
 [maintained plugin corpus](examples/dsh/install-observer/targets.json), one fresh
 VM per plugin. A mapped plugin publication retests only that plugin. Unchanged
-commits stay quiet, and the DSH Agent/API key never enters the execution job.
+evidence keeps `observations.json` byte-stable, persistent source/publish drift
+does not wake the Agent again, and the DSH Agent/API key never enters the execution job.
 Build-script approvals are exact package names stored in the maintained target
 and copied into every report; an absent list approves nothing.
 
