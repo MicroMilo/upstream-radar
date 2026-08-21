@@ -66,5 +66,12 @@ describe('awesome-dsh-plugin monitored cohort', () => {
       assert.equal(observed?.observeNpm, false)
       assert.equal(installTargets.plugins.some(target => target.observerTargetId === plugin.id), false)
     }
+
+    // The published OpenPencil artifact declares Node >=24.11. Running its
+    // maintained cell on Node 22 only proves the engine gate, not DSH behavior.
+    assert.deepEqual(
+      installTargets.plugins.find(target => target.id === 'openpencil')?.runtimeProfiles,
+      ['node24'],
+    )
   })
 })
