@@ -1,6 +1,6 @@
 {
   "name": "upstream-radar",
-  "version": "0.37.0",
+  "version": "0.38.0",
   "description": "Always-on dependency security monitoring for DeepSeek Harness (DSH) plugins: find exact installed or candidate transitive vulnerable paths and breaking updates, then route evidence to a DSH Agent.",
   "type": "module",
   "license": "Apache-2.0",
@@ -95,6 +95,7 @@
     "showcase:dsh-case": "pnpm run build && node scripts/dsh-case-showcase.mjs",
     "showcase:dsh-case:report": "pnpm run build && node scripts/dsh-case-showcase.mjs --write-report",
     "showcase:observer": "pnpm run build && node scripts/upstream-observer-showcase.mjs",
+    "monitor:dsh-findings": "pnpm run build && node scripts/monitor-dsh-findings.mjs",
     "refresh:dsh-batch": "pnpm run build && node scripts/refresh-dsh-batch-index.mjs",
     "showcase:pnpm-lock": "pnpm run build && node scripts/pnpm-lock-showcase.mjs",
     "showcase:pnpm-lock:monitor": "pnpm run build && node scripts/pnpm-lock-monitor-showcase.mjs",

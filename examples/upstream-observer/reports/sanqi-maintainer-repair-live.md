@@ -10,12 +10,12 @@ The baseline was taken at the commit that produced the published `0.5.4`
 artifact, then the same state was checked against the current `master`:
 
 ```bash
-npx --yes upstream-radar@0.37.0 observe \
+npx --yes upstream-radar@0.38.0 observe \
   https://github.com/Sanqi-normal/dsh-webui-market-plugin \
   --ref aa5f4efc7827176cce27c73f73a2f42514da1ebf \
   --state observations.json --report baseline.md --json
 
-npx --yes upstream-radar@0.37.0 observe \
+npx --yes upstream-radar@0.38.0 observe \
   https://github.com/Sanqi-normal/dsh-webui-market-plugin \
   --ref master \
   --state observations.json --report repair.md --json
