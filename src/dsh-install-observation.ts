@@ -12,7 +12,7 @@ import {
 } from './dsh-runtime.js'
 import { parseInstalledNodeModulesGraph } from './installed-graph.js'
 import { parseNpmSpec } from './npm.js'
-import type { DependencyKind } from './radar-types.js'
+import type { DependencyKind, RootPeerContract } from './radar-types.js'
 import { satisfiesSemverRange } from './semver.js'
 import { parseNpmTarball } from './tar.js'
 import { TOOL_VERSION } from './version.js'
@@ -42,7 +42,7 @@ const PROFILE_LOCKFILE_CANDIDATES = [
 ] as const
 const SYNTHETIC_PROFILE_GRAPH_ROOT = { name: 'dsh-profile-headless', version: '0.0.0' } as const
 
-export type DshInstallObservationResult = 'compatible' | 'runtime-incompatible' | 'install-failed' | 'load-failed' | 'unknown'
+export type DshInstallObservationResult = 'compatible' | 'runtime-incompatible' | 'peer-contract-incompatible' | 'install-failed' | 'load-failed' | 'unknown'
 export type InstallObservationPhase = 'runtime' | 'artifact' | 'profile' | 'install' | 'load'
 export type InstallObservationIsolationProvider = 'github-actions-hosted-runner' | 'firecracker' | 'other'
 
@@ -147,6 +147,28 @@ export interface DshInstallProfileGraphGap {
   kind: DependencyKind
 }
 
+/** A direct, required plugin peer that did not line up with the DSH runtime. */
+export interface DshInstallPeerContractIssue {
+  name: string
+  required: string
+  status: 'mismatched' | 'indeterminate' | 'missing'
+  resolvedVersion?: string
+}
+
+/**
+ * Direct plugin-to-DSH host contracts evaluated from the final installed
+ * graph. This is distinct from whether the generic load probe happened to
+ * exercise every API path.
+ */
+export interface DshInstallPluginPeerContracts {
+  declared: number
+  satisfied: number
+  mismatched: number
+  indeterminate: number
+  missing: number
+  issues?: DshInstallPeerContractIssue[]
+}
+
 /**
  * The dependency tree DSH can actually resolve after installing the plugin.
  * Unlike the profile lockfile alone, this may include the shared DSH host
@@ -156,8 +178,13 @@ export interface DshInstallRuntimeGraphEvidence {
   digest: string
   nodes: number
   edges: number
+  /** Required runtime/peer gaps only. Platform-selected optional packages are reported separately. */
   unresolved: number
   unresolvedDependencies?: DshInstallProfileGraphGap[]
+  /** Optional platform or feature packages absent from this exact runtime. */
+  optionalUnavailable?: number
+  optionalUnavailableDependencies?: DshInstallProfileGraphGap[]
+  pluginPeerContracts: DshInstallPluginPeerContracts
   hostRuntime?: {
     source: 'dsh-profile-fallback' | 'dsh-process'
     resolvedNodes: number
@@ -902,6 +929,41 @@ function graphGaps(graph: { unresolved?: readonly DshInstallProfileGraphGap[] })
   }))
 }
 
+function pluginPeerContractEvidence(contracts: readonly RootPeerContract[] | undefined): DshInstallPluginPeerContracts {
+  const entries = contracts ?? []
+  const issues = entries
+    .filter((entry): entry is RootPeerContract & { status: DshInstallPeerContractIssue['status'] } => entry.status !== 'satisfied')
+    .sort((left, right) => left.name.localeCompare(right.name))
+  return {
+    declared: entries.length,
+    satisfied: entries.filter(entry => entry.status === 'satisfied').length,
+    mismatched: entries.filter(entry => entry.status === 'mismatched').length,
+    indeterminate: entries.filter(entry => entry.status === 'indeterminate').length,
+    missing: entries.filter(entry => entry.status === 'missing').length,
+    ...(issues.length === 0 ? {} : {
+      issues: issues.slice(0, MAX_PROFILE_GRAPH_GAPS).map(issue => ({
+        name: bounded(issue.name, 214),
+        required: bounded(issue.required, 512),
+        status: issue.status,
+        ...(issue.resolvedVersion === undefined ? {} : { resolvedVersion: bounded(issue.resolvedVersion, 256) }),
+      })),
+    }),
+  }
+}
+
+function graphGapPartitions(graph: { unresolved?: readonly DshInstallProfileGraphGap[] }): {
+  required: DshInstallProfileGraphGap[]
+  optional: DshInstallProfileGraphGap[]
+} {
+  const required: DshInstallProfileGraphGap[] = []
+  const optional: DshInstallProfileGraphGap[] = []
+  for (const gap of graph.unresolved ?? []) {
+    if (gap.kind === 'optional') optional.push(gap)
+    else required.push(gap)
+  }
+  return { required, optional }
+}
+
 function isLexicallyInside(root: string, candidate: string): boolean {
   const child = relative(resolve(root), resolve(candidate))
   return child === '' || (!child.startsWith(`..${sep}`) && child !== '..')
@@ -1025,14 +1087,21 @@ async function runtimeGraphEvidence(
       },
     )
     if (graph.digest === undefined) return {}
-    const gaps = graphGaps(graph)
+    const gaps = graphGapPartitions(graph)
+    const requiredGaps = graphGaps({ unresolved: gaps.required })
+    const optionalGaps = graphGaps({ unresolved: gaps.optional })
     return {
       runtimeGraph: {
         digest: graph.digest,
         nodes: graph.nodes.length,
         edges: graph.edges.length,
-        unresolved: graph.unresolved?.length ?? 0,
-        ...(gaps === undefined ? {} : { unresolvedDependencies: gaps }),
+        unresolved: gaps.required.length,
+        ...(requiredGaps === undefined ? {} : { unresolvedDependencies: requiredGaps }),
+        ...(gaps.optional.length === 0 ? {} : {
+          optionalUnavailable: gaps.optional.length,
+          ...(optionalGaps === undefined ? {} : { optionalUnavailableDependencies: optionalGaps }),
+        }),
+        pluginPeerContracts: pluginPeerContractEvidence(graph.rootPeerContracts),
         ...(graph.hostRuntime === undefined ? {} : {
           hostRuntime: {
             source: graph.hostRuntime.source,
@@ -1067,6 +1136,54 @@ function finishReport(report: DshInstallObservationReport, result: DshInstallObs
   report.result = result
   report.reason = reason
   return report
+}
+
+/**
+ * A load success is necessary but not enough for the compatibility claim. The
+ * final verdict also requires a complete required-edge graph and a direct
+ * plugin peer contract that the observer could actually evaluate.
+ */
+function finalCompatibilityConclusion(
+  resolution: DshInstallObservationReport['resolution'],
+): { result: DshInstallObservationResult, reason: string } {
+  const graph = resolution.runtimeGraph
+  if (graph === undefined) {
+    return {
+      result: 'unknown',
+      reason: resolution.runtimeGraphError === undefined
+        ? 'the exact artifact installed and loaded, but the effective DSH runtime graph was not established'
+        : `the exact artifact installed and loaded, but the effective DSH runtime graph could not be established: ${resolution.runtimeGraphError}`,
+    }
+  }
+  const contracts = graph.pluginPeerContracts
+  const firstIssue = contracts.issues?.[0]
+  if (contracts.mismatched > 0 || contracts.missing > 0) {
+    const detail = firstIssue === undefined
+      ? `${contracts.mismatched + contracts.missing} required plugin peer contract(s) do not match the DSH runtime`
+      : firstIssue.status === 'missing'
+        ? `${firstIssue.name}@${firstIssue.required} was not resolved by the DSH runtime`
+        : `${firstIssue.name}@${firstIssue.resolvedVersion ?? 'unknown'} does not satisfy ${firstIssue.required}`
+    return {
+      result: 'peer-contract-incompatible',
+      reason: `the exact artifact installed and loaded, but ${detail}`,
+    }
+  }
+  if (graph.unresolved > 0) {
+    return {
+      result: 'unknown',
+      reason: `the exact artifact installed and loaded, but the effective DSH runtime graph has ${graph.unresolved} required unresolved edge(s)`,
+    }
+  }
+  if (contracts.indeterminate > 0) {
+    return {
+      result: 'unknown',
+      reason: `the exact artifact installed and loaded, but ${contracts.indeterminate} required plugin peer range(s) could not be evaluated safely`,
+    }
+  }
+  return {
+    result: 'compatible',
+    reason: 'the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version',
+  }
 }
 
 export async function observeDshPluginInstall(options: DshInstallObservationOptions): Promise<DshInstallObservationReport> {
@@ -1314,7 +1431,8 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
         return finishReport(report, 'unknown', 'the load command ran without readable trace evidence')
       }
       if (loadResult.code !== 0) return finishReport(report, 'load-failed', 'the traced DSH profile load command failed')
-      return finishReport(report, 'compatible', 'the exact artifact installed, registered and loaded under the requested DSH version')
+      const conclusion = finalCompatibilityConclusion(report.resolution)
+      return finishReport(report, conclusion.result, conclusion.reason)
     } catch (error: unknown) {
       const detail = bounded(error instanceof Error ? error.message : String(error))
       const currentStage = (['runtime', 'profile', 'install', 'registration', 'load'] as const)
@@ -1347,7 +1465,10 @@ export function renderDshInstallObservation(report: DshInstallObservationReport)
     `Load evidence: ${load.processes.length} process, ${load.network.length} network, ${load.fileWrites.length} file-write event(s); trace ${load.coverage.status}`,
     `Final filesystem delta: install +${report.filesystem.install.totals.created} ~${report.filesystem.install.totals.modified} -${report.filesystem.install.totals.deleted}; load +${report.filesystem.load.totals.created} ~${report.filesystem.load.totals.modified} -${report.filesystem.load.totals.deleted}`,
     `Resolved profile graph: ${report.resolution.profileLockfile?.graphDigest ?? 'not established'}${report.resolution.profileLockfile === undefined ? '' : ` (lock sha256:${report.resolution.profileLockfile.sha256.slice(0, 12)}…)`}`,
-    `Effective DSH runtime graph: ${report.resolution.runtimeGraph?.digest ?? 'not established'}${report.resolution.runtimeGraph === undefined ? '' : ` (${report.resolution.runtimeGraph.nodes} nodes, ${report.resolution.runtimeGraph.edges} edges, ${report.resolution.runtimeGraph.unresolved} unresolved)`}`,
+    `Effective DSH runtime graph: ${report.resolution.runtimeGraph?.digest ?? 'not established'}${report.resolution.runtimeGraph === undefined ? '' : ` (${report.resolution.runtimeGraph.nodes} nodes, ${report.resolution.runtimeGraph.edges} edges, ${report.resolution.runtimeGraph.unresolved} required unresolved${report.resolution.runtimeGraph.optionalUnavailable === undefined ? '' : `, ${report.resolution.runtimeGraph.optionalUnavailable} optional unavailable`})`}`,
+    `Plugin peer contracts: ${report.resolution.runtimeGraph === undefined
+      ? 'not established'
+      : `${report.resolution.runtimeGraph.pluginPeerContracts.satisfied}/${report.resolution.runtimeGraph.pluginPeerContracts.declared} satisfied; ${report.resolution.runtimeGraph.pluginPeerContracts.mismatched} mismatched, ${report.resolution.runtimeGraph.pluginPeerContracts.missing} missing, ${report.resolution.runtimeGraph.pluginPeerContracts.indeterminate} indeterminate`}`,
     `Effective graph collector: ${report.resolution.runtimeGraphError ?? 'captured'}`,
     '',
   ]

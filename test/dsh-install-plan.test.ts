@@ -63,6 +63,13 @@ function entry(expected: DshCompatibilityExpectedCase, overrides: Partial<DshCom
         nodes: 12,
         edges: 14,
         unresolved: 0,
+        pluginPeerContracts: {
+          declared: 0,
+          satisfied: 0,
+          mismatched: 0,
+          indeterminate: 0,
+          missing: 0,
+        },
       },
     },
     observer: { schema: 'upstream-radar.dsh-install-observation/v1alpha1', version: '0.41.0' },
@@ -129,6 +136,25 @@ describe('DSH compatibility reconciliation plan', () => {
     assert.equal(plan.run, true)
     assert.deepEqual(plan.matrix.include.map(item => item.id), ['browser-node22'])
     assert.deepEqual(plan.matrix.include[0]?.reasons, ['runtime-graph-incomplete'])
+  })
+
+  it('rechecks a green runtime graph until direct plugin peer contracts were evaluated', () => {
+    const first = baseline()
+    const browser = first.matrix.include.find(item => item.id === 'browser-node22') as DshCompatibilityExpectedCase
+    const feishu = first.matrix.include.find(item => item.id === 'feishu-node22') as DshCompatibilityExpectedCase
+    const ledger = {
+      schema: 'upstream-radar.dsh-compatibility-ledger/v1alpha1',
+      entries: [
+        entry(browser, { resolution: { runtimeGraph: {
+          digest: `sha256:${'f'.repeat(64)}`, nodes: 2, edges: 1, unresolved: 0,
+        } } }),
+        entry(feishu),
+      ],
+    }
+    const plan = buildDshInstallPlan(corpus, state(), { changes: [] }, ledger, now)
+    assert.equal(plan.run, true)
+    assert.deepEqual(plan.matrix.include.map(item => item.id), ['browser-node22'])
+    assert.deepEqual(plan.matrix.include[0]?.reasons, ['peer-contract-not-evaluated'])
   })
 
   it('retests the whole maintained default corpus when the official DSH coordinate changes', () => {

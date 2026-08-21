@@ -13,7 +13,7 @@ export const DSH_COMPATIBILITY_LEDGER_SCHEMA = 'upstream-radar.dsh-compatibility
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const CASE_ID = /^[a-z0-9][a-z0-9._-]{0,63}$/
 const FINGERPRINT = /^sha256:[a-f0-9]{64}$/
-const RESULTS = new Set<DshInstallObservationResult>(['compatible', 'runtime-incompatible', 'install-failed', 'load-failed', 'unknown'])
+const RESULTS = new Set<DshInstallObservationResult>(['compatible', 'runtime-incompatible', 'peer-contract-incompatible', 'install-failed', 'load-failed', 'unknown'])
 const MAX_ENTRIES = 500
 const MAX_REPORTS = 100
 
@@ -38,13 +38,33 @@ export interface DshCompatibilityRuntimeGraph {
   digest: string
   nodes: number
   edges: number
+  /** Required runtime/peer gaps; optional platform variants are kept separately. */
   unresolved: number
   unresolvedDependencies?: DshCompatibilityProfileGraphGap[]
+  optionalUnavailable?: number
+  optionalUnavailableDependencies?: DshCompatibilityProfileGraphGap[]
+  pluginPeerContracts?: DshCompatibilityPluginPeerContracts
   hostRuntime?: {
     source: 'dsh-profile-fallback' | 'dsh-process'
     resolvedNodes: number
     dshVersion?: string
   }
+}
+
+export interface DshCompatibilityPeerContractIssue {
+  name: string
+  required: string
+  status: 'mismatched' | 'indeterminate' | 'missing'
+  resolvedVersion?: string
+}
+
+export interface DshCompatibilityPluginPeerContracts {
+  declared: number
+  satisfied: number
+  mismatched: number
+  indeterminate: number
+  missing: number
+  issues?: DshCompatibilityPeerContractIssue[]
 }
 
 export interface DshCompatibilityLedgerEntry {
@@ -198,29 +218,77 @@ function parseLifecycleScripts(value: unknown, label: string): string[] {
 function parseGraphGaps(
   item: Record<string, unknown>,
   label: string,
-  unresolved: number | undefined,
+  count: number | undefined,
+  field = 'unresolvedDependencies',
 ): DshCompatibilityProfileGraphGap[] | undefined {
-  const rawGaps = item.unresolvedDependencies
+  const rawGaps = item[field]
   if (rawGaps !== undefined && (!Array.isArray(rawGaps) || rawGaps.length > 32)) {
-    throw new Error(`${label}.unresolvedDependencies must be an array of at most 32 graph gaps`)
+    throw new Error(`${label}.${field} must be an array of at most 32 graph gaps`)
   }
   const unresolvedDependencies = rawGaps?.map((value, index): DshCompatibilityProfileGraphGap => {
-    const gap = record(value, `${label}.unresolvedDependencies[${index}]`)
-    const kind = boundedString(gap.kind, `${label}.unresolvedDependencies[${index}].kind`, 32)
+    const gap = record(value, `${label}.${field}[${index}]`)
+    const kind = boundedString(gap.kind, `${label}.${field}[${index}].kind`, 32)
     if (!['runtime', 'development', 'optional', 'peer', 'host-runtime'].includes(kind)) {
-      throw new Error(`${label}.unresolvedDependencies[${index}].kind is unsupported`)
+      throw new Error(`${label}.${field}[${index}].kind is unsupported`)
     }
     return {
-      from: boundedString(gap.from, `${label}.unresolvedDependencies[${index}].from`, 512),
-      name: boundedString(gap.name, `${label}.unresolvedDependencies[${index}].name`, 214),
-      spec: boundedString(gap.spec, `${label}.unresolvedDependencies[${index}].spec`, 512),
+      from: boundedString(gap.from, `${label}.${field}[${index}].from`, 512),
+      name: boundedString(gap.name, `${label}.${field}[${index}].name`, 214),
+      spec: boundedString(gap.spec, `${label}.${field}[${index}].spec`, 512),
       kind: kind as DshCompatibilityProfileGraphGap['kind'],
     }
   })
-  if (unresolvedDependencies !== undefined && unresolved !== undefined && unresolvedDependencies.length > unresolved) {
-    throw new Error(`${label}.unresolvedDependencies cannot exceed unresolved`)
+  if (unresolvedDependencies !== undefined && count !== undefined && unresolvedDependencies.length > count) {
+    throw new Error(`${label}.${field} cannot exceed its reported count`)
   }
   return unresolvedDependencies
+}
+
+function parsePluginPeerContracts(value: unknown, label: string): DshCompatibilityPluginPeerContracts | undefined {
+  if (value === undefined) return undefined
+  const item = record(value, label)
+  const declared = positiveInteger(item.declared, `${label}.declared`, 100_000)
+  const satisfied = positiveInteger(item.satisfied, `${label}.satisfied`, 100_000)
+  const mismatched = positiveInteger(item.mismatched, `${label}.mismatched`, 100_000)
+  const indeterminate = positiveInteger(item.indeterminate, `${label}.indeterminate`, 100_000)
+  const missing = positiveInteger(item.missing, `${label}.missing`, 100_000)
+  if (satisfied + mismatched + indeterminate + missing !== declared) {
+    throw new Error(`${label} counts must add up to declared`)
+  }
+  const rawIssues = item.issues
+  if (rawIssues !== undefined && (!Array.isArray(rawIssues) || rawIssues.length > 32)) {
+    throw new Error(`${label}.issues must be an array of at most 32 peer contract issues`)
+  }
+  const issues = rawIssues?.map((value, index): DshCompatibilityPeerContractIssue => {
+    const issue = record(value, `${label}.issues[${index}]`)
+    const status = boundedString(issue.status, `${label}.issues[${index}].status`, 32)
+    if (status !== 'mismatched' && status !== 'indeterminate' && status !== 'missing') {
+      throw new Error(`${label}.issues[${index}].status is unsupported`)
+    }
+    const resolvedVersion = issue.resolvedVersion === undefined
+      ? undefined
+      : boundedString(issue.resolvedVersion, `${label}.issues[${index}].resolvedVersion`, 256)
+    if (status === 'missing' && resolvedVersion !== undefined) {
+      throw new Error(`${label}.issues[${index}].resolvedVersion must be absent for a missing peer`)
+    }
+    return {
+      name: boundedString(issue.name, `${label}.issues[${index}].name`, 214),
+      required: boundedString(issue.required, `${label}.issues[${index}].required`, 512),
+      status,
+      ...(resolvedVersion === undefined ? {} : { resolvedVersion }),
+    }
+  })
+  if (issues !== undefined && issues.length > mismatched + indeterminate + missing) {
+    throw new Error(`${label}.issues cannot exceed the number of non-satisfied peers`)
+  }
+  return {
+    declared,
+    satisfied,
+    mismatched,
+    indeterminate,
+    missing,
+    ...(issues === undefined ? {} : { issues }),
+  }
 }
 
 function parseProfileLockfile(value: unknown, label: string): DshCompatibilityProfileLockfile | undefined {
@@ -267,12 +335,25 @@ function parseRuntimeGraph(value: unknown, label: string): DshCompatibilityRunti
     }
   }
   const unresolvedDependencies = parseGraphGaps(item, label, unresolved)
+  const optionalUnavailable = item.optionalUnavailable === undefined
+    ? undefined
+    : positiveInteger(item.optionalUnavailable, `${label}.optionalUnavailable`, 250_000)
+  const optionalUnavailableDependencies = parseGraphGaps(
+    item,
+    label,
+    optionalUnavailable,
+    'optionalUnavailableDependencies',
+  )
+  const pluginPeerContracts = parsePluginPeerContracts(item.pluginPeerContracts, `${label}.pluginPeerContracts`)
   return {
     digest,
     nodes: positiveInteger(item.nodes, `${label}.nodes`, 100_000),
     edges: positiveInteger(item.edges, `${label}.edges`, 250_000),
     unresolved,
     ...(unresolvedDependencies === undefined ? {} : { unresolvedDependencies }),
+    ...(optionalUnavailable === undefined ? {} : { optionalUnavailable }),
+    ...(optionalUnavailableDependencies === undefined ? {} : { optionalUnavailableDependencies }),
+    ...(pluginPeerContracts === undefined ? {} : { pluginPeerContracts }),
     ...(parsedHostRuntime === undefined ? {} : { hostRuntime: parsedHostRuntime }),
   }
 }

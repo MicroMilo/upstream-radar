@@ -322,7 +322,13 @@ function isStale(entry: DshCompatibilityLedger['entries'][number], refreshAfterH
 function hasCompleteResolutionEvidence(entry: DshCompatibilityLedger['entries'][number]): boolean {
   if (entry.result !== 'compatible') return true
   const graph = entry.resolution?.runtimeGraph
-  return graph?.digest !== undefined && graph.unresolved === 0
+  const contracts = graph?.pluginPeerContracts
+  return graph?.digest !== undefined
+    && graph.unresolved === 0
+    && contracts !== undefined
+    && contracts.mismatched === 0
+    && contracts.missing === 0
+    && contracts.indeterminate === 0
 }
 
 /**
@@ -402,8 +408,12 @@ export function buildDshInstallPlan(
         if (previous.contractFingerprint !== contractFingerprint) reasons.add('execution-contract-changed')
         if (isStale(previous, corpus.refreshAfterHours, now)) reasons.add('stale-evidence')
         if (!hasCompleteResolutionEvidence(previous)) {
-          if (previous.resolution?.runtimeGraph?.digest === undefined) reasons.add('runtime-graph-missing')
-          else reasons.add('runtime-graph-incomplete')
+          const graph = previous.resolution?.runtimeGraph
+          if (graph?.digest === undefined) reasons.add('runtime-graph-missing')
+          else if (graph.unresolved > 0) reasons.add('runtime-graph-incomplete')
+          else if (graph.pluginPeerContracts === undefined) reasons.add('peer-contract-not-evaluated')
+          else if (graph.pluginPeerContracts.indeterminate > 0) reasons.add('peer-contract-indeterminate')
+          else reasons.add('peer-contract-incomplete')
         }
       }
       if (reasons.size === 0) continue

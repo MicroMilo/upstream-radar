@@ -2,6 +2,7 @@ import { readFile, realpath } from 'node:fs/promises'
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import { parsePackageManifestSnapshot } from './inventory.js'
 import { dependencyGraphDigest } from './graph.js'
+import { satisfiesSemverRange } from './semver.js'
 import {
   DEPENDENCY_GRAPH_SCHEMA,
   type DependencyEdge,
@@ -11,6 +12,7 @@ import {
   type DependencyNode,
   type PackageCoordinate,
   type PackageManifestSnapshot,
+  type RootPeerContract,
 } from './radar-types.js'
 
 const MAX_MANIFEST_BYTES = 8 * 1024 * 1024
@@ -301,6 +303,7 @@ export async function parseInstalledNodeModulesGraph(
   const packages = new Map<string, InstalledPackage>([[root.id, root]])
   const edges: DependencyEdge[] = []
   const unresolved: NonNullable<DependencyGraph['unresolved']> = []
+  const rootPeerContracts: RootPeerContract[] = []
   const queue = [root.id]
   if (hostNodeModulesDirectoryReal !== undefined && options.hostRuntimePackage !== undefined) {
     const resolvedHostNodeModulesDirectory = hostNodeModulesDirectory
@@ -380,10 +383,22 @@ export async function parseInstalledNodeModulesGraph(
       if (target === undefined) {
         unresolved.push({ from: current.id, ...dependency })
         if (unresolved.length > MAX_EDGES) throw new Error(`installed dependency graph exceeds the ${MAX_EDGES} edge limit`)
+        if (current.id === root.id && dependency.kind === 'peer') {
+          rootPeerContracts.push({ name: dependency.name, required: dependency.spec, status: 'missing' })
+        }
         continue
       }
       if (edges.length >= MAX_EDGES) throw new Error(`installed dependency graph exceeds the ${MAX_EDGES} edge limit`)
       edges.push({ from: current.id, to: target.id, kind: dependency.kind })
+      if (current.id === root.id && dependency.kind === 'peer') {
+        const evaluation = satisfiesSemverRange(target.manifest.version, dependency.spec)
+        rootPeerContracts.push({
+          name: dependency.name,
+          required: dependency.spec,
+          status: evaluation === true ? 'satisfied' : evaluation === false ? 'mismatched' : 'indeterminate',
+          resolvedVersion: target.manifest.version,
+        })
+      }
       if (packages.has(target.id)) continue
       if (packages.size >= MAX_NODES) throw new Error(`installed dependency graph exceeds the ${MAX_NODES} node limit`)
       packages.set(target.id, target)
@@ -413,6 +428,9 @@ export async function parseInstalledNodeModulesGraph(
         resolvedNodes: [...packages.values()].filter(item => item.source === 'dsh-host').length,
         ...(options.hostRuntimePackage === undefined ? {} : { package: { ...options.hostRuntimePackage } }),
       },
+    }),
+    ...(rootPeerContracts.length === 0 ? {} : {
+      rootPeerContracts: rootPeerContracts.sort((left, right) => left.name.localeCompare(right.name)),
     }),
     ...(reachableUnresolved.length === 0 ? {} : { unresolved: reachableUnresolved }),
   }

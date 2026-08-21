@@ -125,6 +125,12 @@ describe('installed DSH dependency graph', () => {
         to: 'dsh-host/node_modules/host-runtime',
         kind: 'peer',
       }])
+      assert.deepEqual(graph.rootPeerContracts, [{
+        name: 'host-runtime',
+        required: '^2.0.0',
+        status: 'satisfied',
+        resolvedVersion: '2.1.0',
+      }])
       assert.equal(graph.unresolved, undefined)
     } finally {
       await rm(root, { recursive: true, force: true })
@@ -255,6 +261,44 @@ describe('installed DSH dependency graph', () => {
       assert.deepEqual(graph.edges.map(edge => edge.kind), ['runtime', 'host-runtime'])
       assert.equal(graph.nodes.find(node => node.name === '@deepseek-ai/cordis')?.version, '4.0.2')
       assert.equal(graph.hostRuntime?.resolvedNodes, 2)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('keeps missing, mismatched, and indeterminate root peer contracts distinct', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-installed-graph-'))
+    try {
+      await writeManifest(join(root, 'node_modules', 'plugin', 'package.json'), {
+        name: 'plugin',
+        version: '1.0.0',
+        peerDependencies: {
+          'host-mismatch': '^3.0.0',
+          'host-unknown': 'git+https://example.invalid/host.git',
+          'host-missing': '^1.0.0',
+        },
+      })
+      await writeManifest(join(root, 'node_modules', 'host-mismatch', 'package.json'), {
+        name: 'host-mismatch',
+        version: '2.1.0',
+      })
+      await writeManifest(join(root, 'node_modules', 'host-unknown', 'package.json'), {
+        name: 'host-unknown',
+        version: '1.0.0',
+      })
+
+      const graph = await parseInstalledNodeModulesGraph(root, { name: 'plugin', version: '1.0.0' })
+      assert.deepEqual(graph.rootPeerContracts, [
+        { name: 'host-mismatch', required: '^3.0.0', status: 'mismatched', resolvedVersion: '2.1.0' },
+        { name: 'host-missing', required: '^1.0.0', status: 'missing' },
+        { name: 'host-unknown', required: 'git+https://example.invalid/host.git', status: 'indeterminate', resolvedVersion: '1.0.0' },
+      ])
+      assert.deepEqual(graph.unresolved, [{
+        from: 'node_modules/plugin',
+        name: 'host-missing',
+        kind: 'peer',
+        spec: '^1.0.0',
+      }])
     } finally {
       await rm(root, { recursive: true, force: true })
     }

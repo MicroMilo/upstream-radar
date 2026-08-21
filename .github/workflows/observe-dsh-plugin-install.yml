@@ -224,7 +224,8 @@ jobs:
             } else {
               lines.push(
                 `- Profile graph coverage: ${inline(report.resolution?.profileLockfile?.nodes ?? 'unknown')} node(s), ${inline(report.resolution?.profileLockfile?.edges ?? 'unknown')} edge(s), ${inline(report.resolution?.profileLockfile?.unresolved ?? 'unknown')} unresolved edge(s)`,
-                `- Effective runtime graph: \`${inline(report.resolution?.runtimeGraph?.digest ?? 'not established')}\`; ${inline(report.resolution?.runtimeGraph?.nodes ?? 'unknown')} node(s), ${inline(report.resolution?.runtimeGraph?.edges ?? 'unknown')} edge(s), ${inline(report.resolution?.runtimeGraph?.unresolved ?? 'unknown')} unresolved edge(s)`,
+                `- Effective runtime graph: \`${inline(report.resolution?.runtimeGraph?.digest ?? 'not established')}\`; ${inline(report.resolution?.runtimeGraph?.nodes ?? 'unknown')} node(s), ${inline(report.resolution?.runtimeGraph?.edges ?? 'unknown')} edge(s), ${inline(report.resolution?.runtimeGraph?.unresolved ?? 'unknown')} required unresolved edge(s), ${inline(report.resolution?.runtimeGraph?.optionalUnavailable ?? 0)} optional package(s) unavailable on this runtime`,
+                `- Plugin peer contracts: ${inline(report.resolution?.runtimeGraph?.pluginPeerContracts?.satisfied ?? 'unknown')}/${inline(report.resolution?.runtimeGraph?.pluginPeerContracts?.declared ?? 'unknown')} satisfied; ${inline(report.resolution?.runtimeGraph?.pluginPeerContracts?.mismatched ?? 'unknown')} mismatched, ${inline(report.resolution?.runtimeGraph?.pluginPeerContracts?.missing ?? 'unknown')} missing, ${inline(report.resolution?.runtimeGraph?.pluginPeerContracts?.indeterminate ?? 'unknown')} indeterminate`,
                 `- Effective runtime graph collector: ${inline(report.resolution?.runtimeGraphError ?? 'captured')}`,
                 `- Result: \`${inline(report.result)}\` — ${inline(report.reason)}`,
                 `- Exact artifact: \`sha256:${inline(report.artifact?.sha256)}\``,
@@ -242,13 +243,18 @@ jobs:
               const graphGaps = (report.resolution?.runtimeGraph?.unresolvedDependencies
                 ?? report.resolution?.profileLockfile?.unresolvedDependencies
                 ?? []).slice(0, 8)
+              const peerIssues = (report.resolution?.runtimeGraph?.pluginPeerContracts?.issues ?? []).slice(0, 8)
               if (endpoints.length > 0) {
                 lines.push('- First observed install destinations:')
                 for (const event of endpoints) lines.push(`  - \`${inline(`${event.address}${event.port === undefined ? '' : `:${event.port}`}`)}\` (${inline(event.operation)}, count ${inline(event.count)})`)
               }
               if (graphGaps.length > 0) {
-                lines.push('- First unresolved profile edges:')
+                lines.push('- First unresolved required graph edges:')
                 for (const gap of graphGaps) lines.push(`  - \`${inline(gap.from)}\` → \`${inline(gap.name)}\` (${inline(gap.kind)}: \`${inline(gap.spec)}\`)`)
+              }
+              if (peerIssues.length > 0) {
+                lines.push('- Direct plugin peer-contract findings:')
+                for (const issue of peerIssues) lines.push(`  - \`${inline(issue.name)}\`: ${inline(issue.status)}; requires \`${inline(issue.required)}\`${issue.resolvedVersion === undefined ? '' : `, resolved \`${inline(issue.resolvedVersion)}\``}`)
               }
             }
           }
@@ -265,7 +271,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Fail the check unless the exact pair installed and loaded
+      - name: Fail the check unless the exact pair has compatible behavior and a complete host contract
         if: always()
         shell: bash
         env:

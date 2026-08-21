@@ -221,4 +221,46 @@ describe('DSH compatibility ledger', () => {
       hostRuntime: { source: 'dsh-profile-fallback', resolvedNodes: 1 },
     })
   })
+
+  it('retains a direct peer-contract violation as an incompatibility, not a green load result', () => {
+    const merged = mergeDshCompatibilityLedger({
+      ledger: emptyDshCompatibilityLedger(),
+      expected: [expected],
+      reports: [report({
+        result: 'peer-contract-incompatible',
+        reason: 'the exact artifact loaded, but host-runtime@2.1.0 does not satisfy ^3.0.0',
+        resolution: {
+          runtimeGraph: {
+            digest: `sha256:${'f'.repeat(64)}`,
+            nodes: 3,
+            edges: 2,
+            unresolved: 0,
+            optionalUnavailable: 7,
+            pluginPeerContracts: {
+              declared: 1,
+              satisfied: 0,
+              mismatched: 1,
+              indeterminate: 0,
+              missing: 0,
+              issues: [{
+                name: 'host-runtime',
+                required: '^3.0.0',
+                status: 'mismatched',
+                resolvedVersion: '2.1.0',
+              }],
+            },
+          },
+        },
+      })],
+    })
+    assert.equal(merged.transitions[0]?.status, 'new-incompatibility')
+    assert.equal(merged.ledger.entries[0]?.result, 'peer-contract-incompatible')
+    assert.deepEqual(merged.ledger.entries[0]?.resolution?.runtimeGraph?.pluginPeerContracts?.issues, [{
+      name: 'host-runtime',
+      required: '^3.0.0',
+      status: 'mismatched',
+      resolvedVersion: '2.1.0',
+    }])
+    assert.equal(merged.ledger.entries[0]?.resolution?.runtimeGraph?.optionalUnavailable, 7)
+  })
 })

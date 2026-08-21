@@ -239,6 +239,13 @@ snapshots:
     assert.equal(report.resolution.runtimeGraph?.nodes, 3)
     assert.equal(report.resolution.runtimeGraph?.edges, 2)
     assert.equal(report.resolution.runtimeGraph?.unresolved, 0)
+    assert.deepEqual(report.resolution.runtimeGraph?.pluginPeerContracts, {
+      declared: 1,
+      satisfied: 1,
+      mismatched: 0,
+      indeterminate: 0,
+      missing: 0,
+    })
     assert.deepEqual(report.resolution.runtimeGraph?.hostRuntime, {
       source: 'dsh-process',
       resolvedNodes: 2,
@@ -255,6 +262,74 @@ snapshots:
     assert.match(renderDshInstallObservation(report), /Plugin Node requirement: >=18\.0\.0/)
     assert.match(renderDshInstallObservation(report), /Approved dependency builds: none/)
     assert.match(renderDshInstallObservation(report), /Lifecycle scripts declared: postinstall/)
+  })
+
+  it('does not call a successful load compatible when the DSH host violates a required plugin peer range', async () => {
+    const runner = async (command: InstallObservationCommand): Promise<InstallObservationCommandResult> => {
+      if (command.phase === 'runtime') return passed({ stdout: '11.7.0\n' })
+      if (command.phase === 'artifact') {
+        await writeFile(join(command.cwd, 'mismatch-plugin-1.0.0.tgz'), makeTarball([
+          { path: 'package/package.json', contents: JSON.stringify({
+            name: 'mismatch-plugin',
+            version: '1.0.0',
+            dsh: { bundle: { patch: 'cordis.patch.yml' } },
+          }) },
+          { path: 'package/cordis.patch.yml', contents: '[]\n' },
+        ]))
+        return passed({ stdout: JSON.stringify([{ filename: 'mismatch-plugin-1.0.0.tgz' }]) })
+      }
+      if (command.phase === 'install') {
+        const dshHome = command.env.DSH_HOME as string
+        const profileDirectory = join(dshHome, 'profiles', 'headless')
+        await mkdir(join(profileDirectory, 'node_modules', 'mismatch-plugin'), { recursive: true })
+        await writeFile(join(profileDirectory, 'package.json'), JSON.stringify({
+          dsh: { profile: { bundles: ['mismatch-plugin'] } },
+        }))
+        await writeFile(join(profileDirectory, 'node_modules', 'mismatch-plugin', 'package.json'), JSON.stringify({
+          name: 'mismatch-plugin',
+          version: '1.0.0',
+          peerDependencies: { 'host-runtime': '^3.0.0' },
+        }))
+        const dshRuntimeNodeModules = join(command.env.XDG_CACHE_HOME as string, 'pnpm', 'dlx', 'fixture', 'node_modules')
+        await mkdir(join(dshRuntimeNodeModules, '@deepseek-ai', 'dsh'), { recursive: true })
+        await writeFile(join(dshRuntimeNodeModules, '@deepseek-ai', 'dsh', 'package.json'), JSON.stringify({
+          name: '@deepseek-ai/dsh',
+          version: '0.1.0-rc.8',
+        }))
+        await mkdir(join(dshRuntimeNodeModules, 'host-runtime'), { recursive: true })
+        await writeFile(join(dshRuntimeNodeModules, 'host-runtime', 'package.json'), JSON.stringify({
+          name: 'host-runtime',
+          version: '2.1.0',
+        }))
+      }
+      if (command.tracePath !== undefined) await writeFile(command.tracePath, TRACE.replaceAll('/sandbox', command.sandboxRoot))
+      return passed()
+    }
+
+    const report = await observeDshPluginInstall({
+      packageSpec: 'mismatch-plugin@1.0.0',
+      dshVersion: '0.1.0-rc.8',
+      allowExecution: true,
+      isolationProvider: 'other',
+      runner,
+    })
+
+    assert.equal(report.stages.load.status, 'passed')
+    assert.equal(report.result, 'peer-contract-incompatible')
+    assert.match(report.reason, /host-runtime@2\.1\.0 does not satisfy \^3\.0\.0/)
+    assert.deepEqual(report.resolution.runtimeGraph?.pluginPeerContracts, {
+      declared: 1,
+      satisfied: 0,
+      mismatched: 1,
+      indeterminate: 0,
+      missing: 0,
+      issues: [{
+        name: 'host-runtime',
+        required: '^3.0.0',
+        status: 'mismatched',
+        resolvedVersion: '2.1.0',
+      }],
+    })
   })
 
   it('keeps an observed install failure distinct from missing trace evidence', async () => {
