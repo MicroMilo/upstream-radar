@@ -329,20 +329,35 @@ async function main() {
     if (exactHostNode === undefined) throw new Error(`exact preflight graph did not resolve ${HOST_PACKAGE_NAME} from the DSH host plane`)
     const hostPackageVersion = exactHostNode.version
 
-    // The generated config can already use DSH's profile-level fallback plane.
-    // The native DSH adapter must refresh it to the stronger process-level
-    // plane before polling, so the persisted event carries the right source.
-    const config = await createRadarConfigFromDshProfile({
-      profileDirectory,
-      projectId: 'dsh-runtime-host-showcase',
-      projectName: 'DSH runtime host showcase',
-      workspace: ROOT,
-    })
+    // A profile can contain symlinks into the DSH package-manager cache. A
+    // profile-only inspection deliberately refuses to follow that untrusted
+    // external link. Once the real DSH process gives us its exact package
+    // root, the earlier `exact` graph supplies a bounded, verified host plane.
+    let staticProfileBoundary: 'refused-external-host-link' | undefined
+    try {
+      await createRadarConfigFromDshProfile({
+        profileDirectory,
+        projectId: 'dsh-runtime-host-showcase',
+        projectName: 'DSH runtime host showcase',
+        workspace: ROOT,
+      })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      if (!message.includes('escapes the shared dependency plane')) throw error
+      staticProfileBoundary = 'refused-external-host-link'
+    }
+    if (staticProfileBoundary === undefined) {
+      throw new Error('profile-only graph unexpectedly followed an external DSH host link')
+    }
+
+    // The native adapter receives the same exact running-process boundary and
+    // rebuilds this graph before it polls. Starting from verified evidence is
+    // safer than treating a profile-controlled external symlink as trusted.
+    const config = exact
     config.dshProfile = { name: 'headless' }
-    const initialGraph = config.projects[0]?.plugins[0]?.graph
-    const initialHostRuntime = initialGraph?.hostRuntime
-    if (initialHostRuntime?.source !== 'dsh-profile-fallback' || initialHostRuntime.resolvedNodes < 1) {
-      throw new Error(`initial profile-only graph did not use the expected DSH fallback plane: ${JSON.stringify(initialHostRuntime)}`)
+    const configuredHostRuntime = config.projects[0]?.plugins[0]?.graph.hostRuntime
+    if (configuredHostRuntime?.source !== 'dsh-process' || configuredHostRuntime.resolvedNodes < 1) {
+      throw new Error(`verified process graph did not preserve the expected DSH host plane: ${JSON.stringify(configuredHostRuntime)}`)
     }
 
     const configFile = join(scratch, 'upstream-radar.config.json')
@@ -459,9 +474,12 @@ async function main() {
       dshPackage: DSH_PACKAGE,
       plugin: `${PLUGIN_NAME}@${PLUGIN_VERSION}`,
       hostPackage: `${HOST_PACKAGE_NAME}@${hostPackageVersion}`,
-      initialProfileOnlyGraph: {
-        hostRuntimeSource: initialHostRuntime.source,
-        hostRuntimePackages: initialHostRuntime.resolvedNodes,
+      staticProfileBoundary: {
+        result: staticProfileBoundary,
+      },
+      configuredProcessGraph: {
+        hostRuntimeSource: configuredHostRuntime.source,
+        hostRuntimePackages: configuredHostRuntime.resolvedNodes,
       },
       refreshedGraph: {
         source: exactGraph?.hostRuntime?.source,
