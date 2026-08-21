@@ -69,6 +69,7 @@ function entry(expected: DshCompatibilityExpectedCase, overrides: Partial<DshCom
           mismatched: 0,
           indeterminate: 0,
           missing: 0,
+          relations: [],
         },
       },
     },

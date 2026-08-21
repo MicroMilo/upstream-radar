@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MicroMilo/upstream-radar/blob/main/schemas/dsh-compatibility-ir.schema.json",
+  "title": "Upstream Radar DSH compatibility IR",
+  "description": "Normalized direct plugin-to-DSH-host compatibility relations produced from isolated observations.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "cells", "relations"],
+  "properties": {
+    "schema": { "const": "upstream-radar.dsh-compatibility-ir/v1alpha1" },
+    "cells": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "caseId", "targetId", "observedAt", "result", "plugin", "runtime", "evidence"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "caseId": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "targetId": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "observedAt": { "type": "string", "format": "date-time" },
+          "result": { "enum": ["compatible", "runtime-incompatible", "peer-contract-incompatible", "install-failed", "load-failed", "unknown"] },
+          "plugin": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "version", "staticFingerprint"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1, "maxLength": 214 },
+              "version": { "type": "string", "minLength": 1, "maxLength": 256 },
+              "artifactSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "staticFingerprint": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+            }
+          },
+          "runtime": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["dshVersion", "nodeMajor", "nodeVersion", "platform", "architecture", "contractFingerprint"],
+            "properties": {
+              "dshVersion": { "type": "string", "minLength": 1, "maxLength": 256 },
+              "nodeMajor": { "type": "integer", "minimum": 16, "maximum": 40 },
+              "nodeVersion": { "type": "string", "minLength": 1, "maxLength": 256 },
+              "platform": { "type": "string", "minLength": 1, "maxLength": 64 },
+              "architecture": { "type": "string", "minLength": 1, "maxLength": 64 },
+              "pnpmVersion": { "type": "string", "minLength": 1, "maxLength": 256 },
+              "contractFingerprint": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+            }
+          },
+          "evidence": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "runtimeGraphDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+              "runtimeGraphNodes": { "type": "integer", "minimum": 0, "maximum": 100000 },
+              "runtimeGraphEdges": { "type": "integer", "minimum": 0, "maximum": 250000 },
+              "requiredUnresolved": { "type": "integer", "minimum": 0, "maximum": 250000 },
+              "declaredPeerContracts": { "type": "integer", "minimum": 0, "maximum": 64 }
+            }
+          }
+        }
+      }
+    },
+    "relations": {
+      "type": "array",
+      "maxItems": 32000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "cellId", "dependency"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "cellId": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "dependency": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "required", "status"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1, "maxLength": 214 },
+              "required": { "type": "string", "minLength": 1, "maxLength": 512 },
+              "status": { "enum": ["satisfied", "mismatched", "indeterminate", "missing"] },
+              "resolvedVersion": { "type": "string", "minLength": 1, "maxLength": 256 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

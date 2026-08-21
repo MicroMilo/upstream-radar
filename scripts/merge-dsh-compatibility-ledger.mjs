@@ -8,6 +8,10 @@ import {
   mergeDshCompatibilityLedger,
   renderDshCompatibilityLedgerMerge,
 } from '../dist/src/dsh-compatibility-ledger.js'
+import {
+  buildDshCompatibilityIR,
+  buildDshCompatibilityReverseIndex,
+} from '../dist/src/dsh-compatibility-ir.js'
 
 const MAX_JSON_BYTES = 64 * 1024 * 1024
 const MAX_REPORTS = 100
@@ -64,9 +68,10 @@ async function readReports(root) {
   return { reports, rejected }
 }
 
-const [ledgerPath, matrixPath, reportsPath, markdownPath] = process.argv.slice(2)
-if (ledgerPath === undefined || matrixPath === undefined || reportsPath === undefined || markdownPath === undefined) {
-  throw new Error('usage: merge-dsh-compatibility-ledger.mjs <compatibility-ledger.json> <install-matrix.json> <reports-directory> <markdown-report.md>')
+const [ledgerPath, matrixPath, reportsPath, markdownPath, irPath, reverseIndexPath] = process.argv.slice(2)
+if (ledgerPath === undefined || matrixPath === undefined || reportsPath === undefined || markdownPath === undefined
+  || irPath === undefined || reverseIndexPath === undefined) {
+  throw new Error('usage: merge-dsh-compatibility-ledger.mjs <compatibility-ledger.json> <install-matrix.json> <reports-directory> <markdown-report.md> <compatibility-ir.json> <compatibility-reverse-index.json>')
 }
 
 const matrix = await readJson(matrixPath)
@@ -84,8 +89,14 @@ merged.rejectedReports.sort()
 
 await mkdir(dirname(resolve(ledgerPath)), { recursive: true })
 await mkdir(dirname(resolve(markdownPath)), { recursive: true })
+await mkdir(dirname(resolve(irPath)), { recursive: true })
+await mkdir(dirname(resolve(reverseIndexPath)), { recursive: true })
 await writeFile(resolve(ledgerPath), `${JSON.stringify(merged.ledger, null, 2)}\n`, 'utf8')
 await writeFile(resolve(markdownPath), renderDshCompatibilityLedgerMerge(merged), 'utf8')
+const ir = buildDshCompatibilityIR(merged.ledger)
+const reverseIndex = buildDshCompatibilityReverseIndex(ir)
+await writeFile(resolve(irPath), `${JSON.stringify(ir, null, 2)}\n`, 'utf8')
+await writeFile(resolve(reverseIndexPath), `${JSON.stringify(reverseIndex, null, 2)}\n`, 'utf8')
 
 const actionable = merged.transitions.filter(item => (
   item.status !== 'compatible' && item.status !== 'persisting-incompatibility'
@@ -95,6 +106,9 @@ const summary = {
   missing: merged.missingCaseIds.length,
   rejected: merged.rejectedReports.length,
   actionable,
+  cells: ir.cells.length,
+  relations: ir.relations.length,
+  dependencies: reverseIndex.dependencies.length,
   transitions: merged.transitions,
 }
 process.stdout.write(`${JSON.stringify(summary, null, 2)}\n`)
@@ -105,5 +119,8 @@ if (process.env.GITHUB_OUTPUT !== undefined) {
     `missing=${summary.missing}`,
     `rejected=${summary.rejected}`,
     `actionable=${summary.actionable}`,
+    `cells=${summary.cells}`,
+    `relations=${summary.relations}`,
+    `dependencies=${summary.dependencies}`,
   ].join('\n') + '\n', 'utf8')
 }

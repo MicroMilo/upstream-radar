@@ -58,12 +58,21 @@ export interface DshCompatibilityPeerContractIssue {
   resolvedVersion?: string
 }
 
+/** One exact plugin peer relation, kept for the reverse compatibility index. */
+export interface DshCompatibilityPeerContractRelation {
+  name: string
+  required: string
+  status: 'satisfied' | 'mismatched' | 'indeterminate' | 'missing'
+  resolvedVersion?: string
+}
+
 export interface DshCompatibilityPluginPeerContracts {
   declared: number
   satisfied: number
   mismatched: number
   indeterminate: number
   missing: number
+  relations: DshCompatibilityPeerContractRelation[]
   issues?: DshCompatibilityPeerContractIssue[]
 }
 
@@ -255,6 +264,45 @@ function parsePluginPeerContracts(value: unknown, label: string): DshCompatibili
   if (satisfied + mismatched + indeterminate + missing !== declared) {
     throw new Error(`${label} counts must add up to declared`)
   }
+  const rawRelations = item.relations
+  if (!Array.isArray(rawRelations) || rawRelations.length > 64 || rawRelations.length !== declared) {
+    throw new Error(`${label}.relations must contain every declared peer, up to 64 entries`)
+  }
+  const relations = rawRelations.map((value, index): DshCompatibilityPeerContractRelation => {
+    const relation = record(value, `${label}.relations[${index}]`)
+    const status = boundedString(relation.status, `${label}.relations[${index}].status`, 32)
+    if (status !== 'satisfied' && status !== 'mismatched' && status !== 'indeterminate' && status !== 'missing') {
+      throw new Error(`${label}.relations[${index}].status is unsupported`)
+    }
+    const resolvedVersion = relation.resolvedVersion === undefined
+      ? undefined
+      : boundedString(relation.resolvedVersion, `${label}.relations[${index}].resolvedVersion`, 256)
+    if ((status === 'satisfied' || status === 'mismatched') && resolvedVersion === undefined) {
+      throw new Error(`${label}.relations[${index}] requires a resolvedVersion`)
+    }
+    if (status === 'missing' && resolvedVersion !== undefined) {
+      throw new Error(`${label}.relations[${index}].resolvedVersion must be absent for a missing peer`)
+    }
+    return {
+      name: boundedString(relation.name, `${label}.relations[${index}].name`, 214),
+      required: boundedString(relation.required, `${label}.relations[${index}].required`, 512),
+      status,
+      ...(resolvedVersion === undefined ? {} : { resolvedVersion }),
+    }
+  }).sort((left, right) => left.name.localeCompare(right.name))
+  if (new Set(relations.map(relation => relation.name)).size !== relations.length) {
+    throw new Error(`${label}.relations must not contain duplicate peer names`)
+  }
+  const relationCounts = {
+    satisfied: relations.filter(relation => relation.status === 'satisfied').length,
+    mismatched: relations.filter(relation => relation.status === 'mismatched').length,
+    indeterminate: relations.filter(relation => relation.status === 'indeterminate').length,
+    missing: relations.filter(relation => relation.status === 'missing').length,
+  }
+  if (relationCounts.satisfied !== satisfied || relationCounts.mismatched !== mismatched
+    || relationCounts.indeterminate !== indeterminate || relationCounts.missing !== missing) {
+    throw new Error(`${label}.relations do not match the reported peer contract counts`)
+  }
   const rawIssues = item.issues
   if (rawIssues !== undefined && (!Array.isArray(rawIssues) || rawIssues.length > 32)) {
     throw new Error(`${label}.issues must be an array of at most 32 peer contract issues`)
@@ -287,6 +335,7 @@ function parsePluginPeerContracts(value: unknown, label: string): DshCompatibili
     mismatched,
     indeterminate,
     missing,
+    relations,
     ...(issues === undefined ? {} : { issues }),
   }
 }

@@ -262,6 +262,12 @@ snapshots:
       mismatched: 0,
       indeterminate: 0,
       missing: 0,
+      relations: [{
+        name: 'host-runtime',
+        required: '^2.0.0',
+        status: 'satisfied',
+        resolvedVersion: '2.1.0',
+      }],
     })
     assert.deepEqual(report.resolution.runtimeGraph?.hostRuntime, {
       source: 'dsh-process',
@@ -352,6 +358,12 @@ snapshots:
       mismatched: 1,
       indeterminate: 0,
       missing: 0,
+      relations: [{
+        name: 'host-runtime',
+        required: '^3.0.0',
+        status: 'mismatched',
+        resolvedVersion: '2.1.0',
+      }],
       issues: [{
         name: 'host-runtime',
         required: '^3.0.0',

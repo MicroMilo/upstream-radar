@@ -33,6 +33,7 @@ const MAX_DIFF_PATHS = 512
 const MAX_ALLOWED_BUILDS = 16
 const MAX_PROFILE_LOCKFILE_BYTES = 16 * 1024 * 1024
 const MAX_PROFILE_GRAPH_GAPS = 32
+const MAX_PLUGIN_PEERS = 64
 const MAX_RUNTIME_DISCOVERY_DIRECTORIES = 12_000
 const MAX_RUNTIME_DISCOVERY_DEPTH = 16
 const PROFILE = 'headless'
@@ -156,6 +157,14 @@ export interface DshInstallPeerContractIssue {
   resolvedVersion?: string
 }
 
+/** One direct plugin peer requirement aligned to its exact runtime resolution. */
+export interface DshInstallPeerContractRelation {
+  name: string
+  required: string
+  status: 'satisfied' | 'mismatched' | 'indeterminate' | 'missing'
+  resolvedVersion?: string
+}
+
 /**
  * Direct plugin-to-DSH host contracts evaluated from the final installed
  * graph. This is distinct from whether the generic load probe happened to
@@ -167,6 +176,8 @@ export interface DshInstallPluginPeerContracts {
   mismatched: number
   indeterminate: number
   missing: number
+  /** Full bounded relation set; this is the plugin-to-DSH compatibility IR boundary. */
+  relations: DshInstallPeerContractRelation[]
   issues?: DshInstallPeerContractIssue[]
 }
 
@@ -332,6 +343,9 @@ function requiredPeerDependencies(manifest: Record<string, unknown>): Array<{ na
     const optional = typeof peerMetadata === 'object' && peerMetadata !== null && !Array.isArray(peerMetadata)
       && (peerMetadata as Record<string, unknown>).optional === true
     if (!optional) requirements.push({ name, required: bounded(rawRange.trim(), 512) })
+  }
+  if (requirements.length > MAX_PLUGIN_PEERS) {
+    throw new Error(`packed artifact declares more than ${MAX_PLUGIN_PEERS} required peer dependencies`)
   }
   return requirements
 }
@@ -959,7 +973,7 @@ function graphGaps(graph: { unresolved?: readonly DshInstallProfileGraphGap[] })
 }
 
 function pluginPeerContractEvidence(contracts: readonly RootPeerContract[] | undefined): DshInstallPluginPeerContracts {
-  const entries = contracts ?? []
+  const entries = [...(contracts ?? [])].sort((left, right) => left.name.localeCompare(right.name))
   const issues = entries
     .filter((entry): entry is RootPeerContract & { status: DshInstallPeerContractIssue['status'] } => entry.status !== 'satisfied')
     .sort((left, right) => left.name.localeCompare(right.name))
@@ -969,6 +983,12 @@ function pluginPeerContractEvidence(contracts: readonly RootPeerContract[] | und
     mismatched: entries.filter(entry => entry.status === 'mismatched').length,
     indeterminate: entries.filter(entry => entry.status === 'indeterminate').length,
     missing: entries.filter(entry => entry.status === 'missing').length,
+    relations: entries.map(entry => ({
+      name: bounded(entry.name, 214),
+      required: bounded(entry.required, 512),
+      status: entry.status,
+      ...(entry.resolvedVersion === undefined ? {} : { resolvedVersion: bounded(entry.resolvedVersion, 256) }),
+    })),
     ...(issues.length === 0 ? {} : {
       issues: issues.slice(0, MAX_PROFILE_GRAPH_GAPS).map(issue => ({
         name: bounded(issue.name, 214),

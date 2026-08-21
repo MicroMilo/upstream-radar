@@ -215,20 +215,27 @@ jobs:
           INSTALL_MATRIX_PATH: ${{ runner.temp }}/upstream-radar-install-matrix.json
           INSTALL_REPORTS_PATH: ${{ runner.temp }}/upstream-radar-install-reports
           LEDGER_REPORT: ${{ runner.temp }}/upstream-radar-compatibility-ledger.md
+          COMPATIBILITY_IR: compatibility-ir.json
+          COMPATIBILITY_REVERSE_INDEX: compatibility-reverse-index.json
         run: |
           node scripts/merge-dsh-compatibility-ledger.mjs \
             compatibility-ledger.json \
             "$INSTALL_MATRIX_PATH" \
             "$INSTALL_REPORTS_PATH" \
-            "$LEDGER_REPORT"
+            "$LEDGER_REPORT" \
+            "$COMPATIBILITY_IR" \
+            "$COMPATIBILITY_REVERSE_INDEX"
           cat "$LEDGER_REPORT" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Keep the compatibility-ledger report
+      - name: Keep compatibility evidence artifacts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: upstream-radar-compatibility-ledger-${{ github.run_id }}
-          path: ${{ runner.temp }}/upstream-radar-compatibility-ledger.md
+          path: |
+            ${{ runner.temp }}/upstream-radar-compatibility-ledger.md
+            compatibility-ir.json
+            compatibility-reverse-index.json
           if-no-files-found: warn
           retention-days: 30
 
@@ -237,16 +244,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ ! -f compatibility-ledger.json ]]; then
-            echo 'compatibility-ledger.json was not produced; nothing to persist.'
+          if [[ ! -f compatibility-ledger.json || ! -f compatibility-ir.json || ! -f compatibility-reverse-index.json ]]; then
+            echo 'complete compatibility evidence was not produced; nothing to persist.'
             exit 0
           fi
           git config user.name 'upstream-radar[bot]'
           git config user.email 'upstream-radar[bot]@users.noreply.github.com'
-          git add -- compatibility-ledger.json
+          git add -- compatibility-ledger.json compatibility-ir.json compatibility-reverse-index.json
           if git diff --cached --quiet; then
             echo 'No compatibility evidence changed; no commit created.'
             exit 0
           fi
-          git commit -m 'chore: update DSH compatibility ledger [skip ci]'
+          git commit -m 'chore: update DSH compatibility evidence [skip ci]'
           git push

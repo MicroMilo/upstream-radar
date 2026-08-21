@@ -195,13 +195,28 @@
             "pluginPeerContracts": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["declared", "satisfied", "mismatched", "indeterminate", "missing"],
+              "required": ["declared", "satisfied", "mismatched", "indeterminate", "missing", "relations"],
               "properties": {
                 "declared": { "type": "integer", "minimum": 0, "maximum": 100000 },
                 "satisfied": { "type": "integer", "minimum": 0, "maximum": 100000 },
                 "mismatched": { "type": "integer", "minimum": 0, "maximum": 100000 },
                 "indeterminate": { "type": "integer", "minimum": 0, "maximum": 100000 },
                 "missing": { "type": "integer", "minimum": 0, "maximum": 100000 },
+                "relations": {
+                  "type": "array",
+                  "maxItems": 64,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["name", "required", "status"],
+                    "properties": {
+                      "name": { "type": "string", "minLength": 1, "maxLength": 214 },
+                      "required": { "type": "string", "minLength": 1, "maxLength": 512 },
+                      "status": { "enum": ["satisfied", "mismatched", "indeterminate", "missing"] },
+                      "resolvedVersion": { "type": "string", "minLength": 1, "maxLength": 256 }
+                    }
+                  }
+                },
                 "issues": {
                   "type": "array",
                   "maxItems": 32,

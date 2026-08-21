@@ -242,6 +242,12 @@ describe('DSH compatibility ledger', () => {
               mismatched: 1,
               indeterminate: 0,
               missing: 0,
+              relations: [{
+                name: 'host-runtime',
+                required: '^3.0.0',
+                status: 'mismatched',
+                resolvedVersion: '2.1.0',
+              }],
               issues: [{
                 name: 'host-runtime',
                 required: '^3.0.0',
