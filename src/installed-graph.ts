@@ -90,10 +90,10 @@ function nodeId(rootDirectory: string, packageDirectory: string): string {
   return value.split(sep).join('/')
 }
 
-function hostNodeId(hostNodeModulesDirectory: string, packageDirectory: string): string {
-  const value = relative(dirname(hostNodeModulesDirectory), resolve(packageDirectory))
+function hostNodeId(hostNodeModulesDirectoryReal: string, packageDirectoryReal: string): string {
+  const value = relative(dirname(hostNodeModulesDirectoryReal), resolve(packageDirectoryReal))
   if (value === '' || value.startsWith(`..${sep}`) || value === '..' || isAbsolute(value)) {
-    throw new Error(`DSH host package path escapes the shared dependency plane: ${packageDirectory}`)
+    throw new Error(`DSH host package path escapes the shared dependency plane: ${packageDirectoryReal}`)
   }
   return `dsh-host/${value.split(sep).join('/')}`
 }
@@ -150,7 +150,7 @@ async function readHostManifest(
   }
   const manifest = parseInstalledManifestSnapshot(parsed)
   return {
-    id: hostNodeId(hostNodeModulesDirectory, packageDirectory),
+    id: hostNodeId(hostNodeModulesDirectoryReal, realDirectory),
     directory: realDirectory,
     source: 'dsh-host',
     manifest,
@@ -204,24 +204,60 @@ async function findProfilePackage(
 }
 
 async function findHostPackage(
+  parentDirectory: string,
   dependencyName: string,
   hostNodeModulesDirectory: string,
   hostNodeModulesDirectoryReal: string,
 ): Promise<InstalledPackage | undefined> {
   if (!isPackageName(dependencyName)) return undefined
-  const dependencyDirectory = resolve(hostNodeModulesDirectory, ...dependencyName.split('/'))
-  if (!isLexicallyInside(hostNodeModulesDirectory, dependencyDirectory)) return undefined
+  let cursor: string
   try {
-    const target = await readHostManifest(dependencyDirectory, hostNodeModulesDirectory, hostNodeModulesDirectoryReal)
-    if (target.manifest.name !== dependencyName) {
-      throw new Error(`DSH host package manifest name does not match resolved dependency: ${dependencyName}`)
-    }
-    return target
+    cursor = await realpath(parentDirectory)
   } catch (error: unknown) {
     const code = (error as NodeJS.ErrnoException).code
-    if (code !== 'ENOENT' && code !== 'ENOTDIR') throw error
-    return undefined
+    if (code === 'ENOENT' || code === 'ENOTDIR') return undefined
+    throw error
   }
+  if (!isLexicallyInside(hostNodeModulesDirectoryReal, cursor)) {
+    try {
+      const adjacentNodeModules = await realpath(join(cursor, 'node_modules'))
+      if (adjacentNodeModules !== hostNodeModulesDirectoryReal) return undefined
+      cursor = hostNodeModulesDirectoryReal
+    } catch (error: unknown) {
+      const code = (error as NodeJS.ErrnoException).code
+      if (code === 'ENOENT' || code === 'ENOTDIR') return undefined
+      throw error
+    }
+  }
+
+  /**
+   * pnpm resolves a package's dependencies from the package-local virtual
+   * `node_modules`, then walks outward. Looking only at the outer host plane
+   * misses the links beside `@deepseek-ai/dsh` itself, which is how `pnpm dlx`
+   * stores most of DSH's runtime dependencies.
+   */
+  while (isLexicallyInside(hostNodeModulesDirectoryReal, cursor)) {
+    const dependencyDirectory = cursor === hostNodeModulesDirectoryReal
+      ? resolve(cursor, ...dependencyName.split('/'))
+      : resolve(cursor, 'node_modules', ...dependencyName.split('/'))
+    if (isLexicallyInside(hostNodeModulesDirectoryReal, dependencyDirectory)) {
+      try {
+        const target = await readHostManifest(dependencyDirectory, hostNodeModulesDirectory, hostNodeModulesDirectoryReal)
+        if (target.manifest.name !== dependencyName) {
+          throw new Error(`DSH host package manifest name does not match resolved dependency: ${dependencyName}`)
+        }
+        return target
+      } catch (error: unknown) {
+        const code = (error as NodeJS.ErrnoException).code
+        if (code !== 'ENOENT' && code !== 'ENOTDIR') throw error
+      }
+    }
+    if (cursor === hostNodeModulesDirectoryReal) break
+    const next = dirname(cursor)
+    if (next === cursor) break
+    cursor = next
+  }
+  return undefined
 }
 
 /** Read the package tree that DSH can actually resolve from its installed profile. */
@@ -285,7 +321,12 @@ export async function parseInstalledNodeModulesGraph(
           : await readRuntimeManifest(runtimePackageDirectory)
       }
     } else {
-      runtimeRoot = await findHostPackage('@deepseek-ai/dsh', resolvedHostNodeModulesDirectory, hostNodeModulesDirectoryReal)
+      runtimeRoot = await findHostPackage(
+        resolvedHostNodeModulesDirectory,
+        '@deepseek-ai/dsh',
+        resolvedHostNodeModulesDirectory,
+        hostNodeModulesDirectoryReal,
+      )
     }
     if (runtimeRoot !== undefined) {
       if (runtimeRoot.manifest.name !== options.hostRuntimePackage.name) {
@@ -321,11 +362,21 @@ export async function parseInstalledNodeModulesGraph(
       const target = current.source === 'dsh-host'
         ? (hostNodeModulesDirectory === undefined || hostNodeModulesDirectoryReal === undefined
             ? undefined
-            : await findHostPackage(dependency.name, hostNodeModulesDirectory, hostNodeModulesDirectoryReal))
+            : await findHostPackage(
+              current.directory,
+              dependency.name,
+              hostNodeModulesDirectory,
+              hostNodeModulesDirectoryReal,
+            ))
         : (await findProfilePackage(current.directory, dependency.name, profileRoot, profileRootReal)
           ?? (hostNodeModulesDirectory === undefined || hostNodeModulesDirectoryReal === undefined
               ? undefined
-              : await findHostPackage(dependency.name, hostNodeModulesDirectory, hostNodeModulesDirectoryReal)))
+              : await findHostPackage(
+                hostNodeModulesDirectory,
+                dependency.name,
+                hostNodeModulesDirectory,
+                hostNodeModulesDirectoryReal,
+              )))
       if (target === undefined) {
         unresolved.push({ from: current.id, ...dependency })
         if (unresolved.length > MAX_EDGES) throw new Error(`installed dependency graph exceeds the ${MAX_EDGES} edge limit`)

@@ -206,4 +206,57 @@ describe('installed DSH dependency graph', () => {
       await rm(root, { recursive: true, force: true })
     }
   })
+
+  it('follows pnpm virtual-store links beside the exact DSH runtime package', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-installed-graph-'))
+    const profile = join(root, 'profiles', 'web')
+    const hostNodeModules = join(root, 'dsh-cache', 'node_modules')
+    const runtimeRoot = join(
+      hostNodeModules,
+      '.pnpm',
+      '@deepseek-ai+dsh@0.1.0-rc.8',
+      'node_modules',
+      '@deepseek-ai',
+      'dsh',
+    )
+    const cordisRoot = join(
+      hostNodeModules,
+      '.pnpm',
+      '@deepseek-ai+cordis@4.0.2',
+      'node_modules',
+      '@deepseek-ai',
+      'cordis',
+    )
+    try {
+      await writeManifest(join(profile, 'node_modules', 'plugin', 'package.json'), {
+        name: 'plugin',
+        version: '1.0.0',
+      })
+      await writeManifest(join(runtimeRoot, 'package.json'), {
+        name: '@deepseek-ai/dsh',
+        version: '0.1.0-rc.8',
+        dependencies: { '@deepseek-ai/cordis': '^4.0.1' },
+      })
+      await writeManifest(join(cordisRoot, 'package.json'), {
+        name: '@deepseek-ai/cordis',
+        version: '4.0.2',
+      })
+      await symlink(cordisRoot, join(dirname(runtimeRoot), 'cordis'), 'dir')
+
+      const graph = await parseInstalledNodeModulesGraph(profile, { name: 'plugin', version: '1.0.0' }, {
+        hostNodeModulesDirectory: hostNodeModules,
+        hostRuntimeSource: 'dsh-process',
+        hostRuntimePackage: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.8' },
+        hostRuntimePackageDirectory: runtimeRoot,
+      })
+
+      assert.equal(graph.unresolved, undefined)
+      assert.equal(graph.nodes.length, 3)
+      assert.deepEqual(graph.edges.map(edge => edge.kind), ['runtime', 'host-runtime'])
+      assert.equal(graph.nodes.find(node => node.name === '@deepseek-ai/cordis')?.version, '4.0.2')
+      assert.equal(graph.hostRuntime?.resolvedNodes, 2)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
 })
