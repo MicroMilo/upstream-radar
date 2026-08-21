@@ -34,6 +34,19 @@ export interface DshCompatibilityProfileGraphGap {
   kind: 'runtime' | 'development' | 'optional' | 'peer' | 'host-runtime'
 }
 
+export interface DshCompatibilityRuntimeGraph {
+  digest: string
+  nodes: number
+  edges: number
+  unresolved: number
+  unresolvedDependencies?: DshCompatibilityProfileGraphGap[]
+  hostRuntime?: {
+    source: 'dsh-profile-fallback' | 'dsh-process'
+    resolvedNodes: number
+    dshVersion?: string
+  }
+}
+
 export interface DshCompatibilityLedgerEntry {
   caseId: string
   targetId: string
@@ -59,6 +72,7 @@ export interface DshCompatibilityLedgerEntry {
   }
   resolution?: {
     profileLockfile?: DshCompatibilityProfileLockfile
+    runtimeGraph?: DshCompatibilityRuntimeGraph
   }
   observer: {
     schema: string
@@ -181,15 +195,11 @@ function parseLifecycleScripts(value: unknown, label: string): string[] {
   return scripts.sort()
 }
 
-function parseProfileLockfile(value: unknown, label: string): DshCompatibilityProfileLockfile | undefined {
-  if (value === undefined) return undefined
-  const item = record(value, label)
-  const sha256 = optionalBareSha256(item.sha256, `${label}.sha256`)
-  if (sha256 === undefined) throw new Error(`${label}.sha256 is required`)
-  const graphDigest = optionalDigest(item.graphDigest, `${label}.graphDigest`)
-  const nodes = item.nodes === undefined ? undefined : positiveInteger(item.nodes, `${label}.nodes`, 100_000)
-  const edges = item.edges === undefined ? undefined : positiveInteger(item.edges, `${label}.edges`, 250_000)
-  const unresolved = item.unresolved === undefined ? undefined : positiveInteger(item.unresolved, `${label}.unresolved`, 250_000)
+function parseGraphGaps(
+  item: Record<string, unknown>,
+  label: string,
+  unresolved: number | undefined,
+): DshCompatibilityProfileGraphGap[] | undefined {
   const rawGaps = item.unresolvedDependencies
   if (rawGaps !== undefined && (!Array.isArray(rawGaps) || rawGaps.length > 32)) {
     throw new Error(`${label}.unresolvedDependencies must be an array of at most 32 graph gaps`)
@@ -210,6 +220,19 @@ function parseProfileLockfile(value: unknown, label: string): DshCompatibilityPr
   if (unresolvedDependencies !== undefined && unresolved !== undefined && unresolvedDependencies.length > unresolved) {
     throw new Error(`${label}.unresolvedDependencies cannot exceed unresolved`)
   }
+  return unresolvedDependencies
+}
+
+function parseProfileLockfile(value: unknown, label: string): DshCompatibilityProfileLockfile | undefined {
+  if (value === undefined) return undefined
+  const item = record(value, label)
+  const sha256 = optionalBareSha256(item.sha256, `${label}.sha256`)
+  if (sha256 === undefined) throw new Error(`${label}.sha256 is required`)
+  const graphDigest = optionalDigest(item.graphDigest, `${label}.graphDigest`)
+  const nodes = item.nodes === undefined ? undefined : positiveInteger(item.nodes, `${label}.nodes`, 100_000)
+  const edges = item.edges === undefined ? undefined : positiveInteger(item.edges, `${label}.edges`, 250_000)
+  const unresolved = item.unresolved === undefined ? undefined : positiveInteger(item.unresolved, `${label}.unresolved`, 250_000)
+  const unresolvedDependencies = parseGraphGaps(item, label, unresolved)
   return {
     sha256,
     bytes: positiveInteger(item.bytes, `${label}.bytes`, 64 * 1024 * 1024),
@@ -218,6 +241,39 @@ function parseProfileLockfile(value: unknown, label: string): DshCompatibilityPr
     ...(edges === undefined ? {} : { edges }),
     ...(unresolved === undefined ? {} : { unresolved }),
     ...(unresolvedDependencies === undefined ? {} : { unresolvedDependencies }),
+  }
+}
+
+function parseRuntimeGraph(value: unknown, label: string): DshCompatibilityRuntimeGraph | undefined {
+  if (value === undefined) return undefined
+  const item = record(value, label)
+  const digest = optionalDigest(item.digest, `${label}.digest`)
+  if (digest === undefined) throw new Error(`${label}.digest is required`)
+  const unresolved = positiveInteger(item.unresolved, `${label}.unresolved`, 250_000)
+  const hostRuntime = item.hostRuntime === undefined ? undefined : record(item.hostRuntime, `${label}.hostRuntime`)
+  let parsedHostRuntime: DshCompatibilityRuntimeGraph['hostRuntime']
+  if (hostRuntime !== undefined) {
+    const source = boundedString(hostRuntime.source, `${label}.hostRuntime.source`, 64)
+    if (source !== 'dsh-profile-fallback' && source !== 'dsh-process') {
+      throw new Error(`${label}.hostRuntime.source is unsupported`)
+    }
+    const dshVersion = hostRuntime.dshVersion === undefined
+      ? undefined
+      : exactVersion(hostRuntime.dshVersion, `${label}.hostRuntime.dshVersion`)
+    parsedHostRuntime = {
+      source,
+      resolvedNodes: positiveInteger(hostRuntime.resolvedNodes, `${label}.hostRuntime.resolvedNodes`, 100_000),
+      ...(dshVersion === undefined ? {} : { dshVersion }),
+    }
+  }
+  const unresolvedDependencies = parseGraphGaps(item, label, unresolved)
+  return {
+    digest,
+    nodes: positiveInteger(item.nodes, `${label}.nodes`, 100_000),
+    edges: positiveInteger(item.edges, `${label}.edges`, 250_000),
+    unresolved,
+    ...(unresolvedDependencies === undefined ? {} : { unresolvedDependencies }),
+    ...(parsedHostRuntime === undefined ? {} : { hostRuntime: parsedHostRuntime }),
   }
 }
 
@@ -237,6 +293,7 @@ function parseEntry(value: unknown, index: number): DshCompatibilityLedgerEntry 
   if (!Number.isFinite(Date.parse(observedAt))) throw new Error(`entries[${index}].observedAt must be an ISO timestamp`)
   const resolution = item.resolution === undefined ? undefined : record(item.resolution, `entries[${index}].resolution`)
   const profileLockfile = resolution === undefined ? undefined : parseProfileLockfile(resolution.profileLockfile, `entries[${index}].resolution.profileLockfile`)
+  const runtimeGraph = resolution === undefined ? undefined : parseRuntimeGraph(resolution.runtimeGraph, `entries[${index}].resolution.runtimeGraph`)
   const sha256 = optionalBareSha256(artifact.sha256, `entries[${index}].artifact.sha256`)
   const integrity = optionalBoundedString(artifact.integrity, `entries[${index}].artifact.integrity`, 1_024)
   const nodeEngine = optionalBoundedString(artifact.nodeEngine, `entries[${index}].artifact.nodeEngine`, 512)
@@ -264,7 +321,12 @@ function parseEntry(value: unknown, index: number): DshCompatibilityLedgerEntry 
       ...(integrity === undefined ? {} : { integrity }),
       ...(nodeEngine === undefined ? {} : { nodeEngine }),
     },
-    ...(profileLockfile === undefined ? {} : { resolution: { profileLockfile } }),
+    ...(profileLockfile === undefined && runtimeGraph === undefined
+      ? {}
+      : { resolution: {
+          ...(profileLockfile === undefined ? {} : { profileLockfile }),
+          ...(runtimeGraph === undefined ? {} : { runtimeGraph }),
+        } }),
     observer: {
       schema: boundedString(observer.schema, `entries[${index}].observer.schema`, 256),
       version: boundedString(observer.version, `entries[${index}].observer.version`, 256),
@@ -406,6 +468,7 @@ function parseObservationReport(value: unknown, expected: DshCompatibilityExpect
   const nodeEngine = optionalBoundedString(artifact.nodeEngine, 'report artifact.nodeEngine', 512)
   const resolutionRecord = report.resolution === undefined ? undefined : reportRecord(report.resolution, 'report resolution')
   const profileLockfile = resolutionRecord === undefined ? undefined : parseProfileLockfile(resolutionRecord.profileLockfile, 'report resolution.profileLockfile')
+  const runtimeGraph = resolutionRecord === undefined ? undefined : parseRuntimeGraph(resolutionRecord.runtimeGraph, 'report resolution.runtimeGraph')
   const tool = reportRecord(report.tool, 'report tool')
   if (tool.name !== 'upstream-radar') throw new Error('report was not produced by upstream-radar')
   const observedAt = reportString(report.completedAt, 'report completedAt', 64)
@@ -433,7 +496,12 @@ function parseObservationReport(value: unknown, expected: DshCompatibilityExpect
       ...(integrity === undefined ? {} : { integrity }),
       ...(nodeEngine === undefined ? {} : { nodeEngine }),
     },
-    ...(profileLockfile === undefined ? {} : { resolution: { profileLockfile } }),
+    ...(profileLockfile === undefined && runtimeGraph === undefined
+      ? {}
+      : { resolution: {
+          ...(profileLockfile === undefined ? {} : { profileLockfile }),
+          ...(runtimeGraph === undefined ? {} : { runtimeGraph }),
+        } }),
     observer: {
       schema: reportString(report.schema, 'report schema', 256),
       version: reportString(tool.version, 'report tool.version', 256),
@@ -459,10 +527,22 @@ function sameResolution(
   previous: DshCompatibilityLedgerEntry['resolution'],
   current: DshCompatibilityLedgerEntry['resolution'],
 ): boolean {
-  const before = previous?.profileLockfile
-  const after = current?.profileLockfile
-  if (before === undefined || after === undefined) return before === after
-  return before.sha256 === after.sha256 && before.graphDigest === after.graphDigest
+  const beforeLockfile = previous?.profileLockfile
+  const afterLockfile = current?.profileLockfile
+  const sameLockfile = beforeLockfile === undefined || afterLockfile === undefined
+    ? beforeLockfile === afterLockfile
+    // pnpm can rewrite non-semantic metadata. Prefer the canonical graph when
+    // both runs established one; only fall back to raw lockfile bytes when it
+    // could not be parsed.
+    : beforeLockfile.graphDigest !== undefined && afterLockfile.graphDigest !== undefined
+      ? beforeLockfile.graphDigest === afterLockfile.graphDigest
+      : beforeLockfile.sha256 === afterLockfile.sha256
+  const beforeRuntime = previous?.runtimeGraph
+  const afterRuntime = current?.runtimeGraph
+  const sameRuntime = beforeRuntime === undefined || afterRuntime === undefined
+    ? beforeRuntime === afterRuntime
+    : beforeRuntime.digest === afterRuntime.digest
+  return sameLockfile && sameRuntime
 }
 
 function transition(previous: DshCompatibilityLedgerEntry | undefined, current: DshCompatibilityLedgerEntry): DshCompatibilityTransition {

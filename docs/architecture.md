@@ -136,7 +136,7 @@ desired plugin × DSH × runtime-policy cell
   -> traced DSH install
   -> registration check
   -> traced DSH load
-  -> bounded JSON artifact + complete resolved profile graph
+  -> bounded JSON artifact + complete profile-plus-DSH-host graph
   -> exact-cell ledger merge
 ```
 
@@ -149,10 +149,12 @@ case id, plugin tarball, DSH version, Node major, and build approvals match the
 static plan. It also compares the resulting profile-lockfile digest on each
 retest; an exact pair that resolves a different transitive graph is reported as
 `resolution-drift` even if its install/load result remains compatible. This
-same pair is not considered covered when its final profile lockfile cannot be
-turned into a complete graph: that is retained as an evidence gap, not hidden
-behind a green install result. This backend is useful compatibility and behavior
-evidence, not hostile-code proof.
+same pair is not considered covered when its final effective profile-plus-host
+graph cannot be completed: that is retained as an evidence gap, not hidden
+behind a green install result. The dynamic collector reads the shared host
+plane without importing it, so a DSH-provided peer is represented as a host
+edge instead of falsely reported as missing. This backend is useful
+compatibility and behavior evidence, not hostile-code proof.
 Docker shares the hosted VM kernel, and code in the same container may attempt
 to tamper with its trace/output. Moving the collector outside a Firecracker
 guest is the later high-assurance boundary.

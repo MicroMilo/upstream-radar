@@ -28,8 +28,8 @@ Inside the restricted container, Radar:
 8. verifies that DSH registered the bundle;
 9. loads the profile with `--dump-config`;
 10. records install and load process execution, network destinations, write-like
-   file syscalls, final filesystem changes, and the resulting DSH profile
-   lockfile/graph digest; and
+   file syscalls, final filesystem changes, the resulting DSH profile lockfile,
+   and the effective profile-plus-DSH-host graph; and
 11. destroys the container and hosted VM after preserving bounded JSON.
 
 The container is read-only except for a memory-backed sandbox and one output
@@ -70,9 +70,11 @@ blocked script into a global “allow all” policy.
   version, Node major, and explicit build approvals match the static plan.
 - A missing or malformed report is never saved as compatible. It remains
   unsatisfied and will be selected again on the next reconciliation.
-- A `compatible` result only closes its matrix cell when the final DSH profile
-  lockfile also yields a complete dependency graph. A green install/load with
-  missing or unresolved graph evidence remains an explicit evidence gap.
+- A `compatible` result only closes its matrix cell when the final effective
+  profile-plus-DSH-host graph is complete. A green install/load with missing or
+  unresolved graph evidence remains an explicit evidence gap. The report keeps
+  a bounded sample of unresolved edges so authors can distinguish a missing
+  plugin dependency from an absent DSH host peer.
 
 ## Result semantics
 

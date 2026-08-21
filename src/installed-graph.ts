@@ -128,9 +128,16 @@ async function readProfileManifest(
 async function readHostManifest(
   packageDirectory: string,
   hostNodeModulesDirectory: string,
+  hostNodeModulesDirectoryReal: string,
 ): Promise<InstalledPackage> {
   const realDirectory = await realpath(packageDirectory)
+  if (!isLexicallyInside(hostNodeModulesDirectoryReal, realDirectory)) {
+    throw new Error(`DSH host package path escapes the shared dependency plane: ${packageDirectory}`)
+  }
   const manifestPath = await realpath(join(packageDirectory, 'package.json'))
+  if (!isLexicallyInside(hostNodeModulesDirectoryReal, manifestPath)) {
+    throw new Error(`DSH host package manifest escapes the shared dependency plane: ${packageDirectory}`)
+  }
   const contents = await readFile(manifestPath, 'utf8')
   if (Buffer.byteLength(contents) > MAX_MANIFEST_BYTES) {
     throw new Error(`DSH host package manifest exceeds the ${MAX_MANIFEST_BYTES} byte limit: ${packageDirectory}`)
@@ -199,12 +206,13 @@ async function findProfilePackage(
 async function findHostPackage(
   dependencyName: string,
   hostNodeModulesDirectory: string,
+  hostNodeModulesDirectoryReal: string,
 ): Promise<InstalledPackage | undefined> {
   if (!isPackageName(dependencyName)) return undefined
   const dependencyDirectory = resolve(hostNodeModulesDirectory, ...dependencyName.split('/'))
   if (!isLexicallyInside(hostNodeModulesDirectory, dependencyDirectory)) return undefined
   try {
-    const target = await readHostManifest(dependencyDirectory, hostNodeModulesDirectory)
+    const target = await readHostManifest(dependencyDirectory, hostNodeModulesDirectory, hostNodeModulesDirectoryReal)
     if (target.manifest.name !== dependencyName) {
       throw new Error(`DSH host package manifest name does not match resolved dependency: ${dependencyName}`)
     }
@@ -273,11 +281,11 @@ export async function parseInstalledNodeModulesGraph(
       }
       if (runtimeDirectoryReal !== undefined) {
         runtimeRoot = isLexicallyInside(hostNodeModulesDirectoryReal, runtimeDirectoryReal)
-          ? await readHostManifest(runtimePackageDirectory, resolvedHostNodeModulesDirectory)
+          ? await readHostManifest(runtimePackageDirectory, resolvedHostNodeModulesDirectory, hostNodeModulesDirectoryReal)
           : await readRuntimeManifest(runtimePackageDirectory)
       }
     } else {
-      runtimeRoot = await findHostPackage('@deepseek-ai/dsh', resolvedHostNodeModulesDirectory)
+      runtimeRoot = await findHostPackage('@deepseek-ai/dsh', resolvedHostNodeModulesDirectory, hostNodeModulesDirectoryReal)
     }
     if (runtimeRoot !== undefined) {
       if (runtimeRoot.manifest.name !== options.hostRuntimePackage.name) {
@@ -311,9 +319,13 @@ export async function parseInstalledNodeModulesGraph(
     if (current === undefined) continue
     for (const dependency of dependencyEntries(current.manifest)) {
       const target = current.source === 'dsh-host'
-        ? (hostNodeModulesDirectory === undefined ? undefined : await findHostPackage(dependency.name, hostNodeModulesDirectory))
+        ? (hostNodeModulesDirectory === undefined || hostNodeModulesDirectoryReal === undefined
+            ? undefined
+            : await findHostPackage(dependency.name, hostNodeModulesDirectory, hostNodeModulesDirectoryReal))
         : (await findProfilePackage(current.directory, dependency.name, profileRoot, profileRootReal)
-          ?? (hostNodeModulesDirectory === undefined ? undefined : await findHostPackage(dependency.name, hostNodeModulesDirectory)))
+          ?? (hostNodeModulesDirectory === undefined || hostNodeModulesDirectoryReal === undefined
+              ? undefined
+              : await findHostPackage(dependency.name, hostNodeModulesDirectory, hostNodeModulesDirectoryReal)))
       if (target === undefined) {
         unresolved.push({ from: current.id, ...dependency })
         if (unresolved.length > MAX_EDGES) throw new Error(`installed dependency graph exceeds the ${MAX_EDGES} edge limit`)

@@ -151,6 +151,42 @@
               }
             }
           }
+        },
+        "runtimeGraph": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["digest", "nodes", "edges", "unresolved"],
+          "properties": {
+            "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+            "nodes": { "type": "integer", "minimum": 0, "maximum": 100000 },
+            "edges": { "type": "integer", "minimum": 0, "maximum": 250000 },
+            "unresolved": { "type": "integer", "minimum": 0, "maximum": 250000 },
+            "unresolvedDependencies": {
+              "type": "array",
+              "maxItems": 32,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["from", "name", "spec", "kind"],
+                "properties": {
+                  "from": { "type": "string", "minLength": 1, "maxLength": 512 },
+                  "name": { "type": "string", "minLength": 1, "maxLength": 214 },
+                  "spec": { "type": "string", "minLength": 1, "maxLength": 512 },
+                  "kind": { "enum": ["runtime", "development", "optional", "peer", "host-runtime"] }
+                }
+              }
+            },
+            "hostRuntime": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["source", "resolvedNodes"],
+              "properties": {
+                "source": { "enum": ["dsh-profile-fallback", "dsh-process"] },
+                "resolvedNodes": { "type": "integer", "minimum": 0, "maximum": 100000 },
+                "dshVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" }
+              }
+            }
+          }
         }
       }
     },

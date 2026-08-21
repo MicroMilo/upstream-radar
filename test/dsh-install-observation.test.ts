@@ -149,10 +149,21 @@ describe('DSH install observation', () => {
         assert.equal(typeof dshHome, 'string')
         const profileDirectory = join(dshHome as string, 'profiles', 'headless')
         await mkdir(join(profileDirectory, 'node_modules', '.pnpm'), { recursive: true })
+        await mkdir(join(profileDirectory, 'node_modules', 'example-plugin'), { recursive: true })
         await mkdir(join(profileDirectory, 'generated'), { recursive: true })
         await writeFile(join(profileDirectory, 'generated', 'install.txt'), 'created during install\n')
         await writeFile(join(profileDirectory, 'package.json'), JSON.stringify({
           dsh: { profile: { bundles: ['example-plugin'] } },
+        }))
+        await writeFile(join(profileDirectory, 'node_modules', 'example-plugin', 'package.json'), JSON.stringify({
+          name: 'example-plugin',
+          version: '1.0.0',
+          peerDependencies: { 'host-runtime': '^2.0.0' },
+        }))
+        await mkdir(join(dshHome as string, 'profiles', 'node_modules', 'host-runtime'), { recursive: true })
+        await writeFile(join(dshHome as string, 'profiles', 'node_modules', 'host-runtime', 'package.json'), JSON.stringify({
+          name: 'host-runtime',
+          version: '2.1.0',
         }))
         // DSH currently keeps the resolved profile graph in pnpm's virtual
         // store rather than beside the profile manifest.
@@ -215,6 +226,14 @@ snapshots:
       spec: '1.0.0',
       kind: 'runtime',
     }])
+    assert.match(report.resolution.runtimeGraph?.digest ?? '', /^sha256:[a-f0-9]{64}$/)
+    assert.equal(report.resolution.runtimeGraph?.nodes, 2)
+    assert.equal(report.resolution.runtimeGraph?.edges, 1)
+    assert.equal(report.resolution.runtimeGraph?.unresolved, 0)
+    assert.deepEqual(report.resolution.runtimeGraph?.hostRuntime, {
+      source: 'dsh-profile-fallback',
+      resolvedNodes: 1,
+    })
     assert.deepEqual(report.boundary.approvedDependencyBuilds, [])
     assert.equal(report.stages.registration.status, 'passed')
     assert.equal(report.observations.install.processes.length, 1)

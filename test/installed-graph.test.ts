@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { describe, it } from 'node:test'
@@ -126,6 +126,33 @@ describe('installed DSH dependency graph', () => {
         kind: 'peer',
       }])
       assert.equal(graph.unresolved, undefined)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('refuses a shared-host symlink that escapes the dependency plane', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-installed-graph-'))
+    const profile = join(root, 'profiles', 'web')
+    const hostNodeModules = join(root, 'profiles', 'node_modules')
+    const outside = join(root, 'outside-host-package')
+    try {
+      await writeManifest(join(profile, 'node_modules', 'plugin', 'package.json'), {
+        name: 'plugin',
+        version: '1.0.0',
+        peerDependencies: { 'host-runtime': '^2.0.0' },
+      })
+      await writeManifest(join(outside, 'package.json'), {
+        name: 'host-runtime',
+        version: '2.1.0',
+      })
+      await mkdir(hostNodeModules, { recursive: true })
+      await symlink(outside, join(hostNodeModules, 'host-runtime'), 'dir')
+
+      await assert.rejects(
+        parseInstalledNodeModulesGraph(profile, { name: 'plugin', version: '1.0.0' }, { hostNodeModulesDirectory: hostNodeModules }),
+        /escapes the shared dependency plane/,
+      )
     } finally {
       await rm(root, { recursive: true, force: true })
     }

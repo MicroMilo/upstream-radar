@@ -58,6 +58,12 @@ function entry(expected: DshCompatibilityExpectedCase, overrides: Partial<DshCom
         edges: 1,
         unresolved: 0,
       },
+      runtimeGraph: {
+        digest: `sha256:${'e'.repeat(64)}`,
+        nodes: 12,
+        edges: 14,
+        unresolved: 0,
+      },
     },
     observer: { schema: 'upstream-radar.dsh-install-observation/v1alpha1', version: '0.41.0' },
     ...overrides,
@@ -89,7 +95,7 @@ describe('DSH compatibility reconciliation plan', () => {
     assert.match(plan.reason, /fresh evidence/)
   })
 
-  it('does not let a green install/load satisfy the ledger without a resolved profile graph', () => {
+  it('does not let a green install/load satisfy the ledger without an effective runtime graph', () => {
     const first = baseline()
     const browser = first.matrix.include.find(item => item.id === 'browser-node22') as DshCompatibilityExpectedCase
     const feishu = first.matrix.include.find(item => item.id === 'feishu-node22') as DshCompatibilityExpectedCase
@@ -103,18 +109,18 @@ describe('DSH compatibility reconciliation plan', () => {
     const plan = buildDshInstallPlan(corpus, state(), { changes: [] }, ledger, now)
     assert.equal(plan.run, true)
     assert.deepEqual(plan.matrix.include.map(item => item.id), ['browser-node22'])
-    assert.deepEqual(plan.matrix.include[0]?.reasons, ['resolution-graph-missing'])
+    assert.deepEqual(plan.matrix.include[0]?.reasons, ['runtime-graph-missing'])
   })
 
-  it('does not let an unresolved profile graph satisfy the ledger', () => {
+  it('does not let an unresolved effective runtime graph satisfy the ledger', () => {
     const first = baseline()
     const browser = first.matrix.include.find(item => item.id === 'browser-node22') as DshCompatibilityExpectedCase
     const feishu = first.matrix.include.find(item => item.id === 'feishu-node22') as DshCompatibilityExpectedCase
     const ledger = {
       schema: 'upstream-radar.dsh-compatibility-ledger/v1alpha1',
       entries: [
-        entry(browser, { resolution: { profileLockfile: {
-          sha256: 'e'.repeat(64), bytes: 128, graphDigest: `sha256:${'f'.repeat(64)}`, nodes: 2, edges: 1, unresolved: 1,
+        entry(browser, { resolution: { runtimeGraph: {
+          digest: `sha256:${'f'.repeat(64)}`, nodes: 2, edges: 1, unresolved: 1,
         } } }),
         entry(feishu),
       ],
@@ -122,7 +128,7 @@ describe('DSH compatibility reconciliation plan', () => {
     const plan = buildDshInstallPlan(corpus, state(), { changes: [] }, ledger, now)
     assert.equal(plan.run, true)
     assert.deepEqual(plan.matrix.include.map(item => item.id), ['browser-node22'])
-    assert.deepEqual(plan.matrix.include[0]?.reasons, ['resolution-graph-incomplete'])
+    assert.deepEqual(plan.matrix.include[0]?.reasons, ['runtime-graph-incomplete'])
   })
 
   it('retests the whole maintained default corpus when the official DSH coordinate changes', () => {

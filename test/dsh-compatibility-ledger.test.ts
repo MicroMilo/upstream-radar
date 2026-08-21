@@ -137,6 +137,31 @@ describe('DSH compatibility ledger', () => {
     assert.match(renderDshCompatibilityLedgerMerge(drifted), /resolution-drift/)
   })
 
+  it('does not call a non-semantic pnpm lockfile rewrite resolution drift', () => {
+    const first = mergeDshCompatibilityLedger({
+      ledger: emptyDshCompatibilityLedger(),
+      expected: [expected],
+      reports: [report()],
+    })
+    const rewritten = mergeDshCompatibilityLedger({
+      ledger: first.ledger,
+      expected: [expected],
+      reports: [report({
+        resolution: {
+          profileLockfile: {
+            sha256: 'f'.repeat(64),
+            bytes: 1300,
+            graphDigest: `sha256:${'e'.repeat(64)}`,
+            nodes: 12,
+            edges: 14,
+            unresolved: 0,
+          },
+        },
+      })],
+    })
+    assert.equal(rewritten.transitions[0]?.status, 'compatible')
+  })
+
   it('retains bounded unresolved profile edges so an incomplete graph is explainable', () => {
     const merged = mergeDshCompatibilityLedger({
       ledger: emptyDshCompatibilityLedger(),
@@ -157,6 +182,22 @@ describe('DSH compatibility ledger', () => {
               kind: 'peer',
             }],
           },
+          runtimeGraph: {
+            digest: `sha256:${'f'.repeat(64)}`,
+            nodes: 2,
+            edges: 1,
+            unresolved: 1,
+            unresolvedDependencies: [{
+              from: 'node_modules/example',
+              name: 'host-only',
+              spec: '^2.0.0',
+              kind: 'peer',
+            }],
+            hostRuntime: {
+              source: 'dsh-profile-fallback',
+              resolvedNodes: 1,
+            },
+          },
         },
       })],
     })
@@ -166,5 +207,18 @@ describe('DSH compatibility ledger', () => {
       spec: '^2.0.0',
       kind: 'peer',
     }])
+    assert.deepEqual(merged.ledger.entries[0]?.resolution?.runtimeGraph, {
+      digest: `sha256:${'f'.repeat(64)}`,
+      nodes: 2,
+      edges: 1,
+      unresolved: 1,
+      unresolvedDependencies: [{
+        from: 'node_modules/example',
+        name: 'host-only',
+        spec: '^2.0.0',
+        kind: 'peer',
+      }],
+      hostRuntime: { source: 'dsh-profile-fallback', resolvedNodes: 1 },
+    })
   })
 })

@@ -24,6 +24,10 @@ All notable changes to Upstream Radar are documented here.
   store layout. A green install/load does not satisfy a compatibility cell
   until that graph is complete; missing or unresolved graph evidence stays
   actionable.
+- Build a second, effective runtime graph from the installed plugin profile and
+  DSH's shared host dependency plane. This resolves normal DSH-provided peers
+  without hiding genuine missing edges, and makes the effective graph—not the
+  profile lockfile alone—the compatibility-coverage criterion.
 - Surface `resolution-drift` when the same exact plugin/DSH/runtime contract
   resolves to a different profile dependency graph on a later clean install.
 - Add configured Node runtime profiles. A static Node-engine mismatch prevents

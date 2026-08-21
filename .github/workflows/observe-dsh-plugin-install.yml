@@ -224,6 +224,7 @@ jobs:
             } else {
               lines.push(
                 `- Profile graph coverage: ${inline(report.resolution?.profileLockfile?.nodes ?? 'unknown')} node(s), ${inline(report.resolution?.profileLockfile?.edges ?? 'unknown')} edge(s), ${inline(report.resolution?.profileLockfile?.unresolved ?? 'unknown')} unresolved edge(s)`,
+                `- Effective runtime graph: \`${inline(report.resolution?.runtimeGraph?.digest ?? 'not established')}\`; ${inline(report.resolution?.runtimeGraph?.nodes ?? 'unknown')} node(s), ${inline(report.resolution?.runtimeGraph?.edges ?? 'unknown')} edge(s), ${inline(report.resolution?.runtimeGraph?.unresolved ?? 'unknown')} unresolved edge(s)`,
                 `- Result: \`${inline(report.result)}\` — ${inline(report.reason)}`,
                 `- Exact artifact: \`sha256:${inline(report.artifact?.sha256)}\``,
                 `- Runtime: Node \`${inline(report.runtime?.nodeVersion)}\` on \`${inline(`${report.runtime?.platform}/${report.runtime?.architecture}`)}\`; pnpm \`${inline(report.runtime?.packageManager?.version)}\``,
@@ -237,7 +238,9 @@ jobs:
                 `- Isolation: \`${inline(report.boundary?.isolationProviderClaim)}\`; no repository secrets were passed into the container.`,
               )
               const endpoints = (report.observations?.install?.network ?? []).slice(0, 5)
-              const graphGaps = (report.resolution?.profileLockfile?.unresolvedDependencies ?? []).slice(0, 8)
+              const graphGaps = (report.resolution?.runtimeGraph?.unresolvedDependencies
+                ?? report.resolution?.profileLockfile?.unresolvedDependencies
+                ?? []).slice(0, 8)
               if (endpoints.length > 0) {
                 lines.push('- First observed install destinations:')
                 for (const event of endpoints) lines.push(`  - \`${inline(`${event.address}${event.port === undefined ? '' : `:${event.port}`}`)}\` (${inline(event.operation)}, count ${inline(event.count)})`)

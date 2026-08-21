@@ -5,6 +5,7 @@ import { lstat, mkdir, mkdtemp, open, readdir, rm, writeFile } from 'node:fs/pro
 import { tmpdir } from 'node:os'
 import { basename, join, relative, resolve, sep } from 'node:path'
 import { parsePnpmLockGraph } from './graph.js'
+import { parseInstalledNodeModulesGraph } from './installed-graph.js'
 import { parseNpmSpec } from './npm.js'
 import type { DependencyKind } from './radar-types.js'
 import { satisfiesSemverRange } from './semver.js'
@@ -139,6 +140,24 @@ export interface DshInstallProfileGraphGap {
   kind: DependencyKind
 }
 
+/**
+ * The dependency tree DSH can actually resolve after installing the plugin.
+ * Unlike the profile lockfile alone, this may include the shared DSH host
+ * dependency plane that satisfies plugin peer dependencies.
+ */
+export interface DshInstallRuntimeGraphEvidence {
+  digest: string
+  nodes: number
+  edges: number
+  unresolved: number
+  unresolvedDependencies?: DshInstallProfileGraphGap[]
+  hostRuntime?: {
+    source: 'dsh-profile-fallback' | 'dsh-process'
+    resolvedNodes: number
+    dshVersion?: string
+  }
+}
+
 export interface DshInstallObservationReport {
   schema: typeof DSH_INSTALL_OBSERVATION_SCHEMA
   tool: { name: 'upstream-radar'; version: string }
@@ -187,6 +206,8 @@ export interface DshInstallObservationReport {
   resolution: {
     /** The exact DSH profile lockfile produced by the isolated install, never its contents. */
     profileLockfile?: DshInstallProfileLockfileEvidence
+    /** The final profile plus shared-DSH-host graph observed after loading. */
+    runtimeGraph?: DshInstallRuntimeGraphEvidence
   }
   result: DshInstallObservationResult
   reason: string
@@ -862,7 +883,7 @@ function profileGraphRoot(manifest: Record<string, unknown>): { name: string, ve
     : SYNTHETIC_PROFILE_GRAPH_ROOT
 }
 
-function profileGraphGaps(graph: ReturnType<typeof parsePnpmLockGraph>): DshInstallProfileGraphGap[] | undefined {
+function graphGaps(graph: { unresolved?: readonly DshInstallProfileGraphGap[] }): DshInstallProfileGraphGap[] | undefined {
   if (graph.unresolved === undefined || graph.unresolved.length === 0) return undefined
   return graph.unresolved.slice(0, MAX_PROFILE_GRAPH_GAPS).map(gap => ({
     from: bounded(gap.from, 512),
@@ -884,7 +905,7 @@ async function profileResolutionEvidence(dshHome: string): Promise<DshInstallObs
     const manifestBuffer = await readRegularFileNoFollow(join(profileDirectory, 'package.json'), 4 * 1024 * 1024)
     const manifest = JSON.parse(manifestBuffer.toString('utf8')) as Record<string, unknown>
     const graph = parsePnpmLockGraph(lockfile.toString('utf8'), profileGraphRoot(manifest))
-    const graphGaps = profileGraphGaps(graph)
+    const gaps = graphGaps(graph)
     return {
       profileLockfile: {
         ...profileLockfile,
@@ -892,12 +913,59 @@ async function profileResolutionEvidence(dshHome: string): Promise<DshInstallObs
         nodes: graph.nodes.length,
         edges: graph.edges.length,
         unresolved: graph.unresolved?.length ?? 0,
-        ...(graphGaps === undefined ? {} : { unresolvedDependencies: graphGaps }),
+        ...(gaps === undefined ? {} : { unresolvedDependencies: gaps }),
       },
     }
   } catch {
     return { profileLockfile }
   }
+}
+
+async function runtimeGraphEvidence(
+  dshHome: string,
+  rootPackage: { name: string, version: string },
+): Promise<Pick<DshInstallObservationReport['resolution'], 'runtimeGraph'>> {
+  try {
+    const graph = await parseInstalledNodeModulesGraph(
+      join(dshHome, 'profiles', PROFILE),
+      rootPackage,
+      {
+        hostNodeModulesDirectory: join(dshHome, 'profiles', 'node_modules'),
+        hostRuntimeSource: 'dsh-profile-fallback',
+      },
+    )
+    if (graph.digest === undefined) return {}
+    const gaps = graphGaps(graph)
+    return {
+      runtimeGraph: {
+        digest: graph.digest,
+        nodes: graph.nodes.length,
+        edges: graph.edges.length,
+        unresolved: graph.unresolved?.length ?? 0,
+        ...(gaps === undefined ? {} : { unresolvedDependencies: gaps }),
+        ...(graph.hostRuntime === undefined ? {} : {
+          hostRuntime: {
+            source: graph.hostRuntime.source,
+            resolvedNodes: graph.hostRuntime.resolvedNodes,
+            ...(graph.hostRuntime.package === undefined ? {} : { dshVersion: graph.hostRuntime.package.version }),
+          },
+        }),
+      },
+    }
+  } catch {
+    return {}
+  }
+}
+
+async function resolutionEvidence(
+  dshHome: string,
+  rootPackage: { name: string, version: string },
+): Promise<DshInstallObservationReport['resolution']> {
+  const [profile, runtime] = await Promise.all([
+    profileResolutionEvidence(dshHome),
+    runtimeGraphEvidence(dshHome, rootPackage),
+  ])
+  return { ...profile, ...runtime }
 }
 
 function finishReport(report: DshInstallObservationReport, result: DshInstallObservationResult, reason: string): DshInstallObservationReport {
@@ -1103,7 +1171,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       const afterInstall = await snapshotSandbox(sandboxRoot, environment)
       report.observations.install = await readTrace(installTracePath, sandboxRoot)
       report.filesystem.install = diffSnapshots(beforeInstall, afterInstall)
-      report.resolution = await profileResolutionEvidence(environment.DSH_HOME as string)
+      report.resolution = await resolutionEvidence(environment.DSH_HOME as string, spec)
       report.stages.install = commandStage(installResult)
       if (installResult.timedOut || installResult.outputExceeded || installResult.launchError !== undefined) {
         return finishReport(report, 'unknown', 'the plugin install did not produce a bounded command result')
@@ -1142,7 +1210,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       report.filesystem.load = diffSnapshots(afterInstall, afterLoad)
       // Loading may trigger one final DSH profile reconciliation. Preserve the
       // final resolved graph rather than only the state immediately after add.
-      report.resolution = await profileResolutionEvidence(environment.DSH_HOME as string)
+      report.resolution = await resolutionEvidence(environment.DSH_HOME as string, spec)
       report.stages.load = commandStage(loadResult)
       if (loadResult.timedOut || loadResult.outputExceeded || loadResult.launchError !== undefined) {
         return finishReport(report, 'unknown', 'the plugin load did not produce a bounded command result')
@@ -1185,6 +1253,7 @@ export function renderDshInstallObservation(report: DshInstallObservationReport)
     `Load evidence: ${load.processes.length} process, ${load.network.length} network, ${load.fileWrites.length} file-write event(s); trace ${load.coverage.status}`,
     `Final filesystem delta: install +${report.filesystem.install.totals.created} ~${report.filesystem.install.totals.modified} -${report.filesystem.install.totals.deleted}; load +${report.filesystem.load.totals.created} ~${report.filesystem.load.totals.modified} -${report.filesystem.load.totals.deleted}`,
     `Resolved profile graph: ${report.resolution.profileLockfile?.graphDigest ?? 'not established'}${report.resolution.profileLockfile === undefined ? '' : ` (lock sha256:${report.resolution.profileLockfile.sha256.slice(0, 12)}…)`}`,
+    `Effective DSH runtime graph: ${report.resolution.runtimeGraph?.digest ?? 'not established'}${report.resolution.runtimeGraph === undefined ? '' : ` (${report.resolution.runtimeGraph.nodes} nodes, ${report.resolution.runtimeGraph.edges} edges, ${report.resolution.runtimeGraph.unresolved} unresolved)`}`,
     '',
   ]
   for (const [name, stage] of Object.entries(report.stages)) {
