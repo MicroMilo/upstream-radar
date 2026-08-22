@@ -50,6 +50,8 @@ Edges retain whether they are runtime, development, optional, or peer dependenci
 
 For a real DSH profile, initialization follows the installed `node_modules` resolution tree exposed by that profile without importing package code or running lifecycle scripts. This captures duplicate versions and profile-local overrides. During a native DSH run, the adapter also starts from the exact `process.argv[1]` entrypoint, verifies the nearest manifest is exactly `@deepseek-ai/dsh`, and discovers the DSH process's usable `node_modules` plane with bounded read-only filesystem checks. It never imports DSH or executes package code to do this. DSH may maintain a shared host plane outside the profile for its runtime closure; Radar prefers the plane discovered from the running process and uses the profile-level plane as a fallback when it is not available. It marks those physical nodes as `dsh-host`, includes their exact versions in OSV matching, and records the evidence source in the graph and status snapshot. A required edge that is absent from both places stays explicit and makes coverage incomplete. Radar preserves npm's `peerDependenciesMeta.optional` declaration, so an optional platform package does not become a required coverage failure. A missing `@deepseek-ai/dsh-*` or Cordis peer is separately counted as an unobserved DSH host dependency; without an exact host version, Radar does not query or guess it. The public npm deep collector remains available for explicit registry comparisons; it resolves in a temporary project with lifecycle scripts disabled and parses `package-lock.json`. In both paths, an unresolved edge stays explicit; it is never silently counted as checked.
 
+An external symlink in a profile is not proof that its target belongs to DSH. If that target leaves the configured profile plane and no verified running-process host plane is available, the collector refuses it rather than widening the static read boundary. The live adapter can then rebuild the same profile from the exact DSH entrypoint and accept only paths inside that bounded host plane.
+
 The pre-install `graph npm-lock` and `graph pnpm-lock` commands use bounded, dependency-free parsers for npm v2/v3 and pnpm v6/v9 lockfiles. The npm parser can synthesize a project root from `packages[""]`, while the pnpm parser can synthesize one from the `importers` section; both retain unresolved or ambiguous dependency targets instead of guessing. They do not run package managers, install hooks, plugin code, or network requests; their output uses the same canonical graph shape as the installed collector, so a CI job can inspect the graph before DSH admission.
 
 `init --pnpm-lock <path>` and `init --npm-lock <path>` wrap the collectors in a normal static Radar config. When `package.json` is beside the lockfile, the CLI reads the exact root name and version from it; for npm project roots, `packages[""]` becomes a synthetic workspace node and root development dependencies are excluded. `--root <name>@<version>` remains an explicit override for another workspace root. The config can be passed to `radar check` or `radar watch`, which then uses the same exact-version OSV matching and durable event lifecycle as an installed DSH profile. This keeps the pre-install path useful for plugin authors and CI without pretending that it has already loaded the plugin into DSH.
@@ -109,34 +111,75 @@ marked complete.
 ## Isolated install/load observation
 
 The upstream observer's static job and the dynamic execution job are separate
-trust domains. The static job watches the official `@deepseek-ai/dsh` package
-and maintained plugin coordinates. A baseline, source-only commit, or unchanged
-published coordinate does nothing. A new exact DSH publication selects the
-maintained plugin corpus; a mapped plugin publication selects only that plugin.
+trust domains. The static job watches the official `@deepseek-ai/dsh` package,
+maintained plugin coordinates, source/lockfile graph facts, and the reviewed
+execution contract. It reconciles those facts against a durable compatibility
+ledger. A cell is selected not only after a DSH/plugin publication, but also
+when it has no evidence, its evidence is older than the corpus refresh window,
+or its static facts, runtime profile, or approved-build policy no longer match.
+Package changes are therefore an immediate invalidation signal rather than the
+sole trigger for code execution.
 
 Each selected matrix entry starts on a fresh GitHub-hosted VM. The target code
 then runs inside a restricted container that receives no repository/model
 secret, host workspace, or Docker socket. Radar first packs the exact npm
 coordinate with lifecycle scripts disabled and verifies its identity and DSH
-bundle declaration. DSH installs that local tarball with lifecycle scripts
-enabled, registers it, and loads it with `--dump-config`. Linux `strace` evidence
-and before/after filesystem snapshots are kept separately for install and load.
+bundle declaration. From that same tarball it records every non-optional peer
+range and performs a bounded, syntax-only scan for literal runtime imports,
+type-only references, or no observed literal reference. This is deliberately
+not a proof that a dynamic import cannot exist.
+
+DSH installs the local tarball with lifecycle scripts enabled, registers it,
+then runs a trusted one-shot wrapper from the profile. The wrapper first calls
+`import.meta.resolve()` for every declared required peer, records the result in
+a new controlled file, imports the plugin from the profile's real Node
+resolution anchor, and boots the `headless` profile with `--help`. Radar then
+reads the concrete package manifest that Node resolved and compares the actual
+version to the declared range. This forces both direct plugin imports and the
+Cordis loader to resolve the bundle while asking the one-shot surface to exit.
+`--dump-config` is intentionally not used as the runtime check because it
+composes patches without evaluating bundle code. Linux `strace` evidence and
+before/after filesystem snapshots are kept separately for install and boot.
 
 ```text
-exact DSH/plugin coordinate change
-  -> deterministic install plan
+desired plugin × DSH × runtime-policy cell
+  -> static reconciliation against the compatibility ledger
+  -> missing / stale / invalidated cell only
   -> one fresh hosted VM per plugin
   -> restricted container
   -> exact tarball SHA-256
+  -> static peer declarations + literal-use classification
   -> traced DSH install
   -> registration check
-  -> traced DSH load
-  -> bounded JSON artifact
+  -> per-peer profile resolution
+  -> traced DSH headless boot
+  -> bounded JSON artifact + complete profile-plus-DSH-host graph
+  -> exact-cell ledger merge + compatibility IR + reverse index
 ```
 
-The result vocabulary separates `install-failed`, `load-failed`, `compatible`,
-and `unknown`; missing or truncated tracing never becomes a clean result. This
-backend is useful compatibility and behavior evidence, not hostile-code proof.
+The result vocabulary separates `install-failed`, `load-failed`,
+`peer-contract-incompatible`, `compatible`, and `unknown`; missing or truncated tracing never becomes a clean result. A
+static Node-engine mismatch is recorded before plugin execution and may open a
+configured alternate runtime cell, so a Node 22 failure is not prematurely
+called a global plugin failure. The ledger accepts a dynamic report only if its
+case id, plugin tarball, DSH version, Node major, and build approvals match the
+static plan. It also compares the resulting profile-lockfile digest on each
+retest; an exact pair that resolves a different transitive graph is reported as
+`resolution-drift` even if its install/load result remains compatible. This
+same pair is not considered covered when its final effective profile-plus-host
+graph cannot be completed: that is retained as an evidence gap, not hidden
+behind a green install result. The collector separates missing optional
+platform binaries from required runtime/peer edges, then compares every direct
+required plugin peer with the concrete version exposed by DSH. A missing or
+out-of-range host peer is `peer-contract-incompatible` even if a superficial
+configuration composition succeeded. The static-use tag prevents a missing
+type-only declaration from being presented as a reproduced runtime crash; a
+runtime import plus an out-of-range host version is a stronger follow-up signal
+but still does not claim every client path has executed. The ledger materializes
+these direct relations into a compact compatibility IR and host-package reverse
+index, so a later DSH host dependency change can be routed directly to exact
+plugin cells. This backend is useful compatibility and behavior evidence, not
+hostile-code proof.
 Docker shares the hosted VM kernel, and code in the same container may attempt
 to tamper with its trace/output. Moving the collector outside a Firecracker
 guest is the later high-assurance boundary.

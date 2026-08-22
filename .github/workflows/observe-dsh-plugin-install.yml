@@ -28,6 +28,11 @@ on:
         required: false
         default: ''
         type: string
+      node_major:
+        description: Node.js major version inside the isolated observer image
+        required: false
+        default: '22'
+        type: string
   workflow_call:
     inputs:
       plugin:
@@ -46,6 +51,10 @@ on:
       allow_builds:
         required: false
         default: ''
+        type: string
+      node_major:
+        required: false
+        default: '22'
         type: string
 
 # The target package executes arbitrary lifecycle and load code. This workflow
@@ -72,6 +81,7 @@ jobs:
           RADAR_CASE_ID: ${{ inputs.case_id }}
           RADAR_TIMEOUT_SECONDS: ${{ inputs.timeout_seconds }}
           RADAR_ALLOW_BUILDS: ${{ inputs.allow_builds }}
+          RADAR_NODE_MAJOR: ${{ inputs.node_major }}
         run: |
           set -euo pipefail
           exact_package='^(@[^/@[:space:]]+/[^@/[:space:]]+|[^@/[:space:]]+)@[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'
@@ -87,6 +97,10 @@ jobs:
           fi
           if [[ ! "$RADAR_CASE_ID" =~ $case_id ]]; then
             echo 'case_id must be a short lowercase label' >&2
+            exit 1
+          fi
+          if [[ ! "$RADAR_NODE_MAJOR" =~ ^(1[6-9]|2[0-9]|3[0-9]|40)$ ]]; then
+            echo 'node_major must be a supported Node.js major version between 16 and 40' >&2
             exit 1
           fi
           if [[ ! "$RADAR_TIMEOUT_SECONDS" =~ ^[0-9]+$ ]] || (( RADAR_TIMEOUT_SECONDS < 30 || RADAR_TIMEOUT_SECONDS > 600 )); then
@@ -111,9 +125,11 @@ jobs:
             done
           fi
 
-      - name: Build the pinned observer image
+      - name: Build the selected observer runtime image
         shell: bash
-        run: docker build --file docker/dsh-install-observer.Dockerfile --tag upstream-radar-install-observer:${{ github.run_id }} .
+        env:
+          RADAR_NODE_MAJOR: ${{ inputs.node_major }}
+        run: docker build --build-arg NODE_MAJOR="$RADAR_NODE_MAJOR" --file docker/dsh-install-observer.Dockerfile --tag upstream-radar-install-observer:${{ github.run_id }} .
 
       - name: Install and load inside the restricted container
         id: observe
@@ -122,6 +138,7 @@ jobs:
         env:
           RADAR_PLUGIN: ${{ inputs.plugin }}
           RADAR_DSH_VERSION: ${{ inputs.dsh_version }}
+          RADAR_CASE_ID: ${{ inputs.case_id }}
           RADAR_TIMEOUT_SECONDS: ${{ inputs.timeout_seconds }}
           RADAR_IMAGE: upstream-radar-install-observer:${{ github.run_id }}
           RADAR_REPORT_DIRECTORY: ${{ runner.temp }}/upstream-radar-install-observation
@@ -163,6 +180,7 @@ jobs:
             "$RADAR_IMAGE" \
             "$RADAR_PLUGIN" \
             --dsh-version "$RADAR_DSH_VERSION" \
+            --case-id "$RADAR_CASE_ID" \
             --isolation-provider github-actions-hosted-runner \
             --timeout "$RADAR_TIMEOUT_SECONDS" \
             --execute \
@@ -180,6 +198,7 @@ jobs:
         env:
           RADAR_PLUGIN: ${{ inputs.plugin }}
           RADAR_DSH_VERSION: ${{ inputs.dsh_version }}
+          RADAR_NODE_MAJOR: ${{ inputs.node_major }}
           RADAR_OBSERVER_EXIT: ${{ steps.observe.outputs.exit }}
           RADAR_REPORT: ${{ runner.temp }}/upstream-radar-install-observation/report.json
         run: |
@@ -192,6 +211,7 @@ jobs:
             '',
             `- Plugin: \`${inline(process.env.RADAR_PLUGIN)}\``,
             `- DSH: \`${inline(process.env.RADAR_DSH_VERSION)}\``,
+            `- Requested Node major: \`${inline(process.env.RADAR_NODE_MAJOR)}\``,
             `- Observer exit: \`${inline(process.env.RADAR_OBSERVER_EXIT)}\``,
           ]
           if (!existsSync(process.env.RADAR_REPORT)) {
@@ -203,10 +223,15 @@ jobs:
               lines.push('- Result: `unknown` — report JSON was invalid.')
             } else {
               lines.push(
+                `- Profile graph coverage: ${inline(report.resolution?.profileLockfile?.nodes ?? 'unknown')} node(s), ${inline(report.resolution?.profileLockfile?.edges ?? 'unknown')} edge(s), ${inline(report.resolution?.profileLockfile?.unresolved ?? 'unknown')} unresolved edge(s)`,
+                `- Effective runtime graph: \`${inline(report.resolution?.runtimeGraph?.digest ?? 'not established')}\`; ${inline(report.resolution?.runtimeGraph?.nodes ?? 'unknown')} node(s), ${inline(report.resolution?.runtimeGraph?.edges ?? 'unknown')} edge(s), ${inline(report.resolution?.runtimeGraph?.unresolved ?? 'unknown')} required unresolved edge(s), ${inline(report.resolution?.runtimeGraph?.optionalUnavailable ?? 0)} optional package(s) unavailable on this runtime`,
+                `- Plugin peer contracts: ${inline(report.resolution?.runtimeGraph?.pluginPeerContracts?.satisfied ?? 'unknown')}/${inline(report.resolution?.runtimeGraph?.pluginPeerContracts?.declared ?? 'unknown')} satisfied; ${inline(report.resolution?.runtimeGraph?.pluginPeerContracts?.mismatched ?? 'unknown')} mismatched, ${inline(report.resolution?.runtimeGraph?.pluginPeerContracts?.missing ?? 'unknown')} missing, ${inline(report.resolution?.runtimeGraph?.pluginPeerContracts?.indeterminate ?? 'unknown')} indeterminate`,
+                `- Effective runtime graph collector: ${inline(report.resolution?.runtimeGraphError ?? 'captured')}`,
                 `- Result: \`${inline(report.result)}\` — ${inline(report.reason)}`,
                 `- Exact artifact: \`sha256:${inline(report.artifact?.sha256)}\``,
                 `- Runtime: Node \`${inline(report.runtime?.nodeVersion)}\` on \`${inline(`${report.runtime?.platform}/${report.runtime?.architecture}`)}\`; pnpm \`${inline(report.runtime?.packageManager?.version)}\``,
                 `- Plugin Node requirement: \`${inline(report.artifact?.nodeEngine ?? 'not declared')}\``,
+                `- Resolved profile graph: \`${inline(report.resolution?.profileLockfile?.graphDigest ?? 'not established')}\``,
                 `- Approved dependency builds: \`${inline(report.boundary?.approvedDependencyBuilds?.join(', ') || 'none')}\``,
                 `- Declared lifecycle scripts: \`${inline(report.artifact?.lifecycleScripts?.join(', ') || 'none')}\``,
                 `- Install behavior: ${count(report.observations?.install?.processes)} process exec(s), ${count(report.observations?.install?.network)} network attempt(s), ${count(report.observations?.install?.fileWrites)} file-write syscall(s)`,
@@ -215,9 +240,21 @@ jobs:
                 `- Isolation: \`${inline(report.boundary?.isolationProviderClaim)}\`; no repository secrets were passed into the container.`,
               )
               const endpoints = (report.observations?.install?.network ?? []).slice(0, 5)
+              const graphGaps = (report.resolution?.runtimeGraph?.unresolvedDependencies
+                ?? report.resolution?.profileLockfile?.unresolvedDependencies
+                ?? []).slice(0, 8)
+              const peerIssues = (report.resolution?.runtimeGraph?.pluginPeerContracts?.issues ?? []).slice(0, 8)
               if (endpoints.length > 0) {
                 lines.push('- First observed install destinations:')
                 for (const event of endpoints) lines.push(`  - \`${inline(`${event.address}${event.port === undefined ? '' : `:${event.port}`}`)}\` (${inline(event.operation)}, count ${inline(event.count)})`)
+              }
+              if (graphGaps.length > 0) {
+                lines.push('- First unresolved required graph edges:')
+                for (const gap of graphGaps) lines.push(`  - \`${inline(gap.from)}\` → \`${inline(gap.name)}\` (${inline(gap.kind)}: \`${inline(gap.spec)}\`)`)
+              }
+              if (peerIssues.length > 0) {
+                lines.push('- Direct plugin peer-contract findings:')
+                for (const issue of peerIssues) lines.push(`  - \`${inline(issue.name)}\`: ${inline(issue.status)}; requires \`${inline(issue.required)}\`${issue.resolvedVersion === undefined ? '' : `, resolved \`${inline(issue.resolvedVersion)}\``}; static use: \`${inline(issue.staticUsage ?? 'unknown')}\``)
               }
             }
           }
@@ -234,7 +271,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Fail the check unless the exact pair installed and loaded
+      - name: Fail the check unless the exact pair has compatible behavior and a complete host contract
         if: always()
         shell: bash
         env:

@@ -1,5 +1,10 @@
 {
   "schema": "upstream-radar.dsh-install-targets/v1alpha1",
+  "refreshAfterHours": 168,
+  "runtimeProfiles": [
+    { "id": "node22", "nodeMajor": 22 },
+    { "id": "node24", "nodeMajor": 24 }
+  ],
   "plugins": [
     {
       "id": "feishu-bot",
@@ -55,6 +60,7 @@
       "id": "openpencil",
       "spec": "@zseven-w/dsh-openpencil@0.1.0-rc.1",
       "observerTargetId": "dsh-openpencil",
+      "runtimeProfiles": ["node24"],
       "reason": "A Node 24-targeted design plugin that exercises host tools and a broad web-client peer surface."
     }
   ]

@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, it } from 'node:test'
 import {
+  discoverDshRuntimeHostNodeModulesDirectory,
   discoverDshRuntimeNodeModulesDirectory,
   discoverDshRuntimePackage,
   discoverDshRuntimePackageDirectory,
@@ -25,6 +26,10 @@ describe('DSH runtime dependency discovery', () => {
         discoverDshRuntimeNodeModulesDirectory(join(dshRoot, 'lib', 'bin.js')),
         await realpath(join(root, 'node_modules')),
       )
+      assert.equal(
+        discoverDshRuntimeHostNodeModulesDirectory(join(dshRoot, 'lib', 'bin.js')),
+        await realpath(join(root, 'node_modules')),
+      )
       assert.deepEqual(discoverDshRuntimePackage(join(dshRoot, 'lib', 'bin.js')), {
         ecosystem: 'npm',
         name: '@deepseek-ai/dsh',
@@ -36,6 +41,28 @@ describe('DSH runtime dependency discovery', () => {
         name: '@deepseek-ai/dsh',
         version: '0.1.0-rc.6',
       })
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('widens a pnpm DSH runtime plane to its enclosing virtual store', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-dsh-runtime-'))
+    const hostNodeModules = join(root, 'node_modules')
+    const dshRoot = join(hostNodeModules, '.pnpm', '@deepseek-ai+dsh@0.1.0-rc.8', 'node_modules', '@deepseek-ai', 'dsh')
+    try {
+      await mkdir(join(dshRoot, 'lib'), { recursive: true })
+      await writeFile(join(dshRoot, 'package.json'), JSON.stringify({ name: '@deepseek-ai/dsh', version: '0.1.0-rc.8' }))
+      await writeFile(join(dshRoot, 'lib', 'bin.js'), '')
+
+      assert.equal(
+        discoverDshRuntimeNodeModulesDirectory(join(dshRoot, 'lib', 'bin.js')),
+        await realpath(join(dshRoot, '..', '..')),
+      )
+      assert.equal(
+        discoverDshRuntimeHostNodeModulesDirectory(join(dshRoot, 'lib', 'bin.js')),
+        await realpath(hostNodeModules),
+      )
     } finally {
       await rm(root, { recursive: true, force: true })
     }

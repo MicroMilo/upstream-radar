@@ -533,7 +533,7 @@ Usage:
   upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
-  upstream-radar probe dsh-install [npm:]<package>@<exact-version> --dsh-version <exact-version> --isolation-provider <github-actions-hosted-runner|firecracker|other> --execute [--allow-build <package>]... [--timeout <seconds>] [--report <report.json>] [--json]
+  upstream-radar probe dsh-install [npm:]<package>@<exact-version> --dsh-version <exact-version> [--case-id <stable-label>] --isolation-provider <github-actions-hosted-runner|firecracker|other> --execute [--allow-build <package>]... [--timeout <seconds>] [--report <report.json>] [--json]
   upstream-radar review dsh-plugin [npm:]<package>@<exact-version> --dsh-version <v1>,<v2>,... [--json]
   upstream-radar demo [--json]
   upstream-radar case dsh-web-ui [--json]
@@ -1248,6 +1248,7 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
     throw new Error('probe dsh-install requires an exact npm package')
   }
   let dshVersion: string | undefined
+  let caseId: string | undefined
   let isolationProvider: InstallObservationIsolationProvider | undefined
   let timeoutSeconds = 180
   let reportPath: string | undefined
@@ -1260,12 +1261,16 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
       execute = true
     } else if (argument === '--json') {
       json = true
-    } else if (argument === '--dsh-version' || argument === '--isolation-provider' || argument === '--allow-build' || argument === '--timeout' || argument === '--report') {
+    } else if (argument === '--dsh-version' || argument === '--case-id' || argument === '--isolation-provider' || argument === '--allow-build' || argument === '--timeout' || argument === '--report') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--dsh-version') {
         if (dshVersion !== undefined) throw new Error('probe dsh-install accepts only one --dsh-version')
         dshVersion = value
+      } else if (argument === '--case-id') {
+        if (caseId !== undefined) throw new Error('probe dsh-install accepts only one --case-id')
+        if (!/^[a-z0-9][a-z0-9._-]{0,63}$/.test(value)) throw new Error('--case-id must be a short lowercase label')
+        caseId = value
       } else if (argument === '--isolation-provider') {
         if (value !== 'github-actions-hosted-runner' && value !== 'firecracker' && value !== 'other') {
           throw new Error('--isolation-provider must be github-actions-hosted-runner, firecracker or other')
@@ -1296,6 +1301,7 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
   const report = await observeDshPluginInstall({
     packageSpec,
     dshVersion,
+    ...(caseId === undefined ? {} : { caseId }),
     allowExecution: true,
     isolationProvider,
     allowedBuilds,

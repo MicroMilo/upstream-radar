@@ -1,12 +1,21 @@
 import { createHash } from 'node:crypto'
 import { spawn } from 'node:child_process'
 import { constants } from 'node:fs'
-import { lstat, mkdir, mkdtemp, open, readdir, rm, writeFile } from 'node:fs/promises'
+import { lstat, mkdir, mkdtemp, open, readdir, realpath, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { basename, join, relative, resolve, sep } from 'node:path'
+import { basename, dirname, join, relative, resolve, sep } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { parsePnpmLockGraph } from './graph.js'
+import {
+  discoverDshRuntimeHostNodeModulesDirectory,
+  discoverDshRuntimePackage,
+  discoverDshRuntimePackageDirectory,
+} from './dsh-runtime.js'
+import { parseInstalledNodeModulesGraph } from './installed-graph.js'
 import { parseNpmSpec } from './npm.js'
+import type { DependencyKind, RootPeerContract } from './radar-types.js'
 import { satisfiesSemverRange } from './semver.js'
-import { parseNpmTarball } from './tar.js'
+import { parseNpmTarball, type TarEntry } from './tar.js'
 import { TOOL_VERSION } from './version.js'
 
 export const DSH_INSTALL_OBSERVATION_SCHEMA = 'upstream-radar.dsh-install-observation/v1alpha1' as const
@@ -22,10 +31,21 @@ const MAX_TRACE_EVENTS = 512
 const MAX_SNAPSHOT_ENTRIES = 25_000
 const MAX_DIFF_PATHS = 512
 const MAX_ALLOWED_BUILDS = 16
+const MAX_PROFILE_LOCKFILE_BYTES = 16 * 1024 * 1024
+const MAX_PROFILE_GRAPH_GAPS = 32
+const MAX_PLUGIN_PEERS = 64
+const MAX_STATIC_PEER_SCAN_BYTES = 8 * 1024 * 1024
+const MAX_RUNTIME_DISCOVERY_DIRECTORIES = 12_000
+const MAX_RUNTIME_DISCOVERY_DEPTH = 16
 const PROFILE = 'headless'
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare'] as const
+const PROFILE_LOCKFILE_CANDIDATES = [
+  ['pnpm-lock.yaml'],
+  ['node_modules', '.pnpm', 'lock.yaml'],
+] as const
+const SYNTHETIC_PROFILE_GRAPH_ROOT = { name: 'dsh-profile-headless', version: '0.0.0' } as const
 
-export type DshInstallObservationResult = 'compatible' | 'runtime-incompatible' | 'install-failed' | 'load-failed' | 'unknown'
+export type DshInstallObservationResult = 'compatible' | 'runtime-incompatible' | 'peer-contract-incompatible' | 'install-failed' | 'load-failed' | 'unknown'
 export type InstallObservationPhase = 'runtime' | 'artifact' | 'profile' | 'install' | 'load'
 export type InstallObservationIsolationProvider = 'github-actions-hosted-runner' | 'firecracker' | 'other'
 
@@ -112,6 +132,93 @@ export interface InstallFilesystemDiff {
   snapshotErrors: number
 }
 
+export interface DshInstallProfileLockfileEvidence {
+  sha256: string
+  bytes: number
+  graphDigest?: string
+  nodes?: number
+  edges?: number
+  unresolved?: number
+  /** A bounded, normalized sample of graph edges that could not be resolved. */
+  unresolvedDependencies?: DshInstallProfileGraphGap[]
+}
+
+export interface DshInstallProfileGraphGap {
+  from: string
+  name: string
+  spec: string
+  kind: DependencyKind
+}
+
+/** A direct, required plugin peer that did not line up with the DSH runtime. */
+export interface DshInstallPeerContractIssue {
+  name: string
+  required: string
+  status: 'mismatched' | 'indeterminate' | 'missing'
+  /** Static evidence explains whether a literal runtime import was observed. */
+  staticUsage: DshInstallPeerStaticUsage
+  resolvedVersion?: string
+}
+
+/**
+ * What the packed artifact itself reveals about a declared peer. This is
+ * intentionally syntactic evidence, not a claim that an unobserved import can
+ * never happen at runtime.
+ */
+export type DshInstallPeerStaticUsage =
+  | 'runtime-import-observed'
+  | 'type-only-reference-observed'
+  | 'no-literal-reference-observed'
+  | 'scan-incomplete'
+
+/** One direct plugin peer requirement aligned to its exact runtime resolution. */
+export interface DshInstallPeerContractRelation {
+  name: string
+  required: string
+  status: 'satisfied' | 'mismatched' | 'indeterminate' | 'missing'
+  staticUsage: DshInstallPeerStaticUsage
+  resolvedVersion?: string
+}
+
+/**
+ * Direct plugin-to-DSH host contracts evaluated from the final installed
+ * graph. This is distinct from whether the generic load probe happened to
+ * exercise every API path.
+ */
+export interface DshInstallPluginPeerContracts {
+  declared: number
+  satisfied: number
+  mismatched: number
+  indeterminate: number
+  missing: number
+  /** Full bounded relation set; this is the plugin-to-DSH compatibility IR boundary. */
+  relations: DshInstallPeerContractRelation[]
+  issues?: DshInstallPeerContractIssue[]
+}
+
+/**
+ * The dependency tree DSH can actually resolve after installing the plugin.
+ * Unlike the profile lockfile alone, this may include the shared DSH host
+ * dependency plane that satisfies plugin peer dependencies.
+ */
+export interface DshInstallRuntimeGraphEvidence {
+  digest: string
+  nodes: number
+  edges: number
+  /** Required runtime/peer gaps only. Platform-selected optional packages are reported separately. */
+  unresolved: number
+  unresolvedDependencies?: DshInstallProfileGraphGap[]
+  /** Optional platform or feature packages absent from this exact runtime. */
+  optionalUnavailable?: number
+  optionalUnavailableDependencies?: DshInstallProfileGraphGap[]
+  pluginPeerContracts: DshInstallPluginPeerContracts
+  hostRuntime?: {
+    source: 'dsh-profile-fallback' | 'dsh-process'
+    resolvedNodes: number
+    dshVersion?: string
+  }
+}
+
 export interface DshInstallObservationReport {
   schema: typeof DSH_INSTALL_OBSERVATION_SCHEMA
   tool: { name: 'upstream-radar'; version: string }
@@ -119,6 +226,7 @@ export interface DshInstallObservationReport {
   scope: 'install-and-load-behavior'
   startedAt: string
   completedAt: string
+  caseId?: string
   dshVersion: string
   runtime: {
     platform: string
@@ -156,6 +264,14 @@ export interface DshInstallObservationReport {
     install: InstallFilesystemDiff
     load: InstallFilesystemDiff
   }
+  resolution: {
+    /** The exact DSH profile lockfile produced by the isolated install, never its contents. */
+    profileLockfile?: DshInstallProfileLockfileEvidence
+    /** The final profile plus shared-DSH-host graph observed after loading. */
+    runtimeGraph?: DshInstallRuntimeGraphEvidence
+    /** Bounded collector diagnostic when the effective graph could not be read. */
+    runtimeGraphError?: string
+  }
   result: DshInstallObservationResult
   reason: string
   boundary: {
@@ -173,6 +289,7 @@ export interface DshInstallObservationReport {
 export interface DshInstallObservationOptions {
   packageSpec: string
   dshVersion: string
+  caseId?: string
   allowExecution: boolean
   isolationProvider: InstallObservationIsolationProvider
   allowedBuilds?: readonly string[]
@@ -217,6 +334,81 @@ interface ParsedArtifact {
   bundlePatch: string
   nodeEngine?: string
   lifecycleScripts: string[]
+  requiredPeerDependencies: ProfilePeerRequirement[]
+}
+
+function isNpmPackageName(value: string): boolean {
+  return /^(?:@[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*|[a-z0-9][a-z0-9._-]*)$/.test(value)
+}
+
+function staticPeerUsage(entries: readonly TarEntry[], requirements: readonly { name: string, required: string }[]): DshInstallPeerStaticUsage[] {
+  const state = new Map(requirements.map(requirement => [requirement.name, 'no-literal-reference-observed' as DshInstallPeerStaticUsage]))
+  let scanned = 0
+  let incomplete = false
+  for (const entry of entries) {
+    if (entry.type !== 'file' || entry.contents === undefined
+      || !/\.(?:[cm]?[jt]sx?|vue|svelte)$/i.test(entry.path)) continue
+    if (scanned + entry.contents.length > MAX_STATIC_PEER_SCAN_BYTES) {
+      incomplete = true
+      continue
+    }
+    scanned += entry.contents.length
+    const text = entry.contents.toString('utf8')
+    const declarationFile = /\.d\.(?:[cm]?ts)$/i.test(entry.path)
+    for (const requirement of requirements) {
+      if (state.get(requirement.name) === 'runtime-import-observed') continue
+      const escaped = requirement.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const literal = `['"]${escaped}(?:/[^'"]*)?['"]`
+      // Stay within one statement line. A wider expression can start at an
+      // unrelated runtime import and accidentally consume a later `import
+      // type`, which would turn declaration-only evidence into a false runtime
+      // claim. Missing a heavily formatted import is safer than that claim.
+      const typeOnly = new RegExp(`(?:^|[;\\n])[\\t ]*import[\\t ]+type\\b[^;\\n]{0,1024}?\\bfrom[\\t ]*${literal}`)
+      const runtime = new RegExp([
+        `(?:^|[;\\n])[\\t ]*import[\\t ]+(?!type\\b)(?:[^;\\n]{0,1024}?[\\t ]+from[\\t ]+)?${literal}`,
+        `(?:^|[;\\n])[\\t ]*export[\\t ]+(?!type\\b)[^;\\n]{0,1024}?[\\t ]+from[\\t ]+${literal}`,
+        `\\b(?:require|import)\\s*\\(\\s*${literal}`,
+      ].join('|'))
+      const literalReference = new RegExp(literal)
+      if (!declarationFile && runtime.test(text)) {
+        state.set(requirement.name, 'runtime-import-observed')
+      } else if (declarationFile ? literalReference.test(text) : typeOnly.test(text)) {
+        state.set(requirement.name, 'type-only-reference-observed')
+      }
+    }
+  }
+  return requirements.map(requirement => {
+    const observed = state.get(requirement.name) ?? 'no-literal-reference-observed'
+    return observed === 'no-literal-reference-observed' && incomplete ? 'scan-incomplete' : observed
+  })
+}
+
+function requiredPeerDependencies(manifest: Record<string, unknown>, entries: readonly TarEntry[]): ProfilePeerRequirement[] {
+  const peers = typeof manifest.peerDependencies === 'object' && manifest.peerDependencies !== null && !Array.isArray(manifest.peerDependencies)
+    ? manifest.peerDependencies as Record<string, unknown>
+    : {}
+  const metadata = typeof manifest.peerDependenciesMeta === 'object' && manifest.peerDependenciesMeta !== null && !Array.isArray(manifest.peerDependenciesMeta)
+    ? manifest.peerDependenciesMeta as Record<string, unknown>
+    : {}
+  const requirements: Array<{ name: string, required: string }> = []
+  for (const [name, rawRange] of Object.entries(peers).sort(([left], [right]) => left.localeCompare(right))) {
+    if (!isNpmPackageName(name)) throw new Error(`packed artifact has an invalid peer dependency name: ${name}`)
+    if (typeof rawRange !== 'string' || rawRange.trim() === '' || rawRange.length > 512) {
+      throw new Error(`packed artifact has an invalid peer dependency range for ${name}`)
+    }
+    const peerMetadata = metadata[name]
+    const optional = typeof peerMetadata === 'object' && peerMetadata !== null && !Array.isArray(peerMetadata)
+      && (peerMetadata as Record<string, unknown>).optional === true
+    if (!optional) requirements.push({ name, required: bounded(rawRange.trim(), 512) })
+  }
+  if (requirements.length > MAX_PLUGIN_PEERS) {
+    throw new Error(`packed artifact declares more than ${MAX_PLUGIN_PEERS} required peer dependencies`)
+  }
+  const usages = staticPeerUsage(entries, requirements)
+  return requirements.map((requirement, index) => ({
+    ...requirement,
+    staticUsage: usages[index] ?? 'scan-incomplete',
+  }))
 }
 
 function bounded(value: string, maximum = MAX_REPORT_DETAIL_BYTES): string {
@@ -644,6 +836,7 @@ async function parsePackedArtifact(
   }
   const nodeEngine = rawNodeEngine === undefined || rawNodeEngine === '' ? undefined : bounded(rawNodeEngine, 512)
   const integrity = typeof item.integrity === 'string' ? bounded(item.integrity, 1_024) : undefined
+  const peerRequirements = requiredPeerDependencies(manifest, parsed.entries)
   return {
     path,
     filename,
@@ -653,6 +846,7 @@ async function parsePackedArtifact(
     bundlePatch,
     ...(nodeEngine === undefined ? {} : { nodeEngine }),
     lifecycleScripts,
+    requiredPeerDependencies: peerRequirements,
   }
 }
 
@@ -783,6 +977,455 @@ async function registeredBundle(dshHome: string, packageName: string): Promise<b
   }
 }
 
+function isNotFound(error: unknown): boolean {
+  return typeof error === 'object' && error !== null
+    && 'code' in error
+    && (error as { code?: unknown }).code === 'ENOENT'
+}
+
+/**
+ * DSH versions have emitted both a project lockfile and pnpm's virtual-store
+ * lockfile. Read only those fixed descendants, refuse every symlink in their
+ * path, and never retain the lockfile contents outside the disposable runner.
+ */
+async function readProfileLockfile(dshHome: string): Promise<Buffer | undefined> {
+  const profileDirectory = join(dshHome, 'profiles', PROFILE)
+  try {
+    const profileMetadata = await lstat(profileDirectory)
+    if (!profileMetadata.isDirectory() || profileMetadata.isSymbolicLink()) return undefined
+  } catch {
+    return undefined
+  }
+
+  for (const segments of PROFILE_LOCKFILE_CANDIDATES) {
+    let current = profileDirectory
+    try {
+      for (let index = 0; index < segments.length; index += 1) {
+        const segment = segments[index] as string
+        current = join(current, segment)
+        const metadata = await lstat(current)
+        if (metadata.isSymbolicLink()) return undefined
+        if (index < segments.length - 1 && !metadata.isDirectory()) return undefined
+      }
+      return await readRegularFileNoFollow(current, MAX_PROFILE_LOCKFILE_BYTES)
+    } catch (error: unknown) {
+      if (isNotFound(error)) continue
+      return undefined
+    }
+  }
+  return undefined
+}
+
+function profileGraphRoot(manifest: Record<string, unknown>): { name: string, version: string } {
+  return typeof manifest.name === 'string' && manifest.name.length > 0
+    && typeof manifest.version === 'string' && EXACT_VERSION.test(manifest.version)
+    ? { name: manifest.name, version: manifest.version }
+    : SYNTHETIC_PROFILE_GRAPH_ROOT
+}
+
+function graphGaps(graph: { unresolved?: readonly DshInstallProfileGraphGap[] }): DshInstallProfileGraphGap[] | undefined {
+  if (graph.unresolved === undefined || graph.unresolved.length === 0) return undefined
+  return graph.unresolved.slice(0, MAX_PROFILE_GRAPH_GAPS).map(gap => ({
+    from: bounded(gap.from, 512),
+    name: bounded(gap.name, 214),
+    spec: bounded(gap.spec, 512),
+    kind: gap.kind,
+  }))
+}
+
+function pluginPeerContractEvidence(contracts: readonly ObservedPeerContract[] | undefined): DshInstallPluginPeerContracts {
+  const entries = [...(contracts ?? [])].sort((left, right) => left.name.localeCompare(right.name))
+  const issues = entries
+    .filter((entry): entry is ObservedPeerContract & { status: DshInstallPeerContractIssue['status'] } => entry.status !== 'satisfied')
+    .sort((left, right) => left.name.localeCompare(right.name))
+  return {
+    declared: entries.length,
+    satisfied: entries.filter(entry => entry.status === 'satisfied').length,
+    mismatched: entries.filter(entry => entry.status === 'mismatched').length,
+    indeterminate: entries.filter(entry => entry.status === 'indeterminate').length,
+    missing: entries.filter(entry => entry.status === 'missing').length,
+    relations: entries.map(entry => ({
+      name: bounded(entry.name, 214),
+      required: bounded(entry.required, 512),
+      status: entry.status,
+      staticUsage: entry.staticUsage,
+      ...(entry.resolvedVersion === undefined ? {} : { resolvedVersion: bounded(entry.resolvedVersion, 256) }),
+    })),
+    ...(issues.length === 0 ? {} : {
+      issues: issues.slice(0, MAX_PROFILE_GRAPH_GAPS).map(issue => ({
+        name: bounded(issue.name, 214),
+        required: bounded(issue.required, 512),
+        status: issue.status,
+        staticUsage: issue.staticUsage,
+        ...(issue.resolvedVersion === undefined ? {} : { resolvedVersion: bounded(issue.resolvedVersion, 256) }),
+      })),
+    }),
+  }
+}
+
+function graphGapPartitions(graph: { unresolved?: readonly DshInstallProfileGraphGap[] }): {
+  required: DshInstallProfileGraphGap[]
+  optional: DshInstallProfileGraphGap[]
+} {
+  const required: DshInstallProfileGraphGap[] = []
+  const optional: DshInstallProfileGraphGap[] = []
+  for (const gap of graph.unresolved ?? []) {
+    if (gap.kind === 'optional') optional.push(gap)
+    else required.push(gap)
+  }
+  return { required, optional }
+}
+
+function isLexicallyInside(root: string, candidate: string): boolean {
+  const child = relative(resolve(root), resolve(candidate))
+  return child === '' || (!child.startsWith(`..${sep}`) && child !== '..')
+}
+
+interface ProfilePeerRequirement {
+  name: string
+  required: string
+  staticUsage: DshInstallPeerStaticUsage
+}
+
+interface ObservedPeerContract extends RootPeerContract {
+  staticUsage: DshInstallPeerStaticUsage
+}
+
+interface ProfilePeerResolutionRecord {
+  name: string
+  status: 'resolved' | 'missing'
+  url?: string
+}
+
+const PROFILE_PEER_RESOLUTION_SCHEMA = 'upstream-radar.profile-peer-resolution/v1alpha1'
+
+function indeterminatePeerContracts(requirements: readonly ProfilePeerRequirement[]): ObservedPeerContract[] {
+  return requirements.map(requirement => ({ ...requirement, status: 'indeterminate' }))
+}
+
+async function peerVersionFromResolvedModule(
+  url: string,
+  expectedName: string,
+  sandboxRoot: string,
+): Promise<string | undefined> {
+  let resolvedModule: string
+  try {
+    const parsed = new URL(url)
+    if (parsed.protocol !== 'file:') return undefined
+    resolvedModule = await realpath(fileURLToPath(parsed))
+  } catch {
+    return undefined
+  }
+  let sandboxReal: string
+  try {
+    sandboxReal = await realpath(sandboxRoot)
+  } catch {
+    return undefined
+  }
+  if (!isLexicallyInside(sandboxReal, resolvedModule)) return undefined
+  let cursor = dirname(resolvedModule)
+  for (let depth = 0; depth < 32 && isLexicallyInside(sandboxReal, cursor); depth += 1) {
+    try {
+      const manifest = JSON.parse((await readRegularFileNoFollow(join(cursor, 'package.json'), 1 * 1024 * 1024)).toString('utf8')) as unknown
+      if (typeof manifest === 'object' && manifest !== null && !Array.isArray(manifest)) {
+        const item = manifest as Record<string, unknown>
+        if (item.name === expectedName && typeof item.version === 'string' && EXACT_VERSION.test(item.version)) return item.version
+      }
+    } catch {
+      // Continue toward the package root; a module may live in a nested directory.
+    }
+    const parent = dirname(cursor)
+    if (parent === cursor) break
+    cursor = parent
+  }
+  return undefined
+}
+
+async function readProfilePeerContracts(
+  path: string,
+  requirements: readonly ProfilePeerRequirement[],
+  sandboxRoot: string,
+): Promise<ObservedPeerContract[]> {
+  if (requirements.length === 0) return []
+  let records: ProfilePeerResolutionRecord[]
+  try {
+    const raw = JSON.parse((await readRegularFileNoFollow(path, 64 * 1024)).toString('utf8')) as unknown
+    if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) return indeterminatePeerContracts(requirements)
+    const item = raw as Record<string, unknown>
+    if (item.schema !== PROFILE_PEER_RESOLUTION_SCHEMA || !Array.isArray(item.peers) || item.peers.length !== requirements.length) {
+      return indeterminatePeerContracts(requirements)
+    }
+    records = item.peers.map((value): ProfilePeerResolutionRecord => {
+      if (typeof value !== 'object' || value === null || Array.isArray(value)) throw new Error('invalid peer resolver record')
+      const peer = value as Record<string, unknown>
+      if (typeof peer.name !== 'string' || (peer.status !== 'resolved' && peer.status !== 'missing')) {
+        throw new Error('invalid peer resolver record')
+      }
+      if (peer.status === 'resolved' && (typeof peer.url !== 'string' || peer.url.length === 0 || peer.url.length > 4_096)) {
+        throw new Error('resolved peer has no bounded URL')
+      }
+      return {
+        name: peer.name,
+        status: peer.status,
+        ...(typeof peer.url === 'string' ? { url: peer.url } : {}),
+      }
+    })
+  } catch {
+    return indeterminatePeerContracts(requirements)
+  }
+  const byName = new Map(records.map(record => [record.name, record]))
+  if (byName.size !== requirements.length || requirements.some(requirement => !byName.has(requirement.name))) {
+    return indeterminatePeerContracts(requirements)
+  }
+  const contracts: ObservedPeerContract[] = []
+  for (const requirement of requirements) {
+    const record = byName.get(requirement.name)
+    if (record === undefined || record.status === 'missing') {
+      contracts.push({ ...requirement, status: 'missing' })
+      continue
+    }
+    const resolvedVersion = record.url === undefined
+      ? undefined
+      : await peerVersionFromResolvedModule(record.url, requirement.name, sandboxRoot)
+    if (resolvedVersion === undefined) {
+      contracts.push({ ...requirement, status: 'indeterminate' })
+      continue
+    }
+    const evaluation = satisfiesSemverRange(resolvedVersion, requirement.required)
+    contracts.push({
+      ...requirement,
+      status: evaluation === true ? 'satisfied' : evaluation === false ? 'mismatched' : 'indeterminate',
+      resolvedVersion,
+    })
+  }
+  return contracts
+}
+
+/**
+ * Run the plugin's real ESM entry from the profile resolution anchor, then
+ * boot DSH. The config dumper intentionally skips `!!js` and module imports;
+ * this tiny trusted wrapper proves that the installed plugin can resolve its
+ * own direct imports before the DSH headless app exits through `--help`.
+ */
+async function writeProfileLoadProbe(
+  dshHome: string,
+  pluginName: string,
+  dshVersion: string,
+  pnpmCommand: string,
+  peerRequirements: readonly ProfilePeerRequirement[],
+): Promise<{ path: string, peerResolutionPath: string, profileDirectory: string }> {
+  const profileDirectory = join(dshHome, 'profiles', PROFILE)
+  const profileMetadata = await lstat(profileDirectory)
+  if (!profileMetadata.isDirectory() || profileMetadata.isSymbolicLink()) {
+    throw new Error('the DSH profile directory is not a regular directory for the load probe')
+  }
+  const [homeReal, profileReal] = await Promise.all([realpath(dshHome), realpath(profileDirectory)])
+  if (!isLexicallyInside(homeReal, profileReal)) {
+    throw new Error('the DSH profile directory escaped the controlled DSH home')
+  }
+  const probePath = join(profileDirectory, '.upstream-radar-load-probe.mjs')
+  const peerResolutionPath = join(profileDirectory, '.upstream-radar-peer-resolution.json')
+  const dshBootArgs = dshArgs(dshVersion, ['--profile', PROFILE, '--help'])
+  const contents = [
+    "import { spawn } from 'node:child_process'",
+    "import { writeFile } from 'node:fs/promises'",
+    `const peerRequirements = ${JSON.stringify(peerRequirements)}`,
+    'const peers = []',
+    'for (const peer of peerRequirements) {',
+    '  try { peers.push({ name: peer.name, status: \'resolved\', url: import.meta.resolve(peer.name) }) }',
+    '  catch { peers.push({ name: peer.name, status: \'missing\' }) }',
+    '}',
+    `await writeFile(${JSON.stringify(peerResolutionPath)}, JSON.stringify({ schema: ${JSON.stringify(PROFILE_PEER_RESOLUTION_SCHEMA)}, peers }), { encoding: 'utf8', mode: 0o600, flag: 'wx' })`,
+    `await import(${JSON.stringify(pluginName)})`,
+    `const child = spawn(${JSON.stringify(pnpmCommand)}, ${JSON.stringify(dshBootArgs)}, { cwd: process.cwd(), env: process.env, stdio: 'inherit' })`,
+    "const exitCode = await new Promise(resolve => {",
+    "  child.once('error', error => { console.error(error.message); resolve(1) })",
+    "  child.once('close', code => resolve(code ?? 1))",
+    '})',
+    'process.exitCode = exitCode',
+    '',
+  ].join('\n')
+  // Never overwrite a path a target package may have planted in the profile.
+  await writeFile(probePath, contents, { encoding: 'utf8', mode: 0o600, flag: 'wx' })
+  return { path: probePath, peerResolutionPath, profileDirectory }
+}
+
+interface ExactDshRuntime {
+  packageDirectory: string
+  nodeModulesDirectory: string
+  package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: string }
+}
+
+/**
+ * `pnpm dlx` owns the DSH host dependency plane, rather than a plugin-created
+ * symlink in the profile. Discover the exact cached DSH package by manifest,
+ * with bounded directory traversal and no symlink following.
+ */
+async function discoverExactDshRuntime(cacheHome: string, dshVersion: string): Promise<ExactDshRuntime> {
+  const root = resolve(cacheHome, 'pnpm', 'dlx')
+  const rootReal = await realpath(root)
+  const queue: Array<{ path: string, depth: number }> = [{ path: root, depth: 0 }]
+  const candidates = new Set<string>()
+  let visited = 0
+  while (queue.length > 0) {
+    const current = queue.shift()
+    if (current === undefined) break
+    if (visited >= MAX_RUNTIME_DISCOVERY_DIRECTORIES) {
+      throw new Error(`DSH runtime discovery exceeds ${MAX_RUNTIME_DISCOVERY_DIRECTORIES} directories`)
+    }
+    visited += 1
+    let entries
+    try {
+      entries = await readdir(current.path, { withFileTypes: true })
+    } catch (error: unknown) {
+      if (isNotFound(error)) continue
+      throw error
+    }
+    for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
+      const child = join(current.path, entry.name)
+      if (entry.isDirectory()) {
+        if (current.depth < MAX_RUNTIME_DISCOVERY_DEPTH) queue.push({ path: child, depth: current.depth + 1 })
+        continue
+      }
+      if (!entry.isFile() || entry.name !== 'package.json') continue
+      let manifest: unknown
+      try {
+        manifest = JSON.parse((await readRegularFileNoFollow(child, 1 * 1024 * 1024)).toString('utf8')) as unknown
+      } catch {
+        continue
+      }
+      if (typeof manifest !== 'object' || manifest === null || Array.isArray(manifest)) continue
+      const item = manifest as Record<string, unknown>
+      if (item.name === '@deepseek-ai/dsh' && item.version === dshVersion) candidates.add(child)
+    }
+  }
+  if (candidates.size === 0) throw new Error(`exact @deepseek-ai/dsh@${dshVersion} was not found in the controlled pnpm dlx cache`)
+  if (candidates.size > 1) throw new Error(`multiple exact @deepseek-ai/dsh@${dshVersion} packages were found in the controlled pnpm dlx cache`)
+  const manifestPath = [...candidates][0] as string
+  const packageDirectory = discoverDshRuntimePackageDirectory(manifestPath)
+  const packageCoordinate = discoverDshRuntimePackage(manifestPath)
+  const nodeModulesDirectory = discoverDshRuntimeHostNodeModulesDirectory(manifestPath)
+  if (packageDirectory === undefined || packageCoordinate === undefined || nodeModulesDirectory === undefined) {
+    throw new Error('the exact DSH package did not expose a usable dependency plane')
+  }
+  if (!isLexicallyInside(rootReal, packageDirectory) || !isLexicallyInside(rootReal, nodeModulesDirectory)) {
+    throw new Error('the exact DSH dependency plane escaped the controlled pnpm dlx cache')
+  }
+  if (packageCoordinate.name !== '@deepseek-ai/dsh' || packageCoordinate.version !== dshVersion) {
+    throw new Error('the discovered DSH package does not match the requested exact version')
+  }
+  return {
+    packageDirectory,
+    nodeModulesDirectory,
+    package: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: packageCoordinate.version },
+  }
+}
+
+async function profileResolutionEvidence(dshHome: string): Promise<DshInstallObservationReport['resolution']> {
+  const profileDirectory = join(dshHome, 'profiles', PROFILE)
+  const lockfile = await readProfileLockfile(dshHome)
+  if (lockfile === undefined) return {}
+  const profileLockfile: DshInstallProfileLockfileEvidence = {
+    sha256: createHash('sha256').update(lockfile).digest('hex'),
+    bytes: lockfile.length,
+  }
+  try {
+    const manifestBuffer = await readRegularFileNoFollow(join(profileDirectory, 'package.json'), 4 * 1024 * 1024)
+    const manifest = JSON.parse(manifestBuffer.toString('utf8')) as Record<string, unknown>
+    const graph = parsePnpmLockGraph(lockfile.toString('utf8'), profileGraphRoot(manifest))
+    const gaps = graphGaps(graph)
+    return {
+      profileLockfile: {
+        ...profileLockfile,
+        ...(graph.digest === undefined ? {} : { graphDigest: graph.digest }),
+        nodes: graph.nodes.length,
+        edges: graph.edges.length,
+        unresolved: graph.unresolved?.length ?? 0,
+        ...(gaps === undefined ? {} : { unresolvedDependencies: gaps }),
+      },
+    }
+  } catch {
+    return { profileLockfile }
+  }
+}
+
+async function runtimeGraphEvidence(
+  dshHome: string,
+  rootPackage: { name: string, version: string },
+  dshVersion: string,
+  cacheHome: string,
+  profileResolvedPeerContracts?: readonly ObservedPeerContract[],
+): Promise<Pick<DshInstallObservationReport['resolution'], 'runtimeGraph' | 'runtimeGraphError'>> {
+  try {
+    const dshRuntime = await discoverExactDshRuntime(cacheHome, dshVersion)
+    const graph = await parseInstalledNodeModulesGraph(
+      join(dshHome, 'profiles', PROFILE),
+      rootPackage,
+      {
+        hostNodeModulesDirectory: dshRuntime.nodeModulesDirectory,
+        hostRuntimeSource: 'dsh-process',
+        hostRuntimePackage: dshRuntime.package,
+        hostRuntimePackageDirectory: dshRuntime.packageDirectory,
+      },
+    )
+    if (graph.digest === undefined) return {}
+    const gaps = graphGapPartitions(graph)
+    const contracts = profileResolvedPeerContracts ?? graph.rootPeerContracts?.map(contract => ({
+      ...contract,
+      staticUsage: 'scan-incomplete' as const,
+    }))
+    const concretelyResolvedRootPeers = new Set((contracts ?? [])
+      .filter(contract => contract.status === 'satisfied' || contract.status === 'mismatched')
+      .map(contract => contract.name))
+    const effectiveRequiredGaps = gaps.required.filter(gap => !(
+      gap.from === graph.rootNodeId
+      && gap.kind === 'peer'
+      && concretelyResolvedRootPeers.has(gap.name)
+    ))
+    const requiredGaps = graphGaps({ unresolved: effectiveRequiredGaps })
+    const optionalGaps = graphGaps({ unresolved: gaps.optional })
+    return {
+      runtimeGraph: {
+        digest: graph.digest,
+        nodes: graph.nodes.length,
+        edges: graph.edges.length,
+        unresolved: effectiveRequiredGaps.length,
+        ...(requiredGaps === undefined ? {} : { unresolvedDependencies: requiredGaps }),
+        ...(gaps.optional.length === 0 ? {} : {
+          optionalUnavailable: gaps.optional.length,
+          ...(optionalGaps === undefined ? {} : { optionalUnavailableDependencies: optionalGaps }),
+        }),
+        pluginPeerContracts: pluginPeerContractEvidence(contracts),
+        ...(graph.hostRuntime === undefined ? {} : {
+          hostRuntime: {
+            source: graph.hostRuntime.source,
+            resolvedNodes: graph.hostRuntime.resolvedNodes,
+            ...(graph.hostRuntime.package === undefined ? {} : { dshVersion: graph.hostRuntime.package.version }),
+          },
+        }),
+      },
+    }
+  } catch (error: unknown) {
+    return {
+      runtimeGraphError: bounded(error instanceof Error ? error.message : String(error), 512),
+    }
+  }
+}
+
+async function resolutionEvidence(
+  dshHome: string,
+  rootPackage: { name: string, version: string },
+  dshVersion: string,
+  cacheHome: string,
+  profileResolvedPeerContracts?: readonly ObservedPeerContract[],
+): Promise<DshInstallObservationReport['resolution']> {
+  const [profile, runtime] = await Promise.all([
+    profileResolutionEvidence(dshHome),
+    runtimeGraphEvidence(dshHome, rootPackage, dshVersion, cacheHome, profileResolvedPeerContracts),
+  ])
+  return { ...profile, ...runtime }
+}
+
 function finishReport(report: DshInstallObservationReport, result: DshInstallObservationResult, reason: string): DshInstallObservationReport {
   report.completedAt = new Date().toISOString()
   report.result = result
@@ -790,9 +1433,60 @@ function finishReport(report: DshInstallObservationReport, result: DshInstallObs
   return report
 }
 
+/**
+ * A load success is necessary but not enough for the compatibility claim. The
+ * final verdict also requires a complete required-edge graph and a direct
+ * plugin peer contract that the observer could actually evaluate.
+ */
+function finalCompatibilityConclusion(
+  resolution: DshInstallObservationReport['resolution'],
+): { result: DshInstallObservationResult, reason: string } {
+  const graph = resolution.runtimeGraph
+  if (graph === undefined) {
+    return {
+      result: 'unknown',
+      reason: resolution.runtimeGraphError === undefined
+        ? 'the exact artifact installed and loaded, but the effective DSH runtime graph was not established'
+        : `the exact artifact installed and loaded, but the effective DSH runtime graph could not be established: ${resolution.runtimeGraphError}`,
+    }
+  }
+  const contracts = graph.pluginPeerContracts
+  const firstIssue = contracts.issues?.[0]
+  if (contracts.mismatched > 0 || contracts.missing > 0) {
+    const detail = firstIssue === undefined
+      ? `${contracts.mismatched + contracts.missing} required plugin peer contract(s) do not match the DSH runtime`
+      : firstIssue.status === 'missing'
+        ? `${firstIssue.name}@${firstIssue.required} was not resolved by the DSH runtime (${firstIssue.staticUsage})`
+        : `${firstIssue.name}@${firstIssue.resolvedVersion ?? 'unknown'} does not satisfy ${firstIssue.required} (${firstIssue.staticUsage})`
+    return {
+      result: 'peer-contract-incompatible',
+      reason: `the exact artifact installed and loaded, but ${detail}`,
+    }
+  }
+  if (graph.unresolved > 0) {
+    return {
+      result: 'unknown',
+      reason: `the exact artifact installed and loaded, but the effective DSH runtime graph has ${graph.unresolved} required unresolved edge(s)`,
+    }
+  }
+  if (contracts.indeterminate > 0) {
+    return {
+      result: 'unknown',
+      reason: `the exact artifact installed and loaded, but ${contracts.indeterminate} required plugin peer range(s) could not be evaluated safely`,
+    }
+  }
+  return {
+    result: 'compatible',
+    reason: 'the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version',
+  }
+}
+
 export async function observeDshPluginInstall(options: DshInstallObservationOptions): Promise<DshInstallObservationReport> {
   const spec = parseNpmSpec(options.packageSpec)
   if (!EXACT_VERSION.test(options.dshVersion)) throw new Error('DSH version must be an exact semantic version')
+  if (options.caseId !== undefined && !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(options.caseId)) {
+    throw new Error('DSH install observation caseId must be a short lowercase label')
+  }
   const allowedBuilds = normalizeAllowedBuilds(options.allowedBuilds)
   if (!options.allowExecution) throw new Error('DSH install observation requires explicit execution consent')
   if (!['github-actions-hosted-runner', 'firecracker', 'other'].includes(options.isolationProvider)) {
@@ -816,6 +1510,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
     scope: 'install-and-load-behavior',
     startedAt,
     completedAt: startedAt,
+    ...(options.caseId === undefined ? {} : { caseId: options.caseId }),
     dshVersion: options.dshVersion,
     runtime: {
       platform: process.platform,
@@ -839,6 +1534,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
     },
     observations: { install: emptyTraceObservation(), load: emptyTraceObservation() },
     filesystem: { install: emptyFilesystemDiff(), load: emptyFilesystemDiff() },
+    resolution: {},
     result: 'unknown',
     reason: 'observation did not complete',
     boundary: {
@@ -981,6 +1677,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       const afterInstall = await snapshotSandbox(sandboxRoot, environment)
       report.observations.install = await readTrace(installTracePath, sandboxRoot)
       report.filesystem.install = diffSnapshots(beforeInstall, afterInstall)
+      report.resolution = await resolutionEvidence(environment.DSH_HOME as string, spec, options.dshVersion, environment.XDG_CACHE_HOME as string)
       report.stages.install = commandStage(installResult)
       if (installResult.timedOut || installResult.outputExceeded || installResult.launchError !== undefined) {
         return finishReport(report, 'unknown', 'the plugin install did not produce a bounded command result')
@@ -1003,12 +1700,19 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
         : { status: 'failed', detail: `the DSH profile did not register ${spec.name}` }
       if (!registered) return finishReport(report, 'install-failed', 'DSH accepted the install command but did not register the plugin bundle')
 
+      const loadProbe = await writeProfileLoadProbe(
+        environment.DSH_HOME as string,
+        spec.name,
+        options.dshVersion,
+        pnpmCommand,
+        artifact.requiredPeerDependencies,
+      )
       const loadTracePath = join(traceDirectory, 'load.strace')
       const loadResult = await runSafely(runner, {
         phase: 'load',
-        command: pnpmCommand,
-        args: dshArgs(options.dshVersion, ['--profile', PROFILE, '--dump-config']),
-        cwd: artifactDirectory,
+        command: process.execPath,
+        args: [loadProbe.path],
+        cwd: loadProbe.profileDirectory,
         env: scriptsEnvironment,
         timeoutMs,
         sandboxRoot,
@@ -1017,6 +1721,20 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       const afterLoad = await snapshotSandbox(sandboxRoot, environment)
       report.observations.load = await readTrace(loadTracePath, sandboxRoot)
       report.filesystem.load = diffSnapshots(afterInstall, afterLoad)
+      const profilePeerContracts = await readProfilePeerContracts(
+        loadProbe.peerResolutionPath,
+        artifact.requiredPeerDependencies,
+        sandboxRoot,
+      )
+      // Loading may trigger one final DSH profile reconciliation. Preserve the
+      // final resolved graph rather than only the state immediately after add.
+      report.resolution = await resolutionEvidence(
+        environment.DSH_HOME as string,
+        spec,
+        options.dshVersion,
+        environment.XDG_CACHE_HOME as string,
+        profilePeerContracts,
+      )
       report.stages.load = commandStage(loadResult)
       if (loadResult.timedOut || loadResult.outputExceeded || loadResult.launchError !== undefined) {
         return finishReport(report, 'unknown', 'the plugin load did not produce a bounded command result')
@@ -1026,7 +1744,8 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
         return finishReport(report, 'unknown', 'the load command ran without readable trace evidence')
       }
       if (loadResult.code !== 0) return finishReport(report, 'load-failed', 'the traced DSH profile load command failed')
-      return finishReport(report, 'compatible', 'the exact artifact installed, registered and loaded under the requested DSH version')
+      const conclusion = finalCompatibilityConclusion(report.resolution)
+      return finishReport(report, conclusion.result, conclusion.reason)
     } catch (error: unknown) {
       const detail = bounded(error instanceof Error ? error.message : String(error))
       const currentStage = (['runtime', 'profile', 'install', 'registration', 'load'] as const)
@@ -1045,6 +1764,7 @@ export function renderDshInstallObservation(report: DshInstallObservationReport)
   const lifecycle = report.artifact.lifecycleScripts.length === 0 ? 'none' : report.artifact.lifecycleScripts.join(', ')
   const lines = [
     'DSH isolated install observation',
+    ...(report.caseId === undefined ? [] : [`Case: ${report.caseId}`]),
     `Artifact: ${report.artifact.name}@${report.artifact.version}${report.artifact.sha256 === undefined ? '' : ` (sha256:${report.artifact.sha256.slice(0, 12)}…)`}`,
     `DSH: ${report.dshVersion}`,
     `Runtime: Node ${report.runtime.nodeVersion} (${report.runtime.platform}/${report.runtime.architecture}), pnpm ${report.runtime.packageManager.version ?? 'unknown'}`,
@@ -1057,10 +1777,23 @@ export function renderDshInstallObservation(report: DshInstallObservationReport)
     `Install evidence: ${install.processes.length} process, ${install.network.length} network, ${install.fileWrites.length} file-write event(s); trace ${install.coverage.status}`,
     `Load evidence: ${load.processes.length} process, ${load.network.length} network, ${load.fileWrites.length} file-write event(s); trace ${load.coverage.status}`,
     `Final filesystem delta: install +${report.filesystem.install.totals.created} ~${report.filesystem.install.totals.modified} -${report.filesystem.install.totals.deleted}; load +${report.filesystem.load.totals.created} ~${report.filesystem.load.totals.modified} -${report.filesystem.load.totals.deleted}`,
+    `Resolved profile graph: ${report.resolution.profileLockfile?.graphDigest ?? 'not established'}${report.resolution.profileLockfile === undefined ? '' : ` (lock sha256:${report.resolution.profileLockfile.sha256.slice(0, 12)}…)`}`,
+    `Effective DSH runtime graph: ${report.resolution.runtimeGraph?.digest ?? 'not established'}${report.resolution.runtimeGraph === undefined ? '' : ` (${report.resolution.runtimeGraph.nodes} nodes, ${report.resolution.runtimeGraph.edges} edges, ${report.resolution.runtimeGraph.unresolved} required unresolved${report.resolution.runtimeGraph.optionalUnavailable === undefined ? '' : `, ${report.resolution.runtimeGraph.optionalUnavailable} optional unavailable`})`}`,
+    `Plugin peer contracts: ${report.resolution.runtimeGraph === undefined
+      ? 'not established'
+      : `${report.resolution.runtimeGraph.pluginPeerContracts.satisfied}/${report.resolution.runtimeGraph.pluginPeerContracts.declared} satisfied; ${report.resolution.runtimeGraph.pluginPeerContracts.mismatched} mismatched, ${report.resolution.runtimeGraph.pluginPeerContracts.missing} missing, ${report.resolution.runtimeGraph.pluginPeerContracts.indeterminate} indeterminate`}`,
+    `Effective graph collector: ${report.resolution.runtimeGraphError ?? 'captured'}`,
     '',
   ]
   for (const [name, stage] of Object.entries(report.stages)) {
     lines.push(`  ${name}: ${stage.status}${stage.detail === undefined ? '' : ` (${stage.detail})`}`)
+  }
+  const peerIssues = report.resolution.runtimeGraph?.pluginPeerContracts.issues ?? []
+  if (peerIssues.length > 0) {
+    lines.push('', 'Direct peer-contract findings:')
+    for (const issue of peerIssues) {
+      lines.push(`  ${issue.name}: ${issue.status}; requires ${issue.required}${issue.resolvedVersion === undefined ? '' : `, resolved ${issue.resolvedVersion}`}; static use ${issue.staticUsage}`)
+    }
   }
   lines.push('', report.boundary.note)
   return `${lines.join('\n')}\n`
