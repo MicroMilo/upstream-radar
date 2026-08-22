@@ -589,15 +589,15 @@
       ],
       "source": {
         "name": "dsh-msg-hub",
-        "version": "0.1.8",
-        "digest": "sha256:2b04fa077cf4b61ccce4937328c1b75a41d04dde626c61d7fedd1ddd92897e15",
+        "version": "0.1.9",
+        "digest": "sha256:2b900001256d2a78cccc674df93c653d33cf00a077a8b8afccb3c8172804f538",
         "findings": []
       },
       "artifact": {
-        "spec": "npm:dsh-msg-hub@0.1.8",
+        "spec": "npm:dsh-msg-hub@0.1.9",
         "name": "dsh-msg-hub",
-        "version": "0.1.8",
-        "digest": "sha256:dc1251f3ce953a57a92e7abcb7a0644eaca09d0c7a6ba4876f95bbf3049c934a",
+        "version": "0.1.9",
+        "digest": "sha256:0047e135f648e73bb5ac73f925f276f0627532f23492ead397aa7c81d3756263",
         "findings": [
           {
             "code": "dependency-install-script-present",
@@ -740,39 +740,16 @@
       ],
       "source": {
         "name": "@nn12138/dsh-voice",
-        "version": "0.2.5",
-        "digest": "sha256:d1c038e3d0717420bed2c2c1be5e59942e689cfc1173aa2e90c5001785b9b44e",
-        "findings": [
-          {
-            "code": "lifecycle-script-present",
-            "severity": "high",
-            "summary": "Lifecycle script prepare executes during installation",
-            "detail": "Lifecycle scripts run before a plugin is admitted into DSH and therefore require review.",
-            "evidence": {
-              "script": "prepare",
-              "command": "npm run build"
-            },
-            "fingerprint": "sha256:bc52e50bc84e4ea3f23e710f580b338850e9e0f46e15886daa702389f34c5751"
-          }
-        ]
+        "version": "0.2.6",
+        "digest": "sha256:ee7844a5f0875309625995cff1925ee2ca938341036556bf24c384d33ba61b4c",
+        "findings": []
       },
       "artifact": {
-        "spec": "npm:@nn12138/dsh-voice@0.2.5",
+        "spec": "npm:@nn12138/dsh-voice@0.2.6",
         "name": "@nn12138/dsh-voice",
-        "version": "0.2.5",
-        "digest": "sha256:591e9d7bec499d499f36cd8a32c835010f7c1f94a6ee18dc90af2f25ad0a8075",
+        "version": "0.2.6",
+        "digest": "sha256:dc6449587ac2b141e2054e26198ef2a438c912420b17b10e4d466e13f05774f2",
         "findings": [
-          {
-            "code": "lifecycle-script-present",
-            "severity": "high",
-            "summary": "Lifecycle script prepare executes during installation",
-            "detail": "Lifecycle scripts run before a plugin is admitted into DSH and therefore require review.",
-            "evidence": {
-              "script": "prepare",
-              "command": "npm run build"
-            },
-            "fingerprint": "sha256:bc52e50bc84e4ea3f23e710f580b338850e9e0f46e15886daa702389f34c5751"
-          },
           {
             "code": "npm-provenance-missing",
             "severity": "medium",
@@ -795,8 +772,8 @@
       ],
       "source": {
         "name": "dsh-wsl-workspace",
-        "version": "0.2.4",
-        "digest": "sha256:4cc71abe211312cb13e45091e7d3d7c74c1e4273ed7e7d0be587d27d1bf205b3",
+        "version": "0.2.3",
+        "digest": "sha256:ef63492e49e30e8caec27101365a9000bc4188ac3f14d229683c996bfa518c74",
         "findings": [
           {
             "code": "dependency-graph-unlocked",
