@@ -8,6 +8,7 @@ export interface TestTarEntry {
   type?: 'file' | 'directory' | 'symlink' | 'hardlink' | 'pax'
   linkTarget?: string
   mode?: number
+  headerSize?: number
 }
 
 function writeText(target: Buffer, offset: number, length: number, value: string): void {
@@ -48,7 +49,7 @@ export function makeTarball(entries: readonly TestTarEntry[]): Buffer {
     const contents = type === 'file' || type === 'pax'
       ? Buffer.isBuffer(entry.contents) ? entry.contents : Buffer.from(entry.contents ?? '')
       : Buffer.alloc(0)
-    parts.push(headerFor(entry, contents.length), contents)
+    parts.push(headerFor(entry, entry.headerSize ?? contents.length), contents)
     const padding = (BLOCK - (contents.length % BLOCK)) % BLOCK
     if (padding > 0) parts.push(Buffer.alloc(padding))
   }

@@ -118,12 +118,33 @@ describe('npm tarball parser', () => {
     assert.throws(() => parseNpmTarball(tarball, { maxFileBytes: 8 }), /per-entry budget/)
   })
 
-  it('rejects PAX size overrides the parser cannot account for safely', () => {
+  it('uses a validated PAX size override to find the next tar header', () => {
     const tarball = makeTarball([
       { path: 'pax-header', contents: '10 size=1\n', type: 'pax' },
-      { path: 'package/a.js', contents: 'x' },
+      { path: 'package/a.js', contents: 'x', headerSize: 0 },
     ])
 
-    assert.throws(() => parseNpmTarball(tarball), /unsupported PAX size override/)
+    const parsed = parseNpmTarball(tarball)
+    assert.equal(parsed.entries[0]?.path, 'a.js')
+    assert.equal(parsed.entries[0]?.size, 1)
+    assert.equal(parsed.entries[0]?.contents?.toString('utf8'), 'x')
+  })
+
+  it('rejects malformed PAX size overrides', () => {
+    const tarball = makeTarball([
+      { path: 'pax-header', contents: '11 size=-1\n', type: 'pax' },
+      { path: 'package/a.js', contents: 'x', headerSize: 0 },
+    ])
+
+    assert.throws(() => parseNpmTarball(tarball), /invalid PAX size override/)
+  })
+
+  it('applies the per-entry byte budget to the effective PAX size', () => {
+    const tarball = makeTarball([
+      { path: 'pax-header', contents: '11 size=12\n', type: 'pax' },
+      { path: 'package/a.js', contents: 'twelve-bytes', headerSize: 0 },
+    ])
+
+    assert.throws(() => parseNpmTarball(tarball, { maxFileBytes: 11 }), /per-entry budget/)
   })
 })

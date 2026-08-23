@@ -84,6 +84,7 @@ describe('DSH install observation', () => {
 
   it('stops before DSH or plugin execution when the exact artifact excludes the isolated Node runtime', async () => {
     const phases: InstallObservationCommand['phase'][] = []
+    let artifactArgs: string[] = []
     const report = await observeDshPluginInstall({
       packageSpec: 'future-plugin@1.0.0',
       dshVersion: '0.1.1-rc.1',
@@ -93,6 +94,7 @@ describe('DSH install observation', () => {
         phases.push(command.phase)
         if (command.phase === 'runtime') return passed({ stdout: '11.7.0\n' })
         if (command.phase === 'artifact') {
+          artifactArgs = command.args
           await writeFile(join(command.cwd, 'future-plugin-1.0.0.tgz'), makeTarball([
             { path: 'package/package.json', contents: JSON.stringify({
               name: 'future-plugin',
@@ -101,8 +103,9 @@ describe('DSH install observation', () => {
               dsh: { bundle: { patch: 'cordis.patch.yml' } },
             }) },
             { path: 'package/cordis.patch.yml', contents: '[]\n' },
+            { path: 'package/vendor/dsh-runtime.tgz', contents: Buffer.alloc(17 * 1024 * 1024) },
           ]))
-          return passed({ stdout: JSON.stringify([{ filename: 'future-plugin-1.0.0.tgz' }]) })
+          return passed({ stdout: 'future-plugin-1.0.0.tgz\n' })
         }
         throw new Error(`unexpected execution phase: ${command.phase}`)
       },
@@ -115,6 +118,8 @@ describe('DSH install observation', () => {
     assert.equal(report.stages.install.status, 'skipped')
     assert.equal(report.stages.load.status, 'skipped')
     assert.deepEqual(phases, ['runtime', 'artifact'])
+    assert.equal(artifactArgs.includes('--silent'), true)
+    assert.equal(artifactArgs.includes('--json'), false)
     assert.match(report.reason, /declares Node >=999\.0\.0/)
     assert.match(renderDshInstallObservation(report), /RUNTIME-INCOMPATIBLE/)
   })
