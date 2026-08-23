@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { describe, it } from 'node:test'
@@ -125,7 +125,40 @@ describe('installed DSH dependency graph', () => {
         to: 'dsh-host/node_modules/host-runtime',
         kind: 'peer',
       }])
+      assert.deepEqual(graph.rootPeerContracts, [{
+        name: 'host-runtime',
+        required: '^2.0.0',
+        status: 'satisfied',
+        resolvedVersion: '2.1.0',
+      }])
       assert.equal(graph.unresolved, undefined)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('refuses a shared-host symlink that escapes the dependency plane', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-installed-graph-'))
+    const profile = join(root, 'profiles', 'web')
+    const hostNodeModules = join(root, 'profiles', 'node_modules')
+    const outside = join(root, 'outside-host-package')
+    try {
+      await writeManifest(join(profile, 'node_modules', 'plugin', 'package.json'), {
+        name: 'plugin',
+        version: '1.0.0',
+        peerDependencies: { 'host-runtime': '^2.0.0' },
+      })
+      await writeManifest(join(outside, 'package.json'), {
+        name: 'host-runtime',
+        version: '2.1.0',
+      })
+      await mkdir(hostNodeModules, { recursive: true })
+      await symlink(outside, join(hostNodeModules, 'host-runtime'), 'dir')
+
+      await assert.rejects(
+        parseInstalledNodeModulesGraph(profile, { name: 'plugin', version: '1.0.0' }, { hostNodeModulesDirectory: hostNodeModules }),
+        /escapes the shared dependency plane/,
+      )
     } finally {
       await rm(root, { recursive: true, force: true })
     }
@@ -175,6 +208,104 @@ describe('installed DSH dependency graph', () => {
         'host-parser@2.0.0',
       ]])
       assert.equal(graph.unresolved, undefined)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('follows pnpm virtual-store links beside the exact DSH runtime package', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-installed-graph-'))
+    const profile = join(root, 'profiles', 'web')
+    const hostNodeModules = join(root, 'dsh-cache', 'node_modules')
+    const runtimeRoot = join(
+      hostNodeModules,
+      '.pnpm',
+      '@deepseek-ai+dsh@0.1.0-rc.8',
+      'node_modules',
+      '@deepseek-ai',
+      'dsh',
+    )
+    const cordisRoot = join(
+      hostNodeModules,
+      '.pnpm',
+      '@deepseek-ai+cordis@4.0.2',
+      'node_modules',
+      '@deepseek-ai',
+      'cordis',
+    )
+    try {
+      await writeManifest(join(profile, 'node_modules', 'plugin', 'package.json'), {
+        name: 'plugin',
+        version: '1.0.0',
+        peerDependencies: { '@deepseek-ai/cordis': '^4.0.0' },
+      })
+      await writeManifest(join(runtimeRoot, 'package.json'), {
+        name: '@deepseek-ai/dsh',
+        version: '0.1.0-rc.8',
+        dependencies: { '@deepseek-ai/cordis': '^4.0.1' },
+      })
+      await writeManifest(join(cordisRoot, 'package.json'), {
+        name: '@deepseek-ai/cordis',
+        version: '4.0.2',
+      })
+      await symlink(cordisRoot, join(dirname(runtimeRoot), 'cordis'), 'dir')
+
+      const graph = await parseInstalledNodeModulesGraph(profile, { name: 'plugin', version: '1.0.0' }, {
+        hostNodeModulesDirectory: hostNodeModules,
+        hostRuntimeSource: 'dsh-process',
+        hostRuntimePackage: { ecosystem: 'npm', name: '@deepseek-ai/dsh', version: '0.1.0-rc.8' },
+        hostRuntimePackageDirectory: runtimeRoot,
+      })
+
+      assert.equal(graph.unresolved, undefined)
+      assert.equal(graph.nodes.length, 3)
+      assert.deepEqual(graph.edges.map(edge => edge.kind), ['runtime', 'peer', 'host-runtime'])
+      assert.equal(graph.nodes.find(node => node.name === '@deepseek-ai/cordis')?.version, '4.0.2')
+      assert.deepEqual(graph.rootPeerContracts, [{
+        name: '@deepseek-ai/cordis',
+        required: '^4.0.0',
+        status: 'satisfied',
+        resolvedVersion: '4.0.2',
+      }])
+      assert.equal(graph.hostRuntime?.resolvedNodes, 2)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('keeps missing, mismatched, and indeterminate root peer contracts distinct', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-installed-graph-'))
+    try {
+      await writeManifest(join(root, 'node_modules', 'plugin', 'package.json'), {
+        name: 'plugin',
+        version: '1.0.0',
+        peerDependencies: {
+          'host-mismatch': '^3.0.0',
+          'host-unknown': 'git+https://example.invalid/host.git',
+          'host-missing': '^1.0.0',
+        },
+      })
+      await writeManifest(join(root, 'node_modules', 'host-mismatch', 'package.json'), {
+        name: 'host-mismatch',
+        version: '2.1.0',
+      })
+      await writeManifest(join(root, 'node_modules', 'host-unknown', 'package.json'), {
+        name: 'host-unknown',
+        version: '1.0.0',
+      })
+
+      const graph = await parseInstalledNodeModulesGraph(root, { name: 'plugin', version: '1.0.0' })
+      assert.deepEqual(graph.rootPeerContracts, [
+        { name: 'host-mismatch', required: '^3.0.0', status: 'mismatched', resolvedVersion: '2.1.0' },
+        { name: 'host-missing', required: '^1.0.0', status: 'missing' },
+        { name: 'host-unknown', required: 'git+https://example.invalid/host.git', status: 'indeterminate', resolvedVersion: '1.0.0' },
+      ])
+      assert.deepEqual(graph.unresolved, [{
+        from: 'node_modules/plugin',
+        name: 'host-missing',
+        kind: 'peer',
+        spec: '^1.0.0',
+      }])
     } finally {
       await rm(root, { recursive: true, force: true })
     }

@@ -2,6 +2,72 @@
 
 All notable changes to Upstream Radar are documented here.
 
+## [Unreleased]
+
+### Closed-loop compatibility incidents
+
+- Reconcile actionable isolated DSH incompatibilities into one managed GitHub
+  issue per stable target/runtime cell. Persistent failures update the same
+  issue, regressions reopen it, and a compatible retest comments and closes it.
+- Treat reproduced incompatibility as a successful observer result while still
+  failing missing, malformed, rejected, or `unknown` evidence. Scanner failure
+  therefore cannot be presented as a plugin defect.
+- Keep issue delivery and compatibility-ledger persistence in one retryable
+  scheduled transaction, and classify a fixed replacement artifact as a
+  resolved incompatibility before generic artifact drift.
+- Add the published `@sanqi-normal/dsh-webui-market-plugin@0.5.5` repair to the
+  maintained dynamic matrix, bringing the corpus to ten public plugins.
+
+### DSH contract evidence
+
+- Materialize the exact plugin-to-DSH-host compatibility frontier into
+  `compatibility-ir.json` and a host-package reverse index after every accepted
+  isolated observation.
+- Resolve every non-optional plugin peer from the real DSH profile before the
+  direct plugin import and headless boot. A missing or out-of-range host peer
+  is no longer hidden by a successful install/load stage.
+- Preserve bounded static evidence beside each peer relation: runtime literal
+  import observed, type-only reference observed, no literal reference observed,
+  or scan incomplete. This keeps a declaration drift distinct from an already
+  reproduced runtime crash.
+- Maintain the OpenPencil cell on Node 24, matching its published Node engine,
+  and add a reproducible current-DSH contract-drift case.
+
+## [0.41.0] - 2026-08-21
+
+### Continuously reconciled DSH compatibility
+
+- Replace the change-only install plan with a compatibility ledger. The daily
+  static lane now forms the current plugin × DSH × Node/runtime-policy matrix
+  and selects only cells that are missing, stale, or invalidated by static
+  evidence or execution-contract drift.
+- Treat a new DSH/plugin publication as an immediate retest signal, rather than
+  the only way a dynamic compatibility check can run. Existing evidence is
+  revalidated after a reviewed seven-day window.
+- Bind every dynamic report to a scheduled case id, exact plugin coordinate,
+  DSH release, Node major, and approved dependency-build list before accepting
+  it into durable state. Missing or malformed reports remain unsatisfied.
+
+### Static + dynamic evidence
+
+- Record the bounded SHA-256 and dependency-graph digest of the DSH profile
+  lockfile produced by the real isolated install, including DSH's pnpm virtual
+  store layout. A green install/load does not satisfy a compatibility cell
+  until that graph is complete; missing or unresolved graph evidence stays
+  actionable.
+- Build a second, effective runtime graph from the installed plugin profile and
+  DSH's shared host dependency plane. This resolves normal DSH-provided peers
+  without hiding genuine missing edges, and makes the effective graph—not the
+  profile lockfile alone—the compatibility-coverage criterion.
+- Surface `resolution-drift` when the same exact plugin/DSH/runtime contract
+  resolves to a different profile dependency graph on a later clean install.
+- Add configured Node runtime profiles. A static Node-engine mismatch prevents
+  plugin execution on the wrong runtime and automatically schedules a
+  potentially matching alternative profile once, avoiding a false global
+  incompatibility claim.
+- Add a final Actions reconciliation job that collects per-VM reports, updates
+  `compatibility-ledger.json`, and writes only new/changed compatibility facts.
+
 ## [0.40.0] - 2026-08-21
 
 ### Awesome DSH cohort

@@ -210,7 +210,7 @@ When the native DSH adapter is running, it additionally verifies the exact `@dee
 For a runner that does not have DSH installed, commit the generated config after review and run one frozen check:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.40.0 upstream-radar radar check \
+pnpm dlx --package=upstream-radar@0.41.0 upstream-radar radar check \
   ./upstream-radar.config.json \
   --frozen --state :memory: --fail-on high --json
 ```
@@ -224,7 +224,7 @@ The published Action packages the same frozen check so a DSH plugin project does
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: MicroMilo/upstream-radar@v0.40.0
+  - uses: MicroMilo/upstream-radar@v0.41.0
     with:
       config: upstream-radar.config.json
       fail-on: high
@@ -257,7 +257,7 @@ It packs without lifecycle scripts, runs one temporary DSH profile per version, 
 The package includes a no-network compatibility benchmark for the deterministic gate itself:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.40.0 upstream-radar benchmark compatibility
+pnpm dlx --package=upstream-radar@0.41.0 upstream-radar benchmark compatibility
 ```
 
 It covers a safe patch, analysis-only structural change, DSH peer exclusion, explicit publisher breaking language, a vulnerable candidate dependency, and incomplete candidate coverage. A passing benchmark means the rule contract has not regressed; it does not mean a real plugin is runtime-compatible. The real DSH consumer workflow below remains the integration proof.
@@ -271,7 +271,7 @@ The repository also carries a copyable consumer smoke under [`examples/github-ac
 The `probe dsh-load` command gives the compatibility question its own bounded surface. It takes one exact `.tgz`, uses one exact DSH version, and creates a disposable `headless` profile:
 
 ```bash
-pnpm dlx --package=upstream-radar@0.40.0 upstream-radar probe dsh-load \
+pnpm dlx --package=upstream-radar@0.41.0 upstream-radar probe dsh-load \
   ./dsh-plugin-1.2.3.tgz \
   --dsh-version 0.1.0-rc.6 --json
 ```
@@ -296,10 +296,11 @@ The broader headless smoke proves that Radar can hand an event to a DSH Agent. T
 pnpm run showcase:dsh-runtime
 ```
 
-It creates a temporary plugin with a peer on the exact `@deepseek-ai/cordis` version installed by `@deepseek-ai/dsh@0.1.0-rc.6`, installs both the current Radar bundle and that plugin into a disposable profile, and starts the real DSH process. A local HTTPS OSV-compatible server returns one deterministic advisory only for that host version. Radar first records the profile fallback, then the native adapter refreshes the graph from the running process and persists:
+It creates a temporary plugin with a peer on the exact `@deepseek-ai/cordis` version installed by `@deepseek-ai/dsh@0.1.0-rc.6`, installs both the current Radar bundle and that plugin into a disposable profile, and starts the real DSH process. A local HTTPS OSV-compatible server returns one deterministic advisory only for that host version. The profile-only reader first refuses to follow the profile's external host symlink; after DSH exposes its exact entrypoint, the native adapter constructs the bounded process host plane and persists:
 
 ```text
-profile fallback -> running DSH process
+static profile link: refused outside its trust boundary
+verified running DSH process -> bounded host plane
 affected: @deepseek-ai/cordis@4.0.1
 affectedSources: dsh-host
 path: showcase-dsh-host-peer -> @deepseek-ai/cordis

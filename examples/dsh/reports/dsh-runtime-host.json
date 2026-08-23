@@ -2,15 +2,18 @@
   "dshPackage": "@deepseek-ai/dsh@0.1.0-rc.6",
   "plugin": "showcase-dsh-host-peer@1.0.0",
   "hostPackage": "@deepseek-ai/cordis@4.0.1",
-  "initialProfileOnlyGraph": {
-    "hostRuntimeSource": "dsh-profile-fallback",
-    "hostRuntimePackages": 510
+  "staticProfileBoundary": {
+    "result": "refused-external-host-link"
+  },
+  "configuredProcessGraph": {
+    "hostRuntimeSource": "dsh-process",
+    "hostRuntimePackages": 447
   },
   "refreshedGraph": {
     "source": "dsh-process",
-    "hostRuntimePackages": 62,
+    "hostRuntimePackages": 447,
     "hostNode": {
-      "id": "dsh-host/node_modules/@deepseek-ai/cordis",
+      "id": "dsh-host/node_modules/.pnpm/@deepseek-ai+cordis@4.0.1_@deepseek-ai+cordis-plugin-include@1.0.6_@deepseek-ai+cordis-plugin-loader@1.0.2/node_modules/@deepseek-ai/cordis",
       "name": "@deepseek-ai/cordis",
       "version": "4.0.1",
       "source": "dsh-host"
@@ -39,11 +42,11 @@
     ]
   },
   "dshAnalysisResults": 1,
-  "feedRequests": 59,
+  "feedRequests": 191,
   "modelRequests": 3,
   "webhookRequests": 1,
   "webhookEventIds": [
-    "event-e9cea0f53dbdca810d0e99c2"
+    "event-3dd57ae0f6e770bb6f51ca1f"
   ],
   "webhookEndpointPersisted": false,
   "dshProcessPollCompleted": true,

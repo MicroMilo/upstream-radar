@@ -79,6 +79,29 @@ function runtimeNodeModulesDirectory(root: string): string | undefined {
 }
 
 /**
+ * pnpm's logical host plane can point into an outer `.pnpm` virtual store.
+ * Return that enclosing `node_modules` root when present so a read-only graph
+ * collector can resolve both the links and their physical package targets.
+ */
+function runtimeHostNodeModulesDirectory(root: string): string | undefined {
+  let cursor = root
+  for (let depth = 0; depth < MAX_ANCESTORS; depth += 1) {
+    if (basename(cursor) === 'node_modules') {
+      try {
+        const resolved = realpathSync(cursor)
+        if (statSync(join(resolved, '.pnpm')).isDirectory()) return resolved
+      } catch {
+        // Keep walking to the ordinary runtime-plane fallback below.
+      }
+    }
+    const parent = dirname(cursor)
+    if (parent === cursor) break
+    cursor = parent
+  }
+  return undefined
+}
+
+/**
  * Find the DSH CLI's own dependency plane without importing or executing it.
  * The entrypoint is normally process.argv[1] inside a running DSH process.
  */
@@ -89,6 +112,20 @@ export function discoverDshRuntimeNodeModulesDirectory(
   const root = packageRoot(entrypoint)
   if (root === undefined) return undefined
   return runtimeNodeModulesDirectory(root)
+}
+
+/**
+ * Find the safe enclosing DSH host plane. For pnpm this includes the virtual
+ * store that logical package links resolve into; non-pnpm layouts use the
+ * ordinary runtime dependency plane.
+ */
+export function discoverDshRuntimeHostNodeModulesDirectory(
+  entrypoint = process.argv[1],
+): string | undefined {
+  if (typeof entrypoint !== 'string' || entrypoint.trim() === '') return undefined
+  const root = packageRoot(entrypoint)
+  if (root === undefined) return undefined
+  return runtimeHostNodeModulesDirectory(root) ?? runtimeNodeModulesDirectory(root)
 }
 
 /** Read the exact DSH executable package without importing or executing DSH. */

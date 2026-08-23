@@ -55,6 +55,21 @@ export interface DependencyEdge {
   kind: DependencyKind
 }
 
+/** Whether the installed version actually honors one required peer declared by the graph root. */
+export type RootPeerContractStatus = 'satisfied' | 'mismatched' | 'indeterminate' | 'missing'
+
+/**
+ * A root-plugin peer requirement joined to the physical version that DSH made
+ * available at runtime. Optional peers are deliberately excluded: their
+ * absence is not a broken host contract.
+ */
+export interface RootPeerContract {
+  name: string
+  required: string
+  status: RootPeerContractStatus
+  resolvedVersion?: string
+}
+
 export interface DependencyGraph {
   schema: typeof DEPENDENCY_GRAPH_SCHEMA
   rootNodeId: string
@@ -69,6 +84,8 @@ export interface DependencyGraph {
     /** The exact DSH executable package that owns this shared host plane. */
     package?: PackageCoordinate
   }
+  /** Direct required peer contracts of the graph root, evaluated from the installed tree. */
+  rootPeerContracts?: RootPeerContract[]
   digest?: string
   unresolved?: Array<{
     from: string
