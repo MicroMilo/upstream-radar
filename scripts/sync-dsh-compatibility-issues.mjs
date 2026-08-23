@@ -127,6 +127,7 @@ for (const action of plan.actions) {
 const summary = {
   repository,
   activeCompatibilityIncidents: plan.openCaseIds.length,
+  reviewOnlyCells: plan.reviewOnlyCaseIds.length,
   ignoredUnknownCells: plan.ignoredUnknownCaseIds.length,
   actions: applied,
 }
@@ -139,6 +140,7 @@ if (process.env.GITHUB_STEP_SUMMARY !== undefined) {
     '',
     `- Active compatibility incidents: **${summary.activeCompatibilityIncidents}**`,
     `- Created: **${applied.create}**; updated: **${applied.update}**; reopened: **${applied.reopen}**; resolved and closed: **${applied.close}**`,
+    `- Peer-contract cells held for execution-plane review: **${summary.reviewOnlyCells}**`,
     `- Unknown cells held for observer review: **${summary.ignoredUnknownCells}**`,
     '',
   ]

@@ -84,6 +84,7 @@ each pair receives a fresh, secret-free GitHub-hosted VM and restricted
 container.
 
 Inspect the [live compatibility matrix](examples/dsh/install-observer/README.md),
+the [directory-consumable evidence feed](feeds/dsh-plugin-compatibility.md),
 the [first 50-plugin corpus](examples/dsh/first-batch/README.md), or the
 [architecture notes](docs/architecture.md).
 

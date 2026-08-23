@@ -6,7 +6,6 @@ import {
 const CASE_MARKER = /<!-- upstream-radar:dsh-compatibility-case=([a-z0-9][a-z0-9._-]{0,63}) -->/
 const ACTIONABLE_RESULTS = new Set<DshCompatibilityLedgerEntry['result']>([
   'runtime-incompatible',
-  'peer-contract-incompatible',
   'install-failed',
   'load-failed',
 ])
@@ -44,6 +43,7 @@ export type DshCompatibilityIssueAction =
 export interface DshCompatibilityIssuePlan {
   actions: DshCompatibilityIssueAction[]
   openCaseIds: string[]
+  reviewOnlyCaseIds: string[]
   ignoredUnknownCaseIds: string[]
 }
 
@@ -178,6 +178,23 @@ export function renderDshCompatibilityResolution(entry: DshCompatibilityLedgerEn
   ].join('\n')
 }
 
+export function renderDshCompatibilityReviewReclassification(entry: DshCompatibilityLedgerEntry): string {
+  return [
+    `<!-- upstream-radar:dsh-compatibility-review=${entry.caseId}:${entry.contractFingerprint} -->`,
+    '',
+    'Closing this managed incident because the current observation is a review signal, not a reproduced plugin failure.',
+    '',
+    `- Plugin: \`${inline(entry.plugin, 512)}\``,
+    `- DSH: \`@deepseek-ai/dsh@${inline(entry.dshVersion, 128)}\``,
+    `- Raw result retained in the ledger: \`${entry.result}\``,
+    `- Evidence gap: ${inline(entry.reason, 4_096)}`,
+    '',
+    'This cell used the headless profile. A missing or mismatched web-client peer from that Node resolution anchor does not prove the plugin fails in its intended browser execution plane. The evidence remains visible as `needs-review`; it will become author-actionable only after the intended plane reproduces an install, registration or load failure.',
+    '',
+    'Execution-plane coverage is tracked in #75.',
+  ].join('\n')
+}
+
 function existingByCase(issues: readonly DshCompatibilityExistingIssue[]): Map<string, DshCompatibilityExistingIssue> {
   const result = new Map<string, DshCompatibilityExistingIssue>()
   for (const issue of issues) {
@@ -202,12 +219,25 @@ export function buildDshCompatibilityIssuePlan(input: {
   const existing = existingByCase(input.existingIssues)
   const actions: DshCompatibilityIssueAction[] = []
   const openCaseIds: string[] = []
+  const reviewOnlyCaseIds: string[] = []
   const ignoredUnknownCaseIds: string[] = []
 
   for (const entry of ledger.entries) {
     const issue = existing.get(entry.caseId)
     if (entry.result === 'unknown') {
       ignoredUnknownCaseIds.push(entry.caseId)
+      continue
+    }
+    if (entry.result === 'peer-contract-incompatible') {
+      reviewOnlyCaseIds.push(entry.caseId)
+      if (issue?.state === 'open') {
+        actions.push({
+          kind: 'close',
+          caseId: entry.caseId,
+          issueNumber: issue.number,
+          comment: renderDshCompatibilityReviewReclassification(entry),
+        })
+      }
       continue
     }
     if (entry.result === 'compatible') {
@@ -236,6 +266,7 @@ export function buildDshCompatibilityIssuePlan(input: {
   return {
     actions,
     openCaseIds: openCaseIds.sort(),
+    reviewOnlyCaseIds: reviewOnlyCaseIds.sort(),
     ignoredUnknownCaseIds: ignoredUnknownCaseIds.sort(),
   }
 }

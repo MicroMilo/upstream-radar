@@ -97,6 +97,7 @@
     "showcase:observer": "pnpm run build && node scripts/upstream-observer-showcase.mjs",
     "monitor:dsh-findings": "pnpm run build && node scripts/monitor-dsh-findings.mjs",
     "refresh:dsh-batch": "pnpm run build && node scripts/refresh-dsh-batch-index.mjs",
+    "refresh:dsh-directory-feed": "pnpm run build && node scripts/write-dsh-directory-feed.mjs examples/dsh/awesome-observer/cohort.json examples/dsh/install-observer/targets.json compatibility-ledger.json feeds/dsh-plugin-compatibility.json feeds/dsh-plugin-compatibility.md",
     "showcase:pnpm-lock": "pnpm run build && node scripts/pnpm-lock-showcase.mjs",
     "showcase:pnpm-lock:monitor": "pnpm run build && node scripts/pnpm-lock-monitor-showcase.mjs",
     "showcase:npm-lock:monitor": "pnpm run build && node scripts/npm-lock-monitor-showcase.mjs",

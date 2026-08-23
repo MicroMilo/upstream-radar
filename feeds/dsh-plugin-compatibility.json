@@ -1,0 +1,318 @@
+{
+  "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha1",
+  "generatedAt": "2026-08-23T08:02:26.261Z",
+  "producer": {
+    "name": "upstream-radar",
+    "version": "0.41.0",
+    "repository": "https://github.com/MicroMilo/upstream-radar",
+    "license": "Apache-2.0"
+  },
+  "sourceCatalog": {
+    "repository": "awesome-dsh-plugin/awesome-dsh-plugin",
+    "commit": "7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82",
+    "commitUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82",
+    "entryDirectory": "data/plugins",
+    "entryCount": 1837,
+    "license": "CC0-1.0"
+  },
+  "boundary": {
+    "claim": "exact-cell compatibility evidence; not a security review, endorsement, or timeless compatibility badge",
+    "executionPlane": "headless",
+    "profile": "headless",
+    "isolation": "fresh GitHub-hosted VM plus restricted container",
+    "consumptionRule": "Treat a cell as stale after recheckDueAt. needs-review and not-observed must never be rendered as pass or fail.",
+    "refreshAfterHours": 168
+  },
+  "summary": {
+    "total": 8,
+    "observed-compatible": 4,
+    "observed-incompatible": 0,
+    "needs-review": 2,
+    "not-observed": 2
+  },
+  "plugins": [
+    {
+      "id": "dsh-context",
+      "repository": "bowenliang123/dsh-context",
+      "repositoryUrl": "https://github.com/bowenliang123/dsh-context",
+      "catalogEntry": "data/plugins/bowenliang123__dsh-context.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/bowenliang123__dsh-context.yml",
+      "category": "usage",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-context",
+        "selectedVersion": "0.20.0",
+        "distTag": "latest"
+      },
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "context-node22",
+          "artifact": {
+            "spec": "dsh-context@0.25.3",
+            "sha256": "2fe8bd75e83f4c6e0ef69c87611e700011426ff5c83f1c661f45628e250593e2"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T03:40:17.088Z",
+          "recheckDueAt": "2026-08-30T03:40:17.088Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-market",
+      "repository": "dsh-market/dsh-market",
+      "repositoryUrl": "https://github.com/dsh-market/dsh-market",
+      "catalogEntry": "data/plugins/dsh-market__dsh-market.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/dsh-market__dsh-market.yml",
+      "category": "market",
+      "distribution": {
+        "kind": "npm",
+        "name": "dshmarket",
+        "selectedVersion": "1.17.1",
+        "distTag": "latest"
+      },
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-market-node22",
+          "artifact": {
+            "spec": "dshmarket@1.19.0",
+            "sha256": "7428009ef928ebfd23e265c51601404124d249cd83b5bb1b9b1d2ca06fd429d2"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T07:09:16.954Z",
+          "recheckDueAt": "2026-08-30T07:09:16.954Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "aegis",
+      "repository": "GanyuanRan/Aegis",
+      "repositoryUrl": "https://github.com/GanyuanRan/Aegis",
+      "catalogEntry": "data/plugins/GanyuanRan__Aegis.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/GanyuanRan__Aegis.yml",
+      "category": "skill",
+      "distribution": {
+        "kind": "github",
+        "reason": "The matching DSH install path is GitHub; the aegis npm coordinate belongs to a different project.",
+        "installSpec": "github:GanyuanRan/Aegis"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-cost-meter",
+      "repository": "Han-1413141/dsh-cost-meter",
+      "repositoryUrl": "https://github.com/Han-1413141/dsh-cost-meter",
+      "catalogEntry": "data/plugins/Han-1413141__dsh-cost-meter.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/Han-1413141__dsh-cost-meter.yml",
+      "category": "usage",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-cost-meter",
+        "selectedVersion": "1.5.31",
+        "distTag": "latest"
+      },
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "cost-meter-node22",
+          "artifact": {
+            "spec": "dsh-cost-meter@1.5.38",
+            "sha256": "304947c31e0c00fa21a25cdc9c2211bd02656c98d2fec9dd425c4e8aa5707bcb"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T03:40:18.405Z",
+          "recheckDueAt": "2026-08-30T03:40:18.405Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-browser",
+      "repository": "Lum1104/dsh-browser",
+      "repositoryUrl": "https://github.com/Lum1104/dsh-browser",
+      "catalogEntry": "data/plugins/Lum1104__dsh-browser--packages-browser-bridge-browser.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/Lum1104__dsh-browser--packages-browser-bridge-browser.yml",
+      "category": "browser",
+      "distribution": {
+        "kind": "repository-installer",
+        "reason": "The bridge package is private and its README uses the repository installer; the unrelated dsh-browser npm name must not be substituted."
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-agent-teams",
+      "repository": "NanmiCoder/dsh-agent-teams",
+      "repositoryUrl": "https://github.com/NanmiCoder/dsh-agent-teams",
+      "catalogEntry": "data/plugins/NanmiCoder__dsh-agent-teams.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/NanmiCoder__dsh-agent-teams.yml",
+      "category": "workflow",
+      "distribution": {
+        "kind": "npm",
+        "name": "@nanmicoder/dsh-agent-teams",
+        "selectedVersion": "0.1.10",
+        "distTag": "latest"
+      },
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "agent-teams-node22",
+          "artifact": {
+            "spec": "@nanmicoder/dsh-agent-teams@0.1.13",
+            "sha256": "d9351c7e4637c7604fe882e8944ee5a5d77ec57647948d0ef67bc6c62e7f557a"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T03:40:29.383Z",
+          "recheckDueAt": "2026-08-30T03:40:29.383Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-better-sidebar",
+      "repository": "omdsh-dev/DSH-better-sidebar",
+      "repositoryUrl": "https://github.com/omdsh-dev/DSH-better-sidebar",
+      "catalogEntry": "data/plugins/omdsh-dev__DSH-better-sidebar.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/omdsh-dev__DSH-better-sidebar.yml",
+      "category": "ui",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-better-sidebar",
+        "selectedVersion": "0.14.0",
+        "distTag": "latest"
+      },
+      "status": "needs-review",
+      "cells": [
+        {
+          "caseId": "better-sidebar-node22",
+          "artifact": {
+            "spec": "dsh-better-sidebar@0.15.2",
+            "sha256": "d932367e9b436e3f515394f55e90c5793253a51d357b9d390ab16cb9e91931a9"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "needs-review",
+          "radarResult": "peer-contract-incompatible",
+          "observedAt": "2026-08-23T03:40:58.944Z",
+          "recheckDueAt": "2026-08-30T03:40:58.944Z",
+          "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@^0.1.0-rc.8 was not resolved by the DSH runtime (runtime-import-observed)"
+        }
+      ],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-openpencil",
+      "repository": "ZSeven-W/dsh-openpencil",
+      "repositoryUrl": "https://github.com/ZSeven-W/dsh-openpencil",
+      "catalogEntry": "data/plugins/ZSeven-W__dsh-openpencil.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/ZSeven-W__dsh-openpencil.yml",
+      "category": "ui",
+      "distribution": {
+        "kind": "npm",
+        "name": "@zseven-w/dsh-openpencil",
+        "selectedVersion": "0.1.0-rc.1",
+        "distTag": "latest"
+      },
+      "status": "needs-review",
+      "cells": [
+        {
+          "caseId": "openpencil-node24",
+          "artifact": {
+            "spec": "@zseven-w/dsh-openpencil@0.1.0-rc.1",
+            "sha256": "a4563e560e91bcd3a2a9302ee7dbee046b146c1bd0de6b27b7c7524fd52e77ca"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 24,
+            "nodeVersion": "24.19.0",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "needs-review",
+          "radarResult": "peer-contract-incompatible",
+          "observedAt": "2026-08-23T03:40:15.559Z",
+          "recheckDueAt": "2026-08-30T03:40:15.559Z",
+          "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@^0.1.0-rc.6 was not resolved by the DSH runtime (type-only-reference-observed)"
+        }
+      ],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    }
+  ]
+}
