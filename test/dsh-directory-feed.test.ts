@@ -128,24 +128,22 @@ describe('DSH directory compatibility feed', () => {
     const cohort = JSON.parse(await readFile('examples/dsh/awesome-observer/cohort.json', 'utf8')) as unknown
     const installTargets = JSON.parse(await readFile('examples/dsh/install-observer/targets.json', 'utf8')) as unknown
     const ledger = JSON.parse(await readFile('compatibility-ledger.json', 'utf8')) as unknown
+    const checkedInFeed = JSON.parse(await readFile('feeds/dsh-plugin-compatibility.json', 'utf8')) as { generatedAt: string }
     const feed = buildDshDirectoryCompatibilityFeed({
       cohort,
       installTargets,
       ledger,
-      generatedAt: '2026-08-23T08:00:00.000Z',
+      generatedAt: checkedInFeed.generatedAt,
     })
 
+    assert.deepEqual(feed, checkedInFeed)
     assert.equal(feed.plugins.length, 50)
-    assert.equal(feed.plugins.find(item => item.id === 'dsh-market')?.status, 'observed-compatible')
-    assert.equal(feed.plugins.find(item => item.id === 'dsh-better-sidebar')?.status, 'needs-review')
-    assert.equal(feed.plugins.find(item => item.id === 'dsh-openpencil')?.status, 'needs-review')
     assert.equal(feed.plugins.find(item => item.id === 'dsh-browser')?.status, 'not-observed')
-    assert.equal(feed.plugins.find(item => item.id === 'dsh-web-ui-all')?.status, 'not-observed')
     assert.equal(feed.plugins.find(item => item.id === 'api-relay-audit')?.status, 'not-observed')
     assert.equal(
       feed.plugins.find(item => item.id === 'dsh-browser')?.catalogUrl,
       'https://github.com/Lum1104/dsh-browser/tree/main/packages/browser/bridge-browser',
     )
-    assert.equal(feed.plugins.filter(item => item.status === 'observed-incompatible').length, 0)
+    assert.equal(Object.values(feed.summary).slice(1).reduce((sum, count) => sum + count, 0), feed.summary.total)
   })
 })

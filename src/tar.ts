@@ -98,6 +98,13 @@ function parsePax(contents: Buffer): Record<string, string> {
   return values
 }
 
+function parsePaxSize(value: string): number {
+  if (!/^[0-9]+$/.test(value)) throw new Error('invalid PAX size override')
+  const parsed = Number(value)
+  if (!Number.isSafeInteger(parsed) || parsed < 0) throw new Error('invalid PAX size override')
+  return parsed
+}
+
 function pathIssue(rawPath: string): string | undefined {
   if (rawPath.includes('\0')) return 'contains a NUL byte'
   if (/[\u0001-\u001f\u007f-\u009f]/.test(rawPath)) return 'contains a control character'
@@ -247,17 +254,28 @@ export function parseNpmTarball(compressed: Buffer, options: TarOptions = {}): P
     verifyHeaderChecksum(header)
 
     const headerSize = readOctal(header, 124, 12, 'size')
-    if (headerSize > maxFileBytes) throw new Error('tar entry exceeds per-entry budget')
-    budgetBytes += headerSize
+    const typeFlag = String.fromCharCode(header[156] ?? 0)
+    const metadataRecord = typeFlag === 'x' || typeFlag === 'g' || typeFlag === 'L' || typeFlag === 'K'
+    const regularFile = typeFlag === '\0' || typeFlag === '0' || typeFlag === '7'
+    const pax = metadataRecord ? undefined : { ...globalPax, ...pendingPax }
+    let effectiveSize = headerSize
+    if (pax?.size !== undefined) {
+      const paxSize = parsePaxSize(pax.size)
+      if (!regularFile && paxSize !== headerSize) {
+        throw new Error('PAX size override is only supported for regular files')
+      }
+      effectiveSize = paxSize
+    }
+    if (effectiveSize > maxFileBytes) throw new Error('tar entry exceeds per-entry budget')
+    budgetBytes += effectiveSize
     if (budgetBytes > maxUnpackedBytes) throw new Error(`tar contents exceed ${maxUnpackedBytes} bytes`)
     const contentStart = offset + TAR_BLOCK
-    const contentEnd = contentStart + headerSize
+    const contentEnd = contentStart + effectiveSize
     if (contentEnd > archive.length) throw new Error('tar entry exceeds archive bounds')
-    const paddedSize = Math.ceil(headerSize / TAR_BLOCK) * TAR_BLOCK
+    const paddedSize = Math.ceil(effectiveSize / TAR_BLOCK) * TAR_BLOCK
     const nextOffset = contentStart + paddedSize
     if (nextOffset > archive.length) throw new Error('tar padding exceeds archive bounds')
 
-    const typeFlag = String.fromCharCode(header[156] ?? 0)
     const contents = archive.subarray(contentStart, contentEnd)
     const headerName = readString(header, 0, 100)
     const prefix = readString(header, 345, 155)
@@ -265,7 +283,6 @@ export function parseNpmTarball(compressed: Buffer, options: TarOptions = {}): P
 
     if (typeFlag === 'x' || typeFlag === 'g') {
       const parsed = parsePax(contents)
-      if (parsed.size !== undefined) throw new Error('unsupported PAX size override')
       if (typeFlag === 'g') globalPax = { ...globalPax, ...parsed }
       else pendingPax = parsed
       offset = nextOffset
@@ -279,9 +296,8 @@ export function parseNpmTarball(compressed: Buffer, options: TarOptions = {}): P
       continue
     }
 
-    const pax = { ...globalPax, ...pendingPax }
-    const rawPath = pax.path ?? pendingLongName ?? combinedHeaderName
-    const rawLink = pax.linkpath ?? pendingLongLink ?? readString(header, 157, 100)
+    const rawPath = pax?.path ?? pendingLongName ?? combinedHeaderName
+    const rawLink = pax?.linkpath ?? pendingLongLink ?? readString(header, 157, 100)
     pendingPax = {}
     pendingLongName = undefined
     pendingLongLink = undefined
@@ -331,11 +347,10 @@ export function parseNpmTarball(compressed: Buffer, options: TarOptions = {}): P
     portablePaths.set(portableKey, entryPath)
 
     const mode = readOctal(header, 100, 8, 'mode')
-    const regularFile = typeFlag === '\0' || typeFlag === '0' || typeFlag === '7'
     if (regularFile) {
-      fileBytes += headerSize
+      fileBytes += effectiveSize
       const digest = createHash('sha256').update(contents).digest('hex')
-      entries.push({ path: entryPath, type: 'file', mode, size: headerSize, digest, contents: Buffer.from(contents) })
+      entries.push({ path: entryPath, type: 'file', mode, size: effectiveSize, digest, contents: Buffer.from(contents) })
     } else if (typeFlag === '5') {
       const digest = createHash('sha256').update('directory').digest('hex')
       entries.push({ path: entryPath, type: 'directory', mode, size: 0, digest })

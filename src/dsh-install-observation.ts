@@ -777,24 +777,34 @@ async function parsePackedArtifact(
   expectedVersion: string,
 ): Promise<ParsedArtifact> {
   if (commandStage(result).status !== 'passed') throw new Error(commandStage(result).detail ?? 'npm pack failed')
-  let output: unknown
-  try {
-    output = JSON.parse(result.stdout.trim()) as unknown
-  } catch {
-    throw new Error('npm pack did not return JSON')
+  const stdout = result.stdout.trim()
+  let filename: unknown
+  let integrity: string | undefined
+  if (stdout.startsWith('[')) {
+    let output: unknown
+    try {
+      output = JSON.parse(stdout) as unknown
+    } catch {
+      throw new Error('npm pack did not return valid JSON')
+    }
+    if (!Array.isArray(output) || output.length !== 1 || typeof output[0] !== 'object' || output[0] === null) {
+      throw new Error('npm pack returned an unexpected result')
+    }
+    const item = output[0] as Record<string, unknown>
+    filename = item.filename
+    integrity = typeof item.integrity === 'string' ? bounded(item.integrity, 1_024) : undefined
+  } else {
+    const lines = stdout.split(/\r?\n/)
+    if (lines.length !== 1) throw new Error('npm pack returned an unexpected result')
+    filename = lines[0]
   }
-  if (!Array.isArray(output) || output.length !== 1 || typeof output[0] !== 'object' || output[0] === null) {
-    throw new Error('npm pack returned an unexpected result')
-  }
-  const item = output[0] as Record<string, unknown>
-  const filename = item.filename
   if (typeof filename !== 'string' || filename === '' || filename !== basename(filename) || !filename.endsWith('.tgz')) {
     throw new Error('npm pack returned an unsafe artifact filename')
   }
   const path = resolve(artifactDirectory, filename)
   if (!path.startsWith(`${resolve(artifactDirectory)}${sep}`)) throw new Error('npm pack artifact escaped its directory')
   const compressed = await readRegularFileNoFollow(path, MAX_ARTIFACT_BYTES)
-  const parsed = parseNpmTarball(compressed)
+  const parsed = parseNpmTarball(compressed, { maxFileBytes: MAX_ARTIFACT_BYTES })
   const manifestEntry = parsed.entries.find(entry => entry.path === 'package.json' && entry.type === 'file')
   if (manifestEntry?.contents === undefined) throw new Error('packed artifact has no package.json')
   let manifest: Record<string, unknown>
@@ -835,7 +845,6 @@ async function parsePackedArtifact(
     throw new Error('packed artifact Node engine requirement exceeds 512 characters')
   }
   const nodeEngine = rawNodeEngine === undefined || rawNodeEngine === '' ? undefined : bounded(rawNodeEngine, 512)
-  const integrity = typeof item.integrity === 'string' ? bounded(item.integrity, 1_024) : undefined
   const peerRequirements = requiredPeerDependencies(manifest, parsed.entries)
   return {
     path,
@@ -1598,7 +1607,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
     const artifactResult = await runSafely(runner, {
       phase: 'artifact',
       command: npmCommand,
-      args: ['pack', `${spec.name}@${spec.version}`, '--ignore-scripts', '--json', '--pack-destination', '.'],
+      args: ['pack', `${spec.name}@${spec.version}`, '--ignore-scripts', '--pack-destination', '.', '--silent'],
       cwd: artifactDirectory,
       env: noScriptsEnvironment,
       timeoutMs,
