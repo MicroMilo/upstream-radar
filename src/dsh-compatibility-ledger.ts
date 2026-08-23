@@ -540,7 +540,9 @@ export function createDshCompatibilityContractFingerprint(value: {
   allowedBuilds: readonly string[]
 }): string {
   return fingerprint({
-    probe: 'dsh-install/v1alpha1',
+    // v1alpha2 boots the composed DSH profile instead of imposing a package-
+    // root ESM export that the DSH bundle contract does not require.
+    probe: 'dsh-install/v1alpha2',
     platform: 'linux',
     architecture: 'x64',
     packageManager: 'pnpm@11.7.0',

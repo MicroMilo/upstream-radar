@@ -82,7 +82,7 @@ describe('DSH install observation', () => {
     assert.deepEqual(phases, ['runtime'])
   })
 
-  it('stops before DSH or plugin execution when the exact artifact excludes the isolated Node runtime', async () => {
+  it('preflights a bounded large bundle before stopping on an incompatible Node runtime', async () => {
     const phases: InstallObservationCommand['phase'][] = []
     let artifactArgs: string[] = []
     const report = await observeDshPluginInstall({
@@ -103,7 +103,10 @@ describe('DSH install observation', () => {
               dsh: { bundle: { patch: 'cordis.patch.yml' } },
             }) },
             { path: 'package/cordis.patch.yml', contents: '[]\n' },
-            { path: 'package/vendor/dsh-runtime.tgz', contents: Buffer.alloc(17 * 1024 * 1024) },
+            ...Array.from({ length: 4 }, (_, index) => ({
+              path: `package/vendor/runtime-${index}.bin`,
+              contents: Buffer.alloc(17 * 1024 * 1024),
+            })),
           ]))
           return passed({ stdout: 'future-plugin-1.0.0.tgz\n' })
         }
@@ -209,7 +212,7 @@ snapshots:
       if (command.phase === 'load') {
         assert.equal(command.command, process.execPath)
         const probe = await readFile(command.args[0] as string, 'utf8')
-        assert.match(probe, /await import\("example-plugin"\)/)
+        assert.doesNotMatch(probe, /await import\("example-plugin"\)/)
         assert.match(probe, /"--profile","headless","--help"/)
         assert.notEqual(hostRuntimeEntry, undefined)
         await writeFile(join(command.cwd, '.upstream-radar-peer-resolution.json'), JSON.stringify({
@@ -437,7 +440,7 @@ snapshots:
         if (command.tracePath !== undefined) await writeFile(command.tracePath, TRACE)
         return passed({
           code: 1,
-          stderr: '[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: sharp@0.34.5, @scope/native@1.2.3, protobufjs@7.6.5\n\nRun "pnpm approve-builds" to pick which dependencies should be allowed to run scripts.\n',
+          stderr: '[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: approval-plugin@file:../../../artifact/approval-plugin-1.0.0.tgz, sharp@0.34.5, @scope/native@1.2.3, protobufjs@7.6.5\n\nRun "pnpm approve-builds" to pick which dependencies should be allowed to run scripts.\n',
         })
       }
       return passed()
@@ -454,9 +457,9 @@ snapshots:
     assert.equal(report.result, 'build-approval-required')
     assert.deepEqual(
       (report.boundary as typeof report.boundary & { requiredDependencyBuilds?: string[] }).requiredDependencyBuilds,
-      ['@scope/native', 'protobufjs', 'sharp'],
+      ['@scope/native', 'approval-plugin', 'protobufjs', 'sharp'],
     )
-    assert.match(report.reason, /requires explicit approval.*@scope\/native, protobufjs, sharp/)
+    assert.match(report.reason, /requires explicit approval.*@scope\/native, approval-plugin, protobufjs, sharp/)
     assert.equal(report.stages.registration.status, 'skipped')
     assert.equal(report.stages.load.status, 'skipped')
   })
