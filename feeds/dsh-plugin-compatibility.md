@@ -1,8 +1,8 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-23T10:30:09.077Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-23T10:48:50.129Z`.
 
-**29 observed compatible · 4 observed incompatible · 13 needs review · 4 not observed**
+**32 observed compatible · 4 observed incompatible · 10 needs review · 4 not observed**
 
 | Catalog plugin | Exact artifact | Exact DSH / runtime | Evidence status | Observed |
 | --- | --- | --- | --- | --- |
@@ -15,8 +15,8 @@ Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-pl
 | [awesome-dsh-plugin/dsh-find-plugin](https://github.com/awesome-dsh-plugin/dsh-find-plugin) | `dsh-find-plugin@0.3.7` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T10:29:07.055Z |
 | [Blank-not-black/dsh-Remote](https://github.com/Blank-not-black/dsh-Remote/tree/main/packages/plugin) | `dsh-remote-plugin@0.6.10` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T10:29:10.766Z |
 | [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) | `dsh-context@0.25.3` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T03:40:17.088Z |
-| [ccch1mneyyy/dsh-TUI](https://github.com/ccch1mneyyy/dsh-TUI) | `@deepseek-harness-tui/dsh-tui@0.9.0` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T10:28:45.459Z |
-| [ChongCyrus/Vibe-Mathematics](https://github.com/ChongCyrus/Vibe-Mathematics) | `dsh-vibe-math@1.0.2` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T10:28:56.405Z |
+| [ccch1mneyyy/dsh-TUI](https://github.com/ccch1mneyyy/dsh-TUI) | `@deepseek-harness-tui/dsh-tui@0.9.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T10:45:13.430Z |
+| [ChongCyrus/Vibe-Mathematics](https://github.com/ChongCyrus/Vibe-Mathematics) | `dsh-vibe-math@1.0.2` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T10:45:04.817Z |
 | [DDDMUC/dsh-free-search](https://github.com/DDDMUC/dsh-free-search) | `dsh-free-search@0.4.12` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T10:29:01.728Z |
 | [dsh-market/dsh-market](https://github.com/dsh-market/dsh-market) | `dshmarket@1.19.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T07:09:16.954Z |
 | [elysia395/dsh-wallpaper-engine](https://github.com/elysia395/dsh-wallpaper-engine) | `dsh-plugin-wallpaper-engine@0.5.1` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T10:29:07.481Z |
@@ -35,8 +35,8 @@ Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-pl
 | [NanmiCoder/dsh-agent-teams](https://github.com/NanmiCoder/dsh-agent-teams) | `@nanmicoder/dsh-agent-teams@0.1.13` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T03:40:29.383Z |
 | [Nwflower/dsh-chat-import](https://github.com/Nwflower/dsh-chat-import) | `dsh-chat-import@0.6.2` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T10:28:59.740Z |
 | [omdsh-dev/DSH-better-sidebar](https://github.com/omdsh-dev/DSH-better-sidebar) | `dsh-better-sidebar@0.15.2` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T03:40:58.944Z |
-| [openma-ai/deepseek-harness-acp](https://github.com/openma-ai/deepseek-harness-acp) | `@openma/deepseek-harness-acp@0.4.24` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T10:28:41.757Z |
-| [PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet/tree/main/dsh-pet) | `dsh-pet@0.1.7` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T10:28:39.649Z |
+| [openma-ai/deepseek-harness-acp](https://github.com/openma-ai/deepseek-harness-acp) | `@openma/deepseek-harness-acp@0.4.24` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T10:45:06.760Z |
+| [PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet/tree/main/dsh-pet) | `dsh-pet@0.1.7` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T10:45:08.504Z |
 | [Q00/ouroboros](https://github.com/Q00/ouroboros/tree/main/integrations/dsh-plugin) | — | — | `not-observed` | — |
 | [Relistencode/dsh-extension-hub](https://github.com/Relistencode/dsh-extension-hub) | `dsh-extension-hub@0.2.19` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T10:29:05.384Z |
 | [RevolutionLA/dsh-dream-skin](https://github.com/RevolutionLA/dsh-dream-skin) | `dsh-dream-skin@0.4.10` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T10:29:01.450Z |
