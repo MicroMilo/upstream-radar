@@ -520,8 +520,8 @@
       ],
       "source": {
         "name": "dsh-hdc-bridge",
-        "version": "0.7.2",
-        "digest": "sha256:2a26a4a2fc3dd0f58cad501e437278809f7398b6d8f3bd33ba2e983de10a2f91",
+        "version": "0.7.3",
+        "digest": "sha256:c005a7b014a72ae9674ff01290b6a1310d1d1f0ae9b134f8cbf894bff8748e0c",
         "findings": [
           {
             "code": "custom-registry-config",
@@ -532,41 +532,15 @@
               "path": ".npmrc"
             },
             "fingerprint": "sha256:8afb78a4e5afa427a6ed3c9f472731f151df40c88d335e6d0399f4d8bf407c4c"
-          },
-          {
-            "code": "dependency-graph-unlocked",
-            "severity": "medium",
-            "summary": "Runtime dependency graph is not locked in the reviewed source tree",
-            "detail": "A future resolution of the same manifest may select different transitive artifacts.",
-            "evidence": {
-              "runtimeDependencyCount": 1
-            },
-            "fingerprint": "sha256:30fb4ab431a5c730344ea899eaed18698e7aa6c77fff4ad01b821eed3ddc256d"
           }
         ]
       },
       "artifact": {
-        "spec": "npm:dsh-hdc-bridge@0.7.2",
+        "spec": "npm:dsh-hdc-bridge@0.7.3",
         "name": "dsh-hdc-bridge",
-        "version": "0.7.2",
-        "digest": "sha256:0c86a66448efdc1d331a3d8c9d664b0d3087c7e039d0ec6d7b99f421326617be",
+        "version": "0.7.3",
+        "digest": "sha256:f2fd58883c31f44758e7a0201df9a7e2dc62d4710a6b99a015eecfe1ca4668ae",
         "findings": [
-          {
-            "code": "dependency-install-script-present",
-            "severity": "high",
-            "summary": "Resolved dependency graph contains install-time scripts",
-            "detail": "The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.",
-            "evidence": {
-              "packages": [
-                "@deveco/deveco-cli@1.3.0"
-              ],
-              "scripts": [
-                "@deveco/deveco-cli@1.3.0 postinstall: node scripts/postinstall.mjs",
-                "@deveco/deveco-cli@1.3.0 prepare: husky"
-              ]
-            },
-            "fingerprint": "sha256:3c013c563c024e16451b6d20c902f72a2a9b44b2df6924c331f4a581a3b77d6a"
-          },
           {
             "code": "npm-provenance-missing",
             "severity": "medium",
