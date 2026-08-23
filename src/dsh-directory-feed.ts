@@ -6,7 +6,7 @@ import { TOOL_VERSION } from './version.js'
 export const AWESOME_DSH_COHORT_SCHEMA = 'upstream-radar.awesome-dsh-cohort/v1alpha1' as const
 export const DSH_DIRECTORY_COMPATIBILITY_FEED_SCHEMA = 'upstream-radar.dsh-directory-compatibility-feed/v1alpha1' as const
 
-const MAX_COHORT_PLUGINS = 50
+const MAX_COHORT_PLUGINS = 100
 const REPOSITORY = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/
 const CATALOG_ENTRY = /^data\/plugins\/[A-Za-z0-9_.@-]+\.ya?ml$/
 

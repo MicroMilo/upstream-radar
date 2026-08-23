@@ -323,6 +323,306 @@
         "node24"
       ],
       "reason": "A Node 24-targeted design plugin that exercises host tools and a broad web-client peer surface."
+    },
+    {
+      "id": "modlens",
+      "spec": "@liustack/modlens@3.24.0",
+      "observerTargetId": "modlens",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 97137 downloads and 3530 GitHub stars to expand vision coverage."
+    },
+    {
+      "id": "dsh-mnemon",
+      "spec": "dsh-mnemon@0.2.16",
+      "observerTargetId": "dsh-mnemon",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 11815 downloads and 181 GitHub stars to expand memory coverage."
+    },
+    {
+      "id": "dsh-win32",
+      "spec": "dsh-win32@0.16.0",
+      "observerTargetId": "dsh-win32",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 7271 downloads and 17 GitHub stars to expand dev coverage."
+    },
+    {
+      "id": "whale-on-desk",
+      "spec": "whale-on-desk@3.0.0",
+      "observerTargetId": "whale-on-desk",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 6872 downloads and 3 GitHub stars to expand ui coverage."
+    },
+    {
+      "id": "dsh-client-auto-continue",
+      "spec": "dsh-client-auto-continue@0.8.1",
+      "observerTargetId": "dsh-client-auto-continue",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 6722 downloads and 36 GitHub stars to expand ui coverage."
+    },
+    {
+      "id": "dsh-strata",
+      "spec": "dsh-strata@0.8.2",
+      "observerTargetId": "dsh-strata",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 5987 downloads and 7 GitHub stars to expand ui coverage."
+    },
+    {
+      "id": "dsh-free-vision",
+      "spec": "dsh-free-vision@1.0.8",
+      "observerTargetId": "dsh-free-vision",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 5964 downloads and 6 GitHub stars to expand vision coverage."
+    },
+    {
+      "id": "dsh-xueqiu",
+      "spec": "dsh-xueqiu@1.21.4",
+      "observerTargetId": "dsh-xueqiu",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 4943 downloads and 7 GitHub stars to expand ui coverage."
+    },
+    {
+      "id": "dsh-skills-manager",
+      "spec": "@michengai/dsh-skills-manager@0.1.23",
+      "observerTargetId": "dsh-skills-manager",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 4905 downloads and 18 GitHub stars to expand dev coverage."
+    },
+    {
+      "id": "graphflow",
+      "spec": "@roarpeng/graphflow@1.12.2",
+      "observerTargetId": "graphflow",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 4107 downloads and 4 GitHub stars to expand tools coverage."
+    },
+    {
+      "id": "dsh-history",
+      "spec": "dsh-history@0.1.24",
+      "observerTargetId": "dsh-history",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3907 downloads and 6 GitHub stars to expand session coverage."
+    },
+    {
+      "id": "dsh-catppuccin",
+      "spec": "@nonamelego/dsh-catppuccin@0.2.10",
+      "observerTargetId": "dsh-catppuccin",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3897 downloads and 17 GitHub stars to expand theme coverage."
+    },
+    {
+      "id": "dsh-rewind-plugin",
+      "spec": "dsh-rewind-plugin@0.3.2",
+      "observerTargetId": "dsh-rewind-plugin",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3859 downloads and 9 GitHub stars to expand session coverage."
+    },
+    {
+      "id": "dsh-vision-proxy",
+      "spec": "dsh-vision-proxy@0.4.1",
+      "observerTargetId": "dsh-vision-proxy",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3778 downloads and 13 GitHub stars to expand vision coverage."
+    },
+    {
+      "id": "dsh-codex-subscription",
+      "spec": "dsh-codex-subscription@1.4.0",
+      "observerTargetId": "dsh-codex-subscription",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3583 downloads and 19 GitHub stars to expand model coverage."
+    },
+    {
+      "id": "anweat-dsh-browser",
+      "spec": "@anweat/dsh-browser@0.1.8",
+      "observerTargetId": "anweat-dsh-browser",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3455 downloads and 8 GitHub stars to expand browser coverage."
+    },
+    {
+      "id": "dsh-turn-rewind",
+      "spec": "@anionex/dsh-turn-rewind@0.1.1",
+      "observerTargetId": "dsh-turn-rewind",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3372 downloads and 96 GitHub stars to expand session coverage."
+    },
+    {
+      "id": "dsh-easyrewrite",
+      "spec": "dsh-easyrewrite@2.1.0",
+      "observerTargetId": "dsh-easyrewrite",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3257 downloads and 43 GitHub stars to expand session coverage."
+    },
+    {
+      "id": "dsh-better-edit",
+      "spec": "dsh-better-edit@0.3.1",
+      "observerTargetId": "dsh-better-edit",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3169 downloads and 14 GitHub stars to expand tools coverage."
+    },
+    {
+      "id": "dsh-auxiliary",
+      "spec": "@dsh-plugin/dsh-auxiliary@0.5.1",
+      "observerTargetId": "dsh-auxiliary",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3138 downloads and 5 GitHub stars to expand tools coverage."
+    },
+    {
+      "id": "dsh-verify",
+      "spec": "dsh-verify@0.9.0",
+      "observerTargetId": "dsh-verify",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3135 downloads and 0 GitHub stars to expand browser coverage."
+    },
+    {
+      "id": "dsh-passwords",
+      "spec": "dsh-passwords@2.6.0",
+      "observerTargetId": "dsh-passwords",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3128 downloads and 18 GitHub stars to expand security coverage."
+    },
+    {
+      "id": "dsh-memory-plugin",
+      "spec": "@openviking/dsh-memory-plugin@0.2.1",
+      "observerTargetId": "dsh-memory-plugin",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3103 downloads and 32115 GitHub stars to expand memory coverage."
+    },
+    {
+      "id": "dsh-univer-office",
+      "spec": "dsh-univer-office@0.2.9",
+      "observerTargetId": "dsh-univer-office",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3094 downloads and 77 GitHub stars to expand docs coverage."
+    },
+    {
+      "id": "dsh-plugin-vet",
+      "spec": "@jieai/dsh-plugin-vet@0.2.5",
+      "observerTargetId": "dsh-plugin-vet",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3027 downloads and 2 GitHub stars to expand security coverage."
+    },
+    {
+      "id": "dsh-full-remote",
+      "spec": "dsh-full-remote@0.3.7",
+      "observerTargetId": "dsh-full-remote",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 3008 downloads and 21 GitHub stars to expand remote coverage."
+    },
+    {
+      "id": "odai-dsh-plugin",
+      "spec": "odai-dsh-plugin@0.2.8",
+      "observerTargetId": "odai-dsh-plugin",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2885 downloads and 95 GitHub stars to expand workflow coverage."
+    },
+    {
+      "id": "dsh-deepread",
+      "spec": "dsh-deepread@1.0.0",
+      "observerTargetId": "dsh-deepread",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2878 downloads and 37 GitHub stars to expand tools coverage."
+    },
+    {
+      "id": "dsh-deepseek-vision",
+      "spec": "dsh-deepseek-vision@0.1.7",
+      "observerTargetId": "dsh-deepseek-vision",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2850 downloads and 7 GitHub stars to expand vision coverage."
+    },
+    {
+      "id": "dsh-archive-manager",
+      "spec": "@michengai/dsh-archive-manager@0.1.12",
+      "observerTargetId": "dsh-archive-manager",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2721 downloads and 9 GitHub stars to expand session coverage."
+    },
+    {
+      "id": "dsh-plugin-subscriptions",
+      "spec": "dsh-plugin-subscriptions@0.5.0",
+      "observerTargetId": "dsh-plugin-subscriptions",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2720 downloads and 246 GitHub stars to expand model coverage."
+    },
+    {
+      "id": "dsh-crew",
+      "spec": "dsh-crew@0.9.0",
+      "observerTargetId": "dsh-crew",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2632 downloads and 3 GitHub stars to expand workflow coverage."
+    },
+    {
+      "id": "iterate-plugin",
+      "spec": "iterate-plugin@2.12.0",
+      "observerTargetId": "iterate-plugin",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2619 downloads and 2 GitHub stars to expand workflow coverage."
+    },
+    {
+      "id": "dsh-plugin-vetting",
+      "spec": "dsh-plugin-vetting@0.5.6",
+      "observerTargetId": "dsh-plugin-vetting",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2604 downloads and 4 GitHub stars to expand security coverage."
+    },
+    {
+      "id": "dsh-any-background",
+      "spec": "dsh-any-background@0.1.9",
+      "observerTargetId": "dsh-any-background",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2529 downloads and 16 GitHub stars to expand theme coverage."
+    },
+    {
+      "id": "dsh-tavern",
+      "spec": "dsh-tavern@1.9.1",
+      "observerTargetId": "dsh-tavern",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2515 downloads and 20 GitHub stars to expand fun coverage."
+    },
+    {
+      "id": "dsh-auto-classifier",
+      "spec": "dsh-auto-classifier@0.1.14",
+      "observerTargetId": "dsh-auto-classifier",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2496 downloads and 0 GitHub stars to expand security coverage."
+    },
+    {
+      "id": "dshscan",
+      "spec": "@shaoshi/dshscan@0.5.0",
+      "observerTargetId": "dshscan",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2455 downloads and 8 GitHub stars to expand security coverage."
+    },
+    {
+      "id": "dsh-im-connect",
+      "spec": "@michengai/dsh-im-connect@0.1.19",
+      "observerTargetId": "dsh-im-connect",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2385 downloads and 2 GitHub stars to expand notify coverage."
+    },
+    {
+      "id": "dsh-gateway",
+      "spec": "dsh-gateway@1.6.0",
+      "observerTargetId": "dsh-gateway",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2381 downloads and 1 GitHub stars to expand remote coverage."
+    },
+    {
+      "id": "dsh-spend",
+      "spec": "dsh-spend@0.4.6",
+      "observerTargetId": "dsh-spend",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2361 downloads and 8 GitHub stars to expand usage coverage."
+    },
+    {
+      "id": "dsh-thirteen-bg",
+      "spec": "dsh-thirteen-bg@0.5.2",
+      "observerTargetId": "dsh-thirteen-bg",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2322 downloads and 0 GitHub stars to expand theme coverage."
+    },
+    {
+      "id": "dsh-coding-subscription-oauth",
+      "spec": "dsh-coding-subscription-oauth@0.6.0",
+      "observerTargetId": "dsh-coding-subscription-oauth",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2245 downloads and 11 GitHub stars to expand model coverage."
+    },
+    {
+      "id": "dsh-testkit",
+      "spec": "dsh-testkit@0.3.3",
+      "observerTargetId": "dsh-testkit",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2242 downloads and 1 GitHub stars to expand dev coverage."
+    },
+    {
+      "id": "dsh-movein",
+      "spec": "dsh-movein@0.12.0",
+      "observerTargetId": "dsh-movein",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2196 downloads and 7 GitHub stars to expand dev coverage."
+    },
+    {
+      "id": "dsh-imagegen",
+      "spec": "@dickpy/dsh-imagegen@1.0.20",
+      "observerTargetId": "dsh-imagegen",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2181 downloads and 11 GitHub stars to expand vision coverage."
+    },
+    {
+      "id": "dsh-taskboard",
+      "spec": "dsh-taskboard@0.4.5",
+      "observerTargetId": "dsh-taskboard",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2168 downloads and 15 GitHub stars to expand workflow coverage."
+    },
+    {
+      "id": "dsh-email",
+      "spec": "dsh-email@0.6.2",
+      "observerTargetId": "dsh-email",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2152 downloads and 7 GitHub stars to expand notify coverage."
+    },
+    {
+      "id": "dsh-meme",
+      "spec": "dsh-meme@0.1.39",
+      "observerTargetId": "dsh-meme",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2150 downloads and 45 GitHub stars to expand fun coverage."
+    },
+    {
+      "id": "xgone-dsh-remote",
+      "spec": "@xgone/dsh-remote@0.2.7",
+      "observerTargetId": "xgone-dsh-remote",
+      "reason": "Identity-checked npm artifact from the 100-plugin catalog cohort; selected with 2429 downloads and 42 GitHub stars to expand security coverage."
     }
   ]
 }

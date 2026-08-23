@@ -15,7 +15,7 @@ export const DSH_INSTALL_TARGETS_SCHEMA = 'upstream-radar.dsh-install-targets/v1
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const DSH_TARGET_ID = 'deepseek-harness'
 const DSH_PACKAGE = '@deepseek-ai/dsh'
-const MAX_TARGETS = 50
+const MAX_TARGETS = 100
 const MAX_RUNTIME_PROFILES = 8
 const DEFAULT_REFRESH_AFTER_HOURS = 7 * 24
 

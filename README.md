@@ -19,7 +19,7 @@ plugins against changing
 releases in disposable runners. When a pair breaks, it produces a reproducible
 issue; when the author ships a fix, it retests and closes the loop.
 
-**50 maintained install/load targets · 50 catalog entries across all 21 categories · 4 upstream reports closed**
+**100 maintained install/load targets · 100 catalog entries across all 21 categories · 4 upstream reports closed**
 
 ## Why it exists
 

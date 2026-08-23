@@ -1,20 +1,20 @@
 # awesome-dsh-plugin monitored cohort
 
-This directory binds an operational 50-plugin cohort to one immutable snapshot of
+This directory binds an operational 100-plugin cohort to one immutable snapshot of
 the public [`awesome-dsh-plugin`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin)
 catalog. The catalog is a discovery source, not a security review or an install
 instruction.
 
 ## What was imported
 
-[`cohort.json`](cohort.json) records the exact catalog commit and 50 selected
+[`cohort.json`](cohort.json) records the exact catalog commit and 100 selected
 repositories across all 21 catalog categories. Every executable entry was
 included only after its catalog URL, source package name, npm package name and
 npm repository metadata agreed:
 
 | Monitoring lane | Count | Targets |
 | --- | ---: | --- |
-| Source + npm coordinate + dependency graph + isolated install/load | 46 | Exact npm artifacts selected for adoption and category coverage |
+| Source + npm coordinate + dependency graph + isolated install/load | 96 | Exact npm artifacts selected for adoption and category coverage |
 | Source + dependency graph only | 4 | dsh-browser, Aegis, Ouroboros DSH integration, API Relay Audit |
 
 The four source-only targets are not evidence gaps accidentally presented as
@@ -23,11 +23,24 @@ npm packages. Their cataloged install paths are GitHub or repository-specific;
 name belongs to another project. Radar records their commits and graphs but
 never substitutes an unrelated npm artifact.
 
-The cohort is adoption-stratified, not simply the first 50 directory rows: it
-prioritizes downloads and Stars, limits one entry per repository and four per
-category, and still covers every category. Expanding from 8 to 50 also makes a
-clean run informative: with zero observed failures, the rough 95% upper bound
-on the underlying failure rate falls from about 37.5% to 6%.
+The cohort is adoption-stratified, not simply the first 100 directory rows. It
+prioritizes downloads and Stars, limits one entry per repository, eight per
+category and four per owner, and still covers every category. The second 50
+were accepted only when the catalog URL, source `package.json`, npm package
+name and npm `repository` metadata all pointed to the same project.
+
+The expansion is reproducible. Given the catalog's checked-out commit and its
+generated `plugins.json`, this command fills the bounded cohort without
+executing target code:
+
+```bash
+GITHUB_TOKEN=... pnpm expand:dsh-cohort -- \
+  /path/to/plugins.json /path/to/awesome-dsh-plugin 100
+```
+
+It rejects identity drift, archived repositories, missing DSH contracts,
+non-exact versions and Node requirements outside the maintained runtimes
+before writing any target files.
 
 ## How the loop closes
 

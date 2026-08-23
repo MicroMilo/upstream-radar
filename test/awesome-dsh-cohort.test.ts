@@ -16,12 +16,19 @@ interface CohortPlugin {
     name?: string
     selectedVersion?: string
   }
+  sourceCoordinateAtSelection?: { name?: string, version?: string }
 }
 
 interface Cohort {
   schema: string
   source: { commit: string; entryCount: number }
   plugins: CohortPlugin[]
+}
+
+function maximumFrequency(values: readonly string[]): number {
+  const counts = new Map<string, number>()
+  for (const value of values) counts.set(value, (counts.get(value) ?? 0) + 1)
+  return Math.max(...counts.values())
 }
 
 describe('awesome-dsh-plugin monitored cohort', () => {
@@ -35,11 +42,14 @@ describe('awesome-dsh-plugin monitored cohort', () => {
     assert.equal(cohort.schema, 'upstream-radar.awesome-dsh-cohort/v1alpha1')
     assert.match(cohort.source.commit, /^[0-9a-f]{40}$/)
     assert.ok(cohort.source.entryCount >= cohort.plugins.length)
-    assert.equal(cohort.plugins.length, 50)
+    assert.equal(cohort.plugins.length, 100)
     assert.equal(new Set(cohort.plugins.map(plugin => plugin.id)).size, cohort.plugins.length)
     assert.equal(new Set(cohort.plugins.map(plugin => plugin.repository.toLowerCase())).size, cohort.plugins.length)
     assert.equal(new Set(cohort.plugins.map(plugin => plugin.category)).size, 21)
-    assert.equal(installTargets.plugins.length, 50)
+    assert.equal(cohort.plugins.some(plugin => plugin.repository.toLowerCase() === 'micromilo/upstream-radar'), false)
+    assert.ok(maximumFrequency(cohort.plugins.map(plugin => plugin.category)) <= 8)
+    assert.ok(maximumFrequency(cohort.plugins.map(plugin => plugin.repository.split('/')[0]?.toLowerCase() ?? '')) <= 4)
+    assert.equal(installTargets.plugins.length, 100)
 
     const importedIds = new Set(cohort.plugins.map(plugin => plugin.id))
     const importedObserverTargets = observer.targets.filter(target => importedIds.has(target.id))
@@ -56,7 +66,7 @@ describe('awesome-dsh-plugin monitored cohort', () => {
 
     const npmPlugins = cohort.plugins.filter(plugin => plugin.distribution.kind === 'npm')
     const sourceOnlyPlugins = cohort.plugins.filter(plugin => plugin.distribution.kind !== 'npm')
-    assert.equal(npmPlugins.length, 46)
+    assert.equal(npmPlugins.length, 96)
     assert.deepEqual(
       sourceOnlyPlugins.map(plugin => plugin.id).sort(),
       ['aegis', 'api-relay-audit', 'dsh-browser', 'ouroboros-dsh-plugin'],
@@ -69,6 +79,7 @@ describe('awesome-dsh-plugin monitored cohort', () => {
     for (const plugin of npmPlugins) {
       assert.ok(plugin.distribution.name)
       assert.ok(plugin.distribution.selectedVersion)
+      assert.equal(plugin.sourceCoordinateAtSelection?.name, plugin.distribution.name)
       const executable = installTargets.plugins.find(target => target.observerTargetId === plugin.id)
       assert.ok(executable, `missing isolated install target for ${plugin.id}`)
       assert.equal(executable.spec, `${plugin.distribution.name}@${plugin.distribution.selectedVersion}`)

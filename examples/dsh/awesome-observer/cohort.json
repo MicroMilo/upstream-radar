@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.awesome-dsh-cohort/v1alpha1",
-  "selectedAt": "2026-08-23T10:19:24.671Z",
+  "selectedAt": "2026-08-23T11:27:36.238Z",
   "source": {
     "repository": "awesome-dsh-plugin/awesome-dsh-plugin",
     "commit": "2e19b3c5bd42f2f688eba9df7933ace9e13e66ea",
@@ -1398,6 +1398,1279 @@
         "downloads": 3298,
         "stars": 147,
         "nodeEngine": ">=24.11.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "modlens",
+      "catalogEntry": "data/plugins/liustack__modlens.yml",
+      "catalogUrl": "https://github.com/liustack/modlens",
+      "repository": "liustack/modlens",
+      "ref": "main",
+      "category": "vision",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@liustack/modlens",
+        "version": "3.24.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@liustack/modlens",
+        "selectedVersion": "3.24.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 97137,
+        "stars": 3530,
+        "nodeEngine": ">=22.19",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-mnemon",
+      "catalogEntry": "data/plugins/omdsh-dev__dsh-mnemon.yml",
+      "catalogUrl": "https://github.com/omdsh-dev/dsh-mnemon",
+      "repository": "omdsh-dev/dsh-mnemon",
+      "ref": "main",
+      "category": "memory",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-mnemon",
+        "version": "0.2.16"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-mnemon",
+        "selectedVersion": "0.2.16",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 11815,
+        "stars": 181,
+        "nodeEngine": ">=20",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-win32",
+      "catalogEntry": "data/plugins/sjh9714__dsh-win32.yml",
+      "catalogUrl": "https://github.com/sjh9714/dsh-win32",
+      "repository": "sjh9714/dsh-win32",
+      "ref": "master",
+      "category": "dev",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-win32",
+        "version": "0.16.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-win32",
+        "selectedVersion": "0.16.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 7271,
+        "stars": 17,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "whale-on-desk",
+      "catalogEntry": "data/plugins/cookiesheep__whale-on-desk.yml",
+      "catalogUrl": "https://github.com/cookiesheep/whale-on-desk",
+      "repository": "cookiesheep/whale-on-desk",
+      "ref": "master",
+      "category": "ui",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "whale-on-desk",
+        "version": "3.0.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "whale-on-desk",
+        "selectedVersion": "3.0.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 6872,
+        "stars": 3,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-client-auto-continue",
+      "catalogEntry": "data/plugins/HsiangNianian__dsh-auto-continue.yml",
+      "catalogUrl": "https://github.com/HsiangNianian/dsh-auto-continue",
+      "repository": "HsiangNianian/dsh-auto-continue",
+      "ref": "main",
+      "category": "ui",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-client-auto-continue",
+        "version": "0.8.1"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-client-auto-continue",
+        "selectedVersion": "0.8.1",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 6722,
+        "stars": 36,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-strata",
+      "catalogEntry": "data/plugins/jsdvjx__dsh-strata.yml",
+      "catalogUrl": "https://github.com/jsdvjx/dsh-strata",
+      "repository": "jsdvjx/dsh-strata",
+      "ref": "main",
+      "category": "ui",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-strata",
+        "version": "0.8.2"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-strata",
+        "selectedVersion": "0.8.2",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 5987,
+        "stars": 7,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-free-vision",
+      "catalogEntry": "data/plugins/FuzzySoul__dsh-free-vision.yml",
+      "catalogUrl": "https://github.com/FuzzySoul/dsh-free-vision",
+      "repository": "FuzzySoul/dsh-free-vision",
+      "ref": "main",
+      "category": "vision",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-free-vision",
+        "version": "1.0.8"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-free-vision",
+        "selectedVersion": "1.0.8",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 5964,
+        "stars": 6,
+        "nodeEngine": ">=18",
+        "lifecycleScripts": [
+          "postinstall"
+        ]
+      }
+    },
+    {
+      "id": "dsh-xueqiu",
+      "catalogEntry": "data/plugins/kangjinghang__dsh-xueqiu.yml",
+      "catalogUrl": "https://github.com/kangjinghang/dsh-xueqiu",
+      "repository": "kangjinghang/dsh-xueqiu",
+      "ref": "main",
+      "category": "ui",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-xueqiu",
+        "version": "1.21.4"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-xueqiu",
+        "selectedVersion": "1.21.4",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4943,
+        "stars": 7,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-skills-manager",
+      "catalogEntry": "data/plugins/MichengAI__dsh-skills-manager.yml",
+      "catalogUrl": "https://github.com/MichengAI/dsh-skills-manager",
+      "repository": "MichengAI/dsh-skills-manager",
+      "ref": "master",
+      "category": "dev",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@michengai/dsh-skills-manager",
+        "version": "0.1.23"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@michengai/dsh-skills-manager",
+        "selectedVersion": "0.1.23",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4905,
+        "stars": 18,
+        "nodeEngine": ">=20",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "graphflow",
+      "catalogEntry": "data/plugins/Roarpeng__GraphFlow.yml",
+      "catalogUrl": "https://github.com/Roarpeng/GraphFlow",
+      "repository": "Roarpeng/GraphFlow",
+      "ref": "main",
+      "category": "tools",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@roarpeng/graphflow",
+        "version": "1.12.2"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@roarpeng/graphflow",
+        "selectedVersion": "1.12.2",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4107,
+        "stars": 4,
+        "nodeEngine": ">=20",
+        "lifecycleScripts": [
+          "postinstall",
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "dsh-history",
+      "catalogEntry": "data/plugins/chenproton__dsh-history.yml",
+      "catalogUrl": "https://github.com/chenproton/dsh-history",
+      "repository": "chenproton/dsh-history",
+      "ref": "main",
+      "category": "session",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-history",
+        "version": "0.1.24"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-history",
+        "selectedVersion": "0.1.24",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3907,
+        "stars": 6,
+        "nodeEngine": ">=20",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-catppuccin",
+      "catalogEntry": "data/plugins/NoNameLeGo__dsh-catppuccin-theme.yml",
+      "catalogUrl": "https://github.com/NoNameLeGo/dsh-catppuccin-theme",
+      "repository": "NoNameLeGo/dsh-catppuccin-theme",
+      "ref": "main",
+      "category": "theme",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@nonamelego/dsh-catppuccin",
+        "version": "0.2.10"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@nonamelego/dsh-catppuccin",
+        "selectedVersion": "0.2.10",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3897,
+        "stars": 17,
+        "nodeEngine": null,
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "dsh-rewind-plugin",
+      "catalogEntry": "data/plugins/SiriLee__dsh-rewind.yml",
+      "catalogUrl": "https://github.com/SiriLee/dsh-rewind",
+      "repository": "SiriLee/dsh-rewind",
+      "ref": "main",
+      "category": "session",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-rewind-plugin",
+        "version": "0.3.2"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-rewind-plugin",
+        "selectedVersion": "0.3.2",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3859,
+        "stars": 9,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "dsh-vision-proxy",
+      "catalogEntry": "data/plugins/Flyvhidbwo__dsh-vision-proxy.yml",
+      "catalogUrl": "https://github.com/Flyvhidbwo/dsh-vision-proxy",
+      "repository": "Flyvhidbwo/dsh-vision-proxy",
+      "ref": "main",
+      "category": "vision",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-vision-proxy",
+        "version": "0.4.1"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-vision-proxy",
+        "selectedVersion": "0.4.1",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3778,
+        "stars": 13,
+        "nodeEngine": ">=22.19.0",
+        "lifecycleScripts": [
+          "postinstall"
+        ]
+      }
+    },
+    {
+      "id": "dsh-codex-subscription",
+      "catalogEntry": "data/plugins/WSL043__dsh-codex-subscription.yml",
+      "catalogUrl": "https://github.com/WSL043/dsh-codex-subscription",
+      "repository": "WSL043/dsh-codex-subscription",
+      "ref": "main",
+      "category": "model",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-codex-subscription",
+        "version": "1.4.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-codex-subscription",
+        "selectedVersion": "1.4.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3583,
+        "stars": 19,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "anweat-dsh-browser",
+      "catalogEntry": "data/plugins/anweat__dsh-browser.yml",
+      "catalogUrl": "https://github.com/anweat/dsh-browser",
+      "repository": "anweat/dsh-browser",
+      "ref": "master",
+      "category": "browser",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@anweat/dsh-browser",
+        "version": "0.1.8"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@anweat/dsh-browser",
+        "selectedVersion": "0.1.8",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3455,
+        "stars": 8,
+        "nodeEngine": "^22.19 || >=24",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-turn-rewind",
+      "catalogEntry": "data/plugins/Anionex__dsh-turn-rewind.yml",
+      "catalogUrl": "https://github.com/Anionex/dsh-turn-rewind",
+      "repository": "Anionex/dsh-turn-rewind",
+      "ref": "main",
+      "category": "session",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@anionex/dsh-turn-rewind",
+        "version": "0.1.1"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@anionex/dsh-turn-rewind",
+        "selectedVersion": "0.1.1",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3372,
+        "stars": 96,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-easyrewrite",
+      "catalogEntry": "data/plugins/Renzic-Stone__DSH-EasyRewrite.yml",
+      "catalogUrl": "https://github.com/Renzic-Stone/DSH-EasyRewrite",
+      "repository": "Renzic-Stone/DSH-EasyRewrite",
+      "ref": "main",
+      "category": "session",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-easyrewrite",
+        "version": "2.1.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-easyrewrite",
+        "selectedVersion": "2.1.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3257,
+        "stars": 43,
+        "nodeEngine": null,
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "dsh-better-edit",
+      "catalogEntry": "data/plugins/Rianico__dsh-better-edit.yml",
+      "catalogUrl": "https://github.com/Rianico/dsh-better-edit",
+      "repository": "Rianico/dsh-better-edit",
+      "ref": "main",
+      "category": "tools",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-better-edit",
+        "version": "0.3.1"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-better-edit",
+        "selectedVersion": "0.3.1",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3169,
+        "stars": 14,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-auxiliary",
+      "catalogEntry": "data/plugins/dsh-plugins__dsh-auxiliary.yml",
+      "catalogUrl": "https://github.com/dsh-plugins/dsh-auxiliary",
+      "repository": "dsh-plugins/dsh-auxiliary",
+      "ref": "main",
+      "category": "tools",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@dsh-plugin/dsh-auxiliary",
+        "version": "0.5.1"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@dsh-plugin/dsh-auxiliary",
+        "selectedVersion": "0.5.1",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3138,
+        "stars": 5,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-verify",
+      "catalogEntry": "data/plugins/263311487-ux__dsh-verify.yml",
+      "catalogUrl": "https://github.com/263311487-ux/dsh-verify",
+      "repository": "263311487-ux/dsh-verify",
+      "ref": "main",
+      "category": "browser",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-verify",
+        "version": "0.9.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-verify",
+        "selectedVersion": "0.9.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3135,
+        "stars": 0,
+        "nodeEngine": ">=18",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-passwords",
+      "catalogEntry": "data/plugins/slywalker2006__dsh-passwords.yml",
+      "catalogUrl": "https://github.com/slywalker2006/dsh-passwords",
+      "repository": "slywalker2006/dsh-passwords",
+      "ref": "main",
+      "category": "security",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-passwords",
+        "version": "2.6.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-passwords",
+        "selectedVersion": "2.6.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3128,
+        "stars": 18,
+        "nodeEngine": ">=22.5",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-memory-plugin",
+      "catalogEntry": "data/plugins/volcengine__OpenViking--examples-dsh-memory-plugin.yml",
+      "catalogUrl": "https://github.com/volcengine/OpenViking/tree/main/examples/dsh-memory-plugin",
+      "repository": "volcengine/OpenViking",
+      "ref": "main",
+      "category": "memory",
+      "packagePath": "examples/dsh-memory-plugin/package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@openviking/dsh-memory-plugin",
+        "version": "0.2.1"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@openviking/dsh-memory-plugin",
+        "selectedVersion": "0.2.1",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3103,
+        "stars": 32115,
+        "nodeEngine": "^22.19.0 || >=24",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-univer-office",
+      "catalogEntry": "data/plugins/dream-num__dsh-univer-office.yml",
+      "catalogUrl": "https://github.com/dream-num/dsh-univer-office",
+      "repository": "dream-num/dsh-univer-office",
+      "ref": "main",
+      "category": "docs",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-univer-office",
+        "version": "0.2.9"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-univer-office",
+        "selectedVersion": "0.2.9",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3094,
+        "stars": 77,
+        "nodeEngine": ">=22.19.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-plugin-vet",
+      "catalogEntry": "data/plugins/wulun811__dsh-plugin-vet.yml",
+      "catalogUrl": "https://github.com/wulun811/dsh-plugin-vet",
+      "repository": "wulun811/dsh-plugin-vet",
+      "ref": "main",
+      "category": "security",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@jieai/dsh-plugin-vet",
+        "version": "0.2.5"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@jieai/dsh-plugin-vet",
+        "selectedVersion": "0.2.5",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3027,
+        "stars": 2,
+        "nodeEngine": ">=22.19",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-full-remote",
+      "catalogEntry": "data/plugins/JUANWANG-BUAA__dsh-full-remote.yml",
+      "catalogUrl": "https://github.com/JUANWANG-BUAA/dsh-full-remote",
+      "repository": "JUANWANG-BUAA/dsh-full-remote",
+      "ref": "main",
+      "category": "remote",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-full-remote",
+        "version": "0.3.7"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-full-remote",
+        "selectedVersion": "0.3.7",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3008,
+        "stars": 21,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "odai-dsh-plugin",
+      "catalogEntry": "data/plugins/orziz__odai--dsh-plugin.yml",
+      "catalogUrl": "https://github.com/orziz/odai/tree/main/dsh/plugin",
+      "repository": "orziz/odai",
+      "ref": "main",
+      "category": "workflow",
+      "packagePath": "dsh/plugin/package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "odai-dsh-plugin",
+        "version": "0.2.8"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "odai-dsh-plugin",
+        "selectedVersion": "0.2.8",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2885,
+        "stars": 95,
+        "nodeEngine": ">=22.15.0",
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "dsh-deepread",
+      "catalogEntry": "data/plugins/xiehuan123__dsh-deepread.yml",
+      "catalogUrl": "https://github.com/xiehuan123/dsh-deepread",
+      "repository": "xiehuan123/dsh-deepread",
+      "ref": "main",
+      "category": "tools",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-deepread",
+        "version": "1.0.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-deepread",
+        "selectedVersion": "1.0.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2878,
+        "stars": 37,
+        "nodeEngine": "^22.19 || >=24",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-deepseek-vision",
+      "catalogEntry": "data/plugins/siegfly__dsh-deepseek-vision.yml",
+      "catalogUrl": "https://github.com/siegfly/dsh-deepseek-vision",
+      "repository": "siegfly/dsh-deepseek-vision",
+      "ref": "main",
+      "category": "vision",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-deepseek-vision",
+        "version": "0.1.7"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-deepseek-vision",
+        "selectedVersion": "0.1.7",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2850,
+        "stars": 7,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-archive-manager",
+      "catalogEntry": "data/plugins/MichengAI__dsh-archive-manager.yml",
+      "catalogUrl": "https://github.com/MichengAI/dsh-archive-manager",
+      "repository": "MichengAI/dsh-archive-manager",
+      "ref": "main",
+      "category": "session",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@michengai/dsh-archive-manager",
+        "version": "0.1.12"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@michengai/dsh-archive-manager",
+        "selectedVersion": "0.1.12",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2721,
+        "stars": 9,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-plugin-subscriptions",
+      "catalogEntry": "data/plugins/V1ki__dsh-plugin-subscriptions.yml",
+      "catalogUrl": "https://github.com/V1ki/dsh-plugin-subscriptions",
+      "repository": "V1ki/dsh-plugin-subscriptions",
+      "ref": "main",
+      "category": "model",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-plugin-subscriptions",
+        "version": "0.5.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-plugin-subscriptions",
+        "selectedVersion": "0.5.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2720,
+        "stars": 246,
+        "nodeEngine": null,
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "dsh-crew",
+      "catalogEntry": "data/plugins/stuarthu__dsh-crew.yml",
+      "catalogUrl": "https://github.com/stuarthu/dsh-crew",
+      "repository": "stuarthu/dsh-crew",
+      "ref": "main",
+      "category": "workflow",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-crew",
+        "version": "0.9.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-crew",
+        "selectedVersion": "0.9.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2632,
+        "stars": 3,
+        "nodeEngine": ">=18",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "iterate-plugin",
+      "catalogEntry": "data/plugins/jingzhao-l__iterate-plugin.yml",
+      "catalogUrl": "https://github.com/jingzhao-l/iterate-plugin",
+      "repository": "jingzhao-l/iterate-plugin",
+      "ref": "main",
+      "category": "workflow",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "iterate-plugin",
+        "version": "2.12.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "iterate-plugin",
+        "selectedVersion": "2.12.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2619,
+        "stars": 2,
+        "nodeEngine": ">=20",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-plugin-vetting",
+      "catalogEntry": "data/plugins/truelove-dreamer__dsh-plugin-vetting.yml",
+      "catalogUrl": "https://github.com/truelove-dreamer/dsh-plugin-vetting",
+      "repository": "truelove-dreamer/dsh-plugin-vetting",
+      "ref": "main",
+      "category": "security",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-plugin-vetting",
+        "version": "0.5.6"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-plugin-vetting",
+        "selectedVersion": "0.5.6",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2604,
+        "stars": 4,
+        "nodeEngine": ">=18",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-any-background",
+      "catalogEntry": "data/plugins/Tkingxiao__dsh-any-background.yml",
+      "catalogUrl": "https://github.com/Tkingxiao/dsh-any-background",
+      "repository": "Tkingxiao/dsh-any-background",
+      "ref": "main",
+      "category": "theme",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-any-background",
+        "version": "0.1.9"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-any-background",
+        "selectedVersion": "0.1.9",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2529,
+        "stars": 16,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-tavern",
+      "catalogEntry": "data/plugins/chen731215-dev__dsh-tavern.yml",
+      "catalogUrl": "https://github.com/chen731215-dev/dsh-tavern",
+      "repository": "chen731215-dev/dsh-tavern",
+      "ref": "main",
+      "category": "fun",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-tavern",
+        "version": "1.9.1"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-tavern",
+        "selectedVersion": "1.9.1",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2515,
+        "stars": 20,
+        "nodeEngine": ">=22.5",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-auto-classifier",
+      "catalogEntry": "data/plugins/PAKIKNOWLEDGE__dsh-auto-classifier.yml",
+      "catalogUrl": "https://github.com/PAKIKNOWLEDGE/dsh-auto-classifier",
+      "repository": "PAKIKNOWLEDGE/dsh-auto-classifier",
+      "ref": "main",
+      "category": "security",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-auto-classifier",
+        "version": "0.1.14"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-auto-classifier",
+        "selectedVersion": "0.1.14",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2496,
+        "stars": 0,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dshscan",
+      "catalogEntry": "data/plugins/shaoshi20__dshscan.yml",
+      "catalogUrl": "https://github.com/shaoshi20/dshscan",
+      "repository": "shaoshi20/dshscan",
+      "ref": "main",
+      "category": "security",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@shaoshi/dshscan",
+        "version": "0.5.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@shaoshi/dshscan",
+        "selectedVersion": "0.5.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2455,
+        "stars": 8,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-im-connect",
+      "catalogEntry": "data/plugins/MichengAI__dsh-im-connect.yml",
+      "catalogUrl": "https://github.com/MichengAI/dsh-im-connect",
+      "repository": "MichengAI/dsh-im-connect",
+      "ref": "main",
+      "category": "notify",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@michengai/dsh-im-connect",
+        "version": "0.1.19"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@michengai/dsh-im-connect",
+        "selectedVersion": "0.1.19",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2385,
+        "stars": 2,
+        "nodeEngine": ">=22.19",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-gateway",
+      "catalogEntry": "data/plugins/clarknu__dsh-gateway.yml",
+      "catalogUrl": "https://github.com/clarknu/dsh-gateway",
+      "repository": "clarknu/dsh-gateway",
+      "ref": "main",
+      "category": "remote",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-gateway",
+        "version": "1.6.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-gateway",
+        "selectedVersion": "1.6.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2381,
+        "stars": 1,
+        "nodeEngine": ">=22.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-spend",
+      "catalogEntry": "data/plugins/nonewind__dsh-spend.yml",
+      "catalogUrl": "https://github.com/nonewind/dsh-spend",
+      "repository": "nonewind/dsh-spend",
+      "ref": "main",
+      "category": "usage",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-spend",
+        "version": "0.4.6"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-spend",
+        "selectedVersion": "0.4.6",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2361,
+        "stars": 8,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-thirteen-bg",
+      "catalogEntry": "data/plugins/feng78-boop__dsh-thirteen-bg.yml",
+      "catalogUrl": "https://github.com/feng78-boop/dsh-thirteen-bg",
+      "repository": "feng78-boop/dsh-thirteen-bg",
+      "ref": "master",
+      "category": "theme",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-thirteen-bg",
+        "version": "0.5.2"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-thirteen-bg",
+        "selectedVersion": "0.5.2",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2322,
+        "stars": 0,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-coding-subscription-oauth",
+      "catalogEntry": "data/plugins/lninghaha__dsh-coding-subscription-oauth.yml",
+      "catalogUrl": "https://github.com/lninghaha/dsh-coding-subscription-oauth",
+      "repository": "lninghaha/dsh-coding-subscription-oauth",
+      "ref": "main",
+      "category": "model",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-coding-subscription-oauth",
+        "version": "0.6.1"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-coding-subscription-oauth",
+        "selectedVersion": "0.6.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2245,
+        "stars": 11,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-testkit",
+      "catalogEntry": "data/plugins/iiwish__dsh-testkit.yml",
+      "catalogUrl": "https://github.com/iiwish/dsh-testkit",
+      "repository": "iiwish/dsh-testkit",
+      "ref": "main",
+      "category": "dev",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-testkit",
+        "version": "0.3.3"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-testkit",
+        "selectedVersion": "0.3.3",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2242,
+        "stars": 1,
+        "nodeEngine": ">=22",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-movein",
+      "catalogEntry": "data/plugins/sjh9714__dsh-movein.yml",
+      "catalogUrl": "https://github.com/sjh9714/dsh-movein",
+      "repository": "sjh9714/dsh-movein",
+      "ref": "main",
+      "category": "dev",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-movein",
+        "version": "0.12.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-movein",
+        "selectedVersion": "0.12.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2196,
+        "stars": 7,
+        "nodeEngine": ">=18",
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "dsh-imagegen",
+      "catalogEntry": "data/plugins/dickpy__dsh-imagegen.yml",
+      "catalogUrl": "https://github.com/dickpy/dsh-imagegen",
+      "repository": "dickpy/dsh-imagegen",
+      "ref": "main",
+      "category": "vision",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@dickpy/dsh-imagegen",
+        "version": "1.0.20"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@dickpy/dsh-imagegen",
+        "selectedVersion": "1.0.20",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2181,
+        "stars": 11,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-taskboard",
+      "catalogEntry": "data/plugins/cloader__dsh-taskboard.yml",
+      "catalogUrl": "https://github.com/cloader/dsh-taskboard",
+      "repository": "cloader/dsh-taskboard",
+      "ref": "main",
+      "category": "workflow",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-taskboard",
+        "version": "0.4.5"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-taskboard",
+        "selectedVersion": "0.4.5",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2168,
+        "stars": 15,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-email",
+      "catalogEntry": "data/plugins/STARDUSTLC666__dsh-email.yml",
+      "catalogUrl": "https://github.com/STARDUSTLC666/dsh-email",
+      "repository": "STARDUSTLC666/dsh-email",
+      "ref": "main",
+      "category": "notify",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-email",
+        "version": "0.6.2"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-email",
+        "selectedVersion": "0.6.2",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2152,
+        "stars": 7,
+        "nodeEngine": ">=20",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-meme",
+      "catalogEntry": "data/plugins/yyh-001__dsh-meme.yml",
+      "catalogUrl": "https://github.com/yyh-001/dsh-meme",
+      "repository": "yyh-001/dsh-meme",
+      "ref": "main",
+      "category": "fun",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-meme",
+        "version": "0.1.39"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-meme",
+        "selectedVersion": "0.1.39",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2150,
+        "stars": 45,
+        "nodeEngine": ">=20",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "xgone-dsh-remote",
+      "catalogEntry": "data/plugins/xgone__dsh-remote.yml",
+      "catalogUrl": "https://github.com/xgone/dsh-remote",
+      "repository": "xgone/dsh-remote",
+      "ref": "main",
+      "category": "security",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@xgone/dsh-remote",
+        "version": "0.2.7"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@xgone/dsh-remote",
+        "selectedVersion": "0.2.7",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 2429,
+        "stars": 42,
+        "nodeEngine": null,
         "lifecycleScripts": []
       }
     }
