@@ -147,16 +147,16 @@
       }
     },
     {
-      "id": "cell:667abef37048b67fccfad88e69a225a5b6e0ec21c4eb625a0b1065ef88af92aa",
+      "id": "cell:b118aa2fe2f51e5b588a6dd504500ef0a44ab551c14c4c10853c07f71c37016c",
       "caseId": "dsh-market-node22",
       "targetId": "dsh-market",
-      "observedAt": "2026-08-23T03:40:22.641Z",
+      "observedAt": "2026-08-23T07:09:16.954Z",
       "result": "compatible",
       "plugin": {
         "name": "dshmarket",
-        "version": "1.18.1",
-        "artifactSha256": "39f46319e568c44495e314e327d1e895f0b951cf803a68f4dc1d594c564d1069",
-        "staticFingerprint": "sha256:2036624fbd77bff2b149fb503b068e446df1381364f3850d49172e8dea5e6852"
+        "version": "1.19.0",
+        "artifactSha256": "7428009ef928ebfd23e265c51601404124d249cd83b5bb1b9b1d2ca06fd429d2",
+        "staticFingerprint": "sha256:7ae82c170dd2eb389c0523858c6158f8123310f62dafa6a44d1be39f6f55926c"
       },
       "runtime": {
         "dshVersion": "0.1.1-rc.2",
@@ -165,10 +165,10 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:f9b3f8dacd2798a635bd75ccf33962eb89c826f5c8e5194b70dd49475f351df9"
+        "contractFingerprint": "sha256:113dfd045c9210137056842c8156d650912fcc37146e2e5e8ca3a92d7f38a9ee"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:8f2c22e31ab12baf35a7423e49e7bc24c67b0019ab6189d0fdd306d010805a10",
+        "runtimeGraphDigest": "sha256:c4f462234d1ad08210ac78afa679e3e2430507cfd7706d5f108d4543ce8b964f",
         "runtimeGraphNodes": 451,
         "runtimeGraphEdges": 2033,
         "requiredUnresolved": 0,
@@ -566,8 +566,8 @@
       }
     },
     {
-      "id": "relation:fd30dbd2ffa94c0af077d65e4877316bc96819a1e3ef59eb82298fd7b9bd84bc",
-      "cellId": "cell:667abef37048b67fccfad88e69a225a5b6e0ec21c4eb625a0b1065ef88af92aa",
+      "id": "relation:50468e95232122521a850c3d9f369817ff4ce582138ca2930b0464655f854ff7",
+      "cellId": "cell:b118aa2fe2f51e5b588a6dd504500ef0a44ab551c14c4c10853c07f71c37016c",
       "dependency": {
         "name": "@deepseek-ai/cordis",
         "required": "^4.0.1",
