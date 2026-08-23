@@ -14,19 +14,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:cdb2945634e52cca272a2cc6455b6fad469d432fe76b56f136c910c0c6205905",
-      "contractFingerprint": "sha256:13684d8c9166b38011788fda36debe26bf824f8acedf16bbc7924a488ebb2499",
-      "observedAt": "2026-08-23T03:40:29.383Z",
+      "contractFingerprint": "sha256:b4d802e86db393629079d418d255f8ffba4ec2d33c2a0a27a844aaf8c43260b7",
+      "observedAt": "2026-08-23T11:52:35.030Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "d9351c7e4637c7604fe882e8944ee5a5d77ec57647948d0ef67bc6c62e7f557a",
-        "integrity": "sha512-1r762+78NCwomc8t6cSx847AmEuAORKdIkIcdtgxB0Gk1qgjDUsJcwZ8O2oGFBICt+72pAwtj1n0yYGU1DLJTg==",
         "nodeEngine": "^22.19.0 || >=24"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "e67e6545e76931ab8c9c3bb3d672f89ae88800a52bf5e6ab65b8b1f25358ffa5",
+          "sha256": "fe98d696ba4c7e4660577a2a365d15e831f9f740ef859d1b86709a7ca67a0f5f",
           "bytes": 2586,
           "graphDigest": "sha256:227a27e9aac61c758b13e09bc784e6dd2f27e1d655802d4f6d4fc81050db1383",
           "nodes": 2,
@@ -364,8 +363,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:dfda377dd9019c3721a152ec68212b5af3ddb4a3e045ce67b9314c690d4e0c97",
-      "contractFingerprint": "sha256:a22ae8fe008852aae5c155dfcf38e1979e1b969f6ee48908f3bf1b4eabdb20e4",
-      "observedAt": "2026-08-23T11:37:07.732Z",
+      "contractFingerprint": "sha256:e70d31a52f31838c08c6e71965c11d4d8f5bbcfc9244d2d04b98c81242fab7a8",
+      "observedAt": "2026-08-23T11:52:34.572Z",
       "result": "build-approval-required",
       "reason": "the DSH plugin install requires explicit approval for dependency builds: @jackwener/opencli",
       "requiredDependencyBuilds": [
@@ -378,7 +377,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "705bf03963f4177a85292f51b91fea93210eda5bc0ffdd45a0d831a3ead16361",
+          "sha256": "da2ad82331517178c5d662af34a269432769bf85105a804d7637ca21b9d6d12a",
           "bytes": 7639,
           "graphDigest": "sha256:b474c40382d1dc5e13519ab5541a2402904097265d5f439349ae4b5af095cea7",
           "nodes": 24,
@@ -692,19 +691,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:4a98af15b7c50f628a65502694505094638edd9d6d77097f1f8268c7359f24de",
-      "contractFingerprint": "sha256:ba1773af2a71bcac0d656be47b4709a265b26afb655699a6748436e8ab75fd28",
-      "observedAt": "2026-08-23T10:29:07.782Z",
+      "contractFingerprint": "sha256:490ca93586146fa011fa44efc0aab4b038cddc82d6ac9dd28b169245bb2f8109",
+      "observedAt": "2026-08-23T11:53:34.782Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "3192afe54949da6494acea3bd2bf5113a58ea78651113b1289bcc7212130df38",
-        "integrity": "sha512-D8fDqV6DV/vo80Gj/3rgidd+hwBbhTVncaVoD5Uhh+DbgYlEoQQOmBVbhU5HW33wE5OqJP/2HkTRPJ0hf7W0tA==",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "fed43e84dcd4eb6ede6e4a603fd95636706a86a5ea2bbbeabba9f784d1b41cd5",
+          "sha256": "f5e587bf2ee5169d1bfc3f74a86d33653a5ffae95a36a74375267d4ba634d0c8",
           "bytes": 763,
           "graphDigest": "sha256:ee7bcf6e89d712544747301e2752113936db80ded16c818b5625a18ba07b0c9a",
           "nodes": 2,
@@ -944,19 +942,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:1142e4cf8b81fc5fa428b9a5d74cb39b04fdc387e27a0f55c2bf14a17f3fb030",
-      "contractFingerprint": "sha256:d59e2baea3ec12d96515c7dd997c341ad68a76282c5b11d7b0283beee619ce40",
-      "observedAt": "2026-08-23T03:40:58.944Z",
+      "contractFingerprint": "sha256:1cde4db7dc2c5c040d650ecdf62001e88be8c1728f7486e57b13d5bb5af7d337",
+      "observedAt": "2026-08-23T11:53:22.059Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@^0.1.0-rc.8 was not resolved by the DSH runtime (runtime-import-observed)",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "d932367e9b436e3f515394f55e90c5793253a51d357b9d390ab16cb9e91931a9",
-        "integrity": "sha512-XHr7cAqxz1k60D3W9q5VAuZ64kGhnZz9M4etBaRDNNCzuJZbJTvQ/Fzgl8mY06B/PpEcgzG6PTn2RMYF3FVnGQ==",
         "nodeEngine": ">=20"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "412b76c00ef069c360c6a21ed9c06b62a1307a0635db3ee054ca85eaac5f0510",
+          "sha256": "d2eee332999959f981eb143901f291b46c4c6760973eb332159f2d9e571ebfbe",
           "bytes": 44086,
           "graphDigest": "sha256:8c0a3d50300be371b0bc2cd2cd5e61e05b601371811d4bcad01b34accdbe1463",
           "nodes": 167,
@@ -1477,19 +1474,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:9f3ac125cea2a703709f33e41e600781fea0b9a69a165aa8e9b0ef5d0c2403ee",
-      "contractFingerprint": "sha256:34e98db42942a79d63d1e9291befa1e9c2522ce9b69db2fa684e3643a563b388",
-      "observedAt": "2026-08-23T03:40:18.609Z",
+      "contractFingerprint": "sha256:1019cf7134684f9b03c6ffa96b6c3d24938f94437acf7ffd54b06200f435ac66",
+      "observedAt": "2026-08-23T11:52:40.446Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "85f3fdc240d6d2608e7ef53d4fd31af1c8ff462392e3b7d6b6d8862ebf9e60c1",
-        "integrity": "sha512-sAHB3qfpkplJzaDhxawH1eqyRi665G/b/Cpoy3LsFtN784PoS/NOn0hGRQOarVUQ5zYFlflbYcNw2zUd5Ppveg==",
         "nodeEngine": ">=20.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "497790e84ae73d73d91f6211959e9aa4dfa4a753f0c00c6f7566f6bef3dd1a08",
+          "sha256": "fae2a37109e839a4ec5c96c542f54bcdb468396c6795af83a2b9ee7d0ac27272",
           "bytes": 3411,
           "graphDigest": "sha256:459abae697372f1c2466cd113c1b105ecdadf812fefb186471a57198d020110f",
           "nodes": 7,
@@ -1743,18 +1739,17 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:8bea95d7407605641f2353dff6f507292358f26bbfcc780738a021efb77b4c13",
-      "contractFingerprint": "sha256:b19c9300c2455066a5a8402e4a478b2f37db76453acc5a695b96b5f992c78ac2",
-      "observedAt": "2026-08-23T03:40:17.088Z",
+      "contractFingerprint": "sha256:3cf126ab30b5b727f9ec93a9e6d5fa3a86dbda130911ac2cfd8c0cf664eeafb7",
+      "observedAt": "2026-08-23T11:52:36.032Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "2fe8bd75e83f4c6e0ef69c87611e700011426ff5c83f1c661f45628e250593e2",
-        "integrity": "sha512-jkfJioC+ngIGjXXsNaw7V4TDrDxx/too9wKtMPeOu9+obRy87TDgc+6xRrN2Pyl6fkdA7k5lp3yrYQkOaMzb3A=="
+        "sha256": "2fe8bd75e83f4c6e0ef69c87611e700011426ff5c83f1c661f45628e250593e2"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "9b496a3c8a1ef8ab1f56a3985ce896ec343a5c96584cd31b750a7164fee6a557",
+          "sha256": "2df7233f80247723dd89382395ee68dda0122987ce03fd56f27389eaf0b6f985",
           "bytes": 996,
           "graphDigest": "sha256:a86928a0ed10d2b2db9692fac6b5d2a1d5109061c7437fdeb1eff8a68335f15a",
           "nodes": 2,
@@ -2048,18 +2043,17 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:c9894f07bef9641738e29dbe5ba72753c15d15e4d5edf1a1ee4c801f8336f697",
-      "contractFingerprint": "sha256:4ad7e04366e22f8d08e07ef52c896c0fc4f1fade8b94b91cb367625ad5acc7c1",
-      "observedAt": "2026-08-23T10:29:05.575Z",
+      "contractFingerprint": "sha256:84506f43356b736aaa61d1f90a1200fc4fc3094217304f0ea93762ce5d6901ce",
+      "observedAt": "2026-08-23T11:53:31.756Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "304947c31e0c00fa21a25cdc9c2211bd02656c98d2fec9dd425c4e8aa5707bcb",
-        "integrity": "sha512-iXXe0Ry8Va1v5iJsqk9tfgh1IdUc0mI0VxRDMTSPkRcTIifr5he2jO4P1z+QDboNt4JQ5fuR/C/Je0fIUDfRuQ=="
+        "sha256": "304947c31e0c00fa21a25cdc9c2211bd02656c98d2fec9dd425c4e8aa5707bcb"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "94cb159cffa143179d9d137c479a928b21760add844bc840859ddb11007d59ca",
+          "sha256": "e7d5393465dd40ad4b87eabbb442366f877286a5b9c36872f7226effec79a1e6",
           "bytes": 1800,
           "graphDigest": "sha256:663c587d82b8827202e35786873369949b994d1d0605e36736b22d66ec38abb4",
           "nodes": 5,
@@ -2331,8 +2325,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:e94dbd7692477bdf438a3678e9113393f45ea215c66468cad6e4b00147baa4e3",
-      "contractFingerprint": "sha256:c24fd15b248b868f10faf7d7fbcdbd0ca6d969eb4bd499a190222c68b26245ac",
-      "observedAt": "2026-08-23T10:45:06.760Z",
+      "contractFingerprint": "sha256:bba01825c1c7e94043f3ec94f95f03be8cfd6d2eec0937e970327cab1053fa73",
+      "observedAt": "2026-08-23T11:52:42.792Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -2342,7 +2336,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "6b429edf46e6647b49e5eeeb5eec826028d3b0b891e5b1199ed01a8966888bc4",
+          "sha256": "de79e0cf92726c7e36f23ea3132aff9234127a0a95490cf62683330b85d24de5",
           "bytes": 2931,
           "graphDigest": "sha256:74d526bd3665b5d30e3aae890f22a4edfb2906f514490c0913c8b5f690d29e11",
           "nodes": 10,
@@ -2590,19 +2584,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:2e00b453891c50c449f17b4fb8e7be96e6c60fa4b3cda9871685122be41b0a94",
-      "contractFingerprint": "sha256:1dda4c8a0c91515b38265346f1cbcc17b68008b087f0c03ca27f940d544a577c",
-      "observedAt": "2026-08-23T10:29:39.842Z",
+      "contractFingerprint": "sha256:d15bb159c12a357843b4c22c70849e087524a98413612fcbbd23c17534697071",
+      "observedAt": "2026-08-23T11:52:31.355Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "079b3dfc1eded70b873d8ae06b6b33ad44f9c735ea976b34a6e11ab8d11ec642",
-        "integrity": "sha512-YWMUu8iQUXJarDO3mQ/U6aG8ie4gg8w0pMrXll7yF99JsUlxee6sKW5dlbBnBdq1RYvnoXtBL5/v9sPonBBbxQ==",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "fafd6226bddded0808ccd9db6b750e1e1ac5495958e9b11a79618d2f09e9f218",
+          "sha256": "197df89efabbb5fb3261a2d0e56adf62737d9846280772e672161a34a8d951eb",
           "bytes": 794,
           "graphDigest": "sha256:9d6f9a2a4dfb334d75c2b99d0463bcce39cc1da3bde77aa20c41774d70246906",
           "nodes": 2,
@@ -2842,18 +2835,17 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:a2dcd18bfaa7cc0b6cf7c76d067bc462832a8b4a073650e4c375163aa21411d6",
-      "contractFingerprint": "sha256:18c6b7320401298388aa01d884259400d6a1dd0d91ebc352eb24025dfbdfd06a",
-      "observedAt": "2026-08-23T10:29:05.828Z",
+      "contractFingerprint": "sha256:5de83421c1769db58c14d1ddf0a6cba30c2d4f585e64319ee79b1d19f2ccc328",
+      "observedAt": "2026-08-23T11:53:31.013Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@^0.1.0-rc.5 was not resolved by the DSH runtime (no-literal-reference-observed)",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "29409d44e1a88550a75b11e8ba528db7b1138103e2393911f77241977838fbaf",
-        "integrity": "sha512-AS7r2iIRLOaKjipUqrP0cUkXcSRcaNw6oKIt6K0DY/BGjFxazc9wEk4o7nQkmjquMTeWXx481URBS5I7MDiP9g=="
+        "sha256": "29409d44e1a88550a75b11e8ba528db7b1138103e2393911f77241977838fbaf"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "8b3c11c1d9f9de561207705a089380a89d8be545248dc794aadbc4a4bb43f9a8",
+          "sha256": "5c144fc81f1a7b64042efb28ef8c17d5afd9714d876f93e8dcd278890a7eaf23",
           "bytes": 1893,
           "graphDigest": "sha256:86aa65a2d1f61831a024d7013e7a76ee8da509a5d1ee4536c6707331031216a3",
           "nodes": 3,
@@ -3345,19 +3337,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:cead32d43dd76ffd987363d05938845a7c6ebcb24f49653198616158977abfe8",
-      "contractFingerprint": "sha256:fd9cc025eab1486a6c0e7d4638b5d7884e91a2825c1fd84050241d20e5f45900",
-      "observedAt": "2026-08-23T10:29:29.961Z",
+      "contractFingerprint": "sha256:0fa6b8f3db939eaaa2a06cf95cf2abde38931c84a8c3ef658361bd4d7e873419",
+      "observedAt": "2026-08-23T11:52:36.151Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "8c4e2b12f2c80ab9efbd0cfd0680f02154f53afc2ab2110fbe3b98465aa103f0",
-        "integrity": "sha512-9Mvc25tBfQ3En6mIIFXdLlRqejFLkbZOm8bGgze9K+InQjqVW9rsjj/jDbZbdlTTPNcPEhWPHsU9ttj/deK37w==",
         "nodeEngine": ">=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "1a7fa2f94864e7d1c76e42303852a315a59b4f00d6a81731a80fe412ca4577ae",
+          "sha256": "893671dec5afbb256ca177f7c89855321c409f6829f664e97afa8dbb720fbd96",
           "bytes": 7792,
           "graphDigest": "sha256:92ecd30bb9c67c5ef4f25f66aedd244a36011619f6852f483b969fdaa2ce3d7d",
           "nodes": 31,
@@ -3629,8 +3620,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:92afc465440af6b16febf93a91b94144be3873c081ef0a0d5366dad67d1b34f5",
-      "contractFingerprint": "sha256:7998e5bffc9b3a76aaacfd210c52926dfc561aec58c9990fae752e5d88978a22",
-      "observedAt": "2026-08-23T11:37:47.590Z",
+      "contractFingerprint": "sha256:1f593ff465481087125127bdf0b3ca53267da6612202bd59362b74020181100d",
+      "observedAt": "2026-08-23T11:52:39.776Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -3639,7 +3630,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "c2d326fa019052936f94cd799c859ad02042b9943b015218be9e2278870b1f10",
+          "sha256": "879973f00682d25602e6683d44658d5d1c0f0e01cc0d08bf385e5eca7b04d7f1",
           "bytes": 1753,
           "graphDigest": "sha256:281fb699de57c20941179817a1d81fd80c5e856f55d11760728a3b5f6da94556",
           "nodes": 3,
@@ -3929,8 +3920,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:7980769b00112f645422eb6c7cca75a94efa452160c3798fe239dcab6c25712b",
-      "contractFingerprint": "sha256:6e30290020f755644e83f278def9d1cb081720505ea9b7700c06a6e35a5af69d",
-      "observedAt": "2026-08-23T11:37:04.127Z",
+      "contractFingerprint": "sha256:0622b5fb41c777338a80807ae9a1c4f03db4cbd69cb9bbbc4b817fcadf1e044e",
+      "observedAt": "2026-08-23T11:52:43.398Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@>=0.1.0-rc.5 <0.2.0 was not resolved by the DSH runtime (runtime-import-observed)",
       "artifact": {
@@ -3940,7 +3931,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "bf640200929214a431d9068175b592ef85115cc26a999b748571a5c0ae502889",
+          "sha256": "6864df29c3ef599655fe3cb31ea65555816124e0b991c81712078f1fee407c47",
           "bytes": 1755,
           "graphDigest": "sha256:d0ef52aab5e4519930291a7af8bba87fed7ef314099369343c8f01c47cd82c5b",
           "nodes": 2,
@@ -4380,8 +4371,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:fcd379f276d7cea03187e7581f77ab8901ee9ba7e2a3a8767d9169d39205f901",
-      "contractFingerprint": "sha256:d8c38483a87179d8b4a6ff362345353d2556b515402b38625ea3a6bfe9038e28",
-      "observedAt": "2026-08-23T10:29:07.792Z",
+      "contractFingerprint": "sha256:3f4dff674bedeadd170cdb9e6dda54099f9b8cac226b21387346161ad9056881",
+      "observedAt": "2026-08-23T11:53:27.902Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -4389,12 +4380,11 @@
           "prepare"
         ],
         "sha256": "d7989d61bc63c174cb9d6622719c074f8640947fd1f9d5b3ee00cb6910784859",
-        "integrity": "sha512-g2x+90ldjEMC5R7Zj9upqpHfjxyUQ66KMueg6cpBkVXdTRkyHmCPTSgJstE4P6H+wCkNABgesf9y/NiGdCU1FA==",
         "nodeEngine": ">=22.19.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "d655613c725a0de3a062fbb67b07cd99d7d0af000978c0454e549c274dc1b4d3",
+          "sha256": "443102052c80e582ab290811024c7e9c43190b9c066ceb83a864372ac9910f2a",
           "bytes": 2527,
           "graphDigest": "sha256:eb5bf37fb9886f3c17bc33496587fa5e8182d747219308db8f2f35f81a05ce7c",
           "nodes": 8,
@@ -4668,8 +4658,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:aab82b9f1c9b0e443a996e4d91fd8856a4dbd0d0662a6a43a1880758e50e68e9",
-      "contractFingerprint": "sha256:17d07501b17f0e9ea38a12e3659517b22a2d7c224c7ce2ec47ab3ea68d794926",
-      "observedAt": "2026-08-23T11:37:45.858Z",
+      "contractFingerprint": "sha256:42408fba07b860d239e62e638fa25ddb909b388aa0c7d0f9523f061871e7b5fa",
+      "observedAt": "2026-08-23T11:53:27.365Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -4678,7 +4668,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "bd054834d4dcfa239d57a8e82594650cd06df359c9170c008dd81b6d7d81e8a0",
+          "sha256": "bf0a93efbcc763eb918f56d3f7c637a265268a7cfe4646f479528800cb75da57",
           "bytes": 726,
           "graphDigest": "sha256:605bcd351bc4002f793db782ca35109585e6574ae04f9e15f1f61fe20666f615",
           "nodes": 2,
@@ -4918,18 +4908,17 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:b946c38f17393223c4c4b27eec4e6e579bafbca3996e7a62a110ac1abaf89733",
-      "contractFingerprint": "sha256:33e5b2b7b45271c4748fc001674c6f9968e08693a5387bfaf41cf73ee4764cba",
-      "observedAt": "2026-08-23T10:29:10.043Z",
+      "contractFingerprint": "sha256:b4efceccf28a4bf4b743cbbc7d714f26f6362fa6d4e5b8720164f2c853987284",
+      "observedAt": "2026-08-23T11:53:34.439Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "c2c82df3a772c92c8cc515456402ae5673c7d70ff5cb1567b4e681ccabc5dca6",
-        "integrity": "sha512-GZ/LCqeYqHiShEHFs9MK/VA43FHaw9YqrUIm405bszcK1VniSCk4LZeibqRTVS/ky50ooh+MZs5oBVwejnjpSw=="
+        "sha256": "c2c82df3a772c92c8cc515456402ae5673c7d70ff5cb1567b4e681ccabc5dca6"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "6d22d0af9ba5ded2446b22503bcdc19b851c4d9c69c153c415ac13ac91d6f916",
+          "sha256": "6a331938b72f0ece40c54c84e964923f050e90aa0634f041ecbfb27ad295c2e9",
           "bytes": 817,
           "graphDigest": "sha256:57579791289c627c70048b1564fa3fc11c6cef5e5317c69268dbab2fb1fcb075",
           "nodes": 2,
@@ -5185,8 +5174,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:a637f8af42a04089a788679a8d4fa4ede775d9127f29a3c5bca7dccf7c988662",
-      "contractFingerprint": "sha256:3a62abf9bf159f64975e35688d2031bf36f47125f0a42a5f9749bdfde239613c",
-      "observedAt": "2026-08-23T11:36:56.649Z",
+      "contractFingerprint": "sha256:4177c60bcd1cb3bf7485cae0af845bd7be28b4bd03727938f18c79456b1b39c8",
+      "observedAt": "2026-08-23T11:53:37.260Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -5195,7 +5184,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "26d93d62df0bd20580f50981e235a9f613218547c7114c18cf144323c3036bcc",
+          "sha256": "e7cc289a76f8d72fc53875a6ac219049953e3d1d94b4b25af6f395c7fbf835bf",
           "bytes": 1434,
           "graphDigest": "sha256:9a49397d779addd5f3759a355ff7aa9c57b1a246523442e177565ffdf59da056",
           "nodes": 2,
@@ -5587,19 +5576,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:6313589eced1a15cb9b880864110ea730d7898a0016aec51d8802e7f75d655b5",
-      "contractFingerprint": "sha256:84476b03468d6bc8a60c0297a9be6bc391be92e83050738c833af5fc46ff3f50",
-      "observedAt": "2026-08-23T10:29:02.164Z",
+      "contractFingerprint": "sha256:98902f55d3ce76fdf7d2d96e41415605341781bc7426bd0d3249cff6fd749740",
+      "observedAt": "2026-08-23T11:52:35.321Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@0.1.1-rc.2 was not resolved by the DSH runtime (runtime-import-observed)",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "2418ac088d9875d4ee3e2899e80531d1c00b00bb34012589216c09dd9e84bc28",
-        "integrity": "sha512-O2v3j8UyOLQtmaGD2xEwySBHjJtHglK3l2AGHSzvvW1eBYiZqpE5L2cwMWMR+lpwR3j07u9rq9zJrDbkKegcGg==",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "49e0d7eac362dbdf4a98f503447d5a73154ff04ec074026dfa76901e25589e6f",
+          "sha256": "a021cda88b9a25379c36e8d29cc28e626865a91635c4a8ae30ca0f05c0ba066f",
           "bytes": 4840,
           "graphDigest": "sha256:3037fe99ded674ae173ca177fb485b8c90be7548a7adad8a4b8ae53228fb7415",
           "nodes": 12,
@@ -6121,8 +6109,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:c80bbbf0143968229d635703c8fede5969d51af6f27c535c755c421ae4afe434",
-      "contractFingerprint": "sha256:b26ae67146b6189bdb02ff4bfe5f89e91034c2476e17f9e0b74f62e5ca7c9699",
-      "observedAt": "2026-08-23T11:37:52.596Z",
+      "contractFingerprint": "sha256:e201e5736c57960f85cad43db5592c5a05d03a9a2c7f191ff622456eaeeed565",
+      "observedAt": "2026-08-23T11:52:39.089Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -6132,7 +6120,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "e00d5c14c9290cbe48000d5b182ec6d7fc2a2483afeba2988d1f6eaeaf196e1e",
+          "sha256": "36be7de7b980894e08636e9220c9cd8012ad77501e27c2c69f367f51306b8c21",
           "bytes": 3734,
           "graphDigest": "sha256:f5c161a8961b55263f499e1ba0bc3acee3f893f08da239923c9e979a17809fd7",
           "nodes": 14,
@@ -6380,19 +6368,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:e3277002f6df552825f252d240c08100b74b877e1b62ab450779dce245c0319f",
-      "contractFingerprint": "sha256:ffac021581fb6c991790b53438cf853de6a13bac2ec1dd4fe745890da2f58234",
-      "observedAt": "2026-08-23T10:29:05.443Z",
+      "contractFingerprint": "sha256:3d41d74ae29c5161df51d63877c30cbddf3c41d302f98c6cfdecf0b4774bcb77",
+      "observedAt": "2026-08-23T11:53:40.180Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "a4f9d9f3d46ed2b3898713bb10da04fa1e13dd1466f3801e8fe1ae8bf2fdb2ac",
-        "integrity": "sha512-ipUxgaMU1YaMgwRG12gpXvdz2/Q/k/TH5xcVWzGj5kxzwxqGWjyCA6p15K/OxdlodkTJpsBbahVNlI+3zff4MQ==",
         "nodeEngine": ">=22.19"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "d98d929ba366e7404a68f2df10947353de6bef529cc0377d25ee59d067371dd1",
+          "sha256": "5b5dfe62416681793fa4d6a3dd3123a015e61f2f8f680aeb50224551a11da80b",
           "bytes": 1088,
           "graphDigest": "sha256:2250311b8cf93638859b23e8f994accd6e9aa6d512f5f1276d9ace1291c8555a",
           "nodes": 2,
@@ -6706,8 +6693,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:40f0a1fc3707f0d573a455e9ca180ec1d71c4da655a274c7aa1761b2b54770ea",
-      "contractFingerprint": "sha256:97995bd338628a41a3df1a296921df93d972b53fc1e627c0e27edda191e7fc02",
-      "observedAt": "2026-08-23T11:36:56.404Z",
+      "contractFingerprint": "sha256:2849950927821a976eea8a3b9fa6c3222afe575a09e65a29c40587e62ed6028e",
+      "observedAt": "2026-08-23T11:52:38.445Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -6718,7 +6705,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "a99b64b15cc954726e21788b1a45532a0210612b20f7e74907c3e4c735fdaa28",
+          "sha256": "74ef2ec87c10b2a8cd21cc49ffa18b07a6b0802d8e07410daf92bb39e23fa62b",
           "bytes": 826,
           "graphDigest": "sha256:2fd538bac1b62499baa64086f2ef77c47c0b315cdb67e20483a9ef987c9536c3",
           "nodes": 2,
@@ -6974,19 +6961,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:83e151e195b3be2b98aecb13cd862d13332b47e95e47bcae8f2e6b702a1cb2aa",
-      "contractFingerprint": "sha256:a4b671c54ac318a5c9dec2acf73b2eb10d9af6b3d94134a5ba7b2335181f660f",
-      "observedAt": "2026-08-23T10:28:59.740Z",
+      "contractFingerprint": "sha256:2ddcfcdd13a6fa7873279710509812fc3963e92b4a3d67acd1251684f06f3f2f",
+      "observedAt": "2026-08-23T11:52:39.034Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "cdaa8b5ec0579409805acf4cdbac8fe144722628936bb007699641e9401b3a78",
-        "integrity": "sha512-8TBQzK3UqTpNO1zTa/vPPHgySU6wBFvOHIbIT9YwbfFSI69c2C1y4XincrkFIK01oatrLlQla8MAM+qRP+AaCA==",
         "nodeEngine": ">=22.13"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "7e12476a4e0848cd641be6a0427838a4fe2f697c73721b7c6ec41f21df9e6ee6",
+          "sha256": "ae549e7c943472c6bad8f239852e375347de08066d5f88efac513e05cb812f89",
           "bytes": 1155,
           "graphDigest": "sha256:0069777f00977159bbc410c30925e8aac493488d11082c8448a0272b387f0779",
           "nodes": 3,
@@ -7294,19 +7280,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:da47937aaa0095a9423014a12b14b6e61dea3a3eb1cfe3c1a5376a729a85f306",
-      "contractFingerprint": "sha256:75e494599f67d202abdaaade491340186fe0bcfedc6586b925a965fb910035c3",
-      "observedAt": "2026-08-23T10:29:10.309Z",
+      "contractFingerprint": "sha256:4536e844bf02b400fef6dc804b7bf04e795ec7399f8b914e972f265aff95d50f",
+      "observedAt": "2026-08-23T11:53:36.797Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "496a3f99aaab5f71c9d35a55a2f03c207b42f665d27c3f661b30c105d943ae0a",
-        "integrity": "sha512-QUR8biVjKlfJxEhW8J+WnoVq2jSzUB14DxEb9LdiXj50EiL68f4y27oGRF2CVCiBlTHlVpSTtDbjWJCXt5hpaA==",
         "nodeEngine": ">=18"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "fa1e336177cd017cab30640c651ea0a0f455b8dd19a773e309d294ae9554baba",
+          "sha256": "58ac4d86b04531ddd5a13c616cc1c2a16f475dd4391f97d6015894892245dcd2",
           "bytes": 1441,
           "graphDigest": "sha256:f921f1cddd4bf92a1f93ae92b34434f615d0062267cb5065f74fc5b573d8bd2b",
           "nodes": 5,
@@ -7546,8 +7531,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:df965273e7b0196d81e75cfd0ee1ae7c6ed3d502ec981c0a27464903e387c603",
-      "contractFingerprint": "sha256:53786cd73d24391f199978bfd98ab35dce3144aa01bf65407cb5dc941cb1ae96",
-      "observedAt": "2026-08-23T11:37:00.498Z",
+      "contractFingerprint": "sha256:1abd6e587a7bab9be64ed961599a0d026b561b8f155b09cc93559b07d98c87b2",
+      "observedAt": "2026-08-23T11:53:33.893Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -7556,7 +7541,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "3b68614415ceed4e77bb3335089fd2058f75a2524766204304659a7ee3a0ad84",
+          "sha256": "d2ae686b7c029ca26b4bfb3cddef2642db6106fadd34ac807cbb7cab6c4aed69",
           "bytes": 928,
           "graphDigest": "sha256:d283c036054e65e8849ac3bb4ef3a970295e508dd67835ce936e60035097f672",
           "nodes": 2,
@@ -7850,20 +7835,19 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:710ff1f3c1e7b38f87e1a314258bd523bc5fe0e4aa38d57b1f109ba9b58b6089",
-      "contractFingerprint": "sha256:25fc475a39c83ec505c2de54744c63896a6880ea7f45f91d91a411773e77bd22",
-      "observedAt": "2026-08-23T10:29:11.415Z",
+      "staticFingerprint": "sha256:a9a74eacaa99e76191fb0c8caf5ab4e2d8eb691214efa7d47e744dac8a30e5ef",
+      "contractFingerprint": "sha256:fe58c2784d368c2e6654e558135d1210a5b97623fe1e259790594bd076b08840",
+      "observedAt": "2026-08-23T11:52:33.312Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-agent@0.1.1-rc.2 does not satisfy 0.1.0-rc.7 (type-only-reference-observed)",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "2ec91e9e5515940f9bd9d81885d9c1121c31c5573153c503a7794a3ae85456e7",
-        "integrity": "sha512-16V7829w/F8gekuW3LShVvj1szIj6nOSgfEsISXz/EmPv7Q7n0XSStLq4IgQJF1APJEauwoNCQdH2ZPh9xpkow==",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "08cf63651805f4596ac1dead64c81260be3934abc8fb9caf5a8e38a50130405f",
+          "sha256": "b798f26920faee979acd827f77c7a4a7134e42e2030ca8e197c70198985cd7a6",
           "bytes": 1758,
           "graphDigest": "sha256:e7052afe2785fc16ac7a8d58122fdce74db411c68bd3df55c41434bd5f973c05",
           "nodes": 2,
@@ -8486,8 +8470,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:c8a9f949a200096c5fba1f250844f2ebc7b4a2ead8b0cd881969e0fcc442addd",
-      "contractFingerprint": "sha256:f7cf482f19bcf356815ea8628a616b119e29c1690a16f1ce8614223776822871",
-      "observedAt": "2026-08-23T11:36:55.392Z",
+      "contractFingerprint": "sha256:8ff9337cdc39d662619a43bfcc27775a1dcf4a9b4f4de69ff4460c61380f20f8",
+      "observedAt": "2026-08-23T11:53:37.613Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2 was not resolved by the DSH runtime (runtime-import-observed)",
       "artifact": {
@@ -8497,7 +8481,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "e4b6225e92249977ab758da5af4ff612b984398007daa41a7926049cfaf5e9fc",
+          "sha256": "8cfae30cc25d476758ceb8d092431c4d0dbab3ecab5e1f811593706f37f96ba7",
           "bytes": 2655,
           "graphDigest": "sha256:0948b3be0430ee9ea9ed99305a203e0a5a64d1e988dc113fcf62dfb34f62bf97",
           "nodes": 2,
@@ -9026,8 +9010,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:566409190d3614ac4cab7cb85ca46a3bd2489786b5333e03327c83b2275e788e",
-      "contractFingerprint": "sha256:fed3f2be5735dc7df3d503599ce9ef51de7faaaf7e73b72c8113279db04c4de5",
-      "observedAt": "2026-08-23T11:36:52.167Z",
+      "contractFingerprint": "sha256:c0a2cfaa7e1db2e93f0a5c2e3a7df647b56edcfd98a45d4815be351c9c140ad3",
+      "observedAt": "2026-08-23T11:52:38.709Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-atomic-write@0.1.1-rc.2 does not satisfy 0.1.0-rc.6 (runtime-import-observed)",
       "artifact": {
@@ -9037,7 +9021,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "4e62f395daa20c4e1d70fdf083925e2826842e01f49d78c21fff9f4aff3f5aff",
+          "sha256": "7d5e0e2b3a89e1ace5bf1b15d5325cc7be6a9882f92c10b11613d6fd8345d0d8",
           "bytes": 2654,
           "graphDigest": "sha256:0adc12b37ec1981e8890a932578c3fb244322b9da6bed2e1ceb16f4c0eb5aca0",
           "nodes": 5,
@@ -9443,8 +9427,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:9633b03084af6d81fef38d4cfa6be094f77a28cabd6e19c0b8d39d487b918ffa",
-      "contractFingerprint": "sha256:13e2e8eda591501b71fc38e940f93dede559ba0c308b7333304a03fa9d3191b1",
-      "observedAt": "2026-08-23T10:29:06.719Z",
+      "contractFingerprint": "sha256:c2e214dcd7e9148c9a2739064440ae1e382012e6568103ed620de9a9c2802bf2",
+      "observedAt": "2026-08-23T11:52:41.370Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@^0.1.0-rc.6 || ^0.1.1-rc.1 was not resolved by the DSH runtime (runtime-import-observed)",
       "artifact": {
@@ -9452,12 +9436,11 @@
           "prepare"
         ],
         "sha256": "cb8b28c8eff33587a642c25ad5445b5b690c761813b4f6e96a749c3312a661e5",
-        "integrity": "sha512-LNuRPGLKUQt84H8Nk/Ti6bhob87URpVI0UdP4QOiJuNCfsUhHhnGH1Q8VNdFjibVT0YVRa06DbjhxqGu4tgy1g==",
         "nodeEngine": ">=22"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "71bd1ff216bb67dcbfd11389b6d92083d606d333fe4ff7e5234f5c12638e3565",
+          "sha256": "d704b3c968828edd8fc300da53e32bfdaefc75467b2e1f6dfb8ff959219b20ac",
           "bytes": 1988,
           "graphDigest": "sha256:9f4fb91ecb1b2ab7d089fc3bbd5a321ca31ac9c80e962f80dd16b5d512d84367",
           "nodes": 2,
@@ -9960,19 +9943,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:35497ad5645980f15bbbb2e07fe1f63e57de92840cce67c5bd6e5fc27878c245",
-      "contractFingerprint": "sha256:3699758a8f75621f23a5f089c8520d6afc5e8b87233a59a0e08f6d80b3dcd02b",
-      "observedAt": "2026-08-23T10:29:12.673Z",
+      "contractFingerprint": "sha256:ebf1161bb3a72b4ac16c49213cf8341d231b9ac6888b73fd4c67a9a0224ea9e7",
+      "observedAt": "2026-08-23T11:52:39.341Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@^0.1.0-rc.6 was not resolved by the DSH runtime (runtime-import-observed)",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "765e3f3fbc62e6519ee357f326a0b74e323ca55c11773b33f5aea863453783f9",
-        "integrity": "sha512-ns3ck1PO5OUCHYpeDC55UG0QA0u79LWMpZ7OJh/C3gbo0vJPlwmtfix+mNyDtbeNX9nDCwCSJ6hQE9TVkgWkAA==",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "d4863de32b21c3a4372200bc6ff8abcf67c6960f5fb9cc8ae1e30ecda64078a3",
+          "sha256": "ff15c5c57d6b39c5df5508e66859a7500c9d7e979d093a596c26971eae2b4ad0",
           "bytes": 1986,
           "graphDigest": "sha256:c710bfab2da286269de1ac02a90e7f344977095135a3d5693e3655820da7b07b",
           "nodes": 4,
@@ -10445,10 +10427,10 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:6176ba1e15836f30a62e307c52f4572d1cec8b5f62b165f5b07d80f60edbe036",
-      "contractFingerprint": "sha256:40b959a4e8a6f8d24afa99ecc19ec054a0820c3731fc213e0be0cc9d8a38fc61",
-      "observedAt": "2026-08-23T11:37:42.911Z",
-      "result": "load-failed",
-      "reason": "the traced DSH profile load command failed",
+      "contractFingerprint": "sha256:2e4a9f9c7af8d9220b7aa571e4ad9f6af765c54bb5ca9eb8287e2e6e5ee905bd",
+      "observedAt": "2026-08-23T11:53:30.712Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "a41c509589d5b16180627c39f2bc533a5a8131d7d6b85b0c01c70deb8e419b22",
@@ -10456,7 +10438,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "119c584543afd36a96cd8bff7451f9270e9f3eec7efc76097b0f287a7f09ee62",
+          "sha256": "3fac7e0b424eeecf3c16bad10a1440ae6d5e5286faa931f004577803d2afd5f6",
           "bytes": 726,
           "graphDigest": "sha256:2f0ea82a739e1a0969fd16a6f3f5fe5f38697d70ea5f18f7782a2547815d6f13",
           "nodes": 2,
@@ -10712,8 +10694,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:891e1bc8fc0cbeebd94ef77f378e78f7bf3e5b2afaf9fbc0d8a980b595a0726d",
-      "contractFingerprint": "sha256:b07ad9094e8a2f48ebb0a937cc8ffb07e22755f265e7764c5b909b675c857c71",
-      "observedAt": "2026-08-23T11:37:00.510Z",
+      "contractFingerprint": "sha256:9cff2fa3716113c3a16a8d37793706a66991394ba11cde6180a9cff4583c4907",
+      "observedAt": "2026-08-23T11:53:31.947Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -10723,7 +10705,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "fe49cd95d726bf1eb2028df065758cddfc1cdf398c012e0815ff8ccf11de31f1",
+          "sha256": "4f34f156dfb82027c6c8e035bf8023eacf7a9d4dfb3cde64b6d72a6a28a8bf89",
           "bytes": 910,
           "graphDigest": "sha256:34b1706e8b2fd8f3abf0bb1eeb404a1abfd5e3adf3af8c373ae1bf65b02288a7",
           "nodes": 2,
@@ -11044,8 +11026,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:3686d0c2d6689fec3fbd4b3dd1b4ca9c7c4ca7a8a8f6e1e0897d4caf2913bb65",
-      "contractFingerprint": "sha256:6ca415123f56ea62c1bb6db38f3afb1d04318aa6b39f82eed8c976e12afcab90",
-      "observedAt": "2026-08-23T11:37:01.019Z",
+      "contractFingerprint": "sha256:bcb1159b65098b51e3614bb848ea9304f9c7757638ed8fe139f39e81ab6695f7",
+      "observedAt": "2026-08-23T11:52:39.005Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -11055,7 +11037,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "86fa4b996e7c4a01dd5fdfe394f11e4daab3eec2378b21cbe349ccb3d61536e7",
+          "sha256": "91c0964647e5e12b9bcc8d1809284f556430f7ab08587a4cf2e0f93b131a0408",
           "bytes": 2662,
           "graphDigest": "sha256:778649b2a5b9cf219fcefbae194121f5f974136b174b3ac37493b06654558f62",
           "nodes": 2,
@@ -11405,18 +11387,17 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:63d5d8316563c54eb54834ddd27fe0632d6d16d1197d3870b7df0667de9ff21d",
-      "contractFingerprint": "sha256:27f3e7780e1c42a586f104782f8fb3fcb86882903f7c1630bac7c50ca71ec3ca",
-      "observedAt": "2026-08-23T10:28:59.744Z",
+      "contractFingerprint": "sha256:e18143480b94a3b162ac7d6ed2415bcef1bc65c46999b334de625e10b1689fec",
+      "observedAt": "2026-08-23T11:52:40.923Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "5ce8a6512d94c19e3756f72bccdb6c99fe773089dbcfa0ac9a94e7c771294a2e",
-        "integrity": "sha512-S2Vo2rOXaf/FYWK84G9fw51RHBtb9tz2fhoShANem4QEZgWNn2+qzaYfO3iSqd8Z4Ez1w7FxQYPWqD4mw87hdA=="
+        "sha256": "5ce8a6512d94c19e3756f72bccdb6c99fe773089dbcfa0ac9a94e7c771294a2e"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "9316df7af395d4f909282e00657563b9e2a824744e8de7fa1c5e79eb80c78437",
+          "sha256": "a91a4f7c9612930f8fa7186f742659c034e32ec3afb1271ab4a5e0a3c3d4d840",
           "bytes": 844,
           "graphDigest": "sha256:64c302cf7886775eb905b04f98d09d85cfc31a3f8d88157fff522bd60eeb4c17",
           "nodes": 2,
@@ -11672,19 +11653,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:9abcd057070a00ff9042639c4c02e366cf72c98c601ce63a6f64eb4c0b8bdd5a",
-      "contractFingerprint": "sha256:8bb5552040b9c8b1b846e57c2f8c71453d2f3d27d1a3d2d53ba0bee9adb18f49",
-      "observedAt": "2026-08-23T10:29:01.450Z",
+      "contractFingerprint": "sha256:470e34e4c25fd5c0bc02ee53d6aba033acb744b39843461eec12202e3ba284c1",
+      "observedAt": "2026-08-23T11:52:34.532Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "9738a7c9988d9be4f259e1f064881d4df5a9e7918c4b6e4a20ea7b3e055796d3",
-        "integrity": "sha512-F7f4twINP9wNQKQ+TwNlMg2CicsuVqLWwmQ3waHocn4d/PItqbk8iN6kyk0l+Us4n4uq1SltnyFqz2Tujrteag==",
         "nodeEngine": ">=18"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "ba989cd63711097bef5282c4f887b86ab8b748c15e194c1f8981d4c4dfe37428",
+          "sha256": "098c97e9b882558f0cd95e182fe31dcddea54284fad83e322977c98a3717dcde",
           "bytes": 1074,
           "graphDigest": "sha256:ffcc752079c6a1df981381279b0828bb7f7c7647cb2be0163677005111d130e3",
           "nodes": 2,
@@ -12018,8 +11998,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:c44e2704de602cb2f1325753d69762546dd07ff0b2d4e191895c6ab01d7347fa",
-      "contractFingerprint": "sha256:811f6930df2286fb08a87f6bd138821d32131aa0445772a105efd83a264a9de4",
-      "observedAt": "2026-08-23T11:36:59.810Z",
+      "contractFingerprint": "sha256:06de53ffd75d96fcb81305cd2d5dc0c7073e4dc63c59433fd15b633cb9fd53e6",
+      "observedAt": "2026-08-23T11:52:43.725Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -12030,7 +12010,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "f00a265d713e934892898403fc9713e96cdfe5504fe2e4dcbe71a1aef7af73fe",
+          "sha256": "80991f7b23a51c81bb6f6ec400b9a659ae6bdba66ac6fd3e52cfdc3115bce665",
           "bytes": 688,
           "graphDigest": "sha256:845cc03948cefd7eb886e66563b9e87b372c7b42954a6676a3b7623f453064fa",
           "nodes": 2,
@@ -12270,8 +12250,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:55d24d413bdd561bde4cbe72161a18dbab183bef991499603f923f304540f0ac",
-      "contractFingerprint": "sha256:548c72fd873f599a9c6e8fd4ff05347473ca3abfe7cf022e334e3bc026526e00",
-      "observedAt": "2026-08-23T11:36:44.414Z",
+      "contractFingerprint": "sha256:9aa5e2e701182f381cb2354adf091be7a8111aa5a80d5ad1135ff8704d494888",
+      "observedAt": "2026-08-23T11:52:42.713Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -12281,7 +12261,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "1e61e36825b455d297a37ef4c155c45b634dc924bac52758a8afa2a8089f1b4f",
+          "sha256": "0d0e21b33ca2ee0c397acef038ba4c74189d67de413eda96f983f13e18f92619",
           "bytes": 12272,
           "graphDigest": "sha256:56a446e8cc16aaa7e71b91dfd5a0b9938e44cb94fa3246be9439c2c1212588b1",
           "nodes": 52,
@@ -12521,19 +12501,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:8199410508e525a18ac3e42ea7b7272e098fc528fb3e0d07b6d8bb575760535d",
-      "contractFingerprint": "sha256:42bcc3b6e5d37ddbb5de5cca7cd77a590c409f5c7fcfb2948a03d3b64d6c225b",
-      "observedAt": "2026-08-23T10:29:05.384Z",
+      "contractFingerprint": "sha256:77b3704bda20be7f5da2d54362033cf9087c92523a5b7bca7fc1f516380d2b4a",
+      "observedAt": "2026-08-23T11:53:31.897Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "7f1e01396899cdcc4d36dff1b9bbd02b42661a35174a0231ba69ae368c5039ea",
-        "integrity": "sha512-R0Vo0UAp1xranW8xC5cuBIyZLwB8F8y4NNLbKTQh/hGhkbiYgFiSYYXXaR1NMD8OhfM5XXJ3t+3NSuVKKzCEtA==",
         "nodeEngine": ">=22"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "0c1c0f0a8e1f893acacf7e505cc48e5c53ad523c2995dd7b3469c0f6b68fe0da",
+          "sha256": "bf8d0e8fb617e3fe342eaae9bd6f8b8ffed25e70aa6044e7af9ee6e7a0d25c89",
           "bytes": 1431,
           "graphDigest": "sha256:a64c03e679b9e58fa1d9927b4703863686d19f02340b643bcbee927249662c56",
           "nodes": 4,
@@ -12787,18 +12766,17 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:0deed992854d77a7e4fcf045f7b6141f10e9d024474697c02b46b5e2ec37e140",
-      "contractFingerprint": "sha256:308fe44036ba12fa520a47990d46b490897d3f3f13d697b58ff36b65b0821de6",
-      "observedAt": "2026-08-23T10:29:07.055Z",
+      "contractFingerprint": "sha256:38656cd71a6d93a2408d4983d2277fdbbb566fc9ef68b8c582131a1699a43760",
+      "observedAt": "2026-08-23T11:52:40.622Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "46c408fc9f649b90ec25b30fa02dcc0f1e783c4a269e82468b7095ce1cffa992",
-        "integrity": "sha512-yqvG58ci3+c7DsNJ515TFyu8IK5Jc249DQma8wQ2DavUpmU9avzKAyZ8V41tHB5mZrC09xrEhNFcZzj3qgODtQ=="
+        "sha256": "46c408fc9f649b90ec25b30fa02dcc0f1e783c4a269e82468b7095ce1cffa992"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "d12d84c4cf0c03b4d666cd44456293915cafc644cc72c1dc3bb157bce2c930b4",
+          "sha256": "02b3497e62e96d67fce6d81e054ec8962f81e450c6f5a86af63546b370c1efa0",
           "bytes": 790,
           "graphDigest": "sha256:80a6a5c3126fc9cd22d06e98fe251c3e5993a9cd7945c05f5f962faf59d0c227",
           "nodes": 2,
@@ -13067,19 +13045,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:d15c8290219eca6799ed1fedd3f6db718f777c8de2be53900cfefbf3ac22a6c8",
-      "contractFingerprint": "sha256:31a96855b8a56230a6ecce36c64355859203d9b59a312374b969655538580633",
-      "observedAt": "2026-08-23T10:29:01.728Z",
+      "contractFingerprint": "sha256:cd7d64dcf0964aa56c796be4566f6fdf2e6ddd8020d6dabe3c8a14d2085694cd",
+      "observedAt": "2026-08-23T11:52:40.522Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "951ad445c40a071673b53566b993cb187f5cdb36505804b64c2f242d67ec17d8",
-        "integrity": "sha512-HL/eBv/dRAa2ogj46Cy3uQxZxrC5GfZVkXP8EmxbB+254Yd4tbWXUqlCBwXhoA8ZwpcGBjDTVXuGxSF4ThcOng==",
         "nodeEngine": ">=20"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "c57640e062100c5237eb8da02d5203034b13c9cf809b5c090f1ee8f2113c41ff",
+          "sha256": "8f4b953926c11dbd540bb3a5df224ffbc15e529a1151c0daab32dfc227ff16ee",
           "bytes": 1582,
           "graphDigest": "sha256:0949d43df7031eccb0404cf13a2307e527da905c8a2205f0ace272fe188fccd9",
           "nodes": 5,
@@ -13348,10 +13325,14 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:33c5f3cb44f4637f5913d9f887263b9b094f7e7ff898799e643fe8e743a70de6",
-      "contractFingerprint": "sha256:35fc1f639ef91e6b54e815fdf393984ca83b53afda1240726d2a7e273aae6c78",
-      "observedAt": "2026-08-23T11:36:51.220Z",
-      "result": "install-failed",
-      "reason": "the traced DSH plugin install command failed",
+      "contractFingerprint": "sha256:502ed0b58badb06df4e392ac0bddcf709000f2cb5f6cfdeb578fee8e39a86b83",
+      "observedAt": "2026-08-23T11:52:34.260Z",
+      "result": "build-approval-required",
+      "reason": "the DSH plugin install requires explicit approval for dependency builds: dsh-free-vision, sharp",
+      "requiredDependencyBuilds": [
+        "dsh-free-vision",
+        "sharp"
+      ],
       "artifact": {
         "lifecycleScripts": [
           "postinstall"
@@ -13361,7 +13342,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "94f7b0142d64e2bf7dac6448751c27e4312a711fdd443d52cb6b153db897fd92",
+          "sha256": "6ce2206396fe3ab1d81300077b981eae813f8618e226f86feff3abd1fb9b8446",
           "bytes": 40041,
           "graphDigest": "sha256:6844a62ccaa331c2dc1d834b9da7867c3b346faf642353a24e88a992829ec2a8",
           "nodes": 146,
@@ -13621,8 +13602,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:92c5d280c51bebbd3850dd23139c6fbccbadb175ec762b5d5afeb1c973fd4607",
-      "contractFingerprint": "sha256:5acbf01728e1f00ecc75fd865911885c89e998d25cfd40cba5f44c13f600ae50",
-      "observedAt": "2026-08-23T11:36:55.882Z",
+      "contractFingerprint": "sha256:59202c9fed8f49d5475793211fee7ec06c444a82a74d2183e022571dbb0514b9",
+      "observedAt": "2026-08-23T11:52:42.519Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@>=0.1.0-rc.5 <0.2 was not resolved by the DSH runtime (no-literal-reference-observed)",
       "artifact": {
@@ -13634,7 +13615,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "cfa5710f530f56f5b3460f77ce8cfad7d60f512f90bf40b2c8098c951b1efc6e",
+          "sha256": "0c665628421723a2b1fd95579c384e1f6094d5c891715dfbaa2cd22da5834aff",
           "bytes": 1877,
           "graphDigest": "sha256:052588d04507822f0c89c186a7f5ea93f01208f2ceb57119316107264c9b90b0",
           "nodes": 6,
@@ -13964,8 +13945,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:8e2ccfa4eb1c45a51226f3924f7c5e150f28eaec746956a8bfd7697048e1aabe",
-      "contractFingerprint": "sha256:97ecd4c259abac98e565f7edf1ca6026514ce16859faab7159f9b9057664af8e",
-      "observedAt": "2026-08-23T11:37:53.240Z",
+      "contractFingerprint": "sha256:c6c138e09ae5afe602ea2bd75bd160e7edcc35bbb6780e599b6dfa9f9449f9be",
+      "observedAt": "2026-08-23T11:52:34.896Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -13975,7 +13956,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "9c6136ad83db8a22cbe633f92b6ce0f4b85d80489cffe242e949f937807784e7",
+          "sha256": "c866d730a1053029b4dcc994d5355aab77927af39667956496e91af450418957",
           "bytes": 1927,
           "graphDigest": "sha256:79e676b68a389d394f5002403894e7f95d9fbcbc42e26c61766718b9b0fc7f1c",
           "nodes": 7,
@@ -14244,8 +14225,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:734477b981aba2fa3dc8d9c1dcd67d9f5be6adaefedcbab4d890546baf7d3ff9",
-      "contractFingerprint": "sha256:653c5e9749b3684d8943584e0543fe4cb08a33e461fbf47202af78901a74c02d",
-      "observedAt": "2026-08-23T10:29:04.165Z",
+      "contractFingerprint": "sha256:ea19458c3ed6e0db3cbd58ac1cae0c9cab372159cf3e93f77e4b837f397e3c12",
+      "observedAt": "2026-08-23T11:52:36.570Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -14253,12 +14234,11 @@
           "prepare"
         ],
         "sha256": "672e8f107e94a0421e79e7b571eb6d78e486fee28859451976ad78ea02fe1418",
-        "integrity": "sha512-DGt82rhBANySO+FWMglfLGctb8djqYchTmSy9H+4pBDeHGJ8SwRwfjIqT6aw/yBF3Mf2ucJRhV0CuxQ+GU5McA==",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "a0223e14c63d1b529a38b1a8ea0e49ac85e6d818e4c91e213becd37b7479e825",
+          "sha256": "d679fd11e1d9e2b081a5798d0c4a1a63023a3fcfd48d62a4df8d8465c002e21f",
           "bytes": 12265,
           "graphDigest": "sha256:17678cd8a431fa3f0a86285103209377b93f452b85e636db26396690288e226f",
           "nodes": 15,
@@ -14526,8 +14506,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:a3f6687e2b7888f29cf8713a6585e3e22f7c2ef0a99a8f9f9c8e10424d4cbf4e",
-      "contractFingerprint": "sha256:e97ece1957fbe8f0530dc7667aed6a1f38250e7424217be33417178eb3e82c5a",
-      "observedAt": "2026-08-23T11:36:58.520Z",
+      "contractFingerprint": "sha256:5543e81d58e6451402c7a4d125853fc4817ed1c6b397e06a0afa17851e19b240",
+      "observedAt": "2026-08-23T11:53:45.845Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -14537,7 +14517,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "15655a8bcc120779c2f54f8749bd166683d2c09ca207d9a070b95e4101aac730",
+          "sha256": "f568cc444f4bde5a61b27d9d2550211f101f55aa15e0016ff88f876cbae358e2",
           "bytes": 1373,
           "graphDigest": "sha256:d4c9b662aeb15d84fce182023a698b04be88327c1c81b8dc7b20d486f619018a",
           "nodes": 2,
@@ -14857,8 +14837,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:453eb1015c25cc3c579f396dadd1e0d00a35bafe9a4a1f7069c3b3b2cb449f4f",
-      "contractFingerprint": "sha256:76b7f6dcad1303e70f3a4921f203b20c3b9f267512fe6f7d6bb35d4e327d060a",
-      "observedAt": "2026-08-23T11:36:52.082Z",
+      "contractFingerprint": "sha256:258d01863f4bcd4fe5650ddb44d29324360032317c93c3e7da47762e12ac03cf",
+      "observedAt": "2026-08-23T11:52:38.490Z",
       "result": "build-approval-required",
       "reason": "the DSH plugin install requires explicit approval for dependency builds: protobufjs",
       "requiredDependencyBuilds": [
@@ -14871,7 +14851,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "2ada89b16dc2291ad00c0f1f641a3260b8dba8af845876af78d2a138e7c5b940",
+          "sha256": "8fac9fa1ca12bd3a0f185ec2f971aca48a3a137a6a489f67ab61cb1d9f0dde97",
           "bytes": 22679,
           "graphDigest": "sha256:0c3514a196c2940b045fc5dbbf1db7eef9a54e93e117f823fb8ed3652f00f6c4",
           "nodes": 88,
@@ -15158,19 +15138,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:bf7f9cdb70141623e2feb98390daeace13ff33e615c84cada9c4e96e6af3b7c5",
-      "contractFingerprint": "sha256:800d393c2a2a141fbd83f0ea8e4855f6143070ef1fc5b0ac5ad4f41585eeba71",
-      "observedAt": "2026-08-23T10:29:09.549Z",
+      "contractFingerprint": "sha256:de478c9e0b4cd0c2d6c9055d8616fd0a6030d93a9e3053d1443436689bdbbe51",
+      "observedAt": "2026-08-23T11:53:34.785Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "1fa43e60649e24997f5e0e0f8882e46084f299b6429604e882702cbbcb7db2d4",
-        "integrity": "sha512-xYZPRjSCHMjXzBinfmJw3OjJRUaPhXN+cLXBUbuTvMHjEocXOTD4SKR/YXKYLVPGTc8zTKBZ1kljbcZ1wLYd4A==",
         "nodeEngine": ">=22.19"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "463e7a9700eab7664fcfa552ca286d92a35a1490c5c61d215b2f3c9903c76e2c",
+          "sha256": "aeb9ae592068eff4eda72c97de0ad32cb8b46521ecc1d6c2ac26572df38b2057",
           "bytes": 17077,
           "graphDigest": "sha256:513e1cd38f975454b12a404afbaa272f372930fedd4df18b4a5d907c45f157e8",
           "nodes": 65,
@@ -15442,8 +15421,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:1648e56cb8f6e3b41e0f119221665724f1810f13b16e1744b8bc66ab62e19605",
-      "contractFingerprint": "sha256:8ddd6c1307a8ac5cb9f5399a65665c20fa46aca4921d3454ccb50d016bfdaa67",
-      "observedAt": "2026-08-23T11:36:49.976Z",
+      "contractFingerprint": "sha256:96e51629bce663792609b58387ea19e0be42712ba33bb518e837e1e947cd330b",
+      "observedAt": "2026-08-23T11:53:35.243Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -15452,7 +15431,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "9f3f60e361ea1620ca13027e90f1b9bfc035850625e9ff3256ee4ef4b214751a",
+          "sha256": "24caf9da7ae2c5b61b7fe968ea167b38cb941a0764a27b740f3532af1405cd29",
           "bytes": 1386,
           "graphDigest": "sha256:c5cad63a6fd4e01047e07b2ba028ddc7358c4e7404a40b4738e381284505d85d",
           "nodes": 5,
@@ -15692,20 +15671,19 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:7ae82c170dd2eb389c0523858c6158f8123310f62dafa6a44d1be39f6f55926c",
-      "contractFingerprint": "sha256:113dfd045c9210137056842c8156d650912fcc37146e2e5e8ca3a92d7f38a9ee",
-      "observedAt": "2026-08-23T07:09:16.954Z",
+      "contractFingerprint": "sha256:ffab3d3828c1189e647a153f468be0b02f6eddd364e8eb9dbc55c1fe04606db8",
+      "observedAt": "2026-08-23T11:53:34.794Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [
           "prepare"
         ],
-        "sha256": "7428009ef928ebfd23e265c51601404124d249cd83b5bb1b9b1d2ca06fd429d2",
-        "integrity": "sha512-R6S6zT5PXTiY3HjqDXQglcTJ/hLJhuDlEERBK6+j9gIJCEECnz2hJKtCqvJi5uBAl4kBrwffKRAMqFGd2z56xQ=="
+        "sha256": "7428009ef928ebfd23e265c51601404124d249cd83b5bb1b9b1d2ca06fd429d2"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "fa1eb7a63070aec845f01d5f05f8156db8d882a2dfa9e93145be59bd8faa0307",
+          "sha256": "70bf1b4ceb60a46f5183dc3056a4a0dbd410bc6cce9d7412dfc8659db1ddc259",
           "bytes": 1488,
           "graphDigest": "sha256:f47bd0e193393b42219f3d0b531331a2f7a163680d9d5cd1ba35dbf8262f0af2",
           "nodes": 5,
@@ -15967,8 +15945,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:faa8e912d196c72ec7c099214ca6f12657d1b67c168ca18f3e796c2d7657c755",
-      "contractFingerprint": "sha256:f9cbc2af491a427f08f776c2b5daa782cc21766c88b174bc8e3d01063cd3ddc8",
-      "observedAt": "2026-08-23T11:37:12.369Z",
+      "contractFingerprint": "sha256:693c3642df6c27a6fab67804f0af5d5cf3fd0c9df1ffc2706b22a881087f35cb",
+      "observedAt": "2026-08-23T11:53:25.255Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -15978,7 +15956,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "7251b1cf82c7c72023e5523b53ae468f3875da2210a885b924fd80174ef3cdd1",
+          "sha256": "c23523871cc7038978d278ac9d9dd688f85e05bf11a1d339b4e6bc8fbec55e33",
           "bytes": 724,
           "graphDigest": "sha256:e615ecb0ea268de96ce43982b6bd6222de6793911b997fca02ac8335675be4d3",
           "nodes": 2,
@@ -16234,8 +16212,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:4cbac115311052324ca78252eb2dfd1548d070d1ee1ac732bbe6e4e0a9343efb",
-      "contractFingerprint": "sha256:6b307150f92c92f79f718d3a130ce209fdd5e796d20c6d6be1c1248db53df3b7",
-      "observedAt": "2026-08-23T11:36:50.704Z",
+      "contractFingerprint": "sha256:13a7aeef60d35fd47717316f330bff7d8337b0ed5c3b1965ae829526ae3f56ac",
+      "observedAt": "2026-08-23T11:52:38.395Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -16245,7 +16223,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "94b44a1744976d152deb9ae24609e955ab54d9b2f6b7f85db9acda0b54590f31",
+          "sha256": "630d4738689af076dc604883b843359466946ef1e088bf2861110d1b4ff0aba6",
           "bytes": 1037,
           "graphDigest": "sha256:42771d129b32f34b2e471dd7f122139a8b9f86682096aae9b7f45063a1840632",
           "nodes": 2,
@@ -16527,8 +16505,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:625d67dfb6a97e74123b023f8502234d38a87de66c6390986e8d9998c09da0dc",
-      "contractFingerprint": "sha256:1d785808a544dc72cfe8cd7039c87e24113142e3c05312ec31f0f05258f7df11",
-      "observedAt": "2026-08-23T11:12:37.676Z",
+      "contractFingerprint": "sha256:b222783f9e97f57e31c0936e49e7418935a9d8cf9107439a2c4acfcb9fb73e4b",
+      "observedAt": "2026-08-23T11:52:39.367Z",
       "result": "build-approval-required",
       "reason": "the DSH plugin install requires explicit approval for dependency builds: onnxruntime-node, protobufjs, sharp",
       "requiredDependencyBuilds": [
@@ -16542,7 +16520,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "ee1006bc7a447946a431fa944497edcc9108bbc9347ebc67cba00c6d2b886e58",
+          "sha256": "abe05850a0b1e64f3df1ad0bd6771c39f1f6ca763d721e6553092d54e63e6812",
           "bytes": 21631,
           "graphDigest": "sha256:87250c4530790d396659f51478a6f75860b1b2f586c0851e70daae067760420e",
           "nodes": 76,
@@ -16863,8 +16841,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:83ea7b552d8063f0784e58e371f2e635d467d297ee900d1fd9c810dc3c78354e",
-      "contractFingerprint": "sha256:e9748fbca8f3ed80f7ea16812bb4a1472568a22ea2b81efaf3d6477bdc803c3f",
-      "observedAt": "2026-08-23T11:36:55.305Z",
+      "contractFingerprint": "sha256:9611bde09e64066af6a1db517eb5a594fba4538baf7a8720ad735da8a1181c58",
+      "observedAt": "2026-08-23T11:52:37.835Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@^0.1.0-rc.6 || ^0.1.1-rc.1 was not resolved by the DSH runtime (runtime-import-observed)",
       "artifact": {
@@ -16874,7 +16852,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "d3c2a2506bc9ef8bc656a744c622cca07c5541b9e08b8a8b408aa51c4a5ede6d",
+          "sha256": "c56ff6115cda556439916dcb87203b8fe0f616cc1bd8ef36afdb940d128e6f22",
           "bytes": 2007,
           "graphDigest": "sha256:10f5259fdf8f863043e5e6e03795bb5786ee401c42f9ce65c753be4a7372ba95",
           "nodes": 7,
@@ -17184,8 +17162,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:14c5401b77b73d4de088d4018c9a595c187f320bea28a03c81805113a7ee3021",
-      "contractFingerprint": "sha256:de0038d02254302a41c0c7a51142590016ba9ee9f3398b91128fba60e41a663d",
-      "observedAt": "2026-08-23T11:37:56.904Z",
+      "contractFingerprint": "sha256:a37d96aa30d0449bf8827d9a99f6e3976f94f3421401fbb90481fcf71c0f91e9",
+      "observedAt": "2026-08-23T11:53:40.415Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -17195,7 +17173,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "b26640d676ae5a7041eb582fc23ccd82899eefc348abc8e495d1e5e792177f5b",
+          "sha256": "6c5fbaa2b86b2ad29bf97b01917de1ab72f434400edded066d73688aaf7a2bf0",
           "bytes": 16920,
           "graphDigest": "sha256:59feb7f488f4ee80137103e8ad7ffe6a37f05860a4c71dd66319d5a592ab15bd",
           "nodes": 63,
@@ -17467,8 +17445,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:40d228c12e1cad90f0cff759d554f6c4494b069fb29565c52bbdf75f588a94b0",
-      "contractFingerprint": "sha256:70eb2f61b92ffa1e6d98d4ca6deafc0a2b1cbe1fa85d23c229e2565e3027258c",
-      "observedAt": "2026-08-23T11:36:57.109Z",
+      "contractFingerprint": "sha256:345ebad5a7e598f44dabeb4f2580a545c660ed9ced68a1142e62941e402ac169",
+      "observedAt": "2026-08-23T11:52:33.555Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -17480,7 +17458,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "bfc77d8969f57655cf872b1180796dcda579758c8b8a18a1c42fec3cbb09d369",
+          "sha256": "ea2f66ee73e399e2062275069fd4f83317fb7c7e5361e6df6c5e526e125283eb",
           "bytes": 1019,
           "graphDigest": "sha256:3b3364d80ec5c456371f40fd9ce7ebdbc38b9d3fe6532fee5d7c642b95e883e0",
           "nodes": 3,
@@ -17728,8 +17706,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:fee6a3bbe9ce6177cf03fcca60375c66f07183dc51c3a7460782eb2af87532fa",
-      "contractFingerprint": "sha256:349d18abf4e5fa26ff8985280bbae6c107df261e699749855f3a205d971b24ed",
-      "observedAt": "2026-08-23T11:12:24.826Z",
+      "contractFingerprint": "sha256:56c8a3274230281c9db040e4d127af268fee5dfc9d9a72f3bb5d734928093c5b",
+      "observedAt": "2026-08-23T11:52:35.056Z",
       "result": "build-approval-required",
       "reason": "the DSH plugin install requires explicit approval for dependency builds: protobufjs",
       "requiredDependencyBuilds": [
@@ -17742,7 +17720,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "e72a955417bc8453a275958a3bcc9fa2c7760c7064f0b2df35ce70d5058ffbcc",
+          "sha256": "290a7d2cbe6acd7431f4b73ed219edfcda28d5eeb39975b9afc637351f3c731a",
           "bytes": 15797,
           "graphDigest": "sha256:33cda90c380df28951669a5750cdb7205a37358846b3c7c63199c81a3ef0a57e",
           "nodes": 56,
@@ -18022,8 +18000,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:1f609a606cbf28f3305ee6fccb8d7b4f996fb503948a463db8cb110131696531",
-      "contractFingerprint": "sha256:56127e7063b1479ddd31b6323523c111ed4a8bfebccd4ef25891fc57cf8c028f",
-      "observedAt": "2026-08-23T11:37:52.297Z",
+      "contractFingerprint": "sha256:24d91ebf760d9c3ef479ee4e28bc64aef0ce450d0314393f5a43829c4df99dee",
+      "observedAt": "2026-08-23T11:52:37.563Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -18033,7 +18011,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "786b8e5949dd0f42b7630daaa816d6c73be321e8fa5465f11fd870a1a166fac6",
+          "sha256": "bd28f0aacf8c2099751756d47073ab142f15fc20bada9c789e3a2eb03ebb93cc",
           "bytes": 21245,
           "graphDigest": "sha256:1632c909743751bbaef3c43f4b64e4a62ce9abd1e9146870507d53eecd37105d",
           "nodes": 85,
@@ -18281,8 +18259,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:2deaf09cffc00cf01350c9b68dca78f2881ff613e46fcd1f5b9ce3306110c091",
-      "contractFingerprint": "sha256:c8066f6abbf8e4cd313f1cd2019f6dd3dbb49483b6ad22cd1d5991708da99869",
-      "observedAt": "2026-08-23T10:45:08.504Z",
+      "contractFingerprint": "sha256:0f75f0a671e8e660ebf4a2c81adb0421f91eacf23d6a3def12c2b96165787666",
+      "observedAt": "2026-08-23T11:53:30.779Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@^0.1.1-rc.1 was not resolved by the DSH runtime (no-literal-reference-observed)",
       "artifact": {
@@ -18293,7 +18271,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "667e1af2459e6eca7ab9c7eb33fbc827de883071d7606763553216d362a25e4e",
+          "sha256": "28333059afeb3284c2ebfcde9ae72e20214d9829de5052a47374a2b8d2ebc658",
           "bytes": 912,
           "graphDigest": "sha256:44fe91bd8b2aa829679b53431ea6f13a81073aaf7c7d4645f1603d62de799c90",
           "nodes": 2,
@@ -18629,8 +18607,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:b0442604c0affe471b99cae423a81ea982460e21a10623cb1b3a1f427aaafd06",
-      "contractFingerprint": "sha256:bd3615ee2846eaa7241c89ac7bf65b17fb9b2a719ddd590a73314cce57241708",
-      "observedAt": "2026-08-23T11:37:45.878Z",
+      "contractFingerprint": "sha256:abf00272e0a4ba9e334c1d210ee696ef1aa7a4d1b296f659446089a1192c3068",
+      "observedAt": "2026-08-23T11:53:31.957Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -18639,7 +18617,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "1172c998d42a74f1d7e8f5145171e46042f15287c302a74e9a7db4077fd4fbf9",
+          "sha256": "4cbcb5281206e013609d71db82142711f8dbe11a9c685974859d493dab940ffd",
           "bytes": 1586,
           "graphDigest": "sha256:08663ac79ae1fd6a40011229897ee2822bc9f4249778aaa820dbbc7e518177bb",
           "nodes": 5,
@@ -18934,8 +18912,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:f04779a2ada700a2e425fc4535f95b456527c61237d9ce7c5ee584f686c86baf",
-      "contractFingerprint": "sha256:279a5c0046d3e4661ea0a0f5e8329f831693909f34e7291b6cabd2ffaf046290",
-      "observedAt": "2026-08-23T11:37:01.985Z",
+      "contractFingerprint": "sha256:70054b22f7c869e23884ff5b5b7649a703bcb570bf47b7e1c0733924eb298578",
+      "observedAt": "2026-08-23T11:52:38.729Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -18946,7 +18924,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "b05c1ae3247d13a83fe68e6db45c40ad98eaaf5a6eb20e71c68b8b6cbd81c7b1",
+          "sha256": "3a1966e2a8f0a1765ce20e5ed0b31cf0ed281af605d1f782333f85fe55b8f343",
           "bytes": 1044,
           "graphDigest": "sha256:f721a06b5715c0e7b259fcc632a3175039e8d8b7e5288f1d4ca652bb61718269",
           "nodes": 2,
@@ -19267,8 +19245,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:47bade3e66403e71a515f5449e744abbef1af20372a1b6f023c1ae6d5166c80a",
-      "contractFingerprint": "sha256:20583bedb36dd22a05d10a6ae90926e99e9a1547e76a680b80c2a96ff868509e",
-      "observedAt": "2026-08-23T11:37:02.935Z",
+      "contractFingerprint": "sha256:78185aba15bfc671b8e912539e24458be14d25a974fa520cddb85bbe0c5fd8df",
+      "observedAt": "2026-08-23T11:52:39.212Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -19278,7 +19256,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "2f7a8907682bf588500a296995e09222dbcfc7fdbb7943358ed4180222e805b3",
+          "sha256": "1295f12789a612a5bcd028474ca1d9348bda774d6638e35a05db57a4dd23edde",
           "bytes": 2412,
           "graphDigest": "sha256:a5bc0d71bb42e3fb8d33614097a64bfec2ece36b6e14a0187fa626caaac4ae18",
           "nodes": 8,
@@ -19586,8 +19564,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:cb8cbaa49eac9ed81745504873963d130a1c28726874cdb24127c2ac3b0e2fbc",
-      "contractFingerprint": "sha256:69dadf1851950e2b0356e4df551a9158ed2969de1e60df3362c164f1f81b37c4",
-      "observedAt": "2026-08-23T11:37:47.701Z",
+      "contractFingerprint": "sha256:9a21e96c15d9656aa4ec74a4f9243d661dd00225e46789b7498f2f9cb3c02cc5",
+      "observedAt": "2026-08-23T11:52:39.650Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -19597,7 +19575,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "73e4d466ebacc87ae7e3ef9a31ab904b3b036d1645dfc4baf25278d6550f1f39",
+          "sha256": "b8e60570a371a08bd2b1fc94667680c085784607cf0d29852adbe974ab139f05",
           "bytes": 740,
           "graphDigest": "sha256:af68071210bca7c064dda1653697359aa724e905f99c6a32c817d6281fa764f8",
           "nodes": 2,
@@ -19837,19 +19815,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:c3aabac8d38df7d1b671720288910f9d98dd00277edd0ea987b93832e6641780",
-      "contractFingerprint": "sha256:94ee72f685e4c7bc19cb0077be7a3b34fbe3e5c4f32be045c9c4d6d2e1b8491c",
-      "observedAt": "2026-08-23T10:29:05.560Z",
+      "contractFingerprint": "sha256:899dbc262b93b4d6c97d70843ae586be85df15557e7fcfbd470527c5810adc80",
+      "observedAt": "2026-08-23T11:53:32.939Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "074667890e032a3aeb423a09460a542d37606c5b67e71ff6c080aeacb75bd102",
-        "integrity": "sha512-r8mZl5CiXpckPHjORVjcsnFvciHSrUXPw3TLN9ozPHTcoSvnR2ZsNOHN4brKN1d2DxlQwMOhd4aJifEIPgCgKQ==",
         "nodeEngine": ">=18"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "1c0ae517ef027a27e33a78e3bf5281cbe9a0d4f406e5dafbe08fb03199977235",
+          "sha256": "ccc068ea2dd881805ed358fb81d07cc98750d19f763f880a26b4bf168ad77f06",
           "bytes": 932,
           "graphDigest": "sha256:b212e72ffd91b1f8aefdc04ea724bdce88cafd05a88f49387be6bb87c0bdb39b",
           "nodes": 2,
@@ -20131,19 +20108,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:f7629ea46bcf998180e2940710b47526102edfbca13b1df2ad8226a378f3721c",
-      "contractFingerprint": "sha256:10ddf9f2ca0b33e154717f39e122bcaf6264a6b503409a1ffc4413af7d674147",
-      "observedAt": "2026-08-23T10:29:08.417Z",
+      "contractFingerprint": "sha256:6a791303202e3e0bad03e7690ed4772e9cccdefb8d2577e272acbfd3f6edf5bc",
+      "observedAt": "2026-08-23T11:53:37.264Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "61cb4d23401b3edf807188749e2856f998b21d0d7d2e91580efbe53a0a6b9ee8",
-        "integrity": "sha512-QqffCn8MS6FPaRTMGfG/gVYkdj8iWWyIH75by8fF7KusLLyuHxhzBydzWYemi5n9zsoqu5SJio+NKQ2KSdToSg==",
         "nodeEngine": ">=22"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "7348244c45d44a12a05545ba0613bf8d758701d170b338cab376b1a29c4f4f21",
+          "sha256": "c808389284edd51f8e8f0a0fadd2017a2ee0ee08391ed6e22b985ebcbe4a3a29",
           "bytes": 7611,
           "graphDigest": "sha256:e27ee4af522be0392ae536dc4a92a5eeb23aa6710010250e01a67e500473c2a0",
           "nodes": 32,
@@ -20399,8 +20375,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:14e286ee6a925d9539e15ad9478e32f40349514d96b79c588416ff0e710bbb2c",
-      "contractFingerprint": "sha256:3235db0f7c200a2e425c5819da5ce23334837df92ff7b820353365f652c0a8b5",
-      "observedAt": "2026-08-23T11:12:31.567Z",
+      "contractFingerprint": "sha256:8f4dc2adcf1d2820854a942b4e29cded384a519e467d157fe22e86ab346db380",
+      "observedAt": "2026-08-23T11:52:41.322Z",
       "result": "build-approval-required",
       "reason": "the DSH plugin install requires explicit approval for dependency builds: cpu-features, node-pty, ssh2",
       "requiredDependencyBuilds": [
@@ -20414,7 +20390,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "0c5d4972086ab81cbe6a6bf5d02053649e80740d5407d0390b8949a4e36acc2d",
+          "sha256": "bf71d3830a9d7fd87d3fa4b600abaa9c4c354566fff1475bfb306d93cdfe3995",
           "bytes": 47010,
           "graphDigest": "sha256:7a3a5db5c6633594c52bf157a8801b4ea1e6d9a679304a88d7711bb77854c22b",
           "nodes": 176,
@@ -20876,8 +20852,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:8374f993167ba0b4671f1149cf4cd82a8e3e0ce00b4e1dee868ad0dbf45ef0a4",
-      "contractFingerprint": "sha256:604c31317e219f19d89d34181aedd4652fbfe7569a0dcf0da77587b7f2fc6931",
-      "observedAt": "2026-08-23T11:36:59.653Z",
+      "contractFingerprint": "sha256:d6bdeac406b3ed7f8e9b0889d04134f73e392a0afb49945fb90f44e7fcd9a143",
+      "observedAt": "2026-08-23T11:53:29.509Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -20887,7 +20863,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "80be1e6cae6a5040b7cecbe479773197cdf6c3546d9cede3e88e2d8bdb6239aa",
+          "sha256": "783b3612012295c0bfe5f3417310373cea0b0b72aa3da90d3c63246faf2c5551",
           "bytes": 738,
           "graphDigest": "sha256:647fbd3571bfdb5a0b496c01d1910aa0eec9b29a2a7f04595deba91819ed16df",
           "nodes": 2,
@@ -21127,8 +21103,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:984f3b0aba6df64358f5ff4493244d6875ee4e50fbac5c59c974d0f46bcd5a0a",
-      "contractFingerprint": "sha256:9c136dc5530ce9c547e2f38f518617e6e1a86a2bc9b5a8f96d82aed4b4e6f33d",
-      "observedAt": "2026-08-23T11:36:58.734Z",
+      "contractFingerprint": "sha256:ca9bcf83d353ef32645179706e24c3e08ca9b1b27c36d60ab918261cbd1ac65d",
+      "observedAt": "2026-08-23T11:54:30.424Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -21140,7 +21116,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "7c61406a9897e354f53a8c38a5d27b7d732c991f5388721203604ecf37cf129f",
+          "sha256": "c464c6b88ab949331c4df425d85191301451afc987ea528eb429f2eb1bf138e9",
           "bytes": 2078,
           "graphDigest": "sha256:87db5925e634eac2a85e786303665d2dc0858c1dd4dbd50ebff9fbebbc91262d",
           "nodes": 2,
@@ -21454,8 +21430,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:20c55c381bbecba93a34e81f77f72c497a56df63ef7a596e848f6aa26eadd058",
-      "contractFingerprint": "sha256:85300ce0f94aa68ca74fe33a66e0e9fd9f45b59524452b32085d14b19a3b6a74",
-      "observedAt": "2026-08-23T11:37:54.188Z",
+      "contractFingerprint": "sha256:0fc82a517cc2786e404f1dc756fdfc710dba37ccaf5abee01e6f8fcdd2ae9d3c",
+      "observedAt": "2026-08-23T11:54:30.570Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@>=0.1.0-rc.0 <0.2.0 was not resolved by the DSH runtime (no-literal-reference-observed)",
       "artifact": {
@@ -21465,7 +21441,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "751b495b3e2db80b0b55513d7d2ea790041b0b3599fe5dfb5ab6cef39cfc9977",
+          "sha256": "be003e20c13d0f615bd067234a1fdaf624f1243c1eb3be83dd0986cdf3f8d2ab",
           "bytes": 1298,
           "graphDigest": "sha256:402f18e007578fd2fd092556b9a32cd1b7b8d0d60a2ba339289a7d56499c867d",
           "nodes": 2,
@@ -21827,8 +21803,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:245dab2f5c75cd9f65d45f559eca90c6b1a48117acf01ed00a4de31945619e77",
-      "contractFingerprint": "sha256:0875e6760555b0165f4f53610c7681daa72145291969abd8eedf52001d0ddbb2",
-      "observedAt": "2026-08-23T11:36:56.022Z",
+      "contractFingerprint": "sha256:cac63f15d4046ffb538eea329a05dd179ae7473706a5cf5844183bde054a25f4",
+      "observedAt": "2026-08-23T11:53:41.211Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -21837,7 +21813,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "6f6f5cf06bd1484abc7126e6225167006a82f69df0473da6af926183c6686895",
+          "sha256": "e65733223553eee01171e4f3f7db229c62aa163099bb47f945aa64d053099df0",
           "bytes": 843,
           "graphDigest": "sha256:861485d739005e87861b0589b168ef56054ae80de4b822cf0042bdf33313636b",
           "nodes": 2,
@@ -22132,8 +22108,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:8c812cdb0b8e85ba29ca74ca2b2d27d121edd2c402cd287d5388c94acb636f46",
-      "contractFingerprint": "sha256:9eaf40c7b5e1ff68387bed1fc256338cadb824e5030a8886c5f7f56212a9526f",
-      "observedAt": "2026-08-23T11:36:55.634Z",
+      "contractFingerprint": "sha256:d03810aa4e8833194991ab51b91e5ec00018f917384ece9917cfb9bb34bd02df",
+      "observedAt": "2026-08-23T11:54:34.496Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -22142,7 +22118,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "3080e434675a440bcfa5ad2c71f70be2774a5bbdfc45f2d83e4ee495c845ac2c",
+          "sha256": "deacc2aae15e2d5a4d9d31c2f319face0688a853579432f2e58be11c6e0f26e9",
           "bytes": 703,
           "graphDigest": "sha256:faa8bfbfdc7e8f3c4ce28ae4e8b4b1f519c41f86327eb9174649014d7ceab6e6",
           "nodes": 2,
@@ -22398,8 +22374,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:59e6dff22b0320e649ca1406de864a4a9afaa6cdafe622e669e33c479859856f",
-      "contractFingerprint": "sha256:28a50bb7ae146db7826952906c469a709a8c61adc2d98b2ac993467a04be3090",
-      "observedAt": "2026-08-23T11:37:45.349Z",
+      "contractFingerprint": "sha256:da9c51a81116ba4268674035a6a6e6dc8d0f6e510a87c7cef95824b332b5e40b",
+      "observedAt": "2026-08-23T11:53:41.897Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -22408,7 +22384,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "643688dc521d78810736dbbe36026cb50b33ddab2832370fcbcc6a3a1e774d19",
+          "sha256": "07deb4e780ff059ecb81e1aad3e7e8d2ad03246e4219cfd508f619a884e8e2c7",
           "bytes": 672,
           "graphDigest": "sha256:f56e6688526be10067ee560f31a1925a615d8b75ef553501870f33e6b15da9ab",
           "nodes": 2,
@@ -22648,8 +22624,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:16623ff373aab22dabf1ecf1cb908309ce2468c1a5206e7e107660d7ffc5f30a",
-      "contractFingerprint": "sha256:45f37659d7efcf79eb364e59ffc025878ce5940d5c39370ccd4b7c75f057b093",
-      "observedAt": "2026-08-23T11:36:55.108Z",
+      "contractFingerprint": "sha256:4d4701b539ad194f541cc6222e4e7dfcc961a68bd651a4acb22c671cc78e6065",
+      "observedAt": "2026-08-23T11:53:33.672Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -22659,7 +22635,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "8c48783a08b526729c1acd3d19831672eb747ee240173c3c63557934813deb8f",
+          "sha256": "c97a3436f2995b08f778d7deffc7b6cebf1048324e5ba5c507a61c5c0bf0bbb6",
           "bytes": 753,
           "graphDigest": "sha256:b181f54f015331d19d82efe98976884d768c2029d855d99662da90b80a8431be",
           "nodes": 2,
@@ -22915,8 +22891,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:368c94a9a3cbdb1ad79f5d0e60a064294988ecef60843d3b3ea042c584fa4ca3",
-      "contractFingerprint": "sha256:6f18961ee8419d167a5b41af9fac60da29112db75c7311d54bee8a2a5f7037bf",
-      "observedAt": "2026-08-23T11:36:55.566Z",
+      "contractFingerprint": "sha256:ecdd38811a6b9cdb2b70d1b6c25c8176ea851c8ed8d53aec8c138f85f22aa4a9",
+      "observedAt": "2026-08-23T11:53:47.936Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -22926,7 +22902,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "5756cfe178383359dfdd52bf8ca3dcadbaef82a76001c17834716236cdc99dd6",
+          "sha256": "10b5213c6b9716a2b67e83a1e503f532ed23c93e4af0595d50545236cd31e1b0",
           "bytes": 3519,
           "graphDigest": "sha256:c16f85638f61480495261667b7753fe3176d22a12600b1048230563c28cc355b",
           "nodes": 12,
@@ -23186,8 +23162,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:ce04373c1ddb08b1b9c56d1200b3fcf74038f9e005de8d09b6fd15421a103d14",
-      "contractFingerprint": "sha256:4a158b8867ad2e19103e800eaa3459836cee03344cfb34384357fa61e67c9d48",
-      "observedAt": "2026-08-23T11:36:57.785Z",
+      "contractFingerprint": "sha256:9292935b675315ae7f6f8e07095c5f4542db8185a9ec0e937f2d078ebc53fea8",
+      "observedAt": "2026-08-23T11:54:30.752Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@>=0.1.0-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0 was not resolved by the DSH runtime (no-literal-reference-observed)",
       "artifact": {
@@ -23196,7 +23172,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "8be4a7fcf5bed7f0b8c731ff25dd9ff9372826390cba566c4df0cefbc3c417a4",
+          "sha256": "ce5bce3d08667f0c2594a01c34866a8f50e61b1d88aa1c045deed392c1998abf",
           "bytes": 944,
           "graphDigest": "sha256:1e8b87a6809182c34afebfbcf10806708fe9df8646352782483cde3738a47265",
           "nodes": 2,
@@ -23506,18 +23482,17 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:a9f6ea3e0ee43e5c421248f34d90402c7637fe1c27812d20751d1186287a2a14",
-      "contractFingerprint": "sha256:8873ca365bb27bb193bf15cf221e259c42a1b9a0887ec01074d601b250af540c",
-      "observedAt": "2026-08-23T10:29:10.665Z",
+      "contractFingerprint": "sha256:28062913b1b2b02567b0303403d86c312b0ac69e7f1c1dd0b8fa66b3cfef3766",
+      "observedAt": "2026-08-23T11:54:22.626Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "8a64c4c7373150bd7e81a02f4c5c6dc59f713e0464b3085fccf79e576c5e8338",
-        "integrity": "sha512-emWZvgEbo4+gun1rBY2tF64QktSLIF9d0R5KIsjErTWTWr2lMmbcWmiP6m5CwY7owPksxcqF3rKDeHVR7BQHNQ=="
+        "sha256": "8a64c4c7373150bd7e81a02f4c5c6dc59f713e0464b3085fccf79e576c5e8338"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "f3c2b1bc65717de20caff8534be430899b3750ec4f28cf19b16940826e3e3501",
+          "sha256": "8ddd7b7ed90558b7aab92d044a12ee6b04459427e3ad6cfacb56633921e104dd",
           "bytes": 3655,
           "graphDigest": "sha256:97e419a41fcdb481ae13006a2a1ead4a182c4dca5d4cf7847220ad938654f740",
           "nodes": 8,
@@ -23770,9 +23745,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:2487532d41d57ff848a7d778081c7153b15e41954f685693abca10e479927937",
-      "contractFingerprint": "sha256:384bf76b47277a6fbb967b96f230fa8e637048ed572834d1c8ee10aba5220bcd",
-      "observedAt": "2026-08-23T10:45:13.430Z",
+      "staticFingerprint": "sha256:d9cc668204d2bf8fadf916fd32d53fbb8ce8b6bcc791ac9c47c0b8d3e6066c90",
+      "contractFingerprint": "sha256:38a76ae04dcf0b43c8ef4a5ac327bc752f8f6b0bf22f87dca9134944f1380265",
+      "observedAt": "2026-08-23T11:53:42.745Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -23784,7 +23759,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "d8dc18a611ed6ade2a44c08386986f55632f5e1b7a06e8d15019f8d074ed7f8e",
+          "sha256": "8c52e9464f1ed20549eafd4aae0e1f9794ca1e9075faae213c1f27816df22511",
           "bytes": 19098,
           "graphDigest": "sha256:b083c9d1dcb19fbf1bd0315ea31fb7d874f3bf141d13e02fbd26a033fea2c46b",
           "nodes": 66,
@@ -24365,8 +24340,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:385322030e46f884b76ae8596abb8de273e33841588891a45a583ca536985e87",
-      "contractFingerprint": "sha256:6cba38abe5758ba26201db48fb1370311ba386419f2afd2694391a230c21ce7f",
-      "observedAt": "2026-08-23T11:36:55.375Z",
+      "contractFingerprint": "sha256:f5cc56cc5e651cdcf6b5f3b61e31482f62750e59cfb880e5f990dc638f735614",
+      "observedAt": "2026-08-23T11:53:41.857Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -24376,7 +24351,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "9b92f5668f3eb581c7ecac5a3f8bd8396bffb5de7c92723ece3825c2e2602ee2",
+          "sha256": "b236f9d481ea9c26eb1ff7934a7bc4bbde4f57e898d767efab8867c32bdc9941",
           "bytes": 861,
           "graphDigest": "sha256:77443142d1629cbb975921363a913d90df5d2c66d591ff1ece8ff438cd9be42a",
           "nodes": 2,
@@ -24632,12 +24607,413 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:78adbdcce935987327aec7dc6bcf5c9aa456b9bda3d22f159d888e9fd6923871",
-      "contractFingerprint": "sha256:46d95bc393c9959a9d067dfbdcdf3db2bb5db3af4a1e93a5349042b7cc17d7fa",
-      "observedAt": "2026-08-23T11:37:33.669Z",
-      "result": "unknown",
-      "reason": "the exact npm artifact could not be established before execution",
+      "contractFingerprint": "sha256:aa794c5a4f5db336317491c5e07e7ce4b8da9b625dd6ff9c72764fefbe04fb73",
+      "observedAt": "2026-08-23T11:54:42.004Z",
+      "result": "peer-contract-incompatible",
+      "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-attachment@0.1.1-rc.2 does not satisfy 0.1.0-rc.8 (scan-incomplete)",
       "artifact": {
-        "lifecycleScripts": []
+        "lifecycleScripts": [],
+        "sha256": "dcd5cdbd02ffc240f18fdd45318205345cccb29dde3694f1efe51ee0211c746a",
+        "nodeEngine": ">=22.19.0"
+      },
+      "resolution": {
+        "profileLockfile": {
+          "sha256": "c1d79a61b9e727c1e0869b3016c758df5b33570e1652c25af999e3bd482b9ab8",
+          "bytes": 15238,
+          "graphDigest": "sha256:4614a15abb53e5ae5c8f87decf86b325693261dec96667d4b89476fd2b0aefac",
+          "nodes": 49,
+          "edges": 55,
+          "unresolved": 12,
+          "unresolvedDependencies": [
+            {
+              "from": "pnpm:@puppeteer/browsers@3.2.1",
+              "name": "proxy-agent",
+              "spec": ">=8.0.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@puppeteer/browsers@3.2.1",
+              "name": "yauzl",
+              "spec": "^2.10.0 || ^3.4.0",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.9.tgz",
+              "name": "@deepseek-ai/cordis",
+              "spec": "^4.0.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.9.tgz",
+              "name": "@deepseek-ai/dsh-attachment",
+              "spec": "0.1.0-rc.8",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.9.tgz",
+              "name": "@deepseek-ai/dsh-host-webserver",
+              "spec": "0.1.0-rc.8",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.9.tgz",
+              "name": "@deepseek-ai/dsh-llm",
+              "spec": "0.1.0-rc.8",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.9.tgz",
+              "name": "@deepseek-ai/dsh-session",
+              "spec": "0.1.0-rc.8",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.9.tgz",
+              "name": "@deepseek-ai/dsh-skill",
+              "spec": "0.1.0-rc.8",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.9.tgz",
+              "name": "@deepseek-ai/dsh-tools",
+              "spec": "0.1.0-rc.8",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.9.tgz",
+              "name": "@deepseek-ai/schemastery",
+              "spec": "^3.18.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:ws@8.21.3",
+              "name": "bufferutil",
+              "spec": "^4.0.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:ws@8.21.3",
+              "name": "utf-8-validate",
+              "spec": ">=5.0.2",
+              "kind": "optional"
+            }
+          ]
+        },
+        "runtimeGraph": {
+          "digest": "sha256:96a0125f77e1be8e04665d386eb1355fc7e7dce36c3abc3eee0f26e341675db6",
+          "nodes": 481,
+          "edges": 2077,
+          "unresolved": 0,
+          "optionalUnavailable": 77,
+          "optionalUnavailableDependencies": [
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-landlock-run@0.1.1/node_modules/@deepseek-ai/node-addon-landlock-run",
+              "name": "@deepseek-ai/node-addon-landlock-run-linux-arm64",
+              "spec": "0.1.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.4.3/node_modules/@modelcontextprotocol/sdk",
+              "name": "@cfworker/json-schema",
+              "spec": "^4.1.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-arm",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ppc64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-riscv64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-s390x",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.1.6/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-arm64",
+              "spec": "3.1.6",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.1.6/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-x64",
+              "spec": "3.1.6",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.1.6/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-arm64",
+              "spec": "3.1.6",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.1.6/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-ia32",
+              "spec": "3.1.6",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.1.6/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-x64",
+              "spec": "3.1.6",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.1.6/node_modules/koffi",
+              "name": "@koromix/koffi-linux-arm64",
+              "spec": "3.1.6",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.1.6/node_modules/koffi",
+              "name": "@koromix/koffi-linux-ia32",
+              "spec": "3.1.6",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.1.6/node_modules/koffi",
+              "name": "@koromix/koffi-linux-loong64",
+              "spec": "3.1.6",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.1.6/node_modules/koffi",
+              "name": "@koromix/koffi-linux-riscv64",
+              "spec": "3.1.6",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.1.6/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-ia32",
+              "spec": "3.1.6",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.1.6/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-x64",
+              "spec": "3.1.6",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.1.6/node_modules/koffi",
+              "name": "@koromix/koffi-win32-arm64",
+              "spec": "3.1.6",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.1.6/node_modules/koffi",
+              "name": "@koromix/koffi-win32-ia32",
+              "spec": "3.1.6",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.1.6/node_modules/koffi",
+              "name": "@koromix/koffi-win32-x64",
+              "spec": "3.1.6",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/node-addon-require-builtin@0.1.5/node_modules/node-addon-require-builtin",
+              "name": "node-addon-require-builtin-darwin-arm64",
+              "spec": "0.1.5",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/node-addon-require-builtin@0.1.5/node_modules/node-addon-require-builtin",
+              "name": "node-addon-require-builtin-darwin-x64",
+              "spec": "0.1.5",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/node-addon-require-builtin@0.1.5/node_modules/node-addon-require-builtin",
+              "name": "node-addon-require-builtin-linux-arm64-gnu",
+              "spec": "0.1.5",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/node-addon-require-builtin@0.1.5/node_modules/node-addon-require-builtin",
+              "name": "node-addon-require-builtin-win32-arm64-msvc",
+              "spec": "0.1.5",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/node-addon-require-builtin@0.1.5/node_modules/node-addon-require-builtin",
+              "name": "node-addon-require-builtin-win32-ia32-msvc",
+              "spec": "0.1.5",
+              "kind": "optional"
+            }
+          ],
+          "pluginPeerContracts": {
+            "declared": 8,
+            "satisfied": 2,
+            "mismatched": 6,
+            "indeterminate": 0,
+            "missing": 0,
+            "relations": [
+              {
+                "name": "@deepseek-ai/cordis",
+                "required": "^4.0.1",
+                "status": "satisfied",
+                "staticUsage": "scan-incomplete",
+                "resolvedVersion": "4.0.1"
+              },
+              {
+                "name": "@deepseek-ai/dsh-attachment",
+                "required": "0.1.0-rc.8",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "resolvedVersion": "0.1.1-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-host-webserver",
+                "required": "0.1.0-rc.8",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "resolvedVersion": "0.1.1-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-llm",
+                "required": "0.1.0-rc.8",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "resolvedVersion": "0.1.1-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-session",
+                "required": "0.1.0-rc.8",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "resolvedVersion": "0.1.1-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-skill",
+                "required": "0.1.0-rc.8",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "resolvedVersion": "0.1.1-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-tools",
+                "required": "0.1.0-rc.8",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "resolvedVersion": "0.1.1-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/schemastery",
+                "required": "^3.18.1",
+                "status": "satisfied",
+                "staticUsage": "scan-incomplete",
+                "resolvedVersion": "3.18.1"
+              }
+            ],
+            "issues": [
+              {
+                "name": "@deepseek-ai/dsh-attachment",
+                "required": "0.1.0-rc.8",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "resolvedVersion": "0.1.1-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-host-webserver",
+                "required": "0.1.0-rc.8",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "resolvedVersion": "0.1.1-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-llm",
+                "required": "0.1.0-rc.8",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "resolvedVersion": "0.1.1-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-session",
+                "required": "0.1.0-rc.8",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "resolvedVersion": "0.1.1-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-skill",
+                "required": "0.1.0-rc.8",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "resolvedVersion": "0.1.1-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-tools",
+                "required": "0.1.0-rc.8",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "resolvedVersion": "0.1.1-rc.2"
+              }
+            ]
+          },
+          "hostRuntime": {
+            "source": "dsh-process",
+            "resolvedNodes": 447,
+            "dshVersion": "0.1.1-rc.2"
+          }
+        }
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
@@ -24657,18 +25033,17 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:c9aac99d04d37fb89cd91894538852ecc225d7c4f653aef28c229e4df2ff8698",
-      "contractFingerprint": "sha256:e1b1d61e48d434f128118d7fd6b69b33c51876e9d3489fab92da5f540ca32418",
-      "observedAt": "2026-08-23T10:29:00.933Z",
+      "contractFingerprint": "sha256:b174b85fafc3cc617444ca42e549f3290c35c9bb42ddb59796d83ee15b3594ea",
+      "observedAt": "2026-08-23T11:54:25.952Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "b7cdf5f160fdab7880c23a0304e7d6891126a6b8befc6291da53af74860dffa6",
-        "integrity": "sha512-ezADWhoAYQzrdm883Y1YNtQeJfrv8oFTnt8av1zzHVKKGRP46Hj1fef0EITwTGW+zdtMpnXwykcDUIw0v/5+5Q=="
+        "sha256": "b7cdf5f160fdab7880c23a0304e7d6891126a6b8befc6291da53af74860dffa6"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "33e584944e4c6dd3033553bfad795d07265ba0193775298526b5122044b5ad1e",
+          "sha256": "c9df5ee3c1becfbfbda4464e859121175246bd0a2ba806c840268318d6fc7903",
           "bytes": 761,
           "graphDigest": "sha256:934e79a00d60c4e0596730e04e357edf250912ced1d3f9f68a2a8665baef002f",
           "nodes": 2,
@@ -24924,10 +25299,10 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:bb92eca4da50c1cb7e079bada3f04258b05a6af5d9b5a85979f2b4bbc249704c",
-      "contractFingerprint": "sha256:f894b93d898ad06d690d1c58f60cf09da8078271663713c139f915c5f0132e9c",
-      "observedAt": "2026-08-23T11:37:00.401Z",
-      "result": "load-failed",
-      "reason": "the traced DSH profile load command failed",
+      "contractFingerprint": "sha256:c7b095ebd7c6e54afcd2203951dd8d074d4f8eebebdb7a8fb8223aaa864ceacf",
+      "observedAt": "2026-08-23T11:54:33.710Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "284126787dc34cf1a747588c5d8b81296d542732cd2847cff1a06be8438852a3",
@@ -24935,7 +25310,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "5242dae59aa926731bb0b42239a153eeab0b1ab065572a79dcbfd262ba782476",
+          "sha256": "4734329533f0750c11282ad686b01c3337bd4c75500f1864a9fa5fac5ac81570",
           "bytes": 25101,
           "graphDigest": "sha256:97f45aa6d22cbf9584f99aa49429de656cae22024f1e8254a68b14a8d3054b13",
           "nodes": 98,
@@ -25189,8 +25564,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:4d613429f7edde8b2cb968c11cdaf659b672d0677a4a9b8c0ce9485a84499ef6",
-      "contractFingerprint": "sha256:de33af1c481b0c24bc433fb49ee7b965aca13377d1021df91ed39f179d18e949",
-      "observedAt": "2026-08-23T10:45:04.817Z",
+      "contractFingerprint": "sha256:4020ef4bac347311c943474c273183f0b6b031dbe0ca8d5313f31ed390ca957f",
+      "observedAt": "2026-08-23T11:54:31.725Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -25199,7 +25574,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "67798e56a0252d4d0b9695ddaa554c99fda7884dbfd99c21cabec87711237342",
+          "sha256": "938df29eac247b24cafd99d0a7ff7d2628bd727ae58a697de85293128ad32886",
           "bytes": 672,
           "graphDigest": "sha256:c81d36df6d43396d5982597218cf538551cd287fb49d9465e9a42c036fbe3969",
           "nodes": 2,
@@ -25439,10 +25814,14 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:a6add211f62ec7ee300d2ad8460a1d0ddbe348d39f06df1fd8401fed2a22962f",
-      "contractFingerprint": "sha256:3cfcd953e8b491032401b694d03419dcf98e6e510a5105115d02e5116475ca28",
-      "observedAt": "2026-08-23T11:36:54.129Z",
-      "result": "install-failed",
-      "reason": "the traced DSH plugin install command failed",
+      "contractFingerprint": "sha256:7ffa1922b0d38de21b41a090b35385438d9673e58ce4f30579a7cd86bc7666e4",
+      "observedAt": "2026-08-23T11:54:09.943Z",
+      "result": "build-approval-required",
+      "reason": "the DSH plugin install requires explicit approval for dependency builds: dsh-vision-proxy, sharp",
+      "requiredDependencyBuilds": [
+        "dsh-vision-proxy",
+        "sharp"
+      ],
       "artifact": {
         "lifecycleScripts": [
           "postinstall"
@@ -25452,7 +25831,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "a98b89ff9211dc5e3037736101c4f07792ec482fb5590e05a000da2bc96030c9",
+          "sha256": "e2a702993c8fd2283a3b122c3915efb7173e635c1bca4fadfb1e798d7a6fc776",
           "bytes": 11763,
           "graphDigest": "sha256:17c6ffc2481fac1ae80d37a7f3a17e8a2faa3f79f515872e561ad2f79e0233ad",
           "nodes": 35,
@@ -25692,19 +26071,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:620423daba9aab703ec93d0a7a825b3e5961d86637e44e3d8f602528e084ca7f",
-      "contractFingerprint": "sha256:9858996ae6c302640a5319735a7c7a921b0a9c60e6611b717b8a6cccfad17ea6",
-      "observedAt": "2026-08-23T10:29:10.312Z",
+      "contractFingerprint": "sha256:121a092ac0708f5b7dcce4ccae08f7add8a95dcb160e7b7dbd461ca0ea82c1ed",
+      "observedAt": "2026-08-23T11:54:35.252Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "de2bd6749feaa917637f97ed6070be59f5b4c909b989dc8c104756eaabcd423d",
-        "integrity": "sha512-cV8TT7oKW6UcPESQj3HEXXYron74P4tHUYSckJM0QE6prj3UemMlQhCUmVLsiW5xSjRoHbnl3lOSRSkefuWgTQ==",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "7950dc17acc71a8bc75fbe3785474bb63f489c86616915a489eb5f50880c3a86",
+          "sha256": "4dee7aa650242105873425fa7f3552ec2569bee7595617e38dcd68244fbc5a19",
           "bytes": 35148,
           "graphDigest": "sha256:1cfc72fb46cd0c69f77f63d8a745ca02e9b3a2251c9504bc3ef064d854cde94d",
           "nodes": 107,
@@ -25994,19 +26372,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:83f783e85265ed6d6ad9cd5ba643ec9c796f99e4a560154a59f7d03aa87f8489",
-      "contractFingerprint": "sha256:64be8df42048e563e09d6283290461a462447fc0673c973b491ee677d98702a4",
-      "observedAt": "2026-08-23T10:29:07.894Z",
+      "contractFingerprint": "sha256:0f65fd956ee233d398ad3695e7c86d986d806ea6592e56de74375f9da37e6a7d",
+      "observedAt": "2026-08-23T11:53:42.565Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@^0.1.0-rc.6 was not resolved by the DSH runtime (runtime-import-observed)",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "524a85818f90d43a3784fdafbfd25bb11908b6a75f6996e642d8890f39f04e64",
-        "integrity": "sha512-84WgmkD+rvNGu2T+Dx1y/CteaCWku0YjNFMBFkNPtI940Ub8kI1dXg8M1/fmGsG093R4vrjnWdlTgZQuUwudPA==",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "f39d14fe97bbeea03d56d66781a4ffc0efcef0c22bdf29b22131542536a03ca7",
+          "sha256": "7f1daa856ae17a75cfa09cfcd12e16f5391ac62ac2bcb46ed4fb859b3fe11f2a",
           "bytes": 4310,
           "graphDigest": "sha256:d5496621754faea4adaeeb2b81cc6615f4dbafcf6586c995f45835ea87fb600d",
           "nodes": 12,
@@ -26567,20 +26944,19 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:f2db0e6898a2d37d1e3418587486c64224c01bca7f1609e58c5837a999b608fe",
-      "contractFingerprint": "sha256:d17b19601b0ccc2503109a43cce438c3c2a8a5689db50d5ea68cae888ed73ad1",
-      "observedAt": "2026-08-23T10:29:07.481Z",
+      "contractFingerprint": "sha256:5688dd5c3e3ec66bce0ad5d098e9b2fa7cc22d36b08c5bebf7886dc2d7d59669",
+      "observedAt": "2026-08-23T11:54:30.873Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@>=0.1.0-rc.6 was not resolved by the DSH runtime (no-literal-reference-observed)",
       "artifact": {
         "lifecycleScripts": [
           "prepare"
         ],
-        "sha256": "f590804e80ae73b8f863229147a80a644fd702b319446847dfc2412afc6268a7",
-        "integrity": "sha512-EA42F/SBU9oaCjolu09hVSPc4Alb2jNzKtgqGGGUtIv05xrkguxOUVc6PZjNE/dUYEtl4PO9Eanjkxy1raBNjA=="
+        "sha256": "f590804e80ae73b8f863229147a80a644fd702b319446847dfc2412afc6268a7"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "2dc19a7328cb3331495b316cf0e5b0f5b7be34dd697fa8b11712adf72679c70a",
+          "sha256": "f7b0db51394cd5898d79792770af11c925b62d6fef1bb5eb7dbbc147aa28e88a",
           "bytes": 1122,
           "graphDigest": "sha256:d47f0ad80ff58f843c50d6949bc0994ba94e7c1b2dd34c89f22864d5232646dd",
           "nodes": 2,
@@ -26896,8 +27272,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:84687c1df225fa808858f5a6a3949e98e1dacea47ea8f36a0887b5f068b98827",
-      "contractFingerprint": "sha256:a3265261d6a6599b2c40e3f18ca3b1b5475b9acc0b13f1f2b9b0c30c85fbe792",
-      "observedAt": "2026-08-23T11:12:43.381Z",
+      "contractFingerprint": "sha256:76153bb867d0638b8de0e22f0710ba673ec89b0fa61e7c13d7f935a9fc620f05",
+      "observedAt": "2026-08-23T11:54:33.690Z",
       "result": "build-approval-required",
       "reason": "the DSH plugin install requires explicit approval for dependency builds: cloudflared, cpu-features, node-pty, ssh2",
       "requiredDependencyBuilds": [
@@ -26912,7 +27288,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "1f07c05491272026142477b19514bd685f3a1c9ddec085e330042e6cb8bacadd",
+          "sha256": "2b0878ba01f480427bb7d8a03ee97004f3a60e4f88214414d480a702c15686a6",
           "bytes": 59585,
           "graphDigest": "sha256:207edfe6239b14663d7313570338277431c3f6b9887812cfe248b392a84d6a74",
           "nodes": 215,
@@ -27366,8 +27742,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:f1e133fc51732a54dd36a4a4eff1fc2424510d50b12edbb49c071af467e8be03",
-      "contractFingerprint": "sha256:8e5cb6f2c409843ff031e1f57886ee3ea067c5320f8369d77239f07b8e0b6763",
-      "observedAt": "2026-08-23T11:36:55.921Z",
+      "contractFingerprint": "sha256:a724e077b819731d651e0e45d879200ec0f09f2f7a81ad42f3f32267d2c3e5aa",
+      "observedAt": "2026-08-23T11:54:32.177Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -27379,7 +27755,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "96abffaf705a49e7df682397ae5b8deee483ab5cdb1731aff066a6375cc22591",
+          "sha256": "b6380d3b6ecdd074bb33b9d60f037163c204e38efec811ea682bac51254e57b1",
           "bytes": 1673,
           "graphDigest": "sha256:63d68b406dd680d0f858f9c93a1ecfe8d9b4899e6ef28513d7f2c50be6849a2b",
           "nodes": 4,
@@ -27645,8 +28021,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:a337d48041619bb446024b6827e6c4ac52ea738e27933746d750f79f8ce5e6da",
-      "contractFingerprint": "sha256:0a5d146ebcc40388710f2704384afab47578a3bbee9c1f8a315633592e875617",
-      "observedAt": "2026-08-23T11:36:56.695Z",
+      "contractFingerprint": "sha256:53e1334b043d2f723dd01cbf7863b49e24a8da0a9c3e5001b04f4103ef74e997",
+      "observedAt": "2026-08-23T11:54:30.073Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -27655,7 +28031,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "9bf42ee38a0c9834c24ab1a441c394dac8b1fa0043c958fd5deb21d99e1352c3",
+          "sha256": "d570492c6ed40559bae7722b453d599556c5904cd6439f153508c910d389150a",
           "bytes": 843,
           "graphDigest": "sha256:7c3ff044bcff7892a6ac5fb4af0d7aff18207e27c9324d1ab4e2be187bbd36a4",
           "nodes": 2,
@@ -27950,8 +28326,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:8ae40d296f602e534f31582f3ea1703f347cd8bb3539fdf27752ff864ce6c4fc",
-      "contractFingerprint": "sha256:05fc20976954cacf2fd6c05a8634296ba68638260bd47ac7c7ca04c3d55d4fe5",
-      "observedAt": "2026-08-23T11:36:57.800Z",
+      "contractFingerprint": "sha256:785d53f92f11c79fe3bc46aa8227777af0f671a5d2ac628fc60fa53e410b21cd",
+      "observedAt": "2026-08-23T11:53:45.378Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-tools@0.1.1-rc.2 does not satisfy 0.1.0-rc.6 (runtime-import-observed)",
       "artifact": {
@@ -27960,7 +28336,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "365acdb9ff987900afd84a8d9062b6dca04ec76001c0f3116a38ddca2f58665f",
+          "sha256": "c7ff71127fd1b117b20a5942eae601cd9fceeb56fa9dab515f2a14e91c497f8f",
           "bytes": 1236,
           "graphDigest": "sha256:01f27c0f70ad11369c0ba7ca2235ad6d194efbf5e175c810bcdc3d1121ff0e3c",
           "nodes": 4,
@@ -28225,19 +28601,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:b7e6451abfc12d7be37a6ee7531258cfbc85765e2fcc549fcca0861c2cfde17b",
-      "contractFingerprint": "sha256:c02eaecc7b32e5220d8d540905e4f78b9914ad6567cd5eefe23ca8500e2cb406",
-      "observedAt": "2026-08-23T10:29:06.562Z",
+      "contractFingerprint": "sha256:74a8e3b8219d70e843cc1c9938a0be219352eb4f1e6db78dafad88813ff97594",
+      "observedAt": "2026-08-23T11:53:47.098Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "24996e82b3cc737eb38020179cd8364f7be43c20a523c346a24b232e14b5b283",
-        "integrity": "sha512-kiA++3iJyvdE/ei8aCDZLTqezxqg0fQ7T0Q5hZYGO+Gu/QDmwcefphAZPfqBWRUZ3/xd/K8zQRTovrTGwSpy2w==",
         "nodeEngine": ">=22.19.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "6d58ccab623d5baa434952d91fb1f421e522229f10eb46278a7074ff4d10a6ce",
+          "sha256": "782a53787943e5b05c4f17a719ce7dcff3520bc78259040b461b9a2ff57103c9",
           "bytes": 23374,
           "graphDigest": "sha256:f001ded7aaf9be3b2a95b495cfd3ffcdb126b8a52980b187d7b616dcbea1f416",
           "nodes": 77,
@@ -28535,10 +28910,17 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:a17a5962a69546829de55dfddde33cf52dd955983950269be316c31678a470de",
-      "contractFingerprint": "sha256:534b79b3c4099ff93a92c4a77021c6dc3053800e095c2140910c95b103a58f07",
-      "observedAt": "2026-08-23T11:37:06.046Z",
-      "result": "install-failed",
-      "reason": "the traced DSH plugin install command failed",
+      "contractFingerprint": "sha256:6aec03b4ae530c980904fc7914e9b9c68cd154e7f9a48388a71999500d3f6ec2",
+      "observedAt": "2026-08-23T11:54:31.204Z",
+      "result": "build-approval-required",
+      "reason": "the DSH plugin install requires explicit approval for dependency builds: @roarpeng/graphflow, better-sqlite3, onnxruntime-node, protobufjs, sharp",
+      "requiredDependencyBuilds": [
+        "@roarpeng/graphflow",
+        "better-sqlite3",
+        "onnxruntime-node",
+        "protobufjs",
+        "sharp"
+      ],
       "artifact": {
         "lifecycleScripts": [
           "postinstall",
@@ -28549,7 +28931,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "9c7474709e38d1316d3496c5fa16e823d87de7c73202a9a3dc7eed4a88c86b1d",
+          "sha256": "5aa9ff3c683be3baa55e4a762ecadfff22fe13a9355d75883d644f5667a3d55c",
           "bytes": 59810,
           "graphDigest": "sha256:f470508f7277703aabed2ebaa01170f6f0de91272cb13ff62cf355f15b5bc53d",
           "nodes": 226,
@@ -28809,18 +29191,17 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:37f55330ed8488c08968efcf6e51c1cc14ee4e9ed8a6cc47641ffe2811e380a2",
-      "contractFingerprint": "sha256:2077c885121743cb7c672b5a671ca31064f2433baf42f62a36cd9579cf6acf6b",
-      "observedAt": "2026-08-23T10:29:39.757Z",
+      "contractFingerprint": "sha256:dbbff4d9a1fc89dd0325d1de72d1275dc3d03096ed43e9e150df0ca9d7e16547",
+      "observedAt": "2026-08-23T11:54:35.389Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "22b5133e403bb75e24fbadd1274bce279442397997e3167bf2a84ff9166ed969",
-        "integrity": "sha512-kJxvHFOWalfDg7xtAuPGMRJ/v8pTGulA+8g54H/nXOjcXnqdOy/qE2EupAJaN5VCWf152Ps/X/LjXc4UVG0tSw=="
+        "sha256": "22b5133e403bb75e24fbadd1274bce279442397997e3167bf2a84ff9166ed969"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "e54b3fadb7c2b3394fa98b6f87518bbd10083ee3677da646a0861ce9ad976c74",
+          "sha256": "9b3784635bc9a45ddc782634d17af7f8ac55e72aafee6c06b19038832535a9a4",
           "bytes": 24561,
           "graphDigest": "sha256:813fd420e6121ceb0a0816a2cf514f4d45f1ddf00d074866c8f40110cd2112a3",
           "nodes": 95,
@@ -29074,8 +29455,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:6b54f966ba0a1e7ff0bc26a77e3b9828b683881e0353b0c059b0d3611c7be343",
-      "contractFingerprint": "sha256:c52b1a4601ec79b94041edf67b6b8a7f5c3c689ceea171901fc811bf8a044f59",
-      "observedAt": "2026-08-23T11:36:59.203Z",
+      "contractFingerprint": "sha256:980c0955f49af9d0aa6ab8fc3a0f0d01c6e7bac28d2c568748e4755293d162f5",
+      "observedAt": "2026-08-23T11:54:24.282Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -29085,7 +29466,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "528bbb9f9b05c72e204eb9384e6dd868f1b06c1522a724b85dc96ff53ea03f1f",
+          "sha256": "c5a63f90be023b6eefeba0b2890c411a556fffd17b87d29eea112c3fe0bc01f6",
           "bytes": 3681,
           "graphDigest": "sha256:e58bbbfdd324b53da5931122930fe3a97d88a5a20fd520c2110a0d4ea07ce370",
           "nodes": 9,
@@ -29339,8 +29720,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:9400220f82f53fd0b1a90df87dd19f4347b013461e035dcc399434fcde487c39",
-      "contractFingerprint": "sha256:6171548ebc02e1b893b72cb41bd731296f7baa5487eb8a28739ad1cf323b38a8",
-      "observedAt": "2026-08-23T11:37:00.371Z",
+      "contractFingerprint": "sha256:f6ebc0f7dd38e2b35a5ed7d2bf4a7011abde04ac7c74115e62d7bf971c3bd73d",
+      "observedAt": "2026-08-23T11:53:43.729Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -29350,7 +29731,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "49dcf6bf0db0df8be21052f3167151a4ad5fa54f824d74b72f9d7844c8fc2f55",
+          "sha256": "f7e0143580c4ce2031dc22655dd3add5f90cad5e5073d196e53bb90688db8a0e",
           "bytes": 1214,
           "graphDigest": "sha256:e7e42a81d379ceb326c1248da0a1198b4a208616bd76cf605b0909a680e923d3",
           "nodes": 4,
@@ -29590,19 +29971,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:7329ef34d8664dd41a6b8d0a7f8949158b24e0b5dd09d0ffcbd237ad7cfbaac0",
-      "contractFingerprint": "sha256:9502ecfdd7e956724b1aaa32e6087604681727c276edca0a7b21774924878fbb",
-      "observedAt": "2026-08-23T10:29:01.487Z",
+      "contractFingerprint": "sha256:277f41952d755e8272a687413ae740aff05ebad87c3f49d9da30a2eed2e9af02",
+      "observedAt": "2026-08-23T11:53:43.536Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "097e99472420e60a01f0f598fef22d36c980d4ac9c95e056c2595c7dc91d2ea2",
-        "integrity": "sha512-SgEOOLi1l/2A/bT1hxlR8o2bclO2Mf6GSFQbJkFYXKg/KRXsO9dqxr58myGxsWI/tjL+7qi1wuSyIItuWhjvRw==",
         "nodeEngine": ">=22.13"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "3e84b0a3370d7eff94850305f05e0274ea27baca7f3bc79c1337aebd4c7f68aa",
+          "sha256": "d9cee0088d3bb2bc6b1d1b87e6a6769d261a86df2df34ae70f0f5b9eab5584f9",
           "bytes": 1224,
           "graphDigest": "sha256:b81f467ec987e858f6962d9a38fcaa99c9045eb2de42ae52dafa0f0e81638733",
           "nodes": 4,
@@ -29842,8 +30222,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:8306aac95751c32faa68b32fa406a39533a01915fce8299192e9522bd1da013e",
-      "contractFingerprint": "sha256:2394c0cd8392892f9772658a92ec2ab2e82e8470febe08d45c975014304b3949",
-      "observedAt": "2026-08-23T11:36:55.362Z",
+      "contractFingerprint": "sha256:7fbe5c04be071e639224851093ee0d1b37eda05957d1b4c80a25dc157146e8dc",
+      "observedAt": "2026-08-23T11:53:39.851Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -29855,7 +30235,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "119004583dcbc2c7be06b6adf3b70929a0cf68ef5401eafdf6db0fb1a680823d",
+          "sha256": "98169ff2400142f5b83822c9b02b5219cc79defbb9f68ab6e6c6f7f42cd4ec6c",
           "bytes": 900,
           "graphDigest": "sha256:31ed3f9b34b95783571a5139f8850f7d478180d4b1df014e5d0283cd21cad738",
           "nodes": 2,
@@ -30103,19 +30483,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:c5eca67009f7df34d76d2b07c5bc871cf2237c93916447ad51e5d4690b295aa3",
-      "contractFingerprint": "sha256:9c40139c3e7d436b5f289b2b26076eb63966a7033b8f94daf0bb3a69242403e4",
-      "observedAt": "2026-08-23T03:40:15.559Z",
+      "contractFingerprint": "sha256:5529d3012c872c88ed979816c2af6b90af428a4324c4b91ded87309df5ccfeab",
+      "observedAt": "2026-08-23T11:53:40.988Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@^0.1.0-rc.6 was not resolved by the DSH runtime (type-only-reference-observed)",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "a4563e560e91bcd3a2a9302ee7dbee046b146c1bd0de6b27b7c7524fd52e77ca",
-        "integrity": "sha512-0equagOeBdSpaEfgH2UnxykoDDAA1UxRHCzscMVNktha6xWQPT7+NhA7aBaH4HhGPP0MAqXznMrF5g2v4kxQIg==",
         "nodeEngine": ">=24.11.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "1cc9e802bad619396081d581f25bd0cf23e0eb6378c520a5706044d64ceb046d",
+          "sha256": "f201c695f240f072375aa998fec0cde0c5546e20358d35c32318c30b8a1aaa51",
           "bytes": 1492,
           "graphDigest": "sha256:6fd91fe7071a970059132eb6106bd47ccb6c3de5d20cbaacb12e16a99d093090",
           "nodes": 2,
@@ -30562,19 +30941,18 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:732c0ff3b23ca66d8d2e9caadd7770866c3347c989be5c8028f5a9a4e205615c",
-      "contractFingerprint": "sha256:c8de3a596e8a6256deed6b8680a1cdb0d5b4ae790af7be62a18833270de9328f",
-      "observedAt": "2026-08-23T03:40:21.978Z",
+      "contractFingerprint": "sha256:db6348084f2aa1f5bfbbbb32ee94ef8fe827b953a8e483d2db0cebcc148d2318",
+      "observedAt": "2026-08-23T11:53:33.232Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@>=0.0.1-rc.2 <0.2.0-0 || >=0.1.0-rc.2 <0.2.0-0 was not resolved by the DSH runtime (no-literal-reference-observed)",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "58de7bbba3784bb5f882c8e825fcb36d97a3555ff1cbc3fc3dbe5f5ec5cad228",
-        "integrity": "sha512-pGHgU3YyfX7OatsUh3pgd+iDQEbwCET+/f1xu3QAQAPNarbhWbhCUuBFklzaCbia7HtoEzVn4yStD2tjuWUlMA==",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "d958956b68c66beba0a3f7d0c8b8489d99004cfeceecc4bfb19c0640533e462a",
+          "sha256": "01f5450f46c774a7dc67e7dc149cdcc751890bdcc456bbfc4f6f2728309280ce",
           "bytes": 1172,
           "graphDigest": "sha256:1d9e23c12bd2a60f0304feeed2d35f86d628da726f16c424697f5b2ef8df6a7a",
           "nodes": 2,
@@ -30884,8 +31262,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:726bf23dda92e10bd712280edc7d633db341166795250452e721cf24afc813a7",
-      "contractFingerprint": "sha256:fb2c8e050ed58aa6313a901c68eb6e7d47650952a3552344640d173e1bc930f7",
-      "observedAt": "2026-08-23T11:37:41.053Z",
+      "contractFingerprint": "sha256:8c8bf7ec0fd702112cf88794186e84cbee7a9a291d258e8a6eef65efc9889684",
+      "observedAt": "2026-08-23T11:54:29.086Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@* was not resolved by the DSH runtime (no-literal-reference-observed)",
       "artifact": {
@@ -30894,7 +31272,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "734561c2582efe26705a22713596c88793f9db1d6148610d73db55db6d30446a",
+          "sha256": "fa86d5981daf4dbce35052e854b0b573b324d1b8ed90fd0b60a13a1b2058f094",
           "bytes": 880,
           "graphDigest": "sha256:fe9fe43e123d091e84b43193a74a9cf5e5238344676fed667e0fe02ff79e9a09",
           "nodes": 2,
@@ -31217,18 +31595,17 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:166ea6237bde5c4ee7077b9438bbb914114bed69d911c8cf4e5550377d386dad",
-      "contractFingerprint": "sha256:5e3959b60ff1af4eff1b4376c0e04907e79e6e1dc53f12f92dddfa535c013b29",
-      "observedAt": "2026-08-23T03:40:16.947Z",
-      "result": "unknown",
-      "reason": "the exact artifact installed and loaded, but 6 required plugin peer range(s) could not be evaluated safely",
+      "contractFingerprint": "sha256:9152190b2f1acebbd23c5618259de72b58fe6c90f92c345ce42237db2be94fc9",
+      "observedAt": "2026-08-23T11:54:24.884Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "831b9bab04b9eed73203fd9024cf4f335f5c0f079cd7de3191611ea73edf6081",
-        "integrity": "sha512-3L8zcNFLi8WU3OM0nVrm2wLG/6gtKKRzKMPznRIxJ1iAmzALLzkaO/HmVDKJWC0uzdRjZ+f3aKuGk/dVJfwY8g=="
+        "sha256": "831b9bab04b9eed73203fd9024cf4f335f5c0f079cd7de3191611ea73edf6081"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "87cb5c79d61727ec959a27c2e48c9a1e334c9f128791da46ab1d5063d72c491e",
+          "sha256": "fb64da8aeb6e1936f0dbd90f2b79efa3e17354019b369bf481f12ea7942be9c8",
           "bytes": 946,
           "graphDigest": "sha256:c6450b4183aee2cd78416f33f63dd8d21fa6eebed762a952b1c39a47b682f449",
           "nodes": 2,
@@ -31475,94 +31852,50 @@
           ],
           "pluginPeerContracts": {
             "declared": 6,
-            "satisfied": 0,
+            "satisfied": 6,
             "mismatched": 0,
-            "indeterminate": 6,
+            "indeterminate": 0,
             "missing": 0,
             "relations": [
               {
                 "name": "@deepseek-ai/cordis",
                 "required": "*",
-                "status": "indeterminate",
+                "status": "satisfied",
                 "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "4.0.1"
               },
               {
                 "name": "@deepseek-ai/dsh-fs",
                 "required": "*",
-                "status": "indeterminate",
+                "status": "satisfied",
                 "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-fs-local",
                 "required": "*",
-                "status": "indeterminate",
+                "status": "satisfied",
                 "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-shell",
                 "required": "*",
-                "status": "indeterminate",
+                "status": "satisfied",
                 "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-subprocess",
                 "required": "*",
-                "status": "indeterminate",
+                "status": "satisfied",
                 "staticUsage": "no-literal-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-timeout",
                 "required": "*",
-                "status": "indeterminate",
-                "staticUsage": "runtime-import-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              }
-            ],
-            "issues": [
-              {
-                "name": "@deepseek-ai/cordis",
-                "required": "*",
-                "status": "indeterminate",
-                "staticUsage": "runtime-import-observed",
-                "resolvedVersion": "4.0.1"
-              },
-              {
-                "name": "@deepseek-ai/dsh-fs",
-                "required": "*",
-                "status": "indeterminate",
-                "staticUsage": "runtime-import-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-fs-local",
-                "required": "*",
-                "status": "indeterminate",
-                "staticUsage": "runtime-import-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-shell",
-                "required": "*",
-                "status": "indeterminate",
-                "staticUsage": "runtime-import-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-subprocess",
-                "required": "*",
-                "status": "indeterminate",
-                "staticUsage": "no-literal-reference-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-timeout",
-                "required": "*",
-                "status": "indeterminate",
+                "status": "satisfied",
                 "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               }
@@ -31593,8 +31926,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:84c7afd2df4ac1c0fac74bfa83540d3f10a001a3887f6c73ceabd40512a1de46",
-      "contractFingerprint": "sha256:3663eac519bd36a68572940e950a94a84e2b9415ebd8e076b44e86427f667435",
-      "observedAt": "2026-08-23T11:36:50.320Z",
+      "contractFingerprint": "sha256:904bdc17f3dfd7062dc025f107e324318221696bcbd83404f276325edc6b4fbb",
+      "observedAt": "2026-08-23T11:54:32.325Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -31603,7 +31936,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "b670114bc0d39be8966d978a93c586fd49cd5cd7b5375557a230e1ce73516013",
+          "sha256": "a4a21a6b9e1d846dc1ddd76eae879aa5ba9165c5d10c08f4853402863f77db4e",
           "bytes": 9307,
           "graphDigest": "sha256:1c8b7efe4a7259249eeece1b9a8d795d995dd8b735738293b960128eb7ee8e68",
           "nodes": 36,
