@@ -141,7 +141,7 @@ describe('DSH directory compatibility feed', () => {
     })
 
     assert.deepEqual(feed, checkedInFeed)
-    assert.equal(feed.plugins.length, 50)
+    assert.equal(feed.plugins.length, 100)
     assert.equal(feed.plugins.find(item => item.id === 'dsh-browser')?.status, 'not-observed')
     assert.equal(feed.plugins.find(item => item.id === 'api-relay-audit')?.status, 'not-observed')
     assert.equal(

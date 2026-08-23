@@ -40,7 +40,7 @@ targets:
     package: '@sanqi-normal/dsh-webui-market-plugin'
     packagePath: package.json
 
-  # Adoption-stratified 50-plugin cohort imported from the immutable
+  # Adoption-stratified 100-plugin cohort imported from the immutable
   # awesome-dsh-plugin commit recorded in the cohort manifest.
   - id: dsh-plugin-mall
     ecosystem: dsh
@@ -408,3 +408,307 @@ targets:
     packagePath: package.json
     lockfile: pnpm-lock.yaml
     lockfileType: pnpm
+  # Identity-checked expansion generated from the same immutable
+  # awesome-dsh-plugin catalog snapshot.
+  - id: modlens
+    ecosystem: dsh
+    repository: liustack/modlens
+    ref: "main"
+    package: "@liustack/modlens"
+    packagePath: "package.json"
+  - id: dsh-mnemon
+    ecosystem: dsh
+    repository: omdsh-dev/dsh-mnemon
+    ref: "main"
+    package: "dsh-mnemon"
+    packagePath: "package.json"
+  - id: dsh-win32
+    ecosystem: dsh
+    repository: sjh9714/dsh-win32
+    ref: "master"
+    package: "dsh-win32"
+    packagePath: "package.json"
+  - id: whale-on-desk
+    ecosystem: dsh
+    repository: cookiesheep/whale-on-desk
+    ref: "master"
+    package: "whale-on-desk"
+    packagePath: "package.json"
+  - id: dsh-client-auto-continue
+    ecosystem: dsh
+    repository: HsiangNianian/dsh-auto-continue
+    ref: "main"
+    package: "dsh-client-auto-continue"
+    packagePath: "package.json"
+  - id: dsh-strata
+    ecosystem: dsh
+    repository: jsdvjx/dsh-strata
+    ref: "main"
+    package: "dsh-strata"
+    packagePath: "package.json"
+  - id: dsh-free-vision
+    ecosystem: dsh
+    repository: FuzzySoul/dsh-free-vision
+    ref: "main"
+    package: "dsh-free-vision"
+    packagePath: "package.json"
+  - id: dsh-xueqiu
+    ecosystem: dsh
+    repository: kangjinghang/dsh-xueqiu
+    ref: "main"
+    package: "dsh-xueqiu"
+    packagePath: "package.json"
+  - id: dsh-skills-manager
+    ecosystem: dsh
+    repository: MichengAI/dsh-skills-manager
+    ref: "master"
+    package: "@michengai/dsh-skills-manager"
+    packagePath: "package.json"
+  - id: graphflow
+    ecosystem: dsh
+    repository: Roarpeng/GraphFlow
+    ref: "main"
+    package: "@roarpeng/graphflow"
+    packagePath: "package.json"
+  - id: dsh-history
+    ecosystem: dsh
+    repository: chenproton/dsh-history
+    ref: "main"
+    package: "dsh-history"
+    packagePath: "package.json"
+  - id: dsh-catppuccin
+    ecosystem: dsh
+    repository: NoNameLeGo/dsh-catppuccin-theme
+    ref: "main"
+    package: "@nonamelego/dsh-catppuccin"
+    packagePath: "package.json"
+  - id: dsh-rewind-plugin
+    ecosystem: dsh
+    repository: SiriLee/dsh-rewind
+    ref: "main"
+    package: "dsh-rewind-plugin"
+    packagePath: "package.json"
+  - id: dsh-vision-proxy
+    ecosystem: dsh
+    repository: Flyvhidbwo/dsh-vision-proxy
+    ref: "main"
+    package: "dsh-vision-proxy"
+    packagePath: "package.json"
+  - id: dsh-codex-subscription
+    ecosystem: dsh
+    repository: WSL043/dsh-codex-subscription
+    ref: "main"
+    package: "dsh-codex-subscription"
+    packagePath: "package.json"
+  - id: anweat-dsh-browser
+    ecosystem: dsh
+    repository: anweat/dsh-browser
+    ref: "master"
+    package: "@anweat/dsh-browser"
+    packagePath: "package.json"
+  - id: dsh-turn-rewind
+    ecosystem: dsh
+    repository: Anionex/dsh-turn-rewind
+    ref: "main"
+    package: "@anionex/dsh-turn-rewind"
+    packagePath: "package.json"
+  - id: dsh-easyrewrite
+    ecosystem: dsh
+    repository: Renzic-Stone/DSH-EasyRewrite
+    ref: "main"
+    package: "dsh-easyrewrite"
+    packagePath: "package.json"
+  - id: dsh-better-edit
+    ecosystem: dsh
+    repository: Rianico/dsh-better-edit
+    ref: "main"
+    package: "dsh-better-edit"
+    packagePath: "package.json"
+  - id: dsh-auxiliary
+    ecosystem: dsh
+    repository: dsh-plugins/dsh-auxiliary
+    ref: "main"
+    package: "@dsh-plugin/dsh-auxiliary"
+    packagePath: "package.json"
+  - id: dsh-verify
+    ecosystem: dsh
+    repository: 263311487-ux/dsh-verify
+    ref: "main"
+    package: "dsh-verify"
+    packagePath: "package.json"
+  - id: dsh-passwords
+    ecosystem: dsh
+    repository: slywalker2006/dsh-passwords
+    ref: "main"
+    package: "dsh-passwords"
+    packagePath: "package.json"
+  - id: dsh-memory-plugin
+    ecosystem: dsh
+    repository: volcengine/OpenViking
+    ref: "main"
+    package: "@openviking/dsh-memory-plugin"
+    packagePath: "examples/dsh-memory-plugin/package.json"
+  - id: dsh-univer-office
+    ecosystem: dsh
+    repository: dream-num/dsh-univer-office
+    ref: "main"
+    package: "dsh-univer-office"
+    packagePath: "package.json"
+  - id: dsh-plugin-vet
+    ecosystem: dsh
+    repository: wulun811/dsh-plugin-vet
+    ref: "main"
+    package: "@jieai/dsh-plugin-vet"
+    packagePath: "package.json"
+  - id: dsh-full-remote
+    ecosystem: dsh
+    repository: JUANWANG-BUAA/dsh-full-remote
+    ref: "main"
+    package: "dsh-full-remote"
+    packagePath: "package.json"
+  - id: odai-dsh-plugin
+    ecosystem: dsh
+    repository: orziz/odai
+    ref: "main"
+    package: "odai-dsh-plugin"
+    packagePath: "dsh/plugin/package.json"
+  - id: dsh-deepread
+    ecosystem: dsh
+    repository: xiehuan123/dsh-deepread
+    ref: "main"
+    package: "dsh-deepread"
+    packagePath: "package.json"
+  - id: dsh-deepseek-vision
+    ecosystem: dsh
+    repository: siegfly/dsh-deepseek-vision
+    ref: "main"
+    package: "dsh-deepseek-vision"
+    packagePath: "package.json"
+  - id: dsh-archive-manager
+    ecosystem: dsh
+    repository: MichengAI/dsh-archive-manager
+    ref: "main"
+    package: "@michengai/dsh-archive-manager"
+    packagePath: "package.json"
+  - id: dsh-plugin-subscriptions
+    ecosystem: dsh
+    repository: V1ki/dsh-plugin-subscriptions
+    ref: "main"
+    package: "dsh-plugin-subscriptions"
+    packagePath: "package.json"
+  - id: dsh-crew
+    ecosystem: dsh
+    repository: stuarthu/dsh-crew
+    ref: "main"
+    package: "dsh-crew"
+    packagePath: "package.json"
+  - id: iterate-plugin
+    ecosystem: dsh
+    repository: jingzhao-l/iterate-plugin
+    ref: "main"
+    package: "iterate-plugin"
+    packagePath: "package.json"
+  - id: dsh-plugin-vetting
+    ecosystem: dsh
+    repository: truelove-dreamer/dsh-plugin-vetting
+    ref: "main"
+    package: "dsh-plugin-vetting"
+    packagePath: "package.json"
+  - id: dsh-any-background
+    ecosystem: dsh
+    repository: Tkingxiao/dsh-any-background
+    ref: "main"
+    package: "dsh-any-background"
+    packagePath: "package.json"
+  - id: dsh-tavern
+    ecosystem: dsh
+    repository: chen731215-dev/dsh-tavern
+    ref: "main"
+    package: "dsh-tavern"
+    packagePath: "package.json"
+  - id: dsh-auto-classifier
+    ecosystem: dsh
+    repository: PAKIKNOWLEDGE/dsh-auto-classifier
+    ref: "main"
+    package: "dsh-auto-classifier"
+    packagePath: "package.json"
+  - id: dshscan
+    ecosystem: dsh
+    repository: shaoshi20/dshscan
+    ref: "main"
+    package: "@shaoshi/dshscan"
+    packagePath: "package.json"
+  - id: dsh-im-connect
+    ecosystem: dsh
+    repository: MichengAI/dsh-im-connect
+    ref: "main"
+    package: "@michengai/dsh-im-connect"
+    packagePath: "package.json"
+  - id: dsh-gateway
+    ecosystem: dsh
+    repository: clarknu/dsh-gateway
+    ref: "main"
+    package: "dsh-gateway"
+    packagePath: "package.json"
+  - id: dsh-spend
+    ecosystem: dsh
+    repository: nonewind/dsh-spend
+    ref: "main"
+    package: "dsh-spend"
+    packagePath: "package.json"
+  - id: dsh-thirteen-bg
+    ecosystem: dsh
+    repository: feng78-boop/dsh-thirteen-bg
+    ref: "master"
+    package: "dsh-thirteen-bg"
+    packagePath: "package.json"
+  - id: dsh-coding-subscription-oauth
+    ecosystem: dsh
+    repository: lninghaha/dsh-coding-subscription-oauth
+    ref: "main"
+    package: "dsh-coding-subscription-oauth"
+    packagePath: "package.json"
+  - id: dsh-testkit
+    ecosystem: dsh
+    repository: iiwish/dsh-testkit
+    ref: "main"
+    package: "dsh-testkit"
+    packagePath: "package.json"
+  - id: dsh-movein
+    ecosystem: dsh
+    repository: sjh9714/dsh-movein
+    ref: "main"
+    package: "dsh-movein"
+    packagePath: "package.json"
+  - id: dsh-imagegen
+    ecosystem: dsh
+    repository: dickpy/dsh-imagegen
+    ref: "main"
+    package: "@dickpy/dsh-imagegen"
+    packagePath: "package.json"
+  - id: dsh-taskboard
+    ecosystem: dsh
+    repository: cloader/dsh-taskboard
+    ref: "main"
+    package: "dsh-taskboard"
+    packagePath: "package.json"
+  - id: dsh-email
+    ecosystem: dsh
+    repository: STARDUSTLC666/dsh-email
+    ref: "main"
+    package: "dsh-email"
+    packagePath: "package.json"
+  - id: dsh-meme
+    ecosystem: dsh
+    repository: yyh-001/dsh-meme
+    ref: "main"
+    package: "dsh-meme"
+    packagePath: "package.json"
+  # Identity-checked expansion generated from the same immutable
+  # awesome-dsh-plugin catalog snapshot.
+  - id: xgone-dsh-remote
+    ecosystem: dsh
+    repository: xgone/dsh-remote
+    ref: "main"
+    package: "@xgone/dsh-remote"
+    packagePath: "package.json"

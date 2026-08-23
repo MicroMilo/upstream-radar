@@ -3,7 +3,7 @@
 This directory is the maintained dynamic-test corpus for Upstream Radar.
 Static checks cover source and dependency changes every day; isolated execution
 establishes behavior evidence for the current active matrix. The corpus now
-contains 50 exact published plugins: 46 identity-checked npm artifacts imported
+contains 100 exact published plugins: 96 identity-checked npm artifacts imported
 from the [`awesome-dsh-plugin` cohort](../awesome-observer/README.md), plus four
 maintained behavior and repair cases.
 
