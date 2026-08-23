@@ -1,7 +1,6 @@
 schema: upstream-radar.observer-targets/v1alpha1
 targets:
-  # The upstream runtime itself. A new exact @deepseek-ai/dsh publication is
-  # the trigger for re-running the maintained install-observation corpus.
+  # The DSH runtime and four maintained repair/behavior cases.
   - id: deepseek-harness
     ecosystem: dsh
     repository: deepseek-ai/deepseek-harness
@@ -11,37 +10,29 @@ targets:
     packagePath: apps/cli/package.json
     lockfile: pnpm-lock.yaml
     lockfileType: pnpm
-
-  # A real public DSH/Feishu plugin. Replace it with the plugin repositories
-  # your team actually depends on.
   - id: dsh-feishu-bot
     ecosystem: dsh
     repository: PlutoKeating/dsh-lark-bot
     ref: main
-    package: dsh-feishu-bot
+    package: 'dsh-feishu-bot'
     packagePath: package.json
     lockfile: pnpm-lock.yaml
     lockfileType: pnpm
     dshVersions: ["0.1.0-rc.7", "0.1.0-rc.8"]
-
   - id: dsh-cloudflare-browser-run
     ecosystem: dsh
     repository: RealAlexandreAI/dsh-cloudflare-browser-run
     ref: main
-    package: dsh-cloudflare-browser-run
+    package: 'dsh-cloudflare-browser-run'
     packagePath: package.json
     lockfile: package-lock.json
     lockfileType: npm
-
   - id: dsh-wsl-workspace
     ecosystem: dsh
     repository: 6Mikao9/dsh-wsl-workspace
     ref: main
-    package: dsh-wsl-workspace
+    package: 'dsh-wsl-workspace'
     packagePath: package.json
-
-  # A real maintainer-repair case. This repository has no committed lockfile;
-  # the observer still watches the source manifest and the published npm release.
   - id: dsh-webui-market-plugin
     ecosystem: dsh
     repository: Sanqi-normal/dsh-webui-market-plugin
@@ -49,8 +40,162 @@ targets:
     package: '@sanqi-normal/dsh-webui-market-plugin'
     packagePath: package.json
 
-  # First maintained cohort imported from awesome-dsh-plugin at the immutable
-  # commit recorded in examples/dsh/awesome-observer/cohort.json.
+  # Adoption-stratified 50-plugin cohort imported from the immutable
+  # awesome-dsh-plugin commit recorded in the cohort manifest.
+  - id: dsh-plugin-mall
+    ecosystem: dsh
+    repository: 1e0zj/dsh-plugin-mall
+    ref: main
+    package: '@1e0zj/dsh-plugin-mall'
+    packagePath: package.json
+  - id: dsh-awiki
+    ecosystem: dsh
+    repository: AgentConnect/dsh-awiki
+    ref: main
+    package: '@awiki/dsh-plugin'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: dsh-auto-memory
+    ecosystem: dsh
+    repository: Aik358/dsh-auto-memory
+    ref: main
+    package: '@a9i5k4/dsh-auto-memory'
+    packagePath: package.json
+  - id: dsh-update-checker
+    ecosystem: dsh
+    repository: Airmetro/dsh-update-checker
+    ref: main
+    package: 'dsh-update-checker'
+    packagePath: package.json
+  - id: dsh-agy-link
+    ecosystem: dsh
+    repository: amlyczz/dsh-agy-link
+    ref: main
+    package: 'dsh-agy-link'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: dsh-vision-toolkit
+    ecosystem: dsh
+    repository: Anionex/dsh-vision-toolkit
+    ref: main
+    package: '@anionex/dsh-vision-toolkit'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: dsh-find-plugin
+    ecosystem: dsh
+    repository: awesome-dsh-plugin/dsh-find-plugin
+    ref: main
+    package: 'dsh-find-plugin'
+    packagePath: package.json
+    lockfile: package-lock.json
+    lockfileType: npm
+  - id: dsh-remote-plugin
+    ecosystem: dsh
+    repository: Blank-not-black/dsh-Remote
+    ref: main
+    package: 'dsh-remote-plugin'
+    packagePath: packages/plugin/package.json
+    lockfile: package-lock.json
+    lockfileType: npm
+  - id: dsh-context
+    ecosystem: dsh
+    repository: bowenliang123/dsh-context
+    ref: main
+    package: 'dsh-context'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: dsh-tui
+    ecosystem: dsh
+    repository: ccch1mneyyy/dsh-TUI
+    ref: main
+    package: '@deepseek-harness-tui/dsh-tui'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: dsh-vibe-math
+    ecosystem: dsh
+    repository: ChongCyrus/Vibe-Mathematics
+    ref: main
+    package: 'dsh-vibe-math'
+    packagePath: package.json
+  - id: dsh-free-search
+    ecosystem: dsh
+    repository: DDDMUC/dsh-free-search
+    ref: master
+    package: 'dsh-free-search'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: dsh-market
+    ecosystem: dsh
+    repository: dsh-market/dsh-market
+    ref: main
+    package: 'dshmarket'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: dsh-wallpaper-engine
+    ecosystem: dsh
+    repository: elysia395/dsh-wallpaper-engine
+    ref: main
+    package: 'dsh-plugin-wallpaper-engine'
+    packagePath: package.json
+  - id: deepseek-harness-wallet
+    ecosystem: dsh
+    repository: feibi-mochi/deepseek-harness-control-center
+    ref: main
+    package: 'deepseek-harness-wallet'
+    packagePath: package.json
+  - id: dsh-remote
+    ecosystem: dsh
+    repository: flymysql/dsh-remote
+    ref: main
+    package: 'dsh-remote'
+    packagePath: package.json
+    lockfile: package-lock.json
+    lockfileType: npm
+  - id: dsh-codex-connect
+    ecosystem: dsh
+    repository: franksong2702/dsh-codex-connect
+    ref: main
+    package: 'dsh-codex-connect'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: dsh-chatvoice
+    ecosystem: dsh
+    repository: FuzzySoul/dsh-chatvoice
+    ref: main
+    package: 'dsh-chatvoice'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: aegis
+    ecosystem: dsh
+    repository: GanyuanRan/Aegis
+    ref: main
+    npm: false
+    packagePath: package.json
+  - id: dsh-cost-meter
+    ecosystem: dsh
+    repository: Han-1413141/dsh-cost-meter
+    ref: master
+    package: 'dsh-cost-meter'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: modsearch
+    ecosystem: dsh
+    repository: liustack/modsearch
+    ref: main
+    package: '@liustack/modsearch'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
   - id: dsh-browser
     ecosystem: dsh
     repository: Lum1104/dsh-browser
@@ -59,43 +204,34 @@ targets:
     packagePath: packages/browser/bridge-browser/package.json
     lockfile: pnpm-lock.yaml
     lockfileType: pnpm
-
-  - id: dsh-better-sidebar
+  - id: dsh-commandcode-provider
     ecosystem: dsh
-    repository: omdsh-dev/DSH-better-sidebar
+    repository: Mars-Sea/dsh-commandcode-provider
     ref: main
-    package: dsh-better-sidebar
+    package: '@mars-sea/dsh-commandcode-provider'
+    packagePath: package.json
+    lockfile: package-lock.json
+    lockfileType: npm
+  - id: dsh-agency-agents
+    ecosystem: dsh
+    repository: MichengAI/dsh-agency-agents
+    ref: main
+    package: '@michengai/dsh-agency-agents'
     packagePath: package.json
     lockfile: pnpm-lock.yaml
     lockfileType: pnpm
-
-  - id: dsh-market
+  - id: dsh-mneme
     ecosystem: dsh
-    repository: dsh-market/dsh-market
+    repository: modusensus/dsh-mneme
     ref: main
-    package: dshmarket
-    packagePath: package.json
-    lockfile: pnpm-lock.yaml
-    lockfileType: pnpm
-
-  - id: dsh-openpencil
+    package: '@modusensus/dsh-mneme'
+    packagePath: dsh-mneme/package.json
+  - id: dsh-doctor
     ecosystem: dsh
-    repository: ZSeven-W/dsh-openpencil
+    repository: moonquake2004/dsh-doctor
     ref: main
-    package: '@zseven-w/dsh-openpencil'
-    packagePath: package.json
-    lockfile: pnpm-lock.yaml
-    lockfileType: pnpm
-
-  - id: dsh-context
-    ecosystem: dsh
-    repository: bowenliang123/dsh-context
-    ref: main
-    package: dsh-context
-    packagePath: package.json
-    lockfile: pnpm-lock.yaml
-    lockfileType: pnpm
-
+    package: '@moonquake2004/dsh-doctor'
+    packagePath: plugin/package.json
   - id: dsh-agent-teams
     ecosystem: dsh
     repository: NanmiCoder/dsh-agent-teams
@@ -104,19 +240,171 @@ targets:
     packagePath: package.json
     lockfile: pnpm-lock.yaml
     lockfileType: pnpm
-
-  - id: dsh-cost-meter
+  - id: dsh-chat-import
     ecosystem: dsh
-    repository: Han-1413141/dsh-cost-meter
-    ref: master
-    package: dsh-cost-meter
+    repository: Nwflower/dsh-chat-import
+    ref: main
+    package: 'dsh-chat-import'
+    packagePath: package.json
+    lockfile: package-lock.json
+    lockfileType: npm
+  - id: dsh-better-sidebar
+    ecosystem: dsh
+    repository: omdsh-dev/DSH-better-sidebar
+    ref: main
+    package: 'dsh-better-sidebar'
     packagePath: package.json
     lockfile: pnpm-lock.yaml
     lockfileType: pnpm
-
-  - id: aegis
+  - id: deepseek-harness-acp
     ecosystem: dsh
-    repository: GanyuanRan/Aegis
+    repository: openma-ai/deepseek-harness-acp
+    ref: main
+    package: '@openma/deepseek-harness-acp'
+    packagePath: package.json
+    lockfile: package-lock.json
+    lockfileType: npm
+  - id: dsh-pet
+    ecosystem: dsh
+    repository: PC2005-cloud/dsh-pet
+    ref: main
+    package: 'dsh-pet'
+    packagePath: dsh-pet/package.json
+  - id: ouroboros-dsh-plugin
+    ecosystem: dsh
+    repository: Q00/ouroboros
     ref: main
     npm: false
+    packagePath: integrations/dsh-plugin/package.json
+  - id: dsh-extension-hub
+    ecosystem: dsh
+    repository: Relistencode/dsh-extension-hub
+    ref: main
+    package: 'dsh-extension-hub'
     packagePath: package.json
+  - id: dsh-dream-skin
+    ecosystem: dsh
+    repository: RevolutionLA/dsh-dream-skin
+    ref: main
+    package: 'dsh-dream-skin'
+    packagePath: package.json
+  - id: dsh-mobile
+    ecosystem: dsh
+    repository: saya-ch/dsh-mobile
+    ref: main
+    package: 'dsh-mobile'
+    packagePath: package.json
+    lockfile: package-lock.json
+    lockfileType: npm
+  - id: dsh-pocket
+    ecosystem: dsh
+    repository: shaobeichen/dsh-pocket
+    ref: main
+    package: 'dsh-pocket'
+    packagePath: package.json
+    lockfile: package-lock.json
+    lockfileType: npm
+  - id: dsh-auth-gate
+    ecosystem: dsh
+    repository: TecFancy/dsh-auth-gate
+    ref: main
+    package: 'dsh-auth-gate'
+    packagePath: package.json
+    lockfile: package-lock.json
+    lockfileType: npm
+  - id: dsh-notifier
+    ecosystem: dsh
+    repository: THEWOLFWALKER/dsh-notifier
+    ref: main
+    package: 'dsh-notifier'
+    packagePath: package.json
+  - id: api-relay-audit
+    ecosystem: dsh
+    repository: toby-bridges/api-relay-audit
+    ref: master
+    npm: false
+    packagePath: package.json
+  - id: dsh-tool-lens
+    ecosystem: dsh
+    repository: trench-xinxin/dsh-tool-lens
+    ref: main
+    package: '@trench-xinxin/dsh-tool-lens'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: archify-dsh
+    ecosystem: dsh
+    repository: tt-a1i/archify
+    ref: main
+    package: '@tt-a1i/archify-dsh'
+    packagePath: integrations/deepseek-harness/package.json
+  - id: hindsight-coding-agents
+    ecosystem: dsh
+    repository: vectorize-io/hindsight
+    ref: main
+    package: '@vectorize-io/hindsight-coding-agents'
+    packagePath: hindsight-integrations/coding-agents/package.json
+    lockfile: package-lock.json
+    lockfileType: npm
+  - id: dsh-git-worktree
+    ecosystem: dsh
+    repository: wloops/dsh-git-worktree
+    ref: master
+    package: 'dsh-git-worktree'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: dsh-builtin-browser
+    ecosystem: dsh
+    repository: wqty123/dsh-browser
+    ref: master
+    package: 'dsh-builtin-browser'
+    packagePath: package.json
+  - id: dsh-config-manager
+    ecosystem: dsh
+    repository: xiajiajun516/dsh-config-manager
+    ref: main
+    package: 'dsh-config-manager'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: dsh-im
+    ecosystem: dsh
+    repository: xmanrui/dsh-im
+    ref: main
+    package: '@xmanrui/dsh-im'
+    packagePath: package.json
+    lockfile: package-lock.json
+    lockfileType: npm
+  - id: dsh-plugin-writing-guard
+    ecosystem: dsh
+    repository: xmutfyh/dsh-plugin-writing-guard
+    ref: master
+    package: 'dsh-plugin-writing-guard'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: dsh-vision-router
+    ecosystem: dsh
+    repository: ysr666/dsh-vision-router
+    ref: main
+    package: 'dsh-vision-router'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: dsh-web-ui-all
+    ecosystem: dsh
+    repository: zhu1090093659/dsh-web-ui
+    ref: main
+    package: '@linxin666/dsh-web-ui-all'
+    packagePath: packages/dsh-web-ui-all/package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: dsh-openpencil
+    ecosystem: dsh
+    repository: ZSeven-W/dsh-openpencil
+    ref: main
+    package: '@zseven-w/dsh-openpencil'
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm

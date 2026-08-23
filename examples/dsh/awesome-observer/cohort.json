@@ -1,20 +1,605 @@
 {
   "schema": "upstream-radar.awesome-dsh-cohort/v1alpha1",
-  "selectedAt": "2026-08-21T09:04:58Z",
+  "selectedAt": "2026-08-23T10:19:24.671Z",
   "source": {
     "repository": "awesome-dsh-plugin/awesome-dsh-plugin",
-    "commit": "7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82",
-    "commitUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82",
+    "commit": "2e19b3c5bd42f2f688eba9df7933ace9e13e66ea",
+    "commitUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea",
     "entryDirectory": "data/plugins",
-    "entryCount": 1837,
+    "entryCount": 1884,
     "license": "CC0-1.0"
   },
   "selection": {
-    "strategy": "small-diverse-maintained-cohort",
-    "reason": "Exercise browser, UI, market, context, multi-agent, cost and skill integration surfaces before expanding execution.",
-    "trustBoundary": "The catalog discovers repositories only. Repository identity, source package identity and npm distribution identity are observed independently."
+    "strategy": "adoption-stratified-identity-checked-cohort",
+    "reason": "Cover every catalog category while prioritizing higher-download and higher-star plugins, with one repository per entry and a maximum of four entries per category.",
+    "executableCoverage": "46 exact npm artifacts; four repository-only install paths remain static-only.",
+    "trustBoundary": "The catalog discovers candidates and adoption signals only. Catalog entry, source package and npm distribution identities were verified independently before inclusion."
   },
   "plugins": [
+    {
+      "id": "dsh-plugin-mall",
+      "catalogEntry": "data/plugins/1e0zj__dsh-plugin-mall.yml",
+      "catalogUrl": "https://github.com/1e0zj/dsh-plugin-mall",
+      "repository": "1e0zj/dsh-plugin-mall",
+      "ref": "main",
+      "category": "market",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@1e0zj/dsh-plugin-mall",
+        "version": "0.4.7"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@1e0zj/dsh-plugin-mall",
+        "selectedVersion": "0.4.7",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4446,
+        "stars": 2,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-awiki",
+      "catalogEntry": "data/plugins/AgentConnect__dsh-awiki.yml",
+      "catalogUrl": "https://github.com/AgentConnect/dsh-awiki",
+      "repository": "AgentConnect/dsh-awiki",
+      "ref": "main",
+      "category": "identity",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "@awiki/dsh-plugin",
+        "version": "0.3.2"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@awiki/dsh-plugin",
+        "selectedVersion": "0.3.2",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 1984,
+        "stars": 10,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-auto-memory",
+      "catalogEntry": "data/plugins/Aik358__dsh-auto-memory.yml",
+      "catalogUrl": "https://github.com/Aik358/dsh-auto-memory",
+      "repository": "Aik358/dsh-auto-memory",
+      "ref": "main",
+      "category": "memory",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@a9i5k4/dsh-auto-memory",
+        "version": "0.1.29"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@a9i5k4/dsh-auto-memory",
+        "selectedVersion": "0.1.29",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4699,
+        "stars": 27,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-update-checker",
+      "catalogEntry": "data/plugins/Airmetro__dsh-update-checker.yml",
+      "catalogUrl": "https://github.com/Airmetro/dsh-update-checker",
+      "repository": "Airmetro/dsh-update-checker",
+      "ref": "main",
+      "category": "dev",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-update-checker",
+        "version": "1.4.15"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-update-checker",
+        "selectedVersion": "1.4.15",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 5408,
+        "stars": 8,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-agy-link",
+      "catalogEntry": "data/plugins/amlyczz__dsh-agy-link.yml",
+      "catalogUrl": "https://github.com/amlyczz/dsh-agy-link",
+      "repository": "amlyczz/dsh-agy-link",
+      "ref": "main",
+      "category": "model",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-agy-link",
+        "version": "0.4.13"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-agy-link",
+        "selectedVersion": "0.4.13",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4001,
+        "stars": 10,
+        "nodeEngine": ">=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-vision-toolkit",
+      "catalogEntry": "data/plugins/Anionex__dsh-vision-toolkit.yml",
+      "catalogUrl": "https://github.com/Anionex/dsh-vision-toolkit",
+      "repository": "Anionex/dsh-vision-toolkit",
+      "ref": "main",
+      "category": "vision",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "@anionex/dsh-vision-toolkit",
+        "version": "0.1.38"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@anionex/dsh-vision-toolkit",
+        "selectedVersion": "0.1.38",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 27048,
+        "stars": 809,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-find-plugin",
+      "catalogEntry": "data/plugins/awesome-dsh-plugin__dsh-find-plugin.yml",
+      "catalogUrl": "https://github.com/awesome-dsh-plugin/dsh-find-plugin",
+      "repository": "awesome-dsh-plugin/dsh-find-plugin",
+      "ref": "main",
+      "category": "market",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "package-lock.json",
+        "type": "npm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-find-plugin",
+        "version": "0.3.7"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-find-plugin",
+        "selectedVersion": "0.3.7",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 10503,
+        "stars": 79,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-remote-plugin",
+      "catalogEntry": "data/plugins/Blank-not-black__dsh-Remote--packages-plugin.yml",
+      "catalogUrl": "https://github.com/Blank-not-black/dsh-Remote/tree/main/packages/plugin",
+      "repository": "Blank-not-black/dsh-Remote",
+      "ref": "main",
+      "category": "remote",
+      "packagePath": "packages/plugin/package.json",
+      "lockfile": {
+        "path": "package-lock.json",
+        "type": "npm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-remote-plugin",
+        "version": "0.6.10"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-remote-plugin",
+        "selectedVersion": "0.6.10",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4499,
+        "stars": 18,
+        "nodeEngine": ">=18",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-context",
+      "catalogEntry": "data/plugins/bowenliang123__dsh-context.yml",
+      "catalogUrl": "https://github.com/bowenliang123/dsh-context",
+      "repository": "bowenliang123/dsh-context",
+      "ref": "main",
+      "category": "usage",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-context",
+        "version": "0.25.3"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-context",
+        "selectedVersion": "0.25.3",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 18345,
+        "stars": 827,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-tui",
+      "catalogEntry": "data/plugins/ccch1mneyyy__dsh-TUI.yml",
+      "catalogUrl": "https://github.com/ccch1mneyyy/dsh-TUI",
+      "repository": "ccch1mneyyy/dsh-TUI",
+      "ref": "main",
+      "category": "ui",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "@deepseek-harness-tui/dsh-tui",
+        "version": "0.9.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@deepseek-harness-tui/dsh-tui",
+        "selectedVersion": "0.9.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 29066,
+        "stars": 2320,
+        "nodeEngine": "^22.19 || >=24",
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "dsh-vibe-math",
+      "catalogEntry": "data/plugins/ChongCyrus__Vibe-Mathematics.yml",
+      "catalogUrl": "https://github.com/ChongCyrus/Vibe-Mathematics",
+      "repository": "ChongCyrus/Vibe-Mathematics",
+      "ref": "main",
+      "category": "workflow",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-vibe-math",
+        "version": "1.0.2"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-vibe-math",
+        "selectedVersion": "1.0.2",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4237,
+        "stars": 5,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-free-search",
+      "catalogEntry": "data/plugins/DDDMUC__dsh-free-search.yml",
+      "catalogUrl": "https://github.com/DDDMUC/dsh-free-search",
+      "repository": "DDDMUC/dsh-free-search",
+      "ref": "master",
+      "category": "browser",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-free-search",
+        "version": "0.4.12"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-free-search",
+        "selectedVersion": "0.4.12",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4338,
+        "stars": 48,
+        "nodeEngine": ">=20",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-market",
+      "catalogEntry": "data/plugins/dsh-market__dsh-market.yml",
+      "catalogUrl": "https://github.com/dsh-market/dsh-market",
+      "repository": "dsh-market/dsh-market",
+      "ref": "main",
+      "category": "market",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dshmarket",
+        "version": "1.19.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dshmarket",
+        "selectedVersion": "1.19.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 154620,
+        "stars": 1867,
+        "nodeEngine": null,
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "dsh-wallpaper-engine",
+      "catalogEntry": "data/plugins/elysia395__dsh-wallpaper-engine.yml",
+      "catalogUrl": "https://github.com/elysia395/dsh-wallpaper-engine",
+      "repository": "elysia395/dsh-wallpaper-engine",
+      "ref": "main",
+      "category": "theme",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-plugin-wallpaper-engine",
+        "version": "0.5.1"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-plugin-wallpaper-engine",
+        "selectedVersion": "0.5.1",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4132,
+        "stars": 153,
+        "nodeEngine": null,
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "deepseek-harness-wallet",
+      "catalogEntry": "data/plugins/feibi-mochi__deepseek-harness-control-center.yml",
+      "catalogUrl": "https://github.com/feibi-mochi/deepseek-harness-control-center",
+      "repository": "feibi-mochi/deepseek-harness-control-center",
+      "ref": "main",
+      "category": "usage",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "deepseek-harness-wallet",
+        "version": "0.3.1"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "deepseek-harness-wallet",
+        "selectedVersion": "0.3.1",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 5374,
+        "stars": 60,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-remote",
+      "catalogEntry": "data/plugins/flymysql__dsh-remote.yml",
+      "catalogUrl": "https://github.com/flymysql/dsh-remote",
+      "repository": "flymysql/dsh-remote",
+      "ref": "main",
+      "category": "tools",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "package-lock.json",
+        "type": "npm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-remote",
+        "version": "0.8.7"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-remote",
+        "selectedVersion": "0.8.7",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 5063,
+        "stars": 32,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-codex-connect",
+      "catalogEntry": "data/plugins/franksong2702__dsh-codex-connect.yml",
+      "catalogUrl": "https://github.com/franksong2702/dsh-codex-connect",
+      "repository": "franksong2702/dsh-codex-connect",
+      "ref": "main",
+      "category": "model",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-codex-connect",
+        "version": "0.1.0-alpha.4.15"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-codex-connect",
+        "selectedVersion": "0.1.0-alpha.4.14",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 5089,
+        "stars": 40,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-chatvoice",
+      "catalogEntry": "data/plugins/FuzzySoul__dsh-chatvoice.yml",
+      "catalogUrl": "https://github.com/FuzzySoul/dsh-chatvoice",
+      "repository": "FuzzySoul/dsh-chatvoice",
+      "ref": "main",
+      "category": "voice",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-chatvoice",
+        "version": "0.1.7"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-chatvoice",
+        "selectedVersion": "0.1.7",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 1567,
+        "stars": 1,
+        "nodeEngine": ">=18",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "aegis",
+      "catalogEntry": "data/plugins/GanyuanRan__Aegis.yml",
+      "catalogUrl": "https://github.com/GanyuanRan/Aegis",
+      "repository": "GanyuanRan/Aegis",
+      "ref": "main",
+      "category": "skill",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "aegis",
+        "version": "2.8.7"
+      },
+      "distribution": {
+        "kind": "github",
+        "installSpec": "github:GanyuanRan/Aegis",
+        "reason": "The matching DSH install path is GitHub; the aegis npm coordinate belongs to a different project."
+      },
+      "signals": {
+        "downloads": null,
+        "stars": 1113
+      }
+    },
+    {
+      "id": "dsh-cost-meter",
+      "catalogEntry": "data/plugins/Han-1413141__dsh-cost-meter.yml",
+      "catalogUrl": "https://github.com/Han-1413141/dsh-cost-meter",
+      "repository": "Han-1413141/dsh-cost-meter",
+      "ref": "master",
+      "category": "usage",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-cost-meter",
+        "version": "1.5.41"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-cost-meter",
+        "selectedVersion": "1.5.38",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 10145,
+        "stars": 162,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "modsearch",
+      "catalogEntry": "data/plugins/liustack__modsearch.yml",
+      "catalogUrl": "https://github.com/liustack/modsearch",
+      "repository": "liustack/modsearch",
+      "ref": "main",
+      "category": "browser",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "@liustack/modsearch",
+        "version": "5.9.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@liustack/modsearch",
+        "selectedVersion": "5.9.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 14253,
+        "stars": 229,
+        "nodeEngine": ">=22.13",
+        "lifecycleScripts": []
+      }
+    },
     {
       "id": "dsh-browser",
       "catalogEntry": "data/plugins/Lum1104__dsh-browser--packages-browser-bridge-browser.yml",
@@ -35,98 +620,120 @@
       "distribution": {
         "kind": "repository-installer",
         "reason": "The bridge package is private and its README uses the repository installer; the unrelated dsh-browser npm name must not be substituted."
+      },
+      "signals": {
+        "downloads": null,
+        "stars": 396
       }
     },
     {
-      "id": "dsh-better-sidebar",
-      "catalogEntry": "data/plugins/omdsh-dev__DSH-better-sidebar.yml",
-      "catalogUrl": "https://github.com/omdsh-dev/DSH-better-sidebar",
-      "repository": "omdsh-dev/DSH-better-sidebar",
+      "id": "dsh-commandcode-provider",
+      "catalogEntry": "data/plugins/Mars-Sea__dsh-commandcode-provider.yml",
+      "catalogUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider",
+      "repository": "Mars-Sea/dsh-commandcode-provider",
       "ref": "main",
-      "category": "ui",
+      "category": "model",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "package-lock.json",
+        "type": "npm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "@mars-sea/dsh-commandcode-provider",
+        "version": "0.8.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@mars-sea/dsh-commandcode-provider",
+        "selectedVersion": "0.8.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4193,
+        "stars": 87,
+        "nodeEngine": ">=22",
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "dsh-agency-agents",
+      "catalogEntry": "data/plugins/MichengAI__dsh-agency-agents.yml",
+      "catalogUrl": "https://github.com/MichengAI/dsh-agency-agents",
+      "repository": "MichengAI/dsh-agency-agents",
+      "ref": "main",
+      "category": "skill",
       "packagePath": "package.json",
       "lockfile": {
         "path": "pnpm-lock.yaml",
         "type": "pnpm"
       },
       "sourceCoordinateAtSelection": {
-        "name": "dsh-better-sidebar",
-        "version": "0.14.1"
+        "name": "@michengai/dsh-agency-agents",
+        "version": "0.1.20"
       },
       "distribution": {
         "kind": "npm",
-        "name": "dsh-better-sidebar",
-        "selectedVersion": "0.14.0",
+        "name": "@michengai/dsh-agency-agents",
+        "selectedVersion": "0.1.20",
         "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3961,
+        "stars": 16,
+        "nodeEngine": null,
+        "lifecycleScripts": []
       }
     },
     {
-      "id": "dsh-market",
-      "catalogEntry": "data/plugins/dsh-market__dsh-market.yml",
-      "catalogUrl": "https://github.com/dsh-market/dsh-market",
-      "repository": "dsh-market/dsh-market",
+      "id": "dsh-mneme",
+      "catalogEntry": "data/plugins/modusensus__dsh-mneme--dsh-mneme.yml",
+      "catalogUrl": "https://github.com/modusensus/dsh-mneme/tree/main/dsh-mneme",
+      "repository": "modusensus/dsh-mneme",
       "ref": "main",
-      "category": "market",
-      "packagePath": "package.json",
-      "lockfile": {
-        "path": "pnpm-lock.yaml",
-        "type": "pnpm"
-      },
+      "category": "memory",
+      "packagePath": "dsh-mneme/package.json",
       "sourceCoordinateAtSelection": {
-        "name": "dshmarket",
-        "version": "1.17.1"
+        "name": "@modusensus/dsh-mneme",
+        "version": "0.6.10"
       },
       "distribution": {
         "kind": "npm",
-        "name": "dshmarket",
-        "selectedVersion": "1.17.1",
+        "name": "@modusensus/dsh-mneme",
+        "selectedVersion": "0.6.10",
         "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 8624,
+        "stars": 33,
+        "nodeEngine": null,
+        "lifecycleScripts": []
       }
     },
     {
-      "id": "dsh-openpencil",
-      "catalogEntry": "data/plugins/ZSeven-W__dsh-openpencil.yml",
-      "catalogUrl": "https://github.com/ZSeven-W/dsh-openpencil",
-      "repository": "ZSeven-W/dsh-openpencil",
+      "id": "dsh-doctor",
+      "catalogEntry": "data/plugins/moonquake2004__dsh-doctor--plugin.yml",
+      "catalogUrl": "https://github.com/moonquake2004/dsh-doctor/tree/main/plugin",
+      "repository": "moonquake2004/dsh-doctor",
       "ref": "main",
-      "category": "ui",
-      "packagePath": "package.json",
-      "lockfile": {
-        "path": "pnpm-lock.yaml",
-        "type": "pnpm"
-      },
+      "category": "dev",
+      "packagePath": "plugin/package.json",
       "sourceCoordinateAtSelection": {
-        "name": "@zseven-w/dsh-openpencil",
-        "version": "0.1.0-rc.1"
+        "name": "@moonquake2004/dsh-doctor",
+        "version": "0.4.3"
       },
       "distribution": {
         "kind": "npm",
-        "name": "@zseven-w/dsh-openpencil",
-        "selectedVersion": "0.1.0-rc.1",
+        "name": "@moonquake2004/dsh-doctor",
+        "selectedVersion": "0.4.3",
         "distTag": "latest"
-      }
-    },
-    {
-      "id": "dsh-context",
-      "catalogEntry": "data/plugins/bowenliang123__dsh-context.yml",
-      "catalogUrl": "https://github.com/bowenliang123/dsh-context",
-      "repository": "bowenliang123/dsh-context",
-      "ref": "main",
-      "category": "usage",
-      "packagePath": "package.json",
-      "lockfile": {
-        "path": "pnpm-lock.yaml",
-        "type": "pnpm"
       },
-      "sourceCoordinateAtSelection": {
-        "name": "dsh-context",
-        "version": "0.20.0"
-      },
-      "distribution": {
-        "kind": "npm",
-        "name": "dsh-context",
-        "selectedVersion": "0.20.0",
-        "distTag": "latest"
+      "signals": {
+        "downloads": 2802,
+        "stars": 1,
+        "nodeEngine": null,
+        "lifecycleScripts": []
       }
     },
     {
@@ -143,54 +750,655 @@
       },
       "sourceCoordinateAtSelection": {
         "name": "@nanmicoder/dsh-agent-teams",
-        "version": "0.1.10"
+        "version": "0.1.13"
       },
       "distribution": {
         "kind": "npm",
         "name": "@nanmicoder/dsh-agent-teams",
-        "selectedVersion": "0.1.10",
+        "selectedVersion": "0.1.13",
         "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 19057,
+        "stars": 841,
+        "nodeEngine": "^22.19.0 || >=24",
+        "lifecycleScripts": []
       }
     },
     {
-      "id": "dsh-cost-meter",
-      "catalogEntry": "data/plugins/Han-1413141__dsh-cost-meter.yml",
-      "catalogUrl": "https://github.com/Han-1413141/dsh-cost-meter",
-      "repository": "Han-1413141/dsh-cost-meter",
-      "ref": "master",
-      "category": "usage",
+      "id": "dsh-chat-import",
+      "catalogEntry": "data/plugins/Nwflower__dsh-chat-import.yml",
+      "catalogUrl": "https://github.com/Nwflower/dsh-chat-import",
+      "repository": "Nwflower/dsh-chat-import",
+      "ref": "main",
+      "category": "session",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "package-lock.json",
+        "type": "npm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-chat-import",
+        "version": "0.6.2"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-chat-import",
+        "selectedVersion": "0.6.2",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 7662,
+        "stars": 90,
+        "nodeEngine": ">=22.13",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-better-sidebar",
+      "catalogEntry": "data/plugins/omdsh-dev__DSH-better-sidebar.yml",
+      "catalogUrl": "https://github.com/omdsh-dev/DSH-better-sidebar",
+      "repository": "omdsh-dev/DSH-better-sidebar",
+      "ref": "main",
+      "category": "ui",
       "packagePath": "package.json",
       "lockfile": {
         "path": "pnpm-lock.yaml",
         "type": "pnpm"
       },
       "sourceCoordinateAtSelection": {
-        "name": "dsh-cost-meter",
-        "version": "1.5.31"
+        "name": "dsh-better-sidebar",
+        "version": "0.15.2"
       },
       "distribution": {
         "kind": "npm",
-        "name": "dsh-cost-meter",
-        "selectedVersion": "1.5.31",
+        "name": "dsh-better-sidebar",
+        "selectedVersion": "0.15.2",
         "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 95109,
+        "stars": 2666,
+        "nodeEngine": ">=20",
+        "lifecycleScripts": []
       }
     },
     {
-      "id": "aegis",
-      "catalogEntry": "data/plugins/GanyuanRan__Aegis.yml",
-      "catalogUrl": "https://github.com/GanyuanRan/Aegis",
-      "repository": "GanyuanRan/Aegis",
+      "id": "deepseek-harness-acp",
+      "catalogEntry": "data/plugins/openma-ai__deepseek-harness-acp.yml",
+      "catalogUrl": "https://github.com/openma-ai/deepseek-harness-acp",
+      "repository": "openma-ai/deepseek-harness-acp",
       "ref": "main",
-      "category": "skill",
+      "category": "notify",
       "packagePath": "package.json",
+      "lockfile": {
+        "path": "package-lock.json",
+        "type": "npm"
+      },
       "sourceCoordinateAtSelection": {
-        "name": "aegis",
-        "version": "2.8.4"
+        "name": "@openma/deepseek-harness-acp",
+        "version": "0.4.24"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@openma/deepseek-harness-acp",
+        "selectedVersion": "0.4.24",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 6022,
+        "stars": 14,
+        "nodeEngine": ">=22.15",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-pet",
+      "catalogEntry": "data/plugins/PC2005-cloud__dsh-pet--dsh-pet.yml",
+      "catalogUrl": "https://github.com/PC2005-cloud/dsh-pet/tree/main/dsh-pet",
+      "repository": "PC2005-cloud/dsh-pet",
+      "ref": "main",
+      "category": "fun",
+      "packagePath": "dsh-pet/package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-pet",
+        "version": "0.1.7"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-pet",
+        "selectedVersion": "0.1.7",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4288,
+        "stars": 332,
+        "nodeEngine": null,
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "ouroboros-dsh-plugin",
+      "catalogEntry": "data/plugins/Q00__ouroboros--integrations-dsh-plugin.yml",
+      "catalogUrl": "https://github.com/Q00/ouroboros/tree/main/integrations/dsh-plugin",
+      "repository": "Q00/ouroboros",
+      "ref": "main",
+      "category": "workflow",
+      "packagePath": "integrations/dsh-plugin/package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-ouroboros",
+        "version": "0.1.0"
       },
       "distribution": {
         "kind": "github",
-        "installSpec": "github:GanyuanRan/Aegis",
-        "reason": "The matching DSH install path is GitHub; the aegis npm coordinate belongs to a different project."
+        "installSpec": "github:Q00/ouroboros#path:/integrations/dsh-plugin",
+        "reason": "The catalog install path is GitHub and no matching npm distribution is declared."
+      },
+      "signals": {
+        "downloads": null,
+        "stars": 5623
+      }
+    },
+    {
+      "id": "dsh-extension-hub",
+      "catalogEntry": "data/plugins/Relistencode__dsh-extension-hub.yml",
+      "catalogUrl": "https://github.com/Relistencode/dsh-extension-hub",
+      "repository": "Relistencode/dsh-extension-hub",
+      "ref": "main",
+      "category": "market",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-extension-hub",
+        "version": "0.2.19"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-extension-hub",
+        "selectedVersion": "0.2.19",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4202,
+        "stars": 8,
+        "nodeEngine": ">=22",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-dream-skin",
+      "catalogEntry": "data/plugins/RevolutionLA__dsh-dream-skin.yml",
+      "catalogUrl": "https://github.com/RevolutionLA/dsh-dream-skin",
+      "repository": "RevolutionLA/dsh-dream-skin",
+      "ref": "main",
+      "category": "theme",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-dream-skin",
+        "version": "0.4.10"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-dream-skin",
+        "selectedVersion": "0.4.10",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 8623,
+        "stars": 84,
+        "nodeEngine": ">=18",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-mobile",
+      "catalogEntry": "data/plugins/saya-ch__dsh-mobile.yml",
+      "catalogUrl": "https://github.com/saya-ch/dsh-mobile",
+      "repository": "saya-ch/dsh-mobile",
+      "ref": "main",
+      "category": "remote",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "package-lock.json",
+        "type": "npm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-mobile",
+        "version": "0.1.4"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-mobile",
+        "selectedVersion": "0.1.4",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 6135,
+        "stars": 120,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-pocket",
+      "catalogEntry": "data/plugins/shaobeichen__dsh-pocket.yml",
+      "catalogUrl": "https://github.com/shaobeichen/dsh-pocket",
+      "repository": "shaobeichen/dsh-pocket",
+      "ref": "main",
+      "category": "notify",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "package-lock.json",
+        "type": "npm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-pocket",
+        "version": "1.12.3"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-pocket",
+        "selectedVersion": "1.12.3",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 15135,
+        "stars": 463,
+        "nodeEngine": ">=22",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-auth-gate",
+      "catalogEntry": "data/plugins/TecFancy__dsh-auth-gate.yml",
+      "catalogUrl": "https://github.com/TecFancy/dsh-auth-gate",
+      "repository": "TecFancy/dsh-auth-gate",
+      "ref": "main",
+      "category": "security",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "package-lock.json",
+        "type": "npm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-auth-gate",
+        "version": "0.7.2"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-auth-gate",
+        "selectedVersion": "0.7.2",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3527,
+        "stars": 4,
+        "nodeEngine": ">=22.19.0",
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "dsh-notifier",
+      "catalogEntry": "data/plugins/THEWOLFWALKER__dsh-notifier.yml",
+      "catalogUrl": "https://github.com/THEWOLFWALKER/dsh-notifier",
+      "repository": "THEWOLFWALKER/dsh-notifier",
+      "ref": "main",
+      "category": "notify",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-notifier",
+        "version": "0.8.5"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-notifier",
+        "selectedVersion": "0.8.6",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 7331,
+        "stars": 58,
+        "nodeEngine": ">=22",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "api-relay-audit",
+      "catalogEntry": "data/plugins/toby-bridges__api-relay-audit.yml",
+      "catalogUrl": "https://github.com/toby-bridges/api-relay-audit",
+      "repository": "toby-bridges/api-relay-audit",
+      "ref": "master",
+      "category": "security",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-api-relay-audit",
+        "version": "2.4.0",
+        "private": true
+      },
+      "distribution": {
+        "kind": "github",
+        "installSpec": "github:toby-bridges/api-relay-audit",
+        "reason": "The catalog install path is GitHub and no matching npm distribution is declared."
+      },
+      "signals": {
+        "downloads": null,
+        "stars": 799
+      }
+    },
+    {
+      "id": "dsh-tool-lens",
+      "catalogEntry": "data/plugins/trench-xinxin__dsh-tool-lens.yml",
+      "catalogUrl": "https://github.com/trench-xinxin/dsh-tool-lens",
+      "repository": "trench-xinxin/dsh-tool-lens",
+      "ref": "main",
+      "category": "tools",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "@trench-xinxin/dsh-tool-lens",
+        "version": "2.0.5"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@trench-xinxin/dsh-tool-lens",
+        "selectedVersion": "2.0.5",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 5186,
+        "stars": 2,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "archify-dsh",
+      "catalogEntry": "data/plugins/tt-a1i__archify--integrations-deepseek-harness.yml",
+      "catalogUrl": "https://github.com/tt-a1i/archify/tree/main/integrations/deepseek-harness",
+      "repository": "tt-a1i/archify",
+      "ref": "main",
+      "category": "docs",
+      "packagePath": "integrations/deepseek-harness/package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "@tt-a1i/archify-dsh",
+        "version": "0.1.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@tt-a1i/archify-dsh",
+        "selectedVersion": "0.1.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 7046,
+        "stars": 15069,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "hindsight-coding-agents",
+      "catalogEntry": "data/plugins/vectorize-io__hindsight--hindsight-integrations-coding-agents.yml",
+      "catalogUrl": "https://github.com/vectorize-io/hindsight/tree/main/hindsight-integrations/coding-agents",
+      "repository": "vectorize-io/hindsight",
+      "ref": "main",
+      "category": "memory",
+      "packagePath": "hindsight-integrations/coding-agents/package.json",
+      "lockfile": {
+        "path": "package-lock.json",
+        "type": "npm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "@vectorize-io/hindsight-coding-agents",
+        "version": "0.4.1"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@vectorize-io/hindsight-coding-agents",
+        "selectedVersion": "0.4.1",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 18785,
+        "stars": 20935,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-git-worktree",
+      "catalogEntry": "data/plugins/wloops__dsh-git-worktree.yml",
+      "catalogUrl": "https://github.com/wloops/dsh-git-worktree",
+      "repository": "wloops/dsh-git-worktree",
+      "ref": "master",
+      "category": "git",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-git-worktree",
+        "version": "0.4.0"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-git-worktree",
+        "selectedVersion": "0.4.0",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 1695,
+        "stars": 3,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": [
+          "prepare"
+        ]
+      }
+    },
+    {
+      "id": "dsh-builtin-browser",
+      "catalogEntry": "data/plugins/wqty123__dsh-browser.yml",
+      "catalogUrl": "https://github.com/wqty123/dsh-browser",
+      "repository": "wqty123/dsh-browser",
+      "ref": "master",
+      "category": "browser",
+      "packagePath": "package.json",
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-builtin-browser",
+        "version": "0.1.15"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-builtin-browser",
+        "selectedVersion": "0.1.15",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4077,
+        "stars": 18,
+        "nodeEngine": ">=22.19",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-config-manager",
+      "catalogEntry": "data/plugins/xiajiajun516__dsh-config-manager.yml",
+      "catalogUrl": "https://github.com/xiajiajun516/dsh-config-manager",
+      "repository": "xiajiajun516/dsh-config-manager",
+      "ref": "main",
+      "category": "tools",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-config-manager",
+        "version": "0.1.45"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-config-manager",
+        "selectedVersion": "0.1.45",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 7261,
+        "stars": 12,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-im",
+      "catalogEntry": "data/plugins/xmanrui__dsh-im.yml",
+      "catalogUrl": "https://github.com/xmanrui/dsh-im",
+      "repository": "xmanrui/dsh-im",
+      "ref": "main",
+      "category": "notify",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "package-lock.json",
+        "type": "npm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "@xmanrui/dsh-im",
+        "version": "1.0.2"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@xmanrui/dsh-im",
+        "selectedVersion": "1.0.2",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 6895,
+        "stars": 553,
+        "nodeEngine": ">=22.19",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-plugin-writing-guard",
+      "catalogEntry": "data/plugins/xmutfyh__dsh-plugin-writing-guard.yml",
+      "catalogUrl": "https://github.com/xmutfyh/dsh-plugin-writing-guard",
+      "repository": "xmutfyh/dsh-plugin-writing-guard",
+      "ref": "master",
+      "category": "tools",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-plugin-writing-guard",
+        "version": "1.6.2"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-plugin-writing-guard",
+        "selectedVersion": "1.6.1",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 4492,
+        "stars": 19,
+        "nodeEngine": ">=18",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-vision-router",
+      "catalogEntry": "data/plugins/ysr666__dsh-vision-router.yml",
+      "catalogUrl": "https://github.com/ysr666/dsh-vision-router",
+      "repository": "ysr666/dsh-vision-router",
+      "ref": "main",
+      "category": "vision",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "dsh-vision-router",
+        "version": "1.7.7"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-vision-router",
+        "selectedVersion": "1.7.7",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 34822,
+        "stars": 938,
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-web-ui-all",
+      "catalogEntry": "data/plugins/zhu1090093659__dsh-web-ui--packages-dsh-web-ui-all.yml",
+      "catalogUrl": "https://github.com/zhu1090093659/dsh-web-ui/tree/main/packages/dsh-web-ui-all",
+      "repository": "zhu1090093659/dsh-web-ui",
+      "ref": "main",
+      "category": "ui",
+      "packagePath": "packages/dsh-web-ui-all/package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "@linxin666/dsh-web-ui-all",
+        "version": "0.2.9"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@linxin666/dsh-web-ui-all",
+        "selectedVersion": "0.2.9",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 114128,
+        "stars": 5612,
+        "nodeEngine": null,
+        "lifecycleScripts": []
+      }
+    },
+    {
+      "id": "dsh-openpencil",
+      "catalogEntry": "data/plugins/ZSeven-W__dsh-openpencil.yml",
+      "catalogUrl": "https://github.com/ZSeven-W/dsh-openpencil",
+      "repository": "ZSeven-W/dsh-openpencil",
+      "ref": "main",
+      "category": "ui",
+      "packagePath": "package.json",
+      "lockfile": {
+        "path": "pnpm-lock.yaml",
+        "type": "pnpm"
+      },
+      "sourceCoordinateAtSelection": {
+        "name": "@zseven-w/dsh-openpencil",
+        "version": "0.1.0-rc.2"
+      },
+      "distribution": {
+        "kind": "npm",
+        "name": "@zseven-w/dsh-openpencil",
+        "selectedVersion": "0.1.0-rc.1",
+        "distTag": "latest"
+      },
+      "signals": {
+        "downloads": 3298,
+        "stars": 147,
+        "nodeEngine": ">=24.11.0",
+        "lifecycleScripts": []
       }
     }
   ]

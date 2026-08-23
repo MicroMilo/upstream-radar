@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha1",
-  "generatedAt": "2026-08-23T08:09:33.232Z",
+  "generatedAt": "2026-08-23T10:22:07.182Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.41.0",
@@ -9,10 +9,10 @@
   },
   "sourceCatalog": {
     "repository": "awesome-dsh-plugin/awesome-dsh-plugin",
-    "commit": "7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82",
-    "commitUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82",
+    "commit": "2e19b3c5bd42f2f688eba9df7933ace9e13e66ea",
+    "commitUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea",
     "entryDirectory": "data/plugins",
-    "entryCount": 1837,
+    "entryCount": 1884,
     "license": "CC0-1.0"
   },
   "boundary": {
@@ -24,25 +24,169 @@
     "refreshAfterHours": 168
   },
   "summary": {
-    "total": 8,
+    "total": 50,
     "observed-compatible": 4,
     "observed-incompatible": 0,
     "needs-review": 2,
-    "not-observed": 2
+    "not-observed": 44
   },
   "plugins": [
+    {
+      "id": "dsh-plugin-mall",
+      "repository": "1e0zj/dsh-plugin-mall",
+      "repositoryUrl": "https://github.com/1e0zj/dsh-plugin-mall",
+      "catalogUrl": "https://github.com/1e0zj/dsh-plugin-mall",
+      "catalogEntry": "data/plugins/1e0zj__dsh-plugin-mall.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/1e0zj__dsh-plugin-mall.yml",
+      "category": "market",
+      "distribution": {
+        "kind": "npm",
+        "name": "@1e0zj/dsh-plugin-mall",
+        "selectedVersion": "0.4.7",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-awiki",
+      "repository": "AgentConnect/dsh-awiki",
+      "repositoryUrl": "https://github.com/AgentConnect/dsh-awiki",
+      "catalogUrl": "https://github.com/AgentConnect/dsh-awiki",
+      "catalogEntry": "data/plugins/AgentConnect__dsh-awiki.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/AgentConnect__dsh-awiki.yml",
+      "category": "identity",
+      "distribution": {
+        "kind": "npm",
+        "name": "@awiki/dsh-plugin",
+        "selectedVersion": "0.3.2",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-auto-memory",
+      "repository": "Aik358/dsh-auto-memory",
+      "repositoryUrl": "https://github.com/Aik358/dsh-auto-memory",
+      "catalogUrl": "https://github.com/Aik358/dsh-auto-memory",
+      "catalogEntry": "data/plugins/Aik358__dsh-auto-memory.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/Aik358__dsh-auto-memory.yml",
+      "category": "memory",
+      "distribution": {
+        "kind": "npm",
+        "name": "@a9i5k4/dsh-auto-memory",
+        "selectedVersion": "0.1.29",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-update-checker",
+      "repository": "Airmetro/dsh-update-checker",
+      "repositoryUrl": "https://github.com/Airmetro/dsh-update-checker",
+      "catalogUrl": "https://github.com/Airmetro/dsh-update-checker",
+      "catalogEntry": "data/plugins/Airmetro__dsh-update-checker.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/Airmetro__dsh-update-checker.yml",
+      "category": "dev",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-update-checker",
+        "selectedVersion": "1.4.15",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-agy-link",
+      "repository": "amlyczz/dsh-agy-link",
+      "repositoryUrl": "https://github.com/amlyczz/dsh-agy-link",
+      "catalogUrl": "https://github.com/amlyczz/dsh-agy-link",
+      "catalogEntry": "data/plugins/amlyczz__dsh-agy-link.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/amlyczz__dsh-agy-link.yml",
+      "category": "model",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-agy-link",
+        "selectedVersion": "0.4.13",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-vision-toolkit",
+      "repository": "Anionex/dsh-vision-toolkit",
+      "repositoryUrl": "https://github.com/Anionex/dsh-vision-toolkit",
+      "catalogUrl": "https://github.com/Anionex/dsh-vision-toolkit",
+      "catalogEntry": "data/plugins/Anionex__dsh-vision-toolkit.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/Anionex__dsh-vision-toolkit.yml",
+      "category": "vision",
+      "distribution": {
+        "kind": "npm",
+        "name": "@anionex/dsh-vision-toolkit",
+        "selectedVersion": "0.1.38",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-find-plugin",
+      "repository": "awesome-dsh-plugin/dsh-find-plugin",
+      "repositoryUrl": "https://github.com/awesome-dsh-plugin/dsh-find-plugin",
+      "catalogUrl": "https://github.com/awesome-dsh-plugin/dsh-find-plugin",
+      "catalogEntry": "data/plugins/awesome-dsh-plugin__dsh-find-plugin.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/awesome-dsh-plugin__dsh-find-plugin.yml",
+      "category": "market",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-find-plugin",
+        "selectedVersion": "0.3.7",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-remote-plugin",
+      "repository": "Blank-not-black/dsh-Remote",
+      "repositoryUrl": "https://github.com/Blank-not-black/dsh-Remote",
+      "catalogUrl": "https://github.com/Blank-not-black/dsh-Remote/tree/main/packages/plugin",
+      "catalogEntry": "data/plugins/Blank-not-black__dsh-Remote--packages-plugin.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/Blank-not-black__dsh-Remote--packages-plugin.yml",
+      "category": "remote",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-remote-plugin",
+        "selectedVersion": "0.6.10",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
     {
       "id": "dsh-context",
       "repository": "bowenliang123/dsh-context",
       "repositoryUrl": "https://github.com/bowenliang123/dsh-context",
       "catalogUrl": "https://github.com/bowenliang123/dsh-context",
       "catalogEntry": "data/plugins/bowenliang123__dsh-context.yml",
-      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/bowenliang123__dsh-context.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/bowenliang123__dsh-context.yml",
       "category": "usage",
       "distribution": {
         "kind": "npm",
         "name": "dsh-context",
-        "selectedVersion": "0.20.0",
+        "selectedVersion": "0.25.3",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -75,17 +219,71 @@
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
+      "id": "dsh-tui",
+      "repository": "ccch1mneyyy/dsh-TUI",
+      "repositoryUrl": "https://github.com/ccch1mneyyy/dsh-TUI",
+      "catalogUrl": "https://github.com/ccch1mneyyy/dsh-TUI",
+      "catalogEntry": "data/plugins/ccch1mneyyy__dsh-TUI.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/ccch1mneyyy__dsh-TUI.yml",
+      "category": "ui",
+      "distribution": {
+        "kind": "npm",
+        "name": "@deepseek-harness-tui/dsh-tui",
+        "selectedVersion": "0.9.0",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-vibe-math",
+      "repository": "ChongCyrus/Vibe-Mathematics",
+      "repositoryUrl": "https://github.com/ChongCyrus/Vibe-Mathematics",
+      "catalogUrl": "https://github.com/ChongCyrus/Vibe-Mathematics",
+      "catalogEntry": "data/plugins/ChongCyrus__Vibe-Mathematics.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/ChongCyrus__Vibe-Mathematics.yml",
+      "category": "workflow",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-vibe-math",
+        "selectedVersion": "1.0.2",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-free-search",
+      "repository": "DDDMUC/dsh-free-search",
+      "repositoryUrl": "https://github.com/DDDMUC/dsh-free-search",
+      "catalogUrl": "https://github.com/DDDMUC/dsh-free-search",
+      "catalogEntry": "data/plugins/DDDMUC__dsh-free-search.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/DDDMUC__dsh-free-search.yml",
+      "category": "browser",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-free-search",
+        "selectedVersion": "0.4.12",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
       "id": "dsh-market",
       "repository": "dsh-market/dsh-market",
       "repositoryUrl": "https://github.com/dsh-market/dsh-market",
       "catalogUrl": "https://github.com/dsh-market/dsh-market",
       "catalogEntry": "data/plugins/dsh-market__dsh-market.yml",
-      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/dsh-market__dsh-market.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/dsh-market__dsh-market.yml",
       "category": "market",
       "distribution": {
         "kind": "npm",
         "name": "dshmarket",
-        "selectedVersion": "1.17.1",
+        "selectedVersion": "1.19.0",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -118,12 +316,102 @@
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
+      "id": "dsh-wallpaper-engine",
+      "repository": "elysia395/dsh-wallpaper-engine",
+      "repositoryUrl": "https://github.com/elysia395/dsh-wallpaper-engine",
+      "catalogUrl": "https://github.com/elysia395/dsh-wallpaper-engine",
+      "catalogEntry": "data/plugins/elysia395__dsh-wallpaper-engine.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/elysia395__dsh-wallpaper-engine.yml",
+      "category": "theme",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-plugin-wallpaper-engine",
+        "selectedVersion": "0.5.1",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "deepseek-harness-wallet",
+      "repository": "feibi-mochi/deepseek-harness-control-center",
+      "repositoryUrl": "https://github.com/feibi-mochi/deepseek-harness-control-center",
+      "catalogUrl": "https://github.com/feibi-mochi/deepseek-harness-control-center",
+      "catalogEntry": "data/plugins/feibi-mochi__deepseek-harness-control-center.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/feibi-mochi__deepseek-harness-control-center.yml",
+      "category": "usage",
+      "distribution": {
+        "kind": "npm",
+        "name": "deepseek-harness-wallet",
+        "selectedVersion": "0.3.1",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-remote",
+      "repository": "flymysql/dsh-remote",
+      "repositoryUrl": "https://github.com/flymysql/dsh-remote",
+      "catalogUrl": "https://github.com/flymysql/dsh-remote",
+      "catalogEntry": "data/plugins/flymysql__dsh-remote.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/flymysql__dsh-remote.yml",
+      "category": "tools",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-remote",
+        "selectedVersion": "0.8.7",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-codex-connect",
+      "repository": "franksong2702/dsh-codex-connect",
+      "repositoryUrl": "https://github.com/franksong2702/dsh-codex-connect",
+      "catalogUrl": "https://github.com/franksong2702/dsh-codex-connect",
+      "catalogEntry": "data/plugins/franksong2702__dsh-codex-connect.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/franksong2702__dsh-codex-connect.yml",
+      "category": "model",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-codex-connect",
+        "selectedVersion": "0.1.0-alpha.4.14",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-chatvoice",
+      "repository": "FuzzySoul/dsh-chatvoice",
+      "repositoryUrl": "https://github.com/FuzzySoul/dsh-chatvoice",
+      "catalogUrl": "https://github.com/FuzzySoul/dsh-chatvoice",
+      "catalogEntry": "data/plugins/FuzzySoul__dsh-chatvoice.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/FuzzySoul__dsh-chatvoice.yml",
+      "category": "voice",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-chatvoice",
+        "selectedVersion": "0.1.7",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
       "id": "aegis",
       "repository": "GanyuanRan/Aegis",
       "repositoryUrl": "https://github.com/GanyuanRan/Aegis",
       "catalogUrl": "https://github.com/GanyuanRan/Aegis",
       "catalogEntry": "data/plugins/GanyuanRan__Aegis.yml",
-      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/GanyuanRan__Aegis.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/GanyuanRan__Aegis.yml",
       "category": "skill",
       "distribution": {
         "kind": "github",
@@ -140,12 +428,12 @@
       "repositoryUrl": "https://github.com/Han-1413141/dsh-cost-meter",
       "catalogUrl": "https://github.com/Han-1413141/dsh-cost-meter",
       "catalogEntry": "data/plugins/Han-1413141__dsh-cost-meter.yml",
-      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/Han-1413141__dsh-cost-meter.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/Han-1413141__dsh-cost-meter.yml",
       "category": "usage",
       "distribution": {
         "kind": "npm",
         "name": "dsh-cost-meter",
-        "selectedVersion": "1.5.31",
+        "selectedVersion": "1.5.38",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -178,16 +466,106 @@
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
+      "id": "modsearch",
+      "repository": "liustack/modsearch",
+      "repositoryUrl": "https://github.com/liustack/modsearch",
+      "catalogUrl": "https://github.com/liustack/modsearch",
+      "catalogEntry": "data/plugins/liustack__modsearch.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/liustack__modsearch.yml",
+      "category": "browser",
+      "distribution": {
+        "kind": "npm",
+        "name": "@liustack/modsearch",
+        "selectedVersion": "5.9.0",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
       "id": "dsh-browser",
       "repository": "Lum1104/dsh-browser",
       "repositoryUrl": "https://github.com/Lum1104/dsh-browser",
       "catalogUrl": "https://github.com/Lum1104/dsh-browser/tree/main/packages/browser/bridge-browser",
       "catalogEntry": "data/plugins/Lum1104__dsh-browser--packages-browser-bridge-browser.yml",
-      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/Lum1104__dsh-browser--packages-browser-bridge-browser.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/Lum1104__dsh-browser--packages-browser-bridge-browser.yml",
       "category": "browser",
       "distribution": {
         "kind": "repository-installer",
         "reason": "The bridge package is private and its README uses the repository installer; the unrelated dsh-browser npm name must not be substituted."
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-commandcode-provider",
+      "repository": "Mars-Sea/dsh-commandcode-provider",
+      "repositoryUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider",
+      "catalogUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider",
+      "catalogEntry": "data/plugins/Mars-Sea__dsh-commandcode-provider.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/Mars-Sea__dsh-commandcode-provider.yml",
+      "category": "model",
+      "distribution": {
+        "kind": "npm",
+        "name": "@mars-sea/dsh-commandcode-provider",
+        "selectedVersion": "0.8.0",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-agency-agents",
+      "repository": "MichengAI/dsh-agency-agents",
+      "repositoryUrl": "https://github.com/MichengAI/dsh-agency-agents",
+      "catalogUrl": "https://github.com/MichengAI/dsh-agency-agents",
+      "catalogEntry": "data/plugins/MichengAI__dsh-agency-agents.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/MichengAI__dsh-agency-agents.yml",
+      "category": "skill",
+      "distribution": {
+        "kind": "npm",
+        "name": "@michengai/dsh-agency-agents",
+        "selectedVersion": "0.1.20",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-mneme",
+      "repository": "modusensus/dsh-mneme",
+      "repositoryUrl": "https://github.com/modusensus/dsh-mneme",
+      "catalogUrl": "https://github.com/modusensus/dsh-mneme/tree/main/dsh-mneme",
+      "catalogEntry": "data/plugins/modusensus__dsh-mneme--dsh-mneme.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/modusensus__dsh-mneme--dsh-mneme.yml",
+      "category": "memory",
+      "distribution": {
+        "kind": "npm",
+        "name": "@modusensus/dsh-mneme",
+        "selectedVersion": "0.6.10",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-doctor",
+      "repository": "moonquake2004/dsh-doctor",
+      "repositoryUrl": "https://github.com/moonquake2004/dsh-doctor",
+      "catalogUrl": "https://github.com/moonquake2004/dsh-doctor/tree/main/plugin",
+      "catalogEntry": "data/plugins/moonquake2004__dsh-doctor--plugin.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/moonquake2004__dsh-doctor--plugin.yml",
+      "category": "dev",
+      "distribution": {
+        "kind": "npm",
+        "name": "@moonquake2004/dsh-doctor",
+        "selectedVersion": "0.4.3",
+        "distTag": "latest"
       },
       "status": "not-observed",
       "cells": [],
@@ -199,12 +577,12 @@
       "repositoryUrl": "https://github.com/NanmiCoder/dsh-agent-teams",
       "catalogUrl": "https://github.com/NanmiCoder/dsh-agent-teams",
       "catalogEntry": "data/plugins/NanmiCoder__dsh-agent-teams.yml",
-      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/NanmiCoder__dsh-agent-teams.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/NanmiCoder__dsh-agent-teams.yml",
       "category": "workflow",
       "distribution": {
         "kind": "npm",
         "name": "@nanmicoder/dsh-agent-teams",
-        "selectedVersion": "0.1.10",
+        "selectedVersion": "0.1.13",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -237,17 +615,35 @@
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
+      "id": "dsh-chat-import",
+      "repository": "Nwflower/dsh-chat-import",
+      "repositoryUrl": "https://github.com/Nwflower/dsh-chat-import",
+      "catalogUrl": "https://github.com/Nwflower/dsh-chat-import",
+      "catalogEntry": "data/plugins/Nwflower__dsh-chat-import.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/Nwflower__dsh-chat-import.yml",
+      "category": "session",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-chat-import",
+        "selectedVersion": "0.6.2",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
       "id": "dsh-better-sidebar",
       "repository": "omdsh-dev/DSH-better-sidebar",
       "repositoryUrl": "https://github.com/omdsh-dev/DSH-better-sidebar",
       "catalogUrl": "https://github.com/omdsh-dev/DSH-better-sidebar",
       "catalogEntry": "data/plugins/omdsh-dev__DSH-better-sidebar.yml",
-      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/omdsh-dev__DSH-better-sidebar.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/omdsh-dev__DSH-better-sidebar.yml",
       "category": "ui",
       "distribution": {
         "kind": "npm",
         "name": "dsh-better-sidebar",
-        "selectedVersion": "0.14.0",
+        "selectedVersion": "0.15.2",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -280,12 +676,370 @@
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
+      "id": "deepseek-harness-acp",
+      "repository": "openma-ai/deepseek-harness-acp",
+      "repositoryUrl": "https://github.com/openma-ai/deepseek-harness-acp",
+      "catalogUrl": "https://github.com/openma-ai/deepseek-harness-acp",
+      "catalogEntry": "data/plugins/openma-ai__deepseek-harness-acp.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/openma-ai__deepseek-harness-acp.yml",
+      "category": "notify",
+      "distribution": {
+        "kind": "npm",
+        "name": "@openma/deepseek-harness-acp",
+        "selectedVersion": "0.4.24",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-pet",
+      "repository": "PC2005-cloud/dsh-pet",
+      "repositoryUrl": "https://github.com/PC2005-cloud/dsh-pet",
+      "catalogUrl": "https://github.com/PC2005-cloud/dsh-pet/tree/main/dsh-pet",
+      "catalogEntry": "data/plugins/PC2005-cloud__dsh-pet--dsh-pet.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/PC2005-cloud__dsh-pet--dsh-pet.yml",
+      "category": "fun",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-pet",
+        "selectedVersion": "0.1.7",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "ouroboros-dsh-plugin",
+      "repository": "Q00/ouroboros",
+      "repositoryUrl": "https://github.com/Q00/ouroboros",
+      "catalogUrl": "https://github.com/Q00/ouroboros/tree/main/integrations/dsh-plugin",
+      "catalogEntry": "data/plugins/Q00__ouroboros--integrations-dsh-plugin.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/Q00__ouroboros--integrations-dsh-plugin.yml",
+      "category": "workflow",
+      "distribution": {
+        "kind": "github",
+        "reason": "The catalog install path is GitHub and no matching npm distribution is declared.",
+        "installSpec": "github:Q00/ouroboros#path:/integrations/dsh-plugin"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-extension-hub",
+      "repository": "Relistencode/dsh-extension-hub",
+      "repositoryUrl": "https://github.com/Relistencode/dsh-extension-hub",
+      "catalogUrl": "https://github.com/Relistencode/dsh-extension-hub",
+      "catalogEntry": "data/plugins/Relistencode__dsh-extension-hub.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/Relistencode__dsh-extension-hub.yml",
+      "category": "market",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-extension-hub",
+        "selectedVersion": "0.2.19",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-dream-skin",
+      "repository": "RevolutionLA/dsh-dream-skin",
+      "repositoryUrl": "https://github.com/RevolutionLA/dsh-dream-skin",
+      "catalogUrl": "https://github.com/RevolutionLA/dsh-dream-skin",
+      "catalogEntry": "data/plugins/RevolutionLA__dsh-dream-skin.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/RevolutionLA__dsh-dream-skin.yml",
+      "category": "theme",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-dream-skin",
+        "selectedVersion": "0.4.10",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-mobile",
+      "repository": "saya-ch/dsh-mobile",
+      "repositoryUrl": "https://github.com/saya-ch/dsh-mobile",
+      "catalogUrl": "https://github.com/saya-ch/dsh-mobile",
+      "catalogEntry": "data/plugins/saya-ch__dsh-mobile.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/saya-ch__dsh-mobile.yml",
+      "category": "remote",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-mobile",
+        "selectedVersion": "0.1.4",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-pocket",
+      "repository": "shaobeichen/dsh-pocket",
+      "repositoryUrl": "https://github.com/shaobeichen/dsh-pocket",
+      "catalogUrl": "https://github.com/shaobeichen/dsh-pocket",
+      "catalogEntry": "data/plugins/shaobeichen__dsh-pocket.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/shaobeichen__dsh-pocket.yml",
+      "category": "notify",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-pocket",
+        "selectedVersion": "1.12.3",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-auth-gate",
+      "repository": "TecFancy/dsh-auth-gate",
+      "repositoryUrl": "https://github.com/TecFancy/dsh-auth-gate",
+      "catalogUrl": "https://github.com/TecFancy/dsh-auth-gate",
+      "catalogEntry": "data/plugins/TecFancy__dsh-auth-gate.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/TecFancy__dsh-auth-gate.yml",
+      "category": "security",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-auth-gate",
+        "selectedVersion": "0.7.2",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-notifier",
+      "repository": "THEWOLFWALKER/dsh-notifier",
+      "repositoryUrl": "https://github.com/THEWOLFWALKER/dsh-notifier",
+      "catalogUrl": "https://github.com/THEWOLFWALKER/dsh-notifier",
+      "catalogEntry": "data/plugins/THEWOLFWALKER__dsh-notifier.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/THEWOLFWALKER__dsh-notifier.yml",
+      "category": "notify",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-notifier",
+        "selectedVersion": "0.8.6",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "api-relay-audit",
+      "repository": "toby-bridges/api-relay-audit",
+      "repositoryUrl": "https://github.com/toby-bridges/api-relay-audit",
+      "catalogUrl": "https://github.com/toby-bridges/api-relay-audit",
+      "catalogEntry": "data/plugins/toby-bridges__api-relay-audit.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/toby-bridges__api-relay-audit.yml",
+      "category": "security",
+      "distribution": {
+        "kind": "github",
+        "reason": "The catalog install path is GitHub and no matching npm distribution is declared.",
+        "installSpec": "github:toby-bridges/api-relay-audit"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-tool-lens",
+      "repository": "trench-xinxin/dsh-tool-lens",
+      "repositoryUrl": "https://github.com/trench-xinxin/dsh-tool-lens",
+      "catalogUrl": "https://github.com/trench-xinxin/dsh-tool-lens",
+      "catalogEntry": "data/plugins/trench-xinxin__dsh-tool-lens.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/trench-xinxin__dsh-tool-lens.yml",
+      "category": "tools",
+      "distribution": {
+        "kind": "npm",
+        "name": "@trench-xinxin/dsh-tool-lens",
+        "selectedVersion": "2.0.5",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "archify-dsh",
+      "repository": "tt-a1i/archify",
+      "repositoryUrl": "https://github.com/tt-a1i/archify",
+      "catalogUrl": "https://github.com/tt-a1i/archify/tree/main/integrations/deepseek-harness",
+      "catalogEntry": "data/plugins/tt-a1i__archify--integrations-deepseek-harness.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/tt-a1i__archify--integrations-deepseek-harness.yml",
+      "category": "docs",
+      "distribution": {
+        "kind": "npm",
+        "name": "@tt-a1i/archify-dsh",
+        "selectedVersion": "0.1.0",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "hindsight-coding-agents",
+      "repository": "vectorize-io/hindsight",
+      "repositoryUrl": "https://github.com/vectorize-io/hindsight",
+      "catalogUrl": "https://github.com/vectorize-io/hindsight/tree/main/hindsight-integrations/coding-agents",
+      "catalogEntry": "data/plugins/vectorize-io__hindsight--hindsight-integrations-coding-agents.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/vectorize-io__hindsight--hindsight-integrations-coding-agents.yml",
+      "category": "memory",
+      "distribution": {
+        "kind": "npm",
+        "name": "@vectorize-io/hindsight-coding-agents",
+        "selectedVersion": "0.4.1",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-git-worktree",
+      "repository": "wloops/dsh-git-worktree",
+      "repositoryUrl": "https://github.com/wloops/dsh-git-worktree",
+      "catalogUrl": "https://github.com/wloops/dsh-git-worktree",
+      "catalogEntry": "data/plugins/wloops__dsh-git-worktree.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/wloops__dsh-git-worktree.yml",
+      "category": "git",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-git-worktree",
+        "selectedVersion": "0.4.0",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-builtin-browser",
+      "repository": "wqty123/dsh-browser",
+      "repositoryUrl": "https://github.com/wqty123/dsh-browser",
+      "catalogUrl": "https://github.com/wqty123/dsh-browser",
+      "catalogEntry": "data/plugins/wqty123__dsh-browser.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/wqty123__dsh-browser.yml",
+      "category": "browser",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-builtin-browser",
+        "selectedVersion": "0.1.15",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-config-manager",
+      "repository": "xiajiajun516/dsh-config-manager",
+      "repositoryUrl": "https://github.com/xiajiajun516/dsh-config-manager",
+      "catalogUrl": "https://github.com/xiajiajun516/dsh-config-manager",
+      "catalogEntry": "data/plugins/xiajiajun516__dsh-config-manager.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/xiajiajun516__dsh-config-manager.yml",
+      "category": "tools",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-config-manager",
+        "selectedVersion": "0.1.45",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-im",
+      "repository": "xmanrui/dsh-im",
+      "repositoryUrl": "https://github.com/xmanrui/dsh-im",
+      "catalogUrl": "https://github.com/xmanrui/dsh-im",
+      "catalogEntry": "data/plugins/xmanrui__dsh-im.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/xmanrui__dsh-im.yml",
+      "category": "notify",
+      "distribution": {
+        "kind": "npm",
+        "name": "@xmanrui/dsh-im",
+        "selectedVersion": "1.0.2",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-plugin-writing-guard",
+      "repository": "xmutfyh/dsh-plugin-writing-guard",
+      "repositoryUrl": "https://github.com/xmutfyh/dsh-plugin-writing-guard",
+      "catalogUrl": "https://github.com/xmutfyh/dsh-plugin-writing-guard",
+      "catalogEntry": "data/plugins/xmutfyh__dsh-plugin-writing-guard.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/xmutfyh__dsh-plugin-writing-guard.yml",
+      "category": "tools",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-plugin-writing-guard",
+        "selectedVersion": "1.6.1",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-vision-router",
+      "repository": "ysr666/dsh-vision-router",
+      "repositoryUrl": "https://github.com/ysr666/dsh-vision-router",
+      "catalogUrl": "https://github.com/ysr666/dsh-vision-router",
+      "catalogEntry": "data/plugins/ysr666__dsh-vision-router.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/ysr666__dsh-vision-router.yml",
+      "category": "vision",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-vision-router",
+        "selectedVersion": "1.7.7",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
+      "id": "dsh-web-ui-all",
+      "repository": "zhu1090093659/dsh-web-ui",
+      "repositoryUrl": "https://github.com/zhu1090093659/dsh-web-ui",
+      "catalogUrl": "https://github.com/zhu1090093659/dsh-web-ui/tree/main/packages/dsh-web-ui-all",
+      "catalogEntry": "data/plugins/zhu1090093659__dsh-web-ui--packages-dsh-web-ui-all.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/zhu1090093659__dsh-web-ui--packages-dsh-web-ui-all.yml",
+      "category": "ui",
+      "distribution": {
+        "kind": "npm",
+        "name": "@linxin666/dsh-web-ui-all",
+        "selectedVersion": "0.2.9",
+        "distTag": "latest"
+      },
+      "status": "not-observed",
+      "cells": [],
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+    },
+    {
       "id": "dsh-openpencil",
       "repository": "ZSeven-W/dsh-openpencil",
       "repositoryUrl": "https://github.com/ZSeven-W/dsh-openpencil",
       "catalogUrl": "https://github.com/ZSeven-W/dsh-openpencil",
       "catalogEntry": "data/plugins/ZSeven-W__dsh-openpencil.yml",
-      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/ZSeven-W__dsh-openpencil.yml",
+      "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/ZSeven-W__dsh-openpencil.yml",
       "category": "ui",
       "distribution": {
         "kind": "npm",

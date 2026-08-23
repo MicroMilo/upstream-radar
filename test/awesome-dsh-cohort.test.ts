@@ -6,6 +6,7 @@ import { parseObserverConfigText } from '../src/upstream-observer.js'
 
 interface CohortPlugin {
   id: string
+  category: string
   catalogUrl: string
   repository: string
   ref: string
@@ -34,8 +35,11 @@ describe('awesome-dsh-plugin monitored cohort', () => {
     assert.equal(cohort.schema, 'upstream-radar.awesome-dsh-cohort/v1alpha1')
     assert.match(cohort.source.commit, /^[0-9a-f]{40}$/)
     assert.ok(cohort.source.entryCount >= cohort.plugins.length)
-    assert.equal(cohort.plugins.length, 8)
+    assert.equal(cohort.plugins.length, 50)
     assert.equal(new Set(cohort.plugins.map(plugin => plugin.id)).size, cohort.plugins.length)
+    assert.equal(new Set(cohort.plugins.map(plugin => plugin.repository.toLowerCase())).size, cohort.plugins.length)
+    assert.equal(new Set(cohort.plugins.map(plugin => plugin.category)).size, 21)
+    assert.equal(installTargets.plugins.length, 50)
 
     const importedIds = new Set(cohort.plugins.map(plugin => plugin.id))
     const importedObserverTargets = observer.targets.filter(target => importedIds.has(target.id))
@@ -52,8 +56,11 @@ describe('awesome-dsh-plugin monitored cohort', () => {
 
     const npmPlugins = cohort.plugins.filter(plugin => plugin.distribution.kind === 'npm')
     const sourceOnlyPlugins = cohort.plugins.filter(plugin => plugin.distribution.kind !== 'npm')
-    assert.equal(npmPlugins.length, 6)
-    assert.deepEqual(sourceOnlyPlugins.map(plugin => plugin.id).sort(), ['aegis', 'dsh-browser'])
+    assert.equal(npmPlugins.length, 46)
+    assert.deepEqual(
+      sourceOnlyPlugins.map(plugin => plugin.id).sort(),
+      ['aegis', 'api-relay-audit', 'dsh-browser', 'ouroboros-dsh-plugin'],
+    )
     assert.equal(
       cohort.plugins.find(plugin => plugin.id === 'dsh-browser')?.catalogUrl,
       'https://github.com/Lum1104/dsh-browser/tree/main/packages/browser/bridge-browser',
@@ -79,5 +86,15 @@ describe('awesome-dsh-plugin monitored cohort', () => {
       installTargets.plugins.find(target => target.id === 'openpencil')?.runtimeProfiles,
       ['node24'],
     )
+    assert.deepEqual(
+      installTargets.plugins.find(target => target.id === 'dsh-agy-link')?.runtimeProfiles,
+      ['node24'],
+    )
+
+    const nonCohortTargets = installTargets.plugins
+      .filter(target => target.observerTargetId === undefined || !importedIds.has(target.observerTargetId))
+      .map(target => target.id)
+      .sort()
+    assert.deepEqual(nonCohortTargets, ['cloudflare-browser', 'feishu-bot', 'sanqi-market', 'wsl-workspace'])
   })
 })
