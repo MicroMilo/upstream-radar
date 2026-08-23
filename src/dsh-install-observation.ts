@@ -45,7 +45,14 @@ const PROFILE_LOCKFILE_CANDIDATES = [
 ] as const
 const SYNTHETIC_PROFILE_GRAPH_ROOT = { name: 'dsh-profile-headless', version: '0.0.0' } as const
 
-export type DshInstallObservationResult = 'compatible' | 'runtime-incompatible' | 'peer-contract-incompatible' | 'install-failed' | 'load-failed' | 'unknown'
+export type DshInstallObservationResult =
+  | 'compatible'
+  | 'runtime-incompatible'
+  | 'peer-contract-incompatible'
+  | 'build-approval-required'
+  | 'install-failed'
+  | 'load-failed'
+  | 'unknown'
 export type InstallObservationPhase = 'runtime' | 'artifact' | 'profile' | 'install' | 'load'
 export type InstallObservationIsolationProvider = 'github-actions-hosted-runner' | 'firecracker' | 'other'
 
@@ -282,6 +289,7 @@ export interface DshInstallObservationReport {
     pluginCodeMayExecuteDuringLoad: true
     inheritedHostSecrets: false
     approvedDependencyBuilds: string[]
+    requiredDependencyBuilds: string[]
     note: string
   }
 }
@@ -339,6 +347,38 @@ interface ParsedArtifact {
 
 function isNpmPackageName(value: string): boolean {
   return /^(?:@[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*|[a-z0-9][a-z0-9._-]*)$/.test(value)
+}
+
+/**
+ * pnpm 10+ deliberately stops before running dependency lifecycle scripts
+ * unless each package is approved. Keep that policy gate distinct from a
+ * plugin install defect, but only when pnpm supplied a bounded, exact list.
+ */
+function requiredDependencyBuilds(output: string): string[] {
+  const normalized = output.replace(/\r\n?/g, '\n')
+  const marker = '[ERR_PNPM_IGNORED_BUILDS]'
+  const markerIndex = normalized.indexOf(marker)
+  if (markerIndex < 0) return []
+  const tail = normalized.slice(markerIndex, markerIndex + MAX_COMMAND_OUTPUT_BYTES)
+  const prefix = 'Ignored build scripts:'
+  const prefixIndex = tail.indexOf(prefix)
+  if (prefixIndex < marker.length || prefixIndex > 256) return []
+  let list = tail.slice(prefixIndex + prefix.length)
+  const terminator = list.search(/\n\s*\n|\n\s*Run\s+["']pnpm approve-builds["']/)
+  if (terminator >= 0) list = list.slice(0, terminator)
+  const coordinates = list.split(',').map(value => value.trim()).filter(Boolean)
+  if (coordinates.length === 0 || coordinates.length > MAX_ALLOWED_BUILDS) return []
+  const names = new Set<string>()
+  for (const coordinate of coordinates) {
+    try {
+      const parsed = parseNpmSpec(coordinate)
+      if (!EXACT_VERSION.test(parsed.version) || !isNpmPackageName(parsed.name)) return []
+      names.add(parsed.name)
+    } catch {
+      return []
+    }
+  }
+  return [...names].sort()
 }
 
 function staticPeerUsage(entries: readonly TarEntry[], requirements: readonly { name: string, required: string }[]): DshInstallPeerStaticUsage[] {
@@ -1554,6 +1594,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       pluginCodeMayExecuteDuringLoad: true,
       inheritedHostSecrets: false,
       approvedDependencyBuilds: allowedBuilds,
+      requiredDependencyBuilds: [],
       note: 'Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate.',
     },
   }
@@ -1700,6 +1741,15 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
         return finishReport(report, 'unknown', 'the install command ran without readable trace evidence')
       }
       if (installResult.code !== 0) {
+        const requiredBuilds = requiredDependencyBuilds(`${installResult.stderr}\n${installResult.stdout}`)
+        if (requiredBuilds.length > 0) {
+          report.boundary.requiredDependencyBuilds = requiredBuilds
+          return finishReport(
+            report,
+            'build-approval-required',
+            `the DSH plugin install requires explicit approval for dependency builds: ${requiredBuilds.join(', ')}`,
+          )
+        }
         return finishReport(report, 'install-failed', 'the traced DSH plugin install command failed')
       }
 
@@ -1780,6 +1830,7 @@ export function renderDshInstallObservation(report: DshInstallObservationReport)
     `Plugin Node requirement: ${report.artifact.nodeEngine ?? 'not declared'}`,
     `Isolation claim: ${report.boundary.isolationProviderClaim} (provided externally; not verified by Radar)`,
     `Approved dependency builds: ${report.boundary.approvedDependencyBuilds.length === 0 ? 'none' : report.boundary.approvedDependencyBuilds.join(', ')}`,
+    `Additional dependency builds required: ${report.boundary.requiredDependencyBuilds.length === 0 ? 'none' : report.boundary.requiredDependencyBuilds.join(', ')}`,
     '',
     `Result: ${report.result.toUpperCase()} — ${report.reason}`,
     `Lifecycle scripts declared: ${lifecycle}`,

@@ -141,4 +141,20 @@ describe('DSH compatibility IR', () => {
     }
     assert.throws(() => parseDshCompatibilityIR(incomplete), /relation count does not match declared peer contracts/)
   })
+
+  it('keeps an exact dependency build-approval gate in the normalized evidence', () => {
+    const value = ledger()
+    const first = value.entries[0]
+    assert.notEqual(first, undefined)
+    if (first === undefined) return
+    first.result = 'build-approval-required'
+    first.reason = 'pnpm requires an explicit dependency-build approval'
+    first.requiredDependencyBuilds = ['protobufjs', 'sharp']
+    delete first.resolution
+
+    const ir = buildDshCompatibilityIR(value)
+
+    assert.deepEqual(ir.cells[0]?.evidence.requiredDependencyBuilds, ['protobufjs', 'sharp'])
+    assert.deepEqual(parseDshCompatibilityIR(ir), ir)
+  })
 })

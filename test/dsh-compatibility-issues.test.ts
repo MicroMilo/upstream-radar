@@ -169,6 +169,24 @@ describe('DSH compatibility issue reconciliation', () => {
     assert.deepEqual(plan.reviewOnlyCaseIds, ['openpencil-node24'])
   })
 
+  it('keeps a dependency build-approval gate as review evidence instead of blaming the plugin', () => {
+    const review = {
+      ...entry('unknown'),
+      result: 'build-approval-required' as DshCompatibilityLedgerEntry['result'],
+      reason: 'the install requires explicit approval for protobufjs',
+      requiredDependencyBuilds: ['protobufjs'],
+    }
+    const plan = buildDshCompatibilityIssuePlan({
+      ledger: ledger(review),
+      existingIssues: [issue(review)],
+    })
+
+    assert.equal(plan.actions[0]?.kind, 'close')
+    assert.match(plan.actions[0]?.kind === 'close' ? plan.actions[0].comment : '', /protobufjs.*does not prove the plugin artifact is incompatible/s)
+    assert.deepEqual(plan.openCaseIds, [])
+    assert.deepEqual(plan.reviewOnlyCaseIds, ['openpencil-node24'])
+  })
+
   it('closes an old peer-contract incident after the evidence is reclassified', () => {
     const review = entry('peer-contract-incompatible')
     const plan = buildDshCompatibilityIssuePlan({

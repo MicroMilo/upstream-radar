@@ -13,7 +13,7 @@ export const DSH_COMPATIBILITY_LEDGER_SCHEMA = 'upstream-radar.dsh-compatibility
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const CASE_ID = /^[a-z0-9][a-z0-9._-]{0,63}$/
 const FINGERPRINT = /^sha256:[a-f0-9]{64}$/
-const RESULTS = new Set<DshInstallObservationResult>(['compatible', 'runtime-incompatible', 'peer-contract-incompatible', 'install-failed', 'load-failed', 'unknown'])
+const RESULTS = new Set<DshInstallObservationResult>(['compatible', 'runtime-incompatible', 'peer-contract-incompatible', 'build-approval-required', 'install-failed', 'load-failed', 'unknown'])
 const MAX_ENTRIES = 500
 const MAX_REPORTS = 100
 
@@ -95,6 +95,8 @@ export interface DshCompatibilityLedgerEntry {
   observedAt: string
   result: DshInstallObservationResult
   reason: string
+  /** Exact dependency packages pnpm refused to build without explicit approval. */
+  requiredDependencyBuilds?: string[]
   artifact: {
     lifecycleScripts: string[]
     sha256?: string
@@ -441,6 +443,12 @@ function parseEntry(value: unknown, index: number): DshCompatibilityLedgerEntry 
   const integrity = optionalBoundedString(artifact.integrity, `entries[${index}].artifact.integrity`, 1_024)
   const nodeEngine = optionalBoundedString(artifact.nodeEngine, `entries[${index}].artifact.nodeEngine`, 512)
   const pnpmVersion = runtime.pnpmVersion === undefined ? undefined : exactVersion(runtime.pnpmVersion, `entries[${index}].runtime.pnpmVersion`)
+  const requiredDependencyBuilds = item.requiredDependencyBuilds === undefined
+    ? []
+    : parseLifecycleBuilds(item.requiredDependencyBuilds, `entries[${index}].requiredDependencyBuilds`)
+  if ((result === 'build-approval-required') !== (requiredDependencyBuilds.length > 0)) {
+    throw new Error(`entries[${index}] must bind build-approval-required to a non-empty requiredDependencyBuilds list`)
+  }
   return {
     caseId: caseId(item.caseId, `entries[${index}].caseId`),
     targetId: caseId(item.targetId, `entries[${index}].targetId`),
@@ -458,6 +466,7 @@ function parseEntry(value: unknown, index: number): DshCompatibilityLedgerEntry 
     observedAt,
     result,
     reason: boundedString(item.reason, `entries[${index}].reason`, 4_096),
+    ...(requiredDependencyBuilds.length === 0 ? {} : { requiredDependencyBuilds }),
     artifact: {
       lifecycleScripts: parseLifecycleScripts(artifact.lifecycleScripts, `entries[${index}].artifact.lifecycleScripts`),
       ...(sha256 === undefined ? {} : { sha256 }),
@@ -605,6 +614,12 @@ function parseObservationReport(value: unknown, expected: DshCompatibilityExpect
   if (approved.join(',') !== expected.allowedBuilds) throw new Error('report approved dependency builds do not match the scheduled policy')
   const result = reportString(report.result, 'report result', 64) as DshInstallObservationResult
   if (!RESULTS.has(result)) throw new Error('report result is unsupported')
+  const requiredDependencyBuilds = boundary.requiredDependencyBuilds === undefined
+    ? []
+    : parseLifecycleBuilds(boundary.requiredDependencyBuilds, 'report boundary.requiredDependencyBuilds')
+  if ((result === 'build-approval-required') !== (requiredDependencyBuilds.length > 0)) {
+    throw new Error('report must bind build-approval-required to a non-empty requiredDependencyBuilds list')
+  }
   const lifecycleScripts = parseLifecycleScripts(artifact.lifecycleScripts, 'report artifact.lifecycleScripts')
   const sha256 = optionalBareSha256(artifact.sha256, 'report artifact.sha256')
   const integrity = optionalBoundedString(artifact.integrity, 'report artifact.integrity', 1_024)
@@ -633,6 +648,7 @@ function parseObservationReport(value: unknown, expected: DshCompatibilityExpect
     observedAt,
     result,
     reason: reportString(report.reason, 'report reason', 4_096),
+    ...(requiredDependencyBuilds.length === 0 ? {} : { requiredDependencyBuilds }),
     artifact: {
       lifecycleScripts,
       ...(sha256 === undefined ? {} : { sha256 }),

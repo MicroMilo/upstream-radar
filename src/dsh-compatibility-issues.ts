@@ -179,6 +179,17 @@ export function renderDshCompatibilityResolution(entry: DshCompatibilityLedgerEn
 }
 
 export function renderDshCompatibilityReviewReclassification(entry: DshCompatibilityLedgerEntry): string {
+  const explanation = entry.result === 'build-approval-required'
+    ? [
+        `pnpm stopped before DSH registration because these dependency builds require an explicit trust decision: ${(entry.requiredDependencyBuilds ?? []).map(name => `\`${inline(name, 214)}\``).join(', ')}.`,
+        '',
+        'That gate is important operational evidence, but it does not prove the plugin artifact is incompatible. The exact requirement remains visible as `needs-review`; a separately configured cell may approve those packages and test registration and load.',
+      ]
+    : [
+        'This cell used the headless profile. A missing or mismatched web-client peer from that Node resolution anchor does not prove the plugin fails in its intended browser execution plane. The evidence remains visible as `needs-review`; it will become author-actionable only after the intended plane reproduces an install, registration or load failure.',
+        '',
+        'Execution-plane coverage is tracked in #75.',
+      ]
   return [
     `<!-- upstream-radar:dsh-compatibility-review=${entry.caseId}:${entry.contractFingerprint} -->`,
     '',
@@ -189,9 +200,7 @@ export function renderDshCompatibilityReviewReclassification(entry: DshCompatibi
     `- Raw result retained in the ledger: \`${entry.result}\``,
     `- Evidence gap: ${inline(entry.reason, 4_096)}`,
     '',
-    'This cell used the headless profile. A missing or mismatched web-client peer from that Node resolution anchor does not prove the plugin fails in its intended browser execution plane. The evidence remains visible as `needs-review`; it will become author-actionable only after the intended plane reproduces an install, registration or load failure.',
-    '',
-    'Execution-plane coverage is tracked in #75.',
+    ...explanation,
   ].join('\n')
 }
 
@@ -228,7 +237,7 @@ export function buildDshCompatibilityIssuePlan(input: {
       ignoredUnknownCaseIds.push(entry.caseId)
       continue
     }
-    if (entry.result === 'peer-contract-incompatible') {
+    if (entry.result === 'peer-contract-incompatible' || entry.result === 'build-approval-required') {
       reviewOnlyCaseIds.push(entry.caseId)
       if (issue?.state === 'open') {
         actions.push({

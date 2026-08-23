@@ -98,6 +98,7 @@ blocked script into a global “allow all” policy.
 | `compatible` | The exact tarball installed, registered, and loaded under the exact DSH release and recorded build-approval set, with readable bounded traces. |
 | `runtime-incompatible` | The exact tarball requires a Node version that excludes the isolated runtime. No plugin or dependency code is executed. |
 | `peer-contract-incompatible` | Install and load passed, but a declared required peer is missing from the actual DSH profile or its resolved version is outside the declared range. This is not by itself proof that every UI/business path fails. |
+| `build-approval-required` | pnpm stopped before registration and supplied an exact list of dependency packages whose lifecycle builds need explicit approval. This is a trust-policy gate, not proof that the plugin is incompatible. |
 | `install-failed` | The traced install failed or DSH did not register the plugin. |
 | `load-failed` | Installation and registration passed, but the traced profile load failed. |
 | `unknown` | The artifact, DSH bootstrap, timeout/output bound, tracer, or collector could not establish a reliable result. |

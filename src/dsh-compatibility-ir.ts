@@ -56,6 +56,7 @@ export interface DshCompatibilityIrCell {
     runtimeGraphEdges?: number
     requiredUnresolved?: number
     declaredPeerContracts?: number
+    requiredDependencyBuilds?: string[]
   }
 }
 
@@ -148,7 +149,8 @@ function peerStaticUsage(value: unknown, label: string): DshCompatibilityPeerCon
 function result(value: unknown, label: string): DshCompatibilityLedgerEntry['result'] {
   const parsed = boundedString(value, label, 64)
   if (parsed !== 'compatible' && parsed !== 'runtime-incompatible' && parsed !== 'peer-contract-incompatible'
-    && parsed !== 'install-failed' && parsed !== 'load-failed' && parsed !== 'unknown') {
+    && parsed !== 'build-approval-required' && parsed !== 'install-failed'
+    && parsed !== 'load-failed' && parsed !== 'unknown') {
     throw new Error(`${label} is unsupported`)
   }
   return parsed
@@ -256,6 +258,7 @@ export function buildDshCompatibilityIR(ledgerInput: DshCompatibilityLedger | un
         ...(runtimeGraph?.edges === undefined ? {} : { runtimeGraphEdges: runtimeGraph.edges }),
         ...(runtimeGraph?.unresolved === undefined ? {} : { requiredUnresolved: runtimeGraph.unresolved }),
         ...(contracts === undefined ? {} : { declaredPeerContracts: contracts.declared }),
+        ...(entry.requiredDependencyBuilds === undefined ? {} : { requiredDependencyBuilds: entry.requiredDependencyBuilds }),
       },
     })
     for (const relation of contracts?.relations ?? []) {
@@ -332,12 +335,28 @@ function parseCell(value: unknown, index: number): DshCompatibilityIrCell {
   const runtimeGraphEdges = evidence.runtimeGraphEdges === undefined ? undefined : boundedInteger(evidence.runtimeGraphEdges, `cells[${index}].evidence.runtimeGraphEdges`, 250_000)
   const requiredUnresolved = evidence.requiredUnresolved === undefined ? undefined : boundedInteger(evidence.requiredUnresolved, `cells[${index}].evidence.requiredUnresolved`, 250_000)
   const declaredPeerContracts = evidence.declaredPeerContracts === undefined ? undefined : boundedInteger(evidence.declaredPeerContracts, `cells[${index}].evidence.declaredPeerContracts`, MAX_RELATIONS_PER_CELL)
+  let requiredDependencyBuilds: string[] | undefined
+  if (evidence.requiredDependencyBuilds !== undefined) {
+    if (!Array.isArray(evidence.requiredDependencyBuilds) || evidence.requiredDependencyBuilds.length === 0 || evidence.requiredDependencyBuilds.length > 16) {
+      throw new Error(`cells[${index}].evidence.requiredDependencyBuilds must contain between one and 16 package names`)
+    }
+    requiredDependencyBuilds = evidence.requiredDependencyBuilds
+      .map((name, dependencyIndex) => packageName(name, `cells[${index}].evidence.requiredDependencyBuilds[${dependencyIndex}]`))
+      .sort()
+    if (new Set(requiredDependencyBuilds).size !== requiredDependencyBuilds.length) {
+      throw new Error(`cells[${index}].evidence.requiredDependencyBuilds must not contain duplicates`)
+    }
+  }
+  const parsedResult = result(item.result, `cells[${index}].result`)
+  if ((parsedResult === 'build-approval-required') !== (requiredDependencyBuilds !== undefined)) {
+    throw new Error(`cells[${index}] must bind build-approval-required to requiredDependencyBuilds evidence`)
+  }
   const cell: DshCompatibilityIrCell = {
     id: boundedString(item.id, `cells[${index}].id`, 80),
     caseId: boundedString(item.caseId, `cells[${index}].caseId`, 64),
     targetId: boundedString(item.targetId, `cells[${index}].targetId`, 64),
     observedAt,
-    result: result(item.result, `cells[${index}].result`),
+    result: parsedResult,
     plugin: {
       name: parsedPlugin.name,
       version: parsedPlugin.version,
@@ -359,6 +378,7 @@ function parseCell(value: unknown, index: number): DshCompatibilityIrCell {
       ...(runtimeGraphEdges === undefined ? {} : { runtimeGraphEdges }),
       ...(requiredUnresolved === undefined ? {} : { requiredUnresolved }),
       ...(declaredPeerContracts === undefined ? {} : { declaredPeerContracts }),
+      ...(requiredDependencyBuilds === undefined ? {} : { requiredDependencyBuilds }),
     },
   }
   return cell

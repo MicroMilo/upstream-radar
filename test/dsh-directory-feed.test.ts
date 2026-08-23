@@ -27,6 +27,7 @@ function ledgerEntry(targetId: string, result: DshCompatibilityLedgerEntry['resu
     observedAt: '2026-08-23T00:00:00.000Z',
     result,
     reason: `${result} evidence`,
+    ...(result === 'build-approval-required' ? { requiredDependencyBuilds: ['protobufjs'] } : {}),
     artifact: { lifecycleScripts: [], sha256: 'c'.repeat(64) },
     observer: {
       schema: 'upstream-radar.dsh-install-observation/v1alpha1',
@@ -36,7 +37,7 @@ function ledgerEntry(targetId: string, result: DshCompatibilityLedgerEntry['resu
 }
 
 function fixture() {
-  const ids = ['clean', 'broken', 'peer-gap', 'unknown']
+  const ids = ['clean', 'broken', 'peer-gap', 'approval', 'unknown']
   return {
     cohort: {
       schema: AWESOME_DSH_COHORT_SCHEMA,
@@ -79,6 +80,7 @@ function fixture() {
         ledgerEntry('clean', 'compatible'),
         ledgerEntry('broken', 'load-failed'),
         ledgerEntry('peer-gap', 'peer-contract-incompatible'),
+        ledgerEntry('approval', 'build-approval-required' as DshCompatibilityLedgerEntry['result']),
         ledgerEntry('unknown', 'unknown'),
       ],
     },
@@ -94,15 +96,17 @@ describe('DSH directory compatibility feed', () => {
     })
 
     assert.deepEqual(feed.summary, {
-      total: 5,
+      total: 6,
       'observed-compatible': 1,
       'observed-incompatible': 1,
-      'needs-review': 2,
+      'needs-review': 3,
       'not-observed': 1,
     })
     assert.equal(feed.plugins.find(item => item.id === 'clean')?.status, 'observed-compatible')
     assert.equal(feed.plugins.find(item => item.id === 'broken')?.status, 'observed-incompatible')
     assert.equal(feed.plugins.find(item => item.id === 'peer-gap')?.status, 'needs-review')
+    assert.equal(feed.plugins.find(item => item.id === 'approval')?.status, 'needs-review')
+    assert.deepEqual(feed.plugins.find(item => item.id === 'approval')?.cells[0]?.requiredDependencyBuilds, ['protobufjs'])
     assert.equal(feed.plugins.find(item => item.id === 'unknown')?.status, 'needs-review')
     assert.equal(feed.plugins.find(item => item.id === 'source-only')?.status, 'not-observed')
     assert.equal(
@@ -119,7 +123,7 @@ describe('DSH directory compatibility feed', () => {
       generatedAt: '2026-08-23T01:00:00.000Z',
     })
     const markdown = renderDshDirectoryCompatibilityFeed(feed)
-    assert.match(markdown, /1 observed compatible · 1 observed incompatible · 2 needs review · 1 not observed/)
+    assert.match(markdown, /1 observed compatible · 1 observed incompatible · 3 needs review · 1 not observed/)
     assert.match(markdown, /must then show it as stale/)
     assert.match(markdown, /not a security review or endorsement/)
   })
