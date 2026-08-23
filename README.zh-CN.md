@@ -20,6 +20,10 @@ Radar 会再次检查并关闭闭环。
 
 **维护 100 个安装/加载目标 · 覆盖目录全部 21 个类别 · 4 条上游报告已关闭**
 
+[最近一次全量运行](https://github.com/MicroMilo/upstream-radar/actions/runs/32637649422)：
+**观测 96 个可执行目录插件 · 67 个兼容 · 29 个需要复核 · 0 个复现不兼容 · 4 个仅源码目标**。
+需要复核的信号不会被宣传成插件故障。
+
 ## 为什么需要它
 
 仓库看起来正常，不代表用户实际安装的插件仍然可用。真实发布物必须同时适配某个
@@ -66,7 +70,7 @@ Radar 用确定性证据得出结果。DSH Agent 可以补充影响解释和下�
 ## 检查一个插件
 
 ```bash
-npx --yes upstream-radar@0.41.0 review dsh-plugin \
+npx --yes upstream-radar@0.42.0 review dsh-plugin \
   <包名>@<版本> \
   --dsh-version <DSH版本>
 ```

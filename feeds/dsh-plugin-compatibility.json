@@ -1,9 +1,9 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha1",
-  "generatedAt": "2026-08-23T11:55:06.448Z",
+  "generatedAt": "2026-08-23T11:58:39.765Z",
   "producer": {
     "name": "upstream-radar",
-    "version": "0.41.0",
+    "version": "0.42.0",
     "repository": "https://github.com/MicroMilo/upstream-radar",
     "license": "Apache-2.0"
   },

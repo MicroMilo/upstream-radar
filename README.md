@@ -21,6 +21,10 @@ issue; when the author ships a fix, it retests and closes the loop.
 
 **100 maintained install/load targets · 100 catalog entries across all 21 categories · 4 upstream reports closed**
 
+[Latest full fleet run](https://github.com/MicroMilo/upstream-radar/actions/runs/32637649422):
+**96 executable catalog cells observed · 67 compatible · 29 need review · 0 reproduced incompatibilities · 4 source-only**.
+Review signals are never advertised as plugin failures.
+
 ## Why it exists
 
 A healthy repository does not prove that its published plugin still works.
@@ -73,7 +77,7 @@ them:
 ## Run one check
 
 ```bash
-npx --yes upstream-radar@0.41.0 review dsh-plugin \
+npx --yes upstream-radar@0.42.0 review dsh-plugin \
   <package>@<version> \
   --dsh-version <dsh-version>
 ```
