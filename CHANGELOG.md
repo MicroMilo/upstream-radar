@@ -4,6 +4,37 @@ All notable changes to Upstream Radar are documented here.
 
 ## [Unreleased]
 
+## [0.42.0] - 2026-08-23
+
+### 100-plugin maintained fleet
+
+- Expand the immutable `awesome-dsh-plugin` cohort from 50 to 100 repositories
+  across all 21 catalog categories, with 96 exact npm artifacts and four
+  explicitly source-only targets.
+- Add a reproducible, bounded importer that aligns each new catalog URL with
+  its source manifest, npm identity, repository metadata, DSH contract, and
+  maintained Node runtime before it may enter the fleet.
+- Complete a clean 100-cell contract refresh in disposable GitHub-hosted
+  runners: 67 catalog plugins are observed compatible, 29 retain review-only
+  evidence, zero are reproduced incompatible, and the four source-only
+  entries remain explicit.
+
+### Compatibility evidence accuracy
+
+- Distinguish pnpm build approval from an install failure when the ignored
+  build list names the exact reviewed plugin tarball through a `file:`
+  coordinate, while continuing to reject arbitrary local coordinates.
+- Boot the actual composed DSH profile instead of importing a bundle's package
+  root. Bundle patches may legitimately load subpaths or command adapters and
+  do not declare a root ESM-export contract.
+- Raise only the bounded aggregate artifact expansion allowance to 192 MiB,
+  retaining the 64 MiB compressed and per-file limits, so large published DSH
+  bundles can be reviewed without weakening the archive boundary.
+- Version the corrected execution contract as `dsh-install/v1alpha2`, forcing
+  old and new evidence to be retested instead of mixed; the five provisional
+  red cells from the first run were reclassified or cleared and their managed
+  incidents closed automatically.
+
 ## [0.41.0] - 2026-08-23
 
 ### Closed-loop compatibility incidents
