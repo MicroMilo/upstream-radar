@@ -788,8 +788,8 @@
       "id": "cell:1af50ea8f9b1667789eee8f015d073aba5e03f582e7c736a050d3ca16775181e",
       "caseId": "dsh-mneme-node22",
       "targetId": "dsh-mneme",
-      "observedAt": "2026-08-23T10:29:03.439Z",
-      "result": "install-failed",
+      "observedAt": "2026-08-23T11:12:37.676Z",
+      "result": "build-approval-required",
       "plugin": {
         "name": "@modusensus/dsh-mneme",
         "version": "0.6.10",
@@ -810,7 +810,12 @@
         "runtimeGraphNodes": 498,
         "runtimeGraphEdges": 2092,
         "requiredUnresolved": 0,
-        "declaredPeerContracts": 6
+        "declaredPeerContracts": 6,
+        "requiredDependencyBuilds": [
+          "onnxruntime-node",
+          "protobufjs",
+          "sharp"
+        ]
       }
     },
     {
@@ -846,8 +851,8 @@
       "id": "cell:7fa5cc5d190bd7f572bc56eea27f213c974963c05b94c7535a9a7be58adabb05",
       "caseId": "dsh-notifier-node22",
       "targetId": "dsh-notifier",
-      "observedAt": "2026-08-23T10:28:57.196Z",
-      "result": "install-failed",
+      "observedAt": "2026-08-23T11:12:24.826Z",
+      "result": "build-approval-required",
       "plugin": {
         "name": "dsh-notifier",
         "version": "0.8.6",
@@ -868,7 +873,10 @@
         "runtimeGraphNodes": 502,
         "runtimeGraphEdges": 2113,
         "requiredUnresolved": 0,
-        "declaredPeerContracts": 1
+        "declaredPeerContracts": 1,
+        "requiredDependencyBuilds": [
+          "protobufjs"
+        ]
       }
     },
     {
@@ -991,8 +999,8 @@
       "id": "cell:a8fc384560fbd18b80d3f16499569cb9f4a6ab4639b71cfbbc03dce429ccd2a7",
       "caseId": "dsh-remote-node22",
       "targetId": "dsh-remote",
-      "observedAt": "2026-08-23T10:29:13.306Z",
-      "result": "install-failed",
+      "observedAt": "2026-08-23T11:12:31.567Z",
+      "result": "build-approval-required",
       "plugin": {
         "name": "dsh-remote",
         "version": "0.8.7",
@@ -1013,7 +1021,12 @@
         "runtimeGraphNodes": 622,
         "runtimeGraphEdges": 2398,
         "requiredUnresolved": 2,
-        "declaredPeerContracts": 7
+        "declaredPeerContracts": 7,
+        "requiredDependencyBuilds": [
+          "cpu-features",
+          "node-pty",
+          "ssh2"
+        ]
       }
     },
     {
@@ -1252,8 +1265,8 @@
       "id": "cell:44193cf8cdd59c418cc794381f7924f5e750d467c0d059d5a572cf1d757a8c06",
       "caseId": "dsh-web-ui-all-node22",
       "targetId": "dsh-web-ui-all",
-      "observedAt": "2026-08-23T10:29:14.718Z",
-      "result": "install-failed",
+      "observedAt": "2026-08-23T11:12:43.381Z",
+      "result": "build-approval-required",
       "plugin": {
         "name": "@linxin666/dsh-web-ui-all",
         "version": "0.2.9",
@@ -1274,7 +1287,13 @@
         "runtimeGraphNodes": 651,
         "runtimeGraphEdges": 2458,
         "requiredUnresolved": 3,
-        "declaredPeerContracts": 0
+        "declaredPeerContracts": 0,
+        "requiredDependencyBuilds": [
+          "cloudflared",
+          "cpu-features",
+          "node-pty",
+          "ssh2"
+        ]
       }
     },
     {

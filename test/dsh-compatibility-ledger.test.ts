@@ -170,12 +170,35 @@ describe('DSH compatibility ledger', () => {
     })
 
     assert.deepEqual(merged.acceptedCaseIds, ['openpencil-node24'])
+    assert.equal(merged.transitions[0]?.status, 'new-review-signal')
     assert.deepEqual(
       (merged.ledger.entries[0] as typeof merged.ledger.entries[number] & { requiredDependencyBuilds?: string[] })
         ?.requiredDependencyBuilds,
       ['protobufjs'],
     )
     assert.equal(parseDshCompatibilityLedger(merged.ledger).entries[0]?.result, 'build-approval-required')
+  })
+
+  it('calls an install failure reclassified as a build gate review evidence, not a changed incompatibility', () => {
+    const failed = mergeDshCompatibilityLedger({
+      ledger: emptyDshCompatibilityLedger(),
+      expected: [expected],
+      reports: [report({ result: 'install-failed', reason: 'the traced install failed' })],
+    })
+    const reviewed = mergeDshCompatibilityLedger({
+      ledger: failed.ledger,
+      expected: [expected],
+      reports: [report({
+        result: 'build-approval-required',
+        reason: 'the install requires explicit approval for protobufjs',
+        boundary: {
+          approvedDependencyBuilds: [],
+          requiredDependencyBuilds: ['protobufjs'],
+        },
+      })],
+    })
+
+    assert.equal(reviewed.transitions[0]?.status, 'reclassified-for-review')
   })
 
   it('surfaces a newly resolved dependency graph even when install/load still succeeds', () => {
