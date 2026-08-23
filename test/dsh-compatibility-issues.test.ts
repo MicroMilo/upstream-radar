@@ -105,18 +105,18 @@ function issue(value: DshCompatibilityLedgerEntry, state: 'open' | 'closed' = 'o
 describe('DSH compatibility issue reconciliation', () => {
   it('creates one managed issue for an actionable incompatibility', () => {
     const plan = buildDshCompatibilityIssuePlan({
-      ledger: ledger(entry('peer-contract-incompatible')),
+      ledger: ledger(entry('load-failed')),
       existingIssues: [],
       runUrl: 'https://github.com/MicroMilo/upstream-radar/actions/runs/1',
     })
     assert.equal(plan.actions.length, 1)
     assert.equal(plan.actions[0]?.kind, 'create')
-    assert.match(plan.actions[0]?.kind === 'create' ? plan.actions[0].body : '', /react-dom/)
+    assert.match(plan.actions[0]?.kind === 'create' ? plan.actions[0].body : '', /Reproduce the DSH registration/)
     assert.deepEqual(plan.openCaseIds, ['openpencil-node24'])
   })
 
   it('is quiet when the desired open issue already matches the ledger', () => {
-    const incompatible = entry('peer-contract-incompatible')
+    const incompatible = entry('load-failed')
     const plan = buildDshCompatibilityIssuePlan({
       ledger: ledger(incompatible),
       existingIssues: [issue(incompatible)],
@@ -159,5 +159,23 @@ describe('DSH compatibility issue reconciliation', () => {
     const plan = buildDshCompatibilityIssuePlan({ ledger: ledger(entry('unknown')), existingIssues: [] })
     assert.deepEqual(plan.actions, [])
     assert.deepEqual(plan.ignoredUnknownCaseIds, ['openpencil-node24'])
+  })
+
+  it('keeps a headless peer-contract gap as review evidence instead of creating an incident', () => {
+    const review = entry('peer-contract-incompatible')
+    const plan = buildDshCompatibilityIssuePlan({ ledger: ledger(review), existingIssues: [] })
+    assert.deepEqual(plan.actions, [])
+    assert.deepEqual(plan.openCaseIds, [])
+    assert.deepEqual(plan.reviewOnlyCaseIds, ['openpencil-node24'])
+  })
+
+  it('closes an old peer-contract incident after the evidence is reclassified', () => {
+    const review = entry('peer-contract-incompatible')
+    const plan = buildDshCompatibilityIssuePlan({
+      ledger: ledger(review),
+      existingIssues: [issue(review)],
+    })
+    assert.equal(plan.actions[0]?.kind, 'close')
+    assert.match(plan.actions[0]?.kind === 'close' ? plan.actions[0].comment : '', /review signal, not a reproduced plugin failure/)
   })
 })

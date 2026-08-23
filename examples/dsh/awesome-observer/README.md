@@ -42,3 +42,13 @@ analysis tasks. An unchanged run updates nothing and schedules no VM.
 The initial compatibility baseline is dispatched explicitly once, using the
 same isolated workflow that later scheduled changes use. Results are checked in
 only after their exact DSH/plugin pairs and trace coverage have been reviewed.
+
+## Consumer feed
+
+The maintained ledger is joined back to the pinned catalog identities as a
+[machine-readable compatibility feed](../../../feeds/dsh-plugin-compatibility.json)
+and a [human-readable snapshot](../../../feeds/dsh-plugin-compatibility.md).
+The feed preserves exact plugin, DSH, Node, profile, artifact digest and expiry
+instead of stamping a timeless pass/fail badge onto a repository. A headless
+peer-contract gap is explicitly `needs-review`, not an author defect, until its
+intended web execution plane has also been observed.

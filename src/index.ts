@@ -133,6 +133,7 @@ export {
   dshCompatibilityIssueCaseId,
   dshCompatibilityIssueMarker,
   renderDshCompatibilityIssue,
+  renderDshCompatibilityReviewReclassification,
   renderDshCompatibilityResolution,
   type DshCompatibilityExistingIssue,
   type DshCompatibilityIssueAction,
@@ -164,6 +165,19 @@ export {
   type DshInstallTarget,
   type DshInstallTargets,
 } from './dsh-install-plan.js'
+export {
+  AWESOME_DSH_COHORT_SCHEMA,
+  DSH_DIRECTORY_COMPATIBILITY_FEED_SCHEMA,
+  buildDshDirectoryCompatibilityFeed,
+  parseAwesomeDshCohort,
+  renderDshDirectoryCompatibilityFeed,
+  type AwesomeDshCohort,
+  type AwesomeDshCohortPlugin,
+  type DshDirectoryCompatibilityEntry,
+  type DshDirectoryCompatibilityFeed,
+  type DshDirectoryEvidenceCell,
+  type DshDirectoryEvidenceStatus,
+} from './dsh-directory-feed.js'
 export {
   DSH_PLUGIN_REVIEW_SCHEMA,
   renderDshPluginReview,
