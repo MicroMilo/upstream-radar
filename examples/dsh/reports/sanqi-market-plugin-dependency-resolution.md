@@ -108,8 +108,9 @@ The clean resolver completed successfully and selected:
 @deepseek-ai/dsh-compact           absent
 ```
 
-The npm `latest` tag is still `0.5.4`, so the exact published artifact analysed
-above remains the pre-fix release until the maintainer publishes the source
-fix. This is now a complete feedback loop with a clear release follow-up:
-Radar found the unresolvable path, the author confirmed and fixed it, and the
-repair is independently re-checkable before release.
+The analysis above records the pre-fix `0.5.4` artifact. The maintainer later
+published `0.5.5`; Radar verified its exact tarball in a fresh scripts-disabled
+strict resolution. The required graph now resolves 69 packages and no longer
+reaches `@deepseek-ai/dsh-compact`, so the original author issue was closed as
+verified resolved. Web-client versus headless host-contract coverage is tracked
+separately and does not rewrite this publication result.
