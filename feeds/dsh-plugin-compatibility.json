@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha1",
-  "generatedAt": "2026-08-23T11:27:47.396Z",
+  "generatedAt": "2026-08-23T11:38:16.060Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.41.0",
@@ -25,10 +25,10 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 32,
-    "observed-incompatible": 0,
-    "needs-review": 14,
-    "not-observed": 54
+    "observed-compatible": 65,
+    "observed-incompatible": 5,
+    "needs-review": 26,
+    "not-observed": 4
   },
   "plugins": [
     {
@@ -50,8 +50,8 @@
         {
           "caseId": "dsh-plugin-mall-node22",
           "artifact": {
-            "spec": "@1e0zj/dsh-plugin-mall@0.4.7",
-            "sha256": "0202e8203d2f1f0acf4574e72a1d1d8fd02a809fc44af8a8ade0cdeff33afd63"
+            "spec": "@1e0zj/dsh-plugin-mall@0.4.12",
+            "sha256": "b68245fb237be968deb9d3a69ba18ad9016266d8c58729632b6167bad9bcb3d1"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -67,8 +67,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-23T10:29:12.765Z",
-          "recheckDueAt": "2026-08-30T10:29:12.765Z",
+          "observedAt": "2026-08-23T11:37:45.878Z",
+          "recheckDueAt": "2026-08-30T11:37:45.878Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -88,8 +88,33 @@
         "selectedVersion": "0.9.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-incompatible",
+      "cells": [
+        {
+          "caseId": "dsh-verify-node22",
+          "artifact": {
+            "spec": "dsh-verify@0.9.0",
+            "sha256": "284126787dc34cf1a747588c5d8b81296d542732cd2847cff1a06be8438852a3"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-incompatible",
+          "radarResult": "load-failed",
+          "observedAt": "2026-08-23T11:37:00.401Z",
+          "recheckDueAt": "2026-08-30T11:37:00.401Z",
+          "reason": "the traced DSH profile load command failed"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -278,8 +303,33 @@
         "selectedVersion": "0.1.1",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-turn-rewind-node22",
+          "artifact": {
+            "spec": "@anionex/dsh-turn-rewind@0.1.1",
+            "sha256": "a3941f80ecddf146cbd86bc2b4d976b4df79cef5229200ec16bec7a4fd392c7b"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:55.375Z",
+          "recheckDueAt": "2026-08-30T11:36:55.375Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -339,8 +389,36 @@
         "selectedVersion": "0.1.8",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "needs-review",
+      "cells": [
+        {
+          "caseId": "anweat-dsh-browser-node22",
+          "artifact": {
+            "spec": "@anweat/dsh-browser@0.1.8",
+            "sha256": "93396ab0961fa992c53dd8beeff1428b23d4f3f56b2fc33e9181944535f845be"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "needs-review",
+          "radarResult": "build-approval-required",
+          "requiredDependencyBuilds": [
+            "@jackwener/opencli"
+          ],
+          "observedAt": "2026-08-23T11:37:07.732Z",
+          "recheckDueAt": "2026-08-30T11:37:07.732Z",
+          "reason": "the DSH plugin install requires explicit approval for dependency builds: @jackwener/opencli"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -405,8 +483,8 @@
         {
           "caseId": "dsh-remote-plugin-node22",
           "artifact": {
-            "spec": "dsh-remote-plugin@0.6.10",
-            "sha256": "c0d066adcccad7e6ad1a5155bfb0bcdba0c52ceb158acd25880e71d25b106c13"
+            "spec": "dsh-remote-plugin@0.6.11",
+            "sha256": "3eee9f1bbf62527026bd9ca78a21fb2c8afdfbc802a2da4cb5d813f876bc575b"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -422,8 +500,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-23T10:29:10.766Z",
-          "recheckDueAt": "2026-08-30T10:29:10.766Z",
+          "observedAt": "2026-08-23T11:36:59.653Z",
+          "recheckDueAt": "2026-08-30T11:36:59.653Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -529,8 +607,33 @@
         "selectedVersion": "1.9.1",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-tavern-node22",
+          "artifact": {
+            "spec": "dsh-tavern@1.9.1",
+            "sha256": "8f203c7ad90ae117a49f5df3e26bb144cd178295f00f2c0064407850a5dbab58"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:55.108Z",
+          "recheckDueAt": "2026-08-30T11:36:55.108Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -547,8 +650,33 @@
         "selectedVersion": "0.1.24",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-history-node22",
+          "artifact": {
+            "spec": "dsh-history@0.1.24",
+            "sha256": "5b41c975fb4d3e2dfc90093f6ce8e9348081cf8e06032025d8275fcbbeb376aa"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:58.520Z",
+          "recheckDueAt": "2026-08-30T11:36:58.520Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -608,8 +736,33 @@
         "selectedVersion": "1.6.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-gateway-node22",
+          "artifact": {
+            "spec": "dsh-gateway@1.6.0",
+            "sha256": "7a307266aba83341f6d82f2a136da54fb4238d7f6612d56f172678d9b395c652"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:37:53.240Z",
+          "recheckDueAt": "2026-08-30T11:37:53.240Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -626,8 +779,33 @@
         "selectedVersion": "0.4.5",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-taskboard-node22",
+          "artifact": {
+            "spec": "dsh-taskboard@0.4.5",
+            "sha256": "01736640c818f6adaa059713f4b97ea76ba3a8f90a4d80207fdf1a8dbb02310c"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:37:45.349Z",
+          "recheckDueAt": "2026-08-30T11:37:45.349Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -644,8 +822,33 @@
         "selectedVersion": "3.0.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "needs-review",
+      "cells": [
+        {
+          "caseId": "whale-on-desk-node22",
+          "artifact": {
+            "spec": "whale-on-desk@3.0.0",
+            "sha256": "17e374e5cb56a95457490180ac3cac0fff82b03fa8ef929424edda9ead8d84cb"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "needs-review",
+          "radarResult": "peer-contract-incompatible",
+          "observedAt": "2026-08-23T11:37:41.053Z",
+          "recheckDueAt": "2026-08-30T11:37:41.053Z",
+          "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@* was not resolved by the DSH runtime (no-literal-reference-observed)"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -705,8 +908,33 @@
         "selectedVersion": "1.0.20",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-imagegen-node22",
+          "artifact": {
+            "spec": "@dickpy/dsh-imagegen@1.0.20",
+            "sha256": "b63e9bbfa5a033fd354ba48d6afcddfd8c5df970ea413d3cdbf95647533af998"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:49.976Z",
+          "recheckDueAt": "2026-08-30T11:36:49.976Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -723,8 +951,32 @@
         "selectedVersion": "0.2.9",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "needs-review",
+      "cells": [
+        {
+          "caseId": "dsh-univer-office-node22",
+          "artifact": {
+            "spec": "dsh-univer-office@0.2.9"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "needs-review",
+          "radarResult": "unknown",
+          "observedAt": "2026-08-23T11:37:33.669Z",
+          "recheckDueAt": "2026-08-30T11:37:33.669Z",
+          "reason": "the exact npm artifact could not be established before execution"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -784,8 +1036,33 @@
         "selectedVersion": "0.5.1",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-auxiliary-node22",
+          "artifact": {
+            "spec": "@dsh-plugin/dsh-auxiliary@0.5.1",
+            "sha256": "1915e49dc87eaec925be5b28cc671c1f68ae19b56d5dbb4337dcc8e537a38f70"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:56.649Z",
+          "recheckDueAt": "2026-08-30T11:36:56.649Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -888,8 +1165,33 @@
         "selectedVersion": "0.5.2",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "needs-review",
+      "cells": [
+        {
+          "caseId": "dsh-thirteen-bg-node22",
+          "artifact": {
+            "spec": "dsh-thirteen-bg@0.5.2",
+            "sha256": "ba718513fe41aa604b01ea38220a3ce7ad5f51c0e486bbb319218ac2b7d0eb51"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "needs-review",
+          "radarResult": "peer-contract-incompatible",
+          "observedAt": "2026-08-23T11:36:57.785Z",
+          "recheckDueAt": "2026-08-30T11:36:57.785Z",
+          "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@>=0.1.0-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0 was not resolved by the DSH runtime (no-literal-reference-observed)"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -954,8 +1256,33 @@
         "selectedVersion": "0.4.1",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-incompatible",
+      "cells": [
+        {
+          "caseId": "dsh-vision-proxy-node22",
+          "artifact": {
+            "spec": "dsh-vision-proxy@0.4.1",
+            "sha256": "ede1c99584a6560059258b912dbb14325780daa564632392c93e789230702b56"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-incompatible",
+          "radarResult": "install-failed",
+          "observedAt": "2026-08-23T11:36:54.129Z",
+          "recheckDueAt": "2026-08-30T11:36:54.129Z",
+          "reason": "the traced DSH plugin install command failed"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1058,8 +1385,33 @@
         "selectedVersion": "1.0.8",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-incompatible",
+      "cells": [
+        {
+          "caseId": "dsh-free-vision-node22",
+          "artifact": {
+            "spec": "dsh-free-vision@1.0.8",
+            "sha256": "dc1499d6e3926c8f293b2760dca6ab91b6b0c980ca01a7250fb83647b0e42836"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-incompatible",
+          "radarResult": "install-failed",
+          "observedAt": "2026-08-23T11:36:51.220Z",
+          "recheckDueAt": "2026-08-30T11:36:51.220Z",
+          "reason": "the traced DSH plugin install command failed"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1136,8 +1488,33 @@
         "selectedVersion": "0.8.1",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-client-auto-continue-node22",
+          "artifact": {
+            "spec": "dsh-client-auto-continue@0.8.1",
+            "sha256": "7bedffc7ca4e3bf6453489ac67126fdb1166107347e7816a9ebb21e4270c4120"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:37:00.498Z",
+          "recheckDueAt": "2026-08-30T11:37:00.498Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1154,8 +1531,33 @@
         "selectedVersion": "0.3.3",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-testkit-node22",
+          "artifact": {
+            "spec": "dsh-testkit@0.3.3",
+            "sha256": "d216ff7d4dbd9f83bdb08ee56442622590dae45ab628992d88772a32ad1df67f"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:55.566Z",
+          "recheckDueAt": "2026-08-30T11:36:55.566Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1172,8 +1574,33 @@
         "selectedVersion": "2.12.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "iterate-plugin-node22",
+          "artifact": {
+            "spec": "iterate-plugin@2.12.0",
+            "sha256": "48d12aeb4acef5f77b3cc3d23a823d95aa9f447969e48ea93ea2688f459a8570"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:59.203Z",
+          "recheckDueAt": "2026-08-30T11:36:59.203Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1190,8 +1617,33 @@
         "selectedVersion": "0.8.2",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-strata-node22",
+          "artifact": {
+            "spec": "dsh-strata@0.8.2",
+            "sha256": "16fa3a5b85c1ce397a302650d9c46ba243b8d63aee8e62a21ff07941768b1d74"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:55.634Z",
+          "recheckDueAt": "2026-08-30T11:36:55.634Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1208,8 +1660,33 @@
         "selectedVersion": "0.3.7",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "needs-review",
+      "cells": [
+        {
+          "caseId": "dsh-full-remote-node22",
+          "artifact": {
+            "spec": "dsh-full-remote@0.3.7",
+            "sha256": "f6aef43b8926e2096c0163726ded38066d3b76df3bcd6ba6193d1fe194480f2b"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "needs-review",
+          "radarResult": "peer-contract-incompatible",
+          "observedAt": "2026-08-23T11:36:55.882Z",
+          "recheckDueAt": "2026-08-30T11:36:55.882Z",
+          "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@>=0.1.0-rc.5 <0.2 was not resolved by the DSH runtime (no-literal-reference-observed)"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1226,8 +1703,33 @@
         "selectedVersion": "1.21.4",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-xueqiu-node22",
+          "artifact": {
+            "spec": "dsh-xueqiu@1.21.4",
+            "sha256": "e2d927cc87fa9092f55bbc70c184500d700e87f6e061550fda4ee8ea59ddb194"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:56.695Z",
+          "recheckDueAt": "2026-08-30T11:36:56.695Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1244,8 +1746,33 @@
         "selectedVersion": "3.24.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "modlens-node22",
+          "artifact": {
+            "spec": "@liustack/modlens@3.24.0",
+            "sha256": "248bfeaccb584bb2685eda48a33b203f8ed7be9ed6d4c9f727d7d61813c25053"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:37:00.371Z",
+          "recheckDueAt": "2026-08-30T11:37:00.371Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1305,8 +1832,33 @@
         "selectedVersion": "0.6.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "needs-review",
+      "cells": [
+        {
+          "caseId": "dsh-coding-subscription-oauth-node22",
+          "artifact": {
+            "spec": "dsh-coding-subscription-oauth@0.6.0",
+            "sha256": "0f14c5c7a7c34cd4c8a4d72f26e94b812ef126ec3e27f36dd77664926c9f1b1d"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "needs-review",
+          "radarResult": "peer-contract-incompatible",
+          "observedAt": "2026-08-23T11:36:52.167Z",
+          "recheckDueAt": "2026-08-30T11:36:52.167Z",
+          "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-atomic-write@0.1.1-rc.2 does not satisfy 0.1.0-rc.6 (runtime-import-observed)"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1425,8 +1977,33 @@
         "selectedVersion": "0.1.12",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "needs-review",
+      "cells": [
+        {
+          "caseId": "dsh-archive-manager-node22",
+          "artifact": {
+            "spec": "@michengai/dsh-archive-manager@0.1.12",
+            "sha256": "91bb5f2835cfa401cb3d6127a0db5a76c3f10fb8ada8a029fc976bbf1938e3bc"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "needs-review",
+          "radarResult": "peer-contract-incompatible",
+          "observedAt": "2026-08-23T11:37:04.127Z",
+          "recheckDueAt": "2026-08-30T11:37:04.127Z",
+          "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@>=0.1.0-rc.5 <0.2.0 was not resolved by the DSH runtime (runtime-import-observed)"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1443,8 +2020,36 @@
         "selectedVersion": "0.1.19",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "needs-review",
+      "cells": [
+        {
+          "caseId": "dsh-im-connect-node22",
+          "artifact": {
+            "spec": "@michengai/dsh-im-connect@0.1.19",
+            "sha256": "12019a012979f9305055b7db893ecb5054183fb1589872576d28ce103dff8af1"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "needs-review",
+          "radarResult": "build-approval-required",
+          "requiredDependencyBuilds": [
+            "protobufjs"
+          ],
+          "observedAt": "2026-08-23T11:36:52.082Z",
+          "recheckDueAt": "2026-08-30T11:36:52.082Z",
+          "reason": "the DSH plugin install requires explicit approval for dependency builds: protobufjs"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1461,8 +2066,33 @@
         "selectedVersion": "0.1.23",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "needs-review",
+      "cells": [
+        {
+          "caseId": "dsh-skills-manager-node22",
+          "artifact": {
+            "spec": "@michengai/dsh-skills-manager@0.1.23",
+            "sha256": "f48d7085bf194b9cad9ab3f106ff42470386556324ba887e8c08a6068bea2b28"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "needs-review",
+          "radarResult": "peer-contract-incompatible",
+          "observedAt": "2026-08-23T11:37:54.188Z",
+          "recheckDueAt": "2026-08-30T11:37:54.188Z",
+          "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@>=0.1.0-rc.0 <0.2.0 was not resolved by the DSH runtime (no-literal-reference-observed)"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1613,8 +2243,33 @@
         "selectedVersion": "0.2.10",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-catppuccin-node22",
+          "artifact": {
+            "spec": "@nonamelego/dsh-catppuccin@0.2.10",
+            "sha256": "dd1d7e25b54783543452ce3f057e1b7c6460dbd5ff47331eecee9e2a7e548a95"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:56.404Z",
+          "recheckDueAt": "2026-08-30T11:36:56.404Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1631,8 +2286,33 @@
         "selectedVersion": "0.4.6",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-spend-node22",
+          "artifact": {
+            "spec": "dsh-spend@0.4.6",
+            "sha256": "0c3539469405bfe2bf347c0c59337195f3e3bf3a79522d3131ccfdefb5d42478"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:56.022Z",
+          "recheckDueAt": "2026-08-30T11:36:56.022Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1735,8 +2415,33 @@
         "selectedVersion": "0.2.16",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "needs-review",
+      "cells": [
+        {
+          "caseId": "dsh-mnemon-node22",
+          "artifact": {
+            "spec": "dsh-mnemon@0.2.16",
+            "sha256": "84e07d2d1337c59ab75247e16df1806c81260de4363a0e94a5f76e1fc4187d41"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "needs-review",
+          "radarResult": "peer-contract-incompatible",
+          "observedAt": "2026-08-23T11:36:55.305Z",
+          "recheckDueAt": "2026-08-30T11:36:55.305Z",
+          "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@^0.1.0-rc.6 || ^0.1.1-rc.1 was not resolved by the DSH runtime (runtime-import-observed)"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1796,8 +2501,33 @@
         "selectedVersion": "0.2.8",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "odai-dsh-plugin-node22",
+          "artifact": {
+            "spec": "odai-dsh-plugin@0.2.8",
+            "sha256": "03ad056889f2bde57a821f671826e0d7524eba7ead8265be0e3dac033f7c5392"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:55.362Z",
+          "recheckDueAt": "2026-08-30T11:36:55.362Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1814,8 +2544,33 @@
         "selectedVersion": "0.1.14",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-auto-classifier-node22",
+          "artifact": {
+            "spec": "dsh-auto-classifier@0.1.14",
+            "sha256": "4d520ebac921a068bd8bb0040eaede24759663220b2befd4bf118121d45204d7"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:37:45.858Z",
+          "recheckDueAt": "2026-08-30T11:37:45.858Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1935,8 +2690,33 @@
         "selectedVersion": "2.1.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-easyrewrite-node22",
+          "artifact": {
+            "spec": "dsh-easyrewrite@2.1.0",
+            "sha256": "d8e873c21f3140d5f2d50438e2ed1fbdf2e2760cdfc867f1edcb96cb66d71831"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:59.810Z",
+          "recheckDueAt": "2026-08-30T11:36:59.810Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1996,8 +2776,33 @@
         "selectedVersion": "0.3.1",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-better-edit-node22",
+          "artifact": {
+            "spec": "dsh-better-edit@0.3.1",
+            "sha256": "9954dd36cdd6a32a896809c57f84fdbe2c7c47cb83072f25f5ab3d78e7eec0f8"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:37:52.596Z",
+          "recheckDueAt": "2026-08-30T11:37:52.596Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2014,8 +2819,33 @@
         "selectedVersion": "1.12.2",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-incompatible",
+      "cells": [
+        {
+          "caseId": "graphflow-node22",
+          "artifact": {
+            "spec": "@roarpeng/graphflow@1.12.2",
+            "sha256": "3712f929138150a85804405fb8f6a13a27187415b735c8bdf13e11507f2de7ef"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-incompatible",
+          "radarResult": "install-failed",
+          "observedAt": "2026-08-23T11:37:06.046Z",
+          "recheckDueAt": "2026-08-30T11:37:06.046Z",
+          "reason": "the traced DSH plugin install command failed"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2054,8 +2884,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-23T10:29:06.821Z",
-          "recheckDueAt": "2026-08-30T10:29:06.821Z",
+          "observedAt": "2026-08-23T11:37:56.904Z",
+          "recheckDueAt": "2026-08-30T11:37:56.904Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -2118,8 +2948,33 @@
         "selectedVersion": "0.5.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "needs-review",
+      "cells": [
+        {
+          "caseId": "dshscan-node22",
+          "artifact": {
+            "spec": "@shaoshi/dshscan@0.5.0",
+            "sha256": "db62d1fb00272fd174cd6d8650a432a25a16103ec11b4f1a4bc78d6c31d70dc5"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "needs-review",
+          "radarResult": "peer-contract-incompatible",
+          "observedAt": "2026-08-23T11:36:57.800Z",
+          "recheckDueAt": "2026-08-30T11:36:57.800Z",
+          "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-tools@0.1.1-rc.2 does not satisfy 0.1.0-rc.6 (runtime-import-observed)"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2136,8 +2991,33 @@
         "selectedVersion": "0.1.7",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-deepseek-vision-node22",
+          "artifact": {
+            "spec": "dsh-deepseek-vision@0.1.7",
+            "sha256": "be636816b4f1cd8f6dbc0639ffa4e21222896713c43719b78fc085d4da14e6af"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:37:01.019Z",
+          "recheckDueAt": "2026-08-30T11:37:01.019Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2154,8 +3034,33 @@
         "selectedVersion": "0.3.2",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-rewind-plugin-node22",
+          "artifact": {
+            "spec": "dsh-rewind-plugin@0.3.2",
+            "sha256": "58eee45f2f779701be5ed4ca5a2054f8824f6103ffdb2143dc35962f736ee472"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:58.734Z",
+          "recheckDueAt": "2026-08-30T11:36:58.734Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2172,8 +3077,33 @@
         "selectedVersion": "0.12.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-movein-node22",
+          "artifact": {
+            "spec": "dsh-movein@0.12.0",
+            "sha256": "11616acebe1ac58cc3fa9d31c4a1e472f47c443ccc0765fc4dbae8e651408e34"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:57.109Z",
+          "recheckDueAt": "2026-08-30T11:36:57.109Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2190,8 +3120,33 @@
         "selectedVersion": "0.16.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-win32-node22",
+          "artifact": {
+            "spec": "dsh-win32@0.16.0",
+            "sha256": "5aa3bc9e7df59c05b2836682b43ad0b98b35f354d4648219c58b8bc7758ef03a"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:55.921Z",
+          "recheckDueAt": "2026-08-30T11:36:55.921Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2208,8 +3163,33 @@
         "selectedVersion": "2.6.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-passwords-node22",
+          "artifact": {
+            "spec": "dsh-passwords@2.6.0",
+            "sha256": "4b4ae6032ddf6f1eda8f24a54f0054a689bb3fb59662a7ed06b7a2f42d11268c"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:37:52.297Z",
+          "recheckDueAt": "2026-08-30T11:37:52.297Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2226,8 +3206,33 @@
         "selectedVersion": "0.6.2",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-email-node22",
+          "artifact": {
+            "spec": "dsh-email@0.6.2",
+            "sha256": "3e1dafaeaff973d0111dd497020c9bb257a6028c733a55749a19a78e2c19e3a6"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:44.414Z",
+          "recheckDueAt": "2026-08-30T11:36:44.414Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2244,8 +3249,33 @@
         "selectedVersion": "0.9.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-incompatible",
+      "cells": [
+        {
+          "caseId": "dsh-crew-node22",
+          "artifact": {
+            "spec": "dsh-crew@0.9.0",
+            "sha256": "a41c509589d5b16180627c39f2bc533a5a8131d7d6b85b0c01c70deb8e419b22"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-incompatible",
+          "radarResult": "load-failed",
+          "observedAt": "2026-08-23T11:37:42.911Z",
+          "recheckDueAt": "2026-08-30T11:37:42.911Z",
+          "reason": "the traced DSH profile load command failed"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2351,8 +3381,33 @@
         "selectedVersion": "0.1.9",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-any-background-node22",
+          "artifact": {
+            "spec": "dsh-any-background@0.1.9",
+            "sha256": "e16ae44ded547bab2d5a0a12a8b6251762964f87aaf45dc9cba33e0fb91da141"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:37:47.590Z",
+          "recheckDueAt": "2026-08-30T11:37:47.590Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2429,8 +3484,33 @@
         "selectedVersion": "0.5.6",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-plugin-vetting-node22",
+          "artifact": {
+            "spec": "dsh-plugin-vetting@0.5.6",
+            "sha256": "4b49dcc8860879a32ca4cfdc21d847473acd4d08b2f2d69bdc6977cf0a370db8"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:37:47.701Z",
+          "recheckDueAt": "2026-08-30T11:37:47.701Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2490,8 +3570,33 @@
         "selectedVersion": "0.5.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-plugin-subscriptions-node22",
+          "artifact": {
+            "spec": "dsh-plugin-subscriptions@0.5.0",
+            "sha256": "4355982ecb47bf5da5bf852cdfb88350b840833132091ae52fd37a848bb04f22"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:37:01.985Z",
+          "recheckDueAt": "2026-08-30T11:37:01.985Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2551,8 +3656,33 @@
         "selectedVersion": "0.2.1",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-memory-plugin-node22",
+          "artifact": {
+            "spec": "@openviking/dsh-memory-plugin@0.2.1",
+            "sha256": "ea1a32a099d7c1acfcf4c20ebc5d76e43fc22ce38160cd99343366aa3c739cb1"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:50.704Z",
+          "recheckDueAt": "2026-08-30T11:36:50.704Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2655,8 +3785,33 @@
         "selectedVersion": "1.4.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "needs-review",
+      "cells": [
+        {
+          "caseId": "dsh-codex-subscription-node22",
+          "artifact": {
+            "spec": "dsh-codex-subscription@1.4.0",
+            "sha256": "77b2edd18400314df846e9a59c42ce80a7e9d9aa6920a59ded7e08a05e9321c2"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "needs-review",
+          "radarResult": "peer-contract-incompatible",
+          "observedAt": "2026-08-23T11:36:55.392Z",
+          "recheckDueAt": "2026-08-30T11:36:55.392Z",
+          "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2 was not resolved by the DSH runtime (runtime-import-observed)"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2673,8 +3828,33 @@
         "selectedVersion": "0.2.5",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-plugin-vet-node22",
+          "artifact": {
+            "spec": "@jieai/dsh-plugin-vet@0.2.5",
+            "sha256": "684610d4e463dec14fa917fcc20494c80a6cb98ae2eeeeab222181932055e999"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:37:02.935Z",
+          "recheckDueAt": "2026-08-30T11:37:02.935Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2691,8 +3871,33 @@
         "selectedVersion": "0.2.7",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "xgone-dsh-remote-node22",
+          "artifact": {
+            "spec": "@xgone/dsh-remote@0.2.7",
+            "sha256": "f0fe2822bff36b5686b38b497b43b1cc477c9423e23d24ee7c09d64817a8a920"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:36:50.320Z",
+          "recheckDueAt": "2026-08-30T11:36:50.320Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2752,8 +3957,33 @@
         "selectedVersion": "1.0.0",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-deepread-node22",
+          "artifact": {
+            "spec": "dsh-deepread@1.0.0",
+            "sha256": "ae6fc81d8f8823689f4e5a87534b776faf9d7e12288ed4b14511635c8371c43c"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:37:00.510Z",
+          "recheckDueAt": "2026-08-30T11:37:00.510Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2899,8 +4129,33 @@
         "selectedVersion": "0.1.39",
         "distTag": "latest"
       },
-      "status": "not-observed",
-      "cells": [],
+      "status": "observed-compatible",
+      "cells": [
+        {
+          "caseId": "dsh-meme-node22",
+          "artifact": {
+            "spec": "dsh-meme@0.1.39",
+            "sha256": "f217de7dd918fcb0d7915ba9c8db6520ce8706c8f0df01abef07feef41e6af03"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "headless",
+          "profile": "headless",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T11:37:12.369Z",
+          "recheckDueAt": "2026-08-30T11:37:12.369Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        }
+      ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
