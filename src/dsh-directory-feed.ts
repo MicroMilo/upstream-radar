@@ -62,6 +62,7 @@ export interface DshDirectoryEvidenceCell {
   profile: 'headless'
   status: Exclude<DshDirectoryEvidenceStatus, 'not-observed'>
   radarResult: DshCompatibilityLedgerEntry['result']
+  requiredDependencyBuilds?: string[]
   observedAt: string
   recheckDueAt: string
   reason: string
@@ -287,6 +288,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
       profile: 'headless',
       status: cellStatus(entry.result),
       radarResult: entry.result,
+      ...(entry.requiredDependencyBuilds === undefined ? {} : { requiredDependencyBuilds: entry.requiredDependencyBuilds }),
       observedAt: entry.observedAt,
       recheckDueAt: dueAt(entry.observedAt, installTargets.refreshAfterHours),
       reason: entry.reason,
@@ -372,7 +374,7 @@ export function renderDshDirectoryCompatibilityFeed(feed: DshDirectoryCompatibil
     '',
     '- `observed-compatible`: the exact artifact installed, registered and loaded in the stated headless cell.',
     '- `observed-incompatible`: the exact cell reproduced a runtime gate, install, registration or load failure.',
-    '- `needs-review`: evidence exists, but Radar cannot yet separate a plugin defect from an uncovered execution plane or environment condition.',
+    '- `needs-review`: evidence exists, but Radar cannot yet separate a plugin defect from an uncovered execution plane, environment condition, or explicit dependency-build approval gate.',
     '- `not-observed`: the catalog entry is monitored statically but has no matching executable npm artifact in this cohort.',
     '',
     `A cell expires at its \`recheckDueAt\` value (${feed.boundary.refreshAfterHours} hours after observation). Consumers must then show it as stale. This is exact compatibility evidence, not a security review or endorsement.`,

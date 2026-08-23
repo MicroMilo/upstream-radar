@@ -233,6 +233,7 @@ jobs:
                 `- Plugin Node requirement: \`${inline(report.artifact?.nodeEngine ?? 'not declared')}\``,
                 `- Resolved profile graph: \`${inline(report.resolution?.profileLockfile?.graphDigest ?? 'not established')}\``,
                 `- Approved dependency builds: \`${inline(report.boundary?.approvedDependencyBuilds?.join(', ') || 'none')}\``,
+                `- Additional dependency builds required: \`${inline(report.boundary?.requiredDependencyBuilds?.join(', ') || 'none')}\``,
                 `- Declared lifecycle scripts: \`${inline(report.artifact?.lifecycleScripts?.join(', ') || 'none')}\``,
                 `- Install behavior: ${count(report.observations?.install?.processes)} process exec(s), ${count(report.observations?.install?.network)} network attempt(s), ${count(report.observations?.install?.fileWrites)} file-write syscall(s)`,
                 `- Load behavior: ${count(report.observations?.load?.processes)} process exec(s), ${count(report.observations?.load?.network)} network attempt(s), ${count(report.observations?.load?.fileWrites)} file-write syscall(s)`,
@@ -292,6 +293,7 @@ jobs:
             'compatible',
             'runtime-incompatible',
             'peer-contract-incompatible',
+            'build-approval-required',
             'install-failed',
             'load-failed',
           ])

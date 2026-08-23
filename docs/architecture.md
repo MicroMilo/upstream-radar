@@ -160,7 +160,8 @@ desired plugin × DSH × runtime-policy cell
 ```
 
 The result vocabulary separates `install-failed`, `load-failed`,
-`peer-contract-incompatible`, `compatible`, and `unknown`; missing or truncated tracing never becomes a clean result. A
+`peer-contract-incompatible`, `build-approval-required`, `compatible`, and
+`unknown`; missing or truncated tracing never becomes a clean result. A
 static Node-engine mismatch is recorded before plugin execution and may open a
 configured alternate runtime cell, so a Node 22 failure is not prematurely
 called a global plugin failure. The ledger accepts a dynamic report only if its
@@ -183,12 +184,21 @@ index, so a later DSH host dependency change can be routed directly to exact
 plugin cells. This backend is useful compatibility and behavior evidence, not
 hostile-code proof.
 
+pnpm's explicit dependency-build gate is not classified as a plugin failure.
+When `ERR_PNPM_IGNORED_BUILDS` provides an exact bounded package list, Radar
+records `build-approval-required` and retains those package names. A separately
+configured cell can approve that exact set and continue through registration
+and load. Malformed or unbounded output remains an ordinary failed/unknown
+observation rather than being guessed into this category.
+
 Issue reconciliation is part of the same scheduled transaction as the ledger
-merge. An actionable result (`runtime-incompatible`,
-`peer-contract-incompatible`, `install-failed`, or `load-failed`) owns one
-issue in Radar's repository through a stable target/runtime case id. A later
-failure updates or reopens that issue; a complete `compatible` observation adds
-the exact retest evidence and closes it. `unknown` never opens a plugin issue.
+merge. An actionable reproduced result (`runtime-incompatible`,
+`install-failed`, or `load-failed`) owns one issue in Radar's repository through
+a stable target/runtime case id. `peer-contract-incompatible` from the headless
+plane and `build-approval-required` stay as review evidence; they do not blame
+the plugin author. A later failure updates or reopens an issue; a complete
+`compatible` observation adds the exact retest evidence and closes it. `unknown`
+never opens a plugin issue.
 If GitHub issue reconciliation fails, the new ledger is not persisted, so the
 next schedule retries the delivery instead of silently marking it handled.
 Docker shares the hosted VM kernel, and code in the same container may attempt

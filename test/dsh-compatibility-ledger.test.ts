@@ -155,6 +155,29 @@ describe('DSH compatibility ledger', () => {
     assert.equal(resolved.transitions[0]?.status, 'resolved-incompatibility')
   })
 
+  it('retains an exact build-approval requirement as review evidence', () => {
+    const merged = mergeDshCompatibilityLedger({
+      ledger: emptyDshCompatibilityLedger(),
+      expected: [expected],
+      reports: [report({
+        result: 'build-approval-required',
+        reason: 'the install requires explicit approval for protobufjs',
+        boundary: {
+          approvedDependencyBuilds: [],
+          requiredDependencyBuilds: ['protobufjs'],
+        },
+      })],
+    })
+
+    assert.deepEqual(merged.acceptedCaseIds, ['openpencil-node24'])
+    assert.deepEqual(
+      (merged.ledger.entries[0] as typeof merged.ledger.entries[number] & { requiredDependencyBuilds?: string[] })
+        ?.requiredDependencyBuilds,
+      ['protobufjs'],
+    )
+    assert.equal(parseDshCompatibilityLedger(merged.ledger).entries[0]?.result, 'build-approval-required')
+  })
+
   it('surfaces a newly resolved dependency graph even when install/load still succeeds', () => {
     const first = mergeDshCompatibilityLedger({
       ledger: emptyDshCompatibilityLedger(),

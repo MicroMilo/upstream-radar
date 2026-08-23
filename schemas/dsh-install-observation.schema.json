@@ -75,7 +75,7 @@
       }
     },
     "resolution": { "$ref": "#/$defs/resolution" },
-    "result": { "enum": ["compatible", "runtime-incompatible", "peer-contract-incompatible", "install-failed", "load-failed", "unknown"] },
+    "result": { "enum": ["compatible", "runtime-incompatible", "peer-contract-incompatible", "build-approval-required", "install-failed", "load-failed", "unknown"] },
     "reason": { "type": "string", "maxLength": 4096 },
     "boundary": {
       "type": "object",
@@ -89,6 +89,12 @@
         "pluginCodeMayExecuteDuringLoad": { "const": true },
         "inheritedHostSecrets": { "const": false },
         "approvedDependencyBuilds": {
+          "type": "array",
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^(?:@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*$", "maxLength": 214 }
+        },
+        "requiredDependencyBuilds": {
           "type": "array",
           "maxItems": 16,
           "uniqueItems": true,

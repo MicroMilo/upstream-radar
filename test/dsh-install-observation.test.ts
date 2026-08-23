@@ -418,6 +418,49 @@ snapshots:
     assert.match(report.reason, /install command failed/)
   })
 
+  it('separates a pnpm build-approval gate from a plugin incompatibility', async () => {
+    const artifact = makeTarball([
+      { path: 'package/package.json', contents: JSON.stringify({
+        name: 'approval-plugin',
+        version: '1.0.0',
+        dsh: { bundle: { patch: 'cordis.patch.yml' } },
+      }) },
+      { path: 'package/cordis.patch.yml', contents: '[]\n' },
+    ])
+    const runner = async (command: InstallObservationCommand): Promise<InstallObservationCommandResult> => {
+      if (command.phase === 'runtime') return passed({ stdout: '11.7.0\n' })
+      if (command.phase === 'artifact') {
+        await writeFile(join(command.cwd, 'approval-plugin-1.0.0.tgz'), artifact)
+        return passed({ stdout: 'approval-plugin-1.0.0.tgz\n' })
+      }
+      if (command.phase === 'install') {
+        if (command.tracePath !== undefined) await writeFile(command.tracePath, TRACE)
+        return passed({
+          code: 1,
+          stderr: '[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: sharp@0.34.5, @scope/native@1.2.3, protobufjs@7.6.5\n\nRun "pnpm approve-builds" to pick which dependencies should be allowed to run scripts.\n',
+        })
+      }
+      return passed()
+    }
+
+    const report = await observeDshPluginInstall({
+      packageSpec: 'approval-plugin@1.0.0',
+      dshVersion: '0.1.1-rc.2',
+      allowExecution: true,
+      isolationProvider: 'other',
+      runner,
+    })
+
+    assert.equal(report.result, 'build-approval-required')
+    assert.deepEqual(
+      (report.boundary as typeof report.boundary & { requiredDependencyBuilds?: string[] }).requiredDependencyBuilds,
+      ['@scope/native', 'protobufjs', 'sharp'],
+    )
+    assert.match(report.reason, /requires explicit approval.*@scope\/native, protobufjs, sharp/)
+    assert.equal(report.stages.registration.status, 'skipped')
+    assert.equal(report.stages.load.status, 'skipped')
+  })
+
   it('passes only explicit validated dependency build approvals to pnpm', async () => {
     let installArgs: string[] = []
     const runner = async (command: InstallObservationCommand): Promise<InstallObservationCommandResult> => {
