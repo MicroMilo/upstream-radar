@@ -23,6 +23,7 @@ export const DSH_INSTALL_OBSERVATION_SCHEMA = 'upstream-radar.dsh-install-observ
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const DEFAULT_TIMEOUT_MS = 180_000
 const MAX_ARTIFACT_BYTES = 64 * 1024 * 1024
+const MAX_ARTIFACT_UNPACKED_BYTES = 192 * 1024 * 1024
 const MAX_COMMAND_OUTPUT_BYTES = 64 * 1024
 const MAX_REPORT_DETAIL_BYTES = 4 * 1024
 const MAX_TRACE_BYTES = 16 * 1024 * 1024
@@ -354,7 +355,7 @@ function isNpmPackageName(value: string): boolean {
  * unless each package is approved. Keep that policy gate distinct from a
  * plugin install defect, but only when pnpm supplied a bounded, exact list.
  */
-function requiredDependencyBuilds(output: string): string[] {
+function requiredDependencyBuilds(output: string, artifactName: string): string[] {
   const normalized = output.replace(/\r\n?/g, '\n')
   const marker = '[ERR_PNPM_IGNORED_BUILDS]'
   const markerIndex = normalized.indexOf(marker)
@@ -375,7 +376,14 @@ function requiredDependencyBuilds(output: string): string[] {
       if (!EXACT_VERSION.test(parsed.version) || !isNpmPackageName(parsed.name)) return []
       names.add(parsed.name)
     } catch {
-      return []
+      // When the exact reviewed tarball itself has a lifecycle script, pnpm
+      // prints its profile-relative file: coordinate alongside registry
+      // dependencies. Accept only the already-established artifact identity;
+      // an arbitrary local coordinate must not become an approval suggestion.
+      const prefix = `${artifactName}@file:`
+      const localPath = coordinate.startsWith(prefix) ? coordinate.slice(prefix.length) : ''
+      if (localPath === '' || localPath.length > 4_096 || /[\u0000-\u0020\u007f]/.test(localPath)) return []
+      names.add(artifactName)
     }
   }
   return [...names].sort()
@@ -844,7 +852,10 @@ async function parsePackedArtifact(
   const path = resolve(artifactDirectory, filename)
   if (!path.startsWith(`${resolve(artifactDirectory)}${sep}`)) throw new Error('npm pack artifact escaped its directory')
   const compressed = await readRegularFileNoFollow(path, MAX_ARTIFACT_BYTES)
-  const parsed = parseNpmTarball(compressed, { maxFileBytes: MAX_ARTIFACT_BYTES })
+  const parsed = parseNpmTarball(compressed, {
+    maxFileBytes: MAX_ARTIFACT_BYTES,
+    maxUnpackedBytes: MAX_ARTIFACT_UNPACKED_BYTES,
+  })
   const manifestEntry = parsed.entries.find(entry => entry.path === 'package.json' && entry.type === 'file')
   if (manifestEntry?.contents === undefined) throw new Error('packed artifact has no package.json')
   let manifest: Record<string, unknown>
@@ -1251,14 +1262,13 @@ async function readProfilePeerContracts(
 }
 
 /**
- * Run the plugin's real ESM entry from the profile resolution anchor, then
- * boot DSH. The config dumper intentionally skips `!!js` and module imports;
- * this tiny trusted wrapper proves that the installed plugin can resolve its
- * own direct imports before the DSH headless app exits through `--help`.
+ * Resolve direct peer contracts from the profile anchor, then boot the actual
+ * composed DSH profile. A DSH bundle does not have to export its package root:
+ * its patch may load one or more package subpaths (or a command adapter).
+ * Importing the root here would therefore test a contract DSH never declared.
  */
 async function writeProfileLoadProbe(
   dshHome: string,
-  pluginName: string,
   dshVersion: string,
   pnpmCommand: string,
   peerRequirements: readonly ProfilePeerRequirement[],
@@ -1285,7 +1295,6 @@ async function writeProfileLoadProbe(
     '  catch { peers.push({ name: peer.name, status: \'missing\' }) }',
     '}',
     `await writeFile(${JSON.stringify(peerResolutionPath)}, JSON.stringify({ schema: ${JSON.stringify(PROFILE_PEER_RESOLUTION_SCHEMA)}, peers }), { encoding: 'utf8', mode: 0o600, flag: 'wx' })`,
-    `await import(${JSON.stringify(pluginName)})`,
     `const child = spawn(${JSON.stringify(pnpmCommand)}, ${JSON.stringify(dshBootArgs)}, { cwd: process.cwd(), env: process.env, stdio: 'inherit' })`,
     "const exitCode = await new Promise(resolve => {",
     "  child.once('error', error => { console.error(error.message); resolve(1) })",
@@ -1741,7 +1750,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
         return finishReport(report, 'unknown', 'the install command ran without readable trace evidence')
       }
       if (installResult.code !== 0) {
-        const requiredBuilds = requiredDependencyBuilds(`${installResult.stderr}\n${installResult.stdout}`)
+        const requiredBuilds = requiredDependencyBuilds(`${installResult.stderr}\n${installResult.stdout}`, spec.name)
         if (requiredBuilds.length > 0) {
           report.boundary.requiredDependencyBuilds = requiredBuilds
           return finishReport(
@@ -1761,7 +1770,6 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
 
       const loadProbe = await writeProfileLoadProbe(
         environment.DSH_HOME as string,
-        spec.name,
         options.dshVersion,
         pnpmCommand,
         artifact.requiredPeerDependencies,
