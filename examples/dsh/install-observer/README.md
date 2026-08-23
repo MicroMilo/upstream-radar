@@ -1,12 +1,11 @@
 # DSH isolated install observer
 
-This directory is the maintained dynamic-test corpus for Upstream Radar. It is
-small on purpose: static checks cover the wider plugin inventory every day;
-dynamic code execution establishes behavior evidence for the current active
-matrix. The corpus currently contains ten published plugins: the original
-three behavior cases, six identity-checked targets imported from the
-[`awesome-dsh-plugin` cohort](../awesome-observer/README.md), and the published
-repair for the first author-confirmed dependency case.
+This directory is the maintained dynamic-test corpus for Upstream Radar.
+Static checks cover source and dependency changes every day; isolated execution
+establishes behavior evidence for the current active matrix. The corpus now
+contains 50 exact published plugins: 46 identity-checked npm artifacts imported
+from the [`awesome-dsh-plugin` cohort](../awesome-observer/README.md), plus four
+maintained behavior and repair cases.
 
 ## What runs where
 
@@ -47,8 +46,10 @@ toolchain.
 
 ## When the matrix runs
 
-[`targets.json`](targets.json) is not a popularity list. It is the set of exact
-plugins whose install/load behavior we commit to retesting. The durable
+[`targets.json`](targets.json) is not a popularity ranking. Adoption signals
+help choose the cohort, but identity, category coverage and executable evidence
+decide admission. It is the set of exact plugins whose install/load behavior we
+commit to retesting. The durable
 [`compatibility-ledger.json`](../../../compatibility-ledger.json) holds the most
 recent evidence for every active plugin × DSH × Node/runtime-policy cell.
 The same reconciliation writes a compact

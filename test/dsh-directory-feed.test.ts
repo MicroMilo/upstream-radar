@@ -135,11 +135,13 @@ describe('DSH directory compatibility feed', () => {
       generatedAt: '2026-08-23T08:00:00.000Z',
     })
 
-    assert.equal(feed.plugins.length, 8)
+    assert.equal(feed.plugins.length, 50)
     assert.equal(feed.plugins.find(item => item.id === 'dsh-market')?.status, 'observed-compatible')
     assert.equal(feed.plugins.find(item => item.id === 'dsh-better-sidebar')?.status, 'needs-review')
     assert.equal(feed.plugins.find(item => item.id === 'dsh-openpencil')?.status, 'needs-review')
     assert.equal(feed.plugins.find(item => item.id === 'dsh-browser')?.status, 'not-observed')
+    assert.equal(feed.plugins.find(item => item.id === 'dsh-web-ui-all')?.status, 'not-observed')
+    assert.equal(feed.plugins.find(item => item.id === 'api-relay-audit')?.status, 'not-observed')
     assert.equal(
       feed.plugins.find(item => item.id === 'dsh-browser')?.catalogUrl,
       'https://github.com/Lum1104/dsh-browser/tree/main/packages/browser/bridge-browser',

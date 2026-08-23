@@ -18,7 +18,7 @@ Upstream Radar 持续把一批真实插件发布物放到一次性隔离环境�
 版本重新配对测试。某个组合坏了，就生成一条可复现的 Issue；作者发布修复后，
 Radar 会再次检查并关闭闭环。
 
-**维护 10 个真实插件发布物 · 37 张真实依赖图 · 1,025 个依赖坐标 · 4 条上游报告已关闭**
+**维护 50 个安装/加载目标 · 覆盖目录全部 21 个类别 · 4 条上游报告已关闭**
 
 ## 为什么需要它
 
@@ -76,6 +76,7 @@ npx --yes upstream-radar@0.41.0 review dsh-plugin \
 一台全新的、无密钥的 GitHub 托管虚拟机和受限容器。
 
 你还可以查看[实时兼容性矩阵](examples/dsh/install-observer/README.md)、
+[可供目录消费的兼容性结果](feeds/dsh-plugin-compatibility.md)、
 [第一批 50 个插件](examples/dsh/first-batch/README.md)和
 [架构说明](docs/architecture.md)。
 

@@ -2,15 +2,23 @@
   "schema": "upstream-radar.dsh-install-targets/v1alpha1",
   "refreshAfterHours": 168,
   "runtimeProfiles": [
-    { "id": "node22", "nodeMajor": 22 },
-    { "id": "node24", "nodeMajor": 24 }
+    {
+      "id": "node22",
+      "nodeMajor": 22
+    },
+    {
+      "id": "node24",
+      "nodeMajor": 24
+    }
   ],
   "plugins": [
     {
       "id": "feishu-bot",
       "spec": "dsh-feishu-bot@0.16.0",
       "observerTargetId": "dsh-feishu-bot",
-      "allowedBuilds": ["protobufjs"],
+      "allowedBuilds": [
+        "protobufjs"
+      ],
       "reason": "A real messaging plugin with a large DSH dependency surface and a reachable protobuf build step."
     },
     {
@@ -26,47 +34,294 @@
       "reason": "A plugin whose native dependency makes install behavior materially different from manifest-only review."
     },
     {
-      "id": "agent-teams",
-      "spec": "@nanmicoder/dsh-agent-teams@0.1.10",
-      "observerTargetId": "dsh-agent-teams",
-      "reason": "A popular multi-agent workflow plugin imported from the awesome-dsh-plugin maintained cohort."
-    },
-    {
-      "id": "better-sidebar",
-      "spec": "dsh-better-sidebar@0.14.0",
-      "observerTargetId": "dsh-better-sidebar",
-      "allowedBuilds": ["node-pty"],
-      "reason": "A high-adoption UI workbench with a broad DSH peer surface and a native terminal dependency."
-    },
-    {
-      "id": "context",
-      "spec": "dsh-context@0.20.0",
-      "observerTargetId": "dsh-context",
-      "reason": "A context lifecycle plugin that exercises host, session and client integration boundaries."
-    },
-    {
-      "id": "cost-meter",
-      "spec": "dsh-cost-meter@1.5.31",
-      "observerTargetId": "dsh-cost-meter",
-      "reason": "A cost and budget plugin that reads DSH credential and home-path services."
-    },
-    {
-      "id": "dsh-market",
-      "spec": "dshmarket@1.17.1",
-      "observerTargetId": "dsh-market",
-      "reason": "The in-product plugin market is a high-leverage downstream consumer of DSH compatibility changes."
-    },
-    {
       "id": "sanqi-market",
       "spec": "@sanqi-normal/dsh-webui-market-plugin@0.5.5",
       "observerTargetId": "dsh-webui-market-plugin",
       "reason": "The first author-confirmed repair case proves that a new published artifact can resolve a previously broken DSH host dependency contract."
     },
     {
+      "id": "dsh-plugin-mall",
+      "spec": "@1e0zj/dsh-plugin-mall@0.4.7",
+      "observerTargetId": "dsh-plugin-mall",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 4446 downloads and 2 GitHub stars to cover the market surface."
+    },
+    {
+      "id": "dsh-awiki",
+      "spec": "@awiki/dsh-plugin@0.3.2",
+      "observerTargetId": "dsh-awiki",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 1984 downloads and 10 GitHub stars to cover the identity surface."
+    },
+    {
+      "id": "dsh-auto-memory",
+      "spec": "@a9i5k4/dsh-auto-memory@0.1.29",
+      "observerTargetId": "dsh-auto-memory",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 4699 downloads and 27 GitHub stars to cover the memory surface."
+    },
+    {
+      "id": "dsh-update-checker",
+      "spec": "dsh-update-checker@1.4.15",
+      "observerTargetId": "dsh-update-checker",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 5408 downloads and 8 GitHub stars to cover the dev surface."
+    },
+    {
+      "id": "dsh-agy-link",
+      "spec": "dsh-agy-link@0.4.13",
+      "observerTargetId": "dsh-agy-link",
+      "runtimeProfiles": [
+        "node24"
+      ],
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 4001 downloads and 10 GitHub stars to cover the model surface."
+    },
+    {
+      "id": "dsh-vision-toolkit",
+      "spec": "@anionex/dsh-vision-toolkit@0.1.38",
+      "observerTargetId": "dsh-vision-toolkit",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 27048 downloads and 809 GitHub stars to cover the vision surface."
+    },
+    {
+      "id": "dsh-find-plugin",
+      "spec": "dsh-find-plugin@0.3.7",
+      "observerTargetId": "dsh-find-plugin",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 10503 downloads and 79 GitHub stars to cover the market surface."
+    },
+    {
+      "id": "dsh-remote-plugin",
+      "spec": "dsh-remote-plugin@0.6.10",
+      "observerTargetId": "dsh-remote-plugin",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 4499 downloads and 18 GitHub stars to cover the remote surface."
+    },
+    {
+      "id": "context",
+      "spec": "dsh-context@0.25.3",
+      "observerTargetId": "dsh-context",
+      "reason": "A context lifecycle plugin that exercises host, session and client integration boundaries."
+    },
+    {
+      "id": "dsh-tui",
+      "spec": "@deepseek-harness-tui/dsh-tui@0.9.0",
+      "observerTargetId": "dsh-tui",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 29066 downloads and 2320 GitHub stars to cover the ui surface."
+    },
+    {
+      "id": "dsh-vibe-math",
+      "spec": "dsh-vibe-math@1.0.2",
+      "observerTargetId": "dsh-vibe-math",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 4237 downloads and 5 GitHub stars to cover the workflow surface."
+    },
+    {
+      "id": "dsh-free-search",
+      "spec": "dsh-free-search@0.4.12",
+      "observerTargetId": "dsh-free-search",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 4338 downloads and 48 GitHub stars to cover the browser surface."
+    },
+    {
+      "id": "dsh-market",
+      "spec": "dshmarket@1.19.0",
+      "observerTargetId": "dsh-market",
+      "reason": "The in-product plugin market is a high-leverage downstream consumer of DSH compatibility changes."
+    },
+    {
+      "id": "dsh-wallpaper-engine",
+      "spec": "dsh-plugin-wallpaper-engine@0.5.1",
+      "observerTargetId": "dsh-wallpaper-engine",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 4132 downloads and 153 GitHub stars to cover the theme surface."
+    },
+    {
+      "id": "deepseek-harness-wallet",
+      "spec": "deepseek-harness-wallet@0.3.1",
+      "observerTargetId": "deepseek-harness-wallet",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 5374 downloads and 60 GitHub stars to cover the usage surface."
+    },
+    {
+      "id": "dsh-remote",
+      "spec": "dsh-remote@0.8.7",
+      "observerTargetId": "dsh-remote",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 5063 downloads and 32 GitHub stars to cover the tools surface."
+    },
+    {
+      "id": "dsh-codex-connect",
+      "spec": "dsh-codex-connect@0.1.0-alpha.4.14",
+      "observerTargetId": "dsh-codex-connect",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 5089 downloads and 40 GitHub stars to cover the model surface."
+    },
+    {
+      "id": "dsh-chatvoice",
+      "spec": "dsh-chatvoice@0.1.7",
+      "observerTargetId": "dsh-chatvoice",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 1567 downloads and 1 GitHub stars to cover the voice surface."
+    },
+    {
+      "id": "cost-meter",
+      "spec": "dsh-cost-meter@1.5.38",
+      "observerTargetId": "dsh-cost-meter",
+      "reason": "A cost and budget plugin that reads DSH credential and home-path services."
+    },
+    {
+      "id": "modsearch",
+      "spec": "@liustack/modsearch@5.9.0",
+      "observerTargetId": "modsearch",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 14253 downloads and 229 GitHub stars to cover the browser surface."
+    },
+    {
+      "id": "dsh-commandcode-provider",
+      "spec": "@mars-sea/dsh-commandcode-provider@0.8.0",
+      "observerTargetId": "dsh-commandcode-provider",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 4193 downloads and 87 GitHub stars to cover the model surface."
+    },
+    {
+      "id": "dsh-agency-agents",
+      "spec": "@michengai/dsh-agency-agents@0.1.20",
+      "observerTargetId": "dsh-agency-agents",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 3961 downloads and 16 GitHub stars to cover the skill surface."
+    },
+    {
+      "id": "dsh-mneme",
+      "spec": "@modusensus/dsh-mneme@0.6.10",
+      "observerTargetId": "dsh-mneme",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 8624 downloads and 33 GitHub stars to cover the memory surface."
+    },
+    {
+      "id": "dsh-doctor",
+      "spec": "@moonquake2004/dsh-doctor@0.4.3",
+      "observerTargetId": "dsh-doctor",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 2802 downloads and 1 GitHub stars to cover the dev surface."
+    },
+    {
+      "id": "agent-teams",
+      "spec": "@nanmicoder/dsh-agent-teams@0.1.13",
+      "observerTargetId": "dsh-agent-teams",
+      "reason": "A popular multi-agent workflow plugin imported from the awesome-dsh-plugin maintained cohort."
+    },
+    {
+      "id": "dsh-chat-import",
+      "spec": "dsh-chat-import@0.6.2",
+      "observerTargetId": "dsh-chat-import",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 7662 downloads and 90 GitHub stars to cover the session surface."
+    },
+    {
+      "id": "better-sidebar",
+      "spec": "dsh-better-sidebar@0.15.2",
+      "observerTargetId": "dsh-better-sidebar",
+      "allowedBuilds": [
+        "node-pty"
+      ],
+      "reason": "A high-adoption UI workbench with a broad DSH peer surface and a native terminal dependency."
+    },
+    {
+      "id": "deepseek-harness-acp",
+      "spec": "@openma/deepseek-harness-acp@0.4.24",
+      "observerTargetId": "deepseek-harness-acp",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 6022 downloads and 14 GitHub stars to cover the notify surface."
+    },
+    {
+      "id": "dsh-pet",
+      "spec": "dsh-pet@0.1.7",
+      "observerTargetId": "dsh-pet",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 4288 downloads and 332 GitHub stars to cover the fun surface."
+    },
+    {
+      "id": "dsh-extension-hub",
+      "spec": "dsh-extension-hub@0.2.19",
+      "observerTargetId": "dsh-extension-hub",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 4202 downloads and 8 GitHub stars to cover the market surface."
+    },
+    {
+      "id": "dsh-dream-skin",
+      "spec": "dsh-dream-skin@0.4.10",
+      "observerTargetId": "dsh-dream-skin",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 8623 downloads and 84 GitHub stars to cover the theme surface."
+    },
+    {
+      "id": "dsh-mobile",
+      "spec": "dsh-mobile@0.1.4",
+      "observerTargetId": "dsh-mobile",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 6135 downloads and 120 GitHub stars to cover the remote surface."
+    },
+    {
+      "id": "dsh-pocket",
+      "spec": "dsh-pocket@1.12.3",
+      "observerTargetId": "dsh-pocket",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 15135 downloads and 463 GitHub stars to cover the notify surface."
+    },
+    {
+      "id": "dsh-auth-gate",
+      "spec": "dsh-auth-gate@0.7.2",
+      "observerTargetId": "dsh-auth-gate",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 3527 downloads and 4 GitHub stars to cover the security surface."
+    },
+    {
+      "id": "dsh-notifier",
+      "spec": "dsh-notifier@0.8.6",
+      "observerTargetId": "dsh-notifier",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 7331 downloads and 58 GitHub stars to cover the notify surface."
+    },
+    {
+      "id": "dsh-tool-lens",
+      "spec": "@trench-xinxin/dsh-tool-lens@2.0.5",
+      "observerTargetId": "dsh-tool-lens",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 5186 downloads and 2 GitHub stars to cover the tools surface."
+    },
+    {
+      "id": "archify-dsh",
+      "spec": "@tt-a1i/archify-dsh@0.1.0",
+      "observerTargetId": "archify-dsh",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 7046 downloads and 15069 GitHub stars to cover the docs surface."
+    },
+    {
+      "id": "hindsight-coding-agents",
+      "spec": "@vectorize-io/hindsight-coding-agents@0.4.1",
+      "observerTargetId": "hindsight-coding-agents",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 18785 downloads and 20935 GitHub stars to cover the memory surface."
+    },
+    {
+      "id": "dsh-git-worktree",
+      "spec": "dsh-git-worktree@0.4.0",
+      "observerTargetId": "dsh-git-worktree",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 1695 downloads and 3 GitHub stars to cover the git surface."
+    },
+    {
+      "id": "dsh-builtin-browser",
+      "spec": "dsh-builtin-browser@0.1.15",
+      "observerTargetId": "dsh-builtin-browser",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 4077 downloads and 18 GitHub stars to cover the browser surface."
+    },
+    {
+      "id": "dsh-config-manager",
+      "spec": "dsh-config-manager@0.1.45",
+      "observerTargetId": "dsh-config-manager",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 7261 downloads and 12 GitHub stars to cover the tools surface."
+    },
+    {
+      "id": "dsh-im",
+      "spec": "@xmanrui/dsh-im@1.0.2",
+      "observerTargetId": "dsh-im",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 6895 downloads and 553 GitHub stars to cover the notify surface."
+    },
+    {
+      "id": "dsh-plugin-writing-guard",
+      "spec": "dsh-plugin-writing-guard@1.6.1",
+      "observerTargetId": "dsh-plugin-writing-guard",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 4492 downloads and 19 GitHub stars to cover the tools surface."
+    },
+    {
+      "id": "dsh-vision-router",
+      "spec": "dsh-vision-router@1.7.7",
+      "observerTargetId": "dsh-vision-router",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 34822 downloads and 938 GitHub stars to cover the vision surface."
+    },
+    {
+      "id": "dsh-web-ui-all",
+      "spec": "@linxin666/dsh-web-ui-all@0.2.9",
+      "observerTargetId": "dsh-web-ui-all",
+      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 114128 downloads and 5612 GitHub stars to cover the ui surface."
+    },
+    {
       "id": "openpencil",
       "spec": "@zseven-w/dsh-openpencil@0.1.0-rc.1",
       "observerTargetId": "dsh-openpencil",
-      "runtimeProfiles": ["node24"],
+      "runtimeProfiles": [
+        "node24"
+      ],
       "reason": "A Node 24-targeted design plugin that exercises host tools and a broad web-client peer surface."
     }
   ]
