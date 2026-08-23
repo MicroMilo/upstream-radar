@@ -166,6 +166,7 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: write
+      issues: write
     steps:
       - name: Check out the latest durable observation state
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -234,13 +235,21 @@ jobs:
           name: upstream-radar-compatibility-ledger-${{ github.run_id }}
           path: |
             ${{ runner.temp }}/upstream-radar-compatibility-ledger.md
+            compatibility-ledger.json
             compatibility-ir.json
             compatibility-reverse-index.json
           if-no-files-found: warn
           retention-days: 30
 
+      # The consumer is part of the transaction: a ledger that cannot create,
+      # update or close its managed incident is not persisted as delivered.
+      # The next scheduled run will therefore reproduce and retry the cell.
+      - name: Create, update or close compatibility incidents
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/sync-dsh-compatibility-issues.mjs compatibility-ledger.json
+
       - name: Persist compatibility evidence
-        if: always()
         shell: bash
         run: |
           set -euo pipefail

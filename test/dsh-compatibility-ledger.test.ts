@@ -111,6 +111,50 @@ describe('DSH compatibility ledger', () => {
     assert.match(renderDshCompatibilityLedgerMerge(resolved), /resolved-incompatibility/)
   })
 
+  it('does not hide a new incompatibility behind artifact drift', () => {
+    const compatible = mergeDshCompatibilityLedger({
+      ledger: emptyDshCompatibilityLedger(),
+      expected: [expected],
+      reports: [report()],
+    })
+    const incompatible = mergeDshCompatibilityLedger({
+      ledger: compatible.ledger,
+      expected: [expected],
+      reports: [report({
+        artifact: {
+          spec: expected.plugin,
+          sha256: 'f'.repeat(64),
+          nodeEngine: '>=24.11.0',
+          lifecycleScripts: [],
+        },
+        result: 'load-failed',
+        reason: 'the new artifact fails during DSH boot',
+      })],
+    })
+    assert.equal(incompatible.transitions[0]?.status, 'new-incompatibility')
+  })
+
+  it('records a fixed replacement artifact as resolved instead of generic drift', () => {
+    const incompatible = mergeDshCompatibilityLedger({
+      ledger: emptyDshCompatibilityLedger(),
+      expected: [expected],
+      reports: [report({ result: 'install-failed', reason: 'the package cannot resolve its host dependency' })],
+    })
+    const resolved = mergeDshCompatibilityLedger({
+      ledger: incompatible.ledger,
+      expected: [expected],
+      reports: [report({
+        artifact: {
+          spec: expected.plugin,
+          sha256: 'f'.repeat(64),
+          nodeEngine: '>=24.11.0',
+          lifecycleScripts: [],
+        },
+      })],
+    })
+    assert.equal(resolved.transitions[0]?.status, 'resolved-incompatibility')
+  })
+
   it('surfaces a newly resolved dependency graph even when install/load still succeeds', () => {
     const first = mergeDshCompatibilityLedger({
       ledger: emptyDshCompatibilityLedger(),

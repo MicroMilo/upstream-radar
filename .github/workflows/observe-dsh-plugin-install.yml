@@ -271,7 +271,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Fail the check unless the exact pair has compatible behavior and a complete host contract
+      - name: Validate that a trustworthy compatibility result survived
         if: always()
         shell: bash
         env:
@@ -288,9 +288,16 @@ jobs:
             console.error('The machine-readable install observation is invalid JSON.')
             process.exit(1)
           }
-          if (report.result !== 'compatible') {
-            console.error(`DSH install observation: ${report.result ?? 'unknown'} — ${report.reason ?? 'no reason recorded'}`)
+          const trustworthyResults = new Set([
+            'compatible',
+            'runtime-incompatible',
+            'peer-contract-incompatible',
+            'install-failed',
+            'load-failed',
+          ])
+          if (!trustworthyResults.has(report.result)) {
+            console.error(`DSH install observer did not establish a trustworthy result: ${report.result ?? 'unknown'} — ${report.reason ?? 'no reason recorded'}`)
             process.exit(1)
           }
-          console.log(`Compatible: ${report.artifact?.spec} with DSH ${report.dshVersion}`)
+          console.log(`Observed: ${report.artifact?.spec} with DSH ${report.dshVersion} on Node ${report.runtime?.nodeVersion} -> ${report.result}`)
           NODE

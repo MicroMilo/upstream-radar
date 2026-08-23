@@ -29,6 +29,9 @@ flowchart TB
   Resolve --> IR["Compatibility IR: declared range ↔ resolved host version"]
   IR --> Ledger["Current-cell ledger"]
   IR --> Impact["Reverse impact index + author-facing repair"]
+  Ledger --> Incident["Managed compatibility incident"]
+  Incident --> Repair["Plugin or DSH repair"]
+  Repair --> Artifact
 ```
 
 Radar establishes deterministic facts; an optional Agent may explain project
@@ -44,6 +47,7 @@ evidence into a green result.
 | What enters the DSH profile? | Exact npm/pnpm nodes, host-plane joins, duplicate versions, paths, and unresolved edges. |
 | Which plugins are exposed to an upstream dependency change? | A materialized reverse index from host package to exact plugin cells. |
 | What can the author repair? | One package/range/API boundary with the evidence needed to reproduce it. |
+| What happens after a break is found? | One managed issue is created, updated on repeat failures, reopened on regression, and closed only after a clean retest. |
 
 ## Proven on real DSH plugins
 
@@ -58,6 +62,10 @@ evidence into a green result.
   range drift. [Read the reproducible case.](examples/dsh/install-observer/reports/2026-08-22-openpencil-node24.md)
 - Proved `dsh-better-sidebar@0.14.0` succeeds only after the documented
   `node-pty` build is explicitly approved and the native toolchain is present.
+- Found that `@sanqi-normal/dsh-webui-market-plugin@0.5.4` could not form a
+  clean DSH dependency graph, gave the author an exact repair path, and added
+  the published `0.5.5` repair to the maintained isolated matrix.
+  [See the author-confirmed case.](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)
 - Built a reverse index from **37 real plugin graphs and 1,025 dependency
   coordinates**, while preserving 13 missing-graph targets as evidence gaps.
 
@@ -110,6 +118,13 @@ is missing, outside its declared range, or indeterminate.
 
 When all cells are current, the runtime lane stays quiet. Missing or malformed
 reports never turn green: they remain unsatisfied and are selected again.
+
+Actionable incompatibilities become managed issues in the Radar repository.
+The same stable cell owns the issue across plugin and DSH releases: repeated
+failures update it, a regression reopens it, and a later compatible isolated
+run comments with fresh evidence and closes it. `unknown` is deliberately not
+an accusation against a plugin; it fails the observer lane and waits for a
+trustworthy rerun instead of opening an incident.
 
 ## Safety boundary
 

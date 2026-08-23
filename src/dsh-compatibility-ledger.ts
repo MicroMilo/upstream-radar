@@ -693,11 +693,14 @@ function transition(previous: DshCompatibilityLedgerEntry | undefined, current: 
   const currentIncompatible = isIncompatible(current.result)
   let status: DshCompatibilityTransitionStatus
   if (previous === undefined) status = currentIncompatible ? 'new-incompatibility' : 'compatible'
-  else if (previous.artifact.sha256 !== undefined && current.artifact.sha256 !== undefined && previous.artifact.sha256 !== current.artifact.sha256) status = 'artifact-drift'
   else if (previousIncompatible && !currentIncompatible) status = 'resolved-incompatibility'
   else if (!previousIncompatible && currentIncompatible) status = 'new-incompatibility'
   else if (previousIncompatible && currentIncompatible && (previous.result !== current.result || previous.reason !== current.reason)) status = 'changed-incompatibility'
   else if (currentIncompatible) status = 'persisting-incompatibility'
+  // Compatibility-state transitions take precedence over artifact drift. A
+  // fixed release necessarily changes its bytes; classifying that as generic
+  // drift would prevent the managed incident from ever closing.
+  else if (previous.artifact.sha256 !== undefined && current.artifact.sha256 !== undefined && previous.artifact.sha256 !== current.artifact.sha256) status = 'artifact-drift'
   else if (!sameResolution(previous.resolution, current.resolution)) status = 'resolution-drift'
   else status = 'compatible'
   return {

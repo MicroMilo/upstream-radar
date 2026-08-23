@@ -3,9 +3,10 @@
 This directory is the maintained dynamic-test corpus for Upstream Radar. It is
 small on purpose: static checks cover the wider plugin inventory every day;
 dynamic code execution establishes behavior evidence for the current active
-matrix. The corpus currently contains nine published plugins: the original
-three behavior cases plus six identity-checked targets imported from the
-[`awesome-dsh-plugin` cohort](../awesome-observer/README.md).
+matrix. The corpus currently contains ten published plugins: the original
+three behavior cases, six identity-checked targets imported from the
+[`awesome-dsh-plugin` cohort](../awesome-observer/README.md), and the published
+repair for the first author-confirmed dependency case.
 
 ## What runs where
 
@@ -85,6 +86,9 @@ blocked script into a global “allow all” policy.
   contract evidence remains an explicit evidence gap. The report keeps a
   bounded sample of unresolved edges and labels static peer use as runtime,
   type-only, no literal reference observed, or scan-incomplete.
+- An actionable incompatibility creates one managed issue keyed by the stable
+  target/runtime cell. Persistent failures update that issue, regressions
+  reopen it, and a later compatible retest adds evidence and closes it.
 
 ## Result semantics
 
@@ -99,9 +103,11 @@ blocked script into a global “allow all” policy.
 
 The report separately preserves `captured`, `truncated`, and `missing` trace
 coverage. A failed attempt is not silently converted into a compatibility
-result. The JSON artifact and Job Summary are written first, then the GitHub
-check fails unless the result is `compatible`, so a scheduled regression is
-visible without somebody opening the artifact by hand.
+result. The JSON artifact and Job Summary are written first. A reproduced
+incompatibility is a successful observer result and is reconciled into a
+managed issue; the check fails only when no trustworthy result survives, such
+as a missing, malformed, rejected, or `unknown` report. This distinction keeps
+product findings separate from observer-infrastructure failures.
 
 The [OpenPencil current-DSH case](reports/2026-08-22-openpencil-node24.md)
 shows the full distinction in practice: headless load passed, but one

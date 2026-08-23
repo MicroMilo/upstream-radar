@@ -124,3 +124,8 @@ if (process.env.GITHUB_OUTPUT !== undefined) {
     `dependencies=${summary.dependencies}`,
   ].join('\n') + '\n', 'utf8')
 }
+
+if (summary.missing > 0 || summary.rejected > 0) {
+  console.error(`Compatibility reconciliation is incomplete: ${summary.missing} scheduled report(s) missing, ${summary.rejected} report(s) rejected.`)
+  process.exitCode = 1
+}

@@ -128,6 +128,17 @@ export {
   type DshCompatibilityTransitionStatus,
 } from './dsh-compatibility-ledger.js'
 export {
+  DSH_COMPATIBILITY_ISSUE_LABELS,
+  buildDshCompatibilityIssuePlan,
+  dshCompatibilityIssueCaseId,
+  dshCompatibilityIssueMarker,
+  renderDshCompatibilityIssue,
+  renderDshCompatibilityResolution,
+  type DshCompatibilityExistingIssue,
+  type DshCompatibilityIssueAction,
+  type DshCompatibilityIssuePlan,
+} from './dsh-compatibility-issues.js'
+export {
   DSH_COMPATIBILITY_IR_SCHEMA,
   DSH_COMPATIBILITY_REVERSE_INDEX_SCHEMA,
   buildDshCompatibilityIR,

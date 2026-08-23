@@ -155,6 +155,8 @@ desired plugin × DSH × runtime-policy cell
   -> traced DSH headless boot
   -> bounded JSON artifact + complete profile-plus-DSH-host graph
   -> exact-cell ledger merge + compatibility IR + reverse index
+  -> managed issue create / update / reopen / resolve
+  -> persist the reconciled ledger and observation point
 ```
 
 The result vocabulary separates `install-failed`, `load-failed`,
@@ -180,6 +182,15 @@ these direct relations into a compact compatibility IR and host-package reverse
 index, so a later DSH host dependency change can be routed directly to exact
 plugin cells. This backend is useful compatibility and behavior evidence, not
 hostile-code proof.
+
+Issue reconciliation is part of the same scheduled transaction as the ledger
+merge. An actionable result (`runtime-incompatible`,
+`peer-contract-incompatible`, `install-failed`, or `load-failed`) owns one
+issue in Radar's repository through a stable target/runtime case id. A later
+failure updates or reopens that issue; a complete `compatible` observation adds
+the exact retest evidence and closes it. `unknown` never opens a plugin issue.
+If GitHub issue reconciliation fails, the new ledger is not persisted, so the
+next schedule retries the delivery instead of silently marking it handled.
 Docker shares the hosted VM kernel, and code in the same container may attempt
 to tamper with its trace/output. Moving the collector outside a Firecracker
 guest is the later high-assurance boundary.

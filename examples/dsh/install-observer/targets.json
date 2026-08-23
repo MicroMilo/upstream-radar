@@ -57,6 +57,12 @@
       "reason": "The in-product plugin market is a high-leverage downstream consumer of DSH compatibility changes."
     },
     {
+      "id": "sanqi-market",
+      "spec": "@sanqi-normal/dsh-webui-market-plugin@0.5.5",
+      "observerTargetId": "dsh-webui-market-plugin",
+      "reason": "The first author-confirmed repair case proves that a new published artifact can resolve a previously broken DSH host dependency contract."
+    },
+    {
       "id": "openpencil",
       "spec": "@zseven-w/dsh-openpencil@0.1.0-rc.1",
       "observerTargetId": "dsh-openpencil",

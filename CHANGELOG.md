@@ -4,6 +4,20 @@ All notable changes to Upstream Radar are documented here.
 
 ## [Unreleased]
 
+### Closed-loop compatibility incidents
+
+- Reconcile actionable isolated DSH incompatibilities into one managed GitHub
+  issue per stable target/runtime cell. Persistent failures update the same
+  issue, regressions reopen it, and a compatible retest comments and closes it.
+- Treat reproduced incompatibility as a successful observer result while still
+  failing missing, malformed, rejected, or `unknown` evidence. Scanner failure
+  therefore cannot be presented as a plugin defect.
+- Keep issue delivery and compatibility-ledger persistence in one retryable
+  scheduled transaction, and classify a fixed replacement artifact as a
+  resolved incompatibility before generic artifact drift.
+- Add the published `@sanqi-normal/dsh-webui-market-plugin@0.5.5` repair to the
+  maintained dynamic matrix, bringing the corpus to ten public plugins.
+
 ### DSH contract evidence
 
 - Materialize the exact plugin-to-DSH-host compatibility frontier into
