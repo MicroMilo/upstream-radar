@@ -9207,17 +9207,21 @@
       },
       "staticFingerprint": "sha256:625d67dfb6a97e74123b023f8502234d38a87de66c6390986e8d9998c09da0dc",
       "contractFingerprint": "sha256:1d785808a544dc72cfe8cd7039c87e24113142e3c05312ec31f0f05258f7df11",
-      "observedAt": "2026-08-23T10:29:03.439Z",
-      "result": "install-failed",
-      "reason": "the traced DSH plugin install command failed",
+      "observedAt": "2026-08-23T11:12:37.676Z",
+      "result": "build-approval-required",
+      "reason": "the DSH plugin install requires explicit approval for dependency builds: onnxruntime-node, protobufjs, sharp",
+      "requiredDependencyBuilds": [
+        "onnxruntime-node",
+        "protobufjs",
+        "sharp"
+      ],
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "e60755fea5e92b72a3abe900a5dae11b6064de3d53746e3259bf8a6411c8b669",
-        "integrity": "sha512-eUUMrPkEOdA2wBXB3lcU17KUpKxmpaHJHjEqG9h1u7nf0Lija0YGNhx2IlCnmRxRPk1091/x+J6E2fCDIVK7cA=="
+        "sha256": "e60755fea5e92b72a3abe900a5dae11b6064de3d53746e3259bf8a6411c8b669"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "deee5a1173c653ca827ee891a28b1278487d6cf16b7822a4dd81539605ca05d4",
+          "sha256": "ee1006bc7a447946a431fa944497edcc9108bbc9347ebc67cba00c6d2b886e58",
           "bytes": 21631,
           "graphDigest": "sha256:87250c4530790d396659f51478a6f75860b1b2f586c0851e70daae067760420e",
           "nodes": 76,
@@ -9823,18 +9827,20 @@
       },
       "staticFingerprint": "sha256:fee6a3bbe9ce6177cf03fcca60375c66f07183dc51c3a7460782eb2af87532fa",
       "contractFingerprint": "sha256:349d18abf4e5fa26ff8985280bbae6c107df261e699749855f3a205d971b24ed",
-      "observedAt": "2026-08-23T10:28:57.196Z",
-      "result": "install-failed",
-      "reason": "the traced DSH plugin install command failed",
+      "observedAt": "2026-08-23T11:12:24.826Z",
+      "result": "build-approval-required",
+      "reason": "the DSH plugin install requires explicit approval for dependency builds: protobufjs",
+      "requiredDependencyBuilds": [
+        "protobufjs"
+      ],
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "31df82786797f1bbf26eed3e4573db55d0d15bb59584324478d2268512776cca",
-        "integrity": "sha512-V7KGTjBXC4YBYd9K/L67nDOzGousIE5tx0wY4JlFiLVjCFvcB5FrxZpXTMoKsdE3kFaYCZwO33BIfZDf5tJ0UA==",
         "nodeEngine": ">=22"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "59468f9030f2f7dd018c82afd9af35127839f299cf4287ff49b2ae7feb02764b",
+          "sha256": "e72a955417bc8453a275958a3bcc9fa2c7760c7064f0b2df35ce70d5058ffbcc",
           "bytes": 15797,
           "graphDigest": "sha256:33cda90c380df28951669a5750cdb7205a37358846b3c7c63199c81a3ef0a57e",
           "nodes": 56,
@@ -11331,17 +11337,21 @@
       },
       "staticFingerprint": "sha256:14e286ee6a925d9539e15ad9478e32f40349514d96b79c588416ff0e710bbb2c",
       "contractFingerprint": "sha256:3235db0f7c200a2e425c5819da5ce23334837df92ff7b820353365f652c0a8b5",
-      "observedAt": "2026-08-23T10:29:13.306Z",
-      "result": "install-failed",
-      "reason": "the traced DSH plugin install command failed",
+      "observedAt": "2026-08-23T11:12:31.567Z",
+      "result": "build-approval-required",
+      "reason": "the DSH plugin install requires explicit approval for dependency builds: cpu-features, node-pty, ssh2",
+      "requiredDependencyBuilds": [
+        "cpu-features",
+        "node-pty",
+        "ssh2"
+      ],
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "0c3b171a83069ed67b1a75a19333cceb05c16939dd4c216c934f2c1fac7046d1",
-        "integrity": "sha512-5LdgS9nXoKCrnIt2Z+navrEjruJyv1Gch6dA7tlYR2qmb37+NLTEb1RPg1d11+D9ekgmNyuv19HCSHcy+13qFQ=="
+        "sha256": "0c3b171a83069ed67b1a75a19333cceb05c16939dd4c216c934f2c1fac7046d1"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "ea226b8190daf9cdf7ca2ed1ccc7004401a338488f787f7412a6e72c27f3fbf8",
+          "sha256": "0c5d4972086ab81cbe6a6bf5d02053649e80740d5407d0390b8949a4e36acc2d",
           "bytes": 47010,
           "graphDigest": "sha256:7a3a5db5c6633594c52bf157a8801b4ea1e6d9a679304a88d7711bb77854c22b",
           "nodes": 176,
@@ -14636,17 +14646,22 @@
       },
       "staticFingerprint": "sha256:84687c1df225fa808858f5a6a3949e98e1dacea47ea8f36a0887b5f068b98827",
       "contractFingerprint": "sha256:a3265261d6a6599b2c40e3f18ca3b1b5475b9acc0b13f1f2b9b0c30c85fbe792",
-      "observedAt": "2026-08-23T10:29:14.718Z",
-      "result": "install-failed",
-      "reason": "the traced DSH plugin install command failed",
+      "observedAt": "2026-08-23T11:12:43.381Z",
+      "result": "build-approval-required",
+      "reason": "the DSH plugin install requires explicit approval for dependency builds: cloudflared, cpu-features, node-pty, ssh2",
+      "requiredDependencyBuilds": [
+        "cloudflared",
+        "cpu-features",
+        "node-pty",
+        "ssh2"
+      ],
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "1e18c7538682931593cda66395b571dd1c53bbefc5698c4f18fa236adee6c9a3",
-        "integrity": "sha512-0Iu1EVXvOQvHZAg82izxKGzXBhGhUhjbx6C+mdYACo0kYkitncm/U/iWKbINN8BQghlVgL1BUExmB3a7uI6rpQ=="
+        "sha256": "1e18c7538682931593cda66395b571dd1c53bbefc5698c4f18fa236adee6c9a3"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "ebe7ca1b90501b5d2b70856dde4b94d10613f3226522e4a47036a88006bf7fb0",
+          "sha256": "1f07c05491272026142477b19514bd685f3a1c9ddec085e330042e6cb8bacadd",
           "bytes": 59585,
           "graphDigest": "sha256:207edfe6239b14663d7313570338277431c3f6b9887812cfe248b392a84d6a74",
           "nodes": 215,

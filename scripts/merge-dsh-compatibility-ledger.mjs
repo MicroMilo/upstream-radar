@@ -100,6 +100,7 @@ await writeFile(resolve(reverseIndexPath), `${JSON.stringify(reverseIndex, null,
 
 const actionable = merged.transitions.filter(item => (
   item.status !== 'compatible' && item.status !== 'persisting-incompatibility'
+    && item.status !== 'persisting-review-signal'
 )).length
 const summary = {
   accepted: merged.acceptedCaseIds.length,

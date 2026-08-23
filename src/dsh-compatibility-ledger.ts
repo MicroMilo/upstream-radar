@@ -139,6 +139,11 @@ export type DshCompatibilityTransitionStatus =
   | 'changed-incompatibility'
   | 'resolved-incompatibility'
   | 'persisting-incompatibility'
+  | 'new-review-signal'
+  | 'changed-review-signal'
+  | 'persisting-review-signal'
+  | 'reclassified-for-review'
+  | 'resolved-review-signal'
 
 export interface DshCompatibilityTransition {
   caseId: string
@@ -679,7 +684,11 @@ function parseLifecycleBuilds(value: unknown, label: string): string[] {
 }
 
 function isIncompatible(result: DshInstallObservationResult): boolean {
-  return result !== 'compatible'
+  return result !== 'compatible' && result !== 'build-approval-required'
+}
+
+function isReviewSignal(result: DshInstallObservationResult): boolean {
+  return result === 'build-approval-required'
 }
 
 function sameResolution(
@@ -707,8 +716,16 @@ function sameResolution(
 function transition(previous: DshCompatibilityLedgerEntry | undefined, current: DshCompatibilityLedgerEntry): DshCompatibilityTransition {
   const previousIncompatible = previous !== undefined && isIncompatible(previous.result)
   const currentIncompatible = isIncompatible(current.result)
+  const previousReview = previous !== undefined && isReviewSignal(previous.result)
+  const currentReview = isReviewSignal(current.result)
   let status: DshCompatibilityTransitionStatus
-  if (previous === undefined) status = currentIncompatible ? 'new-incompatibility' : 'compatible'
+  if (previous === undefined) status = currentReview ? 'new-review-signal' : currentIncompatible ? 'new-incompatibility' : 'compatible'
+  else if (currentReview && previousReview) {
+    status = previous.reason === current.reason ? 'persisting-review-signal' : 'changed-review-signal'
+  } else if (currentReview && previousIncompatible) status = 'reclassified-for-review'
+  else if (currentReview) status = 'new-review-signal'
+  else if (previousReview && !currentIncompatible) status = 'resolved-review-signal'
+  else if (previousReview && currentIncompatible) status = 'new-incompatibility'
   else if (previousIncompatible && !currentIncompatible) status = 'resolved-incompatibility'
   else if (!previousIncompatible && currentIncompatible) status = 'new-incompatibility'
   else if (previousIncompatible && currentIncompatible && (previous.result !== current.result || previous.reason !== current.reason)) status = 'changed-incompatibility'
@@ -787,7 +804,8 @@ export function renderDshCompatibilityLedgerMerge(merge: DshCompatibilityLedgerM
     `- Rejected reports: **${merge.rejectedReports.length}**`,
     `- Current active cells: **${merge.ledger.entries.length}**`,
   ]
-  const actionable = merge.transitions.filter(item => item.status !== 'compatible' && item.status !== 'persisting-incompatibility')
+  const actionable = merge.transitions.filter(item => item.status !== 'compatible'
+    && item.status !== 'persisting-incompatibility' && item.status !== 'persisting-review-signal')
   if (actionable.length > 0) {
     lines.push('', '### New or changed evidence', '')
     for (const item of actionable) {
