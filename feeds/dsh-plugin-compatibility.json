@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha1",
-  "generatedAt": "2026-08-23T10:30:09.077Z",
+  "generatedAt": "2026-08-23T10:48:50.129Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.41.0",
@@ -25,9 +25,9 @@
   },
   "summary": {
     "total": 50,
-    "observed-compatible": 29,
+    "observed-compatible": 32,
     "observed-incompatible": 4,
-    "needs-review": 13,
+    "needs-review": 10,
     "not-observed": 4
   },
   "plugins": [
@@ -432,12 +432,13 @@
         "selectedVersion": "0.9.0",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-tui-node22",
           "artifact": {
-            "spec": "@deepseek-harness-tui/dsh-tui@0.9.0"
+            "spec": "@deepseek-harness-tui/dsh-tui@0.9.0",
+            "sha256": "1604bf456c740743064bab07d91a1f083fb64dcc335d9b43dbddc0b96c1fe66e"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -451,11 +452,11 @@
           },
           "executionPlane": "headless",
           "profile": "headless",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-08-23T10:28:45.459Z",
-          "recheckDueAt": "2026-08-30T10:28:45.459Z",
-          "reason": "the exact npm artifact could not be established before execution"
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T10:45:13.430Z",
+          "recheckDueAt": "2026-08-30T10:45:13.430Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
@@ -474,12 +475,13 @@
         "selectedVersion": "1.0.2",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-vibe-math-node22",
           "artifact": {
-            "spec": "dsh-vibe-math@1.0.2"
+            "spec": "dsh-vibe-math@1.0.2",
+            "sha256": "93ea96844b828c0845fc65059a858d41cc605cffdebc4f1298b478c50d06077c"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -493,11 +495,11 @@
           },
           "executionPlane": "headless",
           "profile": "headless",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-08-23T10:28:56.405Z",
-          "recheckDueAt": "2026-08-30T10:28:56.405Z",
-          "reason": "the exact npm artifact could not be established before execution"
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T10:45:04.817Z",
+          "recheckDueAt": "2026-08-30T10:45:04.817Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
@@ -1237,12 +1239,13 @@
         "selectedVersion": "0.4.24",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "deepseek-harness-acp-node22",
           "artifact": {
-            "spec": "@openma/deepseek-harness-acp@0.4.24"
+            "spec": "@openma/deepseek-harness-acp@0.4.24",
+            "sha256": "d1a95afe3d562df46c6b3a27919e8e5470d78e55f2f873188a22f2f53fb537c6"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -1256,11 +1259,11 @@
           },
           "executionPlane": "headless",
           "profile": "headless",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-08-23T10:28:41.757Z",
-          "recheckDueAt": "2026-08-30T10:28:41.757Z",
-          "reason": "the exact npm artifact could not be established before execution"
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-23T10:45:06.760Z",
+          "recheckDueAt": "2026-08-30T10:45:06.760Z",
+          "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
@@ -1284,7 +1287,8 @@
         {
           "caseId": "dsh-pet-node22",
           "artifact": {
-            "spec": "dsh-pet@0.1.7"
+            "spec": "dsh-pet@0.1.7",
+            "sha256": "a1b0e87a5beca59d31fff6ac92b65df7743064055865f1a2e788f4c415ece001"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -1299,10 +1303,10 @@
           "executionPlane": "headless",
           "profile": "headless",
           "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-08-23T10:28:39.649Z",
-          "recheckDueAt": "2026-08-30T10:28:39.649Z",
-          "reason": "the exact npm artifact could not be established before execution"
+          "radarResult": "peer-contract-incompatible",
+          "observedAt": "2026-08-23T10:45:08.504Z",
+          "recheckDueAt": "2026-08-30T10:45:08.504Z",
+          "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@^0.1.1-rc.1 was not resolved by the DSH runtime (no-literal-reference-observed)"
         }
       ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
