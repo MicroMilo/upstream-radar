@@ -71279,16 +71279,16 @@
     "dsh-tui": {
       "targetId": "dsh-tui",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T10:26:42.776Z",
+      "observedAt": "2026-08-23T11:50:13.122Z",
       "source": {
         "repository": "ccch1mneyyy/dsh-TUI",
         "ref": "main",
-        "commit": "33d561bce02fb72c1d65d3e0796147184860f397",
+        "commit": "889be9e2913f04fbd79cd78b208813888d1b5c31",
         "packagePath": "package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/ccch1mneyyy/dsh-TUI/commit/33d561bce02fb72c1d65d3e0796147184860f397",
-        "packageUrl": "https://raw.githubusercontent.com/ccch1mneyyy/dsh-TUI/33d561bce02fb72c1d65d3e0796147184860f397/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/ccch1mneyyy/dsh-TUI/33d561bce02fb72c1d65d3e0796147184860f397/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/ccch1mneyyy/dsh-TUI/commit/889be9e2913f04fbd79cd78b208813888d1b5c31",
+        "packageUrl": "https://raw.githubusercontent.com/ccch1mneyyy/dsh-TUI/889be9e2913f04fbd79cd78b208813888d1b5c31/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/ccch1mneyyy/dsh-TUI/889be9e2913f04fbd79cd78b208813888d1b5c31/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "@deepseek-harness-tui/dsh-tui",
@@ -78690,7 +78690,7 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "ccch1mneyyy/dsh-TUI",
-          "commit": "33d561bce02fb72c1d65d3e0796147184860f397",
+          "commit": "889be9e2913f04fbd79cd78b208813888d1b5c31",
           "packagePath": "package.json",
           "coordinate": {
             "name": "@deepseek-harness-tui/dsh-tui",
@@ -79781,16 +79781,16 @@
     "dsh-codex-connect": {
       "targetId": "dsh-codex-connect",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T10:26:42.776Z",
+      "observedAt": "2026-08-23T11:50:13.122Z",
       "source": {
         "repository": "franksong2702/dsh-codex-connect",
         "ref": "main",
-        "commit": "9532aff66a3b5ab1168cb8344e3144dd3406d97f",
+        "commit": "b16702678b742e42696976246216efd4b20497ce",
         "packagePath": "package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/franksong2702/dsh-codex-connect/commit/9532aff66a3b5ab1168cb8344e3144dd3406d97f",
-        "packageUrl": "https://raw.githubusercontent.com/franksong2702/dsh-codex-connect/9532aff66a3b5ab1168cb8344e3144dd3406d97f/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/franksong2702/dsh-codex-connect/9532aff66a3b5ab1168cb8344e3144dd3406d97f/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/franksong2702/dsh-codex-connect/commit/b16702678b742e42696976246216efd4b20497ce",
+        "packageUrl": "https://raw.githubusercontent.com/franksong2702/dsh-codex-connect/b16702678b742e42696976246216efd4b20497ce/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/franksong2702/dsh-codex-connect/b16702678b742e42696976246216efd4b20497ce/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "dsh-codex-connect",
@@ -89394,7 +89394,7 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "franksong2702/dsh-codex-connect",
-          "commit": "9532aff66a3b5ab1168cb8344e3144dd3406d97f",
+          "commit": "b16702678b742e42696976246216efd4b20497ce",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-codex-connect",
