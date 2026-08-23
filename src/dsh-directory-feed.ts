@@ -19,6 +19,7 @@ export type DshDirectoryEvidenceStatus =
 export interface AwesomeDshCohortPlugin {
   id: string
   catalogEntry: string
+  catalogUrl: string
   repository: string
   category: string
   distribution:
@@ -70,6 +71,7 @@ export interface DshDirectoryCompatibilityEntry {
   id: string
   repository: string
   repositoryUrl: string
+  catalogUrl: string
   catalogEntry: string
   catalogEntryUrl: string
   category: string
@@ -133,6 +135,17 @@ function httpsUrl(value: unknown, label: string): string {
   return parsed.toString()
 }
 
+function githubCatalogUrl(value: unknown, repositoryName: string, label: string): string {
+  const parsed = new URL(httpsUrl(value, label))
+  const expectedPath = `/${repositoryName}`.toLowerCase()
+  const actualPath = parsed.pathname.replace(/\/$/, '').toLowerCase()
+  if (parsed.hostname.toLowerCase() !== 'github.com' || (actualPath !== expectedPath && !actualPath.startsWith(`${expectedPath}/`))) {
+    throw new Error(`${label} must stay within the selected GitHub repository`)
+  }
+  parsed.pathname = parsed.pathname.replace(/\/$/, '')
+  return parsed.toString()
+}
+
 function parseDistribution(value: unknown, label: string): AwesomeDshCohortPlugin['distribution'] {
   const item = record(value, label)
   const kind = boundedString(item.kind, `${label}.kind`, 64)
@@ -187,6 +200,7 @@ export function parseAwesomeDshCohort(input: unknown): AwesomeDshCohort {
     return {
       id,
       catalogEntry,
+      catalogUrl: githubCatalogUrl(item.catalogUrl, repositoryName, `plugins[${index}].catalogUrl`),
       repository: repositoryName,
       category: boundedString(item.category, `plugins[${index}].category`, 64),
       distribution: parseDistribution(item.distribution, `plugins[${index}].distribution`),
@@ -281,6 +295,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
       id: plugin.id,
       repository: plugin.repository,
       repositoryUrl: `https://github.com/${plugin.repository}`,
+      catalogUrl: plugin.catalogUrl,
       catalogEntry: plugin.catalogEntry,
       catalogEntryUrl: `https://github.com/${cohort.source.repository}/blob/${cohort.source.commit}/${plugin.catalogEntry}`,
       category: plugin.category,
@@ -349,7 +364,7 @@ export function renderDshDirectoryCompatibilityFeed(feed: DshDirectoryCompatibil
     '| --- | --- | --- | --- | --- |',
   ]
   for (const entry of feed.plugins) {
-    lines.push(`| [${markdown(entry.repository)}](${entry.catalogEntryUrl}) | ${cellCoordinate(entry)} | ${dshCoordinate(entry)} | \`${entry.status}\` | ${observedCoordinate(entry)} |`)
+    lines.push(`| [${markdown(entry.repository)}](${entry.catalogUrl}) | ${cellCoordinate(entry)} | ${dshCoordinate(entry)} | \`${entry.status}\` | ${observedCoordinate(entry)} |`)
   }
   lines.push(
     '',

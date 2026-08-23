@@ -1,19 +1,19 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`7f79f9c11b3c`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82) at `2026-08-23T08:02:26.261Z`.
+Generated from catalog commit [`7f79f9c11b3c`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82) at `2026-08-23T08:09:33.232Z`.
 
 **4 observed compatible · 0 observed incompatible · 2 needs review · 2 not observed**
 
 | Catalog plugin | Exact artifact | Exact DSH / runtime | Evidence status | Observed |
 | --- | --- | --- | --- | --- |
-| [bowenliang123/dsh-context](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/bowenliang123__dsh-context.yml) | `dsh-context@0.25.3` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T03:40:17.088Z |
-| [dsh-market/dsh-market](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/dsh-market__dsh-market.yml) | `dshmarket@1.19.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T07:09:16.954Z |
-| [GanyuanRan/Aegis](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/GanyuanRan__Aegis.yml) | — | — | `not-observed` | — |
-| [Han-1413141/dsh-cost-meter](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/Han-1413141__dsh-cost-meter.yml) | `dsh-cost-meter@1.5.38` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T03:40:18.405Z |
-| [Lum1104/dsh-browser](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/Lum1104__dsh-browser--packages-browser-bridge-browser.yml) | — | — | `not-observed` | — |
-| [NanmiCoder/dsh-agent-teams](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/NanmiCoder__dsh-agent-teams.yml) | `@nanmicoder/dsh-agent-teams@0.1.13` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T03:40:29.383Z |
-| [omdsh-dev/DSH-better-sidebar](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/omdsh-dev__DSH-better-sidebar.yml) | `dsh-better-sidebar@0.15.2` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T03:40:58.944Z |
-| [ZSeven-W/dsh-openpencil](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/7f79f9c11b3c655fe7656a00e54f0b6f8aa0bf82/data/plugins/ZSeven-W__dsh-openpencil.yml) | `@zseven-w/dsh-openpencil@0.1.0-rc.1` | `0.1.1-rc.2` / Node 24 | `needs-review` | 2026-08-23T03:40:15.559Z |
+| [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) | `dsh-context@0.25.3` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T03:40:17.088Z |
+| [dsh-market/dsh-market](https://github.com/dsh-market/dsh-market) | `dshmarket@1.19.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T07:09:16.954Z |
+| [GanyuanRan/Aegis](https://github.com/GanyuanRan/Aegis) | — | — | `not-observed` | — |
+| [Han-1413141/dsh-cost-meter](https://github.com/Han-1413141/dsh-cost-meter) | `dsh-cost-meter@1.5.38` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T03:40:18.405Z |
+| [Lum1104/dsh-browser](https://github.com/Lum1104/dsh-browser/tree/main/packages/browser/bridge-browser) | — | — | `not-observed` | — |
+| [NanmiCoder/dsh-agent-teams](https://github.com/NanmiCoder/dsh-agent-teams) | `@nanmicoder/dsh-agent-teams@0.1.13` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T03:40:29.383Z |
+| [omdsh-dev/DSH-better-sidebar](https://github.com/omdsh-dev/DSH-better-sidebar) | `dsh-better-sidebar@0.15.2` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T03:40:58.944Z |
+| [ZSeven-W/dsh-openpencil](https://github.com/ZSeven-W/dsh-openpencil) | `@zseven-w/dsh-openpencil@0.1.0-rc.1` | `0.1.1-rc.2` / Node 24 | `needs-review` | 2026-08-23T03:40:15.559Z |
 
 ## Reading the status
 
