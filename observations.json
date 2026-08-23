@@ -4,20 +4,20 @@
     "dsh-feishu-bot": {
       "targetId": "dsh-feishu-bot",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-22T07:05:47.403Z",
+      "observedAt": "2026-08-23T03:36:10.583Z",
       "source": {
         "repository": "PlutoKeating/dsh-lark-bot",
         "ref": "main",
-        "commit": "2812c8ed93be1c1a676f1d59a25952fdca915af9",
+        "commit": "06f31f46a290a5087de6d654c6d8665b8c7c1176",
         "packagePath": "package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/PlutoKeating/dsh-lark-bot/commit/2812c8ed93be1c1a676f1d59a25952fdca915af9",
-        "packageUrl": "https://raw.githubusercontent.com/PlutoKeating/dsh-lark-bot/2812c8ed93be1c1a676f1d59a25952fdca915af9/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/PlutoKeating/dsh-lark-bot/2812c8ed93be1c1a676f1d59a25952fdca915af9/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/PlutoKeating/dsh-lark-bot/commit/06f31f46a290a5087de6d654c6d8665b8c7c1176",
+        "packageUrl": "https://raw.githubusercontent.com/PlutoKeating/dsh-lark-bot/06f31f46a290a5087de6d654c6d8665b8c7c1176/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/PlutoKeating/dsh-lark-bot/06f31f46a290a5087de6d654c6d8665b8c7c1176/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "dsh-lark-bot",
-        "version": "0.17.0",
+        "version": "0.17.2",
         "type": "module",
         "exports": {
           ".": {
@@ -86,19 +86,19 @@
       },
       "package": {
         "name": "dsh-feishu-bot",
-        "version": "0.17.0",
+        "version": "0.17.2",
         "distTag": "latest",
-        "integrity": "sha512-cGKIKKsihCmdG2RZIbvH5PpR3WcoalwAKJYlBR+k10NBCue5nyC0/sraT8wnNxI7KTzm4bhHs3dwIcOcdB69vA==",
-        "tarball": "https://registry.npmjs.org/dsh-feishu-bot/-/dsh-feishu-bot-0.17.0.tgz"
+        "integrity": "sha512-EFCcTdbf8VSigKwEeqLovCBf2oazPwxfrWEtxnbKgiawRgrz9ZrT7YzNfTqwiEA+6DVSBw6ayV5SjdblBQUxfA==",
+        "tarball": "https://registry.npmjs.org/dsh-feishu-bot/-/dsh-feishu-bot-0.17.2.tgz"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+        "rootNodeId": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
         "nodes": [
           {
-            "id": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "id": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "name": "dsh-lark-bot",
-            "version": "0.17.0"
+            "version": "0.17.2"
           },
           {
             "id": "pnpm:@agentclientprotocol/sdk@0.25.1(zod@4.4.3)",
@@ -4963,112 +4963,112 @@
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:@agentclientprotocol/sdk@0.25.1(zod@4.4.3)",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:@deepseek-ai/cordis@4.0.1(@deepseek-ai/cordis-plugin-include@1.0.6)(@deepseek-ai/cordis-plugin-loader@1.0.2)",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:@deepseek-ai/dsh-client-runtime@0.1.0-rc.8(ae9b044469bc6958158de9f5e7986452)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-settings-plugins@0.1.0-rc.8(d1bf3319a31c0f6550e6e68382d2deb3)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-settings@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-api-remotes@0.1.0-rc.8(595254fcd6f0e2eefb415cb6827720e3))(@deepseek-ai/dsh-client-connection@0.1.0-rc.8)(@deepseek-ai/dsh-client-runtime@0.1.0-rc.8(ae9b044469bc6958158de9f5e7986452))(@deepseek-ai/dsh-invariants@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-settings@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/schemastery@3.18.1))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-slots@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:@deepseek-ai/dsh-sdk-client@0.1.0-rc.8(c5f7da3c6b82a880e497b3c928449391)",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:@deepseek-ai/dsh-settings@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/schemastery@3.18.1)",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:@larksuite/channel@0.4.1",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:@types/cross-spawn@6.0.6",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:@types/node@22.20.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:@types/qrcode-terminal@0.12.2",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:@types/react@18.3.28",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:commander@12.1.0",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:cross-spawn@7.0.6",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:qrcode-terminal@0.12.0",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:react@18.3.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:tsup@8.5.1(postcss@8.5.26)(typescript@5.9.3)(yaml@2.9.0)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:typescript@5.9.3",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:vitest@2.1.9(@types/node@22.20.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.0",
+            "from": "pnpm:workspace-root:dsh-lark-bot@0.17.2",
             "to": "pnpm:yaml@2.9.0",
             "kind": "runtime"
           },
@@ -5094,7 +5094,7 @@
           }
         ],
         "source": "pnpm-lock",
-        "digest": "sha256:fac28bb8c69156916cb5d2d20c866ba16dc72a30bccb82741e6aec0e356ae4ea",
+        "digest": "sha256:25c8d9175fac7f199bb3628e6bdaef828ae72aeeb3cde5950ba9c40da050b6d4",
         "unresolved": [
           {
             "from": "pnpm:debug@4.4.3",
@@ -5137,25 +5137,25 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "PlutoKeating/dsh-lark-bot",
-          "commit": "2812c8ed93be1c1a676f1d59a25952fdca915af9",
+          "commit": "06f31f46a290a5087de6d654c6d8665b8c7c1176",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-lark-bot",
-            "version": "0.17.0"
+            "version": "0.17.2"
           }
         },
         "downstream": {
           "published": {
             "name": "dsh-feishu-bot",
-            "version": "0.17.0"
+            "version": "0.17.2"
           },
           "graph": {
             "status": "incomplete",
             "root": {
               "name": "dsh-lark-bot",
-              "version": "0.17.0"
+              "version": "0.17.2"
             },
-            "digest": "sha256:fac28bb8c69156916cb5d2d20c866ba16dc72a30bccb82741e6aec0e356ae4ea",
+            "digest": "sha256:25c8d9175fac7f199bb3628e6bdaef828ae72aeeb3cde5950ba9c40da050b6d4",
             "nodes": 297,
             "edges": 702,
             "unresolved": 5
@@ -5167,23 +5167,23 @@
             "code": "source-published-identity",
             "status": "mismatch",
             "summary": "The source manifest and observed npm package do not identify the same name and version.",
-            "upstream": "dsh-lark-bot@0.17.0",
-            "downstream": "dsh-feishu-bot@0.17.0",
+            "upstream": "dsh-lark-bot@0.17.2",
+            "downstream": "dsh-feishu-bot@0.17.2",
             "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
           },
           {
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "dsh-lark-bot@0.17.0",
-            "downstream": "dsh-lark-bot@0.17.0"
+            "upstream": "dsh-lark-bot@0.17.2",
+            "downstream": "dsh-lark-bot@0.17.2"
           },
           {
             "code": "published-graph-root",
             "status": "mismatch",
             "summary": "The dependency graph root does not identify the observed npm package.",
-            "upstream": "dsh-feishu-bot@0.17.0",
-            "downstream": "dsh-lark-bot@0.17.0",
+            "upstream": "dsh-feishu-bot@0.17.2",
+            "downstream": "dsh-lark-bot@0.17.2",
             "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
           },
           {
@@ -11292,20 +11292,20 @@
     "dsh-better-sidebar": {
       "targetId": "dsh-better-sidebar",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-22T07:05:47.403Z",
+      "observedAt": "2026-08-23T03:36:10.583Z",
       "source": {
         "repository": "omdsh-dev/DSH-better-sidebar",
         "ref": "main",
-        "commit": "7dbd9b75e2fd65758d4e55f750319399b91255a2",
+        "commit": "d9b8f15d9eab018742f97d67e54b2398504894cd",
         "packagePath": "package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/omdsh-dev/DSH-better-sidebar/commit/7dbd9b75e2fd65758d4e55f750319399b91255a2",
-        "packageUrl": "https://raw.githubusercontent.com/omdsh-dev/DSH-better-sidebar/7dbd9b75e2fd65758d4e55f750319399b91255a2/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/omdsh-dev/DSH-better-sidebar/7dbd9b75e2fd65758d4e55f750319399b91255a2/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/omdsh-dev/DSH-better-sidebar/commit/d9b8f15d9eab018742f97d67e54b2398504894cd",
+        "packageUrl": "https://raw.githubusercontent.com/omdsh-dev/DSH-better-sidebar/d9b8f15d9eab018742f97d67e54b2398504894cd/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/omdsh-dev/DSH-better-sidebar/d9b8f15d9eab018742f97d67e54b2398504894cd/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "dsh-better-sidebar",
-        "version": "0.15.0",
+        "version": "0.15.2",
         "type": "module",
         "main": "lib/index.js",
         "exports": {
@@ -11360,6 +11360,7 @@
           "clsx": "^2.1.1",
           "mermaid": "^11.16.1",
           "node-pty": "^1.1.0",
+          "react-icons": "5.7.0",
           "rxjs": "^7.8.2",
           "schemastery": "^3.18.0",
           "ws": "^8.18.0"
@@ -11377,8 +11378,8 @@
           "@deepseek-ai/dsh-invariants": "^0.1.0-rc.8",
           "@deepseek-ai/dsh-llm": "^0.1.0-rc.8",
           "@deepseek-ai/dsh-session": "^0.1.0-rc.8",
-          "@deepseek-ai/dsh-subagent": "^0.1.0-rc.8",
           "@deepseek-ai/dsh-settings": "^0.1.0-rc.8",
+          "@deepseek-ai/dsh-subagent": "^0.1.0-rc.8",
           "@deepseek-ai/dsh-tools": "^0.1.0-rc.8",
           "cordis": "^4.0.0-rc.8",
           "react": "^18.2.0",
@@ -11407,19 +11408,19 @@
       },
       "package": {
         "name": "dsh-better-sidebar",
-        "version": "0.15.0",
+        "version": "0.15.2",
         "distTag": "latest",
-        "integrity": "sha512-9Ox7wvwhBRlgMIxVRKqar26eRp1GnAAOO5a0QrxydpUbuJdBIpUFOHGcAI+xX6ddJGwAdELFdMsyMWAtJEhAUQ==",
-        "tarball": "https://registry.npmjs.org/dsh-better-sidebar/-/dsh-better-sidebar-0.15.0.tgz"
+        "integrity": "sha512-XHr7cAqxz1k60D3W9q5VAuZ64kGhnZz9M4etBaRDNNCzuJZbJTvQ/Fzgl8mY06B/PpEcgzG6PTn2RMYF3FVnGQ==",
+        "tarball": "https://registry.npmjs.org/dsh-better-sidebar/-/dsh-better-sidebar-0.15.2.tgz"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+        "rootNodeId": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
         "nodes": [
           {
-            "id": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "id": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "name": "dsh-better-sidebar",
-            "version": "0.15.0"
+            "version": "0.15.2"
           },
           {
             "id": "pnpm:@antfu/install-pkg@1.1.0",
@@ -13595,6 +13596,11 @@
             "id": "pnpm:react-dom@18.2.0(react@18.2.0)",
             "name": "react-dom",
             "version": "18.2.0"
+          },
+          {
+            "id": "pnpm:react-icons@5.7.0(react@18.2.0)",
+            "name": "react-icons",
+            "version": "5.7.0"
           },
           {
             "id": "pnpm:react@18.2.0",
@@ -19679,6 +19685,11 @@
             "kind": "runtime"
           },
           {
+            "from": "pnpm:react-icons@5.7.0(react@18.2.0)",
+            "to": "pnpm:react@18.2.0",
+            "kind": "runtime"
+          },
+          {
             "from": "pnpm:react@18.2.0",
             "to": "pnpm:loose-envify@1.4.0",
             "kind": "runtime"
@@ -20279,292 +20290,297 @@
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/commands@6.11.0",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/lang-cpp@6.0.3",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/lang-css@6.3.1",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/lang-go@6.0.1",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/lang-html@6.4.12",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/lang-java@6.0.2",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/lang-javascript@6.2.5",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/lang-json@6.0.2",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/lang-markdown@6.5.2",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/lang-php@6.0.2",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/lang-python@6.2.1",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/lang-rust@6.0.2",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/lang-sql@6.10.0",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/lang-xml@6.1.0",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/lang-yaml@6.1.3",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/language@6.12.4",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/legacy-modes@6.5.3",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/search@6.7.1",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/state@6.7.1",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@codemirror/view@6.43.9",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@cordisjs/plugin-loader@1.0.0-rc.5(cordis@4.0.0-rc.8)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/cordis@4.0.1(@deepseek-ai/cordis-plugin-include@1.0.6)(@deepseek-ai/cordis-plugin-loader@1.0.2)",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/dsh-agent@0.1.1-rc.1(aa3d9fe6db68ff807654619f7de13685)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/dsh-client-locale@0.1.1-rc.1(cdf31bdbf1c332c5404cbf36a25aebfd)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/dsh-client-runtime@0.1.1-rc.1(114626bcc5e5280d3934a64ac9cf965f)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-conversation@0.1.1-rc.1(2372b72dc930ae314f391ca41692b6bf)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-primitives@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-settings@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-api-remotes@0.1.1-rc.1(0dbd24110e04aadb9415a7fc081ef3f0))(@deepseek-ai/dsh-client-connection@0.1.1-rc.1)(@deepseek-ai/dsh-client-runtime@0.1.1-rc.1(114626bcc5e5280d3934a64ac9cf965f))(@deepseek-ai/dsh-invariants@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-settings@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/schemastery@3.18.1))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-slots@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/dsh-host-webserver@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/dsh-llm@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/dsh-session@0.1.1-rc.1(7df49adfe80cd12fee5d57cbd9c430d9)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/dsh-settings@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.1-rc.1(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/schemastery@3.18.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/dsh-subagent@0.1.1-rc.1(49bbde82f635743d219c2dce7f3ffcd1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@deepseek-ai/dsh-tools@0.1.1-rc.1(5493e0ab460eb504a0593977b284c2a8)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@lezer/highlight@1.2.3",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@playwright/test@1.62.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@types/node@24.13.3",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@types/react-dom@18.3.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@types/react@18.3.31",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@types/ws@8.18.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@xterm/addon-fit@0.11.0",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:@xterm/xterm@5.5.0",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:clsx@2.1.1",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:cordis@4.0.0-rc.8(@cordisjs/plugin-loader@1.0.0-rc.5)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:jsdom@29.1.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:lightningcss@1.33.0",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:mermaid@11.17.0",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:node-pty@1.1.0",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:react-dom@18.2.0(react@18.2.0)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
+            "to": "pnpm:react-icons@5.7.0(react@18.2.0)",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:react@18.2.0",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:rxjs@7.8.2",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:schemastery@3.18.0",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:tsdown@0.22.14(typescript@5.6.2)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:typescript@5.6.2",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:vitest@4.1.11(@types/node@24.13.3)(jsdom@29.1.1)(vite@8.2.2(@types/node@24.13.3))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.0",
+            "from": "pnpm:workspace-root:dsh-better-sidebar@0.15.2",
             "to": "pnpm:ws@8.21.3",
             "kind": "runtime"
           },
@@ -20730,7 +20746,7 @@
           }
         ],
         "source": "pnpm-lock",
-        "digest": "sha256:9783dce686017a932b49b1dd8f794b753dcc1930189a3fcece6e47f09747fe2e",
+        "digest": "sha256:46b1901e96e09a11f50654e1c53fa2728879e82d5acf96787ab6b636af2c342d",
         "unresolved": [
           {
             "from": "pnpm:@exodus/bytes@1.15.1",
@@ -20776,27 +20792,27 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "omdsh-dev/DSH-better-sidebar",
-          "commit": "7dbd9b75e2fd65758d4e55f750319399b91255a2",
+          "commit": "d9b8f15d9eab018742f97d67e54b2398504894cd",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-better-sidebar",
-            "version": "0.15.0"
+            "version": "0.15.2"
           }
         },
         "downstream": {
           "published": {
             "name": "dsh-better-sidebar",
-            "version": "0.15.0"
+            "version": "0.15.2"
           },
           "graph": {
             "status": "incomplete",
             "root": {
               "name": "dsh-better-sidebar",
-              "version": "0.15.0"
+              "version": "0.15.2"
             },
-            "digest": "sha256:9783dce686017a932b49b1dd8f794b753dcc1930189a3fcece6e47f09747fe2e",
-            "nodes": 508,
-            "edges": 1354,
+            "digest": "sha256:46b1901e96e09a11f50654e1c53fa2728879e82d5acf96787ab6b636af2c342d",
+            "nodes": 509,
+            "edges": 1356,
             "unresolved": 6
           }
         },
@@ -20806,28 +20822,28 @@
             "code": "source-published-identity",
             "status": "aligned",
             "summary": "The source manifest and observed npm package have the same name and version.",
-            "upstream": "dsh-better-sidebar@0.15.0",
-            "downstream": "dsh-better-sidebar@0.15.0"
+            "upstream": "dsh-better-sidebar@0.15.2",
+            "downstream": "dsh-better-sidebar@0.15.2"
           },
           {
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "dsh-better-sidebar@0.15.0",
-            "downstream": "dsh-better-sidebar@0.15.0"
+            "upstream": "dsh-better-sidebar@0.15.2",
+            "downstream": "dsh-better-sidebar@0.15.2"
           },
           {
             "code": "published-graph-root",
             "status": "aligned",
             "summary": "The dependency graph root matches the observed npm package.",
-            "upstream": "dsh-better-sidebar@0.15.0",
-            "downstream": "dsh-better-sidebar@0.15.0"
+            "upstream": "dsh-better-sidebar@0.15.2",
+            "downstream": "dsh-better-sidebar@0.15.2"
           },
           {
             "code": "dependency-graph-coverage",
             "status": "unknown",
             "summary": "The dependency graph is incomplete (6 unresolved edges).",
-            "downstream": "incomplete; 508 nodes, 1354 edges",
+            "downstream": "incomplete; 509 nodes, 1356 edges",
             "remediation": "Resolve the missing lockfile or peer/optional edges; an empty vulnerability result is not complete coverage while this remains unknown."
           }
         ]
@@ -20836,20 +20852,20 @@
     "dsh-market": {
       "targetId": "dsh-market",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-22T07:05:47.403Z",
+      "observedAt": "2026-08-23T03:36:10.583Z",
       "source": {
         "repository": "dsh-market/dsh-market",
         "ref": "main",
-        "commit": "b9323cc85d0148013384a5aca5215be1922eea36",
+        "commit": "d829d785f01d4902416a1770d2104bf0a1c1d593",
         "packagePath": "package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/dsh-market/dsh-market/commit/b9323cc85d0148013384a5aca5215be1922eea36",
-        "packageUrl": "https://raw.githubusercontent.com/dsh-market/dsh-market/b9323cc85d0148013384a5aca5215be1922eea36/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/dsh-market/dsh-market/b9323cc85d0148013384a5aca5215be1922eea36/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/dsh-market/dsh-market/commit/d829d785f01d4902416a1770d2104bf0a1c1d593",
+        "packageUrl": "https://raw.githubusercontent.com/dsh-market/dsh-market/d829d785f01d4902416a1770d2104bf0a1c1d593/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/dsh-market/dsh-market/d829d785f01d4902416a1770d2104bf0a1c1d593/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "dshmarket",
-        "version": "1.18.0",
+        "version": "1.19.0-beta.2",
         "type": "module",
         "main": "lib/index.js",
         "exports": {
@@ -20867,7 +20883,7 @@
         },
         "peerDependencies": {
           "@deepseek-ai/cordis": "^4.0.1",
-          "@deepseek-ai/dsh-settings": "^0.1.0-rc.7"
+          "@deepseek-ai/dsh-settings": "^0.1.0-rc.7 || ^0.1.1-rc.2"
         },
         "peerDependenciesMeta": {
           "@deepseek-ai/dsh-settings": {
@@ -20892,19 +20908,19 @@
       },
       "package": {
         "name": "dshmarket",
-        "version": "1.18.0",
+        "version": "1.18.1",
         "distTag": "latest",
-        "integrity": "sha512-WAHmaGU1JkSMQl6FfG5NqMnTg4C6h5+i2skb52QdwPGMA8mifqflirr87TM1PPUvF431EYy9v/UR2GihnswmEw==",
-        "tarball": "https://registry.npmjs.org/dshmarket/-/dshmarket-1.18.0.tgz"
+        "integrity": "sha512-N7Z9Ylevf7zRJBkwuoapA/Hw5Ps7MYuQ9dDSRM9EiSo3vIU9GQluPyP5NrHiVEdJYy6sh28ATjAmriMCLgesqg==",
+        "tarball": "https://registry.npmjs.org/dshmarket/-/dshmarket-1.18.1.tgz"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "pnpm:workspace-root:dshmarket@1.18.0",
+        "rootNodeId": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
         "nodes": [
           {
-            "id": "pnpm:workspace-root:dshmarket@1.18.0",
+            "id": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "name": "dshmarket",
-            "version": "1.18.0"
+            "version": "1.19.0-beta.2"
           },
           {
             "id": "pnpm:@asamuzakjp/css-color@5.1.11",
@@ -25079,82 +25095,82 @@
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:@deepseek-ai/cordis@4.0.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-primitives@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(supports-color@7.1.0)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:@types/js-yaml@4.0.9",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:@types/node@26.2.0",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:@types/react@18.3.31",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:js-yaml@4.3.1",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:jsdom@29.1.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:lightningcss@1.33.0",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:playwright@1.62.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:react-dom@18.3.1(react@18.3.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:react@18.3.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:tsdown@0.22.14(typescript@7.0.2)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:typescript@7.0.2",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.18.0",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
             "to": "pnpm:vitest@4.1.10(@types/node@26.2.0)(jsdom@29.1.1)(vite@8.2.1(@types/node@26.2.0))",
             "kind": "development"
           },
@@ -25300,7 +25316,7 @@
           }
         ],
         "source": "pnpm-lock",
-        "digest": "sha256:bf83eb0ab680528c9b2ad82bac71b152bfdf34f30c33f087bf4f0f9fb0b4b3bf",
+        "digest": "sha256:f11d7d63270d71108dc16ffd03258311937fb6368bb63d6a498543e16eae2107",
         "unresolved": [
           {
             "from": "pnpm:@deepseek-ai/cordis@4.0.1",
@@ -25340,52 +25356,54 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "dsh-market/dsh-market",
-          "commit": "b9323cc85d0148013384a5aca5215be1922eea36",
+          "commit": "d829d785f01d4902416a1770d2104bf0a1c1d593",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dshmarket",
-            "version": "1.18.0"
+            "version": "1.19.0-beta.2"
           }
         },
         "downstream": {
           "published": {
             "name": "dshmarket",
-            "version": "1.18.0"
+            "version": "1.18.1"
           },
           "graph": {
             "status": "incomplete",
             "root": {
               "name": "dshmarket",
-              "version": "1.18.0"
+              "version": "1.19.0-beta.2"
             },
-            "digest": "sha256:bf83eb0ab680528c9b2ad82bac71b152bfdf34f30c33f087bf4f0f9fb0b4b3bf",
+            "digest": "sha256:f11d7d63270d71108dc16ffd03258311937fb6368bb63d6a498543e16eae2107",
             "nodes": 315,
             "edges": 564,
             "unresolved": 5
           }
         },
-        "status": "unknown",
+        "status": "mismatch",
         "checks": [
           {
             "code": "source-published-identity",
-            "status": "aligned",
-            "summary": "The source manifest and observed npm package have the same name and version.",
-            "upstream": "dshmarket@1.18.0",
-            "downstream": "dshmarket@1.18.0"
+            "status": "mismatch",
+            "summary": "The source manifest and observed npm package do not identify the same name and version.",
+            "upstream": "dshmarket@1.19.0-beta.2",
+            "downstream": "dshmarket@1.18.1",
+            "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
           },
           {
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "dshmarket@1.18.0",
-            "downstream": "dshmarket@1.18.0"
+            "upstream": "dshmarket@1.19.0-beta.2",
+            "downstream": "dshmarket@1.19.0-beta.2"
           },
           {
             "code": "published-graph-root",
-            "status": "aligned",
-            "summary": "The dependency graph root matches the observed npm package.",
-            "upstream": "dshmarket@1.18.0",
-            "downstream": "dshmarket@1.18.0"
+            "status": "mismatch",
+            "summary": "The dependency graph root does not identify the observed npm package.",
+            "upstream": "dshmarket@1.18.1",
+            "downstream": "dshmarket@1.19.0-beta.2",
+            "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
           },
           {
             "code": "dependency-graph-coverage",
@@ -31288,20 +31306,20 @@
     "dsh-context": {
       "targetId": "dsh-context",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-22T07:05:47.403Z",
+      "observedAt": "2026-08-23T03:36:10.583Z",
       "source": {
         "repository": "bowenliang123/dsh-context",
         "ref": "main",
-        "commit": "1ddd99978f4e1057291180c07e03cc31758957a2",
+        "commit": "c2fb81eaaac44b4c02cbe5cff123a20796c109ef",
         "packagePath": "package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/bowenliang123/dsh-context/commit/1ddd99978f4e1057291180c07e03cc31758957a2",
-        "packageUrl": "https://raw.githubusercontent.com/bowenliang123/dsh-context/1ddd99978f4e1057291180c07e03cc31758957a2/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/bowenliang123/dsh-context/1ddd99978f4e1057291180c07e03cc31758957a2/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/bowenliang123/dsh-context/commit/c2fb81eaaac44b4c02cbe5cff123a20796c109ef",
+        "packageUrl": "https://raw.githubusercontent.com/bowenliang123/dsh-context/c2fb81eaaac44b4c02cbe5cff123a20796c109ef/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/bowenliang123/dsh-context/c2fb81eaaac44b4c02cbe5cff123a20796c109ef/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "dsh-context",
-        "version": "0.23.0",
+        "version": "0.25.3",
         "type": "module",
         "main": "lib/index.js",
         "exports": {
@@ -31344,19 +31362,19 @@
       },
       "package": {
         "name": "dsh-context",
-        "version": "0.23.0",
+        "version": "0.25.3",
         "distTag": "latest",
-        "integrity": "sha512-YaBDkeeXkAAweEGue4esz7eblhnrJ6NgfGK2xq164sCx1hkFGD+WGJnIHc+FZBzqvXsoU77/jhMWeAQX1yn1ng==",
-        "tarball": "https://registry.npmjs.org/dsh-context/-/dsh-context-0.23.0.tgz"
+        "integrity": "sha512-jkfJioC+ngIGjXXsNaw7V4TDrDxx/too9wKtMPeOu9+obRy87TDgc+6xRrN2Pyl6fkdA7k5lp3yrYQkOaMzb3A==",
+        "tarball": "https://registry.npmjs.org/dsh-context/-/dsh-context-0.25.3.tgz"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "pnpm:workspace-root:dsh-context@0.23.0",
+        "rootNodeId": "pnpm:workspace-root:dsh-context@0.25.3",
         "nodes": [
           {
-            "id": "pnpm:workspace-root:dsh-context@0.23.0",
+            "id": "pnpm:workspace-root:dsh-context@0.25.3",
             "name": "dsh-context",
-            "version": "0.23.0"
+            "version": "0.25.3"
           },
           {
             "id": "pnpm:@asamuzakjp/css-color@6.0.7",
@@ -36626,92 +36644,92 @@
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:@deepseek-ai/cordis@4.0.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-primitives@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:@deepseek-ai/dsh-session-projection@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-session@0.1.0-rc.8(6fd26f59436a18b115f326d6060415e6))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.8(6fd26f59436a18b115f326d6060415e6)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:@stylistic/eslint-plugin@5.10.0(eslint@10.8.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:@types/react@18.3.31",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:eslint-plugin-sonarjs@4.2.0(eslint@10.8.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:jsdom@30.0.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:lightningcss@1.33.0",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:oxlint-tsgolint@7.0.2001",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:oxlint@1.76.0(oxlint-tsgolint@7.0.2001)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:playwright-core@1.62.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:react-dom@18.3.1(react@18.3.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:react@18.3.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:tsdown@0.22.14(typescript@7.0.2)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:typescript@7.0.2",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:vitest@4.1.11(jsdom@30.0.1)(vite@8.2.2(yaml@2.9.0))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dsh-context@0.23.0",
+            "from": "pnpm:workspace-root:dsh-context@0.25.3",
             "to": "pnpm:zod@4.4.3",
             "kind": "runtime"
           },
@@ -36857,7 +36875,7 @@
           }
         ],
         "source": "pnpm-lock",
-        "digest": "sha256:3bb32a35e687e0508ad7967250fe8e803beb7b133f7f29779bcb95b170a177f8",
+        "digest": "sha256:58ed38e1f10eb1305e8912d8e1cc60f85637b75c68bd6d56b33bce9629546e20",
         "unresolved": [
           {
             "from": "pnpm:@deepseek-ai/cordis@4.0.1",
@@ -36909,25 +36927,25 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "bowenliang123/dsh-context",
-          "commit": "1ddd99978f4e1057291180c07e03cc31758957a2",
+          "commit": "c2fb81eaaac44b4c02cbe5cff123a20796c109ef",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-context",
-            "version": "0.23.0"
+            "version": "0.25.3"
           }
         },
         "downstream": {
           "published": {
             "name": "dsh-context",
-            "version": "0.23.0"
+            "version": "0.25.3"
           },
           "graph": {
             "status": "incomplete",
             "root": {
               "name": "dsh-context",
-              "version": "0.23.0"
+              "version": "0.25.3"
             },
-            "digest": "sha256:3bb32a35e687e0508ad7967250fe8e803beb7b133f7f29779bcb95b170a177f8",
+            "digest": "sha256:58ed38e1f10eb1305e8912d8e1cc60f85637b75c68bd6d56b33bce9629546e20",
             "nodes": 401,
             "edges": 699,
             "unresolved": 7
@@ -36939,22 +36957,22 @@
             "code": "source-published-identity",
             "status": "aligned",
             "summary": "The source manifest and observed npm package have the same name and version.",
-            "upstream": "dsh-context@0.23.0",
-            "downstream": "dsh-context@0.23.0"
+            "upstream": "dsh-context@0.25.3",
+            "downstream": "dsh-context@0.25.3"
           },
           {
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "dsh-context@0.23.0",
-            "downstream": "dsh-context@0.23.0"
+            "upstream": "dsh-context@0.25.3",
+            "downstream": "dsh-context@0.25.3"
           },
           {
             "code": "published-graph-root",
             "status": "aligned",
             "summary": "The dependency graph root matches the observed npm package.",
-            "upstream": "dsh-context@0.23.0",
-            "downstream": "dsh-context@0.23.0"
+            "upstream": "dsh-context@0.25.3",
+            "downstream": "dsh-context@0.25.3"
           },
           {
             "code": "dependency-graph-coverage",
@@ -36969,20 +36987,20 @@
     "dsh-agent-teams": {
       "targetId": "dsh-agent-teams",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-22T07:05:47.403Z",
+      "observedAt": "2026-08-23T03:36:10.583Z",
       "source": {
         "repository": "NanmiCoder/dsh-agent-teams",
         "ref": "main",
-        "commit": "0c21e5d2f45ec1ea7c9ee89ffc4ee77d1cb9262e",
+        "commit": "912aae5225d3d85fa841a1b0c8a5c77021876c25",
         "packagePath": "package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/NanmiCoder/dsh-agent-teams/commit/0c21e5d2f45ec1ea7c9ee89ffc4ee77d1cb9262e",
-        "packageUrl": "https://raw.githubusercontent.com/NanmiCoder/dsh-agent-teams/0c21e5d2f45ec1ea7c9ee89ffc4ee77d1cb9262e/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/NanmiCoder/dsh-agent-teams/0c21e5d2f45ec1ea7c9ee89ffc4ee77d1cb9262e/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/NanmiCoder/dsh-agent-teams/commit/912aae5225d3d85fa841a1b0c8a5c77021876c25",
+        "packageUrl": "https://raw.githubusercontent.com/NanmiCoder/dsh-agent-teams/912aae5225d3d85fa841a1b0c8a5c77021876c25/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/NanmiCoder/dsh-agent-teams/912aae5225d3d85fa841a1b0c8a5c77021876c25/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "@nanmicoder/dsh-agent-teams",
-        "version": "0.1.11",
+        "version": "0.1.13",
         "type": "module",
         "main": "lib/index.js",
         "exports": {
@@ -37085,19 +37103,19 @@
       },
       "package": {
         "name": "@nanmicoder/dsh-agent-teams",
-        "version": "0.1.11",
+        "version": "0.1.13",
         "distTag": "latest",
-        "integrity": "sha512-x6ICNxvv6oewHJDG9d9MCX8j0oW2QdXRIVN/qc2uhJYxnqwIydvgEMX7GmBf9m4VKDisawYpTuEYml6zok2Tiw==",
-        "tarball": "https://registry.npmjs.org/@nanmicoder/dsh-agent-teams/-/dsh-agent-teams-0.1.11.tgz"
+        "integrity": "sha512-1r762+78NCwomc8t6cSx847AmEuAORKdIkIcdtgxB0Gk1qgjDUsJcwZ8O2oGFBICt+72pAwtj1n0yYGU1DLJTg==",
+        "tarball": "https://registry.npmjs.org/@nanmicoder/dsh-agent-teams/-/dsh-agent-teams-0.1.13.tgz"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+        "rootNodeId": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
         "nodes": [
           {
-            "id": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "id": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "name": "@nanmicoder/dsh-agent-teams",
-            "version": "0.1.11"
+            "version": "0.1.13"
           },
           {
             "id": "pnpm:@babel/generator@8.0.0-rc.6",
@@ -42647,122 +42665,122 @@
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/cordis@4.0.1(@deepseek-ai/cordis-plugin-include@1.0.6)(@deepseek-ai/cordis-plugin-loader@1.0.2)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/dsh-agent@0.1.0-rc.8(163ec746819ca45896bc0b506439513f)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/dsh-client-locale@0.1.0-rc.8(986878d80e354fbb3db132a1ac384d07)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/dsh-client-runtime@0.1.0-rc.8(e257c20f65985e8ca27c6cc2bac0a0f2)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-conversation@0.1.0-rc.8(f2fc3e18331c7969b5d43024c3d03eaf)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-layout@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-client-runtime@0.1.0-rc.8(e257c20f65985e8ca27c6cc2bac0a0f2))(@deepseek-ai/dsh-client-ui-theme@0.1.0-rc.8(1eaec191bbc4cdca55cd4d0904a92d0a))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-primitives@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-slots@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/dsh-commands@0.1.0-rc.8(73b5e59a60d947da0cb151b0ddc1a2d4)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/dsh-llm@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/dsh-session@0.1.0-rc.8(63e7d1d5072439be969a2c67b66ea98d)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/dsh-subagent@0.1.0-rc.8(730d293b3132ab4924eba478430363b0)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/dsh-system-prompt@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.8(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/dsh-tools@0.1.0-rc.8(3ccbd99673ba75fe218429ad7656a94f)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/dsh-workspace@0.1.0-rc.8(53b8510bcb700c395573eafbdf55b63c)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@deepseek-ai/schemastery@3.18.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@types/node@24.13.3",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@types/react-dom@18.3.7(@types/react@18.3.31)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:@types/react@18.3.31",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:lightningcss@1.33.0",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:react-dom@18.3.1(react@18.3.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:react@18.3.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:tsdown@0.22.2(typescript@5.9.3)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.11",
+            "from": "pnpm:workspace-root:@nanmicoder/dsh-agent-teams@0.1.13",
             "to": "pnpm:typescript@5.9.3",
             "kind": "development"
           },
@@ -42788,7 +42806,7 @@
           }
         ],
         "source": "pnpm-lock",
-        "digest": "sha256:1819dc31911635d56b50dcddf6210ba969eebf7a010e1bbc18e4123b9dbf8f69",
+        "digest": "sha256:05ce7c94c0326ce670b8b8237fd76f17033cf2743553a0ac99c0d69c2bef2d06",
         "unresolved": [
           {
             "from": "pnpm:debug@4.4.3",
@@ -42822,25 +42840,25 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "NanmiCoder/dsh-agent-teams",
-          "commit": "0c21e5d2f45ec1ea7c9ee89ffc4ee77d1cb9262e",
+          "commit": "912aae5225d3d85fa841a1b0c8a5c77021876c25",
           "packagePath": "package.json",
           "coordinate": {
             "name": "@nanmicoder/dsh-agent-teams",
-            "version": "0.1.11"
+            "version": "0.1.13"
           }
         },
         "downstream": {
           "published": {
             "name": "@nanmicoder/dsh-agent-teams",
-            "version": "0.1.11"
+            "version": "0.1.13"
           },
           "graph": {
             "status": "incomplete",
             "root": {
               "name": "@nanmicoder/dsh-agent-teams",
-              "version": "0.1.11"
+              "version": "0.1.13"
             },
-            "digest": "sha256:1819dc31911635d56b50dcddf6210ba969eebf7a010e1bbc18e4123b9dbf8f69",
+            "digest": "sha256:05ce7c94c0326ce670b8b8237fd76f17033cf2743553a0ac99c0d69c2bef2d06",
             "nodes": 264,
             "edges": 874,
             "unresolved": 4
@@ -42852,22 +42870,22 @@
             "code": "source-published-identity",
             "status": "aligned",
             "summary": "The source manifest and observed npm package have the same name and version.",
-            "upstream": "@nanmicoder/dsh-agent-teams@0.1.11",
-            "downstream": "@nanmicoder/dsh-agent-teams@0.1.11"
+            "upstream": "@nanmicoder/dsh-agent-teams@0.1.13",
+            "downstream": "@nanmicoder/dsh-agent-teams@0.1.13"
           },
           {
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "@nanmicoder/dsh-agent-teams@0.1.11",
-            "downstream": "@nanmicoder/dsh-agent-teams@0.1.11"
+            "upstream": "@nanmicoder/dsh-agent-teams@0.1.13",
+            "downstream": "@nanmicoder/dsh-agent-teams@0.1.13"
           },
           {
             "code": "published-graph-root",
             "status": "aligned",
             "summary": "The dependency graph root matches the observed npm package.",
-            "upstream": "@nanmicoder/dsh-agent-teams@0.1.11",
-            "downstream": "@nanmicoder/dsh-agent-teams@0.1.11"
+            "upstream": "@nanmicoder/dsh-agent-teams@0.1.13",
+            "downstream": "@nanmicoder/dsh-agent-teams@0.1.13"
           },
           {
             "code": "dependency-graph-coverage",
@@ -42882,20 +42900,20 @@
     "dsh-cost-meter": {
       "targetId": "dsh-cost-meter",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-22T07:05:47.403Z",
+      "observedAt": "2026-08-23T03:36:10.583Z",
       "source": {
         "repository": "Han-1413141/dsh-cost-meter",
         "ref": "master",
-        "commit": "a4f653b37ba3a31b7f4a50af3ad52dbe31efdcdf",
+        "commit": "a6ab9d61936e89521e800d16ce9b4dc6723972f9",
         "packagePath": "package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/Han-1413141/dsh-cost-meter/commit/a4f653b37ba3a31b7f4a50af3ad52dbe31efdcdf",
-        "packageUrl": "https://raw.githubusercontent.com/Han-1413141/dsh-cost-meter/a4f653b37ba3a31b7f4a50af3ad52dbe31efdcdf/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/Han-1413141/dsh-cost-meter/a4f653b37ba3a31b7f4a50af3ad52dbe31efdcdf/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/Han-1413141/dsh-cost-meter/commit/a6ab9d61936e89521e800d16ce9b4dc6723972f9",
+        "packageUrl": "https://raw.githubusercontent.com/Han-1413141/dsh-cost-meter/a6ab9d61936e89521e800d16ce9b4dc6723972f9/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/Han-1413141/dsh-cost-meter/a6ab9d61936e89521e800d16ce9b4dc6723972f9/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "dsh-cost-meter",
-        "version": "1.5.37",
+        "version": "1.5.40",
         "type": "module",
         "main": "lib/index.js",
         "exports": {
@@ -42926,19 +42944,19 @@
       },
       "package": {
         "name": "dsh-cost-meter",
-        "version": "1.5.37",
+        "version": "1.5.38",
         "distTag": "latest",
-        "integrity": "sha512-BIN+5dPJBOv7UuXrli+egU1TH9JUjksCnCo59uFUVtEGdjNksouhkzv/eFYXmE7S5/ae2QrhSM/EzIo0u5Lo7A==",
-        "tarball": "https://registry.npmjs.org/dsh-cost-meter/-/dsh-cost-meter-1.5.37.tgz"
+        "integrity": "sha512-iXXe0Ry8Va1v5iJsqk9tfgh1IdUc0mI0VxRDMTSPkRcTIifr5he2jO4P1z+QDboNt4JQ5fuR/C/Je0fIUDfRuQ==",
+        "tarball": "https://registry.npmjs.org/dsh-cost-meter/-/dsh-cost-meter-1.5.38.tgz"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "pnpm:workspace-root:dsh-cost-meter@1.5.37",
+        "rootNodeId": "pnpm:workspace-root:dsh-cost-meter@1.5.40",
         "nodes": [
           {
-            "id": "pnpm:workspace-root:dsh-cost-meter@1.5.37",
+            "id": "pnpm:workspace-root:dsh-cost-meter@1.5.40",
             "name": "dsh-cost-meter",
-            "version": "1.5.37"
+            "version": "1.5.40"
           },
           {
             "id": "pnpm:@deepseek-ai/cordis@4.0.1",
@@ -43053,23 +43071,23 @@
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.37",
+            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.40",
             "to": "pnpm:@deepseek-ai/dsh-credentials@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.37",
+            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.40",
             "to": "pnpm:@deepseek-ai/dsh-home-paths@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.37",
+            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.40",
             "to": "pnpm:zod@4.4.3",
             "kind": "runtime"
           }
         ],
         "source": "pnpm-lock",
-        "digest": "sha256:14fc4e507a99035e3bbe7cc59b8925fe337919ffc971e58c853ae7c427e0a465",
+        "digest": "sha256:d82df7459ad88cd74854c4e71dd9abe666ad3d8d198929e397ae2ea1a42e926b",
         "unresolved": [
           {
             "from": "pnpm:@deepseek-ai/cordis@4.0.1",
@@ -43091,52 +43109,54 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "Han-1413141/dsh-cost-meter",
-          "commit": "a4f653b37ba3a31b7f4a50af3ad52dbe31efdcdf",
+          "commit": "a6ab9d61936e89521e800d16ce9b4dc6723972f9",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-cost-meter",
-            "version": "1.5.37"
+            "version": "1.5.40"
           }
         },
         "downstream": {
           "published": {
             "name": "dsh-cost-meter",
-            "version": "1.5.37"
+            "version": "1.5.38"
           },
           "graph": {
             "status": "incomplete",
             "root": {
               "name": "dsh-cost-meter",
-              "version": "1.5.37"
+              "version": "1.5.40"
             },
-            "digest": "sha256:14fc4e507a99035e3bbe7cc59b8925fe337919ffc971e58c853ae7c427e0a465",
+            "digest": "sha256:d82df7459ad88cd74854c4e71dd9abe666ad3d8d198929e397ae2ea1a42e926b",
             "nodes": 10,
             "edges": 16,
             "unresolved": 2
           }
         },
-        "status": "unknown",
+        "status": "mismatch",
         "checks": [
           {
             "code": "source-published-identity",
-            "status": "aligned",
-            "summary": "The source manifest and observed npm package have the same name and version.",
-            "upstream": "dsh-cost-meter@1.5.37",
-            "downstream": "dsh-cost-meter@1.5.37"
+            "status": "mismatch",
+            "summary": "The source manifest and observed npm package do not identify the same name and version.",
+            "upstream": "dsh-cost-meter@1.5.40",
+            "downstream": "dsh-cost-meter@1.5.38",
+            "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
           },
           {
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "dsh-cost-meter@1.5.37",
-            "downstream": "dsh-cost-meter@1.5.37"
+            "upstream": "dsh-cost-meter@1.5.40",
+            "downstream": "dsh-cost-meter@1.5.40"
           },
           {
             "code": "published-graph-root",
-            "status": "aligned",
-            "summary": "The dependency graph root matches the observed npm package.",
-            "upstream": "dsh-cost-meter@1.5.37",
-            "downstream": "dsh-cost-meter@1.5.37"
+            "status": "mismatch",
+            "summary": "The dependency graph root does not identify the observed npm package.",
+            "upstream": "dsh-cost-meter@1.5.38",
+            "downstream": "dsh-cost-meter@1.5.40",
+            "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
           },
           {
             "code": "dependency-graph-coverage",
