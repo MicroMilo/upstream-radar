@@ -52,6 +52,9 @@ function fixture() {
       plugins: [...ids, 'source-only'].map(id => ({
         id,
         catalogEntry: `data/plugins/example__${id}.yml`,
+        catalogUrl: id === 'source-only'
+          ? 'https://github.com/example/source-only/tree/main/packages/plugin'
+          : `https://github.com/example/${id}`,
         repository: `example/${id}`,
         category: 'dev',
         distribution: id === 'source-only'
@@ -102,6 +105,10 @@ describe('DSH directory compatibility feed', () => {
     assert.equal(feed.plugins.find(item => item.id === 'peer-gap')?.status, 'needs-review')
     assert.equal(feed.plugins.find(item => item.id === 'unknown')?.status, 'needs-review')
     assert.equal(feed.plugins.find(item => item.id === 'source-only')?.status, 'not-observed')
+    assert.equal(
+      feed.plugins.find(item => item.id === 'source-only')?.catalogUrl,
+      'https://github.com/example/source-only/tree/main/packages/plugin',
+    )
     assert.equal(feed.plugins.find(item => item.id === 'clean')?.cells[0]?.recheckDueAt, '2026-08-30T00:00:00.000Z')
     assert.equal(feed.producer.license, 'Apache-2.0')
   })
@@ -133,6 +140,10 @@ describe('DSH directory compatibility feed', () => {
     assert.equal(feed.plugins.find(item => item.id === 'dsh-better-sidebar')?.status, 'needs-review')
     assert.equal(feed.plugins.find(item => item.id === 'dsh-openpencil')?.status, 'needs-review')
     assert.equal(feed.plugins.find(item => item.id === 'dsh-browser')?.status, 'not-observed')
+    assert.equal(
+      feed.plugins.find(item => item.id === 'dsh-browser')?.catalogUrl,
+      'https://github.com/Lum1104/dsh-browser/tree/main/packages/browser/bridge-browser',
+    )
     assert.equal(feed.plugins.filter(item => item.status === 'observed-incompatible').length, 0)
   })
 })

@@ -18,6 +18,7 @@
     {
       "id": "dsh-browser",
       "catalogEntry": "data/plugins/Lum1104__dsh-browser--packages-browser-bridge-browser.yml",
+      "catalogUrl": "https://github.com/Lum1104/dsh-browser/tree/main/packages/browser/bridge-browser",
       "repository": "Lum1104/dsh-browser",
       "ref": "main",
       "category": "browser",
@@ -39,6 +40,7 @@
     {
       "id": "dsh-better-sidebar",
       "catalogEntry": "data/plugins/omdsh-dev__DSH-better-sidebar.yml",
+      "catalogUrl": "https://github.com/omdsh-dev/DSH-better-sidebar",
       "repository": "omdsh-dev/DSH-better-sidebar",
       "ref": "main",
       "category": "ui",
@@ -61,6 +63,7 @@
     {
       "id": "dsh-market",
       "catalogEntry": "data/plugins/dsh-market__dsh-market.yml",
+      "catalogUrl": "https://github.com/dsh-market/dsh-market",
       "repository": "dsh-market/dsh-market",
       "ref": "main",
       "category": "market",
@@ -83,6 +86,7 @@
     {
       "id": "dsh-openpencil",
       "catalogEntry": "data/plugins/ZSeven-W__dsh-openpencil.yml",
+      "catalogUrl": "https://github.com/ZSeven-W/dsh-openpencil",
       "repository": "ZSeven-W/dsh-openpencil",
       "ref": "main",
       "category": "ui",
@@ -105,6 +109,7 @@
     {
       "id": "dsh-context",
       "catalogEntry": "data/plugins/bowenliang123__dsh-context.yml",
+      "catalogUrl": "https://github.com/bowenliang123/dsh-context",
       "repository": "bowenliang123/dsh-context",
       "ref": "main",
       "category": "usage",
@@ -127,6 +132,7 @@
     {
       "id": "dsh-agent-teams",
       "catalogEntry": "data/plugins/NanmiCoder__dsh-agent-teams.yml",
+      "catalogUrl": "https://github.com/NanmiCoder/dsh-agent-teams",
       "repository": "NanmiCoder/dsh-agent-teams",
       "ref": "main",
       "category": "workflow",
@@ -149,6 +155,7 @@
     {
       "id": "dsh-cost-meter",
       "catalogEntry": "data/plugins/Han-1413141__dsh-cost-meter.yml",
+      "catalogUrl": "https://github.com/Han-1413141/dsh-cost-meter",
       "repository": "Han-1413141/dsh-cost-meter",
       "ref": "master",
       "category": "usage",
@@ -171,6 +178,7 @@
     {
       "id": "aegis",
       "catalogEntry": "data/plugins/GanyuanRan__Aegis.yml",
+      "catalogUrl": "https://github.com/GanyuanRan/Aegis",
       "repository": "GanyuanRan/Aegis",
       "ref": "main",
       "category": "skill",

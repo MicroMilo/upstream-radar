@@ -6,6 +6,7 @@ import { parseObserverConfigText } from '../src/upstream-observer.js'
 
 interface CohortPlugin {
   id: string
+  catalogUrl: string
   repository: string
   ref: string
   packagePath: string
@@ -41,6 +42,7 @@ describe('awesome-dsh-plugin monitored cohort', () => {
     assert.equal(importedObserverTargets.length, cohort.plugins.length)
 
     for (const plugin of cohort.plugins) {
+      assert.ok(plugin.catalogUrl.toLowerCase().startsWith(`https://github.com/${plugin.repository.toLowerCase()}`))
       const observed = importedObserverTargets.find(target => target.id === plugin.id)
       assert.ok(observed, `missing observer target for ${plugin.id}`)
       assert.equal(observed.repository, plugin.repository)
@@ -52,6 +54,10 @@ describe('awesome-dsh-plugin monitored cohort', () => {
     const sourceOnlyPlugins = cohort.plugins.filter(plugin => plugin.distribution.kind !== 'npm')
     assert.equal(npmPlugins.length, 6)
     assert.deepEqual(sourceOnlyPlugins.map(plugin => plugin.id).sort(), ['aegis', 'dsh-browser'])
+    assert.equal(
+      cohort.plugins.find(plugin => plugin.id === 'dsh-browser')?.catalogUrl,
+      'https://github.com/Lum1104/dsh-browser/tree/main/packages/browser/bridge-browser',
+    )
 
     for (const plugin of npmPlugins) {
       assert.ok(plugin.distribution.name)
