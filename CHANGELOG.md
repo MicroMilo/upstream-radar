@@ -4,6 +4,8 @@ All notable changes to Upstream Radar are documented here.
 
 ## [Unreleased]
 
+## [0.41.0] - 2026-08-23
+
 ### Closed-loop compatibility incidents
 
 - Evaluate npm's bare `*` peer range as an explicit match instead of an
@@ -35,8 +37,6 @@ All notable changes to Upstream Radar are documented here.
   reproduced runtime crash.
 - Maintain the OpenPencil cell on Node 24, matching its published Node engine,
   and add a reproducible current-DSH contract-drift case.
-
-## [0.41.0] - 2026-08-21
 
 ### Continuously reconciled DSH compatibility
 

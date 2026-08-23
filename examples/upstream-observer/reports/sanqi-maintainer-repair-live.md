@@ -1,5 +1,9 @@
 # Live observer replay: maintainer repair before npm release
 
+> Follow-up, 2026-08-23: version `0.5.5` is now published. Its exact tarball
+> completes strict dependency resolution without `@deepseek-ai/dsh-compact`
+> and has joined the maintained isolated matrix. The original issue is closed.
+
 This is a real old → new observer run for
 `@sanqi-normal/dsh-webui-market-plugin`. It demonstrates the useful case where
 the source repository is fixed before the npm artifact is republished.
@@ -57,8 +61,8 @@ The model endpoint returned HTTP 404 on every supported OpenAI-compatible path,
 so Radar kept the task pending and wrote no model conclusion. The static result
 remains usable without a model; a later scheduled run can retry the same task.
 
-The npm `latest` tag remains `0.5.4`, so the next scheduled observer run will
-detect the release separately. This is the intended always-on loop:
+At the time of this replay, npm `latest` remained `0.5.4`. The later `0.5.5`
+publication was detected and checked separately, completing the intended loop:
 
 ```text
 maintainer source fix

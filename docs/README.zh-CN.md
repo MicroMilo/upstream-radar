@@ -122,7 +122,8 @@ profile、插件执行或 LLM。完整证据见[作者修复报告](../examples/
 这条案例已经闭环：维护者确认了宿主依赖约定，并提交了[修复
 `8b32828`](https://github.com/Sanqi-normal/dsh-webui-market-plugin/commit/8b328289ce5268451bd4414fa3ae41ee2f515649)；
 我在该源码提交上用禁用脚本的干净解析重新验证，已经不再拉取 `dsh-compact`。
-npm 发布物还没有更新，所以报告仍明确区分“源码已修复”和“发布版本待跟进”。
+后续发布的 `0.5.5` 也已用精确 npm tarball 复核：严格依赖解析建立了 69 个包的
+完整必需依赖图，原 issue 已作为“发布物修复验证通过”关闭。
 
 如果你手里的是公开 DSH 插件仓库，不需要先手动 clone：
 
@@ -408,8 +409,9 @@ npx --yes upstream-radar@0.41.0 observe \
 
 提交的 targets 示例还包含一个没有锁文件的真实案例
 [`Sanqi-normal/dsh-webui-market-plugin`](../examples/upstream-observer/targets.yml)。
-它的 peer 修复先进入源码，npm 仍是 `0.5.4` 时 observer 不会冒充“发布物已修复”，
-而是留下待处理任务；完整结果见[observer 重放报告](../examples/upstream-observer/reports/sanqi-maintainer-repair-live.md)。
+它的 peer 修复先进入源码、npm 仍是 `0.5.4` 时，observer 没有冒充“发布物已修复”，
+而是留下待处理任务；`0.5.5` 发布后又进入 maintained isolated matrix。完整时间线见
+[observer 重放报告](../examples/upstream-observer/reports/sanqi-maintainer-repair-live.md)。
 
 执行一次检查：
 
