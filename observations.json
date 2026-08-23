@@ -6478,16 +6478,16 @@
     "dsh-browser": {
       "targetId": "dsh-browser",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-22T07:05:47.403Z",
+      "observedAt": "2026-08-23T07:07:52.910Z",
       "source": {
         "repository": "Lum1104/dsh-browser",
         "ref": "main",
-        "commit": "eefd503da96097b41826943f49231f761e448e70",
+        "commit": "ef8b551666d6e725e69934e71c3cc0f63c3e51b0",
         "packagePath": "packages/browser/bridge-browser/package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/Lum1104/dsh-browser/commit/eefd503da96097b41826943f49231f761e448e70",
-        "packageUrl": "https://raw.githubusercontent.com/Lum1104/dsh-browser/eefd503da96097b41826943f49231f761e448e70/packages/browser/bridge-browser/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/Lum1104/dsh-browser/eefd503da96097b41826943f49231f761e448e70/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/Lum1104/dsh-browser/commit/ef8b551666d6e725e69934e71c3cc0f63c3e51b0",
+        "packageUrl": "https://raw.githubusercontent.com/Lum1104/dsh-browser/ef8b551666d6e725e69934e71c3cc0f63c3e51b0/packages/browser/bridge-browser/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/Lum1104/dsh-browser/ef8b551666d6e725e69934e71c3cc0f63c3e51b0/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "@yuxianglin/dsh-bridge-browser",
@@ -11235,7 +11235,7 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "Lum1104/dsh-browser",
-          "commit": "eefd503da96097b41826943f49231f761e448e70",
+          "commit": "ef8b551666d6e725e69934e71c3cc0f63c3e51b0",
           "packagePath": "packages/browser/bridge-browser/package.json",
           "coordinate": {
             "name": "@yuxianglin/dsh-bridge-browser",
@@ -20852,20 +20852,20 @@
     "dsh-market": {
       "targetId": "dsh-market",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T03:36:10.583Z",
+      "observedAt": "2026-08-23T07:07:52.910Z",
       "source": {
         "repository": "dsh-market/dsh-market",
         "ref": "main",
-        "commit": "d829d785f01d4902416a1770d2104bf0a1c1d593",
+        "commit": "7f43e0c5a9e483a92e85f0d6c5d7550aa35e1aea",
         "packagePath": "package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/dsh-market/dsh-market/commit/d829d785f01d4902416a1770d2104bf0a1c1d593",
-        "packageUrl": "https://raw.githubusercontent.com/dsh-market/dsh-market/d829d785f01d4902416a1770d2104bf0a1c1d593/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/dsh-market/dsh-market/d829d785f01d4902416a1770d2104bf0a1c1d593/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/dsh-market/dsh-market/commit/7f43e0c5a9e483a92e85f0d6c5d7550aa35e1aea",
+        "packageUrl": "https://raw.githubusercontent.com/dsh-market/dsh-market/7f43e0c5a9e483a92e85f0d6c5d7550aa35e1aea/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/dsh-market/dsh-market/7f43e0c5a9e483a92e85f0d6c5d7550aa35e1aea/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "dshmarket",
-        "version": "1.19.0-beta.2",
+        "version": "1.19.0",
         "type": "module",
         "main": "lib/index.js",
         "exports": {
@@ -20908,19 +20908,19 @@
       },
       "package": {
         "name": "dshmarket",
-        "version": "1.18.1",
+        "version": "1.19.0",
         "distTag": "latest",
-        "integrity": "sha512-N7Z9Ylevf7zRJBkwuoapA/Hw5Ps7MYuQ9dDSRM9EiSo3vIU9GQluPyP5NrHiVEdJYy6sh28ATjAmriMCLgesqg==",
-        "tarball": "https://registry.npmjs.org/dshmarket/-/dshmarket-1.18.1.tgz"
+        "integrity": "sha512-R6S6zT5PXTiY3HjqDXQglcTJ/hLJhuDlEERBK6+j9gIJCEECnz2hJKtCqvJi5uBAl4kBrwffKRAMqFGd2z56xQ==",
+        "tarball": "https://registry.npmjs.org/dshmarket/-/dshmarket-1.19.0.tgz"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+        "rootNodeId": "pnpm:workspace-root:dshmarket@1.19.0",
         "nodes": [
           {
-            "id": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "id": "pnpm:workspace-root:dshmarket@1.19.0",
             "name": "dshmarket",
-            "version": "1.19.0-beta.2"
+            "version": "1.19.0"
           },
           {
             "id": "pnpm:@asamuzakjp/css-color@5.1.11",
@@ -25095,82 +25095,82 @@
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:@deepseek-ai/cordis@4.0.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-primitives@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(supports-color@7.1.0)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:@types/js-yaml@4.0.9",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:@types/node@26.2.0",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:@types/react@18.3.31",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:js-yaml@4.3.1",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:jsdom@29.1.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:lightningcss@1.33.0",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:playwright@1.62.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:react-dom@18.3.1(react@18.3.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:react@18.3.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:tsdown@0.22.14(typescript@7.0.2)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:typescript@7.0.2",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.19.0-beta.2",
+            "from": "pnpm:workspace-root:dshmarket@1.19.0",
             "to": "pnpm:vitest@4.1.10(@types/node@26.2.0)(jsdom@29.1.1)(vite@8.2.1(@types/node@26.2.0))",
             "kind": "development"
           },
@@ -25316,7 +25316,7 @@
           }
         ],
         "source": "pnpm-lock",
-        "digest": "sha256:f11d7d63270d71108dc16ffd03258311937fb6368bb63d6a498543e16eae2107",
+        "digest": "sha256:057c899e6b1c7dbfa8ecad9b224b25db74665e8af87635bf4632ca04d9532660",
         "unresolved": [
           {
             "from": "pnpm:@deepseek-ai/cordis@4.0.1",
@@ -25356,54 +25356,52 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "dsh-market/dsh-market",
-          "commit": "d829d785f01d4902416a1770d2104bf0a1c1d593",
+          "commit": "7f43e0c5a9e483a92e85f0d6c5d7550aa35e1aea",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dshmarket",
-            "version": "1.19.0-beta.2"
+            "version": "1.19.0"
           }
         },
         "downstream": {
           "published": {
             "name": "dshmarket",
-            "version": "1.18.1"
+            "version": "1.19.0"
           },
           "graph": {
             "status": "incomplete",
             "root": {
               "name": "dshmarket",
-              "version": "1.19.0-beta.2"
+              "version": "1.19.0"
             },
-            "digest": "sha256:f11d7d63270d71108dc16ffd03258311937fb6368bb63d6a498543e16eae2107",
+            "digest": "sha256:057c899e6b1c7dbfa8ecad9b224b25db74665e8af87635bf4632ca04d9532660",
             "nodes": 315,
             "edges": 564,
             "unresolved": 5
           }
         },
-        "status": "mismatch",
+        "status": "unknown",
         "checks": [
           {
             "code": "source-published-identity",
-            "status": "mismatch",
-            "summary": "The source manifest and observed npm package do not identify the same name and version.",
-            "upstream": "dshmarket@1.19.0-beta.2",
-            "downstream": "dshmarket@1.18.1",
-            "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
+            "status": "aligned",
+            "summary": "The source manifest and observed npm package have the same name and version.",
+            "upstream": "dshmarket@1.19.0",
+            "downstream": "dshmarket@1.19.0"
           },
           {
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "dshmarket@1.19.0-beta.2",
-            "downstream": "dshmarket@1.19.0-beta.2"
+            "upstream": "dshmarket@1.19.0",
+            "downstream": "dshmarket@1.19.0"
           },
           {
             "code": "published-graph-root",
-            "status": "mismatch",
-            "summary": "The dependency graph root does not identify the observed npm package.",
-            "upstream": "dshmarket@1.18.1",
-            "downstream": "dshmarket@1.19.0-beta.2",
-            "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
+            "status": "aligned",
+            "summary": "The dependency graph root matches the observed npm package.",
+            "upstream": "dshmarket@1.19.0",
+            "downstream": "dshmarket@1.19.0"
           },
           {
             "code": "dependency-graph-coverage",
@@ -43171,18 +43169,18 @@
     "aegis": {
       "targetId": "aegis",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-22T07:05:47.403Z",
+      "observedAt": "2026-08-23T07:07:52.910Z",
       "source": {
         "repository": "GanyuanRan/Aegis",
         "ref": "main",
-        "commit": "fea84dd545385ebdbe1c7ceab0d2afb8fe9d4600",
+        "commit": "4a281c241a5ac7511b1421714d8c9bd03daa523d",
         "packagePath": "package.json",
-        "commitUrl": "https://github.com/GanyuanRan/Aegis/commit/fea84dd545385ebdbe1c7ceab0d2afb8fe9d4600",
-        "packageUrl": "https://raw.githubusercontent.com/GanyuanRan/Aegis/fea84dd545385ebdbe1c7ceab0d2afb8fe9d4600/package.json"
+        "commitUrl": "https://github.com/GanyuanRan/Aegis/commit/4a281c241a5ac7511b1421714d8c9bd03daa523d",
+        "packageUrl": "https://raw.githubusercontent.com/GanyuanRan/Aegis/4a281c241a5ac7511b1421714d8c9bd03daa523d/package.json"
       },
       "manifest": {
         "name": "aegis",
-        "version": "2.8.5",
+        "version": "2.8.7",
         "type": "module",
         "main": ".opencode/plugins/aegis.js",
         "peerDependencies": {
@@ -43216,11 +43214,11 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "GanyuanRan/Aegis",
-          "commit": "fea84dd545385ebdbe1c7ceab0d2afb8fe9d4600",
+          "commit": "4a281c241a5ac7511b1421714d8c9bd03daa523d",
           "packagePath": "package.json",
           "coordinate": {
             "name": "aegis",
-            "version": "2.8.5"
+            "version": "2.8.7"
           }
         },
         "downstream": {
@@ -43238,14 +43236,14 @@
             "code": "source-published-identity",
             "status": "aligned",
             "summary": "This target is explicitly source-only; no npm publication is part of its distribution contract.",
-            "upstream": "aegis@2.8.5",
+            "upstream": "aegis@2.8.7",
             "downstream": "source repository"
           },
           {
             "code": "source-graph-root",
             "status": "unknown",
             "summary": "No dependency graph root was observed.",
-            "upstream": "aegis@2.8.5",
+            "upstream": "aegis@2.8.7",
             "remediation": "Commit a supported lockfile or correct the configured package path/importer so the root can be verified."
           },
           {
