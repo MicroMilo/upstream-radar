@@ -112,7 +112,12 @@ export function satisfiesSemverRange(versionValue: string, rangeValue: string): 
   const version = parseSemver(versionValue)
   if (version === undefined) return undefined
   const normalized = rangeValue.trim().replace(/^workspace:/, '')
-  if (normalized === '^' || normalized === '~' || normalized === '*') return undefined
+  // npm's bare wildcard is an explicit unconstrained range. Treating it as
+  // indeterminate made every resolved `peerDependencies: { name: "*" }`
+  // contract look like missing evidence even though any semantic version is
+  // a mathematical match.
+  if (normalized === '*') return true
+  if (normalized === '^' || normalized === '~') return undefined
   let sawUnknown = false
   for (const branch of normalized.split('||')) {
     const result = branchMatches(version, branch)

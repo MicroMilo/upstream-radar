@@ -6,6 +6,9 @@ All notable changes to Upstream Radar are documented here.
 
 ### Closed-loop compatibility incidents
 
+- Evaluate npm's bare `*` peer range as an explicit match instead of an
+  indeterminate contract, preventing resolved wildcard peers from creating a
+  daily observer failure.
 - Reconcile actionable isolated DSH incompatibilities into one managed GitHub
   issue per stable target/runtime cell. Persistent failures update the same
   issue, regressions reopen it, and a compatible retest comments and closes it.
