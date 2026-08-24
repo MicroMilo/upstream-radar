@@ -24,7 +24,7 @@ Replace it with the repositories your team depends on.
 For one repository, the shortest path skips YAML and lockfile configuration entirely:
 
 ```bash
-npx --yes upstream-radar@0.43.3 observe \
+npx --yes upstream-radar@0.43.4 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md
@@ -35,7 +35,7 @@ Radar automatically chooses the committed `pnpm-lock.yaml` or
 the explicit form below adds `--package`:
 
 ```bash
-npx --yes upstream-radar@0.43.3 observe \
+npx --yes upstream-radar@0.43.4 observe \
   https://github.com/PlutoKeating/dsh-lark-bot \
   --package dsh-feishu-bot \
   --lockfile pnpm-lock.yaml --lockfile-type pnpm \
@@ -75,9 +75,9 @@ Build one index from saved DSH plugin scan/review/config JSON, then give it to
 the observer:
 
 ```bash
-npx --yes upstream-radar@0.43.3 graph reverse ./plugin-reports \
+npx --yes upstream-radar@0.43.4 graph reverse ./plugin-reports \
   --output ./reverse-dependency-index.json
-npx --yes upstream-radar@0.43.3 observe ./targets.yml \
+npx --yes upstream-radar@0.43.4 observe ./targets.yml \
   --reverse-index ./reverse-dependency-index.json \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md
@@ -99,7 +99,7 @@ and run `pnpm run showcase:observer` to replay a real
 The scheduled workflow uses the checked-in index directly:
 
 ```bash
-npx --yes upstream-radar@0.43.3 observe ./targets.yml \
+npx --yes upstream-radar@0.43.4 observe ./targets.yml \
   --reverse-index ../dsh/first-batch/reverse-dependency-index.json \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md
@@ -126,7 +126,7 @@ Run it from any directory with the published CLI:
 
 ```bash
 export GITHUB_TOKEN='a read-only token with repository metadata access'
-npx --yes upstream-radar@0.43.3 observe \
+npx --yes upstream-radar@0.43.4 observe \
   /path/to/targets.yml \
   --state /tmp/upstream-radar-observations.json \
   --report /tmp/upstream-radar-observer.md

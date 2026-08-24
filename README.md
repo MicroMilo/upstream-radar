@@ -110,7 +110,7 @@ and a report that only needs maintainer confirmation.
 ## Run one check
 
 ```bash
-npx --yes upstream-radar@0.43.3 review dsh-plugin \
+npx --yes upstream-radar@0.43.4 review dsh-plugin \
   <package>@<version> \
   --dsh-version <dsh-version>
 ```

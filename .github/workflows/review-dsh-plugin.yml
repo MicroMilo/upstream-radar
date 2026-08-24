@@ -25,7 +25,7 @@ jobs:
       - name: Inspect and load-test the exact plugin
         id: radar
         continue-on-error: true
-        uses: MicroMilo/upstream-radar@v0.43.3
+        uses: MicroMilo/upstream-radar@v0.43.4
         with:
           inspect-package: ${{ inputs.plugin }}
           inspect-fail-on: never
