@@ -53,7 +53,7 @@ jobs:
           llm_env_file="$RUNNER_TEMP/issue-locator.env"
           trap 'rm -f "$llm_env_file"' EXIT
           observe_args=(
-            npx --yes upstream-radar@0.43.0 observe "$repository"
+            npx --yes upstream-radar@0.43.1 observe "$repository"
             --ref "$ref"
             --state observations.json
             --report "$report"

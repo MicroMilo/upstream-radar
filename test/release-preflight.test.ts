@@ -23,7 +23,7 @@ describe('release preflight', () => {
       checks: Array<{ status: string }>
     }
     assert.equal(report.schema, 'upstream-radar.release-preflight/v1alpha1')
-    assert.equal(report.version, '0.43.0')
+    assert.equal(report.version, '0.43.1')
     assert.equal(report.passed, true)
     assert.equal(report.publishedCheck, false)
     assert.ok(report.checks.length >= 4)
