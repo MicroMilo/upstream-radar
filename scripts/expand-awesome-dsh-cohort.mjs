@@ -8,6 +8,7 @@ import { promisify } from 'node:util'
 import { parseAwesomeDshCohort } from '../dist/src/dsh-directory-feed.js'
 import { parseDshInstallTargets } from '../dist/src/dsh-install-plan.js'
 import { parseNpmSpec } from '../dist/src/npm.js'
+import { resolveNpmReleaseTag } from '../dist/src/npm-release-channel.js'
 import { satisfiesSemverRange } from '../dist/src/semver.js'
 import { parseObserverConfigText } from '../dist/src/upstream-observer.js'
 
@@ -189,10 +190,10 @@ function githubHeaders(token) {
 async function verifyCandidate(item, input) {
   const [owner, repo] = item.repository.split('/')
   const repositoryApi = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`
-  const npmApi = `https://registry.npmjs.org/${encodeURIComponent(item.npm)}/latest`
-  const [repositoryMetadataValue, npmManifestValue] = await Promise.all([
+  const npmApi = `https://registry.npmjs.org/${encodeURIComponent(item.npm)}`
+  const [repositoryMetadataValue, latestNpmManifestValue] = await Promise.all([
     fetchJson(repositoryApi, githubHeaders(input.token)),
-    fetchJson(npmApi, { accept: 'application/json' }),
+    fetchJson(`${npmApi}/latest`, { accept: 'application/json' }),
   ])
   const repositoryMetadata = object(repositoryMetadataValue, `${item.repository} metadata`)
   if (repositoryMetadata.archived === true || repositoryMetadata.disabled === true) throw new Error('repository is archived or disabled')
@@ -207,10 +208,14 @@ async function verifyCandidate(item, input) {
   const decoded = Buffer.from(source.content.replace(/\s+/g, ''), 'base64')
   if (decoded.length === 0 || decoded.length > MAX_MANIFEST_BYTES) throw new Error('source package.json is empty or exceeds the byte budget')
   const sourceManifest = object(JSON.parse(decoded.toString('utf8')), `${item.repository} package.json`)
-  const npmManifest = object(npmManifestValue, `${item.npm} latest manifest`)
+  const distTag = resolveNpmReleaseTag(sourceManifest)
+  const npmManifestValue = distTag === 'latest'
+    ? latestNpmManifestValue
+    : await fetchJson(`${npmApi}/${encodeURIComponent(distTag)}`, { accept: 'application/json' })
+  const npmManifest = object(npmManifestValue, `${item.npm} ${distTag} manifest`)
   if (sourceManifest.name !== item.npm || npmManifest.name !== item.npm) throw new Error('catalog, source and npm package names do not align')
   const sourceVersion = string(sourceManifest.version, `${item.repository} source version`, 256)
-  const selectedVersion = string(npmManifest.version, `${item.npm} latest version`, 256)
+  const selectedVersion = string(npmManifest.version, `${item.npm} ${distTag} version`, 256)
   if (!EXACT_VERSION.test(sourceVersion) || !EXACT_VERSION.test(selectedVersion)) throw new Error('source or npm version is not exact')
   const publishedRepository = normalizeRepository(npmManifest.repository)
   if (publishedRepository?.toLowerCase() !== item.repository.toLowerCase()) throw new Error('npm repository metadata does not point to the catalog repository')
@@ -244,7 +249,7 @@ async function verifyCandidate(item, input) {
     category: item.category,
     packagePath,
     sourceCoordinateAtSelection: { name: item.npm, version: sourceVersion },
-    distribution: { kind: 'npm', name: item.npm, selectedVersion, distTag: 'latest' },
+    distribution: { kind: 'npm', name: item.npm, selectedVersion, distTag },
     signals: {
       downloads: item.downloads,
       stars: item.stars,

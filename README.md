@@ -19,7 +19,7 @@ plugins against changing
 releases in disposable runners. When a pair breaks, it produces a reproducible
 issue; when the author ships a fix, it retests and closes the loop.
 
-**100 maintained install/load targets · 100 catalog entries across all 21 categories · 4 upstream reports closed · 4 more under watch**
+**100 maintained install/load targets · 13 domain reports filed · 4 closed · 9 open or under watch**
 
 [Latest Agent-driven headless run](https://github.com/MicroMilo/upstream-radar/actions/runs/32684879130):
 **96 executable catalog cells observed · 74 compatible · 22 need review · 0 reproduced incompatibilities · 4 source-only**.
@@ -68,27 +68,49 @@ inside the target VM, or turn missing evidence into a pass.
 - One managed issue that is updated on repeat failures, reopened on regression,
   and closed after a clean retest.
 
-## Upstream reports now closed
+## Domain reports from our loop
 
-We opened the following reports; their upstream maintainers have now closed
-them:
+These are the 13 maintainer-facing reports filed by Upstream Radar. They are
+not all “the plugin is broken”: the first group is runtime compatibility, the
+second is the exact package/install boundary, and the third is whether a
+dependency graph can be trusted for continuous monitoring.
 
-- [Sanqi-normal/dsh-webui-market-plugin#5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)
-- [1na-ko/dsh-hdc-bridge#3](https://github.com/1na-ko/dsh-hdc-bridge/issues/3)
-- [6Mikao9/dsh-wsl-workspace#6](https://github.com/6Mikao9/dsh-wsl-workspace/issues/6)
-- [3274375092/dsh-voice#2](https://github.com/3274375092/dsh-voice/issues/2)
+### DSH host/plugin contract · 2
 
-Four newer reports are still open and being watched:
+- **closed** · [Sanqi-normal/dsh-webui-market-plugin#5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)
+- **open** · [shaoshi20/dshscan#1](https://github.com/shaoshi20/dshscan/issues/1)
 
-- [AmeKrance/anan-thermal-monitor#1](https://github.com/AmeKrance/anan-thermal-monitor/issues/1)
-- [AbcdefgXW/dsh-msg-hub#3](https://github.com/AbcdefgXW/dsh-msg-hub/issues/3)
-- [030611/dsh-verification-receipt#3](https://github.com/030611/dsh-verification-receipt/issues/3)
-- [0xsline/dsh-spotlight#5](https://github.com/0xsline/dsh-spotlight/issues/5)
+### Published artifact and install contract · 7
+
+- **closed** · [1na-ko/dsh-hdc-bridge#3](https://github.com/1na-ko/dsh-hdc-bridge/issues/3)
+- **closed** · [6Mikao9/dsh-wsl-workspace#6](https://github.com/6Mikao9/dsh-wsl-workspace/issues/6)
+- **closed** · [3274375092/dsh-voice#2](https://github.com/3274375092/dsh-voice/issues/2)
+- **open** · [AmeKrance/anan-thermal-monitor#1](https://github.com/AmeKrance/anan-thermal-monitor/issues/1)
+- **open** · [AbcdefgXW/dsh-msg-hub#3](https://github.com/AbcdefgXW/dsh-msg-hub/issues/3)
+- **open** · [030611/dsh-verification-receipt#3](https://github.com/030611/dsh-verification-receipt/issues/3)
+- **open** · [0xsline/dsh-spotlight#5](https://github.com/0xsline/dsh-spotlight/issues/5)
+
+### Dependency graph and source/release alignment · 4
+
+- **open** · [lninghaha/dsh-coding-subscription-oauth#14](https://github.com/lninghaha/dsh-coding-subscription-oauth/issues/14)
+- **open** · [AbcdefgXW/dsh-msg-hub#1](https://github.com/AbcdefgXW/dsh-msg-hub/issues/1)
+- **open** · [AbcdefgXW/dsh-toolbox-web#1](https://github.com/AbcdefgXW/dsh-toolbox-web/issues/1)
+- **open** · [13071301808/dsh-composer-expand#1](https://github.com/13071301808/dsh-composer-expand/issues/1)
+
+The browser/web cases you may remember—[`dsh-web-ui#35`](https://github.com/zhu1090093659/dsh-web-ui/issues/35)
+and [`dsh-web-ui#71`](https://github.com/zhu1090093659/dsh-web-ui/issues/71)—are
+useful historical compatibility references and are closed, but they were not
+filed by Upstream Radar and are therefore not counted above. The maintained
+`dsh-browser` entries currently observed compatible are also not findings.
+
+See the [full classification and evidence index](docs/domain-reports.md) for
+validation level, impact, and the boundary between a confirmed runtime issue
+and a report that only needs maintainer confirmation.
 
 ## Run one check
 
 ```bash
-npx --yes upstream-radar@0.43.2 review dsh-plugin \
+npx --yes upstream-radar@0.43.3 review dsh-plugin \
   <package>@<version> \
   --dsh-version <dsh-version>
 ```
