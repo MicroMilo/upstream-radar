@@ -7,6 +7,22 @@ contains 100 exact published plugins: 96 identity-checked npm artifacts imported
 from the [`awesome-dsh-plugin` cohort](../awesome-observer/README.md), plus four
 maintained behavior and repair cases.
 
+## Agent-planned headless follow-up
+
+The first isolated run uses the reviewed clean headless contract. When that run
+ends in `build-approval-required` or `peer-contract-incompatible`, the scheduled
+Action gives the exact evidence plus bounded repository documents to the
+configured Agent. There is deliberately no static environment-planning
+fallback. The Agent either stops the headless path or requests one retry whose
+build approvals are a subset of the package names already observed by pnpm.
+
+The plan is persisted in [`agent-plans.json`](agent-plans.json), rendered in
+[`agent-plans.md`](agent-plans.md), and bound to the exact plugin artifact, DSH
+release and Node major. The target package runs later in a separate no-secret
+hosted VM; it never receives the model key. A successful retry retains that
+exact build policy for refreshes of the same artifact, while a new artifact or
+runtime cannot inherit it.
+
 ## What runs where
 
 The reusable workflow runs each plugin in a fresh GitHub-hosted Linux VM. The
