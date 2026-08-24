@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha1",
-  "generatedAt": "2026-08-24T04:47:38.600Z",
+  "generatedAt": "2026-08-24T04:54:24.120Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.43.3",
@@ -42,7 +42,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@1e0zj/dsh-plugin-mall",
-        "selectedVersion": "0.4.7",
+        "selectedVersion": "0.4.14",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -300,7 +300,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@anionex/dsh-turn-rewind",
-        "selectedVersion": "0.1.1",
+        "selectedVersion": "0.1.2",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -472,7 +472,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-remote-plugin",
-        "selectedVersion": "0.6.10",
+        "selectedVersion": "0.6.12",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -515,7 +515,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-context",
-        "selectedVersion": "0.25.3",
+        "selectedVersion": "0.29.0",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -601,7 +601,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-tavern",
-        "selectedVersion": "1.9.1",
+        "selectedVersion": "1.9.2",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -773,7 +773,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-taskboard",
-        "selectedVersion": "0.4.5",
+        "selectedVersion": "0.5.0",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -902,7 +902,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@dickpy/dsh-imagegen",
-        "selectedVersion": "1.0.20",
+        "selectedVersion": "1.2.1",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -988,7 +988,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dshmarket",
-        "selectedVersion": "1.19.0",
+        "selectedVersion": "1.21.2",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -1074,7 +1074,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-plugin-wallpaper-engine",
-        "selectedVersion": "0.5.1",
+        "selectedVersion": "0.6.3",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1117,7 +1117,7 @@
       "distribution": {
         "kind": "npm",
         "name": "deepseek-harness-wallet",
-        "selectedVersion": "0.3.1",
+        "selectedVersion": "0.3.2",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -1203,7 +1203,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-remote",
-        "selectedVersion": "0.8.7",
+        "selectedVersion": "0.8.8",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1289,8 +1289,8 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-codex-connect",
-        "selectedVersion": "0.1.0-alpha.4.14",
-        "distTag": "latest"
+        "selectedVersion": "0.1.0-alpha.4.18",
+        "distTag": "alpha"
       },
       "status": "needs-review",
       "cells": [
@@ -1435,7 +1435,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-cost-meter",
-        "selectedVersion": "1.5.38",
+        "selectedVersion": "1.5.42",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -1564,7 +1564,7 @@
       "distribution": {
         "kind": "npm",
         "name": "iterate-plugin",
-        "selectedVersion": "2.12.0",
+        "selectedVersion": "2.12.1",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -1693,7 +1693,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-xueqiu",
-        "selectedVersion": "1.21.4",
+        "selectedVersion": "1.21.7",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -1736,7 +1736,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@liustack/modlens",
-        "selectedVersion": "3.24.0",
+        "selectedVersion": "3.24.1",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -1924,7 +1924,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-agency-agents",
-        "selectedVersion": "0.1.20",
+        "selectedVersion": "0.1.21",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1967,7 +1967,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-archive-manager",
-        "selectedVersion": "0.1.12",
+        "selectedVersion": "0.1.14",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2010,7 +2010,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-im-connect",
-        "selectedVersion": "0.1.19",
+        "selectedVersion": "0.1.23",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -2053,7 +2053,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-skills-manager",
-        "selectedVersion": "0.1.23",
+        "selectedVersion": "0.1.24",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2096,7 +2096,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@modusensus/dsh-mneme",
-        "selectedVersion": "0.6.10",
+        "selectedVersion": "0.7.0",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -2225,7 +2225,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@nonamelego/dsh-catppuccin",
-        "selectedVersion": "0.2.10",
+        "selectedVersion": "0.3.1",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -2311,7 +2311,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-chat-import",
-        "selectedVersion": "0.6.2",
+        "selectedVersion": "0.7.0",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -2844,7 +2844,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-mobile",
-        "selectedVersion": "0.1.4",
+        "selectedVersion": "0.2.0",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -2887,7 +2887,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-pocket",
-        "selectedVersion": "1.12.3",
+        "selectedVersion": "1.13.4",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -3059,7 +3059,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-movein",
-        "selectedVersion": "0.12.0",
+        "selectedVersion": "0.12.1",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -3102,7 +3102,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-win32",
-        "selectedVersion": "0.16.0",
+        "selectedVersion": "0.16.3",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -3145,7 +3145,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-passwords",
-        "selectedVersion": "2.6.0",
+        "selectedVersion": "2.6.1",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -3231,7 +3231,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-crew",
-        "selectedVersion": "0.9.0",
+        "selectedVersion": "0.10.0",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -3549,7 +3549,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-plugin-subscriptions",
-        "selectedVersion": "0.5.0",
+        "selectedVersion": "0.5.1",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -3764,7 +3764,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-codex-subscription",
-        "selectedVersion": "1.4.0",
+        "selectedVersion": "1.5.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3807,7 +3807,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@jieai/dsh-plugin-vet",
-        "selectedVersion": "0.2.5",
+        "selectedVersion": "0.2.6",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -3893,7 +3893,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-config-manager",
-        "selectedVersion": "0.1.45",
+        "selectedVersion": "0.1.51",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3979,7 +3979,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@xmanrui/dsh-im",
-        "selectedVersion": "1.0.2",
+        "selectedVersion": "2.0.1",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -4151,7 +4151,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@linxin666/dsh-web-ui-all",
-        "selectedVersion": "0.2.9",
+        "selectedVersion": "0.3.2",
         "distTag": "latest"
       },
       "status": "needs-review",

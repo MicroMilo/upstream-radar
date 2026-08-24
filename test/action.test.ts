@@ -38,6 +38,7 @@ describe('reusable GitHub Action', () => {
     const observerTargetsPath = fileURLToPath(new URL('../../examples/upstream-observer/targets.yml', import.meta.url))
     const detectorPath = fileURLToPath(new URL('../../scripts/detect-action-input.mjs', import.meta.url))
     const packagePath = fileURLToPath(new URL('../../package.json', import.meta.url))
+    const installObserverDockerfilePath = fileURLToPath(new URL('../../docker/dsh-install-observer.Dockerfile', import.meta.url))
     const action = await readFile(actionPath, 'utf8')
     const example = await readFile(examplePath, 'utf8')
     const observerWorkflow = await readFile(observerWorkflowPath, 'utf8')
@@ -47,6 +48,7 @@ describe('reusable GitHub Action', () => {
     const checkedInObserverWorkflow = await readFile(checkedInObserverWorkflowPath, 'utf8')
     const observerTargets = await readFile(observerTargetsPath, 'utf8')
     const detector = await readFile(detectorPath, 'utf8')
+    const installObserverDockerfile = await readFile(installObserverDockerfilePath, 'utf8')
     const packageJson = JSON.parse(await readFile(packagePath, 'utf8')) as { version?: unknown }
 
     assert.equal(typeof packageJson.version, 'string')
@@ -149,6 +151,9 @@ describe('reusable GitHub Action', () => {
     assert.match(checkedInObserverWorkflow.slice(reconcileStep, publishStep), /continue-on-error: true/)
     assert.match(checkedInObserverWorkflow.slice(incompleteGate), /if: always\(\) && steps\.ledger\.outcome == 'failure'/)
     assert.match(checkedInObserverWorkflow.slice(incompleteGate), /RADAR_MISSING: \$\{\{ steps\.ledger\.outputs\.missing \}\}/)
+    assert.match(checkedInObserverWorkflow.slice(publishStep, persistStep), /feeds\/dsh-plugin-compatibility\.md \\\n\s+observations\.json/)
+    assert.match(installObserverDockerfile, /until corepack prepare pnpm@11\.3\.0 --activate/)
+    assert.match(installObserverDockerfile, /if \[ "\$attempt" -ge 3 \]; then exit 1; fi/)
     assert.match(observerTargets, /observer-targets\/v1alpha1/)
     assert.match(observerTargets, /ecosystem: dsh/)
   })

@@ -254,6 +254,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
   cohort: unknown
   installTargets: unknown
   ledger: unknown
+  observations?: unknown
   generatedAt: string
   repositoryBaseUrl?: string
 }): DshDirectoryCompatibilityFeed {
@@ -265,6 +266,37 @@ export function buildDshDirectoryCompatibilityFeed(input: {
   const targetByObserverId = new Map(installTargets.plugins
     .filter(target => target.observerTargetId !== undefined)
     .map(target => [target.observerTargetId as string, target]))
+
+  const observedDistribution = (plugin: AwesomeDshCohortPlugin): AwesomeDshCohortPlugin['distribution'] => {
+    if (plugin.distribution.kind !== 'npm') return plugin.distribution
+    if (typeof input.observations !== 'object' || input.observations === null || Array.isArray(input.observations)) {
+      return plugin.distribution
+    }
+    const rawTargets = (input.observations as Record<string, unknown>).targets
+    if (typeof rawTargets !== 'object' || rawTargets === null || Array.isArray(rawTargets)) return plugin.distribution
+    const rawObservation = (rawTargets as Record<string, unknown>)[plugin.id]
+    if (typeof rawObservation !== 'object' || rawObservation === null || Array.isArray(rawObservation)) return plugin.distribution
+    const rawPackage = (rawObservation as Record<string, unknown>).package
+    if (typeof rawPackage !== 'object' || rawPackage === null || Array.isArray(rawPackage)) return plugin.distribution
+    const packageRecord = rawPackage as Record<string, unknown>
+    if (packageRecord.name !== plugin.distribution.name || typeof packageRecord.version !== 'string') return plugin.distribution
+    try {
+      parseNpmSpec(`${packageRecord.name}@${packageRecord.version}`)
+    } catch {
+      return plugin.distribution
+    }
+    const distTag = typeof packageRecord.distTag === 'string'
+      && packageRecord.distTag.trim() !== ''
+      && packageRecord.distTag.length <= 128
+      ? packageRecord.distTag
+      : undefined
+    return {
+      kind: 'npm',
+      name: plugin.distribution.name,
+      selectedVersion: packageRecord.version,
+      ...(distTag === undefined ? {} : { distTag }),
+    }
+  }
 
   const plugins = cohort.plugins.map((plugin): DshDirectoryCompatibilityEntry => {
     const installTarget = targetByObserverId.get(plugin.id)
@@ -301,7 +333,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
       catalogEntry: plugin.catalogEntry,
       catalogEntryUrl: `https://github.com/${cohort.source.repository}/blob/${cohort.source.commit}/${plugin.catalogEntry}`,
       category: plugin.category,
-      distribution: plugin.distribution,
+      distribution: observedDistribution(plugin),
       status: aggregateStatus(cells),
       cells,
       evidenceUrl: `${repositoryBaseUrl}/blob/main/compatibility-ledger.json`,

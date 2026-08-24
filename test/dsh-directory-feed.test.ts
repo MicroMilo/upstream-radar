@@ -84,6 +84,13 @@ function fixture() {
         ledgerEntry('unknown', 'unknown'),
       ],
     },
+    observations: {
+      targets: {
+        clean: {
+          package: { name: 'clean', version: '2.0.0-beta.1', distTag: 'beta' },
+        },
+      },
+    },
   }
 }
 
@@ -103,6 +110,13 @@ describe('DSH directory compatibility feed', () => {
       'not-observed': 1,
     })
     assert.equal(feed.plugins.find(item => item.id === 'clean')?.status, 'observed-compatible')
+    assert.deepEqual(feed.plugins.find(item => item.id === 'clean')?.distribution, {
+      kind: 'npm',
+      name: 'clean',
+      selectedVersion: '2.0.0-beta.1',
+      distTag: 'beta',
+    })
+    assert.equal(feed.plugins.find(item => item.id === 'clean')?.cells[0]?.artifact.spec, 'clean@1.0.0')
     assert.equal(feed.plugins.find(item => item.id === 'broken')?.status, 'observed-incompatible')
     assert.equal(feed.plugins.find(item => item.id === 'peer-gap')?.status, 'needs-review')
     assert.equal(feed.plugins.find(item => item.id === 'approval')?.status, 'needs-review')
@@ -115,6 +129,27 @@ describe('DSH directory compatibility feed', () => {
     )
     assert.equal(feed.plugins.find(item => item.id === 'clean')?.cells[0]?.recheckDueAt, '2026-08-30T00:00:00.000Z')
     assert.equal(feed.producer.license, 'Apache-2.0')
+  })
+
+  it('does not let malformed or name-mismatched observation state replace catalog distribution metadata', () => {
+    const input = fixture()
+    const feed = buildDshDirectoryCompatibilityFeed({
+      ...input,
+      observations: {
+        targets: {
+          clean: { package: { name: 'different-package', version: '9.0.0', distTag: 'latest' } },
+          broken: { package: { name: 'broken', version: '^2.0.0', distTag: 'next' } },
+        },
+      },
+      generatedAt: '2026-08-23T01:00:00.000Z',
+    })
+
+    assert.deepEqual(feed.plugins.find(item => item.id === 'clean')?.distribution, {
+      kind: 'npm', name: 'clean', selectedVersion: '1.0.0', distTag: 'latest',
+    })
+    assert.deepEqual(feed.plugins.find(item => item.id === 'broken')?.distribution, {
+      kind: 'npm', name: 'broken', selectedVersion: '1.0.0', distTag: 'latest',
+    })
   })
 
   it('renders a consumer-readable boundary and status table', () => {
@@ -132,11 +167,13 @@ describe('DSH directory compatibility feed', () => {
     const cohort = JSON.parse(await readFile('examples/dsh/awesome-observer/cohort.json', 'utf8')) as unknown
     const installTargets = JSON.parse(await readFile('examples/dsh/install-observer/targets.json', 'utf8')) as unknown
     const ledger = JSON.parse(await readFile('compatibility-ledger.json', 'utf8')) as unknown
+    const observations = JSON.parse(await readFile('observations.json', 'utf8')) as unknown
     const checkedInFeed = JSON.parse(await readFile('feeds/dsh-plugin-compatibility.json', 'utf8')) as { generatedAt: string }
     const feed = buildDshDirectoryCompatibilityFeed({
       cohort,
       installTargets,
       ledger,
+      observations,
       generatedAt: checkedInFeed.generatedAt,
     })
 
