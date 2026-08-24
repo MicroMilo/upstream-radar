@@ -33,6 +33,7 @@ export interface DshHeadlessAgentCandidate {
   result: 'build-approval-required' | 'peer-contract-incompatible'
   reason: string
   requiredDependencyBuilds: string[]
+  previouslyApprovedBuilds: string[]
   artifactSha256?: string
   repository?: string
   sourceCommit?: string
@@ -143,10 +144,17 @@ export function parseDshHeadlessAgentDecision(
       throw new Error('a headless retry must be classified as build-approval')
     }
     if (decision.allowedBuilds.length === 0) throw new Error('a headless retry requires at least one approved dependency build')
-    const observed = new Set(candidate.requiredDependencyBuilds)
+    const observed = new Set([
+      ...candidate.previouslyApprovedBuilds,
+      ...candidate.requiredDependencyBuilds,
+    ])
     const invented = decision.allowedBuilds.filter(name => !observed.has(name))
     if (invented.length > 0) {
       throw new Error(`Agent requested dependency builds absent from the isolated observation: ${invented.join(', ')}`)
+    }
+    const dropped = candidate.previouslyApprovedBuilds.filter(name => !decision.allowedBuilds.includes(name))
+    if (dropped.length > 0) {
+      throw new Error(`Agent dropped dependency builds approved in an earlier retry: ${dropped.join(', ')}`)
     }
   } else if (decision.allowedBuilds.length > 0) {
     throw new Error('a stopped headless plan cannot approve dependency builds')
@@ -164,6 +172,7 @@ export function createDshHeadlessAgentInputFingerprint(candidate: DshHeadlessAge
     result: candidate.result,
     reason: candidate.reason,
     requiredDependencyBuilds: [...candidate.requiredDependencyBuilds].sort(),
+    previouslyApprovedBuilds: [...candidate.previouslyApprovedBuilds].sort(),
     artifactSha256: candidate.artifactSha256,
     repository: candidate.repository,
     sourceCommit: candidate.sourceCommit,
@@ -190,6 +199,7 @@ export function renderDshHeadlessAgentPrompt(candidate: DshHeadlessAgentCandidat
     'The only execution plane available in this milestone is the existing headless DSH profile.',
     'The runner may change only the explicit pnpm dependency-build approval list. It cannot add a Web/TUI plane, secrets, services, system packages, or arbitrary commands.',
     'Choose retry-headless only when the reproduced result is build-approval-required and repository evidence supports approving a subset of the exact observed build packages.',
+    'Build gates may appear in stages. A retry must keep every previously approved package and add any newly supported package; never drop an earlier approval.',
     'Otherwise choose stop-headless and classify the reason. Do not invent package names.',
     'Return exactly one JSON object with keys: action, classification, allowedBuilds, summary, evidence.',
     'Allowed action: retry-headless | stop-headless.',
@@ -202,7 +212,8 @@ export function renderDshHeadlessAgentPrompt(candidate: DshHeadlessAgentCandidat
     `Node major: ${candidate.nodeMajor}`,
     `Observed result: ${candidate.result}`,
     `Observed reason: ${candidate.reason}`,
-    `Observed build packages: ${candidate.requiredDependencyBuilds.join(', ') || '(none)'}`,
+    `Build packages required by the latest retry: ${candidate.requiredDependencyBuilds.join(', ') || '(none)'}`,
+    `Build packages approved in earlier retries: ${candidate.previouslyApprovedBuilds.join(', ') || '(none)'}`,
     `Repository: ${candidate.repository ?? '(unknown)'}`,
     `Source commit: ${candidate.sourceCommit ?? '(unknown)'}`,
     `Observed manifest: ${JSON.stringify(candidate.manifest ?? null).slice(0, 32 * 1024)}`,
