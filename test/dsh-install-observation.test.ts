@@ -492,12 +492,13 @@ snapshots:
       dshVersion: '0.1.1-rc.1',
       allowExecution: true,
       isolationProvider: 'other',
-      allowedBuilds: ['protobufjs', 'protobufjs'],
+      allowedBuilds: ['approved-plugin', 'protobufjs', 'protobufjs'],
       runner,
     })
 
+    assert.equal(installArgs.includes('--allow-build=approved-plugin@file:../../../artifact/approved-plugin-1.0.0.tgz'), true)
     assert.equal(installArgs.includes('--allow-build=protobufjs'), true)
-    assert.deepEqual(report.boundary.approvedDependencyBuilds, ['protobufjs'])
+    assert.deepEqual(report.boundary.approvedDependencyBuilds, ['approved-plugin', 'protobufjs'])
     await assert.rejects(observeDshPluginInstall({
       packageSpec: 'approved-plugin@1.0.0',
       dshVersion: '0.1.1-rc.1',
