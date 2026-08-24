@@ -296,7 +296,11 @@ targets:
         const url = String(input)
         if (url.includes('/commits/main')) return new Response(JSON.stringify({ sha: 'commit-1' }), { status: 200 })
         if (url.endsWith('/commit-1/plugin/package.json')) {
-          return new Response(JSON.stringify({ name: 'dsh-demo', version: '2.0.0-rc.1' }), { status: 200 })
+          return new Response(JSON.stringify({
+            name: 'dsh-demo',
+            version: '3.0.0-alpha.1',
+            publishConfig: { tag: 'alpha' },
+          }), { status: 200 })
         }
         if (url.startsWith('https://registry.npmjs.org/')) {
           return new Response(JSON.stringify({
@@ -327,6 +331,76 @@ targets:
     assert.equal(result.package?.version, '2.0.0-rc.1')
     assert.equal(result.package?.distTag, 'next')
     assert.equal(result.package?.integrity, 'sha512-next')
+  })
+
+  it('observes the source-declared npm release channel when no target override exists', async () => {
+    const source = new UpstreamObserverClient({
+      fetch: async input => {
+        const url = String(input)
+        if (url.includes('/commits/main')) return new Response(JSON.stringify({ sha: 'commit-1' }), { status: 200 })
+        if (url.endsWith('/commit-1/plugin/package.json')) {
+          return new Response(JSON.stringify({
+            name: 'dsh-demo',
+            version: '2.0.0-alpha.2',
+            publishConfig: { tag: 'alpha' },
+          }), { status: 200 })
+        }
+        if (url.startsWith('https://registry.npmjs.org/')) {
+          return new Response(JSON.stringify({
+            'dist-tags': { latest: '1.0.0', alpha: '2.0.0-alpha.2' },
+            versions: {
+              '1.0.0': { dist: { integrity: 'sha512-latest' } },
+              '2.0.0-alpha.2': { dist: { integrity: 'sha512-alpha' } },
+            },
+          }), { status: 200 })
+        }
+        if (url.endsWith('/commit-1/plugin/pnpm-lock.yaml')) {
+          return new Response([
+            "lockfileVersion: '9.0'",
+            '',
+            'importers:',
+            '  plugin: {}',
+            '',
+            'packages: {}',
+            '',
+            'snapshots: {}',
+            '',
+          ].join('\n'), { status: 200 })
+        }
+        throw new Error(`unexpected request: ${url}`)
+      },
+    })
+    const result = await source.observe(target, '2026-08-21T00:00:00.000Z')
+    assert.equal(result.package?.version, '2.0.0-alpha.2')
+    assert.equal(result.package?.distTag, 'alpha')
+    assert.equal(result.package?.integrity, 'sha512-alpha')
+  })
+
+  it('does not fall back to latest when a declared release channel is unavailable', async () => {
+    const source = new UpstreamObserverClient({
+      fetch: async input => {
+        const url = String(input)
+        if (url.includes('/commits/main')) return new Response(JSON.stringify({ sha: 'commit-1' }), { status: 200 })
+        if (url.endsWith('/commit-1/plugin/package.json')) {
+          return new Response(JSON.stringify({
+            name: 'dsh-demo',
+            version: '2.0.0-alpha.1',
+            publishConfig: { tag: 'alpha' },
+          }), { status: 200 })
+        }
+        if (url.startsWith('https://registry.npmjs.org/')) {
+          return new Response(JSON.stringify({
+            'dist-tags': { latest: '1.0.0' },
+            versions: { '1.0.0': { dist: { integrity: 'sha512-latest' } } },
+          }), { status: 200 })
+        }
+        throw new Error(`unexpected request: ${url}`)
+      },
+    })
+    await assert.rejects(
+      source.observe(target, '2026-08-21T00:00:00.000Z'),
+      /no alpha manifest/,
+    )
   })
 
   it('observes GitHub-only source and lockfile evidence without querying npm', async () => {

@@ -6,6 +6,7 @@ import { findReverseDependencyImpacts, type ReverseDependencyImpact, type Revers
 import type { DshLoadMatrixReport } from './dsh-probe.js'
 import { parseNpmLockGraph, parsePnpmLockGraph } from './graph.js'
 import { parsePackageManifestSnapshot } from './inventory.js'
+import { resolveNpmReleaseTag } from './npm-release-channel.js'
 import { buildUpstreamDownstreamIR, parseUpstreamDownstreamIR, type UpstreamDownstreamIR } from './upstream-alignment.js'
 import type { DependencyGraph, PackageManifestSnapshot } from './radar-types.js'
 import type {
@@ -1151,7 +1152,7 @@ export class UpstreamObserverClient implements ObserverSource {
     }
     const packageObservation = targetValue.observeNpm === false
       ? undefined
-      : await this.fetchNpmObservation(packageName, targetValue.packageTag)
+      : await this.fetchNpmObservation(packageName, resolveNpmReleaseTag(rawManifest, targetValue.packageTag))
     if (targetValue.observeNpm !== false && packageObservation === undefined) {
       warnings.push(`${packageName} was not found on the configured npm registry`)
     }
