@@ -4,7 +4,12 @@ ARG NODE_MAJOR=22
 FROM node:${NODE_MAJOR}-bookworm-slim AS build
 
 RUN corepack enable \
-  && corepack prepare pnpm@11.3.0 --activate
+  && attempt=1 \
+  && until corepack prepare pnpm@11.3.0 --activate; do \
+    if [ "$attempt" -ge 3 ]; then exit 1; fi; \
+    sleep "$((attempt * 2))"; \
+    attempt="$((attempt + 1))"; \
+  done
 
 WORKDIR /build
 COPY package.json pnpm-lock.yaml tsconfig.json .npmrc ./

@@ -283,7 +283,8 @@ jobs:
             examples/dsh/install-observer/targets.json \
             compatibility-ledger.json \
             feeds/dsh-plugin-compatibility.json \
-            feeds/dsh-plugin-compatibility.md
+            feeds/dsh-plugin-compatibility.md \
+            observations.json
 
       - name: Keep compatibility evidence artifacts
         if: always()
