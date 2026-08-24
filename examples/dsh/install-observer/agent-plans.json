@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-headless-agent-plans/v1alpha1",
-  "updatedAt": "2026-08-24T02:42:05.977Z",
+  "updatedAt": "2026-08-24T02:53:10.884Z",
   "entries": [
     {
       "caseId": "anweat-dsh-browser-node22",
@@ -266,28 +266,25 @@
       "nodeMajor": 22,
       "result": "build-approval-required",
       "observedRequiredBuilds": [
-        "dsh-free-vision",
-        "sharp"
+        "dsh-free-vision"
       ],
       "artifactSha256": "dc1499d6e3926c8f293b2760dca6ab91b6b0c980ca01a7250fb83647b0e42836",
       "repository": "FuzzySoul/dsh-free-vision",
       "sourceCommit": "9daa0dc4b42920c129bec5988765a585a0523843",
-      "inputFingerprint": "sha256:d695b1e78e49c1cb26318b5abb8205edc1c9bb26895339f1f8ac5763a8bb9876",
-      "plannedAt": "2026-08-24T02:41:54.492Z",
+      "inputFingerprint": "sha256:638b1d399e38540247714fb997033cca9522766c0568a672a40b949b52d3e927",
+      "plannedAt": "2026-08-24T02:53:10.271Z",
       "model": "deepseek-v4-flash",
       "action": "retry-headless",
       "classification": "build-approval",
       "allowedBuilds": [
-        "dsh-free-vision",
-        "sharp"
+        "dsh-free-vision"
       ],
-      "summary": "The observed result is build-approval-required for packages dsh-free-vision and sharp. The repository evidence (package.json) shows dsh-free-vision is the plugin itself and sharp is a transitive dependency of luma-mcp (a dependency of dsh-free-vision). The plugin is designed for headless use (no web UI required) and the build approval is limited to these exact packages. Therefore, retry-headless is appropriate.",
+      "summary": "The observed build-approval-required result is due to the plugin package dsh-free-vision requiring explicit approval for its dependency build. The repository evidence (package.json) confirms the package name and version, and the manifest shows it is a valid DSH plugin with a dsh bundle patch. The only build package observed is dsh-free-vision itself, which matches the plugin name. Approving this package is consistent with the headless profile and does not introduce additional dependencies or services.",
       "evidence": [
-        "Observed result: build-approval-required for dsh-free-vision and sharp",
-        "package.json lists dependencies: @modelcontextprotocol/sdk, luma-mcp, @deepseek-ai/schemastery",
-        "README states '零 MCP 配置' and '进程内启动视觉引擎（版本锁定）' indicating headless operation",
-        "cordis.patch.yml shows plugin insertion without web-specific requirements",
-        "No evidence of need for web/TUI plane, secrets, services, or system packages"
+        "Observed result: build-approval-required for dsh-free-vision",
+        "Observed build packages: dsh-free-vision",
+        "package.json: name dsh-free-vision, version 1.0.8, dsh.bundle.patch ./cordis.patch.yml",
+        "cordis.patch.yml: insert free-vision plugin with name dsh-free-vision"
       ]
     },
     {
@@ -577,28 +574,24 @@
       "nodeMajor": 22,
       "result": "build-approval-required",
       "observedRequiredBuilds": [
-        "dsh-vision-proxy",
-        "sharp"
+        "dsh-vision-proxy"
       ],
       "artifactSha256": "ede1c99584a6560059258b912dbb14325780daa564632392c93e789230702b56",
       "repository": "Flyvhidbwo/dsh-vision-proxy",
       "sourceCommit": "68d3b59148b0d6c80fc919c231512642302d9418",
-      "inputFingerprint": "sha256:23700004fd69c343fc7fa820613fe043425e5b76e63c47ee033932d9e0c8201b",
-      "plannedAt": "2026-08-24T02:42:01.517Z",
+      "inputFingerprint": "sha256:72d9d64123a5b6e883f6fda0c04b4b95695de0d1f1557f610ce7d584655ec2e8",
+      "plannedAt": "2026-08-24T02:53:10.884Z",
       "model": "deepseek-v4-flash",
       "action": "retry-headless",
       "classification": "build-approval",
       "allowedBuilds": [
-        "dsh-vision-proxy",
-        "sharp"
+        "dsh-vision-proxy"
       ],
-      "summary": "The observed result is build-approval-required for exactly the packages dsh-vision-proxy and sharp. The repository evidence (package.json) explicitly lists sharp in optionalDependencies and in pnpm.onlyBuiltDependencies, and the README instructs approving both dsh-vision-proxy and sharp for pnpm >=10. The plugin's postinstall script requires build approval. Approving these two packages is sufficient to proceed with the headless profile.",
+      "summary": "The observed result is build-approval-required for the package dsh-vision-proxy. The repository evidence (package.json) explicitly lists dsh-vision-proxy in the pnpm.onlyBuiltDependencies array, indicating the package itself has a postinstall script that requires build approval. The README also instructs users to approve dsh-vision-proxy and sharp in the profile's pnpm-workspace.yaml. Since the observed build packages only include dsh-vision-proxy (not sharp, which is optional), approving dsh-vision-proxy is sufficient to proceed with the headless profile. The plugin is designed for headless use and does not require a Web/TUI plane, secrets, services, or system packages.",
       "evidence": [
-        "package.json: optionalDependencies includes sharp ^0.34.0",
-        "package.json: pnpm.onlyBuiltDependencies includes sharp",
-        "README.md: 'pnpm ≥ 10 默认拦截依赖构建脚本——首次安装会以非零码退出并提示 Ignored build scripts: dsh-vision-proxy, sharp. 请批准两者'",
-        "README.md: 'allowBuilds: dsh-vision-proxy: true, sharp: true'",
-        "Observed build packages: dsh-vision-proxy, sharp"
+        "package.json: pnpm.onlyBuiltDependencies includes 'sharp' only, but the observed build package is 'dsh-vision-proxy' (the plugin itself has a postinstall script).",
+        "README.md: 'pnpm ≥ 10 默认拦截依赖构建脚本——首次安装会以非零码退出并提示 Ignored build scripts: dsh-vision-proxy, sharp. 请批准两者...' and 'allowBuilds: {dsh-vision-proxy: true, sharp: true}'.",
+        "Observed manifest: dependencies include schemastery, optionalDependencies include sharp, and scripts include postinstall."
       ]
     },
     {
@@ -719,34 +712,26 @@
       "nodeMajor": 22,
       "result": "build-approval-required",
       "observedRequiredBuilds": [
-        "@roarpeng/graphflow",
-        "better-sqlite3",
-        "onnxruntime-node",
-        "protobufjs",
-        "sharp"
+        "@roarpeng/graphflow"
       ],
       "artifactSha256": "3712f929138150a85804405fb8f6a13a27187415b735c8bdf13e11507f2de7ef",
       "repository": "Roarpeng/GraphFlow",
       "sourceCommit": "5115c06c442ec47bb00b5d283e4731994713f38d",
-      "inputFingerprint": "sha256:3cfee69c5674daaee7ebc3b9c35dcb6a57e5b378db552fec7649288b10dcc7e1",
-      "plannedAt": "2026-08-24T02:42:05.973Z",
+      "inputFingerprint": "sha256:a43b92c237c8db152e5edbff34aa61d275ca97f29c5db3c01ce8ba4537094a5a",
+      "plannedAt": "2026-08-24T02:53:10.180Z",
       "model": "deepseek-v4-flash",
       "action": "retry-headless",
       "classification": "build-approval",
       "allowedBuilds": [
-        "@roarpeng/graphflow",
-        "better-sqlite3",
-        "onnxruntime-node",
-        "protobufjs",
-        "sharp"
+        "@roarpeng/graphflow"
       ],
-      "summary": "The observed build-approval-required result lists exactly the packages that the plugin's manifest and documentation indicate are needed for headless operation. The package.json shows better-sqlite3 as an optionalDependency, and the README mentions @firecrawl/anydoc as optional, but the observed build packages include onnxruntime-node, protobufjs, and sharp which are transitive dependencies of @huggingface/transformers. The repository evidence supports approving these specific packages for a headless retry.",
+      "summary": "The observed build-approval-required result is for the exact package @roarpeng/graphflow, which is the plugin itself. The repository evidence (package.json, README, cordis.patch.yml) confirms this package is a legitimate dsh plugin with a proper dsh bundle and no suspicious build steps. The build approval is limited to the observed package, and the headless profile can proceed with the retry.",
       "evidence": [
-        "Observed result: build-approval-required with build packages: @roarpeng/graphflow, better-sqlite3, onnxruntime-node, protobufjs, sharp",
-        "package.json dependencies include @huggingface/transformers, which depends on onnxruntime-node, protobufjs, and sharp",
-        "package.json optionalDependencies include better-sqlite3, which is used for sqlite storage backend",
-        "README documents sqlite as a storage backend and mentions @firecrawl/anydoc as optional, but the observed build packages do not include @firecrawl/anydoc",
-        "cordis.patch.yml shows the plugin uses npx to run graphflow-mcp, which requires the package to be installed"
+        "Observed result: build-approval-required for @roarpeng/graphflow",
+        "package.json shows @roarpeng/graphflow is the plugin package with dsh.bundle and dsh.client config",
+        "cordis.patch.yml defines the dsh plugin layer with MCP client and glue",
+        "README documents DeepSeek Harness plugin usage and capabilities",
+        "No evidence of arbitrary commands or non-headless requirements"
       ]
     },
     {
