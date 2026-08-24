@@ -47,11 +47,19 @@ repositories are checked separately.
    clean retest.
 
 ```mermaid
-flowchart LR
-  Change["DSH or plugin change"] --> Graph["Exact artifact + dependency paths"]
-  Graph --> Runtime["Isolated install → register → load"]
-  Runtime --> Result["Evidence, retest, or fixable issue"]
+flowchart TB
+  Change["Schedule / DSH or plugin change"] --> Agent["Agent plans a bounded headless retry"]
+  Agent --> Runtime["Disposable VM: install → register → load"]
+  Runtime -->|"next observed gate"| Agent
+  Runtime -->|"compatible / outside headless"| Evidence["Publish exact evidence"]
+  Runtime -->|"reproduced failure"| Issue["Open one fixable issue"]
+  Issue -->|"author ships a fix"| Change
 ```
+
+The Agent interprets repository instructions and the latest runtime evidence,
+then chooses whether and how headless should retry. The disposable runner—not
+the model—establishes the result. A model cannot invent a build package, execute
+inside the target VM, or turn missing evidence into a pass.
 
 ## Try a real check
 
@@ -97,21 +105,20 @@ The [isolated observer workflow](.github/workflows/observe-dsh-plugin-install.ym
 uses a fresh GitHub-hosted runner for code-executing checks. The runner is not
 your workstation and does not receive project secrets.
 
-## Trust boundary
+## Upstream reports now closed
 
-- Static collection never executes target-controlled code.
-- Dynamic observation runs only in a disposable, bounded environment.
-- The DSH Agent may choose a constrained follow-up or explain evidence; it cannot
-  invent a dependency, turn missing evidence into a pass, or replace the runtime
-  result.
+We opened the following reports; their upstream maintainers have now closed
+them:
 
-## Evidence from the ecosystem
+- [Sanqi-normal/dsh-webui-market-plugin#5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)
+- [1na-ko/dsh-hdc-bridge#3](https://github.com/1na-ko/dsh-hdc-bridge/issues/3)
+- [6Mikao9/dsh-wsl-workspace#6](https://github.com/6Mikao9/dsh-wsl-workspace/issues/6)
+- [3274375092/dsh-voice#2](https://github.com/3274375092/dsh-voice/issues/2)
 
-The repository keeps a [domain report index](docs/domain-reports.md) with public
-issue links, validation level, impact, and the difference between a confirmed
-runtime failure and a maintainer-confirmation request. The [compatibility feed](feeds/dsh-plugin-compatibility.md)
-is machine-readable for plugin directories and other consumers.
+The [full domain report index](docs/domain-reports.md) keeps the open reports,
+validation level, and the boundary between a confirmed runtime failure and a
+maintainer-confirmation request.
 
-If Upstream Radar helps you keep DSH plugins working as the ecosystem changes,
-[please give the project a Star](https://github.com/MicroMilo/upstream-radar) ⭐
-or open an issue with a plugin we should observe.
+<p align="center">
+  <strong>If Upstream Radar helps the DSH ecosystem stay compatible, <a href="https://github.com/MicroMilo/upstream-radar">please give it a Star</a> ⭐</strong>
+</p>

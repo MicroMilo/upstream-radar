@@ -38,11 +38,18 @@ Upstream Radar 持续检查三者之间的真实关系：精确的 DSH 插件发
 4. **完成闭环。** 生成有边界的证据，把重要变化交给可选的 DSH Agent，并在干净复测后更新或关闭一条面向维护者的 Issue。
 
 ```mermaid
-flowchart LR
-  Change["DSH 或插件变化"] --> Graph["精确发布物 + 依赖路径"]
-  Graph --> Runtime["隔离安装 → 注册 → 加载"]
-  Runtime --> Result["证据、复测或可修复 Issue"]
+flowchart TB
+  Change["定时运行 / DSH 或插件变化"] --> Agent["Agent 规划受限的 headless 重试"]
+  Agent --> Runtime["一次性虚拟机：安装 → 注册 → 加载"]
+  Runtime -->|"出现下一层门槛"| Agent
+  Runtime -->|"兼容 / 超出 headless"| Evidence["发布精确证据"]
+  Runtime -->|"复现真实失败"| Issue["创建一条可修复的 Issue"]
+  Issue -->|"作者发布修复"| Change
 ```
+
+Agent 读取仓库说明和最新运行证据，决定 headless 是否重试、重试时允许哪些安装条件。
+真正的结果由一次性虚拟机执行得出，而不是模型判断。模型不能凭空增加安装包、不能进入目标
+虚拟机执行，也不能把缺失证据说成通过。
 
 ## 试试一个真实检查
 
@@ -78,16 +85,17 @@ npx --yes upstream-radar@0.43.4 scan \
 [隔离观察 workflow](.github/workflows/observe-dsh-plugin-install.yml) 会为需要执行代码的检查使用全新的 GitHub 托管 runner。
 它不是你的电脑，也不会接收项目密钥。
 
-## 信任边界
+## 已关闭的上游报告
 
-- 静态收集不会执行目标控制的代码。
-- 动态观察只在一次性、受限环境中运行。
-- DSH Agent 可以选择受限的后续检查或解释证据，但不能凭空增加依赖、把缺失证据说成通过，或替代运行结果。
+以下报告由我们提出，目前均已被对应上游维护者关闭：
 
-## 生态证据
+- [Sanqi-normal/dsh-webui-market-plugin#5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)
+- [1na-ko/dsh-hdc-bridge#3](https://github.com/1na-ko/dsh-hdc-bridge/issues/3)
+- [6Mikao9/dsh-wsl-workspace#6](https://github.com/6Mikao9/dsh-wsl-workspace/issues/6)
+- [3274375092/dsh-voice#2](https://github.com/3274375092/dsh-voice/issues/2)
 
-仓库维护一份[domain 报告索引](docs/domain-reports.md)，包含公开 Issue、验证等级、影响，以及“已确认运行失败”和“需要维护者确认”之间的区别。
-[兼容性 feed](feeds/dsh-plugin-compatibility.md) 可以供插件目录和其他消费者使用。
+[完整的 domain 报告索引](docs/domain-reports.md)保留了开放报告、验证等级，以及“已确认运行失败”和“需要维护者确认”之间的区别。
 
-如果 Upstream Radar 对你维护 DSH 插件有帮助，欢迎[给项目点个 Star](https://github.com/MicroMilo/upstream-radar) ⭐，
-或者提交一个值得我们持续观察的插件。
+<p align="center">
+  <strong>如果 Upstream Radar 对 DSH 生态有帮助，欢迎<a href="https://github.com/MicroMilo/upstream-radar">点一个 Star</a> ⭐</strong>
+</p>
