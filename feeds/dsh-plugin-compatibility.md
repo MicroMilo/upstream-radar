@@ -1,8 +1,8 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-23T11:58:39.765Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-24T02:44:17.611Z`.
 
-**67 observed compatible · 0 observed incompatible · 29 needs review · 4 not observed**
+**71 observed compatible · 0 observed incompatible · 25 needs review · 4 not observed**
 
 | Catalog plugin | Exact artifact | Exact DSH / runtime | Evidence status | Observed |
 | --- | --- | --- | --- | --- |
@@ -14,7 +14,7 @@ Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-pl
 | [amlyczz/dsh-agy-link](https://github.com/amlyczz/dsh-agy-link) | `dsh-agy-link@0.4.13` | `0.1.1-rc.2` / Node 24 | `observed-compatible` | 2026-08-23T11:52:36.151Z |
 | [Anionex/dsh-turn-rewind](https://github.com/Anionex/dsh-turn-rewind) | `@anionex/dsh-turn-rewind@0.1.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:41.857Z |
 | [Anionex/dsh-vision-toolkit](https://github.com/Anionex/dsh-vision-toolkit) | `@anionex/dsh-vision-toolkit@0.1.38` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:53:42.565Z |
-| [anweat/dsh-browser](https://github.com/anweat/dsh-browser) | `@anweat/dsh-browser@0.1.8` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:52:34.572Z |
+| [anweat/dsh-browser](https://github.com/anweat/dsh-browser) | `@anweat/dsh-browser@0.1.8` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-24T02:43:13.234Z |
 | [awesome-dsh-plugin/dsh-find-plugin](https://github.com/awesome-dsh-plugin/dsh-find-plugin) | `dsh-find-plugin@0.3.7` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:40.622Z |
 | [Blank-not-black/dsh-Remote](https://github.com/Blank-not-black/dsh-Remote/tree/main/packages/plugin) | `dsh-remote-plugin@0.6.11` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:29.509Z |
 | [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) | `dsh-context@0.25.3` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:36.032Z |
@@ -33,11 +33,11 @@ Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-pl
 | [elysia395/dsh-wallpaper-engine](https://github.com/elysia395/dsh-wallpaper-engine) | `dsh-plugin-wallpaper-engine@0.5.1` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:54:30.873Z |
 | [feibi-mochi/deepseek-harness-control-center](https://github.com/feibi-mochi/deepseek-harness-control-center) | `deepseek-harness-wallet@0.3.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:31.355Z |
 | [feng78-boop/dsh-thirteen-bg](https://github.com/feng78-boop/dsh-thirteen-bg) | `dsh-thirteen-bg@0.5.2` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:54:30.752Z |
-| [flymysql/dsh-remote](https://github.com/flymysql/dsh-remote) | `dsh-remote@0.8.7` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:52:41.322Z |
-| [Flyvhidbwo/dsh-vision-proxy](https://github.com/Flyvhidbwo/dsh-vision-proxy) | `dsh-vision-proxy@0.4.1` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:54:09.943Z |
+| [flymysql/dsh-remote](https://github.com/flymysql/dsh-remote) | `dsh-remote@0.8.7` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-24T02:43:49.693Z |
+| [Flyvhidbwo/dsh-vision-proxy](https://github.com/Flyvhidbwo/dsh-vision-proxy) | `dsh-vision-proxy@0.4.1` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-24T02:43:20.265Z |
 | [franksong2702/dsh-codex-connect](https://github.com/franksong2702/dsh-codex-connect) | `dsh-codex-connect@0.1.0-alpha.4.14` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:52:33.312Z |
 | [FuzzySoul/dsh-chatvoice](https://github.com/FuzzySoul/dsh-chatvoice) | `dsh-chatvoice@0.1.7` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:36.797Z |
-| [FuzzySoul/dsh-free-vision](https://github.com/FuzzySoul/dsh-free-vision) | `dsh-free-vision@1.0.8` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:52:34.260Z |
+| [FuzzySoul/dsh-free-vision](https://github.com/FuzzySoul/dsh-free-vision) | `dsh-free-vision@1.0.8` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-24T02:43:08.385Z |
 | [GanyuanRan/Aegis](https://github.com/GanyuanRan/Aegis) | — | — | `not-observed` | — |
 | [Han-1413141/dsh-cost-meter](https://github.com/Han-1413141/dsh-cost-meter) | `dsh-cost-meter@1.5.38` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:31.756Z |
 | [HsiangNianian/dsh-auto-continue](https://github.com/HsiangNianian/dsh-auto-continue) | `dsh-client-auto-continue@0.8.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:33.893Z |
@@ -53,9 +53,9 @@ Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-pl
 | [Mars-Sea/dsh-commandcode-provider](https://github.com/Mars-Sea/dsh-commandcode-provider) | `@mars-sea/dsh-commandcode-provider@0.8.0` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:52:41.370Z |
 | [MichengAI/dsh-agency-agents](https://github.com/MichengAI/dsh-agency-agents) | `@michengai/dsh-agency-agents@0.1.20` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:53:31.013Z |
 | [MichengAI/dsh-archive-manager](https://github.com/MichengAI/dsh-archive-manager) | `@michengai/dsh-archive-manager@0.1.12` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:52:43.398Z |
-| [MichengAI/dsh-im-connect](https://github.com/MichengAI/dsh-im-connect) | `@michengai/dsh-im-connect@0.1.19` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:52:38.490Z |
+| [MichengAI/dsh-im-connect](https://github.com/MichengAI/dsh-im-connect) | `@michengai/dsh-im-connect@0.1.19` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-24T02:43:09.125Z |
 | [MichengAI/dsh-skills-manager](https://github.com/MichengAI/dsh-skills-manager) | `@michengai/dsh-skills-manager@0.1.23` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:54:30.570Z |
-| [modusensus/dsh-mneme](https://github.com/modusensus/dsh-mneme/tree/main/dsh-mneme) | `@modusensus/dsh-mneme@0.6.10` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:52:39.367Z |
+| [modusensus/dsh-mneme](https://github.com/modusensus/dsh-mneme/tree/main/dsh-mneme) | `@modusensus/dsh-mneme@0.6.10` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-24T02:43:07.255Z |
 | [moonquake2004/dsh-doctor](https://github.com/moonquake2004/dsh-doctor/tree/main/plugin) | `@moonquake2004/dsh-doctor@0.4.3` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:40.923Z |
 | [NanmiCoder/dsh-agent-teams](https://github.com/NanmiCoder/dsh-agent-teams) | `@nanmicoder/dsh-agent-teams@0.1.13` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:35.030Z |
 | [NoNameLeGo/dsh-catppuccin-theme](https://github.com/NoNameLeGo/dsh-catppuccin-theme) | `@nonamelego/dsh-catppuccin@0.2.10` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:38.445Z |
@@ -72,7 +72,7 @@ Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-pl
 | [Renzic-Stone/DSH-EasyRewrite](https://github.com/Renzic-Stone/DSH-EasyRewrite) | `dsh-easyrewrite@2.1.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:43.725Z |
 | [RevolutionLA/dsh-dream-skin](https://github.com/RevolutionLA/dsh-dream-skin) | `dsh-dream-skin@0.4.10` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:34.532Z |
 | [Rianico/dsh-better-edit](https://github.com/Rianico/dsh-better-edit) | `dsh-better-edit@0.3.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:39.089Z |
-| [Roarpeng/GraphFlow](https://github.com/Roarpeng/GraphFlow) | `@roarpeng/graphflow@1.12.2` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:54:31.204Z |
+| [Roarpeng/GraphFlow](https://github.com/Roarpeng/GraphFlow) | `@roarpeng/graphflow@1.12.2` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-24T02:43:22.546Z |
 | [saya-ch/dsh-mobile](https://github.com/saya-ch/dsh-mobile) | `dsh-mobile@0.1.4` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:40.415Z |
 | [shaobeichen/dsh-pocket](https://github.com/shaobeichen/dsh-pocket) | `dsh-pocket@1.12.3` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:37.264Z |
 | [shaoshi20/dshscan](https://github.com/shaoshi20/dshscan) | `@shaoshi/dshscan@0.5.0` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:53:45.378Z |
@@ -84,7 +84,7 @@ Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-pl
 | [STARDUSTLC666/dsh-email](https://github.com/STARDUSTLC666/dsh-email) | `dsh-email@0.6.2` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:42.713Z |
 | [stuarthu/dsh-crew](https://github.com/stuarthu/dsh-crew) | `dsh-crew@0.9.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:30.712Z |
 | [TecFancy/dsh-auth-gate](https://github.com/TecFancy/dsh-auth-gate) | `dsh-auth-gate@0.7.2` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:27.902Z |
-| [THEWOLFWALKER/dsh-notifier](https://github.com/THEWOLFWALKER/dsh-notifier) | `dsh-notifier@0.8.6` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:52:35.056Z |
+| [THEWOLFWALKER/dsh-notifier](https://github.com/THEWOLFWALKER/dsh-notifier) | `dsh-notifier@0.8.6` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-24T02:43:05.159Z |
 | [Tkingxiao/dsh-any-background](https://github.com/Tkingxiao/dsh-any-background) | `dsh-any-background@0.1.9` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:39.776Z |
 | [toby-bridges/api-relay-audit](https://github.com/toby-bridges/api-relay-audit) | — | — | `not-observed` | — |
 | [trench-xinxin/dsh-tool-lens](https://github.com/trench-xinxin/dsh-tool-lens) | `@trench-xinxin/dsh-tool-lens@2.0.5` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:54:22.626Z |
@@ -104,7 +104,7 @@ Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-pl
 | [xmutfyh/dsh-plugin-writing-guard](https://github.com/xmutfyh/dsh-plugin-writing-guard) | `dsh-plugin-writing-guard@1.6.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:32.939Z |
 | [ysr666/dsh-vision-router](https://github.com/ysr666/dsh-vision-router) | `dsh-vision-router@1.7.7` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:54:35.252Z |
 | [yyh-001/dsh-meme](https://github.com/yyh-001/dsh-meme) | `dsh-meme@0.1.39` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:25.255Z |
-| [zhu1090093659/dsh-web-ui](https://github.com/zhu1090093659/dsh-web-ui/tree/main/packages/dsh-web-ui-all) | `@linxin666/dsh-web-ui-all@0.2.9` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:54:33.690Z |
+| [zhu1090093659/dsh-web-ui](https://github.com/zhu1090093659/dsh-web-ui/tree/main/packages/dsh-web-ui-all) | `@linxin666/dsh-web-ui-all@0.2.9` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-24T02:43:53.129Z |
 | [ZSeven-W/dsh-openpencil](https://github.com/ZSeven-W/dsh-openpencil) | `@zseven-w/dsh-openpencil@0.1.0-rc.1` | `0.1.1-rc.2` / Node 24 | `needs-review` | 2026-08-23T11:53:40.988Z |
 
 ## Reading the status

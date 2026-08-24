@@ -31,11 +31,11 @@
       }
     },
     {
-      "id": "cell:68173d98f4a40b11f9f60a1f9328657768a77528b7947af0e67f811b5098bfe1",
+      "id": "cell:5dfd301705d58f97a4cc52f64016d135e037e2698ba242662b679afcc05ffee6",
       "caseId": "anweat-dsh-browser-node22",
       "targetId": "anweat-dsh-browser",
-      "observedAt": "2026-08-23T11:52:34.572Z",
-      "result": "build-approval-required",
+      "observedAt": "2026-08-24T02:43:13.234Z",
+      "result": "compatible",
       "plugin": {
         "name": "@anweat/dsh-browser",
         "version": "0.1.8",
@@ -49,17 +49,14 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:e70d31a52f31838c08c6e71965c11d4d8f5bbcfc9244d2d04b98c81242fab7a8"
+        "contractFingerprint": "sha256:f4c1b31cfd2afb25d19bb72167a18077a904a46577db8fd8e0a61fc4c4cab480"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:f3ce676a49957433f69deabc94909ff79a4b90530f38b35bed965b26a31b8114",
+        "runtimeGraphDigest": "sha256:6691312be86c06690fde841be493e4b087fd1bde140e1a28368bad89bfea8440",
         "runtimeGraphNodes": 469,
         "runtimeGraphEdges": 2050,
         "requiredUnresolved": 0,
-        "declaredPeerContracts": 0,
-        "requiredDependencyBuilds": [
-          "@jackwener/opencli"
-        ]
+        "declaredPeerContracts": 0
       }
     },
     {
@@ -1136,10 +1133,10 @@
       }
     },
     {
-      "id": "cell:6cb5579208a3c4b0892a0fda8d789ab82184bebf4f2a780367a498015654a51e",
+      "id": "cell:3b08c544cdb59365f805b7ef4b2ee593af6a522b4aa7e80170a981c125feb6fb",
       "caseId": "dsh-free-vision-node22",
       "targetId": "dsh-free-vision",
-      "observedAt": "2026-08-23T11:52:34.260Z",
+      "observedAt": "2026-08-24T02:43:08.385Z",
       "result": "build-approval-required",
       "plugin": {
         "name": "dsh-free-vision",
@@ -1154,17 +1151,16 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:502ed0b58badb06df4e392ac0bddcf709000f2cb5f6cfdeb578fee8e39a86b83"
+        "contractFingerprint": "sha256:9d3822991399f0692f01ed9459063ed4a8c6e228808f26af984417c5a487dff9"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:159e65cb5132aed9ffe64a66dbaad3eb7abc2d8bded8cde5cf559fdb4c63f0a1",
+        "runtimeGraphDigest": "sha256:799208b058e79d24d1ed577dd70bdc706a27e307c736f5a64cbba744bcf797de",
         "runtimeGraphNodes": 575,
         "runtimeGraphEdges": 2247,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0,
         "requiredDependencyBuilds": [
-          "dsh-free-vision",
-          "sharp"
+          "dsh-free-vision"
         ]
       }
     },
@@ -1285,11 +1281,11 @@
       }
     },
     {
-      "id": "cell:68bba141f95496fb73947b754984776415280d2310beb92a19460731941974ad",
+      "id": "cell:41cf289fbaa79de3342ff95a5520f8edbc03265d587abb3a862b99c4f9cd8aeb",
       "caseId": "dsh-im-connect-node22",
       "targetId": "dsh-im-connect",
-      "observedAt": "2026-08-23T11:52:38.490Z",
-      "result": "build-approval-required",
+      "observedAt": "2026-08-24T02:43:09.125Z",
+      "result": "compatible",
       "plugin": {
         "name": "@michengai/dsh-im-connect",
         "version": "0.1.19",
@@ -1303,17 +1299,14 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:258d01863f4bcd4fe5650ddb44d29324360032317c93c3e7da47762e12ac03cf"
+        "contractFingerprint": "sha256:d15d9fec640f650f7ec013b3bc7c5b9c3058eec2b6a5a3c2feb8b81207f3f42b"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:b5647570a424b298750539e9b78c1bbe1600a64953294ee4d7467e0768b0a67e",
+        "runtimeGraphDigest": "sha256:d4f4209e1b65361a5b3d49105ddda407b8729f458f7c3f247e0e8d9cd843844c",
         "runtimeGraphNodes": 534,
         "runtimeGraphEdges": 2155,
         "requiredUnresolved": 0,
-        "declaredPeerContracts": 2,
-        "requiredDependencyBuilds": [
-          "protobufjs"
-        ]
+        "declaredPeerContracts": 2
       }
     },
     {
@@ -1462,11 +1455,11 @@
       }
     },
     {
-      "id": "cell:24ac4e9c0188d9b34f181a6cbfd7cc816ebcee34d0488cb51d29d52a9ec56709",
+      "id": "cell:4734fa871d60907b34dd70772945bec0a3d74a93f3c6b09d54b2875695328374",
       "caseId": "dsh-mneme-node22",
       "targetId": "dsh-mneme",
-      "observedAt": "2026-08-23T11:52:39.367Z",
-      "result": "build-approval-required",
+      "observedAt": "2026-08-24T02:43:07.255Z",
+      "result": "compatible",
       "plugin": {
         "name": "@modusensus/dsh-mneme",
         "version": "0.6.10",
@@ -1480,19 +1473,14 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:b222783f9e97f57e31c0936e49e7418935a9d8cf9107439a2c4acfcb9fb73e4b"
+        "contractFingerprint": "sha256:1b101a729f3eeca6d121e84884534909bed2def0c03e51489a075db83476f36a"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:addcb5f00722669795f1cc45c767135f5adb5ac231d4c9670d1b8edb2871f22e",
+        "runtimeGraphDigest": "sha256:d414efaa7098b9d0cc787f8e191d33ad8304632694191d74fe6d0d35add8227f",
         "runtimeGraphNodes": 498,
         "runtimeGraphEdges": 2092,
         "requiredUnresolved": 0,
-        "declaredPeerContracts": 6,
-        "requiredDependencyBuilds": [
-          "onnxruntime-node",
-          "protobufjs",
-          "sharp"
-        ]
+        "declaredPeerContracts": 6
       }
     },
     {
@@ -1583,11 +1571,11 @@
       }
     },
     {
-      "id": "cell:c04775e4048f357eaa7e86f64b5b6b17be45b57715e342a3e0312806674710e9",
+      "id": "cell:25fba57a61f125be8b9591591bf0125b98eeb947627094f0d17c6d1abd1c8770",
       "caseId": "dsh-notifier-node22",
       "targetId": "dsh-notifier",
-      "observedAt": "2026-08-23T11:52:35.056Z",
-      "result": "build-approval-required",
+      "observedAt": "2026-08-24T02:43:05.159Z",
+      "result": "compatible",
       "plugin": {
         "name": "dsh-notifier",
         "version": "0.8.6",
@@ -1601,17 +1589,14 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:56c8a3274230281c9db040e4d127af268fee5dfc9d9a72f3bb5d734928093c5b"
+        "contractFingerprint": "sha256:ca816c475e95b3eed6a9f03fcb3df27a4485e5e786036b643fc1231a3358f344"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:f64df6bdb33d579c6ec642a8e5868dcb6082a86d94520aad454a6336148c7604",
+        "runtimeGraphDigest": "sha256:4df94976cbf2fb3916a34e956456b2acf10a4979df66cd42797a63322cb662c3",
         "runtimeGraphNodes": 502,
         "runtimeGraphEdges": 2113,
         "requiredUnresolved": 0,
-        "declaredPeerContracts": 1,
-        "requiredDependencyBuilds": [
-          "protobufjs"
-        ]
+        "declaredPeerContracts": 1
       }
     },
     {
@@ -1847,11 +1832,11 @@
       }
     },
     {
-      "id": "cell:cbecae89445c6ea8938a6f9279ab332a9b6595ef7d9dc706d39cc05cf10f6c86",
+      "id": "cell:ee2a0723236123b10a05118dd791f325eb76cf4b21792b2e2239458445361587",
       "caseId": "dsh-remote-node22",
       "targetId": "dsh-remote",
-      "observedAt": "2026-08-23T11:52:41.322Z",
-      "result": "build-approval-required",
+      "observedAt": "2026-08-24T02:43:49.693Z",
+      "result": "unknown",
       "plugin": {
         "name": "dsh-remote",
         "version": "0.8.7",
@@ -1865,19 +1850,14 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:8f4dc2adcf1d2820854a942b4e29cded384a519e467d157fe22e86ab346db380"
+        "contractFingerprint": "sha256:026ff2fb049e29c19bbc12d2b2ee454dc517347ef184f4e00647959e27b13897"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:3227cf74001254fb2169e684b1af7b0e429dad2dad001df408c7a6e9e884bf6f",
+        "runtimeGraphDigest": "sha256:19757eb12ba60909bae077f8730bffe71ac3d28d4dd48aa97873c65d78349e69",
         "runtimeGraphNodes": 622,
         "runtimeGraphEdges": 2398,
         "requiredUnresolved": 2,
-        "declaredPeerContracts": 7,
-        "requiredDependencyBuilds": [
-          "cpu-features",
-          "node-pty",
-          "ssh2"
-        ]
+        "declaredPeerContracts": 7
       }
     },
     {
@@ -2345,10 +2325,10 @@
       }
     },
     {
-      "id": "cell:4f2362486d166ae3ba34813030994584fa50c1306f2c83de9c239eed7dc5578a",
+      "id": "cell:ef94f6a0a0eb3189b9151cd2fb8b67c4a5d8bf595e432c8bd1595db26128c278",
       "caseId": "dsh-vision-proxy-node22",
       "targetId": "dsh-vision-proxy",
-      "observedAt": "2026-08-23T11:54:09.943Z",
+      "observedAt": "2026-08-24T02:43:20.265Z",
       "result": "build-approval-required",
       "plugin": {
         "name": "dsh-vision-proxy",
@@ -2363,17 +2343,16 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:7ffa1922b0d38de21b41a090b35385438d9673e58ce4f30579a7cd86bc7666e4"
+        "contractFingerprint": "sha256:5d1eff6adaebc6db02794971cd7be74035987184fc1a8268b3249dfa94523ca4"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:ceff81d79425e4d729d8fd18bcf48998dfce17be537a262b6386ffc897e99e20",
+        "runtimeGraphDigest": "sha256:d86cf9b76536110835f7031d585d61c414007088814497d752ac7935fb6a6fd1",
         "runtimeGraphNodes": 457,
         "runtimeGraphEdges": 2039,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0,
         "requiredDependencyBuilds": [
-          "dsh-vision-proxy",
-          "sharp"
+          "dsh-vision-proxy"
         ]
       }
     },
@@ -2465,11 +2444,11 @@
       }
     },
     {
-      "id": "cell:d48353bb46227fcaf2ce8c60126f10dd9d2ffacf256815aabf6c2b3560cb07a0",
+      "id": "cell:7afd1ae1222351c6e509412557ca864b71dbabd145df17323c9f498cdf82e7de",
       "caseId": "dsh-web-ui-all-node22",
       "targetId": "dsh-web-ui-all",
-      "observedAt": "2026-08-23T11:54:33.690Z",
-      "result": "build-approval-required",
+      "observedAt": "2026-08-24T02:43:53.129Z",
+      "result": "unknown",
       "plugin": {
         "name": "@linxin666/dsh-web-ui-all",
         "version": "0.2.9",
@@ -2483,20 +2462,14 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:76153bb867d0638b8de0e22f0710ba673ec89b0fa61e7c13d7f935a9fc620f05"
+        "contractFingerprint": "sha256:11db2433f505aa26572bec2ee82ce6e2d79d4a3d32ec7f9b4aaebbbe726f41f2"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:aca4a6d6bf218cb5cd6ef2eeab73cffd5fc2e940911c7b27f759530ffa82bd17",
+        "runtimeGraphDigest": "sha256:9f8ee599c7256c32704b57b99c5c63cf0a82e28abef5c393aeec22c0cdac8ea2",
         "runtimeGraphNodes": 651,
         "runtimeGraphEdges": 2458,
         "requiredUnresolved": 3,
-        "declaredPeerContracts": 0,
-        "requiredDependencyBuilds": [
-          "cloudflared",
-          "cpu-features",
-          "node-pty",
-          "ssh2"
-        ]
+        "declaredPeerContracts": 0
       }
     },
     {
@@ -2616,10 +2589,10 @@
       }
     },
     {
-      "id": "cell:f4a52ad8e1a1d8e3d88190e691189553b2ba5bb114e1d1090e9a748326288ab2",
+      "id": "cell:5aae295ef57e5da941df037ef214fe164e731d347c72fe6c0e0a43847543ec5a",
       "caseId": "graphflow-node22",
       "targetId": "graphflow",
-      "observedAt": "2026-08-23T11:54:31.204Z",
+      "observedAt": "2026-08-24T02:43:22.546Z",
       "result": "build-approval-required",
       "plugin": {
         "name": "@roarpeng/graphflow",
@@ -2634,20 +2607,16 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:6aec03b4ae530c980904fc7914e9b9c68cd154e7f9a48388a71999500d3f6ec2"
+        "contractFingerprint": "sha256:1eb24b5cc879e07ab756cb46f1c208b5b0659eea13612839be0252ccfa88d8aa"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:5247388c984d7f468433c3460a46508cc0807270f00ee978abfc2f910c63ba6f",
+        "runtimeGraphDigest": "sha256:47ff9274256a6be9798e33348a2bba8ee0b9a14fc6c3dd86e05c13df0cf6dea3",
         "runtimeGraphNodes": 643,
         "runtimeGraphEdges": 2318,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0,
         "requiredDependencyBuilds": [
-          "@roarpeng/graphflow",
-          "better-sqlite3",
-          "onnxruntime-node",
-          "protobufjs",
-          "sharp"
+          "@roarpeng/graphflow"
         ]
       }
     },
@@ -3458,69 +3427,14 @@
       }
     },
     {
-      "id": "relation:7ea7381179ace868868cda9dcf5f01364168e772595bce2f32853d189cc2a563",
-      "cellId": "cell:24ac4e9c0188d9b34f181a6cbfd7cc816ebcee34d0488cb51d29d52a9ec56709",
+      "id": "relation:7dea1c34e8e68a37ccf04ba72fdccb009d7d2126d99955ef094d8b483c098f69",
+      "cellId": "cell:25fba57a61f125be8b9591591bf0125b98eeb947627094f0d17c6d1abd1c8770",
       "dependency": {
         "name": "@deepseek-ai/cordis",
         "required": "^4.0.1",
         "status": "satisfied",
-        "staticUsage": "scan-incomplete",
+        "staticUsage": "no-literal-reference-observed",
         "resolvedVersion": "4.0.1"
-      }
-    },
-    {
-      "id": "relation:1ece5972633568270edca50272694311aef30ead6cc96efdd1f59c9ba14331e3",
-      "cellId": "cell:24ac4e9c0188d9b34f181a6cbfd7cc816ebcee34d0488cb51d29d52a9ec56709",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-host-webserver",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.1-rc.2"
-      }
-    },
-    {
-      "id": "relation:b87a287bf633025682f3d2255b1807adb1d96eadaf5ed1ccea6bc1f6acc50437",
-      "cellId": "cell:24ac4e9c0188d9b34f181a6cbfd7cc816ebcee34d0488cb51d29d52a9ec56709",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-llm",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.1-rc.2"
-      }
-    },
-    {
-      "id": "relation:c3acba73e625ec238b0dd3945792250cb32d5b8c46fe358b3788518741cc1aba",
-      "cellId": "cell:24ac4e9c0188d9b34f181a6cbfd7cc816ebcee34d0488cb51d29d52a9ec56709",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-system-prompt",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.1-rc.2"
-      }
-    },
-    {
-      "id": "relation:f1ff7b9964a167921ce2f815a3415187695cd05fb2b575c1e274ee19e19d64cf",
-      "cellId": "cell:24ac4e9c0188d9b34f181a6cbfd7cc816ebcee34d0488cb51d29d52a9ec56709",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-tools",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.1-rc.2"
-      }
-    },
-    {
-      "id": "relation:38ac0a39e7851fbdeee533ff07fe06f5d20e9188fbe9beff69ba35918a43148b",
-      "cellId": "cell:24ac4e9c0188d9b34f181a6cbfd7cc816ebcee34d0488cb51d29d52a9ec56709",
-      "dependency": {
-        "name": "@deepseek-ai/schemastery",
-        "required": "^3.18.1",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "3.18.1"
       }
     },
     {
@@ -3620,6 +3534,28 @@
         "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "18.3.1"
+      }
+    },
+    {
+      "id": "relation:3d65fa08ea21cbcbf30cd5597199aca52dd678170fb3510d092df15fd0cd61ff",
+      "cellId": "cell:41cf289fbaa79de3342ff95a5520f8edbc03265d587abb3a862b99c4f9cd8aeb",
+      "dependency": {
+        "name": "@deepseek-ai/cordis",
+        "required": "^4.0.1",
+        "status": "satisfied",
+        "staticUsage": "type-only-reference-observed",
+        "resolvedVersion": "4.0.1"
+      }
+    },
+    {
+      "id": "relation:2d4b609e24b27992a42348a4c92c9f3add6ed7b37a91afccde2c35d8cca339d2",
+      "cellId": "cell:41cf289fbaa79de3342ff95a5520f8edbc03265d587abb3a862b99c4f9cd8aeb",
+      "dependency": {
+        "name": "@deepseek-ai/schemastery",
+        "required": "^3.18.1",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "3.18.1"
       }
     },
     {
@@ -3859,6 +3795,72 @@
         "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "0.1.1-rc.2"
+      }
+    },
+    {
+      "id": "relation:b51ca4772fbfb8a854fcd4f09e3bf0c77247cc7a436336c1dea7dbe5452a1d39",
+      "cellId": "cell:4734fa871d60907b34dd70772945bec0a3d74a93f3c6b09d54b2875695328374",
+      "dependency": {
+        "name": "@deepseek-ai/cordis",
+        "required": "^4.0.1",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "4.0.1"
+      }
+    },
+    {
+      "id": "relation:04f0b4da5fe902a92be2c270d1ac95b5948a0543cfade1de45c252578f7196fa",
+      "cellId": "cell:4734fa871d60907b34dd70772945bec0a3d74a93f3c6b09d54b2875695328374",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-host-webserver",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.1-rc.2"
+      }
+    },
+    {
+      "id": "relation:be30a605c7e27fdc03aae8d4e6afe5a72bdbf2329db65d8c339cf6a38c3b0500",
+      "cellId": "cell:4734fa871d60907b34dd70772945bec0a3d74a93f3c6b09d54b2875695328374",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-llm",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.1-rc.2"
+      }
+    },
+    {
+      "id": "relation:5d7ec0ee5e8d830f0a765bc9c82e2db85bdbbde1a79a2abc12965af66abdcdc9",
+      "cellId": "cell:4734fa871d60907b34dd70772945bec0a3d74a93f3c6b09d54b2875695328374",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-system-prompt",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.1-rc.2"
+      }
+    },
+    {
+      "id": "relation:f7204922ac2e7449a0b78142f62bbb088b65b160aef87fd2330817fea5cdac43",
+      "cellId": "cell:4734fa871d60907b34dd70772945bec0a3d74a93f3c6b09d54b2875695328374",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-tools",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.1-rc.2"
+      }
+    },
+    {
+      "id": "relation:46c907613301613d2bd2469d2d449b03f105de60fa3a984faab134cb125b34ab",
+      "cellId": "cell:4734fa871d60907b34dd70772945bec0a3d74a93f3c6b09d54b2875695328374",
+      "dependency": {
+        "name": "@deepseek-ai/schemastery",
+        "required": "^3.18.1",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "3.18.1"
       }
     },
     {
@@ -4417,28 +4419,6 @@
         "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "18.3.1"
-      }
-    },
-    {
-      "id": "relation:f23a19af9183b9c88c934af5ba1c253aa23b3ee529652945c63298f760f93a34",
-      "cellId": "cell:68bba141f95496fb73947b754984776415280d2310beb92a19460731941974ad",
-      "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": "^4.0.1",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "4.0.1"
-      }
-    },
-    {
-      "id": "relation:7b83a3fc2c6e78a89f971864b9ffd4e406206240aa080e6ab7b9251052ac906c",
-      "cellId": "cell:68bba141f95496fb73947b754984776415280d2310beb92a19460731941974ad",
-      "dependency": {
-        "name": "@deepseek-ai/schemastery",
-        "required": "^3.18.1",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "3.18.1"
       }
     },
     {
@@ -6027,17 +6007,6 @@
       }
     },
     {
-      "id": "relation:da9c8def239016d06bb47e1b4c8df638d89e90d7a394dc3be261af6c75ee3451",
-      "cellId": "cell:c04775e4048f357eaa7e86f64b5b6b17be45b57715e342a3e0312806674710e9",
-      "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": "^4.0.1",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "4.0.1"
-      }
-    },
-    {
       "id": "relation:38f1c7337a69d4133d69a014f0d4bfd6125ec2603d563f5bb9962de663849049",
       "cellId": "cell:c04e8ea270e88eddb23c73a8681f0d7e6dcd3338944933ffa10ac3ffa4e2c815",
       "dependency": {
@@ -6046,83 +6015,6 @@
         "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "18.3.1"
-      }
-    },
-    {
-      "id": "relation:bf11890be6cfa22f7659a260dd0916af3b5e5ff2987c3843bd5f1fffa2496d98",
-      "cellId": "cell:cbecae89445c6ea8938a6f9279ab332a9b6595ef7d9dc706d39cc05cf10f6c86",
-      "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": "^4.0.1",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "4.0.1"
-      }
-    },
-    {
-      "id": "relation:0047129d9122cea54ab77638a05e1acf2571528276fcf7dfe5502937545f38eb",
-      "cellId": "cell:cbecae89445c6ea8938a6f9279ab332a9b6595ef7d9dc706d39cc05cf10f6c86",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-runtime",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.1-rc.2"
-      }
-    },
-    {
-      "id": "relation:e2f224c99fb6c69316d883dba4ae2db973ca63e2d4fd195fd7109b612d59d621",
-      "cellId": "cell:cbecae89445c6ea8938a6f9279ab332a9b6595ef7d9dc706d39cc05cf10f6c86",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-ui-workspace",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.1-rc.2"
-      }
-    },
-    {
-      "id": "relation:17460d084ff6907413d1deebd8c4d9da38123e2398d4a041b3fa92c857b0b415",
-      "cellId": "cell:cbecae89445c6ea8938a6f9279ab332a9b6595ef7d9dc706d39cc05cf10f6c86",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-commands",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.1-rc.2"
-      }
-    },
-    {
-      "id": "relation:468415e14814aaf39240ccd9afa77a67a1bd0c830ccc48c618ccf7c9779d5984",
-      "cellId": "cell:cbecae89445c6ea8938a6f9279ab332a9b6595ef7d9dc706d39cc05cf10f6c86",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-host-webserver",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.1-rc.2"
-      }
-    },
-    {
-      "id": "relation:fb7545d4639a257c97b340cd0e5aca644ed56fbd8259325b07fde0e0a45c1869",
-      "cellId": "cell:cbecae89445c6ea8938a6f9279ab332a9b6595ef7d9dc706d39cc05cf10f6c86",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-system-prompt",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.1-rc.2"
-      }
-    },
-    {
-      "id": "relation:d8474c0ac3096bff1b6162ef3158d636a80355cc0aef0978ff1fee20da9a0217",
-      "cellId": "cell:cbecae89445c6ea8938a6f9279ab332a9b6595ef7d9dc706d39cc05cf10f6c86",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-tools",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.1-rc.2"
       }
     },
     {
@@ -6878,6 +6770,83 @@
         "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "18.3.1"
+      }
+    },
+    {
+      "id": "relation:8a3f171dce143aac82c7d8241751d748e727058531ed896c45184e32804fa649",
+      "cellId": "cell:ee2a0723236123b10a05118dd791f325eb76cf4b21792b2e2239458445361587",
+      "dependency": {
+        "name": "@deepseek-ai/cordis",
+        "required": "^4.0.1",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "4.0.1"
+      }
+    },
+    {
+      "id": "relation:4f292f7b47dd6936f9e2e1d8b622a132dc31243ef04c3d271bd612aaab4c60b0",
+      "cellId": "cell:ee2a0723236123b10a05118dd791f325eb76cf4b21792b2e2239458445361587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-runtime",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.1-rc.2"
+      }
+    },
+    {
+      "id": "relation:e4189db3b628d25fb48ff6642b9f501f11d3eb12806d90d68f7937e59e4e533c",
+      "cellId": "cell:ee2a0723236123b10a05118dd791f325eb76cf4b21792b2e2239458445361587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-ui-workspace",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.1-rc.2"
+      }
+    },
+    {
+      "id": "relation:9dd1a2a2b7d520ac57e24490df32b4b4aa618db209db158854283b1ef09b448b",
+      "cellId": "cell:ee2a0723236123b10a05118dd791f325eb76cf4b21792b2e2239458445361587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-commands",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.1-rc.2"
+      }
+    },
+    {
+      "id": "relation:95966e9deedabd45df6e7cd6f1aa400d55c9d9112228707b8c5f4fa64995367a",
+      "cellId": "cell:ee2a0723236123b10a05118dd791f325eb76cf4b21792b2e2239458445361587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-host-webserver",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.1-rc.2"
+      }
+    },
+    {
+      "id": "relation:d17972b8be8956e947af2bf0ad252df8429ac2fb1fea3b2a40b228c722a5f91b",
+      "cellId": "cell:ee2a0723236123b10a05118dd791f325eb76cf4b21792b2e2239458445361587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-system-prompt",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.1-rc.2"
+      }
+    },
+    {
+      "id": "relation:66a4619c3312838252cee0ba71d9b65f927464f00e7ff7d7edb0bd987528648a",
+      "cellId": "cell:ee2a0723236123b10a05118dd791f325eb76cf4b21792b2e2239458445361587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-tools",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.1-rc.2"
       }
     },
     {
