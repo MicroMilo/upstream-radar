@@ -2,6 +2,15 @@ name: Upstream Radar observer
 
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: Run the full observer or reuse current evidence for the headless Agent loop
+        required: true
+        default: full
+        type: choice
+        options:
+          - full
+          - headless-agent
   schedule:
     # The observer is intentionally periodic: durable state makes the loop
     # restartable, while the report stays quiet when nothing meaningful changed.
@@ -48,6 +57,7 @@ jobs:
           pnpm build
 
       - name: Build downstream reverse dependency index
+        if: inputs.mode != 'headless-agent'
         run: |
           # Use the checked-in index generated from the first-batch corpus of
           # real DSH plugin reports. Refresh it intentionally with
@@ -57,6 +67,7 @@ jobs:
             "$RUNNER_TEMP/reverse-dependency-index.json"
 
       - name: Observe upstream changes
+        if: inputs.mode != 'headless-agent'
         id: observe
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -99,6 +110,13 @@ jobs:
           fi
           echo "exit=$observer_exit" >> "$GITHUB_OUTPUT"
           exit "$observer_exit"
+
+      - name: Reuse current evidence for the headless Agent loop
+        if: inputs.mode == 'headless-agent'
+        env:
+          OBSERVER_JSON: ${{ runner.temp }}/upstream-radar-observer.json
+        run: |
+          node -e "require('node:fs').writeFileSync(process.env.OBSERVER_JSON, JSON.stringify({ changes: [] }))"
 
       # Repository prose is untrusted model input. This job never executes a
       # target package; it emits only a bounded headless retry contract. The
