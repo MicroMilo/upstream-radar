@@ -3,7 +3,7 @@
   "generatedAt": "2026-08-24T03:06:16.972Z",
   "producer": {
     "name": "upstream-radar",
-    "version": "0.43.0",
+    "version": "0.43.1",
     "repository": "https://github.com/MicroMilo/upstream-radar",
     "license": "Apache-2.0"
   },

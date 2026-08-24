@@ -19,7 +19,7 @@ plugins against changing
 releases in disposable runners. When a pair breaks, it produces a reproducible
 issue; when the author ships a fix, it retests and closes the loop.
 
-**100 maintained install/load targets · 100 catalog entries across all 21 categories · 4 upstream reports closed**
+**100 maintained install/load targets · 100 catalog entries across all 21 categories · 4 upstream reports closed · 4 more under watch**
 
 [Latest Agent-driven headless run](https://github.com/MicroMilo/upstream-radar/actions/runs/32684879130):
 **96 executable catalog cells observed · 74 compatible · 22 need review · 0 reproduced incompatibilities · 4 source-only**.
@@ -28,6 +28,8 @@ Review signals are never advertised as plugin failures.
 The first live loop started with 29 review cells. The Agent selected nine
 bounded retries; seven became compatible, while two stopped at an explicit Web
 client dependency boundary instead of being mislabeled as broken.
+
+In one line: `DSH/plugin change → Agent → disposable headless VM → exact evidence → retest or fixable issue`.
 
 ## Why it exists
 
@@ -76,10 +78,17 @@ them:
 - [6Mikao9/dsh-wsl-workspace#6](https://github.com/6Mikao9/dsh-wsl-workspace/issues/6)
 - [3274375092/dsh-voice#2](https://github.com/3274375092/dsh-voice/issues/2)
 
+Four newer reports are still open and being watched:
+
+- [AmeKrance/anan-thermal-monitor#1](https://github.com/AmeKrance/anan-thermal-monitor/issues/1)
+- [AbcdefgXW/dsh-msg-hub#3](https://github.com/AbcdefgXW/dsh-msg-hub/issues/3)
+- [030611/dsh-verification-receipt#3](https://github.com/030611/dsh-verification-receipt/issues/3)
+- [0xsline/dsh-spotlight#5](https://github.com/0xsline/dsh-spotlight/issues/5)
+
 ## Run one check
 
 ```bash
-npx --yes upstream-radar@0.43.0 review dsh-plugin \
+npx --yes upstream-radar@0.43.1 review dsh-plugin \
   <package>@<version> \
   --dsh-version <dsh-version>
 ```

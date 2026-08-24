@@ -177,6 +177,45 @@ function sourceContext(target, observations, cohort) {
   }
 }
 
+function dynamicEvidence(entry) {
+  const profileLockfile = entry.resolution?.profileLockfile
+  const runtimeGraph = entry.resolution?.runtimeGraph
+  if (profileLockfile === undefined && runtimeGraph === undefined) return undefined
+  return {
+    ...(profileLockfile === undefined ? {} : {
+      profileLockfile: {
+        sha256: profileLockfile.sha256,
+        bytes: profileLockfile.bytes,
+        ...(profileLockfile.graphDigest === undefined ? {} : { graphDigest: profileLockfile.graphDigest }),
+        ...(profileLockfile.nodes === undefined ? {} : { nodes: profileLockfile.nodes }),
+        ...(profileLockfile.edges === undefined ? {} : { edges: profileLockfile.edges }),
+        ...(profileLockfile.unresolved === undefined ? {} : { unresolved: profileLockfile.unresolved }),
+        ...(profileLockfile.unresolvedDependencies === undefined
+          ? {}
+          : { unresolvedDependencies: profileLockfile.unresolvedDependencies }),
+      },
+    }),
+    ...(runtimeGraph === undefined ? {} : {
+      runtimeGraph: {
+        digest: runtimeGraph.digest,
+        nodes: runtimeGraph.nodes,
+        edges: runtimeGraph.edges,
+        unresolved: runtimeGraph.unresolved,
+        ...(runtimeGraph.unresolvedDependencies === undefined
+          ? {}
+          : { unresolvedDependencies: runtimeGraph.unresolvedDependencies }),
+        ...(runtimeGraph.optionalUnavailable === undefined
+          ? {}
+          : { optionalUnavailable: runtimeGraph.optionalUnavailable }),
+        ...(runtimeGraph.pluginPeerContracts === undefined
+          ? {}
+          : { pluginPeerContracts: runtimeGraph.pluginPeerContracts }),
+        ...(runtimeGraph.hostRuntime === undefined ? {} : { hostRuntime: runtimeGraph.hostRuntime }),
+      },
+    }),
+  }
+}
+
 async function mapConcurrent(values, mapper) {
   const results = new Array(values.length)
   let next = 0
@@ -195,22 +234,31 @@ function markdown(plans, candidates, failures) {
   const inline = value => String(value).replace(/[\u0000-\u001f\u007f<>|`]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 1_024)
   const planByCase = new Map(plans.entries.map(entry => [entry.caseId, entry]))
   const failureByCase = new Map(failures.map(item => [item.caseId, item.error]))
+  const currentPlan = candidate => {
+    const plan = planByCase.get(candidate.caseId)
+    return plan?.inputFingerprint === createDshHeadlessAgentInputFingerprint(candidate) ? plan : undefined
+  }
+  const reviewed = candidates.filter(candidate => currentPlan(candidate) !== undefined).length
   const lines = [
-    '# DSH headless Agent plans',
+    '# DSH headless Agent review',
     '',
     `Updated: ${plans.updatedAt}`,
     '',
     'The Agent reads bounded repository evidence and the latest isolated headless result. There is no static environment-planning fallback. Only an exact observed build-package name can reach the no-secret retry runner.',
     '',
-    '| Case | Previous evidence | Agent action | Classification | Headless delta |',
+    `- Current review set: ${candidates.length}`,
+    `- Agent-reviewed: ${reviewed}`,
+    `- Agent failures awaiting retry: ${failures.length}`,
+    '',
+    '| Case | Previous evidence | Agent action | Classification | Retained build policy |',
     '| --- | --- | --- | --- | --- |',
   ]
   for (const candidate of candidates) {
-    const plan = planByCase.get(candidate.caseId)
+    const plan = currentPlan(candidate)
     const failure = failureByCase.get(candidate.caseId)
     const action = plan?.action ?? (failure === undefined ? 'pending' : 'agent-failed')
     const classification = plan?.classification ?? 'unknown'
-    const delta = plan?.allowedBuilds.length ? `approve ${plan.allowedBuilds.map(name => `\`${name}\``).join(', ')}` : 'none'
+    const delta = plan?.approvedBuilds.length ? `approve ${plan.approvedBuilds.map(name => `\`${name}\``).join(', ')}` : 'none'
     lines.push(`| \`${candidate.caseId}\` | \`${candidate.result}\` | \`${action}\` | \`${classification}\` | ${delta} |`)
     if (plan !== undefined) lines.push(`|  |  |  |  | ${inline(plan.summary)} |`)
     if (failure !== undefined) lines.push(`|  |  |  |  | ${inline(failure)} |`)
@@ -233,21 +281,27 @@ const [targets, cohort, observations, ledger, existingPlans] = await Promise.all
 ])
 const targetById = new Map((Array.isArray(targets?.plugins) ? targets.plugins : []).map(target => [target.id, target]))
 const existingByCase = new Map(existingPlans.entries.map(entry => [entry.caseId, entry]))
-const reviewEntries = ledger.entries.filter(entry => (
-  entry.result === 'build-approval-required' || entry.result === 'peer-contract-incompatible'
-)).slice(0, MAX_CANDIDATES)
+const reviewEntries = ledger.entries.filter(entry => {
+  const target = targetById.get(entry.targetId)
+  return target !== undefined
+    && target.spec === entry.plugin
+    && (entry.result === 'build-approval-required'
+      || entry.result === 'peer-contract-incompatible'
+      || entry.result === 'unknown')
+}).slice(0, MAX_CANDIDATES)
 const candidates = await mapConcurrent(reviewEntries, async entry => {
   const target = targetById.get(entry.targetId)
   const source = sourceContext(target, observations, cohort)
+  const observedDynamicEvidence = dynamicEvidence(entry)
   const previous = existingByCase.get(entry.caseId)
-  const previouslyApprovedBuilds = previous?.action === 'retry-headless'
+  const previouslyApprovedBuilds = previous !== undefined
     && previous.targetId === entry.targetId
     && previous.plugin === entry.plugin
     && previous.dshVersion === entry.dshVersion
     && previous.nodeMajor === entry.runtime.nodeMajor
     && previous.artifactSha256 !== undefined
     && previous.artifactSha256 === entry.artifact.sha256
-      ? previous.allowedBuilds
+      ? previous.approvedBuilds
       : []
   return {
     caseId: entry.caseId,
@@ -263,6 +317,7 @@ const candidates = await mapConcurrent(reviewEntries, async entry => {
     ...(source.repository === undefined ? {} : { repository: source.repository }),
     ...(source.sourceCommit === undefined ? {} : { sourceCommit: source.sourceCommit }),
     ...(source.manifest === undefined ? {} : { manifest: source.manifest }),
+    ...(observedDynamicEvidence === undefined ? {} : { dynamicEvidence: observedDynamicEvidence }),
     documents: await collectDocuments(source.repository, source.sourceCommit, source.packagePath),
   }
 })
@@ -299,6 +354,9 @@ if (config === undefined && pending.length > 0) {
           ...candidate.previouslyApprovedBuilds,
           ...candidate.requiredDependencyBuilds,
         ])].sort(),
+        approvedBuilds: decision.action === 'retry-headless'
+          ? decision.allowedBuilds
+          : candidate.previouslyApprovedBuilds,
         ...(candidate.artifactSha256 === undefined ? {} : { artifactSha256: candidate.artifactSha256 }),
         ...(candidate.repository === undefined ? {} : { repository: candidate.repository }),
         ...(candidate.sourceCommit === undefined ? {} : { sourceCommit: candidate.sourceCommit }),

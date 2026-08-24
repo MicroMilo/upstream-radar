@@ -343,6 +343,7 @@ export function buildDshInstallPlan(
   reportInput: unknown,
   ledgerInput: unknown = emptyDshCompatibilityLedger(),
   now = new Date(),
+  reviewedInput: ReadonlySet<string> = new Set(),
 ): DshInstallPlan {
   const corpus = parseDshInstallTargets(corpusInput)
   const ledger = parseDshCompatibilityLedger(ledgerInput)
@@ -359,6 +360,7 @@ export function buildDshInstallPlan(
   const dshPackageChanged = dshAfter?.name === DSH_PACKAGE && coordinateChanged(dshBefore, dshAfter)
   const dshVersion = dshPackageChanged ? dshAfter.version : observedDshVersion(stateInput)
   const pluginChanges = changedPluginTargets(corpus, changes)
+  const reviewed = reviewedInput
   const triggers = new Set<string>()
   if (dshPackageChanged) triggers.add(DSH_TARGET_ID)
   for (const target of corpus.plugins) {
@@ -417,6 +419,17 @@ export function buildDshInstallPlan(
         }
       }
       if (reasons.size === 0) continue
+      // An Agent may explicitly stop on an unchanged, non-actionable headless
+      // result (for example a Web-only contract). Do not spin the same cell on
+      // every scheduled run; a DSH/plugin coordinate or evidence change must
+      // still invalidate that review and select it again.
+      if (reviewed.has(id)
+        && !dshPackageChanged
+        && !pluginChanges.has(target.id)
+        && !reasons.has('exact-coordinate-changed')
+        && !reasons.has('static-evidence-changed')
+        && !reasons.has('execution-contract-changed')
+        && !reasons.has('stale-evidence')) continue
       selected.set(id, {
         id,
         targetId: target.id,

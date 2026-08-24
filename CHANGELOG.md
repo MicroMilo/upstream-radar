@@ -4,6 +4,17 @@ All notable changes to Upstream Radar are documented here.
 
 ## [Unreleased]
 
+## [0.43.1] - 2026-08-24
+
+### npm homepage and bounded review state
+
+- Publish the English product README as the npm landing page, with a working
+  Chinese companion link, the current Agent-driven headless loop, and the
+  closed/open upstream report list.
+- Stop repeating an unchanged headless compatibility cell after the Agent has
+  explicitly reviewed it; a DSH/plugin change or changed evidence still
+  reopens the cell.
+
 ## [0.43.0] - 2026-08-24
 
 ### Agent-driven headless closure

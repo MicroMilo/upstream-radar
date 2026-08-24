@@ -18,7 +18,7 @@ Upstream Radar 持续把一批真实插件发布物放到一次性隔离环境�
 版本重新配对测试。某个组合坏了，就生成一条可复现的 Issue；作者发布修复后，
 Radar 会再次检查并关闭闭环。
 
-**维护 100 个安装/加载目标 · 覆盖目录全部 21 个类别 · 4 条上游报告已关闭**
+**维护 100 个安装/加载目标 · 覆盖目录全部 21 个类别 · 4 条上游报告已关闭 · 另有 4 条持续观察**
 
 [最近一次 Agent 驱动的 headless 运行](https://github.com/MicroMilo/upstream-radar/actions/runs/32684879130)：
 **观测 96 个可执行目录插件 · 74 个兼容 · 22 个需要复核 · 0 个复现不兼容 · 4 个仅源码目标**。
@@ -26,6 +26,8 @@ Radar 会再次检查并关闭闭环。
 
 第一轮真实闭环从 29 个待复核插件开始。Agent 选择了 9 个受限重试，其中 7 个转为
 兼容；另 2 个明确停在 Web 客户端依赖边界，没有被误报成插件坏了。
+
+一句话：`DSH/插件变化 → Agent → 一次性 headless 虚拟机 → 精确证据 → 复测或可修复 Issue`。
 
 ## 为什么需要它
 
@@ -68,10 +70,17 @@ Agent 读取仓库说明和最新运行证据，决定 headless 是否重试、�
 - [6Mikao9/dsh-wsl-workspace#6](https://github.com/6Mikao9/dsh-wsl-workspace/issues/6)
 - [3274375092/dsh-voice#2](https://github.com/3274375092/dsh-voice/issues/2)
 
+另有 4 条较新的报告仍在持续观察：
+
+- [AmeKrance/anan-thermal-monitor#1](https://github.com/AmeKrance/anan-thermal-monitor/issues/1)
+- [AbcdefgXW/dsh-msg-hub#3](https://github.com/AbcdefgXW/dsh-msg-hub/issues/3)
+- [030611/dsh-verification-receipt#3](https://github.com/030611/dsh-verification-receipt/issues/3)
+- [0xsline/dsh-spotlight#5](https://github.com/0xsline/dsh-spotlight/issues/5)
+
 ## 检查一个插件
 
 ```bash
-npx --yes upstream-radar@0.43.0 review dsh-plugin \
+npx --yes upstream-radar@0.43.1 review dsh-plugin \
   <包名>@<版本> \
   --dsh-version <DSH版本>
 ```
