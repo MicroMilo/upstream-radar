@@ -1,6 +1,6 @@
 # DSH headless Agent review
 
-Updated: 2026-08-24T04:30:41.754Z
+Updated: 2026-08-24T04:44:30.451Z
 
 The Agent reads bounded repository evidence and the latest isolated headless result. There is no static environment-planning fallback. Only an exact observed build-package name can reach the no-secret retry runner.
 
@@ -11,7 +11,7 @@ The Agent reads bounded repository evidence and the latest isolated headless res
 | Case | Previous evidence | Agent action | Classification | Retained build policy |
 | --- | --- | --- | --- | --- |
 | `better-sidebar-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
-|  |  |  |  | The plugin installed and loaded, but the DSH runtime did not resolve two peer dependencies: @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots. The observed result is peer-contract-incompatible, not build-approval-required. No build packages were required or approved, so a retry cannot change the outcome. The issue is a runtime contract mismatch, not a build approval gate. |
+|  |  |  |  | The plugin's peer contract is not satisfiable in the headless DSH profile because the runtime does not provide @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots, which are required peer dependencies. The observed result is peer-contract-incompatible with runtime-import-observed for @deepseek-ai/dsh-client-ui-primitives. No build packages are required, so a retry cannot resolve the missing peer dependencies. The issue is a headless contract limitation, not a build approval problem. |
 | `dsh-agency-agents-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The plugin loaded but the DSH runtime did not resolve the peer dependency @deepseek-ai/dsh-client-ui-slots@^0.1.0-rc.5, which is required by the plugin's manifest. The plugin declares a web client platform and injects client modules, but the headless profile cannot provide the missing UI slot package. No build packages are required, so a retry cannot fix the missing peer dependency. |
 | `dsh-archive-manager-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |

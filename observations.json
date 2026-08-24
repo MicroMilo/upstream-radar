@@ -6559,18 +6559,18 @@
     "dsh-wsl-workspace": {
       "targetId": "dsh-wsl-workspace",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-24T04:41:39.913Z",
       "source": {
         "repository": "6Mikao9/dsh-wsl-workspace",
         "ref": "main",
-        "commit": "b3c3f22846da497be210c9737b253d89757ec44c",
+        "commit": "db5234197d8bd697070be28b1c648b46b9f1ac01",
         "packagePath": "package.json",
-        "commitUrl": "https://github.com/6Mikao9/dsh-wsl-workspace/commit/b3c3f22846da497be210c9737b253d89757ec44c",
-        "packageUrl": "https://raw.githubusercontent.com/6Mikao9/dsh-wsl-workspace/b3c3f22846da497be210c9737b253d89757ec44c/package.json"
+        "commitUrl": "https://github.com/6Mikao9/dsh-wsl-workspace/commit/db5234197d8bd697070be28b1c648b46b9f1ac01",
+        "packageUrl": "https://raw.githubusercontent.com/6Mikao9/dsh-wsl-workspace/db5234197d8bd697070be28b1c648b46b9f1ac01/package.json"
       },
       "manifest": {
         "name": "dsh-wsl-workspace",
-        "version": "0.3.0",
+        "version": "0.3.1",
         "type": "module",
         "main": "lib/index.js",
         "exports": {
@@ -6604,10 +6604,10 @@
       },
       "package": {
         "name": "dsh-wsl-workspace",
-        "version": "0.2.3",
+        "version": "0.3.0",
         "distTag": "latest",
-        "integrity": "sha512-3L8zcNFLi8WU3OM0nVrm2wLG/6gtKKRzKMPznRIxJ1iAmzALLzkaO/HmVDKJWC0uzdRjZ+f3aKuGk/dVJfwY8g==",
-        "tarball": "https://registry.npmjs.org/dsh-wsl-workspace/-/dsh-wsl-workspace-0.2.3.tgz"
+        "integrity": "sha512-C8jrTxM7L2jN+42yjydyxOYqngMKDNopINy3gtBmbQg9ZZtkCZ6twjY9pMTfYEKkBrEkjYRMw4AdVo6NrRvcUQ==",
+        "tarball": "https://registry.npmjs.org/dsh-wsl-workspace/-/dsh-wsl-workspace-0.3.0.tgz"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -6618,17 +6618,17 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "6Mikao9/dsh-wsl-workspace",
-          "commit": "b3c3f22846da497be210c9737b253d89757ec44c",
+          "commit": "db5234197d8bd697070be28b1c648b46b9f1ac01",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-wsl-workspace",
-            "version": "0.3.0"
+            "version": "0.3.1"
           }
         },
         "downstream": {
           "published": {
             "name": "dsh-wsl-workspace",
-            "version": "0.2.3"
+            "version": "0.3.0"
           },
           "graph": {
             "status": "unavailable",
@@ -6643,22 +6643,22 @@
             "code": "source-published-identity",
             "status": "mismatch",
             "summary": "The source manifest and observed npm package do not identify the same name and version.",
-            "upstream": "dsh-wsl-workspace@0.3.0",
-            "downstream": "dsh-wsl-workspace@0.2.3",
+            "upstream": "dsh-wsl-workspace@0.3.1",
+            "downstream": "dsh-wsl-workspace@0.3.0",
             "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
           },
           {
             "code": "source-graph-root",
             "status": "unknown",
             "summary": "No dependency graph root was observed.",
-            "upstream": "dsh-wsl-workspace@0.3.0",
+            "upstream": "dsh-wsl-workspace@0.3.1",
             "remediation": "Commit a supported lockfile or correct the configured package path/importer so the root can be verified."
           },
           {
             "code": "published-graph-root",
             "status": "unknown",
             "summary": "The published package cannot be compared with the dependency graph root.",
-            "upstream": "dsh-wsl-workspace@0.2.3",
+            "upstream": "dsh-wsl-workspace@0.3.0",
             "downstream": "unknown",
             "remediation": "Observe both the exact npm package and a complete lockfile graph before using the graph as downstream evidence."
           },
@@ -11489,16 +11489,16 @@
     "dsh-better-sidebar": {
       "targetId": "dsh-better-sidebar",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-24T04:41:39.913Z",
       "source": {
         "repository": "omdsh-dev/DSH-better-sidebar",
         "ref": "main",
-        "commit": "36a411925399a92e3b441bb8bb09c5fac85989b5",
+        "commit": "4c0da8119b6ca37ce3daf5c102076154a10010de",
         "packagePath": "package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/omdsh-dev/DSH-better-sidebar/commit/36a411925399a92e3b441bb8bb09c5fac85989b5",
-        "packageUrl": "https://raw.githubusercontent.com/omdsh-dev/DSH-better-sidebar/36a411925399a92e3b441bb8bb09c5fac85989b5/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/omdsh-dev/DSH-better-sidebar/36a411925399a92e3b441bb8bb09c5fac85989b5/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/omdsh-dev/DSH-better-sidebar/commit/4c0da8119b6ca37ce3daf5c102076154a10010de",
+        "packageUrl": "https://raw.githubusercontent.com/omdsh-dev/DSH-better-sidebar/4c0da8119b6ca37ce3daf5c102076154a10010de/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/omdsh-dev/DSH-better-sidebar/4c0da8119b6ca37ce3daf5c102076154a10010de/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "dsh-better-sidebar",
@@ -21325,7 +21325,7 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "omdsh-dev/DSH-better-sidebar",
-          "commit": "36a411925399a92e3b441bb8bb09c5fac85989b5",
+          "commit": "4c0da8119b6ca37ce3daf5c102076154a10010de",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-better-sidebar",
@@ -172802,18 +172802,18 @@
     "dsh-xueqiu": {
       "targetId": "dsh-xueqiu",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-24T04:41:39.913Z",
       "source": {
         "repository": "kangjinghang/dsh-xueqiu",
         "ref": "main",
-        "commit": "dda02e4015e8224302491217bc75c76b7a04de16",
+        "commit": "7fda82dd37cf57ebd27be675219beb0783b87b47",
         "packagePath": "package.json",
-        "commitUrl": "https://github.com/kangjinghang/dsh-xueqiu/commit/dda02e4015e8224302491217bc75c76b7a04de16",
-        "packageUrl": "https://raw.githubusercontent.com/kangjinghang/dsh-xueqiu/dda02e4015e8224302491217bc75c76b7a04de16/package.json"
+        "commitUrl": "https://github.com/kangjinghang/dsh-xueqiu/commit/7fda82dd37cf57ebd27be675219beb0783b87b47",
+        "packageUrl": "https://raw.githubusercontent.com/kangjinghang/dsh-xueqiu/7fda82dd37cf57ebd27be675219beb0783b87b47/package.json"
       },
       "manifest": {
         "name": "dsh-xueqiu",
-        "version": "1.21.6",
+        "version": "1.21.7",
         "type": "module",
         "main": "src/index.js",
         "exports": {
@@ -172842,10 +172842,10 @@
       },
       "package": {
         "name": "dsh-xueqiu",
-        "version": "1.21.6",
+        "version": "1.21.7",
         "distTag": "latest",
-        "integrity": "sha512-cxQcBVGEAicBzaYhM2mmRUbk1LcvIUPtGGmIUHl3Cs0S1GMm6J9q3Bj/Ng6d9KOnCmcteJ5tdg7UCDSn1yx8jA==",
-        "tarball": "https://registry.npmjs.org/dsh-xueqiu/-/dsh-xueqiu-1.21.6.tgz"
+        "integrity": "sha512-BQ+G64Rer/2GbJ82RcqNkcUzV9Iz3uaNXc4s44okMmP0GOgXy/4ZHHLsku5ur6yHzeMzyIDM50eR8AOMkF6bew==",
+        "tarball": "https://registry.npmjs.org/dsh-xueqiu/-/dsh-xueqiu-1.21.7.tgz"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -172856,17 +172856,17 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "kangjinghang/dsh-xueqiu",
-          "commit": "dda02e4015e8224302491217bc75c76b7a04de16",
+          "commit": "7fda82dd37cf57ebd27be675219beb0783b87b47",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-xueqiu",
-            "version": "1.21.6"
+            "version": "1.21.7"
           }
         },
         "downstream": {
           "published": {
             "name": "dsh-xueqiu",
-            "version": "1.21.6"
+            "version": "1.21.7"
           },
           "graph": {
             "status": "unavailable",
@@ -172881,21 +172881,21 @@
             "code": "source-published-identity",
             "status": "aligned",
             "summary": "The source manifest and observed npm package have the same name and version.",
-            "upstream": "dsh-xueqiu@1.21.6",
-            "downstream": "dsh-xueqiu@1.21.6"
+            "upstream": "dsh-xueqiu@1.21.7",
+            "downstream": "dsh-xueqiu@1.21.7"
           },
           {
             "code": "source-graph-root",
             "status": "unknown",
             "summary": "No dependency graph root was observed.",
-            "upstream": "dsh-xueqiu@1.21.6",
+            "upstream": "dsh-xueqiu@1.21.7",
             "remediation": "Commit a supported lockfile or correct the configured package path/importer so the root can be verified."
           },
           {
             "code": "published-graph-root",
             "status": "unknown",
             "summary": "The published package cannot be compared with the dependency graph root.",
-            "upstream": "dsh-xueqiu@1.21.6",
+            "upstream": "dsh-xueqiu@1.21.7",
             "downstream": "unknown",
             "remediation": "Observe both the exact npm package and a complete lockfile graph before using the graph as downstream evidence."
           },
@@ -207811,14 +207811,14 @@
     "dsh-memory-plugin": {
       "targetId": "dsh-memory-plugin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-24T04:41:39.913Z",
       "source": {
         "repository": "volcengine/OpenViking",
         "ref": "main",
-        "commit": "c66fee4d12a98bff336f0181c151ad5a39f1e351",
+        "commit": "e7ab26ab24a1b113eff6ba8290bf08109f9e7c2e",
         "packagePath": "examples/dsh-memory-plugin/package.json",
-        "commitUrl": "https://github.com/volcengine/OpenViking/commit/c66fee4d12a98bff336f0181c151ad5a39f1e351",
-        "packageUrl": "https://raw.githubusercontent.com/volcengine/OpenViking/c66fee4d12a98bff336f0181c151ad5a39f1e351/examples/dsh-memory-plugin/package.json"
+        "commitUrl": "https://github.com/volcengine/OpenViking/commit/e7ab26ab24a1b113eff6ba8290bf08109f9e7c2e",
+        "packageUrl": "https://raw.githubusercontent.com/volcengine/OpenViking/e7ab26ab24a1b113eff6ba8290bf08109f9e7c2e/examples/dsh-memory-plugin/package.json"
       },
       "manifest": {
         "name": "@openviking/dsh-memory-plugin",
@@ -207858,7 +207858,7 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "volcengine/OpenViking",
-          "commit": "c66fee4d12a98bff336f0181c151ad5a39f1e351",
+          "commit": "e7ab26ab24a1b113eff6ba8290bf08109f9e7c2e",
           "packagePath": "examples/dsh-memory-plugin/package.json",
           "coordinate": {
             "name": "@openviking/dsh-memory-plugin",

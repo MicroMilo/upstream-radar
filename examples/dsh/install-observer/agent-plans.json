@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-headless-agent-plans/v1alpha1",
-  "updatedAt": "2026-08-24T04:30:41.754Z",
+  "updatedAt": "2026-08-24T04:44:30.451Z",
   "entries": [
     {
       "caseId": "anweat-dsh-browser-node22",
@@ -44,21 +44,20 @@
       "approvedBuilds": [],
       "artifactSha256": "d932367e9b436e3f515394f55e90c5793253a51d357b9d390ab16cb9e91931a9",
       "repository": "omdsh-dev/DSH-better-sidebar",
-      "sourceCommit": "36a411925399a92e3b441bb8bb09c5fac85989b5",
-      "inputFingerprint": "sha256:1128c9f863300b541219f6c2bf258052b7512a643c84d98c7f28227a615c38ef",
-      "plannedAt": "2026-08-24T04:30:32.658Z",
+      "sourceCommit": "4c0da8119b6ca37ce3daf5c102076154a10010de",
+      "inputFingerprint": "sha256:35205d270ce1558d3d709bd3df3d20d46aa66e35b684f53c2dba746990d4fa5c",
+      "plannedAt": "2026-08-24T04:44:30.451Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
       "classification": "headless-contract",
       "allowedBuilds": [],
-      "summary": "The plugin installed and loaded, but the DSH runtime did not resolve two peer dependencies: @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots. The observed result is peer-contract-incompatible, not build-approval-required. No build packages were required or approved, so a retry cannot change the outcome. The issue is a runtime contract mismatch, not a build approval gate.",
+      "summary": "The plugin's peer contract is not satisfiable in the headless DSH profile because the runtime does not provide @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots, which are required peer dependencies. The observed result is peer-contract-incompatible with runtime-import-observed for @deepseek-ai/dsh-client-ui-primitives. No build packages are required, so a retry cannot resolve the missing peer dependencies. The issue is a headless contract limitation, not a build approval problem.",
       "evidence": [
-        "Observed result: peer-contract-incompatible",
-        "Observed reason: runtime-import-observed for @deepseek-ai/dsh-client-ui-primitives",
-        "runtimeGraph unresolvedDependencies: @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots",
-        "pluginPeerContracts: missing for @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots",
-        "Build packages required by latest retry: (none)",
-        "Build packages approved in earlier retries: (none)"
+        "Observed result: peer-contract-incompatible; reason: @deepseek-ai/dsh-client-ui-primitives@^0.1.0-rc.8 not resolved by DSH runtime (runtime-import-observed)",
+        "Runtime graph unresolved dependencies: @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots (peer)",
+        "Plugin peerDependencies include @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots (^0.1.0-rc.8)",
+        "Build packages required by latest retry: none; no earlier approvals",
+        "Headless DSH profile cannot provide missing peer packages; retry would not change outcome"
       ]
     },
     {
