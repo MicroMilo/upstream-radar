@@ -4,6 +4,13 @@ All notable changes to Upstream Radar are documented here.
 
 ## [Unreleased]
 
+## [0.43.2] - 2026-08-24
+
+### npm README selection
+
+- Rename the shipped Chinese companion README so npm's automatic README
+  selection cannot replace the English package landing page.
+
 ## [0.43.1] - 2026-08-24
 
 ### npm homepage and bounded review state

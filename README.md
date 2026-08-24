@@ -3,7 +3,7 @@
 <p align="center"><strong>Know which DeepSeek Harness plugins break after every release—before users do.</strong></p>
 
 <p align="center">
-  English · <a href="README.zh-CN.md">简体中文</a>
+  English · <a href="README-zh-CN.md">简体中文</a>
 </p>
 
 <p align="center">
@@ -88,7 +88,7 @@ Four newer reports are still open and being watched:
 ## Run one check
 
 ```bash
-npx --yes upstream-radar@0.43.1 review dsh-plugin \
+npx --yes upstream-radar@0.43.2 review dsh-plugin \
   <package>@<version> \
   --dsh-version <dsh-version>
 ```

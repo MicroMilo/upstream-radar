@@ -80,7 +80,7 @@ Agent 读取仓库说明和最新运行证据，决定 headless 是否重试、�
 ## 检查一个插件
 
 ```bash
-npx --yes upstream-radar@0.43.1 review dsh-plugin \
+npx --yes upstream-radar@0.43.2 review dsh-plugin \
   <包名>@<版本> \
   --dsh-version <DSH版本>
 ```

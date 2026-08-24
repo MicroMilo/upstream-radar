@@ -1,6 +1,6 @@
 {
   "name": "upstream-radar",
-  "version": "0.43.1",
+  "version": "0.43.2",
   "description": "Always-on dependency and compatibility monitoring for DeepSeek Harness plugins, including exact paths, upstream changes, and isolated install/load evidence.",
   "type": "module",
   "license": "Apache-2.0",
@@ -63,7 +63,7 @@
     "docs/assets/upstream-radar-hero.jpg",
     "docs/assets/upstream-radar-hero-mobile.jpg",
     "README.md",
-    "README.zh-CN.md",
+    "README-zh-CN.md",
     "docs/README.zh-CN.md",
     "examples/cases/dsh-web-ui-issue-71",
     "LICENSE"

@@ -13,11 +13,11 @@ No DSH profile, plugin code, lifecycle script, or LLM was started.
 ## Commands
 
 ```bash
-npx --yes upstream-radar@0.43.1 scan \
+npx --yes upstream-radar@0.43.2 scan \
   https://github.com/ccch1mneyyy/dsh-TUI \
   --fail-on never
 
-npx --yes upstream-radar@0.43.1 inspect \
+npx --yes upstream-radar@0.43.2 inspect \
   npm:@deepseek-harness-tui/dsh-tui@0.8.0 \
   --deep --fail-on never
 ```

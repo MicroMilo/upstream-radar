@@ -8,7 +8,7 @@ graph without installing anything.
 ## Reproduction
 
 ```bash
-npx --yes upstream-radar@0.43.1 scan \
+npx --yes upstream-radar@0.43.2 scan \
   https://github.com/2008924/dsh-progress-viz \
   --fail-on never
 ```
