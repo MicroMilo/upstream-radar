@@ -20,9 +20,12 @@ Radar 会再次检查并关闭闭环。
 
 **维护 100 个安装/加载目标 · 覆盖目录全部 21 个类别 · 4 条上游报告已关闭**
 
-[最近一次全量运行](https://github.com/MicroMilo/upstream-radar/actions/runs/32637649422)：
-**观测 96 个可执行目录插件 · 67 个兼容 · 29 个需要复核 · 0 个复现不兼容 · 4 个仅源码目标**。
+[最近一次 Agent 驱动的 headless 运行](https://github.com/MicroMilo/upstream-radar/actions/runs/32684879130)：
+**观测 96 个可执行目录插件 · 74 个兼容 · 22 个需要复核 · 0 个复现不兼容 · 4 个仅源码目标**。
 需要复核的信号不会被宣传成插件故障。
+
+第一轮真实闭环从 29 个待复核插件开始。Agent 选择了 9 个受限重试，其中 7 个转为
+兼容；另 2 个明确停在 Web 客户端依赖边界，没有被误报成插件坏了。
 
 ## 为什么需要它
 
@@ -38,23 +41,25 @@ Upstream Radar 检查的是这层真实关系，而不只是分别看两个仓�
 ```mermaid
 flowchart TB
   Schedule["定时 GitHub Action"] --> Watch["观察 DSH 与插件发布"]
-  Watch --> Matrix["精确的插件 × DSH 测试矩阵"]
-  Matrix --> Static["静态契约检查"]
-  Matrix --> Runtime["一次性环境：安装 → 注册 → 加载"]
-  Static --> Evidence["可复现的兼容性证据"]
-  Runtime --> Evidence
-  Evidence --> Issue["一条可修复的 Issue"]
+  Watch --> Evidence["当前精确的 headless 证据"]
+  Evidence --> Agent["Agent 决定下一次受限重试"]
+  Agent --> Runtime["一次性虚拟机：安装 → 注册 → 加载"]
+  Runtime -->|"出现下一层门槛"| Agent
+  Runtime -->|"兼容"| Ledger["保存精确结果"]
+  Runtime -->|"超出 headless"| Hold["保留为待复核证据"]
+  Runtime -->|"复现真实失败"| Issue["一条可修复的 Issue"]
   Issue --> Fix["作者发布修复"]
   Fix --> Watch
 ```
 
-Radar 用确定性证据得出结果。DSH Agent 可以补充影响解释和下一步建议，但模型不能
-把缺失的证据说成通过。
+Agent 读取仓库说明和最新运行证据，决定 headless 是否重试、重试时允许哪些安装条件。
+真正的结果由一次性虚拟机执行得出，而不是模型判断。模型不能凭空增加安装包、不能
+进入目标虚拟机执行，也不能把缺失证据说成通过。
 
 ## 你会得到什么
 
 - `插件版本 × DSH 版本 × Node/profile` 的精确结果，而不是永不过期的“兼容”标签。
-- 把静态依赖和 peer 契约，与真实发布物的安装、注册、加载结果放在一起判断。
+- 把 Agent 规划的后续动作，与真实发布物的安装、注册、加载结果放在一起判断。
 - DSH 或插件变化后自动重新检查，而不是只生成一次报告。
 - 同一问题持续更新；回归时重新打开；干净复测通过后自动关闭。
 
@@ -70,7 +75,7 @@ Radar 用确定性证据得出结果。DSH Agent 可以补充影响解释和下�
 ## 检查一个插件
 
 ```bash
-npx --yes upstream-radar@0.42.0 review dsh-plugin \
+npx --yes upstream-radar@0.43.0 review dsh-plugin \
   <包名>@<版本> \
   --dsh-version <DSH版本>
 ```

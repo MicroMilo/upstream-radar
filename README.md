@@ -21,9 +21,13 @@ issue; when the author ships a fix, it retests and closes the loop.
 
 **100 maintained install/load targets · 100 catalog entries across all 21 categories · 4 upstream reports closed**
 
-[Latest full fleet run](https://github.com/MicroMilo/upstream-radar/actions/runs/32637649422):
-**96 executable catalog cells observed · 67 compatible · 29 need review · 0 reproduced incompatibilities · 4 source-only**.
+[Latest Agent-driven headless run](https://github.com/MicroMilo/upstream-radar/actions/runs/32684879130):
+**96 executable catalog cells observed · 74 compatible · 22 need review · 0 reproduced incompatibilities · 4 source-only**.
 Review signals are never advertised as plugin failures.
+
+The first live loop started with 29 review cells. The Agent selected nine
+bounded retries; seven became compatible, while two stopped at an explicit Web
+client dependency boundary instead of being mislabeled as broken.
 
 ## Why it exists
 
@@ -40,26 +44,28 @@ maintained plugins stopped passing after the ecosystem changed?”
 ```mermaid
 flowchart TB
   Schedule["Scheduled GitHub Action"] --> Watch["Watch DSH + plugin releases"]
-  Watch --> Matrix["Exact plugin × DSH matrix"]
-  Matrix --> Static["Static contract checks"]
-  Matrix --> Runtime["Disposable runner: install → register → load"]
-  Static --> Evidence["Reproducible compatibility evidence"]
-  Runtime --> Evidence
-  Evidence --> Issue["One fixable issue"]
+  Watch --> Evidence["Current exact headless evidence"]
+  Evidence --> Agent["Agent chooses the next bounded retry"]
+  Agent --> Runtime["Disposable VM: install → register → load"]
+  Runtime -->|"next observed gate"| Agent
+  Runtime -->|"compatible"| Ledger["Persist exact result"]
+  Runtime -->|"outside headless"| Hold["Keep as review evidence"]
+  Runtime -->|"reproduced failure"| Issue["One fixable issue"]
   Issue --> Fix["Author publishes a fix"]
   Fix --> Watch
 ```
 
-Radar establishes the result with deterministic evidence. An optional DSH
-Agent can explain impact and suggest the next action, but a model never turns
-missing evidence into a pass.
+The Agent interprets repository instructions and the latest runtime evidence,
+then chooses whether and how headless should retry. The disposable runner—not
+the model—establishes the result. A model cannot invent a build package, execute
+inside the target VM, or turn missing evidence into a pass.
 
 ## What you get
 
 - An exact result for `plugin version × DSH version × Node/profile`, not a
   timeless “compatible” badge.
-- Static dependency and peer-contract checks joined with real
-  install/register/load evidence from the published artifact.
+- Agent-planned follow-ups joined with real install/register/load evidence from
+  the published artifact.
 - A maintained result that is retested when DSH or the plugin changes.
 - One managed issue that is updated on repeat failures, reopened on regression,
   and closed after a clean retest.
@@ -77,7 +83,7 @@ them:
 ## Run one check
 
 ```bash
-npx --yes upstream-radar@0.42.0 review dsh-plugin \
+npx --yes upstream-radar@0.43.0 review dsh-plugin \
   <package>@<version> \
   --dsh-version <dsh-version>
 ```

@@ -4,6 +4,28 @@ All notable changes to Upstream Radar are documented here.
 
 ## [Unreleased]
 
+## [0.43.0] - 2026-08-24
+
+### Agent-driven headless closure
+
+- Let the configured DSH Agent read bounded repository instructions plus the
+  latest isolated result and choose either a constrained headless retry or an
+  explicit stop. There is no static environment-planning fallback.
+- Add a fast `headless-agent` GitHub Actions mode that reuses current exact
+  observations instead of waiting for the full upstream refresh before every
+  follow-up.
+- Bind every Agent plan to the exact plugin artifact digest, DSH version and
+  Node runtime. The model key stays in the planning job; the target package
+  executes later in a separate secret-free disposable runner.
+- Translate an Agent-approved root package to pnpm's exact local-tarball build
+  key, and accumulate approvals across staged lifecycle gates instead of
+  replacing the previous set and oscillating.
+- Complete the first live loop over the 29 catalog review cells: the Agent
+  selected nine bounded retries, seven became compatible, and two stopped at a
+  Web-client dependency boundary. The maintained fleet now records 74
+  compatible, 22 review-only, zero reproduced-incompatible and four
+  source-only catalog entries.
+
 ## [0.42.0] - 2026-08-23
 
 ### 100-plugin maintained fleet
