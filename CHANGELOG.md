@@ -4,6 +4,23 @@ All notable changes to Upstream Radar are documented here.
 
 ## [Unreleased]
 
+## [0.43.4] - 2026-08-24
+
+### Always-on observation reliability
+
+- Follow an explicitly configured or source-declared npm release channel, so
+  prerelease plugins are observed from their intended stream instead of
+  silently falling back to `latest`.
+- Persist every accepted compatibility cell before an incomplete matrix run is
+  reported, retaining prior evidence only for the missing cells that need a
+  later retry.
+- Retry transient Corepack bootstrap failures in isolated runners and publish
+  current observed package versions and dist-tags beside exact ledger-backed
+  compatibility cells.
+- Verify the repaired loop in production: five unsatisfied cells were selected
+  instead of rerunning the full fleet, all five produced accepted evidence, and
+  the ledger, directory feed, and managed incident reconciliation completed.
+
 ## [0.43.3] - 2026-08-24
 
 ### Domain report index
