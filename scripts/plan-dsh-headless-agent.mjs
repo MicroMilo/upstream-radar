@@ -78,7 +78,7 @@ async function collectDocuments(repository, commit, packagePath) {
     packagePath,
     packageDirectory === '.' ? 'README.md' : `${packageDirectory}/README.md`,
     'README.md',
-    'README.zh-CN.md',
+    'README-zh-CN.md',
     packageDirectory === '.' ? 'cordis.patch.yml' : `${packageDirectory}/cordis.patch.yml`,
     packageDirectory === '.' ? 'cordis.patch.yaml' : `${packageDirectory}/cordis.patch.yaml`,
   ].filter((value, index, values) => value !== undefined && values.indexOf(value) === index)
