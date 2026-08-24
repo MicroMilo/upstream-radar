@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha1",
-  "generatedAt": "2026-08-24T02:44:17.611Z",
+  "generatedAt": "2026-08-24T02:54:35.707Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.42.0",
@@ -1272,11 +1272,11 @@
           "status": "needs-review",
           "radarResult": "build-approval-required",
           "requiredDependencyBuilds": [
-            "dsh-vision-proxy"
+            "sharp"
           ],
-          "observedAt": "2026-08-24T02:43:20.265Z",
-          "recheckDueAt": "2026-08-31T02:43:20.265Z",
-          "reason": "the DSH plugin install requires explicit approval for dependency builds: dsh-vision-proxy"
+          "observedAt": "2026-08-24T02:54:03.280Z",
+          "recheckDueAt": "2026-08-31T02:54:03.280Z",
+          "reason": "the DSH plugin install requires explicit approval for dependency builds: sharp"
         }
       ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
@@ -1404,11 +1404,11 @@
           "status": "needs-review",
           "radarResult": "build-approval-required",
           "requiredDependencyBuilds": [
-            "dsh-free-vision"
+            "sharp"
           ],
-          "observedAt": "2026-08-24T02:43:08.385Z",
-          "recheckDueAt": "2026-08-31T02:43:08.385Z",
-          "reason": "the DSH plugin install requires explicit approval for dependency builds: dsh-free-vision"
+          "observedAt": "2026-08-24T02:54:02.015Z",
+          "recheckDueAt": "2026-08-31T02:54:02.015Z",
+          "reason": "the DSH plugin install requires explicit approval for dependency builds: sharp"
         }
       ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
@@ -2833,11 +2833,14 @@
           "status": "needs-review",
           "radarResult": "build-approval-required",
           "requiredDependencyBuilds": [
-            "@roarpeng/graphflow"
+            "better-sqlite3",
+            "onnxruntime-node",
+            "protobufjs",
+            "sharp"
           ],
-          "observedAt": "2026-08-24T02:43:22.546Z",
-          "recheckDueAt": "2026-08-31T02:43:22.546Z",
-          "reason": "the DSH plugin install requires explicit approval for dependency builds: @roarpeng/graphflow"
+          "observedAt": "2026-08-24T02:54:11.878Z",
+          "recheckDueAt": "2026-08-31T02:54:11.878Z",
+          "reason": "the DSH plugin install requires explicit approval for dependency builds: better-sqlite3, onnxruntime-node, protobufjs, sharp"
         }
       ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
