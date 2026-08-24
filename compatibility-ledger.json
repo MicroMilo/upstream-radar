@@ -13322,13 +13322,10 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:33c5f3cb44f4637f5913d9f887263b9b094f7e7ff898799e643fe8e743a70de6",
-      "contractFingerprint": "sha256:5f750ed50b7cd002246b0642cd813c88b23097d1db196cf50d24ca99df159991",
-      "observedAt": "2026-08-24T02:54:02.015Z",
-      "result": "build-approval-required",
-      "reason": "the DSH plugin install requires explicit approval for dependency builds: sharp",
-      "requiredDependencyBuilds": [
-        "sharp"
-      ],
+      "contractFingerprint": "sha256:9d3822991399f0692f01ed9459063ed4a8c6e228808f26af984417c5a487dff9",
+      "observedAt": "2026-08-24T03:01:25.614Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [
           "postinstall"
@@ -13338,7 +13335,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "359d078965ad3d5049dfec89526f84bb3840c4a835de1a4555d8d9f26cc8a067",
+          "sha256": "d958405cb0767c5537420a3d43f26d2ff4c215eab4e23f510fb955131c07a91b",
           "bytes": 40041,
           "graphDigest": "sha256:6a280ac9963e8aa23e8e38b6b9f7632bf70c7717cb684ec87687de5e49c8ace1",
           "nodes": 146,
@@ -25794,13 +25791,10 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:a6add211f62ec7ee300d2ad8460a1d0ddbe348d39f06df1fd8401fed2a22962f",
-      "contractFingerprint": "sha256:ce0357ffb4e78c296f90eb9df6346c2045f803c9a8560a14afd6ae8f558b0b24",
-      "observedAt": "2026-08-24T02:54:03.280Z",
-      "result": "build-approval-required",
-      "reason": "the DSH plugin install requires explicit approval for dependency builds: sharp",
-      "requiredDependencyBuilds": [
-        "sharp"
-      ],
+      "contractFingerprint": "sha256:5d1eff6adaebc6db02794971cd7be74035987184fc1a8268b3249dfa94523ca4",
+      "observedAt": "2026-08-24T03:01:19.585Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [
           "postinstall"
@@ -25810,7 +25804,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "9cc8a6326c3d77e82c94e9b6c4a2b16b9b555ad8cafb25dccac9892bdebccf3d",
+          "sha256": "9f26058f59dad10ccc3af31a8285caf7e654ae11eb44362d19136f367aabb731",
           "bytes": 11763,
           "graphDigest": "sha256:17c6ffc2481fac1ae80d37a7f3a17e8a2faa3f79f515872e561ad2f79e0233ad",
           "nodes": 35,
@@ -28883,16 +28877,10 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:a17a5962a69546829de55dfddde33cf52dd955983950269be316c31678a470de",
-      "contractFingerprint": "sha256:c99b4d7c2f270cbc25bb3533cf6f6522a168621e5c812635f66bc6ab67a30c99",
-      "observedAt": "2026-08-24T02:54:11.878Z",
-      "result": "build-approval-required",
-      "reason": "the DSH plugin install requires explicit approval for dependency builds: better-sqlite3, onnxruntime-node, protobufjs, sharp",
-      "requiredDependencyBuilds": [
-        "better-sqlite3",
-        "onnxruntime-node",
-        "protobufjs",
-        "sharp"
-      ],
+      "contractFingerprint": "sha256:1eb24b5cc879e07ab756cb46f1c208b5b0659eea13612839be0252ccfa88d8aa",
+      "observedAt": "2026-08-24T03:01:39.009Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [
           "postinstall",
@@ -28903,7 +28891,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "265770a93e0f25aca38bc3a4c7cf16030074f1e22ebf3a2352c51e525d6db1be",
+          "sha256": "f97a256ab2a3435f474d5de8c4d2277c22470aa92ab10332fd39f0ad79822ee6",
           "bytes": 59810,
           "graphDigest": "sha256:716493db06382863284688e1b5ef27c0b62358a322229d67baee7e940108b2eb",
           "nodes": 226,

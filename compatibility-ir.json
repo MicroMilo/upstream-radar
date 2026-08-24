@@ -1133,11 +1133,11 @@
       }
     },
     {
-      "id": "cell:7413c2957c06bf7617d43ca24988e47525dde8944f7f461d010cc426afee0af6",
+      "id": "cell:3b08c544cdb59365f805b7ef4b2ee593af6a522b4aa7e80170a981c125feb6fb",
       "caseId": "dsh-free-vision-node22",
       "targetId": "dsh-free-vision",
-      "observedAt": "2026-08-24T02:54:02.015Z",
-      "result": "build-approval-required",
+      "observedAt": "2026-08-24T03:01:25.614Z",
+      "result": "compatible",
       "plugin": {
         "name": "dsh-free-vision",
         "version": "1.0.8",
@@ -1151,17 +1151,14 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:5f750ed50b7cd002246b0642cd813c88b23097d1db196cf50d24ca99df159991"
+        "contractFingerprint": "sha256:9d3822991399f0692f01ed9459063ed4a8c6e228808f26af984417c5a487dff9"
       },
       "evidence": {
         "runtimeGraphDigest": "sha256:799208b058e79d24d1ed577dd70bdc706a27e307c736f5a64cbba744bcf797de",
         "runtimeGraphNodes": 575,
         "runtimeGraphEdges": 2247,
         "requiredUnresolved": 0,
-        "declaredPeerContracts": 0,
-        "requiredDependencyBuilds": [
-          "sharp"
-        ]
+        "declaredPeerContracts": 0
       }
     },
     {
@@ -2325,11 +2322,11 @@
       }
     },
     {
-      "id": "cell:3154f324508f222767970c5447fb942747c2c33a02ad717249824cd2165c9ec7",
+      "id": "cell:ef94f6a0a0eb3189b9151cd2fb8b67c4a5d8bf595e432c8bd1595db26128c278",
       "caseId": "dsh-vision-proxy-node22",
       "targetId": "dsh-vision-proxy",
-      "observedAt": "2026-08-24T02:54:03.280Z",
-      "result": "build-approval-required",
+      "observedAt": "2026-08-24T03:01:19.585Z",
+      "result": "compatible",
       "plugin": {
         "name": "dsh-vision-proxy",
         "version": "0.4.1",
@@ -2343,17 +2340,14 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:ce0357ffb4e78c296f90eb9df6346c2045f803c9a8560a14afd6ae8f558b0b24"
+        "contractFingerprint": "sha256:5d1eff6adaebc6db02794971cd7be74035987184fc1a8268b3249dfa94523ca4"
       },
       "evidence": {
         "runtimeGraphDigest": "sha256:d86cf9b76536110835f7031d585d61c414007088814497d752ac7935fb6a6fd1",
         "runtimeGraphNodes": 457,
         "runtimeGraphEdges": 2039,
         "requiredUnresolved": 0,
-        "declaredPeerContracts": 0,
-        "requiredDependencyBuilds": [
-          "sharp"
-        ]
+        "declaredPeerContracts": 0
       }
     },
     {
@@ -2589,11 +2583,11 @@
       }
     },
     {
-      "id": "cell:800287b80415be11bda57e5f5a484c41b33e59838a0cfbbd99ec7bd8b3a0bf49",
+      "id": "cell:5aae295ef57e5da941df037ef214fe164e731d347c72fe6c0e0a43847543ec5a",
       "caseId": "graphflow-node22",
       "targetId": "graphflow",
-      "observedAt": "2026-08-24T02:54:11.878Z",
-      "result": "build-approval-required",
+      "observedAt": "2026-08-24T03:01:39.009Z",
+      "result": "compatible",
       "plugin": {
         "name": "@roarpeng/graphflow",
         "version": "1.12.2",
@@ -2607,20 +2601,14 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:c99b4d7c2f270cbc25bb3533cf6f6522a168621e5c812635f66bc6ab67a30c99"
+        "contractFingerprint": "sha256:1eb24b5cc879e07ab756cb46f1c208b5b0659eea13612839be0252ccfa88d8aa"
       },
       "evidence": {
         "runtimeGraphDigest": "sha256:47ff9274256a6be9798e33348a2bba8ee0b9a14fc6c3dd86e05c13df0cf6dea3",
         "runtimeGraphNodes": 643,
         "runtimeGraphEdges": 2318,
         "requiredUnresolved": 0,
-        "declaredPeerContracts": 0,
-        "requiredDependencyBuilds": [
-          "better-sqlite3",
-          "onnxruntime-node",
-          "protobufjs",
-          "sharp"
-        ]
+        "declaredPeerContracts": 0
       }
     },
     {
