@@ -254,6 +254,12 @@ jobs:
 
       - name: Reconcile dynamic evidence into the compatibility ledger
         id: ledger
+        # The merger writes every accepted cell before returning non-zero for
+        # missing/rejected reports. Keep processing that bounded partial
+        # result, persist it, then surface the incomplete run at the end. This
+        # prevents one transient runner failure from discarding every other
+        # successful observation while preserving a visible retry signal.
+        continue-on-error: true
         env:
           INSTALL_MATRIX_PATH: ${{ runner.temp }}/upstream-radar-install-matrix.json
           INSTALL_REPORTS_PATH: ${{ runner.temp }}/upstream-radar-install-reports
@@ -319,3 +325,15 @@ jobs:
           fi
           git commit -m 'chore: update DSH compatibility evidence [skip ci]'
           git push
+
+      - name: Fail after persisting incomplete reconciliation
+        if: always() && steps.ledger.outcome == 'failure'
+        shell: bash
+        env:
+          RADAR_ACCEPTED: ${{ steps.ledger.outputs.accepted }}
+          RADAR_MISSING: ${{ steps.ledger.outputs.missing }}
+          RADAR_REJECTED: ${{ steps.ledger.outputs.rejected }}
+        run: |
+          echo "Compatibility evidence was partially persisted: accepted=${RADAR_ACCEPTED:-unknown}, missing=${RADAR_MISSING:-unknown}, rejected=${RADAR_REJECTED:-unknown}."
+          echo 'The incomplete cells remain unsatisfied and will be selected by the next reconciliation run.'
+          exit 1

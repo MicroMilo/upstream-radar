@@ -94,6 +94,54 @@ describe('DSH compatibility ledger', () => {
     assert.equal(merged.ledger.entries.length, 0)
   })
 
+  it('updates accepted cells while retaining prior evidence for a missing cell', () => {
+    const missingExpected: DshCompatibilityExpectedCase = {
+      ...expected,
+      id: 'missing-node24',
+      targetId: 'missing',
+      plugin: 'missing-plugin@1.0.0',
+      staticFingerprint: `sha256:${'1'.repeat(64)}`,
+      contractFingerprint: `sha256:${'2'.repeat(64)}`,
+    }
+    const initial = mergeDshCompatibilityLedger({
+      ledger: emptyDshCompatibilityLedger(),
+      expected: [expected, missingExpected],
+      reports: [
+        report(),
+        report({
+          caseId: missingExpected.id,
+          artifact: {
+            spec: missingExpected.plugin,
+            sha256: '3'.repeat(64),
+            nodeEngine: '>=24.11.0',
+            lifecycleScripts: [],
+          },
+        }),
+      ],
+    })
+
+    const refreshed = mergeDshCompatibilityLedger({
+      ledger: initial.ledger,
+      expected: [expected, missingExpected],
+      reports: [report({
+        completedAt: '2026-08-22T00:00:00.000Z',
+        artifact: {
+          spec: expected.plugin,
+          sha256: '4'.repeat(64),
+          nodeEngine: '>=24.11.0',
+          lifecycleScripts: [],
+        },
+      })],
+    })
+
+    assert.deepEqual(refreshed.acceptedCaseIds, [expected.id])
+    assert.deepEqual(refreshed.missingCaseIds, [missingExpected.id])
+    assert.equal(refreshed.ledger.entries.find(entry => entry.caseId === expected.id)?.observedAt, '2026-08-22T00:00:00.000Z')
+    assert.equal(refreshed.ledger.entries.find(entry => entry.caseId === expected.id)?.artifact.sha256, '4'.repeat(64))
+    assert.equal(refreshed.ledger.entries.find(entry => entry.caseId === missingExpected.id)?.observedAt, '2026-08-21T00:00:00.000Z')
+    assert.equal(refreshed.ledger.entries.find(entry => entry.caseId === missingExpected.id)?.artifact.sha256, '3'.repeat(64))
+  })
+
   it('makes a newly observed incompatible result actionable, then records its resolution', () => {
     const first = mergeDshCompatibilityLedger({
       ledger: emptyDshCompatibilityLedger(),
