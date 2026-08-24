@@ -40,16 +40,12 @@ Upstream Radar 检查的是这层真实关系，而不只是分别看两个仓�
 
 ```mermaid
 flowchart TB
-  Schedule["定时 GitHub Action"] --> Watch["观察 DSH 与插件发布"]
-  Watch --> Evidence["当前精确的 headless 证据"]
-  Evidence --> Agent["Agent 决定下一次受限重试"]
+  Change["定时运行 / DSH 或插件变化"] --> Agent["Agent 规划受限的 headless 重试"]
   Agent --> Runtime["一次性虚拟机：安装 → 注册 → 加载"]
   Runtime -->|"出现下一层门槛"| Agent
-  Runtime -->|"兼容"| Ledger["保存精确结果"]
-  Runtime -->|"超出 headless"| Hold["保留为待复核证据"]
-  Runtime -->|"复现真实失败"| Issue["一条可修复的 Issue"]
-  Issue --> Fix["作者发布修复"]
-  Fix --> Watch
+  Runtime -->|"兼容 / 超出 headless"| Evidence["发布精确证据"]
+  Runtime -->|"复现真实失败"| Issue["创建一条可修复的 Issue"]
+  Issue -->|"作者发布修复"| Change
 ```
 
 Agent 读取仓库说明和最新运行证据，决定 headless 是否重试、重试时允许哪些安装条件。

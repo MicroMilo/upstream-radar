@@ -43,16 +43,12 @@ maintained plugins stopped passing after the ecosystem changed?”
 
 ```mermaid
 flowchart TB
-  Schedule["Scheduled GitHub Action"] --> Watch["Watch DSH + plugin releases"]
-  Watch --> Evidence["Current exact headless evidence"]
-  Evidence --> Agent["Agent chooses the next bounded retry"]
+  Change["Schedule / DSH or plugin change"] --> Agent["Agent plans a bounded headless retry"]
   Agent --> Runtime["Disposable VM: install → register → load"]
   Runtime -->|"next observed gate"| Agent
-  Runtime -->|"compatible"| Ledger["Persist exact result"]
-  Runtime -->|"outside headless"| Hold["Keep as review evidence"]
-  Runtime -->|"reproduced failure"| Issue["One fixable issue"]
-  Issue --> Fix["Author publishes a fix"]
-  Fix --> Watch
+  Runtime -->|"compatible / outside headless"| Evidence["Publish exact evidence"]
+  Runtime -->|"reproduced failure"| Issue["Open one fixable issue"]
+  Issue -->|"author ships a fix"| Change
 ```
 
 The Agent interprets repository instructions and the latest runtime evidence,
