@@ -18,7 +18,7 @@ Upstream Radar 持续把一批真实插件发布物放到一次性隔离环境�
 版本重新配对测试。某个组合坏了，就生成一条可复现的 Issue；作者发布修复后，
 Radar 会再次检查并关闭闭环。
 
-**维护 100 个安装/加载目标 · 覆盖目录全部 21 个类别 · 4 条上游报告已关闭 · 另有 4 条持续观察**
+**维护 100 个安装/加载目标 · 已提出 13 条 domain 报告 · 4 条已关闭 · 9 条开放或持续观察**
 
 [最近一次 Agent 驱动的 headless 运行](https://github.com/MicroMilo/upstream-radar/actions/runs/32684879130)：
 **观测 96 个可执行目录插件 · 74 个兼容 · 22 个需要复核 · 0 个复现不兼容 · 4 个仅源码目标**。
@@ -61,26 +61,46 @@ Agent 读取仓库说明和最新运行证据，决定 headless 是否重试、�
 - DSH 或插件变化后自动重新检查，而不是只生成一次报告。
 - 同一问题持续更新；回归时重新打开；干净复测通过后自动关闭。
 
-## 已关闭的上游报告
+## 我们闭环中提出的 domain 报告
 
-以下报告由我们提出，目前均已被对应上游维护者关闭：
+以下是 Upstream Radar 提出的 13 条面向维护者的报告。它们不全都表示
+“插件坏了”：第一组是运行时兼容性，第二组是精确发布物/安装边界，第三组是
+持续监控所依赖的依赖图是否可信。
 
-- [Sanqi-normal/dsh-webui-market-plugin#5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)
-- [1na-ko/dsh-hdc-bridge#3](https://github.com/1na-ko/dsh-hdc-bridge/issues/3)
-- [6Mikao9/dsh-wsl-workspace#6](https://github.com/6Mikao9/dsh-wsl-workspace/issues/6)
-- [3274375092/dsh-voice#2](https://github.com/3274375092/dsh-voice/issues/2)
+### DSH 宿主/插件契约 · 2 条
 
-另有 4 条较新的报告仍在持续观察：
+- **已关闭** · [Sanqi-normal/dsh-webui-market-plugin#5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)
+- **开放** · [shaoshi20/dshscan#1](https://github.com/shaoshi20/dshscan/issues/1)
 
-- [AmeKrance/anan-thermal-monitor#1](https://github.com/AmeKrance/anan-thermal-monitor/issues/1)
-- [AbcdefgXW/dsh-msg-hub#3](https://github.com/AbcdefgXW/dsh-msg-hub/issues/3)
-- [030611/dsh-verification-receipt#3](https://github.com/030611/dsh-verification-receipt/issues/3)
-- [0xsline/dsh-spotlight#5](https://github.com/0xsline/dsh-spotlight/issues/5)
+### 发布物与安装契约 · 7 条
+
+- **已关闭** · [1na-ko/dsh-hdc-bridge#3](https://github.com/1na-ko/dsh-hdc-bridge/issues/3)
+- **已关闭** · [6Mikao9/dsh-wsl-workspace#6](https://github.com/6Mikao9/dsh-wsl-workspace/issues/6)
+- **已关闭** · [3274375092/dsh-voice#2](https://github.com/3274375092/dsh-voice/issues/2)
+- **开放** · [AmeKrance/anan-thermal-monitor#1](https://github.com/AmeKrance/anan-thermal-monitor/issues/1)
+- **开放** · [AbcdefgXW/dsh-msg-hub#3](https://github.com/AbcdefgXW/dsh-msg-hub/issues/3)
+- **开放** · [030611/dsh-verification-receipt#3](https://github.com/030611/dsh-verification-receipt/issues/3)
+- **开放** · [0xsline/dsh-spotlight#5](https://github.com/0xsline/dsh-spotlight/issues/5)
+
+### 依赖图与源码/发布版本对齐 · 4 条
+
+- **开放** · [lninghaha/dsh-coding-subscription-oauth#14](https://github.com/lninghaha/dsh-coding-subscription-oauth/issues/14)
+- **开放** · [AbcdefgXW/dsh-msg-hub#1](https://github.com/AbcdefgXW/dsh-msg-hub/issues/1)
+- **开放** · [AbcdefgXW/dsh-toolbox-web#1](https://github.com/AbcdefgXW/dsh-toolbox-web/issues/1)
+- **开放** · [13071301808/dsh-composer-expand#1](https://github.com/13071301808/dsh-composer-expand/issues/1)
+
+你记得的 browser/web 案例——[`dsh-web-ui#35`](https://github.com/zhu1090093659/dsh-web-ui/issues/35)
+和 [`dsh-web-ui#71`](https://github.com/zhu1090093659/dsh-web-ui/issues/71)——是有价值的历史兼容性
+对照，且目前已关闭；但它们不是 Upstream Radar 提出的报告，所以不计入上面的 13 条。
+当前维护中的 `dsh-browser` 条目也都观测为兼容，不应被列成问题。
+
+查看[完整分类与证据索引](docs/domain-reports.md)，其中区分了动态复现、源码/发布物证据，
+以及仍需维护者确认的弱结论。
 
 ## 检查一个插件
 
 ```bash
-npx --yes upstream-radar@0.43.2 review dsh-plugin \
+npx --yes upstream-radar@0.43.3 review dsh-plugin \
   <包名>@<版本> \
   --dsh-version <DSH版本>
 ```

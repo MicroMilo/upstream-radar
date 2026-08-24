@@ -4,6 +4,16 @@ All notable changes to Upstream Radar are documented here.
 
 ## [Unreleased]
 
+## [0.43.3] - 2026-08-24
+
+### Domain report index
+
+- Reclassify the 13 maintainer-facing reports into DSH host/plugin contract,
+  published artifact/install contract, and dependency-graph observability.
+- Clarify that historical browser/web compatibility cases are closed reference
+  cases, not open Upstream Radar incidents.
+- Publish the full evidence and validation boundary in `docs/domain-reports.md`.
+
 ## [0.43.2] - 2026-08-24
 
 ### npm README selection
