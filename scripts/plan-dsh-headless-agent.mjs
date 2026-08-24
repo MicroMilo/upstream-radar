@@ -232,12 +232,23 @@ const [targets, cohort, observations, ledger, existingPlans] = await Promise.all
   readPlans(plansPath),
 ])
 const targetById = new Map((Array.isArray(targets?.plugins) ? targets.plugins : []).map(target => [target.id, target]))
+const existingByCase = new Map(existingPlans.entries.map(entry => [entry.caseId, entry]))
 const reviewEntries = ledger.entries.filter(entry => (
   entry.result === 'build-approval-required' || entry.result === 'peer-contract-incompatible'
 )).slice(0, MAX_CANDIDATES)
 const candidates = await mapConcurrent(reviewEntries, async entry => {
   const target = targetById.get(entry.targetId)
   const source = sourceContext(target, observations, cohort)
+  const previous = existingByCase.get(entry.caseId)
+  const previouslyApprovedBuilds = previous?.action === 'retry-headless'
+    && previous.targetId === entry.targetId
+    && previous.plugin === entry.plugin
+    && previous.dshVersion === entry.dshVersion
+    && previous.nodeMajor === entry.runtime.nodeMajor
+    && previous.artifactSha256 !== undefined
+    && previous.artifactSha256 === entry.artifact.sha256
+      ? previous.allowedBuilds
+      : []
   return {
     caseId: entry.caseId,
     targetId: entry.targetId,
@@ -247,6 +258,7 @@ const candidates = await mapConcurrent(reviewEntries, async entry => {
     result: entry.result,
     reason: entry.reason,
     requiredDependencyBuilds: entry.requiredDependencyBuilds ?? [],
+    previouslyApprovedBuilds,
     ...(entry.artifact.sha256 === undefined ? {} : { artifactSha256: entry.artifact.sha256 }),
     ...(source.repository === undefined ? {} : { repository: source.repository }),
     ...(source.sourceCommit === undefined ? {} : { sourceCommit: source.sourceCommit }),
@@ -259,7 +271,6 @@ const baseUrl = process.env.ISSUE_LOCATOR_LLM_BASE_URL
 const apiKey = process.env.ISSUE_LOCATOR_LLM_API_KEY
 const model = process.env.ISSUE_LOCATOR_LLM_MODEL
 const config = baseUrl && apiKey && model ? { baseUrl, apiKey, model } : undefined
-const existingByCase = new Map(existingPlans.entries.map(entry => [entry.caseId, entry]))
 const pending = candidates.filter(candidate => {
   const previous = existingByCase.get(candidate.caseId)
   return previous?.inputFingerprint !== createDshHeadlessAgentInputFingerprint(candidate)
@@ -284,7 +295,10 @@ if (config === undefined && pending.length > 0) {
         dshVersion: candidate.dshVersion,
         nodeMajor: candidate.nodeMajor,
         result: candidate.result,
-        observedRequiredBuilds: candidate.requiredDependencyBuilds,
+        observedRequiredBuilds: [...new Set([
+          ...candidate.previouslyApprovedBuilds,
+          ...candidate.requiredDependencyBuilds,
+        ])].sort(),
         ...(candidate.artifactSha256 === undefined ? {} : { artifactSha256: candidate.artifactSha256 }),
         ...(candidate.repository === undefined ? {} : { repository: candidate.repository }),
         ...(candidate.sourceCommit === undefined ? {} : { sourceCommit: candidate.sourceCommit }),

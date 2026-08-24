@@ -19,6 +19,7 @@ const candidate: DshHeadlessAgentCandidate = {
   result: 'build-approval-required',
   reason: 'the isolated install requires explicit approval for sharp',
   requiredDependencyBuilds: ['sharp'],
+  previouslyApprovedBuilds: [],
   artifactSha256: 'a'.repeat(64),
   repository: 'example/dsh-vision',
   sourceCommit: 'b'.repeat(40),
@@ -112,6 +113,32 @@ describe('DSH headless Agent planning', () => {
       summary: 'Wrong result type.',
       evidence: ['Existing peer evidence only.'],
     }, { ...candidate, result: 'peer-contract-incompatible', requiredDependencyBuilds: [] }), /only after a reproduced build-approval-required/)
+  })
+
+  it('requires the Agent to accumulate approvals across staged build gates', () => {
+    const stagedCandidate = {
+      ...candidate,
+      reason: 'the next isolated retry requires explicit approval for protobufjs',
+      requiredDependencyBuilds: ['protobufjs'],
+      previouslyApprovedBuilds: ['sharp'],
+    }
+    assert.throws(() => parseDshHeadlessAgentDecision({
+      action: 'retry-headless',
+      classification: 'build-approval',
+      allowedBuilds: ['protobufjs'],
+      summary: 'Approve only the newly visible gate.',
+      evidence: ['The latest isolated retry named protobufjs.'],
+    }, stagedCandidate), /dropped dependency builds approved in an earlier retry: sharp/)
+
+    const decision = parseDshHeadlessAgentDecision({
+      action: 'retry-headless',
+      classification: 'build-approval',
+      allowedBuilds: ['protobufjs', 'sharp'],
+      summary: 'Retain sharp and add protobufjs.',
+      evidence: ['Two consecutive isolated retries established both build gates.'],
+    }, stagedCandidate)
+    assert.deepEqual(decision.allowedBuilds, ['protobufjs', 'sharp'])
+    assert.match(renderDshHeadlessAgentPrompt(stagedCandidate), /never drop an earlier approval/)
   })
 
   it('overlays a retry only onto the exact artifact and runtime cell', () => {
