@@ -389,6 +389,23 @@ function requiredDependencyBuilds(output: string, artifactName: string): string[
   return [...names].sort()
 }
 
+/**
+ * pnpm keys registry dependency build approvals by package name, but keys a
+ * tarball dependency by its full package id. DSH installs the already-pinned
+ * artifact from a local tarball, so an Agent approval for the root package
+ * must be bound back to that exact file coordinate before it reaches pnpm.
+ */
+function pnpmBuildApproval(
+  approvedPackage: string,
+  artifact: ParsedArtifact,
+  artifactName: string,
+  profileDirectory: string,
+): string {
+  if (approvedPackage !== artifactName) return approvedPackage
+  const artifactPath = relative(profileDirectory, artifact.path).split(sep).join('/')
+  return `${artifactName}@file:${artifactPath}`
+}
+
 function staticPeerUsage(entries: readonly TarEntry[], requirements: readonly { name: string, required: string }[]): DshInstallPeerStaticUsage[] {
   const state = new Map(requirements.map(requirement => [requirement.name, 'no-literal-reference-observed' as DshInstallPeerStaticUsage]))
   let scanned = 0
@@ -1725,7 +1742,12 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
         command: pnpmCommand,
         args: dshArgs(options.dshVersion, [
           'plugin', '--profile', PROFILE, 'add', join(artifactDirectory, artifact.filename),
-          ...allowedBuilds.map(name => `--allow-build=${name}`),
+          ...allowedBuilds.map(name => `--allow-build=${pnpmBuildApproval(
+            name,
+            artifact,
+            spec.name,
+            join(environment.DSH_HOME as string, 'profiles', PROFILE),
+          )}`),
         ]),
         cwd: artifactDirectory,
         env: scriptsEnvironment,
