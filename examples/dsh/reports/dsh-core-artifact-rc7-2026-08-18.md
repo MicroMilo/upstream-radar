@@ -43,5 +43,5 @@ graph, the unresolved peer boundary, the vulnerability result, and the two
 remaining review actions in one report.
 
 This report was produced by the current branch, not the already published
-`upstream-radar@0.42.0`. Review the Draft PR before relying on the fallback
+`upstream-radar@0.43.0`. Review the Draft PR before relying on the fallback
 resolver from npm.
