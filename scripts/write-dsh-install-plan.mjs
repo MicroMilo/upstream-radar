@@ -4,6 +4,7 @@ import { appendFile, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import process from 'node:process'
 import { buildDshInstallPlan } from '../dist/src/dsh-install-plan.js'
+import { applyDshHeadlessAgentPlans } from '../dist/src/dsh-headless-agent-plan.js'
 import { emptyDshCompatibilityLedger } from '../dist/src/dsh-compatibility-ledger.js'
 
 const MAX_INPUT_BYTES = 256 * 1024 * 1024
@@ -23,16 +24,20 @@ async function readOptionalJson(path) {
   }
 }
 
-const [corpusPath, statePath, reportPath, ledgerPath] = process.argv.slice(2)
+const [corpusPath, statePath, reportPath, ledgerPath, agentPlansPath] = process.argv.slice(2)
 if (corpusPath === undefined || statePath === undefined || reportPath === undefined || ledgerPath === undefined) {
-  throw new Error('usage: write-dsh-install-plan.mjs <targets.json> <observations.json> <observer-report.json> <compatibility-ledger.json>')
+  throw new Error('usage: write-dsh-install-plan.mjs <targets.json> <observations.json> <observer-report.json> <compatibility-ledger.json> [agent-plans.json]')
 }
 
+const ledger = await readOptionalJson(ledgerPath)
+const corpus = agentPlansPath === undefined
+  ? await readJson(corpusPath)
+  : applyDshHeadlessAgentPlans(await readJson(corpusPath), await readJson(agentPlansPath), ledger)
 const plan = buildDshInstallPlan(
-  await readJson(corpusPath),
+  corpus,
   await readJson(statePath),
   await readJson(reportPath),
-  await readOptionalJson(ledgerPath),
+  ledger,
 )
 process.stdout.write(`${JSON.stringify(plan, null, 2)}\n`)
 

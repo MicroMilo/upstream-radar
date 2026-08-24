@@ -100,6 +100,26 @@ jobs:
           echo "exit=$observer_exit" >> "$GITHUB_OUTPUT"
           exit "$observer_exit"
 
+      # Repository prose is untrusted model input. This job never executes a
+      # target package; it emits only a bounded headless retry contract. The
+      # later reusable workflow receives that contract but no model secret.
+      - name: Let the Agent plan bounded headless follow-ups
+        id: headless-agent-plan
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
+        run: |
+          node scripts/plan-dsh-headless-agent.mjs \
+            examples/dsh/install-observer/targets.json \
+            examples/dsh/awesome-observer/cohort.json \
+            observations.json \
+            compatibility-ledger.json \
+            examples/dsh/install-observer/agent-plans.json \
+            examples/dsh/install-observer/agent-plans.md
+
       - name: Reconcile the current DSH compatibility matrix
         id: install-plan
         env:
@@ -109,12 +129,13 @@ jobs:
             examples/dsh/install-observer/targets.json \
             observations.json \
             "$OBSERVER_JSON" \
-            compatibility-ledger.json
+            compatibility-ledger.json \
+            examples/dsh/install-observer/agent-plans.json
 
-      # The state is written even when an upstream source or the optional
-      # Agent fails. Pending tasks and the last trustworthy observations must
-      # survive the runner, so the next scheduled run can retry them.
-      - name: Persist observation state
+      # State is written even when an upstream source or Agent call fails.
+      # Successful plans remain bound to exact bytes/runtime; failed calls have
+      # no static fallback and are retried by the next scheduled run.
+      - name: Persist observation and Agent planning state
         if: always()
         shell: bash
         run: |
@@ -125,7 +146,10 @@ jobs:
           fi
           git config user.name 'upstream-radar[bot]'
           git config user.email 'upstream-radar[bot]@users.noreply.github.com'
-          git add -- observations.json
+          git add -- \
+            observations.json \
+            examples/dsh/install-observer/agent-plans.json \
+            examples/dsh/install-observer/agent-plans.md
           if git diff --cached --quiet; then
             echo 'No observation point changed; no commit created.'
             exit 0
