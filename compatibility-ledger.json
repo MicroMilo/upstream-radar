@@ -938,9 +938,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:1142e4cf8b81fc5fa428b9a5d74cb39b04fdc387e27a0f55c2bf14a17f3fb030",
+      "staticFingerprint": "sha256:0c3e0e3ae8c7f7ef30b20219a1cb67cc6986f3e664e0c8708c460d3f0565a3c2",
       "contractFingerprint": "sha256:1cde4db7dc2c5c040d650ecdf62001e88be8c1728f7486e57b13d5bb5af7d337",
-      "observedAt": "2026-08-23T11:53:22.059Z",
+      "observedAt": "2026-08-24T04:47:07.838Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@^0.1.0-rc.8 was not resolved by the DSH runtime (runtime-import-observed)",
       "artifact": {
@@ -950,7 +950,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "d2eee332999959f981eb143901f291b46c4c6760973eb332159f2d9e571ebfbe",
+          "sha256": "a867edfb3fc8d209ce212c07c4975f0542d41d8ad65e49e4b016586442a4a100",
           "bytes": 44086,
           "graphDigest": "sha256:8c0a3d50300be371b0bc2cd2cd5e61e05b601371811d4bcad01b34accdbe1463",
           "nodes": 167,
@@ -1086,7 +1086,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:a404cc1abe26fdd782ecfa76de1c18e2e96650abd620a68f0fc24dd6b38b8619",
+          "digest": "sha256:08b15183ac3a2824b6b325921e059e5050485a361899f2934152cebaefdaa3b7",
           "nodes": 613,
           "edges": 2380,
           "unresolved": 2,
@@ -1455,7 +1455,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -1726,7 +1726,7 @@
     {
       "caseId": "context-node22",
       "targetId": "context",
-      "plugin": "dsh-context@0.25.3",
+      "plugin": "dsh-context@0.29.0",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -1735,50 +1735,62 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:8bea95d7407605641f2353dff6f507292358f26bbfcc780738a021efb77b4c13",
-      "contractFingerprint": "sha256:3cf126ab30b5b727f9ec93a9e6d5fa3a86dbda130911ac2cfd8c0cf664eeafb7",
-      "observedAt": "2026-08-23T11:52:36.032Z",
+      "staticFingerprint": "sha256:40941631e83941921cbfdede12b2baae0d850eaeba03d40b5e97e3dfec6a6af7",
+      "contractFingerprint": "sha256:6bbd13b4eb33b5f763022281464f66235e48ff66320507a6ff8c07e509303f7b",
+      "observedAt": "2026-08-24T04:45:33.736Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "2fe8bd75e83f4c6e0ef69c87611e700011426ff5c83f1c661f45628e250593e2"
+        "sha256": "4c1751176339a4fef83fb9df6efcb980ada7546ba2e45d87b8704ba70c5e8e7a"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "2df7233f80247723dd89382395ee68dda0122987ce03fd56f27389eaf0b6f985",
-          "bytes": 996,
-          "graphDigest": "sha256:a86928a0ed10d2b2db9692fac6b5d2a1d5109061c7437fdeb1eff8a68335f15a",
+          "sha256": "0adeabe16ff22ebc153b5915c82149479ee13e330ac0743c598dbc81faf087cc",
+          "bytes": 1085,
+          "graphDigest": "sha256:0c845c9ef21b2c708558a216eb154dfe0abde05f1fe87c796b094560b4f8c7cb",
           "nodes": 2,
           "edges": 1,
-          "unresolved": 5,
+          "unresolved": 7,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.25.3.tgz",
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.29.0.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.25.3.tgz",
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.29.0.tgz",
               "name": "@deepseek-ai/dsh-client-ui-primitives",
               "spec": "^0.1.0-rc.7",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.25.3.tgz",
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.29.0.tgz",
               "name": "@deepseek-ai/dsh-session",
               "spec": "^0.1.0-rc.7",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.25.3.tgz",
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.29.0.tgz",
+              "name": "@deepseek-ai/dsh-settings",
+              "spec": "^0.1.0-rc.7",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.29.0.tgz",
+              "name": "@deepseek-ai/schemastery",
+              "spec": "^3.18.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.29.0.tgz",
               "name": "react",
               "spec": "^18.3.1",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.25.3.tgz",
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.29.0.tgz",
               "name": "zod",
               "spec": "^4.4.3",
               "kind": "peer"
@@ -1786,9 +1798,9 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:4c23d27c7216d8a1b626f258a080d2a03a158a87e2f1d042817eec24e7e67ef3",
+          "digest": "sha256:75f8edfae0c425943ebea3691e39f7b8d7eaa390570be62c23b5bf6e2eb9d44a",
           "nodes": 448,
-          "edges": 2032,
+          "edges": 2034,
           "unresolved": 0,
           "optionalUnavailable": 61,
           "optionalUnavailableDependencies": [
@@ -1986,8 +1998,8 @@
             }
           ],
           "pluginPeerContracts": {
-            "declared": 3,
-            "satisfied": 3,
+            "declared": 5,
+            "satisfied": 5,
             "mismatched": 0,
             "indeterminate": 0,
             "missing": 0,
@@ -2007,6 +2019,20 @@
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
+                "name": "@deepseek-ai/dsh-settings",
+                "required": "^0.1.0-rc.7",
+                "status": "satisfied",
+                "staticUsage": "runtime-import-observed",
+                "resolvedVersion": "0.1.1-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/schemastery",
+                "required": "^3.18.1",
+                "status": "satisfied",
+                "staticUsage": "runtime-import-observed",
+                "resolvedVersion": "3.18.1"
+              },
+              {
                 "name": "zod",
                 "required": "^4.4.3",
                 "status": "satisfied",
@@ -2024,13 +2050,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "cost-meter-node22",
       "targetId": "cost-meter",
-      "plugin": "dsh-cost-meter@1.5.38",
+      "plugin": "dsh-cost-meter@1.5.42",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -2039,20 +2065,20 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:c9894f07bef9641738e29dbe5ba72753c15d15e4d5edf1a1ee4c801f8336f697",
-      "contractFingerprint": "sha256:84506f43356b736aaa61d1f90a1200fc4fc3094217304f0ea93762ce5d6901ce",
-      "observedAt": "2026-08-23T11:53:31.756Z",
+      "staticFingerprint": "sha256:616b81e00e3e803a29fcf217e90b59a082049cd498c4235d8f0743f7ffc9f418",
+      "contractFingerprint": "sha256:e936ffa1bab75264b35f7c93fc7926dd9fd18dc5e16d8d5be0bf17f622c32a5e",
+      "observedAt": "2026-08-24T04:45:28.561Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "304947c31e0c00fa21a25cdc9c2211bd02656c98d2fec9dd425c4e8aa5707bcb"
+        "sha256": "cdbcd1b9a85261e9c45c69ee680f052c6ae5d4688382f91180b404a63485cd7d"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "e7d5393465dd40ad4b87eabbb442366f877286a5b9c36872f7226effec79a1e6",
+          "sha256": "c9c44134776c57b464d02bc99c3c4264b921cb2d35b0e3685f89f4bf0720eb75",
           "bytes": 1800,
-          "graphDigest": "sha256:663c587d82b8827202e35786873369949b994d1d0605e36736b22d66ec38abb4",
+          "graphDigest": "sha256:68ae83f31ad66eb384a8de7b39a8eef707771daa51755ffbad2b9c72f82ccc8b",
           "nodes": 5,
           "edges": 4,
           "unresolved": 5,
@@ -2090,7 +2116,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:52cfbdf25848c42dd9c948b77e07f731bff6152a86e24a709350676ebb7be058",
+          "digest": "sha256:475d5949aee87d7785fe51c63d1187f1ada59f9f74e52d125c2d091225e68388",
           "nodes": 451,
           "edges": 2037,
           "unresolved": 0,
@@ -2306,7 +2332,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -2321,9 +2347,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:e94dbd7692477bdf438a3678e9113393f45ea215c66468cad6e4b00147baa4e3",
+      "staticFingerprint": "sha256:e751a535ed788247c39e88095d79789a52cd21377b3dd70a1f3bbb5b6c8b916f",
       "contractFingerprint": "sha256:bba01825c1c7e94043f3ec94f95f03be8cfd6d2eec0937e970327cab1053fa73",
-      "observedAt": "2026-08-23T11:52:42.792Z",
+      "observedAt": "2026-08-24T04:46:27.798Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -2333,7 +2359,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "de79e0cf92726c7e36f23ea3132aff9234127a0a95490cf62683330b85d24de5",
+          "sha256": "92286aed61b041764d762182fa6329f171fe10d902b24e476fb33304cc4e5fc5",
           "bytes": 2931,
           "graphDigest": "sha256:74d526bd3665b5d30e3aae890f22a4edfb2906f514490c0913c8b5f690d29e11",
           "nodes": 10,
@@ -2349,7 +2375,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:9fc681b134ddb95014b186bf6ab9d985069746a9f70baebe2f9278c23c751c66",
+          "digest": "sha256:dccf0a6b884599ead2227cec5052ca9738df00ab3215d60e5123d5b63248add7",
           "nodes": 456,
           "edges": 2041,
           "unresolved": 0,
@@ -2565,13 +2591,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "deepseek-harness-wallet-node22",
       "targetId": "deepseek-harness-wallet",
-      "plugin": "deepseek-harness-wallet@0.3.1",
+      "plugin": "deepseek-harness-wallet@0.3.2",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -2580,27 +2606,27 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:2e00b453891c50c449f17b4fb8e7be96e6c60fa4b3cda9871685122be41b0a94",
-      "contractFingerprint": "sha256:d15bb159c12a357843b4c22c70849e087524a98413612fcbbd23c17534697071",
-      "observedAt": "2026-08-23T11:52:31.355Z",
+      "staticFingerprint": "sha256:df88d328281c9f2a94b63a6cb8928bc6eadaa29ecafd50675705412b17e29765",
+      "contractFingerprint": "sha256:7d9acc8287eecda97be67fa160f98ae3211094989626b2616a08de01096a8d57",
+      "observedAt": "2026-08-24T04:46:29.311Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "079b3dfc1eded70b873d8ae06b6b33ad44f9c735ea976b34a6e11ab8d11ec642",
+        "sha256": "c725216f567684e31b9aa092cf5cfcfe9f8b1f6409236584ef0fa16831aa996b",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "197df89efabbb5fb3261a2d0e56adf62737d9846280772e672161a34a8d951eb",
+          "sha256": "390047e0592af6d2f551a506fe0d58e09ce1835bd8722c218aabc5ac8a26448d",
           "bytes": 794,
-          "graphDigest": "sha256:9d6f9a2a4dfb334d75c2b99d0463bcce39cc1da3bde77aa20c41774d70246906",
+          "graphDigest": "sha256:9b203ce33017c62cb260078b738ed26f56fec9bdc3b918dbe885ecbdb9291acc",
           "nodes": 2,
           "edges": 1,
           "unresolved": 0
         },
         "runtimeGraph": {
-          "digest": "sha256:20cae84ca6d479372abbc709595d74b70699677368970c45c47e78c1e07af5a3",
+          "digest": "sha256:6e182f0eb29595e3e846e0d57bf770e9da2fd7fa13dec68d6626a2de6a2b06fd",
           "nodes": 448,
           "edges": 2029,
           "unresolved": 0,
@@ -2816,13 +2842,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-agency-agents-node22",
       "targetId": "dsh-agency-agents",
-      "plugin": "@michengai/dsh-agency-agents@0.1.20",
+      "plugin": "@michengai/dsh-agency-agents@0.1.21",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -2831,128 +2857,128 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:a2dcd18bfaa7cc0b6cf7c76d067bc462832a8b4a073650e4c375163aa21411d6",
-      "contractFingerprint": "sha256:5de83421c1769db58c14d1ddf0a6cba30c2d4f585e64319ee79b1d19f2ccc328",
-      "observedAt": "2026-08-23T11:53:31.013Z",
+      "staticFingerprint": "sha256:63c6e28768df681e65b35ccd12cdc6de0a9c3f28e889ac4f12778a8e83bd3053",
+      "contractFingerprint": "sha256:444721215e4e804636e779b70c59ba4b041a2321f0cc05599ce97544cc2ec823",
+      "observedAt": "2026-08-24T04:45:52.492Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@^0.1.0-rc.5 was not resolved by the DSH runtime (no-literal-reference-observed)",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "29409d44e1a88550a75b11e8ba528db7b1138103e2393911f77241977838fbaf"
+        "sha256": "8256aba3b054ecf33d9490fb0cafb93447e8f43180a82b0b2fc0df892d739d31"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "5c144fc81f1a7b64042efb28ef8c17d5afd9714d876f93e8dcd278890a7eaf23",
+          "sha256": "ec2f9b05a130fbf16d27af9c1c74297cffb30db82508f87b2b59e4d6c4ef1130",
           "bytes": 1893,
-          "graphDigest": "sha256:86aa65a2d1f61831a024d7013e7a76ee8da509a5d1ee4536c6707331031216a3",
+          "graphDigest": "sha256:b259c0e69dd531cd6b9ab1bda6c41ab5005d0cfe8d0727829069efb215eaddce",
           "nodes": 3,
           "edges": 2,
           "unresolved": 18,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-api-remotes",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-client-connection",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-client-locale",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-client-runtime",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-client-ui-conversation",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-client-ui-input-trigger",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-client-ui-settings",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-client-ui-slots",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-llm",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-settings",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-subagent",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-system-prompt",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-tools",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-typert-protocol",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/dsh-typert-registry",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "@deepseek-ai/schemastery",
               "spec": "^3.18.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.20.tgz",
+              "from": "pnpm:@michengai/dsh-agency-agents@file:../../../artifact/michengai-dsh-agency-agents-0.1.21.tgz",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
@@ -2960,7 +2986,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:45ba7b298e3879fc3b778e4ad4e61ac7994cd97ba76e13888588758f41749900",
+          "digest": "sha256:52cf7adf4797eeecb2a533398c58268a46884e6cd095200b67bc2093cdf003b4",
           "nodes": 449,
           "edges": 2047,
           "unresolved": 1,
@@ -3318,7 +3344,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -3333,9 +3359,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:cead32d43dd76ffd987363d05938845a7c6ebcb24f49653198616158977abfe8",
+      "staticFingerprint": "sha256:3dc38dfa90ea46f348763f65901b6d982d5d6ec0bffaff97787165da4f96fb1c",
       "contractFingerprint": "sha256:0fa6b8f3db939eaaa2a06cf95cf2abde38931c84a8c3ef658361bd4d7e873419",
-      "observedAt": "2026-08-23T11:52:36.151Z",
+      "observedAt": "2026-08-24T04:45:31.755Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -3345,7 +3371,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "893671dec5afbb256ca177f7c89855321c409f6829f664e97afa8dbb720fbd96",
+          "sha256": "ad671365edf9cf805fc7023da6a1ed763499963199554eabd7a8866e7e41a4e8",
           "bytes": 7792,
           "graphDigest": "sha256:92ecd30bb9c67c5ef4f25f66aedd244a36011619f6852f483b969fdaa2ce3d7d",
           "nodes": 31,
@@ -3385,7 +3411,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:667c81c298dc3c7f918efd0e88e372ee0a89e4b7ccb1e5f5185be9d1270ccc52",
+          "digest": "sha256:12f971d618dcd835dccc3046ace40caec8f70950d6ba21890dc097875c9b0755",
           "nodes": 477,
           "edges": 2063,
           "unresolved": 0,
@@ -3601,7 +3627,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -3907,7 +3933,7 @@
     {
       "caseId": "dsh-archive-manager-node22",
       "targetId": "dsh-archive-manager",
-      "plugin": "@michengai/dsh-archive-manager@0.1.12",
+      "plugin": "@michengai/dsh-archive-manager@0.1.14",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -3916,105 +3942,105 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:7980769b00112f645422eb6c7cca75a94efa452160c3798fe239dcab6c25712b",
-      "contractFingerprint": "sha256:0622b5fb41c777338a80807ae9a1c4f03db4cbd69cb9bbbc4b817fcadf1e044e",
-      "observedAt": "2026-08-23T11:52:43.398Z",
+      "staticFingerprint": "sha256:2cb0335797c36107263ea5ca37b1f337b32e7d141e80b9c44d731388c04ef1a6",
+      "contractFingerprint": "sha256:8151dd3f4c4500d4ff128bc27e3147f7f36cd800306f2c11f614708028c032e6",
+      "observedAt": "2026-08-24T04:46:15.360Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@>=0.1.0-rc.5 <0.2.0 was not resolved by the DSH runtime (runtime-import-observed)",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "91bb5f2835cfa401cb3d6127a0db5a76c3f10fb8ada8a029fc976bbf1938e3bc",
+        "sha256": "f8d76d265dbd96e68a777e4b88e06d844a592750abea2559109d9c90486dcf3e",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "6864df29c3ef599655fe3cb31ea65555816124e0b991c81712078f1fee407c47",
+          "sha256": "99d24916e3f0a22fcd807e7aa7fe5c2fe2bb876d905a256f225a43264cdcae30",
           "bytes": 1755,
-          "graphDigest": "sha256:d0ef52aab5e4519930291a7af8bba87fed7ef314099369343c8f01c47cd82c5b",
+          "graphDigest": "sha256:2954bd325d8505de423dc5570f5f254644d5c57717a8f283ed935db5dc683b9a",
           "nodes": 2,
           "edges": 1,
           "unresolved": 14,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.12.tgz",
+              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.14.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.12.tgz",
+              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.14.tgz",
               "name": "@deepseek-ai/dsh-client-connection",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.12.tgz",
+              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.14.tgz",
               "name": "@deepseek-ai/dsh-client-locale",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.12.tgz",
+              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.14.tgz",
               "name": "@deepseek-ai/dsh-client-runtime",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.12.tgz",
+              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.14.tgz",
               "name": "@deepseek-ai/dsh-client-ui-conversation",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.12.tgz",
+              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.14.tgz",
               "name": "@deepseek-ai/dsh-client-ui-primitives",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.12.tgz",
+              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.14.tgz",
               "name": "@deepseek-ai/dsh-client-ui-sidebar",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.12.tgz",
+              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.14.tgz",
               "name": "@deepseek-ai/dsh-client-ui-workspace",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.12.tgz",
+              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.14.tgz",
               "name": "@deepseek-ai/dsh-session",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.12.tgz",
+              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.14.tgz",
               "name": "@deepseek-ai/dsh-session-projection-cache",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.12.tgz",
+              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.14.tgz",
               "name": "@deepseek-ai/dsh-spill-local",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.12.tgz",
+              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.14.tgz",
               "name": "@deepseek-ai/dsh-typert-protocol",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.12.tgz",
+              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.14.tgz",
               "name": "@deepseek-ai/dsh-typert-registry",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.12.tgz",
+              "from": "pnpm:@michengai/dsh-archive-manager@file:../../../artifact/michengai-dsh-archive-manager-0.1.14.tgz",
               "name": "@deepseek-ai/dsh-workspace",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
@@ -4022,7 +4048,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:f8061d411f462ad23b7e959354d9f90c9ab643e6458f4c7e4545308bb56d1dbe",
+          "digest": "sha256:65c22faed39f3df9f9492cdb98a6c24d5d83c21de7b75401a8962c1a30dda1f3",
           "nodes": 448,
           "edges": 2042,
           "unresolved": 1,
@@ -4352,7 +4378,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -6105,9 +6131,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:c80bbbf0143968229d635703c8fede5969d51af6f27c535c755c421ae4afe434",
+      "staticFingerprint": "sha256:e6596e491bd540a78f5b1801b565473d09462a45485614c215415e44a4099c07",
       "contractFingerprint": "sha256:e201e5736c57960f85cad43db5592c5a05d03a9a2c7f191ff622456eaeeed565",
-      "observedAt": "2026-08-23T11:52:39.089Z",
+      "observedAt": "2026-08-24T04:45:33.785Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -6117,7 +6143,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "36be7de7b980894e08636e9220c9cd8012ad77501e27c2c69f367f51306b8c21",
+          "sha256": "3050fa3cd522389ecc97ab0a727f5458a6e1f5305c83d08f46ef270b4d1c9a06",
           "bytes": 3734,
           "graphDigest": "sha256:f5c161a8961b55263f499e1ba0bc3acee3f893f08da239923c9e979a17809fd7",
           "nodes": 14,
@@ -6133,7 +6159,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:19e7b29c4688ce1c168c8e1eea4c9f9ce30712357045a1584d2bf8fbcf45dd3d",
+          "digest": "sha256:55438e95065c3ea702d111094b595c0fa26bb9de5e89b07c2cbf831a59265964",
           "nodes": 460,
           "edges": 2043,
           "unresolved": 0,
@@ -6349,7 +6375,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -6680,7 +6706,7 @@
     {
       "caseId": "dsh-catppuccin-node22",
       "targetId": "dsh-catppuccin",
-      "plugin": "@nonamelego/dsh-catppuccin@0.2.10",
+      "plugin": "@nonamelego/dsh-catppuccin@0.3.1",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -6689,28 +6715,28 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:40f0a1fc3707f0d573a455e9ca180ec1d71c4da655a274c7aa1761b2b54770ea",
-      "contractFingerprint": "sha256:2849950927821a976eea8a3b9fa6c3222afe575a09e65a29c40587e62ed6028e",
-      "observedAt": "2026-08-23T11:52:38.445Z",
+      "staticFingerprint": "sha256:5c437eab84add8d8724d7a753a6d0dd55d02617b0652c91ca4190f38f4d14aae",
+      "contractFingerprint": "sha256:1a8f1aa405409f2d79efeed2e6b534cd9f7c82ebfa8e19e86e78b1567a8a8fbe",
+      "observedAt": "2026-08-24T04:45:32.811Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [
           "prepare"
         ],
-        "sha256": "dd1d7e25b54783543452ce3f057e1b7c6460dbd5ff47331eecee9e2a7e548a95"
+        "sha256": "5380f1274127237971f340294f5c8dfe80942535856cf7f113daccb6f5d7e27d"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "74ef2ec87c10b2a8cd21cc49ffa18b07a6b0802d8e07410daf92bb39e23fa62b",
-          "bytes": 826,
-          "graphDigest": "sha256:2fd538bac1b62499baa64086f2ef77c47c0b315cdb67e20483a9ef987c9536c3",
+          "sha256": "5c64d63cd2641bc41e93ba42dc7adb4c255960cc52da111d996b42faebf643ce",
+          "bytes": 820,
+          "graphDigest": "sha256:d0c6d4b784e008835ccf2c673e38ae1dcc012e0eba0f30428f0ace94e658f68c",
           "nodes": 2,
           "edges": 1,
           "unresolved": 1,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:@nonamelego/dsh-catppuccin@file:../../../artifact/nonamelego-dsh-catppuccin-0.2.10.tgz",
+              "from": "pnpm:@nonamelego/dsh-catppuccin@file:../../../artifact/nonamelego-dsh-catppuccin-0.3.1.tgz",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
@@ -6718,7 +6744,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:75fe56cd4a4d4578ac83cbad372c6e6a26ea6101b63adb4ba04697c7fcca66b3",
+          "digest": "sha256:396cfd131c5f9ea9cf763c266ffe6cd69f60d13e1daddf6e4cc8577843f57da0",
           "nodes": 448,
           "edges": 2030,
           "unresolved": 0,
@@ -6942,13 +6968,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-chat-import-node22",
       "targetId": "dsh-chat-import",
-      "plugin": "dsh-chat-import@0.6.2",
+      "plugin": "dsh-chat-import@0.7.0",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -6957,51 +6983,51 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:83e151e195b3be2b98aecb13cd862d13332b47e95e47bcae8f2e6b702a1cb2aa",
-      "contractFingerprint": "sha256:2ddcfcdd13a6fa7873279710509812fc3963e92b4a3d67acd1251684f06f3f2f",
-      "observedAt": "2026-08-23T11:52:39.034Z",
+      "staticFingerprint": "sha256:882b4f2a298966f4e96eb27c19d609db90b56e0af3c7c7d623226e4c7afb34c3",
+      "contractFingerprint": "sha256:757955e31c7a38fe09927827c8d285388d0f21d547f03c615387847b6f1cbb70",
+      "observedAt": "2026-08-24T04:45:35.663Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "cdaa8b5ec0579409805acf4cdbac8fe144722628936bb007699641e9401b3a78",
+        "sha256": "b2844a071606701f471518a6884a218864f5d9bd76ef4ee8bab3bdf97db3a22f",
         "nodeEngine": ">=22.13"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "ae549e7c943472c6bad8f239852e375347de08066d5f88efac513e05cb812f89",
+          "sha256": "9c7091e1d81c090bdcf24309756c4ffe00356da9073c09a4ca5957464513b15f",
           "bytes": 1155,
-          "graphDigest": "sha256:0069777f00977159bbc410c30925e8aac493488d11082c8448a0272b387f0779",
+          "graphDigest": "sha256:925a64100ec25bc5b0f76a1164b3b0cce78141c967a104ef76d399a6f203d9ff",
           "nodes": 3,
           "edges": 2,
           "unresolved": 5,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-chat-import@file:../../../artifact/dsh-chat-import-0.6.2.tgz",
+              "from": "pnpm:dsh-chat-import@file:../../../artifact/dsh-chat-import-0.7.0.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-chat-import@file:../../../artifact/dsh-chat-import-0.6.2.tgz",
+              "from": "pnpm:dsh-chat-import@file:../../../artifact/dsh-chat-import-0.7.0.tgz",
               "name": "@deepseek-ai/dsh-client-locale",
               "spec": ">=0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-chat-import@file:../../../artifact/dsh-chat-import-0.6.2.tgz",
+              "from": "pnpm:dsh-chat-import@file:../../../artifact/dsh-chat-import-0.7.0.tgz",
               "name": "@deepseek-ai/dsh-tools",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-chat-import@file:../../../artifact/dsh-chat-import-0.6.2.tgz",
+              "from": "pnpm:dsh-chat-import@file:../../../artifact/dsh-chat-import-0.7.0.tgz",
               "name": "@deepseek-ai/schemastery",
               "spec": ">=3.0.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-chat-import@file:../../../artifact/dsh-chat-import-0.6.2.tgz",
+              "from": "pnpm:dsh-chat-import@file:../../../artifact/dsh-chat-import-0.7.0.tgz",
               "name": "react",
               "spec": ">=18.0.0",
               "kind": "peer"
@@ -7009,7 +7035,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:cd4c749897e87530e25435e751e3a11aa8da36b081238a849e8aefc9d06aabf9",
+          "digest": "sha256:52b8addae72607b595018b866c448ff4831bf7a64527b3fbe9ace0d6bb869d04",
           "nodes": 449,
           "edges": 2035,
           "unresolved": 0,
@@ -7261,7 +7287,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -7823,7 +7849,7 @@
     {
       "caseId": "dsh-codex-connect-node22",
       "targetId": "dsh-codex-connect",
-      "plugin": "dsh-codex-connect@0.1.0-alpha.4.14",
+      "plugin": "dsh-codex-connect@0.1.0-alpha.4.18",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -7832,141 +7858,141 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:a9a74eacaa99e76191fb0c8caf5ab4e2d8eb691214efa7d47e744dac8a30e5ef",
-      "contractFingerprint": "sha256:fe58c2784d368c2e6654e558135d1210a5b97623fe1e259790594bd076b08840",
-      "observedAt": "2026-08-23T11:52:33.312Z",
+      "staticFingerprint": "sha256:493583f424aacb823af40591e0476734e73359116dc9d7b6bd86d07dc4f92e52",
+      "contractFingerprint": "sha256:653a0c17de90f32ec5dc9b7784ba4dc921e5abd75fb63df1811b1dec5d96e4ce",
+      "observedAt": "2026-08-24T04:45:31.880Z",
       "result": "peer-contract-incompatible",
-      "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-agent@0.1.1-rc.2 does not satisfy 0.1.0-rc.7 (type-only-reference-observed)",
+      "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@0.1.1-rc.2 was not resolved by the DSH runtime (runtime-import-observed)",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "2ec91e9e5515940f9bd9d81885d9c1121c31c5573153c503a7794a3ae85456e7",
+        "sha256": "dfce834a66e9d83bdaf8d16dd2e660213ac44ffd5be962a494e23c5527bb6121",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "b798f26920faee979acd827f77c7a4a7134e42e2030ca8e197c70198985cd7a6",
-          "bytes": 1758,
-          "graphDigest": "sha256:e7052afe2785fc16ac7a8d58122fdce74db411c68bd3df55c41434bd5f973c05",
+          "sha256": "6181336c58b4f5f8c60b786e3c8553f927c592182933d78304a43a024d312e89",
+          "bytes": 1754,
+          "graphDigest": "sha256:79253428f06bab401c7513f0721dffb1d1d88f0d152ec35a74accf5fa716e194",
           "nodes": 2,
           "edges": 1,
           "unresolved": 20,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1-rc.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-agent",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-atomic-write",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-attachment",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
-              "name": "@deepseek-ai/dsh-client-ui-attachment",
-              "spec": "0.1.0-rc.7",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
+              "name": "@deepseek-ai/dsh-client-ui-layout",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-client-ui-primitives",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-client-ui-tool",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-fs",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-home-paths",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-host-webserver",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-invariants",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-llm",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-llm-pi-ai",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-session",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-settings",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-tools",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/dsh-web",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@deepseek-ai/schemastery",
               "spec": "^3.18.1-rc.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "@earendil-works/pi-ai",
               "spec": "0.82.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.14.tgz",
+              "from": "pnpm:dsh-codex-connect@file:../../../artifact/dsh-codex-connect-0.1.0-alpha.4.18.tgz",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
@@ -7974,7 +8000,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:8d7b751093443d3a2abe8735da166ec4f814221e31e229f68058534327e0facb",
+          "digest": "sha256:9ccd18d867bc221289cf3bd34a0b249caad21edb90f76595f1a7f1e98c8bfd03",
           "nodes": 448,
           "edges": 2048,
           "unresolved": 1,
@@ -7982,7 +8008,7 @@
             {
               "from": "node_modules/dsh-codex-connect",
               "name": "@deepseek-ai/dsh-client-ui-primitives",
-              "spec": "0.1.0-rc.7",
+              "spec": "0.1.1-rc.2",
               "kind": "peer"
             }
           ],
@@ -8183,8 +8209,8 @@
           ],
           "pluginPeerContracts": {
             "declared": 20,
-            "satisfied": 4,
-            "mismatched": 15,
+            "satisfied": 19,
+            "mismatched": 0,
             "indeterminate": 0,
             "missing": 1,
             "relations": [
@@ -8197,112 +8223,112 @@
               },
               {
                 "name": "@deepseek-ai/dsh-agent",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
                 "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-atomic-write",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
                 "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-attachment",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
                 "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
-                "name": "@deepseek-ai/dsh-client-ui-attachment",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "runtime-import-observed",
+                "name": "@deepseek-ai/dsh-client-ui-layout",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
+                "staticUsage": "no-literal-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-client-ui-primitives",
-                "required": "0.1.0-rc.7",
+                "required": "0.1.1-rc.2",
                 "status": "missing",
                 "staticUsage": "runtime-import-observed"
               },
               {
                 "name": "@deepseek-ai/dsh-client-ui-tool",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
                 "staticUsage": "no-literal-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-fs",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
                 "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-home-paths",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
                 "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-host-webserver",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
                 "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-invariants",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
                 "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-llm",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
                 "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-llm-pi-ai",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
                 "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-session",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
                 "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-settings",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
                 "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-tools",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
                 "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-web",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
+                "required": "0.1.1-rc.2",
+                "status": "satisfied",
                 "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
@@ -8330,115 +8356,10 @@
             ],
             "issues": [
               {
-                "name": "@deepseek-ai/dsh-agent",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "type-only-reference-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-atomic-write",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "runtime-import-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-attachment",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "runtime-import-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-client-ui-attachment",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "runtime-import-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
                 "name": "@deepseek-ai/dsh-client-ui-primitives",
-                "required": "0.1.0-rc.7",
+                "required": "0.1.1-rc.2",
                 "status": "missing",
                 "staticUsage": "runtime-import-observed"
-              },
-              {
-                "name": "@deepseek-ai/dsh-client-ui-tool",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "no-literal-reference-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-fs",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "type-only-reference-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-home-paths",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "runtime-import-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-host-webserver",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "type-only-reference-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-invariants",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "type-only-reference-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-llm",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "runtime-import-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-llm-pi-ai",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "runtime-import-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-session",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "type-only-reference-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-settings",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "runtime-import-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-tools",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "runtime-import-observed",
-                "resolvedVersion": "0.1.1-rc.2"
-              },
-              {
-                "name": "@deepseek-ai/dsh-web",
-                "required": "0.1.0-rc.7",
-                "status": "mismatched",
-                "staticUsage": "runtime-import-observed",
-                "resolvedVersion": "0.1.1-rc.2"
               }
             ]
           },
@@ -8451,13 +8372,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-codex-subscription-node22",
       "targetId": "dsh-codex-subscription",
-      "plugin": "dsh-codex-subscription@1.4.0",
+      "plugin": "dsh-codex-subscription@1.5.0",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -8466,141 +8387,141 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:c8a9f949a200096c5fba1f250844f2ebc7b4a2ead8b0cd881969e0fcc442addd",
-      "contractFingerprint": "sha256:8ff9337cdc39d662619a43bfcc27775a1dcf4a9b4f4de69ff4460c61380f20f8",
-      "observedAt": "2026-08-23T11:53:37.613Z",
+      "staticFingerprint": "sha256:8cc5640d4dbde38fd8570c818e4be1d0c3b8b3074d1b8e085b06d33ab385117d",
+      "contractFingerprint": "sha256:ff64b1129bdb1d5520f34396a306791e45da244f16c88ea8d1985ed8143ec9bf",
+      "observedAt": "2026-08-24T04:45:28.223Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2 was not resolved by the DSH runtime (runtime-import-observed)",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "77b2edd18400314df846e9a59c42ce80a7e9d9aa6920a59ded7e08a05e9321c2",
+        "sha256": "53d8c710079f7a003660ca3696d89d20027b5078132da2eb272a7a8ffea2d898",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "8cfae30cc25d476758ceb8d092431c4d0dbab3ecab5e1f811593706f37f96ba7",
+          "sha256": "15c104dfc4527d9e0dddbd6e317907b5d7fd30b822f866bb92373c926a523be0",
           "bytes": 2655,
-          "graphDigest": "sha256:0948b3be0430ee9ea9ed99305a203e0a5a64d1e988dc113fcf62dfb34f62bf97",
+          "graphDigest": "sha256:ada27f4765dcd508da2c56355b5292a5ba440f6ec488f1179903ce97d1e91fe0",
           "nodes": 2,
           "edges": 1,
           "unresolved": 20,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-api-remotes",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-client-connection",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-client-locale",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-client-runtime",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-client-ui-conversation",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-client-ui-model-selection",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-client-ui-primitives",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-client-ui-settings",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-client-ui-slots",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-client-ui-tool",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-credentials",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-llm",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-llm-pi-ai",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-settings",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-tools",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/dsh-web",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@deepseek-ai/schemastery",
               "spec": "3.18.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "@earendil-works/pi-ai",
               "spec": "0.82.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.4.0.tgz",
+              "from": "pnpm:dsh-codex-subscription@file:../../../artifact/dsh-codex-subscription-1.5.0.tgz",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
@@ -8608,7 +8529,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:f23eff122047ef5b8ff02cafb6c8cae35a9fbd3eb612e3a1746b7759bd12b86e",
+          "digest": "sha256:d0c66fa2d96b15fd62c6adbbb283bc929a39eb54792ac65eb609a8caa33fe9bc",
           "nodes": 448,
           "edges": 2047,
           "unresolved": 2,
@@ -8991,7 +8912,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -9930,7 +9851,7 @@
     {
       "caseId": "dsh-config-manager-node22",
       "targetId": "dsh-config-manager",
-      "plugin": "dsh-config-manager@0.1.45",
+      "plugin": "dsh-config-manager@0.1.51",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -9939,117 +9860,117 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:35497ad5645980f15bbbb2e07fe1f63e57de92840cce67c5bd6e5fc27878c245",
-      "contractFingerprint": "sha256:ebf1161bb3a72b4ac16c49213cf8341d231b9ac6888b73fd4c67a9a0224ea9e7",
-      "observedAt": "2026-08-23T11:52:39.341Z",
+      "staticFingerprint": "sha256:55070008e1790bb11b651ca5bb177dc9f68b2a361c221947def617a9086502c3",
+      "contractFingerprint": "sha256:d69f128f28f9e23342afb60bee49d43280b687d00bbea5ddc8ee105b095c4c84",
+      "observedAt": "2026-08-24T04:45:29.304Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@^0.1.0-rc.6 was not resolved by the DSH runtime (runtime-import-observed)",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "765e3f3fbc62e6519ee357f326a0b74e323ca55c11773b33f5aea863453783f9",
+        "sha256": "6a88c92b97e42b777a60f26758c5178a04461ada5e859af702e6775a42eecb3b",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "ff15c5c57d6b39c5df5508e66859a7500c9d7e979d093a596c26971eae2b4ad0",
+          "sha256": "653056091cebee42f3f20e83ba2575b6304e4bc56cf4dce2c871dc35e55bcd72",
           "bytes": 1986,
-          "graphDigest": "sha256:c710bfab2da286269de1ac02a90e7f344977095135a3d5693e3655820da7b07b",
+          "graphDigest": "sha256:384557c55a740575422a34e55a93b27a785cae3dcc442cc84badb45b4f134a4c",
           "nodes": 4,
           "edges": 3,
           "unresolved": 16,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "@deepseek-ai/dsh-agent-presets",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "@deepseek-ai/dsh-client-connection",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "@deepseek-ai/dsh-client-locale",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "@deepseek-ai/dsh-client-runtime",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "@deepseek-ai/dsh-client-ui-settings",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "@deepseek-ai/dsh-client-ui-slots",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "@deepseek-ai/dsh-credentials",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "@deepseek-ai/dsh-home-paths",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "@deepseek-ai/dsh-host-plugin-inventory",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "@deepseek-ai/dsh-host-webserver",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "@deepseek-ai/dsh-llm",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "@deepseek-ai/dsh-settings",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "@deepseek-ai/dsh-system-prompt",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "@deepseek-ai/dsh-tools",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.45.tgz",
+              "from": "pnpm:dsh-config-manager@file:../../../artifact/dsh-config-manager-0.1.51.tgz",
               "name": "react-dom",
               "spec": "^18.2.0",
               "kind": "peer"
@@ -10057,7 +9978,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:29ea5f6c9590360cc67ddfb85c13b9e172978e2cc74d61e42b637d3660fd0a83",
+          "digest": "sha256:cd24e4bd70c7dd94eca0a16a7d3eb0ff04aed87432124fc85c2a7177111233fa",
           "nodes": 450,
           "edges": 2046,
           "unresolved": 1,
@@ -10365,7 +10286,7 @@
                 "name": "@deepseek-ai/dsh-tools",
                 "required": "^0.1.0-rc.6",
                 "status": "satisfied",
-                "staticUsage": "no-literal-reference-observed",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
@@ -10408,13 +10329,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-crew-node22",
       "targetId": "dsh-crew",
-      "plugin": "dsh-crew@0.9.0",
+      "plugin": "dsh-crew@0.10.0",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -10423,27 +10344,27 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:6176ba1e15836f30a62e307c52f4572d1cec8b5f62b165f5b07d80f60edbe036",
-      "contractFingerprint": "sha256:2e4a9f9c7af8d9220b7aa571e4ad9f6af765c54bb5ca9eb8287e2e6e5ee905bd",
-      "observedAt": "2026-08-23T11:53:30.712Z",
+      "staticFingerprint": "sha256:473db46a14e5a92be88c18ae2e5a833c11251c8492fc1037d5a028545a84bd22",
+      "contractFingerprint": "sha256:6c86be6629d93a9e74e7e6b539e15d8d047e423ee5b055ca4e4ea41c383bc7e1",
+      "observedAt": "2026-08-24T04:45:29.188Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "a41c509589d5b16180627c39f2bc533a5a8131d7d6b85b0c01c70deb8e419b22",
+        "sha256": "1749c966f178c41cd6017bad7fabba84036b724a01216d83dc3c87273a493f26",
         "nodeEngine": ">=18"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "3fac7e0b424eeecf3c16bad10a1440ae6d5e5286faa931f004577803d2afd5f6",
-          "bytes": 726,
-          "graphDigest": "sha256:2f0ea82a739e1a0969fd16a6f3f5fe5f38697d70ea5f18f7782a2547815d6f13",
+          "sha256": "4426496bde733c747c41ccc156dc60ff48af8ae5722c5daad89053bad3f61e35",
+          "bytes": 732,
+          "graphDigest": "sha256:6facf13c0c5b10bc2987bda2154c16c77c42438d8d3a80b2bb723c2e18f7fe9f",
           "nodes": 2,
           "edges": 1,
           "unresolved": 1,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-crew@file:../../../artifact/dsh-crew-0.9.0.tgz",
+              "from": "pnpm:dsh-crew@file:../../../artifact/dsh-crew-0.10.0.tgz",
               "name": "@deepseek-ai/dsh-tool-subagent",
               "spec": "*",
               "kind": "peer"
@@ -10451,7 +10372,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:1e11944319943e71466909d17d920a36877b74bff0a27686e43717f7f8f6b972",
+          "digest": "sha256:cba46bf701aa854bc94ac0e6d58388c9d6ff4a46e5e7b176d8eb532a1e106671",
           "nodes": 448,
           "edges": 2030,
           "unresolved": 0,
@@ -10675,7 +10596,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -11649,9 +11570,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:9abcd057070a00ff9042639c4c02e366cf72c98c601ce63a6f64eb4c0b8bdd5a",
+      "staticFingerprint": "sha256:d2a10936b1ce62b89a7884b2521afaa61ded8ea396d5ca1fef20ea6685ed8672",
       "contractFingerprint": "sha256:470e34e4c25fd5c0bc02ee53d6aba033acb744b39843461eec12202e3ba284c1",
-      "observedAt": "2026-08-23T11:52:34.532Z",
+      "observedAt": "2026-08-24T04:45:25.128Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -11661,7 +11582,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "098c97e9b882558f0cd95e182fe31dcddea54284fad83e322977c98a3717dcde",
+          "sha256": "ed343b18ba3961a9ceef13e2a95d717e33419dd1a390df9409e667101d945033",
           "bytes": 1074,
           "graphDigest": "sha256:ffcc752079c6a1df981381279b0828bb7f7c7647cb2be0163677005111d130e3",
           "nodes": 2,
@@ -11713,7 +11634,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:42bad91baefe2b52c650e292b51c30577adecad1e0ab1258b63f56c713ead9a5",
+          "digest": "sha256:a8ccdf0ee033998b62228fbf181297e9aa9f3ad159880bedc3b2d481b1d1e72e",
           "nodes": 448,
           "edges": 2036,
           "unresolved": 0,
@@ -11979,7 +11900,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -14820,7 +14741,7 @@
     {
       "caseId": "dsh-im-connect-node22",
       "targetId": "dsh-im-connect",
-      "plugin": "@michengai/dsh-im-connect@0.1.19",
+      "plugin": "@michengai/dsh-im-connect@0.1.23",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -14829,33 +14750,33 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:453eb1015c25cc3c579f396dadd1e0d00a35bafe9a4a1f7069c3b3b2cb449f4f",
-      "contractFingerprint": "sha256:d15d9fec640f650f7ec013b3bc7c5b9c3058eec2b6a5a3c2feb8b81207f3f42b",
-      "observedAt": "2026-08-24T02:43:09.125Z",
+      "staticFingerprint": "sha256:26e1b112aaa226f4677df40f685dbd88acc8639d39df7f9999a5b258a7f5c791",
+      "contractFingerprint": "sha256:281d5875839b285f7a5263bd3a71436a798520c098f62a0d84090a6164374b54",
+      "observedAt": "2026-08-24T04:45:33.368Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "12019a012979f9305055b7db893ecb5054183fb1589872576d28ce103dff8af1",
+        "sha256": "167cb11911bc56be04d9f7c5e999780268d2b3aaabc1b5b93ddaf24390fec45f",
         "nodeEngine": ">=22.19"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "3252333ab13d29548f8258f32663320ec3317ee06e18eef25f3cd02817717a9f",
+          "sha256": "e1aac2c7075baea1f47d05919b87ddbd8997cdf60c1956c7a1a4f6aaa00ada1b",
           "bytes": 22679,
-          "graphDigest": "sha256:0c3514a196c2940b045fc5dbbf1db7eef9a54e93e117f823fb8ed3652f00f6c4",
+          "graphDigest": "sha256:57967212834891afb9987d2f220540bb9761d66ff930cf99d7bc8996cb369565",
           "nodes": 88,
           "edges": 126,
           "unresolved": 5,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:@michengai/dsh-im-connect@file:../../../artifact/michengai-dsh-im-connect-0.1.19.tgz",
+              "from": "pnpm:@michengai/dsh-im-connect@file:../../../artifact/michengai-dsh-im-connect-0.1.23.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-im-connect@file:../../../artifact/michengai-dsh-im-connect-0.1.19.tgz",
+              "from": "pnpm:@michengai/dsh-im-connect@file:../../../artifact/michengai-dsh-im-connect-0.1.23.tgz",
               "name": "@deepseek-ai/schemastery",
               "spec": "^3.18.1",
               "kind": "peer"
@@ -14881,7 +14802,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:d4f4209e1b65361a5b3d49105ddda407b8729f458f7c3f247e0e8d9cd843844c",
+          "digest": "sha256:538e5f246e79dfa105e061ee04f605c4c06ef3cd6155277bb001b415dec451ce",
           "nodes": 534,
           "edges": 2155,
           "unresolved": 0,
@@ -15112,13 +15033,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.42.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-im-node22",
       "targetId": "dsh-im",
-      "plugin": "@xmanrui/dsh-im@1.0.2",
+      "plugin": "@xmanrui/dsh-im@2.0.1",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -15127,21 +15048,21 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:bf7f9cdb70141623e2feb98390daeace13ff33e615c84cada9c4e96e6af3b7c5",
-      "contractFingerprint": "sha256:de478c9e0b4cd0c2d6c9055d8616fd0a6030d93a9e3053d1443436689bdbbe51",
-      "observedAt": "2026-08-23T11:53:34.785Z",
+      "staticFingerprint": "sha256:28167b919da8d9a67427e58fa9dd4c2e5f549dd4beb5251455c078f56611acb6",
+      "contractFingerprint": "sha256:b3cf37cedceff37390c6c7608afda61b6258d40244b9b05e65571117d49d0d84",
+      "observedAt": "2026-08-24T04:45:37.246Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "1fa43e60649e24997f5e0e0f8882e46084f299b6429604e882702cbbcb7db2d4",
+        "sha256": "2f91b9eb9b1839b70c65486174525205a9b65e55c7682443151e7b7d28b5022c",
         "nodeEngine": ">=22.19"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "aeb9ae592068eff4eda72c97de0ad32cb8b46521ecc1d6c2ac26572df38b2057",
+          "sha256": "f55682a139f99855e589778c6e197bf702836cba944d7ec4f3e7c83a919c1e1c",
           "bytes": 17077,
-          "graphDigest": "sha256:513e1cd38f975454b12a404afbaa272f372930fedd4df18b4a5d907c45f157e8",
+          "graphDigest": "sha256:f28d11e9e68c0af8bd65ad3f15b8afcf738165d4e99dba3e546de2e81887f4f3",
           "nodes": 65,
           "edges": 87,
           "unresolved": 5,
@@ -15179,7 +15100,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:1f31e30f6e246e0811f572f7e13e960d17f56d996d4409c40290182acb1a26ea",
+          "digest": "sha256:9da33c5836f26d7abf1764a8c75d64f190ef63706a0fa8a54335ad123c8cc465",
           "nodes": 511,
           "edges": 2114,
           "unresolved": 0,
@@ -15395,13 +15316,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-imagegen-node22",
       "targetId": "dsh-imagegen",
-      "plugin": "@dickpy/dsh-imagegen@1.0.20",
+      "plugin": "@dickpy/dsh-imagegen@1.2.1",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -15410,26 +15331,26 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:1648e56cb8f6e3b41e0f119221665724f1810f13b16e1744b8bc66ab62e19605",
-      "contractFingerprint": "sha256:96e51629bce663792609b58387ea19e0be42712ba33bb518e837e1e947cd330b",
-      "observedAt": "2026-08-23T11:53:35.243Z",
+      "staticFingerprint": "sha256:8e58df89482a9c7ceaf03c25512f06659670c7f5bcf45f769ab8250cad6ce83c",
+      "contractFingerprint": "sha256:062e63d33cf4313ca363b3e0bc55d24aa24e1f517141e4b2912f738131c567d3",
+      "observedAt": "2026-08-24T04:45:34.903Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "b63e9bbfa5a033fd354ba48d6afcddfd8c5df970ea413d3cdbf95647533af998"
+        "sha256": "c10b921759745fdf57c13c49f0c4f9e5cd9df66c136ed40cf5c4a96c27968888"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "24caf9da7ae2c5b61b7fe968ea167b38cb941a0764a27b740f3532af1405cd29",
-          "bytes": 1386,
-          "graphDigest": "sha256:c5cad63a6fd4e01047e07b2ba028ddc7358c4e7404a40b4738e381284505d85d",
+          "sha256": "f01cdde16f4a6d74eaf70023cc5a4d0ea3f8c687b1a3f8d6813856d0c851a97d",
+          "bytes": 1380,
+          "graphDigest": "sha256:7ac9e0403293df7ec64d1287c9bea3e53aa89401a7597009c9c2a8458f4e39df",
           "nodes": 5,
           "edges": 4,
           "unresolved": 0
         },
         "runtimeGraph": {
-          "digest": "sha256:5044e3125a0503a0c83ed21a1be25e4516034203a54d7464a0d2af35af3bf5bc",
+          "digest": "sha256:8e9f355d5ef6b61c16da6d86d24011eb569e258bc610ae9e408cc823db9a76ad",
           "nodes": 451,
           "edges": 2032,
           "unresolved": 0,
@@ -15645,13 +15566,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-market-node22",
       "targetId": "dsh-market",
-      "plugin": "dshmarket@1.19.0",
+      "plugin": "dshmarket@1.21.2",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -15660,34 +15581,34 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:7ae82c170dd2eb389c0523858c6158f8123310f62dafa6a44d1be39f6f55926c",
-      "contractFingerprint": "sha256:ffab3d3828c1189e647a153f468be0b02f6eddd364e8eb9dbc55c1fe04606db8",
-      "observedAt": "2026-08-23T11:53:34.794Z",
+      "staticFingerprint": "sha256:20385c70c9568218ed7255c052b3a5e828ae510fd3a4930b868db5b95cfa7d94",
+      "contractFingerprint": "sha256:ddf1b56f0a1a9d4453eb1e409c57375e0142dfacd3bac4440a8985014a6330b4",
+      "observedAt": "2026-08-24T04:45:40.751Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [
           "prepare"
         ],
-        "sha256": "7428009ef928ebfd23e265c51601404124d249cd83b5bb1b9b1d2ca06fd429d2"
+        "sha256": "45bde925ffc85b0b4181d9665d622b3206939209ea9dd794384f2d190faf3fb7"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "70bf1b4ceb60a46f5183dc3056a4a0dbd410bc6cce9d7412dfc8659db1ddc259",
+          "sha256": "ca922fdef621e36071d6ce996620d3f4eeec61857f822d8664cd3fe987540c6f",
           "bytes": 1488,
-          "graphDigest": "sha256:f47bd0e193393b42219f3d0b531331a2f7a163680d9d5cd1ba35dbf8262f0af2",
+          "graphDigest": "sha256:ac2c8dede3f4baecb9cfa318591e5846b9c75b9cf65ed62bb42408caa70d312b",
           "nodes": 5,
           "edges": 4,
           "unresolved": 2,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dshmarket@file:../../../artifact/dshmarket-1.19.0.tgz",
+              "from": "pnpm:dshmarket@file:../../../artifact/dshmarket-1.21.2.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dshmarket@file:../../../artifact/dshmarket-1.19.0.tgz",
+              "from": "pnpm:dshmarket@file:../../../artifact/dshmarket-1.21.2.tgz",
               "name": "@deepseek-ai/dsh-settings",
               "spec": "^0.1.0-rc.7 || ^0.1.1-rc.2",
               "kind": "optional"
@@ -15695,7 +15616,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:c4f462234d1ad08210ac78afa679e3e2430507cfd7706d5f108d4543ce8b964f",
+          "digest": "sha256:05050e4a22452ed9c543aee1f8c8fb2982c402d9f2bc14811fef541055813c91",
           "nodes": 451,
           "edges": 2033,
           "unresolved": 0,
@@ -15919,7 +15840,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -16201,9 +16122,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:4cbac115311052324ca78252eb2dfd1548d070d1ee1ac732bbe6e4e0a9343efb",
+      "staticFingerprint": "sha256:ba4afd315ccd00612e6fede52a74f2b769b657c2be5e56a0d0d2fbdae566c191",
       "contractFingerprint": "sha256:13a7aeef60d35fd47717316f330bff7d8337b0ed5c3b1965ae829526ae3f56ac",
-      "observedAt": "2026-08-23T11:52:38.395Z",
+      "observedAt": "2026-08-24T04:45:35.036Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -16213,7 +16134,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "630d4738689af076dc604883b843359466946ef1e088bf2861110d1b4ff0aba6",
+          "sha256": "f2bf1849db7bd9f2b6b49ce0919de52a464430b94f4c91c0a17cc3885c0d8e68",
           "bytes": 1037,
           "graphDigest": "sha256:42771d129b32f34b2e471dd7f122139a8b9f86682096aae9b7f45063a1840632",
           "nodes": 2,
@@ -16241,7 +16162,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:d49ab2325a967a0fb8544ca6cdcc1475f2894d46b8f4d49709186edd7d1895ae",
+          "digest": "sha256:9b353677ce2e7c2fd96898b811e3e9848eb2c72ac55d4e94e41cea7ebe36e1d5",
           "nodes": 448,
           "edges": 2032,
           "unresolved": 0,
@@ -16479,13 +16400,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-mneme-node22",
       "targetId": "dsh-mneme",
-      "plugin": "@modusensus/dsh-mneme@0.6.10",
+      "plugin": "@modusensus/dsh-mneme@0.7.0",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -16494,56 +16415,56 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:625d67dfb6a97e74123b023f8502234d38a87de66c6390986e8d9998c09da0dc",
-      "contractFingerprint": "sha256:1b101a729f3eeca6d121e84884534909bed2def0c03e51489a075db83476f36a",
-      "observedAt": "2026-08-24T02:43:07.255Z",
+      "staticFingerprint": "sha256:6a2829902bb61c0cf45d647859c5d2a0a1e8471cfa509d21c3f6ade90ee4147b",
+      "contractFingerprint": "sha256:9e4d922c1e133a65d55e43b463346836725096e34bc89add11e44f7abe7291e7",
+      "observedAt": "2026-08-24T04:45:30.587Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "e60755fea5e92b72a3abe900a5dae11b6064de3d53746e3259bf8a6411c8b669"
+        "sha256": "f57ff049fcb124205026cb9041d2ddafdada602db7d60d4b6caa0646873d6ee3"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "821620d3b962402b41ddbc311fd516e7f0577b0de5a8cd74b25da55dd9823ce1",
-          "bytes": 21631,
-          "graphDigest": "sha256:87250c4530790d396659f51478a6f75860b1b2f586c0851e70daae067760420e",
-          "nodes": 76,
-          "edges": 91,
+          "sha256": "f89d0bdca7438c06237afc15922aaecc843a2972dc88831b95d80516a174dfd2",
+          "bytes": 1028,
+          "graphDigest": "sha256:a1a7157d704a0cc5ab14d8ca4395cad414d51e40daffa146352529e3236308cc",
+          "nodes": 2,
+          "edges": 1,
           "unresolved": 6,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:@modusensus/dsh-mneme@file:../../../artifact/modusensus-dsh-mneme-0.6.10.tgz",
+              "from": "pnpm:@modusensus/dsh-mneme@file:../../../artifact/modusensus-dsh-mneme-0.7.0.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@modusensus/dsh-mneme@file:../../../artifact/modusensus-dsh-mneme-0.6.10.tgz",
+              "from": "pnpm:@modusensus/dsh-mneme@file:../../../artifact/modusensus-dsh-mneme-0.7.0.tgz",
               "name": "@deepseek-ai/dsh-host-webserver",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@modusensus/dsh-mneme@file:../../../artifact/modusensus-dsh-mneme-0.6.10.tgz",
+              "from": "pnpm:@modusensus/dsh-mneme@file:../../../artifact/modusensus-dsh-mneme-0.7.0.tgz",
               "name": "@deepseek-ai/dsh-llm",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@modusensus/dsh-mneme@file:../../../artifact/modusensus-dsh-mneme-0.6.10.tgz",
+              "from": "pnpm:@modusensus/dsh-mneme@file:../../../artifact/modusensus-dsh-mneme-0.7.0.tgz",
               "name": "@deepseek-ai/dsh-system-prompt",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@modusensus/dsh-mneme@file:../../../artifact/modusensus-dsh-mneme-0.6.10.tgz",
+              "from": "pnpm:@modusensus/dsh-mneme@file:../../../artifact/modusensus-dsh-mneme-0.7.0.tgz",
               "name": "@deepseek-ai/dsh-tools",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@modusensus/dsh-mneme@file:../../../artifact/modusensus-dsh-mneme-0.6.10.tgz",
+              "from": "pnpm:@modusensus/dsh-mneme@file:../../../artifact/modusensus-dsh-mneme-0.7.0.tgz",
               "name": "@deepseek-ai/schemastery",
               "spec": "^3.18.1",
               "kind": "peer"
@@ -16551,11 +16472,11 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:d414efaa7098b9d0cc787f8e191d33ad8304632694191d74fe6d0d35add8227f",
-          "nodes": 498,
-          "edges": 2092,
+          "digest": "sha256:f473b5b5ad11ae34132709b944c174a76d4c843fbf559fa75ec91e238e515958",
+          "nodes": 448,
+          "edges": 2035,
           "unresolved": 0,
-          "optionalUnavailable": 81,
+          "optionalUnavailable": 59,
           "optionalUnavailableDependencies": [
             {
               "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-landlock-run@0.1.1/node_modules/@deepseek-ai/node-addon-landlock-run",
@@ -16810,7 +16731,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.42.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -17137,7 +17058,7 @@
     {
       "caseId": "dsh-mobile-node22",
       "targetId": "dsh-mobile",
-      "plugin": "dsh-mobile@0.1.4",
+      "plugin": "dsh-mobile@0.2.0",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -17146,51 +17067,51 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:14c5401b77b73d4de088d4018c9a595c187f320bea28a03c81805113a7ee3021",
-      "contractFingerprint": "sha256:a37d96aa30d0449bf8827d9a99f6e3976f94f3421401fbb90481fcf71c0f91e9",
-      "observedAt": "2026-08-23T11:53:40.415Z",
+      "staticFingerprint": "sha256:bf89db5d9b12c48ddd58173b529c0699a7680bad6c9c70e6f5c55a4292b54d60",
+      "contractFingerprint": "sha256:9090152da813412d686a4ec299e31c4638d60a8dd165296f569344158b54a3c6",
+      "observedAt": "2026-08-24T04:45:31.171Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "12297e5fbd7afccfb1b6d3e9270c614d2cd9cfc619a0642f68f64a20d4935220",
+        "sha256": "38346bfa199d07f563ecfae7291070a90951570f7a8d3cedc8c10745d9b676fe",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "6c5fbaa2b86b2ad29bf97b01917de1ab72f434400edded066d73688aaf7a2bf0",
+          "sha256": "a53fab89f5c4ec7a1582bc0e54ebb448d4ad7fffc5223904694c853c51de2129",
           "bytes": 16920,
-          "graphDigest": "sha256:59feb7f488f4ee80137103e8ad7ffe6a37f05860a4c71dd66319d5a592ab15bd",
+          "graphDigest": "sha256:45254ce7c49fa9f92362e8899b6f8f330bb6283d0eb44daa3dca9bb4e6d4d35f",
           "nodes": 63,
           "edges": 116,
           "unresolved": 5,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-mobile@file:../../../artifact/dsh-mobile-0.1.4.tgz",
+              "from": "pnpm:dsh-mobile@file:../../../artifact/dsh-mobile-0.2.0.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dsh-mobile@file:../../../artifact/dsh-mobile-0.1.4.tgz",
+              "from": "pnpm:dsh-mobile@file:../../../artifact/dsh-mobile-0.2.0.tgz",
               "name": "@deepseek-ai/dsh-commands",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.1-rc.2",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dsh-mobile@file:../../../artifact/dsh-mobile-0.1.4.tgz",
+              "from": "pnpm:dsh-mobile@file:../../../artifact/dsh-mobile-0.2.0.tgz",
               "name": "@deepseek-ai/dsh-host-webserver",
               "spec": "0.1.0-rc.5 || 0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.1-rc.2",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dsh-mobile@file:../../../artifact/dsh-mobile-0.1.4.tgz",
+              "from": "pnpm:dsh-mobile@file:../../../artifact/dsh-mobile-0.2.0.tgz",
               "name": "@deepseek-ai/dsh-llm",
               "spec": "0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.1-rc.2",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dsh-mobile@file:../../../artifact/dsh-mobile-0.1.4.tgz",
+              "from": "pnpm:dsh-mobile@file:../../../artifact/dsh-mobile-0.2.0.tgz",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "optional"
@@ -17198,7 +17119,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:bdb760a8c48c8a6a8e733b12d0e139cbb7d22fcaa567d91c8c7518c8ed42a831",
+          "digest": "sha256:bdf1199b6f8d829c82ed171c970fe18c642aae8772c7301a201ede8bdbc3a2fc",
           "nodes": 509,
           "edges": 2144,
           "unresolved": 0,
@@ -17414,13 +17335,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-movein-node22",
       "targetId": "dsh-movein",
-      "plugin": "dsh-movein@0.12.0",
+      "plugin": "dsh-movein@0.12.1",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -17429,29 +17350,29 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:40d228c12e1cad90f0cff759d554f6c4494b069fb29565c52bbdf75f588a94b0",
-      "contractFingerprint": "sha256:345ebad5a7e598f44dabeb4f2580a545c660ed9ced68a1142e62941e402ac169",
-      "observedAt": "2026-08-23T11:52:33.555Z",
+      "staticFingerprint": "sha256:bbf330da82ee1fe27a36d4774e7a61fa7c59f057220b5ebef5552331953170cf",
+      "contractFingerprint": "sha256:ed5e967fb1903a07b632ed3c3947506686b8a84d1b3ad0d55be51e7e20aa8b59",
+      "observedAt": "2026-08-24T04:45:30.822Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [
           "prepare"
         ],
-        "sha256": "11616acebe1ac58cc3fa9d31c4a1e472f47c443ccc0765fc4dbae8e651408e34",
+        "sha256": "94b431f4e4a24c338373655d32a24248213819c38c134a6773766c3fa08d1cc4",
         "nodeEngine": ">=18"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "ea2f66ee73e399e2062275069fd4f83317fb7c7e5361e6df6c5e526e125283eb",
+          "sha256": "22028bf5526f9d07d5a0cdc8084fe429ba666818f03d13d59190bd63922f403c",
           "bytes": 1019,
-          "graphDigest": "sha256:3b3364d80ec5c456371f40fd9ce7ebdbc38b9d3fe6532fee5d7c642b95e883e0",
+          "graphDigest": "sha256:a230aed08de60accaa8b41dfc9b9096d8beaf9ebf41b25dd47aec0d754260d28",
           "nodes": 3,
           "edges": 2,
           "unresolved": 1,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-movein@file:../../../artifact/dsh-movein-0.12.0.tgz",
+              "from": "pnpm:dsh-movein@file:../../../artifact/dsh-movein-0.12.1.tgz",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "optional"
@@ -17459,7 +17380,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:43c54dc095f5250f00ffb2c84c5f7042d9248faa5b7c71c8077bbf558bd5e7d2",
+          "digest": "sha256:e7df59061a9a632e370d8a342a09256b568cf89d1562e3314ca58d067d92e532",
           "nodes": 449,
           "edges": 2030,
           "unresolved": 0,
@@ -17675,7 +17596,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -17972,7 +17893,7 @@
     {
       "caseId": "dsh-passwords-node22",
       "targetId": "dsh-passwords",
-      "plugin": "dsh-passwords@2.6.0",
+      "plugin": "dsh-passwords@2.6.1",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -17981,21 +17902,21 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:1f609a606cbf28f3305ee6fccb8d7b4f996fb503948a463db8cb110131696531",
-      "contractFingerprint": "sha256:24d91ebf760d9c3ef479ee4e28bc64aef0ce450d0314393f5a43829c4df99dee",
-      "observedAt": "2026-08-23T11:52:37.563Z",
+      "staticFingerprint": "sha256:cd93fca66f2bd030109fd249f0fdc01fa018e89b1799082fd43218a92e54b99d",
+      "contractFingerprint": "sha256:403cfb9180a9ba14887d05c64664854eed01ff451649fbd606d9da826aebcd73",
+      "observedAt": "2026-08-24T04:45:33.315Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "4b4ae6032ddf6f1eda8f24a54f0054a689bb3fb59662a7ed06b7a2f42d11268c",
+        "sha256": "9300bea643a20540c99e9ba854995f63bbc3bf7ffff132766f12fe470e5ed971",
         "nodeEngine": ">=22.5"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "bd28f0aacf8c2099751756d47073ab142f15fc20bada9c789e3a2eb03ebb93cc",
+          "sha256": "1deae08d602959235655e449accc257baec811466f3946af474c47acea477617",
           "bytes": 21245,
-          "graphDigest": "sha256:1632c909743751bbaef3c43f4b64e4a62ce9abd1e9146870507d53eecd37105d",
+          "graphDigest": "sha256:453d58e99e33077f51478052fbd757194d2c92ad6867c1858132edcde62a2de2",
           "nodes": 85,
           "edges": 147,
           "unresolved": 1,
@@ -18009,7 +17930,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:ab6d366e8ae965cfc65b25e4c80cfc5faa78fc6534f61f23da1f4885d7b68712",
+          "digest": "sha256:fabc95c159051c04052d21a3862b9197ba99b503c235385f0a938ac57a9f4ea2",
           "nodes": 531,
           "edges": 2175,
           "unresolved": 0,
@@ -18225,7 +18146,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -18579,7 +18500,7 @@
     {
       "caseId": "dsh-plugin-mall-node22",
       "targetId": "dsh-plugin-mall",
-      "plugin": "@1e0zj/dsh-plugin-mall@0.4.12",
+      "plugin": "@1e0zj/dsh-plugin-mall@0.4.14",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -18588,44 +18509,44 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:b0442604c0affe471b99cae423a81ea982460e21a10623cb1b3a1f427aaafd06",
-      "contractFingerprint": "sha256:abf00272e0a4ba9e334c1d210ee696ef1aa7a4d1b296f659446089a1192c3068",
-      "observedAt": "2026-08-23T11:53:31.957Z",
+      "staticFingerprint": "sha256:afcb4eb87d5084ec61c0d78321d8f8030341c967fcc94b3d037afadf58172450",
+      "contractFingerprint": "sha256:3ae45c4eb810448930bcc470172f8fb901386395813c79e849163f1b26243db8",
+      "observedAt": "2026-08-24T04:45:26.137Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "b68245fb237be968deb9d3a69ba18ad9016266d8c58729632b6167bad9bcb3d1"
+        "sha256": "ffe672efc2618b8bd46dd30b4072574d848ad097272aaef2209d9e2cd660edf8"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "4cbcb5281206e013609d71db82142711f8dbe11a9c685974859d493dab940ffd",
+          "sha256": "fa23b68bd615ea8855c6ff548834650470b5170d3146a7d76bf262b55017a58a",
           "bytes": 1586,
-          "graphDigest": "sha256:08663ac79ae1fd6a40011229897ee2822bc9f4249778aaa820dbbc7e518177bb",
+          "graphDigest": "sha256:a48310bbd005b5562f83fd807b5370a355cea54334746cd3230f3a00bc06eaf9",
           "nodes": 5,
           "edges": 4,
           "unresolved": 4,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:@1e0zj/dsh-plugin-mall@file:../../../artifact/1e0zj-dsh-plugin-mall-0.4.12.tgz",
+              "from": "pnpm:@1e0zj/dsh-plugin-mall@file:../../../artifact/1e0zj-dsh-plugin-mall-0.4.14.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@1e0zj/dsh-plugin-mall@file:../../../artifact/1e0zj-dsh-plugin-mall-0.4.12.tgz",
+              "from": "pnpm:@1e0zj/dsh-plugin-mall@file:../../../artifact/1e0zj-dsh-plugin-mall-0.4.14.tgz",
               "name": "@deepseek-ai/dsh-app-boot",
               "spec": "*",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@1e0zj/dsh-plugin-mall@file:../../../artifact/1e0zj-dsh-plugin-mall-0.4.12.tgz",
+              "from": "pnpm:@1e0zj/dsh-plugin-mall@file:../../../artifact/1e0zj-dsh-plugin-mall-0.4.14.tgz",
               "name": "@deepseek-ai/dsh-tools",
               "spec": "*",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@1e0zj/dsh-plugin-mall@file:../../../artifact/1e0zj-dsh-plugin-mall-0.4.12.tgz",
+              "from": "pnpm:@1e0zj/dsh-plugin-mall@file:../../../artifact/1e0zj-dsh-plugin-mall-0.4.14.tgz",
               "name": "@deepseek-ai/schemastery",
               "spec": "*",
               "kind": "peer"
@@ -18633,7 +18554,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:1d06f0d493a7211df4a52c6949f6eb4c853280555663d5309ae37f3bd2b6fe05",
+          "digest": "sha256:d0734b1d116f4dc5ef84b6f8186608dc3634060d3ceb8ba3e5d211cd8870466c",
           "nodes": 451,
           "edges": 2036,
           "unresolved": 0,
@@ -18878,13 +18799,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-plugin-subscriptions-node22",
       "targetId": "dsh-plugin-subscriptions",
-      "plugin": "dsh-plugin-subscriptions@0.5.0",
+      "plugin": "dsh-plugin-subscriptions@0.5.1",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -18893,58 +18814,56 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:f04779a2ada700a2e425fc4535f95b456527c61237d9ce7c5ee584f686c86baf",
-      "contractFingerprint": "sha256:70054b22f7c869e23884ff5b5b7649a703bcb570bf47b7e1c0733924eb298578",
-      "observedAt": "2026-08-23T11:52:38.729Z",
+      "staticFingerprint": "sha256:5c427f07da366d1683abcf0147ff2ee046c07e39c8d5000b05fdc90f9bbaa903",
+      "contractFingerprint": "sha256:8ae8b404fa0cc6ce129b3a43ee892d6fee940ce36c3b10216b820cd7b9bf82af",
+      "observedAt": "2026-08-24T04:45:29.022Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
-        "lifecycleScripts": [
-          "prepare"
-        ],
-        "sha256": "4355982ecb47bf5da5bf852cdfb88350b840833132091ae52fd37a848bb04f22"
+        "lifecycleScripts": [],
+        "sha256": "5ed95897e27e7d289dc26191dbaa0d51909db1eb3712c658fac2b197b1a9d03b"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "3a1966e2a8f0a1765ce20e5ed0b31cf0ed281af605d1f782333f85fe55b8f343",
+          "sha256": "1fda748fb517f5071009f59357068f57aa638ebfc0b7202477dec8777f298f0a",
           "bytes": 1044,
-          "graphDigest": "sha256:f721a06b5715c0e7b259fcc632a3175039e8d8b7e5288f1d4ca652bb61718269",
+          "graphDigest": "sha256:468470c82107be6be22561cf570cd0e29be57f56ff7d4253e025f5296377de0d",
           "nodes": 2,
           "edges": 1,
           "unresolved": 6,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-plugin-subscriptions@file:../../../artifact/dsh-plugin-subscriptions-0.5.0.tgz",
+              "from": "pnpm:dsh-plugin-subscriptions@file:../../../artifact/dsh-plugin-subscriptions-0.5.1.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-plugin-subscriptions@file:../../../artifact/dsh-plugin-subscriptions-0.5.0.tgz",
+              "from": "pnpm:dsh-plugin-subscriptions@file:../../../artifact/dsh-plugin-subscriptions-0.5.1.tgz",
               "name": "@deepseek-ai/dsh-attachment",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-plugin-subscriptions@file:../../../artifact/dsh-plugin-subscriptions-0.5.0.tgz",
+              "from": "pnpm:dsh-plugin-subscriptions@file:../../../artifact/dsh-plugin-subscriptions-0.5.1.tgz",
               "name": "@deepseek-ai/dsh-home-paths",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-plugin-subscriptions@file:../../../artifact/dsh-plugin-subscriptions-0.5.0.tgz",
+              "from": "pnpm:dsh-plugin-subscriptions@file:../../../artifact/dsh-plugin-subscriptions-0.5.1.tgz",
               "name": "@deepseek-ai/dsh-llm",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-plugin-subscriptions@file:../../../artifact/dsh-plugin-subscriptions-0.5.0.tgz",
+              "from": "pnpm:dsh-plugin-subscriptions@file:../../../artifact/dsh-plugin-subscriptions-0.5.1.tgz",
               "name": "@deepseek-ai/dsh-tools",
               "spec": "^0.1.0-rc.5",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-plugin-subscriptions@file:../../../artifact/dsh-plugin-subscriptions-0.5.0.tgz",
+              "from": "pnpm:dsh-plugin-subscriptions@file:../../../artifact/dsh-plugin-subscriptions-0.5.1.tgz",
               "name": "@deepseek-ai/schemastery",
               "spec": "^3.18.1",
               "kind": "peer"
@@ -18952,7 +18871,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:15fc5b34f1bcc74e04ac876dbc83bc3a3403882a229042270019ff28c5368bad",
+          "digest": "sha256:416df4392aee5a019fa3eb9581e86235bffcedc403bba7f25fb4330e8ed4eb78",
           "nodes": 448,
           "edges": 2035,
           "unresolved": 0,
@@ -19211,13 +19130,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-plugin-vet-node22",
       "targetId": "dsh-plugin-vet",
-      "plugin": "@jieai/dsh-plugin-vet@0.2.5",
+      "plugin": "@jieai/dsh-plugin-vet@0.2.6",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -19226,51 +19145,51 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:47bade3e66403e71a515f5449e744abbef1af20372a1b6f023c1ae6d5166c80a",
-      "contractFingerprint": "sha256:78185aba15bfc671b8e912539e24458be14d25a974fa520cddb85bbe0c5fd8df",
-      "observedAt": "2026-08-23T11:52:39.212Z",
+      "staticFingerprint": "sha256:4514ff0c8df5d4d53c5b494f0d6c72545910172aa9aec3d65da8ec7fcb36b8c7",
+      "contractFingerprint": "sha256:103a93915122c13537be003baf0d88d4ed1e519c1707f7b00696c324898e0847",
+      "observedAt": "2026-08-24T04:45:27.045Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "684610d4e463dec14fa917fcc20494c80a6cb98ae2eeeeab222181932055e999",
+        "sha256": "e6b463bd20f0ab85cea110ee0ad6621d3f261e8005f543c65ba5d576219d15cb",
         "nodeEngine": ">=22.19"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "1295f12789a612a5bcd028474ca1d9348bda774d6638e35a05db57a4dd23edde",
+          "sha256": "8728412fd25235f3daea40b284aaab49aa5300459bcd93f4d9964ffa6447a556",
           "bytes": 2412,
-          "graphDigest": "sha256:a5bc0d71bb42e3fb8d33614097a64bfec2ece36b6e14a0187fa626caaac4ae18",
+          "graphDigest": "sha256:57d7337bb15e1d2bd2244d798b4f91ab2dc540c5d6112028158d35896645617c",
           "nodes": 8,
           "edges": 7,
           "unresolved": 5,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:@jieai/dsh-plugin-vet@file:../../../artifact/jieai-dsh-plugin-vet-0.2.5.tgz",
+              "from": "pnpm:@jieai/dsh-plugin-vet@file:../../../artifact/jieai-dsh-plugin-vet-0.2.6.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@jieai/dsh-plugin-vet@file:../../../artifact/jieai-dsh-plugin-vet-0.2.5.tgz",
+              "from": "pnpm:@jieai/dsh-plugin-vet@file:../../../artifact/jieai-dsh-plugin-vet-0.2.6.tgz",
               "name": "@deepseek-ai/dsh-invariants",
               "spec": "^0.1.1-rc.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@jieai/dsh-plugin-vet@file:../../../artifact/jieai-dsh-plugin-vet-0.2.5.tgz",
+              "from": "pnpm:@jieai/dsh-plugin-vet@file:../../../artifact/jieai-dsh-plugin-vet-0.2.6.tgz",
               "name": "@deepseek-ai/dsh-llm",
               "spec": "^0.1.1-rc.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@jieai/dsh-plugin-vet@file:../../../artifact/jieai-dsh-plugin-vet-0.2.5.tgz",
+              "from": "pnpm:@jieai/dsh-plugin-vet@file:../../../artifact/jieai-dsh-plugin-vet-0.2.6.tgz",
               "name": "@deepseek-ai/dsh-session",
               "spec": "^0.1.1-rc.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@jieai/dsh-plugin-vet@file:../../../artifact/jieai-dsh-plugin-vet-0.2.5.tgz",
+              "from": "pnpm:@jieai/dsh-plugin-vet@file:../../../artifact/jieai-dsh-plugin-vet-0.2.6.tgz",
               "name": "@deepseek-ai/dsh-tools",
               "spec": "^0.1.1-rc.1",
               "kind": "peer"
@@ -19278,7 +19197,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:538eb9964bcaca822b4701bfce688e6be24aaa12d78562d7b8c230a61ec405e6",
+          "digest": "sha256:4aa27ee91538879b2fd684c5fa9803f8f4008f435602f7cee78f3eadc25b5d73",
           "nodes": 454,
           "edges": 2040,
           "unresolved": 0,
@@ -19530,7 +19449,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -20080,7 +19999,7 @@
     {
       "caseId": "dsh-pocket-node22",
       "targetId": "dsh-pocket",
-      "plugin": "dsh-pocket@1.12.3",
+      "plugin": "dsh-pocket@1.13.4",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -20089,27 +20008,27 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:f7629ea46bcf998180e2940710b47526102edfbca13b1df2ad8226a378f3721c",
-      "contractFingerprint": "sha256:6a791303202e3e0bad03e7690ed4772e9cccdefb8d2577e272acbfd3f6edf5bc",
-      "observedAt": "2026-08-23T11:53:37.264Z",
+      "staticFingerprint": "sha256:f75d191c5caf1a010f9ee08177da937677d0f38edf5290736130318fea504b51",
+      "contractFingerprint": "sha256:015a892ac25d0507f3246e2c88c3e7857bfd5b4a972bbd281e1a5d746f24e6de",
+      "observedAt": "2026-08-24T04:46:27.002Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "61cb4d23401b3edf807188749e2856f998b21d0d7d2e91580efbe53a0a6b9ee8",
+        "sha256": "5157262c86b6b39d2b5d0b8715a99891b9f75e7660fa39a21b0ea456636c843a",
         "nodeEngine": ">=22"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "c808389284edd51f8e8f0a0fadd2017a2ee0ee08391ed6e22b985ebcbe4a3a29",
+          "sha256": "81cfea6ceb27217d78751213d21465ac7f0d82f9ab11c8fc831c54264bc10e60",
           "bytes": 7611,
-          "graphDigest": "sha256:e27ee4af522be0392ae536dc4a92a5eeb23aa6710010250e01a67e500473c2a0",
+          "graphDigest": "sha256:9f2b1a521e9fd3b12f4376bf5ffd619efb135979c9a22c4ec0db621e11ebbc07",
           "nodes": 32,
           "edges": 36,
           "unresolved": 1,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-pocket@file:../../../artifact/dsh-pocket-1.12.3.tgz",
+              "from": "pnpm:dsh-pocket@file:../../../artifact/dsh-pocket-1.13.4.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
@@ -20117,7 +20036,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:48ef1ab812b39a2d46e36da946ca128183f3bfc1298d0ce91d6e3712b0ae8263",
+          "digest": "sha256:b92100d951c993ee8017583ca91399fba06b7a2aaa0b1c2f3112cdcf99c75736",
           "nodes": 478,
           "edges": 2065,
           "unresolved": 0,
@@ -20341,13 +20260,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-remote-node22",
       "targetId": "dsh-remote",
-      "plugin": "dsh-remote@0.8.7",
+      "plugin": "dsh-remote@0.8.8",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -20356,20 +20275,20 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:14e286ee6a925d9539e15ad9478e32f40349514d96b79c588416ff0e710bbb2c",
-      "contractFingerprint": "sha256:026ff2fb049e29c19bbc12d2b2ee454dc517347ef184f4e00647959e27b13897",
-      "observedAt": "2026-08-24T02:43:49.693Z",
+      "staticFingerprint": "sha256:4e1036638fdb70a96496b7c87db23beb9bf30bfb611090ed2c883b16f238e23a",
+      "contractFingerprint": "sha256:1ccb72b71d8706cd1c78209380c7d126fba6f1c5d827013b96082f12cffcc0d9",
+      "observedAt": "2026-08-24T04:47:09.180Z",
       "result": "unknown",
       "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 2 required unresolved edge(s)",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "0c3b171a83069ed67b1a75a19333cceb05c16939dd4c216c934f2c1fac7046d1"
+        "sha256": "ccedc839d6038e6f09fe18e028017f30d5e9290c20cbd209ef470f0f7c100804"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "3e5c2a42b23c3f257da8dec8fc60cd8dc2775ff1526110403ee2164830e19f13",
+          "sha256": "5a08ed4243a490ce7769a4b389560261a906ebb109e14571c9bc1b541d71974c",
           "bytes": 47010,
-          "graphDigest": "sha256:7a3a5db5c6633594c52bf157a8801b4ea1e6d9a679304a88d7711bb77854c22b",
+          "graphDigest": "sha256:326cccbe9a25798b428378f64733fc62555f694d484e649d651da96d2535658d",
           "nodes": 176,
           "edges": 349,
           "unresolved": 26,
@@ -20477,43 +20396,43 @@
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-remote@file:../../../artifact/dsh-remote-0.8.7.tgz",
+              "from": "pnpm:dsh-remote@file:../../../artifact/dsh-remote-0.8.8.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-remote@file:../../../artifact/dsh-remote-0.8.7.tgz",
+              "from": "pnpm:dsh-remote@file:../../../artifact/dsh-remote-0.8.8.tgz",
               "name": "@deepseek-ai/dsh-client-runtime",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-remote@file:../../../artifact/dsh-remote-0.8.7.tgz",
+              "from": "pnpm:dsh-remote@file:../../../artifact/dsh-remote-0.8.8.tgz",
               "name": "@deepseek-ai/dsh-client-ui-workspace",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-remote@file:../../../artifact/dsh-remote-0.8.7.tgz",
+              "from": "pnpm:dsh-remote@file:../../../artifact/dsh-remote-0.8.8.tgz",
               "name": "@deepseek-ai/dsh-commands",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-remote@file:../../../artifact/dsh-remote-0.8.7.tgz",
+              "from": "pnpm:dsh-remote@file:../../../artifact/dsh-remote-0.8.8.tgz",
               "name": "@deepseek-ai/dsh-host-webserver",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-remote@file:../../../artifact/dsh-remote-0.8.7.tgz",
+              "from": "pnpm:dsh-remote@file:../../../artifact/dsh-remote-0.8.8.tgz",
               "name": "@deepseek-ai/dsh-system-prompt",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-remote@file:../../../artifact/dsh-remote-0.8.7.tgz",
+              "from": "pnpm:dsh-remote@file:../../../artifact/dsh-remote-0.8.8.tgz",
               "name": "@deepseek-ai/dsh-tools",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
@@ -20533,7 +20452,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:19757eb12ba60909bae077f8730bffe71ac3d28d4dd48aa97873c65d78349e69",
+          "digest": "sha256:baea72c5f0221b99c2665cbbf8d47b3aeafad6b3357874d0e22daee258421495",
           "nodes": 622,
           "edges": 2398,
           "unresolved": 2,
@@ -20813,13 +20732,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.42.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-remote-plugin-node22",
       "targetId": "dsh-remote-plugin",
-      "plugin": "dsh-remote-plugin@0.6.11",
+      "plugin": "dsh-remote-plugin@0.6.12",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -20828,27 +20747,27 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:8374f993167ba0b4671f1149cf4cd82a8e3e0ce00b4e1dee868ad0dbf45ef0a4",
-      "contractFingerprint": "sha256:d6bdeac406b3ed7f8e9b0889d04134f73e392a0afb49945fb90f44e7fcd9a143",
-      "observedAt": "2026-08-23T11:53:29.509Z",
+      "staticFingerprint": "sha256:29937c4d552ce7967c5f499697a15f542bcefc00385e3947434cfd3f3ea8cc33",
+      "contractFingerprint": "sha256:24168b3b877cceb073e8831155c1d89dee482ae27b85c284a61afb66200ff0f8",
+      "observedAt": "2026-08-24T04:45:40.652Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "3eee9f1bbf62527026bd9ca78a21fb2c8afdfbc802a2da4cb5d813f876bc575b",
+        "sha256": "4557525dd4dec3e73680073dfd924006e998e15de4c86a8a2bb4ee03ce68a78d",
         "nodeEngine": ">=18"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "783b3612012295c0bfe5f3417310373cea0b0b72aa3da90d3c63246faf2c5551",
+          "sha256": "0b2be062e893dd00a6b25b23272d3704694e409dfd7b2e2ba8b4bbeaf9a7aa4f",
           "bytes": 738,
-          "graphDigest": "sha256:647fbd3571bfdb5a0b496c01d1910aa0eec9b29a2a7f04595deba91819ed16df",
+          "graphDigest": "sha256:b108ca6b58e09fb03659c1425f308f563d6c9b1434b9418acec80cc1f17d2037",
           "nodes": 2,
           "edges": 1,
           "unresolved": 0
         },
         "runtimeGraph": {
-          "digest": "sha256:8521ec0f8555e5c5322b3922158a289df1b1e4f486b3fd3e641e52f828be2123",
+          "digest": "sha256:c2d919a810ea6c20521e34ec0e272596a097d83e4adc52754b4c396ecb405e58",
           "nodes": 448,
           "edges": 2029,
           "unresolved": 0,
@@ -21064,7 +20983,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -21079,9 +20998,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:984f3b0aba6df64358f5ff4493244d6875ee4e50fbac5c59c974d0f46bcd5a0a",
+      "staticFingerprint": "sha256:5cdc52b6c7eb5516d725568d3930240c39832724e8418a019279976761df199d",
       "contractFingerprint": "sha256:ca9bcf83d353ef32645179706e24c3e08ca9b1b27c36d60ab918261cbd1ac65d",
-      "observedAt": "2026-08-23T11:54:30.424Z",
+      "observedAt": "2026-08-24T04:45:32.151Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -21093,7 +21012,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "c464c6b88ab949331c4df425d85191301451afc987ea528eb429f2eb1bf138e9",
+          "sha256": "d6e17eb627620257d921b5603f47dc1789fb6cf438fb702e20072adefb158654",
           "bytes": 2078,
           "graphDigest": "sha256:87db5925e634eac2a85e786303665d2dc0858c1dd4dbd50ebff9fbebbc91262d",
           "nodes": 2,
@@ -21175,7 +21094,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:d7a1bac5c6b38ca102ad9467bf71a993686433430d46ca85d69dd843091441c7",
+          "digest": "sha256:a2370ce43f2402f5a28b95c1a8ce44bb396018635074d244996693d813376a29",
           "nodes": 448,
           "edges": 2029,
           "unresolved": 0,
@@ -21391,13 +21310,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-skills-manager-node22",
       "targetId": "dsh-skills-manager",
-      "plugin": "@michengai/dsh-skills-manager@0.1.23",
+      "plugin": "@michengai/dsh-skills-manager@0.1.24",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -21406,69 +21325,69 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:20c55c381bbecba93a34e81f77f72c497a56df63ef7a596e848f6aa26eadd058",
-      "contractFingerprint": "sha256:0fc82a517cc2786e404f1dc756fdfc710dba37ccaf5abee01e6f8fcdd2ae9d3c",
-      "observedAt": "2026-08-23T11:54:30.570Z",
+      "staticFingerprint": "sha256:cb9f4d7a460e8624b8ef67d0470d8eae83ca43c88d53f75241bf886e2c69e689",
+      "contractFingerprint": "sha256:fff3e1a491acfd3a732ed57b23eb9fe6d1c13eee8b2c0428496929918805107f",
+      "observedAt": "2026-08-24T04:45:36.246Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@>=0.1.0-rc.0 <0.2.0 was not resolved by the DSH runtime (no-literal-reference-observed)",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "f48d7085bf194b9cad9ab3f106ff42470386556324ba887e8c08a6068bea2b28",
+        "sha256": "0d22316d9ecc4373f2ab597634da9a9a0c8df16c02627c4852024839cdeb283b",
         "nodeEngine": ">=20"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "be003e20c13d0f615bd067234a1fdaf624f1243c1eb3be83dd0986cdf3f8d2ab",
+          "sha256": "1035107d0a57ee98c041da6bd70ece2c2093ce38395519cf785c03bb19a327ba",
           "bytes": 1298,
-          "graphDigest": "sha256:402f18e007578fd2fd092556b9a32cd1b7b8d0d60a2ba339289a7d56499c867d",
+          "graphDigest": "sha256:d36a5e4c35af86a37491622c930a1ece16d0b2ed706eed5d8dafc3b07cb42465",
           "nodes": 2,
           "edges": 1,
           "unresolved": 8,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.23.tgz",
+              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.24.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": ">=4.0.1 <5.0.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.23.tgz",
+              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.24.tgz",
               "name": "@deepseek-ai/dsh-client-locale",
               "spec": ">=0.1.0-rc.0 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.23.tgz",
+              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.24.tgz",
               "name": "@deepseek-ai/dsh-client-runtime",
               "spec": ">=0.1.0-rc.0 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.23.tgz",
+              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.24.tgz",
               "name": "@deepseek-ai/dsh-client-ui-slots",
               "spec": ">=0.1.0-rc.0 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.23.tgz",
+              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.24.tgz",
               "name": "@deepseek-ai/dsh-client-ui-workspace",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.23.tgz",
+              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.24.tgz",
               "name": "@deepseek-ai/dsh-host-webserver",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.23.tgz",
+              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.24.tgz",
               "name": "@deepseek-ai/dsh-skill",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.23.tgz",
+              "from": "pnpm:@michengai/dsh-skills-manager@file:../../../artifact/michengai-dsh-skills-manager-0.1.24.tgz",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
@@ -21476,7 +21395,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:3a492292f8f26feb3d805ec67fd12934df00673ecff21d202d4e44441be42b86",
+          "digest": "sha256:2d8509022a0cb98fe7b624bf6c4c427e4007d84c1b3289904505dd3d41662091",
           "nodes": 448,
           "edges": 2036,
           "unresolved": 1,
@@ -21764,7 +21683,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -22341,7 +22260,7 @@
     {
       "caseId": "dsh-taskboard-node22",
       "targetId": "dsh-taskboard",
-      "plugin": "dsh-taskboard@0.4.5",
+      "plugin": "dsh-taskboard@0.5.0",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -22350,26 +22269,26 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:59e6dff22b0320e649ca1406de864a4a9afaa6cdafe622e669e33c479859856f",
-      "contractFingerprint": "sha256:da9c51a81116ba4268674035a6a6e6dc8d0f6e510a87c7cef95824b332b5e40b",
-      "observedAt": "2026-08-23T11:53:41.897Z",
+      "staticFingerprint": "sha256:d8936d5a18af221a4b4f49f484fc591b748d922c46fbad281f3c4f72816115b5",
+      "contractFingerprint": "sha256:2cf29dccdff4e458d02447c618373bb9537f85cce6169eff11526ac478c4ce0f",
+      "observedAt": "2026-08-24T04:45:32.472Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "01736640c818f6adaa059713f4b97ea76ba3a8f90a4d80207fdf1a8dbb02310c"
+        "sha256": "1218603e033032e7d0c1029248bd7a8e789b31e331cb85bb0f58ebba07299fef"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "07deb4e780ff059ecb81e1aad3e7e8d2ad03246e4219cfd508f619a884e8e2c7",
+          "sha256": "9e3c0e3eeee6f4b40a282cde1313811fc88535beb2c0e2b057ac691359dfd628",
           "bytes": 672,
-          "graphDigest": "sha256:f56e6688526be10067ee560f31a1925a615d8b75ef553501870f33e6b15da9ab",
+          "graphDigest": "sha256:0a4e2e1617b152ce179e2f5aab98246cd3d796fde58752b7d04d7b20c5377aaf",
           "nodes": 2,
           "edges": 1,
           "unresolved": 0
         },
         "runtimeGraph": {
-          "digest": "sha256:1948f06df48fb2fab6bd96bf6307addc4895b79c875b9e7fba6e20574aeaf81c",
+          "digest": "sha256:cfb834b553d03d8ed11972e7549a4ac7483b681bc366f6dc5e7da0bcef39316a",
           "nodes": 448,
           "edges": 2029,
           "unresolved": 0,
@@ -22585,13 +22504,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-tavern-node22",
       "targetId": "dsh-tavern",
-      "plugin": "dsh-tavern@1.9.1",
+      "plugin": "dsh-tavern@1.9.2",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -22600,27 +22519,27 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:16623ff373aab22dabf1ecf1cb908309ce2468c1a5206e7e107660d7ffc5f30a",
-      "contractFingerprint": "sha256:4d4701b539ad194f541cc6222e4e7dfcc961a68bd651a4acb22c671cc78e6065",
-      "observedAt": "2026-08-23T11:53:33.672Z",
+      "staticFingerprint": "sha256:7342a02137236c4bcdc7d4241726ce8dfb2f24226548071248e3cc210261fb90",
+      "contractFingerprint": "sha256:9de47a57da16121170dc91af5548c7e5ef1fbc07ff59f1b59b40a4e1df611ace",
+      "observedAt": "2026-08-24T04:45:35.537Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "8f203c7ad90ae117a49f5df3e26bb144cd178295f00f2c0064407850a5dbab58",
+        "sha256": "c882e62d993a4056286fa8b196dcb3afaa3f5ffce4c2293b5e80128db13b80bc",
         "nodeEngine": ">=22.5"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "c97a3436f2995b08f778d7deffc7b6cebf1048324e5ba5c507a61c5c0bf0bbb6",
+          "sha256": "82ca191ca90541a97690941e82ab5416d777d5f3a39e5897af14cf8d941484c0",
           "bytes": 753,
-          "graphDigest": "sha256:b181f54f015331d19d82efe98976884d768c2029d855d99662da90b80a8431be",
+          "graphDigest": "sha256:bc7ec854c57143e749e669c751620ee5fb190d4404c8bc16b9e14f46eb440479",
           "nodes": 2,
           "edges": 1,
           "unresolved": 1,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-tavern@file:../../../artifact/dsh-tavern-1.9.1.tgz",
+              "from": "pnpm:dsh-tavern@file:../../../artifact/dsh-tavern-1.9.2.tgz",
               "name": "@deepseek-ai/dsh-client-runtime",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
@@ -22628,7 +22547,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:51b2ae92c260e5924f1d0370152850229c638c724270a035707487213ad4ebb3",
+          "digest": "sha256:ce21889e4efc2f6f59a0f99ab92ea09204c8cae26c6ab27236ed1520d5743d5a",
           "nodes": 448,
           "edges": 2030,
           "unresolved": 0,
@@ -22852,7 +22771,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -23722,9 +23641,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:d9cc668204d2bf8fadf916fd32d53fbb8ce8b6bcc791ac9c47c0b8d3e6066c90",
+      "staticFingerprint": "sha256:8fecb3b1450eddcc9686799ca3d95cefb8e91b0bec5379982402c4f30d94b82c",
       "contractFingerprint": "sha256:38a76ae04dcf0b43c8ef4a5ac327bc752f8f6b0bf22f87dca9134944f1380265",
-      "observedAt": "2026-08-23T11:53:42.745Z",
+      "observedAt": "2026-08-24T04:45:50.085Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -23736,7 +23655,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "8c52e9464f1ed20549eafd4aae0e1f9794ca1e9075faae213c1f27816df22511",
+          "sha256": "2347071db8f8b509f870064ec5ce4f89fb90a992531825b27695f3f20139189b",
           "bytes": 19098,
           "graphDigest": "sha256:b083c9d1dcb19fbf1bd0315ea31fb7d874f3bf141d13e02fbd26a033fea2c46b",
           "nodes": 66,
@@ -23902,7 +23821,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:e07291b747343d2185b52a7d22b909c973961256428ccd3baeddab1d3172c700",
+          "digest": "sha256:5c63ed1f316c425800df65d534c646423ab5b7a55cf1bebef515c2254e95b1bc",
           "nodes": 520,
           "edges": 2160,
           "unresolved": 0,
@@ -24301,13 +24220,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-turn-rewind-node22",
       "targetId": "dsh-turn-rewind",
-      "plugin": "@anionex/dsh-turn-rewind@0.1.1",
+      "plugin": "@anionex/dsh-turn-rewind@0.1.2",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -24316,27 +24235,27 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:385322030e46f884b76ae8596abb8de273e33841588891a45a583ca536985e87",
-      "contractFingerprint": "sha256:f5cc56cc5e651cdcf6b5f3b61e31482f62750e59cfb880e5f990dc638f735614",
-      "observedAt": "2026-08-23T11:53:41.857Z",
+      "staticFingerprint": "sha256:5af452158c0e6d664d87b557e8b6f2e5f9867bf06f1fd085f243334f5df1ac77",
+      "contractFingerprint": "sha256:f14c5196b2813d55d83ba30abdc8095ce5127e09b95dfe1cf854f66469c45b4c",
+      "observedAt": "2026-08-24T04:45:33.848Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "a3941f80ecddf146cbd86bc2b4d976b4df79cef5229200ec16bec7a4fd392c7b",
+        "sha256": "9663f98348f6db105bfa4d58e53dd0d66c581711c58d8bab7c2b5059b31f6b19",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "b236f9d481ea9c26eb1ff7934a7bc4bbde4f57e898d767efab8867c32bdc9941",
+          "sha256": "519e2c5f7bdf22eeb7dc6b0f315fd5dd987abc441295e2b2780f0ede49f30156",
           "bytes": 861,
-          "graphDigest": "sha256:77443142d1629cbb975921363a913d90df5d2c66d591ff1ece8ff438cd9be42a",
+          "graphDigest": "sha256:533698927084fd6ad77c93c2b1fa63ebbd02ba04e3e4919af9bf09e9e5350810",
           "nodes": 2,
           "edges": 1,
           "unresolved": 1,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:@anionex/dsh-turn-rewind@file:../../../artifact/anionex-dsh-turn-rewind-0.1.1.tgz",
+              "from": "pnpm:@anionex/dsh-turn-rewind@file:../../../artifact/anionex-dsh-turn-rewind-0.1.2.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
@@ -24344,7 +24263,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:de51f6bd76d44ff57b792cd6382421400600899db3fe3e4dbc88fe28fea68a5f",
+          "digest": "sha256:90b45036e0a3d847dc8181bda3d09572133015f9268ed2ccb2a7c9d4b048e06a",
           "nodes": 448,
           "edges": 2030,
           "unresolved": 0,
@@ -24568,7 +24487,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -26344,9 +26263,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:83f783e85265ed6d6ad9cd5ba643ec9c796f99e4a560154a59f7d03aa87f8489",
+      "staticFingerprint": "sha256:78345dd3effcb85e2e29872d4c73b32ca30b7c943a6ee3d912a3d5d59fcef50e",
       "contractFingerprint": "sha256:0f65fd956ee233d398ad3695e7c86d986d806ea6592e56de74375f9da37e6a7d",
-      "observedAt": "2026-08-23T11:53:42.565Z",
+      "observedAt": "2026-08-24T04:45:36.169Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@^0.1.0-rc.6 was not resolved by the DSH runtime (runtime-import-observed)",
       "artifact": {
@@ -26356,7 +26275,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "7f1daa856ae17a75cfa09cfcd12e16f5391ac62ac2bcb46ed4fb859b3fe11f2a",
+          "sha256": "e0c795fb4deb2c1c7a32f7d4c5f679d5a054fba1cbf32d96ece21a801fdacce0",
           "bytes": 4310,
           "graphDigest": "sha256:d5496621754faea4adaeeb2b81cc6615f4dbafcf6586c995f45835ea87fb600d",
           "nodes": 12,
@@ -26504,7 +26423,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:6397573ecdb7e63fb10de108afb32419c03327692fb0d022b35e63cd5d31a53a",
+          "digest": "sha256:63185deb829c8425bfa22e1b26e7255d5cd157a12ffd437d5ab8a6b5dbc698dd",
           "nodes": 458,
           "edges": 2061,
           "unresolved": 2,
@@ -26901,13 +26820,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-wallpaper-engine-node22",
       "targetId": "dsh-wallpaper-engine",
-      "plugin": "dsh-plugin-wallpaper-engine@0.5.1",
+      "plugin": "dsh-plugin-wallpaper-engine@0.6.3",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -26916,52 +26835,52 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:f2db0e6898a2d37d1e3418587486c64224c01bca7f1609e58c5837a999b608fe",
-      "contractFingerprint": "sha256:5688dd5c3e3ec66bce0ad5d098e9b2fa7cc22d36b08c5bebf7886dc2d7d59669",
-      "observedAt": "2026-08-23T11:54:30.873Z",
+      "staticFingerprint": "sha256:26b3381e2112ef9c838eed69212680bbc3a98f19e792c659ce3cd82bd3ad63ab",
+      "contractFingerprint": "sha256:359e1eff61171bd04658be4ed4cfdc94086856f4be35a700193b4fe12eec2bc8",
+      "observedAt": "2026-08-24T04:45:17.330Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@>=0.1.0-rc.6 was not resolved by the DSH runtime (no-literal-reference-observed)",
       "artifact": {
         "lifecycleScripts": [
           "prepare"
         ],
-        "sha256": "f590804e80ae73b8f863229147a80a644fd702b319446847dfc2412afc6268a7"
+        "sha256": "30659dcde9f4f24ffed2f291ee601588fa604c909e3492deec99acdb4e1e41ce"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "f7b0db51394cd5898d79792770af11c925b62d6fef1bb5eb7dbbc147aa28e88a",
-          "bytes": 1122,
-          "graphDigest": "sha256:d47f0ad80ff58f843c50d6949bc0994ba94e7c1b2dd34c89f22864d5232646dd",
-          "nodes": 2,
-          "edges": 1,
+          "sha256": "7318419ac1d694bce14b3cce03e9687b365e4522d05d8b905fc37feea32716a4",
+          "bytes": 1322,
+          "graphDigest": "sha256:0f3ed3d60062fe6f08b1e58ec9a4f85409501c35fc75f8b76737f4136a00ad5a",
+          "nodes": 3,
+          "edges": 2,
           "unresolved": 5,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.5.1.tgz",
+              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.3.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.5.1.tgz",
+              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.3.tgz",
               "name": "@deepseek-ai/dsh-client-runtime",
               "spec": ">=0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.5.1.tgz",
+              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.3.tgz",
               "name": "@deepseek-ai/dsh-client-ui-slots",
               "spec": ">=0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.5.1.tgz",
+              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.3.tgz",
               "name": "@deepseek-ai/dsh-host-webserver",
               "spec": ">=0.1.0-rc.6",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.5.1.tgz",
+              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.3.tgz",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
@@ -26969,9 +26888,9 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:3fb074a48fd9876bdbade2a4074c28a63c4052620755fe3e34c4daa5c750ab43",
-          "nodes": 448,
-          "edges": 2032,
+          "digest": "sha256:1a6eaf26b76f0e1a270648d5b7d12d37f3e349a8deeb3b71eda3c51a0753cf02",
+          "nodes": 449,
+          "edges": 2033,
           "unresolved": 1,
           "unresolvedDependencies": [
             {
@@ -27229,13 +27148,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-web-ui-all-node22",
       "targetId": "dsh-web-ui-all",
-      "plugin": "@linxin666/dsh-web-ui-all@0.2.9",
+      "plugin": "@linxin666/dsh-web-ui-all@0.3.2",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -27244,170 +27163,164 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:84687c1df225fa808858f5a6a3949e98e1dacea47ea8f36a0887b5f068b98827",
-      "contractFingerprint": "sha256:11db2433f505aa26572bec2ee82ce6e2d79d4a3d32ec7f9b4aaebbbe726f41f2",
-      "observedAt": "2026-08-24T02:43:53.129Z",
+      "staticFingerprint": "sha256:61681d2f9595611b6dca01ecb6afee40664e60ca53095d224f8954df53bd9103",
+      "contractFingerprint": "sha256:61d7ded4e4a7cafce4438469db43af3a17a6fbd9c2b8308b66d9f6072e9b4805",
+      "observedAt": "2026-08-24T04:45:52.368Z",
       "result": "unknown",
-      "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 3 required unresolved edge(s)",
+      "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 2 required unresolved edge(s)",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "1e18c7538682931593cda66395b571dd1c53bbefc5698c4f18fa236adee6c9a3"
+        "sha256": "d9e4e560e3ee6dd55642a8b33d8e687eb80570c0d06d18bd3f68b8a48202464d"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "88c4a14e2a9ed5a2f8a8127b7bd30c70f47f6e92e9c34a0ef6704202e4670f9e",
-          "bytes": 59585,
-          "graphDigest": "sha256:207edfe6239b14663d7313570338277431c3f6b9887812cfe248b392a84d6a74",
+          "sha256": "0648c2ec778391360af568ef9799539c28975e10a17a250c2a2c6c1f15a24779",
+          "bytes": 59531,
+          "graphDigest": "sha256:1b7caddaa30198489e9c9b06f31c24e72e82ef926631b7964ce56b8c25aed1f2",
           "nodes": 215,
           "edges": 400,
-          "unresolved": 46,
+          "unresolved": 47,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:@linxin666/dsh-chat-recovery@0.2.9",
+              "from": "pnpm:@linxin666/dsh-chat-recovery@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-chat-recovery@0.2.9",
+              "from": "pnpm:@linxin666/dsh-chat-recovery@0.3.2",
               "name": "react-dom",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-aionui-panel@0.2.9",
+              "from": "pnpm:@linxin666/dsh-client-ui-aionui-panel@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-community-plugins@0.2.9",
+              "from": "pnpm:@linxin666/dsh-client-ui-community-plugins@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-git-graph@0.2.9",
+              "from": "pnpm:@linxin666/dsh-client-ui-git-graph@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-plugin-manager@0.2.9",
+              "from": "pnpm:@linxin666/dsh-client-ui-market@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-session-id@0.2.9",
-              "name": "@deepseek-ai/dsh-client-ui-primitives",
-              "spec": "^0.1.1-rc.2",
-              "kind": "peer"
-            },
-            {
-              "from": "pnpm:@linxin666/dsh-client-ui-session-id@0.2.9",
+              "from": "pnpm:@linxin666/dsh-client-ui-plugin-manager@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-skill-explorer@0.2.9",
+              "from": "pnpm:@linxin666/dsh-client-ui-skill-explorer@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-skin-center@0.2.9",
+              "from": "pnpm:@linxin666/dsh-client-ui-skin-center@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-task-board@0.2.9",
+              "from": "pnpm:@linxin666/dsh-client-ui-task-board@0.3.2",
               "name": "@deepseek-ai/dsh-agent",
               "spec": "^0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-task-board@0.2.9",
+              "from": "pnpm:@linxin666/dsh-client-ui-task-board@0.3.2",
               "name": "@deepseek-ai/dsh-commands",
               "spec": "^0.1.1-rc.2",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-task-board@0.2.9",
+              "from": "pnpm:@linxin666/dsh-client-ui-task-board@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-web-ui-settings@0.2.9",
+              "from": "pnpm:@linxin666/dsh-client-ui-web-ui-settings@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-desktop-launcher@0.2.9",
+              "from": "pnpm:@linxin666/dsh-desktop-launcher@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-desktop-launcher@0.2.9",
+              "from": "pnpm:@linxin666/dsh-desktop-launcher@0.3.2",
               "name": "react-dom",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-doctor@0.2.9",
+              "from": "pnpm:@linxin666/dsh-doctor@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-doctor@0.2.9",
+              "from": "pnpm:@linxin666/dsh-doctor@0.3.2",
               "name": "react-dom",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-pet@0.2.9",
+              "from": "pnpm:@linxin666/dsh-pet@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-pet@0.2.9",
+              "from": "pnpm:@linxin666/dsh-pet@0.3.2",
               "name": "react-dom",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-remote-web-ui@0.2.9",
+              "from": "pnpm:@linxin666/dsh-remote-web-ui@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-remote-web-ui@0.2.9",
+              "from": "pnpm:@linxin666/dsh-remote-web-ui@0.3.2",
               "name": "react-dom",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-ssh@0.2.9",
+              "from": "pnpm:@linxin666/dsh-ssh@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-ssh@0.2.9",
+              "from": "pnpm:@linxin666/dsh-ssh@0.3.2",
               "name": "react-dom",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-tool-describe-image@0.2.9",
+              "from": "pnpm:@linxin666/dsh-tool-describe-image@0.3.2",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
@@ -27419,55 +27332,55 @@
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-better-sidebar@0.14.0",
+              "from": "pnpm:dsh-better-sidebar@0.15.2",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-better-sidebar@0.14.0",
+              "from": "pnpm:dsh-better-sidebar@0.15.2",
               "name": "@deepseek-ai/dsh-agent",
               "spec": "^0.1.0-rc.8",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-better-sidebar@0.14.0",
+              "from": "pnpm:dsh-better-sidebar@0.15.2",
               "name": "@deepseek-ai/dsh-client-locale",
               "spec": "^0.1.0-rc.8",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-better-sidebar@0.14.0",
+              "from": "pnpm:dsh-better-sidebar@0.15.2",
               "name": "@deepseek-ai/dsh-client-runtime",
               "spec": "^0.1.0-rc.8",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-better-sidebar@0.14.0",
+              "from": "pnpm:dsh-better-sidebar@0.15.2",
               "name": "@deepseek-ai/dsh-client-ui-conversation",
               "spec": "^0.1.0-rc.8",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-better-sidebar@0.14.0",
+              "from": "pnpm:dsh-better-sidebar@0.15.2",
               "name": "@deepseek-ai/dsh-client-ui-primitives",
+              "spec": "^0.1.0-rc.8",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@0.15.2",
+              "name": "@deepseek-ai/dsh-client-ui-settings",
               "spec": "^0.1.0-rc.8",
               "kind": "peer"
             }
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:9f8ee599c7256c32704b57b99c5c63cf0a82e28abef5c393aeec22c0cdac8ea2",
+          "digest": "sha256:fb0ba011db78c77b7a1abc89331f836564256ed5f0c904e10c72f4d90d2b3477",
           "nodes": 651,
-          "edges": 2458,
-          "unresolved": 3,
+          "edges": 2460,
+          "unresolved": 2,
           "unresolvedDependencies": [
-            {
-              "from": "node_modules/@linxin666/dsh-client-ui-session-id",
-              "name": "@deepseek-ai/dsh-client-ui-primitives",
-              "spec": "^0.1.1-rc.2",
-              "kind": "peer"
-            },
             {
               "from": "node_modules/dsh-better-sidebar",
               "name": "@deepseek-ai/dsh-client-ui-primitives",
@@ -27693,13 +27606,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.42.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-win32-node22",
       "targetId": "dsh-win32",
-      "plugin": "dsh-win32@0.16.0",
+      "plugin": "dsh-win32@0.16.3",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -27708,47 +27621,47 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:f1e133fc51732a54dd36a4a4eff1fc2424510d50b12edbb49c071af467e8be03",
-      "contractFingerprint": "sha256:a724e077b819731d651e0e45d879200ec0f09f2f7a81ad42f3f32267d2c3e5aa",
-      "observedAt": "2026-08-23T11:54:32.177Z",
+      "staticFingerprint": "sha256:e785f61b041c7b6fe4285cfb672a893e3bc2de17acbaa8b6a858f2bba4260781",
+      "contractFingerprint": "sha256:cff7a5e5497fd910f290f93da6b94ff52df0240fc21392ea215738ba4a439065",
+      "observedAt": "2026-08-24T04:45:35.447Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [
           "prepare"
         ],
-        "sha256": "5aa3bc9e7df59c05b2836682b43ad0b98b35f354d4648219c58b8bc7758ef03a",
+        "sha256": "54a50ea4b94e17ef09039bb5b06db3a0c54c1db027a8cecdd865d03b8ecf6eaa",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "b6380d3b6ecdd074bb33b9d60f037163c204e38efec811ea682bac51254e57b1",
+          "sha256": "1a07376dc24f3bcd1be5ab6ff7541932b43fd623b0c2d986fa7b107e8c5275d8",
           "bytes": 1673,
-          "graphDigest": "sha256:63d68b406dd680d0f858f9c93a1ecfe8d9b4899e6ef28513d7f2c50be6849a2b",
+          "graphDigest": "sha256:d992612764c05a5eec15d1ce4010c1dc36396e7edc12a68fa5db0909d5612fea",
           "nodes": 4,
           "edges": 3,
           "unresolved": 4,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.16.0.tgz",
+              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.16.3.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": ">=4.0.0 <5",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.16.0.tgz",
+              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.16.3.tgz",
               "name": "@deepseek-ai/dsh-fs-local",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.16.0.tgz",
+              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.16.3.tgz",
               "name": "@deepseek-ai/dsh-fs-sandbox",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.16.0.tgz",
+              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.16.3.tgz",
               "name": "@deepseek-ai/dsh-subprocess-local",
               "spec": ">=0.1.0-rc.5 <0.1.0-rc.7",
               "kind": "optional"
@@ -27756,7 +27669,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:a509312ce8424cedc9b822949bc80d718a0b6f84d77b61ae329829abe19343ee",
+          "digest": "sha256:73e442e45db1c379f70443efca0a976593d526a9bd3c9d00ff47e23fa45e9851",
           "nodes": 450,
           "edges": 2031,
           "unresolved": 0,
@@ -27972,13 +27885,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "dsh-xueqiu-node22",
       "targetId": "dsh-xueqiu",
-      "plugin": "dsh-xueqiu@1.21.4",
+      "plugin": "dsh-xueqiu@1.21.7",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -27987,44 +27900,44 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:a337d48041619bb446024b6827e6c4ac52ea738e27933746d750f79f8ce5e6da",
-      "contractFingerprint": "sha256:53e1334b043d2f723dd01cbf7863b49e24a8da0a9c3e5001b04f4103ef74e997",
-      "observedAt": "2026-08-23T11:54:30.073Z",
+      "staticFingerprint": "sha256:75f0090d1f8a43036cff8ba9749ed6e6fe0db4ed9d41d64a1f861316774eaa08",
+      "contractFingerprint": "sha256:3ce5214ea9a1bad874c8a9eed9d5c62dffc6882730fdeb94a2adf18af7ff8a7f",
+      "observedAt": "2026-08-24T04:45:34.258Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "e2d927cc87fa9092f55bbc70c184500d700e87f6e061550fda4ee8ea59ddb194"
+        "sha256": "eb3acb6d7ae76b0f9adf374630bb2c143bcd59910e0c86c42940f901c2f13672"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "d570492c6ed40559bae7722b453d599556c5904cd6439f153508c910d389150a",
+          "sha256": "fba3b5e46b79ba04801158fe2dcb6478972da560cff43590e5b624ef67f8630d",
           "bytes": 843,
-          "graphDigest": "sha256:7c3ff044bcff7892a6ac5fb4af0d7aff18207e27c9324d1ab4e2be187bbd36a4",
+          "graphDigest": "sha256:a9a2f42c3560fb7a64b9ea4f6a49569f3d54d071c530a48af3804758038b327b",
           "nodes": 2,
           "edges": 1,
           "unresolved": 4,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-xueqiu@file:../../../artifact/dsh-xueqiu-1.21.4.tgz",
+              "from": "pnpm:dsh-xueqiu@file:../../../artifact/dsh-xueqiu-1.21.7.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-xueqiu@file:../../../artifact/dsh-xueqiu-1.21.4.tgz",
+              "from": "pnpm:dsh-xueqiu@file:../../../artifact/dsh-xueqiu-1.21.7.tgz",
               "name": "@deepseek-ai/dsh-client-connection",
               "spec": "^0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-xueqiu@file:../../../artifact/dsh-xueqiu-1.21.4.tgz",
+              "from": "pnpm:dsh-xueqiu@file:../../../artifact/dsh-xueqiu-1.21.7.tgz",
               "name": "@deepseek-ai/dsh-tools",
               "spec": ">=0.1.0-rc.1 <0.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-xueqiu@file:../../../artifact/dsh-xueqiu-1.21.4.tgz",
+              "from": "pnpm:dsh-xueqiu@file:../../../artifact/dsh-xueqiu-1.21.7.tgz",
               "name": "react",
               "spec": "^18.3.1",
               "kind": "peer"
@@ -28032,7 +27945,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:3efca656487b114bc0dd576619e2a614609874e7b0f060a11ed4becedc7f00b4",
+          "digest": "sha256:c37a356cbe0d2287e5e13408b0aa2af0abc3ee9003ffd1f45539012ed60d32c1",
           "nodes": 448,
           "edges": 2033,
           "unresolved": 0,
@@ -28277,7 +28190,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -28558,7 +28471,7 @@
     {
       "caseId": "feishu-bot-node22",
       "targetId": "feishu-bot",
-      "plugin": "dsh-feishu-bot@0.17.3",
+      "plugin": "dsh-feishu-bot@0.19.5",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -28567,23 +28480,23 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:b7e6451abfc12d7be37a6ee7531258cfbc85765e2fcc549fcca0861c2cfde17b",
-      "contractFingerprint": "sha256:74a8e3b8219d70e843cc1c9938a0be219352eb4f1e6db78dafad88813ff97594",
-      "observedAt": "2026-08-23T11:53:47.098Z",
+      "staticFingerprint": "sha256:e0b4d9c9de01f9761bff84f2968f9bfca664afef86f9e5d8fb900208c9c50ddc",
+      "contractFingerprint": "sha256:cd59de30f1d681ad0a930e7735d7af59322be32f0c7a42f1ecc8c59a5cb3a6bc",
+      "observedAt": "2026-08-24T04:46:29.536Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "24996e82b3cc737eb38020179cd8364f7be43c20a523c346a24b232e14b5b283",
+        "sha256": "6b26bfe72f79430b3b5f88fc3c18fd79657bc979b9f3df302f6a7b145d1ffa42",
         "nodeEngine": ">=22.19.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "782a53787943e5b05c4f17a719ce7dcff3520bc78259040b461b9a2ff57103c9",
-          "bytes": 23374,
-          "graphDigest": "sha256:f001ded7aaf9be3b2a95b495cfd3ffcdb126b8a52980b187d7b616dcbea1f416",
-          "nodes": 77,
-          "edges": 116,
+          "sha256": "6701895608873486f857321e4e6005a3d13f1a7fedba17f158248080a44d46d2",
+          "bytes": 23963,
+          "graphDigest": "sha256:112c044e2a08ad05686aaa50f64198133f4b9abc5c9a64e06a840876d3243578",
+          "nodes": 78,
+          "edges": 119,
           "unresolved": 8,
           "unresolvedDependencies": [
             {
@@ -28637,9 +28550,9 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:711e4aabb75d8f94bd89a5b1c3e5b11aa8ef296c4096cd51af6b7541afa13f0b",
-          "nodes": 523,
-          "edges": 2163,
+          "digest": "sha256:c456918fe208cac286e41be6096d3cb16d982f979fb694b53f4937ae317a01bd",
+          "nodes": 524,
+          "edges": 2169,
           "unresolved": 0,
           "optionalUnavailable": 64,
           "optionalUnavailableDependencies": [
@@ -28861,7 +28774,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -28876,9 +28789,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:a17a5962a69546829de55dfddde33cf52dd955983950269be316c31678a470de",
+      "staticFingerprint": "sha256:ca7810b689ab7524df207c245c975de0de37370fc8882d93427d5a634e497c1d",
       "contractFingerprint": "sha256:1eb24b5cc879e07ab756cb46f1c208b5b0659eea13612839be0252ccfa88d8aa",
-      "observedAt": "2026-08-24T03:01:39.009Z",
+      "observedAt": "2026-08-24T04:46:39.319Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -28891,7 +28804,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "f97a256ab2a3435f474d5de8c4d2277c22470aa92ab10332fd39f0ad79822ee6",
+          "sha256": "79c32d983a71d5d0e00c38a73564ab6d6c84f12d328e8742ebe9d7f57bb7fab6",
           "bytes": 59810,
           "graphDigest": "sha256:716493db06382863284688e1b5ef27c0b62358a322229d67baee7e940108b2eb",
           "nodes": 226,
@@ -29135,7 +29048,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.42.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -29150,9 +29063,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:37f55330ed8488c08968efcf6e51c1cc14ee4e9ed8a6cc47641ffe2811e380a2",
+      "staticFingerprint": "sha256:9ae24e5ab47b2fe8629f434f49c9b8df3131c2e38761d54f8f6213a196aa23f9",
       "contractFingerprint": "sha256:dbbff4d9a1fc89dd0325d1de72d1275dc3d03096ed43e9e150df0ca9d7e16547",
-      "observedAt": "2026-08-23T11:54:35.389Z",
+      "observedAt": "2026-08-24T04:45:35.525Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -29161,9 +29074,9 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "9b3784635bc9a45ddc782634d17af7f8ac55e72aafee6c06b19038832535a9a4",
+          "sha256": "0cfafe9c9b800e369686b05f85c2ef7c51753aac49ccfc7fa4a7a7ff454a3ff1",
           "bytes": 24561,
-          "graphDigest": "sha256:813fd420e6121ceb0a0816a2cf514f4d45f1ddf00d074866c8f40110cd2112a3",
+          "graphDigest": "sha256:0dd565a02efb0604ec083a6730bc11729bfb880b1f080ac581ba0ac418d1c9e6",
           "nodes": 95,
           "edges": 163,
           "unresolved": 2,
@@ -29183,7 +29096,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:653d70e5f16498b5aaaa9150e269b641cfa7a127677f277d00b4843d034290df",
+          "digest": "sha256:40b4fe475f6a53ad9da0400a8d5e6671fe478427c1489c914931fe90fc846dfa",
           "nodes": 542,
           "edges": 2191,
           "unresolved": 0,
@@ -29399,13 +29312,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "iterate-plugin-node22",
       "targetId": "iterate-plugin",
-      "plugin": "iterate-plugin@2.12.0",
+      "plugin": "iterate-plugin@2.12.1",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -29414,21 +29327,21 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:6b54f966ba0a1e7ff0bc26a77e3b9828b683881e0353b0c059b0d3611c7be343",
-      "contractFingerprint": "sha256:980c0955f49af9d0aa6ab8fc3a0f0d01c6e7bac28d2c568748e4755293d162f5",
-      "observedAt": "2026-08-23T11:54:24.282Z",
+      "staticFingerprint": "sha256:42abbf355c5d266c99fabf050b8cb06fb7f8c1adddcea3c596d27791a96dc1d3",
+      "contractFingerprint": "sha256:bc30e277b82303e61d539057e094913048890884e38980c51c5c0ed094eda27e",
+      "observedAt": "2026-08-24T04:45:28.155Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "48d12aeb4acef5f77b3cc3d23a823d95aa9f447969e48ea93ea2688f459a8570",
+        "sha256": "b9943c59f8b6416e8ed850d38724a7eb12716ed8b41ec81c9e5e4e60846fbb97",
         "nodeEngine": ">=20"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "c5a63f90be023b6eefeba0b2890c411a556fffd17b87d29eea112c3fe0bc01f6",
+          "sha256": "995b5d603589dd0b643ae0a25bc538015cf372c19e29c5af60931fdc6ea841a6",
           "bytes": 3681,
-          "graphDigest": "sha256:e58bbbfdd324b53da5931122930fe3a97d88a5a20fd520c2110a0d4ea07ce370",
+          "graphDigest": "sha256:e96737e63c97b92834d5dd30fd1460f28d950343f52b30c1939473c26451c21b",
           "nodes": 9,
           "edges": 11,
           "unresolved": 2,
@@ -29448,7 +29361,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:00bbc36c63aea65273cf41bac8ed1661090fa940f8c7c1d3517300e5d695d84a",
+          "digest": "sha256:038d5ca9018bf6934f7346de02711bb50ab53ee46416d0904762072ee84d3067",
           "nodes": 455,
           "edges": 2047,
           "unresolved": 0,
@@ -29664,13 +29577,13 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
       "caseId": "modlens-node22",
       "targetId": "modlens",
-      "plugin": "@liustack/modlens@3.24.0",
+      "plugin": "@liustack/modlens@3.24.1",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -29679,27 +29592,27 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:9400220f82f53fd0b1a90df87dd19f4347b013461e035dcc399434fcde487c39",
-      "contractFingerprint": "sha256:f6ebc0f7dd38e2b35a5ed7d2bf4a7011abde04ac7c74115e62d7bf971c3bd73d",
-      "observedAt": "2026-08-23T11:53:43.729Z",
+      "staticFingerprint": "sha256:1114b26ef9f154ac788efaedbe0bb629b17a8c617a12b926d71963257835a769",
+      "contractFingerprint": "sha256:5eec66c36abb2534ce26a654acc6593d8494494ce85ba4cb5275b050631aabbe",
+      "observedAt": "2026-08-24T04:45:33.561Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "248bfeaccb584bb2685eda48a33b203f8ed7be9ed6d4c9f727d7d61813c25053",
+        "sha256": "a5407f981734c516297323b6002be88325bc0fe9bfe463ec328ca6dc0cf5ad0a",
         "nodeEngine": ">=22.19"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "f7e0143580c4ce2031dc22655dd3add5f90cad5e5073d196e53bb90688db8a0e",
+          "sha256": "59fc4bcc1361253f08bc28632e00ebaa56cf4a8e8c76824c83f08a02da006851",
           "bytes": 1214,
-          "graphDigest": "sha256:e7e42a81d379ceb326c1248da0a1198b4a208616bd76cf605b0909a680e923d3",
+          "graphDigest": "sha256:279eacb451738212d68ce65be57825db9fe52a57472f40c0d3472c76dfda730a",
           "nodes": 4,
           "edges": 3,
           "unresolved": 0
         },
         "runtimeGraph": {
-          "digest": "sha256:ae91b71b8e5e348e86217f6db0cb39b25500fe3e52dbffa07e6c06da1c239bde",
+          "digest": "sha256:aceddfa3884191106eaa902c69e92d3b3b4dd9381f19715dcb221a5c28147559",
           "nodes": 450,
           "edges": 2031,
           "unresolved": 0,
@@ -29915,7 +29828,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
@@ -31545,7 +31458,7 @@
     {
       "caseId": "wsl-workspace-node22",
       "targetId": "wsl-workspace",
-      "plugin": "dsh-wsl-workspace@0.2.3",
+      "plugin": "dsh-wsl-workspace@0.3.0",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -31554,56 +31467,56 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:166ea6237bde5c4ee7077b9438bbb914114bed69d911c8cf4e5550377d386dad",
-      "contractFingerprint": "sha256:9152190b2f1acebbd23c5618259de72b58fe6c90f92c345ce42237db2be94fc9",
-      "observedAt": "2026-08-23T11:54:24.884Z",
+      "staticFingerprint": "sha256:1c9cc2064e741ddd48aff84bf7800ae9825785c02631534e970b83b0e2e7584c",
+      "contractFingerprint": "sha256:8e9eb8c75b25f5c972cdf3d3341b05888fd22f7a53648905a5da836ee253ad39",
+      "observedAt": "2026-08-24T04:45:25.757Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "831b9bab04b9eed73203fd9024cf4f335f5c0f079cd7de3191611ea73edf6081"
+        "sha256": "771dff253f12e9eaaadd2474c145d2e1b7550fd2325a82f5a837f44418d99a2a"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "fb64da8aeb6e1936f0dbd90f2b79efa3e17354019b369bf481f12ea7942be9c8",
+          "sha256": "a5ccf06f44008c85783d2611528632b748d49f0cd039235aa9351452d62ad3f8",
           "bytes": 946,
-          "graphDigest": "sha256:c6450b4183aee2cd78416f33f63dd8d21fa6eebed762a952b1c39a47b682f449",
+          "graphDigest": "sha256:869697fe8a2b0835986e77d184ee0f755fbe8e86403a283060c2238bfdff2878",
           "nodes": 2,
           "edges": 1,
           "unresolved": 6,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-wsl-workspace@file:../../../artifact/dsh-wsl-workspace-0.2.3.tgz",
+              "from": "pnpm:dsh-wsl-workspace@file:../../../artifact/dsh-wsl-workspace-0.3.0.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "*",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-wsl-workspace@file:../../../artifact/dsh-wsl-workspace-0.2.3.tgz",
+              "from": "pnpm:dsh-wsl-workspace@file:../../../artifact/dsh-wsl-workspace-0.3.0.tgz",
               "name": "@deepseek-ai/dsh-fs",
               "spec": "*",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-wsl-workspace@file:../../../artifact/dsh-wsl-workspace-0.2.3.tgz",
+              "from": "pnpm:dsh-wsl-workspace@file:../../../artifact/dsh-wsl-workspace-0.3.0.tgz",
               "name": "@deepseek-ai/dsh-fs-local",
               "spec": "*",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-wsl-workspace@file:../../../artifact/dsh-wsl-workspace-0.2.3.tgz",
+              "from": "pnpm:dsh-wsl-workspace@file:../../../artifact/dsh-wsl-workspace-0.3.0.tgz",
               "name": "@deepseek-ai/dsh-shell",
               "spec": "*",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-wsl-workspace@file:../../../artifact/dsh-wsl-workspace-0.2.3.tgz",
+              "from": "pnpm:dsh-wsl-workspace@file:../../../artifact/dsh-wsl-workspace-0.3.0.tgz",
               "name": "@deepseek-ai/dsh-subprocess",
               "spec": "*",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-wsl-workspace@file:../../../artifact/dsh-wsl-workspace-0.2.3.tgz",
+              "from": "pnpm:dsh-wsl-workspace@file:../../../artifact/dsh-wsl-workspace-0.3.0.tgz",
               "name": "@deepseek-ai/dsh-timeout",
               "spec": "*",
               "kind": "peer"
@@ -31611,7 +31524,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:2ffa390d35aa2b4e10dfa8b0da65425a2c8a04764a6fee00c9bc5f2ee71dd803",
+          "digest": "sha256:096721f22992bd9d0c547e0982e13c48d722e3ee4562e6451b00d19826f0e63b",
           "nodes": 448,
           "edges": 2035,
           "unresolved": 0,
@@ -31870,7 +31783,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.3"
       }
     },
     {
