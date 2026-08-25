@@ -18,6 +18,12 @@ Upstream Radar 持续检查三者之间的真实关系：精确的 DSH 插件发
 静态检查是关于发布包的证据；隔离运行检查是关于某个精确的
 `插件 × DSH × Node/profile` 组合的证据。两者都不会被包装成永久有效的“兼容”徽章或安全证书。
 
+> 已被 DSH 生态目录
+> [awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/main/data/plugins/MicroMilo__upstream-radar.yml)、
+> [awesome-deepseek-harness](https://github.com/0xsline/awesome-deepseek-harness) 和
+> [awesome-deepseek-harness-plugins](https://github.com/imsai-sh/awesome-deepseek-harness-plugins/blob/main/catalog/plugins/micromilo--upstream-radar.json)
+> 收录。
+
 ## 为什么需要它
 
 插件源码仓库看起来正常，但用户真正安装的发布物可能还没有适配当前 DSH 宿主：
@@ -85,16 +91,18 @@ npx --yes upstream-radar@0.43.4 scan \
 [隔离观察 workflow](.github/workflows/observe-dsh-plugin-install.yml) 会为需要执行代码的检查使用全新的 GitHub 托管 runner。
 它不是你的电脑，也不会接收项目密钥。
 
-## 已关闭的上游报告
+## 来自真实生态的结果
 
-以下报告由我们提出，目前均已被对应上游维护者关闭：
+截至 2026-08-25，Radar 共向维护者提交了 13 条报告。比数量更重要的是处理结果：
 
-- [Sanqi-normal/dsh-webui-market-plugin#5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)
-- [1na-ko/dsh-hdc-bridge#3](https://github.com/1na-ko/dsh-hdc-bridge/issues/3)
-- [6Mikao9/dsh-wsl-workspace#6](https://github.com/6Mikao9/dsh-wsl-workspace/issues/6)
-- [3274375092/dsh-voice#2](https://github.com/3274375092/dsh-voice/issues/2)
+| 结果 | 报告 |
+| --- | --- |
+| **已发布修复并复核（5）** | [Sanqi #5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)（`0.5.5`）、[HDC #3](https://github.com/1na-ko/dsh-hdc-bridge/issues/3)（`0.7.3`）、[Voice #2](https://github.com/3274375092/dsh-voice/issues/2)（`0.2.6`）、[Msg Hub #1](https://github.com/AbcdefgXW/dsh-msg-hub/issues/1)、[Toolbox Web #1](https://github.com/AbcdefgXW/dsh-toolbox-web/issues/1) |
+| **维护者复核或补充契约（3）** | [Msg Hub #3](https://github.com/AbcdefgXW/dsh-msg-hub/issues/3)、[Spotlight #5 / PR #7](https://github.com/0xsline/dsh-spotlight/pull/7)、[WSL Workspace #6](https://github.com/6Mikao9/dsh-wsl-workspace/issues/6)——均已关闭，但不冒充运行时修复 |
+| **仍开放（5）** | [Anan #1](https://github.com/AmeKrance/anan-thermal-monitor/issues/1)、[Verification Receipt #3](https://github.com/030611/dsh-verification-receipt/issues/3)、[dshscan #1](https://github.com/shaoshi20/dshscan/issues/1)、[OAuth #14](https://github.com/lninghaha/dsh-coding-subscription-oauth/issues/14)、[Composer Expand #1](https://github.com/13071301808/dsh-composer-expand/issues/1) |
 
-[完整的 domain 报告索引](docs/domain-reports.md)保留了开放报告、验证等级，以及“已确认运行失败”和“需要维护者确认”之间的区别。
+“关闭”不自动等于“修复”。[完整的 domain 报告索引](docs/domain-reports.md)逐条保留了证据、
+验证等级、PR 覆盖和剩余边界。
 
 <p align="center">
   <strong>如果 Upstream Radar 对 DSH 生态有帮助，欢迎<a href="https://github.com/MicroMilo/upstream-radar">点一个 Star</a> ⭐</strong>

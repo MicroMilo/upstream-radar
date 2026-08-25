@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha1",
-  "generatedAt": "2026-08-24T05:02:41.228Z",
+  "generatedAt": "2026-08-25T01:47:48.411Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.43.4",
@@ -472,7 +472,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-remote-plugin",
-        "selectedVersion": "0.6.12",
+        "selectedVersion": "0.6.13",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -773,7 +773,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-taskboard",
-        "selectedVersion": "0.5.0",
+        "selectedVersion": "0.5.1",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -1698,7 +1698,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-xueqiu",
-        "selectedVersion": "1.21.7",
+        "selectedVersion": "1.22.1",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -2766,7 +2766,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-better-edit",
-        "selectedVersion": "0.3.1",
+        "selectedVersion": "0.3.2",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -3024,7 +3024,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-rewind-plugin",
-        "selectedVersion": "0.3.2",
+        "selectedVersion": "0.3.3",
         "distTag": "latest"
       },
       "status": "observed-compatible",
@@ -3772,7 +3772,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-codex-subscription",
-        "selectedVersion": "1.5.0",
+        "selectedVersion": "1.6.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3858,7 +3858,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@xgone/dsh-remote",
-        "selectedVersion": "0.2.7",
+        "selectedVersion": "0.2.8",
         "distTag": "latest"
       },
       "status": "observed-compatible",
