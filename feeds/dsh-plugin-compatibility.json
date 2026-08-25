@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha2",
-  "generatedAt": "2026-08-25T08:09:28.851Z",
+  "generatedAt": "2026-08-25T08:11:39.343Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.43.5",
@@ -29,10 +29,10 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 73,
+    "observed-compatible": 74,
     "observed-incompatible": 0,
-    "needs-review": 21,
-    "update-pending": 2,
+    "needs-review": 22,
+    "update-pending": 0,
     "not-observed": 4
   },
   "plugins": [
@@ -3067,13 +3067,13 @@
         "selectedVersion": "0.13.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-movein-node22",
           "artifact": {
-            "spec": "dsh-movein@0.12.1",
-            "sha256": "94b431f4e4a24c338373655d32a24248213819c38c134a6773766c3fa08d1cc4"
+            "spec": "dsh-movein@0.13.0",
+            "sha256": "e991211bd0c1d0303b2acd97047d60399eac1f25fe94d68da3034f56c349ad8c"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -3089,8 +3089,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T07:59:10.821Z",
-          "recheckDueAt": "2026-09-01T07:59:10.821Z",
+          "observedAt": "2026-08-25T08:10:33.786Z",
+          "recheckDueAt": "2026-09-01T08:10:33.786Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -4159,13 +4159,13 @@
         "selectedVersion": "0.3.3",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-web-ui-all-node22",
           "artifact": {
-            "spec": "@linxin666/dsh-web-ui-all@0.3.2",
-            "sha256": "d9e4e560e3ee6dd55642a8b33d8e687eb80570c0d06d18bd3f68b8a48202464d"
+            "spec": "@linxin666/dsh-web-ui-all@0.3.3",
+            "sha256": "6865f4f77787807702ba4e7cf659cd779258d7f79831591e26f748ae9292ff6e"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -4181,8 +4181,8 @@
           "profile": "headless",
           "status": "needs-review",
           "radarResult": "unknown",
-          "observedAt": "2026-08-25T04:40:00.502Z",
-          "recheckDueAt": "2026-09-01T04:40:00.502Z",
+          "observedAt": "2026-08-25T08:11:13.577Z",
+          "recheckDueAt": "2026-09-01T08:11:13.577Z",
           "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 2 required unresolved edge(s)"
         }
       ],

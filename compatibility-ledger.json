@@ -17373,7 +17373,7 @@
     {
       "caseId": "dsh-movein-node22",
       "targetId": "dsh-movein",
-      "plugin": "dsh-movein@0.12.1",
+      "plugin": "dsh-movein@0.13.0",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -17382,29 +17382,29 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:569ac915b1b80f89511aeb49ad1de9fde7637718235e911b9d88265cf1741fb8",
-      "contractFingerprint": "sha256:ed5e967fb1903a07b632ed3c3947506686b8a84d1b3ad0d55be51e7e20aa8b59",
-      "observedAt": "2026-08-25T07:59:10.821Z",
+      "staticFingerprint": "sha256:a0336ec6ae43e3469532cf79e54e292b57e74cad26b2513a2f4abbab6d438c70",
+      "contractFingerprint": "sha256:85f4741bbfafbe20044f174870fb0b828e533a2913d38e6a3cae95ceb4ee5944",
+      "observedAt": "2026-08-25T08:10:33.786Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [
           "prepare"
         ],
-        "sha256": "94b431f4e4a24c338373655d32a24248213819c38c134a6773766c3fa08d1cc4",
+        "sha256": "e991211bd0c1d0303b2acd97047d60399eac1f25fe94d68da3034f56c349ad8c",
         "nodeEngine": ">=18"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "c54f46894b4fc8d1ec8e43f7b3fd2644a66ce582abf415c3226f2552af6ed27b",
+          "sha256": "c1bb6ff9edb9f61290a461a8f17034f7ed17d19628dcb6cc6e310dfb9ec1ba25",
           "bytes": 1019,
-          "graphDigest": "sha256:a230aed08de60accaa8b41dfc9b9096d8beaf9ebf41b25dd47aec0d754260d28",
+          "graphDigest": "sha256:f1029945b01db0a20e87b49abf7645e1f1d845132fbfcaf4991a58f8f46f9122",
           "nodes": 3,
           "edges": 2,
           "unresolved": 1,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-movein@file:../../../artifact/dsh-movein-0.12.1.tgz",
+              "from": "pnpm:dsh-movein@file:../../../artifact/dsh-movein-0.13.0.tgz",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "optional"
@@ -17412,7 +17412,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:e7df59061a9a632e370d8a342a09256b568cf89d1562e3314ca58d067d92e532",
+          "digest": "sha256:29c9a59a7f3392516578adaa5f1e80a8c4788747c00ea672199ac3c775501c9f",
           "nodes": 449,
           "edges": 2030,
           "unresolved": 0,
@@ -27132,7 +27132,7 @@
     {
       "caseId": "dsh-web-ui-all-node22",
       "targetId": "dsh-web-ui-all",
-      "plugin": "@linxin666/dsh-web-ui-all@0.3.2",
+      "plugin": "@linxin666/dsh-web-ui-all@0.3.3",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -27141,164 +27141,158 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:61681d2f9595611b6dca01ecb6afee40664e60ca53095d224f8954df53bd9103",
-      "contractFingerprint": "sha256:61d7ded4e4a7cafce4438469db43af3a17a6fbd9c2b8308b66d9f6072e9b4805",
-      "observedAt": "2026-08-25T04:40:00.502Z",
+      "staticFingerprint": "sha256:567e6fd4f1762abc1afc4e1f19db38b9832faa2e047c672edca919bbe2f611f6",
+      "contractFingerprint": "sha256:d53d61c75ee3bd7a8cde17c576d9dc98886e3ddec722d5b2664c10fb6ec2328d",
+      "observedAt": "2026-08-25T08:11:13.577Z",
       "result": "unknown",
       "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 2 required unresolved edge(s)",
+      "approvedDependencyBuilds": [
+        "cloudflared",
+        "cpu-features",
+        "node-pty",
+        "ssh2"
+      ],
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "d9e4e560e3ee6dd55642a8b33d8e687eb80570c0d06d18bd3f68b8a48202464d"
+        "sha256": "6865f4f77787807702ba4e7cf659cd779258d7f79831591e26f748ae9292ff6e"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "646659614711cd202fe12d5a5ccb83e7a65fa7aae4db6f58b43df671b11f5be3",
-          "bytes": 59531,
-          "graphDigest": "sha256:1b7caddaa30198489e9c9b06f31c24e72e82ef926631b7964ce56b8c25aed1f2",
+          "sha256": "90b41a55481fa029d2572321da2493fb3c02f0dd5fa039fa3e1d79f21b985d5f",
+          "bytes": 59404,
+          "graphDigest": "sha256:e63eb32756da5b88ab3d8a42d3f411e86c6b6ba46aaaddc2e7a8a487a6ee105f",
           "nodes": 215,
           "edges": 400,
-          "unresolved": 47,
+          "unresolved": 45,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:@linxin666/dsh-chat-recovery@0.3.2",
+              "from": "pnpm:@linxin666/dsh-chat-recovery@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-chat-recovery@0.3.2",
+              "from": "pnpm:@linxin666/dsh-chat-recovery@0.3.3",
               "name": "react-dom",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-aionui-panel@0.3.2",
+              "from": "pnpm:@linxin666/dsh-client-ui-aionui-panel@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-community-plugins@0.3.2",
+              "from": "pnpm:@linxin666/dsh-client-ui-community-plugins@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-git-graph@0.3.2",
+              "from": "pnpm:@linxin666/dsh-client-ui-git-graph@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-market@0.3.2",
+              "from": "pnpm:@linxin666/dsh-client-ui-market@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-plugin-manager@0.3.2",
+              "from": "pnpm:@linxin666/dsh-client-ui-plugin-manager@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-skill-explorer@0.3.2",
+              "from": "pnpm:@linxin666/dsh-client-ui-skill-explorer@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-skin-center@0.3.2",
+              "from": "pnpm:@linxin666/dsh-client-ui-skin-center@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-task-board@0.3.2",
-              "name": "@deepseek-ai/dsh-agent",
-              "spec": "^0.1.1-rc.2",
-              "kind": "peer"
-            },
-            {
-              "from": "pnpm:@linxin666/dsh-client-ui-task-board@0.3.2",
-              "name": "@deepseek-ai/dsh-commands",
-              "spec": "^0.1.1-rc.2",
-              "kind": "peer"
-            },
-            {
-              "from": "pnpm:@linxin666/dsh-client-ui-task-board@0.3.2",
+              "from": "pnpm:@linxin666/dsh-client-ui-task-board@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-client-ui-web-ui-settings@0.3.2",
+              "from": "pnpm:@linxin666/dsh-client-ui-web-ui-settings@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-desktop-launcher@0.3.2",
+              "from": "pnpm:@linxin666/dsh-desktop-launcher@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-desktop-launcher@0.3.2",
+              "from": "pnpm:@linxin666/dsh-desktop-launcher@0.3.3",
               "name": "react-dom",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-doctor@0.3.2",
+              "from": "pnpm:@linxin666/dsh-doctor@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-doctor@0.3.2",
+              "from": "pnpm:@linxin666/dsh-doctor@0.3.3",
               "name": "react-dom",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-pet@0.3.2",
+              "from": "pnpm:@linxin666/dsh-pet@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-pet@0.3.2",
+              "from": "pnpm:@linxin666/dsh-pet@0.3.3",
               "name": "react-dom",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-remote-web-ui@0.3.2",
+              "from": "pnpm:@linxin666/dsh-remote-web-ui@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-remote-web-ui@0.3.2",
+              "from": "pnpm:@linxin666/dsh-remote-web-ui@0.3.3",
               "name": "react-dom",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-ssh@0.3.2",
+              "from": "pnpm:@linxin666/dsh-ssh@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-ssh@0.3.2",
+              "from": "pnpm:@linxin666/dsh-ssh@0.3.3",
               "name": "react-dom",
               "spec": "^18.2.0",
               "kind": "peer"
             },
             {
-              "from": "pnpm:@linxin666/dsh-tool-describe-image@0.3.2",
+              "from": "pnpm:@linxin666/dsh-tool-describe-image@0.3.3",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
@@ -27350,13 +27344,25 @@
               "name": "@deepseek-ai/dsh-client-ui-settings",
               "spec": "^0.1.0-rc.8",
               "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@0.15.2",
+              "name": "@deepseek-ai/dsh-client-ui-slots",
+              "spec": "^0.1.0-rc.8",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@0.15.2",
+              "name": "@deepseek-ai/dsh-host-webserver",
+              "spec": "^0.1.0-rc.8",
+              "kind": "peer"
             }
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:fb0ba011db78c77b7a1abc89331f836564256ed5f0c904e10c72f4d90d2b3477",
+          "digest": "sha256:c30d3455d908dd944e4a1e9c359cd5e75c04bee69ab9f79ff66a853daa22d9e9",
           "nodes": 651,
-          "edges": 2460,
+          "edges": 2458,
           "unresolved": 2,
           "unresolvedDependencies": [
             {
@@ -27584,7 +27590,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.43.4"
+        "version": "0.43.5"
       }
     },
     {
