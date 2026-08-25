@@ -1092,6 +1092,56 @@ targets:
       await new Promise<void>((resolve, reject) => server.close(error => error === undefined ? resolve() : reject(error)))
     }
 
+    const emptyJsonBodies: Array<Record<string, unknown>> = []
+    const emptyJsonServer = createServer((request, response) => {
+      let requestBody = ''
+      request.on('data', chunk => { requestBody += chunk.toString('utf8') })
+      request.on('end', () => {
+        emptyJsonBodies.push(JSON.parse(requestBody) as Record<string, unknown>)
+        response.writeHead(200, { 'content-type': 'application/json' })
+        response.end(JSON.stringify({
+          choices: [{ message: { content: emptyJsonBodies.length === 1
+            ? ''
+            : JSON.stringify({
+                impact: 'unknown',
+                confidence: 'low',
+                evidence: ['No project-specific consumer evidence was provided.'],
+                breaking_change: 'unknown',
+                dependency_risk: 'unknown',
+                recommended_action: 'Review the changed runtime entrypoint.',
+                urgency: 'monitor',
+                reasoning_summary: 'The retry returned the required bounded conclusion.',
+              }) } }],
+        }))
+      })
+    })
+    await new Promise<void>((resolve, reject) => {
+      emptyJsonServer.once('error', reject)
+      emptyJsonServer.listen(0, '127.0.0.1', () => resolve())
+    })
+    const emptyJsonAddress = emptyJsonServer.address()
+    if (emptyJsonAddress === null || typeof emptyJsonAddress === 'string') throw new Error('empty JSON test server did not expose an address')
+    const emptyJsonRoot = await mkdtemp(join(tmpdir(), 'upstream-radar-llm-empty-json-'))
+    try {
+      const emptyJsonEnvFile = join(emptyJsonRoot, 'issue-locator.env')
+      await writeFile(emptyJsonEnvFile, [
+        `ISSUE_LOCATOR_LLM_BASE_URL=http://127.0.0.1:${emptyJsonAddress.port}/v1`,
+        'ISSUE_LOCATOR_LLM_API_KEY=test-only',
+        'ISSUE_LOCATOR_LLM_MODEL=deepseek-v4-flash',
+        '',
+      ].join('\n'))
+      const invocation = await runOpenAiCompatibleAgent(task, 'empty JSON retry task', { envFile: emptyJsonEnvFile })
+      assert.equal(invocation.status, 'succeeded')
+      assert.equal(emptyJsonBodies.length, 2)
+      assert.deepEqual(emptyJsonBodies[0]?.response_format, { type: 'json_object' })
+      assert.equal(emptyJsonBodies[1]?.response_format, undefined)
+      assert.match(JSON.stringify(emptyJsonBodies[0]?.messages), /EXAMPLE JSON OUTPUT/)
+      assert.match(JSON.stringify(emptyJsonBodies[1]?.messages), /previous JSON-mode response was empty/)
+    } finally {
+      await rm(emptyJsonRoot, { recursive: true, force: true })
+      await new Promise<void>((resolve, reject) => emptyJsonServer.close(error => error === undefined ? resolve() : reject(error)))
+    }
+
     const notFoundServer = createServer((request, response) => {
       response.writeHead(404)
       response.end()
