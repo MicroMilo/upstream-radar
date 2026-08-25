@@ -1,9 +1,9 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-25T07:48:11.271Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-25T07:58:03.889Z`.
 Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 
-**74 observed compatible · 0 observed incompatible · 22 needs review · 0 update pending · 4 not observed**
+**73 observed compatible · 0 observed incompatible · 22 needs review · 1 update pending · 4 not observed**
 
 | Catalog plugin | Selected artifact | Tested artifact | Exact DSH / runtime | Evidence status | Observed |
 | --- | --- | --- | --- | --- | --- |
@@ -29,7 +29,7 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 | [DDDMUC/dsh-free-search](https://github.com/DDDMUC/dsh-free-search) | `dsh-free-search@0.4.12` | `dsh-free-search@0.4.12` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:40.522Z |
 | [dickpy/dsh-imagegen](https://github.com/dickpy/dsh-imagegen) | `@dickpy/dsh-imagegen@1.2.2` | `@dickpy/dsh-imagegen@1.2.2` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:04:15.784Z |
 | [dream-num/dsh-univer-office](https://github.com/dream-num/dsh-univer-office) | `dsh-univer-office@0.2.9` | `dsh-univer-office@0.2.9` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T07:13:21.792Z |
-| [dsh-market/dsh-market](https://github.com/dsh-market/dsh-market) | `dshmarket@1.29.1` | `dshmarket@1.29.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:38:00.012Z |
+| [dsh-market/dsh-market](https://github.com/dsh-market/dsh-market) | `dshmarket@1.29.2` | `dshmarket@1.29.1` | `0.1.1-rc.2` / Node 22 | `update-pending` | 2026-08-25T07:38:00.012Z |
 | [dsh-plugins/dsh-auxiliary](https://github.com/dsh-plugins/dsh-auxiliary) | `@dsh-plugin/dsh-auxiliary@0.5.1` | `@dsh-plugin/dsh-auxiliary@0.5.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:03:20.535Z |
 | [elysia395/dsh-wallpaper-engine](https://github.com/elysia395/dsh-wallpaper-engine) | `dsh-plugin-wallpaper-engine@0.6.5` | `dsh-plugin-wallpaper-engine@0.6.5` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T07:47:24.570Z |
 | [feibi-mochi/deepseek-harness-control-center](https://github.com/feibi-mochi/deepseek-harness-control-center) | `deepseek-harness-wallet@0.3.3` | `deepseek-harness-wallet@0.3.3` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:04:17.310Z |
@@ -105,7 +105,7 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 | [xmutfyh/dsh-plugin-writing-guard](https://github.com/xmutfyh/dsh-plugin-writing-guard) | `dsh-plugin-writing-guard@1.6.1` | `dsh-plugin-writing-guard@1.6.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:03:21.834Z |
 | [ysr666/dsh-vision-router](https://github.com/ysr666/dsh-vision-router) | `dsh-vision-router@2.0.0` | `dsh-vision-router@2.0.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:13:20.789Z |
 | [yyh-001/dsh-meme](https://github.com/yyh-001/dsh-meme) | `dsh-meme@0.1.39` | `dsh-meme@0.1.39` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:25.255Z |
-| [zhu1090093659/dsh-web-ui](https://github.com/zhu1090093659/dsh-web-ui/tree/main/packages/dsh-web-ui-all) | `@linxin666/dsh-web-ui-all@0.3.2` | `@linxin666/dsh-web-ui-all@0.3.2` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T04:40:00.502Z |
+| [zhu1090093659/dsh-web](https://github.com/zhu1090093659/dsh-web/tree/dev/packages/dsh-web-ui-all) | `@linxin666/dsh-web-ui-all@0.3.2` | `@linxin666/dsh-web-ui-all@0.3.2` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T04:40:00.502Z |
 | [ZSeven-W/dsh-openpencil](https://github.com/ZSeven-W/dsh-openpencil) | `@zseven-w/dsh-openpencil@0.1.0-rc.1` | `@zseven-w/dsh-openpencil@0.1.0-rc.1` | `0.1.1-rc.2` / Node 24 | `needs-review` | 2026-08-25T04:03:19.452Z |
 
 ## Reading the status

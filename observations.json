@@ -21762,20 +21762,20 @@
     "dsh-market": {
       "targetId": "dsh-market",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:34:21.974Z",
+      "observedAt": "2026-08-25T07:56:28.278Z",
       "source": {
         "repository": "dsh-market/dsh-market",
         "ref": "main",
-        "commit": "8577e705e625d91a608af9bbf709933912307d0d",
+        "commit": "9bb879fa1f956e913d9077b669cbba04fdaa1bae",
         "packagePath": "package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/dsh-market/dsh-market/commit/8577e705e625d91a608af9bbf709933912307d0d",
-        "packageUrl": "https://raw.githubusercontent.com/dsh-market/dsh-market/8577e705e625d91a608af9bbf709933912307d0d/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/dsh-market/dsh-market/8577e705e625d91a608af9bbf709933912307d0d/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/dsh-market/dsh-market/commit/9bb879fa1f956e913d9077b669cbba04fdaa1bae",
+        "packageUrl": "https://raw.githubusercontent.com/dsh-market/dsh-market/9bb879fa1f956e913d9077b669cbba04fdaa1bae/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/dsh-market/dsh-market/9bb879fa1f956e913d9077b669cbba04fdaa1bae/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "dshmarket",
-        "version": "1.29.1",
+        "version": "1.29.2",
         "type": "module",
         "main": "lib/index.js",
         "exports": {
@@ -21822,19 +21822,19 @@
       },
       "package": {
         "name": "dshmarket",
-        "version": "1.29.1",
+        "version": "1.29.2",
         "distTag": "latest",
-        "integrity": "sha512-5oDJOhP8f3PH1HUu/eib8BgxD8agRJQhXzyNe9ClgzC8fFruURSuy85EPocw1+a8RZQxup3aLuBX8xm/hXgM4Q==",
-        "tarball": "https://registry.npmjs.org/dshmarket/-/dshmarket-1.29.1.tgz"
+        "integrity": "sha512-Xi0tAWDWf2qKcj8F+TfR439QveoJimGvSh+uj/GyE6avRMM6dArLb4p93Wq/wTU4peY//0llJyMZ8bJLyBUX0Q==",
+        "tarball": "https://registry.npmjs.org/dshmarket/-/dshmarket-1.29.2.tgz"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "pnpm:workspace-root:dshmarket@1.29.1",
+        "rootNodeId": "pnpm:workspace-root:dshmarket@1.29.2",
         "nodes": [
           {
-            "id": "pnpm:workspace-root:dshmarket@1.29.1",
+            "id": "pnpm:workspace-root:dshmarket@1.29.2",
             "name": "dshmarket",
-            "version": "1.29.1"
+            "version": "1.29.2"
           },
           {
             "id": "pnpm:@asamuzakjp/css-color@5.1.11",
@@ -26009,82 +26009,82 @@
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:@deepseek-ai/cordis@4.0.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:@deepseek-ai/dsh-client-ui-primitives@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(supports-color@7.1.0)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:@types/js-yaml@4.0.9",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:@types/node@26.2.0",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:@types/react@18.3.31",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:js-yaml@4.3.1",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:jsdom@29.1.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:lightningcss@1.33.0",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:playwright@1.62.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:react-dom@18.3.1(react@18.3.1)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:react@18.3.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:tsdown@0.22.14(typescript@7.0.2)",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:typescript@7.0.2",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:dshmarket@1.29.1",
+            "from": "pnpm:workspace-root:dshmarket@1.29.2",
             "to": "pnpm:vitest@4.1.10(@types/node@26.2.0)(jsdom@29.1.1)(vite@8.2.1(@types/node@26.2.0))",
             "kind": "development"
           },
@@ -26230,7 +26230,7 @@
           }
         ],
         "source": "pnpm-lock",
-        "digest": "sha256:8786bd617622cf769d0d3b429302e4f2a2db05dbbe3f06c7a89bfe4ef3b6f0ba",
+        "digest": "sha256:5cab2483484a9765bda5cfd491358f034462f1ad547a4f0d8805d5baed581d03",
         "unresolved": [
           {
             "from": "pnpm:@deepseek-ai/cordis@4.0.1",
@@ -26270,25 +26270,25 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "dsh-market/dsh-market",
-          "commit": "8577e705e625d91a608af9bbf709933912307d0d",
+          "commit": "9bb879fa1f956e913d9077b669cbba04fdaa1bae",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dshmarket",
-            "version": "1.29.1"
+            "version": "1.29.2"
           }
         },
         "downstream": {
           "published": {
             "name": "dshmarket",
-            "version": "1.29.1"
+            "version": "1.29.2"
           },
           "graph": {
             "status": "incomplete",
             "root": {
               "name": "dshmarket",
-              "version": "1.29.1"
+              "version": "1.29.2"
             },
-            "digest": "sha256:8786bd617622cf769d0d3b429302e4f2a2db05dbbe3f06c7a89bfe4ef3b6f0ba",
+            "digest": "sha256:5cab2483484a9765bda5cfd491358f034462f1ad547a4f0d8805d5baed581d03",
             "nodes": 315,
             "edges": 564,
             "unresolved": 5
@@ -26300,22 +26300,22 @@
             "code": "source-published-identity",
             "status": "aligned",
             "summary": "The source manifest and observed npm package have the same name and version.",
-            "upstream": "dshmarket@1.29.1",
-            "downstream": "dshmarket@1.29.1"
+            "upstream": "dshmarket@1.29.2",
+            "downstream": "dshmarket@1.29.2"
           },
           {
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "dshmarket@1.29.1",
-            "downstream": "dshmarket@1.29.1"
+            "upstream": "dshmarket@1.29.2",
+            "downstream": "dshmarket@1.29.2"
           },
           {
             "code": "published-graph-root",
             "status": "aligned",
             "summary": "The dependency graph root matches the observed npm package.",
-            "upstream": "dshmarket@1.29.1",
-            "downstream": "dshmarket@1.29.1"
+            "upstream": "dshmarket@1.29.2",
+            "downstream": "dshmarket@1.29.2"
           },
           {
             "code": "dependency-graph-coverage",
@@ -43894,20 +43894,20 @@
     "dsh-cost-meter": {
       "targetId": "dsh-cost-meter",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:44:24.736Z",
+      "observedAt": "2026-08-25T07:56:28.278Z",
       "source": {
         "repository": "Han-1413141/dsh-cost-meter",
         "ref": "master",
-        "commit": "7611708828df6b89186e3ea7df3fbcdf7de33541",
+        "commit": "ce7a25d5451e56773084745cbc4dbfc9d1c38eb3",
         "packagePath": "package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/Han-1413141/dsh-cost-meter/commit/7611708828df6b89186e3ea7df3fbcdf7de33541",
-        "packageUrl": "https://raw.githubusercontent.com/Han-1413141/dsh-cost-meter/7611708828df6b89186e3ea7df3fbcdf7de33541/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/Han-1413141/dsh-cost-meter/7611708828df6b89186e3ea7df3fbcdf7de33541/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/Han-1413141/dsh-cost-meter/commit/ce7a25d5451e56773084745cbc4dbfc9d1c38eb3",
+        "packageUrl": "https://raw.githubusercontent.com/Han-1413141/dsh-cost-meter/ce7a25d5451e56773084745cbc4dbfc9d1c38eb3/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/Han-1413141/dsh-cost-meter/ce7a25d5451e56773084745cbc4dbfc9d1c38eb3/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "dsh-cost-meter",
-        "version": "1.5.47",
+        "version": "1.5.49",
         "type": "module",
         "main": "lib/index.js",
         "exports": {
@@ -43945,12 +43945,12 @@
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "pnpm:workspace-root:dsh-cost-meter@1.5.47",
+        "rootNodeId": "pnpm:workspace-root:dsh-cost-meter@1.5.49",
         "nodes": [
           {
-            "id": "pnpm:workspace-root:dsh-cost-meter@1.5.47",
+            "id": "pnpm:workspace-root:dsh-cost-meter@1.5.49",
             "name": "dsh-cost-meter",
-            "version": "1.5.47"
+            "version": "1.5.49"
           },
           {
             "id": "pnpm:@deepseek-ai/cordis@4.0.1",
@@ -44065,23 +44065,23 @@
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.47",
+            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.49",
             "to": "pnpm:@deepseek-ai/dsh-credentials@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.47",
+            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.49",
             "to": "pnpm:@deepseek-ai/dsh-home-paths@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.47",
+            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.49",
             "to": "pnpm:zod@4.4.3",
             "kind": "runtime"
           }
         ],
         "source": "pnpm-lock",
-        "digest": "sha256:e825c91975b69b0bc3023d43b77a4d5c79632ded2eeac7c472325983b76dfd89",
+        "digest": "sha256:a84205d47d59ac4decedf7208672e416ec80cec33de3c179c6109182414a1ac7",
         "unresolved": [
           {
             "from": "pnpm:@deepseek-ai/cordis@4.0.1",
@@ -44103,11 +44103,11 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "Han-1413141/dsh-cost-meter",
-          "commit": "7611708828df6b89186e3ea7df3fbcdf7de33541",
+          "commit": "ce7a25d5451e56773084745cbc4dbfc9d1c38eb3",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-cost-meter",
-            "version": "1.5.47"
+            "version": "1.5.49"
           }
         },
         "downstream": {
@@ -44119,9 +44119,9 @@
             "status": "incomplete",
             "root": {
               "name": "dsh-cost-meter",
-              "version": "1.5.47"
+              "version": "1.5.49"
             },
-            "digest": "sha256:e825c91975b69b0bc3023d43b77a4d5c79632ded2eeac7c472325983b76dfd89",
+            "digest": "sha256:a84205d47d59ac4decedf7208672e416ec80cec33de3c179c6109182414a1ac7",
             "nodes": 10,
             "edges": 16,
             "unresolved": 2
@@ -44133,7 +44133,7 @@
             "code": "source-published-identity",
             "status": "mismatch",
             "summary": "The source manifest and observed npm package do not identify the same name and version.",
-            "upstream": "dsh-cost-meter@1.5.47",
+            "upstream": "dsh-cost-meter@1.5.49",
             "downstream": "dsh-cost-meter@1.5.42",
             "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
           },
@@ -44141,15 +44141,15 @@
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "dsh-cost-meter@1.5.47",
-            "downstream": "dsh-cost-meter@1.5.47"
+            "upstream": "dsh-cost-meter@1.5.49",
+            "downstream": "dsh-cost-meter@1.5.49"
           },
           {
             "code": "published-graph-root",
             "status": "mismatch",
             "summary": "The dependency graph root does not identify the observed npm package.",
             "upstream": "dsh-cost-meter@1.5.42",
-            "downstream": "dsh-cost-meter@1.5.47",
+            "downstream": "dsh-cost-meter@1.5.49",
             "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
           },
           {
@@ -263859,20 +263859,20 @@
     "dsh-movein": {
       "targetId": "dsh-movein",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T07:56:28.278Z",
       "source": {
         "repository": "sjh9714/dsh-movein",
         "ref": "main",
-        "commit": "dfcfcd9ad96fafe86d67810df00b11dbbb4ab389",
+        "commit": "1bffc20b2c1cb00b5065aeb98427388eb2852411",
         "packagePath": "package.json",
         "lockfile": "package-lock.json",
-        "commitUrl": "https://github.com/sjh9714/dsh-movein/commit/dfcfcd9ad96fafe86d67810df00b11dbbb4ab389",
-        "packageUrl": "https://raw.githubusercontent.com/sjh9714/dsh-movein/dfcfcd9ad96fafe86d67810df00b11dbbb4ab389/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/sjh9714/dsh-movein/dfcfcd9ad96fafe86d67810df00b11dbbb4ab389/package-lock.json"
+        "commitUrl": "https://github.com/sjh9714/dsh-movein/commit/1bffc20b2c1cb00b5065aeb98427388eb2852411",
+        "packageUrl": "https://raw.githubusercontent.com/sjh9714/dsh-movein/1bffc20b2c1cb00b5065aeb98427388eb2852411/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/sjh9714/dsh-movein/1bffc20b2c1cb00b5065aeb98427388eb2852411/package-lock.json"
       },
       "manifest": {
         "name": "dsh-movein",
-        "version": "0.12.1",
+        "version": "0.13.0",
         "type": "module",
         "main": "shell/index.mjs",
         "exports": {
@@ -263916,12 +263916,12 @@
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "npm:workspace-root:dsh-movein@0.12.1",
+        "rootNodeId": "npm:workspace-root:dsh-movein@0.13.0",
         "nodes": [
           {
-            "id": "npm:workspace-root:dsh-movein@0.12.1",
+            "id": "npm:workspace-root:dsh-movein@0.13.0",
             "name": "dsh-movein",
-            "version": "0.12.1"
+            "version": "0.13.0"
           },
           {
             "id": "node_modules/js-tokens",
@@ -263956,18 +263956,18 @@
             "kind": "runtime"
           },
           {
-            "from": "npm:workspace-root:dsh-movein@0.12.1",
+            "from": "npm:workspace-root:dsh-movein@0.13.0",
             "to": "node_modules/jsonc-parser",
             "kind": "runtime"
           },
           {
-            "from": "npm:workspace-root:dsh-movein@0.12.1",
+            "from": "npm:workspace-root:dsh-movein@0.13.0",
             "to": "node_modules/react",
             "kind": "optional"
           }
         ],
         "source": "npm-lock",
-        "digest": "sha256:149aeb952a789649bf364df9d5fac98d463b2d65799dcf08971696d535800731"
+        "digest": "sha256:df18423f866b3138f7bd359ebbdbe9db1026666ded984422162b20c97eb814d7"
       },
       "alignment": {
         "schema": "upstream-radar.upstream-downstream-ir/v1alpha1",
@@ -263975,11 +263975,11 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "sjh9714/dsh-movein",
-          "commit": "dfcfcd9ad96fafe86d67810df00b11dbbb4ab389",
+          "commit": "1bffc20b2c1cb00b5065aeb98427388eb2852411",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-movein",
-            "version": "0.12.1"
+            "version": "0.13.0"
           }
         },
         "downstream": {
@@ -263991,36 +263991,38 @@
             "status": "complete",
             "root": {
               "name": "dsh-movein",
-              "version": "0.12.1"
+              "version": "0.13.0"
             },
-            "digest": "sha256:149aeb952a789649bf364df9d5fac98d463b2d65799dcf08971696d535800731",
+            "digest": "sha256:df18423f866b3138f7bd359ebbdbe9db1026666ded984422162b20c97eb814d7",
             "nodes": 5,
             "edges": 4,
             "unresolved": 0
           }
         },
-        "status": "aligned",
+        "status": "mismatch",
         "checks": [
           {
             "code": "source-published-identity",
-            "status": "aligned",
-            "summary": "The source manifest and observed npm package have the same name and version.",
-            "upstream": "dsh-movein@0.12.1",
-            "downstream": "dsh-movein@0.12.1"
+            "status": "mismatch",
+            "summary": "The source manifest and observed npm package do not identify the same name and version.",
+            "upstream": "dsh-movein@0.13.0",
+            "downstream": "dsh-movein@0.12.1",
+            "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
           },
           {
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "dsh-movein@0.12.1",
-            "downstream": "dsh-movein@0.12.1"
+            "upstream": "dsh-movein@0.13.0",
+            "downstream": "dsh-movein@0.13.0"
           },
           {
             "code": "published-graph-root",
-            "status": "aligned",
-            "summary": "The dependency graph root matches the observed npm package.",
+            "status": "mismatch",
+            "summary": "The dependency graph root does not identify the observed npm package.",
             "upstream": "dsh-movein@0.12.1",
-            "downstream": "dsh-movein@0.12.1"
+            "downstream": "dsh-movein@0.13.0",
+            "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
           },
           {
             "code": "dependency-graph-coverage",

@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha2",
-  "generatedAt": "2026-08-25T07:48:11.271Z",
+  "generatedAt": "2026-08-25T07:58:03.889Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.43.5",
@@ -29,10 +29,10 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 74,
+    "observed-compatible": 73,
     "observed-incompatible": 0,
     "needs-review": 22,
-    "update-pending": 0,
+    "update-pending": 1,
     "not-observed": 4
   },
   "plugins": [
@@ -993,10 +993,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dshmarket",
-        "selectedVersion": "1.29.1",
+        "selectedVersion": "1.29.2",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-market-node22",
@@ -4147,9 +4147,9 @@
     },
     {
       "id": "dsh-web-ui-all",
-      "repository": "zhu1090093659/dsh-web-ui",
-      "repositoryUrl": "https://github.com/zhu1090093659/dsh-web-ui",
-      "catalogUrl": "https://github.com/zhu1090093659/dsh-web-ui/tree/main/packages/dsh-web-ui-all",
+      "repository": "zhu1090093659/dsh-web",
+      "repositoryUrl": "https://github.com/zhu1090093659/dsh-web",
+      "catalogUrl": "https://github.com/zhu1090093659/dsh-web/tree/dev/packages/dsh-web-ui-all",
       "catalogEntry": "data/plugins/zhu1090093659__dsh-web-ui--packages-dsh-web-ui-all.yml",
       "catalogEntryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea/data/plugins/zhu1090093659__dsh-web-ui--packages-dsh-web-ui-all.yml",
       "category": "ui",
