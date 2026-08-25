@@ -144888,20 +144888,20 @@
     "dsh-web-ui-all": {
       "targetId": "dsh-web-ui-all",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-25T08:07:29.972Z",
       "source": {
-        "repository": "zhu1090093659/dsh-web-ui",
-        "ref": "main",
-        "commit": "b5866eb72fe0571ce585d4078e88e2948835f8ab",
-        "packagePath": "packages/dsh-web-ui-all/package.json",
+        "repository": "zhu1090093659/dsh-web",
+        "ref": "dev",
+        "commit": "deb45afe606bd008ed81e05ca2b51fb302525f0c",
+        "packagePath": "packages/dsh-web-all/package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/zhu1090093659/dsh-web-ui/commit/b5866eb72fe0571ce585d4078e88e2948835f8ab",
-        "packageUrl": "https://raw.githubusercontent.com/zhu1090093659/dsh-web-ui/b5866eb72fe0571ce585d4078e88e2948835f8ab/packages/dsh-web-ui-all/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/zhu1090093659/dsh-web-ui/b5866eb72fe0571ce585d4078e88e2948835f8ab/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/zhu1090093659/dsh-web/commit/deb45afe606bd008ed81e05ca2b51fb302525f0c",
+        "packageUrl": "https://raw.githubusercontent.com/zhu1090093659/dsh-web/deb45afe606bd008ed81e05ca2b51fb302525f0c/packages/dsh-web-all/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/zhu1090093659/dsh-web/deb45afe606bd008ed81e05ca2b51fb302525f0c/pnpm-lock.yaml"
       },
       "manifest": {
-        "name": "@linxin666/dsh-web-ui-all",
-        "version": "0.3.2",
+        "name": "@linxin666/dsh-web-all",
+        "version": "0.3.3",
         "type": "module",
         "main": "lib/index.js",
         "exports": {
@@ -144926,6 +144926,7 @@
           "@linxin666/dsh-desktop-launcher": "workspace:*",
           "@linxin666/dsh-doctor": "workspace:*",
           "@linxin666/dsh-client-ui-web-ui-settings": "workspace:*",
+          "@linxin666/dsh-miku-pet": "workspace:*",
           "@linxin666/dsh-client-ui-skin-center": "workspace:*",
           "@mlgbnb/dsh-archive-manager": "1.0.7",
           "dsh-better-sidebar": "0.15.2"
@@ -144945,19 +144946,19 @@
       },
       "package": {
         "name": "@linxin666/dsh-web-ui-all",
-        "version": "0.3.2",
+        "version": "0.3.3",
         "distTag": "latest",
-        "integrity": "sha512-yTDix84bUNPP5q4DKZ7w1ozBrJmh3+lL5syb6i/Ibl80qLzJMY8NQWJC2wTpyJuxy03jChP/3CJCQudSqwlssQ==",
-        "tarball": "https://registry.npmjs.org/@linxin666/dsh-web-ui-all/-/dsh-web-ui-all-0.3.2.tgz"
+        "integrity": "sha512-yycyX7Y82j+ymX7ccRQ3dQ2tLKURXYfdXPKyPsI3hPOA+LpZew0DOHUophOKN210XRf78ghNct/Tkjeyuky10A==",
+        "tarball": "https://registry.npmjs.org/@linxin666/dsh-web-ui-all/-/dsh-web-ui-all-0.3.3.tgz"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+        "rootNodeId": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
         "nodes": [
           {
-            "id": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
-            "name": "@linxin666/dsh-web-ui-all",
-            "version": "0.3.2"
+            "id": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
+            "name": "@linxin666/dsh-web-all",
+            "version": "0.3.3"
           },
           {
             "id": "pnpm:@antfu/install-pkg@1.1.0",
@@ -152647,22 +152648,22 @@
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "to": "pnpm:@mlgbnb/dsh-archive-manager@1.0.7(react@18.3.1)",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "to": "pnpm:dsh-better-sidebar@0.15.2(96d11d43015a66f723a480d8d38ac93f)",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "to": "pnpm:jsdom@29.1.1",
             "kind": "development"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "to": "pnpm:vitest@4.1.11(@types/node@22.20.1)(esbuild@0.28.2)(jsdom@29.1.1)(yaml@2.9.0)",
             "kind": "development"
           },
@@ -152688,7 +152689,7 @@
           }
         ],
         "source": "pnpm-lock",
-        "digest": "sha256:5f5ad90d70329b70de3a9fefa101dd5e560e3557936e9c588db676cd3ca5e0bc",
+        "digest": "sha256:95259e09a809467e8366dc18137b6a925a6feb373e1b39fabb60548b9fb3460a",
         "unresolved": [
           {
             "from": "pnpm:@exodus/bytes@1.15.1",
@@ -152709,103 +152710,109 @@
             "kind": "optional"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-chat-recovery",
             "spec": "link:../dsh-chat-recovery",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-client-ui-aionui-panel",
             "spec": "link:../dsh-aionui-panel",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-client-ui-community-plugins",
             "spec": "link:../dsh-community-plugins",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-client-ui-git-graph",
             "spec": "link:../dsh-git-graph",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-client-ui-market",
             "spec": "link:../dsh-market",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-client-ui-plugin-manager",
             "spec": "link:../dsh-plugin-manager",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-client-ui-skill-explorer",
             "spec": "link:../dsh-skill-explorer",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-client-ui-skin-center",
             "spec": "link:../skins/skin-center",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-client-ui-task-board",
             "spec": "link:../dsh-task-board",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-client-ui-web-ui-settings",
-            "spec": "link:../dsh-web-ui-settings",
+            "spec": "link:../dsh-web-settings",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-desktop-launcher",
             "spec": "link:../dsh-desktop-launcher",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-doctor",
             "spec": "link:../dsh-doctor",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-liangshen",
             "spec": "link:../dsh-liangshen",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
+            "name": "@linxin666/dsh-miku-pet",
+            "spec": "link:../dsh-miku-pet",
+            "kind": "runtime"
+          },
+          {
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-pet",
             "spec": "link:../dsh-pet",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-remote-web-ui",
             "spec": "link:../dsh-remote-web-ui",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-ssh",
             "spec": "link:../dsh-ssh",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-ui-all@0.3.2",
+            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-tool-describe-image",
             "spec": "link:../dsh-tool-describe-image",
             "kind": "runtime"
@@ -152824,63 +152831,68 @@
           }
         ]
       },
+      "warnings": [
+        "target package @linxin666/dsh-web-ui-all does not match source manifest @linxin666/dsh-web-all"
+      ],
       "alignment": {
         "schema": "upstream-radar.upstream-downstream-ir/v1alpha1",
         "targetId": "dsh-web-ui-all",
         "ecosystem": "dsh",
         "upstream": {
-          "repository": "zhu1090093659/dsh-web-ui",
-          "commit": "b5866eb72fe0571ce585d4078e88e2948835f8ab",
-          "packagePath": "packages/dsh-web-ui-all/package.json",
+          "repository": "zhu1090093659/dsh-web",
+          "commit": "deb45afe606bd008ed81e05ca2b51fb302525f0c",
+          "packagePath": "packages/dsh-web-all/package.json",
           "coordinate": {
-            "name": "@linxin666/dsh-web-ui-all",
-            "version": "0.3.2"
+            "name": "@linxin666/dsh-web-all",
+            "version": "0.3.3"
           }
         },
         "downstream": {
           "published": {
             "name": "@linxin666/dsh-web-ui-all",
-            "version": "0.3.2"
+            "version": "0.3.3"
           },
           "graph": {
             "status": "incomplete",
             "root": {
-              "name": "@linxin666/dsh-web-ui-all",
-              "version": "0.3.2"
+              "name": "@linxin666/dsh-web-all",
+              "version": "0.3.3"
             },
-            "digest": "sha256:5f5ad90d70329b70de3a9fefa101dd5e560e3557936e9c588db676cd3ca5e0bc",
+            "digest": "sha256:95259e09a809467e8366dc18137b6a925a6feb373e1b39fabb60548b9fb3460a",
             "nodes": 453,
             "edges": 1093,
-            "unresolved": 22
+            "unresolved": 23
           }
         },
-        "status": "unknown",
+        "status": "mismatch",
         "checks": [
           {
             "code": "source-published-identity",
-            "status": "aligned",
-            "summary": "The source manifest and observed npm package have the same name and version.",
-            "upstream": "@linxin666/dsh-web-ui-all@0.3.2",
-            "downstream": "@linxin666/dsh-web-ui-all@0.3.2"
+            "status": "mismatch",
+            "summary": "The source manifest and observed npm package do not identify the same name and version.",
+            "upstream": "@linxin666/dsh-web-all@0.3.3",
+            "downstream": "@linxin666/dsh-web-ui-all@0.3.3",
+            "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
           },
           {
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "@linxin666/dsh-web-ui-all@0.3.2",
-            "downstream": "@linxin666/dsh-web-ui-all@0.3.2"
+            "upstream": "@linxin666/dsh-web-all@0.3.3",
+            "downstream": "@linxin666/dsh-web-all@0.3.3"
           },
           {
             "code": "published-graph-root",
-            "status": "aligned",
-            "summary": "The dependency graph root matches the observed npm package.",
-            "upstream": "@linxin666/dsh-web-ui-all@0.3.2",
-            "downstream": "@linxin666/dsh-web-ui-all@0.3.2"
+            "status": "mismatch",
+            "summary": "The dependency graph root does not identify the observed npm package.",
+            "upstream": "@linxin666/dsh-web-ui-all@0.3.3",
+            "downstream": "@linxin666/dsh-web-all@0.3.3",
+            "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
           },
           {
             "code": "dependency-graph-coverage",
             "status": "unknown",
-            "summary": "The dependency graph is incomplete (22 unresolved edges).",
+            "summary": "The dependency graph is incomplete (23 unresolved edges).",
             "downstream": "incomplete; 453 nodes, 1093 edges",
             "remediation": "Resolve the missing lockfile or peer/optional edges; an empty vulnerability result is not complete coverage while this remains unknown."
           }
@@ -263859,7 +263871,7 @@
     "dsh-movein": {
       "targetId": "dsh-movein",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:56:28.278Z",
+      "observedAt": "2026-08-25T08:07:29.972Z",
       "source": {
         "repository": "sjh9714/dsh-movein",
         "ref": "main",
@@ -263909,10 +263921,10 @@
       },
       "package": {
         "name": "dsh-movein",
-        "version": "0.12.1",
+        "version": "0.13.0",
         "distTag": "latest",
-        "integrity": "sha512-2kex6G3OoSMr7Px3sKtGsW8YEHPJTvopAUQJdUDVkmpZvjY2ypk5zghE5GMlp/Vf1L+2ZOlr6EuG4/slUK0nvA==",
-        "tarball": "https://registry.npmjs.org/dsh-movein/-/dsh-movein-0.12.1.tgz"
+        "integrity": "sha512-xO+fkDSx/ghD24kglR1QlgQ6YWQBZOu8JUdyLk7OV/8BR/HrTTA4zQnoLLQs+ssdqkS9y/8OK8UGx8fHXPKE2Q==",
+        "tarball": "https://registry.npmjs.org/dsh-movein/-/dsh-movein-0.13.0.tgz"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -263985,7 +263997,7 @@
         "downstream": {
           "published": {
             "name": "dsh-movein",
-            "version": "0.12.1"
+            "version": "0.13.0"
           },
           "graph": {
             "status": "complete",
@@ -263999,15 +264011,14 @@
             "unresolved": 0
           }
         },
-        "status": "mismatch",
+        "status": "aligned",
         "checks": [
           {
             "code": "source-published-identity",
-            "status": "mismatch",
-            "summary": "The source manifest and observed npm package do not identify the same name and version.",
+            "status": "aligned",
+            "summary": "The source manifest and observed npm package have the same name and version.",
             "upstream": "dsh-movein@0.13.0",
-            "downstream": "dsh-movein@0.12.1",
-            "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
+            "downstream": "dsh-movein@0.13.0"
           },
           {
             "code": "source-graph-root",
@@ -264018,11 +264029,10 @@
           },
           {
             "code": "published-graph-root",
-            "status": "mismatch",
-            "summary": "The dependency graph root does not identify the observed npm package.",
-            "upstream": "dsh-movein@0.12.1",
-            "downstream": "dsh-movein@0.13.0",
-            "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
+            "status": "aligned",
+            "summary": "The dependency graph root matches the observed npm package.",
+            "upstream": "dsh-movein@0.13.0",
+            "downstream": "dsh-movein@0.13.0"
           },
           {
             "code": "dependency-graph-coverage",
