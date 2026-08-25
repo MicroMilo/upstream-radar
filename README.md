@@ -72,7 +72,7 @@ No local DSH profile is needed for this first check. It reviews one exact
 published artifact without executing plugin code:
 
 ```bash
-npx --yes upstream-radar@0.43.4 inspect \
+npx --yes upstream-radar@0.43.5 inspect \
   @sanqi-normal/dsh-webui-market-plugin@0.5.4 \
   --deep --fail-on never
 ```
@@ -85,7 +85,7 @@ behavior. See the [full evidence report](examples/dsh/reports/sanqi-market-plugi
 To review your own public repository without installing it:
 
 ```bash
-npx --yes upstream-radar@0.43.4 scan \
+npx --yes upstream-radar@0.43.5 scan \
   https://github.com/owner/dsh-plugin \
   --fail-on never
 ```
@@ -111,6 +111,12 @@ uses a fresh GitHub-hosted runner for code-executing checks. The runner is not
 your workstation and does not receive project secrets.
 
 ## Evidence from the ecosystem
+
+The current [100-plugin compatibility feed](feeds/dsh-plugin-compatibility.md)
+records 74 exact headless passes, 22 review-only results, zero reproduced
+incompatibilities, and four repository-only entries. The review-only group is
+kept separate from failures until the required Web/client or repository install
+plane is actually observed.
 
 As of 2026-08-25, Radar has filed 13 maintainer-facing reports. The outcome is
 more useful than the raw count:

@@ -27,7 +27,7 @@ jobs:
         run: |
           set -euo pipefail
           report="$RUNNER_TEMP/upstream-radar-scan.json"
-          npx --yes upstream-radar@0.43.4 scan \
+          npx --yes upstream-radar@0.43.5 scan \
             "$OBSERVER_REPOSITORY_INPUT" \
             --json --fail-on never > "$report"
           if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
