@@ -148,6 +148,7 @@ describe('reusable GitHub Action', () => {
     assert.match(checkedInObserverWorkflow, /--retry-pending-only/)
     assert.match(checkedInObserverWorkflow, /plan-surface-observations:/)
     assert.match(checkedInObserverWorkflow, /surface-observation:/)
+    assert.match(checkedInObserverWorkflow, /surface-observation:\n\s+needs: plan-surface-observations\n\s+#.*\n\s+#.*\n\s+if: always\(\) && needs\.plan-surface-observations\.result == 'success'/)
     assert.match(checkedInObserverWorkflow, /reconcile-surface-observations:/)
     assert.match(checkedInObserverWorkflow, /scripts\/write-dsh-surface-plan\.mjs/)
     assert.match(checkedInObserverWorkflow, /scripts\/merge-dsh-surface-ledger\.mjs/)

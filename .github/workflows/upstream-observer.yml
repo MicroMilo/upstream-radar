@@ -433,7 +433,9 @@ jobs:
   # reusable workflow receives no repository or model secrets.
   surface-observation:
     needs: plan-surface-observations
-    if: needs.plan-surface-observations.outputs.run == 'true'
+    # A no-op headless reconciliation is a skipped transitive ancestor. Use an
+    # explicit status check so GitHub does not suppress a surface-only refresh.
+    if: always() && needs.plan-surface-observations.result == 'success' && needs.plan-surface-observations.outputs.run == 'true'
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.plan-surface-observations.outputs.matrix) }}
