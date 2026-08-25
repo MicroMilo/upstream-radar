@@ -4,8 +4,8 @@ Updated: 2026-08-25T07:18:27.366Z
 
 The Agent reads bounded repository evidence and the latest isolated headless result. There is no static environment-planning fallback. Only an exact observed build-package name can reach the no-secret retry runner.
 
-- Current review set: 23
-- Agent-reviewed: 23
+- Current review set: 22
+- Agent-reviewed: 22
 - Agent failures awaiting retry: 0
 
 | Case | Previous evidence | Agent action | Classification | Retained build policy |
@@ -44,8 +44,6 @@ The Agent reads bounded repository evidence and the latest isolated headless res
 |  |  |  |  | The plugin's peer dependencies require @deepseek-ai/dsh-* packages at version 0.1.0-rc.8, but the headless DSH profile provides 0.1.1-rc.2, causing a peer contract mismatch. No build packages are required, so a retry cannot resolve the version incompatibility. |
 | `dsh-vision-toolkit-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The plugin's peer contract requires @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots, which are not resolved by the headless runtime. The missing packages are UI-related and not available in the headless execution plane. No build packages are required, so a retry cannot resolve the missing peer dependencies. |
-| `dsh-wallpaper-engine-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
-|  |  |  |  | The plugin's peer dependency @deepseek-ai/dsh-client-ui-slots is missing in the headless runtime, and the plugin declares a web client with immediate injection. The headless profile cannot satisfy the UI slots contract, and no build packages are required or approved. Retrying headless would not resolve the missing peer dependency. |
 | `dsh-web-ui-all-node22` | `unknown` | `stop-headless` | `different-plane` | approve `cloudflared`, `cpu-features`, `node-pty`, `ssh2` |
 |  |  |  |  | The plugin installed and loaded, but the runtime graph has 2 unresolved peer dependencies from dsh-better-sidebar: @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots. These are peer dependencies that cannot be resolved by approving build scripts; they require additional packages to be installed, which is outside the headless build-approval plane. The observed result is not a build-approval-required failure, and no build packages are required by the latest retry. |
 | `dshscan-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |

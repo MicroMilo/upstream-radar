@@ -1,9 +1,9 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-25T07:38:28.765Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-25T07:46:23.579Z`.
 Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 
-**74 observed compatible · 0 observed incompatible · 22 needs review · 0 update pending · 4 not observed**
+**74 observed compatible · 0 observed incompatible · 21 needs review · 1 update pending · 4 not observed**
 
 | Catalog plugin | Selected artifact | Tested artifact | Exact DSH / runtime | Evidence status | Observed |
 | --- | --- | --- | --- | --- | --- |
@@ -31,7 +31,7 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 | [dream-num/dsh-univer-office](https://github.com/dream-num/dsh-univer-office) | `dsh-univer-office@0.2.9` | `dsh-univer-office@0.2.9` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T07:13:21.792Z |
 | [dsh-market/dsh-market](https://github.com/dsh-market/dsh-market) | `dshmarket@1.29.1` | `dshmarket@1.29.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:38:00.012Z |
 | [dsh-plugins/dsh-auxiliary](https://github.com/dsh-plugins/dsh-auxiliary) | `@dsh-plugin/dsh-auxiliary@0.5.1` | `@dsh-plugin/dsh-auxiliary@0.5.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:03:20.535Z |
-| [elysia395/dsh-wallpaper-engine](https://github.com/elysia395/dsh-wallpaper-engine) | `dsh-plugin-wallpaper-engine@0.6.3` | `dsh-plugin-wallpaper-engine@0.6.3` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T07:13:17.620Z |
+| [elysia395/dsh-wallpaper-engine](https://github.com/elysia395/dsh-wallpaper-engine) | `dsh-plugin-wallpaper-engine@0.6.5` | `dsh-plugin-wallpaper-engine@0.6.3` | `0.1.1-rc.2` / Node 22 | `update-pending` | 2026-08-25T07:13:17.620Z |
 | [feibi-mochi/deepseek-harness-control-center](https://github.com/feibi-mochi/deepseek-harness-control-center) | `deepseek-harness-wallet@0.3.3` | `deepseek-harness-wallet@0.3.3` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:04:17.310Z |
 | [feng78-boop/dsh-thirteen-bg](https://github.com/feng78-boop/dsh-thirteen-bg) | `dsh-thirteen-bg@0.5.2` | `dsh-thirteen-bg@0.5.2` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:54:30.752Z |
 | [flymysql/dsh-remote](https://github.com/flymysql/dsh-remote) | `dsh-remote@0.8.8` | `dsh-remote@0.8.8` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T04:39:48.541Z |

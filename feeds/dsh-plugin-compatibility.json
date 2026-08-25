@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha2",
-  "generatedAt": "2026-08-25T07:38:28.765Z",
+  "generatedAt": "2026-08-25T07:46:23.579Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.43.5",
@@ -31,8 +31,8 @@
     "total": 100,
     "observed-compatible": 74,
     "observed-incompatible": 0,
-    "needs-review": 22,
-    "update-pending": 0,
+    "needs-review": 21,
+    "update-pending": 1,
     "not-observed": 4
   },
   "plugins": [
@@ -1079,10 +1079,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-plugin-wallpaper-engine",
-        "selectedVersion": "0.6.3",
+        "selectedVersion": "0.6.5",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-wallpaper-engine-node22",

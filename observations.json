@@ -6787,20 +6787,20 @@
     "dsh-cloudflare-browser-run": {
       "targetId": "dsh-cloudflare-browser-run",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-21T08:46:19.939Z",
+      "observedAt": "2026-08-25T07:44:24.736Z",
       "source": {
         "repository": "RealAlexandreAI/dsh-cloudflare-browser-run",
         "ref": "main",
-        "commit": "6f4432eac58fbf1d43a76a276854efb6cced22be",
+        "commit": "ad5e950bcc1357af8946b135884869e8b52bbb67",
         "packagePath": "package.json",
         "lockfile": "package-lock.json",
-        "commitUrl": "https://github.com/RealAlexandreAI/dsh-cloudflare-browser-run/commit/6f4432eac58fbf1d43a76a276854efb6cced22be",
-        "packageUrl": "https://raw.githubusercontent.com/RealAlexandreAI/dsh-cloudflare-browser-run/6f4432eac58fbf1d43a76a276854efb6cced22be/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/RealAlexandreAI/dsh-cloudflare-browser-run/6f4432eac58fbf1d43a76a276854efb6cced22be/package-lock.json"
+        "commitUrl": "https://github.com/RealAlexandreAI/dsh-cloudflare-browser-run/commit/ad5e950bcc1357af8946b135884869e8b52bbb67",
+        "packageUrl": "https://raw.githubusercontent.com/RealAlexandreAI/dsh-cloudflare-browser-run/ad5e950bcc1357af8946b135884869e8b52bbb67/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/RealAlexandreAI/dsh-cloudflare-browser-run/ad5e950bcc1357af8946b135884869e8b52bbb67/package-lock.json"
       },
       "manifest": {
         "name": "dsh-cloudflare-browser-run",
-        "version": "0.1.3",
+        "version": "0.1.4",
         "type": "module",
         "main": "dist/index.js",
         "exports": {
@@ -6822,29 +6822,29 @@
       },
       "package": {
         "name": "dsh-cloudflare-browser-run",
-        "version": "0.1.3",
+        "version": "0.1.4",
         "distTag": "latest",
-        "integrity": "sha512-sAHB3qfpkplJzaDhxawH1eqyRi665G/b/Cpoy3LsFtN784PoS/NOn0hGRQOarVUQ5zYFlflbYcNw2zUd5Ppveg==",
-        "tarball": "https://registry.npmjs.org/dsh-cloudflare-browser-run/-/dsh-cloudflare-browser-run-0.1.3.tgz"
+        "integrity": "sha512-2k5L0iT0yPwZO84JwKWKKawLK03kAj3gt4nTwNQyigN7ne1PoSyeQNUAKjnVxcbJUKLrweQ4u7vji/WNOtd1Kw==",
+        "tarball": "https://registry.npmjs.org/dsh-cloudflare-browser-run/-/dsh-cloudflare-browser-run-0.1.4.tgz"
       },
-      "graphError": "requested root package is not present in npm lockfile: dsh-cloudflare-browser-run@0.1.3",
+      "graphError": "requested root package is not present in npm lockfile: dsh-cloudflare-browser-run@0.1.4",
       "alignment": {
         "schema": "upstream-radar.upstream-downstream-ir/v1alpha1",
         "targetId": "dsh-cloudflare-browser-run",
         "ecosystem": "dsh",
         "upstream": {
           "repository": "RealAlexandreAI/dsh-cloudflare-browser-run",
-          "commit": "6f4432eac58fbf1d43a76a276854efb6cced22be",
+          "commit": "ad5e950bcc1357af8946b135884869e8b52bbb67",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-cloudflare-browser-run",
-            "version": "0.1.3"
+            "version": "0.1.4"
           }
         },
         "downstream": {
           "published": {
             "name": "dsh-cloudflare-browser-run",
-            "version": "0.1.3"
+            "version": "0.1.4"
           },
           "graph": {
             "status": "unavailable",
@@ -6859,21 +6859,21 @@
             "code": "source-published-identity",
             "status": "aligned",
             "summary": "The source manifest and observed npm package have the same name and version.",
-            "upstream": "dsh-cloudflare-browser-run@0.1.3",
-            "downstream": "dsh-cloudflare-browser-run@0.1.3"
+            "upstream": "dsh-cloudflare-browser-run@0.1.4",
+            "downstream": "dsh-cloudflare-browser-run@0.1.4"
           },
           {
             "code": "source-graph-root",
             "status": "unknown",
-            "summary": "The dependency graph could not be established: requested root package is not present in npm lockfile: dsh-cloudflare-browser-run@0.1.3",
-            "upstream": "dsh-cloudflare-browser-run@0.1.3",
+            "summary": "The dependency graph could not be established: requested root package is not present in npm lockfile: dsh-cloudflare-browser-run@0.1.4",
+            "upstream": "dsh-cloudflare-browser-run@0.1.4",
             "remediation": "Commit a supported lockfile or correct the configured package path/importer so the root can be verified."
           },
           {
             "code": "published-graph-root",
             "status": "unknown",
             "summary": "The published package cannot be compared with the dependency graph root.",
-            "upstream": "dsh-cloudflare-browser-run@0.1.3",
+            "upstream": "dsh-cloudflare-browser-run@0.1.4",
             "downstream": "unknown",
             "remediation": "Observe both the exact npm package and a complete lockfile graph before using the graph as downstream evidence."
           },
@@ -43894,20 +43894,20 @@
     "dsh-cost-meter": {
       "targetId": "dsh-cost-meter",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T07:44:24.736Z",
       "source": {
         "repository": "Han-1413141/dsh-cost-meter",
         "ref": "master",
-        "commit": "2be80a914937186a3c705b227d85248b735281d2",
+        "commit": "7611708828df6b89186e3ea7df3fbcdf7de33541",
         "packagePath": "package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/Han-1413141/dsh-cost-meter/commit/2be80a914937186a3c705b227d85248b735281d2",
-        "packageUrl": "https://raw.githubusercontent.com/Han-1413141/dsh-cost-meter/2be80a914937186a3c705b227d85248b735281d2/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/Han-1413141/dsh-cost-meter/2be80a914937186a3c705b227d85248b735281d2/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/Han-1413141/dsh-cost-meter/commit/7611708828df6b89186e3ea7df3fbcdf7de33541",
+        "packageUrl": "https://raw.githubusercontent.com/Han-1413141/dsh-cost-meter/7611708828df6b89186e3ea7df3fbcdf7de33541/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/Han-1413141/dsh-cost-meter/7611708828df6b89186e3ea7df3fbcdf7de33541/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "dsh-cost-meter",
-        "version": "1.5.46",
+        "version": "1.5.47",
         "type": "module",
         "main": "lib/index.js",
         "exports": {
@@ -43945,12 +43945,12 @@
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "pnpm:workspace-root:dsh-cost-meter@1.5.46",
+        "rootNodeId": "pnpm:workspace-root:dsh-cost-meter@1.5.47",
         "nodes": [
           {
-            "id": "pnpm:workspace-root:dsh-cost-meter@1.5.46",
+            "id": "pnpm:workspace-root:dsh-cost-meter@1.5.47",
             "name": "dsh-cost-meter",
-            "version": "1.5.46"
+            "version": "1.5.47"
           },
           {
             "id": "pnpm:@deepseek-ai/cordis@4.0.1",
@@ -44065,23 +44065,23 @@
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.46",
+            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.47",
             "to": "pnpm:@deepseek-ai/dsh-credentials@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.46",
+            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.47",
             "to": "pnpm:@deepseek-ai/dsh-home-paths@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))",
             "kind": "runtime"
           },
           {
-            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.46",
+            "from": "pnpm:workspace-root:dsh-cost-meter@1.5.47",
             "to": "pnpm:zod@4.4.3",
             "kind": "runtime"
           }
         ],
         "source": "pnpm-lock",
-        "digest": "sha256:7e008636e5ec3a83fc9507e3d2d7d87512e7586ee86cbb6a2ea58e9e0f4bc245",
+        "digest": "sha256:e825c91975b69b0bc3023d43b77a4d5c79632ded2eeac7c472325983b76dfd89",
         "unresolved": [
           {
             "from": "pnpm:@deepseek-ai/cordis@4.0.1",
@@ -44103,11 +44103,11 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "Han-1413141/dsh-cost-meter",
-          "commit": "2be80a914937186a3c705b227d85248b735281d2",
+          "commit": "7611708828df6b89186e3ea7df3fbcdf7de33541",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-cost-meter",
-            "version": "1.5.46"
+            "version": "1.5.47"
           }
         },
         "downstream": {
@@ -44119,9 +44119,9 @@
             "status": "incomplete",
             "root": {
               "name": "dsh-cost-meter",
-              "version": "1.5.46"
+              "version": "1.5.47"
             },
-            "digest": "sha256:7e008636e5ec3a83fc9507e3d2d7d87512e7586ee86cbb6a2ea58e9e0f4bc245",
+            "digest": "sha256:e825c91975b69b0bc3023d43b77a4d5c79632ded2eeac7c472325983b76dfd89",
             "nodes": 10,
             "edges": 16,
             "unresolved": 2
@@ -44133,7 +44133,7 @@
             "code": "source-published-identity",
             "status": "mismatch",
             "summary": "The source manifest and observed npm package do not identify the same name and version.",
-            "upstream": "dsh-cost-meter@1.5.46",
+            "upstream": "dsh-cost-meter@1.5.47",
             "downstream": "dsh-cost-meter@1.5.42",
             "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
           },
@@ -44141,15 +44141,15 @@
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "dsh-cost-meter@1.5.46",
-            "downstream": "dsh-cost-meter@1.5.46"
+            "upstream": "dsh-cost-meter@1.5.47",
+            "downstream": "dsh-cost-meter@1.5.47"
           },
           {
             "code": "published-graph-root",
             "status": "mismatch",
             "summary": "The dependency graph root does not identify the observed npm package.",
             "upstream": "dsh-cost-meter@1.5.42",
-            "downstream": "dsh-cost-meter@1.5.46",
+            "downstream": "dsh-cost-meter@1.5.47",
             "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
           },
           {
@@ -81969,20 +81969,20 @@
     "dsh-wallpaper-engine": {
       "targetId": "dsh-wallpaper-engine",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T07:44:24.736Z",
       "source": {
         "repository": "elysia395/dsh-wallpaper-engine",
         "ref": "main",
-        "commit": "cbd7d711446953ae2a2b08578997af93b6c48d04",
+        "commit": "1f15988960ed216f06785d00d6b8a6363c7c60c5",
         "packagePath": "package.json",
         "lockfile": "package-lock.json",
-        "commitUrl": "https://github.com/elysia395/dsh-wallpaper-engine/commit/cbd7d711446953ae2a2b08578997af93b6c48d04",
-        "packageUrl": "https://raw.githubusercontent.com/elysia395/dsh-wallpaper-engine/cbd7d711446953ae2a2b08578997af93b6c48d04/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/elysia395/dsh-wallpaper-engine/cbd7d711446953ae2a2b08578997af93b6c48d04/package-lock.json"
+        "commitUrl": "https://github.com/elysia395/dsh-wallpaper-engine/commit/1f15988960ed216f06785d00d6b8a6363c7c60c5",
+        "packageUrl": "https://raw.githubusercontent.com/elysia395/dsh-wallpaper-engine/1f15988960ed216f06785d00d6b8a6363c7c60c5/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/elysia395/dsh-wallpaper-engine/1f15988960ed216f06785d00d6b8a6363c7c60c5/package-lock.json"
       },
       "manifest": {
         "name": "dsh-plugin-wallpaper-engine",
-        "version": "0.6.3",
+        "version": "0.6.5",
         "type": "module",
         "main": "lib/index.js",
         "exports": {
@@ -82027,19 +82027,19 @@
       },
       "package": {
         "name": "dsh-plugin-wallpaper-engine",
-        "version": "0.6.3",
+        "version": "0.6.5",
         "distTag": "latest",
-        "integrity": "sha512-YSjSDdHV/1dLY+SP6TdBHyp5taa2b20ZaDBPHLkdTMrEDNpVBRiW4IKdh6ohLV8isS+fdEoCR5o6OkG6QA8rTg==",
-        "tarball": "https://registry.npmjs.org/dsh-plugin-wallpaper-engine/-/dsh-plugin-wallpaper-engine-0.6.3.tgz"
+        "integrity": "sha512-D22Ard1V5H43fvDTfUSzNNsGFh+xDF1ycSNMHqqJS28zSvsMKIm756APcsQ3BUbFwT2266w6aG8XKYI5WCdLpw==",
+        "tarball": "https://registry.npmjs.org/dsh-plugin-wallpaper-engine/-/dsh-plugin-wallpaper-engine-0.6.5.tgz"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.3",
+        "rootNodeId": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.5",
         "nodes": [
           {
-            "id": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.3",
+            "id": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.5",
             "name": "dsh-plugin-wallpaper-engine",
-            "version": "0.6.3"
+            "version": "0.6.5"
           },
           {
             "id": "node_modules/@deepseek-ai/cordis",
@@ -84194,38 +84194,38 @@
             "kind": "runtime"
           },
           {
-            "from": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.3",
+            "from": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.5",
             "to": "node_modules/@deepseek-ai/cordis",
             "kind": "peer"
           },
           {
-            "from": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.3",
+            "from": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.5",
             "to": "node_modules/@deepseek-ai/dsh-client-runtime",
             "kind": "peer"
           },
           {
-            "from": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.3",
+            "from": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.5",
             "to": "node_modules/@deepseek-ai/dsh-client-ui-slots",
             "kind": "peer"
           },
           {
-            "from": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.3",
+            "from": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.5",
             "to": "node_modules/@deepseek-ai/dsh-host-webserver",
             "kind": "optional"
           },
           {
-            "from": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.3",
+            "from": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.5",
             "to": "node_modules/jpeg-js",
             "kind": "runtime"
           },
           {
-            "from": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.3",
+            "from": "npm:workspace-root:dsh-plugin-wallpaper-engine@0.6.5",
             "to": "node_modules/react",
             "kind": "peer"
           }
         ],
         "source": "npm-lock",
-        "digest": "sha256:8bbc8668a0bdfc5089a0045cefbbe370fd344faa71863b8bb050e72328375110",
+        "digest": "sha256:e7be7aff5e1568de54a3f3cd7edad79892fb979c3c4123338461b1729d33cb6b",
         "unresolved": [
           {
             "from": "node_modules/@deepseek-ai/cordis-plugin-loader",
@@ -84271,25 +84271,25 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "elysia395/dsh-wallpaper-engine",
-          "commit": "cbd7d711446953ae2a2b08578997af93b6c48d04",
+          "commit": "1f15988960ed216f06785d00d6b8a6363c7c60c5",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-plugin-wallpaper-engine",
-            "version": "0.6.3"
+            "version": "0.6.5"
           }
         },
         "downstream": {
           "published": {
             "name": "dsh-plugin-wallpaper-engine",
-            "version": "0.6.3"
+            "version": "0.6.5"
           },
           "graph": {
             "status": "incomplete",
             "root": {
               "name": "dsh-plugin-wallpaper-engine",
-              "version": "0.6.3"
+              "version": "0.6.5"
             },
-            "digest": "sha256:8bbc8668a0bdfc5089a0045cefbbe370fd344faa71863b8bb050e72328375110",
+            "digest": "sha256:e7be7aff5e1568de54a3f3cd7edad79892fb979c3c4123338461b1729d33cb6b",
             "nodes": 70,
             "edges": 367,
             "unresolved": 6
@@ -84301,22 +84301,22 @@
             "code": "source-published-identity",
             "status": "aligned",
             "summary": "The source manifest and observed npm package have the same name and version.",
-            "upstream": "dsh-plugin-wallpaper-engine@0.6.3",
-            "downstream": "dsh-plugin-wallpaper-engine@0.6.3"
+            "upstream": "dsh-plugin-wallpaper-engine@0.6.5",
+            "downstream": "dsh-plugin-wallpaper-engine@0.6.5"
           },
           {
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "dsh-plugin-wallpaper-engine@0.6.3",
-            "downstream": "dsh-plugin-wallpaper-engine@0.6.3"
+            "upstream": "dsh-plugin-wallpaper-engine@0.6.5",
+            "downstream": "dsh-plugin-wallpaper-engine@0.6.5"
           },
           {
             "code": "published-graph-root",
             "status": "aligned",
             "summary": "The dependency graph root matches the observed npm package.",
-            "upstream": "dsh-plugin-wallpaper-engine@0.6.3",
-            "downstream": "dsh-plugin-wallpaper-engine@0.6.3"
+            "upstream": "dsh-plugin-wallpaper-engine@0.6.5",
+            "downstream": "dsh-plugin-wallpaper-engine@0.6.5"
           },
           {
             "code": "dependency-graph-coverage",
@@ -209916,14 +209916,14 @@
     "dsh-memory-plugin": {
       "targetId": "dsh-memory-plugin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:34:21.974Z",
+      "observedAt": "2026-08-25T07:44:24.736Z",
       "source": {
         "repository": "volcengine/OpenViking",
         "ref": "main",
-        "commit": "dbdb00bb5bbd02b2d023efb5fcb193fe1256619a",
+        "commit": "3693171661024f1d603c57ba1e233228b5c666b5",
         "packagePath": "examples/dsh-memory-plugin/package.json",
-        "commitUrl": "https://github.com/volcengine/OpenViking/commit/dbdb00bb5bbd02b2d023efb5fcb193fe1256619a",
-        "packageUrl": "https://raw.githubusercontent.com/volcengine/OpenViking/dbdb00bb5bbd02b2d023efb5fcb193fe1256619a/examples/dsh-memory-plugin/package.json"
+        "commitUrl": "https://github.com/volcengine/OpenViking/commit/3693171661024f1d603c57ba1e233228b5c666b5",
+        "packageUrl": "https://raw.githubusercontent.com/volcengine/OpenViking/3693171661024f1d603c57ba1e233228b5c666b5/examples/dsh-memory-plugin/package.json"
       },
       "manifest": {
         "name": "@openviking/dsh-memory-plugin",
@@ -209963,7 +209963,7 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "volcengine/OpenViking",
-          "commit": "dbdb00bb5bbd02b2d023efb5fcb193fe1256619a",
+          "commit": "3693171661024f1d603c57ba1e233228b5c666b5",
           "packagePath": "examples/dsh-memory-plugin/package.json",
           "coordinate": {
             "name": "@openviking/dsh-memory-plugin",
