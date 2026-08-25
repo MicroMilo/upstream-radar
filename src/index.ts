@@ -133,6 +133,7 @@ export {
   buildDshSurfaceIR,
   buildDshSurfacePlan,
   emptyDshSurfaceLedger,
+  hasDshWebClientCoverageGap,
   isDshWebClientOnlyCoverageGap,
   mergeDshSurfaceLedger,
   parseDshSurfaceLedger,

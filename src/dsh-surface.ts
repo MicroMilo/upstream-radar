@@ -256,6 +256,20 @@ function isWebClientPackage(name: string): boolean {
   return name.startsWith('@deepseek-ai/dsh-client-')
 }
 
+function dshCompatibilityGapNames(entry: DshCompatibilityLedgerEntry): string[] {
+  const runtimeGraph = entry.resolution?.runtimeGraph
+  return [
+    ...(runtimeGraph?.unresolvedDependencies ?? []).map(item => item.name),
+    ...(runtimeGraph?.pluginPeerContracts?.issues ?? []).map(item => item.name),
+  ]
+}
+
+/** Route any review cell with a DSH browser-client gap into Web observation. */
+export function hasDshWebClientCoverageGap(entry: DshCompatibilityLedgerEntry): boolean {
+  if (entry.result !== 'peer-contract-incompatible' && entry.result !== 'unknown') return false
+  return dshCompatibilityGapNames(entry).some(isWebClientPackage)
+}
+
 /**
  * True only when the headless result is unresolved exclusively because the
  * stock Web profile is absent. The intended Web plane may cover this gap; a
@@ -263,11 +277,7 @@ function isWebClientPackage(name: string): boolean {
  */
 export function isDshWebClientOnlyCoverageGap(entry: DshCompatibilityLedgerEntry): boolean {
   if (entry.result !== 'peer-contract-incompatible' && entry.result !== 'unknown') return false
-  const runtimeGraph = entry.resolution?.runtimeGraph
-  const names = [
-    ...(runtimeGraph?.unresolvedDependencies ?? []).map(item => item.name),
-    ...(runtimeGraph?.pluginPeerContracts?.issues ?? []).map(item => item.name),
-  ]
+  const names = dshCompatibilityGapNames(entry)
   return names.length > 0 && names.every(isWebClientPackage)
 }
 
@@ -600,7 +610,7 @@ export function buildDshSurfacePlan(
   if (targets.autoDiscover?.webClientGaps === true) {
     for (const source of [...sourceLedger.entries].sort((left, right) => left.caseId.localeCompare(right.caseId))) {
       const pair = `${source.caseId}\u0000web`
-      if (usedSurfacePairs.has(pair) || !isDshWebClientOnlyCoverageGap(source)) continue
+      if (usedSurfacePairs.has(pair) || !hasDshWebClientCoverageGap(source)) continue
       const id = automaticWebTargetId(source.caseId, usedTargetIds)
       if (desiredTargets.length >= MAX_TARGETS) {
         blocked.push({ id, reason: `automatic Web observation skipped because the ${MAX_TARGETS}-surface run budget is full` })

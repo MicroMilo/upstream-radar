@@ -287,12 +287,61 @@ describe('DSH execution-plane reconciliation', () => {
     assert.equal(plan.matrix.include.every(item => item.reasons.includes('missing-evidence')), true)
   })
 
-  it('automatically routes Web-client-only headless gaps without duplicating explicit targets', () => {
+  it('automatically routes Web-client headless gaps without duplicating explicit targets or swallowing host-only cases', () => {
     const ledger = sourceLedger({
       ...webClientGapEntry('web-plugin-node22', 'web-plugin@1.2.3'),
       artifact: { lifecycleScripts: [], sha256: ARTIFACT_SHA },
     })
     ledger.entries.push(webClientGapEntry('auto-client-node22', 'auto-client@2.0.0'))
+    ledger.entries.push({
+      ...webClientGapEntry('mixed-client-node22', 'mixed-client@2.1.0'),
+      artifact: { lifecycleScripts: [], sha256: '7'.repeat(64) },
+      resolution: {
+        runtimeGraph: {
+          digest: `sha256:${'2'.repeat(64)}`,
+          nodes: 10,
+          edges: 9,
+          unresolved: 1,
+          unresolvedDependencies: [{
+            from: 'node_modules/mixed-client',
+            name: '@deepseek-ai/dsh-client-ui-primitives',
+            spec: '^0.1.0-rc.8',
+            kind: 'peer',
+          }],
+          pluginPeerContracts: {
+            declared: 2,
+            satisfied: 0,
+            mismatched: 1,
+            indeterminate: 0,
+            missing: 1,
+            relations: [{
+              name: '@deepseek-ai/dsh-client-ui-primitives',
+              required: '^0.1.0-rc.8',
+              status: 'missing',
+              staticUsage: 'runtime-import-observed',
+            }, {
+              name: 'react-dom',
+              required: '^18.2.0',
+              resolvedVersion: '19.2.8',
+              status: 'mismatched',
+              staticUsage: 'runtime-import-observed',
+            }],
+            issues: [{
+              name: '@deepseek-ai/dsh-client-ui-primitives',
+              required: '^0.1.0-rc.8',
+              status: 'missing',
+              staticUsage: 'runtime-import-observed',
+            }, {
+              name: 'react-dom',
+              required: '^18.2.0',
+              resolvedVersion: '19.2.8',
+              status: 'mismatched',
+              staticUsage: 'runtime-import-observed',
+            }],
+          },
+        },
+      },
+    })
     ledger.entries.push({
       ...webClientGapEntry('host-contract-node22', 'host-contract@3.0.0'),
       artifact: { lifecycleScripts: [], sha256: 'f'.repeat(64) },
@@ -336,6 +385,7 @@ describe('DSH execution-plane reconciliation', () => {
 
     assert.deepEqual(plan.matrix.include.map(item => item.id), [
       'auto-client-node22-web',
+      'mixed-client-node22-web',
       'web-plugin-tui',
       'web-plugin-web',
     ])
@@ -346,6 +396,7 @@ describe('DSH execution-plane reconciliation', () => {
     assert.deepEqual(automatic?.reasons, ['missing-evidence'])
     assert.equal(plan.matrix.include.filter(item => item.sourceCaseId === 'web-plugin-node22' && item.plane === 'web').length, 1)
     assert.equal(plan.matrix.include.some(item => item.sourceCaseId === 'host-contract-node22'), false)
+    assert.equal(plan.matrix.include.some(item => item.sourceCaseId === 'mixed-client-node22'), true)
   })
 
   it('validates the optional automatic Web routing switch', () => {
