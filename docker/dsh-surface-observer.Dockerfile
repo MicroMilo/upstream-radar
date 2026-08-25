@@ -29,7 +29,8 @@ RUN apt-get update \
   && npm install --global --ignore-scripts pnpm@11.7.0 \
   && mkdir -p /surface-driver \
   && npm install --prefix /surface-driver --no-audit --no-fund playwright-core@1.62.0 node-pty@1.1.0 \
-  && npm cache clean --force
+  && npm cache clean --force \
+  && useradd --create-home --uid 10001 --shell /usr/sbin/nologin observer
 
 WORKDIR /radar
 COPY --from=build /build/dist/src ./dist/src
@@ -39,4 +40,3 @@ ENV UPSTREAM_RADAR_SURFACE_DRIVER_ROOT=/surface-driver
 ENV UPSTREAM_RADAR_CHROMIUM_EXECUTABLE=/usr/bin/chromium
 
 ENTRYPOINT ["node", "/radar/dist/src/cli.js", "probe", "dsh-surface"]
-

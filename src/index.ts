@@ -108,6 +108,7 @@ export {
 } from './dsh-install-observation.js'
 export {
   DSH_SURFACE_OBSERVATION_SCHEMA,
+  dshSurfaceProfileStrategy,
   evaluateDshTuiEvidence,
   evaluateDshWebEvidence,
   observeDshPluginSurface,

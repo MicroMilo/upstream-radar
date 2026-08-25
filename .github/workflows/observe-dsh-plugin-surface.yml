@@ -182,7 +182,7 @@ jobs:
           timeout --signal=KILL 20m docker run --rm \
             --name "$RADAR_CONTAINER_NAME" \
             --read-only \
-            --user "$(id -u):$(id -g)" \
+            --user 10001:10001 \
             --network bridge \
             --cap-drop ALL \
             --security-opt no-new-privileges=true \

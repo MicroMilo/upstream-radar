@@ -3,6 +3,7 @@ import { describe, it } from 'node:test'
 import type { DshCompatibilityLedger } from '../src/dsh-compatibility-ledger.js'
 import {
   DSH_SURFACE_OBSERVATION_SCHEMA,
+  dshSurfaceProfileStrategy,
   evaluateDshTuiEvidence,
   evaluateDshWebEvidence,
   type DshSurfaceObservationReport,
@@ -158,6 +159,11 @@ function compatibleReport(expected: DshSurfaceExpectedCase, plane: 'web' | 'tui'
 }
 
 describe('DSH execution-plane evidence', () => {
+  it('initializes the stock Web profile but lets plugin add create a custom TUI profile', () => {
+    assert.equal(dshSurfaceProfileStrategy('web'), 'initialize-stock-profile')
+    assert.equal(dshSurfaceProfileStrategy('tui'), 'create-with-plugin-add')
+  })
+
   it('requires the Web client entry to be published and materialized, not merely HTTP 200', () => {
     assert.deepEqual(evaluateDshWebEvidence({
       driverAvailable: true,

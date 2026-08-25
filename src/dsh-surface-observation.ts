@@ -225,7 +225,7 @@ interface Browser {
 
 interface PlaywrightDriver {
   chromium: {
-    launch(options: { headless: boolean; executablePath?: string; args: string[] }): Promise<Browser>
+    launch(options: { headless: boolean; executablePath?: string; args: string[]; env: Record<string, string> }): Promise<Browser>
   }
 }
 
@@ -309,6 +309,10 @@ export function evaluateDshTuiEvidence(input: DshTuiEvaluationInput): DshSurface
     failedStage: undefined,
     reason: 'the TUI produced a real PTY frame, accepted input, and completed controlled shutdown',
   }
+}
+
+export function dshSurfaceProfileStrategy(plane: DshExecutionPlane): 'initialize-stock-profile' | 'create-with-plugin-add' {
+  return plane === 'web' ? 'initialize-stock-profile' : 'create-with-plugin-add'
 }
 
 function skippedStages(): DshSurfaceObservationReport['stages'] {
@@ -735,7 +739,8 @@ async function observeWebSurface(input: {
     browser = await playwright.chromium.launch({
       headless: true,
       ...(input.chromiumExecutable === undefined ? {} : { executablePath: input.chromiumExecutable }),
-      args: ['--no-sandbox', '--disable-dev-shm-usage'],
+      args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-crashpad', '--disable-crash-reporter'],
+      env: Object.fromEntries(Object.entries(input.env).filter((entry): entry is [string, string] => typeof entry[1] === 'string')),
     })
     context = await browser.newContext({ serviceWorkers: 'block' })
     const tracePath = join(input.artifactsDirectory, safeArtifactName(input.report.caseId, 'trace.zip'))
@@ -1061,6 +1066,9 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
       mkdir(environment.HOME as string, { recursive: true, mode: 0o700 }),
       mkdir(environment.DSH_HOME as string, { recursive: true, mode: 0o700 }),
       mkdir(environment.TMPDIR as string, { recursive: true, mode: 0o700 }),
+      mkdir(environment.XDG_CACHE_HOME as string, { recursive: true, mode: 0o700 }),
+      mkdir(environment.XDG_CONFIG_HOME as string, { recursive: true, mode: 0o700 }),
+      mkdir(environment.XDG_DATA_HOME as string, { recursive: true, mode: 0o700 }),
     ])
     await Promise.all([
       writeFile(join(sandboxRoot, 'controlled.npmrc'), 'registry=https://registry.npmjs.org/\naudit=false\nfund=false\nupdate-notifier=false\n', { mode: 0o600 }),
@@ -1098,9 +1106,14 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
       return finish(report, 'unknown', 'the downloaded artifact bytes do not match the source observation')
     }
 
-    const profile = await runCommand(pnpmCommand, dshArgs(report.dshVersion, ['--profile', report.profile, '--help']), artifactDirectory, noScriptsEnvironment, timeoutMs)
-    report.stages.profile = commandStage(profile)
-    if (report.stages.profile.status !== 'passed') return finish(report, 'unknown', 'the exact DSH runtime could not initialize the declared profile')
+    const profileStrategy = dshSurfaceProfileStrategy(report.plane)
+    if (profileStrategy === 'initialize-stock-profile') {
+      const profile = await runCommand(pnpmCommand, dshArgs(report.dshVersion, ['--profile', report.profile, '--help']), artifactDirectory, noScriptsEnvironment, timeoutMs)
+      report.stages.profile = commandStage(profile)
+      if (report.stages.profile.status !== 'passed') return finish(report, 'unknown', 'the exact DSH runtime could not initialize the declared profile')
+    } else {
+      report.stages.profile = { status: 'skipped', detail: 'the custom TUI profile must be created by dsh plugin add' }
+    }
 
     const install = await runCommand(pnpmCommand, dshArgs(report.dshVersion, [
       'plugin', '--profile', report.profile, 'add', artifact.path,
@@ -1110,6 +1123,9 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
       return finish(report, 'unknown', 'the profile install did not produce a bounded result')
     }
     if (install.code !== 0) return finish(report, 'surface-incompatible', `the exact plugin could not be installed into the declared ${report.plane} profile`)
+    if (profileStrategy === 'create-with-plugin-add') {
+      report.stages.profile = { status: 'passed', detail: 'dsh plugin add created the custom TUI profile' }
+    }
 
     const registered = await registeredBundle(environment.DSH_HOME as string, report.profile, parsedSpec.name)
     report.stages.registration = registered
