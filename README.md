@@ -81,7 +81,7 @@ No local DSH profile is needed for this first check. It reviews one exact
 published artifact without executing plugin code:
 
 ```bash
-npx --yes upstream-radar@0.44.0 inspect \
+npx --yes upstream-radar@0.45.0 inspect \
   @sanqi-normal/dsh-webui-market-plugin@0.5.4 \
   --deep --fail-on never
 ```
@@ -94,7 +94,7 @@ behavior. See the [full evidence report](examples/dsh/reports/sanqi-market-plugi
 To review your own public repository without installing it:
 
 ```bash
-npx --yes upstream-radar@0.44.0 scan \
+npx --yes upstream-radar@0.45.0 scan \
   https://github.com/owner/dsh-plugin \
   --fail-on never
 ```
@@ -123,10 +123,14 @@ model secrets.
 ## Evidence from the ecosystem
 
 The current [100-plugin compatibility feed](feeds/dsh-plugin-compatibility.md)
-records 74 exact headless passes, 22 review-only results, zero reproduced
-incompatibilities, and four repository-only entries. The review-only group is
-kept separate from failures until the required Web/client or repository install
-plane is actually observed.
+records **87 observed compatible, 9 needs review, 0 reproduced incompatible,
+and 4 not observed**. Its execution-plane ledger contains 22 exact Web/TUI
+cells; all 22 now pass in isolated GitHub VMs.
+
+The nine review cells are not hidden failures. Seven have a green Web proof but
+retain separate headless host/peer-contract evidence; two retain known old DSH
+host-package ranges tracked by existing maintainer issues. Radar keeps those
+facts visible without calling a working browser plugin broken.
 
 The first non-headless cells now run in GitHub-hosted VMs:
 
@@ -135,13 +139,15 @@ The first non-headless cells now run in GitHub-hosted VMs:
 | [`dsh-univer-office@0.2.9 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32823035297/job/97726205358) | HTTP 200, DSH boot handoff, declared client bundle fetched, no browser/page errors | **Compatible** |
 | [`@deepseek-harness-tui/dsh-tui@0.9.2 × DSH 0.1.1-rc.2 × TUI`](https://github.com/MicroMilo/upstream-radar/actions/runs/32823035297/job/97726205289) | Real PTY frame, keyboard input, documented double-Ctrl-C exit, code 0 | **Compatible** |
 | [`@linxin666/dsh-web-all@0.3.3 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32828788296/job/97742850608) | Agent-approved four dependency builds; aggregate client bundle returned 200; boot manifest, app mount, and plugin materialization matched | **Compatible** |
+| [`dsh-better-sidebar@0.16.1 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32835449819/job/97763410354) | VM observed a `node-pty` build gate; DeepSeek approved only that exact dependency; the secret-free retry passed install, host, browser interaction, and shutdown | **Compatible** |
 
-Two first attempts were held by Radar rather than reported to authors. The TUI
-observer sent one Ctrl-C while the plugin documents a double press. The Web
-observer confused an internal Cordis loader row with the public npm module ID.
-Radar corrected both contracts and reran the same exact artifacts. The aggregate
-Web case still records a non-blocking `/status` probe returning 404, without
-mistaking that optional request for a failed plugin boot.
+The `better-sidebar` run demonstrates the closed loop: dynamic evidence found a
+build requirement absent from the headless plan; DeepSeek checked the exact
+manifest, README, and VM log; a fingerprint-bound policy approved only
+`node-pty`; then a separate runner with no model secrets established the pass.
+This was Radar's environment gap, so no plugin issue was filed. Earlier TUI and
+Web detector mistakes were handled the same way: held, corrected, and rerun
+instead of being sent to authors.
 
 As of 2026-08-25, Radar has filed 13 maintainer-facing reports. The outcome is
 more useful than the raw count:

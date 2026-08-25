@@ -4,6 +4,27 @@ All notable changes to Upstream Radar are documented here.
 
 ## [Unreleased]
 
+## [0.45.0] - 2026-08-25
+
+### Execution-plane Agent closure
+
+- Record exact pnpm dependency-build gates discovered only inside Web or TUI,
+  instead of collapsing them into an install failure or a plugin defect.
+- Let the configured DeepSeek Agent review bounded repository documents and
+  dynamic VM evidence, while permitting it to approve only package names that
+  the exact isolated observation already reported.
+- Bind every execution-plane approval to the plugin tarball digest, DSH version,
+  Node major, plane, profile, and source fingerprint; a changed cell cannot
+  inherit an old build policy.
+- Persist the Agent decision before dispatching a separate secret-free runner,
+  then reconcile the retry into the public surface ledger and directory feed.
+- Close the live `dsh-better-sidebar@0.16.1` loop: the Web VM reported
+  `node-pty`, DeepSeek `v4-flash` approved that one documented dependency, and
+  the retry passed every install, host, browser, interaction, and shutdown stage.
+- Complete the first 22-cell Web/TUI baseline with 22 compatible results. The
+  maintained 100-plugin feed now records 87 observed compatible, 9 needs review,
+  0 reproduced incompatible, and 4 not observed.
+
 ## [0.44.0] - 2026-08-25
 
 ### Web and TUI execution planes

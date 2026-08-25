@@ -69,7 +69,7 @@ Agent 可以选择作者声明的构建包、profile 设置和下一次受限重
 第一次检查不需要本地 DSH profile，也不会执行插件代码：
 
 ```bash
-npx --yes upstream-radar@0.44.0 inspect \
+npx --yes upstream-radar@0.45.0 inspect \
   @sanqi-normal/dsh-webui-market-plugin@0.5.4 \
   --deep --fail-on never
 ```
@@ -80,7 +80,7 @@ npx --yes upstream-radar@0.44.0 inspect \
 如果要检查自己的公开仓库，而不安装它：
 
 ```bash
-npx --yes upstream-radar@0.44.0 scan \
+npx --yes upstream-radar@0.45.0 scan \
   https://github.com/owner/dsh-plugin \
   --fail-on never
 ```
@@ -101,9 +101,13 @@ npx --yes upstream-radar@0.44.0 scan \
 
 ## 来自真实生态的结果
 
-当前的[100 插件兼容性 feed](feeds/dsh-plugin-compatibility.md)记录了 74 个精确 headless
-通过、22 个仅待复核结果、0 个已复现不兼容和 4 个仅仓库条目。在真正观测所需的
-Web/client 或仓库安装平面之前，待复核项不会被包装成插件故障。
+当前的[100 插件兼容性 feed](feeds/dsh-plugin-compatibility.md)记录了 **87 个已观测兼容、
+9 个待复核、0 个已复现不兼容和 4 个尚未观测**。执行平面账本包含 22 个精确 Web/TUI
+格子；目前 22 个都已在隔离 GitHub VM 中通过。
+
+剩余 9 个待复核格子不是被藏起来的失败：其中 7 个已有绿色 Web 证明，但仍保留独立的
+headless 宿主/peer 契约证据；另 2 个仍声明旧 DSH 宿主包范围，并已有维护者 Issue 跟踪。
+Radar 会保留这些事实，但不会把能正常运行的浏览器插件说成坏了。
 
 首批非 headless 测试已经在 GitHub 托管 VM 中跑通：
 
@@ -112,11 +116,12 @@ Web/client 或仓库安装平面之前，待复核项不会被包装成插件故
 | [`dsh-univer-office@0.2.9 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32823035297/job/97726205358) | HTTP 200、DSH 启动完成交接、客户端下载成功、浏览器和页面无错误 | **兼容** |
 | [`@deepseek-harness-tui/dsh-tui@0.9.2 × DSH 0.1.1-rc.2 × TUI`](https://github.com/MicroMilo/upstream-radar/actions/runs/32823035297/job/97726205289) | 真实 PTY 画面、键盘输入、按文档双击 Ctrl-C 后以 code 0 退出 | **兼容** |
 | [`@linxin666/dsh-web-all@0.3.3 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32828788296/job/97742850608) | Agent 批准 4 个依赖构建；聚合客户端包返回 200；启动清单、应用挂载和插件实体相互吻合 | **兼容** |
+| [`dsh-better-sidebar@0.16.1 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32835449819/job/97763410354) | VM 发现 `node-pty` 构建门槛；DeepSeek 只批准这个精确依赖；无密钥重试通过安装、宿主、浏览器交互和关闭阶段 | **兼容** |
 
-两次首次测试都被 Radar 暂扣，没有提交给作者：TUI 检测器只发送了一次 Ctrl-C，而插件文档要求
-连按两次；Web 检测器把 Cordis 内部加载行误当成公开 npm 模块 ID。我们修正两份测试契约，并用
-相同精确发布物复测。聚合 Web 案例仍如实保留一个非阻塞的 `/status` 探测 404，但不会把这条可选
-请求误判为插件启动失败。
+`better-sidebar` 展示了完整闭环：动态证据发现 headless 计划没遇到的构建要求；DeepSeek 核对
+精确 manifest、README 和 VM 日志；与指纹绑定的策略只批准 `node-pty`；随后另一台不带模型密钥
+的 runner 给出通过结论。这是 Radar 的环境缺口，因此没有向插件作者提交 Issue。此前 TUI 与 Web
+检测器自身的错误也按同样方式处理：先暂扣、修正并复测，而不是发给作者。
 
 截至 2026-08-25，Radar 共向维护者提交了 13 条报告。比数量更重要的是处理结果：
 

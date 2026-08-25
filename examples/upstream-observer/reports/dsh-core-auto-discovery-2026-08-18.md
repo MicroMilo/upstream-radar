@@ -30,5 +30,5 @@ than silently monitoring the repository root. Local `workspace:` links remain
 explicitly unresolved; Radar does not guess their published versions.
 
 This report was produced by the current branch, not the already published
-`upstream-radar@0.44.0`. Review the Draft PR before using the auto-discovery
+`upstream-radar@0.45.0`. Review the Draft PR before using the auto-discovery
 path from npm.

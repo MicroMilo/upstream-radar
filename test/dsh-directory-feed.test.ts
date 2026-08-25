@@ -154,7 +154,7 @@ function surfaceLedger(
       reason: `${result} Web evidence`,
       observer: {
         schema: 'upstream-radar.dsh-surface-observation/v1alpha1',
-        version: '0.44.0',
+        version: '0.45.0',
       },
       ...overrides,
     }],
