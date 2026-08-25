@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-surface-ir/v1alpha1",
-  "generatedAt": "2026-08-25T08:36:51.950Z",
+  "generatedAt": "2026-08-25T08:53:46.265Z",
   "cells": [
     {
       "id": "dsh-tui-tui",
@@ -24,7 +24,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T07:50:24.054Z",
+        "observedAt": "2026-08-25T08:53:30.961Z",
         "result": "compatible",
         "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown",
         "stages": {
@@ -71,8 +71,8 @@
           "exitCode": 0,
           "signal": 0,
           "transcript": "dsh-tui-tui.ansi",
-          "normalizedFrame": "███\n▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\nh-TUI\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc",
-          "capturedBytes": 24082,
+          "normalizedFrame": "▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nPress Ctrl+C again to exit\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\nh-TUI\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc",
+          "capturedBytes": 24028,
           "truncated": false
         }
       }
@@ -99,7 +99,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T07:50:19.330Z",
+        "observedAt": "2026-08-25T08:53:37.752Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -142,6 +142,40 @@
           "title": "DeepSeek Harness",
           "rootMounted": true,
           "bootManifestPresent": true,
+          "bootEntryIds": [
+            "dsh-univer-office",
+            "@deepseek-ai/dsh-typert-registry",
+            "@deepseek-ai/dsh-api-gateway",
+            "@deepseek-ai/dsh-session-log-export",
+            "@deepseek-ai/dsh-client-hmr",
+            "@deepseek-ai/dsh-client-modules",
+            "@deepseek-ai/dsh-client-connection",
+            "@deepseek-ai/dsh-api-remotes",
+            "@deepseek-ai/dsh-client-runtime",
+            "@deepseek-ai/dsh-cordis-client-runner",
+            "@deepseek-ai/dsh-client-ui-theme",
+            "@deepseek-ai/dsh-client-locale",
+            "@deepseek-ai/dsh-client-ui-layout",
+            "@deepseek-ai/dsh-client-ui-renderer",
+            "@deepseek-ai/dsh-client-ui-sidebar",
+            "@deepseek-ai/dsh-client-ui-settings",
+            "@deepseek-ai/dsh-client-ui-settings-general",
+            "@deepseek-ai/dsh-client-ui-settings-models",
+            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+            "@deepseek-ai/dsh-client-ui-conversation",
+            "@deepseek-ai/dsh-client-ui-brand-official",
+            "@deepseek-ai/dsh-client-ui-attachment",
+            "@deepseek-ai/dsh-client-ui-tool",
+            "@deepseek-ai/dsh-client-ui-cordis",
+            "@deepseek-ai/dsh-client-ui-workflow-run",
+            "@deepseek-ai/dsh-client-ui-deliverables",
+            "@deepseek-ai/dsh-client-ui-workspace",
+            "@deepseek-ai/dsh-client-ui-input-trigger",
+            "@deepseek-ai/dsh-client-ui-commands",
+            "@deepseek-ai/dsh-client-ui-skill",
+            "@deepseek-ai/dsh-client-ui-subagent",
+            "@deepseek-ai/dsh-client-ui-reference"
+          ],
           "pluginEntryPresent": true,
           "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-univer-office/client.js?rev=d8df9eba8538",
           "pluginBundleStatus": 200,
@@ -162,7 +196,7 @@
       "sourceCaseId": "dsh-web-ui-all-node22",
       "plane": "web",
       "profile": "web",
-      "runtimeId": "web-ui-compat",
+      "runtimeId": "@linxin666/dsh-web-all",
       "plugin": {
         "spec": "@linxin666/dsh-web-all@0.3.3",
         "artifactSha256": "64ee0f111afe4700d278c97af6f92316b750538d821338399a2c89a290ea6ff9"
@@ -179,9 +213,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T08:36:51.950Z",
-        "result": "surface-incompatible",
-        "reason": "the declared plugin client entry is absent from the DSH boot manifest",
+        "observedAt": "2026-08-25T08:53:46.265Z",
+        "result": "compatible",
+        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -206,8 +240,7 @@
             "status": "passed"
           },
           "surface": {
-            "status": "failed",
-            "detail": "the declared plugin client entry is absent from the DSH boot manifest"
+            "status": "passed"
           },
           "interaction": {
             "status": "passed"
@@ -223,12 +256,52 @@
           "title": "DeepSeek Harness",
           "rootMounted": true,
           "bootManifestPresent": true,
-          "pluginEntryPresent": false,
-          "applicationMounted": false,
-          "pluginMaterialized": false,
-          "consoleErrors": [],
+          "bootEntryIds": [
+            "@linxin666/dsh-web-all",
+            "@linxin666/dsh-client-ui-web-ui-settings",
+            "@linxin666/dsh-client-ui-plugin-manager",
+            "@linxin666/dsh-client-ui-market",
+            "@linxin666/dsh-client-ui-aionui-panel",
+            "@linxin666/dsh-client-ui-task-board",
+            "@linxin666/dsh-client-ui-git-graph",
+            "@linxin666/dsh-remote-web-ui",
+            "@linxin666/dsh-pet",
+            "@linxin666/dsh-ssh",
+            "@linxin666/dsh-tool-describe-image",
+            "@linxin666/dsh-chat-recovery",
+            "@linxin666/dsh-client-ui-skill-explorer",
+            "@linxin666/dsh-desktop-launcher",
+            "@linxin666/dsh-doctor",
+            "@linxin666/dsh-client-ui-skin-center",
+            "dsh-better-sidebar",
+            "@mlgbnb/dsh-archive-manager",
+            "@deepseek-ai/dsh-typert-registry",
+            "@deepseek-ai/dsh-api-gateway",
+            "@deepseek-ai/dsh-session-log-export",
+            "@deepseek-ai/dsh-client-hmr",
+            "@deepseek-ai/dsh-client-modules",
+            "@deepseek-ai/dsh-client-connection",
+            "@deepseek-ai/dsh-api-remotes",
+            "@deepseek-ai/dsh-client-runtime",
+            "@deepseek-ai/dsh-cordis-client-runner",
+            "@deepseek-ai/dsh-client-ui-theme",
+            "@deepseek-ai/dsh-client-locale",
+            "@deepseek-ai/dsh-client-ui-layout",
+            "@deepseek-ai/dsh-client-ui-renderer",
+            "@deepseek-ai/dsh-client-ui-sidebar"
+          ],
+          "pluginEntryPresent": true,
+          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@linxin666/dsh-web-all/client.js?rev=ed80132c1fce",
+          "pluginBundleStatus": 200,
+          "applicationMounted": true,
+          "pluginMaterialized": true,
+          "consoleErrors": [
+            "Failed to load resource: the server responded with a status of 404 (Not Found)"
+          ],
           "pageErrors": [],
-          "failedRequests": [],
+          "failedRequests": [
+            "http://127.0.0.1:30880/status: net::ERR_ABORTED"
+          ],
           "blockedExternalRequests": [],
           "screenshot": "dsh-web-all-web.png",
           "trace": "dsh-web-all-web.trace.zip",
