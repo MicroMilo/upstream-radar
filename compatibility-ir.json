@@ -176,16 +176,16 @@
       }
     },
     {
-      "id": "cell:033b1915041116e3c21f146a124c7feb086b948b1b72fce59da6935655cb7938",
+      "id": "cell:cbe0e27b3bed055743dcab5edb00c9834731b1957418b8540bfbff11f5e2b95f",
       "caseId": "cost-meter-node22",
       "targetId": "cost-meter",
-      "observedAt": "2026-08-25T07:47:23.722Z",
+      "observedAt": "2026-08-25T07:59:14.926Z",
       "result": "compatible",
       "plugin": {
         "name": "dsh-cost-meter",
         "version": "1.5.42",
         "artifactSha256": "cdbcd1b9a85261e9c45c69ee680f052c6ae5d4688382f91180b404a63485cd7d",
-        "staticFingerprint": "sha256:bb61f767fe226cdf31e1d3b671aa281e33ee2b8d0cd099589d08fdd3d409de51"
+        "staticFingerprint": "sha256:1e85c3f392262435d04a67a8a56393bd71ebd51cf5007ee1d9de03633400f3eb"
       },
       "runtime": {
         "dshVersion": "0.1.1-rc.2",
@@ -1365,16 +1365,16 @@
       }
     },
     {
-      "id": "cell:428e765141d5fea71fbfcdc157be02a35352fd69615b380e144b499e449cf71f",
+      "id": "cell:f192bf99c35c779e9f612cf8fb09491a3f58467c98321ec2e4c5e4f6c5083d96",
       "caseId": "dsh-market-node22",
       "targetId": "dsh-market",
-      "observedAt": "2026-08-25T07:38:00.012Z",
+      "observedAt": "2026-08-25T07:59:01.527Z",
       "result": "compatible",
       "plugin": {
         "name": "dshmarket",
-        "version": "1.29.1",
-        "artifactSha256": "3f0f2d4f4289b1e3fa647b574d25c0ce9727822e56c82da9d31e9a843d0464a0",
-        "staticFingerprint": "sha256:fdecc621f905d36ba911f0dfc7377c5175fcf2f6d72651a15d5b4daecdce8ef3"
+        "version": "1.29.2",
+        "artifactSha256": "424e73ae25ca0181244cf418d3aefbc15ecceccea164a6e7cf230cedee85ab5a",
+        "staticFingerprint": "sha256:02ea9fa42262f2a078312c5198a00ed1f8deb51a21c4cd8394d89bb042833faa"
       },
       "runtime": {
         "dshVersion": "0.1.1-rc.2",
@@ -1383,10 +1383,10 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:29fdbf69935f8485d695e774dc8b47240c46f8b8e242f94853ae5aad15f8a33a"
+        "contractFingerprint": "sha256:e7040adbd4d8fc790ffc5aa2407c577f8e97546444bf7e2276aa7613948293c3"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:56c1a1cb0d702b62a22719ef1e9f7c6de3ff0269cbaac3c3fd0e38bc436acb13",
+        "runtimeGraphDigest": "sha256:963c5ef63f4b935eca274662b62307faeace3b0b42af2000e283dbc4006aa168",
         "runtimeGraphNodes": 451,
         "runtimeGraphEdges": 2033,
         "requiredUnresolved": 0,
@@ -1539,16 +1539,16 @@
       }
     },
     {
-      "id": "cell:3f58b3cf73e880ef5147948390860d1db6cd393761ba25a6b7fcb476c51cab78",
+      "id": "cell:39070f7a7113bbf28dfbf28f03113332843d8bec590046c87951898fb29470e1",
       "caseId": "dsh-movein-node22",
       "targetId": "dsh-movein",
-      "observedAt": "2026-08-25T07:13:16.687Z",
+      "observedAt": "2026-08-25T07:59:10.821Z",
       "result": "compatible",
       "plugin": {
         "name": "dsh-movein",
         "version": "0.12.1",
         "artifactSha256": "94b431f4e4a24c338373655d32a24248213819c38c134a6773766c3fa08d1cc4",
-        "staticFingerprint": "sha256:73891eb17c4e830025eff694b0b6fd52a59c3f7e7bce6e5bae57c439fa4bddf9"
+        "staticFingerprint": "sha256:569ac915b1b80f89511aeb49ad1de9fde7637718235e911b9d88265cf1741fb8"
       },
       "runtime": {
         "dshVersion": "0.1.1-rc.2",
@@ -3655,17 +3655,6 @@
         "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "18.3.1"
-      }
-    },
-    {
-      "id": "relation:d34e3c7f39689b036df6b1baaf2be8d18760a9972e85e502c780b61fdfaf7353",
-      "cellId": "cell:428e765141d5fea71fbfcdc157be02a35352fd69615b380e144b499e449cf71f",
-      "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": "^4.0.1",
-        "status": "satisfied",
-        "staticUsage": "type-only-reference-observed",
-        "resolvedVersion": "4.0.1"
       }
     },
     {
@@ -6893,6 +6882,17 @@
         "required": "^4.0.1",
         "status": "satisfied",
         "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "4.0.1"
+      }
+    },
+    {
+      "id": "relation:d6995de69421e9233b959b492c7a016e2864ff8829244aae383f3425baf29d3c",
+      "cellId": "cell:f192bf99c35c779e9f612cf8fb09491a3f58467c98321ec2e4c5e4f6c5083d96",
+      "dependency": {
+        "name": "@deepseek-ai/cordis",
+        "required": "^4.0.1",
+        "status": "satisfied",
+        "staticUsage": "type-only-reference-observed",
         "resolvedVersion": "4.0.1"
       }
     },

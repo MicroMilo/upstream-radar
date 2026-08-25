@@ -2065,9 +2065,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:bb61f767fe226cdf31e1d3b671aa281e33ee2b8d0cd099589d08fdd3d409de51",
+      "staticFingerprint": "sha256:1e85c3f392262435d04a67a8a56393bd71ebd51cf5007ee1d9de03633400f3eb",
       "contractFingerprint": "sha256:e936ffa1bab75264b35f7c93fc7926dd9fd18dc5e16d8d5be0bf17f622c32a5e",
-      "observedAt": "2026-08-25T07:47:23.722Z",
+      "observedAt": "2026-08-25T07:59:14.926Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -2076,7 +2076,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "2faf41816e82234912dd5117a3fd4f789b036508b3aa52444043d4e360518e5b",
+          "sha256": "2cf2a996e1109027af88fb06e0fc146e60e587312b293659be5b19835eed0a04",
           "bytes": 1800,
           "graphDigest": "sha256:68ae83f31ad66eb384a8de7b39a8eef707771daa51755ffbad2b9c72f82ccc8b",
           "nodes": 5,
@@ -15598,7 +15598,7 @@
     {
       "caseId": "dsh-market-node22",
       "targetId": "dsh-market",
-      "plugin": "dshmarket@1.29.1",
+      "plugin": "dshmarket@1.29.2",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -15607,40 +15607,40 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:fdecc621f905d36ba911f0dfc7377c5175fcf2f6d72651a15d5b4daecdce8ef3",
-      "contractFingerprint": "sha256:29fdbf69935f8485d695e774dc8b47240c46f8b8e242f94853ae5aad15f8a33a",
-      "observedAt": "2026-08-25T07:38:00.012Z",
+      "staticFingerprint": "sha256:02ea9fa42262f2a078312c5198a00ed1f8deb51a21c4cd8394d89bb042833faa",
+      "contractFingerprint": "sha256:e7040adbd4d8fc790ffc5aa2407c577f8e97546444bf7e2276aa7613948293c3",
+      "observedAt": "2026-08-25T07:59:01.527Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [
           "prepare"
         ],
-        "sha256": "3f0f2d4f4289b1e3fa647b574d25c0ce9727822e56c82da9d31e9a843d0464a0"
+        "sha256": "424e73ae25ca0181244cf418d3aefbc15ecceccea164a6e7cf230cedee85ab5a"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "e2ea6739e7dbbce5cfdff0cd5f7a7ab43b70508492a20708f6608343f1b2e613",
+          "sha256": "e48b90af362162c8cb2e1d3e7245ddfea7bd4cb85be148746f47aa7e7ba63765",
           "bytes": 1587,
-          "graphDigest": "sha256:bc9a7d8b5e8c8ab84463be20327b0e5ce2640343de2464ee66e1af82b801f469",
+          "graphDigest": "sha256:50645dc4e347d621d9052be90c689c07674c751bca6b30aed8b06ec06e385e97",
           "nodes": 5,
           "edges": 4,
           "unresolved": 3,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dshmarket@file:../../../artifact/dshmarket-1.29.1.tgz",
+              "from": "pnpm:dshmarket@file:../../../artifact/dshmarket-1.29.2.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dshmarket@file:../../../artifact/dshmarket-1.29.1.tgz",
+              "from": "pnpm:dshmarket@file:../../../artifact/dshmarket-1.29.2.tgz",
               "name": "@deepseek-ai/dsh-settings",
               "spec": "^0.1.0-rc.7 || ^0.1.1-rc.2",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dshmarket@file:../../../artifact/dshmarket-1.29.1.tgz",
+              "from": "pnpm:dshmarket@file:../../../artifact/dshmarket-1.29.2.tgz",
               "name": "@deepseek-ai/schemastery",
               "spec": "^3.18.1",
               "kind": "optional"
@@ -15648,7 +15648,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:56c1a1cb0d702b62a22719ef1e9f7c6de3ff0269cbaac3c3fd0e38bc436acb13",
+          "digest": "sha256:963c5ef63f4b935eca274662b62307faeace3b0b42af2000e283dbc4006aa168",
           "nodes": 451,
           "edges": 2033,
           "unresolved": 0,
@@ -17382,9 +17382,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:73891eb17c4e830025eff694b0b6fd52a59c3f7e7bce6e5bae57c439fa4bddf9",
+      "staticFingerprint": "sha256:569ac915b1b80f89511aeb49ad1de9fde7637718235e911b9d88265cf1741fb8",
       "contractFingerprint": "sha256:ed5e967fb1903a07b632ed3c3947506686b8a84d1b3ad0d55be51e7e20aa8b59",
-      "observedAt": "2026-08-25T07:13:16.687Z",
+      "observedAt": "2026-08-25T07:59:10.821Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -17396,7 +17396,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "4a1deb0c954f39d6ff98aee5048fa1294c386cdce02b02152843a95c7eab4024",
+          "sha256": "c54f46894b4fc8d1ec8e43f7b3fd2644a66ce582abf415c3226f2552af6ed27b",
           "bytes": 1019,
           "graphDigest": "sha256:a230aed08de60accaa8b41dfc9b9096d8beaf9ebf41b25dd47aec0d754260d28",
           "nodes": 3,
