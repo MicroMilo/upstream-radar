@@ -1775,53 +1775,91 @@ export async function runOpenAiCompatibleAgent(
     }
   }
   const endpoints = llmCompletionEndpoints(baseUrl)
-  for (let index = 0; index < endpoints.length; index += 1) {
+  const systemPrompt = [
+    '只返回一个严格 JSON 对象。不要输出 Markdown、解释、前缀或后缀；输出必须以 { 开始并以 } 结束。',
+    'Every response must contain exactly the eight fields shown below and no others.',
+    'EXAMPLE JSON OUTPUT:',
+    JSON.stringify({
+      impact: 'unknown',
+      confidence: 'low',
+      evidence: ['State an exact repository path or explicitly name the missing evidence.'],
+      breaking_change: 'unknown',
+      dependency_risk: 'unknown',
+      recommended_action: 'Review the changed runtime paths before upgrading.',
+      urgency: 'monitor',
+      reasoning_summary: 'Separate observed facts from model judgment.',
+    }, null, 2),
+  ].join('\n')
+  endpointLoop: for (let index = 0; index < endpoints.length; index += 1) {
     const endpoint = endpoints[index]!
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          authorization: `Bearer ${apiKey}`,
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          model,
-          messages: [
-            { role: 'system', content: '只返回一个严格 JSON 对象。不要输出 Markdown、解释、前缀或后缀；输出必须以 { 开始并以 } 结束。' },
-            { role: 'user', content: prompt },
-          ],
-          temperature: 0,
-          // DeepSeek V4 enables thinking by default. For this machine-readable
-          // contract, disable it so the output budget is reserved for the JSON
-          // conclusion instead of an optional reasoning stream.
-          ...(isDeepSeekJsonModel(baseUrl, model) ? { thinking: { type: 'disabled' } } : {}),
-          response_format: { type: 'json_object' },
-          // Keep an explicit output budget so the JSON conclusion is not
-          // truncated by a provider default.
-          max_tokens: DEFAULT_LLM_MAX_TOKENS,
-        }),
-        signal: AbortSignal.timeout(timeoutMs),
-      })
-      if (response.status === 404) continue
-      if (!response.ok) {
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      const repairAttempt = attempt === 1
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${apiKey}`,
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              {
+                role: 'system',
+                content: repairAttempt
+                  ? `The previous JSON-mode response was empty or invalid. Return the example shape now.\n\n${systemPrompt}`
+                  : systemPrompt,
+              },
+              { role: 'user', content: prompt },
+            ],
+            temperature: 0,
+            // DeepSeek V4 enables thinking by default. For this machine-readable
+            // contract, disable it so the output budget is reserved for the JSON
+            // conclusion instead of an optional reasoning stream.
+            ...(isDeepSeekJsonModel(baseUrl, model) ? { thinking: { type: 'disabled' } } : {}),
+            // DeepSeek documents that JSON Output may occasionally return an
+            // empty content field. Retry once without provider JSON mode; the
+            // same exact local schema validator still gates the conclusion.
+            ...(repairAttempt ? {} : { response_format: { type: 'json_object' } }),
+            // Keep an explicit output budget so the JSON conclusion is not
+            // truncated by a provider default.
+            max_tokens: DEFAULT_LLM_MAX_TOKENS,
+          }),
+          signal: AbortSignal.timeout(timeoutMs),
+        })
+        if (response.status === 404) continue endpointLoop
+        if (!response.ok) {
+          return {
+            taskId: task.id,
+            status: 'failed',
+            error: `LLM endpoint returned HTTP ${response.status}: ${safeLlmEndpoint(endpoint)}`,
+          }
+        }
+        const body = await response.json() as { choices?: Array<{ message?: { content?: unknown } }> }
+        const content = body.choices?.[0]?.message?.content
+        let conclusionError: string
+        if (typeof content !== 'string') {
+          conclusionError = 'LLM response had no message content'
+        } else {
+          try {
+            const parsed = parseAgentOutput(extractJsonObject(content))
+            if (parsed.value !== undefined) {
+              return { taskId: task.id, status: 'succeeded', parsedOutput: parsed.value }
+            }
+            conclusionError = parsed.error ?? 'LLM returned an invalid conclusion'
+          } catch (error: unknown) {
+            conclusionError = safeError(error)
+          }
+        }
+        if (!repairAttempt) continue
         return {
           taskId: task.id,
           status: 'failed',
-          error: `LLM endpoint returned HTTP ${response.status}: ${safeLlmEndpoint(endpoint)}`,
+          error: `LLM returned no valid conclusion after JSON-mode and plain-text attempts at ${safeLlmEndpoint(endpoint)}: ${conclusionError}`,
         }
+      } catch (error: unknown) {
+        return { taskId: task.id, status: 'failed', error: `LLM request failed at ${safeLlmEndpoint(endpoint)}: ${safeError(error)}` }
       }
-      const body = await response.json() as { choices?: Array<{ message?: { content?: unknown } }> }
-      const content = body.choices?.[0]?.message?.content
-      if (typeof content !== 'string') {
-        return { taskId: task.id, status: 'failed', error: `LLM response had no message content: ${safeLlmEndpoint(endpoint)}` }
-      }
-      const parsed = parseAgentOutput(extractJsonObject(content))
-      if (parsed.value === undefined) {
-        return { taskId: task.id, status: 'failed', error: parsed.error ?? 'LLM returned an invalid conclusion' }
-      }
-      return { taskId: task.id, status: 'succeeded', parsedOutput: parsed.value }
-    } catch (error: unknown) {
-      return { taskId: task.id, status: 'failed', error: `LLM request failed at ${safeLlmEndpoint(endpoint)}: ${safeError(error)}` }
     }
   }
   return {
