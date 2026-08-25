@@ -207,6 +207,10 @@ jobs:
             exit 0
           fi
           git commit -m 'chore: update upstream observation point [skip ci]'
+          # A maintainer may push while this long-running observer is reading
+          # external sources. Replay the bounded evidence commit on the latest
+          # branch; a real state conflict still fails instead of being forced.
+          git pull --rebase origin "${{ github.event.repository.default_branch }}"
           git push
 
   # Every selected matrix entry gets a fresh GitHub-hosted VM. The reusable
@@ -359,6 +363,7 @@ jobs:
             exit 0
           fi
           git commit -m 'chore: update DSH compatibility evidence [skip ci]'
+          git pull --rebase origin "${{ github.event.repository.default_branch }}"
           git push
 
       - name: Fail after persisting incomplete reconciliation
@@ -531,6 +536,7 @@ jobs:
             exit 0
           fi
           git commit -m 'chore: update DSH execution-plane evidence [skip ci]'
+          git pull --rebase origin "${{ github.event.repository.default_branch }}"
           git push
       - name: Fail after persisting incomplete surface reconciliation
         if: always() && steps.surface-ledger.outcome == 'failure'
