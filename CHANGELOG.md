@@ -4,6 +4,26 @@ All notable changes to Upstream Radar are documented here.
 
 ## [Unreleased]
 
+## [0.43.5] - 2026-08-25
+
+### Current-state Agent closure
+
+- Keep the directory feed bound to current observations with an explicit
+  `update-pending` state, while letting successful plugin observations continue
+  when an independent upstream source is temporarily unavailable.
+- Start queued observers from the latest durable state and add a lightweight
+  Agent-only retry path that does not rescan GitHub, npm, or plugin artifacts.
+- Recover from DeepSeek's documented empty JSON-mode response with one bounded
+  plain-response retry that still has to pass the exact local result schema.
+- Make the compatibility planner and headless Agent planner share the same
+  observed plugin coordinate, so a newly published version cannot be tested by
+  one planner and hidden from the other.
+- Verify the repaired loop over the maintained 100-plugin cohort: the Agent
+  reviewed all 25 current headless cases, selected four exact build-policy
+  retries, moved two plugins to compatible, and stopped the other two at a
+  measured Web-client boundary. The public feed now records 74 compatible, 22
+  review-only, zero reproduced-incompatible, and four repository-only entries.
+
 ## [0.43.4] - 2026-08-24
 
 ### Always-on observation reliability

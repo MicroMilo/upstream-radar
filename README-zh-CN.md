@@ -62,7 +62,7 @@ Agent 读取仓库说明和最新运行证据，决定 headless 是否重试、�
 第一次检查不需要本地 DSH profile，也不会执行插件代码：
 
 ```bash
-npx --yes upstream-radar@0.43.4 inspect \
+npx --yes upstream-radar@0.43.5 inspect \
   @sanqi-normal/dsh-webui-market-plugin@0.5.4 \
   --deep --fail-on never
 ```
@@ -73,7 +73,7 @@ npx --yes upstream-radar@0.43.4 inspect \
 如果要检查自己的公开仓库，而不安装它：
 
 ```bash
-npx --yes upstream-radar@0.43.4 scan \
+npx --yes upstream-radar@0.43.5 scan \
   https://github.com/owner/dsh-plugin \
   --fail-on never
 ```
@@ -92,6 +92,10 @@ npx --yes upstream-radar@0.43.4 scan \
 它不是你的电脑，也不会接收项目密钥。
 
 ## 来自真实生态的结果
+
+当前的[100 插件兼容性 feed](feeds/dsh-plugin-compatibility.md)记录了 74 个精确 headless
+通过、22 个仅待复核结果、0 个已复现不兼容和 4 个仅仓库条目。在真正观测所需的
+Web/client 或仓库安装平面之前，待复核项不会被包装成插件故障。
 
 截至 2026-08-25，Radar 共向维护者提交了 13 条报告。比数量更重要的是处理结果：
 
