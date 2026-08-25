@@ -165,6 +165,82 @@
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
         "version": "0.43.5"
       }
+    },
+    {
+      "caseId": "dsh-web-all-web",
+      "sourceCaseId": "dsh-web-ui-all-node22",
+      "plugin": "@linxin666/dsh-web-all@0.3.3",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "web-ui-compat",
+      "sourceFingerprint": "sha256:2e483091dfedb5bb8467a6d5cfd54101e1ea5ab82831f8d934b95c486f82fd69",
+      "contractFingerprint": "sha256:17487fd06c35a4e935251a6e1f2153ec8c926fc7274ab6f590a910811cc0bc43",
+      "observedAt": "2026-08-25T08:28:19.929Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "64ee0f111afe4700d278c97af6f92316b750538d821338399a2c89a290ea6ff9",
+        "bytes": 17102,
+        "integrity": "sha512-dyVaVwTmfLKwcQkZUPdPkYPO3WPHmDyCS0S5l9mH97vTbP4IhGiHfoC6+MVSDK8h33XI/9e/EMkwtw2CXREP2w=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "failed",
+          "code": 1,
+          "detail": "command exited with 1: dsh: pnpm failed in profile directory /sandbox/upstream-radar-dsh-surface-3D1hSC/dsh-home/profiles/web\n\nProgress: resolved 0, reused 0, downloaded 1, added 0\nProgress: resolved 140, reused 0, downloaded 1, added 0\n[WARN] Issues with peer dependencies found. Run \"pnpm peers check\" to list them.\n\ndependencies:\n+ @linxin666/dsh-web-all file:/sandbox/upstream-radar-dsh-surface-3D1hSC/artifact/linxin666-dsh-web-all-0.3.3.tgz\n\nPackages: +204\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 214, reused 11, downloaded 56, added 4\nProgress: resolved 214, reused 11, downloaded 117, added 8\nProgress: resolved 214, reused 11, downloaded 193, added 204\nProgress: resolved 214, reused 11, downloaded 193, added 204, done\nAdded 17 entries to minimumReleaseAgeExclude in pnpm-workspace.yaml (set minimumReleaseAgeStrict to true to gate these updates with a prompt):\n  @linxin666/dsh-chat-recovery@0.3.3\n  @linxin666/dsh-client-ui-aionui-panel@0.3.3\n  @linxin666/dsh-client-ui-community-plugins@0.3.3\n  @linxin666/dsh-client-ui-git-graph@0.3.3\n  @linxin666/dsh-client-ui-market@0.3.3\n  @linxin666/dsh-client-ui-plugin-manager@0.3.3\n  @linxin666/dsh-client-ui-skill-explorer@0.3.3\n  @linxin666/dsh-client-ui-skin-center@0.3.3\n  @linxin666/dsh-client-ui-task-board@0.3.3\n  @linxin666/dsh-client-ui-web-ui-settings@0.3.3\n  @linxin666/dsh-desktop-launcher@0.3.3\n  @linxin666/dsh-doctor@0.3.3\n  @linxin666/dsh-liangshen@0.3.3\n  @linxin666/dsh-pet@0.3.3\n  @linxin666/dsh-remote-web-ui@0.3.3\n  @linxin666/dsh-ssh@0.3.3\n  @linxin666/dsh-tool-describe-image@0.3.3\n[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: cloudflared@0.7.3, cpu-features@0.0.10, node-pty@1.1.0, ssh2@1.17.0\n\nRun \"pnpm approve-builds\" to pick which dependencies should be allowed to run scripts."
+        },
+        "registration": {
+          "status": "skipped"
+        },
+        "host": {
+          "status": "skipped"
+        },
+        "surface": {
+          "status": "skipped"
+        },
+        "interaction": {
+          "status": "skipped"
+        },
+        "shutdown": {
+          "status": "skipped"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "rootMounted": false,
+        "bootManifestPresent": false,
+        "pluginEntryPresent": false,
+        "applicationMounted": false,
+        "pluginMaterialized": false,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": []
+      },
+      "result": "surface-incompatible",
+      "reason": "the exact plugin could not be installed into the declared web profile",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.43.5"
+      }
     }
   ]
 }
