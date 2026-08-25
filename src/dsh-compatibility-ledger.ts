@@ -97,6 +97,8 @@ export interface DshCompatibilityLedgerEntry {
   reason: string
   /** Exact dependency packages pnpm refused to build without explicit approval. */
   requiredDependencyBuilds?: string[]
+  /** Exact dependency builds approved by the evidence-producing Agent plan. */
+  approvedDependencyBuilds?: string[]
   artifact: {
     lifecycleScripts: string[]
     sha256?: string
@@ -451,6 +453,9 @@ function parseEntry(value: unknown, index: number): DshCompatibilityLedgerEntry 
   const requiredDependencyBuilds = item.requiredDependencyBuilds === undefined
     ? []
     : parseLifecycleBuilds(item.requiredDependencyBuilds, `entries[${index}].requiredDependencyBuilds`)
+  const approvedDependencyBuilds = item.approvedDependencyBuilds === undefined
+    ? []
+    : parseLifecycleBuilds(item.approvedDependencyBuilds, `entries[${index}].approvedDependencyBuilds`)
   if ((result === 'build-approval-required') !== (requiredDependencyBuilds.length > 0)) {
     throw new Error(`entries[${index}] must bind build-approval-required to a non-empty requiredDependencyBuilds list`)
   }
@@ -472,6 +477,7 @@ function parseEntry(value: unknown, index: number): DshCompatibilityLedgerEntry 
     result,
     reason: boundedString(item.reason, `entries[${index}].reason`, 4_096),
     ...(requiredDependencyBuilds.length === 0 ? {} : { requiredDependencyBuilds }),
+    ...(approvedDependencyBuilds.length === 0 ? {} : { approvedDependencyBuilds }),
     artifact: {
       lifecycleScripts: parseLifecycleScripts(artifact.lifecycleScripts, `entries[${index}].artifact.lifecycleScripts`),
       ...(sha256 === undefined ? {} : { sha256 }),
@@ -656,6 +662,7 @@ function parseObservationReport(value: unknown, expected: DshCompatibilityExpect
     result,
     reason: reportString(report.reason, 'report reason', 4_096),
     ...(requiredDependencyBuilds.length === 0 ? {} : { requiredDependencyBuilds }),
+    ...(approved.length === 0 ? {} : { approvedDependencyBuilds: approved }),
     artifact: {
       lifecycleScripts,
       ...(sha256 === undefined ? {} : { sha256 }),

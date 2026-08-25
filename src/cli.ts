@@ -348,6 +348,7 @@ Usage:
     --source-fingerprint <sha256:...> --contract-fingerprint <sha256:...>
     --plane <web|tui> --profile <name> --runtime-id <id>
     --artifact-sha256 <hex> --isolation-provider <provider> --execute
+    [--allow-build <package>]...
     [--driver-root <path>] [--chromium-executable <path>]
     [--artifacts <directory>] [--timeout <seconds>] [--report <report.json>] [--json]
 
@@ -357,8 +358,8 @@ and loads the bundle while recording Linux process, network, and file-change
 evidence. Run it only inside a disposable, secret-free Linux environment. It
 requires both --execute and UPSTREAM_RADAR_ISOLATED_RUNNER=1.
 Radar records the caller's isolation-provider claim but cannot verify it.
-The dsh-surface probe adds plane-specific proof: Chromium must observe a mounted
-Web shell and materialized plugin client module, or a real PTY must observe a
+The dsh-surface probe adds plane-specific proof: Chromium must observe DSH hand
+off from its boot page after activating the client graph, or a real PTY must observe a
 TUI frame, bounded input, and controlled shutdown. It has the same disposable,
 secret-free execution requirement.
 `,
@@ -557,7 +558,7 @@ Usage:
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-install [npm:]<package>@<exact-version> --dsh-version <exact-version> [--case-id <stable-label>] --isolation-provider <github-actions-hosted-runner|firecracker|other> --execute [--allow-build <package>]... [--timeout <seconds>] [--report <report.json>] [--json]
-  upstream-radar probe dsh-surface [npm:]<package>@<exact-version> --dsh-version <exact-version> --case-id <stable-label> --source-case-id <stable-label> --source-fingerprint <sha256:...> --contract-fingerprint <sha256:...> --plane <web|tui> --profile <name> --runtime-id <id> --artifact-sha256 <hex> --isolation-provider <github-actions-hosted-runner|firecracker|other> --execute [--driver-root <path>] [--chromium-executable <path>] [--artifacts <directory>] [--timeout <seconds>] [--report <report.json>] [--json]
+  upstream-radar probe dsh-surface [npm:]<package>@<exact-version> --dsh-version <exact-version> --case-id <stable-label> --source-case-id <stable-label> --source-fingerprint <sha256:...> --contract-fingerprint <sha256:...> --plane <web|tui> --profile <name> --runtime-id <id> --artifact-sha256 <hex> --isolation-provider <github-actions-hosted-runner|firecracker|other> --execute [--allow-build <package>]... [--driver-root <path>] [--chromium-executable <path>] [--artifacts <directory>] [--timeout <seconds>] [--report <report.json>] [--json]
   upstream-radar review dsh-plugin [npm:]<package>@<exact-version> --dsh-version <v1>,<v2>,... [--json]
   upstream-radar demo [--json]
   upstream-radar case dsh-web-ui [--json]
@@ -1361,6 +1362,7 @@ async function runDshSurfaceObservation(args: readonly string[]): Promise<number
   let artifactsDirectory: string | undefined
   let driverRoot: string | undefined
   let chromiumExecutable: string | undefined
+  const allowedBuilds: string[] = []
   let execute = false
   let json = false
   for (let index = 1; index < args.length; index += 1) {
@@ -1371,7 +1373,8 @@ async function runDshSurfaceObservation(args: readonly string[]): Promise<number
       || argument === '--source-fingerprint' || argument === '--contract-fingerprint' || argument === '--plane'
       || argument === '--profile' || argument === '--runtime-id' || argument === '--artifact-sha256'
       || argument === '--isolation-provider' || argument === '--timeout' || argument === '--report'
-      || argument === '--artifacts' || argument === '--driver-root' || argument === '--chromium-executable') {
+      || argument === '--artifacts' || argument === '--driver-root' || argument === '--chromium-executable'
+      || argument === '--allow-build') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--dsh-version') dshVersion = value
@@ -1397,7 +1400,8 @@ async function runDshSurfaceObservation(args: readonly string[]): Promise<number
       } else if (argument === '--report') reportPath = value
       else if (argument === '--artifacts') artifactsDirectory = value
       else if (argument === '--driver-root') driverRoot = value
-      else chromiumExecutable = value
+      else if (argument === '--chromium-executable') chromiumExecutable = value
+      else allowedBuilds.push(value)
       index += 1
     } else {
       throw new Error(`unknown option for probe dsh-surface: ${argument}`)
@@ -1432,6 +1436,7 @@ async function runDshSurfaceObservation(args: readonly string[]): Promise<number
     profile: profile as string,
     runtimeId: runtimeId as string,
     expectedArtifactSha256: artifactSha256 as string,
+    allowedBuilds,
     allowExecution: true,
     isolationProvider: isolationProvider as DshSurfaceIsolationProvider,
     timeoutMs: timeoutSeconds * 1_000,
@@ -1442,7 +1447,11 @@ async function runDshSurfaceObservation(args: readonly string[]): Promise<number
   if (reportPath !== undefined) {
     const absoluteReportPath = resolve(reportPath)
     await mkdir(dirname(absoluteReportPath), { recursive: true })
-    await writeFile(absoluteReportPath, `${JSON.stringify(report, null, 2)}\n`, { mode: 0o600 })
+    // Surface reports are an explicit hand-off from the unprivileged observer
+    // container to the GitHub runner. They contain bounded compatibility
+    // evidence and no inherited secrets, so the runner must be able to read
+    // and upload them even when the container uses a different uid.
+    await writeFile(absoluteReportPath, `${JSON.stringify(report, null, 2)}\n`, { mode: 0o644 })
   }
   process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDshSurfaceObservation(report))
   return report.result === 'compatible' ? 0 : report.result === 'surface-incompatible' ? 2 : 1

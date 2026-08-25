@@ -25,7 +25,7 @@ const STAGE_STATUS = new Set(['passed', 'failed', 'skipped'])
 const DEFAULT_REFRESH_AFTER_HOURS = 7 * 24
 const MAX_TARGETS = 32
 const MAX_LEDGER_ENTRIES = 128
-const SURFACE_CONTRACT_REVISION = 'dsh-surface-contract/1'
+const SURFACE_CONTRACT_REVISION = 'dsh-surface-contract/2'
 
 export interface DshSurfaceTarget {
   id: string
@@ -52,6 +52,7 @@ export interface DshSurfaceExpectedCase {
   profile: string
   runtimeId: string
   artifactSha256: string
+  allowedBuilds: string
   sourceFingerprint: string
   contractFingerprint: string
   reasons: string[]
@@ -72,6 +73,7 @@ export interface DshSurfaceLedgerEntry {
   plane: DshExecutionPlane
   profile: string
   runtimeId: string
+  approvedDependencyBuilds?: string[]
   sourceFingerprint: string
   contractFingerprint: string
   observedAt: string
@@ -241,6 +243,7 @@ function sourceFingerprint(entry: DshCompatibilityLedgerEntry): string {
     artifactSha256: entry.artifact.sha256,
     staticFingerprint: entry.staticFingerprint,
     contractFingerprint: entry.contractFingerprint,
+    approvedDependencyBuilds: entry.approvedDependencyBuilds ?? [],
     observerSchema: entry.observer.schema,
   })
 }
@@ -252,8 +255,9 @@ function contractFingerprint(target: DshSurfaceTarget, entry: DshCompatibilityLe
     profile: target.profile,
     runtimeId: target.runtimeId,
     nodeMajor: entry.runtime.nodeMajor,
+    approvedDependencyBuilds: entry.approvedDependencyBuilds ?? [],
     web: target.plane === 'web'
-      ? { browser: 'chromium', root: '#root', manifest: '__DSH_BOOT__', modules: '__DSH_MODULES__.loadCache', externalRequests: 'blocked' }
+      ? { browser: 'chromium', root: '#root', manifest: '__DSH_BOOT__', bootHandoff: '[data-dsh-boot] removed after graph activation', externalRequests: 'blocked' }
       : undefined,
     tui: target.plane === 'tui'
       ? { terminal: 'xterm-256color', columns: 100, rows: 32, frame: 'ansi-and-printable', interaction: 'ctrl-l', shutdown: 'ctrl-c' }
@@ -273,6 +277,7 @@ function desiredCase(target: DshSurfaceTarget, source: DshCompatibilityLedgerEnt
     profile: target.profile,
     runtimeId: target.runtimeId,
     artifactSha256: source.artifact.sha256,
+    allowedBuilds: [...(source.approvedDependencyBuilds ?? [])].sort().join(','),
     sourceFingerprint: sourceFingerprint(source),
     contractFingerprint: contractFingerprint(target, source),
     reasons: [],
@@ -320,6 +325,17 @@ function stringArray(value: unknown, label: string): string[] {
   return value.map((item, index) => boundedString(item, `${label}[${index}]`, 512))
 }
 
+function packageNames(value: unknown, label: string): string[] {
+  if (!Array.isArray(value) || value.length > 32) throw new Error(`${label} must be an array of at most 32 package names`)
+  const names = value.map((item, index) => {
+    const name = boundedString(item, `${label}[${index}]`, 214)
+    if (!/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/.test(name)) throw new Error(`${label}[${index}] is not a package name`)
+    return name
+  })
+  if (new Set(names).size !== names.length) throw new Error(`${label} contains duplicate package names`)
+  return names.sort()
+}
+
 function optionalInteger(value: unknown, label: string): number | undefined {
   if (value === undefined) return undefined
   if (!Number.isSafeInteger(value) || (value as number) < 0 || (value as number) > 1_000_000_000) throw new Error(`${label} must be a bounded non-negative integer`)
@@ -342,7 +358,11 @@ function parseEvidence(value: unknown, plane: DshExecutionPlane, label: string):
       pluginEntryPresent: item.pluginEntryPresent as boolean,
       ...(item.pluginBundleUrl === undefined ? {} : { pluginBundleUrl: boundedString(item.pluginBundleUrl, `${label}.pluginBundleUrl`, 2_048) }),
       ...(optionalInteger(item.pluginBundleStatus, `${label}.pluginBundleStatus`) === undefined ? {} : { pluginBundleStatus: optionalInteger(item.pluginBundleStatus, `${label}.pluginBundleStatus`) as number }),
+      applicationMounted: typeof item.applicationMounted === 'boolean'
+        ? item.applicationMounted
+        : item.pluginMaterialized as boolean,
       pluginMaterialized: item.pluginMaterialized as boolean,
+      ...(item.bootFailureText === undefined ? {} : { bootFailureText: boundedString(item.bootFailureText, `${label}.bootFailureText`, 512) }),
       consoleErrors: stringArray(item.consoleErrors, `${label}.consoleErrors`),
       pageErrors: stringArray(item.pageErrors, `${label}.pageErrors`),
       failedRequests: stringArray(item.failedRequests, `${label}.failedRequests`),
@@ -395,6 +415,7 @@ function parseReport(input: unknown): DshSurfaceObservationReport {
   const artifact = record(root.artifact, 'report.artifact')
   const result = boundedString(root.result, 'report.result', 64) as DshSurfaceObservationResult
   if (!RESULTS.has(result)) throw new Error('report.result is unsupported')
+  const boundary = record(root.boundary, 'report.boundary')
   return {
     schema: DSH_SURFACE_OBSERVATION_SCHEMA,
     tool: { name: 'upstream-radar', version: boundedString(tool.version, 'report.tool.version', 64) },
@@ -423,15 +444,16 @@ function parseReport(input: unknown): DshSurfaceObservationReport {
     reason: boundedString(root.reason, 'report.reason', 2_048),
     boundary: {
       isolationProviderClaim: (() => {
-        const value = record(root.boundary, 'report.boundary').isolationProviderClaim
+        const value = boundary.isolationProviderClaim
         if (value !== 'github-actions-hosted-runner' && value !== 'firecracker' && value !== 'other') throw new Error('report.boundary.isolationProviderClaim is unsupported')
         return value
       })(),
       isolationVerifiedByRadar: false,
       disposableEnvironmentRequired: true,
       inheritedHostSecrets: false,
-      externalBrowserRequestsBlocked: record(root.boundary, 'report.boundary').externalBrowserRequestsBlocked === true,
-      note: boundedString(record(root.boundary, 'report.boundary').note, 'report.boundary.note', 2_048),
+      externalBrowserRequestsBlocked: boundary.externalBrowserRequestsBlocked === true,
+      approvedDependencyBuilds: packageNames(boundary.approvedDependencyBuilds ?? [], 'report.boundary.approvedDependencyBuilds'),
+      note: boundedString(boundary.note, 'report.boundary.note', 2_048),
     },
   }
 }
@@ -460,6 +482,7 @@ export function parseDshSurfaceLedger(input: unknown): DshSurfaceLedger {
       plane,
       profile: profileName(item.profile, `entries[${index}].profile`),
       runtimeId: boundedString(item.runtimeId, `entries[${index}].runtimeId`, 214),
+      ...(item.approvedDependencyBuilds === undefined ? {} : { approvedDependencyBuilds: packageNames(item.approvedDependencyBuilds, `entries[${index}].approvedDependencyBuilds`) }),
       sourceFingerprint: fingerprint(item.sourceFingerprint, `entries[${index}].sourceFingerprint`),
       contractFingerprint: fingerprint(item.contractFingerprint, `entries[${index}].contractFingerprint`),
       observedAt: isoDate(item.observedAt, `entries[${index}].observedAt`),
@@ -547,6 +570,7 @@ function mismatch(expected: DshSurfaceExpectedCase, report: DshSurfaceObservatio
     ['plane', expected.plane, report.plane],
     ['profile', expected.profile, report.profile],
     ['runtime id', expected.runtimeId, report.runtimeId],
+    ['approved dependency builds', expected.allowedBuilds, report.boundary.approvedDependencyBuilds.join(',')],
     ['artifact SHA-256', expected.artifactSha256, report.artifact.sha256],
     ['source fingerprint', expected.sourceFingerprint, report.sourceFingerprint],
     ['contract fingerprint', expected.contractFingerprint, report.contractFingerprint],
@@ -588,6 +612,9 @@ export function mergeDshSurfaceLedger(input: {
   for (const value of input.expected) {
     const id = caseId(value.id, 'expected.id')
     if (expectedById.has(id)) throw new Error(`duplicate expected DSH surface case: ${id}`)
+    const allowedBuilds = value.allowedBuilds === ''
+      ? []
+      : packageNames(value.allowedBuilds.split(','), `expected ${id}.allowedBuilds`)
     expectedById.set(id, {
       id,
       sourceCaseId: caseId(value.sourceCaseId, `expected ${id}.sourceCaseId`),
@@ -598,6 +625,7 @@ export function mergeDshSurfaceLedger(input: {
       profile: profileName(value.profile, `expected ${id}.profile`),
       runtimeId: boundedString(value.runtimeId, `expected ${id}.runtimeId`, 214),
       artifactSha256: bareSha256(value.artifactSha256, `expected ${id}.artifactSha256`),
+      allowedBuilds: allowedBuilds.join(','),
       sourceFingerprint: fingerprint(value.sourceFingerprint, `expected ${id}.sourceFingerprint`),
       contractFingerprint: fingerprint(value.contractFingerprint, `expected ${id}.contractFingerprint`),
       reasons: Array.isArray(value.reasons) ? value.reasons.map((reason, index) => boundedString(reason, `expected ${id}.reasons[${index}]`, 128)) : [],
@@ -641,6 +669,7 @@ export function mergeDshSurfaceLedger(input: {
       plane: report.plane,
       profile: report.profile,
       runtimeId: report.runtimeId,
+      ...(report.boundary.approvedDependencyBuilds.length === 0 ? {} : { approvedDependencyBuilds: report.boundary.approvedDependencyBuilds }),
       sourceFingerprint: report.sourceFingerprint,
       contractFingerprint: report.contractFingerprint,
       observedAt: report.completedAt,

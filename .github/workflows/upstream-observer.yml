@@ -445,6 +445,7 @@ jobs:
       profile: ${{ matrix.profile }}
       runtime_id: ${{ matrix.runtimeId }}
       artifact_sha256: ${{ matrix.artifactSha256 }}
+      allow_builds: ${{ matrix.allowedBuilds }}
       node_major: ${{ matrix.nodeMajor }}
       timeout_seconds: '300'
 

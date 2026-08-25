@@ -59,6 +59,16 @@ function report(overrides: Record<string, unknown> = {}): unknown {
 }
 
 describe('DSH compatibility ledger', () => {
+  it('preserves the Agent-approved build environment for later execution planes', () => {
+    const approvedExpected = { ...expected, allowedBuilds: 'protobufjs' }
+    const merged = mergeDshCompatibilityLedger({
+      ledger: emptyDshCompatibilityLedger(),
+      expected: [approvedExpected],
+      reports: [report({ boundary: { approvedDependencyBuilds: ['protobufjs'] } })],
+    })
+    assert.deepEqual(merged.ledger.entries[0]?.approvedDependencyBuilds, ['protobufjs'])
+  })
+
   it('accepts only a report that proves it belongs to the exact scheduled cell', () => {
     const merged = mergeDshCompatibilityLedger({
       ledger: emptyDshCompatibilityLedger(),

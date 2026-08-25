@@ -23745,6 +23745,10 @@
       "observedAt": "2026-08-25T07:13:27.454Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
+      "approvedDependencyBuilds": [
+        "@google/genai",
+        "protobufjs"
+      ],
       "artifact": {
         "lifecycleScripts": [
           "prepare"

@@ -85,6 +85,10 @@ on:
       artifact_sha256:
         required: true
         type: string
+      allow_builds:
+        required: false
+        default: ''
+        type: string
       node_major:
         required: false
         default: '22'
@@ -123,6 +127,7 @@ jobs:
           RADAR_PROFILE: ${{ inputs.profile }}
           RADAR_RUNTIME_ID: ${{ inputs.runtime_id }}
           RADAR_ARTIFACT_SHA256: ${{ inputs.artifact_sha256 }}
+          RADAR_ALLOWED_BUILDS: ${{ inputs.allow_builds || '' }}
           RADAR_NODE_MAJOR: ${{ inputs.node_major || '22' }}
           RADAR_TIMEOUT_SECONDS: ${{ inputs.timeout_seconds || '300' }}
         run: |
@@ -144,6 +149,17 @@ jobs:
           [[ "$RADAR_PLANE" != tui || "$RADAR_PROFILE" != web ]] || { echo 'the TUI plane cannot use profile web' >&2; exit 1; }
           (( ${#RADAR_RUNTIME_ID} > 0 && ${#RADAR_RUNTIME_ID} <= 214 )) || { echo 'runtime_id is invalid' >&2; exit 1; }
           [[ "$RADAR_RUNTIME_ID" != *[[:space:]]* ]] || { echo 'runtime_id cannot contain whitespace' >&2; exit 1; }
+          if [[ -n "$RADAR_ALLOWED_BUILDS" ]]; then
+            package_name='^(@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*$'
+            IFS=',' read -ra approved_builds <<< "$RADAR_ALLOWED_BUILDS"
+            (( ${#approved_builds[@]} <= 32 )) || { echo 'allow_builds contains too many package names' >&2; exit 1; }
+            declare -A seen_builds=()
+            for approved_build in "${approved_builds[@]}"; do
+              [[ "$approved_build" =~ $package_name ]] || { echo 'allow_builds contains an invalid package name' >&2; exit 1; }
+              [[ -z "${seen_builds[$approved_build]:-}" ]] || { echo 'allow_builds contains a duplicate package name' >&2; exit 1; }
+              seen_builds[$approved_build]=1
+            done
+          fi
           [[ "$RADAR_NODE_MAJOR" =~ ^(1[6-9]|2[0-9]|3[0-9]|40)$ ]] || { echo 'node_major is invalid' >&2; exit 1; }
           [[ "$RADAR_TIMEOUT_SECONDS" =~ ^[0-9]+$ ]] && (( RADAR_TIMEOUT_SECONDS >= 30 && RADAR_TIMEOUT_SECONDS <= 600 )) || { echo 'timeout_seconds is invalid' >&2; exit 1; }
 
@@ -168,6 +184,7 @@ jobs:
           RADAR_PROFILE: ${{ inputs.profile }}
           RADAR_RUNTIME_ID: ${{ inputs.runtime_id }}
           RADAR_ARTIFACT_SHA256: ${{ inputs.artifact_sha256 }}
+          RADAR_ALLOWED_BUILDS: ${{ inputs.allow_builds || '' }}
           RADAR_TIMEOUT_SECONDS: ${{ inputs.timeout_seconds || '300' }}
           RADAR_REPORT_DIRECTORY: ${{ runner.temp }}/upstream-radar-surface-observation
           RADAR_CONTAINER_NAME: upstream-radar-surface-${{ github.run_id }}-${{ github.run_attempt }}
@@ -176,6 +193,13 @@ jobs:
           set -euo pipefail
           mkdir -p "$RADAR_REPORT_DIRECTORY"
           chmod 0777 "$RADAR_REPORT_DIRECTORY"
+          allow_build_args=()
+          if [[ -n "$RADAR_ALLOWED_BUILDS" ]]; then
+            IFS=',' read -ra approved_builds <<< "$RADAR_ALLOWED_BUILDS"
+            for approved_build in "${approved_builds[@]}"; do
+              allow_build_args+=(--allow-build "$approved_build")
+            done
+          fi
           cleanup() { docker rm --force "$RADAR_CONTAINER_NAME" >/dev/null 2>&1 || true; }
           trap cleanup EXIT
           set +e
@@ -206,6 +230,7 @@ jobs:
             --profile "$RADAR_PROFILE" \
             --runtime-id "$RADAR_RUNTIME_ID" \
             --artifact-sha256 "$RADAR_ARTIFACT_SHA256" \
+            "${allow_build_args[@]}" \
             --driver-root /surface-driver \
             --chromium-executable /usr/bin/chromium \
             --artifacts /output \
@@ -243,7 +268,7 @@ jobs:
                 `- Result: \`${clean(report.result)}\` — ${clean(report.reason)}`,
               )
               if (report.evidence?.plane === 'web') lines.push(
-                `- Web proof: HTTP \`${clean(report.evidence.httpStatus)}\`; root \`${clean(report.evidence.rootMounted)}\`; manifest entry \`${clean(report.evidence.pluginEntryPresent)}\`; module materialized \`${clean(report.evidence.pluginMaterialized)}\``,
+                `- Web proof: HTTP \`${clean(report.evidence.httpStatus)}\`; root \`${clean(report.evidence.rootMounted)}\`; manifest entry \`${clean(report.evidence.pluginEntryPresent)}\`; application mounted \`${clean(report.evidence.applicationMounted)}\`; module activated \`${clean(report.evidence.pluginMaterialized)}\``,
                 `- Browser evidence: \`${clean(report.evidence.screenshot)}\`, \`${clean(report.evidence.trace)}\``,
               )
               if (report.evidence?.plane === 'tui') lines.push(

@@ -2,9 +2,9 @@ import { createHash } from 'node:crypto'
 import { spawn, type ChildProcess } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { constants } from 'node:fs'
-import { mkdir, mkdtemp, open, readFile, rm, writeFile } from 'node:fs/promises'
+import { chmod, mkdir, mkdtemp, open, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { basename, join, resolve, sep } from 'node:path'
+import { basename, join, relative, resolve, sep } from 'node:path'
 import { parseNpmSpec } from './npm.js'
 import { parseNpmTarball } from './tar.js'
 import { TOOL_VERSION } from './version.js'
@@ -21,6 +21,7 @@ const MAX_COMMAND_OUTPUT_BYTES = 256 * 1024
 const MAX_ARTIFACT_BYTES = 64 * 1024 * 1024
 const MAX_ARTIFACT_UNPACKED_BYTES = 192 * 1024 * 1024
 const MAX_SURFACE_ERRORS = 32
+const MAX_ALLOWED_BUILDS = 32
 const MAX_EVIDENCE_TEXT = 2_048
 const MAX_TUI_BYTES = 256 * 1024
 const WEB_PORT = 30_880
@@ -48,7 +49,11 @@ export interface DshWebSurfaceEvidence {
   pluginEntryPresent: boolean
   pluginBundleUrl?: string
   pluginBundleStatus?: number
+  /** The framework-free DSH boot page handed the root to the assembled app. */
+  applicationMounted: boolean
+  /** Inferred from DSH's guarantee that hand-off follows activation of every graph entry. */
   pluginMaterialized: boolean
+  bootFailureText?: string
   consoleErrors: string[]
   pageErrors: string[]
   failedRequests: string[]
@@ -122,6 +127,7 @@ export interface DshSurfaceObservationReport {
     disposableEnvironmentRequired: true
     inheritedHostSecrets: false
     externalBrowserRequestsBlocked: boolean
+    approvedDependencyBuilds: string[]
     note: string
   }
 }
@@ -134,7 +140,9 @@ export interface DshWebEvaluationInput {
   bootManifestPresent: boolean
   pluginEntryPresent: boolean
   pluginBundleStatus?: number
+  applicationMounted: boolean
   pluginMaterialized: boolean
+  bootFailureText?: string
   consoleErrors: readonly string[]
   pageErrors: readonly string[]
   failedRequests: readonly string[]
@@ -165,6 +173,7 @@ export interface DshSurfaceObservationOptions {
   profile: string
   runtimeId: string
   expectedArtifactSha256: string
+  allowedBuilds?: readonly string[]
   allowExecution: boolean
   isolationProvider: DshSurfaceIsolationProvider
   timeoutMs?: number
@@ -278,8 +287,12 @@ export function evaluateDshWebEvidence(input: DshWebEvaluationInput): DshSurface
   if (input.pluginBundleStatus === undefined || input.pluginBundleStatus < 200 || input.pluginBundleStatus >= 400) {
     return { result: 'surface-incompatible', failedStage: 'surface', reason: `the declared plugin client bundle returned HTTP ${input.pluginBundleStatus ?? 'unknown'}` }
   }
+  if (!input.applicationMounted) {
+    const detail = input.bootFailureText === undefined ? '' : `: ${bounded(input.bootFailureText, 512)}`
+    return { result: 'surface-incompatible', failedStage: 'surface', reason: `DSH Web did not hand off from its boot page to the assembled application${detail}` }
+  }
   if (!input.pluginMaterialized) {
-    return { result: 'surface-incompatible', failedStage: 'surface', reason: 'the declared plugin client bundle was published but did not materialize in the DSH module system' }
+    return { result: 'surface-incompatible', failedStage: 'surface', reason: 'DSH mounted the application but could not establish activation of the declared plugin client entry' }
   }
   if (input.pageErrors.length > 0) {
     return { result: 'surface-incompatible', failedStage: 'interaction', reason: `the browser observed ${input.pageErrors.length} uncaught page error(s) after plugin materialization` }
@@ -337,6 +350,7 @@ function emptyEvidence(plane: DshExecutionPlane): DshWebSurfaceEvidence | DshTui
         rootMounted: false,
         bootManifestPresent: false,
         pluginEntryPresent: false,
+        applicationMounted: false,
         pluginMaterialized: false,
         consoleErrors: [],
         pageErrors: [],
@@ -476,6 +490,30 @@ function scriptPolicy(environment: NodeJS.ProcessEnv, enabled: boolean): NodeJS.
     npm_config_ignore_scripts: value,
     PNPM_CONFIG_IGNORE_SCRIPTS: value,
   }
+}
+
+function normalizeAllowedBuilds(values: readonly string[] | undefined): string[] {
+  if (values === undefined) return []
+  if (values.length > MAX_ALLOWED_BUILDS) throw new Error(`DSH surface observation accepts at most ${MAX_ALLOWED_BUILDS} approved dependency builds`)
+  const names = new Set<string>()
+  for (const value of values) {
+    if (value.length > 214 || !/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/.test(value)) {
+      throw new Error(`invalid approved dependency build package name: ${JSON.stringify(value)}`)
+    }
+    names.add(value)
+  }
+  return [...names].sort()
+}
+
+function pnpmSurfaceBuildApproval(
+  approvedPackage: string,
+  artifact: PackedArtifact,
+  artifactName: string,
+  profileDirectory: string,
+): string {
+  if (approvedPackage !== artifactName) return approvedPackage
+  const artifactPath = relative(profileDirectory, artifact.path).split(sep).join('/')
+  return `${artifactName}@file:${artifactPath}`
 }
 
 function dshArgs(dshVersion: string, args: readonly string[]): string[] {
@@ -693,6 +731,7 @@ async function observeWebSurface(input: {
       rootMounted: false,
       bootManifestPresent: false,
       pluginEntryPresent: false,
+      applicationMounted: false,
       pluginMaterialized: false,
       consoleErrors: [],
       pageErrors: [],
@@ -729,6 +768,7 @@ async function observeWebSurface(input: {
         rootMounted: false,
         bootManifestPresent: false,
         pluginEntryPresent: false,
+        applicationMounted: false,
         pluginMaterialized: false,
         consoleErrors: [],
         pageErrors: [],
@@ -794,13 +834,34 @@ async function observeWebSurface(input: {
     }
     if (initial.pluginEntryPresent) {
       try {
-        await page.waitForFunction(runtimeId => {
-          const value = globalThis as unknown as { __DSH_MODULES__?: { loadCache?: Map<string, unknown> } }
-          return value.__DSH_MODULES__?.loadCache?.has(runtimeId) === true
-        }, input.report.runtimeId, { timeout: Math.min(input.timeoutMs, 60_000) })
+        await page.waitForFunction(() => {
+          const value = globalThis as unknown as {
+            document?: {
+              querySelector(selector: string): {
+                childElementCount?: number
+                querySelector(selector: string): unknown
+              } | null
+            }
+          }
+          const root = value.document?.querySelector('#root')
+          return (root?.childElementCount ?? 0) > 0
+            && root?.querySelector(':scope > [data-dsh-boot]') == null
+        }, undefined, { timeout: Math.min(input.timeoutMs, 60_000) })
+        evidence.applicationMounted = true
+        // DSH's Web boot contract audits every graph entry as ACTIVE before
+        // the UI renderer replaces [data-dsh-boot]. This is a public,
+        // observable boundary; the old __DSH_MODULES__ page global no longer
+        // exists in current DSH releases.
         evidence.pluginMaterialized = true
       } catch {
+        evidence.applicationMounted = false
         evidence.pluginMaterialized = false
+        evidence.bootFailureText = bounded(await page.evaluate(() => {
+          const value = globalThis as unknown as {
+            document?: { querySelector(selector: string): { textContent?: string | null } | null }
+          }
+          return value.document?.querySelector('#root > [data-dsh-boot]')?.textContent ?? ''
+        }, undefined), 512)
       }
     }
     evidence.consoleErrors = boundedList(consoleErrors)
@@ -809,8 +870,10 @@ async function observeWebSurface(input: {
     evidence.blockedExternalRequests = boundedList(blockedExternalRequests)
     const screenshotPath = join(input.artifactsDirectory, safeArtifactName(input.report.caseId, 'png'))
     await page.screenshot({ path: screenshotPath, fullPage: true })
+    await chmod(screenshotPath, 0o644)
     evidence.screenshot = basename(screenshotPath)
     await context.tracing.stop({ path: tracePath })
+    await chmod(tracePath, 0o644)
     traceStarted = false
     evidence.trace = basename(tracePath)
     const evaluation = evaluateDshWebEvidence({
@@ -821,7 +884,9 @@ async function observeWebSurface(input: {
       bootManifestPresent: evidence.bootManifestPresent,
       pluginEntryPresent: evidence.pluginEntryPresent,
       ...(evidence.pluginBundleStatus === undefined ? {} : { pluginBundleStatus: evidence.pluginBundleStatus }),
+      applicationMounted: evidence.applicationMounted,
       pluginMaterialized: evidence.pluginMaterialized,
+      ...(evidence.bootFailureText === undefined ? {} : { bootFailureText: evidence.bootFailureText }),
       consoleErrors: evidence.consoleErrors,
       pageErrors: evidence.pageErrors,
       failedRequests: evidence.failedRequests,
@@ -847,7 +912,7 @@ async function observeWebSurface(input: {
     input.report.stages.shutdown = stopped
       ? { status: 'passed' }
       : { status: 'failed', detail: 'DSH Web required a forced shutdown' }
-    await writeFile(hostLogPath, bounded(host.output(), MAX_COMMAND_OUTPUT_BYTES), { mode: 0o600 }).catch(() => undefined)
+    await writeFile(hostLogPath, bounded(host.output(), MAX_COMMAND_OUTPUT_BYTES), { mode: 0o644 }).catch(() => undefined)
   }
 }
 
@@ -970,7 +1035,7 @@ async function observeTuiSurface(input: {
   evidence.normalizedFrame = normalizeTerminalFrame(raw)
   evidence.capturedBytes = capturedBytes
   evidence.truncated = truncated
-  await writeFile(transcriptPath, raw, { mode: 0o600 })
+  await writeFile(transcriptPath, raw, { mode: 0o644 })
   const evaluation = evaluateDshTuiEvidence({
     driverAvailable: true,
     frameObserved: evidence.frameObserved,
@@ -1006,6 +1071,7 @@ function validateObservationOptions(options: DshSurfaceObservationOptions): void
 
 export async function observeDshPluginSurface(options: DshSurfaceObservationOptions): Promise<DshSurfaceObservationReport> {
   validateObservationOptions(options)
+  const allowedBuilds = normalizeAllowedBuilds(options.allowedBuilds)
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
   if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 30_000 || timeoutMs > 600_000) {
     throw new Error('DSH surface observation timeout must be between 30000 and 600000 milliseconds')
@@ -1046,6 +1112,7 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
       disposableEnvironmentRequired: true,
       inheritedHostSecrets: false,
       externalBrowserRequestsBlocked: options.plane === 'web',
+      approvedDependencyBuilds: allowedBuilds,
       note: 'The caller supplies a disposable VM and restricted container. Radar passes no repository or model secrets, binds the run to exact artifact bytes, blocks non-loopback browser requests, and collects bounded smoke evidence. This is compatibility evidence, not a malicious-code safety certificate.',
     },
   }
@@ -1117,6 +1184,12 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
 
     const install = await runCommand(pnpmCommand, dshArgs(report.dshVersion, [
       'plugin', '--profile', report.profile, 'add', artifact.path,
+      ...allowedBuilds.map(name => `--allow-build=${pnpmSurfaceBuildApproval(
+        name,
+        artifact,
+        parsedSpec.name,
+        join(environment.DSH_HOME as string, 'profiles', report.profile),
+      )}`),
     ]), artifactDirectory, scriptsEnvironment, timeoutMs)
     report.stages.install = commandStage(install)
     if (install.timedOut || install.outputExceeded || install.launchError !== undefined) {
@@ -1178,7 +1251,7 @@ export function renderDshSurfaceObservation(report: DshSurfaceObservationReport)
   if (report.evidence.plane === 'web') {
     lines.push(
       '',
-      `Web: HTTP ${report.evidence.httpStatus ?? 'unknown'}, root ${report.evidence.rootMounted ? 'mounted' : 'missing'}, entry ${report.evidence.pluginEntryPresent ? 'present' : 'missing'}, module ${report.evidence.pluginMaterialized ? 'materialized' : 'not materialized'}`,
+      `Web: HTTP ${report.evidence.httpStatus ?? 'unknown'}, root ${report.evidence.rootMounted ? 'mounted' : 'missing'}, entry ${report.evidence.pluginEntryPresent ? 'present' : 'missing'}, app ${report.evidence.applicationMounted ? 'mounted' : 'still booting'}, module ${report.evidence.pluginMaterialized ? 'activated' : 'not activated'}`,
       `Browser errors: ${report.evidence.pageErrors.length} page, ${report.evidence.consoleErrors.length} console, ${report.evidence.failedRequests.length} failed request(s)`,
     )
   } else {

@@ -116,6 +116,7 @@ function compatibleReport(expected: DshSurfaceExpectedCase, plane: 'web' | 'tui'
       disposableEnvironmentRequired: true as const,
       inheritedHostSecrets: false as const,
       externalBrowserRequestsBlocked: plane === 'web',
+      approvedDependencyBuilds: expected.allowedBuilds === '' ? [] : expected.allowedBuilds.split(','),
       note: 'fixture',
     },
   }
@@ -131,6 +132,7 @@ function compatibleReport(expected: DshSurfaceExpectedCase, plane: 'web' | 'tui'
           bootManifestPresent: true,
           pluginEntryPresent: true,
           pluginBundleStatus: 200,
+          applicationMounted: true,
           pluginMaterialized: true,
           consoleErrors: [],
           pageErrors: [],
@@ -164,7 +166,7 @@ describe('DSH execution-plane evidence', () => {
     assert.equal(dshSurfaceProfileStrategy('tui'), 'create-with-plugin-add')
   })
 
-  it('requires the Web client entry to be published and materialized, not merely HTTP 200', () => {
+  it('requires DSH to hand off from its boot page after activating the Web client graph', () => {
     assert.deepEqual(evaluateDshWebEvidence({
       driverAvailable: true,
       hostStarted: true,
@@ -173,6 +175,7 @@ describe('DSH execution-plane evidence', () => {
       bootManifestPresent: true,
       pluginEntryPresent: true,
       pluginBundleStatus: 200,
+      applicationMounted: true,
       pluginMaterialized: true,
       consoleErrors: [],
       pageErrors: [],
@@ -191,14 +194,17 @@ describe('DSH execution-plane evidence', () => {
       bootManifestPresent: true,
       pluginEntryPresent: true,
       pluginBundleStatus: 200,
+      applicationMounted: false,
       pluginMaterialized: false,
-      consoleErrors: ['Failed to resolve @deepseek-ai/dsh-session'],
+      bootFailureText: 'Failed to load plugins dsh-univer-office',
+      consoleErrors: [],
       pageErrors: [],
       failedRequests: [],
     })
     assert.equal(missing.result, 'surface-incompatible')
     assert.equal(missing.failedStage, 'surface')
-    assert.match(missing.reason, /did not materialize/)
+    assert.match(missing.reason, /did not hand off/)
+    assert.match(missing.reason, /dsh-univer-office/)
   })
 
   it('does not turn a missing browser into a plugin incompatibility', () => {
@@ -208,6 +214,7 @@ describe('DSH execution-plane evidence', () => {
       rootMounted: false,
       bootManifestPresent: false,
       pluginEntryPresent: false,
+      applicationMounted: false,
       pluginMaterialized: false,
       consoleErrors: [],
       pageErrors: [],
@@ -246,7 +253,24 @@ describe('DSH execution-plane reconciliation', () => {
     assert.equal(plan.matrix.include.every(item => item.plugin === 'web-plugin@1.2.3'), true)
     assert.equal(plan.matrix.include.every(item => item.dshVersion === '0.1.1-rc.2'), true)
     assert.equal(plan.matrix.include.every(item => item.artifactSha256 === ARTIFACT_SHA), true)
+    assert.equal(plan.matrix.include.every(item => item.allowedBuilds === ''), true)
     assert.equal(plan.matrix.include.every(item => item.reasons.includes('missing-evidence')), true)
+  })
+
+  it('carries the Agent-approved install environment into every execution plane', () => {
+    const plan = buildDshSurfacePlan(
+      targets,
+      sourceLedger({ approvedDependencyBuilds: ['protobufjs', '@google/genai'] }),
+      emptyDshSurfaceLedger(),
+      new Date('2026-08-25T00:00:00.000Z'),
+    )
+    assert.equal(plan.matrix.include.every(item => item.allowedBuilds === '@google/genai,protobufjs'), true)
+    const merged = mergeDshSurfaceLedger({
+      ledger: emptyDshSurfaceLedger(),
+      expected: plan.matrix.include,
+      reports: plan.matrix.include.map(expected => compatibleReport(expected)),
+    })
+    assert.deepEqual(merged.ledger.entries[0]?.approvedDependencyBuilds, ['@google/genai', 'protobufjs'])
   })
 
   it('stays quiet with fresh exact evidence and invalidates both planes after an upstream artifact change', () => {
