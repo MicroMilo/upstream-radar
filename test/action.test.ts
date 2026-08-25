@@ -151,6 +151,7 @@ describe('reusable GitHub Action', () => {
     assert.match(checkedInObserverWorkflow, /reconcile-surface-observations:/)
     assert.match(checkedInObserverWorkflow, /scripts\/write-dsh-surface-plan\.mjs/)
     assert.match(checkedInObserverWorkflow, /scripts\/merge-dsh-surface-ledger\.mjs/)
+    assert.match(checkedInObserverWorkflow, /accept_bounded_unknown: true/)
     assert.match(surfaceObserverWorkflow, /permissions:\n\s+contents: read/)
     assert.match(surfaceObserverWorkflow, /--read-only/)
     assert.match(surfaceObserverWorkflow, /--cap-drop ALL/)

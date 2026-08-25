@@ -1356,13 +1356,13 @@
         "type": "pnpm"
       },
       "sourceCoordinateAtSelection": {
-        "name": "@linxin666/dsh-web-ui-all",
-        "version": "0.2.9"
+        "name": "@linxin666/dsh-web-all",
+        "version": "0.3.3"
       },
       "distribution": {
         "kind": "npm",
-        "name": "@linxin666/dsh-web-ui-all",
-        "selectedVersion": "0.2.9",
+        "name": "@linxin666/dsh-web-all",
+        "selectedVersion": "0.3.3",
         "distTag": "latest"
       },
       "signals": {

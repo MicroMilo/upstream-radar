@@ -396,7 +396,7 @@ targets:
     ecosystem: dsh
     repository: zhu1090093659/dsh-web
     ref: dev
-    package: '@linxin666/dsh-web-ui-all'
+    package: '@linxin666/dsh-web-all'
     packagePath: packages/dsh-web-all/package.json
     lockfile: pnpm-lock.yaml
     lockfileType: pnpm

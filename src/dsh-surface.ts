@@ -266,7 +266,12 @@ function contractFingerprint(target: DshSurfaceTarget, entry: DshCompatibilityLe
 }
 
 function desiredCase(target: DshSurfaceTarget, source: DshCompatibilityLedgerEntry): DshSurfaceExpectedCase | undefined {
-  if (source.artifact.sha256 === undefined || !BARE_SHA256.test(source.artifact.sha256) || source.result === 'unknown') return undefined
+  // The headless result may legitimately remain unknown when the unresolved
+  // edges belong to the Web or TUI host that this target is about to provide.
+  // An explicit surface target needs only exact artifact provenance here; the
+  // plane observer independently reinstalls the package, verifies this digest,
+  // and establishes its own result.
+  if (source.artifact.sha256 === undefined || !BARE_SHA256.test(source.artifact.sha256)) return undefined
   return {
     id: target.id,
     sourceCaseId: source.caseId,
@@ -528,7 +533,7 @@ export function buildDshSurfacePlan(
     }
     const desired = desiredCase(target, source)
     if (desired === undefined) {
-      blocked.push({ id: target.id, reason: `source compatibility case ${target.sourceCaseId} has no trustworthy exact artifact bytes` })
+      blocked.push({ id: target.id, reason: `source compatibility case ${target.sourceCaseId} has no exact artifact bytes` })
       continue
     }
     const current = currentById.get(target.id)

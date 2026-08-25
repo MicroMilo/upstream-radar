@@ -311,9 +311,9 @@
     },
     {
       "id": "dsh-web-ui-all",
-      "spec": "@linxin666/dsh-web-ui-all@0.2.9",
+      "spec": "@linxin666/dsh-web-all@0.3.3",
       "observerTargetId": "dsh-web-ui-all",
-      "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 114128 downloads and 5612 GitHub stars to cover the ui surface."
+      "reason": "Canonical npm artifact reached through the old @linxin666/dsh-web-ui-all package's declared DSH migration; retained under the catalog identity to cover the ui surface."
     },
     {
       "id": "openpencil",

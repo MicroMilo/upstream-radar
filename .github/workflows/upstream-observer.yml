@@ -233,6 +233,7 @@ jobs:
       node_major: ${{ matrix.nodeMajor }}
       timeout_seconds: '180'
       allow_builds: ${{ matrix.allowedBuilds }}
+      accept_bounded_unknown: true
 
   # Dynamic reports are useful only if they become durable, comparable
   # evidence. This job accepts reports only when their exact case, plugin,

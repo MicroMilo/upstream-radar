@@ -17,7 +17,14 @@
       "profile": "web",
       "runtimeId": "dsh-univer-office",
       "reason": "Exercise the Web client path that headless load evidence cannot reach and test the strict rc.8 peer contract against current DSH."
+    },
+    {
+      "id": "dsh-web-all-web",
+      "sourceCaseId": "dsh-web-ui-all-node22",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "@linxin666/dsh-web-all",
+      "reason": "Follow the package's declared migration and resolve its Web-only host peers in the official DSH Web profile."
     }
   ]
 }
-

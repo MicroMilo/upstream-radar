@@ -33,6 +33,11 @@ on:
         required: false
         default: '22'
         type: string
+      accept_bounded_unknown:
+        description: Let an exact installed artifact continue to a later Web/TUI observer
+        required: false
+        default: false
+        type: boolean
   workflow_call:
     inputs:
       plugin:
@@ -56,6 +61,10 @@ on:
         required: false
         default: '22'
         type: string
+      accept_bounded_unknown:
+        required: false
+        default: false
+        type: boolean
 
 # The target package executes arbitrary lifecycle and load code. This workflow
 # deliberately has no write permission and declares no secrets.
@@ -272,11 +281,12 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Validate that a trustworthy compatibility result survived
+      - name: Validate that a bounded compatibility observation survived
         if: always()
         shell: bash
         env:
           RADAR_REPORT: ${{ runner.temp }}/upstream-radar-install-observation/report.json
+          RADAR_ACCEPT_BOUNDED_UNKNOWN: ${{ inputs.accept_bounded_unknown }}
         run: |
           node --input-type=module <<'NODE'
           import { existsSync, readFileSync } from 'node:fs'
@@ -297,6 +307,16 @@ jobs:
             'install-failed',
             'load-failed',
           ])
+          const stages = report.stages ?? {}
+          const boundedUnknown = report.result === 'unknown'
+            && process.env.RADAR_ACCEPT_BOUNDED_UNKNOWN === 'true'
+            && /^[a-f0-9]{64}$/.test(report.artifact?.sha256 ?? '')
+            && ['artifact', 'install', 'registration', 'load'].every(stage => stages[stage]?.status === 'passed')
+            && /^sha256:[a-f0-9]{64}$/.test(report.resolution?.runtimeGraph?.digest ?? '')
+          if (boundedUnknown) {
+            console.log(`Observed bounded headless gap for ${report.artifact.spec}; exact bytes are eligible for a configured Web/TUI observer.`)
+            process.exit(0)
+          }
           if (!trustworthyResults.has(report.result)) {
             console.error(`DSH install observer did not establish a trustworthy result: ${report.result ?? 'unknown'} — ${report.reason ?? 'no reason recorded'}`)
             process.exit(1)

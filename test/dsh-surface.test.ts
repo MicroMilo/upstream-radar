@@ -273,6 +273,33 @@ describe('DSH execution-plane reconciliation', () => {
     assert.deepEqual(merged.ledger.entries[0]?.approvedDependencyBuilds, ['@google/genai', 'protobufjs'])
   })
 
+  it('routes a bounded headless unknown into its explicitly configured execution plane', () => {
+    const plan = buildDshSurfacePlan(
+      targets,
+      sourceLedger({
+        result: 'unknown',
+        reason: 'the exact artifact loaded, but Web host peers are unresolved in headless',
+      }),
+      emptyDshSurfaceLedger(),
+      new Date('2026-08-25T00:00:00.000Z'),
+    )
+    assert.equal(plan.run, true)
+    assert.equal(plan.blocked.length, 0)
+    assert.equal(plan.matrix.include.every(item => item.artifactSha256 === ARTIFACT_SHA), true)
+  })
+
+  it('still blocks a surface run when the headless observer did not bind exact artifact bytes', () => {
+    const plan = buildDshSurfacePlan(
+      targets,
+      sourceLedger({ result: 'unknown', artifact: { lifecycleScripts: [] } }),
+      emptyDshSurfaceLedger(),
+      new Date('2026-08-25T00:00:00.000Z'),
+    )
+    assert.equal(plan.run, false)
+    assert.equal(plan.blocked.length, 2)
+    assert.match(plan.blocked[0]?.reason ?? '', /no exact artifact bytes/)
+  })
+
   it('stays quiet with fresh exact evidence and invalidates both planes after an upstream artifact change', () => {
     const first = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger(), new Date('2026-08-25T00:00:00.000Z'))
     const reports = first.matrix.include.map(expected => compatibleReport(expected))
