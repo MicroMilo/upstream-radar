@@ -1025,7 +1025,7 @@
       "source": {
         "name": "dsh-msg-hub",
         "version": "0.1.9",
-        "digest": "sha256:2b900001256d2a78cccc674df93c653d33cf00a077a8b8afccb3c8172804f538",
+        "digest": "sha256:05efb1c6d353e792e34468a9d5c7de1725e4c4e3340c7ee4a73e4fd47142b932",
         "findings": []
       },
       "artifact": {
@@ -1070,7 +1070,7 @@
       "source": {
         "name": "@0xsline/dsh-spotlight",
         "version": "0.0.2",
-        "digest": "sha256:cebe7dd8cd5df591b5d48101f13072274a48b3f9b518fc21208bdf8726f4ad72",
+        "digest": "sha256:28cbea0de6545a4fd1cd8572fc915f6a9b9d69381e6f4b713165bd31f07b1375",
         "findings": [
           {
             "code": "lifecycle-script-present",
