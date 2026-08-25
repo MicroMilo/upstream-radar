@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-headless-agent-plans/v1alpha1",
-  "updatedAt": "2026-08-25T08:32:30.303Z",
+  "updatedAt": "2026-08-25T08:48:47.091Z",
   "entries": [
     {
       "caseId": "anweat-dsh-browser-node22",
@@ -729,7 +729,7 @@
       "plugin": "@linxin666/dsh-web-all@0.3.3",
       "dshVersion": "0.1.1-rc.2",
       "nodeMajor": 22,
-      "result": "build-approval-required",
+      "result": "unknown",
       "observedRequiredBuilds": [
         "cloudflared",
         "cpu-features",
@@ -745,22 +745,17 @@
       "artifactSha256": "64ee0f111afe4700d278c97af6f92316b750538d821338399a2c89a290ea6ff9",
       "repository": "zhu1090093659/dsh-web",
       "sourceCommit": "dab13e5996b3adfc5f22e5bb29661b19529a94f2",
-      "inputFingerprint": "sha256:79e2b9342b01b07cd5f1db08b3097cb3647e0f621826f42cb452936589b2f5a8",
-      "plannedAt": "2026-08-25T08:32:30.302Z",
+      "inputFingerprint": "sha256:de4c35b509e65881a5c0d3e881ac1db7ea3ec2315fbbfcefb009da5446629a0c",
+      "plannedAt": "2026-08-25T08:48:47.091Z",
       "model": "deepseek-v4-flash",
-      "action": "retry-headless",
-      "classification": "build-approval",
-      "allowedBuilds": [
-        "cloudflared",
-        "cpu-features",
-        "node-pty",
-        "ssh2"
-      ],
-      "summary": "The plugin requires approval for four dependency builds. The repository README explicitly instructs adding cloudflared, cpu-features, and ssh2 to allowBuilds, and node-pty is a known dependency of ssh2. All four are legitimate build packages observed in the lockfile. Retrying with these approvals is justified.",
+      "action": "stop-headless",
+      "classification": "different-plane",
+      "allowedBuilds": [],
+      "summary": "The runtime graph has 2 unresolved peer dependencies on @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots from dsh-better-sidebar. These are DSH SDK packages that must be provided by the host runtime, not by pnpm build approvals. The headless profile cannot add these packages as they are not build dependencies but runtime peer dependencies. No build approval can resolve this.",
       "evidence": [
-        "README.md: '首次安装若提示 ERR_PNPM_IGNORED_BUILDS ... 把 cloudflared / cpu-features / ssh2 加入 profile 的 pnpm-workspace.yaml allowBuilds'",
-        "Observed result: build-approval-required for cloudflared, cpu-features, node-pty, ssh2",
-        "Lockfile graph includes ssh2 and node-pty as dependencies"
+        "runtimeGraph.unresolvedDependencies: dsh-better-sidebar requires @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots as peers",
+        "manifest dependencies include dsh-better-sidebar 0.15.2",
+        "README states dsh-better-sidebar is an external plugin integrated via npm dependency"
       ]
     },
     {

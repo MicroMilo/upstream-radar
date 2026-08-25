@@ -1,6 +1,6 @@
 # DSH headless Agent review
 
-Updated: 2026-08-25T08:32:30.303Z
+Updated: 2026-08-25T08:48:47.091Z
 
 The Agent reads bounded repository evidence and the latest isolated headless result. There is no static environment-planning fallback. Only an exact observed build-package name can reach the no-secret retry runner.
 
@@ -46,8 +46,8 @@ The Agent reads bounded repository evidence and the latest isolated headless res
 |  |  |  |  | The plugin's peer contract requires @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots, which are not resolved by the headless runtime. The missing packages are UI-related and not available in the headless execution plane. No build packages are required, so a retry cannot resolve the missing peer dependencies. |
 | `dsh-wallpaper-engine-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The plugin's peer dependency @deepseek-ai/dsh-client-ui-slots@ =0.1.0-rc.6 is missing in the headless runtime, and the plugin declares a web client platform with immediate injection. The headless profile cannot satisfy the UI slots peer contract, and no build packages are required or approved. Retrying headless would not resolve the missing peer dependency. |
-| `dsh-web-ui-all-node22` | `build-approval-required` | `retry-headless` | `build-approval` | approve `cloudflared`, `cpu-features`, `node-pty`, `ssh2` |
-|  |  |  |  | The plugin requires approval for four dependency builds. The repository README explicitly instructs adding cloudflared, cpu-features, and ssh2 to allowBuilds, and node-pty is a known dependency of ssh2. All four are legitimate build packages observed in the lockfile. Retrying with these approvals is justified. |
+| `dsh-web-ui-all-node22` | `unknown` | `stop-headless` | `different-plane` | approve `cloudflared`, `cpu-features`, `node-pty`, `ssh2` |
+|  |  |  |  | The runtime graph has 2 unresolved peer dependencies on @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots from dsh-better-sidebar. These are DSH SDK packages that must be provided by the host runtime, not by pnpm build approvals. The headless profile cannot add these packages as they are not build dependencies but runtime peer dependencies. No build approval can resolve this. |
 | `dshscan-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The plugin's peer dependency @deepseek-ai/dsh-tools is pinned to 0.1.0-rc.6, but the headless DSH runtime provides 0.1.1-rc.2, causing a runtime-import mismatch. No build packages are required, and the mismatch is a version contract issue that cannot be resolved by approving builds. The headless profile cannot change the runtime version, so retrying is not justified. |
 | `openpencil-node24` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
