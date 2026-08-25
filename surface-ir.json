@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-surface-ir/v1alpha1",
-  "generatedAt": "2026-08-25T07:40:54.451Z",
+  "generatedAt": "2026-08-25T07:50:24.054Z",
   "cells": [
     {
       "id": "dsh-tui-tui",
@@ -24,9 +24,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T07:40:08.944Z",
-        "result": "surface-incompatible",
-        "reason": "the TUI produced a frame but did not stop after the bounded shutdown input",
+        "observedAt": "2026-08-25T07:50:24.054Z",
+        "result": "compatible",
+        "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -57,8 +57,7 @@
             "status": "passed"
           },
           "shutdown": {
-            "status": "failed",
-            "detail": "the TUI produced a frame but did not stop after the bounded shutdown input"
+            "status": "passed"
           }
         },
         "evidence": {
@@ -68,12 +67,12 @@
           "rows": 32,
           "frameObserved": true,
           "inputSent": true,
-          "exitedAfterShutdown": false,
+          "exitedAfterShutdown": true,
           "exitCode": 0,
-          "signal": 9,
+          "signal": 0,
           "transcript": "dsh-tui-tui.ansi",
-          "normalizedFrame": "██\nExplore\n██\n██\n██\n██\n██\nExplore t\n▄▀▄ ▄\n▀▀▀▄ ▄▀▀▀\n▀▀▀▀▀▀▀\n▀▀▀▀\n▄▀▀▀\n▀▀\n▀\n▀\n█\n█\n█\n█\n█\nExplore th\n█\n█\n█\n█\nExplore the\n█\n█\nxplore the u\nlore the un\nore the un",
-          "capturedBytes": 54953,
+          "normalizedFrame": "███\n▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\nh-TUI\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc",
+          "capturedBytes": 24082,
           "truncated": false
         }
       }
@@ -100,7 +99,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T07:40:54.451Z",
+        "observedAt": "2026-08-25T07:50:19.330Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {

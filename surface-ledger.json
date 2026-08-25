@@ -14,8 +14,8 @@
         "protobufjs"
       ],
       "sourceFingerprint": "sha256:480aca8a8b7e8f28b24946af26bea053dd8ba511d93fa2715a62c6c0760cc62d",
-      "contractFingerprint": "sha256:28210af42c28f2610363e760d465195fb0f5b5a2ab73b816a2cca908e0bdb5c7",
-      "observedAt": "2026-08-25T07:40:08.944Z",
+      "contractFingerprint": "sha256:26c2dd39240847a012793c70912ade841afa892066140ea2a62e865f7158f085",
+      "observedAt": "2026-08-25T07:50:24.054Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -58,8 +58,7 @@
           "status": "passed"
         },
         "shutdown": {
-          "status": "failed",
-          "detail": "the TUI produced a frame but did not stop after the bounded shutdown input"
+          "status": "passed"
         }
       },
       "evidence": {
@@ -69,16 +68,16 @@
         "rows": 32,
         "frameObserved": true,
         "inputSent": true,
-        "exitedAfterShutdown": false,
+        "exitedAfterShutdown": true,
         "exitCode": 0,
-        "signal": 9,
+        "signal": 0,
         "transcript": "dsh-tui-tui.ansi",
-        "normalizedFrame": "██\nExplore\n██\n██\n██\n██\n██\nExplore t\n▄▀▄ ▄\n▀▀▀▄ ▄▀▀▀\n▀▀▀▀▀▀▀\n▀▀▀▀\n▄▀▀▀\n▀▀\n▀\n▀\n█\n█\n█\n█\n█\nExplore th\n█\n█\n█\n█\nExplore the\n█\n█\nxplore the u\nlore the un\nore the un",
-        "capturedBytes": 54953,
+        "normalizedFrame": "███\n▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\nh-TUI\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc",
+        "capturedBytes": 24082,
         "truncated": false
       },
-      "result": "surface-incompatible",
-      "reason": "the TUI produced a frame but did not stop after the bounded shutdown input",
+      "result": "compatible",
+      "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
         "version": "0.43.5"
@@ -93,8 +92,8 @@
       "profile": "web",
       "runtimeId": "dsh-univer-office",
       "sourceFingerprint": "sha256:2977f10c66b1119a0cb09f9d360fc2714a3048c473ea545c642ff62c9541ade7",
-      "contractFingerprint": "sha256:e498b1ee1678119786c8f14bf02584980bafe40a7eacdcb98d318728fd2afda8",
-      "observedAt": "2026-08-25T07:40:54.451Z",
+      "contractFingerprint": "sha256:eae163037d036addbc405afe979758dd556a12e1f6a8cd998798a0aa202f0207",
+      "observedAt": "2026-08-25T07:50:19.330Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
