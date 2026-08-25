@@ -8,6 +8,7 @@ import {
 } from '../src/dsh-directory-feed.js'
 import { DSH_COMPATIBILITY_LEDGER_SCHEMA, type DshCompatibilityLedgerEntry } from '../src/dsh-compatibility-ledger.js'
 import { DSH_INSTALL_TARGETS_SCHEMA } from '../src/dsh-install-plan.js'
+import { DSH_SURFACE_LEDGER_SCHEMA, type DshSurfaceLedger } from '../src/dsh-surface.js'
 
 function ledgerEntry(targetId: string, result: DshCompatibilityLedgerEntry['result']): DshCompatibilityLedgerEntry {
   return {
@@ -97,6 +98,69 @@ function fixture() {
   }
 }
 
+function surfaceLedger(
+  sourceTargetId: string,
+  result: DshSurfaceLedger['entries'][number]['result'] = 'compatible',
+  overrides: Partial<DshSurfaceLedger['entries'][number]> = {},
+): DshSurfaceLedger {
+  const status = result === 'compatible' ? 'passed' as const : 'failed' as const
+  return {
+    schema: DSH_SURFACE_LEDGER_SCHEMA,
+    entries: [{
+      caseId: `${sourceTargetId}-web`,
+      sourceCaseId: `${sourceTargetId}-node22`,
+      plugin: `${sourceTargetId}@1.0.0`,
+      dshVersion: '0.1.1-rc.2',
+      plane: 'web',
+      profile: 'web',
+      runtimeId: sourceTargetId,
+      sourceFingerprint: `sha256:${'d'.repeat(64)}`,
+      contractFingerprint: `sha256:${'e'.repeat(64)}`,
+      observedAt: '2026-08-23T00:30:00.000Z',
+      runtime: {
+        nodeMajor: 22,
+        nodeVersion: '22.23.2',
+        platform: 'linux',
+        architecture: 'x64',
+        pnpmVersion: '11.7.0',
+      },
+      artifact: { sha256: 'c'.repeat(64), bytes: 1_024 },
+      stages: {
+        runtime: { status: 'passed' },
+        artifact: { status: 'passed' },
+        profile: { status: 'passed' },
+        install: { status: 'passed' },
+        registration: { status: 'passed' },
+        host: { status: 'passed' },
+        surface: { status },
+        interaction: { status },
+        shutdown: { status: 'passed' },
+      },
+      evidence: {
+        plane: 'web',
+        url: 'http://127.0.0.1:3080/',
+        httpStatus: 200,
+        rootMounted: true,
+        bootManifestPresent: true,
+        pluginEntryPresent: result === 'compatible',
+        pluginBundleStatus: result === 'compatible' ? 200 : 404,
+        applicationMounted: result === 'compatible',
+        pluginMaterialized: result === 'compatible',
+        consoleErrors: [],
+        pageErrors: [],
+        failedRequests: [],
+      },
+      result,
+      reason: `${result} Web evidence`,
+      observer: {
+        schema: 'upstream-radar.dsh-surface-observation/v1alpha1',
+        version: '0.44.0',
+      },
+      ...overrides,
+    }],
+  }
+}
+
 describe('DSH directory compatibility feed', () => {
   it('publishes exact evidence without turning coverage gaps into pass or fail', () => {
     const input = fixture()
@@ -167,6 +231,117 @@ describe('DSH directory compatibility feed', () => {
     })
   })
 
+  it('joins an exact Web cell and lets it cover only a Web-client headless gap', () => {
+    const input = fixture()
+    const peerGap = input.ledger.entries.find(entry => entry.caseId === 'peer-gap-node22')
+    assert.ok(peerGap)
+    peerGap.resolution = {
+      runtimeGraph: {
+        digest: `sha256:${'f'.repeat(64)}`,
+        nodes: 10,
+        edges: 9,
+        unresolved: 1,
+        unresolvedDependencies: [{
+          from: 'node_modules/peer-gap',
+          name: '@deepseek-ai/dsh-client-ui-primitives',
+          spec: '0.1.1-rc.2',
+          kind: 'peer',
+        }],
+      },
+    }
+    const feed = buildDshDirectoryCompatibilityFeed({
+      ...input,
+      surfaceLedger: surfaceLedger('peer-gap'),
+      generatedAt: '2026-08-23T01:00:00.000Z',
+    })
+
+    const plugin = feed.plugins.find(item => item.id === 'peer-gap')
+    assert.equal(plugin?.status, 'observed-compatible')
+    assert.deepEqual(plugin?.cells.map(cell => cell.executionPlane), ['headless', 'web'])
+    assert.deepEqual(plugin?.cells[0]?.coveredBy, ['peer-gap-web'])
+    assert.equal(plugin?.cells[1]?.sourceCaseId, 'peer-gap-node22')
+    assert.equal(plugin?.cells[1]?.evidenceSource, 'surface-ledger')
+    assert.deepEqual(feed.boundary.executionPlanes, ['headless', 'web'])
+  })
+
+  it('keeps a non-client peer mismatch under review even when Web boot succeeds', () => {
+    const input = fixture()
+    const peerGap = input.ledger.entries.find(entry => entry.caseId === 'peer-gap-node22')
+    assert.ok(peerGap)
+    peerGap.resolution = {
+      runtimeGraph: {
+        digest: `sha256:${'f'.repeat(64)}`,
+        nodes: 10,
+        edges: 9,
+        unresolved: 1,
+        pluginPeerContracts: {
+          declared: 1,
+          satisfied: 0,
+          mismatched: 1,
+          indeterminate: 0,
+          missing: 0,
+          relations: [{
+            name: '@deepseek-ai/dsh-attachment',
+            required: '0.1.0-rc.8',
+            status: 'mismatched',
+            staticUsage: 'runtime-import-observed',
+            resolvedVersion: '0.1.1-rc.2',
+          }],
+          issues: [{
+            name: '@deepseek-ai/dsh-attachment',
+            required: '0.1.0-rc.8',
+            status: 'mismatched',
+            staticUsage: 'runtime-import-observed',
+            resolvedVersion: '0.1.1-rc.2',
+          }],
+        },
+      },
+    }
+    const feed = buildDshDirectoryCompatibilityFeed({
+      ...input,
+      surfaceLedger: surfaceLedger('peer-gap'),
+      generatedAt: '2026-08-23T01:00:00.000Z',
+    })
+
+    const plugin = feed.plugins.find(item => item.id === 'peer-gap')
+    assert.equal(plugin?.status, 'needs-review')
+    assert.equal(plugin?.cells[0]?.coveredBy, undefined)
+    assert.equal(plugin?.cells[1]?.status, 'observed-compatible')
+  })
+
+  it('ignores a surface report that is not bound to the exact source artifact', () => {
+    const input = fixture()
+    const feed = buildDshDirectoryCompatibilityFeed({
+      ...input,
+      surfaceLedger: surfaceLedger('peer-gap', 'compatible', {
+        artifact: { sha256: '9'.repeat(64), bytes: 1_024 },
+      }),
+      generatedAt: '2026-08-23T01:00:00.000Z',
+    })
+
+    const plugin = feed.plugins.find(item => item.id === 'peer-gap')
+    assert.equal(plugin?.status, 'needs-review')
+    assert.deepEqual(plugin?.cells.map(cell => cell.executionPlane), ['headless'])
+  })
+
+  it('lets an exact surface incompatibility override a green headless load', () => {
+    const input = fixture()
+    const feed = buildDshDirectoryCompatibilityFeed({
+      ...input,
+      observations: {
+        ...input.observations,
+        targets: {
+          ...input.observations.targets,
+          clean: { package: { name: 'clean', version: '1.0.0', distTag: 'latest' } },
+        },
+      },
+      surfaceLedger: surfaceLedger('clean', 'surface-incompatible'),
+      generatedAt: '2026-08-23T01:00:00.000Z',
+    })
+
+    assert.equal(feed.plugins.find(item => item.id === 'clean')?.status, 'observed-incompatible')
+  })
+
   it('does not let malformed or name-mismatched observation state replace catalog distribution metadata', () => {
     const input = fixture()
     const feed = buildDshDirectoryCompatibilityFeed({
@@ -205,12 +380,14 @@ describe('DSH directory compatibility feed', () => {
     const cohort = JSON.parse(await readFile('examples/dsh/awesome-observer/cohort.json', 'utf8')) as unknown
     const installTargets = JSON.parse(await readFile('examples/dsh/install-observer/targets.json', 'utf8')) as unknown
     const ledger = JSON.parse(await readFile('compatibility-ledger.json', 'utf8')) as unknown
+    const surfaceLedger = JSON.parse(await readFile('surface-ledger.json', 'utf8')) as unknown
     const observations = JSON.parse(await readFile('observations.json', 'utf8')) as unknown
     const checkedInFeed = JSON.parse(await readFile('feeds/dsh-plugin-compatibility.json', 'utf8')) as { generatedAt: string }
     const feed = buildDshDirectoryCompatibilityFeed({
       cohort,
       installTargets,
       ledger,
+      surfaceLedger,
       observations,
       generatedAt: checkedInFeed.generatedAt,
     })

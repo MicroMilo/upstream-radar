@@ -1,6 +1,9 @@
 {
   "schema": "upstream-radar.dsh-surface-targets/v1alpha1",
   "refreshAfterHours": 168,
+  "autoDiscover": {
+    "webClientGaps": true
+  },
   "surfaces": [
     {
       "id": "dsh-tui-tui",

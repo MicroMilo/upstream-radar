@@ -1,10 +1,17 @@
 import { parseDshCompatibilityLedger, type DshCompatibilityLedgerEntry } from './dsh-compatibility-ledger.js'
 import { parseDshInstallTargets } from './dsh-install-plan.js'
+import {
+  DSH_SURFACE_LEDGER_SCHEMA,
+  isDshWebClientOnlyCoverageGap,
+  parseDshSurfaceLedger,
+  type DshSurfaceLedgerEntry,
+} from './dsh-surface.js'
+import type { DshSurfaceObservationResult } from './dsh-surface-observation.js'
 import { parseNpmSpec } from './npm.js'
 import { TOOL_VERSION } from './version.js'
 
 export const AWESOME_DSH_COHORT_SCHEMA = 'upstream-radar.awesome-dsh-cohort/v1alpha1' as const
-export const DSH_DIRECTORY_COMPATIBILITY_FEED_SCHEMA = 'upstream-radar.dsh-directory-compatibility-feed/v1alpha2' as const
+export const DSH_DIRECTORY_COMPATIBILITY_FEED_SCHEMA = 'upstream-radar.dsh-directory-compatibility-feed/v1alpha3' as const
 
 const MAX_COHORT_PLUGINS = 100
 const REPOSITORY = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/
@@ -16,6 +23,8 @@ export type DshDirectoryEvidenceStatus =
   | 'needs-review'
   | 'update-pending'
   | 'not-observed'
+
+export type DshDirectoryExecutionPlane = 'headless' | 'web' | 'tui'
 
 export interface AwesomeDshCohortPlugin {
   id: string
@@ -45,6 +54,8 @@ export interface AwesomeDshCohort {
 
 export interface DshDirectoryEvidenceCell {
   caseId: string
+  sourceCaseId?: string
+  evidenceSource: 'compatibility-ledger' | 'surface-ledger'
   artifact: {
     spec: string
     sha256?: string
@@ -59,11 +70,14 @@ export interface DshDirectoryEvidenceCell {
     platform: string
     architecture: string
   }
-  executionPlane: 'headless'
-  profile: 'headless'
+  executionPlane: DshDirectoryExecutionPlane
+  profile: string
   status: Exclude<DshDirectoryEvidenceStatus, 'not-observed' | 'update-pending'>
-  radarResult: DshCompatibilityLedgerEntry['result']
+  radarResult: DshCompatibilityLedgerEntry['result'] | DshSurfaceObservationResult
   requiredDependencyBuilds?: string[]
+  approvedDependencyBuilds?: string[]
+  /** Compatible intended-plane cells that resolve this headless-only coverage gap. */
+  coveredBy?: string[]
   observedAt: string
   recheckDueAt: string
   reason: string
@@ -81,6 +95,7 @@ export interface DshDirectoryCompatibilityEntry {
   status: DshDirectoryEvidenceStatus
   cells: DshDirectoryEvidenceCell[]
   evidenceUrl: string
+  surfaceEvidenceUrl?: string
 }
 
 export interface DshDirectoryCompatibilityFeed {
@@ -99,8 +114,8 @@ export interface DshDirectoryCompatibilityFeed {
   sourceCatalog: AwesomeDshCohort['source']
   boundary: {
     claim: 'exact-cell compatibility evidence; not a security review, endorsement, or timeless compatibility badge'
-    executionPlane: 'headless'
-    profile: 'headless'
+    executionPlanes: DshDirectoryExecutionPlane[]
+    profiles: string[]
     isolation: 'fresh GitHub-hosted VM plus restricted container'
     consumptionRule: string
     refreshAfterHours: number
@@ -236,10 +251,16 @@ function cellStatus(result: DshCompatibilityLedgerEntry['result']): Exclude<DshD
   return 'needs-review'
 }
 
+function surfaceCellStatus(result: DshSurfaceObservationResult): Exclude<DshDirectoryEvidenceStatus, 'not-observed' | 'update-pending'> {
+  if (result === 'compatible') return 'observed-compatible'
+  if (result === 'surface-incompatible') return 'observed-incompatible'
+  return 'needs-review'
+}
+
 function aggregateExactCellStatus(cells: readonly DshDirectoryEvidenceCell[]): DshDirectoryEvidenceStatus {
   if (cells.length === 0) return 'not-observed'
   if (cells.some(cell => cell.status === 'observed-incompatible')) return 'observed-incompatible'
-  if (cells.some(cell => cell.status === 'needs-review')) return 'needs-review'
+  if (cells.some(cell => cell.status === 'needs-review' && (cell.coveredBy?.length ?? 0) === 0)) return 'needs-review'
   return 'observed-compatible'
 }
 
@@ -263,6 +284,43 @@ function dueAt(observedAt: string, refreshAfterHours: number): string {
   return new Date(Date.parse(observedAt) + refreshAfterHours * 60 * 60 * 1_000).toISOString()
 }
 
+function exactSurfaceBinding(source: DshCompatibilityLedgerEntry, surface: DshSurfaceLedgerEntry): boolean {
+  return surface.sourceCaseId === source.caseId
+    && surface.plugin === source.plugin
+    && surface.dshVersion === source.dshVersion
+    && surface.runtime.nodeMajor === source.runtime.nodeMajor
+    && surface.runtime.platform === source.runtime.platform
+    && surface.runtime.architecture === source.runtime.architecture
+    && source.artifact.sha256 !== undefined
+    && surface.artifact.sha256 === source.artifact.sha256
+}
+
+function surfaceCell(surface: DshSurfaceLedgerEntry, refreshAfterHours: number): DshDirectoryEvidenceCell {
+  return {
+    caseId: surface.caseId,
+    sourceCaseId: surface.sourceCaseId,
+    evidenceSource: 'surface-ledger',
+    artifact: { spec: surface.plugin, sha256: surface.artifact.sha256 },
+    dsh: { package: '@deepseek-ai/dsh', version: surface.dshVersion },
+    runtime: {
+      nodeMajor: surface.runtime.nodeMajor,
+      nodeVersion: surface.runtime.nodeVersion,
+      platform: surface.runtime.platform,
+      architecture: surface.runtime.architecture,
+    },
+    executionPlane: surface.plane,
+    profile: surface.profile,
+    status: surfaceCellStatus(surface.result),
+    radarResult: surface.result,
+    ...(surface.approvedDependencyBuilds === undefined
+      ? {}
+      : { approvedDependencyBuilds: surface.approvedDependencyBuilds }),
+    observedAt: surface.observedAt,
+    recheckDueAt: dueAt(surface.observedAt, refreshAfterHours),
+    reason: surface.reason,
+  }
+}
+
 function normalizedRepositoryBaseUrl(value: string): string {
   const parsed = new URL(value)
   if (parsed.protocol !== 'https:' || parsed.username !== '' || parsed.password !== '' || parsed.search !== '' || parsed.hash !== '') {
@@ -275,6 +333,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
   cohort: unknown
   installTargets: unknown
   ledger: unknown
+  surfaceLedger?: unknown
   observations?: unknown
   generatedAt: string
   repositoryBaseUrl?: string
@@ -282,6 +341,10 @@ export function buildDshDirectoryCompatibilityFeed(input: {
   const cohort = parseAwesomeDshCohort(input.cohort)
   const installTargets = parseDshInstallTargets(input.installTargets)
   const ledger = parseDshCompatibilityLedger(input.ledger)
+  const surfaceLedger = parseDshSurfaceLedger(input.surfaceLedger ?? {
+    schema: DSH_SURFACE_LEDGER_SCHEMA,
+    entries: [],
+  })
   const generatedAt = timestamp(input.generatedAt, 'directory feed generatedAt')
   const repositoryBaseUrl = normalizedRepositoryBaseUrl(input.repositoryBaseUrl ?? 'https://github.com/MicroMilo/upstream-radar')
   const targetByObserverId = new Map(installTargets.plugins
@@ -335,28 +398,47 @@ export function buildDshDirectoryCompatibilityFeed(input: {
     const observations = installTarget === undefined
       ? []
       : ledger.entries.filter(entry => entry.targetId === installTarget.id)
-    const cells = observations.map((entry): DshDirectoryEvidenceCell => ({
-      caseId: entry.caseId,
-      artifact: {
-        spec: entry.plugin,
-        ...(entry.artifact.sha256 === undefined ? {} : { sha256: entry.artifact.sha256 }),
-      },
-      dsh: { package: '@deepseek-ai/dsh', version: entry.dshVersion },
-      runtime: {
-        nodeMajor: entry.runtime.nodeMajor,
-        nodeVersion: entry.runtime.nodeVersion,
-        platform: entry.runtime.platform,
-        architecture: entry.runtime.architecture,
-      },
-      executionPlane: 'headless',
-      profile: 'headless',
-      status: cellStatus(entry.result),
-      radarResult: entry.result,
-      ...(entry.requiredDependencyBuilds === undefined ? {} : { requiredDependencyBuilds: entry.requiredDependencyBuilds }),
-      observedAt: entry.observedAt,
-      recheckDueAt: dueAt(entry.observedAt, installTargets.refreshAfterHours),
-      reason: entry.reason,
-    })).sort((left, right) => left.caseId.localeCompare(right.caseId))
+    const cells: DshDirectoryEvidenceCell[] = []
+    for (const entry of observations) {
+      const matchingSurfaces = surfaceLedger.entries.filter(surface => exactSurfaceBinding(entry, surface))
+      const compatibleCover = isDshWebClientOnlyCoverageGap(entry)
+        ? matchingSurfaces
+          .filter(surface => surface.plane === 'web' && surface.result === 'compatible')
+          .map(surface => surface.caseId)
+          .sort()
+        : []
+      cells.push({
+        caseId: entry.caseId,
+        evidenceSource: 'compatibility-ledger',
+        artifact: {
+          spec: entry.plugin,
+          ...(entry.artifact.sha256 === undefined ? {} : { sha256: entry.artifact.sha256 }),
+        },
+        dsh: { package: '@deepseek-ai/dsh', version: entry.dshVersion },
+        runtime: {
+          nodeMajor: entry.runtime.nodeMajor,
+          nodeVersion: entry.runtime.nodeVersion,
+          platform: entry.runtime.platform,
+          architecture: entry.runtime.architecture,
+        },
+        executionPlane: 'headless',
+        profile: 'headless',
+        status: cellStatus(entry.result),
+        radarResult: entry.result,
+        ...(entry.requiredDependencyBuilds === undefined ? {} : { requiredDependencyBuilds: entry.requiredDependencyBuilds }),
+        ...(entry.approvedDependencyBuilds === undefined ? {} : { approvedDependencyBuilds: entry.approvedDependencyBuilds }),
+        ...(compatibleCover.length === 0 ? {} : { coveredBy: compatibleCover }),
+        observedAt: entry.observedAt,
+        recheckDueAt: dueAt(entry.observedAt, installTargets.refreshAfterHours),
+        reason: entry.reason,
+      })
+      for (const surface of matchingSurfaces) cells.push(surfaceCell(surface, installTargets.refreshAfterHours))
+    }
+    cells.sort((left, right) => {
+      const planeOrder = { headless: 0, web: 1, tui: 2 } as const
+      return planeOrder[left.executionPlane] - planeOrder[right.executionPlane]
+        || left.caseId.localeCompare(right.caseId)
+    })
     const distribution = observedDistribution(plugin)
     return {
       id: plugin.id,
@@ -370,6 +452,9 @@ export function buildDshDirectoryCompatibilityFeed(input: {
       status: aggregateStatus(distribution, cells, selectedDshVersion),
       cells,
       evidenceUrl: `${repositoryBaseUrl}/blob/main/compatibility-ledger.json`,
+      ...(cells.some(cell => cell.evidenceSource === 'surface-ledger')
+        ? { surfaceEvidenceUrl: `${repositoryBaseUrl}/blob/main/surface-ledger.json` }
+        : {}),
     }
   }).sort((left, right) => left.repository.localeCompare(right.repository))
 
@@ -383,6 +468,10 @@ export function buildDshDirectoryCompatibilityFeed(input: {
   }
   for (const plugin of plugins) summary[plugin.status] += 1
 
+  const executionPlanes = [...new Set(plugins.flatMap(plugin => plugin.cells.map(cell => cell.executionPlane)))]
+    .sort((left, right) => ({ headless: 0, web: 1, tui: 2 })[left] - ({ headless: 0, web: 1, tui: 2 })[right])
+  const profiles = [...new Set(plugins.flatMap(plugin => plugin.cells.map(cell => cell.profile)))].sort()
+
   return {
     schema: DSH_DIRECTORY_COMPATIBILITY_FEED_SCHEMA,
     generatedAt,
@@ -393,8 +482,8 @@ export function buildDshDirectoryCompatibilityFeed(input: {
     sourceCatalog: cohort.source,
     boundary: {
       claim: 'exact-cell compatibility evidence; not a security review, endorsement, or timeless compatibility badge',
-      executionPlane: 'headless',
-      profile: 'headless',
+      executionPlanes,
+      profiles,
       isolation: 'fresh GitHub-hosted VM plus restricted container',
       consumptionRule: 'A plugin status applies only when a cell exactly matches the selected artifact. Treat update-pending, needs-review and not-observed as neither pass nor fail, and treat a cell as stale after recheckDueAt.',
       refreshAfterHours: installTargets.refreshAfterHours,
@@ -420,7 +509,7 @@ function selectedCoordinate(entry: DshDirectoryCompatibilityEntry): string {
 
 function dshCoordinate(entry: DshDirectoryCompatibilityEntry): string {
   if (entry.cells.length === 0) return '—'
-  return entry.cells.map(cell => `\`${markdown(cell.dsh.version)}\` / Node ${cell.runtime.nodeMajor}`).join('<br>')
+  return entry.cells.map(cell => `\`${markdown(cell.dsh.version)}\` / Node ${cell.runtime.nodeMajor} / ${cell.executionPlane}`).join('<br>')
 }
 
 function observedCoordinate(entry: DshDirectoryCompatibilityEntry): string {
@@ -447,7 +536,7 @@ export function renderDshDirectoryCompatibilityFeed(feed: DshDirectoryCompatibil
     '',
     '## Reading the status',
     '',
-    '- `observed-compatible`: the exact artifact installed, registered and loaded in the stated headless cell.',
+    '- `observed-compatible`: every currently required exact cell passed; a plane-specific pass may cover only a headless gap made exclusively of that plane\'s client packages.',
     '- `observed-incompatible`: the exact cell reproduced a runtime gate, install, registration or load failure.',
     '- `needs-review`: evidence exists, but Radar cannot yet separate a plugin defect from an uncovered execution plane, environment condition, or explicit dependency-build approval gate.',
     '- `update-pending`: the selected npm artifact changed and has no exact cell yet; historical evidence is retained but never inherited as the current result.',
@@ -455,7 +544,7 @@ export function renderDshDirectoryCompatibilityFeed(feed: DshDirectoryCompatibil
     '',
     `A cell expires at its \`recheckDueAt\` value (${feed.boundary.refreshAfterHours} hours after observation). Consumers must then show it as stale. This is exact compatibility evidence, not a security review or endorsement.`,
     '',
-    `[Machine-readable feed](dsh-plugin-compatibility.json) · [Full compatibility ledger](${feed.producer.repository}/blob/main/compatibility-ledger.json)`,
+    `[Machine-readable feed](dsh-plugin-compatibility.json) · [Headless ledger](${feed.producer.repository}/blob/main/compatibility-ledger.json) · [Web/TUI ledger](${feed.producer.repository}/blob/main/surface-ledger.json)`,
     '',
   )
   return lines.join('\n')

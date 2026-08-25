@@ -39,6 +39,9 @@ export interface DshSurfaceTarget {
 export interface DshSurfaceTargets {
   schema: typeof DSH_SURFACE_TARGETS_SCHEMA
   refreshAfterHours: number
+  autoDiscover?: {
+    webClientGaps: boolean
+  }
   surfaces: DshSurfaceTarget[]
 }
 
@@ -207,6 +210,15 @@ export function parseDshSurfaceTargets(input: unknown): DshSurfaceTargets {
   if (!Array.isArray(root.surfaces) || root.surfaces.length === 0 || root.surfaces.length > MAX_TARGETS) {
     throw new Error(`DSH surface targets must contain between 1 and ${MAX_TARGETS} surfaces`)
   }
+  const autoDiscoverRecord = root.autoDiscover === undefined
+    ? undefined
+    : record(root.autoDiscover, 'DSH surface targets autoDiscover')
+  if (autoDiscoverRecord !== undefined && typeof autoDiscoverRecord.webClientGaps !== 'boolean') {
+    throw new Error('DSH surface targets autoDiscover.webClientGaps must be boolean')
+  }
+  const autoDiscover = autoDiscoverRecord === undefined
+    ? undefined
+    : { webClientGaps: autoDiscoverRecord.webClientGaps as boolean }
   const ids = new Set<string>()
   const pairs = new Set<string>()
   const surfaces = root.surfaces.map((value, index): DshSurfaceTarget => {
@@ -227,11 +239,46 @@ export function parseDshSurfaceTargets(input: unknown): DshSurfaceTargets {
     return { id, sourceCaseId, plane, profile, runtimeId, reason }
   })
   surfaces.sort((left, right) => left.id.localeCompare(right.id))
-  return { schema: DSH_SURFACE_TARGETS_SCHEMA, refreshAfterHours, surfaces }
+  return {
+    schema: DSH_SURFACE_TARGETS_SCHEMA,
+    refreshAfterHours,
+    ...(autoDiscover === undefined ? {} : { autoDiscover }),
+    surfaces,
+  }
 }
 
 function digest(value: unknown): string {
   return `sha256:${createHash('sha256').update(JSON.stringify(value)).digest('hex')}`
+}
+
+function isWebClientPackage(name: string): boolean {
+  return name.startsWith('@deepseek-ai/dsh-client-')
+}
+
+/**
+ * True only when the headless result is unresolved exclusively because the
+ * stock Web profile is absent. The intended Web plane may cover this gap; a
+ * host/runtime mismatch must remain visible even when browser boot succeeds.
+ */
+export function isDshWebClientOnlyCoverageGap(entry: DshCompatibilityLedgerEntry): boolean {
+  if (entry.result !== 'peer-contract-incompatible' && entry.result !== 'unknown') return false
+  const runtimeGraph = entry.resolution?.runtimeGraph
+  const names = [
+    ...(runtimeGraph?.unresolvedDependencies ?? []).map(item => item.name),
+    ...(runtimeGraph?.pluginPeerContracts?.issues ?? []).map(item => item.name),
+  ]
+  return names.length > 0 && names.every(isWebClientPackage)
+}
+
+function automaticWebTargetId(sourceCaseId: string, usedIds: ReadonlySet<string>): string {
+  const direct = `${sourceCaseId}-web`
+  if (direct.length <= 64 && !usedIds.has(direct)) return direct
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    const suffix = `-${createHash('sha256').update(`${sourceCaseId}\u0000web\u0000${attempt}`).digest('hex').slice(0, 8)}`
+    const candidate = `${sourceCaseId.slice(0, 64 - suffix.length)}${suffix}`
+    if (!usedIds.has(candidate)) return candidate
+  }
+  throw new Error(`could not derive a unique automatic Web target id for ${sourceCaseId}`)
 }
 
 function sourceFingerprint(entry: DshCompatibilityLedgerEntry): string {
@@ -531,10 +578,35 @@ export function buildDshSurfacePlan(
   const surfaceLedger = parseDshSurfaceLedger(surfaceLedgerInput)
   const sourceById = new Map(sourceLedger.entries.map(entry => [entry.caseId, entry]))
   const currentById = new Map(surfaceLedger.entries.map(entry => [entry.caseId, entry]))
+  const desiredTargets = [...targets.surfaces]
+  const usedTargetIds = new Set(desiredTargets.map(target => target.id))
+  const usedSurfacePairs = new Set(desiredTargets.map(target => `${target.sourceCaseId}\u0000${target.plane}`))
   const include: DshSurfaceExpectedCase[] = []
   const blocked: DshSurfacePlan['blocked'] = []
+  if (targets.autoDiscover?.webClientGaps === true) {
+    for (const source of [...sourceLedger.entries].sort((left, right) => left.caseId.localeCompare(right.caseId))) {
+      const pair = `${source.caseId}\u0000web`
+      if (usedSurfacePairs.has(pair) || !isDshWebClientOnlyCoverageGap(source)) continue
+      const id = automaticWebTargetId(source.caseId, usedTargetIds)
+      if (desiredTargets.length >= MAX_TARGETS) {
+        blocked.push({ id, reason: `automatic Web observation skipped because the ${MAX_TARGETS}-surface run budget is full` })
+        continue
+      }
+      const runtimeId = parseNpmSpec(source.plugin).name
+      desiredTargets.push({
+        id,
+        sourceCaseId: source.caseId,
+        plane: 'web',
+        profile: 'web',
+        runtimeId,
+        reason: 'Headless evidence contains only DSH browser-client dependency gaps; observe the exact artifact in the stock Web plane.',
+      })
+      usedTargetIds.add(id)
+      usedSurfacePairs.add(pair)
+    }
+  }
   const staleBefore = now.getTime() - targets.refreshAfterHours * 60 * 60 * 1_000
-  for (const target of targets.surfaces) {
+  for (const target of desiredTargets) {
     const source = sourceById.get(target.sourceCaseId)
     if (source === undefined) {
       blocked.push({ id: target.id, reason: `source compatibility case ${target.sourceCaseId} is missing` })

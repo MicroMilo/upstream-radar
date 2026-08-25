@@ -49,6 +49,36 @@ function sourceLedger(overrides: Partial<DshCompatibilityLedger['entries'][numbe
   }
 }
 
+function webClientGapEntry(
+  caseId: string,
+  plugin: string,
+): DshCompatibilityLedger['entries'][number] {
+  const source = sourceLedger().entries[0] as DshCompatibilityLedger['entries'][number]
+  return {
+    ...source,
+    caseId,
+    targetId: caseId.replace(/-node22$/, ''),
+    plugin,
+    result: 'peer-contract-incompatible',
+    reason: 'the exact package loaded, but its browser-client peers are absent from headless',
+    artifact: { ...source.artifact, sha256: 'd'.repeat(64) },
+    resolution: {
+      runtimeGraph: {
+        digest: `sha256:${'e'.repeat(64)}`,
+        nodes: 10,
+        edges: 9,
+        unresolved: 1,
+        unresolvedDependencies: [{
+          from: `node_modules/${plugin.split('@')[0]}`,
+          name: '@deepseek-ai/dsh-client-ui-primitives',
+          spec: '0.1.1-rc.2',
+          kind: 'peer',
+        }],
+      },
+    },
+  }
+}
+
 const targets = {
   schema: 'upstream-radar.dsh-surface-targets/v1alpha1',
   refreshAfterHours: 168,
@@ -255,6 +285,74 @@ describe('DSH execution-plane reconciliation', () => {
     assert.equal(plan.matrix.include.every(item => item.artifactSha256 === ARTIFACT_SHA), true)
     assert.equal(plan.matrix.include.every(item => item.allowedBuilds === ''), true)
     assert.equal(plan.matrix.include.every(item => item.reasons.includes('missing-evidence')), true)
+  })
+
+  it('automatically routes Web-client-only headless gaps without duplicating explicit targets', () => {
+    const ledger = sourceLedger({
+      ...webClientGapEntry('web-plugin-node22', 'web-plugin@1.2.3'),
+      artifact: { lifecycleScripts: [], sha256: ARTIFACT_SHA },
+    })
+    ledger.entries.push(webClientGapEntry('auto-client-node22', 'auto-client@2.0.0'))
+    ledger.entries.push({
+      ...webClientGapEntry('host-contract-node22', 'host-contract@3.0.0'),
+      artifact: { lifecycleScripts: [], sha256: 'f'.repeat(64) },
+      resolution: {
+        runtimeGraph: {
+          digest: `sha256:${'1'.repeat(64)}`,
+          nodes: 10,
+          edges: 9,
+          unresolved: 1,
+          pluginPeerContracts: {
+            declared: 1,
+            satisfied: 0,
+            mismatched: 1,
+            indeterminate: 0,
+            missing: 0,
+            relations: [{
+              name: '@deepseek-ai/dsh-attachment',
+              required: '0.1.0-rc.8',
+              resolvedVersion: '0.1.1-rc.2',
+              status: 'mismatched',
+              staticUsage: 'runtime-import-observed',
+            }],
+            issues: [{
+              name: '@deepseek-ai/dsh-attachment',
+              required: '0.1.0-rc.8',
+              resolvedVersion: '0.1.1-rc.2',
+              status: 'mismatched',
+              staticUsage: 'runtime-import-observed',
+            }],
+          },
+        },
+      },
+    })
+
+    const plan = buildDshSurfacePlan(
+      { ...targets, autoDiscover: { webClientGaps: true } },
+      ledger,
+      emptyDshSurfaceLedger(),
+      new Date('2026-08-25T00:00:00.000Z'),
+    )
+
+    assert.deepEqual(plan.matrix.include.map(item => item.id), [
+      'auto-client-node22-web',
+      'web-plugin-tui',
+      'web-plugin-web',
+    ])
+    const automatic = plan.matrix.include[0]
+    assert.equal(automatic?.plane, 'web')
+    assert.equal(automatic?.profile, 'web')
+    assert.equal(automatic?.runtimeId, 'auto-client')
+    assert.deepEqual(automatic?.reasons, ['missing-evidence'])
+    assert.equal(plan.matrix.include.filter(item => item.sourceCaseId === 'web-plugin-node22' && item.plane === 'web').length, 1)
+    assert.equal(plan.matrix.include.some(item => item.sourceCaseId === 'host-contract-node22'), false)
+  })
+
+  it('validates the optional automatic Web routing switch', () => {
+    assert.throws(() => parseDshSurfaceTargets({
+      ...targets,
+      autoDiscover: { webClientGaps: 'yes' },
+    }), /autoDiscover\.webClientGaps must be boolean/)
   })
 
   it('derives the Web module id from the exact package coordinate, not a Cordis loader row id', () => {

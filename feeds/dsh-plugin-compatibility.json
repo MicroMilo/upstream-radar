@@ -1,6 +1,6 @@
 {
-  "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha2",
-  "generatedAt": "2026-08-25T08:57:39.186Z",
+  "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
+  "generatedAt": "2026-08-25T09:32:57.953Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.44.0",
@@ -21,17 +21,25 @@
   },
   "boundary": {
     "claim": "exact-cell compatibility evidence; not a security review, endorsement, or timeless compatibility badge",
-    "executionPlane": "headless",
-    "profile": "headless",
+    "executionPlanes": [
+      "headless",
+      "web",
+      "tui"
+    ],
+    "profiles": [
+      "dsh-tui",
+      "headless",
+      "web"
+    ],
     "isolation": "fresh GitHub-hosted VM plus restricted container",
     "consumptionRule": "A plugin status applies only when a cell exactly matches the selected artifact. Treat update-pending, needs-review and not-observed as neither pass nor fail, and treat a cell as stale after recheckDueAt.",
     "refreshAfterHours": 168
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 74,
+    "observed-compatible": 75,
     "observed-incompatible": 0,
-    "needs-review": 22,
+    "needs-review": 21,
     "update-pending": 0,
     "not-observed": 4
   },
@@ -54,6 +62,7 @@
       "cells": [
         {
           "caseId": "dsh-plugin-mall-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@1e0zj/dsh-plugin-mall@0.4.15",
             "sha256": "9ba3b4e2772e293d461607d0b07f3f3aa0d4598370f7482294e5a50d518ee1b1"
@@ -97,6 +106,7 @@
       "cells": [
         {
           "caseId": "dsh-verify-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-verify@0.9.0",
             "sha256": "284126787dc34cf1a747588c5d8b81296d542732cd2847cff1a06be8438852a3"
@@ -140,6 +150,7 @@
       "cells": [
         {
           "caseId": "dsh-awiki-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@awiki/dsh-plugin@0.3.3",
             "sha256": "0a4b43e67b15323d648552020e839777d6ee48ced7d61fbf36022358541696b4"
@@ -183,6 +194,7 @@
       "cells": [
         {
           "caseId": "dsh-auto-memory-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@a9i5k4/dsh-auto-memory@0.1.29",
             "sha256": "c2c82df3a772c92c8cc515456402ae5673c7d70ff5cb1567b4e681ccabc5dca6"
@@ -226,6 +238,7 @@
       "cells": [
         {
           "caseId": "dsh-update-checker-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-update-checker@1.4.16",
             "sha256": "61016211eb3ebe6a21915916b2cd99a1cf0219c74b290d058867e7ad290af94e"
@@ -269,6 +282,7 @@
       "cells": [
         {
           "caseId": "dsh-agy-link-node24",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-agy-link@0.4.16",
             "sha256": "4a9b7d9abbed4e34922224e766693c6284c9ca678115f871f1745238294e3537"
@@ -312,6 +326,7 @@
       "cells": [
         {
           "caseId": "dsh-turn-rewind-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@anionex/dsh-turn-rewind@0.1.2",
             "sha256": "9663f98348f6db105bfa4d58e53dd0d66c581711c58d8bab7c2b5059b31f6b19"
@@ -355,6 +370,7 @@
       "cells": [
         {
           "caseId": "dsh-vision-toolkit-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@anionex/dsh-vision-toolkit@0.1.39",
             "sha256": "81b4029142f0f3c2fbe88a8ee22c90da8cf449b68b345eebfd2e643c0a06efb1"
@@ -398,6 +414,7 @@
       "cells": [
         {
           "caseId": "anweat-dsh-browser-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@anweat/dsh-browser@0.1.8",
             "sha256": "93396ab0961fa992c53dd8beeff1428b23d4f3f56b2fc33e9181944535f845be"
@@ -441,6 +458,7 @@
       "cells": [
         {
           "caseId": "dsh-find-plugin-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-find-plugin@0.3.7",
             "sha256": "46c408fc9f649b90ec25b30fa02dcc0f1e783c4a269e82468b7095ce1cffa992"
@@ -484,6 +502,7 @@
       "cells": [
         {
           "caseId": "dsh-remote-plugin-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-remote-plugin@0.6.14",
             "sha256": "78bbf849d6599677fa82bcf86a311515a5bd64125a14ca91f23daea092a761ae"
@@ -527,6 +546,7 @@
       "cells": [
         {
           "caseId": "context-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-context@0.32.0",
             "sha256": "cc6bc4a276617c5e0f2b6f934e35a2ee55c39525b3d1c0228d8e8f6477a705f5"
@@ -570,6 +590,7 @@
       "cells": [
         {
           "caseId": "dsh-tui-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@deepseek-harness-tui/dsh-tui@0.9.2",
             "sha256": "16109da55dcac367d3ae7ebb4465d9c05831776f52cebd2195552cf3bc626021"
@@ -588,12 +609,47 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
+          "approvedDependencyBuilds": [
+            "@google/genai",
+            "protobufjs"
+          ],
           "observedAt": "2026-08-25T07:13:27.454Z",
           "recheckDueAt": "2026-09-01T07:13:27.454Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        },
+        {
+          "caseId": "dsh-tui-tui",
+          "sourceCaseId": "dsh-tui-node22",
+          "evidenceSource": "surface-ledger",
+          "artifact": {
+            "spec": "@deepseek-harness-tui/dsh-tui@0.9.2",
+            "sha256": "16109da55dcac367d3ae7ebb4465d9c05831776f52cebd2195552cf3bc626021"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "tui",
+          "profile": "dsh-tui",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "approvedDependencyBuilds": [
+            "@google/genai",
+            "protobufjs"
+          ],
+          "observedAt": "2026-08-25T08:53:30.961Z",
+          "recheckDueAt": "2026-09-01T08:53:30.961Z",
+          "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
+      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
     },
     {
       "id": "dsh-tavern",
@@ -613,6 +669,7 @@
       "cells": [
         {
           "caseId": "dsh-tavern-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-tavern@1.9.2",
             "sha256": "c882e62d993a4056286fa8b196dcb3afaa3f5ffce4c2293b5e80128db13b80bc"
@@ -656,6 +713,7 @@
       "cells": [
         {
           "caseId": "dsh-history-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-history@0.1.24",
             "sha256": "5b41c975fb4d3e2dfc90093f6ce8e9348081cf8e06032025d8275fcbbeb376aa"
@@ -699,6 +757,7 @@
       "cells": [
         {
           "caseId": "dsh-vibe-math-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-vibe-math@1.0.2",
             "sha256": "93ea96844b828c0845fc65059a858d41cc605cffdebc4f1298b478c50d06077c"
@@ -742,6 +801,7 @@
       "cells": [
         {
           "caseId": "dsh-gateway-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-gateway@1.6.0",
             "sha256": "7a307266aba83341f6d82f2a136da54fb4238d7f6612d56f172678d9b395c652"
@@ -785,6 +845,7 @@
       "cells": [
         {
           "caseId": "dsh-taskboard-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-taskboard@0.5.1",
             "sha256": "842f9d920937bb4f6075144f31c1eb61d2ae3c2ec7b28e63330bddedf9804625"
@@ -828,6 +889,7 @@
       "cells": [
         {
           "caseId": "whale-on-desk-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "whale-on-desk@3.0.0",
             "sha256": "17e374e5cb56a95457490180ac3cac0fff82b03fa8ef929424edda9ead8d84cb"
@@ -871,6 +933,7 @@
       "cells": [
         {
           "caseId": "dsh-free-search-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-free-search@0.4.12",
             "sha256": "951ad445c40a071673b53566b993cb187f5cdb36505804b64c2f242d67ec17d8"
@@ -914,6 +977,7 @@
       "cells": [
         {
           "caseId": "dsh-imagegen-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@dickpy/dsh-imagegen@1.2.2",
             "sha256": "54cd571ae226276a318c8827e4d31614d1e2c90af896e5c143a1c375050d83d2"
@@ -957,6 +1021,7 @@
       "cells": [
         {
           "caseId": "dsh-univer-office-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-univer-office@0.2.9",
             "sha256": "dcd5cdbd02ffc240f18fdd45318205345cccb29dde3694f1efe51ee0211c746a"
@@ -978,9 +1043,36 @@
           "observedAt": "2026-08-25T07:13:21.792Z",
           "recheckDueAt": "2026-09-01T07:13:21.792Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-attachment@0.1.1-rc.2 does not satisfy 0.1.0-rc.8 (scan-incomplete)"
+        },
+        {
+          "caseId": "dsh-univer-office-web",
+          "sourceCaseId": "dsh-univer-office-node22",
+          "evidenceSource": "surface-ledger",
+          "artifact": {
+            "spec": "dsh-univer-office@0.2.9",
+            "sha256": "dcd5cdbd02ffc240f18fdd45318205345cccb29dde3694f1efe51ee0211c746a"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "web",
+          "profile": "web",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-25T08:53:37.752Z",
+          "recheckDueAt": "2026-09-01T08:53:37.752Z",
+          "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
+      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
     },
     {
       "id": "dsh-market",
@@ -1000,6 +1092,7 @@
       "cells": [
         {
           "caseId": "dsh-market-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dshmarket@1.29.2",
             "sha256": "424e73ae25ca0181244cf418d3aefbc15ecceccea164a6e7cf230cedee85ab5a"
@@ -1043,6 +1136,7 @@
       "cells": [
         {
           "caseId": "dsh-auxiliary-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@dsh-plugin/dsh-auxiliary@0.5.1",
             "sha256": "1915e49dc87eaec925be5b28cc671c1f68ae19b56d5dbb4337dcc8e537a38f70"
@@ -1086,6 +1180,7 @@
       "cells": [
         {
           "caseId": "dsh-wallpaper-engine-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-plugin-wallpaper-engine@0.6.5",
             "sha256": "528ae9a9068574cc3a01752f2cfcf495418d099a9e9b42267666a999fc1ea7d4"
@@ -1129,6 +1224,7 @@
       "cells": [
         {
           "caseId": "deepseek-harness-wallet-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "deepseek-harness-wallet@0.3.3",
             "sha256": "3d12ac9338bf5e1d6c13219e5478e7037aaa8491048535c0b418919b9e494d60"
@@ -1172,6 +1268,7 @@
       "cells": [
         {
           "caseId": "dsh-thirteen-bg-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-thirteen-bg@0.5.2",
             "sha256": "ba718513fe41aa604b01ea38220a3ce7ad5f51c0e486bbb319218ac2b7d0eb51"
@@ -1215,6 +1312,7 @@
       "cells": [
         {
           "caseId": "dsh-remote-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-remote@0.8.8",
             "sha256": "ccedc839d6038e6f09fe18e028017f30d5e9290c20cbd209ef470f0f7c100804"
@@ -1258,6 +1356,7 @@
       "cells": [
         {
           "caseId": "dsh-vision-proxy-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-vision-proxy@0.4.1",
             "sha256": "ede1c99584a6560059258b912dbb14325780daa564632392c93e789230702b56"
@@ -1301,6 +1400,7 @@
       "cells": [
         {
           "caseId": "dsh-codex-connect-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-codex-connect@0.1.0-alpha.4.19",
             "sha256": "3876106f058f94d3451fc2941a66b02b924ba0e93041fd5028252484ae6c451c"
@@ -1344,6 +1444,7 @@
       "cells": [
         {
           "caseId": "dsh-chatvoice-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-chatvoice@0.1.7",
             "sha256": "496a3f99aaab5f71c9d35a55a2f03c207b42f665d27c3f661b30c105d943ae0a"
@@ -1387,6 +1488,7 @@
       "cells": [
         {
           "caseId": "dsh-free-vision-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-free-vision@1.0.8",
             "sha256": "dc1499d6e3926c8f293b2760dca6ab91b6b0c980ca01a7250fb83647b0e42836"
@@ -1447,6 +1549,7 @@
       "cells": [
         {
           "caseId": "cost-meter-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-cost-meter@1.5.42",
             "sha256": "cdbcd1b9a85261e9c45c69ee680f052c6ae5d4688382f91180b404a63485cd7d"
@@ -1490,6 +1593,7 @@
       "cells": [
         {
           "caseId": "dsh-client-auto-continue-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-client-auto-continue@0.8.1",
             "sha256": "7bedffc7ca4e3bf6453489ac67126fdb1166107347e7816a9ebb21e4270c4120"
@@ -1533,6 +1637,7 @@
       "cells": [
         {
           "caseId": "dsh-testkit-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-testkit@0.3.3",
             "sha256": "d216ff7d4dbd9f83bdb08ee56442622590dae45ab628992d88772a32ad1df67f"
@@ -1576,6 +1681,7 @@
       "cells": [
         {
           "caseId": "iterate-plugin-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "iterate-plugin@2.12.1",
             "sha256": "b9943c59f8b6416e8ed850d38724a7eb12716ed8b41ec81c9e5e4e60846fbb97"
@@ -1619,6 +1725,7 @@
       "cells": [
         {
           "caseId": "dsh-strata-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-strata@0.8.2",
             "sha256": "16fa3a5b85c1ce397a302650d9c46ba243b8d63aee8e62a21ff07941768b1d74"
@@ -1662,6 +1769,7 @@
       "cells": [
         {
           "caseId": "dsh-full-remote-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-full-remote@0.3.7",
             "sha256": "f6aef43b8926e2096c0163726ded38066d3b76df3bcd6ba6193d1fe194480f2b"
@@ -1705,6 +1813,7 @@
       "cells": [
         {
           "caseId": "dsh-xueqiu-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-xueqiu@1.22.9",
             "sha256": "11bff4def61560eefb5332ea685c2db0037b386045c5ca05f60ecbc61381148f"
@@ -1748,6 +1857,7 @@
       "cells": [
         {
           "caseId": "modlens-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@liustack/modlens@3.24.2",
             "sha256": "ca922fe2fed769154fee2d6f615a18cfacc455169d09507c50464b394ed503a4"
@@ -1791,6 +1901,7 @@
       "cells": [
         {
           "caseId": "modsearch-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@liustack/modsearch@5.9.1",
             "sha256": "1b8be3c55654dfd6e5dcef3603068fc2c8420fec51f5d94c21251e79aecda65c"
@@ -1834,6 +1945,7 @@
       "cells": [
         {
           "caseId": "dsh-coding-subscription-oauth-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-coding-subscription-oauth@0.6.0",
             "sha256": "0f14c5c7a7c34cd4c8a4d72f26e94b812ef126ec3e27f36dd77664926c9f1b1d"
@@ -1893,6 +2005,7 @@
       "cells": [
         {
           "caseId": "dsh-commandcode-provider-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@mars-sea/dsh-commandcode-provider@0.8.1",
             "sha256": "245acceadf2fc86d1cb5d6a13d5c45b2ac7cc25f10e1436ad3c66810c3f86eea"
@@ -1936,6 +2049,7 @@
       "cells": [
         {
           "caseId": "dsh-agency-agents-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@michengai/dsh-agency-agents@0.1.21",
             "sha256": "8256aba3b054ecf33d9490fb0cafb93447e8f43180a82b0b2fc0df892d739d31"
@@ -1979,6 +2093,7 @@
       "cells": [
         {
           "caseId": "dsh-archive-manager-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@michengai/dsh-archive-manager@0.1.14",
             "sha256": "f8d76d265dbd96e68a777e4b88e06d844a592750abea2559109d9c90486dcf3e"
@@ -2022,6 +2137,7 @@
       "cells": [
         {
           "caseId": "dsh-im-connect-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@michengai/dsh-im-connect@0.1.23",
             "sha256": "167cb11911bc56be04d9f7c5e999780268d2b3aaabc1b5b93ddaf24390fec45f"
@@ -2065,6 +2181,7 @@
       "cells": [
         {
           "caseId": "dsh-skills-manager-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@michengai/dsh-skills-manager@0.1.24",
             "sha256": "0d22316d9ecc4373f2ab597634da9a9a0c8df16c02627c4852024839cdeb283b"
@@ -2108,6 +2225,7 @@
       "cells": [
         {
           "caseId": "dsh-mneme-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@modusensus/dsh-mneme@0.7.1",
             "sha256": "49c6456ddc8cb44780eaaa6adf442bcf5a5dff78a110b7ae207ef7e702df7e5e"
@@ -2151,6 +2269,7 @@
       "cells": [
         {
           "caseId": "dsh-doctor-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@moonquake2004/dsh-doctor@0.4.3",
             "sha256": "5ce8a6512d94c19e3756f72bccdb6c99fe773089dbcfa0ac9a94e7c771294a2e"
@@ -2194,6 +2313,7 @@
       "cells": [
         {
           "caseId": "agent-teams-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@nanmicoder/dsh-agent-teams@0.1.13",
             "sha256": "d9351c7e4637c7604fe882e8944ee5a5d77ec57647948d0ef67bc6c62e7f557a"
@@ -2237,6 +2357,7 @@
       "cells": [
         {
           "caseId": "dsh-catppuccin-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@nonamelego/dsh-catppuccin@0.3.1",
             "sha256": "5380f1274127237971f340294f5c8dfe80942535856cf7f113daccb6f5d7e27d"
@@ -2280,6 +2401,7 @@
       "cells": [
         {
           "caseId": "dsh-spend-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-spend@0.6.0",
             "sha256": "7b9353e4ab046ca1151d8de3b2f08afc9fb88366ab7b581cfc45baa11834a299"
@@ -2323,6 +2445,7 @@
       "cells": [
         {
           "caseId": "dsh-chat-import-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-chat-import@0.7.0",
             "sha256": "b2844a071606701f471518a6884a218864f5d9bd76ef4ee8bab3bdf97db3a22f"
@@ -2366,6 +2489,7 @@
       "cells": [
         {
           "caseId": "better-sidebar-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-better-sidebar@0.16.1",
             "sha256": "350486c712e17287c316ddb6ba15bc05741796ab0f4de6c5c0daae729913f2b3"
@@ -2409,6 +2533,7 @@
       "cells": [
         {
           "caseId": "dsh-mnemon-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-mnemon@0.3.0",
             "sha256": "da19e5219a53066426bcea66c6c231b78db1f0abd4cc01b431cb350f4af9e6c8"
@@ -2452,6 +2577,7 @@
       "cells": [
         {
           "caseId": "deepseek-harness-acp-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@openma/deepseek-harness-acp@0.4.26",
             "sha256": "7a30833449826045342cdaef378a9e8bc475f065ba039869135a531d50a3d05e"
@@ -2495,6 +2621,7 @@
       "cells": [
         {
           "caseId": "odai-dsh-plugin-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "odai-dsh-plugin@0.2.9",
             "sha256": "fd18501f38d5bc5aaf7f37863d14ee71e7eaa4dc7bfddd163fc7f5962465ac7b"
@@ -2538,6 +2665,7 @@
       "cells": [
         {
           "caseId": "dsh-auto-classifier-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-auto-classifier@0.1.14",
             "sha256": "4d520ebac921a068bd8bb0040eaede24759663220b2befd4bf118121d45204d7"
@@ -2581,6 +2709,7 @@
       "cells": [
         {
           "caseId": "dsh-pet-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-pet@0.1.8",
             "sha256": "9a25c7a4cfc49f74f5dff4ba3292b18fa4bca4a08e656fdd57b8a28d9f9fd121"
@@ -2641,6 +2770,7 @@
       "cells": [
         {
           "caseId": "dsh-extension-hub-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-extension-hub@0.2.19",
             "sha256": "7f1e01396899cdcc4d36dff1b9bbd02b42661a35174a0231ba69ae368c5039ea"
@@ -2684,6 +2814,7 @@
       "cells": [
         {
           "caseId": "dsh-easyrewrite-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-easyrewrite@2.1.0",
             "sha256": "d8e873c21f3140d5f2d50438e2ed1fbdf2e2760cdfc867f1edcb96cb66d71831"
@@ -2727,6 +2858,7 @@
       "cells": [
         {
           "caseId": "dsh-dream-skin-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-dream-skin@0.4.13",
             "sha256": "b039af775af3275cadd9017f5081ffcd2b394aea117a9ff12e4081c3b4acf0f3"
@@ -2770,6 +2902,7 @@
       "cells": [
         {
           "caseId": "dsh-better-edit-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-better-edit@0.4.0",
             "sha256": "f962079fd2993b7741743b8a487fe4a578cb4c0017a8a50c7ea28f8da2d21dcc"
@@ -2813,6 +2946,7 @@
       "cells": [
         {
           "caseId": "graphflow-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@roarpeng/graphflow@1.12.2",
             "sha256": "3712f929138150a85804405fb8f6a13a27187415b735c8bdf13e11507f2de7ef"
@@ -2856,6 +2990,7 @@
       "cells": [
         {
           "caseId": "dsh-mobile-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-mobile@0.2.1",
             "sha256": "350c0bb33d51dc32215c151d2cd01fff9f2487596abba635841df6ec890bef5c"
@@ -2899,6 +3034,7 @@
       "cells": [
         {
           "caseId": "dsh-pocket-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-pocket@1.13.4",
             "sha256": "5157262c86b6b39d2b5d0b8715a99891b9f75e7660fa39a21b0ea456636c843a"
@@ -2942,6 +3078,7 @@
       "cells": [
         {
           "caseId": "dshscan-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@shaoshi/dshscan@0.5.0",
             "sha256": "db62d1fb00272fd174cd6d8650a432a25a16103ec11b4f1a4bc78d6c31d70dc5"
@@ -2985,6 +3122,7 @@
       "cells": [
         {
           "caseId": "dsh-deepseek-vision-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-deepseek-vision@0.1.7",
             "sha256": "be636816b4f1cd8f6dbc0639ffa4e21222896713c43719b78fc085d4da14e6af"
@@ -3028,6 +3166,7 @@
       "cells": [
         {
           "caseId": "dsh-rewind-plugin-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-rewind-plugin@0.4.1",
             "sha256": "d5b2b74608e490719c67bf2ae215a70adffb2c5eedd9a748c71fbbb723d10814"
@@ -3071,6 +3210,7 @@
       "cells": [
         {
           "caseId": "dsh-movein-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-movein@0.13.0",
             "sha256": "e991211bd0c1d0303b2acd97047d60399eac1f25fe94d68da3034f56c349ad8c"
@@ -3114,6 +3254,7 @@
       "cells": [
         {
           "caseId": "dsh-win32-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-win32@0.17.0",
             "sha256": "48d89349b42c2403304fd59604590b4003579af147c28a88f9a67bde5eda7c12"
@@ -3157,6 +3298,7 @@
       "cells": [
         {
           "caseId": "dsh-passwords-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-passwords@2.6.2",
             "sha256": "c68c8c74998d3e41e4797198878c07bde491a9f680a4e9d6cb8b58459ac561ea"
@@ -3200,6 +3342,7 @@
       "cells": [
         {
           "caseId": "dsh-email-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-email@0.6.2",
             "sha256": "3e1dafaeaff973d0111dd497020c9bb257a6028c733a55749a19a78e2c19e3a6"
@@ -3243,6 +3386,7 @@
       "cells": [
         {
           "caseId": "dsh-crew-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-crew@0.10.0",
             "sha256": "1749c966f178c41cd6017bad7fabba84036b724a01216d83dc3c87273a493f26"
@@ -3286,6 +3430,7 @@
       "cells": [
         {
           "caseId": "dsh-auth-gate-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-auth-gate@0.7.2",
             "sha256": "d7989d61bc63c174cb9d6622719c074f8640947fd1f9d5b3ee00cb6910784859"
@@ -3329,6 +3474,7 @@
       "cells": [
         {
           "caseId": "dsh-notifier-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-notifier@0.8.6",
             "sha256": "31df82786797f1bbf26eed3e4573db55d0d15bb59584324478d2268512776cca"
@@ -3372,6 +3518,7 @@
       "cells": [
         {
           "caseId": "dsh-any-background-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-any-background@0.2.1",
             "sha256": "b0fab38b3348ef81c0d3866e8775888b5130b0abf0089504c7a5822dd54b5b9c"
@@ -3432,6 +3579,7 @@
       "cells": [
         {
           "caseId": "dsh-tool-lens-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@trench-xinxin/dsh-tool-lens@2.0.5",
             "sha256": "8a64c4c7373150bd7e81a02f4c5c6dc59f713e0464b3085fccf79e576c5e8338"
@@ -3475,6 +3623,7 @@
       "cells": [
         {
           "caseId": "dsh-plugin-vetting-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-plugin-vetting@0.5.6",
             "sha256": "4b49dcc8860879a32ca4cfdc21d847473acd4d08b2f2d69bdc6977cf0a370db8"
@@ -3518,6 +3667,7 @@
       "cells": [
         {
           "caseId": "archify-dsh-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@tt-a1i/archify-dsh@0.1.0",
             "sha256": "3192afe54949da6494acea3bd2bf5113a58ea78651113b1289bcc7212130df38"
@@ -3561,6 +3711,7 @@
       "cells": [
         {
           "caseId": "dsh-plugin-subscriptions-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-plugin-subscriptions@0.5.2",
             "sha256": "0351b0bd94a29e9ef3fb8a43b857f6252fc9cd6b7d742b208207ff170cb98175"
@@ -3604,6 +3755,7 @@
       "cells": [
         {
           "caseId": "hindsight-coding-agents-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@vectorize-io/hindsight-coding-agents@0.4.2",
             "sha256": "eb6d4464eb07083fca6a8b8469cfb066d9850c63f517daa59686ba1469ff2cb0"
@@ -3647,6 +3799,7 @@
       "cells": [
         {
           "caseId": "dsh-memory-plugin-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@openviking/dsh-memory-plugin@0.2.1",
             "sha256": "ea1a32a099d7c1acfcf4c20ebc5d76e43fc22ce38160cd99343366aa3c739cb1"
@@ -3690,6 +3843,7 @@
       "cells": [
         {
           "caseId": "dsh-git-worktree-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-git-worktree@0.4.0",
             "sha256": "672e8f107e94a0421e79e7b571eb6d78e486fee28859451976ad78ea02fe1418"
@@ -3733,6 +3887,7 @@
       "cells": [
         {
           "caseId": "dsh-builtin-browser-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-builtin-browser@0.1.15",
             "sha256": "a4f9d9f3d46ed2b3898713bb10da04fa1e13dd1466f3801e8fe1ae8bf2fdb2ac"
@@ -3776,6 +3931,7 @@
       "cells": [
         {
           "caseId": "dsh-codex-subscription-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-codex-subscription@1.8.0",
             "sha256": "1737b140a9a435a7f304ac69c9bdb66979a57843f0bc803ce6baa1680f2f6020"
@@ -3819,6 +3975,7 @@
       "cells": [
         {
           "caseId": "dsh-plugin-vet-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@jieai/dsh-plugin-vet@0.2.6",
             "sha256": "e6b463bd20f0ab85cea110ee0ad6621d3f261e8005f543c65ba5d576219d15cb"
@@ -3862,6 +4019,7 @@
       "cells": [
         {
           "caseId": "xgone-dsh-remote-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@xgone/dsh-remote@0.2.8",
             "sha256": "7e621098e11806725e3e80d00af89c00af313e75e91afa87e4b0d989447ab196"
@@ -3905,6 +4063,7 @@
       "cells": [
         {
           "caseId": "dsh-config-manager-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-config-manager@0.1.53",
             "sha256": "ecee0aaf8b8d8117ab8e4470496f1ae7d2cb20f81453bb92d5c3d35a5932a31c"
@@ -3948,6 +4107,7 @@
       "cells": [
         {
           "caseId": "dsh-deepread-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-deepread@1.0.0",
             "sha256": "ae6fc81d8f8823689f4e5a87534b776faf9d7e12288ed4b14511635c8371c43c"
@@ -3991,6 +4151,7 @@
       "cells": [
         {
           "caseId": "dsh-im-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@xmanrui/dsh-im@2.5.0",
             "sha256": "c20ac722fadef3b0650e471c187ddeaffcf4b450567bcdf64f03a086b4ca6ea1"
@@ -4034,6 +4195,7 @@
       "cells": [
         {
           "caseId": "dsh-plugin-writing-guard-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-plugin-writing-guard@1.6.1",
             "sha256": "074667890e032a3aeb423a09460a542d37606c5b67e71ff6c080aeacb75bd102"
@@ -4077,6 +4239,7 @@
       "cells": [
         {
           "caseId": "dsh-vision-router-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-vision-router@2.0.0",
             "sha256": "fce892d8bd10da4479b6ff40cc3b075eb2c48c7cba4244f838aae4589cd461af"
@@ -4120,6 +4283,7 @@
       "cells": [
         {
           "caseId": "dsh-meme-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "dsh-meme@0.1.39",
             "sha256": "f217de7dd918fcb0d7915ba9c8db6520ce8706c8f0df01abef07feef41e6af03"
@@ -4159,10 +4323,11 @@
         "selectedVersion": "0.3.3",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-web-ui-all-node22",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@linxin666/dsh-web-all@0.3.3",
             "sha256": "64ee0f111afe4700d278c97af6f92316b750538d821338399a2c89a290ea6ff9"
@@ -4181,12 +4346,54 @@
           "profile": "headless",
           "status": "needs-review",
           "radarResult": "unknown",
+          "approvedDependencyBuilds": [
+            "cloudflared",
+            "cpu-features",
+            "node-pty",
+            "ssh2"
+          ],
+          "coveredBy": [
+            "dsh-web-all-web"
+          ],
           "observedAt": "2026-08-25T08:34:27.200Z",
           "recheckDueAt": "2026-09-01T08:34:27.200Z",
           "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 2 required unresolved edge(s)"
+        },
+        {
+          "caseId": "dsh-web-all-web",
+          "sourceCaseId": "dsh-web-ui-all-node22",
+          "evidenceSource": "surface-ledger",
+          "artifact": {
+            "spec": "@linxin666/dsh-web-all@0.3.3",
+            "sha256": "64ee0f111afe4700d278c97af6f92316b750538d821338399a2c89a290ea6ff9"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "web",
+          "profile": "web",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "approvedDependencyBuilds": [
+            "cloudflared",
+            "cpu-features",
+            "node-pty",
+            "ssh2"
+          ],
+          "observedAt": "2026-08-25T08:53:46.265Z",
+          "recheckDueAt": "2026-09-01T08:53:46.265Z",
+          "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
+      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
     },
     {
       "id": "dsh-openpencil",
@@ -4206,6 +4413,7 @@
       "cells": [
         {
           "caseId": "openpencil-node24",
+          "evidenceSource": "compatibility-ledger",
           "artifact": {
             "spec": "@zseven-w/dsh-openpencil@0.1.0-rc.1",
             "sha256": "a4563e560e91bcd3a2a9302ee7dbee046b146c1bd0de6b27b7c7524fd52e77ca"

@@ -192,7 +192,8 @@ jobs:
               compatibility-ledger.json \
               feeds/dsh-plugin-compatibility.json \
               feeds/dsh-plugin-compatibility.md \
-              observations.json
+              observations.json \
+              surface-ledger.json
           fi
           git config user.name 'upstream-radar[bot]'
           git config user.email 'upstream-radar[bot]@users.noreply.github.com'
@@ -323,7 +324,8 @@ jobs:
             compatibility-ledger.json \
             feeds/dsh-plugin-compatibility.json \
             feeds/dsh-plugin-compatibility.md \
-            observations.json
+            observations.json \
+            surface-ledger.json
 
       - name: Keep compatibility evidence artifacts
         if: always()
@@ -515,6 +517,16 @@ jobs:
             "$SURFACE_LEDGER_REPORT" \
             surface-ir.json
           cat "$SURFACE_LEDGER_REPORT" >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish execution-plane evidence to the directory feed
+        run: |
+          node scripts/write-dsh-directory-feed.mjs \
+            examples/dsh/awesome-observer/cohort.json \
+            examples/dsh/install-observer/targets.json \
+            compatibility-ledger.json \
+            feeds/dsh-plugin-compatibility.json \
+            feeds/dsh-plugin-compatibility.md \
+            observations.json \
+            surface-ledger.json
       - name: Keep execution-plane evidence artifacts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -524,16 +536,22 @@ jobs:
             ${{ runner.temp }}/upstream-radar-surface-ledger.md
             surface-ledger.json
             surface-ir.json
+            feeds/dsh-plugin-compatibility.json
+            feeds/dsh-plugin-compatibility.md
           if-no-files-found: warn
           retention-days: 30
       - name: Persist execution-plane evidence
         shell: bash
         run: |
           set -euo pipefail
-          [[ -f surface-ledger.json && -f surface-ir.json ]] || { echo 'complete surface evidence was not produced; nothing to persist.'; exit 0; }
+          [[ -f surface-ledger.json && -f surface-ir.json && -f feeds/dsh-plugin-compatibility.json && -f feeds/dsh-plugin-compatibility.md ]] || { echo 'complete surface evidence was not produced; nothing to persist.'; exit 0; }
           git config user.name 'upstream-radar[bot]'
           git config user.email 'upstream-radar[bot]@users.noreply.github.com'
-          git add -- surface-ledger.json surface-ir.json
+          git add -- \
+            surface-ledger.json \
+            surface-ir.json \
+            feeds/dsh-plugin-compatibility.json \
+            feeds/dsh-plugin-compatibility.md
           if git diff --cached --quiet; then
             echo 'No execution-plane evidence changed; no commit created.'
             exit 0
