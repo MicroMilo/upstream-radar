@@ -261,7 +261,8 @@ Usage:
     [--report <report.md>] [--dsh-version <v1>,<v2>,...]
     [--reverse-index <index.json>]
     [--dsh-agent-command <executable>]
-    [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending]
+    [--dsh-agent-arg <argument>] [--llm-env-file <path>]
+    [--retry-pending | --retry-pending-only]
     [--ecosystem <dsh|codex|pi>] [--id <id>] [--package <name>]
     [--package-path <path>] [--lockfile <path>] [--lockfile-type <npm|pnpm>]
     [--ref <branch>] [--json]
@@ -293,6 +294,11 @@ only the model call. It accepts ISSUE_LOCATOR_LLM_*, OPENAI_*, or MODEL/CODEX_MO
 keys; it never writes the key or endpoint to observations.json.
 If a ModelBest-style base URL ends in /llm/v1, a 404 also retries the known
 /llm/openai/v1 path.
+
+--retry-pending-only consumes durable Agent tasks from observations.json
+without reading GitHub/npm, reviewing artifacts, or changing source observation
+points. It requires an Agent or model configuration and fails while any retry
+still remains pending.
 
 The exact npm artifact review is independent of the DSH Agent/model. It runs
 when a meaningful change has a published package, and its dependency findings
@@ -527,7 +533,7 @@ Usage:
   upstream-radar doctor [config.json] [options]
   upstream-radar scan <directory-or-github-url> [--json] [--fail-on <warn|review|block|never>]
   upstream-radar inspect [npm:]<package>@<exact-version> [--deep] [--json] [--fail-on <warn|review|block|never>]
-  upstream-radar observe <targets.yml|github-url> [--state <observations.json>] [--report <report.md>] [--dsh-version <v1>,<v2>,...] [--reverse-index <index.json>] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending] [--ecosystem <dsh|codex|pi>] [--id <id>] [--package <name>] [--package-path <path>] [--lockfile <path>] [--lockfile-type <npm|pnpm>] [--ref <branch>] [--json]
+  upstream-radar observe <targets.yml|github-url> [--state <observations.json>] [--report <report.md>] [--dsh-version <v1>,<v2>,...] [--reverse-index <index.json>] [--dsh-agent-command <executable>] [--dsh-agent-arg <argument>] [--llm-env-file <path>] [--retry-pending | --retry-pending-only] [--ecosystem <dsh|codex|pi>] [--id <id>] [--package <name>] [--package-path <path>] [--lockfile <path>] [--lockfile-type <npm|pnpm>] [--ref <branch>] [--json]
   upstream-radar graph <npm-lock|pnpm-lock> <lockfile> [--root <package>@<exact-version>] [--json]
   upstream-radar graph reverse <reports-directory> [--package <name>@<exact-version>] [--output <index.json>] [--json]
   upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
@@ -1787,6 +1793,7 @@ async function runObserve(args: readonly string[]): Promise<number> {
   let reverseIndexPath: string | undefined
   let registry: string | undefined
   let retryPending = false
+  let retryPendingOnly = false
   let json = false
   let inlineEcosystem: string | undefined
   let inlineId: string | undefined
@@ -1803,6 +1810,8 @@ async function runObserve(args: readonly string[]): Promise<number> {
       json = true
     } else if (argument === '--retry-pending') {
       retryPending = true
+    } else if (argument === '--retry-pending-only') {
+      retryPendingOnly = true
     } else if (argument === '--ecosystem' || argument === '--id' || argument === '--package' || argument === '--package-path' || argument === '--lockfile' || argument === '--lockfile-type' || argument === '--ref' || argument === '--dsh-version' || argument === '--state' || argument === '--report' || argument === '--reverse-index' || argument === '--dsh-agent-command' || argument === '--dsh-agent-arg' || argument === '--llm-env-file' || argument === '--registry') {
       const value = args[index + 1]
       if (value === undefined || (value.startsWith('-') && argument !== '--dsh-agent-arg')) throw new Error(`${argument} requires a value`)
@@ -1872,10 +1881,17 @@ async function runObserve(args: readonly string[]): Promise<number> {
   if (agentCommand !== undefined && llmEnvFile !== undefined) {
     throw new Error('observe accepts either --dsh-agent-command or --llm-env-file, not both')
   }
+  if (retryPending && retryPendingOnly) {
+    throw new Error('observe accepts either --retry-pending or --retry-pending-only, not both')
+  }
+  if (retryPendingOnly && agentCommand === undefined && llmEnvFile === undefined) {
+    throw new Error('--retry-pending-only requires --dsh-agent-command or --llm-env-file')
+  }
   const result = await runObserver(config, previousState, {
     source,
     ...(reverseDependencyIndex === undefined ? {} : { reverseDependencyIndex }),
     retryPending,
+    retryPendingOnly,
     artifactReviewer: async (spec, target) => reviewObserverArtifact(spec, target, registry),
     ...(agentOptions === undefined ? {} : {
       agent: (task, prompt) => runDshAgentCommand(task, prompt, agentOptions),
@@ -1891,10 +1907,11 @@ async function runObserve(args: readonly string[]): Promise<number> {
   }
   process.stdout.write(json ? reportJson : renderObserverReport(result.report))
   const observerExit = observerExitCode(result.report)
+  const pendingRetryExit = retryPendingOnly && result.report.pendingTasks.length > 0 ? 1 : 0
   if (result.report.agent.failed > 0) {
-    process.stderr.write('upstream-radar: static observation completed; DSH Agent/model analysis remains pending. See the report and rerun with --retry-pending.\n')
+    process.stderr.write(`upstream-radar: DSH Agent/model analysis remains pending. See the report and rerun with ${retryPendingOnly ? '--retry-pending-only' : '--retry-pending'}.\n`)
   }
-  return observerExit
+  return observerExit === 0 && pendingRetryExit === 0 ? 0 : 1
 }
 
 async function runQuickstart(args: readonly string[]): Promise<number> {

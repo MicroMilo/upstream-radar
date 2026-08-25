@@ -4,12 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: Run the full observer or reuse current evidence for the headless Agent loop
+        description: Run the full observer, retry durable Agent tasks, or reuse evidence for the headless loop
         required: true
         default: full
         type: choice
         options:
           - full
+          - agent-retry
           - headless-agent
   schedule:
     # The observer is intentionally periodic: durable state makes the loop
@@ -62,7 +63,7 @@ jobs:
           pnpm build
 
       - name: Build downstream reverse dependency index
-        if: inputs.mode != 'headless-agent'
+        if: inputs.mode != 'headless-agent' && inputs.mode != 'agent-retry'
         run: |
           # Use the checked-in index generated from the first-batch corpus of
           # real DSH plugin reports. Refresh it intentionally with
@@ -86,6 +87,7 @@ jobs:
           ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
           ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
           ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
+          OBSERVER_MODE: ${{ inputs.mode }}
         shell: bash
         run: |
           set +e
@@ -96,10 +98,16 @@ jobs:
             examples/upstream-observer/targets.yml
             --state observations.json
             --report "$OBSERVER_REPORT"
-            --reverse-index "$RUNNER_TEMP/reverse-dependency-index.json"
-            --retry-pending
             --json
           )
+          if [[ "$OBSERVER_MODE" == 'agent-retry' ]]; then
+            observe_args+=(--retry-pending-only)
+          else
+            observe_args+=(
+              --reverse-index "$RUNNER_TEMP/reverse-dependency-index.json"
+              --retry-pending
+            )
+          fi
           if [[ -n "${ISSUE_LOCATOR_LLM_BASE_URL:-}" && -n "${ISSUE_LOCATOR_LLM_API_KEY:-}" && -n "${ISSUE_LOCATOR_LLM_MODEL:-}" ]]; then
             umask 077
             {
@@ -132,6 +140,7 @@ jobs:
       # target package; it emits only a bounded headless retry contract. The
       # later reusable workflow receives that contract but no model secret.
       - name: Let the Agent plan bounded headless follow-ups
+        if: inputs.mode != 'agent-retry'
         id: headless-agent-plan
         continue-on-error: true
         env:
@@ -364,17 +373,17 @@ jobs:
           echo 'The incomplete cells remain unsatisfied and will be selected by the next reconciliation run.'
           exit 1
 
-  # Keep a partial source outage visible without letting it short-circuit the
-  # successful targets discovered in the same observer cycle.
-  observer-source-health:
+  # Keep a partial source outage or failed explicit Agent retry visible without
+  # letting it discard successful work from the same observer cycle.
+  observer-final-health:
     needs: [observe, install-observation, reconcile-install-observations]
     if: always() && needs.observe.outputs.observer_exit != '' && needs.observe.outputs.observer_exit != '0'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
-      - name: Surface the partial observer failure after downstream work
+      - name: Surface the deferred observer failure after downstream work
         env:
           OBSERVER_EXIT: ${{ needs.observe.outputs.observer_exit }}
         run: |
-          echo "The observer returned exit code ${OBSERVER_EXIT}; successful targets still completed planning and isolated retesting."
+          echo "The observer returned exit code ${OBSERVER_EXIT}; successful source observations, Agent conclusions, and isolated retests were still persisted."
           exit 1

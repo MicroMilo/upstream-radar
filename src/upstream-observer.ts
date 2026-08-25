@@ -342,6 +342,8 @@ export interface RunObserverOptions {
   reverseDependencyIndex?: ReverseDependencyIndex
   agent?: (task: UpstreamChangeTask, prompt: string) => Promise<ObserverAgentInvocation>
   retryPending?: boolean
+  /** Retry durable Agent tasks without reading GitHub, npm, or artifact inputs again. */
+  retryPendingOnly?: boolean
 }
 
 interface GitHubRepository {
@@ -1912,87 +1914,89 @@ export async function runObserver(
   const errors: Array<{ targetId: string; message: string }> = []
   const newTasks: UpstreamChangeTask[] = []
 
-  for (const configuredTarget of config.targets) {
-    try {
-      const current = await source.observe(configuredTarget, checkedAt)
-      const before = previousState.targets[configuredTarget.id]
-      if (before === undefined) {
-        nextTargets[configuredTarget.id] = current
-        baselineTargets.push(configuredTarget.id)
-        if (current.alignment !== undefined) alignmentFindings.push({ targetId: configuredTarget.id, alignment: structuredClone(current.alignment) })
-        continue
-      }
-      // checkedAt belongs in the run report. Keep the durable observation point
-      // byte-stable when its evidence did not change, so a no-op cron run does
-      // not manufacture a commit from a fresh timestamp alone.
-      nextTargets[configuredTarget.id] = snapshotEvidenceSignature(before) === snapshotEvidenceSignature(current)
-        ? before
-        : current
-      if (before.alignment === undefined && current.alignment !== undefined) {
-        // Upgrade legacy state into the IR and show its first finding once.
-        // This is evidence for the author, not a fake upstream change and not
-        // a reason to wake the Agent on every subsequent scheduled run.
-        alignmentFindings.push({ targetId: configuredTarget.id, alignment: structuredClone(current.alignment) })
-      }
-      const sourceChange = before.source.commit === current.source.commit
-        ? {
-            beforeCommit: before.source.commit,
-            afterCommit: current.source.commit,
-            comparison: 'complete' as const,
-            changedFiles: [],
-            runtimeFiles: [],
-            nonRuntimeFiles: [],
-          }
-        : await source.compare(current.source.repository, before.source.commit, current.source.commit)
-      const change = createChange(configuredTarget, before, current, sourceChange, options.reverseDependencyIndex)
-      if (change.reasons.length === 0) continue
-      let reviewedChange = change
-      if (change.meaningful && current.package !== undefined && options.artifactReviewer !== undefined) {
-        const packageSpec = `npm:${current.package.name}@${current.package.version}`
-        try {
-          reviewedChange = {
-            ...change,
-            artifactReview: await options.artifactReviewer(packageSpec, configuredTarget),
-          }
-        } catch (error: unknown) {
-          // Artifact review is useful evidence, but it must not turn a valid
-          // source observation into a source-observation error. Keep the
-          // change and make the incomplete review explicit for the author and
-          // for a later retry of the whole scheduled run.
-          reviewedChange = {
-            ...change,
-            artifactReview: {
-              spec: packageSpec,
-              verdict: 'review',
-              riskVerdict: 'review',
-              coverageVerdict: 'incomplete',
-              artifactIntegrity: 'not-checked',
-              registrySignature: 'not-checked',
-              provenance: 'not-checked',
-              dependencyResolution: 'manifest-only',
-              dependencyAuditStatus: 'failed',
-              packages: null,
-              unresolved: 0,
-              vulnerabilities: null,
-              installScriptPackages: [],
-              installScriptDetails: [],
-              findings: [],
-              error: safeError(error),
-            },
+  if (options.retryPendingOnly !== true) {
+    for (const configuredTarget of config.targets) {
+      try {
+        const current = await source.observe(configuredTarget, checkedAt)
+        const before = previousState.targets[configuredTarget.id]
+        if (before === undefined) {
+          nextTargets[configuredTarget.id] = current
+          baselineTargets.push(configuredTarget.id)
+          if (current.alignment !== undefined) alignmentFindings.push({ targetId: configuredTarget.id, alignment: structuredClone(current.alignment) })
+          continue
+        }
+        // checkedAt belongs in the run report. Keep the durable observation point
+        // byte-stable when its evidence did not change, so a no-op cron run does
+        // not manufacture a commit from a fresh timestamp alone.
+        nextTargets[configuredTarget.id] = snapshotEvidenceSignature(before) === snapshotEvidenceSignature(current)
+          ? before
+          : current
+        if (before.alignment === undefined && current.alignment !== undefined) {
+          // Upgrade legacy state into the IR and show its first finding once.
+          // This is evidence for the author, not a fake upstream change and not
+          // a reason to wake the Agent on every subsequent scheduled run.
+          alignmentFindings.push({ targetId: configuredTarget.id, alignment: structuredClone(current.alignment) })
+        }
+        const sourceChange = before.source.commit === current.source.commit
+          ? {
+              beforeCommit: before.source.commit,
+              afterCommit: current.source.commit,
+              comparison: 'complete' as const,
+              changedFiles: [],
+              runtimeFiles: [],
+              nonRuntimeFiles: [],
+            }
+          : await source.compare(current.source.repository, before.source.commit, current.source.commit)
+        const change = createChange(configuredTarget, before, current, sourceChange, options.reverseDependencyIndex)
+        if (change.reasons.length === 0) continue
+        let reviewedChange = change
+        if (change.meaningful && current.package !== undefined && options.artifactReviewer !== undefined) {
+          const packageSpec = `npm:${current.package.name}@${current.package.version}`
+          try {
+            reviewedChange = {
+              ...change,
+              artifactReview: await options.artifactReviewer(packageSpec, configuredTarget),
+            }
+          } catch (error: unknown) {
+            // Artifact review is useful evidence, but it must not turn a valid
+            // source observation into a source-observation error. Keep the
+            // change and make the incomplete review explicit for the author and
+            // for a later retry of the whole scheduled run.
+            reviewedChange = {
+              ...change,
+              artifactReview: {
+                spec: packageSpec,
+                verdict: 'review',
+                riskVerdict: 'review',
+                coverageVerdict: 'incomplete',
+                artifactIntegrity: 'not-checked',
+                registrySignature: 'not-checked',
+                provenance: 'not-checked',
+                dependencyResolution: 'manifest-only',
+                dependencyAuditStatus: 'failed',
+                packages: null,
+                unresolved: 0,
+                vulnerabilities: null,
+                installScriptPackages: [],
+                installScriptDetails: [],
+                findings: [],
+                error: safeError(error),
+              },
+            }
           }
         }
+        changes.push(reviewedChange)
+        if (!reviewedChange.meaningful || reviewedChange.taskId === undefined) continue
+        const task = createUpstreamChangeTask(configuredTarget, reviewedChange, checkedAt)
+        newTasks.push(task)
+        if (!taskAlreadyPending(pendingTasks, task.id)) pendingTasks.push(task)
+      } catch (error: unknown) {
+        errors.push({ targetId: configuredTarget.id, message: safeError(error) })
       }
-      changes.push(reviewedChange)
-      if (!reviewedChange.meaningful || reviewedChange.taskId === undefined) continue
-      const task = createUpstreamChangeTask(configuredTarget, reviewedChange, checkedAt)
-      newTasks.push(task)
-      if (!taskAlreadyPending(pendingTasks, task.id)) pendingTasks.push(task)
-    } catch (error: unknown) {
-      errors.push({ targetId: configuredTarget.id, message: safeError(error) })
     }
   }
 
-  const pendingToRetry = options.retryPending === true
+  const pendingToRetry = options.retryPending === true || options.retryPendingOnly === true
     ? pendingTasks.filter(task => !newTasks.some(current => current.id === task.id))
     : []
   const tasksToInvoke = [...newTasks, ...pendingToRetry]
@@ -2005,7 +2009,7 @@ export async function runObserver(
   const report: ObserverReport = {
     schema: OBSERVER_REPORT_SCHEMA,
     checkedAt,
-    targetsChecked: config.targets.length,
+    targetsChecked: options.retryPendingOnly === true ? 0 : config.targets.length,
     baselineTargets,
     alignmentFindings,
     ...(options.reverseDependencyIndex === undefined ? {} : {
