@@ -39,6 +39,8 @@ describe('reusable GitHub Action', () => {
     const detectorPath = fileURLToPath(new URL('../../scripts/detect-action-input.mjs', import.meta.url))
     const packagePath = fileURLToPath(new URL('../../package.json', import.meta.url))
     const installObserverDockerfilePath = fileURLToPath(new URL('../../docker/dsh-install-observer.Dockerfile', import.meta.url))
+    const surfaceObserverDockerfilePath = fileURLToPath(new URL('../../docker/dsh-surface-observer.Dockerfile', import.meta.url))
+    const surfaceObserverWorkflowPath = fileURLToPath(new URL('../../.github/workflows/observe-dsh-plugin-surface.yml', import.meta.url))
     const action = await readFile(actionPath, 'utf8')
     const example = await readFile(examplePath, 'utf8')
     const observerWorkflow = await readFile(observerWorkflowPath, 'utf8')
@@ -49,6 +51,8 @@ describe('reusable GitHub Action', () => {
     const observerTargets = await readFile(observerTargetsPath, 'utf8')
     const detector = await readFile(detectorPath, 'utf8')
     const installObserverDockerfile = await readFile(installObserverDockerfilePath, 'utf8')
+    const surfaceObserverDockerfile = await readFile(surfaceObserverDockerfilePath, 'utf8')
+    const surfaceObserverWorkflow = await readFile(surfaceObserverWorkflowPath, 'utf8')
     const packageJson = JSON.parse(await readFile(packagePath, 'utf8')) as { version?: unknown }
 
     assert.equal(typeof packageJson.version, 'string')
@@ -142,6 +146,20 @@ describe('reusable GitHub Action', () => {
     assert.match(checkedInReviewWorkflow, /finding\.remediation/)
     assert.match(checkedInObserverWorkflow, /agent-retry/)
     assert.match(checkedInObserverWorkflow, /--retry-pending-only/)
+    assert.match(checkedInObserverWorkflow, /plan-surface-observations:/)
+    assert.match(checkedInObserverWorkflow, /surface-observation:/)
+    assert.match(checkedInObserverWorkflow, /reconcile-surface-observations:/)
+    assert.match(checkedInObserverWorkflow, /scripts\/write-dsh-surface-plan\.mjs/)
+    assert.match(checkedInObserverWorkflow, /scripts\/merge-dsh-surface-ledger\.mjs/)
+    assert.match(surfaceObserverWorkflow, /permissions:\n\s+contents: read/)
+    assert.match(surfaceObserverWorkflow, /--read-only/)
+    assert.match(surfaceObserverWorkflow, /--cap-drop ALL/)
+    assert.match(surfaceObserverWorkflow, /--security-opt no-new-privileges=true/)
+    assert.match(surfaceObserverWorkflow, /UPSTREAM_RADAR_ISOLATED_RUNNER=1/)
+    assert.doesNotMatch(surfaceObserverWorkflow, /\$\{\{\s*secrets\./)
+    assert.match(surfaceObserverDockerfile, /chromium/)
+    assert.match(surfaceObserverDockerfile, /playwright-core@1\.62\.0/)
+    assert.match(surfaceObserverDockerfile, /node-pty@1\.1\.0/)
     const observationPersistStep = checkedInObserverWorkflow.indexOf('name: Persist observation and Agent planning state')
     const initialCheckoutStep = checkedInObserverWorkflow.slice(
       checkedInObserverWorkflow.indexOf('name: Check out the observer and its targets'),

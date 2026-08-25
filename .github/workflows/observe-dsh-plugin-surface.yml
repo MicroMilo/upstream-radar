@@ -1,0 +1,284 @@
+name: Observe one DSH plugin execution plane
+
+on:
+  workflow_dispatch:
+    inputs:
+      plugin:
+        description: Exact npm plugin coordinate
+        required: true
+        default: dsh-univer-office@0.2.9
+        type: string
+      dsh_version:
+        description: Exact DSH version
+        required: true
+        default: 0.1.1-rc.2
+        type: string
+      case_id:
+        description: Stable surface case id
+        required: true
+        default: manual-web
+        type: string
+      source_case_id:
+        description: Exact headless source-evidence case
+        required: true
+        default: dsh-univer-office-node22
+        type: string
+      source_fingerprint:
+        description: Fingerprint of the source compatibility evidence
+        required: true
+        type: string
+      contract_fingerprint:
+        description: Fingerprint of the execution-plane contract
+        required: true
+        type: string
+      plane:
+        description: Execution plane
+        required: true
+        default: web
+        type: choice
+        options:
+          - web
+          - tui
+      profile:
+        description: DSH profile to execute
+        required: true
+        default: web
+        type: string
+      runtime_id:
+        description: Plugin id expected in the runtime module graph
+        required: true
+        default: dsh-univer-office
+        type: string
+      artifact_sha256:
+        description: SHA-256 from the source install observation
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      plugin:
+        required: true
+        type: string
+      dsh_version:
+        required: true
+        type: string
+      case_id:
+        required: true
+        type: string
+      source_case_id:
+        required: true
+        type: string
+      source_fingerprint:
+        required: true
+        type: string
+      contract_fingerprint:
+        required: true
+        type: string
+      plane:
+        required: true
+        type: string
+      profile:
+        required: true
+        type: string
+      runtime_id:
+        required: true
+        type: string
+      artifact_sha256:
+        required: true
+        type: string
+      node_major:
+        required: false
+        default: '22'
+        type: string
+      timeout_seconds:
+        required: false
+        default: '300'
+        type: string
+
+# Target install and surface code may execute. The reusable workflow receives
+# no repository/model secrets and has no write permission.
+permissions:
+  contents: read
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out only the trusted observer implementation
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Validate the exact scheduled cell
+        shell: bash
+        env:
+          RADAR_PLUGIN: ${{ inputs.plugin }}
+          RADAR_DSH_VERSION: ${{ inputs.dsh_version }}
+          RADAR_CASE_ID: ${{ inputs.case_id }}
+          RADAR_SOURCE_CASE_ID: ${{ inputs.source_case_id }}
+          RADAR_SOURCE_FINGERPRINT: ${{ inputs.source_fingerprint }}
+          RADAR_CONTRACT_FINGERPRINT: ${{ inputs.contract_fingerprint }}
+          RADAR_PLANE: ${{ inputs.plane }}
+          RADAR_PROFILE: ${{ inputs.profile }}
+          RADAR_RUNTIME_ID: ${{ inputs.runtime_id }}
+          RADAR_ARTIFACT_SHA256: ${{ inputs.artifact_sha256 }}
+          RADAR_NODE_MAJOR: ${{ inputs.node_major || '22' }}
+          RADAR_TIMEOUT_SECONDS: ${{ inputs.timeout_seconds || '300' }}
+        run: |
+          set -euo pipefail
+          exact_package='^(@[^/@[:space:]]+/[^@/[:space:]]+|[^@/[:space:]]+)@[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'
+          exact_version='^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'
+          case_id='^[a-z0-9][a-z0-9._-]{0,63}$'
+          fingerprint='^sha256:[a-f0-9]{64}$'
+          sha256='^[a-f0-9]{64}$'
+          profile='^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$'
+          [[ "$RADAR_PLUGIN" =~ $exact_package ]] || { echo 'plugin must be an exact npm package' >&2; exit 1; }
+          [[ "$RADAR_DSH_VERSION" =~ $exact_version ]] || { echo 'dsh_version must be exact' >&2; exit 1; }
+          [[ "$RADAR_CASE_ID" =~ $case_id && "$RADAR_SOURCE_CASE_ID" =~ $case_id ]] || { echo 'case ids are invalid' >&2; exit 1; }
+          [[ "$RADAR_SOURCE_FINGERPRINT" =~ $fingerprint && "$RADAR_CONTRACT_FINGERPRINT" =~ $fingerprint ]] || { echo 'fingerprints are invalid' >&2; exit 1; }
+          [[ "$RADAR_ARTIFACT_SHA256" =~ $sha256 ]] || { echo 'artifact_sha256 is invalid' >&2; exit 1; }
+          [[ "$RADAR_PLANE" == web || "$RADAR_PLANE" == tui ]] || { echo 'plane must be web or tui' >&2; exit 1; }
+          [[ "$RADAR_PROFILE" =~ $profile ]] || { echo 'profile is invalid' >&2; exit 1; }
+          [[ "$RADAR_PLANE" != web || "$RADAR_PROFILE" == web ]] || { echo 'the Web plane requires profile web' >&2; exit 1; }
+          [[ "$RADAR_PLANE" != tui || "$RADAR_PROFILE" != web ]] || { echo 'the TUI plane cannot use profile web' >&2; exit 1; }
+          (( ${#RADAR_RUNTIME_ID} > 0 && ${#RADAR_RUNTIME_ID} <= 214 )) || { echo 'runtime_id is invalid' >&2; exit 1; }
+          [[ "$RADAR_RUNTIME_ID" != *[[:space:]]* ]] || { echo 'runtime_id cannot contain whitespace' >&2; exit 1; }
+          [[ "$RADAR_NODE_MAJOR" =~ ^(1[6-9]|2[0-9]|3[0-9]|40)$ ]] || { echo 'node_major is invalid' >&2; exit 1; }
+          [[ "$RADAR_TIMEOUT_SECONDS" =~ ^[0-9]+$ ]] && (( RADAR_TIMEOUT_SECONDS >= 30 && RADAR_TIMEOUT_SECONDS <= 600 )) || { echo 'timeout_seconds is invalid' >&2; exit 1; }
+
+      - name: Build the selected browser and PTY observer image
+        shell: bash
+        env:
+          RADAR_NODE_MAJOR: ${{ inputs.node_major || '22' }}
+        run: docker build --build-arg NODE_MAJOR="$RADAR_NODE_MAJOR" --file docker/dsh-surface-observer.Dockerfile --tag upstream-radar-surface-observer:${{ github.run_id }} .
+
+      - name: Exercise the declared DSH execution plane
+        id: observe
+        continue-on-error: true
+        shell: bash
+        env:
+          RADAR_PLUGIN: ${{ inputs.plugin }}
+          RADAR_DSH_VERSION: ${{ inputs.dsh_version }}
+          RADAR_CASE_ID: ${{ inputs.case_id }}
+          RADAR_SOURCE_CASE_ID: ${{ inputs.source_case_id }}
+          RADAR_SOURCE_FINGERPRINT: ${{ inputs.source_fingerprint }}
+          RADAR_CONTRACT_FINGERPRINT: ${{ inputs.contract_fingerprint }}
+          RADAR_PLANE: ${{ inputs.plane }}
+          RADAR_PROFILE: ${{ inputs.profile }}
+          RADAR_RUNTIME_ID: ${{ inputs.runtime_id }}
+          RADAR_ARTIFACT_SHA256: ${{ inputs.artifact_sha256 }}
+          RADAR_TIMEOUT_SECONDS: ${{ inputs.timeout_seconds || '300' }}
+          RADAR_REPORT_DIRECTORY: ${{ runner.temp }}/upstream-radar-surface-observation
+          RADAR_CONTAINER_NAME: upstream-radar-surface-${{ github.run_id }}-${{ github.run_attempt }}
+          RADAR_IMAGE: upstream-radar-surface-observer:${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RADAR_REPORT_DIRECTORY"
+          chmod 0777 "$RADAR_REPORT_DIRECTORY"
+          cleanup() { docker rm --force "$RADAR_CONTAINER_NAME" >/dev/null 2>&1 || true; }
+          trap cleanup EXIT
+          set +e
+          timeout --signal=KILL 20m docker run --rm \
+            --name "$RADAR_CONTAINER_NAME" \
+            --read-only \
+            --user "$(id -u):$(id -g)" \
+            --network bridge \
+            --cap-drop ALL \
+            --security-opt no-new-privileges=true \
+            --pids-limit 512 \
+            --memory 4g \
+            --cpus 2 \
+            --ulimit nofile=4096:4096 \
+            --tmpfs /sandbox:rw,exec,nosuid,nodev,size=4g,mode=1777 \
+            --mount "type=bind,src=$RADAR_REPORT_DIRECTORY,dst=/output" \
+            --env UPSTREAM_RADAR_ISOLATED_RUNNER=1 \
+            --env TMPDIR=/sandbox \
+            --env LANG=C.UTF-8 \
+            "$RADAR_IMAGE" \
+            "$RADAR_PLUGIN" \
+            --dsh-version "$RADAR_DSH_VERSION" \
+            --case-id "$RADAR_CASE_ID" \
+            --source-case-id "$RADAR_SOURCE_CASE_ID" \
+            --source-fingerprint "$RADAR_SOURCE_FINGERPRINT" \
+            --contract-fingerprint "$RADAR_CONTRACT_FINGERPRINT" \
+            --plane "$RADAR_PLANE" \
+            --profile "$RADAR_PROFILE" \
+            --runtime-id "$RADAR_RUNTIME_ID" \
+            --artifact-sha256 "$RADAR_ARTIFACT_SHA256" \
+            --driver-root /surface-driver \
+            --chromium-executable /usr/bin/chromium \
+            --artifacts /output \
+            --isolation-provider github-actions-hosted-runner \
+            --timeout "$RADAR_TIMEOUT_SECONDS" \
+            --execute \
+            --report /output/report.json \
+            --json | tee "$RADAR_REPORT_DIRECTORY/stdout.json"
+          observer_exit=${PIPESTATUS[0]}
+          set -e
+          echo "exit=$observer_exit" >> "$GITHUB_OUTPUT"
+          exit "$observer_exit"
+
+      - name: Write bounded evidence to the Job Summary
+        if: always()
+        shell: bash
+        env:
+          RADAR_REPORT: ${{ runner.temp }}/upstream-radar-surface-observation/report.json
+          RADAR_OBSERVER_EXIT: ${{ steps.observe.outputs.exit }}
+        run: |
+          node --input-type=module <<'NODE' >> "$GITHUB_STEP_SUMMARY"
+          import { existsSync, readFileSync } from 'node:fs'
+          const clean = value => String(value ?? 'unknown').replace(/[\u0000-\u001f\u007f`]/g, ' ').slice(0, 500)
+          const lines = ['## Upstream Radar — DSH execution-plane evidence', '', `- Observer exit: \`${clean(process.env.RADAR_OBSERVER_EXIT)}\``]
+          if (!existsSync(process.env.RADAR_REPORT)) lines.push('- Result: `unknown` — no report survived.')
+          else {
+            let report
+            try { report = JSON.parse(readFileSync(process.env.RADAR_REPORT, 'utf8')) } catch {}
+            if (report === undefined) lines.push('- Result: `unknown` — invalid report JSON.')
+            else {
+              lines.push(
+                `- Cell: \`${clean(report.caseId)}\``,
+                `- Exact runtime: \`${clean(report.plugin)}\` → DSH \`${clean(report.dshVersion)}\` → \`${clean(report.plane)}\``,
+                `- Artifact: \`sha256:${clean(report.artifact?.sha256)}\``,
+                `- Result: \`${clean(report.result)}\` — ${clean(report.reason)}`,
+              )
+              if (report.evidence?.plane === 'web') lines.push(
+                `- Web proof: HTTP \`${clean(report.evidence.httpStatus)}\`; root \`${clean(report.evidence.rootMounted)}\`; manifest entry \`${clean(report.evidence.pluginEntryPresent)}\`; module materialized \`${clean(report.evidence.pluginMaterialized)}\``,
+                `- Browser evidence: \`${clean(report.evidence.screenshot)}\`, \`${clean(report.evidence.trace)}\``,
+              )
+              if (report.evidence?.plane === 'tui') lines.push(
+                `- TUI proof: frame \`${clean(report.evidence.frameObserved)}\`; input \`${clean(report.evidence.inputSent)}\`; controlled shutdown \`${clean(report.evidence.exitedAfterShutdown)}\``,
+                `- PTY transcript: \`${clean(report.evidence.transcript)}\` (${clean(report.evidence.capturedBytes)} bytes)`,
+              )
+            }
+          }
+          lines.push('', 'The run uses a disposable VM plus restricted container and receives no repository/model secrets. It is bounded compatibility evidence, not a malicious-code safety certificate.', '')
+          process.stdout.write(lines.join('\n'))
+          NODE
+
+      - name: Keep the machine-readable surface evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: upstream-radar-surface-${{ inputs.case_id }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/upstream-radar-surface-observation
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Require a plugin-attributable result
+        if: always()
+        shell: bash
+        env:
+          RADAR_REPORT: ${{ runner.temp }}/upstream-radar-surface-observation/report.json
+        run: |
+          node --input-type=module <<'NODE'
+          import { existsSync, readFileSync } from 'node:fs'
+          if (!existsSync(process.env.RADAR_REPORT)) process.exit(1)
+          let report
+          try { report = JSON.parse(readFileSync(process.env.RADAR_REPORT, 'utf8')) } catch { process.exit(1) }
+          if (!new Set(['compatible', 'surface-incompatible']).has(report.result)) {
+            console.error(`Surface observer did not establish a plugin-attributable result: ${report.result ?? 'unknown'} — ${report.reason ?? ''}`)
+            process.exit(1)
+          }
+          console.log(`${report.caseId}: ${report.result}`)
+          NODE

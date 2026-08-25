@@ -1,0 +1,23 @@
+{
+  "schema": "upstream-radar.dsh-surface-targets/v1alpha1",
+  "refreshAfterHours": 168,
+  "surfaces": [
+    {
+      "id": "dsh-tui-tui",
+      "sourceCaseId": "dsh-tui-node22",
+      "plane": "tui",
+      "profile": "dsh-tui",
+      "runtimeId": "@deepseek-harness-tui/dsh-tui",
+      "reason": "Prove that the published TUI starts in a real pseudo-terminal, accepts input, and shuts down under the current DSH runtime."
+    },
+    {
+      "id": "dsh-univer-office-web",
+      "sourceCaseId": "dsh-univer-office-node22",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-univer-office",
+      "reason": "Exercise the Web client path that headless load evidence cannot reach and test the strict rc.8 peer contract against current DSH."
+    }
+  ]
+}
+

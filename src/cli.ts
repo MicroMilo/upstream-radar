@@ -12,6 +12,12 @@ import {
   renderDshInstallObservation,
   type InstallObservationIsolationProvider,
 } from './dsh-install-observation.js'
+import {
+  observeDshPluginSurface,
+  renderDshSurfaceObservation,
+  type DshExecutionPlane,
+  type DshSurfaceIsolationProvider,
+} from './dsh-surface-observation.js'
 import { renderDshPluginReview, reviewDshPlugin } from './dsh-review.js'
 import { createAnalysisTask, renderAgentAnalysisPrompt } from './dsh-analysis.js'
 import { createDshCaseReport, renderDshCase } from './dsh-case.js'
@@ -337,6 +343,13 @@ Usage:
   upstream-radar probe dsh-install [npm:]<package>@<exact-version>
     --dsh-version <exact-version> --isolation-provider <provider> --execute
     [--allow-build <package>]... [--timeout <seconds>] [--report <report.json>] [--json]
+  upstream-radar probe dsh-surface [npm:]<package>@<exact-version>
+    --dsh-version <exact-version> --case-id <id> --source-case-id <id>
+    --source-fingerprint <sha256:...> --contract-fingerprint <sha256:...>
+    --plane <web|tui> --profile <name> --runtime-id <id>
+    --artifact-sha256 <hex> --isolation-provider <provider> --execute
+    [--driver-root <path>] [--chromium-executable <path>]
+    [--artifacts <directory>] [--timeout <seconds>] [--report <report.json>] [--json]
 
 The load probes disable lifecycle scripts and check bundle registration/load.
 The dsh-install probe deliberately executes the exact plugin's lifecycle scripts
@@ -344,6 +357,10 @@ and loads the bundle while recording Linux process, network, and file-change
 evidence. Run it only inside a disposable, secret-free Linux environment. It
 requires both --execute and UPSTREAM_RADAR_ISOLATED_RUNNER=1.
 Radar records the caller's isolation-provider claim but cannot verify it.
+The dsh-surface probe adds plane-specific proof: Chromium must observe a mounted
+Web shell and materialized plugin client module, or a real PTY must observe a
+TUI frame, bounded input, and controlled shutdown. It has the same disposable,
+secret-free execution requirement.
 `,
     review: `Upstream Radar — review one exact published DSH plugin in one command
 
@@ -540,6 +557,7 @@ Usage:
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-install [npm:]<package>@<exact-version> --dsh-version <exact-version> [--case-id <stable-label>] --isolation-provider <github-actions-hosted-runner|firecracker|other> --execute [--allow-build <package>]... [--timeout <seconds>] [--report <report.json>] [--json]
+  upstream-radar probe dsh-surface [npm:]<package>@<exact-version> --dsh-version <exact-version> --case-id <stable-label> --source-case-id <stable-label> --source-fingerprint <sha256:...> --contract-fingerprint <sha256:...> --plane <web|tui> --profile <name> --runtime-id <id> --artifact-sha256 <hex> --isolation-provider <github-actions-hosted-runner|firecracker|other> --execute [--driver-root <path>] [--chromium-executable <path>] [--artifacts <directory>] [--timeout <seconds>] [--report <report.json>] [--json]
   upstream-radar review dsh-plugin [npm:]<package>@<exact-version> --dsh-version <v1>,<v2>,... [--json]
   upstream-radar demo [--json]
   upstream-radar case dsh-web-ui [--json]
@@ -1193,7 +1211,8 @@ async function runDshCase(args: readonly string[]): Promise<number> {
 async function runProbe(args: readonly string[]): Promise<number> {
   const mode = args[0]
   if (mode === 'dsh-install') return runDshInstallObservation(args.slice(1))
-  if (mode !== 'dsh-load' && mode !== 'dsh-matrix') throw new Error('probe requires dsh-load or dsh-matrix')
+  if (mode === 'dsh-surface') return runDshSurfaceObservation(args.slice(1))
+  if (mode !== 'dsh-load' && mode !== 'dsh-matrix') throw new Error('probe requires dsh-load, dsh-matrix, dsh-install or dsh-surface')
   const packagePath = args[1]
   if (packagePath === undefined || packagePath.startsWith('-')) throw new Error(`probe ${mode} requires a package.tgz file`)
   const dshVersions: string[] = []
@@ -1320,6 +1339,113 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
   }
   process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDshInstallObservation(report))
   return report.result === 'compatible' ? 0 : report.result === 'unknown' ? 1 : 2
+}
+
+async function runDshSurfaceObservation(args: readonly string[]): Promise<number> {
+  const packageSpec = args[0]
+  if (packageSpec === undefined || packageSpec.startsWith('-')) {
+    throw new Error('probe dsh-surface requires an exact npm package')
+  }
+  let dshVersion: string | undefined
+  let caseId: string | undefined
+  let sourceCaseId: string | undefined
+  let sourceFingerprint: string | undefined
+  let contractFingerprint: string | undefined
+  let plane: DshExecutionPlane | undefined
+  let profile: string | undefined
+  let runtimeId: string | undefined
+  let artifactSha256: string | undefined
+  let isolationProvider: DshSurfaceIsolationProvider | undefined
+  let timeoutSeconds = 300
+  let reportPath: string | undefined
+  let artifactsDirectory: string | undefined
+  let driverRoot: string | undefined
+  let chromiumExecutable: string | undefined
+  let execute = false
+  let json = false
+  for (let index = 1; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === '--execute') execute = true
+    else if (argument === '--json') json = true
+    else if (argument === '--dsh-version' || argument === '--case-id' || argument === '--source-case-id'
+      || argument === '--source-fingerprint' || argument === '--contract-fingerprint' || argument === '--plane'
+      || argument === '--profile' || argument === '--runtime-id' || argument === '--artifact-sha256'
+      || argument === '--isolation-provider' || argument === '--timeout' || argument === '--report'
+      || argument === '--artifacts' || argument === '--driver-root' || argument === '--chromium-executable') {
+      const value = args[index + 1]
+      if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
+      if (argument === '--dsh-version') dshVersion = value
+      else if (argument === '--case-id') caseId = value
+      else if (argument === '--source-case-id') sourceCaseId = value
+      else if (argument === '--source-fingerprint') sourceFingerprint = value
+      else if (argument === '--contract-fingerprint') contractFingerprint = value
+      else if (argument === '--plane') {
+        if (value !== 'web' && value !== 'tui') throw new Error('--plane must be web or tui')
+        plane = value
+      } else if (argument === '--profile') profile = value
+      else if (argument === '--runtime-id') runtimeId = value
+      else if (argument === '--artifact-sha256') artifactSha256 = value
+      else if (argument === '--isolation-provider') {
+        if (value !== 'github-actions-hosted-runner' && value !== 'firecracker' && value !== 'other') {
+          throw new Error('--isolation-provider must be github-actions-hosted-runner, firecracker or other')
+        }
+        isolationProvider = value
+      } else if (argument === '--timeout') {
+        const parsed = Number(value)
+        if (!Number.isSafeInteger(parsed) || parsed < 30 || parsed > 600) throw new Error('--timeout must be an integer between 30 and 600 seconds')
+        timeoutSeconds = parsed
+      } else if (argument === '--report') reportPath = value
+      else if (argument === '--artifacts') artifactsDirectory = value
+      else if (argument === '--driver-root') driverRoot = value
+      else chromiumExecutable = value
+      index += 1
+    } else {
+      throw new Error(`unknown option for probe dsh-surface: ${argument}`)
+    }
+  }
+  const required = [
+    ['--dsh-version', dshVersion],
+    ['--case-id', caseId],
+    ['--source-case-id', sourceCaseId],
+    ['--source-fingerprint', sourceFingerprint],
+    ['--contract-fingerprint', contractFingerprint],
+    ['--plane', plane],
+    ['--profile', profile],
+    ['--runtime-id', runtimeId],
+    ['--artifact-sha256', artifactSha256],
+    ['--isolation-provider', isolationProvider],
+  ] as const
+  const missing = required.find(([, value]) => value === undefined)
+  if (missing !== undefined) throw new Error(`probe dsh-surface requires ${missing[0]}`)
+  if (!execute) throw new Error('probe dsh-surface requires --execute because third-party code may run')
+  if (process.env.UPSTREAM_RADAR_ISOLATED_RUNNER !== '1') {
+    throw new Error('probe dsh-surface requires UPSTREAM_RADAR_ISOLATED_RUNNER=1 in the disposable environment')
+  }
+  const report = await observeDshPluginSurface({
+    packageSpec,
+    dshVersion: dshVersion as string,
+    caseId: caseId as string,
+    sourceCaseId: sourceCaseId as string,
+    sourceFingerprint: sourceFingerprint as string,
+    contractFingerprint: contractFingerprint as string,
+    plane: plane as DshExecutionPlane,
+    profile: profile as string,
+    runtimeId: runtimeId as string,
+    expectedArtifactSha256: artifactSha256 as string,
+    allowExecution: true,
+    isolationProvider: isolationProvider as DshSurfaceIsolationProvider,
+    timeoutMs: timeoutSeconds * 1_000,
+    ...(artifactsDirectory === undefined ? {} : { artifactsDirectory }),
+    ...(driverRoot === undefined ? {} : { driverRoot }),
+    ...(chromiumExecutable === undefined ? {} : { chromiumExecutable }),
+  })
+  if (reportPath !== undefined) {
+    const absoluteReportPath = resolve(reportPath)
+    await mkdir(dirname(absoluteReportPath), { recursive: true })
+    await writeFile(absoluteReportPath, `${JSON.stringify(report, null, 2)}\n`, { mode: 0o600 })
+  }
+  process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderDshSurfaceObservation(report))
+  return report.result === 'compatible' ? 0 : report.result === 'surface-incompatible' ? 2 : 1
 }
 
 async function runDshPluginReview(args: readonly string[]): Promise<number> {

@@ -373,10 +373,180 @@ jobs:
           echo 'The incomplete cells remain unsatisfied and will be selected by the next reconciliation run.'
           exit 1
 
+  # Surface work is planned after the headless ledger settles, so Web/TUI
+  # evidence always binds to the latest exact plugin artifact and DSH release.
+  plan-surface-observations:
+    needs: [observe, reconcile-install-observations]
+    if: always() && needs.observe.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      run: ${{ steps.surface-plan.outputs.run }}
+      matrix: ${{ steps.surface-plan.outputs.matrix }}
+      blocked: ${{ steps.surface-plan.outputs.blocked }}
+    steps:
+      - name: Check out the latest compatibility ledger
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 11.3.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Build the checked-out Radar
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+      - name: Reconcile Web and TUI cells from exact headless evidence
+        id: surface-plan
+        run: |
+          node scripts/write-dsh-surface-plan.mjs \
+            examples/dsh/surface-observer/targets.json \
+            compatibility-ledger.json \
+            surface-ledger.json | tee "$RUNNER_TEMP/upstream-radar-surface-plan.json"
+          node --input-type=module <<'NODE' >> "$GITHUB_STEP_SUMMARY"
+          import { readFileSync } from 'node:fs'
+          const plan = JSON.parse(readFileSync(process.env.RUNNER_TEMP + '/upstream-radar-surface-plan.json', 'utf8'))
+          const lines = ['## DSH execution-plane plan', '', `- Scheduled: ${plan.matrix.include.length}`, `- Blocked by source evidence: ${plan.blocked.length}`]
+          for (const item of plan.matrix.include) lines.push(`- \`${item.id}\`: \`${item.plugin}\` → DSH \`${item.dshVersion}\` → \`${item.plane}\` (${item.reasons.join(', ')})`)
+          for (const item of plan.blocked) lines.push(`- Blocked \`${item.id}\`: ${item.reason}`)
+          process.stdout.write(lines.join('\n') + '\n')
+          NODE
+
+  # Every selected plane runs in a fresh VM and restricted container. The
+  # reusable workflow receives no repository or model secrets.
+  surface-observation:
+    needs: plan-surface-observations
+    if: needs.plan-surface-observations.outputs.run == 'true'
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan-surface-observations.outputs.matrix) }}
+    permissions:
+      contents: read
+    uses: ./.github/workflows/observe-dsh-plugin-surface.yml
+    with:
+      plugin: ${{ matrix.plugin }}
+      dsh_version: ${{ matrix.dshVersion }}
+      case_id: ${{ matrix.id }}
+      source_case_id: ${{ matrix.sourceCaseId }}
+      source_fingerprint: ${{ matrix.sourceFingerprint }}
+      contract_fingerprint: ${{ matrix.contractFingerprint }}
+      plane: ${{ matrix.plane }}
+      profile: ${{ matrix.profile }}
+      runtime_id: ${{ matrix.runtimeId }}
+      artifact_sha256: ${{ matrix.artifactSha256 }}
+      node_major: ${{ matrix.nodeMajor }}
+      timeout_seconds: '300'
+
+  reconcile-surface-observations:
+    needs: [plan-surface-observations, surface-observation]
+    if: always() && needs.plan-surface-observations.result == 'success' && needs.plan-surface-observations.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the latest durable ledgers
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 1
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 11.3.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Build the checked-out Radar
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+      - name: Materialize the exact scheduled surface matrix
+        env:
+          SURFACE_MATRIX: ${{ needs.plan-surface-observations.outputs.matrix }}
+          SURFACE_MATRIX_PATH: ${{ runner.temp }}/upstream-radar-surface-matrix.json
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFile } from 'node:fs/promises'
+          const matrix = JSON.parse(process.env.SURFACE_MATRIX ?? '')
+          await writeFile(process.env.SURFACE_MATRIX_PATH, `${JSON.stringify(matrix, null, 2)}\n`, 'utf8')
+          NODE
+      - name: Download isolated browser and PTY reports
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: upstream-radar-surface-*-${{ github.run_id }}
+          path: ${{ runner.temp }}/upstream-radar-surface-reports
+      - name: Reconcile plane-specific evidence into the surface ledger
+        id: surface-ledger
+        continue-on-error: true
+        env:
+          SURFACE_MATRIX_PATH: ${{ runner.temp }}/upstream-radar-surface-matrix.json
+          SURFACE_REPORTS_PATH: ${{ runner.temp }}/upstream-radar-surface-reports
+          SURFACE_LEDGER_REPORT: ${{ runner.temp }}/upstream-radar-surface-ledger.md
+        run: |
+          node scripts/merge-dsh-surface-ledger.mjs \
+            surface-ledger.json \
+            "$SURFACE_MATRIX_PATH" \
+            "$SURFACE_REPORTS_PATH" \
+            "$SURFACE_LEDGER_REPORT" \
+            surface-ir.json
+          cat "$SURFACE_LEDGER_REPORT" >> "$GITHUB_STEP_SUMMARY"
+      - name: Keep execution-plane evidence artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: upstream-radar-surface-ledger-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/upstream-radar-surface-ledger.md
+            surface-ledger.json
+            surface-ir.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Persist execution-plane evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ -f surface-ledger.json && -f surface-ir.json ]] || { echo 'complete surface evidence was not produced; nothing to persist.'; exit 0; }
+          git config user.name 'upstream-radar[bot]'
+          git config user.email 'upstream-radar[bot]@users.noreply.github.com'
+          git add -- surface-ledger.json surface-ir.json
+          if git diff --cached --quiet; then
+            echo 'No execution-plane evidence changed; no commit created.'
+            exit 0
+          fi
+          git commit -m 'chore: update DSH execution-plane evidence [skip ci]'
+          git push
+      - name: Fail after persisting incomplete surface reconciliation
+        if: always() && steps.surface-ledger.outcome == 'failure'
+        shell: bash
+        env:
+          RADAR_ACCEPTED: ${{ steps.surface-ledger.outputs.accepted }}
+          RADAR_MISSING: ${{ steps.surface-ledger.outputs.missing }}
+          RADAR_REJECTED: ${{ steps.surface-ledger.outputs.rejected }}
+        run: |
+          echo "Surface evidence was partially persisted: accepted=${RADAR_ACCEPTED:-unknown}, missing=${RADAR_MISSING:-unknown}, rejected=${RADAR_REJECTED:-unknown}."
+          echo 'Incomplete cells remain unsatisfied and will be selected by the next scheduled run.'
+          exit 1
+
   # Keep a partial source outage or failed explicit Agent retry visible without
   # letting it discard successful work from the same observer cycle.
   observer-final-health:
-    needs: [observe, install-observation, reconcile-install-observations]
+    needs: [observe, install-observation, reconcile-install-observations, plan-surface-observations, surface-observation, reconcile-surface-observations]
     if: always() && needs.observe.outputs.observer_exit != '' && needs.observe.outputs.observer_exit != '0'
     runs-on: ubuntu-latest
     timeout-minutes: 2
