@@ -5,6 +5,7 @@ import { constants } from 'node:fs'
 import { chmod, mkdir, mkdtemp, open, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { basename, join, relative, resolve, sep } from 'node:path'
+import { extractPnpmRequiredDependencyBuilds } from './dsh-install-observation.js'
 import { parseNpmSpec } from './npm.js'
 import { parseNpmTarball } from './tar.js'
 import { TOOL_VERSION } from './version.js'
@@ -1202,7 +1203,17 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
     if (install.timedOut || install.outputExceeded || install.launchError !== undefined) {
       return finish(report, 'unknown', 'the profile install did not produce a bounded result')
     }
-    if (install.code !== 0) return finish(report, 'surface-incompatible', `the exact plugin could not be installed into the declared ${report.plane} profile`)
+    if (install.code !== 0) {
+      const requiredBuilds = extractPnpmRequiredDependencyBuilds(`${install.stderr}\n${install.stdout}`, parsedSpec.name)
+      if (requiredBuilds.length > 0) {
+        return finish(
+          report,
+          'environment-unsupported',
+          `the declared ${report.plane} environment still requires explicit dependency-build approval: ${requiredBuilds.join(', ')}`,
+        )
+      }
+      return finish(report, 'surface-incompatible', `the exact plugin could not be installed into the declared ${report.plane} profile`)
+    }
     if (profileStrategy === 'create-with-plugin-add') {
       report.stages.profile = { status: 'passed', detail: 'dsh plugin add created the custom TUI profile' }
     }

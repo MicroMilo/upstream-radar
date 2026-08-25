@@ -355,7 +355,7 @@ function isNpmPackageName(value: string): boolean {
  * unless each package is approved. Keep that policy gate distinct from a
  * plugin install defect, but only when pnpm supplied a bounded, exact list.
  */
-function requiredDependencyBuilds(output: string, artifactName: string): string[] {
+export function extractPnpmRequiredDependencyBuilds(output: string, artifactName: string): string[] {
   const normalized = output.replace(/\r\n?/g, '\n')
   const marker = '[ERR_PNPM_IGNORED_BUILDS]'
   const markerIndex = normalized.indexOf(marker)
@@ -1772,7 +1772,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
         return finishReport(report, 'unknown', 'the install command ran without readable trace evidence')
       }
       if (installResult.code !== 0) {
-        const requiredBuilds = requiredDependencyBuilds(`${installResult.stderr}\n${installResult.stdout}`, spec.name)
+        const requiredBuilds = extractPnpmRequiredDependencyBuilds(`${installResult.stderr}\n${installResult.stdout}`, spec.name)
         if (requiredBuilds.length > 0) {
           report.boundary.requiredDependencyBuilds = requiredBuilds
           return finishReport(

@@ -279,6 +279,14 @@ describe('DSH execution-plane reconciliation', () => {
       sourceLedger({
         result: 'unknown',
         reason: 'the exact artifact loaded, but Web host peers are unresolved in headless',
+        resolution: {
+          runtimeGraph: {
+            digest: `sha256:${'d'.repeat(64)}`,
+            nodes: 3,
+            edges: 2,
+            unresolved: 1,
+          },
+        },
       }),
       emptyDshSurfaceLedger(),
       new Date('2026-08-25T00:00:00.000Z'),
@@ -298,6 +306,21 @@ describe('DSH execution-plane reconciliation', () => {
     assert.equal(plan.run, false)
     assert.equal(plan.blocked.length, 2)
     assert.match(plan.blocked[0]?.reason ?? '', /no exact artifact bytes/)
+  })
+
+  it('does not enter a surface while the Agent still needs to approve dependency builds', () => {
+    const plan = buildDshSurfacePlan(
+      targets,
+      sourceLedger({
+        result: 'build-approval-required',
+        requiredDependencyBuilds: ['node-pty'],
+      }),
+      emptyDshSurfaceLedger(),
+      new Date('2026-08-25T00:00:00.000Z'),
+    )
+    assert.equal(plan.run, false)
+    assert.equal(plan.blocked.length, 2)
+    assert.match(plan.blocked[0]?.reason ?? '', /headless environment must be resolved/)
   })
 
   it('stays quiet with fresh exact evidence and invalidates both planes after an upstream artifact change', () => {

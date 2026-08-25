@@ -272,6 +272,9 @@ function desiredCase(target: DshSurfaceTarget, source: DshCompatibilityLedgerEnt
   // plane observer independently reinstalls the package, verifies this digest,
   // and establishes its own result.
   if (source.artifact.sha256 === undefined || !BARE_SHA256.test(source.artifact.sha256)) return undefined
+  if (source.result === 'build-approval-required' || source.result === 'runtime-incompatible'
+    || source.result === 'install-failed' || source.result === 'load-failed') return undefined
+  if (source.result === 'unknown' && source.resolution?.runtimeGraph?.digest === undefined) return undefined
   return {
     id: target.id,
     sourceCaseId: source.caseId,
@@ -533,7 +536,13 @@ export function buildDshSurfacePlan(
     }
     const desired = desiredCase(target, source)
     if (desired === undefined) {
-      blocked.push({ id: target.id, reason: `source compatibility case ${target.sourceCaseId} has no exact artifact bytes` })
+      const hasExactArtifact = source.artifact.sha256 !== undefined && BARE_SHA256.test(source.artifact.sha256)
+      blocked.push({
+        id: target.id,
+        reason: hasExactArtifact
+          ? `source compatibility case ${target.sourceCaseId} is ${source.result}; its headless environment must be resolved before entering ${target.plane}`
+          : `source compatibility case ${target.sourceCaseId} has no exact artifact bytes`,
+      })
       continue
     }
     const current = currentById.get(target.id)

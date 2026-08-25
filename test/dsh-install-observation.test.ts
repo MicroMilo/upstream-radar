@@ -4,6 +4,7 @@ import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { describe, it } from 'node:test'
 import {
+  extractPnpmRequiredDependencyBuilds,
   observeDshPluginInstall,
   parseDshInstallTrace,
   renderDshInstallObservation,
@@ -32,6 +33,15 @@ function passed(overrides: Partial<InstallObservationCommandResult> = {}): Insta
 }
 
 describe('DSH install observation', () => {
+  it('extracts the exact pnpm dependency-build gate for later execution planes', () => {
+    const output = '[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: cloudflared@0.7.3, @scope/native@1.2.3, node-pty@1.1.0\n\nRun "pnpm approve-builds" to pick which dependencies should be allowed to run scripts.\n'
+    assert.deepEqual(extractPnpmRequiredDependencyBuilds(output, 'demo-plugin'), [
+      '@scope/native',
+      'cloudflared',
+      'node-pty',
+    ])
+  })
+
   it('turns bounded strace evidence into process, network and file-write events', () => {
     const observation = parseDshInstallTrace([TRACE], '/sandbox')
 
