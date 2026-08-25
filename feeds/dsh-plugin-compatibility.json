@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha2",
-  "generatedAt": "2026-08-25T07:18:27.863Z",
+  "generatedAt": "2026-08-25T07:19:59.543Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.43.5",
@@ -29,10 +29,10 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 72,
+    "observed-compatible": 74,
     "observed-incompatible": 0,
     "needs-review": 22,
-    "update-pending": 2,
+    "update-pending": 0,
     "not-observed": 4
   },
   "plugins": [
@@ -996,13 +996,13 @@
         "selectedVersion": "1.29.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-market-node22",
           "artifact": {
-            "spec": "dshmarket@1.28.2",
-            "sha256": "3cc77bfdfc9b72095572716c422ed60d04eda253df48b771f04dfc4b0d4a233d"
+            "spec": "dshmarket@1.29.0",
+            "sha256": "d341351ccfc04687095dfc1a70fba55194e29424f329944b38bf8314790d55fd"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -1018,8 +1018,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T07:13:14.918Z",
-          "recheckDueAt": "2026-09-01T07:13:14.918Z",
+          "observedAt": "2026-08-25T07:19:31.952Z",
+          "recheckDueAt": "2026-09-01T07:19:31.952Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -3987,13 +3987,13 @@
         "selectedVersion": "2.5.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-im-node22",
           "artifact": {
-            "spec": "@xmanrui/dsh-im@2.4.0",
-            "sha256": "c9ed374955a132462f093e1f1cd9a3081a30ad00d3332c45ae364b5ed248b68e"
+            "spec": "@xmanrui/dsh-im@2.5.0",
+            "sha256": "c20ac722fadef3b0650e471c187ddeaffcf4b450567bcdf64f03a086b4ca6ea1"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -4009,8 +4009,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T07:13:18.796Z",
-          "recheckDueAt": "2026-09-01T07:13:18.796Z",
+          "observedAt": "2026-08-25T07:19:20.418Z",
+          "recheckDueAt": "2026-09-01T07:19:20.418Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],

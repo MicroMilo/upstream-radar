@@ -1307,16 +1307,16 @@
       }
     },
     {
-      "id": "cell:5cf261c4dd6d5932f6fff10231da5897ab20b4a020c62a33252eb30754f314b4",
+      "id": "cell:0944312e07c3b4085c1d8c82c81fbec428adc5a16c2978c921c0023e223392e6",
       "caseId": "dsh-im-node22",
       "targetId": "dsh-im",
-      "observedAt": "2026-08-25T07:13:18.796Z",
+      "observedAt": "2026-08-25T07:19:20.418Z",
       "result": "compatible",
       "plugin": {
         "name": "@xmanrui/dsh-im",
-        "version": "2.4.0",
-        "artifactSha256": "c9ed374955a132462f093e1f1cd9a3081a30ad00d3332c45ae364b5ed248b68e",
-        "staticFingerprint": "sha256:44756a35853718f251e1e3946743064bd4734468219ae77b00a6db9acbd0379f"
+        "version": "2.5.0",
+        "artifactSha256": "c20ac722fadef3b0650e471c187ddeaffcf4b450567bcdf64f03a086b4ca6ea1",
+        "staticFingerprint": "sha256:d3f294e5117be0c8d18b624ac39531174d0de7011ec8a656efa927e1334ba39d"
       },
       "runtime": {
         "dshVersion": "0.1.1-rc.2",
@@ -1325,10 +1325,10 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:d17db30e6c85ee35948977f2c6b18e575559c0f288b8af97ca115b53a2b19f97"
+        "contractFingerprint": "sha256:53c6c0bc41affe643314babdf869c34460f49a3e9cf655f6e2b40cb0071a8c95"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:9df6e4740cd39af7e4f51d8b4bd84fbac7b39ce5739109b34b14f47933d25ebd",
+        "runtimeGraphDigest": "sha256:863d54c6f96574f1c7ef499b60766d72e01528171466014357456c10e30142b8",
         "runtimeGraphNodes": 511,
         "runtimeGraphEdges": 2114,
         "requiredUnresolved": 0,
@@ -1365,16 +1365,16 @@
       }
     },
     {
-      "id": "cell:8e826911d26fde6f99af3bdd14ce4607565ca3077fdea2ea3414b1346ae75ca5",
+      "id": "cell:3a735320d40a77b6a675423148724b54e12a28e7eb5d4bcb2b9bdb6943ae083d",
       "caseId": "dsh-market-node22",
       "targetId": "dsh-market",
-      "observedAt": "2026-08-25T07:13:14.918Z",
+      "observedAt": "2026-08-25T07:19:31.952Z",
       "result": "compatible",
       "plugin": {
         "name": "dshmarket",
-        "version": "1.28.2",
-        "artifactSha256": "3cc77bfdfc9b72095572716c422ed60d04eda253df48b771f04dfc4b0d4a233d",
-        "staticFingerprint": "sha256:c3d0cd6304a8df3d49dfd75ca8eb56bf9d4bba0cb331545a6df7841e78820f0d"
+        "version": "1.29.0",
+        "artifactSha256": "d341351ccfc04687095dfc1a70fba55194e29424f329944b38bf8314790d55fd",
+        "staticFingerprint": "sha256:190216c84fbe767259bfc941933efce012071004b90bb60618de7899d1c1a369"
       },
       "runtime": {
         "dshVersion": "0.1.1-rc.2",
@@ -1383,10 +1383,10 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:e4060ebdab843e0696ded79ad01f57740076bd74a292bdda5e01a3cac61bd22d"
+        "contractFingerprint": "sha256:bb61b1f8543aba171ef9d4b26b8fb06adc6e7d1a3aa44c0bc2d20bda048868ab"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:f1e8be63ee71d06208565a11fd118c70ee41dc3b52292dff425b6800a289e08a",
+        "runtimeGraphDigest": "sha256:706642b4842d857c0a3d46c5e26a54adc0a3e8f0c6854dea5528ded7b1683800",
         "runtimeGraphNodes": 451,
         "runtimeGraphEdges": 2033,
         "requiredUnresolved": 0,
@@ -3504,6 +3504,17 @@
       }
     },
     {
+      "id": "relation:f5ddb9d92ac938544c056aa5ed781a0e0fe4aea8c346e4ed913d992c4394ea3b",
+      "cellId": "cell:3a735320d40a77b6a675423148724b54e12a28e7eb5d4bcb2b9bdb6943ae083d",
+      "dependency": {
+        "name": "@deepseek-ai/cordis",
+        "required": "^4.0.1",
+        "status": "satisfied",
+        "staticUsage": "type-only-reference-observed",
+        "resolvedVersion": "4.0.1"
+      }
+    },
+    {
       "id": "relation:5719a6917195c0696f62050350a25486764f6a201ad3f3adb8f094cf29c22045",
       "cellId": "cell:3ae2d19a3b75341fc3f1141b5165d3cb5f469d822d6f88f8bb5c1c059dea0bc2",
       "dependency": {
@@ -5045,17 +5056,6 @@
         "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "18.3.1"
-      }
-    },
-    {
-      "id": "relation:73fc6dc344efaebe076013dea475d92dcdf926795f2bc056b83595a33529d906",
-      "cellId": "cell:8e826911d26fde6f99af3bdd14ce4607565ca3077fdea2ea3414b1346ae75ca5",
-      "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": "^4.0.1",
-        "status": "satisfied",
-        "staticUsage": "type-only-reference-observed",
-        "resolvedVersion": "4.0.1"
       }
     },
     {

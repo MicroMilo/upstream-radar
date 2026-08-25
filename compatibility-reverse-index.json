@@ -533,10 +533,10 @@
           "resolvedVersion": "4.0.1"
         },
         {
-          "relationId": "relation:73fc6dc344efaebe076013dea475d92dcdf926795f2bc056b83595a33529d906",
-          "cellId": "cell:8e826911d26fde6f99af3bdd14ce4607565ca3077fdea2ea3414b1346ae75ca5",
+          "relationId": "relation:f5ddb9d92ac938544c056aa5ed781a0e0fe4aea8c346e4ed913d992c4394ea3b",
+          "cellId": "cell:3a735320d40a77b6a675423148724b54e12a28e7eb5d4bcb2b9bdb6943ae083d",
           "caseId": "dsh-market-node22",
-          "plugin": "dshmarket@1.28.2",
+          "plugin": "dshmarket@1.29.0",
           "dshVersion": "0.1.1-rc.2",
           "nodeMajor": 22,
           "required": "^4.0.1",
