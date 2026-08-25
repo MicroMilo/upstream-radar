@@ -307,7 +307,10 @@ targets:
             'dist-tags': { latest: '1.0.0', next: '2.0.0-rc.1' },
             versions: {
               '1.0.0': { dist: { integrity: 'sha512-latest' } },
-              '2.0.0-rc.1': { dist: { integrity: 'sha512-next' } },
+              '2.0.0-rc.1': {
+                dist: { integrity: 'sha512-next' },
+                dsh: { migrate: { to: '@acme/dsh-demo-next', since: '2.0.0-rc.1' } },
+              },
             },
           }), { status: 200 })
         }
@@ -331,6 +334,7 @@ targets:
     assert.equal(result.package?.version, '2.0.0-rc.1')
     assert.equal(result.package?.distTag, 'next')
     assert.equal(result.package?.integrity, 'sha512-next')
+    assert.deepEqual(result.package?.migration, { to: '@acme/dsh-demo-next', since: '2.0.0-rc.1' })
   })
 
   it('observes the source-declared npm release channel when no target override exists', async () => {

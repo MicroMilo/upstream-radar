@@ -83,6 +83,10 @@ export interface ObserverPackageObservation {
   tarball?: string
   repository?: string
   publishedAt?: string
+  migration?: {
+    to: string
+    since?: string
+  }
 }
 
 export interface ObserverSourceObservation {
@@ -685,6 +689,11 @@ function parsePackageObservation(value: unknown, label: string): ObserverPackage
   const version = boundedString(source.version, `${label}.version`, 512)
   const distTag = optionalBoundedString(source.distTag, `${label}.distTag`, 128)
   if (distTag !== undefined && !SAFE_NPM_DIST_TAG.test(distTag)) throw new Error(`${label}.distTag is invalid`)
+  const rawMigration = source.migration === undefined ? undefined : asRecord(source.migration)
+  if (source.migration !== undefined && rawMigration === undefined) throw new Error(`${label}.migration must be an object`)
+  const migrationTo = rawMigration === undefined ? undefined : boundedString(rawMigration.to, `${label}.migration.to`, 214)
+  if (migrationTo !== undefined && !EXACT_NPM_PACKAGE_NAME.test(migrationTo)) throw new Error(`${label}.migration.to is not an npm package name`)
+  const migrationSince = rawMigration === undefined ? undefined : optionalBoundedString(rawMigration.since, `${label}.migration.since`, 128)
   return {
     name,
     version,
@@ -693,6 +702,12 @@ function parsePackageObservation(value: unknown, label: string): ObserverPackage
     ...(optionalBoundedString(source.tarball, `${label}.tarball`, 4_096) === undefined ? {} : { tarball: source.tarball as string }),
     ...(optionalBoundedString(source.repository, `${label}.repository`, 4_096) === undefined ? {} : { repository: source.repository as string }),
     ...(optionalBoundedString(source.publishedAt, `${label}.publishedAt`, 128) === undefined ? {} : { publishedAt: source.publishedAt as string }),
+    ...(migrationTo === undefined ? {} : {
+      migration: {
+        to: migrationTo,
+        ...(migrationSince === undefined ? {} : { since: migrationSince }),
+      },
+    }),
   }
 }
 
@@ -1121,6 +1136,13 @@ export class UpstreamObserverClient implements ObserverSource {
     const repository = typeof manifest.repository === 'string'
       ? manifest.repository
       : typeof asRecord(manifest.repository)?.url === 'string' ? asRecord(manifest.repository)?.url as string : undefined
+    const rawMigration = asRecord(asRecord(manifest.dsh)?.migrate)
+    const migrationTo = typeof rawMigration?.to === 'string' && EXACT_NPM_PACKAGE_NAME.test(rawMigration.to)
+      ? rawMigration.to
+      : undefined
+    const migrationSince = typeof rawMigration?.since === 'string' && rawMigration.since.length <= 128
+      ? rawMigration.since
+      : undefined
     return {
       name,
       version: selectedVersion,
@@ -1129,6 +1151,12 @@ export class UpstreamObserverClient implements ObserverSource {
       ...(typeof dist?.tarball === 'string' ? { tarball: dist.tarball } : {}),
       ...(repository === undefined ? {} : { repository: repository.slice(0, 4_096) }),
       ...(typeof times?.[selectedVersion] === 'string' ? { publishedAt: times[selectedVersion] as string } : {}),
+      ...(migrationTo === undefined ? {} : {
+        migration: {
+          to: migrationTo,
+          ...(migrationSince === undefined ? {} : { since: migrationSince }),
+        },
+      }),
     }
   }
 
@@ -1450,6 +1478,7 @@ function reverseDependencyChanges(before: ObserverSnapshot, after: ObserverSnaps
 function packageChanged(before: ObserverSnapshot, after: ObserverSnapshot): boolean {
   if (before.package?.name !== after.package?.name || before.package?.version !== after.package?.version) return true
   return before.package?.integrity !== after.package?.integrity
+    || JSON.stringify(before.package?.migration) !== JSON.stringify(after.package?.migration)
 }
 
 function sourcePublishedVersionDrift(snapshot: ObserverSnapshot): string | undefined {
@@ -1474,7 +1503,14 @@ function graphChanged(before: ObserverSnapshot, after: ObserverSnapshot): boolea
 function meaningfulChange(sourceChange: ObserverSourceChange, before: ObserverSnapshot, after: ObserverSnapshot): { meaningful: boolean; reasons: string[] } {
   const reasons: string[] = []
   const manifest = manifestChanges(before.manifest, after.manifest)
-  if (packageChanged(before, after)) reasons.push('npm package version or integrity changed')
+  if (before.package?.name !== after.package?.name
+    || before.package?.version !== after.package?.version
+    || before.package?.integrity !== after.package?.integrity) {
+    reasons.push('npm package version or integrity changed')
+  }
+  if (JSON.stringify(before.package?.migration) !== JSON.stringify(after.package?.migration) && after.package?.migration !== undefined) {
+    reasons.push(`npm package migration declared: ${after.package.name} → ${after.package.migration.to}${after.package.migration.since === undefined ? '' : ` since ${after.package.migration.since}`}`)
+  }
   if (graphChanged(before, after)) reasons.push('dependency graph changed or became unavailable')
   if (manifest.fields.length > 0) reasons.push(`package manifest changed: ${manifest.fields.join(', ')}`)
   if (before.manifest.name !== after.manifest.name || before.manifest.version !== after.manifest.version) {
@@ -2092,7 +2128,7 @@ export function observerExitCode(report: ObserverReport): 0 | 1 {
 function displayPackage(value: ObserverPackageObservation | undefined): string {
   return value === undefined
     ? 'not observed'
-    : `${value.name}@${value.version}${value.distTag === undefined ? '' : ` via npm tag ${value.distTag}`}`
+    : `${value.name}@${value.version}${value.distTag === undefined ? '' : ` via npm tag ${value.distTag}`}${value.migration === undefined ? '' : `; migrates to ${value.migration.to}${value.migration.since === undefined ? '' : ` since ${value.migration.since}`}`}`
 }
 
 function displayGraph(value: ObserverSnapshotSummary['graph'] | undefined): string {
