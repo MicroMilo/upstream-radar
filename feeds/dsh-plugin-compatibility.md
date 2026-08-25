@@ -1,9 +1,9 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-25T04:26:18.718Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-25T04:40:21.435Z`.
 Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 
-**72 observed compatible · 0 observed incompatible · 24 needs review · 0 update pending · 4 not observed**
+**74 observed compatible · 0 observed incompatible · 22 needs review · 0 update pending · 4 not observed**
 
 | Catalog plugin | Selected artifact | Tested artifact | Exact DSH / runtime | Evidence status | Observed |
 | --- | --- | --- | --- | --- | --- |
@@ -19,7 +19,7 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 | [awesome-dsh-plugin/dsh-find-plugin](https://github.com/awesome-dsh-plugin/dsh-find-plugin) | `dsh-find-plugin@0.3.7` | `dsh-find-plugin@0.3.7` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:40.622Z |
 | [Blank-not-black/dsh-Remote](https://github.com/Blank-not-black/dsh-Remote/tree/main/packages/plugin) | `dsh-remote-plugin@0.6.13` | `dsh-remote-plugin@0.6.13` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:03:25.323Z |
 | [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) | `dsh-context@0.31.0` | `dsh-context@0.31.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:03:30.137Z |
-| [ccch1mneyyy/dsh-TUI](https://github.com/ccch1mneyyy/dsh-TUI) | `@deepseek-harness-tui/dsh-tui@0.9.2` | `@deepseek-harness-tui/dsh-tui@0.9.2` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T04:03:27.044Z |
+| [ccch1mneyyy/dsh-TUI](https://github.com/ccch1mneyyy/dsh-TUI) | `@deepseek-harness-tui/dsh-tui@0.9.2` | `@deepseek-harness-tui/dsh-tui@0.9.2` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:39:14.674Z |
 | [chen731215-dev/dsh-tavern](https://github.com/chen731215-dev/dsh-tavern) | `dsh-tavern@1.9.2` | `dsh-tavern@1.9.2` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-24T04:45:35.537Z |
 | [chenproton/dsh-history](https://github.com/chenproton/dsh-history) | `dsh-history@0.1.24` | `dsh-history@0.1.24` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:45.845Z |
 | [ChongCyrus/Vibe-Mathematics](https://github.com/ChongCyrus/Vibe-Mathematics) | `dsh-vibe-math@1.0.2` | `dsh-vibe-math@1.0.2` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:54:31.725Z |
@@ -34,7 +34,7 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 | [elysia395/dsh-wallpaper-engine](https://github.com/elysia395/dsh-wallpaper-engine) | `dsh-plugin-wallpaper-engine@0.6.3` | `dsh-plugin-wallpaper-engine@0.6.3` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T04:03:26.785Z |
 | [feibi-mochi/deepseek-harness-control-center](https://github.com/feibi-mochi/deepseek-harness-control-center) | `deepseek-harness-wallet@0.3.3` | `deepseek-harness-wallet@0.3.3` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:04:17.310Z |
 | [feng78-boop/dsh-thirteen-bg](https://github.com/feng78-boop/dsh-thirteen-bg) | `dsh-thirteen-bg@0.5.2` | `dsh-thirteen-bg@0.5.2` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-23T11:54:30.752Z |
-| [flymysql/dsh-remote](https://github.com/flymysql/dsh-remote) | `dsh-remote@0.8.8` | `dsh-remote@0.8.8` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-24T04:59:55.498Z |
+| [flymysql/dsh-remote](https://github.com/flymysql/dsh-remote) | `dsh-remote@0.8.8` | `dsh-remote@0.8.8` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T04:39:48.541Z |
 | [Flyvhidbwo/dsh-vision-proxy](https://github.com/Flyvhidbwo/dsh-vision-proxy) | `dsh-vision-proxy@0.4.1` | `dsh-vision-proxy@0.4.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-24T03:01:19.585Z |
 | [franksong2702/dsh-codex-connect](https://github.com/franksong2702/dsh-codex-connect) | `dsh-codex-connect@0.1.0-alpha.4.19` | `dsh-codex-connect@0.1.0-alpha.4.19` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T04:03:33.167Z |
 | [FuzzySoul/dsh-chatvoice](https://github.com/FuzzySoul/dsh-chatvoice) | `dsh-chatvoice@0.1.7` | `dsh-chatvoice@0.1.7` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:36.797Z |
@@ -54,7 +54,7 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 | [Mars-Sea/dsh-commandcode-provider](https://github.com/Mars-Sea/dsh-commandcode-provider) | `@mars-sea/dsh-commandcode-provider@0.8.1` | `@mars-sea/dsh-commandcode-provider@0.8.1` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T04:03:16.036Z |
 | [MichengAI/dsh-agency-agents](https://github.com/MichengAI/dsh-agency-agents) | `@michengai/dsh-agency-agents@0.1.21` | `@michengai/dsh-agency-agents@0.1.21` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-24T04:45:52.492Z |
 | [MichengAI/dsh-archive-manager](https://github.com/MichengAI/dsh-archive-manager) | `@michengai/dsh-archive-manager@0.1.14` | `@michengai/dsh-archive-manager@0.1.14` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-24T04:46:15.360Z |
-| [MichengAI/dsh-im-connect](https://github.com/MichengAI/dsh-im-connect) | `@michengai/dsh-im-connect@0.1.23` | `@michengai/dsh-im-connect@0.1.23` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-24T04:59:44.491Z |
+| [MichengAI/dsh-im-connect](https://github.com/MichengAI/dsh-im-connect) | `@michengai/dsh-im-connect@0.1.23` | `@michengai/dsh-im-connect@0.1.23` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:39:08.410Z |
 | [MichengAI/dsh-skills-manager](https://github.com/MichengAI/dsh-skills-manager) | `@michengai/dsh-skills-manager@0.1.24` | `@michengai/dsh-skills-manager@0.1.24` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-24T04:45:36.246Z |
 | [modusensus/dsh-mneme](https://github.com/modusensus/dsh-mneme/tree/main/dsh-mneme) | `@modusensus/dsh-mneme@0.7.1` | `@modusensus/dsh-mneme@0.7.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:03:21.443Z |
 | [moonquake2004/dsh-doctor](https://github.com/moonquake2004/dsh-doctor/tree/main/plugin) | `@moonquake2004/dsh-doctor@0.4.3` | `@moonquake2004/dsh-doctor@0.4.3` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:40.923Z |
@@ -105,7 +105,7 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 | [xmutfyh/dsh-plugin-writing-guard](https://github.com/xmutfyh/dsh-plugin-writing-guard) | `dsh-plugin-writing-guard@1.6.1` | `dsh-plugin-writing-guard@1.6.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:03:21.834Z |
 | [ysr666/dsh-vision-router](https://github.com/ysr666/dsh-vision-router) | `dsh-vision-router@1.7.7` | `dsh-vision-router@1.7.7` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:04:26.942Z |
 | [yyh-001/dsh-meme](https://github.com/yyh-001/dsh-meme) | `dsh-meme@0.1.39` | `dsh-meme@0.1.39` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:25.255Z |
-| [zhu1090093659/dsh-web-ui](https://github.com/zhu1090093659/dsh-web-ui/tree/main/packages/dsh-web-ui-all) | `@linxin666/dsh-web-ui-all@0.3.2` | `@linxin666/dsh-web-ui-all@0.3.2` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-24T04:59:52.725Z |
+| [zhu1090093659/dsh-web-ui](https://github.com/zhu1090093659/dsh-web-ui/tree/main/packages/dsh-web-ui-all) | `@linxin666/dsh-web-ui-all@0.3.2` | `@linxin666/dsh-web-ui-all@0.3.2` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T04:40:00.502Z |
 | [ZSeven-W/dsh-openpencil](https://github.com/ZSeven-W/dsh-openpencil) | `@zseven-w/dsh-openpencil@0.1.0-rc.1` | `@zseven-w/dsh-openpencil@0.1.0-rc.1` | `0.1.1-rc.2` / Node 24 | `needs-review` | 2026-08-25T04:03:19.452Z |
 
 ## Reading the status

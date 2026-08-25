@@ -14777,13 +14777,10 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:26e1b112aaa226f4677df40f685dbd88acc8639d39df7f9999a5b258a7f5c791",
-      "contractFingerprint": "sha256:13d1740bb4e2db945b5c4329953c4d2a913f28690820f40df344889d60483c92",
-      "observedAt": "2026-08-24T04:59:44.491Z",
-      "result": "build-approval-required",
-      "reason": "the DSH plugin install requires explicit approval for dependency builds: protobufjs",
-      "requiredDependencyBuilds": [
-        "protobufjs"
-      ],
+      "contractFingerprint": "sha256:281d5875839b285f7a5263bd3a71436a798520c098f62a0d84090a6164374b54",
+      "observedAt": "2026-08-25T04:39:08.410Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "167cb11911bc56be04d9f7c5e999780268d2b3aaabc1b5b93ddaf24390fec45f",
@@ -14791,7 +14788,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "df49bebfb7bccba0af6b63317ab1ad657bdbcc642b8e835de68bd6d79a74d6ce",
+          "sha256": "8be16e8ebeee40374e4e2c36ae72f8cd785f723b7971aaafa2dcef6648d60d0f",
           "bytes": 22679,
           "graphDigest": "sha256:57967212834891afb9987d2f220540bb9761d66ff930cf99d7bc8996cb369565",
           "nodes": 88,
@@ -15041,14 +15038,14 @@
                 "name": "@deepseek-ai/cordis",
                 "required": "^4.0.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "4.0.1"
               },
               {
                 "name": "@deepseek-ai/schemastery",
                 "required": "^3.18.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "3.18.1"
               }
             ]
@@ -15062,7 +15059,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.43.3"
+        "version": "0.43.4"
       }
     },
     {
@@ -20365,22 +20362,17 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:4e1036638fdb70a96496b7c87db23beb9bf30bfb611090ed2c883b16f238e23a",
-      "contractFingerprint": "sha256:17fb87bdcf42e5a800b19908da4dd0fe3fd6d43efba58db60227a949087a3940",
-      "observedAt": "2026-08-24T04:59:55.498Z",
-      "result": "build-approval-required",
-      "reason": "the DSH plugin install requires explicit approval for dependency builds: cpu-features, node-pty, ssh2",
-      "requiredDependencyBuilds": [
-        "cpu-features",
-        "node-pty",
-        "ssh2"
-      ],
+      "contractFingerprint": "sha256:1ccb72b71d8706cd1c78209380c7d126fba6f1c5d827013b96082f12cffcc0d9",
+      "observedAt": "2026-08-25T04:39:48.541Z",
+      "result": "unknown",
+      "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 2 required unresolved edge(s)",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "ccedc839d6038e6f09fe18e028017f30d5e9290c20cbd209ef470f0f7c100804"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "a132a084895ba99530f25e3c2a254572a49fbb7511bebf0af00b431b056f5d5a",
+          "sha256": "efacca7ccf47f9d59480da5e1e01f9fe61c2e9d2b2830b35812cdd9394856a52",
           "bytes": 47010,
           "graphDigest": "sha256:326cccbe9a25798b428378f64733fc62555f694d484e649d651da96d2535658d",
           "nodes": 176,
@@ -20770,49 +20762,49 @@
                 "name": "@deepseek-ai/cordis",
                 "required": "^4.0.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "no-literal-reference-observed",
                 "resolvedVersion": "4.0.1"
               },
               {
                 "name": "@deepseek-ai/dsh-client-runtime",
                 "required": "^0.1.0-rc.6",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "no-literal-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-client-ui-workspace",
                 "required": "^0.1.0-rc.6",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "no-literal-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-commands",
                 "required": "^0.1.0-rc.6",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "no-literal-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-host-webserver",
                 "required": "^0.1.0-rc.6",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "no-literal-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-system-prompt",
                 "required": "^0.1.0-rc.6",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "no-literal-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-tools",
                 "required": "^0.1.0-rc.6",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               }
             ]
@@ -20826,7 +20818,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.43.3"
+        "version": "0.43.4"
       }
     },
     {
@@ -23749,14 +23741,10 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:62ba44191112c0c6ebbc3710e288ade9e16be882fb5204c30b78c57fbab0c087",
-      "contractFingerprint": "sha256:247c3b515b8affdb233fe99c12ff4088d9c02af5446e66bea77e427d848b036c",
-      "observedAt": "2026-08-25T04:03:27.044Z",
-      "result": "build-approval-required",
-      "reason": "the DSH plugin install requires explicit approval for dependency builds: @google/genai, protobufjs",
-      "requiredDependencyBuilds": [
-        "@google/genai",
-        "protobufjs"
-      ],
+      "contractFingerprint": "sha256:29a00d3329144f0f1bd40c251c6d61dc9bf465e5b3efd6eb68251e6d8edfb465",
+      "observedAt": "2026-08-25T04:39:14.674Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [
           "prepare"
@@ -23766,7 +23754,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "ac028f8228625c24350c7d7bee08f49a88e55c81a673df4cc0f74dbcfa590888",
+          "sha256": "87006a03856e206a448652774499975af9c299c11f9766021fb7dcc8b413fd5a",
           "bytes": 48674,
           "graphDigest": "sha256:16ad2872f4f57b5fac7fc396cff64a67dd7020743bc7a4f736e4703065252b5f",
           "nodes": 158,
@@ -24010,189 +23998,189 @@
                 "name": "@deepseek-ai/cordis",
                 "required": "^4.0.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "4.0.1"
               },
               {
                 "name": "@deepseek-ai/dsh-agent",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-agent-instructions",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-agent-presets",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-atomic-write",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-commands",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-cordis-host-runner",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-invariants",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-llm",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-llm-pi-ai",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-persona",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-session",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-settings",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-skill",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-storage",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-storage-domain",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-storage-json",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-system-prompt",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-terminal",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-terminal-bash",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-tool-ask-user",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-tool-bash-persistent",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-tool-cordis",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-user-approval",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-user-questions",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-workspace",
                 "required": "^0.1.0-rc.6 || ^0.1.1-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
                 "resolvedVersion": "0.1.1-rc.2"
               },
               {
                 "name": "@deepseek-ai/schemastery",
                 "required": "^3.18.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
                 "resolvedVersion": "3.18.1"
               }
             ]
@@ -27150,23 +27138,17 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:61681d2f9595611b6dca01ecb6afee40664e60ca53095d224f8954df53bd9103",
-      "contractFingerprint": "sha256:02acdf51d7928166b03cc5b18955171a8136cbb0a7ea76285f0dd2f1010e8440",
-      "observedAt": "2026-08-24T04:59:52.725Z",
-      "result": "build-approval-required",
-      "reason": "the DSH plugin install requires explicit approval for dependency builds: cloudflared, cpu-features, node-pty, ssh2",
-      "requiredDependencyBuilds": [
-        "cloudflared",
-        "cpu-features",
-        "node-pty",
-        "ssh2"
-      ],
+      "contractFingerprint": "sha256:61d7ded4e4a7cafce4438469db43af3a17a6fbd9c2b8308b66d9f6072e9b4805",
+      "observedAt": "2026-08-25T04:40:00.502Z",
+      "result": "unknown",
+      "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 2 required unresolved edge(s)",
       "artifact": {
         "lifecycleScripts": [],
         "sha256": "d9e4e560e3ee6dd55642a8b33d8e687eb80570c0d06d18bd3f68b8a48202464d"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "748b627a1c46aeadc28051d316eda02841592c5c00273a5bbbf0a3a565417027",
+          "sha256": "646659614711cd202fe12d5a5ccb83e7a65fa7aae4db6f58b43df671b11f5be3",
           "bytes": 59531,
           "graphDigest": "sha256:1b7caddaa30198489e9c9b06f31c24e72e82ef926631b7964ce56b8c25aed1f2",
           "nodes": 215,
@@ -27598,7 +27580,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.43.3"
+        "version": "0.43.4"
       }
     },
     {
