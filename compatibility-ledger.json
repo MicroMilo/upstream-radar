@@ -27142,11 +27142,11 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:4911903fb108ace4761b56c4f791e7378e97e3fe7d2c921b2a326a78ad65d7f1",
-      "contractFingerprint": "sha256:f303ffa4a13c8f0a3be9161f680da2e8c0bcd9b477b8fb4e316545eb7a831be3",
-      "observedAt": "2026-08-25T08:26:11.043Z",
-      "result": "build-approval-required",
-      "reason": "the DSH plugin install requires explicit approval for dependency builds: cloudflared, cpu-features, node-pty, ssh2",
-      "requiredDependencyBuilds": [
+      "contractFingerprint": "sha256:fbe86bc8736c5b11f7df18287538625aaf1f649661d4b49ac0efd792ef6548cd",
+      "observedAt": "2026-08-25T08:34:27.200Z",
+      "result": "unknown",
+      "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 2 required unresolved edge(s)",
+      "approvedDependencyBuilds": [
         "cloudflared",
         "cpu-features",
         "node-pty",
@@ -27158,7 +27158,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "b170c091f1e76569ac788f1e2987c3de8bc2516ee8319488b0ec829930aca468",
+          "sha256": "8c7b1414c0a129361f3d704b3841897b61bf199d81087303364dbe5ff3dadb75",
           "bytes": 59380,
           "graphDigest": "sha256:b04cdae38724edf9358590e55e974d124d6bb9ed93c03131e64a229878ac7542",
           "nodes": 215,

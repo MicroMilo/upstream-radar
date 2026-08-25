@@ -2438,11 +2438,11 @@
       }
     },
     {
-      "id": "cell:be27c0ee8f22b68e85528c0925cc9170ef38cab3733cc0ed1569aceffd1d833e",
+      "id": "cell:fca9a7a1fbebf41a8022e296e074f7c49c193c634d93eb6ff7006f6adcd1fda1",
       "caseId": "dsh-web-ui-all-node22",
       "targetId": "dsh-web-ui-all",
-      "observedAt": "2026-08-25T08:26:11.043Z",
-      "result": "build-approval-required",
+      "observedAt": "2026-08-25T08:34:27.200Z",
+      "result": "unknown",
       "plugin": {
         "name": "@linxin666/dsh-web-all",
         "version": "0.3.3",
@@ -2456,20 +2456,14 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:f303ffa4a13c8f0a3be9161f680da2e8c0bcd9b477b8fb4e316545eb7a831be3"
+        "contractFingerprint": "sha256:fbe86bc8736c5b11f7df18287538625aaf1f649661d4b49ac0efd792ef6548cd"
       },
       "evidence": {
         "runtimeGraphDigest": "sha256:77fab0fda43d899fcaf16c807ae87a2dae76fc6b7143645c06f93ddd394012f9",
         "runtimeGraphNodes": 651,
         "runtimeGraphEdges": 2458,
         "requiredUnresolved": 2,
-        "declaredPeerContracts": 0,
-        "requiredDependencyBuilds": [
-          "cloudflared",
-          "cpu-features",
-          "node-pty",
-          "ssh2"
-        ]
+        "declaredPeerContracts": 0
       }
     },
     {

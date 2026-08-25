@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha2",
-  "generatedAt": "2026-08-25T08:26:35.597Z",
+  "generatedAt": "2026-08-25T08:34:54.831Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.43.5",
@@ -4180,16 +4180,10 @@
           "executionPlane": "headless",
           "profile": "headless",
           "status": "needs-review",
-          "radarResult": "build-approval-required",
-          "requiredDependencyBuilds": [
-            "cloudflared",
-            "cpu-features",
-            "node-pty",
-            "ssh2"
-          ],
-          "observedAt": "2026-08-25T08:26:11.043Z",
-          "recheckDueAt": "2026-09-01T08:26:11.043Z",
-          "reason": "the DSH plugin install requires explicit approval for dependency builds: cloudflared, cpu-features, node-pty, ssh2"
+          "radarResult": "unknown",
+          "observedAt": "2026-08-25T08:34:27.200Z",
+          "recheckDueAt": "2026-09-01T08:34:27.200Z",
+          "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 2 required unresolved edge(s)"
         }
       ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"

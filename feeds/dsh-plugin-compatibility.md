@@ -1,6 +1,6 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-25T08:26:35.597Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-25T08:34:54.831Z`.
 Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 
 **74 observed compatible · 0 observed incompatible · 22 needs review · 0 update pending · 4 not observed**
@@ -105,7 +105,7 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 | [xmutfyh/dsh-plugin-writing-guard](https://github.com/xmutfyh/dsh-plugin-writing-guard) | `dsh-plugin-writing-guard@1.6.1` | `dsh-plugin-writing-guard@1.6.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:03:21.834Z |
 | [ysr666/dsh-vision-router](https://github.com/ysr666/dsh-vision-router) | `dsh-vision-router@2.0.0` | `dsh-vision-router@2.0.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:13:20.789Z |
 | [yyh-001/dsh-meme](https://github.com/yyh-001/dsh-meme) | `dsh-meme@0.1.39` | `dsh-meme@0.1.39` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:25.255Z |
-| [zhu1090093659/dsh-web](https://github.com/zhu1090093659/dsh-web/tree/dev/packages/dsh-web-all) | `@linxin666/dsh-web-all@0.3.3` | `@linxin666/dsh-web-all@0.3.3` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T08:26:11.043Z |
+| [zhu1090093659/dsh-web](https://github.com/zhu1090093659/dsh-web/tree/dev/packages/dsh-web-all) | `@linxin666/dsh-web-all@0.3.3` | `@linxin666/dsh-web-all@0.3.3` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T08:34:27.200Z |
 | [ZSeven-W/dsh-openpencil](https://github.com/ZSeven-W/dsh-openpencil) | `@zseven-w/dsh-openpencil@0.1.0-rc.1` | `@zseven-w/dsh-openpencil@0.1.0-rc.1` | `0.1.1-rc.2` / Node 24 | `needs-review` | 2026-08-25T04:03:19.452Z |
 
 ## Reading the status
