@@ -141,6 +141,10 @@ describe('reusable GitHub Action', () => {
     assert.match(reviewWorkflow, /finding\.remediation/)
     assert.match(checkedInReviewWorkflow, /finding\.remediation/)
     const observationPersistStep = checkedInObserverWorkflow.indexOf('name: Persist observation and Agent planning state')
+    const initialCheckoutStep = checkedInObserverWorkflow.slice(
+      checkedInObserverWorkflow.indexOf('name: Check out the observer and its targets'),
+      checkedInObserverWorkflow.indexOf('name: Set up pnpm'),
+    )
     const installObservationJob = checkedInObserverWorkflow.indexOf('\n  install-observation:')
     const observerHealthJob = checkedInObserverWorkflow.indexOf('\n  observer-source-health:')
     const reconcileStep = checkedInObserverWorkflow.indexOf('name: Reconcile dynamic evidence into the compatibility ledger')
@@ -149,6 +153,7 @@ describe('reusable GitHub Action', () => {
     const incompleteGate = checkedInObserverWorkflow.indexOf('name: Fail after persisting incomplete reconciliation')
     assert.ok(reconcileStep >= 0)
     assert.ok(observationPersistStep >= 0)
+    assert.match(initialCheckoutStep, /ref: \$\{\{ github\.event\.repository\.default_branch \}\}/)
     assert.ok(installObservationJob > observationPersistStep)
     assert.ok(observerHealthJob > incompleteGate)
     assert.ok(publishStep > reconcileStep)

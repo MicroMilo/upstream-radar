@@ -38,6 +38,10 @@ jobs:
       - name: Check out the observer and its targets
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # A queued run may start after an earlier observer has advanced the
+          # durable state. Read the latest serialized observation point rather
+          # than the commit that happened to trigger this run.
+          ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 1
 
       - name: Set up pnpm
