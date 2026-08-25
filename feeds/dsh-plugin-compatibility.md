@@ -1,9 +1,9 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-25T09:37:43.055Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-25T09:46:19.270Z`.
 Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 
-**86 observed compatible · 0 observed incompatible · 10 needs review · 0 update pending · 4 not observed**
+**87 observed compatible · 0 observed incompatible · 9 needs review · 0 update pending · 4 not observed**
 
 | Catalog plugin | Selected artifact | Tested artifact | Exact DSH / runtime | Evidence status | Observed |
 | --- | --- | --- | --- | --- | --- |
@@ -34,7 +34,7 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 | [elysia395/dsh-wallpaper-engine](https://github.com/elysia395/dsh-wallpaper-engine) | `dsh-plugin-wallpaper-engine@0.6.5` | `dsh-plugin-wallpaper-engine@0.6.5`<br>`dsh-plugin-wallpaper-engine@0.6.5` | `0.1.1-rc.2` / Node 22 / headless<br>`0.1.1-rc.2` / Node 22 / web | `observed-compatible` | 2026-08-25T07:47:24.570Z<br>2026-08-25T09:36:31.780Z |
 | [feibi-mochi/deepseek-harness-control-center](https://github.com/feibi-mochi/deepseek-harness-control-center) | `deepseek-harness-wallet@0.3.3` | `deepseek-harness-wallet@0.3.3` | `0.1.1-rc.2` / Node 22 / headless | `observed-compatible` | 2026-08-25T04:04:17.310Z |
 | [feng78-boop/dsh-thirteen-bg](https://github.com/feng78-boop/dsh-thirteen-bg) | `dsh-thirteen-bg@0.5.2` | `dsh-thirteen-bg@0.5.2`<br>`dsh-thirteen-bg@0.5.2` | `0.1.1-rc.2` / Node 22 / headless<br>`0.1.1-rc.2` / Node 22 / web | `observed-compatible` | 2026-08-23T11:54:30.752Z<br>2026-08-25T09:36:35.433Z |
-| [flymysql/dsh-remote](https://github.com/flymysql/dsh-remote) | `dsh-remote@0.8.8` | `dsh-remote@0.8.8`<br>`dsh-remote@0.8.8` | `0.1.1-rc.2` / Node 22 / headless<br>`0.1.1-rc.2` / Node 22 / web | `needs-review` | 2026-08-25T04:39:48.541Z<br>2026-08-25T09:36:32.119Z |
+| [flymysql/dsh-remote](https://github.com/flymysql/dsh-remote) | `dsh-remote@0.8.8` | `dsh-remote@0.8.8`<br>`dsh-remote@0.8.8` | `0.1.1-rc.2` / Node 22 / headless<br>`0.1.1-rc.2` / Node 22 / web | `observed-compatible` | 2026-08-25T04:39:48.541Z<br>2026-08-25T09:45:55.678Z |
 | [Flyvhidbwo/dsh-vision-proxy](https://github.com/Flyvhidbwo/dsh-vision-proxy) | `dsh-vision-proxy@0.4.1` | `dsh-vision-proxy@0.4.1` | `0.1.1-rc.2` / Node 22 / headless | `observed-compatible` | 2026-08-24T03:01:19.585Z |
 | [franksong2702/dsh-codex-connect](https://github.com/franksong2702/dsh-codex-connect) | `dsh-codex-connect@0.1.0-alpha.4.19` | `dsh-codex-connect@0.1.0-alpha.4.19`<br>`dsh-codex-connect@0.1.0-alpha.4.19` | `0.1.1-rc.2` / Node 22 / headless<br>`0.1.1-rc.2` / Node 22 / web | `observed-compatible` | 2026-08-25T04:03:33.167Z<br>2026-08-25T09:36:32.125Z |
 | [FuzzySoul/dsh-chatvoice](https://github.com/FuzzySoul/dsh-chatvoice) | `dsh-chatvoice@0.1.7` | `dsh-chatvoice@0.1.7` | `0.1.1-rc.2` / Node 22 / headless | `observed-compatible` | 2026-08-23T11:53:36.797Z |

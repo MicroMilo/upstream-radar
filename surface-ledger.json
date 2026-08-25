@@ -711,9 +711,14 @@
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-remote",
+      "approvedDependencyBuilds": [
+        "cpu-features",
+        "node-pty",
+        "ssh2"
+      ],
       "sourceFingerprint": "sha256:76bf32acc2d66754a71a3b0c52dfd8509c151c3a382faea9c9ce1e5257db9276",
-      "contractFingerprint": "sha256:7aeac8d6a85aa42b5f938e23136c5611fcf655ef2316058f89d95adbb2253371",
-      "observedAt": "2026-08-25T09:36:32.119Z",
+      "contractFingerprint": "sha256:1fdfaf743f990e6b0a7debd66d4d78902239246088faba781e569a656f231c0e",
+      "observedAt": "2026-08-25T09:45:55.678Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -740,41 +745,81 @@
           "code": 0
         },
         "install": {
-          "status": "failed",
-          "code": 1,
-          "detail": "command exited with 1: dsh: pnpm failed in profile directory /sandbox/upstream-radar-dsh-surface-ppETJy/dsh-home/profiles/web\n\nProgress: resolved 0, reused 0, downloaded 1, added 0\n[WARN] Issues with peer dependencies found. Run \"pnpm peers check\" to list them.\n\ndependencies:\n+ dsh-remote file:/sandbox/upstream-radar-dsh-surface-ppETJy/artifact/dsh-remote-0.8.8.tgz\n\nPackages: +175\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 175, reused 8, downloaded 1, added 0\nProgress: resolved 175, reused 8, downloaded 63, added 4\nProgress: resolved 175, reused 8, downloaded 167, added 175, done\n[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: cpu-features@0.0.10, node-pty@1.1.0, ssh2@1.17.0\n\nRun \"pnpm approve-builds\" to pick which dependencies should be allowed to run scripts."
+          "status": "passed",
+          "code": 0
         },
         "registration": {
-          "status": "skipped"
+          "status": "passed"
         },
         "host": {
-          "status": "skipped"
+          "status": "passed"
         },
         "surface": {
-          "status": "skipped"
+          "status": "passed"
         },
         "interaction": {
-          "status": "skipped"
+          "status": "passed"
         },
         "shutdown": {
-          "status": "skipped"
+          "status": "passed"
         }
       },
       "evidence": {
         "plane": "web",
         "url": "http://127.0.0.1:30880/",
-        "rootMounted": false,
-        "bootManifestPresent": false,
-        "bootEntryIds": [],
-        "pluginEntryPresent": false,
-        "applicationMounted": false,
-        "pluginMaterialized": false,
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "bootEntryIds": [
+          "dsh-remote",
+          "dsh-better-sidebar",
+          "@deepseek-ai/dsh-typert-registry",
+          "@deepseek-ai/dsh-api-gateway",
+          "@deepseek-ai/dsh-session-log-export",
+          "@deepseek-ai/dsh-client-hmr",
+          "@deepseek-ai/dsh-client-modules",
+          "@deepseek-ai/dsh-client-connection",
+          "@deepseek-ai/dsh-api-remotes",
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-cordis-client-runner",
+          "@deepseek-ai/dsh-client-ui-theme",
+          "@deepseek-ai/dsh-client-locale",
+          "@deepseek-ai/dsh-client-ui-layout",
+          "@deepseek-ai/dsh-client-ui-renderer",
+          "@deepseek-ai/dsh-client-ui-sidebar",
+          "@deepseek-ai/dsh-client-ui-settings",
+          "@deepseek-ai/dsh-client-ui-settings-general",
+          "@deepseek-ai/dsh-client-ui-settings-models",
+          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+          "@deepseek-ai/dsh-client-ui-conversation",
+          "@deepseek-ai/dsh-client-ui-brand-official",
+          "@deepseek-ai/dsh-client-ui-attachment",
+          "@deepseek-ai/dsh-client-ui-tool",
+          "@deepseek-ai/dsh-client-ui-cordis",
+          "@deepseek-ai/dsh-client-ui-workflow-run",
+          "@deepseek-ai/dsh-client-ui-deliverables",
+          "@deepseek-ai/dsh-client-ui-workspace",
+          "@deepseek-ai/dsh-client-ui-input-trigger",
+          "@deepseek-ai/dsh-client-ui-commands",
+          "@deepseek-ai/dsh-client-ui-skill",
+          "@deepseek-ai/dsh-client-ui-subagent"
+        ],
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-remote/client.js?rev=3abb2809ceaf",
+        "pluginBundleStatus": 200,
+        "applicationMounted": true,
+        "pluginMaterialized": true,
         "consoleErrors": [],
         "pageErrors": [],
-        "failedRequests": []
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "dsh-remote-node22-web.png",
+        "trace": "dsh-remote-node22-web.trace.zip",
+        "hostLog": "dsh-remote-node22-web.host.log"
       },
-      "result": "environment-unsupported",
-      "reason": "the declared web environment still requires explicit dependency-build approval: cpu-features, node-pty, ssh2",
+      "result": "compatible",
+      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
         "version": "0.44.0"

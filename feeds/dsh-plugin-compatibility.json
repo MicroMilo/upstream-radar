@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-08-25T09:37:43.055Z",
+  "generatedAt": "2026-08-25T09:46:19.270Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.44.0",
@@ -37,9 +37,9 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 86,
+    "observed-compatible": 87,
     "observed-incompatible": 0,
-    "needs-review": 10,
+    "needs-review": 9,
     "update-pending": 0,
     "not-observed": 4
   },
@@ -1458,7 +1458,7 @@
         "selectedVersion": "0.8.8",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-remote-node22",
@@ -1481,6 +1481,9 @@
           "profile": "headless",
           "status": "needs-review",
           "radarResult": "unknown",
+          "coveredBy": [
+            "dsh-remote-node22-web"
+          ],
           "observedAt": "2026-08-25T04:39:48.541Z",
           "recheckDueAt": "2026-09-01T04:39:48.541Z",
           "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 2 required unresolved edge(s)"
@@ -1505,11 +1508,16 @@
           },
           "executionPlane": "web",
           "profile": "web",
-          "status": "needs-review",
-          "radarResult": "environment-unsupported",
-          "observedAt": "2026-08-25T09:36:32.119Z",
-          "recheckDueAt": "2026-09-01T09:36:32.119Z",
-          "reason": "the declared web environment still requires explicit dependency-build approval: cpu-features, node-pty, ssh2"
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "approvedDependencyBuilds": [
+            "cpu-features",
+            "node-pty",
+            "ssh2"
+          ],
+          "observedAt": "2026-08-25T09:45:55.678Z",
+          "recheckDueAt": "2026-09-01T09:45:55.678Z",
+          "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
