@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha2",
-  "generatedAt": "2026-08-25T04:45:36.128Z",
+  "generatedAt": "2026-08-25T07:12:14.834Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.43.5",
@@ -29,10 +29,10 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 74,
+    "observed-compatible": 67,
     "observed-incompatible": 0,
-    "needs-review": 22,
-    "update-pending": 0,
+    "needs-review": 20,
+    "update-pending": 9,
     "not-observed": 4
   },
   "plugins": [
@@ -348,10 +348,10 @@
       "distribution": {
         "kind": "npm",
         "name": "@anionex/dsh-vision-toolkit",
-        "selectedVersion": "0.1.38",
+        "selectedVersion": "0.1.39",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-vision-toolkit-node22",
@@ -477,10 +477,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-remote-plugin",
-        "selectedVersion": "0.6.13",
+        "selectedVersion": "0.6.14",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-remote-plugin-node22",
@@ -520,10 +520,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-context",
-        "selectedVersion": "0.31.0",
+        "selectedVersion": "0.31.1",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "context-node22",
@@ -993,10 +993,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dshmarket",
-        "selectedVersion": "1.26.0",
+        "selectedVersion": "1.28.2",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-market-node22",
@@ -1698,10 +1698,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-xueqiu",
-        "selectedVersion": "1.22.7",
+        "selectedVersion": "1.22.9",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-xueqiu-node22",
@@ -2849,10 +2849,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-mobile",
-        "selectedVersion": "0.2.0",
+        "selectedVersion": "0.2.1",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-mobile-node22",
@@ -3769,10 +3769,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-codex-subscription",
-        "selectedVersion": "1.7.4",
+        "selectedVersion": "1.8.0",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-codex-subscription-node22",
@@ -3984,10 +3984,10 @@
       "distribution": {
         "kind": "npm",
         "name": "@xmanrui/dsh-im",
-        "selectedVersion": "2.3.0",
+        "selectedVersion": "2.4.0",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-im-node22",
@@ -4070,10 +4070,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-vision-router",
-        "selectedVersion": "1.7.7",
+        "selectedVersion": "2.0.0",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-vision-router-node22",
