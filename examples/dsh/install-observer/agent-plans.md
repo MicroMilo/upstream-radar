@@ -1,11 +1,11 @@
 # DSH headless Agent review
 
-Updated: 2026-08-25T07:12:14.405Z
+Updated: 2026-08-25T07:18:27.366Z
 
 The Agent reads bounded repository evidence and the latest isolated headless result. There is no static environment-planning fallback. Only an exact observed build-package name can reach the no-secret retry runner.
 
-- Current review set: 21
-- Agent-reviewed: 21
+- Current review set: 23
+- Agent-reviewed: 23
 - Agent failures awaiting retry: 0
 
 | Case | Previous evidence | Agent action | Classification | Retained build policy |
@@ -20,6 +20,8 @@ The Agent reads bounded repository evidence and the latest isolated headless res
 |  |  |  |  | The plugin installed and loaded, but the DSH runtime did not resolve two peer dependencies: @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots. The runtime graph shows these as missing, and the plugin declares them as peer dependencies. The headless profile cannot provide the required Web UI primitives and slots, which are part of the Web/TUI plane. No build packages are required, so a retry cannot fix the missing runtime resolution. |
 | `dsh-codex-connect-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The plugin's peer dependency @deepseek-ai/dsh-client-ui-primitives@0.1.1-rc.2 is missing at runtime, but the manifest declares it as a peer dependency and the plugin's dsh.client.platform is 'web'. The headless profile cannot provide the required web UI primitives, so a retry cannot resolve this without a different execution plane. |
+| `dsh-codex-subscription-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
+|  |  |  |  | The plugin declares a web client platform and injects UI components, but the headless DSH profile cannot resolve the required @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots peer dependencies. The runtime graph shows these as missing, and the plugin's manifest indicates a web platform with client injection, which is outside the headless execution plane. No build packages are required, so a retry cannot resolve the missing peer dependencies. |
 | `dsh-coding-subscription-oauth-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The plugin's peer dependencies require @deepseek-ai/dsh-atomic-write@0.1.0-rc.6, but the headless DSH profile resolves 0.1.1-rc.2, causing a runtime-import mismatch. No build packages are required, and the mismatch is due to the headless environment's fixed dependency versions, not a build approval issue. |
 | `dsh-commandcode-provider-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
@@ -28,8 +30,8 @@ The Agent reads bounded repository evidence and the latest isolated headless res
 |  |  |  |  | The plugin installed and loaded, but the DSH runtime did not resolve @deepseek-ai/dsh-client-ui-slots, which the plugin imports at runtime. The manifest declares a web client platform and injects client runtime packages, indicating the plugin requires a Web/TUI plane that the headless profile cannot provide. No build packages are required, so a retry cannot fix the missing runtime dependency. |
 | `dsh-full-remote-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The plugin requires a web profile and injects client UI slots, but the headless DSH runtime cannot resolve the peer dependency @deepseek-ai/dsh-client-ui-slots. The observed result is peer-contract-incompatible with no build packages required, so a retry cannot fix the missing peer. The plugin's README explicitly states it is not intended for headless profiles. |
-| `dsh-mnemon-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
-|  |  |  |  | The plugin declares a web-platform client injection and requires @deepseek-ai/dsh-client-ui-primitives as a peer dependency, which is not resolved in the headless runtime. The observed result is peer-contract-incompatible due to a missing peer dependency, not a build approval issue. No build packages are required, and the headless profile cannot satisfy the web UI peer contract. |
+| `dsh-mnemon-node22` | `peer-contract-incompatible` | `stop-headless` | `different-plane` | none |
+|  |  |  |  | The plugin declares a web-platform client with UI primitives peer dependency that is missing in the headless runtime. The observed failure is a peer contract mismatch for @deepseek-ai/dsh-client-ui-primitives, which is a web UI package not available in the headless profile. No build packages are required, so a retry cannot resolve the missing peer. The plugin's manifest and README indicate it is designed for the web profile, and the headless profile lacks the necessary UI primitives. This is a different-plane issue, not a build approval problem. |
 | `dsh-pet-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The plugin's peer dependency @deepseek-ai/dsh-client-ui-slots is not resolved by the DSH runtime, and the plugin declares a web client platform with injection dependencies. The headless environment cannot satisfy the web UI slot contract, and no build packages are required or approved. Retrying headless would not resolve the missing peer dependency. |
 | `dsh-remote-node22` | `unknown` | `stop-headless` | `different-plane` | approve `cpu-features`, `node-pty`, `ssh2` |
@@ -39,9 +41,11 @@ The Agent reads bounded repository evidence and the latest isolated headless res
 | `dsh-thirteen-bg-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The plugin's peer dependency @deepseek-ai/dsh-client-ui-slots is missing in the runtime graph, and the observed result is peer-contract-incompatible. No build packages are required or approved, and the issue is a missing peer dependency that cannot be resolved by approving builds. The headless profile cannot add the missing package or change the runtime environment. |
 | `dsh-univer-office-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
-|  |  |  |  | The plugin's peer dependencies require exact versions (0.1.0-rc.8) of DSH packages, but the headless DSH profile provides 0.1.1-rc.2, causing mismatches. No build packages are required, and the issue is a version contract mismatch that cannot be resolved by approving builds. |
+|  |  |  |  | The plugin's peer dependencies require @deepseek-ai/dsh-* packages at version 0.1.0-rc.8, but the headless DSH profile provides 0.1.1-rc.2, causing a peer contract mismatch. No build packages are required, so a retry cannot resolve the version incompatibility. |
+| `dsh-vision-toolkit-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
+|  |  |  |  | The plugin's peer contract requires @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots, which are not resolved by the headless runtime. The missing packages are UI-related and not available in the headless execution plane. No build packages are required, so a retry cannot resolve the missing peer dependencies. |
 | `dsh-wallpaper-engine-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
-|  |  |  |  | The plugin's peer dependency @deepseek-ai/dsh-client-ui-slots is missing in the headless runtime, and the plugin declares a web client platform with immediate injection. The headless profile cannot satisfy the UI slots peer contract, and no build packages are required or approved. Retrying headless would not resolve the missing peer dependency. |
+|  |  |  |  | The plugin's peer dependency @deepseek-ai/dsh-client-ui-slots is missing in the headless runtime, and the plugin declares a web client with immediate injection. The headless profile cannot satisfy the UI slots contract, and no build packages are required or approved. Retrying headless would not resolve the missing peer dependency. |
 | `dsh-web-ui-all-node22` | `unknown` | `stop-headless` | `different-plane` | approve `cloudflared`, `cpu-features`, `node-pty`, `ssh2` |
 |  |  |  |  | The plugin installed and loaded, but the runtime graph has 2 unresolved peer dependencies from dsh-better-sidebar: @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots. These are peer dependencies that cannot be resolved by approving build scripts; they require additional packages to be installed, which is outside the headless build-approval plane. The observed result is not a build-approval-required failure, and no build packages are required by the latest retry. |
 | `dshscan-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
