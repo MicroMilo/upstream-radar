@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-headless-agent-plans/v1alpha1",
-  "updatedAt": "2026-08-25T04:38:05.602Z",
+  "updatedAt": "2026-08-25T04:41:24.445Z",
   "entries": [
     {
       "caseId": "anweat-dsh-browser-node22",
@@ -493,7 +493,7 @@
       "plugin": "dsh-remote@0.8.8",
       "dshVersion": "0.1.1-rc.2",
       "nodeMajor": 22,
-      "result": "build-approval-required",
+      "result": "unknown",
       "observedRequiredBuilds": [
         "cpu-features",
         "node-pty",
@@ -507,22 +507,18 @@
       "artifactSha256": "ccedc839d6038e6f09fe18e028017f30d5e9290c20cbd209ef470f0f7c100804",
       "repository": "flymysql/dsh-remote",
       "sourceCommit": "5ae197a94c0fe4f0a8ffe5de14822f79418dc3bd",
-      "inputFingerprint": "sha256:c2a345de16cb3cf79fdc400647cdbb5b82e486c150e6587a8641124ab6f06ecb",
-      "plannedAt": "2026-08-25T04:38:03.085Z",
+      "inputFingerprint": "sha256:ab9f142bfa481936c435436f7ad6bb93e55e5ad74872c9bc2938644ab41fa8bc",
+      "plannedAt": "2026-08-25T04:41:24.444Z",
       "model": "deepseek-v4-flash",
-      "action": "retry-headless",
-      "classification": "build-approval",
-      "allowedBuilds": [
-        "cpu-features",
-        "node-pty",
-        "ssh2"
-      ],
-      "summary": "The plugin requires native dependency builds (cpu-features, node-pty, ssh2) which are legitimate transitive dependencies of ssh2 and node-pty. The repository evidence (package.json, README) confirms ssh2 is a direct dependency and node-pty is used for PTY support. The observed build-approval-required result is reproducible and the packages are exactly those needed. Approving these builds is safe and necessary for the plugin to function.",
+      "action": "stop-headless",
+      "classification": "different-plane",
+      "allowedBuilds": [],
+      "summary": "The runtime graph has 2 unresolved peer dependencies from dsh-better-sidebar (@deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots) that are not build packages but missing peer packages. The plugin's own peer dependencies are all satisfied. The unresolved edges are due to version mismatches between dsh-better-sidebar's peer requirements (^0.1.0-rc.8) and the installed DSH packages (0.1.1-rc.2), which cannot be fixed by approving build packages. This requires a different plane (e.g., updating dsh-better-sidebar or aligning versions) and is not addressable by headless retry.",
       "evidence": [
-        "package.json dependencies include ssh2 ^1.16.0",
-        "README mentions rw_exec with pty/env, implying node-pty usage",
-        "Observed manifest lists ssh2 as direct dependency",
-        "Build packages required: cpu-features, node-pty, ssh2 (from observed result)"
+        "runtimeGraph.unresolvedDependencies: dsh-better-sidebar requires @deepseek-ai/dsh-client-ui-primitives ^0.1.0-rc.8 and @deepseek-ai/dsh-client-ui-slots ^0.1.0-rc.8, but these are not present in the runtime graph.",
+        "pluginPeerContracts: all 7 declared peer dependencies of dsh-remote are satisfied, indicating the issue is not with dsh-remote's own peers.",
+        "Build packages required by latest retry: none, and previously approved build packages (cpu-features, node-pty, ssh2) are unrelated to the unresolved peer dependencies.",
+        "The unresolved edges are peer dependencies, not build packages, so approving more build packages cannot resolve them."
       ]
     },
     {
@@ -732,7 +728,7 @@
       "plugin": "@linxin666/dsh-web-ui-all@0.3.2",
       "dshVersion": "0.1.1-rc.2",
       "nodeMajor": 22,
-      "result": "build-approval-required",
+      "result": "unknown",
       "observedRequiredBuilds": [
         "cloudflared",
         "cpu-features",
@@ -748,22 +744,17 @@
       "artifactSha256": "d9e4e560e3ee6dd55642a8b33d8e687eb80570c0d06d18bd3f68b8a48202464d",
       "repository": "zhu1090093659/dsh-web-ui",
       "sourceCommit": "b5866eb72fe0571ce585d4078e88e2948835f8ab",
-      "inputFingerprint": "sha256:d8f3583ce75aac9c6261224f5f8102687e617e05553fe682fc72e66c32c80d25",
-      "plannedAt": "2026-08-25T04:38:05.602Z",
+      "inputFingerprint": "sha256:15f716a6c9f6fd59aca7d54de606718b8d90e47e96253c149a68b0cfa3b0e9f6",
+      "plannedAt": "2026-08-25T04:41:23.765Z",
       "model": "deepseek-v4-flash",
-      "action": "retry-headless",
-      "classification": "build-approval",
-      "allowedBuilds": [
-        "cloudflared",
-        "cpu-features",
-        "node-pty",
-        "ssh2"
-      ],
-      "summary": "The plugin requires building cloudflared, cpu-features, node-pty, and ssh2. The repository README explicitly instructs adding these packages to pnpm-workspace.yaml allowBuilds, confirming they are legitimate build dependencies. No prior approvals exist, so approving all four is safe.",
+      "action": "stop-headless",
+      "classification": "different-plane",
+      "allowedBuilds": [],
+      "summary": "The plugin installed and loaded, but the runtime graph has 2 unresolved peer dependencies from dsh-better-sidebar: @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots. These are peer dependencies that cannot be resolved by approving build scripts; they require additional packages to be installed, which is outside the headless build-approval plane. The observed result is not a build-approval-required failure, and no build packages are required by the latest retry.",
       "evidence": [
-        "README.md: '首次安装若提示 ERR_PNPM_IGNORED_BUILDS ... 按提示把 cloudflared / cpu-features / ssh2 加入 profile 的 pnpm-workspace.yaml allowBuilds'",
-        "Observed result: build-approval-required for cloudflared, cpu-features, node-pty, ssh2",
-        "No earlier approved builds"
+        "runtimeGraph.unresolvedDependencies: dsh-better-sidebar requires @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots as peers",
+        "Build packages required by latest retry: none",
+        "Earlier approved builds: cloudflared, cpu-features, node-pty, ssh2 (not relevant to unresolved peers)"
       ]
     },
     {
