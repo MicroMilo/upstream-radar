@@ -4,6 +4,49 @@ All notable changes to Upstream Radar are documented here.
 
 ## [Unreleased]
 
+## [0.44.0] - 2026-08-25
+
+### Web and TUI execution planes
+
+- Add an exact execution-plane IR and durable ledger that bind every Web/TUI
+  result to the headless artifact digest, DSH version, Node runtime, profile,
+  Agent-approved dependency builds, and plane-specific contract fingerprint.
+- Run Chromium Web and real PTY TUI observations in fresh GitHub-hosted VMs and
+  restricted, secret-free containers; retain bounded screenshots, traces, host
+  logs, and terminal transcripts as evidence.
+- Verify DSH Web through its public boot handoff and the declared plugin client
+  bundle instead of relying on an obsolete private page global.
+- Carry the Agent-derived install environment into later execution planes, so
+  a verified dependency build gate is not rediscovered as a false failure.
+- Route an exact artifact with a bounded headless-only graph gap into its
+  declared Web/TUI plane, while holding a still-unapproved dependency build at
+  the Agent boundary instead of misclassifying it as a plugin failure.
+- Calibrate TUI shutdown against the plugin's documented double-Ctrl-C contract
+  after the first run exposed Radar's own single-Ctrl-C assumption.
+- Derive Web boot module IDs from exact npm package coordinates instead of
+  conflating them with internal Cordis loader row IDs; a regression test now
+  prevents that detector error from becoming a false plugin incompatibility.
+- Let scheduled Web/TUI refreshes run after a clean headless no-op, so evidence
+  expiry and plane-specific contract changes stay always-on even when no new
+  headless work is required.
+- Repair the monitored `dsh-web-ui-all` source coordinate after its repository
+  moved to `zhu1090093659/dsh-web`, its default branch moved to `dev`, and its
+  old package declared a migration to the new `@linxin666/dsh-web-all` source.
+- Preserve declared `dsh.migrate` package edges in observation state and Agent
+  change tasks, so package moves are analyzed as ecosystem changes instead of
+  degrading into unexplained source/package mismatches.
+- Rebase bounded observer commits onto the latest default branch before push,
+  preventing a concurrent maintainer commit from losing an always-on result or
+  requiring a force-push.
+- Complete the first live cross-plane proof on DSH `0.1.1-rc.2`:
+  `dsh-univer-office@0.2.9` mounts under Chromium with its client bundle, and
+  `@deepseek-harness-tui/dsh-tui@0.9.2` renders, accepts input, and exits cleanly
+  inside a real PTY.
+- Complete the migrated aggregate Web proof for
+  `@linxin666/dsh-web-all@0.3.3`: four Agent-approved dependency builds install,
+  the exact client bundle returns 200, and the DSH boot manifest, application
+  mount, and plugin materialization agree in Chromium.
+
 ## [0.43.5] - 2026-08-25
 
 ### Current-state Agent closure

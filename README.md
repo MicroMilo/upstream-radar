@@ -1,6 +1,6 @@
 <h1 align="center">Upstream Radar</h1>
 
-<p align="center"><strong>Find the DeepSeek Harness plugins that need attention when the ecosystem moves.</strong></p>
+<p align="center"><strong>Always-on compatibility testing for DeepSeek Harness plugins—across headless, Web, and TUI.</strong></p>
 
 <p align="center">
   <a href="README-zh-CN.md">简体中文</a> ·
@@ -10,10 +10,11 @@
   <a href="LICENSE"><img alt="Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg"></a>
 </p>
 
-Upstream Radar continuously checks the relationship between an exact published
-DSH plugin, its DSH host, and its dependency graph. When a DSH or plugin release
-changes that relationship, Radar shows what changed, what was actually observed,
-and what a maintainer can fix.
+Upstream Radar binds exact plugin bytes to an exact DSH host and runtime, lets an
+Agent derive a bounded environment from repository instructions and prior
+evidence, then proves the relationship in disposable GitHub VMs. It runs again
+when the ecosystem changes **or evidence expires**, so it tests the current
+version—not only the diff.
 
 It is built for the [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness)
 plugin ecosystem. A static review is evidence about a package; an isolated
@@ -41,30 +42,38 @@ repositories are checked separately.
 
 ## What Radar does
 
-1. **Pin the real inputs.** Read the exact npm artifact, DSH version, Node
-   runtime, profile, lockfile, and dependency paths.
-2. **Compare the relationship.** Detect upstream changes, package/release drift,
-   incomplete graphs, and DSH contract mismatches.
-3. **Observe when execution matters.** In a fresh, secret-free runner, install,
-   register, and load the exact artifact; record the result and its boundary.
-4. **Close the loop.** Produce bounded evidence, route meaningful changes to an
-   optional DSH Agent, and update or close one maintainer-facing issue after a
-   clean retest.
+1. **Build one exact compatibility record (IR).** Align the npm artifact,
+   source commit, DSH host, runtime/profile, dependency paths, and advisories.
+2. **Derive the environment.** An Agent reads declared installation guidance
+   and failed evidence, then emits only a bounded install plan.
+3. **Prove each execution plane.** Fresh, secret-free runners exercise headless
+   load, Chromium Web boot, or a real PTY TUI interaction.
+4. **Keep the result alive.** DSH/plugin/dependency changes and evidence expiry
+   trigger retests; confirmed failures become fixable reports and clean retests
+   close the loop.
 
 ```mermaid
 flowchart TB
-  Change["Schedule / DSH or plugin change"] --> Agent["Agent plans a bounded headless retry"]
-  Agent --> Runtime["Disposable VM: install → register → load"]
-  Runtime -->|"next observed gate"| Agent
-  Runtime -->|"compatible / outside headless"| Evidence["Publish exact evidence"]
-  Runtime -->|"reproduced failure"| Issue["Open one fixable issue"]
-  Issue -->|"author ships a fix"| Change
+  Trigger["Schedule / upstream change / evidence expiry"] --> IR["Exact IR: plugin bytes ↔ DSH ↔ runtime ↔ dependencies"]
+  IR --> Agent["Agent derives a bounded install plan"]
+  Agent --> VM{"Fresh secret-free GitHub VM"}
+  VM --> Headless["Headless: install → register → load"]
+  VM --> Web["Web: Chromium → boot handoff → client bundle"]
+  VM --> TUI["TUI: PTY → frame → input → declared shutdown"]
+  Headless --> Ledger["Versioned evidence ledger + reverse impact index"]
+  Web --> Ledger
+  TUI --> Ledger
+  Ledger --> Decision{"Plugin-attributable failure?"}
+  Decision -->|"yes"| Issue["Produce one fixable maintainer report"]
+  Decision -->|"no / detector gap"| Hold["Hold the report and calibrate"]
+  Issue -->|"author ships a fix"| Trigger
+  Hold --> Trigger
 ```
 
-The Agent interprets repository instructions and the latest runtime evidence,
-then chooses whether and how headless should retry. The disposable runner—not
-the model—establishes the result. A model cannot invent a build package, execute
-inside the target VM, or turn missing evidence into a pass.
+The Agent may choose declared build packages, profile setup, and the next bounded
+retry. Exact fingerprints decide which cell a report can satisfy, and the
+disposable runner—not the model—establishes the result. Missing evidence can
+never become a pass.
 
 ## Try a real check
 
@@ -72,7 +81,7 @@ No local DSH profile is needed for this first check. It reviews one exact
 published artifact without executing plugin code:
 
 ```bash
-npx --yes upstream-radar@0.43.5 inspect \
+npx --yes upstream-radar@0.44.0 inspect \
   @sanqi-normal/dsh-webui-market-plugin@0.5.4 \
   --deep --fail-on never
 ```
@@ -85,7 +94,7 @@ behavior. See the [full evidence report](examples/dsh/reports/sanqi-market-plugi
 To review your own public repository without installing it:
 
 ```bash
-npx --yes upstream-radar@0.43.5 scan \
+npx --yes upstream-radar@0.44.0 scan \
   https://github.com/owner/dsh-plugin \
   --fail-on never
 ```
@@ -106,9 +115,10 @@ Copy one of the maintained workflows into your repository:
 - [Run the dependency gate in CI](examples/github-actions/upstream-radar.yml)
   — checks the lockfile or reviewed Radar configuration before merge.
 
-The [isolated observer workflow](.github/workflows/observe-dsh-plugin-install.yml)
-uses a fresh GitHub-hosted runner for code-executing checks. The runner is not
-your workstation and does not receive project secrets.
+The isolated [headless](.github/workflows/observe-dsh-plugin-install.yml) and
+[Web/TUI](.github/workflows/observe-dsh-plugin-surface.yml) observers use fresh
+GitHub-hosted runners. They are not your workstation and receive no project or
+model secrets.
 
 ## Evidence from the ecosystem
 
@@ -117,6 +127,21 @@ records 74 exact headless passes, 22 review-only results, zero reproduced
 incompatibilities, and four repository-only entries. The review-only group is
 kept separate from failures until the required Web/client or repository install
 plane is actually observed.
+
+The first non-headless cells now run in GitHub-hosted VMs:
+
+| Exact cell | Observed proof | Result |
+| --- | --- | --- |
+| [`dsh-univer-office@0.2.9 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32823035297/job/97726205358) | HTTP 200, DSH boot handoff, declared client bundle fetched, no browser/page errors | **Compatible** |
+| [`@deepseek-harness-tui/dsh-tui@0.9.2 × DSH 0.1.1-rc.2 × TUI`](https://github.com/MicroMilo/upstream-radar/actions/runs/32823035297/job/97726205289) | Real PTY frame, keyboard input, documented double-Ctrl-C exit, code 0 | **Compatible** |
+| [`@linxin666/dsh-web-all@0.3.3 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32828788296/job/97742850608) | Agent-approved four dependency builds; aggregate client bundle returned 200; boot manifest, app mount, and plugin materialization matched | **Compatible** |
+
+Two first attempts were held by Radar rather than reported to authors. The TUI
+observer sent one Ctrl-C while the plugin documents a double press. The Web
+observer confused an internal Cordis loader row with the public npm module ID.
+Radar corrected both contracts and reran the same exact artifacts. The aggregate
+Web case still records a non-blocking `/status` probe returning 404, without
+mistaking that optional request for a failed plugin boot.
 
 As of 2026-08-25, Radar has filed 13 maintainer-facing reports. The outcome is
 more useful than the raw count:

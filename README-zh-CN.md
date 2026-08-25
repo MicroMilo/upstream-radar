@@ -1,6 +1,6 @@
 <h1 align="center">Upstream Radar</h1>
 
-<p align="center"><strong>在 DeepSeek Harness 生态变化后，找出哪些插件需要维护者关注。</strong></p>
+<p align="center"><strong>持续验证 DeepSeek Harness 插件兼容性——覆盖 headless、Web 和 TUI。</strong></p>
 
 <p align="center">
   <a href="README.md">English</a> ·
@@ -10,9 +10,9 @@
   <a href="LICENSE"><img alt="Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg"></a>
 </p>
 
-Upstream Radar 持续检查三者之间的真实关系：精确的 DSH 插件发布物、DSH 宿主和依赖图。
-当 DSH 或插件发布新版本改变这层关系时，Radar 告诉你变了什么、实际观测到了什么，以及维护者
-可以修什么。
+Upstream Radar 把精确的插件发布物、DSH 宿主和运行环境绑定在一起，让 Agent 根据仓库说明和
+已有失败证据推导受限环境，再放进一次性 GitHub VM 中实际验证。生态发生变化或证据过期后都会
+重跑，因此它检查的是**当前版本是否仍然可用**，而不只是比较一次 diff。
 
 它面向 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai/deepseek-harness) 插件生态。
 静态检查是关于发布包的证据；隔离运行检查是关于某个精确的
@@ -38,31 +38,38 @@ Upstream Radar 持续检查三者之间的真实关系：精确的 DSH 插件发
 
 ## Radar 做什么
 
-1. **锁定真实输入。** 读取精确 npm 发布物、DSH 版本、Node 运行时、profile、lockfile 和依赖路径。
-2. **比较真实关系。** 发现上游变化、发布/源码漂移、依赖图不完整和 DSH 契约不一致。
-3. **需要执行时再观察。** 在全新的、无密钥的环境中安装、注册并加载精确发布物，记录结果和边界。
-4. **完成闭环。** 生成有边界的证据，把重要变化交给可选的 DSH Agent，并在干净复测后更新或关闭一条面向维护者的 Issue。
+1. **建立统一兼容记录（IR）。** 对齐 npm 发布物、源码 commit、DSH 宿主、运行环境/profile、依赖路径和漏洞情报。
+2. **推导运行环境。** Agent 读取作者声明的安装说明和失败证据，只输出边界明确的安装计划。
+3. **验证不同执行平面。** 全新、无密钥的 runner 分别验证 headless 加载、Chromium Web 启动或真实 PTY TUI 交互。
+4. **让结果持续有效。** DSH/插件/依赖变化以及证据过期都会触发复测；确认的问题变成可修报告，干净复测后完成闭环。
 
 ```mermaid
 flowchart TB
-  Change["定时运行 / DSH 或插件变化"] --> Agent["Agent 规划受限的 headless 重试"]
-  Agent --> Runtime["一次性虚拟机：安装 → 注册 → 加载"]
-  Runtime -->|"出现下一层门槛"| Agent
-  Runtime -->|"兼容 / 超出 headless"| Evidence["发布精确证据"]
-  Runtime -->|"复现真实失败"| Issue["创建一条可修复的 Issue"]
-  Issue -->|"作者发布修复"| Change
+  Trigger["定时运行 / 上游变化 / 证据过期"] --> IR["精确 IR：插件字节 ↔ DSH ↔ 运行环境 ↔ 依赖"]
+  IR --> Agent["Agent 推导受限安装计划"]
+  Agent --> VM{"全新、无密钥的 GitHub VM"}
+  VM --> Headless["Headless：安装 → 注册 → 加载"]
+  VM --> Web["Web：Chromium → 启动交接 → 客户端包"]
+  VM --> TUI["TUI：PTY → 画面 → 输入 → 声明的退出方式"]
+  Headless --> Ledger["版本化证据账本 + 反向影响索引"]
+  Web --> Ledger
+  TUI --> Ledger
+  Ledger --> Decision{"能归责于插件吗？"}
+  Decision -->|"能"| Issue["生成一条可修复的维护者报告"]
+  Decision -->|"不能 / 检测器缺口"| Hold["暂扣报告并校准"]
+  Issue -->|"作者发布修复"| Trigger
+  Hold --> Trigger
 ```
 
-Agent 读取仓库说明和最新运行证据，决定 headless 是否重试、重试时允许哪些安装条件。
-真正的结果由一次性虚拟机执行得出，而不是模型判断。模型不能凭空增加安装包、不能进入目标
-虚拟机执行，也不能把缺失证据说成通过。
+Agent 可以选择作者声明的构建包、profile 设置和下一次受限重试。精确指纹决定一份报告能填入
+哪个测试格子；真正的结果由一次性虚拟机执行得出，而不是模型判断。缺失证据永远不能变成通过。
 
 ## 试试一个真实检查
 
 第一次检查不需要本地 DSH profile，也不会执行插件代码：
 
 ```bash
-npx --yes upstream-radar@0.43.5 inspect \
+npx --yes upstream-radar@0.44.0 inspect \
   @sanqi-normal/dsh-webui-market-plugin@0.5.4 \
   --deep --fail-on never
 ```
@@ -73,7 +80,7 @@ npx --yes upstream-radar@0.43.5 inspect \
 如果要检查自己的公开仓库，而不安装它：
 
 ```bash
-npx --yes upstream-radar@0.43.5 scan \
+npx --yes upstream-radar@0.44.0 scan \
   https://github.com/owner/dsh-plugin \
   --fail-on never
 ```
@@ -88,14 +95,28 @@ npx --yes upstream-radar@0.43.5 scan \
 - [每天观察一个插件仓库](examples/github-actions/upstream-observer-minimal.yml)：比较 commit、发布版本、manifest 和依赖图，只有发生重要变化才唤起 Agent。
 - [在 CI 中运行依赖门禁](examples/github-actions/upstream-radar.yml)：在合并前检查 lockfile 或审查过的 Radar 配置。
 
-[隔离观察 workflow](.github/workflows/observe-dsh-plugin-install.yml) 会为需要执行代码的检查使用全新的 GitHub 托管 runner。
-它不是你的电脑，也不会接收项目密钥。
+隔离的 [headless](.github/workflows/observe-dsh-plugin-install.yml) 和
+[Web/TUI](.github/workflows/observe-dsh-plugin-surface.yml) workflow 都使用全新的 GitHub 托管 runner。
+它们不是你的电脑，也不会接收项目或模型密钥。
 
 ## 来自真实生态的结果
 
 当前的[100 插件兼容性 feed](feeds/dsh-plugin-compatibility.md)记录了 74 个精确 headless
 通过、22 个仅待复核结果、0 个已复现不兼容和 4 个仅仓库条目。在真正观测所需的
 Web/client 或仓库安装平面之前，待复核项不会被包装成插件故障。
+
+首批非 headless 测试已经在 GitHub 托管 VM 中跑通：
+
+| 精确测试格子 | 实际证据 | 结果 |
+| --- | --- | --- |
+| [`dsh-univer-office@0.2.9 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32823035297/job/97726205358) | HTTP 200、DSH 启动完成交接、客户端下载成功、浏览器和页面无错误 | **兼容** |
+| [`@deepseek-harness-tui/dsh-tui@0.9.2 × DSH 0.1.1-rc.2 × TUI`](https://github.com/MicroMilo/upstream-radar/actions/runs/32823035297/job/97726205289) | 真实 PTY 画面、键盘输入、按文档双击 Ctrl-C 后以 code 0 退出 | **兼容** |
+| [`@linxin666/dsh-web-all@0.3.3 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32828788296/job/97742850608) | Agent 批准 4 个依赖构建；聚合客户端包返回 200；启动清单、应用挂载和插件实体相互吻合 | **兼容** |
+
+两次首次测试都被 Radar 暂扣，没有提交给作者：TUI 检测器只发送了一次 Ctrl-C，而插件文档要求
+连按两次；Web 检测器把 Cordis 内部加载行误当成公开 npm 模块 ID。我们修正两份测试契约，并用
+相同精确发布物复测。聚合 Web 案例仍如实保留一个非阻塞的 `/status` 探测 404，但不会把这条可选
+请求误判为插件启动失败。
 
 截至 2026-08-25，Radar 共向维护者提交了 13 条报告。比数量更重要的是处理结果：
 
