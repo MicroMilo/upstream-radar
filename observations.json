@@ -4,7 +4,7 @@
     "dsh-feishu-bot": {
       "targetId": "dsh-feishu-bot",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "PlutoKeating/dsh-lark-bot",
         "ref": "main",
@@ -106,7 +106,9 @@
         "version": "0.19.15",
         "distTag": "latest",
         "integrity": "sha512-qdzWIQ6KaaBHTp52CYiK+V9CnoXIHhjOgkjZ/LFdXZ7tNt5SVrKwhqBfq+Wc2LC9p5zFvtjXVzWfmFgfpSxWOQ==",
-        "tarball": "https://registry.npmjs.org/dsh-feishu-bot/-/dsh-feishu-bot-0.19.15.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-feishu-bot/-/dsh-feishu-bot-0.19.15.tgz",
+        "repository": "git+https://github.com/PlutoKeating/dsh-lark-bot.git",
+        "publishedAt": "2026-08-25T06:47:03.431Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -5726,7 +5728,7 @@
     "dsh-webui-market-plugin": {
       "targetId": "dsh-webui-market-plugin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-22T07:05:47.403Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Sanqi-normal/dsh-webui-market-plugin",
         "ref": "master",
@@ -5769,7 +5771,9 @@
         "version": "0.5.5",
         "distTag": "latest",
         "integrity": "sha512-pGHgU3YyfX7OatsUh3pgd+iDQEbwCET+/f1xu3QAQAPNarbhWbhCUuBFklzaCbia7HtoEzVn4yStD2tjuWUlMA==",
-        "tarball": "https://registry.npmjs.org/@sanqi-normal/dsh-webui-market-plugin/-/dsh-webui-market-plugin-0.5.5.tgz"
+        "tarball": "https://registry.npmjs.org/@sanqi-normal/dsh-webui-market-plugin/-/dsh-webui-market-plugin-0.5.5.tgz",
+        "repository": "git+https://github.com/Sanqi-normal/dsh-webui-market-plugin.git",
+        "publishedAt": "2026-08-18T04:43:14.290Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -5836,7 +5840,7 @@
     "deepseek-harness": {
       "targetId": "deepseek-harness",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-22T07:05:47.403Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "deepseek-ai/deepseek-harness",
         "ref": "master",
@@ -5921,7 +5925,9 @@
         "version": "0.1.1-rc.2",
         "distTag": "next",
         "integrity": "sha512-UP1UIh6q3Gme/yXRn/QL2P8IsVlv8Shpg22TRJIZPsCRWLm4CBiA1MUvXmJAfsOEETBMLAl+xWPtFw6ICsN3wg==",
-        "tarball": "https://registry.npmjs.org/@deepseek-ai/dsh/-/dsh-0.1.1-rc.2.tgz"
+        "tarball": "https://registry.npmjs.org/@deepseek-ai/dsh/-/dsh-0.1.1-rc.2.tgz",
+        "repository": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+        "publishedAt": "2026-08-21T12:42:19.422Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -6787,7 +6793,7 @@
     "dsh-cloudflare-browser-run": {
       "targetId": "dsh-cloudflare-browser-run",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:44:24.736Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "RealAlexandreAI/dsh-cloudflare-browser-run",
         "ref": "main",
@@ -6825,7 +6831,9 @@
         "version": "0.1.4",
         "distTag": "latest",
         "integrity": "sha512-2k5L0iT0yPwZO84JwKWKKawLK03kAj3gt4nTwNQyigN7ne1PoSyeQNUAKjnVxcbJUKLrweQ4u7vji/WNOtd1Kw==",
-        "tarball": "https://registry.npmjs.org/dsh-cloudflare-browser-run/-/dsh-cloudflare-browser-run-0.1.4.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-cloudflare-browser-run/-/dsh-cloudflare-browser-run-0.1.4.tgz",
+        "repository": "git+https://github.com/RealAlexandreAI/dsh-cloudflare-browser-run.git",
+        "publishedAt": "2026-08-25T07:34:59.564Z"
       },
       "graphError": "requested root package is not present in npm lockfile: dsh-cloudflare-browser-run@0.1.4",
       "alignment": {
@@ -6890,7 +6898,7 @@
     "dsh-wsl-workspace": {
       "targetId": "dsh-wsl-workspace",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T07:33:40.123Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "6Mikao9/dsh-wsl-workspace",
         "ref": "main",
@@ -6938,7 +6946,9 @@
         "version": "0.3.1",
         "distTag": "latest",
         "integrity": "sha512-4dz/y2pzrasDsa1mTbQFj1Vr9O7OIMa2ORd53YAdAY7CzDINoEcx6NZZ9IXJiMJ8pM3TVhtDJfCuccXeVsCtLA==",
-        "tarball": "https://registry.npmjs.org/dsh-wsl-workspace/-/dsh-wsl-workspace-0.3.1.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-wsl-workspace/-/dsh-wsl-workspace-0.3.1.tgz",
+        "repository": "git+https://github.com/6Mikao9/dsh-wsl-workspace.git",
+        "publishedAt": "2026-08-24T04:42:30.851Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -11819,7 +11829,7 @@
     "dsh-better-sidebar": {
       "targetId": "dsh-better-sidebar",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "omdsh-dev/DSH-better-sidebar",
         "ref": "main",
@@ -11940,7 +11950,9 @@
         "version": "0.16.1",
         "distTag": "latest",
         "integrity": "sha512-fjFNzfrgdIbzlcC4Sd4aS1I2ZRbuA+/m3XQnOxY13jE6IKJzwz0+GjATcKTyFoLnXoDRp2QJz/U0GxhaOD70Dw==",
-        "tarball": "https://registry.npmjs.org/dsh-better-sidebar/-/dsh-better-sidebar-0.16.1.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-better-sidebar/-/dsh-better-sidebar-0.16.1.tgz",
+        "repository": "https://github.com/omdsh-dev/DSH-better-sidebar",
+        "publishedAt": "2026-08-25T03:22:03.513Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -21762,7 +21774,7 @@
     "dsh-market": {
       "targetId": "dsh-market",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:56:28.278Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "dsh-market/dsh-market",
         "ref": "main",
@@ -21825,7 +21837,9 @@
         "version": "1.29.2",
         "distTag": "latest",
         "integrity": "sha512-Xi0tAWDWf2qKcj8F+TfR439QveoJimGvSh+uj/GyE6avRMM6dArLb4p93Wq/wTU4peY//0llJyMZ8bJLyBUX0Q==",
-        "tarball": "https://registry.npmjs.org/dshmarket/-/dshmarket-1.29.2.tgz"
+        "tarball": "https://registry.npmjs.org/dshmarket/-/dshmarket-1.29.2.tgz",
+        "repository": "git+https://github.com/dsh-market/dsh-market.git",
+        "publishedAt": "2026-08-25T07:50:33.611Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -26330,7 +26344,7 @@
     "dsh-openpencil": {
       "targetId": "dsh-openpencil",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "ZSeven-W/dsh-openpencil",
         "ref": "main",
@@ -26405,7 +26419,9 @@
         "version": "0.1.0-rc.1",
         "distTag": "latest",
         "integrity": "sha512-0equagOeBdSpaEfgH2UnxykoDDAA1UxRHCzscMVNktha6xWQPT7+NhA7aBaH4HhGPP0MAqXznMrF5g2v4kxQIg==",
-        "tarball": "https://registry.npmjs.org/@zseven-w/dsh-openpencil/-/dsh-openpencil-0.1.0-rc.1.tgz"
+        "tarball": "https://registry.npmjs.org/@zseven-w/dsh-openpencil/-/dsh-openpencil-0.1.0-rc.1.tgz",
+        "repository": "git+https://github.com/ZSeven-W/dsh-openpencil.git",
+        "publishedAt": "2026-08-13T14:02:12.273Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -32262,7 +32278,7 @@
     "dsh-context": {
       "targetId": "dsh-context",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:34:21.974Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "bowenliang123/dsh-context",
         "ref": "main",
@@ -32324,7 +32340,9 @@
         "version": "0.32.0",
         "distTag": "latest",
         "integrity": "sha512-BSRPeg6fncUQPlSNcgRJizu7TikooQmeMCoNeCOaFy1eZdKrG/OnMgfirmCAa4AG0oj5n9zuHUPNRpaeTlZ5Xw==",
-        "tarball": "https://registry.npmjs.org/dsh-context/-/dsh-context-0.32.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-context/-/dsh-context-0.32.0.tgz",
+        "repository": "git+https://github.com/bowenliang123/dsh-context.git",
+        "publishedAt": "2026-08-25T07:21:56.428Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -37981,7 +37999,7 @@
     "dsh-agent-teams": {
       "targetId": "dsh-agent-teams",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T03:36:10.583Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "NanmiCoder/dsh-agent-teams",
         "ref": "main",
@@ -38100,7 +38118,9 @@
         "version": "0.1.13",
         "distTag": "latest",
         "integrity": "sha512-1r762+78NCwomc8t6cSx847AmEuAORKdIkIcdtgxB0Gk1qgjDUsJcwZ8O2oGFBICt+72pAwtj1n0yYGU1DLJTg==",
-        "tarball": "https://registry.npmjs.org/@nanmicoder/dsh-agent-teams/-/dsh-agent-teams-0.1.13.tgz"
+        "tarball": "https://registry.npmjs.org/@nanmicoder/dsh-agent-teams/-/dsh-agent-teams-0.1.13.tgz",
+        "repository": "git+https://github.com/NanmiCoder/dsh-agent-teams.git",
+        "publishedAt": "2026-08-22T19:01:47.369Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -43894,7 +43914,7 @@
     "dsh-cost-meter": {
       "targetId": "dsh-cost-meter",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:56:28.278Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Han-1413141/dsh-cost-meter",
         "ref": "master",
@@ -43941,7 +43961,9 @@
         "version": "1.5.42",
         "distTag": "latest",
         "integrity": "sha512-NdVP5AEMKND8MbB+ajIWmsEjY6KmkbJBPUT71a7edIGpCp+0DEP+BqJZTIQb12oj6arwTKbukWI/wcmgct1/Fg==",
-        "tarball": "https://registry.npmjs.org/dsh-cost-meter/-/dsh-cost-meter-1.5.42.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-cost-meter/-/dsh-cost-meter-1.5.42.tgz",
+        "repository": "git+https://github.com/Han-1413141/dsh-cost-meter.git",
+        "publishedAt": "2026-08-23T22:24:35.216Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -44262,7 +44284,7 @@
     "dsh-plugin-mall": {
       "targetId": "dsh-plugin-mall",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "1e0zj/dsh-plugin-mall",
         "ref": "main",
@@ -44309,7 +44331,9 @@
         "version": "0.4.15",
         "distTag": "latest",
         "integrity": "sha512-uX4ElqeIcPGd0jmrOHLetMnS2BHo8EKG/bEASXje0sonb9uFMy85LWQqmSkjT0ZzFl7ZuxqG7QaLD9uvBJBsQg==",
-        "tarball": "https://registry.npmjs.org/@1e0zj/dsh-plugin-mall/-/dsh-plugin-mall-0.4.15.tgz"
+        "tarball": "https://registry.npmjs.org/@1e0zj/dsh-plugin-mall/-/dsh-plugin-mall-0.4.15.tgz",
+        "repository": "git+https://github.com/1e0zj/dsh-plugin-mall.git",
+        "publishedAt": "2026-08-24T12:57:54.305Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -44376,7 +44400,7 @@
     "dsh-awiki": {
       "targetId": "dsh-awiki",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "AgentConnect/dsh-awiki",
         "ref": "main",
@@ -44497,7 +44521,9 @@
         "version": "0.3.3",
         "distTag": "latest",
         "integrity": "sha512-WQfZj1tb4fHEZfyjzlp5J/XaHxGMal6l5Y3NHtoi8KyNyCIumkx6SuPwktlx947XPf7kBEZ/I/cbh1LthiHuwQ==",
-        "tarball": "https://registry.npmjs.org/@awiki/dsh-plugin/-/dsh-plugin-0.3.3.tgz"
+        "tarball": "https://registry.npmjs.org/@awiki/dsh-plugin/-/dsh-plugin-0.3.3.tgz",
+        "repository": "git+https://github.com/AgentConnect/dsh-awiki.git",
+        "publishedAt": "2026-08-24T22:52:24.374Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -62445,7 +62471,7 @@
     "dsh-auto-memory": {
       "targetId": "dsh-auto-memory",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T10:26:42.776Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Aik358/dsh-auto-memory",
         "ref": "main",
@@ -62488,7 +62514,9 @@
         "version": "0.1.29",
         "distTag": "latest",
         "integrity": "sha512-GZ/LCqeYqHiShEHFs9MK/VA43FHaw9YqrUIm405bszcK1VniSCk4LZeibqRTVS/ky50ooh+MZs5oBVwejnjpSw==",
-        "tarball": "https://registry.npmjs.org/@a9i5k4/dsh-auto-memory/-/dsh-auto-memory-0.1.29.tgz"
+        "tarball": "https://registry.npmjs.org/@a9i5k4/dsh-auto-memory/-/dsh-auto-memory-0.1.29.tgz",
+        "repository": "git+https://github.com/Aik358/dsh-auto-memory.git",
+        "publishedAt": "2026-08-21T07:04:16.602Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -62555,7 +62583,7 @@
     "dsh-update-checker": {
       "targetId": "dsh-update-checker",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Airmetro/dsh-update-checker",
         "ref": "main",
@@ -62596,7 +62624,9 @@
         "version": "1.4.16",
         "distTag": "latest",
         "integrity": "sha512-4+cnnCRxEdjQ4qF9HxkbwtO+5n0X4raoSr4EKQGhUydOiIEmqLJb4ehBItBXT1w6qNuzbq7n3kxnKV5JwecdiQ==",
-        "tarball": "https://registry.npmjs.org/dsh-update-checker/-/dsh-update-checker-1.4.16.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-update-checker/-/dsh-update-checker-1.4.16.tgz",
+        "repository": "git+https://github.com/Airmetro/dsh-update-checker.git",
+        "publishedAt": "2026-08-25T02:03:26.873Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -62663,7 +62693,7 @@
     "dsh-agy-link": {
       "targetId": "dsh-agy-link",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "amlyczz/dsh-agy-link",
         "ref": "main",
@@ -62735,7 +62765,9 @@
         "version": "0.4.16",
         "distTag": "latest",
         "integrity": "sha512-+AV1qbOPfiyrg6RbEAtf770TGE+KbNWCdUmFKr50dIJ7IQEhmf7/GDNXT2XAfm4FEYpvITKHS+5I+dcLzshTHQ==",
-        "tarball": "https://registry.npmjs.org/dsh-agy-link/-/dsh-agy-link-0.4.16.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-agy-link/-/dsh-agy-link-0.4.16.tgz",
+        "repository": "git+ssh://git@github.com/amlyczz/dsh-agy-link.git",
+        "publishedAt": "2026-08-25T03:35:45.325Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -64415,7 +64447,7 @@
     "dsh-vision-toolkit": {
       "targetId": "dsh-vision-toolkit",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Anionex/dsh-vision-toolkit",
         "ref": "main",
@@ -64511,7 +64543,9 @@
         "version": "0.1.39",
         "distTag": "latest",
         "integrity": "sha512-umMUT2lUiErTeDaZjW5GYUGv1W/o7lSbAiRICkxtV4jJryeJ3mjZ5Fgosdf9DMOG83JXJeVrIkAqKJjVotbo1w==",
-        "tarball": "https://registry.npmjs.org/@anionex/dsh-vision-toolkit/-/dsh-vision-toolkit-0.1.39.tgz"
+        "tarball": "https://registry.npmjs.org/@anionex/dsh-vision-toolkit/-/dsh-vision-toolkit-0.1.39.tgz",
+        "repository": "git+https://github.com/Anionex/dsh-vision-toolkit.git",
+        "publishedAt": "2026-08-25T04:17:11.388Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -71446,7 +71480,7 @@
     "dsh-find-plugin": {
       "targetId": "dsh-find-plugin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T10:26:42.776Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "awesome-dsh-plugin/dsh-find-plugin",
         "ref": "main",
@@ -71485,7 +71519,9 @@
         "version": "0.3.7",
         "distTag": "latest",
         "integrity": "sha512-yqvG58ci3+c7DsNJ515TFyu8IK5Jc249DQma8wQ2DavUpmU9avzKAyZ8V41tHB5mZrC09xrEhNFcZzj3qgODtQ==",
-        "tarball": "https://registry.npmjs.org/dsh-find-plugin/-/dsh-find-plugin-0.3.7.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-find-plugin/-/dsh-find-plugin-0.3.7.tgz",
+        "repository": "git+https://github.com/awesome-dsh-plugin/dsh-find-plugin.git",
+        "publishedAt": "2026-08-19T05:25:07.551Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -71987,7 +72023,7 @@
     "dsh-remote-plugin": {
       "targetId": "dsh-remote-plugin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Blank-not-black/dsh-Remote",
         "ref": "main",
@@ -72030,7 +72066,9 @@
         "version": "0.6.14",
         "distTag": "latest",
         "integrity": "sha512-gmLa4B82oPLJtWACNXNEg/mhzvoT6UUVQHiuzclgESL8UwFzumU2+9Exxf8MJ3YM/9MQGnu4g519ZVHdEgzlGw==",
-        "tarball": "https://registry.npmjs.org/dsh-remote-plugin/-/dsh-remote-plugin-0.6.14.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-remote-plugin/-/dsh-remote-plugin-0.6.14.tgz",
+        "repository": "git+https://github.com/Blank-not-black/dsh-Remote.git",
+        "publishedAt": "2026-08-25T06:48:13.911Z"
       },
       "graphError": "requested root package is not present in npm lockfile: dsh-remote-plugin@0.6.14",
       "alignment": {
@@ -72095,7 +72133,7 @@
     "dsh-tui": {
       "targetId": "dsh-tui",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "ccch1mneyyy/dsh-TUI",
         "ref": "main",
@@ -72239,7 +72277,9 @@
         "version": "0.9.2",
         "distTag": "latest",
         "integrity": "sha512-LsjNnQ790sAGNllrNt3L8B1rdePcwRvwqSlQJ97uTh5skPaUkV9W41oqEYw1g19DZ6CEQ/8T3kKsI9pmQ8AynQ==",
-        "tarball": "https://registry.npmjs.org/@deepseek-harness-tui/dsh-tui/-/dsh-tui-0.9.2.tgz"
+        "tarball": "https://registry.npmjs.org/@deepseek-harness-tui/dsh-tui/-/dsh-tui-0.9.2.tgz",
+        "repository": "git+https://github.com/ccch1mneyyy/dsh-TUI.git",
+        "publishedAt": "2026-08-25T03:40:28.847Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -81289,7 +81329,7 @@
     "dsh-vibe-math": {
       "targetId": "dsh-vibe-math",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T10:26:42.776Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "ChongCyrus/Vibe-Mathematics",
         "ref": "main",
@@ -81322,7 +81362,9 @@
         "version": "1.0.2",
         "distTag": "latest",
         "integrity": "sha512-M5viTzEgjjrsDpfps33J4m+ifM6PSMJ0/y4zeK7MUKTwzuarggpmogLidpCiuH825E7pyy3/TYWkssuEaMKiOg==",
-        "tarball": "https://registry.npmjs.org/dsh-vibe-math/-/dsh-vibe-math-1.0.2.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-vibe-math/-/dsh-vibe-math-1.0.2.tgz",
+        "repository": "git+https://github.com/ChongCyrus/Vibe-Mathematics.git",
+        "publishedAt": "2026-08-19T14:05:44.682Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -81389,7 +81431,7 @@
     "dsh-free-search": {
       "targetId": "dsh-free-search",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T10:26:42.776Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "DDDMUC/dsh-free-search",
         "ref": "master",
@@ -81437,7 +81479,9 @@
         "version": "0.4.12",
         "distTag": "latest",
         "integrity": "sha512-HL/eBv/dRAa2ogj46Cy3uQxZxrC5GfZVkXP8EmxbB+254Yd4tbWXUqlCBwXhoA8ZwpcGBjDTVXuGxSF4ThcOng==",
-        "tarball": "https://registry.npmjs.org/dsh-free-search/-/dsh-free-search-0.4.12.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-free-search/-/dsh-free-search-0.4.12.tgz",
+        "repository": "git+https://github.com/DDDMUC/dsh-free-search.git",
+        "publishedAt": "2026-08-21T18:06:12.990Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -81969,7 +82013,7 @@
     "dsh-wallpaper-engine": {
       "targetId": "dsh-wallpaper-engine",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:44:24.736Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "elysia395/dsh-wallpaper-engine",
         "ref": "main",
@@ -82030,7 +82074,9 @@
         "version": "0.6.5",
         "distTag": "latest",
         "integrity": "sha512-D22Ard1V5H43fvDTfUSzNNsGFh+xDF1ycSNMHqqJS28zSvsMKIm756APcsQ3BUbFwT2266w6aG8XKYI5WCdLpw==",
-        "tarball": "https://registry.npmjs.org/dsh-plugin-wallpaper-engine/-/dsh-plugin-wallpaper-engine-0.6.5.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-plugin-wallpaper-engine/-/dsh-plugin-wallpaper-engine-0.6.5.tgz",
+        "repository": "git+https://github.com/elysia395/dsh-wallpaper-engine.git",
+        "publishedAt": "2026-08-25T07:44:07.704Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -84331,7 +84377,7 @@
     "deepseek-harness-wallet": {
       "targetId": "deepseek-harness-wallet",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "feibi-mochi/deepseek-harness-control-center",
         "ref": "main",
@@ -84373,7 +84419,9 @@
         "version": "0.3.3",
         "distTag": "latest",
         "integrity": "sha512-Rk0PzxnHV8EnLA78E+au+IdTifLg5/EKIgFqAqf42s6NjZdhySZ8ZadFzpIMgA0V4f8U5ywzsIHTc5suwhC+IA==",
-        "tarball": "https://registry.npmjs.org/deepseek-harness-wallet/-/deepseek-harness-wallet-0.3.3.tgz"
+        "tarball": "https://registry.npmjs.org/deepseek-harness-wallet/-/deepseek-harness-wallet-0.3.3.tgz",
+        "repository": "git+https://github.com/feibi-mochi/deepseek-harness-control-center.git",
+        "publishedAt": "2026-08-25T02:01:41.527Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -84440,7 +84488,7 @@
     "dsh-remote": {
       "targetId": "dsh-remote",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "flymysql/dsh-remote",
         "ref": "main",
@@ -84495,7 +84543,9 @@
         "version": "0.8.8",
         "distTag": "latest",
         "integrity": "sha512-HVkGiHfhMmpH3Y4HERAFLmw3AUzW+baA5VX7TwQX/8ap245fo2HMaGcWuvi4BTXckbgwvZSWi1qp3ULMVkrcdQ==",
-        "tarball": "https://registry.npmjs.org/dsh-remote/-/dsh-remote-0.8.8.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-remote/-/dsh-remote-0.8.8.tgz",
+        "repository": "git+https://github.com/flymysql/dsh-remote.git",
+        "publishedAt": "2026-08-23T17:26:58.253Z"
       },
       "graphError": "requested root package is not present in npm lockfile: dsh-remote@0.8.8",
       "alignment": {
@@ -84560,7 +84610,7 @@
     "dsh-codex-connect": {
       "targetId": "dsh-codex-connect",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "franksong2702/dsh-codex-connect",
         "ref": "main",
@@ -84641,7 +84691,9 @@
         "version": "0.1.0-alpha.4.19",
         "distTag": "alpha",
         "integrity": "sha512-W0KF0j1uAX7Ebrrll9SpSsByBKJzIh+gBWmyCGAeIoobyFE/d3iNSXtYcTYND3dEKge9slOrvIVjAIRmSGc3fg==",
-        "tarball": "https://registry.npmjs.org/dsh-codex-connect/-/dsh-codex-connect-0.1.0-alpha.4.19.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-codex-connect/-/dsh-codex-connect-0.1.0-alpha.4.19.tgz",
+        "repository": "git+https://github.com/franksong2702/dsh-codex-connect.git",
+        "publishedAt": "2026-08-24T15:07:03.118Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -94398,7 +94450,7 @@
     "dsh-chatvoice": {
       "targetId": "dsh-chatvoice",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T10:26:42.776Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "FuzzySoul/dsh-chatvoice",
         "ref": "main",
@@ -94443,7 +94495,9 @@
         "version": "0.1.7",
         "distTag": "latest",
         "integrity": "sha512-QUR8biVjKlfJxEhW8J+WnoVq2jSzUB14DxEb9LdiXj50EiL68f4y27oGRF2CVCiBlTHlVpSTtDbjWJCXt5hpaA==",
-        "tarball": "https://registry.npmjs.org/dsh-chatvoice/-/dsh-chatvoice-0.1.7.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-chatvoice/-/dsh-chatvoice-0.1.7.tgz",
+        "repository": "git+https://github.com/FuzzySoul/dsh-chatvoice.git",
+        "publishedAt": "2026-08-16T04:37:17.952Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -94852,7 +94906,7 @@
     "modsearch": {
       "targetId": "modsearch",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "liustack/modsearch",
         "ref": "main",
@@ -94896,7 +94950,9 @@
         "version": "5.9.1",
         "distTag": "latest",
         "integrity": "sha512-a7X2NcFIBFq3VLWjxPcMmTX4iPjcd0g1lZ1uFlxI9emJqffF59QVxPODgXHmDn/77yTs9zVfU55XdgxSHO84Ug==",
-        "tarball": "https://registry.npmjs.org/@liustack/modsearch/-/modsearch-5.9.1.tgz"
+        "tarball": "https://registry.npmjs.org/@liustack/modsearch/-/modsearch-5.9.1.tgz",
+        "repository": "git+https://github.com/liustack/modsearch.git",
+        "publishedAt": "2026-08-24T15:46:00.958Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -96935,7 +96991,7 @@
     "dsh-commandcode-provider": {
       "targetId": "dsh-commandcode-provider",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Mars-Sea/dsh-commandcode-provider",
         "ref": "main",
@@ -97009,7 +97065,9 @@
         "version": "0.8.1",
         "distTag": "latest",
         "integrity": "sha512-c2j0feoq9Pa5LN2jPQykrr7EdrsuQsJdDo0Rq4tPcA+npqPYl+kem8pqQrSfzTJLhOg8DyyJSczdqtqTHOdwoA==",
-        "tarball": "https://registry.npmjs.org/@mars-sea/dsh-commandcode-provider/-/dsh-commandcode-provider-0.8.1.tgz"
+        "tarball": "https://registry.npmjs.org/@mars-sea/dsh-commandcode-provider/-/dsh-commandcode-provider-0.8.1.tgz",
+        "repository": "git+https://github.com/Mars-Sea/dsh-commandcode-provider.git",
+        "publishedAt": "2026-08-25T03:25:32.791Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -101274,7 +101332,7 @@
     "dsh-agency-agents": {
       "targetId": "dsh-agency-agents",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "MichengAI/dsh-agency-agents",
         "ref": "main",
@@ -101350,7 +101408,9 @@
         "version": "0.1.21",
         "distTag": "latest",
         "integrity": "sha512-de9/SfTkvOTbpsw6cLUtHUoPIPcNz06qj1OeYN6AU6l8sPigGb6bQmNypVhR+00XXM2R9PRgi9yroVN87o3Xtw==",
-        "tarball": "https://registry.npmjs.org/@michengai/dsh-agency-agents/-/dsh-agency-agents-0.1.21.tgz"
+        "tarball": "https://registry.npmjs.org/@michengai/dsh-agency-agents/-/dsh-agency-agents-0.1.21.tgz",
+        "repository": "git+https://github.com/MichengAI/dsh-agency-agents.git",
+        "publishedAt": "2026-08-23T15:36:47.151Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -107289,7 +107349,7 @@
     "dsh-mneme": {
       "targetId": "dsh-mneme",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "modusensus/dsh-mneme",
         "ref": "main",
@@ -107343,7 +107403,9 @@
         "version": "0.7.1",
         "distTag": "latest",
         "integrity": "sha512-gNAc640Aly+ytzX1yebFML8zyGbIdPGw7GuMxduq6SJqz2lwx8UNw/pkpsWe28SZKlt82t+39YSeOpREp4xUDQ==",
-        "tarball": "https://registry.npmjs.org/@modusensus/dsh-mneme/-/dsh-mneme-0.7.1.tgz"
+        "tarball": "https://registry.npmjs.org/@modusensus/dsh-mneme/-/dsh-mneme-0.7.1.tgz",
+        "repository": "git+https://github.com/modusensus/dsh-mneme.git",
+        "publishedAt": "2026-08-24T11:57:24.970Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -107410,7 +107472,7 @@
     "dsh-doctor": {
       "targetId": "dsh-doctor",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T10:26:42.776Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "moonquake2004/dsh-doctor",
         "ref": "main",
@@ -107454,7 +107516,9 @@
         "version": "0.4.3",
         "distTag": "latest",
         "integrity": "sha512-S2Vo2rOXaf/FYWK84G9fw51RHBtb9tz2fhoShANem4QEZgWNn2+qzaYfO3iSqd8Z4Ez1w7FxQYPWqD4mw87hdA==",
-        "tarball": "https://registry.npmjs.org/@moonquake2004/dsh-doctor/-/dsh-doctor-0.4.3.tgz"
+        "tarball": "https://registry.npmjs.org/@moonquake2004/dsh-doctor/-/dsh-doctor-0.4.3.tgz",
+        "repository": "git+https://github.com/moonquake2004/dsh-doctor.git",
+        "publishedAt": "2026-08-22T07:57:24.355Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -107521,7 +107585,7 @@
     "dsh-chat-import": {
       "targetId": "dsh-chat-import",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Nwflower/dsh-chat-import",
         "ref": "main",
@@ -107580,7 +107644,9 @@
         "version": "0.7.0",
         "distTag": "latest",
         "integrity": "sha512-/OeylNu77PXJAVNFzyMgkaVTvLq9ZpCDTf+dmbsFkBPrjV8mqWSmfi6IQeR0uXA06tS23ljnXZcycMl+AmTBNw==",
-        "tarball": "https://registry.npmjs.org/dsh-chat-import/-/dsh-chat-import-0.7.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-chat-import/-/dsh-chat-import-0.7.0.tgz",
+        "repository": "git+https://github.com/Nwflower/dsh-chat-import.git",
+        "publishedAt": "2026-08-23T14:37:55.929Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -111756,7 +111822,7 @@
     "deepseek-harness-acp": {
       "targetId": "deepseek-harness-acp",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "openma-ai/deepseek-harness-acp",
         "ref": "main",
@@ -111808,7 +111874,9 @@
         "version": "0.4.26",
         "distTag": "latest",
         "integrity": "sha512-fke1vS505m5ydlVAxml+OIyIr6O+kwjm3JsOsQXMfXIP41m0fExEO74VJ0rnJ3K1R1tD7bgMaun/O7d1iZVu1A==",
-        "tarball": "https://registry.npmjs.org/@openma/deepseek-harness-acp/-/deepseek-harness-acp-0.4.26.tgz"
+        "tarball": "https://registry.npmjs.org/@openma/deepseek-harness-acp/-/deepseek-harness-acp-0.4.26.tgz",
+        "repository": "git+https://github.com/openma-ai/deepseek-harness-acp.git",
+        "publishedAt": "2026-08-24T15:53:03.817Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -125137,7 +125205,7 @@
     "dsh-pet": {
       "targetId": "dsh-pet",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "PC2005-cloud/dsh-pet",
         "ref": "main",
@@ -125194,7 +125262,9 @@
         "version": "0.1.8",
         "distTag": "latest",
         "integrity": "sha512-xOGihkKbL8LhZG4ZoKTGnbtgdB1Dofbv5dUoCHnZ6ztpIXy2qXSuupZKIr405C0JrsDbfuhVZa7YqlsnTDPJeQ==",
-        "tarball": "https://registry.npmjs.org/dsh-pet/-/dsh-pet-0.1.8.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-pet/-/dsh-pet-0.1.8.tgz",
+        "repository": "git+https://github.com/PC2005-cloud/dsh-pet.git",
+        "publishedAt": "2026-08-24T07:36:20.204Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -125341,7 +125411,7 @@
     "dsh-extension-hub": {
       "targetId": "dsh-extension-hub",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T10:26:42.776Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Relistencode/dsh-extension-hub",
         "ref": "main",
@@ -125388,7 +125458,9 @@
         "version": "0.2.19",
         "distTag": "latest",
         "integrity": "sha512-R0Vo0UAp1xranW8xC5cuBIyZLwB8F8y4NNLbKTQh/hGhkbiYgFiSYYXXaR1NMD8OhfM5XXJ3t+3NSuVKKzCEtA==",
-        "tarball": "https://registry.npmjs.org/dsh-extension-hub/-/dsh-extension-hub-0.2.19.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-extension-hub/-/dsh-extension-hub-0.2.19.tgz",
+        "repository": "git+https://github.com/Relistencode/dsh-extension-hub.git",
+        "publishedAt": "2026-08-21T11:47:46.978Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -125455,7 +125527,7 @@
     "dsh-dream-skin": {
       "targetId": "dsh-dream-skin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:34:21.974Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "RevolutionLA/dsh-dream-skin",
         "ref": "main",
@@ -125516,7 +125588,9 @@
         "version": "0.4.13",
         "distTag": "latest",
         "integrity": "sha512-fIDwwMltL7ynpQYLMCYQKT8ELEWXpW9ZWtiIkJnAzY/sXsLjbj/3wwOeRhLim2lkokrveEzrLOm1tyY4VisMQQ==",
-        "tarball": "https://registry.npmjs.org/dsh-dream-skin/-/dsh-dream-skin-0.4.13.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-dream-skin/-/dsh-dream-skin-0.4.13.tgz",
+        "repository": "git+https://github.com/RevolutionLA/dsh-dream-skin.git",
+        "publishedAt": "2026-08-25T07:33:08.550Z"
       },
       "graphError": "requested root package is not present in npm lockfile: dsh-dream-skin@0.4.13",
       "alignment": {
@@ -125581,7 +125655,7 @@
     "dsh-mobile": {
       "targetId": "dsh-mobile",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "saya-ch/dsh-mobile",
         "ref": "main",
@@ -125660,7 +125734,9 @@
         "version": "0.2.1",
         "distTag": "latest",
         "integrity": "sha512-wbJ0ypkhxVLqZU2epi996EcQx6B7/211kYk6DedSWbdCUqQ/ArPsuuCCVC7VXUg53OUCTzdwvXzcn3LJbYZzag==",
-        "tarball": "https://registry.npmjs.org/dsh-mobile/-/dsh-mobile-0.2.1.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-mobile/-/dsh-mobile-0.2.1.tgz",
+        "repository": "git+https://github.com/saya-ch/dsh-mobile.git",
+        "publishedAt": "2026-08-25T06:44:14.784Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -127017,7 +127093,7 @@
     "dsh-pocket": {
       "targetId": "dsh-pocket",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "shaobeichen/dsh-pocket",
         "ref": "main",
@@ -127071,7 +127147,9 @@
         "version": "1.13.4",
         "distTag": "latest",
         "integrity": "sha512-Cfw4VkmetjV+qWdwg0VH1apnv9CSSRpbMcgem1WegUEzmM3HncjQZSK+uc1XH2X9Ho4n8G2iM6tIV0XW6oJEDA==",
-        "tarball": "https://registry.npmjs.org/dsh-pocket/-/dsh-pocket-1.13.4.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-pocket/-/dsh-pocket-1.13.4.tgz",
+        "repository": "git+https://github.com/shaobeichen/dsh-pocket.git",
+        "publishedAt": "2026-08-23T13:28:58.109Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -127523,7 +127601,7 @@
     "dsh-auth-gate": {
       "targetId": "dsh-auth-gate",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T10:26:42.776Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "TecFancy/dsh-auth-gate",
         "ref": "main",
@@ -127580,7 +127658,9 @@
         "version": "0.7.2",
         "distTag": "latest",
         "integrity": "sha512-g2x+90ldjEMC5R7Zj9upqpHfjxyUQ66KMueg6cpBkVXdTRkyHmCPTSgJstE4P6H+wCkNABgesf9y/NiGdCU1FA==",
-        "tarball": "https://registry.npmjs.org/dsh-auth-gate/-/dsh-auth-gate-0.7.2.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-auth-gate/-/dsh-auth-gate-0.7.2.tgz",
+        "repository": "git+https://github.com/TecFancy/dsh-auth-gate.git",
+        "publishedAt": "2026-08-19T07:38:21.568Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -127871,7 +127951,7 @@
     "dsh-notifier": {
       "targetId": "dsh-notifier",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T10:26:42.776Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "THEWOLFWALKER/dsh-notifier",
         "ref": "main",
@@ -127911,7 +127991,9 @@
         "version": "0.8.6",
         "distTag": "latest",
         "integrity": "sha512-V7KGTjBXC4YBYd9K/L67nDOzGousIE5tx0wY4JlFiLVjCFvcB5FrxZpXTMoKsdE3kFaYCZwO33BIfZDf5tJ0UA==",
-        "tarball": "https://registry.npmjs.org/dsh-notifier/-/dsh-notifier-0.8.6.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-notifier/-/dsh-notifier-0.8.6.tgz",
+        "repository": "git+https://github.com/THEWOLFWALKER/dsh-notifier.git",
+        "publishedAt": "2026-08-23T04:25:36.127Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -128076,7 +128158,7 @@
     "dsh-tool-lens": {
       "targetId": "dsh-tool-lens",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T10:26:42.776Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "trench-xinxin/dsh-tool-lens",
         "ref": "main",
@@ -128133,7 +128215,9 @@
         "version": "2.0.5",
         "distTag": "latest",
         "integrity": "sha512-emWZvgEbo4+gun1rBY2tF64QktSLIF9d0R5KIsjErTWTWr2lMmbcWmiP6m5CwY7owPksxcqF3rKDeHVR7BQHNQ==",
-        "tarball": "https://registry.npmjs.org/@trench-xinxin/dsh-tool-lens/-/dsh-tool-lens-2.0.5.tgz"
+        "tarball": "https://registry.npmjs.org/@trench-xinxin/dsh-tool-lens/-/dsh-tool-lens-2.0.5.tgz",
+        "repository": "git+https://github.com/trench-xinxin/dsh-tool-lens.git",
+        "publishedAt": "2026-08-18T07:00:46.716Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -129971,7 +130055,7 @@
     "archify-dsh": {
       "targetId": "archify-dsh",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:34:21.974Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "tt-a1i/archify",
         "ref": "main",
@@ -130003,7 +130087,9 @@
         "version": "0.1.0",
         "distTag": "latest",
         "integrity": "sha512-D8fDqV6DV/vo80Gj/3rgidd+hwBbhTVncaVoD5Uhh+DbgYlEoQQOmBVbhU5HW33wE5OqJP/2HkTRPJ0hf7W0tA==",
-        "tarball": "https://registry.npmjs.org/@tt-a1i/archify-dsh/-/archify-dsh-0.1.0.tgz"
+        "tarball": "https://registry.npmjs.org/@tt-a1i/archify-dsh/-/archify-dsh-0.1.0.tgz",
+        "repository": "git+https://github.com/tt-a1i/archify.git",
+        "publishedAt": "2026-08-14T09:12:28.700Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -130070,7 +130156,7 @@
     "hindsight-coding-agents": {
       "targetId": "hindsight-coding-agents",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "vectorize-io/hindsight",
         "ref": "main",
@@ -130112,7 +130198,9 @@
         "version": "0.4.2",
         "distTag": "latest",
         "integrity": "sha512-7BuStkCcEsImQX3dsyK1Qm1wr+7G19slqSt9VrHhMTPrYy2blL0LMLP9VQKX8TvQc55nKrycMNcjzVhSQEkSqw==",
-        "tarball": "https://registry.npmjs.org/@vectorize-io/hindsight-coding-agents/-/hindsight-coding-agents-0.4.2.tgz"
+        "tarball": "https://registry.npmjs.org/@vectorize-io/hindsight-coding-agents/-/hindsight-coding-agents-0.4.2.tgz",
+        "repository": "git+https://github.com/vectorize-io/hindsight.git",
+        "publishedAt": "2026-08-24T12:28:56.406Z"
       },
       "graphError": "requested root package is not present in npm lockfile: @vectorize-io/hindsight-coding-agents@0.4.2",
       "alignment": {
@@ -130177,7 +130265,7 @@
     "dsh-git-worktree": {
       "targetId": "dsh-git-worktree",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "wloops/dsh-git-worktree",
         "ref": "master",
@@ -130256,7 +130344,9 @@
         "version": "0.4.0",
         "distTag": "latest",
         "integrity": "sha512-DGt82rhBANySO+FWMglfLGctb8djqYchTmSy9H+4pBDeHGJ8SwRwfjIqT6aw/yBF3Mf2ucJRhV0CuxQ+GU5McA==",
-        "tarball": "https://registry.npmjs.org/dsh-git-worktree/-/dsh-git-worktree-0.4.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-git-worktree/-/dsh-git-worktree-0.4.0.tgz",
+        "repository": "git+https://github.com/wloops/dsh-git-worktree.git",
+        "publishedAt": "2026-08-20T14:32:53.904Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -135349,7 +135439,7 @@
     "dsh-builtin-browser": {
       "targetId": "dsh-builtin-browser",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T10:26:42.776Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "wqty123/dsh-browser",
         "ref": "master",
@@ -135414,7 +135504,9 @@
         "version": "0.1.15",
         "distTag": "latest",
         "integrity": "sha512-ipUxgaMU1YaMgwRG12gpXvdz2/Q/k/TH5xcVWzGj5kxzwxqGWjyCA6p15K/OxdlodkTJpsBbahVNlI+3zff4MQ==",
-        "tarball": "https://registry.npmjs.org/dsh-builtin-browser/-/dsh-builtin-browser-0.1.15.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-builtin-browser/-/dsh-builtin-browser-0.1.15.tgz",
+        "repository": "git+https://github.com/wqty123/dsh-browser.git",
+        "publishedAt": "2026-08-15T21:48:30.045Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -135481,7 +135573,7 @@
     "dsh-config-manager": {
       "targetId": "dsh-config-manager",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "xiajiajun516/dsh-config-manager",
         "ref": "main",
@@ -135559,7 +135651,9 @@
         "version": "0.1.53",
         "distTag": "latest",
         "integrity": "sha512-7k9OIQR6bRP5+SEvcyWfp3hPNA4FMlhM6t9ZbfQaXU98XCHd6aGKvmGKX/0nzPdiFHGyrMemhkcumyiwBN36LA==",
-        "tarball": "https://registry.npmjs.org/dsh-config-manager/-/dsh-config-manager-0.1.53.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-config-manager/-/dsh-config-manager-0.1.53.tgz",
+        "repository": "git+https://github.com/xiajiajun516/dsh-config-manager.git",
+        "publishedAt": "2026-08-24T15:53:08.611Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -140738,7 +140832,7 @@
     "dsh-im": {
       "targetId": "dsh-im",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:16:44.864Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "xmanrui/dsh-im",
         "ref": "main",
@@ -140790,7 +140884,9 @@
         "version": "2.5.0",
         "distTag": "latest",
         "integrity": "sha512-GoKRh2ZFMJVNNAb3GWrzj9Fyf/QcVaUUCJn6+HHJubrxCgmZbdc6TU15sx3RSDACqXQhTmG7Gtty14Q1JVZmIA==",
-        "tarball": "https://registry.npmjs.org/@xmanrui/dsh-im/-/dsh-im-2.5.0.tgz"
+        "tarball": "https://registry.npmjs.org/@xmanrui/dsh-im/-/dsh-im-2.5.0.tgz",
+        "repository": "git+https://github.com/xmanrui/dsh-im.git",
+        "publishedAt": "2026-08-25T07:15:17.340Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -141639,7 +141735,7 @@
     "dsh-plugin-writing-guard": {
       "targetId": "dsh-plugin-writing-guard",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "xmutfyh/dsh-plugin-writing-guard",
         "ref": "master",
@@ -141674,7 +141770,9 @@
         "version": "1.6.1",
         "distTag": "latest",
         "integrity": "sha512-r8mZl5CiXpckPHjORVjcsnFvciHSrUXPw3TLN9ozPHTcoSvnR2ZsNOHN4brKN1d2DxlQwMOhd4aJifEIPgCgKQ==",
-        "tarball": "https://registry.npmjs.org/dsh-plugin-writing-guard/-/dsh-plugin-writing-guard-1.6.1.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-plugin-writing-guard/-/dsh-plugin-writing-guard-1.6.1.tgz",
+        "repository": "git+https://github.com/xmutfyh/dsh-plugin-writing-guard.git",
+        "publishedAt": "2026-08-17T05:31:13.569Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -142413,7 +142511,7 @@
     "dsh-vision-router": {
       "targetId": "dsh-vision-router",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "ysr666/dsh-vision-router",
         "ref": "main",
@@ -142481,7 +142579,9 @@
         "version": "2.0.0",
         "distTag": "latest",
         "integrity": "sha512-GUwnqDqjz4qxEzi+4vmr4yJDgGgneLthlCIJ7oXkixkao5J0pU4XrwZfCEv4N7tQ/SgcCyVD1weZhnrTwMxFVg==",
-        "tarball": "https://registry.npmjs.org/dsh-vision-router/-/dsh-vision-router-2.0.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-vision-router/-/dsh-vision-router-2.0.0.tgz",
+        "repository": "git+https://github.com/ysr666/dsh-vision-router.git",
+        "publishedAt": "2026-08-25T06:22:38.064Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -144888,16 +144988,16 @@
     "dsh-web-ui-all": {
       "targetId": "dsh-web-ui-all",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T08:07:29.972Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "zhu1090093659/dsh-web",
         "ref": "dev",
-        "commit": "deb45afe606bd008ed81e05ca2b51fb302525f0c",
+        "commit": "dab13e5996b3adfc5f22e5bb29661b19529a94f2",
         "packagePath": "packages/dsh-web-all/package.json",
         "lockfile": "pnpm-lock.yaml",
-        "commitUrl": "https://github.com/zhu1090093659/dsh-web/commit/deb45afe606bd008ed81e05ca2b51fb302525f0c",
-        "packageUrl": "https://raw.githubusercontent.com/zhu1090093659/dsh-web/deb45afe606bd008ed81e05ca2b51fb302525f0c/packages/dsh-web-all/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/zhu1090093659/dsh-web/deb45afe606bd008ed81e05ca2b51fb302525f0c/pnpm-lock.yaml"
+        "commitUrl": "https://github.com/zhu1090093659/dsh-web/commit/dab13e5996b3adfc5f22e5bb29661b19529a94f2",
+        "packageUrl": "https://raw.githubusercontent.com/zhu1090093659/dsh-web/dab13e5996b3adfc5f22e5bb29661b19529a94f2/packages/dsh-web-all/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/zhu1090093659/dsh-web/dab13e5996b3adfc5f22e5bb29661b19529a94f2/pnpm-lock.yaml"
       },
       "manifest": {
         "name": "@linxin666/dsh-web-all",
@@ -144926,7 +145026,6 @@
           "@linxin666/dsh-desktop-launcher": "workspace:*",
           "@linxin666/dsh-doctor": "workspace:*",
           "@linxin666/dsh-client-ui-web-ui-settings": "workspace:*",
-          "@linxin666/dsh-miku-pet": "workspace:*",
           "@linxin666/dsh-client-ui-skin-center": "workspace:*",
           "@mlgbnb/dsh-archive-manager": "1.0.7",
           "dsh-better-sidebar": "0.15.2"
@@ -144945,11 +145044,13 @@
         }
       },
       "package": {
-        "name": "@linxin666/dsh-web-ui-all",
+        "name": "@linxin666/dsh-web-all",
         "version": "0.3.3",
         "distTag": "latest",
-        "integrity": "sha512-yycyX7Y82j+ymX7ccRQ3dQ2tLKURXYfdXPKyPsI3hPOA+LpZew0DOHUophOKN210XRf78ghNct/Tkjeyuky10A==",
-        "tarball": "https://registry.npmjs.org/@linxin666/dsh-web-ui-all/-/dsh-web-ui-all-0.3.3.tgz"
+        "integrity": "sha512-dyVaVwTmfLKwcQkZUPdPkYPO3WPHmDyCS0S5l9mH97vTbP4IhGiHfoC6+MVSDK8h33XI/9e/EMkwtw2CXREP2w==",
+        "tarball": "https://registry.npmjs.org/@linxin666/dsh-web-all/-/dsh-web-all-0.3.3.tgz",
+        "repository": "https://github.com/zhu1090093659/dsh-web.git",
+        "publishedAt": "2026-08-24T13:12:56.504Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -152789,12 +152890,6 @@
           },
           {
             "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
-            "name": "@linxin666/dsh-miku-pet",
-            "spec": "link:../dsh-miku-pet",
-            "kind": "runtime"
-          },
-          {
-            "from": "pnpm:workspace-root:@linxin666/dsh-web-all@0.3.3",
             "name": "@linxin666/dsh-pet",
             "spec": "link:../dsh-pet",
             "kind": "runtime"
@@ -152831,16 +152926,13 @@
           }
         ]
       },
-      "warnings": [
-        "target package @linxin666/dsh-web-ui-all does not match source manifest @linxin666/dsh-web-all"
-      ],
       "alignment": {
         "schema": "upstream-radar.upstream-downstream-ir/v1alpha1",
         "targetId": "dsh-web-ui-all",
         "ecosystem": "dsh",
         "upstream": {
           "repository": "zhu1090093659/dsh-web",
-          "commit": "deb45afe606bd008ed81e05ca2b51fb302525f0c",
+          "commit": "dab13e5996b3adfc5f22e5bb29661b19529a94f2",
           "packagePath": "packages/dsh-web-all/package.json",
           "coordinate": {
             "name": "@linxin666/dsh-web-all",
@@ -152849,7 +152941,7 @@
         },
         "downstream": {
           "published": {
-            "name": "@linxin666/dsh-web-ui-all",
+            "name": "@linxin666/dsh-web-all",
             "version": "0.3.3"
           },
           "graph": {
@@ -152861,18 +152953,17 @@
             "digest": "sha256:95259e09a809467e8366dc18137b6a925a6feb373e1b39fabb60548b9fb3460a",
             "nodes": 453,
             "edges": 1093,
-            "unresolved": 23
+            "unresolved": 22
           }
         },
-        "status": "mismatch",
+        "status": "unknown",
         "checks": [
           {
             "code": "source-published-identity",
-            "status": "mismatch",
-            "summary": "The source manifest and observed npm package do not identify the same name and version.",
+            "status": "aligned",
+            "summary": "The source manifest and observed npm package have the same name and version.",
             "upstream": "@linxin666/dsh-web-all@0.3.3",
-            "downstream": "@linxin666/dsh-web-ui-all@0.3.3",
-            "remediation": "Align package.json, the published npm package, and the observer target; if the names intentionally differ, document the build and publish mapping."
+            "downstream": "@linxin666/dsh-web-all@0.3.3"
           },
           {
             "code": "source-graph-root",
@@ -152883,16 +152974,15 @@
           },
           {
             "code": "published-graph-root",
-            "status": "mismatch",
-            "summary": "The dependency graph root does not identify the observed npm package.",
-            "upstream": "@linxin666/dsh-web-ui-all@0.3.3",
-            "downstream": "@linxin666/dsh-web-all@0.3.3",
-            "remediation": "Fix the package/lockfile mapping before using this graph to describe the published artifact."
+            "status": "aligned",
+            "summary": "The dependency graph root matches the observed npm package.",
+            "upstream": "@linxin666/dsh-web-all@0.3.3",
+            "downstream": "@linxin666/dsh-web-all@0.3.3"
           },
           {
             "code": "dependency-graph-coverage",
             "status": "unknown",
-            "summary": "The dependency graph is incomplete (23 unresolved edges).",
+            "summary": "The dependency graph is incomplete (22 unresolved edges).",
             "downstream": "incomplete; 453 nodes, 1093 edges",
             "remediation": "Resolve the missing lockfile or peer/optional edges; an empty vulnerability result is not complete coverage while this remains unknown."
           }
@@ -152902,7 +152992,7 @@
     "modlens": {
       "targetId": "modlens",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "liustack/modlens",
         "ref": "main",
@@ -152946,7 +153036,9 @@
         "version": "3.24.2",
         "distTag": "latest",
         "integrity": "sha512-uOECx+IOisOSD2RIwcLgHH6YhsBLY7zoJFWBTQ4ejY+PhQyOFB1XfggUWrLVoFSqJrrrQ/EsUo8+I3g39wTFMg==",
-        "tarball": "https://registry.npmjs.org/@liustack/modlens/-/modlens-3.24.2.tgz"
+        "tarball": "https://registry.npmjs.org/@liustack/modlens/-/modlens-3.24.2.tgz",
+        "repository": "git+https://github.com/liustack/modlens.git",
+        "publishedAt": "2026-08-24T14:45:25.273Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -154985,7 +155077,7 @@
     "dsh-mnemon": {
       "targetId": "dsh-mnemon",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "omdsh-dev/dsh-mnemon",
         "ref": "main",
@@ -155082,7 +155174,9 @@
         "version": "0.3.0",
         "distTag": "latest",
         "integrity": "sha512-uBiQ9w67HvdimSi6Zenwi4A9iVqPIN6YpZkIo7GKvztzMPHZwU9JIzy5trcHSGGB9j/MVCJvpIr0BxpkB/VcKA==",
-        "tarball": "https://registry.npmjs.org/dsh-mnemon/-/dsh-mnemon-0.3.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-mnemon/-/dsh-mnemon-0.3.0.tgz",
+        "repository": "git+https://github.com/omdsh-dev/dsh-mnemon.git",
+        "publishedAt": "2026-08-24T10:01:45.304Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -173452,20 +173546,20 @@
     "dsh-win32": {
       "targetId": "dsh-win32",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "sjh9714/dsh-win32",
         "ref": "master",
-        "commit": "a4746d45fb30dfef5551956a86c45823299c73be",
+        "commit": "ce5320a746c4a032a6f4523b8ea020a89cf6a1bd",
         "packagePath": "package.json",
         "lockfile": "package-lock.json",
-        "commitUrl": "https://github.com/sjh9714/dsh-win32/commit/a4746d45fb30dfef5551956a86c45823299c73be",
-        "packageUrl": "https://raw.githubusercontent.com/sjh9714/dsh-win32/a4746d45fb30dfef5551956a86c45823299c73be/package.json",
-        "lockfileUrl": "https://raw.githubusercontent.com/sjh9714/dsh-win32/a4746d45fb30dfef5551956a86c45823299c73be/package-lock.json"
+        "commitUrl": "https://github.com/sjh9714/dsh-win32/commit/ce5320a746c4a032a6f4523b8ea020a89cf6a1bd",
+        "packageUrl": "https://raw.githubusercontent.com/sjh9714/dsh-win32/ce5320a746c4a032a6f4523b8ea020a89cf6a1bd/package.json",
+        "lockfileUrl": "https://raw.githubusercontent.com/sjh9714/dsh-win32/ce5320a746c4a032a6f4523b8ea020a89cf6a1bd/package-lock.json"
       },
       "manifest": {
         "name": "dsh-win32",
-        "version": "0.16.3",
+        "version": "0.17.0",
         "type": "module",
         "main": "lib/index.js",
         "exports": {
@@ -173517,19 +173611,21 @@
       },
       "package": {
         "name": "dsh-win32",
-        "version": "0.16.3",
+        "version": "0.17.0",
         "distTag": "latest",
-        "integrity": "sha512-DROStEpviI3lyaXNMKOC7mlNv8fw3VRVxBV+/TwYlKPVOJIct2EoQ0njtVyGqZSt8i9HLfc31q0Z0NiTUaCnjA==",
-        "tarball": "https://registry.npmjs.org/dsh-win32/-/dsh-win32-0.16.3.tgz"
+        "integrity": "sha512-GIuOlHK4yYh3HY4Z0sGKMrfuyJFkUkMRHkNxu0cKFkW52DTh8Jczd8HJYFGG/9vnatJ76/x3FgfHfuKcCu59Ag==",
+        "tarball": "https://registry.npmjs.org/dsh-win32/-/dsh-win32-0.17.0.tgz",
+        "repository": "git+https://github.com/sjh9714/dsh-win32.git",
+        "publishedAt": "2026-08-25T08:19:45.880Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
-        "rootNodeId": "npm:workspace-root:dsh-win32@0.16.3",
+        "rootNodeId": "npm:workspace-root:dsh-win32@0.17.0",
         "nodes": [
           {
-            "id": "npm:workspace-root:dsh-win32@0.16.3",
+            "id": "npm:workspace-root:dsh-win32@0.17.0",
             "name": "dsh-win32",
-            "version": "0.16.3"
+            "version": "0.17.0"
           },
           {
             "id": "node_modules/@deepseek-ai/cordis",
@@ -174199,33 +174295,33 @@
             "kind": "runtime"
           },
           {
-            "from": "npm:workspace-root:dsh-win32@0.16.3",
+            "from": "npm:workspace-root:dsh-win32@0.17.0",
             "to": "node_modules/@deepseek-ai/cordis",
             "kind": "optional"
           },
           {
-            "from": "npm:workspace-root:dsh-win32@0.16.3",
+            "from": "npm:workspace-root:dsh-win32@0.17.0",
             "to": "node_modules/@deepseek-ai/dsh-fs-local",
             "kind": "optional"
           },
           {
-            "from": "npm:workspace-root:dsh-win32@0.16.3",
+            "from": "npm:workspace-root:dsh-win32@0.17.0",
             "to": "node_modules/@deepseek-ai/dsh-fs-sandbox",
             "kind": "optional"
           },
           {
-            "from": "npm:workspace-root:dsh-win32@0.16.3",
+            "from": "npm:workspace-root:dsh-win32@0.17.0",
             "to": "node_modules/@deepseek-ai/dsh-subprocess-local",
             "kind": "optional"
           },
           {
-            "from": "npm:workspace-root:dsh-win32@0.16.3",
+            "from": "npm:workspace-root:dsh-win32@0.17.0",
             "to": "node_modules/iconv-lite",
             "kind": "runtime"
           }
         ],
         "source": "npm-lock",
-        "digest": "sha256:42c93687341a28d3e4ff030cb73b21eaff7b8144ec7fd239fd1dd0d36cb04ba2",
+        "digest": "sha256:181392b2fc201a814859586203fdb0dcf0f6e4b950f33e9aff00bb0526f9fe76",
         "unresolved": [
           {
             "from": "node_modules/@deepseek-ai/cordis",
@@ -174247,25 +174343,25 @@
         "ecosystem": "dsh",
         "upstream": {
           "repository": "sjh9714/dsh-win32",
-          "commit": "a4746d45fb30dfef5551956a86c45823299c73be",
+          "commit": "ce5320a746c4a032a6f4523b8ea020a89cf6a1bd",
           "packagePath": "package.json",
           "coordinate": {
             "name": "dsh-win32",
-            "version": "0.16.3"
+            "version": "0.17.0"
           }
         },
         "downstream": {
           "published": {
             "name": "dsh-win32",
-            "version": "0.16.3"
+            "version": "0.17.0"
           },
           "graph": {
             "status": "incomplete",
             "root": {
               "name": "dsh-win32",
-              "version": "0.16.3"
+              "version": "0.17.0"
             },
-            "digest": "sha256:42c93687341a28d3e4ff030cb73b21eaff7b8144ec7fd239fd1dd0d36cb04ba2",
+            "digest": "sha256:181392b2fc201a814859586203fdb0dcf0f6e4b950f33e9aff00bb0526f9fe76",
             "nodes": 42,
             "edges": 97,
             "unresolved": 2
@@ -174277,22 +174373,22 @@
             "code": "source-published-identity",
             "status": "aligned",
             "summary": "The source manifest and observed npm package have the same name and version.",
-            "upstream": "dsh-win32@0.16.3",
-            "downstream": "dsh-win32@0.16.3"
+            "upstream": "dsh-win32@0.17.0",
+            "downstream": "dsh-win32@0.17.0"
           },
           {
             "code": "source-graph-root",
             "status": "aligned",
             "summary": "The lockfile graph root matches the source manifest.",
-            "upstream": "dsh-win32@0.16.3",
-            "downstream": "dsh-win32@0.16.3"
+            "upstream": "dsh-win32@0.17.0",
+            "downstream": "dsh-win32@0.17.0"
           },
           {
             "code": "published-graph-root",
             "status": "aligned",
             "summary": "The dependency graph root matches the observed npm package.",
-            "upstream": "dsh-win32@0.16.3",
-            "downstream": "dsh-win32@0.16.3"
+            "upstream": "dsh-win32@0.17.0",
+            "downstream": "dsh-win32@0.17.0"
           },
           {
             "code": "dependency-graph-coverage",
@@ -174307,7 +174403,7 @@
     "whale-on-desk": {
       "targetId": "whale-on-desk",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "cookiesheep/whale-on-desk",
         "ref": "master",
@@ -174352,7 +174448,9 @@
         "version": "3.0.0",
         "distTag": "latest",
         "integrity": "sha512-g5KIb8OS7Pc8tn/er0lmba8BVpEeTgwY3qIrnAuyHdFBSfYoxcd8sTHnXgkYy+RaWQrYLRBccoo9K8KB9SEBUA==",
-        "tarball": "https://registry.npmjs.org/whale-on-desk/-/whale-on-desk-3.0.0.tgz"
+        "tarball": "https://registry.npmjs.org/whale-on-desk/-/whale-on-desk-3.0.0.tgz",
+        "repository": "git+https://github.com/cookiesheep/whale-on-desk.git",
+        "publishedAt": "2026-08-19T13:44:23.779Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -174419,7 +174517,7 @@
     "dsh-client-auto-continue": {
       "targetId": "dsh-client-auto-continue",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "HsiangNianian/dsh-auto-continue",
         "ref": "main",
@@ -174473,7 +174571,9 @@
         "version": "0.8.1",
         "distTag": "latest",
         "integrity": "sha512-esOzTOUuSuM2iPFNzgn8+bGQqnQvURlVzgCAE3z/uszdZJ3zu8b8ONBloC7yrzKavyQGcKtwZnEZgDDa6DHS1Q==",
-        "tarball": "https://registry.npmjs.org/dsh-client-auto-continue/-/dsh-client-auto-continue-0.8.1.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-client-auto-continue/-/dsh-client-auto-continue-0.8.1.tgz",
+        "repository": "git+https://github.com/HsiangNianian/dsh-auto-continue.git",
+        "publishedAt": "2026-08-21T06:15:52.980Z"
       },
       "graphError": "requested root package is not present in npm lockfile: dsh-client-auto-continue@0.8.1",
       "alignment": {
@@ -174538,7 +174638,7 @@
     "dsh-strata": {
       "targetId": "dsh-strata",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "jsdvjx/dsh-strata",
         "ref": "main",
@@ -174579,7 +174679,9 @@
         "version": "0.8.2",
         "distTag": "latest",
         "integrity": "sha512-05Uc2GziqgX5Zd0TIlgKdyM+dsTSoSwQHR1PQ+SI7ESL4xuQDqzhJcdmVPxXJosLln6b/z0KV9pYKHfvfSVucg==",
-        "tarball": "https://registry.npmjs.org/dsh-strata/-/dsh-strata-0.8.2.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-strata/-/dsh-strata-0.8.2.tgz",
+        "repository": "git+https://github.com/jsdvjx/dsh-strata.git",
+        "publishedAt": "2026-08-19T10:33:47.363Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -174646,7 +174748,7 @@
     "dsh-free-vision": {
       "targetId": "dsh-free-vision",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "FuzzySoul/dsh-free-vision",
         "ref": "main",
@@ -174693,7 +174795,9 @@
         "version": "1.0.8",
         "distTag": "latest",
         "integrity": "sha512-fLIiTmw5AbCNQyC5GTIaqks73ZHqiVHOWlsAuCc48iNXTqjcIxuDQGCRYWEavBTUxulCRzaSKEp1Z4GEWzOG2Q==",
-        "tarball": "https://registry.npmjs.org/dsh-free-vision/-/dsh-free-vision-1.0.8.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-free-vision/-/dsh-free-vision-1.0.8.tgz",
+        "repository": "git+https://github.com/FuzzySoul/dsh-free-vision.git",
+        "publishedAt": "2026-08-19T14:54:26.677Z"
       },
       "graphError": "requested root package is not present in npm lockfile: dsh-free-vision@1.0.8",
       "alignment": {
@@ -174758,7 +174862,7 @@
     "dsh-xueqiu": {
       "targetId": "dsh-xueqiu",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "kangjinghang/dsh-xueqiu",
         "ref": "main",
@@ -174795,7 +174899,9 @@
         "version": "1.22.9",
         "distTag": "latest",
         "integrity": "sha512-Ec5J9TBXiMoOxE1xuRkPF+Jeasq7lP8YXZ1BzTz6ahIWfRcoPFB0da3NCOkmZR56xVTJt8B/aYd8FcBPpp9q1g==",
-        "tarball": "https://registry.npmjs.org/dsh-xueqiu/-/dsh-xueqiu-1.22.9.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-xueqiu/-/dsh-xueqiu-1.22.9.tgz",
+        "repository": "git+https://github.com/kangjinghang/dsh-xueqiu.git",
+        "publishedAt": "2026-08-25T05:58:49.693Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -174862,7 +174968,7 @@
     "dsh-skills-manager": {
       "targetId": "dsh-skills-manager",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "MichengAI/dsh-skills-manager",
         "ref": "master",
@@ -174914,7 +175020,9 @@
         "version": "0.1.24",
         "distTag": "latest",
         "integrity": "sha512-89nI2PrnoMcffuXhNTnst30SDP8g0NtOROoFfmunqutSXazxzUgv6iC1tL6KYzWVH4heNtXCk6GYoMe7dDiwtg==",
-        "tarball": "https://registry.npmjs.org/@michengai/dsh-skills-manager/-/dsh-skills-manager-0.1.24.tgz"
+        "tarball": "https://registry.npmjs.org/@michengai/dsh-skills-manager/-/dsh-skills-manager-0.1.24.tgz",
+        "repository": "git+https://github.com/MichengAI/dsh-skills-manager.git",
+        "publishedAt": "2026-08-23T15:36:29.824Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -174981,7 +175089,7 @@
     "graphflow": {
       "targetId": "graphflow",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Roarpeng/GraphFlow",
         "ref": "main",
@@ -175040,7 +175148,9 @@
         "version": "1.12.2",
         "distTag": "latest",
         "integrity": "sha512-g/G5G7Mn8J4DXNL2KVXu8ul9PISmMYwnqY6lEa48pVjYr101Nl0JwD8J0bEN8i0uetgKFjMA/JM8FPDF+0N2vA==",
-        "tarball": "https://registry.npmjs.org/@roarpeng/graphflow/-/graphflow-1.12.2.tgz"
+        "tarball": "https://registry.npmjs.org/@roarpeng/graphflow/-/graphflow-1.12.2.tgz",
+        "repository": "git+https://github.com/Roarpeng/GraphFlow.git",
+        "publishedAt": "2026-08-22T14:06:45.943Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -177929,7 +178039,7 @@
     "dsh-history": {
       "targetId": "dsh-history",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "chenproton/dsh-history",
         "ref": "main",
@@ -177995,7 +178105,9 @@
         "version": "0.1.24",
         "distTag": "latest",
         "integrity": "sha512-DBQ5Q9NGmiGS/3qbmHDb5bA5DVtcQbYmemzNXUUd9MdxcTSQOIh7hLP7XSC/JycOm7J1yDFvQGV2a6w/7qIf+A==",
-        "tarball": "https://registry.npmjs.org/dsh-history/-/dsh-history-0.1.24.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-history/-/dsh-history-0.1.24.tgz",
+        "repository": "git+https://github.com/chenproton/dsh-history.git",
+        "publishedAt": "2026-08-18T06:05:45.126Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -183591,7 +183703,7 @@
     "dsh-catppuccin": {
       "targetId": "dsh-catppuccin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "NoNameLeGo/dsh-catppuccin-theme",
         "ref": "main",
@@ -183637,7 +183749,9 @@
         "version": "0.3.1",
         "distTag": "latest",
         "integrity": "sha512-N6ZVm/n23E7M1piBbS29pzfzSfz1vCGaTkT30utyUepoPgpyL3ZOfHkeCDC9VbV8lnlzSleeWJEUf65tAf4hig==",
-        "tarball": "https://registry.npmjs.org/@nonamelego/dsh-catppuccin/-/dsh-catppuccin-0.3.1.tgz"
+        "tarball": "https://registry.npmjs.org/@nonamelego/dsh-catppuccin/-/dsh-catppuccin-0.3.1.tgz",
+        "repository": "git+https://github.com/NoNameLeGo/dsh-catppuccin-theme.git",
+        "publishedAt": "2026-08-23T14:48:45.470Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -189763,7 +189877,7 @@
     "dsh-rewind-plugin": {
       "targetId": "dsh-rewind-plugin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "SiriLee/dsh-rewind",
         "ref": "main",
@@ -189865,7 +189979,9 @@
         "version": "0.4.1",
         "distTag": "latest",
         "integrity": "sha512-5y3a0YhysabLnsn4C4GJF24X4L7jR63wV5sKuWeBQlUffBsxOzAEbog0ITgD7N8i56hzkgjBoC+OwiV5VVokSQ==",
-        "tarball": "https://registry.npmjs.org/dsh-rewind-plugin/-/dsh-rewind-plugin-0.4.1.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-rewind-plugin/-/dsh-rewind-plugin-0.4.1.tgz",
+        "repository": "git+https://github.com/SiriLee/dsh-rewind.git",
+        "publishedAt": "2026-08-24T11:36:06.001Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -192993,7 +193109,7 @@
     "dsh-vision-proxy": {
       "targetId": "dsh-vision-proxy",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Flyvhidbwo/dsh-vision-proxy",
         "ref": "main",
@@ -193028,7 +193144,9 @@
         "version": "0.4.1",
         "distTag": "latest",
         "integrity": "sha512-Cky0hONygDEAFxL6Fvi4UA8iF0Kd8SQyOCg+6ZtmuahyL0eyV8jw5Wr2lCipVOgkvsQQLaPM+wk+Emt8Lnyuug==",
-        "tarball": "https://registry.npmjs.org/dsh-vision-proxy/-/dsh-vision-proxy-0.4.1.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-vision-proxy/-/dsh-vision-proxy-0.4.1.tgz",
+        "repository": "git+https://github.com/Flyvhidbwo/dsh-vision-proxy.git",
+        "publishedAt": "2026-08-22T15:49:41.948Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -193095,7 +193213,7 @@
     "dsh-codex-subscription": {
       "targetId": "dsh-codex-subscription",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "WSL043/dsh-codex-subscription",
         "ref": "main",
@@ -193170,7 +193288,9 @@
         "version": "1.8.0",
         "distTag": "latest",
         "integrity": "sha512-M1NtzJqi9dms42rcJIp+3oS951L/SkzuwvdHx7o9es82PkdJjzS6MZyD5rnkpeF/ddIiw+sefD8GOzSMJqZDig==",
-        "tarball": "https://registry.npmjs.org/dsh-codex-subscription/-/dsh-codex-subscription-1.8.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-codex-subscription/-/dsh-codex-subscription-1.8.0.tgz",
+        "repository": "git+https://github.com/WSL043/dsh-codex-subscription.git",
+        "publishedAt": "2026-08-25T05:44:51.826Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -200794,7 +200914,7 @@
     "anweat-dsh-browser": {
       "targetId": "anweat-dsh-browser",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "anweat/dsh-browser",
         "ref": "master",
@@ -200895,7 +201015,9 @@
         "version": "0.1.8",
         "distTag": "latest",
         "integrity": "sha512-76gacqneMtMlijTknCRLF2jn/PaQ8MS2l8K0E1CsLa9LqhhIDi6D+9NgxklpV/3QMh0v8Ia0fuvoIErDEiUr8w==",
-        "tarball": "https://registry.npmjs.org/@anweat/dsh-browser/-/dsh-browser-0.1.8.tgz"
+        "tarball": "https://registry.npmjs.org/@anweat/dsh-browser/-/dsh-browser-0.1.8.tgz",
+        "repository": "git+https://github.com/anweat/dsh-browser.git",
+        "publishedAt": "2026-08-23T09:56:03.933Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -202425,7 +202547,7 @@
     "dsh-turn-rewind": {
       "targetId": "dsh-turn-rewind",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Anionex/dsh-turn-rewind",
         "ref": "main",
@@ -202489,7 +202611,9 @@
         "version": "0.1.2",
         "distTag": "latest",
         "integrity": "sha512-GoV1+BUp1YCTMft8K65x+VYHc/KtCmXp3o29veU8BT0vKP++X6dfd8kiSPZ/NMB8axZPBjCnKu8p7wt9Gzg/XQ==",
-        "tarball": "https://registry.npmjs.org/@anionex/dsh-turn-rewind/-/dsh-turn-rewind-0.1.2.tgz"
+        "tarball": "https://registry.npmjs.org/@anionex/dsh-turn-rewind/-/dsh-turn-rewind-0.1.2.tgz",
+        "repository": "git+https://github.com/Anionex/dsh-turn-rewind.git",
+        "publishedAt": "2026-08-23T15:12:55.023Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -202706,7 +202830,7 @@
     "dsh-easyrewrite": {
       "targetId": "dsh-easyrewrite",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Renzic-Stone/DSH-EasyRewrite",
         "ref": "main",
@@ -202744,7 +202868,9 @@
         "version": "2.1.0",
         "distTag": "latest",
         "integrity": "sha512-PbvYEmGDFFXncTCg0FQ82Uh9mFAUuVR2zI23d6aLUEXQs2lD2r6viJvj7k/6ddhoSxmFfY+5WJrUsFISSZe/Qw==",
-        "tarball": "https://registry.npmjs.org/dsh-easyrewrite/-/dsh-easyrewrite-2.1.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-easyrewrite/-/dsh-easyrewrite-2.1.0.tgz",
+        "repository": "git+https://github.com/Renzic-Stone/DSH-EasyRewrite.git",
+        "publishedAt": "2026-08-23T02:02:14.458Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -202811,7 +202937,7 @@
     "dsh-better-edit": {
       "targetId": "dsh-better-edit",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Rianico/dsh-better-edit",
         "ref": "main",
@@ -202854,7 +202980,9 @@
         "version": "0.4.0",
         "distTag": "latest",
         "integrity": "sha512-R9vTVOWGGpZ+mif2pnJdGPQ6HsLZ7jvoAO78zcf3aEPke1juE5DeX9WjXOr6sHe24NiVHWLK4Ooe8etYpVyxkw==",
-        "tarball": "https://registry.npmjs.org/dsh-better-edit/-/dsh-better-edit-0.4.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-better-edit/-/dsh-better-edit-0.4.0.tgz",
+        "repository": "git+https://github.com/Rianico/dsh-better-edit.git",
+        "publishedAt": "2026-08-24T14:22:42.512Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -203076,7 +203204,7 @@
     "dsh-auxiliary": {
       "targetId": "dsh-auxiliary",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "dsh-plugins/dsh-auxiliary",
         "ref": "main",
@@ -203131,7 +203259,9 @@
         "version": "0.5.1",
         "distTag": "latest",
         "integrity": "sha512-k+zKeS+No6Ua+WGpZvVNY8gXe/KM3/QTYlQ+qq9CSIjmwaKtysDtyYYSvyCQfvPSHSVHGVjOHIjJTGviIqfe7g==",
-        "tarball": "https://registry.npmjs.org/@dsh-plugin/dsh-auxiliary/-/dsh-auxiliary-0.5.1.tgz"
+        "tarball": "https://registry.npmjs.org/@dsh-plugin/dsh-auxiliary/-/dsh-auxiliary-0.5.1.tgz",
+        "repository": "git+https://github.com/dsh-plugins/dsh-auxiliary.git",
+        "publishedAt": "2026-08-21T06:08:10.008Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -208510,7 +208640,7 @@
     "dsh-verify": {
       "targetId": "dsh-verify",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "263311487-ux/dsh-verify",
         "ref": "main",
@@ -208544,7 +208674,9 @@
         "version": "0.9.0",
         "distTag": "latest",
         "integrity": "sha512-cUlsjVn9xWAMU1SLue4VHMkWMjU85wOAQEGGF0/y+0dEI6/1QZcooqkFR3A1gPl+iLIM51p0WFuFTWtZWZ9rpQ==",
-        "tarball": "https://registry.npmjs.org/dsh-verify/-/dsh-verify-0.9.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-verify/-/dsh-verify-0.9.0.tgz",
+        "repository": "git+https://github.com/263311487-ux/dsh-verify.git",
+        "publishedAt": "2026-08-19T07:03:30.405Z"
       },
       "graphError": "requested root package is not present in npm lockfile: dsh-verify@0.9.0",
       "alignment": {
@@ -208609,7 +208741,7 @@
     "dsh-passwords": {
       "targetId": "dsh-passwords",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "slywalker2006/dsh-passwords",
         "ref": "main",
@@ -208656,7 +208788,9 @@
         "version": "2.6.2",
         "distTag": "latest",
         "integrity": "sha512-xRT72eeWSJxsPVgyOdKkZi741qtyyv+lc2Lh5g1voY9IqxxTQeM+ioppbSnpP494x5mEDtciFJSUxBh12IPngw==",
-        "tarball": "https://registry.npmjs.org/dsh-passwords/-/dsh-passwords-2.6.2.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-passwords/-/dsh-passwords-2.6.2.tgz",
+        "repository": "git+https://github.com/slywalker2006/dsh-passwords.git",
+        "publishedAt": "2026-08-24T11:55:06.805Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -209928,7 +210062,7 @@
     "dsh-memory-plugin": {
       "targetId": "dsh-memory-plugin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:44:24.736Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "volcengine/OpenViking",
         "ref": "main",
@@ -209964,7 +210098,9 @@
         "version": "0.2.1",
         "distTag": "latest",
         "integrity": "sha512-zyH7D46uX/7L3F2NKSidan1Y4/HrhpG/A+6KVauBKsWgEctUZqRSr1hzknYIO1yRm4yxEEcgBpKbCj+OXORqDw==",
-        "tarball": "https://registry.npmjs.org/@openviking/dsh-memory-plugin/-/dsh-memory-plugin-0.2.1.tgz"
+        "tarball": "https://registry.npmjs.org/@openviking/dsh-memory-plugin/-/dsh-memory-plugin-0.2.1.tgz",
+        "repository": "git+https://github.com/volcengine/OpenViking.git",
+        "publishedAt": "2026-08-20T13:24:37.103Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -210031,7 +210167,7 @@
     "dsh-univer-office": {
       "targetId": "dsh-univer-office",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "dream-num/dsh-univer-office",
         "ref": "main",
@@ -210095,7 +210231,9 @@
         "version": "0.2.9",
         "distTag": "latest",
         "integrity": "sha512-0gvUi/JH70+r5Lx3Q9LyPhsaugUQaYgFjshWbMJcGV+eCTiZ/+YBL6r4J8V9wzwdBvCBjehxmTeTed7tsCiuag==",
-        "tarball": "https://registry.npmjs.org/dsh-univer-office/-/dsh-univer-office-0.2.9.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-univer-office/-/dsh-univer-office-0.2.9.tgz",
+        "repository": "git+https://github.com/dream-num/dsh-univer-office.git",
+        "publishedAt": "2026-08-22T04:51:26.753Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -227095,7 +227233,7 @@
     "dsh-plugin-vet": {
       "targetId": "dsh-plugin-vet",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "wulun811/dsh-plugin-vet",
         "ref": "main",
@@ -227161,7 +227299,9 @@
         "version": "0.2.6",
         "distTag": "latest",
         "integrity": "sha512-XmLsIxJ6diOl8vgKKfC83eMGOUmZrmFEtCxAtpfiK74UMBA4FbXgG7PS9335WQ6hAWeqOQKodS7iz1MHF7PQvA==",
-        "tarball": "https://registry.npmjs.org/@jieai/dsh-plugin-vet/-/dsh-plugin-vet-0.2.6.tgz"
+        "tarball": "https://registry.npmjs.org/@jieai/dsh-plugin-vet/-/dsh-plugin-vet-0.2.6.tgz",
+        "repository": "git+https://github.com/wulun811/dsh-plugin-vet.git",
+        "publishedAt": "2026-08-23T15:22:01.693Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -227713,7 +227853,7 @@
     "dsh-full-remote": {
       "targetId": "dsh-full-remote",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "JUANWANG-BUAA/dsh-full-remote",
         "ref": "main",
@@ -227769,7 +227909,9 @@
         "version": "0.3.7",
         "distTag": "latest",
         "integrity": "sha512-n73mTlkSuuIYY2pLjkbHNsuI8ReTxDMgr0SZ3egtH7L731gnTXV+NFxmuF3NyJpJ51QvBjDwARLxhJ5NiAiikw==",
-        "tarball": "https://registry.npmjs.org/dsh-full-remote/-/dsh-full-remote-0.3.7.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-full-remote/-/dsh-full-remote-0.3.7.tgz",
+        "repository": "git+https://github.com/JUANWANG-BUAA/dsh-full-remote.git",
+        "publishedAt": "2026-08-21T11:53:03.097Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -233751,7 +233893,7 @@
     "odai-dsh-plugin": {
       "targetId": "odai-dsh-plugin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "orziz/odai",
         "ref": "main",
@@ -233795,7 +233937,9 @@
         "version": "0.2.9",
         "distTag": "latest",
         "integrity": "sha512-143gpanu1HSiterfKtkf7ozXwrMAZr/IErgZFns16VaGws+9ayHVsVBpmKFrs+6IGFuw9eCKO+mx+sDjEEg8IQ==",
-        "tarball": "https://registry.npmjs.org/odai-dsh-plugin/-/odai-dsh-plugin-0.2.9.tgz"
+        "tarball": "https://registry.npmjs.org/odai-dsh-plugin/-/odai-dsh-plugin-0.2.9.tgz",
+        "repository": "git+https://github.com/orziz/odai.git",
+        "publishedAt": "2026-08-25T03:39:29.697Z"
       },
       "graphError": "requested root package is not present in npm lockfile: odai-dsh-plugin@0.2.9",
       "alignment": {
@@ -233860,7 +234004,7 @@
     "dsh-deepread": {
       "targetId": "dsh-deepread",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "xiehuan123/dsh-deepread",
         "ref": "main",
@@ -233918,7 +234062,9 @@
         "version": "1.0.0",
         "distTag": "latest",
         "integrity": "sha512-C4y6JABHhMV7eyQajiGREx97i9Hr4fTInIK37GClsim14B9ad70M58b1Iilj+ZO2y0Dgq7EfDZdnId9gHBLQgg==",
-        "tarball": "https://registry.npmjs.org/dsh-deepread/-/dsh-deepread-1.0.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-deepread/-/dsh-deepread-1.0.0.tgz",
+        "repository": "git+https://github.com/xiehuan123/dsh-deepread.git",
+        "publishedAt": "2026-08-20T13:51:38.694Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -234574,7 +234720,7 @@
     "dsh-deepseek-vision": {
       "targetId": "dsh-deepseek-vision",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "siegfly/dsh-deepseek-vision",
         "ref": "main",
@@ -234702,7 +234848,9 @@
         "version": "0.1.7",
         "distTag": "latest",
         "integrity": "sha512-PMSdsAkZTeGNm/MzcNlHEYlUAZJXiFU9Dl2vbTwrYIyxVe6PLDurCehKvuadM8s4ewQVzaGQte1AknVd7Ay5qw==",
-        "tarball": "https://registry.npmjs.org/dsh-deepseek-vision/-/dsh-deepseek-vision-0.1.7.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-deepseek-vision/-/dsh-deepseek-vision-0.1.7.tgz",
+        "repository": "git+https://github.com/siegfly/dsh-deepseek-vision.git",
+        "publishedAt": "2026-08-23T01:31:05.775Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -237247,7 +237395,7 @@
     "dsh-archive-manager": {
       "targetId": "dsh-archive-manager",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "MichengAI/dsh-archive-manager",
         "ref": "main",
@@ -237311,7 +237459,9 @@
         "version": "0.1.14",
         "distTag": "latest",
         "integrity": "sha512-BN5VCX7ep9rAtXFObEqXDRr+UArYOIj+kRoc6SPZ9ZDNjAqrIHN9U+b9i+uzsh2MXWo3eSLok/4z6kqVGK3nfQ==",
-        "tarball": "https://registry.npmjs.org/@michengai/dsh-archive-manager/-/dsh-archive-manager-0.1.14.tgz"
+        "tarball": "https://registry.npmjs.org/@michengai/dsh-archive-manager/-/dsh-archive-manager-0.1.14.tgz",
+        "repository": "git+https://github.com/MichengAI/dsh-archive-manager.git",
+        "publishedAt": "2026-08-24T02:17:25.620Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -242069,7 +242219,7 @@
     "dsh-plugin-subscriptions": {
       "targetId": "dsh-plugin-subscriptions",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "V1ki/dsh-plugin-subscriptions",
         "ref": "main",
@@ -242126,7 +242276,9 @@
         "version": "0.5.2",
         "distTag": "latest",
         "integrity": "sha512-mDBTznlIDa15DVjDpsItDXsjBIWyS1DOPE4zKyzHDlVM+NrGO5DQvKXAl5N1z3/RnRoQxIU4xvy9/UyrIvlNwA==",
-        "tarball": "https://registry.npmjs.org/dsh-plugin-subscriptions/-/dsh-plugin-subscriptions-0.5.2.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-plugin-subscriptions/-/dsh-plugin-subscriptions-0.5.2.tgz",
+        "repository": "git+https://github.com/V1ki/dsh-plugin-subscriptions.git",
+        "publishedAt": "2026-08-24T11:16:54.001Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -243138,7 +243290,7 @@
     "dsh-crew": {
       "targetId": "dsh-crew",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "stuarthu/dsh-crew",
         "ref": "main",
@@ -243189,7 +243341,9 @@
         "version": "0.10.0",
         "distTag": "latest",
         "integrity": "sha512-9lG7bRaiqAV+JtDS06Y85/W5gfUrcYh5XTnvYTah8Xfe8bGd48+gVyNQ8Wjh/2arxCV747+w14hh55V3+bmK+Q==",
-        "tarball": "https://registry.npmjs.org/dsh-crew/-/dsh-crew-0.10.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-crew/-/dsh-crew-0.10.0.tgz",
+        "repository": "git+https://github.com/stuarthu/dsh-crew.git",
+        "publishedAt": "2026-08-23T22:12:10.146Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -243256,7 +243410,7 @@
     "iterate-plugin": {
       "targetId": "iterate-plugin",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "jingzhao-l/iterate-plugin",
         "ref": "main",
@@ -243304,7 +243458,9 @@
         "version": "2.12.1",
         "distTag": "latest",
         "integrity": "sha512-D8kGXTPiBh6nICgByGXJ0CNsThdGH75JwlfxgdJvhPxVEM6CrUsmwMMcu1v0+0GahZohTi4bVo/vwenOgoPstg==",
-        "tarball": "https://registry.npmjs.org/iterate-plugin/-/iterate-plugin-2.12.1.tgz"
+        "tarball": "https://registry.npmjs.org/iterate-plugin/-/iterate-plugin-2.12.1.tgz",
+        "repository": "git+https://github.com/jingzhao-l/iterate-plugin.git",
+        "publishedAt": "2026-08-23T14:45:49.802Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -243826,7 +243982,7 @@
     "dsh-plugin-vetting": {
       "targetId": "dsh-plugin-vetting",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "truelove-dreamer/dsh-plugin-vetting",
         "ref": "main",
@@ -243854,7 +244010,9 @@
         "version": "0.5.6",
         "distTag": "latest",
         "integrity": "sha512-SCjCHx0pgNJAtNUHQ4/g3vRcTSUSBoxjRFwgoA2udvW/MOm8WRZsTwWheSGV7CF9eubbHZzM2GRFBr81eQ6uRA==",
-        "tarball": "https://registry.npmjs.org/dsh-plugin-vetting/-/dsh-plugin-vetting-0.5.6.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-plugin-vetting/-/dsh-plugin-vetting-0.5.6.tgz",
+        "repository": "git+https://github.com/truelove-dreamer/dsh-plugin-vetting.git",
+        "publishedAt": "2026-08-16T05:54:06.714Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -243921,7 +244079,7 @@
     "dsh-any-background": {
       "targetId": "dsh-any-background",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "Tkingxiao/dsh-any-background",
         "ref": "main",
@@ -244000,7 +244158,9 @@
         "version": "0.2.1",
         "distTag": "latest",
         "integrity": "sha512-LkAM2wSljuFsZgJdj/3JZybwu75BjF98usfPmPQk9cPife/AkE+H/MmP35ZuYhSE4bowNIQzfREgaqFoyCyMNQ==",
-        "tarball": "https://registry.npmjs.org/dsh-any-background/-/dsh-any-background-0.2.1.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-any-background/-/dsh-any-background-0.2.1.tgz",
+        "repository": "git+https://github.com/Tkingxiao/dsh-any-background.git",
+        "publishedAt": "2026-08-24T22:23:19.772Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -249245,7 +249405,7 @@
     "dsh-tavern": {
       "targetId": "dsh-tavern",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "chen731215-dev/dsh-tavern",
         "ref": "main",
@@ -249287,7 +249447,9 @@
         "version": "1.9.2",
         "distTag": "latest",
         "integrity": "sha512-jEA35cO7QEvq8sGX+GhG3myQNw9GeyJaHh1nCGqk7TAc8OnuMzdl96Pkog0VUcj8YZnleMj6HL0gnuSeeChnzw==",
-        "tarball": "https://registry.npmjs.org/dsh-tavern/-/dsh-tavern-1.9.2.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-tavern/-/dsh-tavern-1.9.2.tgz",
+        "repository": "git+https://github.com/chen731215-dev/dsh-tavern.git",
+        "publishedAt": "2026-08-23T12:29:33.318Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -249354,7 +249516,7 @@
     "dsh-auto-classifier": {
       "targetId": "dsh-auto-classifier",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "PAKIKNOWLEDGE/dsh-auto-classifier",
         "ref": "main",
@@ -249389,7 +249551,9 @@
         "version": "0.1.14",
         "distTag": "latest",
         "integrity": "sha512-dhrisnFuKeZ/kS71fxsZxKELr0zsBxwXsMunfWsIS7idGVMlJqId69WN1iMmlyojYQTWw0npzbR6fgD3qblXag==",
-        "tarball": "https://registry.npmjs.org/dsh-auto-classifier/-/dsh-auto-classifier-0.1.14.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-auto-classifier/-/dsh-auto-classifier-0.1.14.tgz",
+        "repository": "git+https://github.com/PAKIKNOWLEDGE/dsh-auto-classifier.git",
+        "publishedAt": "2026-08-16T13:14:44.949Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -249456,7 +249620,7 @@
     "dshscan": {
       "targetId": "dshscan",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "shaoshi20/dshscan",
         "ref": "main",
@@ -249496,7 +249660,9 @@
         "version": "0.5.0",
         "distTag": "latest",
         "integrity": "sha512-KAfu3M37DCqiUsaUhWh13bHRvPPQ2co5IFkgfM33WEZmWNV1xNcMhcsg86wmEE+m0PZW0d2ghZXPu6UeqvvJGA==",
-        "tarball": "https://registry.npmjs.org/@shaoshi/dshscan/-/dshscan-0.5.0.tgz"
+        "tarball": "https://registry.npmjs.org/@shaoshi/dshscan/-/dshscan-0.5.0.tgz",
+        "repository": "git+https://github.com/shaoshi20/dshscan.git",
+        "publishedAt": "2026-08-20T16:36:59.384Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -250013,7 +250179,7 @@
     "dsh-im-connect": {
       "targetId": "dsh-im-connect",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T04:13:14.624Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "MichengAI/dsh-im-connect",
         "ref": "main",
@@ -250072,7 +250238,9 @@
         "version": "0.1.23",
         "distTag": "latest",
         "integrity": "sha512-mjhNnjSJmgTMrxO/qVYEHstzvCEXQuI4h6ZT9WMnopulw0gpXBt0W86SZikedLSmwAz+Rl9Lw7KxNukrnLr4mQ==",
-        "tarball": "https://registry.npmjs.org/@michengai/dsh-im-connect/-/dsh-im-connect-0.1.23.tgz"
+        "tarball": "https://registry.npmjs.org/@michengai/dsh-im-connect/-/dsh-im-connect-0.1.23.tgz",
+        "repository": "git+https://github.com/MichengAI/dsh-im-connect.git",
+        "publishedAt": "2026-08-23T15:36:30.976Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -251281,7 +251449,7 @@
     "dsh-gateway": {
       "targetId": "dsh-gateway",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "clarknu/dsh-gateway",
         "ref": "main",
@@ -251330,7 +251498,9 @@
         "version": "1.6.0",
         "distTag": "latest",
         "integrity": "sha512-K5pYjzzYbti2+IxebdEvy6PNTJy9Hn6oBGeYp61rfbqxl/yseueFbX4r0BwNFLBqWGaoR7m7pO+uYT5dbR+gHQ==",
-        "tarball": "https://registry.npmjs.org/dsh-gateway/-/dsh-gateway-1.6.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-gateway/-/dsh-gateway-1.6.0.tgz",
+        "repository": "git+https://github.com/clarknu/dsh-gateway.git",
+        "publishedAt": "2026-08-21T00:41:37.809Z"
       },
       "graphError": "requested root package is not present in npm lockfile: dsh-gateway@1.6.0",
       "alignment": {
@@ -251395,7 +251565,7 @@
     "dsh-spend": {
       "targetId": "dsh-spend",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "nonewind/dsh-spend",
         "ref": "main",
@@ -251446,7 +251616,9 @@
         "version": "0.6.0",
         "distTag": "latest",
         "integrity": "sha512-8Xz2EGxTmos04zXhXH2rwu+fvaMVIKB6asSl9blu8wX+SDvFqFZU0lVYd5emWy0nnpxEL3WDZMouMTfAkUz8Fw==",
-        "tarball": "https://registry.npmjs.org/dsh-spend/-/dsh-spend-0.6.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-spend/-/dsh-spend-0.6.0.tgz",
+        "repository": "git+https://github.com/nonewind/dsh-spend.git",
+        "publishedAt": "2026-08-25T03:04:37.147Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -251513,7 +251685,7 @@
     "dsh-thirteen-bg": {
       "targetId": "dsh-thirteen-bg",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "feng78-boop/dsh-thirteen-bg",
         "ref": "master",
@@ -251560,7 +251732,9 @@
         "version": "0.5.2",
         "distTag": "latest",
         "integrity": "sha512-ByWnQPKVUkaN7DQPSr14FB99o7phAbAV7D0IKStbY1V0YRP9Oqd60k7saCncpbkr21jPhQ5jSC3deIobxDZnsA==",
-        "tarball": "https://registry.npmjs.org/dsh-thirteen-bg/-/dsh-thirteen-bg-0.5.2.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-thirteen-bg/-/dsh-thirteen-bg-0.5.2.tgz",
+        "repository": "git+https://github.com/feng78-boop/dsh-thirteen-bg.git",
+        "publishedAt": "2026-08-20T03:38:34.368Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -251627,7 +251801,7 @@
     "dsh-coding-subscription-oauth": {
       "targetId": "dsh-coding-subscription-oauth",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "lninghaha/dsh-coding-subscription-oauth",
         "ref": "main",
@@ -251751,7 +251925,9 @@
         "version": "0.6.0",
         "distTag": "latest",
         "integrity": "sha512-tGhy+ixh7/SKM6Jt/bJ/Y7SVWo6NM2+6FzDDmMY5UVWui6mrthbvbOYrMIbLEjEBh+cAMXc4T+FM4jsoWRYnwA==",
-        "tarball": "https://registry.npmjs.org/dsh-coding-subscription-oauth/-/dsh-coding-subscription-oauth-0.6.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-coding-subscription-oauth/-/dsh-coding-subscription-oauth-0.6.0.tgz",
+        "repository": "git+https://github.com/lninghaha/dsh-coding-subscription-oauth.git",
+        "publishedAt": "2026-08-22T11:52:23.662Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -261247,7 +261423,7 @@
     "dsh-testkit": {
       "targetId": "dsh-testkit",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "iiwish/dsh-testkit",
         "ref": "main",
@@ -261310,7 +261486,9 @@
         "version": "0.3.3",
         "distTag": "latest",
         "integrity": "sha512-uMN85CDM5yTgY52HFIuzlfOTADmviezMhB21exNUeQJiZAmuE4UBwe+lF7TO+eqTJveledozoJjlqp1Va0j5Hg==",
-        "tarball": "https://registry.npmjs.org/dsh-testkit/-/dsh-testkit-0.3.3.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-testkit/-/dsh-testkit-0.3.3.tgz",
+        "repository": "git+https://github.com/iiwish/dsh-testkit.git",
+        "publishedAt": "2026-08-22T00:51:03.319Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -263871,7 +264049,7 @@
     "dsh-movein": {
       "targetId": "dsh-movein",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T08:07:29.972Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "sjh9714/dsh-movein",
         "ref": "main",
@@ -263924,7 +264102,9 @@
         "version": "0.13.0",
         "distTag": "latest",
         "integrity": "sha512-xO+fkDSx/ghD24kglR1QlgQ6YWQBZOu8JUdyLk7OV/8BR/HrTTA4zQnoLLQs+ssdqkS9y/8OK8UGx8fHXPKE2Q==",
-        "tarball": "https://registry.npmjs.org/dsh-movein/-/dsh-movein-0.13.0.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-movein/-/dsh-movein-0.13.0.tgz",
+        "repository": "git+https://github.com/sjh9714/dsh-movein.git",
+        "publishedAt": "2026-08-25T08:00:57.024Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -264046,7 +264226,7 @@
     "dsh-imagegen": {
       "targetId": "dsh-imagegen",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T03:46:15.294Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "dickpy/dsh-imagegen",
         "ref": "main",
@@ -264090,7 +264270,9 @@
         "version": "1.2.2",
         "distTag": "latest",
         "integrity": "sha512-8yXIFg+Q/1/Bbx7Z80RTqKHw7s17rPYjVII8+6mGpUph1JFmIF170BQXxq+EKh3mlq/zBpnS3NIF6EigYa7nqw==",
-        "tarball": "https://registry.npmjs.org/@dickpy/dsh-imagegen/-/dsh-imagegen-1.2.2.tgz"
+        "tarball": "https://registry.npmjs.org/@dickpy/dsh-imagegen/-/dsh-imagegen-1.2.2.tgz",
+        "repository": "git+https://github.com/dickpy/dsh-imagegen.git",
+        "publishedAt": "2026-08-24T13:53:20.653Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -269955,7 +270137,7 @@
     "dsh-taskboard": {
       "targetId": "dsh-taskboard",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-25T07:05:35.450Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "cloader/dsh-taskboard",
         "ref": "main",
@@ -269992,7 +270174,9 @@
         "version": "0.5.1",
         "distTag": "latest",
         "integrity": "sha512-DMfqz2DvZufSXFGi3oyT394ZvVXMq35IOQZeuMZLpdhFzIUYKixDnaZ6q8p9MPvXWY1Hkrnlty/W8+EFj+fmzg==",
-        "tarball": "https://registry.npmjs.org/dsh-taskboard/-/dsh-taskboard-0.5.1.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-taskboard/-/dsh-taskboard-0.5.1.tgz",
+        "repository": "git+https://github.com/cloader/dsh-taskboard.git",
+        "publishedAt": "2026-08-24T05:52:11.841Z"
       },
       "graphError": "requested root package is not present in npm lockfile: dsh-taskboard@0.5.1",
       "alignment": {
@@ -270057,7 +270241,7 @@
     "dsh-email": {
       "targetId": "dsh-email",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "STARDUSTLC666/dsh-email",
         "ref": "main",
@@ -270110,7 +270294,9 @@
         "version": "0.6.2",
         "distTag": "latest",
         "integrity": "sha512-oZiev0K8rpDuZ5S4hiIpULfWgcMzschMOnUf6J/U3Ga8cUWKTvukcGWpyQSpgpZymKShEsoyC+OLlEcoDkhEZQ==",
-        "tarball": "https://registry.npmjs.org/dsh-email/-/dsh-email-0.6.2.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-email/-/dsh-email-0.6.2.tgz",
+        "repository": "https://github.com/STARDUSTLC666/dsh-email",
+        "publishedAt": "2026-08-15T07:50:45.257Z"
       },
       "graph": {
         "schema": "upstream-radar.dependency-graph/v1alpha1",
@@ -270847,7 +271033,7 @@
     "dsh-meme": {
       "targetId": "dsh-meme",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-23T11:34:10.692Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "yyh-001/dsh-meme",
         "ref": "main",
@@ -270891,7 +271077,9 @@
         "version": "0.1.39",
         "distTag": "latest",
         "integrity": "sha512-PpB1ZyxZjm2fNxd48o+W+g2ZrBwlJ9YlRBthSVvXdZ2DsmewreI84efjhwwL5slXww9oTyTFdw/8YHsHydL30Q==",
-        "tarball": "https://registry.npmjs.org/dsh-meme/-/dsh-meme-0.1.39.tgz"
+        "tarball": "https://registry.npmjs.org/dsh-meme/-/dsh-meme-0.1.39.tgz",
+        "repository": "git+https://github.com/yyh-001/dsh-meme.git",
+        "publishedAt": "2026-08-20T14:29:43.676Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"
@@ -270958,7 +271146,7 @@
     "xgone-dsh-remote": {
       "targetId": "xgone-dsh-remote",
       "ecosystem": "dsh",
-      "observedAt": "2026-08-24T07:33:40.123Z",
+      "observedAt": "2026-08-25T08:22:54.033Z",
       "source": {
         "repository": "xgone/dsh-remote",
         "ref": "main",
@@ -270999,7 +271187,9 @@
         "version": "0.2.8",
         "distTag": "latest",
         "integrity": "sha512-79FBFDmtL3gbDiJd3De1vvUgiak8fgj99zo/y3h+VzrNjtHOb2rKaOVq7auh8sIiBoLY4MC4Fh5EKRBKeMVuvg==",
-        "tarball": "https://registry.npmjs.org/@xgone/dsh-remote/-/dsh-remote-0.2.8.tgz"
+        "tarball": "https://registry.npmjs.org/@xgone/dsh-remote/-/dsh-remote-0.2.8.tgz",
+        "repository": "git+https://github.com/xgone/dsh-remote.git",
+        "publishedAt": "2026-08-24T07:05:03.797Z"
       },
       "warnings": [
         "no supported lockfile found; dependency graph was not available"

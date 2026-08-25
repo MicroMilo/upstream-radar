@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha2",
-  "generatedAt": "2026-08-25T08:11:39.343Z",
+  "generatedAt": "2026-08-25T08:25:05.351Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.43.5",
@@ -29,10 +29,10 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 74,
+    "observed-compatible": 73,
     "observed-incompatible": 0,
-    "needs-review": 22,
-    "update-pending": 0,
+    "needs-review": 21,
+    "update-pending": 2,
     "not-observed": 4
   },
   "plugins": [
@@ -3107,10 +3107,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-win32",
-        "selectedVersion": "0.16.3",
+        "selectedVersion": "0.17.0",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-win32-node22",
@@ -4155,11 +4155,11 @@
       "category": "ui",
       "distribution": {
         "kind": "npm",
-        "name": "@linxin666/dsh-web-ui-all",
+        "name": "@linxin666/dsh-web-all",
         "selectedVersion": "0.3.3",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-web-ui-all-node22",
