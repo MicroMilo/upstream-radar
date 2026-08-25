@@ -33,6 +33,7 @@ jobs:
       run_install_observation: ${{ steps.install-plan.outputs.run }}
       install_dsh_version: ${{ steps.install-plan.outputs.dsh_version }}
       install_matrix: ${{ steps.install-plan.outputs.matrix }}
+      observer_exit: ${{ steps.observe.outputs.exit }}
     steps:
       - name: Check out the observer and its targets
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -69,6 +70,11 @@ jobs:
       - name: Observe upstream changes
         if: inputs.mode != 'headless-agent'
         id: observe
+        # A source outage is degraded evidence, not permission to discard the
+        # successful targets from this cycle. Preserve the exit code, continue
+        # planning/retesting those targets, then surface the outage after the
+        # dynamic jobs have finished.
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ github.token }}
           OBSERVER_REPORT: ${{ runner.temp }}/upstream-radar-observer.md
@@ -352,4 +358,19 @@ jobs:
         run: |
           echo "Compatibility evidence was partially persisted: accepted=${RADAR_ACCEPTED:-unknown}, missing=${RADAR_MISSING:-unknown}, rejected=${RADAR_REJECTED:-unknown}."
           echo 'The incomplete cells remain unsatisfied and will be selected by the next reconciliation run.'
+          exit 1
+
+  # Keep a partial source outage visible without letting it short-circuit the
+  # successful targets discovered in the same observer cycle.
+  observer-source-health:
+    needs: [observe, install-observation, reconcile-install-observations]
+    if: always() && needs.observe.outputs.observer_exit != '' && needs.observe.outputs.observer_exit != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Surface the partial observer failure after downstream work
+        env:
+          OBSERVER_EXIT: ${{ needs.observe.outputs.observer_exit }}
+        run: |
+          echo "The observer returned exit code ${OBSERVER_EXIT}; successful targets still completed planning and isolated retesting."
           exit 1

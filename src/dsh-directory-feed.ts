@@ -4,7 +4,7 @@ import { parseNpmSpec } from './npm.js'
 import { TOOL_VERSION } from './version.js'
 
 export const AWESOME_DSH_COHORT_SCHEMA = 'upstream-radar.awesome-dsh-cohort/v1alpha1' as const
-export const DSH_DIRECTORY_COMPATIBILITY_FEED_SCHEMA = 'upstream-radar.dsh-directory-compatibility-feed/v1alpha1' as const
+export const DSH_DIRECTORY_COMPATIBILITY_FEED_SCHEMA = 'upstream-radar.dsh-directory-compatibility-feed/v1alpha2' as const
 
 const MAX_COHORT_PLUGINS = 100
 const REPOSITORY = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/
@@ -14,6 +14,7 @@ export type DshDirectoryEvidenceStatus =
   | 'observed-compatible'
   | 'observed-incompatible'
   | 'needs-review'
+  | 'update-pending'
   | 'not-observed'
 
 export interface AwesomeDshCohortPlugin {
@@ -60,7 +61,7 @@ export interface DshDirectoryEvidenceCell {
   }
   executionPlane: 'headless'
   profile: 'headless'
-  status: Exclude<DshDirectoryEvidenceStatus, 'not-observed'>
+  status: Exclude<DshDirectoryEvidenceStatus, 'not-observed' | 'update-pending'>
   radarResult: DshCompatibilityLedgerEntry['result']
   requiredDependencyBuilds?: string[]
   observedAt: string
@@ -90,6 +91,10 @@ export interface DshDirectoryCompatibilityFeed {
     version: string
     repository: string
     license: 'Apache-2.0'
+  }
+  selectedHost?: {
+    package: '@deepseek-ai/dsh'
+    version: string
   }
   sourceCatalog: AwesomeDshCohort['source']
   boundary: {
@@ -223,7 +228,7 @@ export function parseAwesomeDshCohort(input: unknown): AwesomeDshCohort {
   }
 }
 
-function cellStatus(result: DshCompatibilityLedgerEntry['result']): Exclude<DshDirectoryEvidenceStatus, 'not-observed'> {
+function cellStatus(result: DshCompatibilityLedgerEntry['result']): Exclude<DshDirectoryEvidenceStatus, 'not-observed' | 'update-pending'> {
   if (result === 'compatible') return 'observed-compatible'
   if (result === 'runtime-incompatible' || result === 'install-failed' || result === 'load-failed') {
     return 'observed-incompatible'
@@ -231,11 +236,27 @@ function cellStatus(result: DshCompatibilityLedgerEntry['result']): Exclude<DshD
   return 'needs-review'
 }
 
-function aggregateStatus(cells: readonly DshDirectoryEvidenceCell[]): DshDirectoryEvidenceStatus {
+function aggregateExactCellStatus(cells: readonly DshDirectoryEvidenceCell[]): DshDirectoryEvidenceStatus {
   if (cells.length === 0) return 'not-observed'
   if (cells.some(cell => cell.status === 'observed-incompatible')) return 'observed-incompatible'
   if (cells.some(cell => cell.status === 'needs-review')) return 'needs-review'
   return 'observed-compatible'
+}
+
+function aggregateStatus(
+  distribution: AwesomeDshCohortPlugin['distribution'],
+  cells: readonly DshDirectoryEvidenceCell[],
+  selectedDshVersion?: string,
+): DshDirectoryEvidenceStatus {
+  if (cells.length === 0) return 'not-observed'
+  if (distribution.kind !== 'npm') return aggregateExactCellStatus(cells)
+  const selectedSpec = `${distribution.name}@${distribution.selectedVersion}`
+  const currentCells = cells.filter(cell => (
+    cell.artifact.spec === selectedSpec
+    && (selectedDshVersion === undefined || cell.dsh.version === selectedDshVersion)
+  ))
+  if (currentCells.length === 0) return 'update-pending'
+  return aggregateExactCellStatus(currentCells)
 }
 
 function dueAt(observedAt: string, refreshAfterHours: number): string {
@@ -267,23 +288,20 @@ export function buildDshDirectoryCompatibilityFeed(input: {
     .filter(target => target.observerTargetId !== undefined)
     .map(target => [target.observerTargetId as string, target]))
 
-  const observedDistribution = (plugin: AwesomeDshCohortPlugin): AwesomeDshCohortPlugin['distribution'] => {
-    if (plugin.distribution.kind !== 'npm') return plugin.distribution
-    if (typeof input.observations !== 'object' || input.observations === null || Array.isArray(input.observations)) {
-      return plugin.distribution
-    }
+  const observedPackage = (targetId: string): { name: string; version: string; distTag?: string } | undefined => {
+    if (typeof input.observations !== 'object' || input.observations === null || Array.isArray(input.observations)) return undefined
     const rawTargets = (input.observations as Record<string, unknown>).targets
-    if (typeof rawTargets !== 'object' || rawTargets === null || Array.isArray(rawTargets)) return plugin.distribution
-    const rawObservation = (rawTargets as Record<string, unknown>)[plugin.id]
-    if (typeof rawObservation !== 'object' || rawObservation === null || Array.isArray(rawObservation)) return plugin.distribution
+    if (typeof rawTargets !== 'object' || rawTargets === null || Array.isArray(rawTargets)) return undefined
+    const rawObservation = (rawTargets as Record<string, unknown>)[targetId]
+    if (typeof rawObservation !== 'object' || rawObservation === null || Array.isArray(rawObservation)) return undefined
     const rawPackage = (rawObservation as Record<string, unknown>).package
-    if (typeof rawPackage !== 'object' || rawPackage === null || Array.isArray(rawPackage)) return plugin.distribution
+    if (typeof rawPackage !== 'object' || rawPackage === null || Array.isArray(rawPackage)) return undefined
     const packageRecord = rawPackage as Record<string, unknown>
-    if (packageRecord.name !== plugin.distribution.name || typeof packageRecord.version !== 'string') return plugin.distribution
+    if (typeof packageRecord.name !== 'string' || typeof packageRecord.version !== 'string') return undefined
     try {
       parseNpmSpec(`${packageRecord.name}@${packageRecord.version}`)
     } catch {
-      return plugin.distribution
+      return undefined
     }
     const distTag = typeof packageRecord.distTag === 'string'
       && packageRecord.distTag.trim() !== ''
@@ -291,10 +309,24 @@ export function buildDshDirectoryCompatibilityFeed(input: {
       ? packageRecord.distTag
       : undefined
     return {
+      name: packageRecord.name,
+      version: packageRecord.version,
+      ...(distTag === undefined ? {} : { distTag }),
+    }
+  }
+
+  const observedDsh = observedPackage('deepseek-harness')
+  const selectedDshVersion = observedDsh?.name === '@deepseek-ai/dsh' ? observedDsh.version : undefined
+
+  const observedDistribution = (plugin: AwesomeDshCohortPlugin): AwesomeDshCohortPlugin['distribution'] => {
+    if (plugin.distribution.kind !== 'npm') return plugin.distribution
+    const observed = observedPackage(plugin.id)
+    if (observed?.name !== plugin.distribution.name) return plugin.distribution
+    return {
       kind: 'npm',
       name: plugin.distribution.name,
-      selectedVersion: packageRecord.version,
-      ...(distTag === undefined ? {} : { distTag }),
+      selectedVersion: observed.version,
+      ...(observed.distTag === undefined ? {} : { distTag: observed.distTag }),
     }
   }
 
@@ -325,6 +357,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
       recheckDueAt: dueAt(entry.observedAt, installTargets.refreshAfterHours),
       reason: entry.reason,
     })).sort((left, right) => left.caseId.localeCompare(right.caseId))
+    const distribution = observedDistribution(plugin)
     return {
       id: plugin.id,
       repository: plugin.repository,
@@ -333,8 +366,8 @@ export function buildDshDirectoryCompatibilityFeed(input: {
       catalogEntry: plugin.catalogEntry,
       catalogEntryUrl: `https://github.com/${cohort.source.repository}/blob/${cohort.source.commit}/${plugin.catalogEntry}`,
       category: plugin.category,
-      distribution: observedDistribution(plugin),
-      status: aggregateStatus(cells),
+      distribution,
+      status: aggregateStatus(distribution, cells, selectedDshVersion),
       cells,
       evidenceUrl: `${repositoryBaseUrl}/blob/main/compatibility-ledger.json`,
     }
@@ -345,6 +378,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
     'observed-compatible': 0,
     'observed-incompatible': 0,
     'needs-review': 0,
+    'update-pending': 0,
     'not-observed': 0,
   }
   for (const plugin of plugins) summary[plugin.status] += 1
@@ -353,13 +387,16 @@ export function buildDshDirectoryCompatibilityFeed(input: {
     schema: DSH_DIRECTORY_COMPATIBILITY_FEED_SCHEMA,
     generatedAt,
     producer: { name: 'upstream-radar', version: TOOL_VERSION, repository: repositoryBaseUrl, license: 'Apache-2.0' },
+    ...(selectedDshVersion === undefined ? {} : {
+      selectedHost: { package: '@deepseek-ai/dsh' as const, version: selectedDshVersion },
+    }),
     sourceCatalog: cohort.source,
     boundary: {
       claim: 'exact-cell compatibility evidence; not a security review, endorsement, or timeless compatibility badge',
       executionPlane: 'headless',
       profile: 'headless',
       isolation: 'fresh GitHub-hosted VM plus restricted container',
-      consumptionRule: 'Treat a cell as stale after recheckDueAt. needs-review and not-observed must never be rendered as pass or fail.',
+      consumptionRule: 'A plugin status applies only when a cell exactly matches the selected artifact. Treat update-pending, needs-review and not-observed as neither pass nor fail, and treat a cell as stale after recheckDueAt.',
       refreshAfterHours: installTargets.refreshAfterHours,
     },
     summary,
@@ -374,6 +411,11 @@ function markdown(value: string): string {
 function cellCoordinate(entry: DshDirectoryCompatibilityEntry): string {
   if (entry.cells.length === 0) return '—'
   return entry.cells.map(cell => `\`${markdown(cell.artifact.spec)}\``).join('<br>')
+}
+
+function selectedCoordinate(entry: DshDirectoryCompatibilityEntry): string {
+  if (entry.distribution.kind !== 'npm') return '—'
+  return `\`${markdown(`${entry.distribution.name}@${entry.distribution.selectedVersion}`)}\``
 }
 
 function dshCoordinate(entry: DshDirectoryCompatibilityEntry): string {
@@ -391,14 +433,15 @@ export function renderDshDirectoryCompatibilityFeed(feed: DshDirectoryCompatibil
     '# DSH directory compatibility evidence',
     '',
     `Generated from catalog commit [\`${feed.sourceCatalog.commit.slice(0, 12)}\`](${feed.sourceCatalog.commitUrl}) at \`${feed.generatedAt}\`.`,
+    ...(feed.selectedHost === undefined ? [] : [`Selected host: \`${feed.selectedHost.package}@${feed.selectedHost.version}\`.`]),
     '',
-    `**${feed.summary['observed-compatible']} observed compatible · ${feed.summary['observed-incompatible']} observed incompatible · ${feed.summary['needs-review']} needs review · ${feed.summary['not-observed']} not observed**`,
+    `**${feed.summary['observed-compatible']} observed compatible · ${feed.summary['observed-incompatible']} observed incompatible · ${feed.summary['needs-review']} needs review · ${feed.summary['update-pending']} update pending · ${feed.summary['not-observed']} not observed**`,
     '',
-    '| Catalog plugin | Exact artifact | Exact DSH / runtime | Evidence status | Observed |',
-    '| --- | --- | --- | --- | --- |',
+    '| Catalog plugin | Selected artifact | Tested artifact | Exact DSH / runtime | Evidence status | Observed |',
+    '| --- | --- | --- | --- | --- | --- |',
   ]
   for (const entry of feed.plugins) {
-    lines.push(`| [${markdown(entry.repository)}](${entry.catalogUrl}) | ${cellCoordinate(entry)} | ${dshCoordinate(entry)} | \`${entry.status}\` | ${observedCoordinate(entry)} |`)
+    lines.push(`| [${markdown(entry.repository)}](${entry.catalogUrl}) | ${selectedCoordinate(entry)} | ${cellCoordinate(entry)} | ${dshCoordinate(entry)} | \`${entry.status}\` | ${observedCoordinate(entry)} |`)
   }
   lines.push(
     '',
@@ -407,6 +450,7 @@ export function renderDshDirectoryCompatibilityFeed(feed: DshDirectoryCompatibil
     '- `observed-compatible`: the exact artifact installed, registered and loaded in the stated headless cell.',
     '- `observed-incompatible`: the exact cell reproduced a runtime gate, install, registration or load failure.',
     '- `needs-review`: evidence exists, but Radar cannot yet separate a plugin defect from an uncovered execution plane, environment condition, or explicit dependency-build approval gate.',
+    '- `update-pending`: the selected npm artifact changed and has no exact cell yet; historical evidence is retained but never inherited as the current result.',
     '- `not-observed`: the catalog entry is monitored statically but has no matching executable npm artifact in this cohort.',
     '',
     `A cell expires at its \`recheckDueAt\` value (${feed.boundary.refreshAfterHours} hours after observation). Consumers must then show it as stale. This is exact compatibility evidence, not a security review or endorsement.`,

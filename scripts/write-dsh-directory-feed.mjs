@@ -39,5 +39,6 @@ process.stdout.write(`${JSON.stringify({
   observedCompatible: feed.summary['observed-compatible'],
   observedIncompatible: feed.summary['observed-incompatible'],
   needsReview: feed.summary['needs-review'],
+  updatePending: feed.summary['update-pending'],
   notObserved: feed.summary['not-observed'],
 }, null, 2)}\n`)
