@@ -1,6 +1,6 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-25T10:04:14.817Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-25T10:08:45.315Z`.
 Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 
 **87 observed compatible · 0 observed incompatible · 9 needs review · 0 update pending · 4 not observed**
@@ -62,7 +62,7 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 | [NoNameLeGo/dsh-catppuccin-theme](https://github.com/NoNameLeGo/dsh-catppuccin-theme) | `@nonamelego/dsh-catppuccin@0.3.1` | `@nonamelego/dsh-catppuccin@0.3.1` | `0.1.1-rc.2` / Node 22 / headless | `observed-compatible` | 2026-08-24T04:45:32.811Z |
 | [nonewind/dsh-spend](https://github.com/nonewind/dsh-spend) | `dsh-spend@0.6.0` | `dsh-spend@0.6.0` | `0.1.1-rc.2` / Node 22 / headless | `observed-compatible` | 2026-08-25T04:03:33.603Z |
 | [Nwflower/dsh-chat-import](https://github.com/Nwflower/dsh-chat-import) | `dsh-chat-import@0.7.0` | `dsh-chat-import@0.7.0` | `0.1.1-rc.2` / Node 22 / headless | `observed-compatible` | 2026-08-25T07:13:15.811Z |
-| [omdsh-dev/DSH-better-sidebar](https://github.com/omdsh-dev/DSH-better-sidebar) | `dsh-better-sidebar@0.16.1` | `dsh-better-sidebar@0.16.1`<br>`dsh-better-sidebar@0.16.1` | `0.1.1-rc.2` / Node 22 / headless<br>`0.1.1-rc.2` / Node 22 / web | `needs-review` | 2026-08-25T04:04:08.326Z<br>2026-08-25T09:50:45.133Z |
+| [omdsh-dev/DSH-better-sidebar](https://github.com/omdsh-dev/DSH-better-sidebar) | `dsh-better-sidebar@0.16.1` | `dsh-better-sidebar@0.16.1`<br>`dsh-better-sidebar@0.16.1` | `0.1.1-rc.2` / Node 22 / headless<br>`0.1.1-rc.2` / Node 22 / web | `needs-review` | 2026-08-25T04:04:08.326Z<br>2026-08-25T10:08:13.193Z |
 | [omdsh-dev/dsh-mnemon](https://github.com/omdsh-dev/dsh-mnemon) | `dsh-mnemon@0.3.0` | `dsh-mnemon@0.3.0`<br>`dsh-mnemon@0.3.0` | `0.1.1-rc.2` / Node 22 / headless<br>`0.1.1-rc.2` / Node 22 / web | `needs-review` | 2026-08-25T07:13:15.313Z<br>2026-08-25T09:50:40.465Z |
 | [openma-ai/deepseek-harness-acp](https://github.com/openma-ai/deepseek-harness-acp) | `@openma/deepseek-harness-acp@0.4.26` | `@openma/deepseek-harness-acp@0.4.26` | `0.1.1-rc.2` / Node 22 / headless | `observed-compatible` | 2026-08-25T04:03:31.244Z |
 | [orziz/odai](https://github.com/orziz/odai/tree/main/dsh/plugin) | `odai-dsh-plugin@0.2.9` | `odai-dsh-plugin@0.2.9` | `0.1.1-rc.2` / Node 22 / headless | `observed-compatible` | 2026-08-25T04:04:13.306Z |

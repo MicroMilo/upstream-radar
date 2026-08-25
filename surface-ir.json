@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-surface-ir/v1alpha1",
-  "generatedAt": "2026-08-25T09:51:09.708Z",
+  "generatedAt": "2026-08-25T10:08:13.193Z",
   "cells": [
     {
       "id": "better-sidebar-node22-web",
@@ -24,9 +24,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:50:45.133Z",
-        "result": "environment-unsupported",
-        "reason": "the declared web environment still requires explicit dependency-build approval: node-pty",
+        "observedAt": "2026-08-25T10:08:13.193Z",
+        "result": "compatible",
+        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -41,38 +41,78 @@
             "code": 0
           },
           "install": {
-            "status": "failed",
-            "code": 1,
-            "detail": "command exited with 1: dsh: pnpm failed in profile directory /sandbox/upstream-radar-dsh-surface-i6IVYb/dsh-home/profiles/web\n\nProgress: resolved 0, reused 0, downloaded 1, added 0\n[WARN] Issues with peer dependencies found. Run \"pnpm peers check\" to list them.\n\ndependencies:\n+ dsh-better-sidebar file:/sandbox/upstream-radar-dsh-surface-i6IVYb/artifact/dsh-better-sidebar-0.16.1.tgz\n\nPackages: +167\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 167, reused 5, downloaded 1, added 0\nProgress: resolved 167, reused 6, downloaded 119, added 12\nProgress: resolved 167, reused 6, downloaded 161, added 67\nProgress: resolved 167, reused 6, downloaded 161, added 167, done\n[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: node-pty@1.1.0\n\nRun \"pnpm approve-builds\" to pick which dependencies should be allowed to run scripts."
+            "status": "passed",
+            "code": 0
           },
           "registration": {
-            "status": "skipped"
+            "status": "passed"
           },
           "host": {
-            "status": "skipped"
+            "status": "passed"
           },
           "surface": {
-            "status": "skipped"
+            "status": "passed"
           },
           "interaction": {
-            "status": "skipped"
+            "status": "passed"
           },
           "shutdown": {
-            "status": "skipped"
+            "status": "passed"
           }
         },
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "rootMounted": false,
-          "bootManifestPresent": false,
-          "bootEntryIds": [],
-          "pluginEntryPresent": false,
-          "applicationMounted": false,
-          "pluginMaterialized": false,
+          "httpStatus": 200,
+          "title": "DeepSeek Harness",
+          "rootMounted": true,
+          "bootManifestPresent": true,
+          "bootEntryIds": [
+            "dsh-better-sidebar",
+            "@deepseek-ai/dsh-typert-registry",
+            "@deepseek-ai/dsh-api-gateway",
+            "@deepseek-ai/dsh-session-log-export",
+            "@deepseek-ai/dsh-client-hmr",
+            "@deepseek-ai/dsh-client-modules",
+            "@deepseek-ai/dsh-client-connection",
+            "@deepseek-ai/dsh-api-remotes",
+            "@deepseek-ai/dsh-client-runtime",
+            "@deepseek-ai/dsh-cordis-client-runner",
+            "@deepseek-ai/dsh-client-ui-theme",
+            "@deepseek-ai/dsh-client-locale",
+            "@deepseek-ai/dsh-client-ui-layout",
+            "@deepseek-ai/dsh-client-ui-renderer",
+            "@deepseek-ai/dsh-client-ui-sidebar",
+            "@deepseek-ai/dsh-client-ui-settings",
+            "@deepseek-ai/dsh-client-ui-settings-general",
+            "@deepseek-ai/dsh-client-ui-settings-models",
+            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+            "@deepseek-ai/dsh-client-ui-conversation",
+            "@deepseek-ai/dsh-client-ui-brand-official",
+            "@deepseek-ai/dsh-client-ui-attachment",
+            "@deepseek-ai/dsh-client-ui-tool",
+            "@deepseek-ai/dsh-client-ui-cordis",
+            "@deepseek-ai/dsh-client-ui-workflow-run",
+            "@deepseek-ai/dsh-client-ui-deliverables",
+            "@deepseek-ai/dsh-client-ui-workspace",
+            "@deepseek-ai/dsh-client-ui-input-trigger",
+            "@deepseek-ai/dsh-client-ui-commands",
+            "@deepseek-ai/dsh-client-ui-skill",
+            "@deepseek-ai/dsh-client-ui-subagent",
+            "@deepseek-ai/dsh-client-ui-reference"
+          ],
+          "pluginEntryPresent": true,
+          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-better-sidebar/client.js?rev=3ae56a444a61",
+          "pluginBundleStatus": 200,
+          "applicationMounted": true,
+          "pluginMaterialized": true,
           "consoleErrors": [],
           "pageErrors": [],
-          "failedRequests": []
+          "failedRequests": [],
+          "blockedExternalRequests": [],
+          "screenshot": "better-sidebar-node22-web.png",
+          "trace": "better-sidebar-node22-web.trace.zip",
+          "hostLog": "better-sidebar-node22-web.host.log"
         }
       }
     },

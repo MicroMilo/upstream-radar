@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-08-25T10:04:14.817Z",
+  "generatedAt": "2026-08-25T10:08:45.315Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.44.0",
@@ -2894,14 +2894,14 @@
           },
           "executionPlane": "web",
           "profile": "web",
-          "status": "needs-review",
-          "radarResult": "environment-unsupported",
-          "requiredDependencyBuilds": [
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "approvedDependencyBuilds": [
             "node-pty"
           ],
-          "observedAt": "2026-08-25T09:50:45.133Z",
-          "recheckDueAt": "2026-09-01T09:50:45.133Z",
-          "reason": "the declared web environment still requires explicit dependency-build approval: node-pty"
+          "observedAt": "2026-08-25T10:08:13.193Z",
+          "recheckDueAt": "2026-09-01T10:08:13.193Z",
+          "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
