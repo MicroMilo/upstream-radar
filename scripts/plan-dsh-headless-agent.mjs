@@ -9,13 +9,14 @@ import {
   parseDshHeadlessAgentDecision,
   parseDshHeadlessAgentPlans,
   renderDshHeadlessAgentPrompt,
+  selectDshHeadlessAgentReviewEntries,
 } from '../dist/src/dsh-headless-agent-plan.js'
+import { parseDshInstallTargets } from '../dist/src/dsh-install-plan.js'
 import { parseDshCompatibilityLedger } from '../dist/src/dsh-compatibility-ledger.js'
 
 const MAX_INPUT_BYTES = 256 * 1024 * 1024
 const MAX_DOCUMENT_BYTES = 48 * 1024
 const MAX_DOCUMENT_TOTAL_BYTES = 128 * 1024
-const MAX_CANDIDATES = 100
 const CONCURRENCY = 4
 
 async function readJson(path) {
@@ -279,16 +280,10 @@ const [targets, cohort, observations, ledger, existingPlans] = await Promise.all
   readJson(ledgerPath).then(parseDshCompatibilityLedger),
   readPlans(plansPath),
 ])
-const targetById = new Map((Array.isArray(targets?.plugins) ? targets.plugins : []).map(target => [target.id, target]))
+const parsedTargets = parseDshInstallTargets(targets)
+const targetById = new Map(parsedTargets.plugins.map(target => [target.id, target]))
 const existingByCase = new Map(existingPlans.entries.map(entry => [entry.caseId, entry]))
-const reviewEntries = ledger.entries.filter(entry => {
-  const target = targetById.get(entry.targetId)
-  return target !== undefined
-    && target.spec === entry.plugin
-    && (entry.result === 'build-approval-required'
-      || entry.result === 'peer-contract-incompatible'
-      || entry.result === 'unknown')
-}).slice(0, MAX_CANDIDATES)
+const reviewEntries = selectDshHeadlessAgentReviewEntries(parsedTargets, observations, ledger)
 const candidates = await mapConcurrent(reviewEntries, async entry => {
   const target = targetById.get(entry.targetId)
   const source = sourceContext(target, observations, cohort)

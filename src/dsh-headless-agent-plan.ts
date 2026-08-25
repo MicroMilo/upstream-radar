@@ -6,6 +6,7 @@ import {
 } from './dsh-compatibility-ledger.js'
 import {
   parseDshInstallTargets,
+  resolveDshInstallTargetSpec,
   type DshInstallTargets,
 } from './dsh-install-plan.js'
 
@@ -325,6 +326,30 @@ function planMatchesLedger(entry: DshHeadlessAgentPlanEntry, observed: DshCompat
     && entry.dshVersion === observed.dshVersion
     && entry.nodeMajor === observed.runtime.nodeMajor
     && entry.artifactSha256 === observed.artifact.sha256
+}
+
+/**
+ * Select only review evidence for the exact plugin coordinate currently
+ * represented by each observer-backed install target. This deliberately uses
+ * the same coordinate resolver as the compatibility planner so a new npm
+ * publication cannot be scheduled by one planner and hidden from the other.
+ */
+export function selectDshHeadlessAgentReviewEntries(
+  targetsInput: unknown,
+  stateInput: unknown,
+  ledgerInput: unknown,
+): DshCompatibilityLedgerEntry[] {
+  const targets = parseDshInstallTargets(targetsInput)
+  const ledger = parseDshCompatibilityLedger(ledgerInput)
+  const targetById = new Map(targets.plugins.map(target => [target.id, target]))
+  return ledger.entries.filter(entry => {
+    const target = targetById.get(entry.targetId)
+    return target !== undefined
+      && resolveDshInstallTargetSpec(target, stateInput) === entry.plugin
+      && (entry.result === 'build-approval-required'
+        || entry.result === 'peer-contract-incompatible'
+        || entry.result === 'unknown')
+  }).slice(0, MAX_ENTRIES)
 }
 
 /**

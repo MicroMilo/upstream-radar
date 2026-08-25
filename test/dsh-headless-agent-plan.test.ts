@@ -7,6 +7,7 @@ import {
   parseDshHeadlessAgentDecision,
   parseDshHeadlessAgentPlans,
   renderDshHeadlessAgentPrompt,
+  selectDshHeadlessAgentReviewEntries,
   type DshHeadlessAgentCandidate,
 } from '../src/dsh-headless-agent-plan.js'
 
@@ -99,6 +100,34 @@ function ledger(overrides: Record<string, unknown> = {}) {
 }
 
 describe('DSH headless Agent planning', () => {
+  it('selects the current observed plugin coordinate instead of the stale corpus coordinate', () => {
+    const mappedTargets = {
+      ...targets,
+      plugins: [{
+        ...targets.plugins[0]!,
+        observerTargetId: 'dsh-vision',
+      }],
+    }
+    const observations = {
+      targets: {
+        'dsh-vision': {
+          package: { name: 'dsh-vision', version: '1.1.0' },
+        },
+      },
+    }
+    const currentLedger = ledger({ plugin: 'dsh-vision@1.1.0' })
+
+    const selected = selectDshHeadlessAgentReviewEntries(mappedTargets, observations, currentLedger)
+
+    assert.deepEqual(selected.map(entry => entry.plugin), ['dsh-vision@1.1.0'])
+    assert.deepEqual(
+      selectDshHeadlessAgentReviewEntries(mappedTargets, {
+        targets: { 'dsh-vision': { package: { name: 'unrelated-package', version: '1.1.0' } } },
+      }, currentLedger),
+      [],
+    )
+  })
+
   it('accepts one exact observed build approval and keeps repository text untrusted', () => {
     const decision = parseDshHeadlessAgentDecision({
       action: 'retry-headless',
