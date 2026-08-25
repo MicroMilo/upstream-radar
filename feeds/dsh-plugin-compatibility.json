@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha2",
-  "generatedAt": "2026-08-25T07:12:14.834Z",
+  "generatedAt": "2026-08-25T07:13:53.913Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.43.5",
@@ -29,10 +29,10 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 67,
+    "observed-compatible": 74,
     "observed-incompatible": 0,
-    "needs-review": 20,
-    "update-pending": 9,
+    "needs-review": 22,
+    "update-pending": 0,
     "not-observed": 4
   },
   "plugins": [
@@ -287,8 +287,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T04:03:26.458Z",
-          "recheckDueAt": "2026-09-01T04:03:26.458Z",
+          "observedAt": "2026-08-25T07:13:18.096Z",
+          "recheckDueAt": "2026-09-01T07:13:18.096Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -351,13 +351,13 @@
         "selectedVersion": "0.1.39",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-vision-toolkit-node22",
           "artifact": {
-            "spec": "@anionex/dsh-vision-toolkit@0.1.38",
-            "sha256": "524a85818f90d43a3784fdafbfd25bb11908b6a75f6996e642d8890f39f04e64"
+            "spec": "@anionex/dsh-vision-toolkit@0.1.39",
+            "sha256": "81b4029142f0f3c2fbe88a8ee22c90da8cf449b68b345eebfd2e643c0a06efb1"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -373,8 +373,8 @@
           "profile": "headless",
           "status": "needs-review",
           "radarResult": "peer-contract-incompatible",
-          "observedAt": "2026-08-25T04:03:26.279Z",
-          "recheckDueAt": "2026-09-01T04:03:26.279Z",
+          "observedAt": "2026-08-25T07:13:14.516Z",
+          "recheckDueAt": "2026-09-01T07:13:14.516Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@^0.1.0-rc.6 was not resolved by the DSH runtime (runtime-import-observed)"
         }
       ],
@@ -416,8 +416,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T04:03:28.053Z",
-          "recheckDueAt": "2026-09-01T04:03:28.053Z",
+          "observedAt": "2026-08-25T07:13:17.834Z",
+          "recheckDueAt": "2026-09-01T07:13:17.834Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -480,13 +480,13 @@
         "selectedVersion": "0.6.14",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-remote-plugin-node22",
           "artifact": {
-            "spec": "dsh-remote-plugin@0.6.13",
-            "sha256": "ad0a52963e7f56569b898ed5d13926bcca43523413c6cfaf72f0034f8ee2c584"
+            "spec": "dsh-remote-plugin@0.6.14",
+            "sha256": "78bbf849d6599677fa82bcf86a311515a5bd64125a14ca91f23daea092a761ae"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -502,8 +502,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T04:03:25.323Z",
-          "recheckDueAt": "2026-09-01T04:03:25.323Z",
+          "observedAt": "2026-08-25T07:13:13.607Z",
+          "recheckDueAt": "2026-09-01T07:13:13.607Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -523,13 +523,13 @@
         "selectedVersion": "0.31.1",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "context-node22",
           "artifact": {
-            "spec": "dsh-context@0.31.0",
-            "sha256": "49245b3566eeb0cc40090639ddd645adb4171eb00a8de7808d747944afa2d12a"
+            "spec": "dsh-context@0.31.1",
+            "sha256": "87301d6a8ffcc41fa9836794d870ac445a372cf5e2f7bdb6643dd39dcfec0e4b"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -545,8 +545,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T04:03:30.137Z",
-          "recheckDueAt": "2026-09-01T04:03:30.137Z",
+          "observedAt": "2026-08-25T07:13:16.846Z",
+          "recheckDueAt": "2026-09-01T07:13:16.846Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -588,8 +588,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T04:39:14.674Z",
-          "recheckDueAt": "2026-09-01T04:39:14.674Z",
+          "observedAt": "2026-08-25T07:13:27.454Z",
+          "recheckDueAt": "2026-09-01T07:13:27.454Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -803,8 +803,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T04:03:21.307Z",
-          "recheckDueAt": "2026-09-01T04:03:21.307Z",
+          "observedAt": "2026-08-25T07:13:11.971Z",
+          "recheckDueAt": "2026-09-01T07:13:11.971Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -975,8 +975,8 @@
           "profile": "headless",
           "status": "needs-review",
           "radarResult": "peer-contract-incompatible",
-          "observedAt": "2026-08-25T04:03:27.693Z",
-          "recheckDueAt": "2026-09-01T04:03:27.693Z",
+          "observedAt": "2026-08-25T07:13:21.792Z",
+          "recheckDueAt": "2026-09-01T07:13:21.792Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-attachment@0.1.1-rc.2 does not satisfy 0.1.0-rc.8 (scan-incomplete)"
         }
       ],
@@ -996,13 +996,13 @@
         "selectedVersion": "1.28.2",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-market-node22",
           "artifact": {
-            "spec": "dshmarket@1.26.0",
-            "sha256": "8d7111fd02cf950b8d6e877a10da46f25677baee5ea8395a774cba969b985188"
+            "spec": "dshmarket@1.28.2",
+            "sha256": "3cc77bfdfc9b72095572716c422ed60d04eda253df48b771f04dfc4b0d4a233d"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -1018,8 +1018,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T04:03:18.411Z",
-          "recheckDueAt": "2026-09-01T04:03:18.411Z",
+          "observedAt": "2026-08-25T07:13:14.918Z",
+          "recheckDueAt": "2026-09-01T07:13:14.918Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -1104,8 +1104,8 @@
           "profile": "headless",
           "status": "needs-review",
           "radarResult": "peer-contract-incompatible",
-          "observedAt": "2026-08-25T04:03:26.785Z",
-          "recheckDueAt": "2026-09-01T04:03:26.785Z",
+          "observedAt": "2026-08-25T07:13:17.620Z",
+          "recheckDueAt": "2026-09-01T07:13:17.620Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@>=0.1.0-rc.6 was not resolved by the DSH runtime (no-literal-reference-observed)"
         }
       ],
@@ -1465,8 +1465,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T04:04:10.943Z",
-          "recheckDueAt": "2026-09-01T04:04:10.943Z",
+          "observedAt": "2026-08-25T07:13:15.908Z",
+          "recheckDueAt": "2026-09-01T07:13:15.908Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -1701,13 +1701,13 @@
         "selectedVersion": "1.22.9",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-xueqiu-node22",
           "artifact": {
-            "spec": "dsh-xueqiu@1.22.7",
-            "sha256": "278ce1b5dc7b7d33ec8352120ff7d6a428ca7499203de59ab5aa6ce4dc5e859c"
+            "spec": "dsh-xueqiu@1.22.9",
+            "sha256": "11bff4def61560eefb5332ea685c2db0037b386045c5ca05f60ecbc61381148f"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -1723,8 +1723,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T04:03:15.429Z",
-          "recheckDueAt": "2026-09-01T04:03:15.429Z",
+          "observedAt": "2026-08-25T07:13:18.969Z",
+          "recheckDueAt": "2026-09-01T07:13:18.969Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -2341,8 +2341,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T04:03:25.473Z",
-          "recheckDueAt": "2026-09-01T04:03:25.473Z",
+          "observedAt": "2026-08-25T07:13:15.811Z",
+          "recheckDueAt": "2026-09-01T07:13:15.811Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -2427,8 +2427,8 @@
           "profile": "headless",
           "status": "needs-review",
           "radarResult": "peer-contract-incompatible",
-          "observedAt": "2026-08-25T04:03:19.306Z",
-          "recheckDueAt": "2026-09-01T04:03:19.306Z",
+          "observedAt": "2026-08-25T07:13:15.313Z",
+          "recheckDueAt": "2026-09-01T07:13:15.313Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@^0.1.0-rc.6 || ^0.1.1-rc.1 was not resolved by the DSH runtime (runtime-import-observed)"
         }
       ],
@@ -2745,8 +2745,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T04:03:30.347Z",
-          "recheckDueAt": "2026-09-01T04:03:30.347Z",
+          "observedAt": "2026-08-25T07:13:11.010Z",
+          "recheckDueAt": "2026-09-01T07:13:11.010Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -2852,13 +2852,13 @@
         "selectedVersion": "0.2.1",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-mobile-node22",
           "artifact": {
-            "spec": "dsh-mobile@0.2.0",
-            "sha256": "38346bfa199d07f563ecfae7291070a90951570f7a8d3cedc8c10745d9b676fe"
+            "spec": "dsh-mobile@0.2.1",
+            "sha256": "350c0bb33d51dc32215c151d2cd01fff9f2487596abba635841df6ec890bef5c"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -2874,8 +2874,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-24T04:45:31.171Z",
-          "recheckDueAt": "2026-08-31T04:45:31.171Z",
+          "observedAt": "2026-08-25T07:13:14.933Z",
+          "recheckDueAt": "2026-09-01T07:13:14.933Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -3089,8 +3089,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-24T04:45:30.822Z",
-          "recheckDueAt": "2026-08-31T04:45:30.822Z",
+          "observedAt": "2026-08-25T07:13:16.687Z",
+          "recheckDueAt": "2026-09-01T07:13:16.687Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -3132,8 +3132,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-24T04:45:35.447Z",
-          "recheckDueAt": "2026-08-31T04:45:35.447Z",
+          "observedAt": "2026-08-25T07:13:16.158Z",
+          "recheckDueAt": "2026-09-01T07:13:16.158Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -3665,8 +3665,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T04:03:19.044Z",
-          "recheckDueAt": "2026-09-01T04:03:19.044Z",
+          "observedAt": "2026-08-25T07:13:15.158Z",
+          "recheckDueAt": "2026-09-01T07:13:15.158Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -3708,8 +3708,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-23T11:52:36.570Z",
-          "recheckDueAt": "2026-08-30T11:52:36.570Z",
+          "observedAt": "2026-08-25T07:13:13.982Z",
+          "recheckDueAt": "2026-09-01T07:13:13.982Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -3772,13 +3772,13 @@
         "selectedVersion": "1.8.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-codex-subscription-node22",
           "artifact": {
-            "spec": "dsh-codex-subscription@1.7.4",
-            "sha256": "d047c922cb3688aad6c5fe7b45e1f09ebffbaadbd6ec564ab121d91625d8aeec"
+            "spec": "dsh-codex-subscription@1.8.0",
+            "sha256": "1737b140a9a435a7f304ac69c9bdb66979a57843f0bc803ce6baa1680f2f6020"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -3794,8 +3794,8 @@
           "profile": "headless",
           "status": "needs-review",
           "radarResult": "peer-contract-incompatible",
-          "observedAt": "2026-08-25T04:03:19.844Z",
-          "recheckDueAt": "2026-09-01T04:03:19.844Z",
+          "observedAt": "2026-08-25T07:13:13.108Z",
+          "recheckDueAt": "2026-09-01T07:13:13.108Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2 was not resolved by the DSH runtime (runtime-import-observed)"
         }
       ],
@@ -3987,13 +3987,13 @@
         "selectedVersion": "2.4.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-im-node22",
           "artifact": {
-            "spec": "@xmanrui/dsh-im@2.3.0",
-            "sha256": "954e9aac5d87347f79fd40df1487dd9e2247277c4a45de3721570a6eee260243"
+            "spec": "@xmanrui/dsh-im@2.4.0",
+            "sha256": "c9ed374955a132462f093e1f1cd9a3081a30ad00d3332c45ae364b5ed248b68e"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -4009,8 +4009,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T04:03:23.612Z",
-          "recheckDueAt": "2026-09-01T04:03:23.612Z",
+          "observedAt": "2026-08-25T07:13:18.796Z",
+          "recheckDueAt": "2026-09-01T07:13:18.796Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -4073,13 +4073,13 @@
         "selectedVersion": "2.0.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-vision-router-node22",
           "artifact": {
-            "spec": "dsh-vision-router@1.7.7",
-            "sha256": "de2bd6749feaa917637f97ed6070be59f5b4c909b989dc8c104756eaabcd423d"
+            "spec": "dsh-vision-router@2.0.0",
+            "sha256": "fce892d8bd10da4479b6ff40cc3b075eb2c48c7cba4244f838aae4589cd461af"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -4095,8 +4095,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T04:04:26.942Z",
-          "recheckDueAt": "2026-09-01T04:04:26.942Z",
+          "observedAt": "2026-08-25T07:13:20.789Z",
+          "recheckDueAt": "2026-09-01T07:13:20.789Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
