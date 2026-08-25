@@ -23,7 +23,7 @@
       "sourceCaseId": "dsh-web-ui-all-node22",
       "plane": "web",
       "profile": "web",
-      "runtimeId": "@linxin666/dsh-web-all",
+      "runtimeId": "web-ui-compat",
       "reason": "Follow the package's declared migration and resolve its Web-only host peers in the official DSH Web profile."
     }
   ]
