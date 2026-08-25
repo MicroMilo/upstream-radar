@@ -9,9 +9,13 @@
       "plane": "tui",
       "profile": "dsh-tui",
       "runtimeId": "@deepseek-harness-tui/dsh-tui",
-      "sourceFingerprint": "sha256:456b3c36da35b9b3e242995c2a64bb681b93b566aecc3844f6c4c85fb82d67ac",
-      "contractFingerprint": "sha256:eac4b31a736f8fb59923c23b5df335d31f7381188290a30a6210d57da0a1b2c3",
-      "observedAt": "2026-08-25T07:15:30.408Z",
+      "approvedDependencyBuilds": [
+        "@google/genai",
+        "protobufjs"
+      ],
+      "sourceFingerprint": "sha256:480aca8a8b7e8f28b24946af26bea053dd8ba511d93fa2715a62c6c0760cc62d",
+      "contractFingerprint": "sha256:28210af42c28f2610363e760d465195fb0f5b5a2ab73b816a2cca908e0bdb5c7",
+      "observedAt": "2026-08-25T07:40:08.944Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -34,27 +38,28 @@
           "code": 0
         },
         "profile": {
-          "status": "failed",
-          "code": 1,
-          "detail": "command exited with 1: Progress: resolved 1, reused 0, downloaded 0, added 0\nProgress: resolved 192, reused 0, downloaded 127, added 0\nProgress: resolved 366, reused 0, downloaded 239, added 0\nProgress: resolved 456, reused 0, downloaded 318, added 0\nProgress: resolved 504, reused 0, downloaded 386, added 0\n[WARN] 1 deprecated subdependencies found: node-domexception@1.0.0\nProgress: resolved 504, reused 0, downloaded 407, added 0\nPackages: +447\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 504, reused 0, downloaded 449, added 447, done\n[WARN] Issues with peer dependencies found. Run \"pnpm peers check\" to list them.\nfile:///sandbox/upstream-radar-dsh-surface-H7YwLa/cache/pnpm/dlx/0a1fda382d1b4709ecb272f1f72ee3777b32b1e044c6dae18a268b1bab3590cc/1a037c5fe53-29/node_modules/.pnpm/@deepseek-ai+dsh-app-boot@0.1.1-rc.2_d7ed335ddbfb7670edc51bd2c8928580/node_modules/@deepseek-ai/dsh-app-boot/lib/index.js:543\n\t\tif (template === void 0) throw new Error(`${binName}: profile ${JSON.stringify(name)} does not exist; create it with 'dsh plugin --profile ${name} add <package>'`);\n\t\t                               ^\n\nError: dsh: profile \"dsh-tui\" does not exist; create it with 'dsh plugin --profile dsh-tui add <package>'\n    at loadProfile (file:///sandbox/upstream-radar-dsh-surface-H7YwLa/cache/pnpm/dlx/0a1fda382d1b4709ecb272f1f72ee3777b32b1e044c6dae18a268b1bab3590cc/1a037c5fe53-29/node_modules/.pnpm/@deepseek-ai+dsh-app-boot@0.1.1-rc.2_d7ed335ddbfb7670edc51bd2c8928580/node_modules/@deepseek-ai/dsh-app-boot/lib/index.js:543:34)\n    at prepareProfile (file:///sandbox/upstream-radar-dsh-surface-H7YwLa/cache/pnpm/dlx/0a1fda382d1b4709ecb272f1f72ee3777b32b1e044c6dae18a268b1bab3590cc/1a037c5fe53-29/node_modules/.pnpm/@deepseek-ai+dsh@0.1.1-rc.2_7adf779e9bedfb2e97ced92905792931/node_modules/@deepseek-ai/dsh/lib/profile-boot-DG5t9aNs.js:142:18)\n    at composeProfile (file:///sandbox/upstream-radar-dsh-surface-H7YwLa/cache/pnpm/dlx/0a1fda382d1b4709ecb272f1f72ee3777b32b1e044c6dae18a268b1"
+          "status": "passed",
+          "detail": "dsh plugin add created the custom TUI profile"
         },
         "install": {
-          "status": "skipped"
+          "status": "passed",
+          "code": 0
         },
         "registration": {
-          "status": "skipped"
+          "status": "passed"
         },
         "host": {
-          "status": "skipped"
+          "status": "passed"
         },
         "surface": {
-          "status": "skipped"
+          "status": "passed"
         },
         "interaction": {
-          "status": "skipped"
+          "status": "passed"
         },
         "shutdown": {
-          "status": "skipped"
+          "status": "failed",
+          "detail": "the TUI produced a frame but did not stop after the bounded shutdown input"
         }
       },
       "evidence": {
@@ -62,15 +67,101 @@
         "terminal": "xterm-256color",
         "columns": 100,
         "rows": 32,
-        "frameObserved": false,
-        "inputSent": false,
+        "frameObserved": true,
+        "inputSent": true,
         "exitedAfterShutdown": false,
-        "normalizedFrame": "",
-        "capturedBytes": 0,
+        "exitCode": 0,
+        "signal": 9,
+        "transcript": "dsh-tui-tui.ansi",
+        "normalizedFrame": "██\nExplore\n██\n██\n██\n██\n██\nExplore t\n▄▀▄ ▄\n▀▀▀▄ ▄▀▀▀\n▀▀▀▀▀▀▀\n▀▀▀▀\n▄▀▀▀\n▀▀\n▀\n▀\n█\n█\n█\n█\n█\nExplore th\n█\n█\n█\n█\nExplore the\n█\n█\nxplore the u\nlore the un\nore the un",
+        "capturedBytes": 54953,
         "truncated": false
       },
-      "result": "unknown",
-      "reason": "the exact DSH runtime could not initialize the declared profile",
+      "result": "surface-incompatible",
+      "reason": "the TUI produced a frame but did not stop after the bounded shutdown input",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.43.5"
+      }
+    },
+    {
+      "caseId": "dsh-univer-office-web",
+      "sourceCaseId": "dsh-univer-office-node22",
+      "plugin": "dsh-univer-office@0.2.9",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-univer-office",
+      "sourceFingerprint": "sha256:2977f10c66b1119a0cb09f9d360fc2714a3048c473ea545c642ff62c9541ade7",
+      "contractFingerprint": "sha256:e498b1ee1678119786c8f14bf02584980bafe40a7eacdcb98d318728fd2afda8",
+      "observedAt": "2026-08-25T07:40:54.451Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "dcd5cdbd02ffc240f18fdd45318205345cccb29dde3694f1efe51ee0211c746a",
+        "bytes": 35613705,
+        "integrity": "sha512-0gvUi/JH70+r5Lx3Q9LyPhsaugUQaYgFjshWbMJcGV+eCTiZ/+YBL6r4J8V9wzwdBvCBjehxmTeTed7tsCiuag=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "passed",
+          "code": 0
+        },
+        "registration": {
+          "status": "passed"
+        },
+        "host": {
+          "status": "passed"
+        },
+        "surface": {
+          "status": "passed"
+        },
+        "interaction": {
+          "status": "passed"
+        },
+        "shutdown": {
+          "status": "passed"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-univer-office/client.js?rev=d8df9eba8538",
+        "pluginBundleStatus": 200,
+        "applicationMounted": true,
+        "pluginMaterialized": true,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "dsh-univer-office-web.png",
+        "trace": "dsh-univer-office-web.trace.zip",
+        "hostLog": "dsh-univer-office-web.host.log"
+      },
+      "result": "compatible",
+      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
         "version": "0.43.5"
