@@ -1,9 +1,9 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-25T07:36:58.277Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-08-25T07:38:28.765Z`.
 Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 
-**71 observed compatible · 0 observed incompatible · 22 needs review · 3 update pending · 4 not observed**
+**74 observed compatible · 0 observed incompatible · 22 needs review · 0 update pending · 4 not observed**
 
 | Catalog plugin | Selected artifact | Tested artifact | Exact DSH / runtime | Evidence status | Observed |
 | --- | --- | --- | --- | --- | --- |
@@ -18,7 +18,7 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 | [anweat/dsh-browser](https://github.com/anweat/dsh-browser) | `@anweat/dsh-browser@0.1.8` | `@anweat/dsh-browser@0.1.8` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:13:17.834Z |
 | [awesome-dsh-plugin/dsh-find-plugin](https://github.com/awesome-dsh-plugin/dsh-find-plugin) | `dsh-find-plugin@0.3.7` | `dsh-find-plugin@0.3.7` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:40.622Z |
 | [Blank-not-black/dsh-Remote](https://github.com/Blank-not-black/dsh-Remote/tree/main/packages/plugin) | `dsh-remote-plugin@0.6.14` | `dsh-remote-plugin@0.6.14` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:13:13.607Z |
-| [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) | `dsh-context@0.32.0` | `dsh-context@0.31.1` | `0.1.1-rc.2` / Node 22 | `update-pending` | 2026-08-25T07:13:16.846Z |
+| [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) | `dsh-context@0.32.0` | `dsh-context@0.32.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:38:02.297Z |
 | [ccch1mneyyy/dsh-TUI](https://github.com/ccch1mneyyy/dsh-TUI) | `@deepseek-harness-tui/dsh-tui@0.9.2` | `@deepseek-harness-tui/dsh-tui@0.9.2` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:13:27.454Z |
 | [chen731215-dev/dsh-tavern](https://github.com/chen731215-dev/dsh-tavern) | `dsh-tavern@1.9.2` | `dsh-tavern@1.9.2` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-24T04:45:35.537Z |
 | [chenproton/dsh-history](https://github.com/chenproton/dsh-history) | `dsh-history@0.1.24` | `dsh-history@0.1.24` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:45.845Z |
@@ -29,7 +29,7 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 | [DDDMUC/dsh-free-search](https://github.com/DDDMUC/dsh-free-search) | `dsh-free-search@0.4.12` | `dsh-free-search@0.4.12` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:40.522Z |
 | [dickpy/dsh-imagegen](https://github.com/dickpy/dsh-imagegen) | `@dickpy/dsh-imagegen@1.2.2` | `@dickpy/dsh-imagegen@1.2.2` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:04:15.784Z |
 | [dream-num/dsh-univer-office](https://github.com/dream-num/dsh-univer-office) | `dsh-univer-office@0.2.9` | `dsh-univer-office@0.2.9` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T07:13:21.792Z |
-| [dsh-market/dsh-market](https://github.com/dsh-market/dsh-market) | `dshmarket@1.29.1` | `dshmarket@1.29.0` | `0.1.1-rc.2` / Node 22 | `update-pending` | 2026-08-25T07:19:31.952Z |
+| [dsh-market/dsh-market](https://github.com/dsh-market/dsh-market) | `dshmarket@1.29.1` | `dshmarket@1.29.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:38:00.012Z |
 | [dsh-plugins/dsh-auxiliary](https://github.com/dsh-plugins/dsh-auxiliary) | `@dsh-plugin/dsh-auxiliary@0.5.1` | `@dsh-plugin/dsh-auxiliary@0.5.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:03:20.535Z |
 | [elysia395/dsh-wallpaper-engine](https://github.com/elysia395/dsh-wallpaper-engine) | `dsh-plugin-wallpaper-engine@0.6.3` | `dsh-plugin-wallpaper-engine@0.6.3` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T07:13:17.620Z |
 | [feibi-mochi/deepseek-harness-control-center](https://github.com/feibi-mochi/deepseek-harness-control-center) | `deepseek-harness-wallet@0.3.3` | `deepseek-harness-wallet@0.3.3` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:04:17.310Z |
@@ -71,7 +71,7 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 | [Q00/ouroboros](https://github.com/Q00/ouroboros/tree/main/integrations/dsh-plugin) | — | — | — | `not-observed` | — |
 | [Relistencode/dsh-extension-hub](https://github.com/Relistencode/dsh-extension-hub) | `dsh-extension-hub@0.2.19` | `dsh-extension-hub@0.2.19` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:31.897Z |
 | [Renzic-Stone/DSH-EasyRewrite](https://github.com/Renzic-Stone/DSH-EasyRewrite) | `dsh-easyrewrite@2.1.0` | `dsh-easyrewrite@2.1.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:43.725Z |
-| [RevolutionLA/dsh-dream-skin](https://github.com/RevolutionLA/dsh-dream-skin) | `dsh-dream-skin@0.4.13` | `dsh-dream-skin@0.4.12` | `0.1.1-rc.2` / Node 22 | `update-pending` | 2026-08-25T07:13:11.010Z |
+| [RevolutionLA/dsh-dream-skin](https://github.com/RevolutionLA/dsh-dream-skin) | `dsh-dream-skin@0.4.13` | `dsh-dream-skin@0.4.13` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:38:00.418Z |
 | [Rianico/dsh-better-edit](https://github.com/Rianico/dsh-better-edit) | `dsh-better-edit@0.4.0` | `dsh-better-edit@0.4.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:03:17.620Z |
 | [Roarpeng/GraphFlow](https://github.com/Roarpeng/GraphFlow) | `@roarpeng/graphflow@1.12.2` | `@roarpeng/graphflow@1.12.2` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-24T04:46:39.319Z |
 | [saya-ch/dsh-mobile](https://github.com/saya-ch/dsh-mobile) | `dsh-mobile@0.2.1` | `dsh-mobile@0.2.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:13:14.933Z |
@@ -90,10 +90,10 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 | [toby-bridges/api-relay-audit](https://github.com/toby-bridges/api-relay-audit) | — | — | — | `not-observed` | — |
 | [trench-xinxin/dsh-tool-lens](https://github.com/trench-xinxin/dsh-tool-lens) | `@trench-xinxin/dsh-tool-lens@2.0.5` | `@trench-xinxin/dsh-tool-lens@2.0.5` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:54:22.626Z |
 | [truelove-dreamer/dsh-plugin-vetting](https://github.com/truelove-dreamer/dsh-plugin-vetting) | `dsh-plugin-vetting@0.5.6` | `dsh-plugin-vetting@0.5.6` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:52:39.650Z |
-| [tt-a1i/archify](https://github.com/tt-a1i/archify/tree/main/integrations/deepseek-harness) | `@tt-a1i/archify-dsh@0.1.0` | `@tt-a1i/archify-dsh@0.1.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:34.782Z |
+| [tt-a1i/archify](https://github.com/tt-a1i/archify/tree/main/integrations/deepseek-harness) | `@tt-a1i/archify-dsh@0.1.0` | `@tt-a1i/archify-dsh@0.1.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:37:57.723Z |
 | [V1ki/dsh-plugin-subscriptions](https://github.com/V1ki/dsh-plugin-subscriptions) | `dsh-plugin-subscriptions@0.5.2` | `dsh-plugin-subscriptions@0.5.2` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:03:21.731Z |
 | [vectorize-io/hindsight](https://github.com/vectorize-io/hindsight/tree/main/hindsight-integrations/coding-agents) | `@vectorize-io/hindsight-coding-agents@0.4.2` | `@vectorize-io/hindsight-coding-agents@0.4.2` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T04:03:16.645Z |
-| [volcengine/OpenViking](https://github.com/volcengine/OpenViking/tree/main/examples/dsh-memory-plugin) | `@openviking/dsh-memory-plugin@0.2.1` | `@openviking/dsh-memory-plugin@0.2.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:13:15.158Z |
+| [volcengine/OpenViking](https://github.com/volcengine/OpenViking/tree/main/examples/dsh-memory-plugin) | `@openviking/dsh-memory-plugin@0.2.1` | `@openviking/dsh-memory-plugin@0.2.1` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:38:00.674Z |
 | [wloops/dsh-git-worktree](https://github.com/wloops/dsh-git-worktree) | `dsh-git-worktree@0.4.0` | `dsh-git-worktree@0.4.0` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-25T07:13:13.982Z |
 | [wqty123/dsh-browser](https://github.com/wqty123/dsh-browser) | `dsh-builtin-browser@0.1.15` | `dsh-builtin-browser@0.1.15` | `0.1.1-rc.2` / Node 22 | `observed-compatible` | 2026-08-23T11:53:40.180Z |
 | [WSL043/dsh-codex-subscription](https://github.com/WSL043/dsh-codex-subscription) | `dsh-codex-subscription@1.8.0` | `dsh-codex-subscription@1.8.0` | `0.1.1-rc.2` / Node 22 | `needs-review` | 2026-08-25T07:13:13.108Z |
