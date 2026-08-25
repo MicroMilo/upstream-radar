@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha2",
-  "generatedAt": "2026-08-25T07:46:23.579Z",
+  "generatedAt": "2026-08-25T07:48:11.271Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.43.5",
@@ -31,8 +31,8 @@
     "total": 100,
     "observed-compatible": 74,
     "observed-incompatible": 0,
-    "needs-review": 21,
-    "update-pending": 1,
+    "needs-review": 22,
+    "update-pending": 0,
     "not-observed": 4
   },
   "plugins": [
@@ -1082,13 +1082,13 @@
         "selectedVersion": "0.6.5",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-wallpaper-engine-node22",
           "artifact": {
-            "spec": "dsh-plugin-wallpaper-engine@0.6.3",
-            "sha256": "30659dcde9f4f24ffed2f291ee601588fa604c909e3492deec99acdb4e1e41ce"
+            "spec": "dsh-plugin-wallpaper-engine@0.6.5",
+            "sha256": "528ae9a9068574cc3a01752f2cfcf495418d099a9e9b42267666a999fc1ea7d4"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -1104,8 +1104,8 @@
           "profile": "headless",
           "status": "needs-review",
           "radarResult": "peer-contract-incompatible",
-          "observedAt": "2026-08-25T07:13:17.620Z",
-          "recheckDueAt": "2026-09-01T07:13:17.620Z",
+          "observedAt": "2026-08-25T07:47:24.570Z",
+          "recheckDueAt": "2026-09-01T07:47:24.570Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@>=0.1.0-rc.6 was not resolved by the DSH runtime (no-literal-reference-observed)"
         }
       ],
@@ -1465,8 +1465,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T07:13:15.908Z",
-          "recheckDueAt": "2026-09-01T07:13:15.908Z",
+          "observedAt": "2026-08-25T07:47:23.722Z",
+          "recheckDueAt": "2026-09-01T07:47:23.722Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -3665,8 +3665,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T07:38:00.674Z",
-          "recheckDueAt": "2026-09-01T07:38:00.674Z",
+          "observedAt": "2026-08-25T07:47:26.453Z",
+          "recheckDueAt": "2026-09-01T07:47:26.453Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],

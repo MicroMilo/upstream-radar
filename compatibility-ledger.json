@@ -1461,7 +1461,7 @@
     {
       "caseId": "cloudflare-browser-node22",
       "targetId": "cloudflare-browser",
-      "plugin": "dsh-cloudflare-browser-run@0.1.3",
+      "plugin": "dsh-cloudflare-browser-run@0.1.4",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -1470,21 +1470,21 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:9f3ac125cea2a703709f33e41e600781fea0b9a69a165aa8e9b0ef5d0c2403ee",
-      "contractFingerprint": "sha256:1019cf7134684f9b03c6ffa96b6c3d24938f94437acf7ffd54b06200f435ac66",
-      "observedAt": "2026-08-23T11:52:40.446Z",
+      "staticFingerprint": "sha256:8bfbe13121ebc600563200d6bc494ed42d94ef5705995df41e3d8641f7c8afed",
+      "contractFingerprint": "sha256:6431daeac637bc894d40acde8d6a7a8a08270afd1b31b9e11d49080529c7b49c",
+      "observedAt": "2026-08-25T07:47:44.321Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "85f3fdc240d6d2608e7ef53d4fd31af1c8ff462392e3b7d6b6d8862ebf9e60c1",
+        "sha256": "feaf5cc8def7057231dd7966f4b2fec559232b60d515cb5a8249b2ba93077dca",
         "nodeEngine": ">=20.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "fae2a37109e839a4ec5c96c542f54bcdb468396c6795af83a2b9ee7d0ac27272",
+          "sha256": "0e63d5a9492d118e3f1679215c3da6b9a00508860303833b4d87945539213a82",
           "bytes": 3411,
-          "graphDigest": "sha256:459abae697372f1c2466cd113c1b105ecdadf812fefb186471a57198d020110f",
+          "graphDigest": "sha256:6ca4f7879f6b935f1baae15ddebe8aaa14b929ec32b018a950c57e8beb3b9008",
           "nodes": 7,
           "edges": 10,
           "unresolved": 2,
@@ -1504,7 +1504,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:701de2c303a44c6f3fb4b705422b69d9d507679586ec27cbbcc254759db39edd",
+          "digest": "sha256:e8d2ab4adac9b659e8b22b529e5226bc3eeacdd4c9401864f90e75ec08ed35b2",
           "nodes": 453,
           "edges": 2046,
           "unresolved": 0,
@@ -1720,7 +1720,7 @@
       },
       "observer": {
         "schema": "upstream-radar.dsh-install-observation/v1alpha1",
-        "version": "0.41.0"
+        "version": "0.43.5"
       }
     },
     {
@@ -2065,9 +2065,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:d1c669dab8134499b3e9e364335f28549b078dd310b0fd3f22f1e17deef18dd3",
+      "staticFingerprint": "sha256:bb61f767fe226cdf31e1d3b671aa281e33ee2b8d0cd099589d08fdd3d409de51",
       "contractFingerprint": "sha256:e936ffa1bab75264b35f7c93fc7926dd9fd18dc5e16d8d5be0bf17f622c32a5e",
-      "observedAt": "2026-08-25T07:13:15.908Z",
+      "observedAt": "2026-08-25T07:47:23.722Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -2076,7 +2076,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "a4f0c829dbf406be04cfc20365040cff18acfdafec69695abe355d181dbe99b8",
+          "sha256": "2faf41816e82234912dd5117a3fd4f789b036508b3aa52444043d4e360518e5b",
           "bytes": 1800,
           "graphDigest": "sha256:68ae83f31ad66eb384a8de7b39a8eef707771daa51755ffbad2b9c72f82ccc8b",
           "nodes": 5,
@@ -16154,9 +16154,9 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:aabb4415b25d17a265083e0629f22aac0ae36ff5a340603381cdcbc7f47cc9f8",
+      "staticFingerprint": "sha256:5b7a51105c60139d016dc3bc2f8efb82a120e5a6a03c3c86139b4bf536774630",
       "contractFingerprint": "sha256:13a7aeef60d35fd47717316f330bff7d8337b0ed5c3b1965ae829526ae3f56ac",
-      "observedAt": "2026-08-25T07:38:00.674Z",
+      "observedAt": "2026-08-25T07:47:26.453Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
@@ -16166,7 +16166,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "d9b36a9b9de30be2c0f5fde7d8239266367957080a6fe77e4d2eb2f15562c414",
+          "sha256": "45e36eef66863111117bc5ab03287210b751ccf8d9ea3a1b98b245d83efcdbfb",
           "bytes": 1037,
           "graphDigest": "sha256:42771d129b32f34b2e471dd7f122139a8b9f86682096aae9b7f45063a1840632",
           "nodes": 2,
@@ -26804,7 +26804,7 @@
     {
       "caseId": "dsh-wallpaper-engine-node22",
       "targetId": "dsh-wallpaper-engine",
-      "plugin": "dsh-plugin-wallpaper-engine@0.6.3",
+      "plugin": "dsh-plugin-wallpaper-engine@0.6.5",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -26813,52 +26813,52 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:e06be85e1a93543ca3df35113d3bd4cc382afe42c6266d252d68fab0b7f4ebf9",
-      "contractFingerprint": "sha256:359e1eff61171bd04658be4ed4cfdc94086856f4be35a700193b4fe12eec2bc8",
-      "observedAt": "2026-08-25T07:13:17.620Z",
+      "staticFingerprint": "sha256:71e012ea3deaa41eec9d659f38464dc70a31959bcfd7686bc5c122196d657443",
+      "contractFingerprint": "sha256:891251c61cf60f9c065d3edb91e8cfbaab31efb4e90be8a7f6ca90f029ec064e",
+      "observedAt": "2026-08-25T07:47:24.570Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@>=0.1.0-rc.6 was not resolved by the DSH runtime (no-literal-reference-observed)",
       "artifact": {
         "lifecycleScripts": [
           "prepare"
         ],
-        "sha256": "30659dcde9f4f24ffed2f291ee601588fa604c909e3492deec99acdb4e1e41ce"
+        "sha256": "528ae9a9068574cc3a01752f2cfcf495418d099a9e9b42267666a999fc1ea7d4"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "4b86957cf8d0324123aa47768f4fcfe4f6ca3654fe918d661ab5005775ef4f4e",
+          "sha256": "10fb7f79232dbe97642dfd373f9deb2859d3e49356cf1433e11f527377b9c0c3",
           "bytes": 1322,
-          "graphDigest": "sha256:0f3ed3d60062fe6f08b1e58ec9a4f85409501c35fc75f8b76737f4136a00ad5a",
+          "graphDigest": "sha256:72da11a6c3a01a5079a8e5ef5b614f796ac2a58dd7f1cd38b068ac56862d8a0c",
           "nodes": 3,
           "edges": 2,
           "unresolved": 5,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.3.tgz",
+              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.5.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": "^4.0.1",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.3.tgz",
+              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.5.tgz",
               "name": "@deepseek-ai/dsh-client-runtime",
               "spec": ">=0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.3.tgz",
+              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.5.tgz",
               "name": "@deepseek-ai/dsh-client-ui-slots",
               "spec": ">=0.1.0-rc.6",
               "kind": "peer"
             },
             {
-              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.3.tgz",
+              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.5.tgz",
               "name": "@deepseek-ai/dsh-host-webserver",
               "spec": ">=0.1.0-rc.6",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.3.tgz",
+              "from": "pnpm:dsh-plugin-wallpaper-engine@file:../../../artifact/dsh-plugin-wallpaper-engine-0.6.5.tgz",
               "name": "react",
               "spec": "^18.2.0",
               "kind": "peer"
@@ -26866,7 +26866,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:1a6eaf26b76f0e1a270648d5b7d12d37f3e349a8deeb3b71eda3c51a0753cf02",
+          "digest": "sha256:f94f914fdfa19a5a3ca562e63c778ebb909430422b7c63af175c5c69c5fb0279",
           "nodes": 449,
           "edges": 2033,
           "unresolved": 1,

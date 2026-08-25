@@ -425,10 +425,10 @@
           "resolvedVersion": "4.0.1"
         },
         {
-          "relationId": "relation:8e27c7dd48ac8dc24e75bfa3ca64b7e6f59cdf78e27b6f0be0689cc42bd220f6",
-          "cellId": "cell:6462c44806db34d17fd4b0914e95017f0656f2b382e3525aa61338654e458f5e",
+          "relationId": "relation:5330bf25cbb341f889f7daefb1ed98124919d6dcee2b3901027b3264a14eac0b",
+          "cellId": "cell:6f4f65258799d54e8d01be5bdefad5df58032ee7211cf5a234da4f22c14b84c2",
           "caseId": "dsh-wallpaper-engine-node22",
-          "plugin": "dsh-plugin-wallpaper-engine@0.6.3",
+          "plugin": "dsh-plugin-wallpaper-engine@0.6.5",
           "dshVersion": "0.1.1-rc.2",
           "nodeMajor": 22,
           "required": "^4.0.1",
@@ -1337,10 +1337,10 @@
           "resolvedVersion": "0.1.1-rc.2"
         },
         {
-          "relationId": "relation:371ce89cc01f7c6d82ca3d1a785690486ea55d7df217ca746175696410dbda5f",
-          "cellId": "cell:6462c44806db34d17fd4b0914e95017f0656f2b382e3525aa61338654e458f5e",
+          "relationId": "relation:ce97253aa8d7599ba3f0d0a5f286dabd0f619af44de55fe94fb0c3afc4d8ae78",
+          "cellId": "cell:6f4f65258799d54e8d01be5bdefad5df58032ee7211cf5a234da4f22c14b84c2",
           "caseId": "dsh-wallpaper-engine-node22",
-          "plugin": "dsh-plugin-wallpaper-engine@0.6.3",
+          "plugin": "dsh-plugin-wallpaper-engine@0.6.5",
           "dshVersion": "0.1.1-rc.2",
           "nodeMajor": 22,
           "required": ">=0.1.0-rc.6",
@@ -1914,10 +1914,10 @@
           "staticUsage": "no-literal-reference-observed"
         },
         {
-          "relationId": "relation:c87de5d7cb5c2c36d3bfc2a6840327bb8f22a68b71a2b3c4a98eef50e8416cfd",
-          "cellId": "cell:6462c44806db34d17fd4b0914e95017f0656f2b382e3525aa61338654e458f5e",
+          "relationId": "relation:3d1e32b0b638285b0b3c077757c58f8cdc732799100425961b6817458436171c",
+          "cellId": "cell:6f4f65258799d54e8d01be5bdefad5df58032ee7211cf5a234da4f22c14b84c2",
           "caseId": "dsh-wallpaper-engine-node22",
-          "plugin": "dsh-plugin-wallpaper-engine@0.6.3",
+          "plugin": "dsh-plugin-wallpaper-engine@0.6.5",
           "dshVersion": "0.1.1-rc.2",
           "nodeMajor": 22,
           "required": ">=0.1.0-rc.6",
@@ -2701,8 +2701,8 @@
           "resolvedVersion": "0.1.1-rc.2"
         },
         {
-          "relationId": "relation:dd1105e9355be52d5896961ca5600abdff07d06854bbf8a951508b820ce81f77",
-          "cellId": "cell:4d32d802d010855647ec7cd9fc6e356f31de4b325d24da91582537f6f2e20d4f",
+          "relationId": "relation:48b5023b7e6cd4a7ec475da57ef3ed9847671b8195d0fc55c05b8bd3677e8387",
+          "cellId": "cell:bee5fb9dd807a3fec5b7f384ffaf983a2d1b14c2b92a714a3ced87099cf56b90",
           "caseId": "dsh-memory-plugin-node22",
           "plugin": "@openviking/dsh-memory-plugin@0.2.1",
           "dshVersion": "0.1.1-rc.2",
@@ -2879,8 +2879,8 @@
       "name": "@deepseek-ai/dsh-mcp-client",
       "impacts": [
         {
-          "relationId": "relation:c71d3dd681c16267e7a2f087dc26762eb1c737b1b8313603a37ca9640bb19a77",
-          "cellId": "cell:4d32d802d010855647ec7cd9fc6e356f31de4b325d24da91582537f6f2e20d4f",
+          "relationId": "relation:f62687efec3f1bae298cf38a79ed977f33af2ae31c832afa820b871036f3ebb5",
+          "cellId": "cell:bee5fb9dd807a3fec5b7f384ffaf983a2d1b14c2b92a714a3ced87099cf56b90",
           "caseId": "dsh-memory-plugin-node22",
           "plugin": "@openviking/dsh-memory-plugin@0.2.1",
           "dshVersion": "0.1.1-rc.2",
@@ -3332,8 +3332,8 @@
       "name": "@deepseek-ai/dsh-skill-filesystem",
       "impacts": [
         {
-          "relationId": "relation:55de25435c4cb700f12823af1b9f673ec274776c0dc3b13cc2e96857133a5076",
-          "cellId": "cell:4d32d802d010855647ec7cd9fc6e356f31de4b325d24da91582537f6f2e20d4f",
+          "relationId": "relation:852cdbc1dbb00554d50dba8f66656afe8b032ef53d34ee47d8cad6e31cca298a",
+          "cellId": "cell:bee5fb9dd807a3fec5b7f384ffaf983a2d1b14c2b92a714a3ced87099cf56b90",
           "caseId": "dsh-memory-plugin-node22",
           "plugin": "@openviking/dsh-memory-plugin@0.2.1",
           "dshVersion": "0.1.1-rc.2",
@@ -4748,10 +4748,10 @@
           "resolvedVersion": "18.3.1"
         },
         {
-          "relationId": "relation:35ed84caba217fb41b9a5ba3bd40e402b97e9153f4eadd4e86b1baef323ad68a",
-          "cellId": "cell:6462c44806db34d17fd4b0914e95017f0656f2b382e3525aa61338654e458f5e",
+          "relationId": "relation:6ced312a4c24a10a2d912957217dfb74efafb319e37d36e9b6b5e8453ce0290e",
+          "cellId": "cell:6f4f65258799d54e8d01be5bdefad5df58032ee7211cf5a234da4f22c14b84c2",
           "caseId": "dsh-wallpaper-engine-node22",
-          "plugin": "dsh-plugin-wallpaper-engine@0.6.3",
+          "plugin": "dsh-plugin-wallpaper-engine@0.6.5",
           "dshVersion": "0.1.1-rc.2",
           "nodeMajor": 22,
           "required": "^18.2.0",
