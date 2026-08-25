@@ -1120,7 +1120,10 @@ export class UpstreamObserverClient implements ObserverSource {
   private async fetchNpmObservation(name: string, distTag = 'latest'): Promise<ObserverPackageObservation | undefined> {
     const url = new URL(encodeURIComponent(name), this.registry)
     const response = await this.fetchWithRetry(url, {
-      headers: { accept: 'application/vnd.npm.install-v1+json, application/json', 'user-agent': 'upstream-radar/upstream-observer' },
+      // The abbreviated install-v1 packument deliberately drops custom DSH
+      // metadata such as dsh.migrate. The observer needs the published package
+      // contract so package moves become explicit Agent evidence.
+      headers: { accept: 'application/json', 'user-agent': 'upstream-radar/upstream-observer' },
       redirect: 'follow',
     })
     if (response.status === 404) return undefined
