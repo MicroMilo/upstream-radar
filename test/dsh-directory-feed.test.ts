@@ -86,6 +86,9 @@ function fixture() {
     },
     observations: {
       targets: {
+        'deepseek-harness': {
+          package: { name: '@deepseek-ai/dsh', version: '0.1.1-rc.2', distTag: 'next' },
+        },
         clean: {
           package: { name: 'clean', version: '2.0.0-beta.1', distTag: 'beta' },
         },
@@ -104,12 +107,13 @@ describe('DSH directory compatibility feed', () => {
 
     assert.deepEqual(feed.summary, {
       total: 6,
-      'observed-compatible': 1,
+      'observed-compatible': 0,
       'observed-incompatible': 1,
       'needs-review': 3,
+      'update-pending': 1,
       'not-observed': 1,
     })
-    assert.equal(feed.plugins.find(item => item.id === 'clean')?.status, 'observed-compatible')
+    assert.equal(feed.plugins.find(item => item.id === 'clean')?.status, 'update-pending')
     assert.deepEqual(feed.plugins.find(item => item.id === 'clean')?.distribution, {
       kind: 'npm',
       name: 'clean',
@@ -129,6 +133,38 @@ describe('DSH directory compatibility feed', () => {
     )
     assert.equal(feed.plugins.find(item => item.id === 'clean')?.cells[0]?.recheckDueAt, '2026-08-30T00:00:00.000Z')
     assert.equal(feed.producer.license, 'Apache-2.0')
+    assert.deepEqual(feed.selectedHost, {
+      package: '@deepseek-ai/dsh',
+      version: '0.1.1-rc.2',
+    })
+  })
+
+  it('does not inherit old green cells after the selected DSH host changes', () => {
+    const input = fixture()
+    const feed = buildDshDirectoryCompatibilityFeed({
+      ...input,
+      observations: {
+        ...input.observations,
+        targets: {
+          ...input.observations.targets,
+          'deepseek-harness': {
+            package: { name: '@deepseek-ai/dsh', version: '0.1.1-rc.3', distTag: 'next' },
+          },
+        },
+      },
+      generatedAt: '2026-08-23T01:00:00.000Z',
+    })
+
+    assert.equal(feed.plugins.find(item => item.id === 'broken')?.status, 'update-pending')
+    assert.equal(feed.plugins.find(item => item.id === 'peer-gap')?.status, 'update-pending')
+    assert.deepEqual(feed.summary, {
+      total: 6,
+      'observed-compatible': 0,
+      'observed-incompatible': 0,
+      'needs-review': 0,
+      'update-pending': 5,
+      'not-observed': 1,
+    })
   })
 
   it('does not let malformed or name-mismatched observation state replace catalog distribution metadata', () => {
@@ -158,7 +194,9 @@ describe('DSH directory compatibility feed', () => {
       generatedAt: '2026-08-23T01:00:00.000Z',
     })
     const markdown = renderDshDirectoryCompatibilityFeed(feed)
-    assert.match(markdown, /1 observed compatible · 1 observed incompatible · 3 needs review · 1 not observed/)
+    assert.match(markdown, /0 observed compatible · 1 observed incompatible · 3 needs review · 1 update pending · 1 not observed/)
+    assert.match(markdown, /`clean@2\.0\.0-beta\.1`.*`clean@1\.0\.0`.*`update-pending`/)
+    assert.match(markdown, /has no exact cell yet/)
     assert.match(markdown, /must then show it as stale/)
     assert.match(markdown, /not a security review or endorsement/)
   })

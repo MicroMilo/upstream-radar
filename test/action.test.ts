@@ -142,6 +142,7 @@ describe('reusable GitHub Action', () => {
     assert.match(checkedInReviewWorkflow, /finding\.remediation/)
     const observationPersistStep = checkedInObserverWorkflow.indexOf('name: Persist observation and Agent planning state')
     const installObservationJob = checkedInObserverWorkflow.indexOf('\n  install-observation:')
+    const observerHealthJob = checkedInObserverWorkflow.indexOf('\n  observer-source-health:')
     const reconcileStep = checkedInObserverWorkflow.indexOf('name: Reconcile dynamic evidence into the compatibility ledger')
     const publishStep = checkedInObserverWorkflow.indexOf('name: Publish directory-consumable compatibility evidence')
     const persistStep = checkedInObserverWorkflow.indexOf('name: Persist compatibility evidence')
@@ -149,10 +150,18 @@ describe('reusable GitHub Action', () => {
     assert.ok(reconcileStep >= 0)
     assert.ok(observationPersistStep >= 0)
     assert.ok(installObservationJob > observationPersistStep)
+    assert.ok(observerHealthJob > incompleteGate)
     assert.ok(publishStep > reconcileStep)
     assert.ok(persistStep > publishStep)
     assert.ok(incompleteGate > persistStep)
     assert.match(checkedInObserverWorkflow.slice(reconcileStep, publishStep), /continue-on-error: true/)
+    const observeStep = checkedInObserverWorkflow.slice(
+      checkedInObserverWorkflow.indexOf('name: Observe upstream changes'),
+      checkedInObserverWorkflow.indexOf('name: Reuse current evidence for the headless Agent loop'),
+    )
+    assert.match(observeStep, /continue-on-error: true/)
+    assert.match(checkedInObserverWorkflow.slice(observerHealthJob), /needs\.observe\.outputs\.observer_exit/)
+    assert.match(checkedInObserverWorkflow.slice(observerHealthJob), /exit 1/)
     const observationPersistence = checkedInObserverWorkflow.slice(observationPersistStep, installObservationJob)
     assert.match(observationPersistence, /git diff --quiet -- observations\.json/)
     assert.match(observationPersistence, /node scripts\/write-dsh-directory-feed\.mjs/)
