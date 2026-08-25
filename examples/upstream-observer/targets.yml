@@ -394,8 +394,8 @@ targets:
     lockfileType: pnpm
   - id: dsh-web-ui-all
     ecosystem: dsh
-    repository: zhu1090093659/dsh-web-ui
-    ref: main
+    repository: zhu1090093659/dsh-web
+    ref: dev
     package: '@linxin666/dsh-web-ui-all'
     packagePath: packages/dsh-web-ui-all/package.json
     lockfile: pnpm-lock.yaml
