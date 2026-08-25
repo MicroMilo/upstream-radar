@@ -162,12 +162,27 @@ jobs:
             echo 'observations.json was not produced; nothing to persist.'
             exit 0
           fi
+          # observations.json may advance even when a later source fails and no
+          # dynamic matrix can run. Keep the directory feed in the same commit
+          # so default-branch consumers and PR merge refs never see stale
+          # distribution coordinates paired with the new observation point.
+          if ! git diff --quiet -- observations.json; then
+            node scripts/write-dsh-directory-feed.mjs \
+              examples/dsh/awesome-observer/cohort.json \
+              examples/dsh/install-observer/targets.json \
+              compatibility-ledger.json \
+              feeds/dsh-plugin-compatibility.json \
+              feeds/dsh-plugin-compatibility.md \
+              observations.json
+          fi
           git config user.name 'upstream-radar[bot]'
           git config user.email 'upstream-radar[bot]@users.noreply.github.com'
           git add -- \
             observations.json \
             examples/dsh/install-observer/agent-plans.json \
-            examples/dsh/install-observer/agent-plans.md
+            examples/dsh/install-observer/agent-plans.md \
+            feeds/dsh-plugin-compatibility.json \
+            feeds/dsh-plugin-compatibility.md
           if git diff --cached --quiet; then
             echo 'No observation point changed; no commit created.'
             exit 0
