@@ -131,6 +131,8 @@ export interface DshSurfaceObservationReport {
     inheritedHostSecrets: false
     externalBrowserRequestsBlocked: boolean
     approvedDependencyBuilds: string[]
+    /** Exact packages pnpm refused to build in this execution plane. */
+    requiredDependencyBuilds?: string[]
     note: string
   }
 }
@@ -1132,6 +1134,7 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
       inheritedHostSecrets: false,
       externalBrowserRequestsBlocked: options.plane === 'web',
       approvedDependencyBuilds: allowedBuilds,
+      requiredDependencyBuilds: [],
       note: 'The caller supplies a disposable VM and restricted container. Radar passes no repository or model secrets, binds the run to exact artifact bytes, blocks non-loopback browser requests, and collects bounded smoke evidence. This is compatibility evidence, not a malicious-code safety certificate.',
     },
   }
@@ -1217,6 +1220,7 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
     if (install.code !== 0) {
       const requiredBuilds = extractPnpmRequiredDependencyBuilds(`${install.stderr}\n${install.stdout}`, parsedSpec.name)
       if (requiredBuilds.length > 0) {
+        report.boundary.requiredDependencyBuilds = requiredBuilds
         return finish(
           report,
           'environment-unsupported',

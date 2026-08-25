@@ -1,6 +1,8 @@
 import { createHash } from 'node:crypto'
 import { parseDshCompatibilityLedger, type DshCompatibilityLedgerEntry } from './dsh-compatibility-ledger.js'
 import { parseDshHeadlessAgentPlans, type DshHeadlessAgentPlans } from './dsh-headless-agent-plan.js'
+import { parseDshSurfaceAgentPlans, type DshSurfaceAgentPlans } from './dsh-surface-agent-plan.js'
+import { extractPnpmRequiredDependencyBuilds } from './dsh-install-observation.js'
 import {
   DSH_SURFACE_OBSERVATION_SCHEMA,
   type DshExecutionPlane,
@@ -78,6 +80,7 @@ export interface DshSurfaceLedgerEntry {
   profile: string
   runtimeId: string
   approvedDependencyBuilds?: string[]
+  requiredDependencyBuilds?: string[]
   sourceFingerprint: string
   contractFingerprint: string
   observedAt: string
@@ -127,6 +130,7 @@ export interface DshSurfaceIR {
       observedAt: string
       result: DshSurfaceObservationResult
       reason: string
+      requiredDependencyBuilds?: string[]
       stages: DshSurfaceObservationReport['stages']
       evidence: DshWebSurfaceEvidence | DshTuiSurfaceEvidence
     }
@@ -292,7 +296,7 @@ function automaticWebTargetId(sourceCaseId: string, usedIds: ReadonlySet<string>
   throw new Error(`could not derive a unique automatic Web target id for ${sourceCaseId}`)
 }
 
-function sourceFingerprint(entry: DshCompatibilityLedgerEntry): string {
+export function createDshSurfaceSourceFingerprint(entry: DshCompatibilityLedgerEntry): string {
   return digest({
     caseId: entry.caseId,
     plugin: entry.plugin,
@@ -358,7 +362,7 @@ function desiredCase(
     runtimeId,
     artifactSha256: source.artifact.sha256,
     allowedBuilds: [...approvedDependencyBuilds].sort().join(','),
-    sourceFingerprint: sourceFingerprint(source),
+    sourceFingerprint: createDshSurfaceSourceFingerprint(source),
     contractFingerprint: contractFingerprint(target, source, runtimeId, approvedDependencyBuilds),
     reasons: [],
   }
@@ -497,6 +501,17 @@ function parseReport(input: unknown): DshSurfaceObservationReport {
   const result = boundedString(root.result, 'report.result', 64) as DshSurfaceObservationResult
   if (!RESULTS.has(result)) throw new Error('report.result is unsupported')
   const boundary = record(root.boundary, 'report.boundary')
+  const plugin = exactSpec(root.plugin, 'report.plugin')
+  const stages = parseStages(root.stages, 'report.stages')
+  const reason = boundedString(root.reason, 'report.reason', 2_048)
+  const requiredDependencyBuilds = boundary.requiredDependencyBuilds === undefined
+    ? (result === 'environment-unsupported'
+        ? extractPnpmRequiredDependencyBuilds(`${stages.install.detail ?? ''}\n${reason}`, parseNpmSpec(plugin).name)
+        : [])
+    : packageNames(boundary.requiredDependencyBuilds, 'report.boundary.requiredDependencyBuilds')
+  if (requiredDependencyBuilds.length > 0 && result !== 'environment-unsupported') {
+    throw new Error('report may require dependency builds only for environment-unsupported')
+  }
   return {
     schema: DSH_SURFACE_OBSERVATION_SCHEMA,
     tool: { name: 'upstream-radar', version: boundedString(tool.version, 'report.tool.version', 64) },
@@ -508,7 +523,7 @@ function parseReport(input: unknown): DshSurfaceObservationReport {
     sourceCaseId: caseId(root.sourceCaseId, 'report.sourceCaseId'),
     sourceFingerprint: fingerprint(root.sourceFingerprint, 'report.sourceFingerprint'),
     contractFingerprint: fingerprint(root.contractFingerprint, 'report.contractFingerprint'),
-    plugin: exactSpec(root.plugin, 'report.plugin'),
+    plugin,
     dshVersion: exactVersion(root.dshVersion, 'report.dshVersion'),
     plane,
     profile: profileName(root.profile, 'report.profile'),
@@ -519,10 +534,10 @@ function parseReport(input: unknown): DshSurfaceObservationReport {
       ...(optionalInteger(artifact.bytes, 'report.artifact.bytes') === undefined ? {} : { bytes: optionalInteger(artifact.bytes, 'report.artifact.bytes') as number }),
       ...(artifact.integrity === undefined ? {} : { integrity: boundedString(artifact.integrity, 'report.artifact.integrity', 1_024) }),
     },
-    stages: parseStages(root.stages, 'report.stages'),
+    stages,
     evidence: parseEvidence(root.evidence, plane, 'report.evidence'),
     result,
-    reason: boundedString(root.reason, 'report.reason', 2_048),
+    reason,
     boundary: {
       isolationProviderClaim: (() => {
         const value = boundary.isolationProviderClaim
@@ -534,6 +549,7 @@ function parseReport(input: unknown): DshSurfaceObservationReport {
       inheritedHostSecrets: false,
       externalBrowserRequestsBlocked: boundary.externalBrowserRequestsBlocked === true,
       approvedDependencyBuilds: packageNames(boundary.approvedDependencyBuilds ?? [], 'report.boundary.approvedDependencyBuilds'),
+      ...(requiredDependencyBuilds.length === 0 ? {} : { requiredDependencyBuilds }),
       note: boundedString(boundary.note, 'report.boundary.note', 2_048),
     },
   }
@@ -555,15 +571,27 @@ export function parseDshSurfaceLedger(input: unknown): DshSurfaceLedger {
     if (observer.schema !== DSH_SURFACE_OBSERVATION_SCHEMA) throw new Error(`entries[${index}].observer.schema is unsupported`)
     const result = boundedString(item.result, `entries[${index}].result`, 64) as DshSurfaceObservationResult
     if (!RESULTS.has(result)) throw new Error(`entries[${index}].result is unsupported`)
+    const plugin = exactSpec(item.plugin, `entries[${index}].plugin`)
+    const stages = parseStages(item.stages, `entries[${index}].stages`)
+    const reason = boundedString(item.reason, `entries[${index}].reason`, 2_048)
+    const requiredDependencyBuilds = item.requiredDependencyBuilds === undefined
+      ? (result === 'environment-unsupported'
+          ? extractPnpmRequiredDependencyBuilds(`${stages.install.detail ?? ''}\n${reason}`, parseNpmSpec(plugin).name)
+          : [])
+      : packageNames(item.requiredDependencyBuilds, `entries[${index}].requiredDependencyBuilds`)
+    if (requiredDependencyBuilds.length > 0 && result !== 'environment-unsupported') {
+      throw new Error(`entries[${index}] may require dependency builds only for environment-unsupported`)
+    }
     return {
       caseId: parsedCaseId,
       sourceCaseId: caseId(item.sourceCaseId, `entries[${index}].sourceCaseId`),
-      plugin: exactSpec(item.plugin, `entries[${index}].plugin`),
+      plugin,
       dshVersion: exactVersion(item.dshVersion, `entries[${index}].dshVersion`),
       plane,
       profile: profileName(item.profile, `entries[${index}].profile`),
       runtimeId: boundedString(item.runtimeId, `entries[${index}].runtimeId`, 214),
       ...(item.approvedDependencyBuilds === undefined ? {} : { approvedDependencyBuilds: packageNames(item.approvedDependencyBuilds, `entries[${index}].approvedDependencyBuilds`) }),
+      ...(requiredDependencyBuilds.length === 0 ? {} : { requiredDependencyBuilds }),
       sourceFingerprint: fingerprint(item.sourceFingerprint, `entries[${index}].sourceFingerprint`),
       contractFingerprint: fingerprint(item.contractFingerprint, `entries[${index}].contractFingerprint`),
       observedAt: isoDate(item.observedAt, `entries[${index}].observedAt`),
@@ -573,10 +601,10 @@ export function parseDshSurfaceLedger(input: unknown): DshSurfaceLedger {
         ...(optionalInteger(artifact.bytes, `entries[${index}].artifact.bytes`) === undefined ? {} : { bytes: optionalInteger(artifact.bytes, `entries[${index}].artifact.bytes`) as number }),
         ...(artifact.integrity === undefined ? {} : { integrity: boundedString(artifact.integrity, `entries[${index}].artifact.integrity`, 1_024) }),
       },
-      stages: parseStages(item.stages, `entries[${index}].stages`),
+      stages,
       evidence: parseEvidence(item.evidence, plane, `entries[${index}].evidence`),
       result,
-      reason: boundedString(item.reason, `entries[${index}].reason`, 2_048),
+      reason,
       observer: {
         schema: DSH_SURFACE_OBSERVATION_SCHEMA,
         version: boundedString(observer.version, `entries[${index}].observer.version`, 64),
@@ -593,6 +621,7 @@ export function buildDshSurfacePlan(
   surfaceLedgerInput: unknown,
   now = new Date(),
   agentPlansInput?: unknown,
+  surfaceAgentPlansInput?: unknown,
 ): DshSurfacePlan {
   const targets = parseDshSurfaceTargets(targetsInput)
   const sourceLedger = parseDshCompatibilityLedger(sourceLedgerInput)
@@ -600,6 +629,9 @@ export function buildDshSurfacePlan(
   const agentPlans: DshHeadlessAgentPlans | undefined = agentPlansInput === undefined
     ? undefined
     : parseDshHeadlessAgentPlans(agentPlansInput)
+  const surfaceAgentPlans: DshSurfaceAgentPlans | undefined = surfaceAgentPlansInput === undefined
+    ? undefined
+    : parseDshSurfaceAgentPlans(surfaceAgentPlansInput)
   const sourceById = new Map(sourceLedger.entries.map(entry => [entry.caseId, entry]))
   const currentById = new Map(surfaceLedger.entries.map(entry => [entry.caseId, entry]))
   const desiredTargets = [...targets.surfaces]
@@ -645,9 +677,22 @@ export function buildDshSurfacePlan(
       && plan.artifactSha256 !== undefined
       && plan.artifactSha256 === source.artifact.sha256
     ))
+    const expectedSourceFingerprint = createDshSurfaceSourceFingerprint(source)
+    const retainedSurfaceAgentPlan = surfaceAgentPlans?.entries.find(plan => (
+      plan.caseId === target.id
+      && plan.sourceCaseId === source.caseId
+      && plan.plugin === source.plugin
+      && plan.dshVersion === source.dshVersion
+      && plan.nodeMajor === source.runtime.nodeMajor
+      && plan.plane === target.plane
+      && plan.profile === target.profile
+      && plan.sourceFingerprint === expectedSourceFingerprint
+      && plan.artifactSha256 === source.artifact.sha256
+    ))
     const approvedDependencyBuilds = [...new Set([
       ...(source.approvedDependencyBuilds ?? []),
       ...(retainedAgentPlan?.approvedBuilds ?? []),
+      ...(retainedSurfaceAgentPlan?.approvedBuilds ?? []),
     ])].sort()
     const desired = desiredCase(target, source, approvedDependencyBuilds)
     if (desired === undefined) {
@@ -799,6 +844,9 @@ export function mergeDshSurfaceLedger(input: {
       profile: report.profile,
       runtimeId: report.runtimeId,
       ...(report.boundary.approvedDependencyBuilds.length === 0 ? {} : { approvedDependencyBuilds: report.boundary.approvedDependencyBuilds }),
+      ...((report.boundary.requiredDependencyBuilds?.length ?? 0) === 0
+        ? {}
+        : { requiredDependencyBuilds: report.boundary.requiredDependencyBuilds }),
       sourceFingerprint: report.sourceFingerprint,
       contractFingerprint: report.contractFingerprint,
       observedAt: report.completedAt,
@@ -850,6 +898,7 @@ export function buildDshSurfaceIR(ledgerInput: unknown): DshSurfaceIR {
         observedAt: entry.observedAt,
         result: entry.result,
         reason: entry.reason,
+        ...(entry.requiredDependencyBuilds === undefined ? {} : { requiredDependencyBuilds: entry.requiredDependencyBuilds }),
         stages: entry.stages,
         evidence: entry.evidence,
       },

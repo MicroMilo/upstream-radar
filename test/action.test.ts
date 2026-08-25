@@ -153,8 +153,9 @@ describe('reusable GitHub Action', () => {
     assert.match(checkedInObserverWorkflow, /surface-observation:\n\s+needs: plan-surface-observations\n\s+#.*\n\s+#.*\n\s+if: always\(\) && needs\.plan-surface-observations\.result == 'success'/)
     assert.match(checkedInObserverWorkflow, /reconcile-surface-observations:/)
     assert.match(checkedInObserverWorkflow, /scripts\/write-dsh-surface-plan\.mjs/)
+    assert.match(checkedInObserverWorkflow, /scripts\/plan-dsh-surface-agent\.mjs/)
     assert.match(checkedInObserverWorkflow, /scripts\/merge-dsh-surface-ledger\.mjs/)
-    assert.match(checkedInObserverWorkflow, /write-dsh-surface-plan\.mjs[\s\S]*agent-plans\.json/)
+    assert.match(checkedInObserverWorkflow, /write-dsh-surface-plan\.mjs[\s\S]*install-observer\/agent-plans\.json[\s\S]*surface-observer\/agent-plans\.json/)
     assert.match(surfaceTargets, /"autoDiscover"\s*:\s*\{\s*"webClientGaps"\s*:\s*true/)
     assert.match(checkedInObserverWorkflow, /accept_bounded_unknown: true/)
     assert.match(surfaceObserverWorkflow, /permissions:\n\s+contents: read/)
@@ -214,6 +215,15 @@ describe('reusable GitHub Action', () => {
     assert.match(checkedInObserverWorkflow.slice(surfaceFeedStep, surfacePersistStep), /write-dsh-directory-feed\.mjs/)
     assert.match(checkedInObserverWorkflow.slice(surfaceFeedStep, surfacePersistStep), /surface-ledger\.json/)
     assert.match(checkedInObserverWorkflow.slice(surfacePersistStep), /git add --[\s\S]*feeds\/dsh-plugin-compatibility\.json[\s\S]*feeds\/dsh-plugin-compatibility\.md/)
+    const surfacePlanJob = checkedInObserverWorkflow.slice(
+      checkedInObserverWorkflow.indexOf('\n  plan-surface-observations:'),
+      checkedInObserverWorkflow.indexOf('\n  surface-observation:'),
+    )
+    assert.match(surfacePlanJob, /permissions:\n\s+contents: write/)
+    assert.match(surfacePlanJob, /secrets\.ISSUE_LOCATOR_LLM_BASE_URL/)
+    assert.match(surfacePlanJob, /secrets\.ISSUE_LOCATOR_LLM_API_KEY/)
+    assert.match(surfacePlanJob, /secrets\.ISSUE_LOCATOR_LLM_MODEL/)
+    assert.match(surfacePlanJob, /git add --[\s\S]*surface-observer\/agent-plans\.json[\s\S]*surface-observer\/agent-plans\.md/)
     assert.match(installObserverDockerfile, /until corepack prepare pnpm@11\.3\.0 --activate/)
     assert.match(installObserverDockerfile, /if \[ "\$attempt" -ge 3 \]; then exit 1; fi/)
     assert.match(observerTargets, /observer-targets\/v1alpha1/)

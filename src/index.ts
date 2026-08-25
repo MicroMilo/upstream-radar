@@ -127,11 +127,26 @@ export {
   type DshWebSurfaceEvidence,
 } from './dsh-surface-observation.js'
 export {
+  DSH_SURFACE_AGENT_PLANS_SCHEMA,
+  createDshSurfaceAgentInputFingerprint,
+  emptyDshSurfaceAgentPlans,
+  parseDshSurfaceAgentDecision,
+  parseDshSurfaceAgentPlans,
+  renderDshSurfaceAgentPrompt,
+  type DshSurfaceAgentAction,
+  type DshSurfaceAgentCandidate,
+  type DshSurfaceAgentClassification,
+  type DshSurfaceAgentDecision,
+  type DshSurfaceAgentPlanEntry,
+  type DshSurfaceAgentPlans,
+} from './dsh-surface-agent-plan.js'
+export {
   DSH_SURFACE_IR_SCHEMA,
   DSH_SURFACE_LEDGER_SCHEMA,
   DSH_SURFACE_TARGETS_SCHEMA,
   buildDshSurfaceIR,
   buildDshSurfacePlan,
+  createDshSurfaceSourceFingerprint,
   emptyDshSurfaceLedger,
   hasDshWebClientCoverageGap,
   isDshWebClientOnlyCoverageGap,

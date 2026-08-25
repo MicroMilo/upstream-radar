@@ -22,9 +22,9 @@ async function readOptionalLedger(path) {
   }
 }
 
-const [targetsPath, sourceLedgerPath, surfaceLedgerPath, agentPlansPath] = process.argv.slice(2)
+const [targetsPath, sourceLedgerPath, surfaceLedgerPath, agentPlansPath, surfaceAgentPlansPath] = process.argv.slice(2)
 if (targetsPath === undefined || sourceLedgerPath === undefined || surfaceLedgerPath === undefined) {
-  throw new Error('usage: write-dsh-surface-plan.mjs <surface-targets.json> <compatibility-ledger.json> <surface-ledger.json> [agent-plans.json]')
+  throw new Error('usage: write-dsh-surface-plan.mjs <surface-targets.json> <compatibility-ledger.json> <surface-ledger.json> [headless-agent-plans.json] [surface-agent-plans.json]')
 }
 
 const plan = buildDshSurfacePlan(
@@ -32,7 +32,10 @@ const plan = buildDshSurfacePlan(
   await readJson(sourceLedgerPath),
   await readOptionalLedger(surfaceLedgerPath),
   new Date(),
-  ...(agentPlansPath === undefined ? [] : [await readJson(agentPlansPath)]),
+  ...(agentPlansPath === undefined ? [] : [
+    await readJson(agentPlansPath),
+    ...(surfaceAgentPlansPath === undefined ? [] : [await readJson(surfaceAgentPlansPath)]),
+  ]),
 )
 process.stdout.write(`${JSON.stringify(plan, null, 2)}\n`)
 

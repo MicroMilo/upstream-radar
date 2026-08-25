@@ -315,6 +315,9 @@ function surfaceCell(surface: DshSurfaceLedgerEntry, refreshAfterHours: number):
     ...(surface.approvedDependencyBuilds === undefined
       ? {}
       : { approvedDependencyBuilds: surface.approvedDependencyBuilds }),
+    ...(surface.requiredDependencyBuilds === undefined
+      ? {}
+      : { requiredDependencyBuilds: surface.requiredDependencyBuilds }),
     observedAt: surface.observedAt,
     recheckDueAt: dueAt(surface.observedAt, refreshAfterHours),
     reason: surface.reason,

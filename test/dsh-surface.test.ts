@@ -433,6 +433,87 @@ describe('DSH execution-plane reconciliation', () => {
     assert.deepEqual(merged.ledger.entries[0]?.approvedDependencyBuilds, ['@google/genai', 'protobufjs'])
   })
 
+  it('retains an exact dependency-build gate discovered only inside an execution plane', () => {
+    const plan = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger(), new Date('2026-08-25T00:00:00.000Z'))
+    const expected = plan.matrix.include.find(item => item.plane === 'web') as DshSurfaceExpectedCase
+    const report = compatibleReport(expected)
+    report.result = 'environment-unsupported'
+    report.reason = 'the declared web environment still requires explicit dependency-build approval: node-pty'
+    report.stages.install = { status: 'failed', code: 1, detail: '[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: node-pty@1.1.0' }
+    ;(report.boundary as typeof report.boundary & { requiredDependencyBuilds: string[] }).requiredDependencyBuilds = ['node-pty']
+
+    const merged = mergeDshSurfaceLedger({
+      ledger: emptyDshSurfaceLedger(),
+      expected: [expected],
+      reports: [report],
+    })
+
+    assert.deepEqual(merged.ledger.entries[0]?.requiredDependencyBuilds, ['node-pty'])
+  })
+
+  it('retries only the exact execution-plane cell approved by the surface Agent', () => {
+    const initial = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger(), new Date('2026-08-25T00:00:00.000Z'))
+    const expected = initial.matrix.include.find(item => item.plane === 'web') as DshSurfaceExpectedCase
+    const report = compatibleReport(expected)
+    report.result = 'environment-unsupported'
+    report.reason = 'the declared web environment still requires explicit dependency-build approval: node-pty'
+    report.stages.install = { status: 'failed', code: 1, detail: '[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: node-pty@1.1.0' }
+    ;(report.boundary as typeof report.boundary & { requiredDependencyBuilds: string[] }).requiredDependencyBuilds = ['node-pty']
+    const merged = mergeDshSurfaceLedger({
+      ledger: emptyDshSurfaceLedger(),
+      expected: [expected],
+      reports: [report],
+    })
+    const surfaceAgentPlans = {
+      schema: 'upstream-radar.dsh-surface-agent-plans/v1alpha1',
+      updatedAt: '2026-08-25T00:02:00.000Z',
+      entries: [{
+        caseId: expected.id,
+        sourceCaseId: expected.sourceCaseId,
+        plugin: expected.plugin,
+        dshVersion: expected.dshVersion,
+        nodeMajor: expected.nodeMajor,
+        plane: expected.plane,
+        profile: expected.profile,
+        result: 'environment-unsupported',
+        observedRequiredBuilds: ['node-pty'],
+        approvedBuilds: ['node-pty'],
+        sourceFingerprint: expected.sourceFingerprint,
+        artifactSha256: expected.artifactSha256,
+        inputFingerprint: `sha256:${'9'.repeat(64)}`,
+        plannedAt: '2026-08-25T00:02:00.000Z',
+        model: 'deepseek-v4-flash',
+        action: 'retry-surface',
+        classification: 'build-approval',
+        allowedBuilds: ['node-pty'],
+        summary: 'The exact plugin declares node-pty and the isolated Web install observed its build gate.',
+        evidence: ['package.json declares node-pty and the Web VM observed only node-pty.'],
+      }],
+    }
+
+    const retry = buildDshSurfacePlan(
+      targets,
+      sourceLedger(),
+      merged.ledger,
+      new Date('2026-08-25T00:03:00.000Z'),
+      undefined,
+      surfaceAgentPlans,
+    )
+    assert.equal(retry.matrix.include.find(item => item.id === expected.id)?.allowedBuilds, 'node-pty')
+    assert.deepEqual(retry.matrix.include.find(item => item.id === expected.id)?.reasons, ['surface-contract-changed'])
+    assert.equal(retry.matrix.include.find(item => item.plane === 'tui')?.allowedBuilds, '')
+
+    const changedArtifact = buildDshSurfacePlan(
+      targets,
+      sourceLedger({ artifact: { lifecycleScripts: [], sha256: '8'.repeat(64) } }),
+      emptyDshSurfaceLedger(),
+      new Date('2026-08-25T00:03:00.000Z'),
+      undefined,
+      surfaceAgentPlans,
+    )
+    assert.equal(changedArtifact.matrix.include.find(item => item.id === expected.id)?.allowedBuilds, '')
+  })
+
   it('reuses an exact retained Agent build policy when the headless result moved to another plane', () => {
     const source = sourceLedger({
       result: 'unknown',

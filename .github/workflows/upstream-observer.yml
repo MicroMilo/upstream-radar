@@ -389,7 +389,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: read
+      contents: write
     outputs:
       run: ${{ steps.surface-plan.outputs.run }}
       matrix: ${{ steps.surface-plan.outputs.matrix }}
@@ -399,7 +399,6 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.repository.default_branch }}
-          persist-credentials: false
           fetch-depth: 1
       - name: Set up pnpm
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
@@ -415,6 +414,27 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           pnpm build
+      # A surface VM may expose a native dependency gate that the headless
+      # install never reached. DeepSeek can approve only package names already
+      # observed in that exact cell; the later no-secret runner gets the
+      # resulting list, never the model credentials.
+      - name: Let the Agent plan bounded execution-plane follow-ups
+        id: surface-agent-plan
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
+        run: |
+          node scripts/plan-dsh-surface-agent.mjs \
+            examples/dsh/install-observer/targets.json \
+            examples/dsh/awesome-observer/cohort.json \
+            observations.json \
+            compatibility-ledger.json \
+            surface-ledger.json \
+            examples/dsh/surface-observer/agent-plans.json \
+            examples/dsh/surface-observer/agent-plans.md
       - name: Reconcile Web and TUI cells from exact headless evidence
         id: surface-plan
         run: |
@@ -422,7 +442,8 @@ jobs:
             examples/dsh/surface-observer/targets.json \
             compatibility-ledger.json \
             surface-ledger.json \
-            examples/dsh/install-observer/agent-plans.json | tee "$RUNNER_TEMP/upstream-radar-surface-plan.json"
+            examples/dsh/install-observer/agent-plans.json \
+            examples/dsh/surface-observer/agent-plans.json | tee "$RUNNER_TEMP/upstream-radar-surface-plan.json"
           node --input-type=module <<'NODE' >> "$GITHUB_STEP_SUMMARY"
           import { readFileSync } from 'node:fs'
           const plan = JSON.parse(readFileSync(process.env.RUNNER_TEMP + '/upstream-radar-surface-plan.json', 'utf8'))
@@ -431,6 +452,23 @@ jobs:
           for (const item of plan.blocked) lines.push(`- Blocked \`${item.id}\`: ${item.reason}`)
           process.stdout.write(lines.join('\n') + '\n')
           NODE
+      - name: Persist execution-plane Agent planning state
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'upstream-radar[bot]'
+          git config user.email 'upstream-radar[bot]@users.noreply.github.com'
+          git add -- \
+            examples/dsh/surface-observer/agent-plans.json \
+            examples/dsh/surface-observer/agent-plans.md
+          if git diff --cached --quiet; then
+            echo 'No execution-plane Agent policy changed; no commit created.'
+            exit 0
+          fi
+          git commit -m 'chore: update DSH execution-plane Agent policy [skip ci]'
+          git pull --rebase origin "${{ github.event.repository.default_branch }}"
+          git push
 
   # Every selected plane runs in a fresh VM and restricted container. The
   # reusable workflow receives no repository or model secrets.

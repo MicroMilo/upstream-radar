@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-08-25T09:51:32.100Z",
+  "generatedAt": "2026-08-25T10:04:14.817Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.44.0",
@@ -2896,6 +2896,9 @@
           "profile": "web",
           "status": "needs-review",
           "radarResult": "environment-unsupported",
+          "requiredDependencyBuilds": [
+            "node-pty"
+          ],
           "observedAt": "2026-08-25T09:50:45.133Z",
           "recheckDueAt": "2026-09-01T09:50:45.133Z",
           "reason": "the declared web environment still requires explicit dependency-build approval: node-pty"
