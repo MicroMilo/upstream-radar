@@ -25,7 +25,7 @@ const STAGE_STATUS = new Set(['passed', 'failed', 'skipped'])
 const DEFAULT_REFRESH_AFTER_HOURS = 7 * 24
 const MAX_TARGETS = 32
 const MAX_LEDGER_ENTRIES = 128
-const SURFACE_CONTRACT_REVISION = 'dsh-surface-contract/2'
+const SURFACE_CONTRACT_REVISION = 'dsh-surface-contract/3'
 
 export interface DshSurfaceTarget {
   id: string
@@ -260,7 +260,7 @@ function contractFingerprint(target: DshSurfaceTarget, entry: DshCompatibilityLe
       ? { browser: 'chromium', root: '#root', manifest: '__DSH_BOOT__', bootHandoff: '[data-dsh-boot] removed after graph activation', externalRequests: 'blocked' }
       : undefined,
     tui: target.plane === 'tui'
-      ? { terminal: 'xterm-256color', columns: 100, rows: 32, frame: 'ansi-and-printable', interaction: 'ctrl-l', shutdown: 'ctrl-c' }
+      ? { terminal: 'xterm-256color', columns: 100, rows: 32, frame: 'ansi-and-printable', interaction: 'ctrl-l', shutdown: 'double-ctrl-c' }
       : undefined,
   })
 }

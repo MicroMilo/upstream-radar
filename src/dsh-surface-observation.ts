@@ -994,6 +994,13 @@ async function observeTuiSurface(input: {
       if (shutdownRequested) return
       shutdownRequested = true
       terminal.write('\u0003')
+      // dsh-TUI intentionally requires a double Ctrl-C: the first press clears
+      // input/arms exit and the second performs the graceful shutdown. Keep the
+      // pair close enough to exercise that public interaction contract.
+      setTimeout(() => {
+        if (exited) return
+        try { terminal.write('\u0003') } catch { /* the PTY exited between taps */ }
+      }, 150)
       shutdownTimer = setTimeout(() => {
         forced = true
         try { terminal.kill('SIGKILL') } catch { settle() }
