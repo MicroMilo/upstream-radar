@@ -22,15 +22,17 @@ async function readOptionalLedger(path) {
   }
 }
 
-const [targetsPath, sourceLedgerPath, surfaceLedgerPath] = process.argv.slice(2)
+const [targetsPath, sourceLedgerPath, surfaceLedgerPath, agentPlansPath] = process.argv.slice(2)
 if (targetsPath === undefined || sourceLedgerPath === undefined || surfaceLedgerPath === undefined) {
-  throw new Error('usage: write-dsh-surface-plan.mjs <surface-targets.json> <compatibility-ledger.json> <surface-ledger.json>')
+  throw new Error('usage: write-dsh-surface-plan.mjs <surface-targets.json> <compatibility-ledger.json> <surface-ledger.json> [agent-plans.json]')
 }
 
 const plan = buildDshSurfacePlan(
   await readJson(targetsPath),
   await readJson(sourceLedgerPath),
   await readOptionalLedger(surfaceLedgerPath),
+  new Date(),
+  ...(agentPlansPath === undefined ? [] : [await readJson(agentPlansPath)]),
 )
 process.stdout.write(`${JSON.stringify(plan, null, 2)}\n`)
 
@@ -41,4 +43,3 @@ if (process.env.GITHUB_OUTPUT !== undefined) {
     `blocked=${JSON.stringify(plan.blocked)}`,
   ].join('\n') + '\n', 'utf8')
 }
-

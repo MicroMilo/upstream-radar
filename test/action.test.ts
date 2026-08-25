@@ -154,6 +154,7 @@ describe('reusable GitHub Action', () => {
     assert.match(checkedInObserverWorkflow, /reconcile-surface-observations:/)
     assert.match(checkedInObserverWorkflow, /scripts\/write-dsh-surface-plan\.mjs/)
     assert.match(checkedInObserverWorkflow, /scripts\/merge-dsh-surface-ledger\.mjs/)
+    assert.match(checkedInObserverWorkflow, /write-dsh-surface-plan\.mjs[\s\S]*agent-plans\.json/)
     assert.match(surfaceTargets, /"autoDiscover"\s*:\s*\{\s*"webClientGaps"\s*:\s*true/)
     assert.match(checkedInObserverWorkflow, /accept_bounded_unknown: true/)
     assert.match(surfaceObserverWorkflow, /permissions:\n\s+contents: read/)

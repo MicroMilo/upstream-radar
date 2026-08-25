@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
 import { parseDshCompatibilityLedger, type DshCompatibilityLedgerEntry } from './dsh-compatibility-ledger.js'
+import { parseDshHeadlessAgentPlans, type DshHeadlessAgentPlans } from './dsh-headless-agent-plan.js'
 import {
   DSH_SURFACE_OBSERVATION_SCHEMA,
   type DshExecutionPlane,
@@ -295,14 +296,19 @@ function sourceFingerprint(entry: DshCompatibilityLedgerEntry): string {
   })
 }
 
-function contractFingerprint(target: DshSurfaceTarget, entry: DshCompatibilityLedgerEntry, runtimeId: string): string {
+function contractFingerprint(
+  target: DshSurfaceTarget,
+  entry: DshCompatibilityLedgerEntry,
+  runtimeId: string,
+  approvedDependencyBuilds: readonly string[],
+): string {
   return digest({
     revision: SURFACE_CONTRACT_REVISION,
     plane: target.plane,
     profile: target.profile,
     runtimeId,
     nodeMajor: entry.runtime.nodeMajor,
-    approvedDependencyBuilds: entry.approvedDependencyBuilds ?? [],
+    approvedDependencyBuilds,
     web: target.plane === 'web'
       ? { browser: 'chromium', root: '#root', manifest: '__DSH_BOOT__', bootHandoff: '[data-dsh-boot] removed after graph activation', externalRequests: 'blocked' }
       : undefined,
@@ -312,7 +318,11 @@ function contractFingerprint(target: DshSurfaceTarget, entry: DshCompatibilityLe
   })
 }
 
-function desiredCase(target: DshSurfaceTarget, source: DshCompatibilityLedgerEntry): DshSurfaceExpectedCase | undefined {
+function desiredCase(
+  target: DshSurfaceTarget,
+  source: DshCompatibilityLedgerEntry,
+  approvedDependencyBuilds: readonly string[],
+): DshSurfaceExpectedCase | undefined {
   // The headless result may legitimately remain unknown when the unresolved
   // edges belong to the Web or TUI host that this target is about to provide.
   // An explicit surface target needs only exact artifact provenance here; the
@@ -337,9 +347,9 @@ function desiredCase(target: DshSurfaceTarget, source: DshCompatibilityLedgerEnt
     profile: target.profile,
     runtimeId,
     artifactSha256: source.artifact.sha256,
-    allowedBuilds: [...(source.approvedDependencyBuilds ?? [])].sort().join(','),
+    allowedBuilds: [...approvedDependencyBuilds].sort().join(','),
     sourceFingerprint: sourceFingerprint(source),
-    contractFingerprint: contractFingerprint(target, source, runtimeId),
+    contractFingerprint: contractFingerprint(target, source, runtimeId, approvedDependencyBuilds),
     reasons: [],
   }
 }
@@ -572,10 +582,14 @@ export function buildDshSurfacePlan(
   sourceLedgerInput: unknown,
   surfaceLedgerInput: unknown,
   now = new Date(),
+  agentPlansInput?: unknown,
 ): DshSurfacePlan {
   const targets = parseDshSurfaceTargets(targetsInput)
   const sourceLedger = parseDshCompatibilityLedger(sourceLedgerInput)
   const surfaceLedger = parseDshSurfaceLedger(surfaceLedgerInput)
+  const agentPlans: DshHeadlessAgentPlans | undefined = agentPlansInput === undefined
+    ? undefined
+    : parseDshHeadlessAgentPlans(agentPlansInput)
   const sourceById = new Map(sourceLedger.entries.map(entry => [entry.caseId, entry]))
   const currentById = new Map(surfaceLedger.entries.map(entry => [entry.caseId, entry]))
   const desiredTargets = [...targets.surfaces]
@@ -612,7 +626,20 @@ export function buildDshSurfacePlan(
       blocked.push({ id: target.id, reason: `source compatibility case ${target.sourceCaseId} is missing` })
       continue
     }
-    const desired = desiredCase(target, source)
+    const retainedAgentPlan = agentPlans?.entries.find(plan => (
+      plan.caseId === source.caseId
+      && plan.targetId === source.targetId
+      && plan.plugin === source.plugin
+      && plan.dshVersion === source.dshVersion
+      && plan.nodeMajor === source.runtime.nodeMajor
+      && plan.artifactSha256 !== undefined
+      && plan.artifactSha256 === source.artifact.sha256
+    ))
+    const approvedDependencyBuilds = [...new Set([
+      ...(source.approvedDependencyBuilds ?? []),
+      ...(retainedAgentPlan?.approvedBuilds ?? []),
+    ])].sort()
+    const desired = desiredCase(target, source, approvedDependencyBuilds)
     if (desired === undefined) {
       const hasExactArtifact = source.artifact.sha256 !== undefined && BARE_SHA256.test(source.artifact.sha256)
       blocked.push({

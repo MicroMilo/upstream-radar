@@ -382,6 +382,72 @@ describe('DSH execution-plane reconciliation', () => {
     assert.deepEqual(merged.ledger.entries[0]?.approvedDependencyBuilds, ['@google/genai', 'protobufjs'])
   })
 
+  it('reuses an exact retained Agent build policy when the headless result moved to another plane', () => {
+    const source = sourceLedger({
+      result: 'unknown',
+      reason: 'the exact artifact loaded, but Web host peers are unresolved in headless',
+      resolution: {
+        runtimeGraph: {
+          digest: `sha256:${'d'.repeat(64)}`,
+          nodes: 3,
+          edges: 2,
+          unresolved: 1,
+          unresolvedDependencies: [{
+            from: 'node_modules/web-plugin',
+            name: '@deepseek-ai/dsh-client-ui-primitives',
+            spec: '0.1.1-rc.2',
+            kind: 'peer',
+          }],
+        },
+      },
+    })
+    const agentPlans = {
+      schema: 'upstream-radar.dsh-headless-agent-plans/v1alpha1',
+      updatedAt: '2026-08-25T00:00:00.000Z',
+      entries: [{
+        caseId: 'web-plugin-node22',
+        targetId: 'web-plugin',
+        plugin: 'web-plugin@1.2.3',
+        dshVersion: '0.1.1-rc.2',
+        nodeMajor: 22,
+        result: 'unknown',
+        observedRequiredBuilds: ['node-pty', 'ssh2'],
+        approvedBuilds: ['node-pty', 'ssh2'],
+        artifactSha256: ARTIFACT_SHA,
+        inputFingerprint: `sha256:${'9'.repeat(64)}`,
+        plannedAt: '2026-08-25T00:00:00.000Z',
+        model: 'deepseek-v4-flash',
+        action: 'stop-headless',
+        classification: 'different-plane',
+        allowedBuilds: [],
+        summary: 'The retained native builds are justified, but the remaining gap belongs to Web.',
+        evidence: ['The exact earlier retries observed and approved node-pty and ssh2.'],
+      }],
+    }
+
+    const plan = buildDshSurfacePlan(
+      targets,
+      source,
+      emptyDshSurfaceLedger(),
+      new Date('2026-08-25T00:00:00.000Z'),
+      agentPlans,
+    )
+
+    assert.equal(plan.matrix.include.every(item => item.allowedBuilds === 'node-pty,ssh2'), true)
+
+    const changedArtifact = buildDshSurfacePlan(
+      targets,
+      sourceLedger({
+        ...source.entries[0],
+        artifact: { lifecycleScripts: [], sha256: '8'.repeat(64) },
+      }),
+      emptyDshSurfaceLedger(),
+      new Date('2026-08-25T00:00:00.000Z'),
+      agentPlans,
+    )
+    assert.equal(changedArtifact.matrix.include.every(item => item.allowedBuilds === ''), true)
+  })
+
   it('routes a bounded headless unknown into its explicitly configured execution plane', () => {
     const plan = buildDshSurfacePlan(
       targets,
