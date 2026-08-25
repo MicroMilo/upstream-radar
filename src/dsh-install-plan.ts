@@ -239,7 +239,13 @@ function staticTargetEvidence(stateInput: unknown, targetId: string): unknown {
   }
 }
 
-function resolvedPluginCoordinate(target: DshInstallTarget, stateInput: unknown): string {
+/**
+ * Resolve the exact plugin coordinate represented by one maintained target.
+ * The target spec is the bootstrap coordinate; once the observer has seen a
+ * newer publication of the same package, every downstream planner must bind
+ * to that observed coordinate instead of comparing against stale config.
+ */
+export function resolveDshInstallTargetSpec(target: DshInstallTarget, stateInput: unknown): string {
   const expected = parseNpmSpec(target.spec)
   const observed = target.observerTargetId === undefined
     ? undefined
@@ -380,7 +386,7 @@ export function buildDshInstallPlan(
   const selected = new Map<string, DshCompatibilityExpectedCase>()
   let desiredCells = 0
   for (const target of corpus.plugins) {
-    const plugin = resolvedPluginCoordinate(target, stateInput)
+    const plugin = resolveDshInstallTargetSpec(target, stateInput)
     const staticFingerprint = createDshCompatibilityStaticFingerprint({
       plugin,
       dshVersion,
