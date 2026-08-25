@@ -2,6 +2,1019 @@
   "schema": "upstream-radar.dsh-surface-ledger/v1alpha1",
   "entries": [
     {
+      "caseId": "dsh-agency-agents-node22-web",
+      "sourceCaseId": "dsh-agency-agents-node22",
+      "plugin": "@michengai/dsh-agency-agents@0.1.21",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "@michengai/dsh-agency-agents",
+      "sourceFingerprint": "sha256:214556fdbc15a8308c80d6158c6e7d180f5c4ee7ba1a04d66254bac96dfb978f",
+      "contractFingerprint": "sha256:7a4079998aff057961c529c2aaf0a9250967dd5991117001ad47c59eb7188323",
+      "observedAt": "2026-08-25T09:36:29.386Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "8256aba3b054ecf33d9490fb0cafb93447e8f43180a82b0b2fc0df892d739d31",
+        "bytes": 3502856,
+        "integrity": "sha512-de9/SfTkvOTbpsw6cLUtHUoPIPcNz06qj1OeYN6AU6l8sPigGb6bQmNypVhR+00XXM2R9PRgi9yroVN87o3Xtw=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "passed",
+          "code": 0
+        },
+        "registration": {
+          "status": "passed"
+        },
+        "host": {
+          "status": "passed"
+        },
+        "surface": {
+          "status": "passed"
+        },
+        "interaction": {
+          "status": "passed"
+        },
+        "shutdown": {
+          "status": "passed"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "bootEntryIds": [
+          "@michengai/dsh-agency-agents",
+          "@deepseek-ai/dsh-typert-registry",
+          "@deepseek-ai/dsh-api-gateway",
+          "@deepseek-ai/dsh-session-log-export",
+          "@deepseek-ai/dsh-client-hmr",
+          "@deepseek-ai/dsh-client-modules",
+          "@deepseek-ai/dsh-client-connection",
+          "@deepseek-ai/dsh-api-remotes",
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-cordis-client-runner",
+          "@deepseek-ai/dsh-client-ui-theme",
+          "@deepseek-ai/dsh-client-locale",
+          "@deepseek-ai/dsh-client-ui-layout",
+          "@deepseek-ai/dsh-client-ui-renderer",
+          "@deepseek-ai/dsh-client-ui-sidebar",
+          "@deepseek-ai/dsh-client-ui-settings",
+          "@deepseek-ai/dsh-client-ui-settings-general",
+          "@deepseek-ai/dsh-client-ui-settings-models",
+          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+          "@deepseek-ai/dsh-client-ui-conversation",
+          "@deepseek-ai/dsh-client-ui-brand-official",
+          "@deepseek-ai/dsh-client-ui-attachment",
+          "@deepseek-ai/dsh-client-ui-tool",
+          "@deepseek-ai/dsh-client-ui-cordis",
+          "@deepseek-ai/dsh-client-ui-workflow-run",
+          "@deepseek-ai/dsh-client-ui-deliverables",
+          "@deepseek-ai/dsh-client-ui-workspace",
+          "@deepseek-ai/dsh-client-ui-input-trigger",
+          "@deepseek-ai/dsh-client-ui-commands",
+          "@deepseek-ai/dsh-client-ui-skill",
+          "@deepseek-ai/dsh-client-ui-subagent",
+          "@deepseek-ai/dsh-client-ui-reference"
+        ],
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@michengai/dsh-agency-agents/client.js?rev=913cbdc5b8ca",
+        "pluginBundleStatus": 200,
+        "applicationMounted": true,
+        "pluginMaterialized": true,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "dsh-agency-agents-node22-web.png",
+        "trace": "dsh-agency-agents-node22-web.trace.zip",
+        "hostLog": "dsh-agency-agents-node22-web.host.log"
+      },
+      "result": "compatible",
+      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.44.0"
+      }
+    },
+    {
+      "caseId": "dsh-archive-manager-node22-web",
+      "sourceCaseId": "dsh-archive-manager-node22",
+      "plugin": "@michengai/dsh-archive-manager@0.1.14",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "@michengai/dsh-archive-manager",
+      "sourceFingerprint": "sha256:13561a3576fd265d01f6da3e8889e587f5fe839e3d015e0b21afcd5bde3ea0cc",
+      "contractFingerprint": "sha256:c555f3c4dea0f44c7510d045cf8749c2557a8fc349f85361afce83e37f02f6a3",
+      "observedAt": "2026-08-25T09:37:03.689Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "f8d76d265dbd96e68a777e4b88e06d844a592750abea2559109d9c90486dcf3e",
+        "bytes": 1316295,
+        "integrity": "sha512-BN5VCX7ep9rAtXFObEqXDRr+UArYOIj+kRoc6SPZ9ZDNjAqrIHN9U+b9i+uzsh2MXWo3eSLok/4z6kqVGK3nfQ=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "passed",
+          "code": 0
+        },
+        "registration": {
+          "status": "passed"
+        },
+        "host": {
+          "status": "passed"
+        },
+        "surface": {
+          "status": "passed"
+        },
+        "interaction": {
+          "status": "passed"
+        },
+        "shutdown": {
+          "status": "passed"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "bootEntryIds": [
+          "@michengai/dsh-archive-manager",
+          "@deepseek-ai/dsh-typert-registry",
+          "@deepseek-ai/dsh-api-gateway",
+          "@deepseek-ai/dsh-session-log-export",
+          "@deepseek-ai/dsh-client-hmr",
+          "@deepseek-ai/dsh-client-modules",
+          "@deepseek-ai/dsh-client-connection",
+          "@deepseek-ai/dsh-api-remotes",
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-cordis-client-runner",
+          "@deepseek-ai/dsh-client-ui-theme",
+          "@deepseek-ai/dsh-client-locale",
+          "@deepseek-ai/dsh-client-ui-layout",
+          "@deepseek-ai/dsh-client-ui-renderer",
+          "@deepseek-ai/dsh-client-ui-sidebar",
+          "@deepseek-ai/dsh-client-ui-settings",
+          "@deepseek-ai/dsh-client-ui-settings-general",
+          "@deepseek-ai/dsh-client-ui-settings-models",
+          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+          "@deepseek-ai/dsh-client-ui-conversation",
+          "@deepseek-ai/dsh-client-ui-brand-official",
+          "@deepseek-ai/dsh-client-ui-attachment",
+          "@deepseek-ai/dsh-client-ui-tool",
+          "@deepseek-ai/dsh-client-ui-cordis",
+          "@deepseek-ai/dsh-client-ui-workflow-run",
+          "@deepseek-ai/dsh-client-ui-deliverables",
+          "@deepseek-ai/dsh-client-ui-input-trigger",
+          "@deepseek-ai/dsh-client-ui-commands",
+          "@deepseek-ai/dsh-client-ui-skill",
+          "@deepseek-ai/dsh-client-ui-subagent",
+          "@deepseek-ai/dsh-client-ui-reference",
+          "@deepseek-ai/dsh-client-ui-jobs"
+        ],
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@michengai/dsh-archive-manager/client.js?rev=288c2c8ac2b4",
+        "pluginBundleStatus": 200,
+        "applicationMounted": true,
+        "pluginMaterialized": true,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "dsh-archive-manager-node22-web.png",
+        "trace": "dsh-archive-manager-node22-web.trace.zip",
+        "hostLog": "dsh-archive-manager-node22-web.host.log"
+      },
+      "result": "compatible",
+      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.44.0"
+      }
+    },
+    {
+      "caseId": "dsh-awiki-node22-web",
+      "sourceCaseId": "dsh-awiki-node22",
+      "plugin": "@awiki/dsh-plugin@0.3.3",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "@awiki/dsh-plugin",
+      "sourceFingerprint": "sha256:fc9d8b164080cfe88c52dba3cb4ca0e04c3c502c95aa25d07c4c823b70d06c1d",
+      "contractFingerprint": "sha256:910d6cd7e3e3db3d44c9f034cc6214687feab6408412dd6e905b6717e792638d",
+      "observedAt": "2026-08-25T09:37:23.394Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "0a4b43e67b15323d648552020e839777d6ee48ced7d61fbf36022358541696b4",
+        "bytes": 640351,
+        "integrity": "sha512-WQfZj1tb4fHEZfyjzlp5J/XaHxGMal6l5Y3NHtoi8KyNyCIumkx6SuPwktlx947XPf7kBEZ/I/cbh1LthiHuwQ=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "passed",
+          "code": 0
+        },
+        "registration": {
+          "status": "passed"
+        },
+        "host": {
+          "status": "passed"
+        },
+        "surface": {
+          "status": "passed"
+        },
+        "interaction": {
+          "status": "passed"
+        },
+        "shutdown": {
+          "status": "passed"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "bootEntryIds": [
+          "@awiki/dsh-plugin",
+          "@deepseek-ai/dsh-typert-registry",
+          "@deepseek-ai/dsh-api-gateway",
+          "@deepseek-ai/dsh-session-log-export",
+          "@deepseek-ai/dsh-client-hmr",
+          "@deepseek-ai/dsh-client-modules",
+          "@deepseek-ai/dsh-client-connection",
+          "@deepseek-ai/dsh-api-remotes",
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-cordis-client-runner",
+          "@deepseek-ai/dsh-client-ui-theme",
+          "@deepseek-ai/dsh-client-locale",
+          "@deepseek-ai/dsh-client-ui-layout",
+          "@deepseek-ai/dsh-client-ui-renderer",
+          "@deepseek-ai/dsh-client-ui-sidebar",
+          "@deepseek-ai/dsh-client-ui-settings",
+          "@deepseek-ai/dsh-client-ui-settings-general",
+          "@deepseek-ai/dsh-client-ui-settings-models",
+          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+          "@deepseek-ai/dsh-client-ui-conversation",
+          "@deepseek-ai/dsh-client-ui-brand-official",
+          "@deepseek-ai/dsh-client-ui-attachment",
+          "@deepseek-ai/dsh-client-ui-tool",
+          "@deepseek-ai/dsh-client-ui-cordis",
+          "@deepseek-ai/dsh-client-ui-workflow-run",
+          "@deepseek-ai/dsh-client-ui-deliverables",
+          "@deepseek-ai/dsh-client-ui-workspace",
+          "@deepseek-ai/dsh-client-ui-input-trigger",
+          "@deepseek-ai/dsh-client-ui-commands",
+          "@deepseek-ai/dsh-client-ui-skill",
+          "@deepseek-ai/dsh-client-ui-subagent",
+          "@deepseek-ai/dsh-client-ui-reference"
+        ],
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@awiki/dsh-plugin/client.js?rev=dcdc645b0006",
+        "pluginBundleStatus": 200,
+        "applicationMounted": true,
+        "pluginMaterialized": true,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "dsh-awiki-node22-web.png",
+        "trace": "dsh-awiki-node22-web.trace.zip",
+        "hostLog": "dsh-awiki-node22-web.host.log"
+      },
+      "result": "compatible",
+      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.44.0"
+      }
+    },
+    {
+      "caseId": "dsh-codex-connect-node22-web",
+      "sourceCaseId": "dsh-codex-connect-node22",
+      "plugin": "dsh-codex-connect@0.1.0-alpha.4.19",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-codex-connect",
+      "sourceFingerprint": "sha256:afaa691c414f5862d59eb1498a1ad65089fa9c3dff683132f7b9488ba8f4d55a",
+      "contractFingerprint": "sha256:5fdb060f09396e3af096e82193e2b6ce9ef842f128aa4767b4788aa622dd461d",
+      "observedAt": "2026-08-25T09:36:32.125Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "3876106f058f94d3451fc2941a66b02b924ba0e93041fd5028252484ae6c451c",
+        "bytes": 1086969,
+        "integrity": "sha512-W0KF0j1uAX7Ebrrll9SpSsByBKJzIh+gBWmyCGAeIoobyFE/d3iNSXtYcTYND3dEKge9slOrvIVjAIRmSGc3fg=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "passed",
+          "code": 0
+        },
+        "registration": {
+          "status": "passed"
+        },
+        "host": {
+          "status": "passed"
+        },
+        "surface": {
+          "status": "passed"
+        },
+        "interaction": {
+          "status": "passed"
+        },
+        "shutdown": {
+          "status": "passed"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "bootEntryIds": [
+          "dsh-codex-connect",
+          "@deepseek-ai/dsh-typert-registry",
+          "@deepseek-ai/dsh-api-gateway",
+          "@deepseek-ai/dsh-session-log-export",
+          "@deepseek-ai/dsh-client-hmr",
+          "@deepseek-ai/dsh-client-modules",
+          "@deepseek-ai/dsh-client-connection",
+          "@deepseek-ai/dsh-api-remotes",
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-cordis-client-runner",
+          "@deepseek-ai/dsh-client-ui-theme",
+          "@deepseek-ai/dsh-client-locale",
+          "@deepseek-ai/dsh-client-ui-layout",
+          "@deepseek-ai/dsh-client-ui-renderer",
+          "@deepseek-ai/dsh-client-ui-sidebar",
+          "@deepseek-ai/dsh-client-ui-settings",
+          "@deepseek-ai/dsh-client-ui-settings-general",
+          "@deepseek-ai/dsh-client-ui-settings-models",
+          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+          "@deepseek-ai/dsh-client-ui-conversation",
+          "@deepseek-ai/dsh-client-ui-brand-official",
+          "@deepseek-ai/dsh-client-ui-attachment",
+          "@deepseek-ai/dsh-client-ui-tool",
+          "@deepseek-ai/dsh-client-ui-cordis",
+          "@deepseek-ai/dsh-client-ui-workflow-run",
+          "@deepseek-ai/dsh-client-ui-deliverables",
+          "@deepseek-ai/dsh-client-ui-workspace",
+          "@deepseek-ai/dsh-client-ui-input-trigger",
+          "@deepseek-ai/dsh-client-ui-commands",
+          "@deepseek-ai/dsh-client-ui-skill",
+          "@deepseek-ai/dsh-client-ui-subagent",
+          "@deepseek-ai/dsh-client-ui-reference"
+        ],
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-codex-connect/client.js?rev=0e4b6dc8577b",
+        "pluginBundleStatus": 200,
+        "applicationMounted": true,
+        "pluginMaterialized": true,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "dsh-codex-connect-node22-web.png",
+        "trace": "dsh-codex-connect-node22-web.trace.zip",
+        "hostLog": "dsh-codex-connect-node22-web.host.log"
+      },
+      "result": "compatible",
+      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.44.0"
+      }
+    },
+    {
+      "caseId": "dsh-commandcode-provider-node22-web",
+      "sourceCaseId": "dsh-commandcode-provider-node22",
+      "plugin": "@mars-sea/dsh-commandcode-provider@0.8.1",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "@mars-sea/dsh-commandcode-provider",
+      "sourceFingerprint": "sha256:bc0248c41d8aabaa0a8c6a4f78f1d693c0b8e761bd6294469caa1ce2d8c133f1",
+      "contractFingerprint": "sha256:43a0c1fb43572882964431ecc28820a74c57140c9721b5e2e21a60447a147888",
+      "observedAt": "2026-08-25T09:36:39.842Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "245acceadf2fc86d1cb5d6a13d5c45b2ac7cc25f10e1436ad3c66810c3f86eea",
+        "bytes": 2253752,
+        "integrity": "sha512-c2j0feoq9Pa5LN2jPQykrr7EdrsuQsJdDo0Rq4tPcA+npqPYl+kem8pqQrSfzTJLhOg8DyyJSczdqtqTHOdwoA=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "passed",
+          "code": 0
+        },
+        "registration": {
+          "status": "passed"
+        },
+        "host": {
+          "status": "passed"
+        },
+        "surface": {
+          "status": "passed"
+        },
+        "interaction": {
+          "status": "passed"
+        },
+        "shutdown": {
+          "status": "passed"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "bootEntryIds": [
+          "@mars-sea/dsh-commandcode-provider",
+          "@deepseek-ai/dsh-typert-registry",
+          "@deepseek-ai/dsh-api-gateway",
+          "@deepseek-ai/dsh-session-log-export",
+          "@deepseek-ai/dsh-client-hmr",
+          "@deepseek-ai/dsh-client-modules",
+          "@deepseek-ai/dsh-client-connection",
+          "@deepseek-ai/dsh-api-remotes",
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-cordis-client-runner",
+          "@deepseek-ai/dsh-client-ui-theme",
+          "@deepseek-ai/dsh-client-locale",
+          "@deepseek-ai/dsh-client-ui-layout",
+          "@deepseek-ai/dsh-client-ui-renderer",
+          "@deepseek-ai/dsh-client-ui-sidebar",
+          "@deepseek-ai/dsh-client-ui-settings",
+          "@deepseek-ai/dsh-client-ui-settings-general",
+          "@deepseek-ai/dsh-client-ui-settings-models",
+          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+          "@deepseek-ai/dsh-client-ui-conversation",
+          "@deepseek-ai/dsh-client-ui-brand-official",
+          "@deepseek-ai/dsh-client-ui-attachment",
+          "@deepseek-ai/dsh-client-ui-tool",
+          "@deepseek-ai/dsh-client-ui-cordis",
+          "@deepseek-ai/dsh-client-ui-workflow-run",
+          "@deepseek-ai/dsh-client-ui-deliverables",
+          "@deepseek-ai/dsh-client-ui-workspace",
+          "@deepseek-ai/dsh-client-ui-input-trigger",
+          "@deepseek-ai/dsh-client-ui-commands",
+          "@deepseek-ai/dsh-client-ui-skill",
+          "@deepseek-ai/dsh-client-ui-subagent",
+          "@deepseek-ai/dsh-client-ui-reference"
+        ],
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@mars-sea/dsh-commandcode-provider/client.js?rev=74805bd7ed2f",
+        "pluginBundleStatus": 200,
+        "applicationMounted": true,
+        "pluginMaterialized": true,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "dsh-commandcode-provider-node22-web.png",
+        "trace": "dsh-commandcode-provider-node22-web.trace.zip",
+        "hostLog": "dsh-commandcode-provider-node22-web.host.log"
+      },
+      "result": "compatible",
+      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.44.0"
+      }
+    },
+    {
+      "caseId": "dsh-pet-node22-web",
+      "sourceCaseId": "dsh-pet-node22",
+      "plugin": "dsh-pet@0.1.8",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-pet",
+      "sourceFingerprint": "sha256:0fdfd2ff794524103b3e7d730e979d923729266fe2e8974440a15f6fd6592ef1",
+      "contractFingerprint": "sha256:c5bcc528ea51a605dab56ea5f73b926c277fbb42e24b9dabe44e9bb70445ffd4",
+      "observedAt": "2026-08-25T09:36:32.513Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "9a25c7a4cfc49f74f5dff4ba3292b18fa4bca4a08e656fdd57b8a28d9f9fd121",
+        "bytes": 53659865,
+        "integrity": "sha512-xOGihkKbL8LhZG4ZoKTGnbtgdB1Dofbv5dUoCHnZ6ztpIXy2qXSuupZKIr405C0JrsDbfuhVZa7YqlsnTDPJeQ=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "passed",
+          "code": 0
+        },
+        "registration": {
+          "status": "passed"
+        },
+        "host": {
+          "status": "passed"
+        },
+        "surface": {
+          "status": "passed"
+        },
+        "interaction": {
+          "status": "passed"
+        },
+        "shutdown": {
+          "status": "passed"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "bootEntryIds": [
+          "dsh-pet",
+          "@deepseek-ai/dsh-typert-registry",
+          "@deepseek-ai/dsh-api-gateway",
+          "@deepseek-ai/dsh-session-log-export",
+          "@deepseek-ai/dsh-client-hmr",
+          "@deepseek-ai/dsh-client-modules",
+          "@deepseek-ai/dsh-client-connection",
+          "@deepseek-ai/dsh-api-remotes",
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-cordis-client-runner",
+          "@deepseek-ai/dsh-client-ui-theme",
+          "@deepseek-ai/dsh-client-locale",
+          "@deepseek-ai/dsh-client-ui-layout",
+          "@deepseek-ai/dsh-client-ui-renderer",
+          "@deepseek-ai/dsh-client-ui-sidebar",
+          "@deepseek-ai/dsh-client-ui-settings",
+          "@deepseek-ai/dsh-client-ui-settings-general",
+          "@deepseek-ai/dsh-client-ui-settings-models",
+          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+          "@deepseek-ai/dsh-client-ui-conversation",
+          "@deepseek-ai/dsh-client-ui-brand-official",
+          "@deepseek-ai/dsh-client-ui-attachment",
+          "@deepseek-ai/dsh-client-ui-tool",
+          "@deepseek-ai/dsh-client-ui-cordis",
+          "@deepseek-ai/dsh-client-ui-workflow-run",
+          "@deepseek-ai/dsh-client-ui-deliverables",
+          "@deepseek-ai/dsh-client-ui-workspace",
+          "@deepseek-ai/dsh-client-ui-input-trigger",
+          "@deepseek-ai/dsh-client-ui-commands",
+          "@deepseek-ai/dsh-client-ui-skill",
+          "@deepseek-ai/dsh-client-ui-subagent",
+          "@deepseek-ai/dsh-client-ui-reference"
+        ],
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-pet/client.js?rev=b658734642b2",
+        "pluginBundleStatus": 200,
+        "applicationMounted": true,
+        "pluginMaterialized": true,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "dsh-pet-node22-web.png",
+        "trace": "dsh-pet-node22-web.trace.zip",
+        "hostLog": "dsh-pet-node22-web.host.log"
+      },
+      "result": "compatible",
+      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.44.0"
+      }
+    },
+    {
+      "caseId": "dsh-remote-node22-web",
+      "sourceCaseId": "dsh-remote-node22",
+      "plugin": "dsh-remote@0.8.8",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-remote",
+      "sourceFingerprint": "sha256:76bf32acc2d66754a71a3b0c52dfd8509c151c3a382faea9c9ce1e5257db9276",
+      "contractFingerprint": "sha256:7aeac8d6a85aa42b5f938e23136c5611fcf655ef2316058f89d95adbb2253371",
+      "observedAt": "2026-08-25T09:36:32.119Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "ccedc839d6038e6f09fe18e028017f30d5e9290c20cbd209ef470f0f7c100804",
+        "bytes": 86269,
+        "integrity": "sha512-HVkGiHfhMmpH3Y4HERAFLmw3AUzW+baA5VX7TwQX/8ap245fo2HMaGcWuvi4BTXckbgwvZSWi1qp3ULMVkrcdQ=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "failed",
+          "code": 1,
+          "detail": "command exited with 1: dsh: pnpm failed in profile directory /sandbox/upstream-radar-dsh-surface-ppETJy/dsh-home/profiles/web\n\nProgress: resolved 0, reused 0, downloaded 1, added 0\n[WARN] Issues with peer dependencies found. Run \"pnpm peers check\" to list them.\n\ndependencies:\n+ dsh-remote file:/sandbox/upstream-radar-dsh-surface-ppETJy/artifact/dsh-remote-0.8.8.tgz\n\nPackages: +175\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 175, reused 8, downloaded 1, added 0\nProgress: resolved 175, reused 8, downloaded 63, added 4\nProgress: resolved 175, reused 8, downloaded 167, added 175, done\n[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: cpu-features@0.0.10, node-pty@1.1.0, ssh2@1.17.0\n\nRun \"pnpm approve-builds\" to pick which dependencies should be allowed to run scripts."
+        },
+        "registration": {
+          "status": "skipped"
+        },
+        "host": {
+          "status": "skipped"
+        },
+        "surface": {
+          "status": "skipped"
+        },
+        "interaction": {
+          "status": "skipped"
+        },
+        "shutdown": {
+          "status": "skipped"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "rootMounted": false,
+        "bootManifestPresent": false,
+        "bootEntryIds": [],
+        "pluginEntryPresent": false,
+        "applicationMounted": false,
+        "pluginMaterialized": false,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": []
+      },
+      "result": "environment-unsupported",
+      "reason": "the declared web environment still requires explicit dependency-build approval: cpu-features, node-pty, ssh2",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.44.0"
+      }
+    },
+    {
+      "caseId": "dsh-skills-manager-node22-web",
+      "sourceCaseId": "dsh-skills-manager-node22",
+      "plugin": "@michengai/dsh-skills-manager@0.1.24",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "@michengai/dsh-skills-manager",
+      "sourceFingerprint": "sha256:26dae0b0fc2dbeddfe2bda0d83e4b4041994f85480f18420bb5ed47b5be7bbf3",
+      "contractFingerprint": "sha256:161a175df95f65af201ca1c01f70d3d502b64ecb1b71d88bc90686023cea4a51",
+      "observedAt": "2026-08-25T09:36:34.853Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "0d22316d9ecc4373f2ab597634da9a9a0c8df16c02627c4852024839cdeb283b",
+        "bytes": 1987401,
+        "integrity": "sha512-89nI2PrnoMcffuXhNTnst30SDP8g0NtOROoFfmunqutSXazxzUgv6iC1tL6KYzWVH4heNtXCk6GYoMe7dDiwtg=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "passed",
+          "code": 0
+        },
+        "registration": {
+          "status": "passed"
+        },
+        "host": {
+          "status": "passed"
+        },
+        "surface": {
+          "status": "passed"
+        },
+        "interaction": {
+          "status": "passed"
+        },
+        "shutdown": {
+          "status": "passed"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "bootEntryIds": [
+          "@michengai/dsh-skills-manager",
+          "@deepseek-ai/dsh-typert-registry",
+          "@deepseek-ai/dsh-api-gateway",
+          "@deepseek-ai/dsh-session-log-export",
+          "@deepseek-ai/dsh-client-hmr",
+          "@deepseek-ai/dsh-client-modules",
+          "@deepseek-ai/dsh-client-connection",
+          "@deepseek-ai/dsh-api-remotes",
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-cordis-client-runner",
+          "@deepseek-ai/dsh-client-ui-theme",
+          "@deepseek-ai/dsh-client-locale",
+          "@deepseek-ai/dsh-client-ui-layout",
+          "@deepseek-ai/dsh-client-ui-renderer",
+          "@deepseek-ai/dsh-client-ui-sidebar",
+          "@deepseek-ai/dsh-client-ui-settings",
+          "@deepseek-ai/dsh-client-ui-settings-general",
+          "@deepseek-ai/dsh-client-ui-settings-models",
+          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+          "@deepseek-ai/dsh-client-ui-conversation",
+          "@deepseek-ai/dsh-client-ui-brand-official",
+          "@deepseek-ai/dsh-client-ui-attachment",
+          "@deepseek-ai/dsh-client-ui-tool",
+          "@deepseek-ai/dsh-client-ui-cordis",
+          "@deepseek-ai/dsh-client-ui-workflow-run",
+          "@deepseek-ai/dsh-client-ui-deliverables",
+          "@deepseek-ai/dsh-client-ui-workspace",
+          "@deepseek-ai/dsh-client-ui-input-trigger",
+          "@deepseek-ai/dsh-client-ui-commands",
+          "@deepseek-ai/dsh-client-ui-skill",
+          "@deepseek-ai/dsh-client-ui-subagent",
+          "@deepseek-ai/dsh-client-ui-reference"
+        ],
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@michengai/dsh-skills-manager/client.js?rev=8a2ee4a927d0",
+        "pluginBundleStatus": 200,
+        "applicationMounted": true,
+        "pluginMaterialized": true,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "dsh-skills-manager-node22-web.png",
+        "trace": "dsh-skills-manager-node22-web.trace.zip",
+        "hostLog": "dsh-skills-manager-node22-web.host.log"
+      },
+      "result": "compatible",
+      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.44.0"
+      }
+    },
+    {
+      "caseId": "dsh-thirteen-bg-node22-web",
+      "sourceCaseId": "dsh-thirteen-bg-node22",
+      "plugin": "dsh-thirteen-bg@0.5.2",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-thirteen-bg",
+      "sourceFingerprint": "sha256:f676705d8521a810a62832c27e8973fe8b20f705620f7f136d53053eaef0dd33",
+      "contractFingerprint": "sha256:3a83035f27f3ab42de1b2010de9a352d5350ba58984934f5e230e76d3fd84554",
+      "observedAt": "2026-08-25T09:36:35.433Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "ba718513fe41aa604b01ea38220a3ce7ad5f51c0e486bbb319218ac2b7d0eb51",
+        "bytes": 14269,
+        "integrity": "sha512-ByWnQPKVUkaN7DQPSr14FB99o7phAbAV7D0IKStbY1V0YRP9Oqd60k7saCncpbkr21jPhQ5jSC3deIobxDZnsA=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "passed",
+          "code": 0
+        },
+        "registration": {
+          "status": "passed"
+        },
+        "host": {
+          "status": "passed"
+        },
+        "surface": {
+          "status": "passed"
+        },
+        "interaction": {
+          "status": "passed"
+        },
+        "shutdown": {
+          "status": "passed"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "bootEntryIds": [
+          "dsh-thirteen-bg",
+          "@deepseek-ai/dsh-typert-registry",
+          "@deepseek-ai/dsh-api-gateway",
+          "@deepseek-ai/dsh-session-log-export",
+          "@deepseek-ai/dsh-client-hmr",
+          "@deepseek-ai/dsh-client-modules",
+          "@deepseek-ai/dsh-client-connection",
+          "@deepseek-ai/dsh-api-remotes",
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-cordis-client-runner",
+          "@deepseek-ai/dsh-client-ui-theme",
+          "@deepseek-ai/dsh-client-locale",
+          "@deepseek-ai/dsh-client-ui-layout",
+          "@deepseek-ai/dsh-client-ui-renderer",
+          "@deepseek-ai/dsh-client-ui-sidebar",
+          "@deepseek-ai/dsh-client-ui-settings",
+          "@deepseek-ai/dsh-client-ui-settings-general",
+          "@deepseek-ai/dsh-client-ui-settings-models",
+          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+          "@deepseek-ai/dsh-client-ui-conversation",
+          "@deepseek-ai/dsh-client-ui-brand-official",
+          "@deepseek-ai/dsh-client-ui-attachment",
+          "@deepseek-ai/dsh-client-ui-tool",
+          "@deepseek-ai/dsh-client-ui-cordis",
+          "@deepseek-ai/dsh-client-ui-workflow-run",
+          "@deepseek-ai/dsh-client-ui-deliverables",
+          "@deepseek-ai/dsh-client-ui-workspace",
+          "@deepseek-ai/dsh-client-ui-input-trigger",
+          "@deepseek-ai/dsh-client-ui-commands",
+          "@deepseek-ai/dsh-client-ui-skill",
+          "@deepseek-ai/dsh-client-ui-subagent",
+          "@deepseek-ai/dsh-client-ui-reference"
+        ],
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-thirteen-bg/client.js?rev=cf52c503e94a",
+        "pluginBundleStatus": 200,
+        "applicationMounted": true,
+        "pluginMaterialized": true,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "dsh-thirteen-bg-node22-web.png",
+        "trace": "dsh-thirteen-bg-node22-web.trace.zip",
+        "hostLog": "dsh-thirteen-bg-node22-web.host.log"
+      },
+      "result": "compatible",
+      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.44.0"
+      }
+    },
+    {
       "caseId": "dsh-tui-tui",
       "sourceCaseId": "dsh-tui-node22",
       "plugin": "@deepseek-harness-tui/dsh-tui@0.9.2",
@@ -201,6 +1214,240 @@
       }
     },
     {
+      "caseId": "dsh-vision-toolkit-node22-web",
+      "sourceCaseId": "dsh-vision-toolkit-node22",
+      "plugin": "@anionex/dsh-vision-toolkit@0.1.39",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "@anionex/dsh-vision-toolkit",
+      "sourceFingerprint": "sha256:dd607294fa3d175d0641ca7f8c1d18d45e22bdcc03fa1f305fa43125a29ebb6b",
+      "contractFingerprint": "sha256:94f062fa9fd33d6e28ff481af28efc7aac42c3f1aebf2548fe251a2fd631be62",
+      "observedAt": "2026-08-25T09:36:25.355Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "81b4029142f0f3c2fbe88a8ee22c90da8cf449b68b345eebfd2e643c0a06efb1",
+        "bytes": 7920823,
+        "integrity": "sha512-umMUT2lUiErTeDaZjW5GYUGv1W/o7lSbAiRICkxtV4jJryeJ3mjZ5Fgosdf9DMOG83JXJeVrIkAqKJjVotbo1w=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "passed",
+          "code": 0
+        },
+        "registration": {
+          "status": "passed"
+        },
+        "host": {
+          "status": "passed"
+        },
+        "surface": {
+          "status": "passed"
+        },
+        "interaction": {
+          "status": "passed"
+        },
+        "shutdown": {
+          "status": "passed"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "bootEntryIds": [
+          "@anionex/dsh-vision-toolkit",
+          "@deepseek-ai/dsh-typert-registry",
+          "@deepseek-ai/dsh-api-gateway",
+          "@deepseek-ai/dsh-session-log-export",
+          "@deepseek-ai/dsh-client-hmr",
+          "@deepseek-ai/dsh-client-modules",
+          "@deepseek-ai/dsh-client-connection",
+          "@deepseek-ai/dsh-api-remotes",
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-cordis-client-runner",
+          "@deepseek-ai/dsh-client-ui-theme",
+          "@deepseek-ai/dsh-client-locale",
+          "@deepseek-ai/dsh-client-ui-layout",
+          "@deepseek-ai/dsh-client-ui-renderer",
+          "@deepseek-ai/dsh-client-ui-sidebar",
+          "@deepseek-ai/dsh-client-ui-settings",
+          "@deepseek-ai/dsh-client-ui-settings-general",
+          "@deepseek-ai/dsh-client-ui-settings-models",
+          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+          "@deepseek-ai/dsh-client-ui-conversation",
+          "@deepseek-ai/dsh-client-ui-brand-official",
+          "@deepseek-ai/dsh-client-ui-attachment",
+          "@deepseek-ai/dsh-client-ui-tool",
+          "@deepseek-ai/dsh-client-ui-cordis",
+          "@deepseek-ai/dsh-client-ui-workflow-run",
+          "@deepseek-ai/dsh-client-ui-deliverables",
+          "@deepseek-ai/dsh-client-ui-workspace",
+          "@deepseek-ai/dsh-client-ui-input-trigger",
+          "@deepseek-ai/dsh-client-ui-commands",
+          "@deepseek-ai/dsh-client-ui-skill",
+          "@deepseek-ai/dsh-client-ui-subagent",
+          "@deepseek-ai/dsh-client-ui-reference"
+        ],
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@anionex/dsh-vision-toolkit/client.js?rev=1a2c6952ba20",
+        "pluginBundleStatus": 200,
+        "applicationMounted": true,
+        "pluginMaterialized": true,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "dsh-vision-toolkit-node22-web.png",
+        "trace": "dsh-vision-toolkit-node22-web.trace.zip",
+        "hostLog": "dsh-vision-toolkit-node22-web.host.log"
+      },
+      "result": "compatible",
+      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.44.0"
+      }
+    },
+    {
+      "caseId": "dsh-wallpaper-engine-node22-web",
+      "sourceCaseId": "dsh-wallpaper-engine-node22",
+      "plugin": "dsh-plugin-wallpaper-engine@0.6.5",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-plugin-wallpaper-engine",
+      "sourceFingerprint": "sha256:b02037e25357570b2989023f9573cf9f6e9b420512749eaab1ef6b1a22cc12b4",
+      "contractFingerprint": "sha256:d9d47a469ca212c9017912752d2d8dad0bd48879f379980229bb0ea66bddcac6",
+      "observedAt": "2026-08-25T09:36:31.780Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "528ae9a9068574cc3a01752f2cfcf495418d099a9e9b42267666a999fc1ea7d4",
+        "bytes": 636485,
+        "integrity": "sha512-D22Ard1V5H43fvDTfUSzNNsGFh+xDF1ycSNMHqqJS28zSvsMKIm756APcsQ3BUbFwT2266w6aG8XKYI5WCdLpw=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "passed",
+          "code": 0
+        },
+        "registration": {
+          "status": "passed"
+        },
+        "host": {
+          "status": "passed"
+        },
+        "surface": {
+          "status": "passed"
+        },
+        "interaction": {
+          "status": "passed"
+        },
+        "shutdown": {
+          "status": "passed"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "bootEntryIds": [
+          "dsh-plugin-wallpaper-engine",
+          "@deepseek-ai/dsh-typert-registry",
+          "@deepseek-ai/dsh-api-gateway",
+          "@deepseek-ai/dsh-session-log-export",
+          "@deepseek-ai/dsh-client-hmr",
+          "@deepseek-ai/dsh-client-modules",
+          "@deepseek-ai/dsh-client-connection",
+          "@deepseek-ai/dsh-api-remotes",
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-cordis-client-runner",
+          "@deepseek-ai/dsh-client-ui-theme",
+          "@deepseek-ai/dsh-client-locale",
+          "@deepseek-ai/dsh-client-ui-layout",
+          "@deepseek-ai/dsh-client-ui-renderer",
+          "@deepseek-ai/dsh-client-ui-sidebar",
+          "@deepseek-ai/dsh-client-ui-settings",
+          "@deepseek-ai/dsh-client-ui-settings-general",
+          "@deepseek-ai/dsh-client-ui-settings-models",
+          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+          "@deepseek-ai/dsh-client-ui-conversation",
+          "@deepseek-ai/dsh-client-ui-brand-official",
+          "@deepseek-ai/dsh-client-ui-attachment",
+          "@deepseek-ai/dsh-client-ui-tool",
+          "@deepseek-ai/dsh-client-ui-cordis",
+          "@deepseek-ai/dsh-client-ui-workflow-run",
+          "@deepseek-ai/dsh-client-ui-deliverables",
+          "@deepseek-ai/dsh-client-ui-workspace",
+          "@deepseek-ai/dsh-client-ui-input-trigger",
+          "@deepseek-ai/dsh-client-ui-commands",
+          "@deepseek-ai/dsh-client-ui-skill",
+          "@deepseek-ai/dsh-client-ui-subagent",
+          "@deepseek-ai/dsh-client-ui-reference"
+        ],
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-plugin-wallpaper-engine/client.js?rev=6c47c3624ebd",
+        "pluginBundleStatus": 200,
+        "applicationMounted": true,
+        "pluginMaterialized": true,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "dsh-wallpaper-engine-node22-web.png",
+        "trace": "dsh-wallpaper-engine-node22-web.trace.zip",
+        "hostLog": "dsh-wallpaper-engine-node22-web.host.log"
+      },
+      "result": "compatible",
+      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.44.0"
+      }
+    },
+    {
       "caseId": "dsh-web-all-web",
       "sourceCaseId": "dsh-web-ui-all-node22",
       "plugin": "@linxin666/dsh-web-all@0.3.3",
@@ -325,6 +1572,240 @@
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
         "version": "0.43.5"
+      }
+    },
+    {
+      "caseId": "sanqi-market-node22-web",
+      "sourceCaseId": "sanqi-market-node22",
+      "plugin": "@sanqi-normal/dsh-webui-market-plugin@0.5.5",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "@sanqi-normal/dsh-webui-market-plugin",
+      "sourceFingerprint": "sha256:45f56fefdf0f1508f790e934450a5dab73ec2c2b82acf593def0a93efe62bb61",
+      "contractFingerprint": "sha256:8249cbca22cbc95c98ea6c5a2d05f9a8fc4f5f502d51638f237b76fc21035274",
+      "observedAt": "2026-08-25T09:36:50.812Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "58de7bbba3784bb5f882c8e825fcb36d97a3555ff1cbc3fc3dbe5f5ec5cad228",
+        "bytes": 124985,
+        "integrity": "sha512-pGHgU3YyfX7OatsUh3pgd+iDQEbwCET+/f1xu3QAQAPNarbhWbhCUuBFklzaCbia7HtoEzVn4yStD2tjuWUlMA=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "passed",
+          "code": 0
+        },
+        "registration": {
+          "status": "passed"
+        },
+        "host": {
+          "status": "passed"
+        },
+        "surface": {
+          "status": "passed"
+        },
+        "interaction": {
+          "status": "passed"
+        },
+        "shutdown": {
+          "status": "passed"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "bootEntryIds": [
+          "@sanqi-normal/dsh-webui-market-plugin",
+          "@deepseek-ai/dsh-typert-registry",
+          "@deepseek-ai/dsh-api-gateway",
+          "@deepseek-ai/dsh-session-log-export",
+          "@deepseek-ai/dsh-client-hmr",
+          "@deepseek-ai/dsh-client-modules",
+          "@deepseek-ai/dsh-client-connection",
+          "@deepseek-ai/dsh-api-remotes",
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-cordis-client-runner",
+          "@deepseek-ai/dsh-client-ui-theme",
+          "@deepseek-ai/dsh-client-locale",
+          "@deepseek-ai/dsh-client-ui-layout",
+          "@deepseek-ai/dsh-client-ui-renderer",
+          "@deepseek-ai/dsh-client-ui-sidebar",
+          "@deepseek-ai/dsh-client-ui-settings",
+          "@deepseek-ai/dsh-client-ui-settings-general",
+          "@deepseek-ai/dsh-client-ui-settings-models",
+          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+          "@deepseek-ai/dsh-client-ui-conversation",
+          "@deepseek-ai/dsh-client-ui-brand-official",
+          "@deepseek-ai/dsh-client-ui-attachment",
+          "@deepseek-ai/dsh-client-ui-tool",
+          "@deepseek-ai/dsh-client-ui-cordis",
+          "@deepseek-ai/dsh-client-ui-workflow-run",
+          "@deepseek-ai/dsh-client-ui-deliverables",
+          "@deepseek-ai/dsh-client-ui-workspace",
+          "@deepseek-ai/dsh-client-ui-input-trigger",
+          "@deepseek-ai/dsh-client-ui-commands",
+          "@deepseek-ai/dsh-client-ui-skill",
+          "@deepseek-ai/dsh-client-ui-subagent",
+          "@deepseek-ai/dsh-client-ui-reference"
+        ],
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@sanqi-normal/dsh-webui-market-plugin/client.js?rev=bbf0516a1f3a",
+        "pluginBundleStatus": 200,
+        "applicationMounted": true,
+        "pluginMaterialized": true,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "sanqi-market-node22-web.png",
+        "trace": "sanqi-market-node22-web.trace.zip",
+        "hostLog": "sanqi-market-node22-web.host.log"
+      },
+      "result": "compatible",
+      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.44.0"
+      }
+    },
+    {
+      "caseId": "whale-on-desk-node22-web",
+      "sourceCaseId": "whale-on-desk-node22",
+      "plugin": "whale-on-desk@3.0.0",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "whale-on-desk",
+      "sourceFingerprint": "sha256:3e55b0c9eb97e6658745f13c9b986fc7bb9b1c868dcce9532a4f17c7c712348c",
+      "contractFingerprint": "sha256:d0172b89e01e309bb59dad8361b5f73ad0e9b2860629a347fe179aa968e28c2b",
+      "observedAt": "2026-08-25T09:36:34.803Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "17e374e5cb56a95457490180ac3cac0fff82b03fa8ef929424edda9ead8d84cb",
+        "bytes": 9799356,
+        "integrity": "sha512-g5KIb8OS7Pc8tn/er0lmba8BVpEeTgwY3qIrnAuyHdFBSfYoxcd8sTHnXgkYy+RaWQrYLRBccoo9K8KB9SEBUA=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "passed",
+          "code": 0
+        },
+        "registration": {
+          "status": "passed"
+        },
+        "host": {
+          "status": "passed"
+        },
+        "surface": {
+          "status": "passed"
+        },
+        "interaction": {
+          "status": "passed"
+        },
+        "shutdown": {
+          "status": "passed"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "bootEntryIds": [
+          "whale-on-desk",
+          "@deepseek-ai/dsh-typert-registry",
+          "@deepseek-ai/dsh-api-gateway",
+          "@deepseek-ai/dsh-session-log-export",
+          "@deepseek-ai/dsh-client-hmr",
+          "@deepseek-ai/dsh-client-modules",
+          "@deepseek-ai/dsh-client-connection",
+          "@deepseek-ai/dsh-api-remotes",
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-cordis-client-runner",
+          "@deepseek-ai/dsh-client-ui-theme",
+          "@deepseek-ai/dsh-client-locale",
+          "@deepseek-ai/dsh-client-ui-layout",
+          "@deepseek-ai/dsh-client-ui-renderer",
+          "@deepseek-ai/dsh-client-ui-sidebar",
+          "@deepseek-ai/dsh-client-ui-settings",
+          "@deepseek-ai/dsh-client-ui-settings-general",
+          "@deepseek-ai/dsh-client-ui-settings-models",
+          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+          "@deepseek-ai/dsh-client-ui-conversation",
+          "@deepseek-ai/dsh-client-ui-brand-official",
+          "@deepseek-ai/dsh-client-ui-attachment",
+          "@deepseek-ai/dsh-client-ui-tool",
+          "@deepseek-ai/dsh-client-ui-cordis",
+          "@deepseek-ai/dsh-client-ui-workflow-run",
+          "@deepseek-ai/dsh-client-ui-deliverables",
+          "@deepseek-ai/dsh-client-ui-workspace",
+          "@deepseek-ai/dsh-client-ui-input-trigger",
+          "@deepseek-ai/dsh-client-ui-commands",
+          "@deepseek-ai/dsh-client-ui-skill",
+          "@deepseek-ai/dsh-client-ui-subagent",
+          "@deepseek-ai/dsh-client-ui-reference"
+        ],
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/whale-on-desk/client.js?rev=a35027ddb7c2",
+        "pluginBundleStatus": 200,
+        "applicationMounted": true,
+        "pluginMaterialized": true,
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "whale-on-desk-node22-web.png",
+        "trace": "whale-on-desk-node22-web.trace.zip",
+        "hostLog": "whale-on-desk-node22-web.host.log"
+      },
+      "result": "compatible",
+      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.44.0"
       }
     }
   ]
