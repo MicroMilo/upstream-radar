@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha2",
-  "generatedAt": "2026-08-25T07:19:59.543Z",
+  "generatedAt": "2026-08-25T07:36:58.277Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.43.5",
@@ -29,10 +29,10 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 74,
+    "observed-compatible": 71,
     "observed-incompatible": 0,
     "needs-review": 22,
-    "update-pending": 0,
+    "update-pending": 3,
     "not-observed": 4
   },
   "plugins": [
@@ -520,10 +520,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-context",
-        "selectedVersion": "0.31.1",
+        "selectedVersion": "0.32.0",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "context-node22",
@@ -993,10 +993,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dshmarket",
-        "selectedVersion": "1.29.0",
+        "selectedVersion": "1.29.1",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-market-node22",
@@ -2720,10 +2720,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-dream-skin",
-        "selectedVersion": "0.4.12",
+        "selectedVersion": "0.4.13",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-dream-skin-node22",
