@@ -397,7 +397,7 @@ targets:
     repository: zhu1090093659/dsh-web
     ref: dev
     package: '@linxin666/dsh-web-ui-all'
-    packagePath: packages/dsh-web-ui-all/package.json
+    packagePath: packages/dsh-web-all/package.json
     lockfile: pnpm-lock.yaml
     lockfileType: pnpm
   - id: dsh-openpencil

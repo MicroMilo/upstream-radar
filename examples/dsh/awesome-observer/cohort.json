@@ -1346,11 +1346,11 @@
     {
       "id": "dsh-web-ui-all",
       "catalogEntry": "data/plugins/zhu1090093659__dsh-web-ui--packages-dsh-web-ui-all.yml",
-      "catalogUrl": "https://github.com/zhu1090093659/dsh-web/tree/dev/packages/dsh-web-ui-all",
+      "catalogUrl": "https://github.com/zhu1090093659/dsh-web/tree/dev/packages/dsh-web-all",
       "repository": "zhu1090093659/dsh-web",
       "ref": "dev",
       "category": "ui",
-      "packagePath": "packages/dsh-web-ui-all/package.json",
+      "packagePath": "packages/dsh-web-all/package.json",
       "lockfile": {
         "path": "pnpm-lock.yaml",
         "type": "pnpm"
