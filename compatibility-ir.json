@@ -2438,16 +2438,16 @@
       }
     },
     {
-      "id": "cell:6bc0882d38aaba24dba07d4b8c3bdda6a79bbba6e37f1170731f1cced4c72d03",
+      "id": "cell:be27c0ee8f22b68e85528c0925cc9170ef38cab3733cc0ed1569aceffd1d833e",
       "caseId": "dsh-web-ui-all-node22",
       "targetId": "dsh-web-ui-all",
-      "observedAt": "2026-08-25T08:11:13.577Z",
-      "result": "unknown",
+      "observedAt": "2026-08-25T08:26:11.043Z",
+      "result": "build-approval-required",
       "plugin": {
-        "name": "@linxin666/dsh-web-ui-all",
+        "name": "@linxin666/dsh-web-all",
         "version": "0.3.3",
-        "artifactSha256": "6865f4f77787807702ba4e7cf659cd779258d7f79831591e26f748ae9292ff6e",
-        "staticFingerprint": "sha256:567e6fd4f1762abc1afc4e1f19db38b9832faa2e047c672edca919bbe2f611f6"
+        "artifactSha256": "64ee0f111afe4700d278c97af6f92316b750538d821338399a2c89a290ea6ff9",
+        "staticFingerprint": "sha256:4911903fb108ace4761b56c4f791e7378e97e3fe7d2c921b2a326a78ad65d7f1"
       },
       "runtime": {
         "dshVersion": "0.1.1-rc.2",
@@ -2456,27 +2456,33 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:d53d61c75ee3bd7a8cde17c576d9dc98886e3ddec722d5b2664c10fb6ec2328d"
+        "contractFingerprint": "sha256:f303ffa4a13c8f0a3be9161f680da2e8c0bcd9b477b8fb4e316545eb7a831be3"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:c30d3455d908dd944e4a1e9c359cd5e75c04bee69ab9f79ff66a853daa22d9e9",
+        "runtimeGraphDigest": "sha256:77fab0fda43d899fcaf16c807ae87a2dae76fc6b7143645c06f93ddd394012f9",
         "runtimeGraphNodes": 651,
         "runtimeGraphEdges": 2458,
         "requiredUnresolved": 2,
-        "declaredPeerContracts": 0
+        "declaredPeerContracts": 0,
+        "requiredDependencyBuilds": [
+          "cloudflared",
+          "cpu-features",
+          "node-pty",
+          "ssh2"
+        ]
       }
     },
     {
-      "id": "cell:ddb62bbc0995d326de2c9656182de84643f92ea5ba279e552c9b7dbf765827b6",
+      "id": "cell:bb1c56395441904d16822a4177884d26dad93c596430cc2ff0e437c574e61972",
       "caseId": "dsh-win32-node22",
       "targetId": "dsh-win32",
-      "observedAt": "2026-08-25T07:13:16.158Z",
+      "observedAt": "2026-08-25T08:26:02.286Z",
       "result": "compatible",
       "plugin": {
         "name": "dsh-win32",
-        "version": "0.16.3",
-        "artifactSha256": "54a50ea4b94e17ef09039bb5b06db3a0c54c1db027a8cecdd865d03b8ecf6eaa",
-        "staticFingerprint": "sha256:8c46c9951ebbe750bd156793898b01319eb156584a8891652c7c8869925c4ed7"
+        "version": "0.17.0",
+        "artifactSha256": "48d89349b42c2403304fd59604590b4003579af147c28a88f9a67bde5eda7c12",
+        "staticFingerprint": "sha256:a5cef14be9621a9fbaf2cbad9f10e7ef8cb3989a69b12c4bc4649007a87f3824"
       },
       "runtime": {
         "dshVersion": "0.1.1-rc.2",
@@ -2485,10 +2491,10 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:cff7a5e5497fd910f290f93da6b94ff52df0240fc21392ea215738ba4a439065"
+        "contractFingerprint": "sha256:3ec303fe433f33b08492477417175151cad7cfe1314efcc5d6e4f3fce085e77f"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:73e442e45db1c379f70443efca0a976593d526a9bd3c9d00ff47e23fa45e9851",
+        "runtimeGraphDigest": "sha256:fe8f6d6cb1cda49c7885d309eb8be69c9574436117be33581dd582bdb23e3e5f",
         "runtimeGraphNodes": 450,
         "runtimeGraphEdges": 2031,
         "requiredUnresolved": 0,

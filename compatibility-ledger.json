@@ -27132,7 +27132,7 @@
     {
       "caseId": "dsh-web-ui-all-node22",
       "targetId": "dsh-web-ui-all",
-      "plugin": "@linxin666/dsh-web-ui-all@0.3.3",
+      "plugin": "@linxin666/dsh-web-all@0.3.3",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -27141,12 +27141,12 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:567e6fd4f1762abc1afc4e1f19db38b9832faa2e047c672edca919bbe2f611f6",
-      "contractFingerprint": "sha256:d53d61c75ee3bd7a8cde17c576d9dc98886e3ddec722d5b2664c10fb6ec2328d",
-      "observedAt": "2026-08-25T08:11:13.577Z",
-      "result": "unknown",
-      "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 2 required unresolved edge(s)",
-      "approvedDependencyBuilds": [
+      "staticFingerprint": "sha256:4911903fb108ace4761b56c4f791e7378e97e3fe7d2c921b2a326a78ad65d7f1",
+      "contractFingerprint": "sha256:f303ffa4a13c8f0a3be9161f680da2e8c0bcd9b477b8fb4e316545eb7a831be3",
+      "observedAt": "2026-08-25T08:26:11.043Z",
+      "result": "build-approval-required",
+      "reason": "the DSH plugin install requires explicit approval for dependency builds: cloudflared, cpu-features, node-pty, ssh2",
+      "requiredDependencyBuilds": [
         "cloudflared",
         "cpu-features",
         "node-pty",
@@ -27154,13 +27154,13 @@
       ],
       "artifact": {
         "lifecycleScripts": [],
-        "sha256": "6865f4f77787807702ba4e7cf659cd779258d7f79831591e26f748ae9292ff6e"
+        "sha256": "64ee0f111afe4700d278c97af6f92316b750538d821338399a2c89a290ea6ff9"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "90b41a55481fa029d2572321da2493fb3c02f0dd5fa039fa3e1d79f21b985d5f",
-          "bytes": 59404,
-          "graphDigest": "sha256:e63eb32756da5b88ab3d8a42d3f411e86c6b6ba46aaaddc2e7a8a487a6ee105f",
+          "sha256": "b170c091f1e76569ac788f1e2987c3de8bc2516ee8319488b0ec829930aca468",
+          "bytes": 59380,
+          "graphDigest": "sha256:b04cdae38724edf9358590e55e974d124d6bb9ed93c03131e64a229878ac7542",
           "nodes": 215,
           "edges": 400,
           "unresolved": 45,
@@ -27360,7 +27360,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:c30d3455d908dd944e4a1e9c359cd5e75c04bee69ab9f79ff66a853daa22d9e9",
+          "digest": "sha256:77fab0fda43d899fcaf16c807ae87a2dae76fc6b7143645c06f93ddd394012f9",
           "nodes": 651,
           "edges": 2458,
           "unresolved": 2,
@@ -27596,7 +27596,7 @@
     {
       "caseId": "dsh-win32-node22",
       "targetId": "dsh-win32",
-      "plugin": "dsh-win32@0.16.3",
+      "plugin": "dsh-win32@0.17.0",
       "dshVersion": "0.1.1-rc.2",
       "runtime": {
         "nodeMajor": 22,
@@ -27605,47 +27605,47 @@
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
-      "staticFingerprint": "sha256:8c46c9951ebbe750bd156793898b01319eb156584a8891652c7c8869925c4ed7",
-      "contractFingerprint": "sha256:cff7a5e5497fd910f290f93da6b94ff52df0240fc21392ea215738ba4a439065",
-      "observedAt": "2026-08-25T07:13:16.158Z",
+      "staticFingerprint": "sha256:a5cef14be9621a9fbaf2cbad9f10e7ef8cb3989a69b12c4bc4649007a87f3824",
+      "contractFingerprint": "sha256:3ec303fe433f33b08492477417175151cad7cfe1314efcc5d6e4f3fce085e77f",
+      "observedAt": "2026-08-25T08:26:02.286Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
       "artifact": {
         "lifecycleScripts": [
           "prepare"
         ],
-        "sha256": "54a50ea4b94e17ef09039bb5b06db3a0c54c1db027a8cecdd865d03b8ecf6eaa",
+        "sha256": "48d89349b42c2403304fd59604590b4003579af147c28a88f9a67bde5eda7c12",
         "nodeEngine": "^22.19.0 || >=24.0.0"
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "9cda2ffe7fca9a2e12691b8b6002e307fafde6a8f4cc37157fae4155bfdfbc67",
+          "sha256": "da30efb2daaffac1961a10a5151226adc5e125254b46d9e3bf71bb26847b78de",
           "bytes": 1673,
-          "graphDigest": "sha256:d992612764c05a5eec15d1ce4010c1dc36396e7edc12a68fa5db0909d5612fea",
+          "graphDigest": "sha256:64005e1c8af29500a001acd06f232583c8ee85e79d900222fb7a01ca809f7b25",
           "nodes": 4,
           "edges": 3,
           "unresolved": 4,
           "unresolvedDependencies": [
             {
-              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.16.3.tgz",
+              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.17.0.tgz",
               "name": "@deepseek-ai/cordis",
               "spec": ">=4.0.0 <5",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.16.3.tgz",
+              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.17.0.tgz",
               "name": "@deepseek-ai/dsh-fs-local",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.16.3.tgz",
+              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.17.0.tgz",
               "name": "@deepseek-ai/dsh-fs-sandbox",
               "spec": ">=0.1.0-rc.5 <0.2.0",
               "kind": "optional"
             },
             {
-              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.16.3.tgz",
+              "from": "pnpm:dsh-win32@file:../../../artifact/dsh-win32-0.17.0.tgz",
               "name": "@deepseek-ai/dsh-subprocess-local",
               "spec": ">=0.1.0-rc.5 <0.1.0-rc.7",
               "kind": "optional"
@@ -27653,7 +27653,7 @@
           ]
         },
         "runtimeGraph": {
-          "digest": "sha256:73e442e45db1c379f70443efca0a976593d526a9bd3c9d00ff47e23fa45e9851",
+          "digest": "sha256:fe8f6d6cb1cda49c7885d309eb8be69c9574436117be33581dd582bdb23e3e5f",
           "nodes": 450,
           "edges": 2031,
           "unresolved": 0,

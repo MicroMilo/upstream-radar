@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha2",
-  "generatedAt": "2026-08-25T08:25:05.351Z",
+  "generatedAt": "2026-08-25T08:26:35.597Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.43.5",
@@ -29,10 +29,10 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 73,
+    "observed-compatible": 74,
     "observed-incompatible": 0,
-    "needs-review": 21,
-    "update-pending": 2,
+    "needs-review": 22,
+    "update-pending": 0,
     "not-observed": 4
   },
   "plugins": [
@@ -3110,13 +3110,13 @@
         "selectedVersion": "0.17.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-win32-node22",
           "artifact": {
-            "spec": "dsh-win32@0.16.3",
-            "sha256": "54a50ea4b94e17ef09039bb5b06db3a0c54c1db027a8cecdd865d03b8ecf6eaa"
+            "spec": "dsh-win32@0.17.0",
+            "sha256": "48d89349b42c2403304fd59604590b4003579af147c28a88f9a67bde5eda7c12"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -3132,8 +3132,8 @@
           "profile": "headless",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-25T07:13:16.158Z",
-          "recheckDueAt": "2026-09-01T07:13:16.158Z",
+          "observedAt": "2026-08-25T08:26:02.286Z",
+          "recheckDueAt": "2026-09-01T08:26:02.286Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
@@ -4159,13 +4159,13 @@
         "selectedVersion": "0.3.3",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-web-ui-all-node22",
           "artifact": {
-            "spec": "@linxin666/dsh-web-ui-all@0.3.3",
-            "sha256": "6865f4f77787807702ba4e7cf659cd779258d7f79831591e26f748ae9292ff6e"
+            "spec": "@linxin666/dsh-web-all@0.3.3",
+            "sha256": "64ee0f111afe4700d278c97af6f92316b750538d821338399a2c89a290ea6ff9"
           },
           "dsh": {
             "package": "@deepseek-ai/dsh",
@@ -4180,10 +4180,16 @@
           "executionPlane": "headless",
           "profile": "headless",
           "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-08-25T08:11:13.577Z",
-          "recheckDueAt": "2026-09-01T08:11:13.577Z",
-          "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 2 required unresolved edge(s)"
+          "radarResult": "build-approval-required",
+          "requiredDependencyBuilds": [
+            "cloudflared",
+            "cpu-features",
+            "node-pty",
+            "ssh2"
+          ],
+          "observedAt": "2026-08-25T08:26:11.043Z",
+          "recheckDueAt": "2026-09-01T08:26:11.043Z",
+          "reason": "the DSH plugin install requires explicit approval for dependency builds: cloudflared, cpu-features, node-pty, ssh2"
         }
       ],
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
