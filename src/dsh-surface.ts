@@ -25,7 +25,7 @@ const STAGE_STATUS = new Set(['passed', 'failed', 'skipped'])
 const DEFAULT_REFRESH_AFTER_HOURS = 7 * 24
 const MAX_TARGETS = 32
 const MAX_LEDGER_ENTRIES = 128
-const SURFACE_CONTRACT_REVISION = 'dsh-surface-contract/3'
+const SURFACE_CONTRACT_REVISION = 'dsh-surface-contract/4'
 
 export interface DshSurfaceTarget {
   id: string
@@ -248,12 +248,12 @@ function sourceFingerprint(entry: DshCompatibilityLedgerEntry): string {
   })
 }
 
-function contractFingerprint(target: DshSurfaceTarget, entry: DshCompatibilityLedgerEntry): string {
+function contractFingerprint(target: DshSurfaceTarget, entry: DshCompatibilityLedgerEntry, runtimeId: string): string {
   return digest({
     revision: SURFACE_CONTRACT_REVISION,
     plane: target.plane,
     profile: target.profile,
-    runtimeId: target.runtimeId,
+    runtimeId,
     nodeMajor: entry.runtime.nodeMajor,
     approvedDependencyBuilds: entry.approvedDependencyBuilds ?? [],
     web: target.plane === 'web'
@@ -275,6 +275,11 @@ function desiredCase(target: DshSurfaceTarget, source: DshCompatibilityLedgerEnt
   if (source.result === 'build-approval-required' || source.result === 'runtime-incompatible'
     || source.result === 'install-failed' || source.result === 'load-failed') return undefined
   if (source.result === 'unknown' && source.resolution?.runtimeGraph?.digest === undefined) return undefined
+  // DSH's browser manifest is keyed by the client package name. The Cordis
+  // patch row id is a different namespace and may remain stable while a
+  // package migrates. Deriving this value from the exact observed coordinate
+  // prevents a stale loader id from becoming a false incompatibility.
+  const runtimeId = target.plane === 'web' ? parseNpmSpec(source.plugin).name : target.runtimeId
   return {
     id: target.id,
     sourceCaseId: source.caseId,
@@ -283,11 +288,11 @@ function desiredCase(target: DshSurfaceTarget, source: DshCompatibilityLedgerEnt
     nodeMajor: source.runtime.nodeMajor,
     plane: target.plane,
     profile: target.profile,
-    runtimeId: target.runtimeId,
+    runtimeId,
     artifactSha256: source.artifact.sha256,
     allowedBuilds: [...(source.approvedDependencyBuilds ?? [])].sort().join(','),
     sourceFingerprint: sourceFingerprint(source),
-    contractFingerprint: contractFingerprint(target, source),
+    contractFingerprint: contractFingerprint(target, source, runtimeId),
     reasons: [],
   }
 }
@@ -363,6 +368,7 @@ function parseEvidence(value: unknown, plane: DshExecutionPlane, label: string):
       ...(item.title === undefined ? {} : { title: boundedString(item.title, `${label}.title`, 256) }),
       rootMounted: item.rootMounted as boolean,
       bootManifestPresent: item.bootManifestPresent as boolean,
+      ...(item.bootEntryIds === undefined ? {} : { bootEntryIds: stringArray(item.bootEntryIds, `${label}.bootEntryIds`) }),
       pluginEntryPresent: item.pluginEntryPresent as boolean,
       ...(item.pluginBundleUrl === undefined ? {} : { pluginBundleUrl: boundedString(item.pluginBundleUrl, `${label}.pluginBundleUrl`, 2_048) }),
       ...(optionalInteger(item.pluginBundleStatus, `${label}.pluginBundleStatus`) === undefined ? {} : { pluginBundleStatus: optionalInteger(item.pluginBundleStatus, `${label}.pluginBundleStatus`) as number }),

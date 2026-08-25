@@ -257,6 +257,17 @@ describe('DSH execution-plane reconciliation', () => {
     assert.equal(plan.matrix.include.every(item => item.reasons.includes('missing-evidence')), true)
   })
 
+  it('derives the Web module id from the exact package coordinate, not a Cordis loader row id', () => {
+    const staleLoaderTarget = {
+      ...targets,
+      surfaces: targets.surfaces.map(surface => surface.plane === 'web'
+        ? { ...surface, runtimeId: 'legacy-cordis-row' }
+        : surface),
+    }
+    const plan = buildDshSurfacePlan(staleLoaderTarget, sourceLedger(), emptyDshSurfaceLedger(), new Date('2026-08-25T00:00:00.000Z'))
+    assert.equal(plan.matrix.include.find(item => item.plane === 'web')?.runtimeId, 'web-plugin')
+  })
+
   it('carries the Agent-approved install environment into every execution plane', () => {
     const plan = buildDshSurfacePlan(
       targets,

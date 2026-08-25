@@ -47,6 +47,8 @@ export interface DshWebSurfaceEvidence {
   title?: string
   rootMounted: boolean
   bootManifestPresent: boolean
+  /** Bounded module ids exposed by DSH, retained to make id mismatches diagnosable. */
+  bootEntryIds?: string[]
   pluginEntryPresent: boolean
   pluginBundleUrl?: string
   pluginBundleStatus?: number
@@ -350,6 +352,7 @@ function emptyEvidence(plane: DshExecutionPlane): DshWebSurfaceEvidence | DshTui
         url: `http://127.0.0.1:${WEB_PORT}/`,
         rootMounted: false,
         bootManifestPresent: false,
+        bootEntryIds: [],
         pluginEntryPresent: false,
         applicationMounted: false,
         pluginMaterialized: false,
@@ -815,15 +818,20 @@ async function observeWebSurface(input: {
       }
       const entries = Array.isArray(value.__DSH_BOOT__?.entries) ? value.__DSH_BOOT__?.entries ?? [] : []
       const entry = entries.find(item => item.id === runtimeId)
+      const ids = entries.map(item => typeof item.id === 'string' ? item.id : '').filter(id => id !== '')
       return {
         rootMounted: (value.document?.querySelector('#root')?.childElementCount ?? 0) > 0,
         bootManifestPresent: entries.length > 0,
+        // Put community modules first so the bounded diagnostic list is still
+        // useful when DSH contributes dozens of built-in entries.
+        bootEntryIds: [...new Set([...ids.filter(id => !id.startsWith('@deepseek-ai/')), ...ids])].slice(0, 32),
         pluginEntryPresent: entry !== undefined,
         pluginBundleUrl: typeof entry?.url === 'string' ? entry.url : undefined,
       }
     }, input.report.runtimeId)
     evidence.rootMounted = initial.rootMounted
     evidence.bootManifestPresent = initial.bootManifestPresent
+    evidence.bootEntryIds = boundedList(initial.bootEntryIds)
     evidence.pluginEntryPresent = initial.pluginEntryPresent
     if (initial.pluginBundleUrl !== undefined) {
       evidence.pluginBundleUrl = new URL(initial.pluginBundleUrl, evidence.url).href
@@ -1064,7 +1072,7 @@ async function observeTuiSurface(input: {
 }
 
 function validateObservationOptions(options: DshSurfaceObservationOptions): void {
-  parseNpmSpec(options.packageSpec)
+  const plugin = parseNpmSpec(options.packageSpec)
   if (!EXACT_VERSION.test(options.dshVersion)) throw new Error('DSH surface observation requires an exact DSH version')
   if (!CASE_ID.test(options.caseId) || !CASE_ID.test(options.sourceCaseId)) throw new Error('DSH surface observation case ids must be short lowercase labels')
   if (!FINGERPRINT.test(options.sourceFingerprint) || !FINGERPRINT.test(options.contractFingerprint)) throw new Error('DSH surface observation fingerprints must be sha256 digests')
@@ -1072,6 +1080,9 @@ function validateObservationOptions(options: DshSurfaceObservationOptions): void
   if (!PROFILE_NAME.test(options.profile)) throw new Error('DSH surface observation profile must be a short safe profile name')
   if (options.runtimeId.trim() === '' || options.runtimeId.length > 214) throw new Error('DSH surface observation runtimeId must be a bounded package id')
   if (options.plane === 'web' && options.profile !== 'web') throw new Error('Web surface observations must use the official web profile')
+  if (options.plane === 'web' && options.runtimeId !== plugin.name) {
+    throw new Error('Web runtimeId must equal the exact npm package name; Cordis loader row ids are not browser module ids')
+  }
   if (options.plane === 'tui' && options.profile === 'web') throw new Error('TUI surface observations cannot use the reserved web profile')
   if (!options.allowExecution) throw new Error('DSH surface observation requires explicit execution consent')
   if (!['github-actions-hosted-runner', 'firecracker', 'other'].includes(options.isolationProvider)) throw new Error('unsupported isolation provider')
