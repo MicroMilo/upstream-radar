@@ -20,6 +20,11 @@ plugin ecosystem. A static review is evidence about a package; an isolated
 runtime review is evidence about one exact `plugin × DSH × Node/profile` pair.
 Neither is presented as a timeless compatibility badge or a security certificate.
 
+> Listed by the DSH ecosystem in
+> [awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/main/data/plugins/MicroMilo__upstream-radar.yml),
+> [awesome-deepseek-harness](https://github.com/0xsline/awesome-deepseek-harness), and
+> [awesome-deepseek-harness-plugins](https://github.com/imsai-sh/awesome-deepseek-harness-plugins/blob/main/catalog/plugins/micromilo--upstream-radar.json).
+
 ## The problem
 
 A source repository can be green while the package users install is not ready
@@ -105,19 +110,20 @@ The [isolated observer workflow](.github/workflows/observe-dsh-plugin-install.ym
 uses a fresh GitHub-hosted runner for code-executing checks. The runner is not
 your workstation and does not receive project secrets.
 
-## Upstream reports now closed
+## Evidence from the ecosystem
 
-We opened the following reports; their upstream maintainers have now closed
-them:
+As of 2026-08-25, Radar has filed 13 maintainer-facing reports. The outcome is
+more useful than the raw count:
 
-- [Sanqi-normal/dsh-webui-market-plugin#5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)
-- [1na-ko/dsh-hdc-bridge#3](https://github.com/1na-ko/dsh-hdc-bridge/issues/3)
-- [6Mikao9/dsh-wsl-workspace#6](https://github.com/6Mikao9/dsh-wsl-workspace/issues/6)
-- [3274375092/dsh-voice#2](https://github.com/3274375092/dsh-voice/issues/2)
+| Outcome | Reports |
+| --- | --- |
+| **Fix shipped and rechecked (5)** | [Sanqi #5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5) (`0.5.5`), [HDC #3](https://github.com/1na-ko/dsh-hdc-bridge/issues/3) (`0.7.3`), [Voice #2](https://github.com/3274375092/dsh-voice/issues/2) (`0.2.6`), [Msg Hub #1](https://github.com/AbcdefgXW/dsh-msg-hub/issues/1), [Toolbox Web #1](https://github.com/AbcdefgXW/dsh-toolbox-web/issues/1) |
+| **Boundary reviewed or documented (3)** | [Msg Hub #3](https://github.com/AbcdefgXW/dsh-msg-hub/issues/3), [Spotlight #5 / PR #7](https://github.com/0xsline/dsh-spotlight/pull/7), [WSL Workspace #6](https://github.com/6Mikao9/dsh-wsl-workspace/issues/6) — closed without claiming a runtime fix |
+| **Still open (5)** | [Anan #1](https://github.com/AmeKrance/anan-thermal-monitor/issues/1), [Verification Receipt #3](https://github.com/030611/dsh-verification-receipt/issues/3), [dshscan #1](https://github.com/shaoshi20/dshscan/issues/1), [OAuth #14](https://github.com/lninghaha/dsh-coding-subscription-oauth/issues/14), [Composer Expand #1](https://github.com/13071301808/dsh-composer-expand/issues/1) |
 
-The [full domain report index](docs/domain-reports.md) keeps the open reports,
-validation level, and the boundary between a confirmed runtime failure and a
-maintainer-confirmation request.
+“Closed” is not automatically “fixed.” The [full domain report index](docs/domain-reports.md)
+records the evidence, validation level, PR coverage, and remaining boundary for
+every report.
 
 <p align="center">
   <strong>If Upstream Radar helps the DSH ecosystem stay compatible, <a href="https://github.com/MicroMilo/upstream-radar">please give it a Star</a> ⭐</strong>

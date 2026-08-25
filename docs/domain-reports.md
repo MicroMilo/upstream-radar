@@ -1,7 +1,8 @@
 # Upstream Radar domain reports
 
-> Snapshot checked on 2026-08-24. This index covers the reports filed by
-> Upstream Radar, not every issue that mentions DSH.
+> Snapshot checked on 2026-08-25. This index covers the reports filed by
+> Upstream Radar, not every issue that mentions DSH. Current outcome: 5 fixes
+> shipped and rechecked, 3 boundaries reviewed or documented, and 5 reports open.
 
 ## 对当前项目的借鉴意义
 
@@ -148,7 +149,8 @@ Issue #1 仍开放，页面当前没有关联 PR；没有发现其他 PR 覆盖 
 
 ### 现有 issue/PR 覆盖状况
 
-Issue #3 已关闭；维护者在后续版本移除了相关可选依赖。当前没有需要重复提交的 PR。
+Issue #3 已关闭；维护者在 `0.7.3` 移除了相关可选依赖。当前 npm 发布物不再声明该依赖，
+属于同根因已覆盖，当前没有需要重复提交的 PR。
 
 ### 修复建议
 
@@ -179,7 +181,8 @@ addon。
 
 ### 现有 issue/PR 覆盖状况
 
-Issue #6 已关闭，维护者补充了平台/安装说明；没有新的同根因 PR 需要我们追加。
+Issue #6 已关闭，维护者补充了平台、预构建覆盖和 fallback 工具链说明，但没有改变 native
+依赖行为。这是安装契约得到说明，不是运行时修复；没有新的同根因 PR 需要我们追加。
 
 ### 修复建议
 
@@ -208,7 +211,10 @@ Issue #6 已关闭，维护者补充了平台/安装说明；没有新的同根�
 
 ### 现有 issue/PR 覆盖状况
 
-Issue #2 已关闭，维护者处理了发布/构建边界；没有发现仍需我们提交的同根因 PR。
+Issue #2 已关闭。维护者在 commit
+[`ceab3e7`](https://github.com/3274375092/dsh-voice/commit/ceab3e7e756dc3e27bf19bddd318159d710520ff)
+中将消费者侧 `prepare` 改为发布者侧 `prepack`，增加 scripts-disabled 安装/导入校验，并发布
+`@nn12138/dsh-voice@0.2.6`。属于同根因已覆盖。
 
 ### 修复建议
 
@@ -263,17 +269,19 @@ Issue #1 仍开放，页面当前没有关联 PR；没有发现相同根因的�
 
 ### 验证结果
 
-脚本被禁用的精确依赖审查已完成；没有执行 `postinstall`，也没有动态证明它会破坏 DSH。
+我们的初始观察只确认精确依赖路径和脚本 metadata。维护者随后审查脚本内容，并报告在
+`--ignore-scripts` 安装下插件加载和飞书链路均正常；这部分是维护者侧验证，不冒充我们的独立复现。
 
 ### 现有 issue/PR 覆盖状况
 
-Issue #3 仍开放，且与该仓库的 lockfile 元数据 Issue #1 是两个不同根因；没有发现 PR 覆盖
-安装脚本路径。
+Issue #3 已关闭。维护者确认该 `protobufjs` 脚本只读取自身 `package.json` 并输出版本提示，
+不访问网络、不写文件、不执行外部命令，也不是运行必需。没有代码修复或 PR；这是弱信号被
+审查后降级的案例，与该仓库的 lockfile 元数据 Issue #1 是两个不同根因。
 
 ### 修复建议
 
-先确认再提 PR。作者应判断脚本是否是运行必需；若不是，移除依赖路径；若是，应记录输入、
-输出和脚本关闭时的加载行为。
+暂不提出 PR。将它保留为 Radar 的 negative-control 案例：检测器可以报告安装边界，但只有
+脚本行为或 scripts-disabled 运行证据支持时，才能升级为可修复问题。
 
 ## 问题八：prepare 在安装时执行 pnpm build（verification-receipt）
 
@@ -326,11 +334,14 @@ Issue #3 仍开放，页面当前没有关联 PR；没有发现同根因覆盖�
 
 ### 现有 issue/PR 覆盖状况
 
-Issue #5 仍开放，页面当前没有关联 PR；没有发现同根因覆盖。
+Issue #5 已由合并的 [PR #7](https://github.com/0xsline/dsh-spotlight/pull/7) 关闭。PR 增加
+prepare 契约说明和 scripts-disabled npm 发布物导入测试，但没有移除 `prepare`；当前发布的
+`@0xsline/dsh-spotlight@0.0.2` 仍保留该脚本。因此属于“契约边界已说明”，不应写成运行时修复。
 
 ### 修复建议
 
-先确认再提 PR。作者应把构建移到发布阶段，或明确说明 prepare 必须执行的环境与边界。
+暂不提出 PR。维护者已选择明确 Git-source 安装与预构建 npm 发布物的边界并增加测试；Radar
+应记录该决策，等待新发布物后复测，而不是继续把脚本存在本身当作故障。
 
 ## 问题十：README、源码版本与 npm latest 不一致（coding-subscription-oauth）
 
@@ -386,12 +397,13 @@ Issue #14 仍开放，页面当前没有关联 PR；没有发现发布 `0.6.1` �
 
 ### 现有 issue/PR 覆盖状况
 
-Issue #1 仍开放，页面当前没有关联 PR；与 Issue #3 的 postinstall 发现不构成覆盖关系。
+Issue #1 已关闭。维护者重新生成 lockfile 并把防复发检查加入发布流程；2026-08-25 独立回读
+确认源码 `package.json` 与 `package-lock.json` 根节点均为 `0.1.9`，npm latest 也是 `0.1.9`。
+属于同根因已覆盖；与 Issue #3 的 postinstall 审查不构成覆盖关系。
 
 ### 修复建议
 
-值得提出一个小 PR：重新生成并提交与当前源码版本一致的 lockfile，并在发布 CI 中检查根
-版本和 package.json 对齐。
+暂不提出 PR。把该案例沉淀为 lockfile 根节点与源码版本对齐规则，并持续监控后续发布。
 
 ## 问题十二：package-lock 根版本落后（toolbox-web）
 
@@ -416,11 +428,12 @@ Issue #1 仍开放，页面当前没有关联 PR；与 Issue #3 的 postinstall 
 
 ### 现有 issue/PR 覆盖状况
 
-Issue #1 仍开放，页面当前没有关联 PR；没有发现同根因覆盖。
+Issue #1 已关闭。维护者重新生成 lockfile 并加入发布检查；2026-08-25 独立回读确认源码
+`package.json` 与 lockfile 根节点均为 `0.1.15`，npm latest 也是 `0.1.15`。属于同根因已覆盖。
 
 ### 修复建议
 
-值得提出一个聚焦的 lockfile 更新 PR，并在 CI 中增加根版本一致性检查。
+暂不提出 PR。将当前版本作为修复基线，并由 Radar 继续检查后续源码、lockfile 与 npm 坐标。
 
 ## 问题十三：package-lock 根版本落后（composer-expand）
 
