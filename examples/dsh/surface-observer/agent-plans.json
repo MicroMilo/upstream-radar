@@ -1,5 +1,40 @@
 {
   "schema": "upstream-radar.dsh-surface-agent-plans/v1alpha1",
-  "updatedAt": "1970-01-01T00:00:00.000Z",
-  "entries": []
+  "updatedAt": "2026-08-25T10:06:43.260Z",
+  "entries": [
+    {
+      "caseId": "better-sidebar-node22-web",
+      "sourceCaseId": "better-sidebar-node22",
+      "plugin": "dsh-better-sidebar@0.16.1",
+      "dshVersion": "0.1.1-rc.2",
+      "nodeMajor": 22,
+      "plane": "web",
+      "profile": "web",
+      "result": "environment-unsupported",
+      "observedRequiredBuilds": [
+        "node-pty"
+      ],
+      "approvedBuilds": [
+        "node-pty"
+      ],
+      "sourceFingerprint": "sha256:5d489c83ab5c34599f3695905b19b45d374133bc2dfef8ae587ae996b2d3d16e",
+      "artifactSha256": "350486c712e17287c316ddb6ba15bc05741796ab0f4de6c5c0daae729913f2b3",
+      "repository": "omdsh-dev/DSH-better-sidebar",
+      "sourceCommit": "f9153dfc1ce47cf43445c1b351ee3ae47b4ad9f1",
+      "inputFingerprint": "sha256:53f441ee252bd1c1d96b9db42620a909eecc1085ec33703188afae91acf7107b",
+      "plannedAt": "2026-08-25T10:06:43.260Z",
+      "model": "deepseek-v4-flash",
+      "action": "retry-surface",
+      "classification": "build-approval",
+      "allowedBuilds": [
+        "node-pty"
+      ],
+      "summary": "The web profile install failed solely because pnpm ignored the build script for node-pty, which is a direct dependency of dsh-better-sidebar. The README explicitly documents that node-pty requires build approval and provides the exact command to approve it. Approving node-pty is a minimal, evidence-backed change that should allow the install to proceed.",
+      "evidence": [
+        "package.json dependencies includes node-pty ^1.1.0",
+        "README.md: 'pnpm approve-builds --all' to allow node-pty build scripts",
+        "install log: [ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: node-pty@1.1.0"
+      ]
+    }
+  ]
 }
