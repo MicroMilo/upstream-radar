@@ -827,6 +827,60 @@ targets:
     assert.doesNotThrow(() => parseObservationState(result.state))
   })
 
+  it('retries durable Agent tasks without observing upstream targets again', async () => {
+    const before = snapshot('commit-1', '1.0.0', 'graph-v1')
+    const after = snapshot('commit-2', '1.1.0', 'graph-v2')
+    const changed = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, {
+      schema: OBSERVATION_STATE_SCHEMA,
+      targets: { [target.id]: before },
+      pendingTasks: [],
+    }, {
+      source: {
+        observe: async () => after,
+        compare: async (repository, beforeCommit, afterCommit) => ({
+          beforeCommit,
+          afterCommit,
+          comparison: 'complete',
+          changedFiles: ['src/index.ts'],
+          runtimeFiles: ['src/index.ts'],
+          nonRuntimeFiles: [],
+        }),
+      },
+      now: new Date('2026-08-17T04:05:00.000Z'),
+    })
+    assert.equal(changed.state.pendingTasks.length, 1)
+
+    let sourceCalls = 0
+    const retried = await runObserver({ schema: OBSERVER_TARGETS_SCHEMA, targets: [target] }, changed.state, {
+      source: {
+        observe: async () => {
+          sourceCalls += 1
+          throw new Error('pending-only retry must not observe GitHub or npm')
+        },
+        compare: async () => {
+          sourceCalls += 1
+          throw new Error('pending-only retry must not compare upstream commits')
+        },
+      },
+      retryPendingOnly: true,
+      agent: async task => ({
+        taskId: task.id,
+        status: 'succeeded',
+        output: '{"impact":"unknown"}',
+        parsedOutput: { impact: 'unknown' },
+      }),
+      now: new Date('2026-08-17T04:10:00.000Z'),
+    })
+
+    assert.equal(sourceCalls, 0)
+    assert.equal(retried.report.targetsChecked, 0)
+    assert.deepEqual(retried.report.changes, [])
+    assert.equal(retried.report.agent.attempted, 1)
+    assert.equal(retried.report.agent.succeeded, 1)
+    assert.equal(retried.report.pendingTasks.length, 0)
+    assert.deepEqual(retried.state.targets, changed.state.targets)
+  })
+
   it('turns source and published version drift into an author-facing task', async () => {
     const before = snapshot('commit-1', '1.0.0', 'graph-v1')
     const after = snapshot('commit-2', '1.0.0', 'graph-v1')

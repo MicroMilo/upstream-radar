@@ -140,13 +140,15 @@ describe('reusable GitHub Action', () => {
     assert.doesNotMatch(minimalObserverWorkflow, /pnpm install|pnpm build/)
     assert.match(reviewWorkflow, /finding\.remediation/)
     assert.match(checkedInReviewWorkflow, /finding\.remediation/)
+    assert.match(checkedInObserverWorkflow, /agent-retry/)
+    assert.match(checkedInObserverWorkflow, /--retry-pending-only/)
     const observationPersistStep = checkedInObserverWorkflow.indexOf('name: Persist observation and Agent planning state')
     const initialCheckoutStep = checkedInObserverWorkflow.slice(
       checkedInObserverWorkflow.indexOf('name: Check out the observer and its targets'),
       checkedInObserverWorkflow.indexOf('name: Set up pnpm'),
     )
     const installObservationJob = checkedInObserverWorkflow.indexOf('\n  install-observation:')
-    const observerHealthJob = checkedInObserverWorkflow.indexOf('\n  observer-source-health:')
+    const observerHealthJob = checkedInObserverWorkflow.indexOf('\n  observer-final-health:')
     const reconcileStep = checkedInObserverWorkflow.indexOf('name: Reconcile dynamic evidence into the compatibility ledger')
     const publishStep = checkedInObserverWorkflow.indexOf('name: Publish directory-consumable compatibility evidence')
     const persistStep = checkedInObserverWorkflow.indexOf('name: Persist compatibility evidence')

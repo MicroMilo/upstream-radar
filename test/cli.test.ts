@@ -242,6 +242,18 @@ describe('CLI option parsing', () => {
     assert.match(observeHelp.stdout, /--reverse-index <index\.json>/)
     assert.match(observeHelp.stdout, /issue-locator\/\.env-style file/)
     assert.match(observeHelp.stdout, /MODEL\/CODEX_MODEL/)
+    assert.match(observeHelp.stdout, /--retry-pending-only consumes durable Agent tasks/)
+
+    const retryWithoutAgent = spawnSync(process.execPath, [
+      cli,
+      'observe',
+      resolve(repository, 'examples/upstream-observer/targets.yml'),
+      '--state',
+      resolve(repository, 'observations.json'),
+      '--retry-pending-only',
+    ], { encoding: 'utf8' })
+    assert.equal(retryWithoutAgent.status, 1)
+    assert.match(retryWithoutAgent.stderr, /--retry-pending-only requires --dsh-agent-command or --llm-env-file/)
 
     const probeHelp = spawnSync(process.execPath, [cli, 'probe', '--help'], { encoding: 'utf8' })
     assert.equal(probeHelp.status, 0)
