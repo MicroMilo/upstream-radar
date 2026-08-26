@@ -358,14 +358,14 @@
     {
       "caseId": "dsh-awiki-node22-web",
       "sourceCaseId": "dsh-awiki-node22",
-      "plugin": "@awiki/dsh-plugin@0.3.3",
+      "plugin": "@awiki/dsh-plugin@0.3.5",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "@awiki/dsh-plugin",
-      "sourceFingerprint": "sha256:fc9d8b164080cfe88c52dba3cb4ca0e04c3c502c95aa25d07c4c823b70d06c1d",
+      "sourceFingerprint": "sha256:2a401153e35dc394797b6f5834862cbcfe8aee1ba099dd7f756845235573d3b4",
       "contractFingerprint": "sha256:910d6cd7e3e3db3d44c9f034cc6214687feab6408412dd6e905b6717e792638d",
-      "observedAt": "2026-08-25T09:37:23.394Z",
+      "observedAt": "2026-08-26T07:37:56.736Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -374,9 +374,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "0a4b43e67b15323d648552020e839777d6ee48ced7d61fbf36022358541696b4",
-        "bytes": 640351,
-        "integrity": "sha512-WQfZj1tb4fHEZfyjzlp5J/XaHxGMal6l5Y3NHtoi8KyNyCIumkx6SuPwktlx947XPf7kBEZ/I/cbh1LthiHuwQ=="
+        "sha256": "8885567afe573e6765108989311da7f708b1f5585d10672a4cfddaaf6c0a32d8",
+        "bytes": 638838,
+        "integrity": "sha512-XmAWR06xmNq3oGeuSAavkto98H+2j5LW/91bAKBS4wVk/T26xp95mP/P2Aixv3CYIhlPxMxvPDTaiBjFuM3eUg=="
       },
       "stages": {
         "runtime": {
@@ -469,7 +469,7 @@
       "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
-        "version": "0.44.0"
+        "version": "0.45.0"
       }
     },
     {
@@ -480,9 +480,9 @@
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-codex-connect",
-      "sourceFingerprint": "sha256:afaa691c414f5862d59eb1498a1ad65089fa9c3dff683132f7b9488ba8f4d55a",
+      "sourceFingerprint": "sha256:0c4b1f3e631287c618e70fb93946991a33778c4c51b2f154927c23c90eb73bda",
       "contractFingerprint": "sha256:5fdb060f09396e3af096e82193e2b6ce9ef842f128aa4767b4788aa622dd461d",
-      "observedAt": "2026-08-25T09:36:32.125Z",
+      "observedAt": "2026-08-26T07:37:48.907Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -586,7 +586,7 @@
       "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
-        "version": "0.44.0"
+        "version": "0.45.0"
       }
     },
     {
@@ -597,9 +597,9 @@
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-codex-subscription",
-      "sourceFingerprint": "sha256:4a807e220c62098dda5e5f3fa964b959242a80cbb758655bdf50cef2f1bb1b81",
+      "sourceFingerprint": "sha256:6b20df5c23293bbaf285edbcd93382973ccc70e314ece80599878b2ab56f173c",
       "contractFingerprint": "sha256:1f4378bc037e43bd1e8db6af46b019f6d54c5efea3532e7b1bf01ed2a8d433c2",
-      "observedAt": "2026-08-25T09:50:44.103Z",
+      "observedAt": "2026-08-26T07:37:54.506Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -703,20 +703,20 @@
       "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
-        "version": "0.44.0"
+        "version": "0.45.0"
       }
     },
     {
       "caseId": "dsh-commandcode-provider-node22-web",
       "sourceCaseId": "dsh-commandcode-provider-node22",
-      "plugin": "@mars-sea/dsh-commandcode-provider@0.8.1",
+      "plugin": "@mars-sea/dsh-commandcode-provider@0.8.3",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "@mars-sea/dsh-commandcode-provider",
-      "sourceFingerprint": "sha256:bc0248c41d8aabaa0a8c6a4f78f1d693c0b8e761bd6294469caa1ce2d8c133f1",
+      "sourceFingerprint": "sha256:f79e5ce76cb481d9e2305a8066d75d46941ae50db36931ba0cd3001b0651da16",
       "contractFingerprint": "sha256:43a0c1fb43572882964431ecc28820a74c57140c9721b5e2e21a60447a147888",
-      "observedAt": "2026-08-25T09:36:39.842Z",
+      "observedAt": "2026-08-26T07:37:53.481Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -725,9 +725,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "245acceadf2fc86d1cb5d6a13d5c45b2ac7cc25f10e1436ad3c66810c3f86eea",
-        "bytes": 2253752,
-        "integrity": "sha512-c2j0feoq9Pa5LN2jPQykrr7EdrsuQsJdDo0Rq4tPcA+npqPYl+kem8pqQrSfzTJLhOg8DyyJSczdqtqTHOdwoA=="
+        "sha256": "872c4c1dd0149d7db8fdc6a4d363ec26312159ffc2b003cad829ed9c94f73047",
+        "bytes": 2255495,
+        "integrity": "sha512-ObSxQ1ApMw2alJFBP9P+m/lls5Z9+mgjerEeONt0XEOlMRx+FgjgbuKqtZheDlVRtl0WpOIjVHUQNgiHh+PGvQ=="
       },
       "stages": {
         "runtime": {
@@ -804,7 +804,7 @@
           "@deepseek-ai/dsh-client-ui-reference"
         ],
         "pluginEntryPresent": true,
-        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@mars-sea/dsh-commandcode-provider/client.js?rev=74805bd7ed2f",
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@mars-sea/dsh-commandcode-provider/client.js?rev=f111a19b0196",
         "pluginBundleStatus": 200,
         "applicationMounted": true,
         "pluginMaterialized": true,
@@ -820,20 +820,20 @@
       "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
-        "version": "0.44.0"
+        "version": "0.45.0"
       }
     },
     {
       "caseId": "dsh-config-manager-node22-web",
       "sourceCaseId": "dsh-config-manager-node22",
-      "plugin": "dsh-config-manager@0.1.53",
+      "plugin": "dsh-config-manager@0.1.54",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-config-manager",
-      "sourceFingerprint": "sha256:b54b75992d55cc144ce9079bcd511ef50f1c4488fd7e6eb1e28076c1112f7383",
+      "sourceFingerprint": "sha256:919f1e947deb52f9927d07fa6e655d53280bf405e646d4bcb3498e4e01422062",
       "contractFingerprint": "sha256:45ab25df71dc42b318df2831e6ed6e6478528b63cfe939566a1c1e06312fd111",
-      "observedAt": "2026-08-25T09:50:38.765Z",
+      "observedAt": "2026-08-26T07:37:55.730Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -842,9 +842,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "ecee0aaf8b8d8117ab8e4470496f1ae7d2cb20f81453bb92d5c3d35a5932a31c",
-        "bytes": 1623354,
-        "integrity": "sha512-7k9OIQR6bRP5+SEvcyWfp3hPNA4FMlhM6t9ZbfQaXU98XCHd6aGKvmGKX/0nzPdiFHGyrMemhkcumyiwBN36LA=="
+        "sha256": "4ba117477558991006be548d609ae8d29f5316ab0522206e1859f54df7c7ada2",
+        "bytes": 1749222,
+        "integrity": "sha512-QOimBhlWzewClqK/25rrNQfNlAHicONw2Pdrt13ujfeN7y4nm+/HNPHXHAVg2F01Lv1g4LEbwuSCD3MDLGqoeQ=="
       },
       "stages": {
         "runtime": {
@@ -921,7 +921,7 @@
           "@deepseek-ai/dsh-client-ui-reference"
         ],
         "pluginEntryPresent": true,
-        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-config-manager/client.js?rev=50de063d56aa",
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-config-manager/client.js?rev=6f37c4bb9d1c",
         "pluginBundleStatus": 200,
         "applicationMounted": true,
         "pluginMaterialized": true,
@@ -937,7 +937,7 @@
       "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
-        "version": "0.44.0"
+        "version": "0.45.0"
       }
     },
     {
@@ -1060,14 +1060,14 @@
     {
       "caseId": "dsh-mnemon-node22-web",
       "sourceCaseId": "dsh-mnemon-node22",
-      "plugin": "dsh-mnemon@0.3.0",
+      "plugin": "dsh-mnemon@0.3.2",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-mnemon",
-      "sourceFingerprint": "sha256:ed3739b52cc9c7772c270b32ec49b4d688b1aaa1b09f15d40490ce23aed1ad4f",
+      "sourceFingerprint": "sha256:235a0f42406200e06d026a0981c3e940b224d24bc3205c40aa0835caf3842e98",
       "contractFingerprint": "sha256:958e5f439fb4c843bd4d7e598ea98829f43fd0f7d35dd4a47e3519375cc3f3ae",
-      "observedAt": "2026-08-25T09:50:40.465Z",
+      "observedAt": "2026-08-26T07:37:54.522Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1076,9 +1076,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "da19e5219a53066426bcea66c6c231b78db1f0abd4cc01b431cb350f4af9e6c8",
-        "bytes": 362021,
-        "integrity": "sha512-uBiQ9w67HvdimSi6Zenwi4A9iVqPIN6YpZkIo7GKvztzMPHZwU9JIzy5trcHSGGB9j/MVCJvpIr0BxpkB/VcKA=="
+        "sha256": "c13be892ec20fa342c1ece6d30dd6d657d8c15e7a8e14392894549a5bccc5aa4",
+        "bytes": 369060,
+        "integrity": "sha512-EaWSdTxMYNICqK0jbwEBB6UsggBik2kMNw3Yb51FpPcYzTRi73WbXM31Fdz5Z3KRM/E5SaWTHqoJkUUnrTMSrw=="
       },
       "stages": {
         "runtime": {
@@ -1155,7 +1155,7 @@
           "@deepseek-ai/dsh-client-ui-reference"
         ],
         "pluginEntryPresent": true,
-        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-mnemon/client.js?rev=3e86b4f62d93",
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-mnemon/client.js?rev=eabc32345868",
         "pluginBundleStatus": 200,
         "applicationMounted": true,
         "pluginMaterialized": true,
@@ -1171,20 +1171,20 @@
       "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
-        "version": "0.44.0"
+        "version": "0.45.0"
       }
     },
     {
       "caseId": "dsh-pet-node22-web",
       "sourceCaseId": "dsh-pet-node22",
-      "plugin": "dsh-pet@0.1.8",
+      "plugin": "dsh-pet@0.2.0",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-pet",
-      "sourceFingerprint": "sha256:0fdfd2ff794524103b3e7d730e979d923729266fe2e8974440a15f6fd6592ef1",
+      "sourceFingerprint": "sha256:e3cb6adcb7ddc217429d3650cb2968bb872c7f3eb5511f18b76de586d1fd893d",
       "contractFingerprint": "sha256:c5bcc528ea51a605dab56ea5f73b926c277fbb42e24b9dabe44e9bb70445ffd4",
-      "observedAt": "2026-08-25T09:36:32.513Z",
+      "observedAt": "2026-08-26T07:37:50.673Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1193,9 +1193,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "9a25c7a4cfc49f74f5dff4ba3292b18fa4bca4a08e656fdd57b8a28d9f9fd121",
-        "bytes": 53659865,
-        "integrity": "sha512-xOGihkKbL8LhZG4ZoKTGnbtgdB1Dofbv5dUoCHnZ6ztpIXy2qXSuupZKIr405C0JrsDbfuhVZa7YqlsnTDPJeQ=="
+        "sha256": "1ce1344474feb2b2e63e57b765b471803c5678945c1564ca08575fbbb9ab5852",
+        "bytes": 53661687,
+        "integrity": "sha512-tZYBpexurZZ2FrqXXJGrKukm3c610YTxPROHzBZcO84i8hjz3446siVaUknP4dxmuc/L6xRB6hgnsB3l0xPUcg=="
       },
       "stages": {
         "runtime": {
@@ -1272,7 +1272,7 @@
           "@deepseek-ai/dsh-client-ui-reference"
         ],
         "pluginEntryPresent": true,
-        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-pet/client.js?rev=b658734642b2",
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-pet/client.js?rev=f87e43b6948f",
         "pluginBundleStatus": 200,
         "applicationMounted": true,
         "pluginMaterialized": true,
@@ -1288,7 +1288,7 @@
       "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
-        "version": "0.44.0"
+        "version": "0.45.0"
       }
     },
     {
@@ -1304,9 +1304,9 @@
         "node-pty",
         "ssh2"
       ],
-      "sourceFingerprint": "sha256:76bf32acc2d66754a71a3b0c52dfd8509c151c3a382faea9c9ce1e5257db9276",
+      "sourceFingerprint": "sha256:5f0e21dc668309ce3469c6a49fffd884f344652b4089074661701bf5ab6de049",
       "contractFingerprint": "sha256:1fdfaf743f990e6b0a7debd66d4d78902239246088faba781e569a656f231c0e",
-      "observedAt": "2026-08-25T09:45:55.678Z",
+      "observedAt": "2026-08-26T07:38:00.964Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1410,7 +1410,7 @@
       "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
-        "version": "0.44.0"
+        "version": "0.45.0"
       }
     },
     {
@@ -1650,7 +1650,7 @@
     {
       "caseId": "dsh-tui-tui",
       "sourceCaseId": "dsh-tui-node22",
-      "plugin": "@deepseek-harness-tui/dsh-tui@0.9.2",
+      "plugin": "@deepseek-harness-tui/dsh-tui@0.9.3",
       "dshVersion": "0.1.1-rc.2",
       "plane": "tui",
       "profile": "dsh-tui",
@@ -1659,9 +1659,9 @@
         "@google/genai",
         "protobufjs"
       ],
-      "sourceFingerprint": "sha256:480aca8a8b7e8f28b24946af26bea053dd8ba511d93fa2715a62c6c0760cc62d",
+      "sourceFingerprint": "sha256:226f6f011e9851f8694f695750738705b4d3e7593aa9bef4bdb9888758329db1",
       "contractFingerprint": "sha256:6421e93df8e3a3826a19956fa72f6e06f237603de5a856b17b30651e968e923b",
-      "observedAt": "2026-08-25T08:53:30.961Z",
+      "observedAt": "2026-08-26T07:38:40.771Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1670,9 +1670,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "16109da55dcac367d3ae7ebb4465d9c05831776f52cebd2195552cf3bc626021",
-        "bytes": 1664521,
-        "integrity": "sha512-LsjNnQ790sAGNllrNt3L8B1rdePcwRvwqSlQJ97uTh5skPaUkV9W41oqEYw1g19DZ6CEQ/8T3kKsI9pmQ8AynQ=="
+        "sha256": "44e1c7926fb97a1faa056a9cf3de4e2cbf7351ccfd3c5e072fa2677150200b0f",
+        "bytes": 1694414,
+        "integrity": "sha512-8AR+/EO+5iBlS9a8OWFqPHtmRXa1EFM8L/0rlTvgLn1YVa2sKIqECfOpuBLxWRQ1ABUb+iSkoyJ1p0bsCC0FTA=="
       },
       "stages": {
         "runtime": {
@@ -1718,28 +1718,28 @@
         "exitCode": 0,
         "signal": 0,
         "transcript": "dsh-tui-tui.ansi",
-        "normalizedFrame": "▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nPress Ctrl+C again to exit\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\nh-TUI\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc",
-        "capturedBytes": 24028,
+        "normalizedFrame": "▄▀█▄▄▄▄\n█▄▀▄\n███\n▀██▀▀▀█\n███\n███\nxplore the\nPress Ctrl+C again to exit\ndsh-TUI\n▄█▀▀▀▀█\n███\n██▀▀▀█\n███\n▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un",
+        "capturedBytes": 23065,
         "truncated": false
       },
       "result": "compatible",
       "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
-        "version": "0.43.5"
+        "version": "0.45.0"
       }
     },
     {
       "caseId": "dsh-univer-office-web",
       "sourceCaseId": "dsh-univer-office-node22",
-      "plugin": "dsh-univer-office@0.2.9",
+      "plugin": "dsh-univer-office@0.2.10",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-univer-office",
-      "sourceFingerprint": "sha256:2977f10c66b1119a0cb09f9d360fc2714a3048c473ea545c642ff62c9541ade7",
+      "sourceFingerprint": "sha256:d260d6baf8b3c0d62cf3daff20dbc90d15e8d963b9bde91e2ec9873b68fb152a",
       "contractFingerprint": "sha256:3b5f8fcf4dc864e3316341017193b6c50b4301f150c692dedc205299a22735a4",
-      "observedAt": "2026-08-25T08:53:37.752Z",
+      "observedAt": "2026-08-26T07:37:59.816Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1748,9 +1748,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "dcd5cdbd02ffc240f18fdd45318205345cccb29dde3694f1efe51ee0211c746a",
-        "bytes": 35613705,
-        "integrity": "sha512-0gvUi/JH70+r5Lx3Q9LyPhsaugUQaYgFjshWbMJcGV+eCTiZ/+YBL6r4J8V9wzwdBvCBjehxmTeTed7tsCiuag=="
+        "sha256": "499ffa4ae522a8ea6f0fb927989beefb2234718fb13794c426cfe5734bb1cf3e",
+        "bytes": 36322999,
+        "integrity": "sha512-drpBS6irjbyUq8MKyr/ya/G1pSLVnVTyExtaeJI0yOsP0NVJkubZyPaPxAAFF2k18s41yEIrYjcl4j/PXjDMsg=="
       },
       "stages": {
         "runtime": {
@@ -1827,7 +1827,7 @@
           "@deepseek-ai/dsh-client-ui-reference"
         ],
         "pluginEntryPresent": true,
-        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-univer-office/client.js?rev=d8df9eba8538",
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-univer-office/client.js?rev=251d01a9127f",
         "pluginBundleStatus": 200,
         "applicationMounted": true,
         "pluginMaterialized": true,
@@ -1843,7 +1843,7 @@
       "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
-        "version": "0.43.5"
+        "version": "0.45.0"
       }
     },
     {
@@ -1854,9 +1854,9 @@
       "plane": "web",
       "profile": "web",
       "runtimeId": "@anionex/dsh-vision-toolkit",
-      "sourceFingerprint": "sha256:dd607294fa3d175d0641ca7f8c1d18d45e22bdcc03fa1f305fa43125a29ebb6b",
+      "sourceFingerprint": "sha256:a29f7c1c276be259fc7a1cd0b18a4be1594a5353af07bd278a04b8ea156d9c8e",
       "contractFingerprint": "sha256:94f062fa9fd33d6e28ff481af28efc7aac42c3f1aebf2548fe251a2fd631be62",
-      "observedAt": "2026-08-25T09:36:25.355Z",
+      "observedAt": "2026-08-26T07:37:53.137Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1960,20 +1960,20 @@
       "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
-        "version": "0.44.0"
+        "version": "0.45.0"
       }
     },
     {
       "caseId": "dsh-wallpaper-engine-node22-web",
       "sourceCaseId": "dsh-wallpaper-engine-node22",
-      "plugin": "dsh-plugin-wallpaper-engine@0.6.5",
+      "plugin": "dsh-plugin-wallpaper-engine@0.6.6",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-plugin-wallpaper-engine",
-      "sourceFingerprint": "sha256:b02037e25357570b2989023f9573cf9f6e9b420512749eaab1ef6b1a22cc12b4",
+      "sourceFingerprint": "sha256:c5f46f23c8ad033e46090f5ecdf44d8db81a4113ce10edcf3bbf5e396cbfb419",
       "contractFingerprint": "sha256:d9d47a469ca212c9017912752d2d8dad0bd48879f379980229bb0ea66bddcac6",
-      "observedAt": "2026-08-25T09:36:31.780Z",
+      "observedAt": "2026-08-26T07:37:55.488Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1982,9 +1982,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "528ae9a9068574cc3a01752f2cfcf495418d099a9e9b42267666a999fc1ea7d4",
-        "bytes": 636485,
-        "integrity": "sha512-D22Ard1V5H43fvDTfUSzNNsGFh+xDF1ycSNMHqqJS28zSvsMKIm756APcsQ3BUbFwT2266w6aG8XKYI5WCdLpw=="
+        "sha256": "848a0cc4c037444e33610ce3af9eb208738d6b933ba0d89d1cb25d6a159ad5d1",
+        "bytes": 637597,
+        "integrity": "sha512-3SvCwOOTDV20uzQfls3Sr9UoIaroT/FhNtEDGiLom9fwx6MA1jOGuFXUq/+KFq/sP9gj46sQzh0HRZ8940g+ZQ=="
       },
       "stages": {
         "runtime": {
@@ -2061,7 +2061,7 @@
           "@deepseek-ai/dsh-client-ui-reference"
         ],
         "pluginEntryPresent": true,
-        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-plugin-wallpaper-engine/client.js?rev=6c47c3624ebd",
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-plugin-wallpaper-engine/client.js?rev=3232cbe46386",
         "pluginBundleStatus": 200,
         "applicationMounted": true,
         "pluginMaterialized": true,
@@ -2077,13 +2077,13 @@
       "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
-        "version": "0.44.0"
+        "version": "0.45.0"
       }
     },
     {
       "caseId": "dsh-web-all-web",
       "sourceCaseId": "dsh-web-ui-all-node22",
-      "plugin": "@linxin666/dsh-web-all@0.3.3",
+      "plugin": "@linxin666/dsh-web-all@0.3.4",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
@@ -2094,9 +2094,9 @@
         "node-pty",
         "ssh2"
       ],
-      "sourceFingerprint": "sha256:68e477bb639de45e977d013cdb6c32b9ac8f22dc3129e93e84b9219b26ae9bea",
+      "sourceFingerprint": "sha256:2991e4a81eb1b469291f98306c4250ed0c8c2c173d5610ad8dac123c19996723",
       "contractFingerprint": "sha256:71b9a069d776bce868c6b95c0ef7f06980c268303bd87bec963a66c15eeabc40",
-      "observedAt": "2026-08-25T08:53:46.265Z",
+      "observedAt": "2026-08-26T07:38:18.582Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -2105,9 +2105,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "64ee0f111afe4700d278c97af6f92316b750538d821338399a2c89a290ea6ff9",
+        "sha256": "a75249b81577e798b6e4daf1fef3cd8650b6fa7097d8e0e05f2f50e909dfa843",
         "bytes": 17102,
-        "integrity": "sha512-dyVaVwTmfLKwcQkZUPdPkYPO3WPHmDyCS0S5l9mH97vTbP4IhGiHfoC6+MVSDK8h33XI/9e/EMkwtw2CXREP2w=="
+        "integrity": "sha512-hT3WQFV4OkvJBD25UL9Gv6PeMixX+mbKXMtAK0iTfyzSw2Dl5IexNxS/SPPrVHGv+6EYT3gvearyTerhMEZZ/Q=="
       },
       "stages": {
         "runtime": {
@@ -2189,12 +2189,10 @@
         "applicationMounted": true,
         "pluginMaterialized": true,
         "consoleErrors": [
-          "Failed to load resource: the server responded with a status of 404 (Not Found)"
+          "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
         ],
         "pageErrors": [],
-        "failedRequests": [
-          "http://127.0.0.1:30880/status: net::ERR_ABORTED"
-        ],
+        "failedRequests": [],
         "blockedExternalRequests": [],
         "screenshot": "dsh-web-all-web.png",
         "trace": "dsh-web-all-web.trace.zip",
@@ -2204,7 +2202,7 @@
       "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
-        "version": "0.43.5"
+        "version": "0.45.0"
       }
     },
     {
@@ -2215,9 +2213,9 @@
       "plane": "web",
       "profile": "web",
       "runtimeId": "@zseven-w/dsh-openpencil",
-      "sourceFingerprint": "sha256:b1589d2d399558e84f62f51e2977554b7223f34adf8438a29edc38b8d63f843e",
+      "sourceFingerprint": "sha256:50701ab05f7ec5d303cccb38b26726b5b38ffbd5cab26b292c9adaf83eca28ae",
       "contractFingerprint": "sha256:389996d4d33d131405bf598ef2dd932f3d06a70411729907756b5af7467af5b5",
-      "observedAt": "2026-08-25T09:51:09.708Z",
+      "observedAt": "2026-08-26T07:37:51.000Z",
       "runtime": {
         "nodeMajor": 24,
         "nodeVersion": "24.19.0",
@@ -2321,7 +2319,7 @@
       "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
-        "version": "0.44.0"
+        "version": "0.45.0"
       }
     },
     {
