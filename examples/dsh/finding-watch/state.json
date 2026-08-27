@@ -981,8 +981,8 @@
       ],
       "source": {
         "name": "dsh-hdc-bridge",
-        "version": "0.7.3",
-        "digest": "sha256:c005a7b014a72ae9674ff01290b6a1310d1d1f0ae9b134f8cbf894bff8748e0c",
+        "version": "0.8.2",
+        "digest": "sha256:b6d21d50f003efccf5d0c3c424e9f2a200dfcdf9ed8b3cee9dd27dd0c004f867",
         "findings": [
           {
             "code": "custom-registry-config",
@@ -997,10 +997,10 @@
         ]
       },
       "artifact": {
-        "spec": "npm:dsh-hdc-bridge@0.7.3",
+        "spec": "npm:dsh-hdc-bridge@0.8.2",
         "name": "dsh-hdc-bridge",
-        "version": "0.7.3",
-        "digest": "sha256:f2fd58883c31f44758e7a0201df9a7e2dc62d4710a6b99a015eecfe1ca4668ae",
+        "version": "0.8.2",
+        "digest": "sha256:53a84ee0984d639bb2e53afc8adeb1649e167eb6eec5de049223cce553fb9408",
         "findings": [
           {
             "code": "npm-provenance-missing",
@@ -1024,15 +1024,15 @@
       ],
       "source": {
         "name": "dsh-msg-hub",
-        "version": "0.1.9",
-        "digest": "sha256:05efb1c6d353e792e34468a9d5c7de1725e4c4e3340c7ee4a73e4fd47142b932",
+        "version": "0.1.10",
+        "digest": "sha256:a77020d88e14583a30bbcd4d847b22eb0adca97fde22809489ac143663fea34a",
         "findings": []
       },
       "artifact": {
-        "spec": "npm:dsh-msg-hub@0.1.9",
+        "spec": "npm:dsh-msg-hub@0.1.10",
         "name": "dsh-msg-hub",
-        "version": "0.1.9",
-        "digest": "sha256:0047e135f648e73bb5ac73f925f276f0627532f23492ead397aa7c81d3756263",
+        "version": "0.1.10",
+        "digest": "sha256:7f4dc332fd04207c1ba8ec025e7d33c3f2a943fef70b27feb7d03ed8a60d88cd",
         "findings": [
           {
             "code": "dependency-install-script-present",
@@ -1041,13 +1041,13 @@
             "detail": "The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.",
             "evidence": {
               "packages": [
-                "protobufjs@7.6.5"
+                "protobufjs@7.6.6"
               ],
               "scripts": [
-                "protobufjs@7.6.5 postinstall: node scripts/postinstall"
+                "protobufjs@7.6.6 postinstall: node scripts/postinstall"
               ]
             },
-            "fingerprint": "sha256:e52d9339a71c4614955dd2bfb04751dc5d287d2e8ef2355acc450f575c287fe3"
+            "fingerprint": "sha256:2bb34dff0ebcff22f7f25f808aca6e368c4083a1dafae268371d39c49a261f48"
           },
           {
             "code": "npm-provenance-missing",
