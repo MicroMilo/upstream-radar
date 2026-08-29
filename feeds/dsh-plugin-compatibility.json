@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-08-28T19:15:24.683Z",
+  "generatedAt": "2026-08-29T13:00:14.595Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -37,10 +37,10 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 82,
+    "observed-compatible": 68,
     "observed-incompatible": 0,
-    "needs-review": 14,
-    "update-pending": 0,
+    "needs-review": 11,
+    "update-pending": 17,
     "not-observed": 4
   },
   "plugins": [
@@ -467,10 +467,10 @@
       "distribution": {
         "kind": "npm",
         "name": "@anweat/dsh-browser",
-        "selectedVersion": "0.1.9",
+        "selectedVersion": "0.1.10",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "anweat-dsh-browser-node22",
@@ -558,10 +558,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-remote-plugin",
-        "selectedVersion": "0.6.17",
+        "selectedVersion": "0.6.18",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-remote-plugin-node22",
@@ -602,10 +602,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-context",
-        "selectedVersion": "0.37.0",
+        "selectedVersion": "0.38.1",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "context-node22",
@@ -857,10 +857,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-gateway",
-        "selectedVersion": "1.6.0",
+        "selectedVersion": "1.7.0",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-gateway-node22",
@@ -1019,10 +1019,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-free-search",
-        "selectedVersion": "0.4.16",
+        "selectedVersion": "0.4.17",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-free-search-node22",
@@ -1222,10 +1222,10 @@
       "distribution": {
         "kind": "npm",
         "name": "@dsh-plugin/dsh-auxiliary",
-        "selectedVersion": "0.5.1",
+        "selectedVersion": "0.6.3",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-auxiliary-node22",
@@ -1773,10 +1773,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-cost-meter",
-        "selectedVersion": "1.6.9",
+        "selectedVersion": "1.6.12",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "cost-meter-node22",
@@ -2196,10 +2196,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-coding-subscription-oauth",
-        "selectedVersion": "0.6.3",
+        "selectedVersion": "0.6.4",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-coding-subscription-oauth-node22",
@@ -2736,10 +2736,10 @@
       "distribution": {
         "kind": "npm",
         "name": "@nonamelego/dsh-catppuccin",
-        "selectedVersion": "0.4.1",
+        "selectedVersion": "0.4.3",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-catppuccin-node22",
@@ -3148,10 +3148,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-pet",
-        "selectedVersion": "0.2.0",
+        "selectedVersion": "0.2.1",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-pet-node22",
@@ -3327,10 +3327,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-dream-skin",
-        "selectedVersion": "8.28.0",
+        "selectedVersion": "8.29.0",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-dream-skin-node22",
@@ -3466,10 +3466,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-mobile",
-        "selectedVersion": "0.3.1",
+        "selectedVersion": "0.3.2",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-mobile-node22",
@@ -3510,10 +3510,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-pocket",
-        "selectedVersion": "1.14.5",
+        "selectedVersion": "2.6.3",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-pocket-node22",
@@ -3642,10 +3642,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-rewind-plugin",
-        "selectedVersion": "0.5.0",
+        "selectedVersion": "0.6.0",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-rewind-plugin-node22",
@@ -3774,10 +3774,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-passwords",
-        "selectedVersion": "2.6.4",
+        "selectedVersion": "2.6.5",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-passwords-node22",
@@ -4410,10 +4410,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-codex-subscription",
-        "selectedVersion": "1.10.0",
+        "selectedVersion": "1.11.0",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-codex-subscription-node22",
@@ -4684,10 +4684,10 @@
       "distribution": {
         "kind": "npm",
         "name": "@xmanrui/dsh-im",
-        "selectedVersion": "3.1.1",
+        "selectedVersion": "4.0.0",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-im-node22",
