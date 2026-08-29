@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-surface-ir/v1alpha1",
-  "generatedAt": "2026-08-28T19:14:58.623Z",
+  "generatedAt": "2026-08-29T13:05:30.939Z",
   "cells": [
     {
       "id": "better-sidebar-node22-web",
@@ -24,7 +24,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:16.130Z",
+        "observedAt": "2026-08-29T13:04:39.294Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -579,8 +579,8 @@
       "profile": "web",
       "runtimeId": "dsh-codex-subscription",
       "plugin": {
-        "spec": "dsh-codex-subscription@1.10.0",
-        "artifactSha256": "6247ed2c21032a51015c757cb971992f3056fb84177ad3ddcdfef89122a74de8"
+        "spec": "dsh-codex-subscription@1.11.0",
+        "artifactSha256": "15c1c849ec76383ccbd3173a24ea9b8799b4dbe654a48b4428ddfff996a6f0a5"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
@@ -594,7 +594,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:07.908Z",
+        "observedAt": "2026-08-29T13:04:34.085Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -672,7 +672,7 @@
             "@deepseek-ai/dsh-client-ui-reference"
           ],
           "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-codex-subscription/client.js?rev=3788481cf80f",
+          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-codex-subscription/client.js?rev=385ab6c56543",
           "pluginBundleStatus": 200,
           "applicationMounted": true,
           "pluginMaterialized": true,
@@ -915,6 +915,124 @@
       }
     },
     {
+      "id": "dsh-dream-skin-node22-web",
+      "sourceCaseId": "dsh-dream-skin-node22",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-dream-skin",
+      "plugin": {
+        "spec": "dsh-dream-skin@8.29.0",
+        "artifactSha256": "b7d7904115cbca0fc2e8708c7b772af3e0f81786d991bc2421eba36cc2ce20c4"
+      },
+      "upstream": {
+        "package": "@deepseek-ai/dsh",
+        "dshVersion": "0.1.1-rc.2"
+      },
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "observation": {
+        "observedAt": "2026-08-29T13:05:30.939Z",
+        "result": "surface-incompatible",
+        "reason": "DSH Web did not hand off from its boot page to the assembled application: HARNESSFailed to load pluginsfailed to import loader entry 6f6829b2 (dsh-dream-skin): client-modules: require(\"@deepseek-ai/dsh-client-store\") missed the module table — not a platform seed word, not a materialized module, and no registered package factory (a build-time externals drift, or a dynamic dependency that did not arrive)",
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "passed",
+            "code": 0
+          },
+          "profile": {
+            "status": "passed",
+            "code": 0
+          },
+          "install": {
+            "status": "passed",
+            "code": 0
+          },
+          "registration": {
+            "status": "passed"
+          },
+          "host": {
+            "status": "passed"
+          },
+          "surface": {
+            "status": "failed",
+            "detail": "DSH Web did not hand off from its boot page to the assembled application: HARNESSFailed to load pluginsfailed to import loader entry 6f6829b2 (dsh-dream-skin): client-modules: require(\"@deepseek-ai/dsh-client-store\") missed the module table — not a platform seed word, not a materialized module, and no registered package factory (a build-time externals drift, or a dynamic dependency that did not arrive)"
+          },
+          "interaction": {
+            "status": "passed"
+          },
+          "shutdown": {
+            "status": "passed"
+          }
+        },
+        "evidence": {
+          "plane": "web",
+          "url": "http://127.0.0.1:30880/",
+          "httpStatus": 200,
+          "title": "DeepSeek Harness",
+          "rootMounted": true,
+          "bootManifestPresent": true,
+          "bootEntryIds": [
+            "dsh-dream-skin",
+            "@deepseek-ai/dsh-typert-registry",
+            "@deepseek-ai/dsh-api-gateway",
+            "@deepseek-ai/dsh-session-log-export",
+            "@deepseek-ai/dsh-client-hmr",
+            "@deepseek-ai/dsh-client-modules",
+            "@deepseek-ai/dsh-client-connection",
+            "@deepseek-ai/dsh-api-remotes",
+            "@deepseek-ai/dsh-client-runtime",
+            "@deepseek-ai/dsh-cordis-client-runner",
+            "@deepseek-ai/dsh-client-ui-theme",
+            "@deepseek-ai/dsh-client-locale",
+            "@deepseek-ai/dsh-client-ui-layout",
+            "@deepseek-ai/dsh-client-ui-renderer",
+            "@deepseek-ai/dsh-client-ui-sidebar",
+            "@deepseek-ai/dsh-client-ui-settings",
+            "@deepseek-ai/dsh-client-ui-settings-general",
+            "@deepseek-ai/dsh-client-ui-settings-models",
+            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+            "@deepseek-ai/dsh-client-ui-conversation",
+            "@deepseek-ai/dsh-client-ui-brand-official",
+            "@deepseek-ai/dsh-client-ui-attachment",
+            "@deepseek-ai/dsh-client-ui-tool",
+            "@deepseek-ai/dsh-client-ui-cordis",
+            "@deepseek-ai/dsh-client-ui-workflow-run",
+            "@deepseek-ai/dsh-client-ui-deliverables",
+            "@deepseek-ai/dsh-client-ui-workspace",
+            "@deepseek-ai/dsh-client-ui-input-trigger",
+            "@deepseek-ai/dsh-client-ui-commands",
+            "@deepseek-ai/dsh-client-ui-skill",
+            "@deepseek-ai/dsh-client-ui-subagent",
+            "@deepseek-ai/dsh-client-ui-reference"
+          ],
+          "pluginEntryPresent": true,
+          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-dream-skin/client.js?rev=75a79f24af77",
+          "pluginBundleStatus": 200,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
+          "bootFailureText": "HARNESSFailed to load pluginsfailed to import loader entry 6f6829b2 (dsh-dream-skin): client-modules: require(\"@deepseek-ai/dsh-client-store\") missed the module table — not a platform seed word, not a materialized module, and no registered package factory (a build-time externals drift, or a dynamic dependency that did not arrive)",
+          "consoleErrors": [
+            "Error: failed to import loader entry 6f6829b2 (dsh-dream-skin): client-modules: require(\"@deepseek-ai/dsh-client-store\") missed the module table — not a platform seed word, not a materialized module, and no registered package factory (a build-time externals drift, or a dynamic dependency that did not arrive)\n    at Dt (http://127.0.0.1:30880/assets/index-ClqxG24t.js:17:259)\n    at Dn._init (http://127.0.0.1:30880/assets/index-ClqxG24t.js:17:4088)\n    at async Dn.init (http://127.0.0.1:30880/assets/index-Clq"
+          ],
+          "pageErrors": [],
+          "failedRequests": [],
+          "blockedExternalRequests": [],
+          "screenshot": "dsh-dream-skin-node22-web.png",
+          "trace": "dsh-dream-skin-node22-web.trace.zip",
+          "hostLog": "dsh-dream-skin-node22-web.host.log"
+        }
+      }
+    },
+    {
       "id": "dsh-full-remote-node22-web",
       "sourceCaseId": "dsh-full-remote-node22",
       "plane": "web",
@@ -1050,7 +1168,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:08.097Z",
+        "observedAt": "2026-08-29T13:04:35.575Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -1149,8 +1267,8 @@
       "profile": "web",
       "runtimeId": "dsh-pet",
       "plugin": {
-        "spec": "dsh-pet@0.2.0",
-        "artifactSha256": "1ce1344474feb2b2e63e57b765b471803c5678945c1564ca08575fbbb9ab5852"
+        "spec": "dsh-pet@0.2.1",
+        "artifactSha256": "e478e4706d549bd23f349623a36053ea88bf36eb310f64a8c8ae2ae01912e436"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
@@ -1164,7 +1282,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:14.395Z",
+        "observedAt": "2026-08-29T13:04:55.671Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -1242,7 +1360,7 @@
             "@deepseek-ai/dsh-client-ui-reference"
           ],
           "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-pet/client.js?rev=f87e43b6948f",
+          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-pet/client.js?rev=33506036402f",
           "pluginBundleStatus": 200,
           "applicationMounted": true,
           "pluginMaterialized": true,
@@ -1620,7 +1738,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-26T07:38:40.771Z",
+        "observedAt": "2026-08-29T13:04:30.095Z",
         "result": "compatible",
         "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown",
         "stages": {
@@ -1667,8 +1785,8 @@
           "exitCode": 0,
           "signal": 0,
           "transcript": "dsh-tui-tui.ansi",
-          "normalizedFrame": "▄▀█▄▄▄▄\n█▄▀▄\n███\n▀██▀▀▀█\n███\n███\nxplore the\nPress Ctrl+C again to exit\ndsh-TUI\n▄█▀▀▀▀█\n███\n██▀▀▀█\n███\n▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un",
-          "capturedBytes": 23065,
+          "normalizedFrame": "▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nPress Ctrl+C again to exit\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\nh-TUI\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc",
+          "capturedBytes": 23961,
           "truncated": false
         }
       }
@@ -1809,7 +1927,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:13:59.319Z",
+        "observedAt": "2026-08-29T13:04:36.366Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -2022,8 +2140,8 @@
       "profile": "web",
       "runtimeId": "@linxin666/dsh-web-all",
       "plugin": {
-        "spec": "@linxin666/dsh-web-all@0.3.4",
-        "artifactSha256": "a75249b81577e798b6e4daf1fef3cd8650b6fa7097d8e0e05f2f50e909dfa843"
+        "spec": "@linxin666/dsh-web-all@0.3.6",
+        "artifactSha256": "b7429637feff4728240fd0983faa0e91dd3c0274ba61c3f334170c2386bf22d1"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
@@ -2037,7 +2155,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-26T07:38:18.582Z",
+        "observedAt": "2026-08-29T13:04:47.845Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -2088,11 +2206,11 @@
             "@linxin666/dsh-client-ui-aionui-panel",
             "@linxin666/dsh-client-ui-task-board",
             "@linxin666/dsh-client-ui-git-graph",
+            "@linxin666/dsh-perf",
             "@linxin666/dsh-remote-web-ui",
             "@linxin666/dsh-pet",
             "@linxin666/dsh-ssh",
             "@linxin666/dsh-tool-describe-image",
-            "@linxin666/dsh-chat-recovery",
             "@linxin666/dsh-client-ui-skill-explorer",
             "@linxin666/dsh-desktop-launcher",
             "@linxin666/dsh-doctor",
@@ -2153,7 +2271,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:06.603Z",
+        "observedAt": "2026-08-29T13:04:29.849Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {

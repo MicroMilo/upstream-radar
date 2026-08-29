@@ -12,9 +12,9 @@
       "approvedDependencyBuilds": [
         "node-pty"
       ],
-      "sourceFingerprint": "sha256:c00fd5dc02fd1be7481b814b59a068be4c50f4f85d55a9cc8ee882d2a8830e47",
+      "sourceFingerprint": "sha256:e6b3da2989a3c1d677fcd85860246425212e88935615f7c0b96a4fc67f948993",
       "contractFingerprint": "sha256:6cc49e92424906167bb5adfe29cee7a5fc7aebe86bc7ba87ef1530b4cc75f9d1",
-      "observedAt": "2026-08-28T19:14:16.130Z",
+      "observedAt": "2026-08-29T13:04:39.294Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -592,14 +592,14 @@
     {
       "caseId": "dsh-codex-subscription-node22-web",
       "sourceCaseId": "dsh-codex-subscription-node22",
-      "plugin": "dsh-codex-subscription@1.10.0",
+      "plugin": "dsh-codex-subscription@1.11.0",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-codex-subscription",
-      "sourceFingerprint": "sha256:e7c0183fdb6c432cb796ee03c1542f22130a3c272b1f32e0ad0fd2e1cfe8a2e2",
+      "sourceFingerprint": "sha256:fd4bdc642dbf8c9ed2bc0263fa0184893656a25ac73c2e9b1e010561cb02bec7",
       "contractFingerprint": "sha256:1f4378bc037e43bd1e8db6af46b019f6d54c5efea3532e7b1bf01ed2a8d433c2",
-      "observedAt": "2026-08-28T19:14:07.908Z",
+      "observedAt": "2026-08-29T13:04:34.085Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -608,9 +608,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "6247ed2c21032a51015c757cb971992f3056fb84177ad3ddcdfef89122a74de8",
-        "bytes": 65417,
-        "integrity": "sha512-ba8iwupV6Mom9UDCtZ7XKr/wReMTb1MZuTW1RXbH9/rtrRz8dcIURRDNTSbakNAKncVXhr7HErjHpghG+645Tw=="
+        "sha256": "15c1c849ec76383ccbd3173a24ea9b8799b4dbe654a48b4428ddfff996a6f0a5",
+        "bytes": 72260,
+        "integrity": "sha512-Pm9pfgBl8WpU32chTTxOqDLqD6NVB3n0oYS3Z/buoCMvW1CbDbYdDRc9Cw62kFlU9xY3n6x/mLPl7rfaXGLqcQ=="
       },
       "stages": {
         "runtime": {
@@ -687,7 +687,7 @@
           "@deepseek-ai/dsh-client-ui-reference"
         ],
         "pluginEntryPresent": true,
-        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-codex-subscription/client.js?rev=3788481cf80f",
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-codex-subscription/client.js?rev=385ab6c56543",
         "pluginBundleStatus": 200,
         "applicationMounted": true,
         "pluginMaterialized": true,
@@ -941,6 +941,127 @@
       }
     },
     {
+      "caseId": "dsh-dream-skin-node22-web",
+      "sourceCaseId": "dsh-dream-skin-node22",
+      "plugin": "dsh-dream-skin@8.29.0",
+      "dshVersion": "0.1.1-rc.2",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-dream-skin",
+      "sourceFingerprint": "sha256:6ba016b7ae7d6f601a6ee1842d28ddcdf11b8528e96aa49f49fb972d758a7816",
+      "contractFingerprint": "sha256:208f9ffece9726699b4320d386af90094417bbdd8ae0faf337f24925583b3736",
+      "observedAt": "2026-08-29T13:05:30.939Z",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "artifact": {
+        "sha256": "b7d7904115cbca0fc2e8708c7b772af3e0f81786d991bc2421eba36cc2ce20c4",
+        "bytes": 3256862,
+        "integrity": "sha512-J0sZ4wBwIlBect737sej/jBuwfx3GJQpuoeQ5S/i9+vlfkWpjNGkCIn6ZEsC+ana4uyfP3YC4mSlcBqlAlEVdg=="
+      },
+      "stages": {
+        "runtime": {
+          "status": "passed",
+          "code": 0
+        },
+        "artifact": {
+          "status": "passed",
+          "code": 0
+        },
+        "profile": {
+          "status": "passed",
+          "code": 0
+        },
+        "install": {
+          "status": "passed",
+          "code": 0
+        },
+        "registration": {
+          "status": "passed"
+        },
+        "host": {
+          "status": "passed"
+        },
+        "surface": {
+          "status": "failed",
+          "detail": "DSH Web did not hand off from its boot page to the assembled application: HARNESSFailed to load pluginsfailed to import loader entry 6f6829b2 (dsh-dream-skin): client-modules: require(\"@deepseek-ai/dsh-client-store\") missed the module table — not a platform seed word, not a materialized module, and no registered package factory (a build-time externals drift, or a dynamic dependency that did not arrive)"
+        },
+        "interaction": {
+          "status": "passed"
+        },
+        "shutdown": {
+          "status": "passed"
+        }
+      },
+      "evidence": {
+        "plane": "web",
+        "url": "http://127.0.0.1:30880/",
+        "httpStatus": 200,
+        "title": "DeepSeek Harness",
+        "rootMounted": true,
+        "bootManifestPresent": true,
+        "bootEntryIds": [
+          "dsh-dream-skin",
+          "@deepseek-ai/dsh-typert-registry",
+          "@deepseek-ai/dsh-api-gateway",
+          "@deepseek-ai/dsh-session-log-export",
+          "@deepseek-ai/dsh-client-hmr",
+          "@deepseek-ai/dsh-client-modules",
+          "@deepseek-ai/dsh-client-connection",
+          "@deepseek-ai/dsh-api-remotes",
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-cordis-client-runner",
+          "@deepseek-ai/dsh-client-ui-theme",
+          "@deepseek-ai/dsh-client-locale",
+          "@deepseek-ai/dsh-client-ui-layout",
+          "@deepseek-ai/dsh-client-ui-renderer",
+          "@deepseek-ai/dsh-client-ui-sidebar",
+          "@deepseek-ai/dsh-client-ui-settings",
+          "@deepseek-ai/dsh-client-ui-settings-general",
+          "@deepseek-ai/dsh-client-ui-settings-models",
+          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+          "@deepseek-ai/dsh-client-ui-conversation",
+          "@deepseek-ai/dsh-client-ui-brand-official",
+          "@deepseek-ai/dsh-client-ui-attachment",
+          "@deepseek-ai/dsh-client-ui-tool",
+          "@deepseek-ai/dsh-client-ui-cordis",
+          "@deepseek-ai/dsh-client-ui-workflow-run",
+          "@deepseek-ai/dsh-client-ui-deliverables",
+          "@deepseek-ai/dsh-client-ui-workspace",
+          "@deepseek-ai/dsh-client-ui-input-trigger",
+          "@deepseek-ai/dsh-client-ui-commands",
+          "@deepseek-ai/dsh-client-ui-skill",
+          "@deepseek-ai/dsh-client-ui-subagent",
+          "@deepseek-ai/dsh-client-ui-reference"
+        ],
+        "pluginEntryPresent": true,
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-dream-skin/client.js?rev=75a79f24af77",
+        "pluginBundleStatus": 200,
+        "applicationMounted": false,
+        "pluginMaterialized": false,
+        "bootFailureText": "HARNESSFailed to load pluginsfailed to import loader entry 6f6829b2 (dsh-dream-skin): client-modules: require(\"@deepseek-ai/dsh-client-store\") missed the module table — not a platform seed word, not a materialized module, and no registered package factory (a build-time externals drift, or a dynamic dependency that did not arrive)",
+        "consoleErrors": [
+          "Error: failed to import loader entry 6f6829b2 (dsh-dream-skin): client-modules: require(\"@deepseek-ai/dsh-client-store\") missed the module table — not a platform seed word, not a materialized module, and no registered package factory (a build-time externals drift, or a dynamic dependency that did not arrive)\n    at Dt (http://127.0.0.1:30880/assets/index-ClqxG24t.js:17:259)\n    at Dn._init (http://127.0.0.1:30880/assets/index-ClqxG24t.js:17:4088)\n    at async Dn.init (http://127.0.0.1:30880/assets/index-Clq"
+        ],
+        "pageErrors": [],
+        "failedRequests": [],
+        "blockedExternalRequests": [],
+        "screenshot": "dsh-dream-skin-node22-web.png",
+        "trace": "dsh-dream-skin-node22-web.trace.zip",
+        "hostLog": "dsh-dream-skin-node22-web.host.log"
+      },
+      "result": "surface-incompatible",
+      "reason": "DSH Web did not hand off from its boot page to the assembled application: HARNESSFailed to load pluginsfailed to import loader entry 6f6829b2 (dsh-dream-skin): client-modules: require(\"@deepseek-ai/dsh-client-store\") missed the module table — not a platform seed word, not a materialized module, and no registered package factory (a build-time externals drift, or a dynamic dependency that did not arrive)",
+      "observer": {
+        "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+        "version": "0.45.0"
+      }
+    },
+    {
       "caseId": "dsh-full-remote-node22-web",
       "sourceCaseId": "dsh-full-remote-node22",
       "plugin": "dsh-full-remote@0.3.7",
@@ -1065,9 +1186,9 @@
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-mnemon",
-      "sourceFingerprint": "sha256:68511c7e346b33247af4fc7eb15b71ab1308d6e60995dc55ff472b7d652554e6",
+      "sourceFingerprint": "sha256:5661ff8ea95bb10f5cfc5a495ccf9bcc675e3cbb87b8872b95c0b94478dd241e",
       "contractFingerprint": "sha256:958e5f439fb4c843bd4d7e598ea98829f43fd0f7d35dd4a47e3519375cc3f3ae",
-      "observedAt": "2026-08-28T19:14:08.097Z",
+      "observedAt": "2026-08-29T13:04:35.575Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1177,14 +1298,14 @@
     {
       "caseId": "dsh-pet-node22-web",
       "sourceCaseId": "dsh-pet-node22",
-      "plugin": "dsh-pet@0.2.0",
+      "plugin": "dsh-pet@0.2.1",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-pet",
-      "sourceFingerprint": "sha256:5496302d89bc662d76a93f0add03f76709c9e690d6e567f12e620d755e6cce0a",
+      "sourceFingerprint": "sha256:34e561325cc51f75132af7756db968f7f63543455d27730adf5698dabae3ecc0",
       "contractFingerprint": "sha256:c5bcc528ea51a605dab56ea5f73b926c277fbb42e24b9dabe44e9bb70445ffd4",
-      "observedAt": "2026-08-28T19:14:14.395Z",
+      "observedAt": "2026-08-29T13:04:55.671Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1193,9 +1314,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "1ce1344474feb2b2e63e57b765b471803c5678945c1564ca08575fbbb9ab5852",
-        "bytes": 53661687,
-        "integrity": "sha512-tZYBpexurZZ2FrqXXJGrKukm3c610YTxPROHzBZcO84i8hjz3446siVaUknP4dxmuc/L6xRB6hgnsB3l0xPUcg=="
+        "sha256": "e478e4706d549bd23f349623a36053ea88bf36eb310f64a8c8ae2ae01912e436",
+        "bytes": 53738517,
+        "integrity": "sha512-YlJPQKcX0uQanRl8+773oem6nqc9KyjPS0ZmGorZrT6jaNDw2cYMQ9r00111ocOHIbkbuLGXVx6nunapUnYpaw=="
       },
       "stages": {
         "runtime": {
@@ -1272,7 +1393,7 @@
           "@deepseek-ai/dsh-client-ui-reference"
         ],
         "pluginEntryPresent": true,
-        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-pet/client.js?rev=f87e43b6948f",
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-pet/client.js?rev=33506036402f",
         "pluginBundleStatus": 200,
         "applicationMounted": true,
         "pluginMaterialized": true,
@@ -1659,9 +1780,9 @@
         "@google/genai",
         "protobufjs"
       ],
-      "sourceFingerprint": "sha256:226f6f011e9851f8694f695750738705b4d3e7593aa9bef4bdb9888758329db1",
+      "sourceFingerprint": "sha256:7822ce8f6a5efcb6df8a5a248fbbd3852b6b33641fe5e2815f699eaa4e3951ea",
       "contractFingerprint": "sha256:6421e93df8e3a3826a19956fa72f6e06f237603de5a856b17b30651e968e923b",
-      "observedAt": "2026-08-26T07:38:40.771Z",
+      "observedAt": "2026-08-29T13:04:30.095Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1718,8 +1839,8 @@
         "exitCode": 0,
         "signal": 0,
         "transcript": "dsh-tui-tui.ansi",
-        "normalizedFrame": "▄▀█▄▄▄▄\n█▄▀▄\n███\n▀██▀▀▀█\n███\n███\nxplore the\nPress Ctrl+C again to exit\ndsh-TUI\n▄█▀▀▀▀█\n███\n██▀▀▀█\n███\n▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un",
-        "capturedBytes": 23065,
+        "normalizedFrame": "▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nPress Ctrl+C again to exit\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\nh-TUI\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc",
+        "capturedBytes": 23961,
         "truncated": false
       },
       "result": "compatible",
@@ -1854,9 +1975,9 @@
       "plane": "web",
       "profile": "web",
       "runtimeId": "@anionex/dsh-vision-toolkit",
-      "sourceFingerprint": "sha256:05f9b444c9d4121a7eb9744bae229ddfc130666e800bb672604517437c65aa44",
+      "sourceFingerprint": "sha256:983e9771b5975d3470732f5641b804bf11d68a3b719ef70f9593d9fe08306348",
       "contractFingerprint": "sha256:94f062fa9fd33d6e28ff481af28efc7aac42c3f1aebf2548fe251a2fd631be62",
-      "observedAt": "2026-08-28T19:13:59.319Z",
+      "observedAt": "2026-08-29T13:04:36.366Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -2083,7 +2204,7 @@
     {
       "caseId": "dsh-web-all-web",
       "sourceCaseId": "dsh-web-ui-all-node22",
-      "plugin": "@linxin666/dsh-web-all@0.3.4",
+      "plugin": "@linxin666/dsh-web-all@0.3.6",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
@@ -2094,9 +2215,9 @@
         "node-pty",
         "ssh2"
       ],
-      "sourceFingerprint": "sha256:2991e4a81eb1b469291f98306c4250ed0c8c2c173d5610ad8dac123c19996723",
+      "sourceFingerprint": "sha256:1ea27a448600ef3574217cefa7f5606b9e574e38461e1c318cf5d8b35d34a078",
       "contractFingerprint": "sha256:71b9a069d776bce868c6b95c0ef7f06980c268303bd87bec963a66c15eeabc40",
-      "observedAt": "2026-08-26T07:38:18.582Z",
+      "observedAt": "2026-08-29T13:04:47.845Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -2105,9 +2226,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "a75249b81577e798b6e4daf1fef3cd8650b6fa7097d8e0e05f2f50e909dfa843",
-        "bytes": 17102,
-        "integrity": "sha512-hT3WQFV4OkvJBD25UL9Gv6PeMixX+mbKXMtAK0iTfyzSw2Dl5IexNxS/SPPrVHGv+6EYT3gvearyTerhMEZZ/Q=="
+        "sha256": "b7429637feff4728240fd0983faa0e91dd3c0274ba61c3f334170c2386bf22d1",
+        "bytes": 20619,
+        "integrity": "sha512-hzruoocLgpu8st4dTpTNQrTY97w8dAUnaMbcrkht88o1ciAQ5nry1t0ZT+DeT/RN+4HaSvP+9VvJdXAcFHKhdg=="
       },
       "stages": {
         "runtime": {
@@ -2157,11 +2278,11 @@
           "@linxin666/dsh-client-ui-aionui-panel",
           "@linxin666/dsh-client-ui-task-board",
           "@linxin666/dsh-client-ui-git-graph",
+          "@linxin666/dsh-perf",
           "@linxin666/dsh-remote-web-ui",
           "@linxin666/dsh-pet",
           "@linxin666/dsh-ssh",
           "@linxin666/dsh-tool-describe-image",
-          "@linxin666/dsh-chat-recovery",
           "@linxin666/dsh-client-ui-skill-explorer",
           "@linxin666/dsh-desktop-launcher",
           "@linxin666/dsh-doctor",
@@ -2213,9 +2334,9 @@
       "plane": "web",
       "profile": "web",
       "runtimeId": "@zseven-w/dsh-openpencil",
-      "sourceFingerprint": "sha256:1b2d3558cec7edace0f57dad69f741e026cba1e7e95d8f10643ba252d795ae35",
+      "sourceFingerprint": "sha256:f6b7cb8a00bd2cc51c48d6746e89b93954542e4514c92d5a13a8e00df4090b12",
       "contractFingerprint": "sha256:389996d4d33d131405bf598ef2dd932f3d06a70411729907756b5af7467af5b5",
-      "observedAt": "2026-08-28T19:14:06.603Z",
+      "observedAt": "2026-08-29T13:04:29.849Z",
       "runtime": {
         "nodeMajor": 24,
         "nodeVersion": "24.20.0",
