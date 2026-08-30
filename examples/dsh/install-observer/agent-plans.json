@@ -1,11 +1,11 @@
 {
   "schema": "upstream-radar.dsh-headless-agent-plans/v1alpha1",
-  "updatedAt": "2026-08-29T13:00:13.995Z",
+  "updatedAt": "2026-08-30T12:14:59.163Z",
   "entries": [
     {
       "caseId": "anweat-dsh-browser-node22",
       "targetId": "anweat-dsh-browser",
-      "plugin": "@anweat/dsh-browser@0.1.8",
+      "plugin": "@anweat/dsh-browser@0.1.10",
       "dshVersion": "0.1.1-rc.2",
       "nodeMajor": 22,
       "result": "build-approval-required",
@@ -15,22 +15,24 @@
       "approvedBuilds": [
         "@jackwener/opencli"
       ],
-      "artifactSha256": "93396ab0961fa992c53dd8beeff1428b23d4f3f56b2fc33e9181944535f845be",
+      "artifactSha256": "ff068f55bc8f2bf5b2fa656aaaa2c2d15cdb7af4fe04f8788b0a1a4142bf12ae",
       "repository": "anweat/dsh-browser",
-      "sourceCommit": "a6fe38bff85a04dbcc088974fd2098dd40d8d24a",
-      "inputFingerprint": "sha256:ca7fb04bdb84c907f9e66fa9f16bc932836003f3a79c669a05e6c1b8c08a51a8",
-      "plannedAt": "2026-08-24T02:41:46.941Z",
+      "sourceCommit": "268b658fea54efaad32a4e33de660ef98818780d",
+      "inputFingerprint": "sha256:882e6d4080e2160e4d16a2b5c8e141b3920d9b97d0ae390f69749239b76f1346",
+      "plannedAt": "2026-08-30T12:14:52.264Z",
       "model": "deepseek-v4-flash",
       "action": "retry-headless",
       "classification": "build-approval",
       "allowedBuilds": [
         "@jackwener/opencli"
       ],
-      "summary": "The plugin requires build approval for @jackwener/opencli, which is a direct dependency in package.json. The repository evidence supports approving this package as it is a legitimate npm dependency for OpenCLI functionality.",
+      "summary": "The plugin requires build approval for @jackwener/opencli, which is a direct dependency in the manifest. The repository evidence supports approving this package for a headless retry.",
       "evidence": [
-        "package.json dependencies: @jackwener/opencli ^1.8.6",
-        "README.md mentions OpenCLI as a bundled dependency and provides usage instructions",
-        "Observed build packages: @jackwener/opencli"
+        "Observed result: build-approval-required",
+        "Observed reason: requires explicit approval for dependency builds: @jackwener/opencli",
+        "Manifest dependencies include @jackwener/opencli: ^1.8.6",
+        "README describes OpenCLI as a plugin-local npm dependency",
+        "No earlier approvals to preserve"
       ]
     },
     {
@@ -44,20 +46,20 @@
       "approvedBuilds": [],
       "artifactSha256": "4e656c9a8dca712814f4111cb4d9ca8e467af6bad641f09222813390c77b65d1",
       "repository": "omdsh-dev/DSH-better-sidebar",
-      "sourceCommit": "3941bd5f3ad32f37fdb109657dd44cc6d289fe4e",
-      "inputFingerprint": "sha256:825bf75b9c8e066c129efe5f525ee0d932466b9c82fd2c687f6247ba325aeb93",
-      "plannedAt": "2026-08-29T12:59:59.091Z",
+      "sourceCommit": "3aab7ca3a53357f9237a91978d57df4cf84c9c45",
+      "inputFingerprint": "sha256:d7817e3a1d090e2ce3e73becd3355337723ffe031fe6816114cabed9c40fce07",
+      "plannedAt": "2026-08-30T12:14:54.091Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
       "classification": "headless-contract",
       "allowedBuilds": [],
-      "summary": "The plugin's peer contract is not satisfied by the headless DSH runtime: @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots are missing, and react-dom is mismatched (resolved 19.2.8 vs required ^18.2.0). The observed result is peer-contract-incompatible, not a build-approval issue. No build packages are required, so a retry cannot resolve the missing peer dependencies. The headless profile cannot add or modify peer dependencies, and the plugin requires a web platform (dsh.client.platform: web) which is outside the headless execution plane.",
+      "summary": "The plugin's peer contract requires @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots at ^0.1.0-rc.8, but the DSH runtime (0.1.1-rc.2) does not provide them. The observed result is peer-contract-incompatible with runtime-import-observed for primitives and type-only-reference for slots. No build packages are required, so a retry cannot resolve the missing peer dependencies. The issue is a headless contract mismatch: the plugin expects a different DSH runtime version or additional client modules not available in the headless environment.",
       "evidence": [
         "Observed result: peer-contract-incompatible; reason: @deepseek-ai/dsh-client-ui-primitives@^0.1.0-rc.8 not resolved by DSH runtime (runtime-import-observed)",
-        "Runtime graph unresolvedDependencies: @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots (peer)",
-        "PluginPeerContracts: missing 2 (dsh-client-ui-primitives, dsh-client-ui-slots), mismatched 1 (react-dom resolved 19.2.8 vs ^18.2.0)",
-        "Build packages required by latest retry: none; earlier approvals: none",
-        "Manifest dsh.client.platform: web; headless profile cannot provide web UI plane"
+        "Runtime graph unresolvedDependencies: @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots",
+        "Plugin peerDependencies declare @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots at ^0.1.0-rc.8",
+        "Host runtime DSH version 0.1.1-rc.2 does not provide these modules",
+        "No build packages required or approved in earlier retries"
       ]
     },
     {
@@ -115,6 +117,34 @@
       ]
     },
     {
+      "caseId": "dsh-auxiliary-node22",
+      "targetId": "dsh-auxiliary",
+      "plugin": "@dsh-plugin/dsh-auxiliary@0.6.3",
+      "dshVersion": "0.1.1-rc.2",
+      "nodeMajor": 22,
+      "result": "peer-contract-incompatible",
+      "observedRequiredBuilds": [],
+      "approvedBuilds": [],
+      "artifactSha256": "e62c2677311f9f6bf7ce641e67c8bf49f7cb8e420c61a965001f8b6b482c697c",
+      "repository": "dsh-plugins/dsh-auxiliary",
+      "sourceCommit": "1f83918c2b2f2e6a8e46edab328e7b577277c189",
+      "inputFingerprint": "sha256:d162ad9683f88d2aa53cead251d322ed0008d664832244a99836a940b21766e9",
+      "plannedAt": "2026-08-30T12:14:52.747Z",
+      "model": "deepseek-v4-flash",
+      "action": "stop-headless",
+      "classification": "headless-contract",
+      "allowedBuilds": [],
+      "summary": "The plugin installed and loaded, but the runtime could not resolve the required peer dependency @dsh-plugin/dsh-loader@^1.3.0. The headless profile cannot provide this peer dependency, and no build approvals are needed or possible. The issue is a missing runtime peer, not a build approval problem.",
+      "evidence": [
+        "Observed result: peer-contract-incompatible",
+        "Observed reason: @dsh-plugin/dsh-loader@^1.3.0 was not resolved by the DSH runtime (runtime-import-observed)",
+        "Build packages required by latest retry: (none)",
+        "Build packages approved in earlier retries: (none)",
+        "Dynamic evidence: runtimeGraph unresolvedDependencies includes @dsh-plugin/dsh-loader from node_modules/@dsh-plugin/dsh-auxiliary",
+        "Manifest declares peerDependencies: @dsh-plugin/dsh-loader ^1.3.0"
+      ]
+    },
+    {
       "caseId": "dsh-awiki-node22",
       "targetId": "dsh-awiki",
       "plugin": "@awiki/dsh-plugin@0.3.6",
@@ -152,19 +182,18 @@
       "approvedBuilds": [],
       "artifactSha256": "13bb515a371e3b56b4855fd7c8c27b0fc234bfd780198ec952cd4e48808b6636",
       "repository": "franksong2702/dsh-codex-connect",
-      "sourceCommit": "dd1093d1f9803ea1857b1f9548d3f389c1a014a8",
-      "inputFingerprint": "sha256:9b48a2177123f635d593d9b4cd3299776519ae4eb8fcce0f490b73fb0ee2f144",
-      "plannedAt": "2026-08-29T13:00:01.385Z",
+      "sourceCommit": "7b590859bf6138b7f3cb01fcc6955def549c0c8e",
+      "inputFingerprint": "sha256:8638cc37cfcfea693ad27ea080605208fd800752c84b93292b9d3a5f07ae4211",
+      "plannedAt": "2026-08-30T12:14:53.085Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
       "classification": "headless-contract",
       "allowedBuilds": [],
-      "summary": "The plugin's peer dependency @deepseek-ai/dsh-client-ui-primitives@0.1.1-rc.2 is missing from the runtime graph, and the plugin declares a web client platform with injects that require a Web/TUI plane. The headless profile cannot resolve this peer dependency because it is a UI package not provided by the headless runtime. No build packages are required, so a retry cannot fix the missing peer. The issue is a headless contract limitation.",
+      "summary": "The plugin's peer dependency @deepseek-ai/dsh-client-ui-primitives@0.1.1-rc.2 is missing at runtime, but the plugin declares a web client platform and injects client UI modules. The headless profile cannot satisfy the web client contract, so a retry is not justified.",
       "evidence": [
         "Observed result: peer-contract-incompatible; runtime-import-observed for @deepseek-ai/dsh-client-ui-primitives",
-        "runtimeGraph.unresolvedDependencies: @deepseek-ai/dsh-client-ui-primitives missing",
-        "manifest.dsh.client.platform: web; inject includes UI packages",
-        "Build packages required: none; no build approval can resolve missing peer"
+        "Manifest dsh.client.platform: web; inject list includes @deepseek-ai/dsh-client-ui-layout, @deepseek-ai/dsh-client-ui-conversation, etc.",
+        "No build packages required or approved; no evidence that approving builds would resolve the missing peer."
       ]
     },
     {
@@ -196,26 +225,27 @@
     {
       "caseId": "dsh-coding-subscription-oauth-node22",
       "targetId": "dsh-coding-subscription-oauth",
-      "plugin": "dsh-coding-subscription-oauth@0.6.0",
+      "plugin": "dsh-coding-subscription-oauth@0.6.4",
       "dshVersion": "0.1.1-rc.2",
       "nodeMajor": 22,
       "result": "peer-contract-incompatible",
       "observedRequiredBuilds": [],
       "approvedBuilds": [],
-      "artifactSha256": "0f14c5c7a7c34cd4c8a4d72f26e94b812ef126ec3e27f36dd77664926c9f1b1d",
+      "artifactSha256": "37a525e715820a020fe32ce1b4cd89145abd34250cedcbfa674f0cf52cb75652",
       "repository": "lninghaha/dsh-coding-subscription-oauth",
-      "sourceCommit": "f611d6df543ae1908c8e1ed396c00e748e379d43",
-      "inputFingerprint": "sha256:2fbb465d90aa2831d0956794fdd994c8e9a95831a14efd591bc78ce53c47035a",
-      "plannedAt": "2026-08-24T04:30:35.018Z",
+      "sourceCommit": "56e5ec4383650f8e4d62256e2f0e49e625a9c6f7",
+      "inputFingerprint": "sha256:277fde0abddc10620b0a389a15c538ca4a2f223c54e6ec2bc8030a2501b598cc",
+      "plannedAt": "2026-08-30T12:14:55.950Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
-      "classification": "headless-contract",
+      "classification": "different-plane",
       "allowedBuilds": [],
-      "summary": "The plugin's peer dependencies require @deepseek-ai/dsh-atomic-write@0.1.0-rc.6, but the headless DSH profile resolves 0.1.1-rc.2, causing a runtime-import mismatch. No build packages are required, and the mismatch is due to the headless environment's fixed dependency versions, not a build approval issue.",
+      "summary": "The plugin's peer dependency @earendil-works/pi-ai requires 0.84.2 but the runtime resolved 0.82.1, causing a peer-contract mismatch. The manifest includes an override pinning @earendil-works/pi-ai to 0.84.2, but the headless profile cannot install or update that package because it is not in the build approval list and the runner cannot modify dependencies beyond the explicit approval list. The mismatch is a runtime dependency resolution issue that cannot be fixed by approving build packages, as no build packages are required. The issue stems from the headless environment's inability to satisfy the peer dependency version, which would require a different execution plane (e.g., a full package manager with network access) to resolve.",
       "evidence": [
-        "Observed result: peer-contract-incompatible; reason: @deepseek-ai/dsh-atomic-write@0.1.1-rc.2 does not satisfy 0.1.0-rc.6 (runtime-import-observed)",
-        "Manifest peerDependencies: @deepseek-ai/dsh-atomic-write: 0.1.0-rc.6",
-        "Dynamic evidence: runtimeGraph pluginPeerContracts shows @deepseek-ai/dsh-atomic-write required 0.1.0-rc.6, resolved 0.1.1-rc.2, status mismatched",
+        "Observed result: peer-contract-incompatible; @earendil-works/pi-ai@0.82.1 does not satisfy 0.84.2 (runtime-import-observed)",
+        "Manifest peerDependencies: @earendil-works/pi-ai: 0.84.2",
+        "Manifest overrides: @earendil-works/pi-ai: 0.84.2",
+        "Runtime graph: pluginPeerContracts mismatched: @earendil-works/pi-ai required 0.84.2, resolved 0.82.1",
         "Build packages required by latest retry: none; approved earlier: none"
       ]
     },
@@ -417,52 +447,46 @@
       "artifactSha256": "9dc3d3ada3ffd367fb50e82f4e87c4320bcfc6569722a778fcf54bb7ee3efcd5",
       "repository": "omdsh-dev/dsh-mnemon",
       "sourceCommit": "9099f1516265d7a2f7aa797358de533d4ee58a17",
-      "inputFingerprint": "sha256:90100c6a9c873a505d3eb3da7762e69ec2e93dfb5d067eba7b46473dea71ea4a",
-      "plannedAt": "2026-08-29T13:00:04.895Z",
+      "inputFingerprint": "sha256:28986ae7c485782fcf6439861f8a5357e5545b0849cab417e7c9a64facbe7521",
+      "plannedAt": "2026-08-30T12:14:56.079Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
       "classification": "different-plane",
       "allowedBuilds": [],
-      "summary": "The plugin declares a web client platform and injects web-only UI packages, but the headless profile cannot resolve the required @deepseek-ai/dsh-client-ui-primitives peer dependency. The observed runtime graph shows the peer is missing and react-dom is mismatched (19.2.8 vs required ^18.2.0). No build packages are required, so a retry cannot fix the peer contract issue. The plugin's web UI dependencies require a Web/TUI plane, which is not available in this milestone.",
+      "summary": "The plugin declares a web client platform and injects UI packages, but the headless profile cannot resolve the required @deepseek-ai/dsh-client-ui-primitives peer dependency. The observed result is peer-contract-incompatible due to a missing runtime import, which is a headless contract violation. No build packages are required, so a retry cannot fix the missing peer. The plugin's web UI dependencies indicate it needs a Web/TUI plane, which is not available in this milestone.",
       "evidence": [
-        "manifest dsh.client.platform: web",
-        "manifest dsh.client.inject: @deepseek-ai/dsh-client-connection, @deepseek-ai/dsh-client-ui-conversation, @deepseek-ai/dsh-client-ui-renderer, @deepseek-ai/dsh-client-ui-settings, @deepseek-ai/dsh-client-locale",
-        "runtimeGraph unresolvedDependencies: @deepseek-ai/dsh-client-ui-primitives (peer) missing",
-        "runtimeGraph pluginPeerContracts: react-dom mismatched (resolved 19.2.8, required ^18.2.0)",
-        "README: 'dsh plugin --profile web add dsh-mnemon' and 'dsh plugin --profile headless add dsh-mnemon' but headless profile lacks WebUI"
+        "Observed result: peer-contract-incompatible; reason: @deepseek-ai/dsh-client-ui-primitives@^0.1.0-rc.6 || ^0.1.1-rc.1 || ^0.1.2-alpha.1 not resolved by DSH runtime (runtime-import-observed)",
+        "Manifest dsh.client.platform: \"web\" and dsh.client.inject lists UI packages",
+        "Dynamic evidence: pluginPeerContracts missing @deepseek-ai/dsh-client-ui-primitives; runtimeGraph unresolved dependency",
+        "README: plugin is designed for WebUI and headless, but headless profile lacks UI primitives"
       ]
     },
     {
       "caseId": "dsh-notifier-node22",
       "targetId": "dsh-notifier",
-      "plugin": "dsh-notifier@0.8.6",
+      "plugin": "dsh-notifier@0.9.0",
       "dshVersion": "0.1.1-rc.2",
       "nodeMajor": 22,
       "result": "build-approval-required",
       "observedRequiredBuilds": [
         "protobufjs"
       ],
-      "approvedBuilds": [
-        "protobufjs"
-      ],
-      "artifactSha256": "31df82786797f1bbf26eed3e4573db55d0d15bb59584324478d2268512776cca",
+      "approvedBuilds": [],
+      "artifactSha256": "9e97e5302f0e53c196df62a4947d37852873548518533abd65650b5a616fc621",
       "repository": "THEWOLFWALKER/dsh-notifier",
-      "sourceCommit": "db4290830329799148475d1c17de6c21f2fde4e4",
-      "inputFingerprint": "sha256:06975d0835872368dfcc211946a00bd2ef35c06d6840ebc454eb2c929f53b649",
-      "plannedAt": "2026-08-24T02:41:57.468Z",
+      "sourceCommit": "1415d7d4af3665f9fcb84d9f14694f8b26cb6bd6",
+      "inputFingerprint": "sha256:a32a354f605a020ce7349ac931b33978859c903272055923f3516e78f4834730",
+      "plannedAt": "2026-08-30T12:14:55.832Z",
       "model": "deepseek-v4-flash",
-      "action": "retry-headless",
-      "classification": "build-approval",
-      "allowedBuilds": [
-        "protobufjs"
-      ],
-      "summary": "The plugin install requires approval for building protobufjs. The repository evidence shows the plugin declares zero runtime dependencies and uses optional dependencies for channel adapters, but the observed build package protobufjs is likely a transitive dependency of one of the optional dependencies (e.g., @larksuiteoapi/node-sdk). Since the observed build package is exactly protobufjs and the repository evidence supports approving this specific package for the headless profile, a retry with the approval list containing only protobufjs is appropriate.",
+      "action": "stop-headless",
+      "classification": "insufficient-evidence",
+      "allowedBuilds": [],
+      "summary": "The observed result is build-approval-required for protobufjs, but the repository evidence does not support approving this package. The plugin declares zero runtime dependencies and only optional dependencies, none of which include protobufjs. The lockfile shows unresolved optional dependencies but no protobufjs. The build approval request appears to be spurious or from an untrusted source, and there is no evidence that protobufjs is a legitimate build dependency for this plugin.",
       "evidence": [
-        "Observed result: build-approval-required for protobufjs",
-        "package.json declares optionalDependencies: @larksuiteoapi/node-sdk, @tencent-connect/qqbot-connector, qrcode-terminal",
-        "README states 'zero runtime deps' and 'no build step'",
-        "cordis.patch.yml shows minimal config with empty channels",
-        "No other build packages observed"
+        "package.json declares optionalDependencies: @larksuiteoapi/node-sdk, @tencent-connect/qqbot-connector, qrcode-terminal; no protobufjs",
+        "README.md states 'zero runtime dependencies' and 'no build step'",
+        "lockfile unresolvedDependencies list does not include protobufjs",
+        "Observed reason: build-approval-required for protobufjs, but no repository evidence supports this"
       ]
     },
     {
@@ -688,18 +712,18 @@
       "artifactSha256": "81b4029142f0f3c2fbe88a8ee22c90da8cf449b68b345eebfd2e643c0a06efb1",
       "repository": "Anionex/dsh-vision-toolkit",
       "sourceCommit": "5cab6ee47c343032ca6d1739204f51eb361f5b14",
-      "inputFingerprint": "sha256:cfb02b30ffcc47b14467d4400fbe86acf7201041fe4893651a8acee1824411cc",
-      "plannedAt": "2026-08-29T13:00:10.715Z",
+      "inputFingerprint": "sha256:d8deed11c4b85603fcc905b16589778c390e98fbdea8e8bd0be5de738e43a401",
+      "plannedAt": "2026-08-30T12:14:57.368Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
       "classification": "headless-contract",
       "allowedBuilds": [],
-      "summary": "The plugin requires @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots as peer dependencies, but the headless DSH runtime does not provide them. The plugin declares a web client platform and injects client UI modules, indicating it is designed for a Web/TUI plane. The headless profile cannot satisfy these runtime peer contracts, and no build packages are required or approved. Retrying headless would not resolve the missing runtime peers.",
+      "summary": "The plugin requires a Web platform (dsh.client.platform: web) and injects client UI modules, but the headless profile cannot provide the missing @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots peer dependencies. No build packages are required, so a retry cannot resolve the runtime import failure.",
       "evidence": [
         "Observed result: peer-contract-incompatible; runtime-import-observed for @deepseek-ai/dsh-client-ui-primitives",
-        "runtimeGraph unresolvedDependencies: @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots",
-        "manifest dsh.client.platform: web; client.inject includes UI modules",
-        "README: install into web or headless profile, but headless lacks UI primitives"
+        "Manifest dsh.client.platform: web; client.inject includes UI modules",
+        "Runtime graph unresolved: @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots",
+        "Build packages required: none; no approval list can add missing UI peers"
       ]
     },
     {
@@ -735,7 +759,7 @@
       "plugin": "@linxin666/dsh-web-all@0.3.6",
       "dshVersion": "0.1.1-rc.2",
       "nodeMajor": 22,
-      "result": "build-approval-required",
+      "result": "unknown",
       "observedRequiredBuilds": [
         "cloudflared",
         "cpu-features",
@@ -750,23 +774,19 @@
       ],
       "artifactSha256": "b7429637feff4728240fd0983faa0e91dd3c0274ba61c3f334170c2386bf22d1",
       "repository": "zhu1090093659/dsh-web",
-      "sourceCommit": "3c3d5644d643f6b4a3c25a7f12864077ddf7bbe9",
-      "inputFingerprint": "sha256:07144cdffb024b2ec01c1670d45ff2326acb212c494de75814594194da1e598e",
-      "plannedAt": "2026-08-29T13:00:11.098Z",
+      "sourceCommit": "3e5eea16a7315035e96cd4ed006e305e0a7dcaf9",
+      "inputFingerprint": "sha256:ddb37bcd3c52af5b28e758f03ea09e6a29cbf37c10e489ab46ff6065c70902c0",
+      "plannedAt": "2026-08-30T12:14:58.803Z",
       "model": "deepseek-v4-flash",
-      "action": "retry-headless",
-      "classification": "build-approval",
-      "allowedBuilds": [
-        "cloudflared",
-        "cpu-features",
-        "node-pty",
-        "ssh2"
-      ],
-      "summary": "The plugin requires approval for four dependency builds. The repository README explicitly instructs adding cloudflared, cpu-features, and ssh2 to pnpm-workspace.yaml allowBuilds, and node-pty is a common transitive dependency for terminal functionality. All four are exact observed build packages, so approving them is justified.",
+      "action": "stop-headless",
+      "classification": "different-plane",
+      "allowedBuilds": [],
+      "summary": "The runtime graph has 2 unresolved peer dependencies on @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots from dsh-better-sidebar. These are not build packages but peer dependencies that require a Web/TUI plane to resolve, which is outside the headless execution plane. No build approval can fix this.",
       "evidence": [
-        "README.md: '首次安装若提示 ERR_PNPM_IGNORED_BUILDS ... 按提示把 cloudflared / cpu-features / ssh2 加入 profile 的 pnpm-workspace.yaml allowBuilds'",
-        "Observed result: build-approval-required for cloudflared, cpu-features, node-pty, ssh2",
-        "Manifest dependencies include @linxin666/dsh-ssh and dsh-better-sidebar, which may require node-pty for terminal features"
+        "runtimeGraph.unresolvedDependencies: dsh-better-sidebar requires @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots as peers",
+        "manifest dependencies include dsh-better-sidebar 0.15.2",
+        "README states dsh-better-sidebar is an external plugin providing the right panel",
+        "No build packages required by latest retry"
       ]
     },
     {
@@ -852,18 +872,17 @@
       "artifactSha256": "a4563e560e91bcd3a2a9302ee7dbee046b146c1bd0de6b27b7c7524fd52e77ca",
       "repository": "ZSeven-W/dsh-openpencil",
       "sourceCommit": "99e05cdbae5e26c920cc20e0793c66446685b0cd",
-      "inputFingerprint": "sha256:e22af6fabadf11bbf8565286c6d31df3556248f4850832a34e65e0487e768868",
-      "plannedAt": "2026-08-29T13:00:13.994Z",
+      "inputFingerprint": "sha256:59e6d93f122e2beb85da6307d545d80d320d0bef933766c507085db07dd698d2",
+      "plannedAt": "2026-08-30T12:14:59.163Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
       "classification": "headless-contract",
       "allowedBuilds": [],
-      "summary": "The plugin's peer dependency @deepseek-ai/dsh-client-ui-slots is missing in the runtime graph, and the plugin declares a web client platform with inject list that does not include this package. The headless profile cannot resolve this peer contract because it requires a web/TUI plane to provide the UI slots package. No build packages are required, so a retry cannot fix the missing peer.",
+      "summary": "The plugin's peer dependency @deepseek-ai/dsh-client-ui-slots is missing in the runtime graph, and the plugin declares a web client platform with inject list that does not include this package. The headless profile cannot resolve this peer contract because it is a type-only reference and the package is not provided by the DSH runtime. No build packages are required, so a retry cannot fix the missing peer. The issue is a headless contract limitation.",
       "evidence": [
-        "Observed result: peer-contract-incompatible; reason: @deepseek-ai/dsh-client-ui-slots@^0.1.0-rc.6 not resolved by DSH runtime (type-only-reference-observed)",
-        "runtimeGraph unresolvedDependencies: @deepseek-ai/dsh-client-ui-slots missing",
-        "manifest dsh.client.platform: web; inject list excludes @deepseek-ai/dsh-client-ui-slots",
-        "Build packages required: none; no build approval possible"
+        "Observed result: peer-contract-incompatible; runtimeGraph unresolvedDependencies: @deepseek-ai/dsh-client-ui-slots (peer, type-only-reference-observed)",
+        "Manifest dsh.client.platform: web; inject list excludes @deepseek-ai/dsh-client-ui-slots",
+        "Build packages required: none; no earlier approvals"
       ]
     },
     {
