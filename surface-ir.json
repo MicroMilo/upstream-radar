@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-surface-ir/v1alpha1",
-  "generatedAt": "2026-08-29T13:05:30.939Z",
+  "generatedAt": "2026-08-30T12:19:19.322Z",
   "cells": [
     {
       "id": "better-sidebar-node22-web",
@@ -24,7 +24,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-29T13:04:39.294Z",
+        "observedAt": "2026-08-30T12:19:10.983Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -237,8 +237,8 @@
       "profile": "web",
       "runtimeId": "@michengai/dsh-archive-manager",
       "plugin": {
-        "spec": "@michengai/dsh-archive-manager@0.1.18",
-        "artifactSha256": "20f09163dd29269e598a099e0255dbc1d1b60a3503e4e166a9dc9bb6f1ffd605"
+        "spec": "@michengai/dsh-archive-manager@0.1.19",
+        "artifactSha256": "6ddeaa63b034e405ac66244325cbb9c6dba11ad6ae163d9c4feb5bf5966c98ba"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
@@ -252,7 +252,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:06.996Z",
+        "observedAt": "2026-08-30T12:18:59.629Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -330,7 +330,7 @@
             "@deepseek-ai/dsh-client-ui-jobs"
           ],
           "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@michengai/dsh-archive-manager/client.js?rev=fa3e5fcefc10",
+          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@michengai/dsh-archive-manager/client.js?rev=363b79ef2c74",
           "pluginBundleStatus": 200,
           "applicationMounted": true,
           "pluginMaterialized": true,
@@ -480,7 +480,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:09.966Z",
+        "observedAt": "2026-08-30T12:19:05.159Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -579,8 +579,8 @@
       "profile": "web",
       "runtimeId": "dsh-codex-subscription",
       "plugin": {
-        "spec": "dsh-codex-subscription@1.11.0",
-        "artifactSha256": "15c1c849ec76383ccbd3173a24ea9b8799b4dbe654a48b4428ddfff996a6f0a5"
+        "spec": "dsh-codex-subscription@1.11.1",
+        "artifactSha256": "c218648f9eb0ab3c64486e14c8f5099c5d7a897e5f82798655e9d4eef264ff49"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
@@ -594,7 +594,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-29T13:04:34.085Z",
+        "observedAt": "2026-08-30T12:18:58.649Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -672,7 +672,7 @@
             "@deepseek-ai/dsh-client-ui-reference"
           ],
           "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-codex-subscription/client.js?rev=385ab6c56543",
+          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-codex-subscription/client.js?rev=c68b68dafa7e",
           "pluginBundleStatus": 200,
           "applicationMounted": true,
           "pluginMaterialized": true,
@@ -1267,8 +1267,8 @@
       "profile": "web",
       "runtimeId": "dsh-pet",
       "plugin": {
-        "spec": "dsh-pet@0.2.1",
-        "artifactSha256": "e478e4706d549bd23f349623a36053ea88bf36eb310f64a8c8ae2ae01912e436"
+        "spec": "dsh-pet@0.2.2",
+        "artifactSha256": "51f4ee9c904018e7c090b69f3f440431f7daf1f31aa51e0eab08b554fe648ad8"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
@@ -1282,7 +1282,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-29T13:04:55.671Z",
+        "observedAt": "2026-08-30T12:19:06.469Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -1360,7 +1360,7 @@
             "@deepseek-ai/dsh-client-ui-reference"
           ],
           "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-pet/client.js?rev=33506036402f",
+          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-pet/client.js?rev=07cb1d625cc0",
           "pluginBundleStatus": 200,
           "applicationMounted": true,
           "pluginMaterialized": true,
@@ -1495,8 +1495,8 @@
       "profile": "web",
       "runtimeId": "@michengai/dsh-skills-manager",
       "plugin": {
-        "spec": "@michengai/dsh-skills-manager@0.1.30",
-        "artifactSha256": "40d76074e5b2b07c20160b71ad134c82e3d9724f0ef1b02e9e5589bb06f46ae9"
+        "spec": "@michengai/dsh-skills-manager@0.1.31",
+        "artifactSha256": "cea3bb76bf4bed3ce59bd6dd9536b15c5753085722bd8f02bcf9a75caa5df5dc"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
@@ -1510,7 +1510,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:12.697Z",
+        "observedAt": "2026-08-30T12:19:01.557Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -1588,7 +1588,7 @@
             "@deepseek-ai/dsh-client-ui-reference"
           ],
           "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@michengai/dsh-skills-manager/client.js?rev=f2150d658dd1",
+          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@michengai/dsh-skills-manager/client.js?rev=040dc5e42bc0",
           "pluginBundleStatus": 200,
           "applicationMounted": true,
           "pluginMaterialized": true,
@@ -1738,7 +1738,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-29T13:04:30.095Z",
+        "observedAt": "2026-08-30T12:19:03.852Z",
         "result": "compatible",
         "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown",
         "stages": {
@@ -1786,7 +1786,7 @@
           "signal": 0,
           "transcript": "dsh-tui-tui.ansi",
           "normalizedFrame": "▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nPress Ctrl+C again to exit\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\nh-TUI\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc",
-          "capturedBytes": 23961,
+          "capturedBytes": 24216,
           "truncated": false
         }
       }
@@ -2155,7 +2155,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-29T13:04:47.845Z",
+        "observedAt": "2026-08-30T12:19:19.322Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {

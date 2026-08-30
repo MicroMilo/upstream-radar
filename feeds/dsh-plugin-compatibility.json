@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-08-30T12:17:20.375Z",
+  "generatedAt": "2026-08-30T12:20:06.569Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -37,9 +37,9 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 82,
+    "observed-compatible": 85,
     "observed-incompatible": 0,
-    "needs-review": 14,
+    "needs-review": 11,
     "update-pending": 0,
     "not-observed": 4
   },
@@ -706,8 +706,8 @@
             "@google/genai",
             "protobufjs"
           ],
-          "observedAt": "2026-08-29T13:04:30.095Z",
-          "recheckDueAt": "2026-09-05T13:04:30.095Z",
+          "observedAt": "2026-08-30T12:19:03.852Z",
+          "recheckDueAt": "2026-09-06T12:19:03.852Z",
           "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown"
         }
       ],
@@ -1645,8 +1645,8 @@
           "profile": "web",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-28T19:14:09.966Z",
-          "recheckDueAt": "2026-09-04T19:14:09.966Z",
+          "observedAt": "2026-08-30T12:19:05.159Z",
+          "recheckDueAt": "2026-09-06T12:19:05.159Z",
           "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
@@ -2407,7 +2407,7 @@
         "selectedVersion": "0.1.19",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-archive-manager-node22",
@@ -2430,12 +2430,42 @@
           "profile": "headless",
           "status": "needs-review",
           "radarResult": "peer-contract-incompatible",
+          "coveredBy": [
+            "dsh-archive-manager-node22-web"
+          ],
           "observedAt": "2026-08-30T12:16:12.515Z",
           "recheckDueAt": "2026-09-06T12:16:12.515Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@>=0.1.0-rc.5 <0.2.0 was not resolved by the DSH runtime (runtime-import-observed)"
+        },
+        {
+          "caseId": "dsh-archive-manager-node22-web",
+          "sourceCaseId": "dsh-archive-manager-node22",
+          "evidenceSource": "surface-ledger",
+          "artifact": {
+            "spec": "@michengai/dsh-archive-manager@0.1.19",
+            "sha256": "6ddeaa63b034e405ac66244325cbb9c6dba11ad6ae163d9c4feb5bf5966c98ba"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "web",
+          "profile": "web",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-30T12:18:59.629Z",
+          "recheckDueAt": "2026-09-06T12:18:59.629Z",
+          "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
+      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
     },
     {
       "id": "dsh-im-connect",
@@ -2498,7 +2528,7 @@
         "selectedVersion": "0.1.31",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-skills-manager-node22",
@@ -2521,12 +2551,42 @@
           "profile": "headless",
           "status": "needs-review",
           "radarResult": "peer-contract-incompatible",
+          "coveredBy": [
+            "dsh-skills-manager-node22-web"
+          ],
           "observedAt": "2026-08-30T12:15:54.769Z",
           "recheckDueAt": "2026-09-06T12:15:54.769Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@>=0.1.0-rc.0 <0.2.0 was not resolved by the DSH runtime (no-literal-reference-observed)"
+        },
+        {
+          "caseId": "dsh-skills-manager-node22-web",
+          "sourceCaseId": "dsh-skills-manager-node22",
+          "evidenceSource": "surface-ledger",
+          "artifact": {
+            "spec": "@michengai/dsh-skills-manager@0.1.31",
+            "sha256": "cea3bb76bf4bed3ce59bd6dd9536b15c5753085722bd8f02bcf9a75caa5df5dc"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "web",
+          "profile": "web",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-30T12:19:01.557Z",
+          "recheckDueAt": "2026-09-06T12:19:01.557Z",
+          "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
+      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
     },
     {
       "id": "dsh-mneme",
@@ -2866,8 +2926,8 @@
           "approvedDependencyBuilds": [
             "node-pty"
           ],
-          "observedAt": "2026-08-29T13:04:39.294Z",
-          "recheckDueAt": "2026-09-05T13:04:39.294Z",
+          "observedAt": "2026-08-30T12:19:10.983Z",
+          "recheckDueAt": "2026-09-06T12:19:10.983Z",
           "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
@@ -3091,7 +3151,7 @@
         "selectedVersion": "0.2.2",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "observed-compatible",
       "cells": [
         {
           "caseId": "dsh-pet-node22",
@@ -3114,12 +3174,42 @@
           "profile": "headless",
           "status": "needs-review",
           "radarResult": "peer-contract-incompatible",
+          "coveredBy": [
+            "dsh-pet-node22-web"
+          ],
           "observedAt": "2026-08-30T12:15:57.294Z",
           "recheckDueAt": "2026-09-06T12:15:57.294Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@^0.1.1-rc.2 was not resolved by the DSH runtime (no-literal-reference-observed)"
+        },
+        {
+          "caseId": "dsh-pet-node22-web",
+          "sourceCaseId": "dsh-pet-node22",
+          "evidenceSource": "surface-ledger",
+          "artifact": {
+            "spec": "dsh-pet@0.2.2",
+            "sha256": "51f4ee9c904018e7c090b69f3f440431f7daf1f31aa51e0eab08b554fe648ad8"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "web",
+          "profile": "web",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-30T12:19:06.469Z",
+          "recheckDueAt": "2026-09-06T12:19:06.469Z",
+          "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
+      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
     },
     {
       "id": "ouroboros-dsh-plugin",
@@ -4349,9 +4439,36 @@
           "observedAt": "2026-08-30T12:15:57.836Z",
           "recheckDueAt": "2026-09-06T12:15:57.836Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@0.1.0-rc.6 || 0.1.0-rc.7 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2 was not resolved by the DSH runtime (runtime-import-observed)"
+        },
+        {
+          "caseId": "dsh-codex-subscription-node22-web",
+          "sourceCaseId": "dsh-codex-subscription-node22",
+          "evidenceSource": "surface-ledger",
+          "artifact": {
+            "spec": "dsh-codex-subscription@1.11.1",
+            "sha256": "c218648f9eb0ab3c64486e14c8f5099c5d7a897e5f82798655e9d4eef264ff49"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.1-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "web",
+          "profile": "web",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "observedAt": "2026-08-30T12:18:58.649Z",
+          "recheckDueAt": "2026-09-06T12:18:58.649Z",
+          "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
+      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
     },
     {
       "id": "dsh-plugin-vet",
@@ -4810,8 +4927,8 @@
             "node-pty",
             "ssh2"
           ],
-          "observedAt": "2026-08-29T13:04:47.845Z",
-          "recheckDueAt": "2026-09-05T13:04:47.845Z",
+          "observedAt": "2026-08-30T12:19:19.322Z",
+          "recheckDueAt": "2026-09-06T12:19:19.322Z",
           "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],

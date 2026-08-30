@@ -12,9 +12,9 @@
       "approvedDependencyBuilds": [
         "node-pty"
       ],
-      "sourceFingerprint": "sha256:e6b3da2989a3c1d677fcd85860246425212e88935615f7c0b96a4fc67f948993",
+      "sourceFingerprint": "sha256:8c089d6575522dd113d8657f7f09a377114c6450b4a222de49c1ff227e7724e8",
       "contractFingerprint": "sha256:6cc49e92424906167bb5adfe29cee7a5fc7aebe86bc7ba87ef1530b4cc75f9d1",
-      "observedAt": "2026-08-29T13:04:39.294Z",
+      "observedAt": "2026-08-30T12:19:10.983Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -241,14 +241,14 @@
     {
       "caseId": "dsh-archive-manager-node22-web",
       "sourceCaseId": "dsh-archive-manager-node22",
-      "plugin": "@michengai/dsh-archive-manager@0.1.18",
+      "plugin": "@michengai/dsh-archive-manager@0.1.19",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "@michengai/dsh-archive-manager",
-      "sourceFingerprint": "sha256:121f975c828c91a130897c22fa7b1ab607ad1a158d64ab563ff730742f086f79",
+      "sourceFingerprint": "sha256:a31b6ce09e892119255bb612402567c514fd039381e9925afcb48f71883699b9",
       "contractFingerprint": "sha256:c555f3c4dea0f44c7510d045cf8749c2557a8fc349f85361afce83e37f02f6a3",
-      "observedAt": "2026-08-28T19:14:06.996Z",
+      "observedAt": "2026-08-30T12:18:59.629Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -257,9 +257,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "20f09163dd29269e598a099e0255dbc1d1b60a3503e4e166a9dc9bb6f1ffd605",
-        "bytes": 1319946,
-        "integrity": "sha512-aYN/RAW4yaGonGCqRr22AH83WPg1ao4EOg0XiW7i9K6Y2bmVl5xJhv/yPCJZzE7ri3qU6NjRT3aLCtJuPkzAfg=="
+        "sha256": "6ddeaa63b034e405ac66244325cbb9c6dba11ad6ae163d9c4feb5bf5966c98ba",
+        "bytes": 1320252,
+        "integrity": "sha512-qBHHS9+30GgJGANuVB0uwg3Ilg7ikAdRwI1CxJsGuZqyoYhOLi+25ic4MNktBc8VBY2ZJql18X5ZPxWMTnBPCA=="
       },
       "stages": {
         "runtime": {
@@ -336,7 +336,7 @@
           "@deepseek-ai/dsh-client-ui-jobs"
         ],
         "pluginEntryPresent": true,
-        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@michengai/dsh-archive-manager/client.js?rev=fa3e5fcefc10",
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@michengai/dsh-archive-manager/client.js?rev=363b79ef2c74",
         "pluginBundleStatus": 200,
         "applicationMounted": true,
         "pluginMaterialized": true,
@@ -480,9 +480,9 @@
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-codex-connect",
-      "sourceFingerprint": "sha256:632de261f965b7c31163991afd77083731f64bb960c577a806e457a3df124ddc",
+      "sourceFingerprint": "sha256:daa2c4e7ccbc6aa03cc6087823538b130860132c8747818fa7168b95521c6500",
       "contractFingerprint": "sha256:5fdb060f09396e3af096e82193e2b6ce9ef842f128aa4767b4788aa622dd461d",
-      "observedAt": "2026-08-28T19:14:09.966Z",
+      "observedAt": "2026-08-30T12:19:05.159Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -592,14 +592,14 @@
     {
       "caseId": "dsh-codex-subscription-node22-web",
       "sourceCaseId": "dsh-codex-subscription-node22",
-      "plugin": "dsh-codex-subscription@1.11.0",
+      "plugin": "dsh-codex-subscription@1.11.1",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-codex-subscription",
-      "sourceFingerprint": "sha256:fd4bdc642dbf8c9ed2bc0263fa0184893656a25ac73c2e9b1e010561cb02bec7",
+      "sourceFingerprint": "sha256:147d2ee2bf2d3c504e6508eed28029d419eca7fb5d94fdb124b4d6f90657a665",
       "contractFingerprint": "sha256:1f4378bc037e43bd1e8db6af46b019f6d54c5efea3532e7b1bf01ed2a8d433c2",
-      "observedAt": "2026-08-29T13:04:34.085Z",
+      "observedAt": "2026-08-30T12:18:58.649Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -608,9 +608,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "15c1c849ec76383ccbd3173a24ea9b8799b4dbe654a48b4428ddfff996a6f0a5",
-        "bytes": 72260,
-        "integrity": "sha512-Pm9pfgBl8WpU32chTTxOqDLqD6NVB3n0oYS3Z/buoCMvW1CbDbYdDRc9Cw62kFlU9xY3n6x/mLPl7rfaXGLqcQ=="
+        "sha256": "c218648f9eb0ab3c64486e14c8f5099c5d7a897e5f82798655e9d4eef264ff49",
+        "bytes": 73022,
+        "integrity": "sha512-zyaigXcztTFki+OxHW7vJGYqtKUYAPg6izuvWylGmdbmSjvYjShLvx+CLCoqOe9bsvGMP13W6+ypWzrX8GKugw=="
       },
       "stages": {
         "runtime": {
@@ -687,7 +687,7 @@
           "@deepseek-ai/dsh-client-ui-reference"
         ],
         "pluginEntryPresent": true,
-        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-codex-subscription/client.js?rev=385ab6c56543",
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-codex-subscription/client.js?rev=c68b68dafa7e",
         "pluginBundleStatus": 200,
         "applicationMounted": true,
         "pluginMaterialized": true,
@@ -1298,14 +1298,14 @@
     {
       "caseId": "dsh-pet-node22-web",
       "sourceCaseId": "dsh-pet-node22",
-      "plugin": "dsh-pet@0.2.1",
+      "plugin": "dsh-pet@0.2.2",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-pet",
-      "sourceFingerprint": "sha256:34e561325cc51f75132af7756db968f7f63543455d27730adf5698dabae3ecc0",
+      "sourceFingerprint": "sha256:c185dc1a1dce4126fe27bb53705a4a488ea1d4c99f99530d8708058c39e84e0a",
       "contractFingerprint": "sha256:c5bcc528ea51a605dab56ea5f73b926c277fbb42e24b9dabe44e9bb70445ffd4",
-      "observedAt": "2026-08-29T13:04:55.671Z",
+      "observedAt": "2026-08-30T12:19:06.469Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1314,9 +1314,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "e478e4706d549bd23f349623a36053ea88bf36eb310f64a8c8ae2ae01912e436",
-        "bytes": 53738517,
-        "integrity": "sha512-YlJPQKcX0uQanRl8+773oem6nqc9KyjPS0ZmGorZrT6jaNDw2cYMQ9r00111ocOHIbkbuLGXVx6nunapUnYpaw=="
+        "sha256": "51f4ee9c904018e7c090b69f3f440431f7daf1f31aa51e0eab08b554fe648ad8",
+        "bytes": 53743048,
+        "integrity": "sha512-5HVlVi2twXWK4ziBy/LLUNqslr4/lPPDI2wRBnZK4ZUWN8Z0SPbHdL+4OqqQtUJ2WoqNtDAS4naICI6OsY4Cqg=="
       },
       "stages": {
         "runtime": {
@@ -1393,7 +1393,7 @@
           "@deepseek-ai/dsh-client-ui-reference"
         ],
         "pluginEntryPresent": true,
-        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-pet/client.js?rev=33506036402f",
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-pet/client.js?rev=07cb1d625cc0",
         "pluginBundleStatus": 200,
         "applicationMounted": true,
         "pluginMaterialized": true,
@@ -1537,14 +1537,14 @@
     {
       "caseId": "dsh-skills-manager-node22-web",
       "sourceCaseId": "dsh-skills-manager-node22",
-      "plugin": "@michengai/dsh-skills-manager@0.1.30",
+      "plugin": "@michengai/dsh-skills-manager@0.1.31",
       "dshVersion": "0.1.1-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "@michengai/dsh-skills-manager",
-      "sourceFingerprint": "sha256:9cb0f56f8a66fb96ddf070d046a8a8f77de7bf787f9ca5282cf01c8bc7bf6aff",
+      "sourceFingerprint": "sha256:7b31abc2212539224a07088de9fa18e831d381f223f6c42e078ec5a32c768486",
       "contractFingerprint": "sha256:161a175df95f65af201ca1c01f70d3d502b64ecb1b71d88bc90686023cea4a51",
-      "observedAt": "2026-08-28T19:14:12.697Z",
+      "observedAt": "2026-08-30T12:19:01.557Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1553,9 +1553,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "40d76074e5b2b07c20160b71ad134c82e3d9724f0ef1b02e9e5589bb06f46ae9",
-        "bytes": 2454549,
-        "integrity": "sha512-4Bm2pDVmTcKBti4YfRs7C1lMdJ4S2ibxeYZJTcE+5KVBAtXCIjMYGZRHUruft4r4I8s4YIf8R7ftk+ahJH57sQ=="
+        "sha256": "cea3bb76bf4bed3ce59bd6dd9536b15c5753085722bd8f02bcf9a75caa5df5dc",
+        "bytes": 2461788,
+        "integrity": "sha512-kjqZZi3CKlKPgsFfWXJn5XhtF6YPiwnCRKXlWA1zb2VIekqWsh6+546Yrwl4ktPwlw6uxL69wT3ArC7wMRjqnA=="
       },
       "stages": {
         "runtime": {
@@ -1632,7 +1632,7 @@
           "@deepseek-ai/dsh-client-ui-reference"
         ],
         "pluginEntryPresent": true,
-        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@michengai/dsh-skills-manager/client.js?rev=f2150d658dd1",
+        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@michengai/dsh-skills-manager/client.js?rev=040dc5e42bc0",
         "pluginBundleStatus": 200,
         "applicationMounted": true,
         "pluginMaterialized": true,
@@ -1780,9 +1780,9 @@
         "@google/genai",
         "protobufjs"
       ],
-      "sourceFingerprint": "sha256:7822ce8f6a5efcb6df8a5a248fbbd3852b6b33641fe5e2815f699eaa4e3951ea",
+      "sourceFingerprint": "sha256:51e79f0f627c77de3fdcb25ea3599e3a93e171cb5d1d4685690282e2e2409605",
       "contractFingerprint": "sha256:6421e93df8e3a3826a19956fa72f6e06f237603de5a856b17b30651e968e923b",
-      "observedAt": "2026-08-29T13:04:30.095Z",
+      "observedAt": "2026-08-30T12:19:03.852Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1840,7 +1840,7 @@
         "signal": 0,
         "transcript": "dsh-tui-tui.ansi",
         "normalizedFrame": "▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nPress Ctrl+C again to exit\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\nh-TUI\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc",
-        "capturedBytes": 23961,
+        "capturedBytes": 24216,
         "truncated": false
       },
       "result": "compatible",
@@ -2215,9 +2215,9 @@
         "node-pty",
         "ssh2"
       ],
-      "sourceFingerprint": "sha256:1ea27a448600ef3574217cefa7f5606b9e574e38461e1c318cf5d8b35d34a078",
+      "sourceFingerprint": "sha256:cab595c0562702d1b33112cb7fed9dc47444da8e4e6c2d95c9f89f628d6e9717",
       "contractFingerprint": "sha256:71b9a069d776bce868c6b95c0ef7f06980c268303bd87bec963a66c15eeabc40",
-      "observedAt": "2026-08-29T13:04:47.845Z",
+      "observedAt": "2026-08-30T12:19:19.322Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
