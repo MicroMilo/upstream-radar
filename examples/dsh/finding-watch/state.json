@@ -981,8 +981,8 @@
       ],
       "source": {
         "name": "dsh-hdc-bridge",
-        "version": "0.8.2",
-        "digest": "sha256:b6d21d50f003efccf5d0c3c424e9f2a200dfcdf9ed8b3cee9dd27dd0c004f867",
+        "version": "0.9.0",
+        "digest": "sha256:f2701e0ae1099658181c48ef62acf7e5287b4c0de340636889240addfc2e6704",
         "findings": [
           {
             "code": "custom-registry-config",
@@ -997,10 +997,10 @@
         ]
       },
       "artifact": {
-        "spec": "npm:dsh-hdc-bridge@0.8.2",
+        "spec": "npm:dsh-hdc-bridge@0.9.0",
         "name": "dsh-hdc-bridge",
-        "version": "0.8.2",
-        "digest": "sha256:53a84ee0984d639bb2e53afc8adeb1649e167eb6eec5de049223cce553fb9408",
+        "version": "0.9.0",
+        "digest": "sha256:f073943a344b1c7b3f0d87d916c88a03d90f8f5fe48223772622362582002781",
         "findings": [
           {
             "code": "npm-provenance-missing",
