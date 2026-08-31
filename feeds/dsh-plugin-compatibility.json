@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-08-31T14:26:14.792Z",
+  "generatedAt": "2026-08-31T14:29:53.876Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
