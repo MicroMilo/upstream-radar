@@ -1207,8 +1207,8 @@
       ],
       "source": {
         "name": "dsh-wsl-workspace",
-        "version": "0.4.1",
-        "digest": "sha256:fd29edd0fbf1e769b7b1777b2929b1d278c239e9a3693d39fa9e0937be2b974f",
+        "version": "0.4.2",
+        "digest": "sha256:58bb1ffbcf9e488c457aebdeb1a5037879d6b0b9ae420bafd8fc3a8b56b86170",
         "findings": [
           {
             "code": "dependency-graph-unlocked",
@@ -1216,9 +1216,21 @@
             "summary": "Runtime dependency graph is not locked in the reviewed source tree",
             "detail": "A future resolution of the same manifest may select different transitive artifacts.",
             "evidence": {
-              "runtimeDependencyCount": 6
+              "runtimeDependencyCount": 8
             },
-            "fingerprint": "sha256:e7f8d9d424f38b21a49bb290700f8cc277f2b4d6009c036c97f84b93a212f635"
+            "fingerprint": "sha256:79f14f5f7c9e8c4575fca826e209d51f0470a20e45b0e9dfc4a23af601d7627c"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/schemastery uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/schemastery",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:0189c3700d23804203d33c2c4de2d08fd7599d3d426164cff5719deef378a0ca"
           },
           {
             "code": "floating-dependency-spec",
@@ -1291,6 +1303,18 @@
               "spec": "*"
             },
             "fingerprint": "sha256:886a6bbf60fecf14541260fa486768c39fab22f5c1b420176aac2082a33c1dee"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-tool-cordis uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-tool-cordis",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:fb596c706cd31967faba55a593fd98119d9e4a0359e9e0a1ba3e6b4113c688af"
           }
         ]
       },
