@@ -1122,8 +1122,8 @@
       ],
       "source": {
         "name": "dsh-verification-receipt",
-        "version": "0.1.0",
-        "digest": "sha256:01ab83c4c6af508c3eb8e6cc0bf6d659ee1267f6d542e64d025c9bbd3884c10d",
+        "version": "0.1.1",
+        "digest": "sha256:832672a6b511bb8b5f30d85ba394fb047505521d67f3a00c600ec3da72de1cb6",
         "findings": [
           {
             "code": "lifecycle-script-present",
@@ -1207,8 +1207,8 @@
       ],
       "source": {
         "name": "dsh-wsl-workspace",
-        "version": "0.4.2",
-        "digest": "sha256:58bb1ffbcf9e488c457aebdeb1a5037879d6b0b9ae420bafd8fc3a8b56b86170",
+        "version": "0.4.0",
+        "digest": "sha256:845e39eb419088c56e3e92a359d7041f342a40046901ed1f5c3d5674dd0e7c27",
         "findings": [
           {
             "code": "dependency-graph-unlocked",
@@ -1216,21 +1216,9 @@
             "summary": "Runtime dependency graph is not locked in the reviewed source tree",
             "detail": "A future resolution of the same manifest may select different transitive artifacts.",
             "evidence": {
-              "runtimeDependencyCount": 8
+              "runtimeDependencyCount": 6
             },
-            "fingerprint": "sha256:79f14f5f7c9e8c4575fca826e209d51f0470a20e45b0e9dfc4a23af601d7627c"
-          },
-          {
-            "code": "floating-dependency-spec",
-            "severity": "medium",
-            "summary": "Dependency @deepseek-ai/schemastery uses a floating version",
-            "detail": "The same manifest can resolve to a different artifact without a source change.",
-            "evidence": {
-              "dependency": "@deepseek-ai/schemastery",
-              "scope": "peerDependency",
-              "spec": "*"
-            },
-            "fingerprint": "sha256:0189c3700d23804203d33c2c4de2d08fd7599d3d426164cff5719deef378a0ca"
+            "fingerprint": "sha256:e7f8d9d424f38b21a49bb290700f8cc277f2b4d6009c036c97f84b93a212f635"
           },
           {
             "code": "floating-dependency-spec",
@@ -1303,18 +1291,6 @@
               "spec": "*"
             },
             "fingerprint": "sha256:886a6bbf60fecf14541260fa486768c39fab22f5c1b420176aac2082a33c1dee"
-          },
-          {
-            "code": "floating-dependency-spec",
-            "severity": "medium",
-            "summary": "Dependency @deepseek-ai/dsh-tool-cordis uses a floating version",
-            "detail": "The same manifest can resolve to a different artifact without a source change.",
-            "evidence": {
-              "dependency": "@deepseek-ai/dsh-tool-cordis",
-              "scope": "peerDependency",
-              "spec": "*"
-            },
-            "fingerprint": "sha256:fb596c706cd31967faba55a593fd98119d9e4a0359e9e0a1ba3e6b4113c688af"
           }
         ]
       },
@@ -1325,19 +1301,29 @@
         "digest": "sha256:425947f55f6bc28bac26a2f9ab58d62b0ea66232a75a9cd91a29de383f91fc34",
         "findings": [
           {
+            "code": "dependency-graph-unlocked",
+            "severity": "medium",
+            "summary": "Runtime dependency graph is not locked in the reviewed source tree",
+            "detail": "A future resolution of the same manifest may select different transitive artifacts.",
+            "evidence": {
+              "runtimeDependencyCount": 6
+            },
+            "fingerprint": "sha256:e7f8d9d424f38b21a49bb290700f8cc277f2b4d6009c036c97f84b93a212f635"
+          },
+          {
             "code": "dependency-install-script-present",
             "severity": "high",
             "summary": "Resolved dependency graph contains install-time scripts",
             "detail": "The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.",
             "evidence": {
               "packages": [
-                "koffi@3.1.6"
+                "koffi@3.2.1"
               ],
               "scripts": [
-                "koffi@3.1.6 install: node ./cnoke.cjs -P . -D src/koffi --prebuild --release"
+                "koffi@3.2.1 install: node ./cnoke.cjs -P . -D src/koffi --prebuild --release"
               ]
             },
-            "fingerprint": "sha256:19464641cb76149ddfd541b25cfd61d4ed02ca435ec7a21051b417ff35cc6dea"
+            "fingerprint": "sha256:277043a9c8ee27abd57e63846d89ad5a0304c5a26b74df93a83d0cc4e61008a2"
           },
           {
             "code": "floating-dependency-spec",
