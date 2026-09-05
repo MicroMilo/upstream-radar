@@ -131,7 +131,7 @@
       "runtimeId": "@michengai/dsh-agency-agents",
       "sourceFingerprint": "sha256:1d816dbd61825a4ea31d4e01653722c227ef273c456f7a7d0c0a8acd3b26c931",
       "contractFingerprint": "sha256:7a4079998aff057961c529c2aaf0a9250967dd5991117001ad47c59eb7188323",
-      "observedAt": "2026-08-28T19:14:09.228Z",
+      "observedAt": "2026-09-05T11:05:14.213Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -365,7 +365,7 @@
       "runtimeId": "@awiki/dsh-plugin",
       "sourceFingerprint": "sha256:7ed1f793a91c65e53631dece30a4514e9004a1d9e3454a39686877e89663f803",
       "contractFingerprint": "sha256:910d6cd7e3e3db3d44c9f034cc6214687feab6408412dd6e905b6717e792638d",
-      "observedAt": "2026-08-28T19:14:07.492Z",
+      "observedAt": "2026-09-05T11:04:47.114Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -716,7 +716,7 @@
       "runtimeId": "@mars-sea/dsh-commandcode-provider",
       "sourceFingerprint": "sha256:ccd26be54e02345514452dac35c84904f424b2168d1efecd5e8489880151f174",
       "contractFingerprint": "sha256:43a0c1fb43572882964431ecc28820a74c57140c9721b5e2e21a60447a147888",
-      "observedAt": "2026-08-28T19:14:08.708Z",
+      "observedAt": "2026-09-05T11:04:45.182Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -833,7 +833,7 @@
       "runtimeId": "dsh-config-manager",
       "sourceFingerprint": "sha256:6d095632d475311d980ff9eb8dc7a7d44eb2b2429a608bbe986760d255f44ca2",
       "contractFingerprint": "sha256:45ab25df71dc42b318df2831e6ed6e6478528b63cfe939566a1c1e06312fd111",
-      "observedAt": "2026-08-28T19:14:20.850Z",
+      "observedAt": "2026-09-05T11:04:49.415Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1071,7 +1071,7 @@
       "runtimeId": "dsh-full-remote",
       "sourceFingerprint": "sha256:a8e5badd26036d5d6dc643890a12193a399aa52e7e03183f251aedf13d0aeb00",
       "contractFingerprint": "sha256:affe85e86e7a987e0f56c9ea043d30e8fda0ea6fd30d110352e74ab826e71cb7",
-      "observedAt": "2026-08-28T19:14:05.043Z",
+      "observedAt": "2026-09-05T11:04:44.818Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1427,7 +1427,7 @@
       ],
       "sourceFingerprint": "sha256:edd74141b2396485afcd96598157ab692c230041316afccb337f9c12d2c5aae5",
       "contractFingerprint": "sha256:1fdfaf743f990e6b0a7debd66d4d78902239246088faba781e569a656f231c0e",
-      "observedAt": "2026-08-28T19:14:58.623Z",
+      "observedAt": "2026-09-05T11:04:55.188Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1661,7 +1661,7 @@
       "runtimeId": "dsh-thirteen-bg",
       "sourceFingerprint": "sha256:b2a234f48a2d4fa7c6a5581de54bf756c4a2590c1d92decd1ba661e86fc97371",
       "contractFingerprint": "sha256:3a83035f27f3ab42de1b2010de9a352d5350ba58984934f5e230e76d3fd84554",
-      "observedAt": "2026-08-28T19:14:15.649Z",
+      "observedAt": "2026-09-05T11:05:20.995Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1860,7 +1860,7 @@
       "runtimeId": "dsh-univer-office",
       "sourceFingerprint": "sha256:d1ed35e56e59b0cff60695968f8933a03a43447be15916a0f99cfae2e4b9df5a",
       "contractFingerprint": "sha256:3b5f8fcf4dc864e3316341017193b6c50b4301f150c692dedc205299a22735a4",
-      "observedAt": "2026-08-28T19:14:13.070Z",
+      "observedAt": "2026-09-05T11:04:46.629Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -2094,7 +2094,7 @@
       "runtimeId": "dsh-plugin-wallpaper-engine",
       "sourceFingerprint": "sha256:df4d238f4e7ca0a475e2b6693748a86cf6c9dd2439d09947d27a4d3de73dba01",
       "contractFingerprint": "sha256:d9d47a469ca212c9017912752d2d8dad0bd48879f379980229bb0ea66bddcac6",
-      "observedAt": "2026-08-28T19:14:09.960Z",
+      "observedAt": "2026-09-05T11:04:42.150Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -2453,7 +2453,7 @@
       "runtimeId": "@sanqi-normal/dsh-webui-market-plugin",
       "sourceFingerprint": "sha256:bae62ee3bacec5c985bf663bbf086fb526e896ced1a4493dba0f07b46ada04d1",
       "contractFingerprint": "sha256:8249cbca22cbc95c98ea6c5a2d05f9a8fc4f5f502d51638f237b76fc21035274",
-      "observedAt": "2026-08-28T19:14:20.560Z",
+      "observedAt": "2026-09-05T11:04:42.437Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -2570,7 +2570,7 @@
       "runtimeId": "whale-on-desk",
       "sourceFingerprint": "sha256:bef0b2007086d7b57455c19d5ed21be1607d57686a853658f1e73d0e9e0774bc",
       "contractFingerprint": "sha256:d0172b89e01e309bb59dad8361b5f73ad0e9b2860629a347fe179aa968e28c2b",
-      "observedAt": "2026-08-28T19:14:04.984Z",
+      "observedAt": "2026-09-05T11:04:42.584Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",

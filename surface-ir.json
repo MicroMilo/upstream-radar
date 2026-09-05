@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-surface-ir/v1alpha1",
-  "generatedAt": "2026-08-30T12:19:19.322Z",
+  "generatedAt": "2026-09-05T11:05:20.995Z",
   "cells": [
     {
       "id": "better-sidebar-node22-web",
@@ -138,7 +138,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:09.228Z",
+        "observedAt": "2026-09-05T11:05:14.213Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -366,7 +366,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:07.492Z",
+        "observedAt": "2026-09-05T11:04:47.114Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -708,7 +708,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:08.708Z",
+        "observedAt": "2026-09-05T11:04:45.182Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -822,7 +822,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:20.850Z",
+        "observedAt": "2026-09-05T11:04:49.415Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -1054,7 +1054,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:05.043Z",
+        "observedAt": "2026-09-05T11:04:44.818Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -1396,7 +1396,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:58.623Z",
+        "observedAt": "2026-09-05T11:04:55.188Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -1624,7 +1624,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:15.649Z",
+        "observedAt": "2026-09-05T11:05:20.995Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -1813,7 +1813,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:13.070Z",
+        "observedAt": "2026-09-05T11:04:46.629Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -2041,7 +2041,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:09.960Z",
+        "observedAt": "2026-09-05T11:04:42.150Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -2385,7 +2385,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:20.560Z",
+        "observedAt": "2026-09-05T11:04:42.437Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -2499,7 +2499,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-28T19:14:04.984Z",
+        "observedAt": "2026-09-05T11:04:42.584Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
