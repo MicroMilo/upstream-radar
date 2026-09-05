@@ -1025,7 +1025,7 @@
       "source": {
         "name": "dsh-msg-hub",
         "version": "0.1.10",
-        "digest": "sha256:a77020d88e14583a30bbcd4d847b22eb0adca97fde22809489ac143663fea34a",
+        "digest": "sha256:d5972f267b300009789b6e2616c4dfe5a088540a7b379ae70fa572bc24a33918",
         "findings": []
       },
       "artifact": {
@@ -1300,16 +1300,6 @@
         "version": "0.4.0",
         "digest": "sha256:425947f55f6bc28bac26a2f9ab58d62b0ea66232a75a9cd91a29de383f91fc34",
         "findings": [
-          {
-            "code": "dependency-graph-unlocked",
-            "severity": "medium",
-            "summary": "Runtime dependency graph is not locked in the reviewed source tree",
-            "detail": "A future resolution of the same manifest may select different transitive artifacts.",
-            "evidence": {
-              "runtimeDependencyCount": 6
-            },
-            "fingerprint": "sha256:e7f8d9d424f38b21a49bb290700f8cc277f2b4d6009c036c97f84b93a212f635"
-          },
           {
             "code": "dependency-install-script-present",
             "severity": "high",
