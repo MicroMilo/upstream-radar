@@ -1188,7 +1188,7 @@
       "runtimeId": "dsh-mnemon",
       "sourceFingerprint": "sha256:5661ff8ea95bb10f5cfc5a495ccf9bcc675e3cbb87b8872b95c0b94478dd241e",
       "contractFingerprint": "sha256:958e5f439fb4c843bd4d7e598ea98829f43fd0f7d35dd4a47e3519375cc3f3ae",
-      "observedAt": "2026-08-29T13:04:35.575Z",
+      "observedAt": "2026-09-06T11:18:36.250Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1977,7 +1977,7 @@
       "runtimeId": "@anionex/dsh-vision-toolkit",
       "sourceFingerprint": "sha256:983e9771b5975d3470732f5641b804bf11d68a3b719ef70f9593d9fe08306348",
       "contractFingerprint": "sha256:94f062fa9fd33d6e28ff481af28efc7aac42c3f1aebf2548fe251a2fd631be62",
-      "observedAt": "2026-08-29T13:04:36.366Z",
+      "observedAt": "2026-09-06T11:18:34.058Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",

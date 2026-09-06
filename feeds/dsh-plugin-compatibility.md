@@ -1,6 +1,6 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-09-06T11:16:41.980Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-09-06T11:19:53.860Z`.
 Selected host: `@deepseek-ai/dsh@0.1.2-rc.1`.
 
 **0 observed compatible · 0 observed incompatible · 0 needs review · 96 update pending · 4 not observed**
@@ -14,7 +14,7 @@ Selected host: `@deepseek-ai/dsh@0.1.2-rc.1`.
 | [Airmetro/dsh-update-checker](https://github.com/Airmetro/dsh-update-checker) | `dsh-update-checker@1.4.21` | `dsh-update-checker@1.4.16` | `0.1.1-rc.2` / Node 22 / headless | `update-pending` | 2026-08-28T19:11:12.852Z |
 | [amlyczz/dsh-agy-link](https://github.com/amlyczz/dsh-agy-link) | `dsh-agy-link@0.4.25` | `dsh-agy-link@0.4.24` | `0.1.1-rc.2` / Node 24 / headless | `update-pending` | 2026-08-28T19:10:24.163Z |
 | [Anionex/dsh-turn-rewind](https://github.com/Anionex/dsh-turn-rewind) | `@anionex/dsh-turn-rewind@0.2.1` | `@anionex/dsh-turn-rewind@0.2.0` | `0.1.1-rc.2` / Node 22 / headless | `update-pending` | 2026-08-30T12:16:02.087Z |
-| [Anionex/dsh-vision-toolkit](https://github.com/Anionex/dsh-vision-toolkit) | `@anionex/dsh-vision-toolkit@0.1.40` | `@anionex/dsh-vision-toolkit@0.1.39`<br>`@anionex/dsh-vision-toolkit@0.1.39` | `0.1.1-rc.2` / Node 22 / headless<br>`0.1.1-rc.2` / Node 22 / web | `update-pending` | 2026-08-29T13:01:16.801Z<br>2026-08-29T13:04:36.366Z |
+| [Anionex/dsh-vision-toolkit](https://github.com/Anionex/dsh-vision-toolkit) | `@anionex/dsh-vision-toolkit@0.1.40` | `@anionex/dsh-vision-toolkit@0.1.39`<br>`@anionex/dsh-vision-toolkit@0.1.39` | `0.1.1-rc.2` / Node 22 / headless<br>`0.1.1-rc.2` / Node 22 / web | `update-pending` | 2026-08-29T13:01:16.801Z<br>2026-09-06T11:18:34.058Z |
 | [anweat/dsh-browser](https://github.com/anweat/dsh-browser) | `@anweat/dsh-browser@0.1.10` | `@anweat/dsh-browser@0.1.10` | `0.1.1-rc.2` / Node 22 / headless | `update-pending` | 2026-08-30T12:16:07.108Z |
 | [awesome-dsh-plugin/dsh-find-plugin](https://github.com/awesome-dsh-plugin/dsh-find-plugin) | `dsh-find-plugin@0.3.7` | `dsh-find-plugin@0.3.7` | `0.1.1-rc.2` / Node 22 / headless | `update-pending` | 2026-08-28T19:09:25.240Z |
 | [Blank-not-black/dsh-Remote](https://github.com/Blank-not-black/dsh-Remote/tree/main/packages/plugin) | `dsh-remote-plugin@0.6.24` | `dsh-remote-plugin@0.6.19` | `0.1.1-rc.2` / Node 22 / headless | `update-pending` | 2026-08-30T12:16:03.394Z |
@@ -63,7 +63,7 @@ Selected host: `@deepseek-ai/dsh@0.1.2-rc.1`.
 | [nonewind/dsh-spend](https://github.com/nonewind/dsh-spend) | `dsh-spend@0.6.2` | `dsh-spend@0.6.2` | `0.1.1-rc.2` / Node 22 / headless | `update-pending` | 2026-08-28T19:10:37.687Z |
 | [Nwflower/dsh-chat-import](https://github.com/Nwflower/dsh-chat-import) | `dsh-chat-import@0.9.1` | `dsh-chat-import@0.8.2` | `0.1.1-rc.2` / Node 22 / headless | `update-pending` | 2026-08-30T12:16:01.078Z |
 | [omdsh-dev/DSH-better-sidebar](https://github.com/omdsh-dev/DSH-better-sidebar) | `dsh-better-sidebar@0.18.0` | `dsh-better-sidebar@0.17.1`<br>`dsh-better-sidebar@0.17.1` | `0.1.1-rc.2` / Node 22 / headless<br>`0.1.1-rc.2` / Node 22 / web | `update-pending` | 2026-08-30T12:16:41.412Z<br>2026-08-30T12:19:10.983Z |
-| [omdsh-dev/dsh-mnemon](https://github.com/omdsh-dev/dsh-mnemon) | `dsh-mnemon@0.5.2` | `dsh-mnemon@0.3.5`<br>`dsh-mnemon@0.3.5` | `0.1.1-rc.2` / Node 22 / headless<br>`0.1.1-rc.2` / Node 22 / web | `update-pending` | 2026-08-29T13:01:14.188Z<br>2026-08-29T13:04:35.575Z |
+| [omdsh-dev/dsh-mnemon](https://github.com/omdsh-dev/dsh-mnemon) | `dsh-mnemon@0.5.2` | `dsh-mnemon@0.3.5`<br>`dsh-mnemon@0.3.5` | `0.1.1-rc.2` / Node 22 / headless<br>`0.1.1-rc.2` / Node 22 / web | `update-pending` | 2026-08-29T13:01:14.188Z<br>2026-09-06T11:18:36.250Z |
 | [openma-ai/deepseek-harness-acp](https://github.com/openma-ai/deepseek-harness-acp) | `@openma/deepseek-harness-acp@0.4.29` | `@openma/deepseek-harness-acp@0.4.26` | `0.1.1-rc.2` / Node 22 / headless | `update-pending` | 2026-08-28T19:09:26.834Z |
 | [orziz/odai](https://github.com/orziz/odai/tree/main/dsh/plugin) | `odai-dsh-plugin@0.2.25` | `odai-dsh-plugin@0.2.13` | `0.1.1-rc.2` / Node 22 / headless | `update-pending` | 2026-08-28T19:11:23.440Z |
 | [PAKIKNOWLEDGE/dsh-auto-classifier](https://github.com/PAKIKNOWLEDGE/dsh-auto-classifier) | `dsh-auto-classifier@0.1.14` | `dsh-auto-classifier@0.1.14` | `0.1.1-rc.2` / Node 22 / headless | `update-pending` | 2026-08-28T19:09:33.411Z |

@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-09-06T11:16:41.980Z",
+  "generatedAt": "2026-09-06T11:19:53.860Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -448,8 +448,8 @@
           "profile": "web",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-29T13:04:36.366Z",
-          "recheckDueAt": "2026-09-05T13:04:36.366Z",
+          "observedAt": "2026-09-06T11:18:34.058Z",
+          "recheckDueAt": "2026-09-13T11:18:34.058Z",
           "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
@@ -2997,8 +2997,8 @@
           "profile": "web",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-29T13:04:35.575Z",
-          "recheckDueAt": "2026-09-05T13:04:35.575Z",
+          "observedAt": "2026-09-06T11:18:36.250Z",
+          "recheckDueAt": "2026-09-13T11:18:36.250Z",
           "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
