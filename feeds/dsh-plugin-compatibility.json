@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-09-07T13:01:28.617Z",
+  "generatedAt": "2026-09-07T13:03:52.931Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -706,8 +706,8 @@
             "@google/genai",
             "protobufjs"
           ],
-          "observedAt": "2026-08-30T12:19:03.852Z",
-          "recheckDueAt": "2026-09-06T12:19:03.852Z",
+          "observedAt": "2026-09-07T13:03:06.515Z",
+          "recheckDueAt": "2026-09-14T13:03:06.515Z",
           "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown"
         }
       ],
@@ -1645,8 +1645,8 @@
           "profile": "web",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-30T12:19:05.159Z",
-          "recheckDueAt": "2026-09-06T12:19:05.159Z",
+          "observedAt": "2026-09-07T13:03:14.500Z",
+          "recheckDueAt": "2026-09-14T13:03:14.500Z",
           "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
@@ -2459,8 +2459,8 @@
           "profile": "web",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-30T12:18:59.629Z",
-          "recheckDueAt": "2026-09-06T12:18:59.629Z",
+          "observedAt": "2026-09-07T13:03:08.498Z",
+          "recheckDueAt": "2026-09-14T13:03:08.498Z",
           "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
@@ -2580,8 +2580,8 @@
           "profile": "web",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-30T12:19:01.557Z",
-          "recheckDueAt": "2026-09-06T12:19:01.557Z",
+          "observedAt": "2026-09-07T13:03:19.217Z",
+          "recheckDueAt": "2026-09-14T13:03:19.217Z",
           "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
@@ -2926,8 +2926,8 @@
           "approvedDependencyBuilds": [
             "node-pty"
           ],
-          "observedAt": "2026-08-30T12:19:10.983Z",
-          "recheckDueAt": "2026-09-06T12:19:10.983Z",
+          "observedAt": "2026-09-07T13:03:13.547Z",
+          "recheckDueAt": "2026-09-14T13:03:13.547Z",
           "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
@@ -3203,8 +3203,8 @@
           "profile": "web",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-30T12:19:06.469Z",
-          "recheckDueAt": "2026-09-06T12:19:06.469Z",
+          "observedAt": "2026-09-07T13:03:11.019Z",
+          "recheckDueAt": "2026-09-14T13:03:11.019Z",
           "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
@@ -4462,8 +4462,8 @@
           "profile": "web",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-30T12:18:58.649Z",
-          "recheckDueAt": "2026-09-06T12:18:58.649Z",
+          "observedAt": "2026-09-07T13:03:08.347Z",
+          "recheckDueAt": "2026-09-14T13:03:08.347Z",
           "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
@@ -4927,8 +4927,8 @@
             "node-pty",
             "ssh2"
           ],
-          "observedAt": "2026-08-30T12:19:19.322Z",
-          "recheckDueAt": "2026-09-06T12:19:19.322Z",
+          "observedAt": "2026-09-07T13:03:27.190Z",
+          "recheckDueAt": "2026-09-14T13:03:27.190Z",
           "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],
@@ -4998,8 +4998,8 @@
           "profile": "web",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "observedAt": "2026-08-29T13:04:29.849Z",
-          "recheckDueAt": "2026-09-05T13:04:29.849Z",
+          "observedAt": "2026-09-07T13:03:12.053Z",
+          "recheckDueAt": "2026-09-14T13:03:12.053Z",
           "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized"
         }
       ],

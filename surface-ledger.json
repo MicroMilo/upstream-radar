@@ -14,7 +14,7 @@
       ],
       "sourceFingerprint": "sha256:8c089d6575522dd113d8657f7f09a377114c6450b4a222de49c1ff227e7724e8",
       "contractFingerprint": "sha256:6cc49e92424906167bb5adfe29cee7a5fc7aebe86bc7ba87ef1530b4cc75f9d1",
-      "observedAt": "2026-08-30T12:19:10.983Z",
+      "observedAt": "2026-09-07T13:03:13.547Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -248,7 +248,7 @@
       "runtimeId": "@michengai/dsh-archive-manager",
       "sourceFingerprint": "sha256:a31b6ce09e892119255bb612402567c514fd039381e9925afcb48f71883699b9",
       "contractFingerprint": "sha256:c555f3c4dea0f44c7510d045cf8749c2557a8fc349f85361afce83e37f02f6a3",
-      "observedAt": "2026-08-30T12:18:59.629Z",
+      "observedAt": "2026-09-07T13:03:08.498Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -482,7 +482,7 @@
       "runtimeId": "dsh-codex-connect",
       "sourceFingerprint": "sha256:daa2c4e7ccbc6aa03cc6087823538b130860132c8747818fa7168b95521c6500",
       "contractFingerprint": "sha256:5fdb060f09396e3af096e82193e2b6ce9ef842f128aa4767b4788aa622dd461d",
-      "observedAt": "2026-08-30T12:19:05.159Z",
+      "observedAt": "2026-09-07T13:03:14.500Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -599,7 +599,7 @@
       "runtimeId": "dsh-codex-subscription",
       "sourceFingerprint": "sha256:147d2ee2bf2d3c504e6508eed28029d419eca7fb5d94fdb124b4d6f90657a665",
       "contractFingerprint": "sha256:1f4378bc037e43bd1e8db6af46b019f6d54c5efea3532e7b1bf01ed2a8d433c2",
-      "observedAt": "2026-08-30T12:18:58.649Z",
+      "observedAt": "2026-09-07T13:03:08.347Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1305,7 +1305,7 @@
       "runtimeId": "dsh-pet",
       "sourceFingerprint": "sha256:c185dc1a1dce4126fe27bb53705a4a488ea1d4c99f99530d8708058c39e84e0a",
       "contractFingerprint": "sha256:c5bcc528ea51a605dab56ea5f73b926c277fbb42e24b9dabe44e9bb70445ffd4",
-      "observedAt": "2026-08-30T12:19:06.469Z",
+      "observedAt": "2026-09-07T13:03:11.019Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1544,7 +1544,7 @@
       "runtimeId": "@michengai/dsh-skills-manager",
       "sourceFingerprint": "sha256:7b31abc2212539224a07088de9fa18e831d381f223f6c42e078ec5a32c768486",
       "contractFingerprint": "sha256:161a175df95f65af201ca1c01f70d3d502b64ecb1b71d88bc90686023cea4a51",
-      "observedAt": "2026-08-30T12:19:01.557Z",
+      "observedAt": "2026-09-07T13:03:19.217Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1782,7 +1782,7 @@
       ],
       "sourceFingerprint": "sha256:51e79f0f627c77de3fdcb25ea3599e3a93e171cb5d1d4685690282e2e2409605",
       "contractFingerprint": "sha256:6421e93df8e3a3826a19956fa72f6e06f237603de5a856b17b30651e968e923b",
-      "observedAt": "2026-08-30T12:19:03.852Z",
+      "observedAt": "2026-09-07T13:03:06.515Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1839,8 +1839,8 @@
         "exitCode": 0,
         "signal": 0,
         "transcript": "dsh-tui-tui.ansi",
-        "normalizedFrame": "▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nPress Ctrl+C again to exit\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\nh-TUI\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc",
-        "capturedBytes": 24216,
+        "normalizedFrame": "███\n▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\nh-TUI\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc",
+        "capturedBytes": 24321,
         "truncated": false
       },
       "result": "compatible",
@@ -2217,7 +2217,7 @@
       ],
       "sourceFingerprint": "sha256:cab595c0562702d1b33112cb7fed9dc47444da8e4e6c2d95c9f89f628d6e9717",
       "contractFingerprint": "sha256:71b9a069d776bce868c6b95c0ef7f06980c268303bd87bec963a66c15eeabc40",
-      "observedAt": "2026-08-30T12:19:19.322Z",
+      "observedAt": "2026-09-07T13:03:27.190Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -2336,7 +2336,7 @@
       "runtimeId": "@zseven-w/dsh-openpencil",
       "sourceFingerprint": "sha256:f6b7cb8a00bd2cc51c48d6746e89b93954542e4514c92d5a13a8e00df4090b12",
       "contractFingerprint": "sha256:389996d4d33d131405bf598ef2dd932f3d06a70411729907756b5af7467af5b5",
-      "observedAt": "2026-08-29T13:04:29.849Z",
+      "observedAt": "2026-09-07T13:03:12.053Z",
       "runtime": {
         "nodeMajor": 24,
         "nodeVersion": "24.20.0",
