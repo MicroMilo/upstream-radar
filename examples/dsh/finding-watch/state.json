@@ -1207,8 +1207,8 @@
       ],
       "source": {
         "name": "dsh-wsl-workspace",
-        "version": "0.4.0",
-        "digest": "sha256:845e39eb419088c56e3e92a359d7041f342a40046901ed1f5c3d5674dd0e7c27",
+        "version": "0.4.3",
+        "digest": "sha256:e90d755b959baf0a85ce24ba6715638af6c12b69e2e09e4ead1c96b720c933d0",
         "findings": [
           {
             "code": "dependency-graph-unlocked",
