@@ -358,14 +358,14 @@
     {
       "caseId": "dsh-awiki-node22-web",
       "sourceCaseId": "dsh-awiki-node22",
-      "plugin": "@awiki/dsh-plugin@0.3.6",
-      "dshVersion": "0.1.1-rc.2",
+      "plugin": "@awiki/dsh-plugin@0.3.7",
+      "dshVersion": "0.1.5-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "@awiki/dsh-plugin",
-      "sourceFingerprint": "sha256:7ed1f793a91c65e53631dece30a4514e9004a1d9e3454a39686877e89663f803",
+      "sourceFingerprint": "sha256:456d6c693412651159fd0bc4629f82d8f201130575b3f5d82f46805c486fca63",
       "contractFingerprint": "sha256:910d6cd7e3e3db3d44c9f034cc6214687feab6408412dd6e905b6717e792638d",
-      "observedAt": "2026-09-05T11:04:47.114Z",
+      "observedAt": "2026-09-11T11:53:52.093Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -374,9 +374,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "3ac2e9fc443f8728b79b82770bd43002a2f21f079fe2be4435ca0bee7793712e",
-        "bytes": 679060,
-        "integrity": "sha512-/LCheVzjDdopFU+Ymzy9THVZiBDr6/dDjCWqtpyd9J5CwmNSHd3Oku4tUy0A+aw+C2KdtH/I7Qums4iDcUmBvA=="
+        "sha256": "6c215ffda68303747d5d702d62e575f0c53bacc2247a9cb02546dedc6c6ff4f9",
+        "bytes": 680590,
+        "integrity": "sha512-qwMWW600IIKF7EC15wRZ3C0bVR9kU3nWKuM1ZM/S561ltdfE+Jt6BeZfB0aSUeRU2mK1ZlzYfo06Zyk/O5CnzA=="
       },
       "stages": {
         "runtime": {
@@ -402,10 +402,11 @@
           "status": "passed"
         },
         "surface": {
-          "status": "passed"
+          "status": "failed",
+          "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         },
         "interaction": {
-          "status": "passed"
+          "status": "skipped"
         },
         "shutdown": {
           "status": "passed"
@@ -414,59 +415,20 @@
       "evidence": {
         "plane": "web",
         "url": "http://127.0.0.1:30880/",
-        "httpStatus": 200,
-        "title": "DeepSeek Harness",
-        "rootMounted": true,
-        "bootManifestPresent": true,
-        "bootEntryIds": [
-          "@awiki/dsh-plugin",
-          "@deepseek-ai/dsh-typert-registry",
-          "@deepseek-ai/dsh-api-gateway",
-          "@deepseek-ai/dsh-session-log-export",
-          "@deepseek-ai/dsh-client-hmr",
-          "@deepseek-ai/dsh-client-modules",
-          "@deepseek-ai/dsh-client-connection",
-          "@deepseek-ai/dsh-api-remotes",
-          "@deepseek-ai/dsh-client-runtime",
-          "@deepseek-ai/dsh-cordis-client-runner",
-          "@deepseek-ai/dsh-client-ui-theme",
-          "@deepseek-ai/dsh-client-locale",
-          "@deepseek-ai/dsh-client-ui-layout",
-          "@deepseek-ai/dsh-client-ui-renderer",
-          "@deepseek-ai/dsh-client-ui-sidebar",
-          "@deepseek-ai/dsh-client-ui-settings",
-          "@deepseek-ai/dsh-client-ui-settings-general",
-          "@deepseek-ai/dsh-client-ui-settings-models",
-          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-          "@deepseek-ai/dsh-client-ui-conversation",
-          "@deepseek-ai/dsh-client-ui-brand-official",
-          "@deepseek-ai/dsh-client-ui-attachment",
-          "@deepseek-ai/dsh-client-ui-tool",
-          "@deepseek-ai/dsh-client-ui-cordis",
-          "@deepseek-ai/dsh-client-ui-workflow-run",
-          "@deepseek-ai/dsh-client-ui-deliverables",
-          "@deepseek-ai/dsh-client-ui-workspace",
-          "@deepseek-ai/dsh-client-ui-input-trigger",
-          "@deepseek-ai/dsh-client-ui-commands",
-          "@deepseek-ai/dsh-client-ui-skill",
-          "@deepseek-ai/dsh-client-ui-subagent",
-          "@deepseek-ai/dsh-client-ui-reference"
-        ],
-        "pluginEntryPresent": true,
-        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@awiki/dsh-plugin/client.js?rev=bb0b73333b9a",
-        "pluginBundleStatus": 200,
-        "applicationMounted": true,
-        "pluginMaterialized": true,
+        "httpStatus": 404,
+        "rootMounted": false,
+        "bootManifestPresent": false,
+        "bootEntryIds": [],
+        "pluginEntryPresent": false,
+        "applicationMounted": false,
+        "pluginMaterialized": false,
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "blockedExternalRequests": [],
-        "screenshot": "dsh-awiki-node22-web.png",
-        "trace": "dsh-awiki-node22-web.trace.zip",
         "hostLog": "dsh-awiki-node22-web.host.log"
       },
-      "result": "compatible",
-      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+      "result": "unknown",
+      "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
         "version": "0.45.0"
@@ -1415,8 +1377,8 @@
     {
       "caseId": "dsh-remote-node22-web",
       "sourceCaseId": "dsh-remote-node22",
-      "plugin": "dsh-remote@0.8.8",
-      "dshVersion": "0.1.1-rc.2",
+      "plugin": "dsh-remote@0.8.14",
+      "dshVersion": "0.1.5-rc.2",
       "plane": "web",
       "profile": "web",
       "runtimeId": "dsh-remote",
@@ -1425,9 +1387,9 @@
         "node-pty",
         "ssh2"
       ],
-      "sourceFingerprint": "sha256:edd74141b2396485afcd96598157ab692c230041316afccb337f9c12d2c5aae5",
+      "sourceFingerprint": "sha256:8771d275040b00fc3f388262b8b654410d05a84d74469961d53dd8c941831810",
       "contractFingerprint": "sha256:1fdfaf743f990e6b0a7debd66d4d78902239246088faba781e569a656f231c0e",
-      "observedAt": "2026-09-05T11:04:55.188Z",
+      "observedAt": "2026-09-11T11:53:50.432Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1436,9 +1398,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "ccedc839d6038e6f09fe18e028017f30d5e9290c20cbd209ef470f0f7c100804",
-        "bytes": 86269,
-        "integrity": "sha512-HVkGiHfhMmpH3Y4HERAFLmw3AUzW+baA5VX7TwQX/8ap245fo2HMaGcWuvi4BTXckbgwvZSWi1qp3ULMVkrcdQ=="
+        "sha256": "6c2e3d684f8c7b0e25ef07cd51170ced0748cb1d19bf27f96ec25360c4c97bbb",
+        "bytes": 107725,
+        "integrity": "sha512-wbq//jM3AVH6JA9a+EbdYagAQQbh4O7qbpROE7nFHDCpQmdRrgi2V9Hv2Ya1+5gjIje0ag+T2UAQlS9WWUXRWg=="
       },
       "stages": {
         "runtime": {
@@ -1464,10 +1426,11 @@
           "status": "passed"
         },
         "surface": {
-          "status": "passed"
+          "status": "failed",
+          "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         },
         "interaction": {
-          "status": "passed"
+          "status": "skipped"
         },
         "shutdown": {
           "status": "passed"
@@ -1476,59 +1439,20 @@
       "evidence": {
         "plane": "web",
         "url": "http://127.0.0.1:30880/",
-        "httpStatus": 200,
-        "title": "DeepSeek Harness",
-        "rootMounted": true,
-        "bootManifestPresent": true,
-        "bootEntryIds": [
-          "dsh-remote",
-          "dsh-better-sidebar",
-          "@deepseek-ai/dsh-typert-registry",
-          "@deepseek-ai/dsh-api-gateway",
-          "@deepseek-ai/dsh-session-log-export",
-          "@deepseek-ai/dsh-client-hmr",
-          "@deepseek-ai/dsh-client-modules",
-          "@deepseek-ai/dsh-client-connection",
-          "@deepseek-ai/dsh-api-remotes",
-          "@deepseek-ai/dsh-client-runtime",
-          "@deepseek-ai/dsh-cordis-client-runner",
-          "@deepseek-ai/dsh-client-ui-theme",
-          "@deepseek-ai/dsh-client-locale",
-          "@deepseek-ai/dsh-client-ui-layout",
-          "@deepseek-ai/dsh-client-ui-renderer",
-          "@deepseek-ai/dsh-client-ui-sidebar",
-          "@deepseek-ai/dsh-client-ui-settings",
-          "@deepseek-ai/dsh-client-ui-settings-general",
-          "@deepseek-ai/dsh-client-ui-settings-models",
-          "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-          "@deepseek-ai/dsh-client-ui-conversation",
-          "@deepseek-ai/dsh-client-ui-brand-official",
-          "@deepseek-ai/dsh-client-ui-attachment",
-          "@deepseek-ai/dsh-client-ui-tool",
-          "@deepseek-ai/dsh-client-ui-cordis",
-          "@deepseek-ai/dsh-client-ui-workflow-run",
-          "@deepseek-ai/dsh-client-ui-deliverables",
-          "@deepseek-ai/dsh-client-ui-workspace",
-          "@deepseek-ai/dsh-client-ui-input-trigger",
-          "@deepseek-ai/dsh-client-ui-commands",
-          "@deepseek-ai/dsh-client-ui-skill",
-          "@deepseek-ai/dsh-client-ui-subagent"
-        ],
-        "pluginEntryPresent": true,
-        "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-remote/client.js?rev=3abb2809ceaf",
-        "pluginBundleStatus": 200,
-        "applicationMounted": true,
-        "pluginMaterialized": true,
+        "httpStatus": 404,
+        "rootMounted": false,
+        "bootManifestPresent": false,
+        "bootEntryIds": [],
+        "pluginEntryPresent": false,
+        "applicationMounted": false,
+        "pluginMaterialized": false,
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "blockedExternalRequests": [],
-        "screenshot": "dsh-remote-node22-web.png",
-        "trace": "dsh-remote-node22-web.trace.zip",
         "hostLog": "dsh-remote-node22-web.host.log"
       },
-      "result": "compatible",
-      "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+      "result": "unknown",
+      "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
       "observer": {
         "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
         "version": "0.45.0"
@@ -1771,8 +1695,8 @@
     {
       "caseId": "dsh-tui-tui",
       "sourceCaseId": "dsh-tui-node22",
-      "plugin": "@deepseek-harness-tui/dsh-tui@0.9.3",
-      "dshVersion": "0.1.1-rc.2",
+      "plugin": "@deepseek-harness-tui/dsh-tui@0.10.1",
+      "dshVersion": "0.1.5-rc.2",
       "plane": "tui",
       "profile": "dsh-tui",
       "runtimeId": "@deepseek-harness-tui/dsh-tui",
@@ -1780,9 +1704,9 @@
         "@google/genai",
         "protobufjs"
       ],
-      "sourceFingerprint": "sha256:51e79f0f627c77de3fdcb25ea3599e3a93e171cb5d1d4685690282e2e2409605",
+      "sourceFingerprint": "sha256:ea26a956a51641d0aad2761e1584afbdecd14225c59cd19a2a519dbaace8fb22",
       "contractFingerprint": "sha256:6421e93df8e3a3826a19956fa72f6e06f237603de5a856b17b30651e968e923b",
-      "observedAt": "2026-09-07T13:03:06.515Z",
+      "observedAt": "2026-09-11T11:53:16.348Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1791,9 +1715,9 @@
         "pnpmVersion": "11.7.0"
       },
       "artifact": {
-        "sha256": "44e1c7926fb97a1faa056a9cf3de4e2cbf7351ccfd3c5e072fa2677150200b0f",
-        "bytes": 1694414,
-        "integrity": "sha512-8AR+/EO+5iBlS9a8OWFqPHtmRXa1EFM8L/0rlTvgLn1YVa2sKIqECfOpuBLxWRQ1ABUb+iSkoyJ1p0bsCC0FTA=="
+        "sha256": "21833eba7569a3e814cb09aa85777fbfa191eef8d6f66269b239b6e6e54e0312",
+        "bytes": 2245889,
+        "integrity": "sha512-xnwLON+c28zt1Yg5nrI2fNHysUEF63TsIC7XndtIJIiDOBEomcSfydnc9DrT+Xzx7p2/qAi6d7+GFB0eSyJ2uw=="
       },
       "stages": {
         "runtime": {
@@ -1839,8 +1763,8 @@
         "exitCode": 0,
         "signal": 0,
         "transcript": "dsh-tui-tui.ansi",
-        "normalizedFrame": "███\n▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\nh-TUI\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc",
-        "capturedBytes": 24321,
+        "normalizedFrame": "▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc\n ▀▀▀▀\n▀▄▄\n▄▄▄▄\n▄▄▄\n▀▀▀▀█▀▀▀\n█\n▀▀▀█▀▀▀\n█\n▄▄▄▄█▄▄▄\n▄▀▄█▀▀▀\n██\n▀▀▀██▄▄▄\n███\n██\nre the unch",
+        "capturedBytes": 24688,
         "truncated": false
       },
       "result": "compatible",

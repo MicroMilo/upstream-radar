@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-09-11T11:51:22.446Z",
+  "generatedAt": "2026-09-11T11:54:22.403Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -22,10 +22,14 @@
   "boundary": {
     "claim": "exact-cell compatibility evidence; not a security review, endorsement, or timeless compatibility badge",
     "executionPlanes": [
-      "headless"
+      "headless",
+      "web",
+      "tui"
     ],
     "profiles": [
-      "headless"
+      "dsh-tui",
+      "headless",
+      "web"
     ],
     "isolation": "fresh GitHub-hosted VM plus restricted container",
     "consumptionRule": "A plugin status applies only when a cell exactly matches the selected artifact. Treat update-pending, needs-review and not-observed as neither pass nor fail, and treat a cell as stale after recheckDueAt.",
@@ -168,9 +172,36 @@
           "observedAt": "2026-09-11T11:48:28.662Z",
           "recheckDueAt": "2026-09-18T11:48:28.662Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-agent@0.1.5-rc.2 does not satisfy 0.1.1-rc.2 (runtime-import-observed)"
+        },
+        {
+          "caseId": "dsh-awiki-node22-web",
+          "sourceCaseId": "dsh-awiki-node22",
+          "evidenceSource": "surface-ledger",
+          "artifact": {
+            "spec": "@awiki/dsh-plugin@0.3.7",
+            "sha256": "6c215ffda68303747d5d702d62e575f0c53bacc2247a9cb02546dedc6c6ff4f9"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.5-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "web",
+          "profile": "web",
+          "status": "needs-review",
+          "radarResult": "unknown",
+          "observedAt": "2026-09-11T11:53:52.093Z",
+          "recheckDueAt": "2026-09-18T11:53:52.093Z",
+          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
+      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
     },
     {
       "id": "dsh-auto-memory",
@@ -620,9 +651,40 @@
           "observedAt": "2026-09-11T11:50:10.301Z",
           "recheckDueAt": "2026-09-18T11:50:10.301Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
+        },
+        {
+          "caseId": "dsh-tui-tui",
+          "sourceCaseId": "dsh-tui-node22",
+          "evidenceSource": "surface-ledger",
+          "artifact": {
+            "spec": "@deepseek-harness-tui/dsh-tui@0.10.1",
+            "sha256": "21833eba7569a3e814cb09aa85777fbfa191eef8d6f66269b239b6e6e54e0312"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.5-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "tui",
+          "profile": "dsh-tui",
+          "status": "observed-compatible",
+          "radarResult": "compatible",
+          "approvedDependencyBuilds": [
+            "@google/genai",
+            "protobufjs"
+          ],
+          "observedAt": "2026-09-11T11:53:16.348Z",
+          "recheckDueAt": "2026-09-18T11:53:16.348Z",
+          "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
+      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
     },
     {
       "id": "dsh-tavern",
@@ -1285,9 +1347,41 @@
           "observedAt": "2026-09-11T11:49:06.636Z",
           "recheckDueAt": "2026-09-18T11:49:06.636Z",
           "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 5 required unresolved edge(s)"
+        },
+        {
+          "caseId": "dsh-remote-node22-web",
+          "sourceCaseId": "dsh-remote-node22",
+          "evidenceSource": "surface-ledger",
+          "artifact": {
+            "spec": "dsh-remote@0.8.14",
+            "sha256": "6c2e3d684f8c7b0e25ef07cd51170ced0748cb1d19bf27f96ec25360c4c97bbb"
+          },
+          "dsh": {
+            "package": "@deepseek-ai/dsh",
+            "version": "0.1.5-rc.2"
+          },
+          "runtime": {
+            "nodeMajor": 22,
+            "nodeVersion": "22.23.2",
+            "platform": "linux",
+            "architecture": "x64"
+          },
+          "executionPlane": "web",
+          "profile": "web",
+          "status": "needs-review",
+          "radarResult": "unknown",
+          "approvedDependencyBuilds": [
+            "cpu-features",
+            "node-pty",
+            "ssh2"
+          ],
+          "observedAt": "2026-09-11T11:53:50.432Z",
+          "recheckDueAt": "2026-09-18T11:53:50.432Z",
+          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
+      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
     },
     {
       "id": "dsh-vision-proxy",

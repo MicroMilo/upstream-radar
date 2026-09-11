@@ -1,6 +1,6 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-09-11T11:51:22.446Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-09-11T11:54:22.403Z`.
 Selected host: `@deepseek-ai/dsh@0.1.5-rc.2`.
 
 **57 observed compatible · 1 observed incompatible · 38 needs review · 0 update pending · 4 not observed**
@@ -9,7 +9,7 @@ Selected host: `@deepseek-ai/dsh@0.1.5-rc.2`.
 | --- | --- | --- | --- | --- | --- |
 | [1e0zj/dsh-plugin-mall](https://github.com/1e0zj/dsh-plugin-mall) | `@1e0zj/dsh-plugin-mall@0.4.17` | `@1e0zj/dsh-plugin-mall@0.4.17` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:48:23.078Z |
 | [263311487-ux/dsh-verify](https://github.com/263311487-ux/dsh-verify) | `dsh-verify@0.9.4` | `dsh-verify@0.9.4` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:50:10.851Z |
-| [AgentConnect/dsh-awiki](https://github.com/AgentConnect/dsh-awiki) | `@awiki/dsh-plugin@0.3.7` | `@awiki/dsh-plugin@0.3.7` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-11T11:48:28.662Z |
+| [AgentConnect/dsh-awiki](https://github.com/AgentConnect/dsh-awiki) | `@awiki/dsh-plugin@0.3.7` | `@awiki/dsh-plugin@0.3.7`<br>`@awiki/dsh-plugin@0.3.7` | `0.1.5-rc.2` / Node 22 / headless<br>`0.1.5-rc.2` / Node 22 / web | `needs-review` | 2026-09-11T11:48:28.662Z<br>2026-09-11T11:53:52.093Z |
 | [Aik358/dsh-auto-memory](https://github.com/Aik358/dsh-auto-memory) | `@a9i5k4/dsh-auto-memory@2.4.2` | `@a9i5k4/dsh-auto-memory@2.4.2` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-11T11:49:11.820Z |
 | [Airmetro/dsh-update-checker](https://github.com/Airmetro/dsh-update-checker) | `dsh-update-checker@1.4.22` | `dsh-update-checker@1.4.22` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-11T11:49:15.386Z |
 | [amlyczz/dsh-agy-link](https://github.com/amlyczz/dsh-agy-link) | `dsh-agy-link@0.4.27` | `dsh-agy-link@0.4.27` | `0.1.5-rc.2` / Node 24 / headless | `observed-compatible` | 2026-09-11T11:49:00.756Z |
@@ -19,7 +19,7 @@ Selected host: `@deepseek-ai/dsh@0.1.5-rc.2`.
 | [awesome-dsh-plugin/dsh-find-plugin](https://github.com/awesome-dsh-plugin/dsh-find-plugin) | `dsh-find-plugin@0.3.7` | `dsh-find-plugin@0.3.7` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:48:34.950Z |
 | [Blank-not-black/dsh-Remote](https://github.com/Blank-not-black/dsh-Remote/tree/main/packages/plugin) | `dsh-remote-plugin@0.6.24` | `dsh-remote-plugin@0.6.24` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:49:22.881Z |
 | [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) | `dsh-context@0.49.4` | `dsh-context@0.49.4` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:48:27.840Z |
-| [ccch1mneyyy/dsh-TUI](https://github.com/ccch1mneyyy/dsh-TUI) | `@deepseek-harness-tui/dsh-tui@0.10.1` | `@deepseek-harness-tui/dsh-tui@0.10.1` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:50:10.301Z |
+| [ccch1mneyyy/dsh-TUI](https://github.com/ccch1mneyyy/dsh-TUI) | `@deepseek-harness-tui/dsh-tui@0.10.1` | `@deepseek-harness-tui/dsh-tui@0.10.1`<br>`@deepseek-harness-tui/dsh-tui@0.10.1` | `0.1.5-rc.2` / Node 22 / headless<br>`0.1.5-rc.2` / Node 22 / tui | `observed-compatible` | 2026-09-11T11:50:10.301Z<br>2026-09-11T11:53:16.348Z |
 | [chen731215-dev/dsh-tavern](https://github.com/chen731215-dev/dsh-tavern) | `dsh-tavern@2.3.1` | `dsh-tavern@2.3.1` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-11T11:49:25.739Z |
 | [chenproton/dsh-history](https://github.com/chenproton/dsh-history) | `dsh-history@0.1.25` | `dsh-history@0.1.25` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-11T11:48:22.456Z |
 | [ChongCyrus/Vibe-Mathematics](https://github.com/ChongCyrus/Vibe-Mathematics) | `dsh-vibe-math@2.0.21` | `dsh-vibe-math@2.0.21` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:50:06.660Z |
@@ -34,7 +34,7 @@ Selected host: `@deepseek-ai/dsh@0.1.5-rc.2`.
 | [elysia395/dsh-wallpaper-engine](https://github.com/elysia395/dsh-wallpaper-engine) | `dsh-plugin-wallpaper-engine@0.7.1` | `dsh-plugin-wallpaper-engine@0.7.1` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-11T11:49:38.889Z |
 | [feibi-mochi/deepseek-harness-control-center](https://github.com/feibi-mochi/deepseek-harness-control-center) | `deepseek-harness-wallet@0.3.13` | `deepseek-harness-wallet@0.3.13` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:48:26.459Z |
 | [feng78-boop/dsh-thirteen-bg](https://github.com/feng78-boop/dsh-thirteen-bg) | `dsh-thirteen-bg@0.5.2` | `dsh-thirteen-bg@0.5.2` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-11T11:49:23.007Z |
-| [flymysql/dsh-remote](https://github.com/flymysql/dsh-remote) | `dsh-remote@0.8.14` | `dsh-remote@0.8.14` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-11T11:49:06.636Z |
+| [flymysql/dsh-remote](https://github.com/flymysql/dsh-remote) | `dsh-remote@0.8.14` | `dsh-remote@0.8.14`<br>`dsh-remote@0.8.14` | `0.1.5-rc.2` / Node 22 / headless<br>`0.1.5-rc.2` / Node 22 / web | `needs-review` | 2026-09-11T11:49:06.636Z<br>2026-09-11T11:53:50.432Z |
 | [Flyvhidbwo/dsh-vision-proxy](https://github.com/Flyvhidbwo/dsh-vision-proxy) | `dsh-vision-proxy@0.4.1` | `dsh-vision-proxy@0.4.1` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:50:08.153Z |
 | [franksong2702/dsh-codex-connect](https://github.com/franksong2702/dsh-codex-connect) | `dsh-codex-connect@0.1.0-alpha.4.35` | `dsh-codex-connect@0.1.0-alpha.4.35` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-11T11:49:13.643Z |
 | [FuzzySoul/dsh-chatvoice](https://github.com/FuzzySoul/dsh-chatvoice) | `dsh-chatvoice@0.1.7` | `dsh-chatvoice@0.1.7` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:48:39.744Z |
