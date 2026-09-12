@@ -1,6 +1,6 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-09-12T11:11:29.249Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-09-12T11:14:28.033Z`.
 Selected host: `@deepseek-ai/dsh@0.1.5-rc.2`.
 
 **54 observed compatible · 1 observed incompatible · 41 needs review · 0 update pending · 4 not observed**
@@ -19,7 +19,7 @@ Selected host: `@deepseek-ai/dsh@0.1.5-rc.2`.
 | [awesome-dsh-plugin/dsh-find-plugin](https://github.com/awesome-dsh-plugin/dsh-find-plugin) | `dsh-find-plugin@0.3.7` | `dsh-find-plugin@0.3.7` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:48:34.950Z |
 | [Blank-not-black/dsh-Remote](https://github.com/Blank-not-black/dsh-Remote/tree/main/packages/plugin) | `dsh-remote-plugin@0.6.24` | `dsh-remote-plugin@0.6.24` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:49:22.881Z |
 | [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) | `dsh-context@0.50.0` | `dsh-context@0.50.0` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-12T11:10:57.960Z |
-| [ccch1mneyyy/dsh-TUI](https://github.com/ccch1mneyyy/dsh-TUI) | `@deepseek-harness-tui/dsh-tui@0.10.1` | `@deepseek-harness-tui/dsh-tui@0.10.1`<br>`@deepseek-harness-tui/dsh-tui@0.10.1` | `0.1.5-rc.2` / Node 22 / headless<br>`0.1.5-rc.2` / Node 22 / tui | `observed-compatible` | 2026-09-12T11:11:06.143Z<br>2026-09-11T11:53:16.348Z |
+| [ccch1mneyyy/dsh-TUI](https://github.com/ccch1mneyyy/dsh-TUI) | `@deepseek-harness-tui/dsh-tui@0.10.1` | `@deepseek-harness-tui/dsh-tui@0.10.1`<br>`@deepseek-harness-tui/dsh-tui@0.10.1` | `0.1.5-rc.2` / Node 22 / headless<br>`0.1.5-rc.2` / Node 22 / tui | `observed-compatible` | 2026-09-12T11:11:06.143Z<br>2026-09-12T11:13:02.266Z |
 | [chen731215-dev/dsh-tavern](https://github.com/chen731215-dev/dsh-tavern) | `dsh-tavern@2.3.1` | `dsh-tavern@2.3.1` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-11T11:49:25.739Z |
 | [chenproton/dsh-history](https://github.com/chenproton/dsh-history) | `dsh-history@0.1.25` | `dsh-history@0.1.25` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-11T11:48:22.456Z |
 | [ChongCyrus/Vibe-Mathematics](https://github.com/ChongCyrus/Vibe-Mathematics) | `dsh-vibe-math@2.0.21` | `dsh-vibe-math@2.0.21` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:50:06.660Z |

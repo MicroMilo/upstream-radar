@@ -1700,13 +1700,9 @@
       "plane": "tui",
       "profile": "dsh-tui",
       "runtimeId": "@deepseek-harness-tui/dsh-tui",
-      "approvedDependencyBuilds": [
-        "@google/genai",
-        "protobufjs"
-      ],
-      "sourceFingerprint": "sha256:ea26a956a51641d0aad2761e1584afbdecd14225c59cd19a2a519dbaace8fb22",
-      "contractFingerprint": "sha256:6421e93df8e3a3826a19956fa72f6e06f237603de5a856b17b30651e968e923b",
-      "observedAt": "2026-09-11T11:53:16.348Z",
+      "sourceFingerprint": "sha256:ca66dcff839d90a1978975792d5ef09461837c5dbb79ae22d5603b48f5db6c2f",
+      "contractFingerprint": "sha256:0cdb8c8999e4b1d58be45bdcf0f139032c626066e27c813a30f577eff1463eb5",
+      "observedAt": "2026-09-12T11:13:02.266Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",
@@ -1763,8 +1759,8 @@
         "exitCode": 0,
         "signal": 0,
         "transcript": "dsh-tui-tui.ansi",
-        "normalizedFrame": "▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc\n ▀▀▀▀\n▀▄▄\n▄▄▄▄\n▄▄▄\n▀▀▀▀█▀▀▀\n█\n▀▀▀█▀▀▀\n█\n▄▄▄▄█▄▄▄\n▄▀▄█▀▀▀\n██\n▀▀▀██▄▄▄\n███\n██\nre the unch",
-        "capturedBytes": 24688,
+        "normalizedFrame": "████\n██▀▀▀██\n████\n████\nplore the u\nPress Ctrl+C again to exit\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc\n ▀▀▀▀\n▀▄▄\n▄▄▄▄\n▄▄▄",
+        "capturedBytes": 24261,
         "truncated": false
       },
       "result": "compatible",

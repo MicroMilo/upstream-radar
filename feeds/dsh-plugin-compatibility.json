@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-09-12T11:11:29.249Z",
+  "generatedAt": "2026-09-12T11:14:28.033Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -670,12 +670,8 @@
           "profile": "dsh-tui",
           "status": "observed-compatible",
           "radarResult": "compatible",
-          "approvedDependencyBuilds": [
-            "@google/genai",
-            "protobufjs"
-          ],
-          "observedAt": "2026-09-11T11:53:16.348Z",
-          "recheckDueAt": "2026-09-18T11:53:16.348Z",
+          "observedAt": "2026-09-12T11:13:02.266Z",
+          "recheckDueAt": "2026-09-19T11:13:02.266Z",
           "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown"
         }
       ],

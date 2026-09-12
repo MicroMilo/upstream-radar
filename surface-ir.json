@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-surface-ir/v1alpha1",
-  "generatedAt": "2026-09-11T11:53:52.093Z",
+  "generatedAt": "2026-09-12T11:13:02.266Z",
   "cells": [
     {
       "id": "better-sidebar-node22-web",
@@ -1662,7 +1662,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-09-11T11:53:16.348Z",
+        "observedAt": "2026-09-12T11:13:02.266Z",
         "result": "compatible",
         "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown",
         "stages": {
@@ -1709,8 +1709,8 @@
           "exitCode": 0,
           "signal": 0,
           "transcript": "dsh-tui-tui.ansi",
-          "normalizedFrame": "▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc\n ▀▀▀▀\n▀▄▄\n▄▄▄▄\n▄▄▄\n▀▀▀▀█▀▀▀\n█\n▀▀▀█▀▀▀\n█\n▄▄▄▄█▄▄▄\n▄▀▄█▀▀▀\n██\n▀▀▀██▄▄▄\n███\n██\nre the unch",
-          "capturedBytes": 24688,
+          "normalizedFrame": "████\n██▀▀▀██\n████\n████\nplore the u\nPress Ctrl+C again to exit\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc\n ▀▀▀▀\n▀▄▄\n▄▄▄▄\n▄▄▄",
+          "capturedBytes": 24261,
           "truncated": false
         }
       }
