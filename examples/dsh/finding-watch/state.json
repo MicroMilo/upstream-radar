@@ -1208,7 +1208,7 @@
       "source": {
         "name": "dsh-wsl-workspace",
         "version": "0.4.3",
-        "digest": "sha256:e90d755b959baf0a85ce24ba6715638af6c12b69e2e09e4ead1c96b720c933d0",
+        "digest": "sha256:9ea898266e7303cbadddf967c09dd62d6a06084077887e3434e5933d2a1f882c",
         "findings": [
           {
             "code": "dependency-graph-unlocked",
@@ -1295,10 +1295,10 @@
         ]
       },
       "artifact": {
-        "spec": "npm:dsh-wsl-workspace@0.4.0",
+        "spec": "npm:dsh-wsl-workspace@0.4.3",
         "name": "dsh-wsl-workspace",
-        "version": "0.4.0",
-        "digest": "sha256:425947f55f6bc28bac26a2f9ab58d62b0ea66232a75a9cd91a29de383f91fc34",
+        "version": "0.4.3",
+        "digest": "sha256:00c8bd82ef532d1dee090cf3c7eca6043e5789654936fbf3ec1cb350a5a0cd83",
         "findings": [
           {
             "code": "dependency-install-script-present",
