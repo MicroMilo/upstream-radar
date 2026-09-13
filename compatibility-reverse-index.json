@@ -17,10 +17,10 @@
           "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:1013708af4e86096468c6fe109fc04a0c416d1bce7186f530893ae9d436016ea",
-          "cellId": "cell:9f161ce8d04c295d0f6cfb51ffeb6793c0451bd793eda2906e60a53f4359f49a",
+          "relationId": "relation:9917c908e49900e577f3f778cbbdd55dd468f50bdf1cb67faae5aca92d9120c4",
+          "cellId": "cell:a380e88cc0521f7bc95717c7ff763b06c60d1d24ab7a9fb317795f214285fa53",
           "caseId": "dsh-auto-memory-node22",
-          "plugin": "@a9i5k4/dsh-auto-memory@2.4.2",
+          "plugin": "@a9i5k4/dsh-auto-memory@2.5.2",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^4.0.1",
@@ -137,10 +137,10 @@
           "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:1f794403324c07822d239062692bfffeefee50ea09178aaa407d7e3b4a7bb193",
-          "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
+          "relationId": "relation:ce04a5f4a9affffafcff7b4675cb2a0ea0eccd5b626fb489be88025d13653f00",
+          "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
           "caseId": "dsh-skills-manager-node22",
-          "plugin": "@michengai/dsh-skills-manager@0.1.49",
+          "plugin": "@michengai/dsh-skills-manager@0.1.50",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": ">=4.0.1 <5.0.0",
@@ -149,8 +149,8 @@
           "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:57196d3aee0a914211b5757895f63f58b1465acb58df9627411bf2f38d789028",
-          "cellId": "cell:1706ee934a6443509168317b606e66e21026920b46784d46b9df3042917b737a",
+          "relationId": "relation:d36a28fb30b4767cc6eb12273d3a75490c27c69afa9168bbd1d490582cabf23c",
+          "cellId": "cell:81ab1ba7cbddf570f8bee4324858579b400d333ed4400fda245c15dfea2429c0",
           "caseId": "dsh-mneme-node22",
           "plugin": "@modusensus/dsh-mneme@0.7.32",
           "dshVersion": "0.1.5-rc.2",
@@ -161,10 +161,10 @@
           "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:2c31dbb8bd503cc2cae21903475aab7d31847e141b35473613a9e5a3a79fa9a8",
-          "cellId": "cell:6735930b98409a2ed994e02f484dca7b9888e4b798c6f6b43e03b67bfe86759f",
+          "relationId": "relation:cdc71d5d15d80284420251a171f7c601a53cc6db7320839b69446e36260be8d7",
+          "cellId": "cell:198b9f5eca122af7f8de851acfa45b23ce413a8029648a91a76949a47176521a",
           "caseId": "dsh-doctor-node22",
-          "plugin": "@moonquake2004/dsh-doctor@0.4.7",
+          "plugin": "@moonquake2004/dsh-doctor@0.4.9",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^4.0.1",
@@ -197,10 +197,10 @@
           "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:f7578103042cfb8afd2644fd96fcb9e5b34754b1a23cdacee999d49a4c97cd73",
-          "cellId": "cell:260d6fd66e89ac649055007ee527c80c7a672e0b4a92f11a37c803e7b61cf8b1",
+          "relationId": "relation:24812752c79e1265a9cb9e1293333339c848bb203da8e75d25d97b6f4370d2b7",
+          "cellId": "cell:d6dd7e05b3e6d1c2c522196135c6accd1bd4370b533502d66e78633ce2f2471c",
           "caseId": "dsh-auth-gate-node22",
-          "plugin": "dsh-auth-gate@0.12.0",
+          "plugin": "dsh-auth-gate@0.13.0",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^4.0.1",
@@ -233,10 +233,10 @@
           "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:4d0065719f0e17c7770975be0cedebf7d6efe6bb47e02b06b106f1449bfd4b1a",
-          "cellId": "cell:477f88ab0cdd395b838252a5f820f0be5690f58383497a1c36259699629a8c1e",
+          "relationId": "relation:ffbbf1bbff67c102e0f406a02af6c813ef32da26123058e38fa33165220d2ae2",
+          "cellId": "cell:3ef0f5ad907585971d49965feedaaac76265754e2e6a13891f2daef96880381e",
           "caseId": "dsh-chat-import-node22",
-          "plugin": "dsh-chat-import@0.11.1",
+          "plugin": "dsh-chat-import@0.11.2",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^4.0.1",
@@ -245,10 +245,10 @@
           "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:6c63da6dddc9bd7db94f50d8d56d59ef84f51b38af0cb754337167d0bd206e19",
-          "cellId": "cell:a70ca75f67874949632f12a2ff688e6296a96bbfbfc6bb2c770e57afd5adb3f6",
+          "relationId": "relation:af4ec634bd34cb121a8b111cdc643a4483787ccc68cc448f57255ad5fc5c0384",
+          "cellId": "cell:edba1b326e8427a32c9797339a2c45ba37623ac52e1c669ce705c84320fdf477",
           "caseId": "dsh-client-auto-continue-node22",
-          "plugin": "dsh-client-auto-continue@0.11.5",
+          "plugin": "dsh-client-auto-continue@0.11.6",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^4.0.1",
@@ -269,8 +269,8 @@
           "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:07487bb5243689ba4296aaaab2ecc503f07d49efd7cd2e902c8d36330d35d70f",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:9a93f9c69b07b323f9fefac33113947f93a249acb850efbd631926a29cf8abb3",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -281,10 +281,10 @@
           "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:f431551d69e4aed02fee9ff80e3ce6a02eb2ed07b6d8a61dfe9e72d2ed47a2e4",
-          "cellId": "cell:b80c7446947f94ccc7165e6e00961d132625526bfb43e7482c5858235be08bdc",
+          "relationId": "relation:789e7760c9c83a9ca1fc51ead60d2b78d012cb817f9655d320a1288149de6258",
+          "cellId": "cell:1e3ab640e98dbe62461d8c927cb56897788aa893c1f8a699cebfc63646311dc4",
           "caseId": "context-node22",
-          "plugin": "dsh-context@0.50.0",
+          "plugin": "dsh-context@0.51.0",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^4.0.2",
@@ -389,10 +389,10 @@
           "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:779204a0e36b5cb8a8dce6372fcd91d6edefb6acd3b015748de3f4685b44672b",
-          "cellId": "cell:4f9f2d8700e5c613c03f691a143ac4ec5163fadcc7332c3c3dc9e0ec5dc578cc",
+          "relationId": "relation:525b60ac9cd8ca9a2b8cec73e4fb93df409bfa52ee69b7efe36f5479e8009184",
+          "cellId": "cell:6bff2e63b2a05684d54c7d0db9291ba17b9cb1c2ba5c986d185f818540a426a5",
           "caseId": "dsh-notifier-node22",
-          "plugin": "dsh-notifier@0.9.6",
+          "plugin": "dsh-notifier@0.10.2",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^4.0.1",
@@ -401,8 +401,8 @@
           "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:29443565e6bd73b95bae621cc22125057875de015db55e17dbe6370e55bb9c00",
-          "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+          "relationId": "relation:0b2278550a6b34ad0727f2fc2dbb00f65df5027a07526b1ed7ab97d626af3af1",
+          "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
           "caseId": "dsh-pet-node22",
           "plugin": "dsh-pet@0.2.8",
           "dshVersion": "0.1.5-rc.2",
@@ -413,10 +413,10 @@
           "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:cc34f861041c239ce099fa2d8a3da95db7898d9888826a581e90d15f8f5f9161",
-          "cellId": "cell:72e0b41953b5b659833c32947e0d21854cb5a0e4de6c0200588db849a2be7f57",
+          "relationId": "relation:0a24e0d42ab48ffd1aa269b6532b9e4f7e87edb2ef452e4c1defd496538d622c",
+          "cellId": "cell:350d92cf7cc19bac0d93de8fa5c8a62de2e2f3ebdb997af4e55107502dfafe60",
           "caseId": "dsh-plugin-subscriptions-node22",
-          "plugin": "dsh-plugin-subscriptions@0.8.0",
+          "plugin": "dsh-plugin-subscriptions@0.9.0",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^4.0.1",
@@ -461,10 +461,10 @@
           "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:c065767fd5a2812fb9c27f32daa597b116128c5a58980aa1608080c8f3b00a01",
-          "cellId": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
+          "relationId": "relation:7d659d205ce6af02a459e16e77394d73b909702cd7f83e92672a521a0a7d5e83",
+          "cellId": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
           "caseId": "dsh-remote-node22",
-          "plugin": "dsh-remote@0.8.14",
+          "plugin": "dsh-remote@0.8.15",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^4.0.1",
@@ -521,22 +521,22 @@
           "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:9110bf1e4d259f464a19a109cd9ff68f908c24024a371c8493ad924cf1af0683",
-          "cellId": "cell:56fc4afb8efc83bedaa0ec71aa74391932646f349418bd1ea97edc790cbb12af",
+          "relationId": "relation:25ff6f8c7191a5a3fb84e293aaa079db66638477af0bfb8245141be105ae2254",
+          "cellId": "cell:9b3d4af025eb9f4a26fe49dda8085cc82705283dc14b5753cd3a1a0211108531",
           "caseId": "wsl-workspace-node24",
-          "plugin": "dsh-wsl-workspace@0.4.0",
-          "dshVersion": "0.1.1-rc.2",
+          "plugin": "dsh-wsl-workspace@0.4.3",
+          "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 24,
           "required": "*",
           "status": "satisfied",
           "staticUsage": "runtime-import-observed",
-          "resolvedVersion": "4.0.1"
+          "resolvedVersion": "4.0.2"
         },
         {
-          "relationId": "relation:2b0ef20e9d8369d991b17e053fe18c760c13db9ac00936c49f04079b25a1db5a",
-          "cellId": "cell:a46fbd01f2add89bc4a136fd72a0367e49abd6645b02b9ef83bea33f3a4d6f4a",
+          "relationId": "relation:13bfe53c2dbea60be008cbcf9d282e10209bfe113876d34ff4fdc1a7ae52ec6c",
+          "cellId": "cell:53e023bc680a38a73a847167eafe95d73ece8875f7b2156894d760db0e4e3c5f",
           "caseId": "dsh-market-node22",
-          "plugin": "dshmarket@1.45.1",
+          "plugin": "dshmarket@1.46.1",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^4.0.1",
@@ -668,8 +668,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:eb29002a1120291a8906acff594459b20328a6dcc7c48dc304733384d2725cc1",
-          "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+          "relationId": "relation:d68437524f196702b8026ce3afb5ec454f516d92f0113ce506e428dbffb62d9e",
+          "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
           "caseId": "dsh-pet-node22",
           "plugin": "dsh-pet@0.2.8",
           "dshVersion": "0.1.5-rc.2",
@@ -685,10 +685,10 @@
       "name": "@deepseek-ai/dsh-agent-presets",
       "impacts": [
         {
-          "relationId": "relation:bc34f0172afb46c7ab547d0e8adcea042cfc2a2f7e25e0275859b80aac75533e",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:2954bab98661ee4bda55d8b850d732bac1a59dd9cd6deffdd724cdd56b0f06d9",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -750,8 +750,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:ac31dd62f052f81a7b53b98c970ebe0149c5ad024479ce2190e8f614f09da447",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:f9eae120eb6658b307bace61befb62d0cae0a15d4fb081777446c6056ce3e1c7",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -796,10 +796,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:0817099b8aa3f45e967b3743ccfea8561df1a8a4cc9177153b6fd20a2bb2f965",
-          "cellId": "cell:f65623ff8c8b16374005db85072196cda5f6dfaf58ea95aeb47f7fdff115d027",
+          "relationId": "relation:8d2c9fb044ae973a59fe714225c74d427e33eabbacb46fbd04fcec61551635a5",
+          "cellId": "cell:c6f4478750998890ce842a818a2f81297d7c9b8ef0d66c7deba08355b2724bf0",
           "caseId": "dsh-coding-subscription-oauth-node22",
-          "plugin": "dsh-coding-subscription-oauth@0.8.1",
+          "plugin": "dsh-coding-subscription-oauth@0.8.3",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "0.1.1-rc.2",
@@ -849,10 +849,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:bd8769a76ec11da64c931f203d28dcac17cb9f63116a8d2bc2ebce61ea9a6765",
-          "cellId": "cell:72e0b41953b5b659833c32947e0d21854cb5a0e4de6c0200588db849a2be7f57",
+          "relationId": "relation:a363aefc3a8410467d628cf63762865b6e0edc01088c6473f8e310878f597bd6",
+          "cellId": "cell:350d92cf7cc19bac0d93de8fa5c8a62de2e2f3ebdb997af4e55107502dfafe60",
           "caseId": "dsh-plugin-subscriptions-node22",
-          "plugin": "dsh-plugin-subscriptions@0.8.0",
+          "plugin": "dsh-plugin-subscriptions@0.9.0",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.1-rc.2 || ^0.1.2-alpha.1",
@@ -943,8 +943,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:564118f44edc12e941c4336b7d13d71b2b28baa7c3d5764b4b4ba8668f96623b",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:c609ddc872357425eef7a0fe1e258cfb407254653d2c0acca055b6ad29e08faa",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -955,10 +955,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:c17ba84decf1b3e9cce3a0a66a906fd57ff0e7d655d10fa0326810969f1743af",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:b8df2673283e669d4cb174a519e01ed565a72578e66068a739abca604a1fdd24",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -967,8 +967,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:755012146ec183b3fb41ac7027a9e8a4f05c75d0460b4cb0ef4874efcc0a904b",
-          "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+          "relationId": "relation:40a57e82767983e5f2cba312f81f498bba368ff4d330085a65478f909b037ca2",
+          "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
           "caseId": "dsh-pet-node22",
           "plugin": "dsh-pet@0.2.8",
           "dshVersion": "0.1.5-rc.2",
@@ -1056,10 +1056,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:eab368feeb7b43ec4fdc612f080a74f6af78a63b13c0a1148b00839854e51257",
-          "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
+          "relationId": "relation:76c3cfc9fbe445f0f9ac7880f09761879aed52ac42514d8528f80e43d753749c",
+          "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
           "caseId": "dsh-skills-manager-node22",
-          "plugin": "@michengai/dsh-skills-manager@0.1.49",
+          "plugin": "@michengai/dsh-skills-manager@0.1.50",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
@@ -1092,10 +1092,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:d44bf2287ff92cb5eaa9ebcd11c8a9aebb2fec34e1bb2336b35472bf1c4568e7",
-          "cellId": "cell:477f88ab0cdd395b838252a5f820f0be5690f58383497a1c36259699629a8c1e",
+          "relationId": "relation:ed899c925326d5b8dbeb6dd38c1d1a154a86a3a5f40cc97a120d390225b2900f",
+          "cellId": "cell:3ef0f5ad907585971d49965feedaaac76265754e2e6a13891f2daef96880381e",
           "caseId": "dsh-chat-import-node22",
-          "plugin": "dsh-chat-import@0.11.1",
+          "plugin": "dsh-chat-import@0.11.2",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": ">=0.1.0-rc.6",
@@ -1104,8 +1104,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:1570200682fd33fe52d36237d461cb73509dcdb48d43306bdba36dcf56805db6",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:832b05c7de4b8acd34df94af734642e15b18be15c83b497d438d45dcf177a941",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -1116,10 +1116,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:90962fd130f9d053ccf414fe60569380c31107f1cc5865299c5f98f8fecc9488",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:8c52406d46451058a41810f29a924394d58af76ce681063555184105e95b3ffe",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -1140,10 +1140,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:53aad5671a652c78e59f1ef90e93ebb1060a34d06716515ec89d316317ef8742",
-          "cellId": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
+          "relationId": "relation:62e2ce1f9da732ae0d346f3b0c12db7640ba7a88610f688ef7b14811aebc2c4b",
+          "cellId": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
           "caseId": "dsh-remote-node22",
-          "plugin": "dsh-remote@0.8.14",
+          "plugin": "dsh-remote@0.8.15",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.2-rc.1",
@@ -1190,10 +1190,10 @@
           "staticUsage": "type-only-reference-observed"
         },
         {
-          "relationId": "relation:7d5aa51ae2aa2b343476c0396e8ada425572ed8c7267b584ddb9b6e9b706518b",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:2a43db5a58ff25b2d882079a4a9b02eb8a45b2cff55a08fdfce80606b3351b9e",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -1223,8 +1223,8 @@
           "staticUsage": "no-literal-reference-observed"
         },
         {
-          "relationId": "relation:94d34aaf63397d6f8bc3b0f3d2ab073dadadb4bbde961e4121384fa6b198a4d8",
-          "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+          "relationId": "relation:a1bfbc869cf7c261b9710e389717c8bebd8d789dac21e848bad98d965075c343",
+          "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
           "caseId": "dsh-pet-node22",
           "plugin": "dsh-pet@0.2.8",
           "dshVersion": "0.1.5-rc.2",
@@ -1245,10 +1245,10 @@
           "staticUsage": "no-literal-reference-observed"
         },
         {
-          "relationId": "relation:2a2649b73f91b30679fc69d1cf14b3166eaf8d3f4b9872f8937c324098dd196e",
-          "cellId": "cell:e92964538724797da963f9932d363ce592a4d105600f0147bf7c28d4c3fc0932",
+          "relationId": "relation:71754e3143fd093df39d53641b7ef8cff011f3623af684df226291c15775ab9d",
+          "cellId": "cell:742307d577e62fe73572fab72e2387bc52cdce322680f3a9d150085107bcb8ce",
           "caseId": "dsh-tavern-node22",
-          "plugin": "dsh-tavern@2.3.1",
+          "plugin": "dsh-tavern@2.3.6",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -1343,8 +1343,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:0d00c36d03ebb78734c3c15b78a68081161150166c19f4021dc2054cc0c18fdb",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:521e1346ca1f4a61d12c0c94e2e2c5a5de131128612f14721bd4d1be3c3bc97a",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -1418,8 +1418,8 @@
       "name": "@deepseek-ai/dsh-client-ui-model-selection",
       "impacts": [
         {
-          "relationId": "relation:d21c8c009abe9ce2908fa153936ed1385617555009eb623f8dc051772444f15e",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:51a7a13c777c97746c275999ec6cde76ed3b3a2b9f115d438f20535a0fb75cab",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -1490,10 +1490,10 @@
           "staticUsage": "scan-incomplete"
         },
         {
-          "relationId": "relation:14f3bbc9fdd63b98d1a7c0ae762af35097661410488d9cc2596113667e0410c7",
-          "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
+          "relationId": "relation:f2c4d0389468ceb608bf24bd8d57172a6b8911e3567499ba95d8c975d25db02c",
+          "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
           "caseId": "dsh-skills-manager-node22",
-          "plugin": "@michengai/dsh-skills-manager@0.1.49",
+          "plugin": "@michengai/dsh-skills-manager@0.1.50",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
@@ -1523,8 +1523,8 @@
           "staticUsage": "runtime-import-observed"
         },
         {
-          "relationId": "relation:3eb02f081aa24319c9b1d6a9b5a313794b1177c651f5a7972c4746a623ff2f75",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:a1b176ac48bd190a39908f2636042c0acd63d86cd5f12e9747f303d659a1daef",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -1562,10 +1562,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:05e56d7ef1704192b2f2cacf5ef918434a9be1b5db8f49a964d1e8d6e4125955",
-          "cellId": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
+          "relationId": "relation:c5447fe5fad6c6ddccd798b4d45d01351fc58ddcf5868c9338fc8f35183ff17b",
+          "cellId": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
           "caseId": "dsh-remote-node22",
-          "plugin": "dsh-remote@0.8.14",
+          "plugin": "dsh-remote@0.8.15",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.2-rc.1",
@@ -1651,8 +1651,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:a144714a66a0baa4118439448a98c3242e6d7d74caa858fce986a6943a87dafb",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:b5776b3109a0a2304f195fed9bd2d3cfd14027271578eca990274af136c6cf0a",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -1663,10 +1663,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:f08c96ce120ad75839f376f63e72b19b897228689ec8e8b0c016b7e788885cb5",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:4abaa9d5264b815b0c47dea973a7aa9b766af8949bf8d5b1af7b29e37e05570f",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -1752,10 +1752,10 @@
           "staticUsage": "scan-incomplete"
         },
         {
-          "relationId": "relation:35eb15b3ee40f09087212491584dc6378f1df0799724e4fab9392f01f460b477",
-          "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
+          "relationId": "relation:6f0bebe8ad5a0f2f3cdf5d538d69de651d860790f0a9c0a9eb57049bd1638c38",
+          "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
           "caseId": "dsh-skills-manager-node22",
-          "plugin": "@michengai/dsh-skills-manager@0.1.49",
+          "plugin": "@michengai/dsh-skills-manager@0.1.50",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
@@ -1796,8 +1796,8 @@
           "staticUsage": "type-only-reference-observed"
         },
         {
-          "relationId": "relation:66f42cbacedab8577da9fa5a4cd384ad76435fc16f857db7a7f3366160334ea7",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:f400e6ad51dece217903d17d9f125d373516778366e35286c96caa85a010000c",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -1807,10 +1807,10 @@
           "staticUsage": "no-literal-reference-observed"
         },
         {
-          "relationId": "relation:22442997c12e32555b4e0808f3a1523b26911ce217534d3c5667687d355173ae",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:d8c8fe17d6f15cf9a575e172871031f2518ba57daf367ecd46c7ea348ebe70a6",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -1829,8 +1829,8 @@
           "staticUsage": "no-literal-reference-observed"
         },
         {
-          "relationId": "relation:abd141befc0cd01790c8e17963c54cda65485fc49baf3d956d677169e0677f23",
-          "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+          "relationId": "relation:4a9e72298ca365c6bdf526bd2c5bdfdc4b9a79f8174aa6801f42d2141f2ba981",
+          "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
           "caseId": "dsh-pet-node22",
           "plugin": "dsh-pet@0.2.8",
           "dshVersion": "0.1.5-rc.2",
@@ -1931,8 +1931,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:c668c9cfbf64e3ed1833a5083384049ac734d7a32dc67cde3343d138ed0b81b9",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:bb04ba3896e339e784d80dcbf37c070d83f86558cdc7f49a65fa8618e4c88a61",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -1989,8 +1989,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:edf37492f49edec66026203634f044d84e4ae701fb0bb09ea43ded900ddec80d",
-          "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+          "relationId": "relation:2c9a20f6218ae9c15616f640f5e02908d8a23eb9d0c96e95b509fabebde6d8e6",
+          "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
           "caseId": "dsh-pet-node22",
           "plugin": "dsh-pet@0.2.8",
           "dshVersion": "0.1.5-rc.2",
@@ -2001,10 +2001,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:19925a7c83cfb0757a47da6b257a23b42fe7054c7228715a153505aad4f8e5d8",
-          "cellId": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
+          "relationId": "relation:1f672a6d8a00c1d3d42bc9a0f565072741e2864b517ce1ce8747a91fde6324be",
+          "cellId": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
           "caseId": "dsh-remote-node22",
-          "plugin": "dsh-remote@0.8.14",
+          "plugin": "dsh-remote@0.8.15",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -2042,8 +2042,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:4e38bf502a17fe9a821f6abda5d3c3cc5e3a63e310f60542ac253282b3ebaebe",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:fce7f22baa4162b56605a788b7d5ab3ec208caf236eaa7c115dec6692a53dc20",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -2054,10 +2054,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:387d4839f47a83a1c4f21b4aaa58cc80e398a9ecc9d27599cf2fb0901c0bc8ba",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:6cc9253133e551434d39bda2ee6e4f0b5230d4e9116966a78a326c275f737320",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -2066,10 +2066,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:10591b90727d11fe2df08928fef3d2c4764b16125c7341fd4ba3a1303bd69d39",
-          "cellId": "cell:5c347a89ce49cc8c81776e44fe283a795aa49c1da7926f1be0f6ebc9139616fa",
+          "relationId": "relation:a2d9609a0789f81a77788a9727e9919748dc0f63a818fcfeb12e912b67637229",
+          "cellId": "cell:cab3785bed884005f8501b63c6f6dcc519956ba1fb8aabeab27c8b3926b74cf7",
           "caseId": "cost-meter-node22",
-          "plugin": "dsh-cost-meter@1.7.21",
+          "plugin": "dsh-cost-meter@1.7.22",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6 || ^0.1.1-0 || ^0.1.2-0 || ^0.1.3-0 || ^0.1.5-0",
@@ -2078,8 +2078,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:2fc18a03c0b00aeab682c924c03cef32ebeda0c47f572d3d1d5b63f0d348a886",
-          "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+          "relationId": "relation:817a8ef414035c7cedc6989b3806426ed04fac7b8d13400798f3f435882ee433",
+          "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
           "caseId": "dsh-pet-node22",
           "plugin": "dsh-pet@0.2.8",
           "dshVersion": "0.1.5-rc.2",
@@ -2131,16 +2131,16 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:341524038bbc40df0fcb439ec226f6919e2fcad302f9902efa7fe0cb29f12eea",
-          "cellId": "cell:56fc4afb8efc83bedaa0ec71aa74391932646f349418bd1ea97edc790cbb12af",
+          "relationId": "relation:deb027774b8e4c31f09a977e6dcb23be722afe46125f5002558e0b69c98b411e",
+          "cellId": "cell:9b3d4af025eb9f4a26fe49dda8085cc82705283dc14b5753cd3a1a0211108531",
           "caseId": "wsl-workspace-node24",
-          "plugin": "dsh-wsl-workspace@0.4.0",
-          "dshVersion": "0.1.1-rc.2",
+          "plugin": "dsh-wsl-workspace@0.4.3",
+          "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 24,
           "required": "*",
           "status": "satisfied",
           "staticUsage": "runtime-import-observed",
-          "resolvedVersion": "0.1.1-rc.2"
+          "resolvedVersion": "0.1.5-rc.2"
         }
       ]
     },
@@ -2148,16 +2148,16 @@
       "name": "@deepseek-ai/dsh-fs-local",
       "impacts": [
         {
-          "relationId": "relation:20c62785298c4c53120f8eafac3699b67e2ed3589f5aacf24e5b4cc43cdc0ce1",
-          "cellId": "cell:56fc4afb8efc83bedaa0ec71aa74391932646f349418bd1ea97edc790cbb12af",
+          "relationId": "relation:64043a00bff3bdd110791b523ebbe1b2818e7d401831f79457f9962e7000cdf2",
+          "cellId": "cell:9b3d4af025eb9f4a26fe49dda8085cc82705283dc14b5753cd3a1a0211108531",
           "caseId": "wsl-workspace-node24",
-          "plugin": "dsh-wsl-workspace@0.4.0",
-          "dshVersion": "0.1.1-rc.2",
+          "plugin": "dsh-wsl-workspace@0.4.3",
+          "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 24,
           "required": "*",
           "status": "satisfied",
           "staticUsage": "runtime-import-observed",
-          "resolvedVersion": "0.1.1-rc.2"
+          "resolvedVersion": "0.1.5-rc.2"
         }
       ]
     },
@@ -2177,10 +2177,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:8281262b345d0f70cb4ec82f52c14e69d86ca05cca53d988ce059b4a2369f0c5",
-          "cellId": "cell:f65623ff8c8b16374005db85072196cda5f6dfaf58ea95aeb47f7fdff115d027",
+          "relationId": "relation:d0a9113db6350efec2241b50346bfb67006ea7c19982f6153b2c90e283e1154a",
+          "cellId": "cell:c6f4478750998890ce842a818a2f81297d7c9b8ef0d66c7deba08355b2724bf0",
           "caseId": "dsh-coding-subscription-oauth-node22",
-          "plugin": "dsh-coding-subscription-oauth@0.8.1",
+          "plugin": "dsh-coding-subscription-oauth@0.8.3",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "0.1.1-rc.2",
@@ -2189,10 +2189,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:0a319a234cf1cbbc66bbd3b57ba7dc342b124d0e137ba86d3c5c8b078029e19a",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:0ccd7304b02753aeb0602c625477c413668d45c6e9ff0edd547c59a6f19704e1",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -2201,10 +2201,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:acbeb707b11f666e82e0b8851c5152f499081d3f6acfb8c698ac832d9175ddb2",
-          "cellId": "cell:5c347a89ce49cc8c81776e44fe283a795aa49c1da7926f1be0f6ebc9139616fa",
+          "relationId": "relation:197e758b31c4918068ef4cfdc6d3bfdc04f7e2ecb1b3d380134644dcf2064859",
+          "cellId": "cell:cab3785bed884005f8501b63c6f6dcc519956ba1fb8aabeab27c8b3926b74cf7",
           "caseId": "cost-meter-node22",
-          "plugin": "dsh-cost-meter@1.7.21",
+          "plugin": "dsh-cost-meter@1.7.22",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6 || ^0.1.1-0 || ^0.1.2-0 || ^0.1.3-0 || ^0.1.5-0",
@@ -2213,8 +2213,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:f22670120af1d2f323c3fc8cc98650416bda3b366da4c657802134acd836c688",
-          "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+          "relationId": "relation:0848801bb839ac73f61fff00c175d4710dc536c43c372413c6882eda90afc39d",
+          "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
           "caseId": "dsh-pet-node22",
           "plugin": "dsh-pet@0.2.8",
           "dshVersion": "0.1.5-rc.2",
@@ -2225,10 +2225,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:feba314ac32fe1733da0eb039f180f59acd1f572fcc8af56a389aa0c62ad07aa",
-          "cellId": "cell:72e0b41953b5b659833c32947e0d21854cb5a0e4de6c0200588db849a2be7f57",
+          "relationId": "relation:a753c1ed78f8934abf9dc2d64fba8320c3202e1a727389f103ef016e3fba4005",
+          "cellId": "cell:350d92cf7cc19bac0d93de8fa5c8a62de2e2f3ebdb997af4e55107502dfafe60",
           "caseId": "dsh-plugin-subscriptions-node22",
-          "plugin": "dsh-plugin-subscriptions@0.8.0",
+          "plugin": "dsh-plugin-subscriptions@0.9.0",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.1-rc.2 || ^0.1.2-alpha.1",
@@ -2254,10 +2254,10 @@
       "name": "@deepseek-ai/dsh-host-plugin-inventory",
       "impacts": [
         {
-          "relationId": "relation:63e2d8d8f7ffbec719a0d87a1892653a73c6af0f4380fc3614c0586e14b31350",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:9a3cb2cd5066872f1d3bbf0ab52f17c1a7fe436e6fce1566e5bd5267b311047f",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -2307,10 +2307,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:37f50adbec00b981e6eafa4918543b19e171b0c62e2682e9fb3ccbb17b049c6b",
-          "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
+          "relationId": "relation:cf2bdbb7cb14ca263b278d90e921c29dfcb8d20e976b6b302d841cd57d3c9303",
+          "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
           "caseId": "dsh-skills-manager-node22",
-          "plugin": "@michengai/dsh-skills-manager@0.1.49",
+          "plugin": "@michengai/dsh-skills-manager@0.1.50",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
@@ -2319,8 +2319,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:1c976362fd1311b68227ad86ebc5cd94f5c483e4134e90c7b8dd4cd7a7f46cbc",
-          "cellId": "cell:1706ee934a6443509168317b606e66e21026920b46784d46b9df3042917b737a",
+          "relationId": "relation:89a5393c9458dfb1b4704b8837ebee6849333903f753a6e2034896e014914fff",
+          "cellId": "cell:81ab1ba7cbddf570f8bee4324858579b400d333ed4400fda245c15dfea2429c0",
           "caseId": "dsh-mneme-node22",
           "plugin": "@modusensus/dsh-mneme@0.7.32",
           "dshVersion": "0.1.5-rc.2",
@@ -2367,10 +2367,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:4e088b9da1e0783559f0fbc6011f532604fe71fe153cd9ae1142132903ef694f",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:d83d92742b5e8c35ee17e9cb809f5cccf3233e31da5211ca4718694477a04737",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -2379,8 +2379,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:85aaa2b7d191b83168fe94d7641b468e5a7f86eefeed3cc3dbef0290fc896ded",
-          "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+          "relationId": "relation:2c10e666d409f750a3670c63fb44e26c6e1869275a9b55c46618dacb3c99be13",
+          "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
           "caseId": "dsh-pet-node22",
           "plugin": "dsh-pet@0.2.8",
           "dshVersion": "0.1.5-rc.2",
@@ -2391,10 +2391,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:06a1b72b25a31e2f7f451dd7ae40a95d5365ff2d27a84b1e2899f5b132d06c1c",
-          "cellId": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
+          "relationId": "relation:e4452aa2d4a0849b5c254a763c12f4c77cc772dc4b45e6a3facff7a57d5a77cd",
+          "cellId": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
           "caseId": "dsh-remote-node22",
-          "plugin": "dsh-remote@0.8.14",
+          "plugin": "dsh-remote@0.8.15",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -2574,8 +2574,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:776d4663afffde03399ad5a37739c0466e1646efb287fca6973c5bb9f6dfef4c",
-          "cellId": "cell:1706ee934a6443509168317b606e66e21026920b46784d46b9df3042917b737a",
+          "relationId": "relation:1c60a7d94be4cd9130acd06f68f289a82758baa2e6bc80ca2fea4ed8212f9b12",
+          "cellId": "cell:81ab1ba7cbddf570f8bee4324858579b400d333ed4400fda245c15dfea2429c0",
           "caseId": "dsh-mneme-node22",
           "plugin": "@modusensus/dsh-mneme@0.7.32",
           "dshVersion": "0.1.5-rc.2",
@@ -2586,8 +2586,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:759f4dd99ceb7e2c6d30840413193f3e588492023a9397b8c5311b79ee28e74c",
-          "cellId": "cell:ebeb343884fb8684c82486c48ca09e8644069832d4f8e9824a6fc12361f8fde5",
+          "relationId": "relation:80f4ecff8026c9b3b60feca84058bfc56e0cd47c6148e53903d6b0a97215abf6",
+          "cellId": "cell:4d128b9ef7c0e863d05cf7ed3e2f20849c08264f52e26b01aee54d72597cf6d2",
           "caseId": "dsh-memory-plugin-node22",
           "plugin": "@openviking/dsh-memory-plugin@0.3.0",
           "dshVersion": "0.1.5-rc.2",
@@ -2634,8 +2634,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:cead4078508227d8ef317251331306726e062a5384e4d8bbe7b94d675a926a0a",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:de1915cbf69e33ab2ac2b90c868f44dc0a84bafac0fbec40f9a602cb6dfb6ad7",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -2646,10 +2646,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:a7d3d4fc033af9ac47406dc751fd0673f3911a578689af5d5e3fe8f19e39e470",
-          "cellId": "cell:f65623ff8c8b16374005db85072196cda5f6dfaf58ea95aeb47f7fdff115d027",
+          "relationId": "relation:85696ff4c5ed2278a98ab770e3630adf587457969fcb2e2db77832b355f92170",
+          "cellId": "cell:c6f4478750998890ce842a818a2f81297d7c9b8ef0d66c7deba08355b2724bf0",
           "caseId": "dsh-coding-subscription-oauth-node22",
-          "plugin": "dsh-coding-subscription-oauth@0.8.1",
+          "plugin": "dsh-coding-subscription-oauth@0.8.3",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "0.1.1-rc.2",
@@ -2658,10 +2658,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:95b79816dfd0df09e117734959162d6df3b901b2e079a6f56716b7af8eebb1ff",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:3ee148068bdc7d4aa1f4e4ead65830e20c7672a9ce79d136ee304e86180a274d",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -2670,8 +2670,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:48b5ed0d98eae84325724ed4fe284e48d4d31b9f2731557bd3a863bc716c7d0e",
-          "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+          "relationId": "relation:7e128f0c6329192f97218df9c63995e0f4b2c4796d04c9b6e13b9774237d9bb6",
+          "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
           "caseId": "dsh-pet-node22",
           "plugin": "dsh-pet@0.2.8",
           "dshVersion": "0.1.5-rc.2",
@@ -2682,10 +2682,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:43ad8acfede57d8e76436bfd06805917662c731a5e5141939df8d508c1bfb3b8",
-          "cellId": "cell:72e0b41953b5b659833c32947e0d21854cb5a0e4de6c0200588db849a2be7f57",
+          "relationId": "relation:1ce9ee4fed45ee9123ceede112425fa82ab5555f5a4ef9f9640d7fbe05e2d243",
+          "cellId": "cell:350d92cf7cc19bac0d93de8fa5c8a62de2e2f3ebdb997af4e55107502dfafe60",
           "caseId": "dsh-plugin-subscriptions-node22",
-          "plugin": "dsh-plugin-subscriptions@0.8.0",
+          "plugin": "dsh-plugin-subscriptions@0.9.0",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.1-rc.2 || ^0.1.2-alpha.1",
@@ -2735,8 +2735,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:9fc705fe129f7836eb0de00eb736224cd7615c4f73e4cdde1a1864ce305157bf",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:e9be0f618b741cef8d571f4a83df2c8e0c2683152090a3b6d6c62fad0862581c",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -2747,10 +2747,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:83a3586c3cbbdf12e293477f14d6244ffdfaa19fb732adbdbaa6b618c79b7c7e",
-          "cellId": "cell:f65623ff8c8b16374005db85072196cda5f6dfaf58ea95aeb47f7fdff115d027",
+          "relationId": "relation:4a409c84b0fb205e740bbd849c91eefeb8eba28f72e84992a139ce05a09943ac",
+          "cellId": "cell:c6f4478750998890ce842a818a2f81297d7c9b8ef0d66c7deba08355b2724bf0",
           "caseId": "dsh-coding-subscription-oauth-node22",
-          "plugin": "dsh-coding-subscription-oauth@0.8.1",
+          "plugin": "dsh-coding-subscription-oauth@0.8.3",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "0.1.1-rc.2",
@@ -2764,8 +2764,8 @@
       "name": "@deepseek-ai/dsh-mcp-client",
       "impacts": [
         {
-          "relationId": "relation:725069af8f40681fe57ac67f5e9802f718e1fa938e2146fd22cc700504805cce",
-          "cellId": "cell:ebeb343884fb8684c82486c48ca09e8644069832d4f8e9824a6fc12361f8fde5",
+          "relationId": "relation:b10d69ff6fbc0ee448306a981064b847dcd934209d28685879a81a21135eff38",
+          "cellId": "cell:4d128b9ef7c0e863d05cf7ed3e2f20849c08264f52e26b01aee54d72597cf6d2",
           "caseId": "dsh-memory-plugin-node22",
           "plugin": "@openviking/dsh-memory-plugin@0.3.0",
           "dshVersion": "0.1.5-rc.2",
@@ -2846,10 +2846,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:4c196da95b233fbcb70b2787b68f823a64ed8e9aae987f368a087c65cf30f4e6",
-          "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
+          "relationId": "relation:d70228fb34acb835f6c89aae237deece7070282fda448d61b7daa4675273aa3d",
+          "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
           "caseId": "dsh-skills-manager-node22",
-          "plugin": "@michengai/dsh-skills-manager@0.1.49",
+          "plugin": "@michengai/dsh-skills-manager@0.1.50",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
@@ -2894,10 +2894,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:05434e83fd97b52b8e24ef24ceeb0c3d1795c87d2666000e60b4d9bcd177aa25",
-          "cellId": "cell:b80c7446947f94ccc7165e6e00961d132625526bfb43e7482c5858235be08bdc",
+          "relationId": "relation:85241a478f5e0bd08191e135020efb4f7e3c41c3abf987c4b658e2f3a9ecd8b3",
+          "cellId": "cell:1e3ab640e98dbe62461d8c927cb56897788aa893c1f8a699cebfc63646311dc4",
           "caseId": "context-node22",
-          "plugin": "dsh-context@0.50.0",
+          "plugin": "dsh-context@0.51.0",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": ">=0.1.2-rc.1",
@@ -3053,10 +3053,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:51fe14291fc9f34b9b7f8ed03dba35ac1395484a34e5378b08b20a7c1ae18d49",
-          "cellId": "cell:a70ca75f67874949632f12a2ff688e6296a96bbfbfc6bb2c770e57afd5adb3f6",
+          "relationId": "relation:40bd4883cdd940ffea200bde04e6a260bd6efd637d2f1f77d7ae2d2399207241",
+          "cellId": "cell:edba1b326e8427a32c9797339a2c45ba37623ac52e1c669ce705c84320fdf477",
           "caseId": "dsh-client-auto-continue-node22",
-          "plugin": "dsh-client-auto-continue@0.11.5",
+          "plugin": "dsh-client-auto-continue@0.11.6",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.7",
@@ -3077,8 +3077,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:f478072302a3adebac29da99c60f1be86e22a42b0b4e651c0fbc88329d25100a",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:01a1546ce9f421b51e9579542adddebf58917b897c5f9f495cd0bacdf9a91960",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -3089,10 +3089,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:f864ead027d60c52b5d85efd900886fb6bcfb54eb686887bfbc43fa3c4650913",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:4c964b725001711685f7d668f05e28b7ec2cb7b76de7cca08be15b8d4e09cf5d",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -3101,10 +3101,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:098241b52870a7a812937323758e6c65842575378bf0f8f87ea2a16137bc14e8",
-          "cellId": "cell:b80c7446947f94ccc7165e6e00961d132625526bfb43e7482c5858235be08bdc",
+          "relationId": "relation:1a053eb78bbf416a516a8c34c184f262cc680f54a856cc88e61e068cbd916712",
+          "cellId": "cell:1e3ab640e98dbe62461d8c927cb56897788aa893c1f8a699cebfc63646311dc4",
           "caseId": "context-node22",
-          "plugin": "dsh-context@0.50.0",
+          "plugin": "dsh-context@0.51.0",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": ">=0.1.2-rc.1",
@@ -3113,8 +3113,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:f80f32e0942dc030a17cd19e0fe35c08305e6fd77c1b7ad21508698366df5a0e",
-          "cellId": "cell:e107d7ac6f246e723060ced02f0abdb5ba3280bef50f8728b4d3d0153c834805",
+          "relationId": "relation:43ca5507296926fb812b7ae60c662b808075997d6a1688aea341aaa15966a504",
+          "cellId": "cell:8fbdf3ee6fff3c9c5aa23e05fa751f893e35bb2cd3497a6f3c75b9408c856626",
           "caseId": "dsh-free-search-node22",
           "plugin": "dsh-free-search@0.4.24",
           "dshVersion": "0.1.5-rc.2",
@@ -3142,16 +3142,16 @@
       "name": "@deepseek-ai/dsh-shell",
       "impacts": [
         {
-          "relationId": "relation:a3dc339b19f6dd7cafa30dd4867bb6d526d6c0442c0b2c5ea806ecadab319733",
-          "cellId": "cell:56fc4afb8efc83bedaa0ec71aa74391932646f349418bd1ea97edc790cbb12af",
+          "relationId": "relation:80c657cc8fc055b4e09bd47093fa94544ce9a61dcd32bd7de4eeac7aefe43467",
+          "cellId": "cell:9b3d4af025eb9f4a26fe49dda8085cc82705283dc14b5753cd3a1a0211108531",
           "caseId": "wsl-workspace-node24",
-          "plugin": "dsh-wsl-workspace@0.4.0",
-          "dshVersion": "0.1.1-rc.2",
+          "plugin": "dsh-wsl-workspace@0.4.3",
+          "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 24,
           "required": "*",
           "status": "satisfied",
           "staticUsage": "runtime-import-observed",
-          "resolvedVersion": "0.1.1-rc.2"
+          "resolvedVersion": "0.1.5-rc.2"
         }
       ]
     },
@@ -3171,10 +3171,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:3e7011d3ffd054fdb9b2d88d036877e1ba10cb98402c7d85113b06552f2efecc",
-          "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
+          "relationId": "relation:cde2462e164a5388b21d4945e6a07f78e24b4cb5decdfbefb87062ea30a0c074",
+          "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
           "caseId": "dsh-skills-manager-node22",
-          "plugin": "@michengai/dsh-skills-manager@0.1.49",
+          "plugin": "@michengai/dsh-skills-manager@0.1.50",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
@@ -3200,8 +3200,8 @@
       "name": "@deepseek-ai/dsh-skill-filesystem",
       "impacts": [
         {
-          "relationId": "relation:860edf75f589d6c8fcc928d30dc96775793927f4fae64ba812cd99046dd18375",
-          "cellId": "cell:ebeb343884fb8684c82486c48ca09e8644069832d4f8e9824a6fc12361f8fde5",
+          "relationId": "relation:216b8098078e4ae21ef5a74cd90eeebf7a5200acd8813e19e51816188b00d00f",
+          "cellId": "cell:4d128b9ef7c0e863d05cf7ed3e2f20849c08264f52e26b01aee54d72597cf6d2",
           "caseId": "dsh-memory-plugin-node22",
           "plugin": "@openviking/dsh-memory-plugin@0.3.0",
           "dshVersion": "0.1.5-rc.2",
@@ -3328,16 +3328,16 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:cddec65ea214fa354399ead5b538efdca5302fbd90a75a2448211007e8ce08a7",
-          "cellId": "cell:56fc4afb8efc83bedaa0ec71aa74391932646f349418bd1ea97edc790cbb12af",
+          "relationId": "relation:5ace1dd467beea053c096a0830f7756c54a482335fd69725dd06d2c4cc983f70",
+          "cellId": "cell:9b3d4af025eb9f4a26fe49dda8085cc82705283dc14b5753cd3a1a0211108531",
           "caseId": "wsl-workspace-node24",
-          "plugin": "dsh-wsl-workspace@0.4.0",
-          "dshVersion": "0.1.1-rc.2",
+          "plugin": "dsh-wsl-workspace@0.4.3",
+          "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 24,
           "required": "*",
           "status": "satisfied",
           "staticUsage": "no-literal-reference-observed",
-          "resolvedVersion": "0.1.1-rc.2"
+          "resolvedVersion": "0.1.5-rc.2"
         }
       ]
     },
@@ -3357,8 +3357,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:c61b24753ab25a113864f5f22215a07008cda0745855e122687bb072473da2df",
-          "cellId": "cell:1706ee934a6443509168317b606e66e21026920b46784d46b9df3042917b737a",
+          "relationId": "relation:91bc81cc8efb3f176212c32c20d7b3bb3f771e27e427f0b6353be99301442bd7",
+          "cellId": "cell:81ab1ba7cbddf570f8bee4324858579b400d333ed4400fda245c15dfea2429c0",
           "caseId": "dsh-mneme-node22",
           "plugin": "@modusensus/dsh-mneme@0.7.32",
           "dshVersion": "0.1.5-rc.2",
@@ -3381,10 +3381,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:6d41e5fa3c2b371d948e647e444de8f7a7ad9f5a96397b7d5f2dafeac3778725",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:0af44b7bccc6ff5905191d952be73ab2e95085524df455e0ef207e6c3d787a69",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -3405,10 +3405,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:6f0730137f209938f82ed642f40484eba5a09f29187e238adae9d21a3cf6d3e7",
-          "cellId": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
+          "relationId": "relation:967bfc67a2a198a9153ca0078deec064622c05a05aed65eeee6d17f409ad80e1",
+          "cellId": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
           "caseId": "dsh-remote-node22",
-          "plugin": "dsh-remote@0.8.14",
+          "plugin": "dsh-remote@0.8.15",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -3434,16 +3434,16 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:f7591baa6aab222f60937c333e28ab1776e196fc8ebd3c41e4aa13c49ceeed7b",
-          "cellId": "cell:56fc4afb8efc83bedaa0ec71aa74391932646f349418bd1ea97edc790cbb12af",
+          "relationId": "relation:5a26300b919ca2ae3fe3f53de3bb23f281dadbb8df6ec905f32afc7250256a76",
+          "cellId": "cell:9b3d4af025eb9f4a26fe49dda8085cc82705283dc14b5753cd3a1a0211108531",
           "caseId": "wsl-workspace-node24",
-          "plugin": "dsh-wsl-workspace@0.4.0",
-          "dshVersion": "0.1.1-rc.2",
+          "plugin": "dsh-wsl-workspace@0.4.3",
+          "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 24,
           "required": "*",
           "status": "satisfied",
           "staticUsage": "runtime-import-observed",
-          "resolvedVersion": "0.1.1-rc.2"
+          "resolvedVersion": "0.1.5-rc.2"
         }
       ]
     },
@@ -3528,10 +3528,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:c581e3ee86a090303e2294a9ae09d521d629d8ae668a963cdf0e7fd100501dd5",
-          "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
+          "relationId": "relation:7d2b11c88762e150a60a29fb17fbca9413c27a12bd67f8e0035eae0ab39d1151",
+          "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
           "caseId": "dsh-skills-manager-node22",
-          "plugin": "@michengai/dsh-skills-manager@0.1.49",
+          "plugin": "@michengai/dsh-skills-manager@0.1.50",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
@@ -3540,8 +3540,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:a47aaf32a83e4d5dda0d64d759211e32ef29bc369319f327635e4a35e647838e",
-          "cellId": "cell:1706ee934a6443509168317b606e66e21026920b46784d46b9df3042917b737a",
+          "relationId": "relation:3c1fa18444ea9b6149babcf75c5bc36ece8e14c68471d74081d30e50c064a907",
+          "cellId": "cell:81ab1ba7cbddf570f8bee4324858579b400d333ed4400fda245c15dfea2429c0",
           "caseId": "dsh-mneme-node22",
           "plugin": "@modusensus/dsh-mneme@0.7.32",
           "dshVersion": "0.1.5-rc.2",
@@ -3600,10 +3600,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:923c3ec3c1ef70fb02e8492e7ce2722cec477f0ea46f6a50a8ced4a5c60702f8",
-          "cellId": "cell:477f88ab0cdd395b838252a5f820f0be5690f58383497a1c36259699629a8c1e",
+          "relationId": "relation:a6c5a32a8fe9bad81bd04d5ca4ce7044f688419ce2bbd2a4b7665ddea533e91f",
+          "cellId": "cell:3ef0f5ad907585971d49965feedaaac76265754e2e6a13891f2daef96880381e",
           "caseId": "dsh-chat-import-node22",
-          "plugin": "dsh-chat-import@0.11.1",
+          "plugin": "dsh-chat-import@0.11.2",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -3624,8 +3624,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:4cbf546095b1ac1a356f02a77c4fd24cc5d492d625b265de5ee1d2030c4481e3",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:627ca6cc0e8d22d6033b83f2ff29b68ae18654888995c356f32e6103b120698a",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -3636,10 +3636,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:430b1ed7bced538bb7898e93f1a1a1ccc80e7d759ec47ff6178672b838244b1f",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:81a540a33f1575ef6b3ded623f6687e24d2c9f0fd6c8b8eacc8f330cc292dbc8",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -3672,8 +3672,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:11a1ab7306f6b942f2aad1f53b76961effd24c7f1ffb4c6f0df622fbd42a97c3",
-          "cellId": "cell:e107d7ac6f246e723060ced02f0abdb5ba3280bef50f8728b4d3d0153c834805",
+          "relationId": "relation:aeb81419d36f0a89d994b8b9113304c76d09ccc7f27adef47c00b0e1f2685e89",
+          "cellId": "cell:8fbdf3ee6fff3c9c5aa23e05fa751f893e35bb2cd3497a6f3c75b9408c856626",
           "caseId": "dsh-free-search-node22",
           "plugin": "dsh-free-search@0.4.24",
           "dshVersion": "0.1.5-rc.2",
@@ -3708,10 +3708,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:4bc14177c05d258a61b4c170a9a2a15a22137aa76537a4a0cd44ff2b1a0074d8",
-          "cellId": "cell:72e0b41953b5b659833c32947e0d21854cb5a0e4de6c0200588db849a2be7f57",
+          "relationId": "relation:c8074fb9c3abd9a0d30d1a50afeb55416d21c23216a1687dfcbc665a744460f9",
+          "cellId": "cell:350d92cf7cc19bac0d93de8fa5c8a62de2e2f3ebdb997af4e55107502dfafe60",
           "caseId": "dsh-plugin-subscriptions-node22",
-          "plugin": "dsh-plugin-subscriptions@0.8.0",
+          "plugin": "dsh-plugin-subscriptions@0.9.0",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.1-rc.2 || ^0.1.2-alpha.1",
@@ -3732,10 +3732,10 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:aaa605feb60f12e419e0070b21daa36cb499b23dda286607270457bf13b95ffd",
-          "cellId": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
+          "relationId": "relation:18375c245593a6fba67a329ee43890123788bd8559bfdc1e1edae0c0aa75573d",
+          "cellId": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
           "caseId": "dsh-remote-node22",
-          "plugin": "dsh-remote@0.8.14",
+          "plugin": "dsh-remote@0.8.15",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^0.1.0-rc.6",
@@ -3932,8 +3932,8 @@
           "resolvedVersion": "0.1.5-rc.2"
         },
         {
-          "relationId": "relation:09a4dabd7ca68bd607e8da050f4af3e1bbb555ee832ac27897b95b5a0a43f4b2",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:bcd67efdd1e25464dcf314e6a61715fe0f44c4a91f29143f952c3df30aba12fe",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -3949,10 +3949,10 @@
       "name": "@deepseek-ai/dsh-web-app",
       "impacts": [
         {
-          "relationId": "relation:e03d07f05683f0e12919f8feba5a3a9e7a0207b8246f6d1016ad87c92c5ec23d",
-          "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
+          "relationId": "relation:1570dd3a96a895770eb2cb2466a3fbc7b31bc37b4ac8e65f268b0bf9116e1580",
+          "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
           "caseId": "dsh-skills-manager-node22",
-          "plugin": "@michengai/dsh-skills-manager@0.1.49",
+          "plugin": "@michengai/dsh-skills-manager@0.1.50",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
@@ -4055,8 +4055,8 @@
           "resolvedVersion": "3.18.2"
         },
         {
-          "relationId": "relation:476c9d19273cff6810d06eed3bdda3fd3f5d38fe16fe173fc96b8e7ff981618d",
-          "cellId": "cell:1706ee934a6443509168317b606e66e21026920b46784d46b9df3042917b737a",
+          "relationId": "relation:18c622ae566f1eafee3794b7648b7824494c44867a2e6b8efc14e9ffb52e6c1a",
+          "cellId": "cell:81ab1ba7cbddf570f8bee4324858579b400d333ed4400fda245c15dfea2429c0",
           "caseId": "dsh-mneme-node22",
           "plugin": "@modusensus/dsh-mneme@0.7.32",
           "dshVersion": "0.1.5-rc.2",
@@ -4079,10 +4079,10 @@
           "resolvedVersion": "3.18.2"
         },
         {
-          "relationId": "relation:c95a9ada54112dadeecea85dd7ac4bdd63ff23f5523becc28557fc9ab86644e2",
-          "cellId": "cell:477f88ab0cdd395b838252a5f820f0be5690f58383497a1c36259699629a8c1e",
+          "relationId": "relation:3f96a2efc5445a90b23c1652698652dc6024d0de529f94e7cd23dff43ef841fc",
+          "cellId": "cell:3ef0f5ad907585971d49965feedaaac76265754e2e6a13891f2daef96880381e",
           "caseId": "dsh-chat-import-node22",
-          "plugin": "dsh-chat-import@0.11.1",
+          "plugin": "dsh-chat-import@0.11.2",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": ">=3.0.0",
@@ -4091,10 +4091,10 @@
           "resolvedVersion": "3.18.2"
         },
         {
-          "relationId": "relation:6fb556bd7ec6165a9edcbacebaf27a006ec6a1b29cc2ef0af5b3251074e61659",
-          "cellId": "cell:a70ca75f67874949632f12a2ff688e6296a96bbfbfc6bb2c770e57afd5adb3f6",
+          "relationId": "relation:3a253801ebe9943de3829655d50b3d377f13225fb0bfc024d954d9ab550b136f",
+          "cellId": "cell:edba1b326e8427a32c9797339a2c45ba37623ac52e1c669ce705c84320fdf477",
           "caseId": "dsh-client-auto-continue-node22",
-          "plugin": "dsh-client-auto-continue@0.11.5",
+          "plugin": "dsh-client-auto-continue@0.11.6",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^3.18.1",
@@ -4115,8 +4115,8 @@
           "resolvedVersion": "3.18.2"
         },
         {
-          "relationId": "relation:18e05d615da1bd83f59736755b26be20fdfd2e3873a24b86660f1aafb6259d80",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:3b9f848558c78e4d09190f9ec6f8c5f836ff054865f3b7c5316b4413a3f37348",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -4127,10 +4127,10 @@
           "resolvedVersion": "3.18.2"
         },
         {
-          "relationId": "relation:4c9e6fb661ff05a314dfbd62c66bbf415b3fae9debb3416637f1e9ae512c1f08",
-          "cellId": "cell:f65623ff8c8b16374005db85072196cda5f6dfaf58ea95aeb47f7fdff115d027",
+          "relationId": "relation:4276ceb2166e2b0db12c7778cd3d9072af536ce93ac03195c49f7e1d81e312a8",
+          "cellId": "cell:c6f4478750998890ce842a818a2f81297d7c9b8ef0d66c7deba08355b2724bf0",
           "caseId": "dsh-coding-subscription-oauth-node22",
-          "plugin": "dsh-coding-subscription-oauth@0.8.1",
+          "plugin": "dsh-coding-subscription-oauth@0.8.3",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "3.18.1",
@@ -4139,10 +4139,10 @@
           "resolvedVersion": "3.18.2"
         },
         {
-          "relationId": "relation:a2b06dd8f1b981eb62395fceb3b6b2d31ed3f3706f10765e244dafec719d6ec9",
-          "cellId": "cell:b80c7446947f94ccc7165e6e00961d132625526bfb43e7482c5858235be08bdc",
+          "relationId": "relation:542dbeb1919380f3b78986179b43ed2272a9c270aa1408d8aa0ddb0ead8c84c4",
+          "cellId": "cell:1e3ab640e98dbe62461d8c927cb56897788aa893c1f8a699cebfc63646311dc4",
           "caseId": "context-node22",
-          "plugin": "dsh-context@0.50.0",
+          "plugin": "dsh-context@0.51.0",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^3.18.2",
@@ -4175,10 +4175,10 @@
           "resolvedVersion": "3.18.2"
         },
         {
-          "relationId": "relation:db7a4396a329323e4ea7e41c2e0da5c380f8bbbcfd62263b89d7bb7831e31525",
-          "cellId": "cell:72e0b41953b5b659833c32947e0d21854cb5a0e4de6c0200588db849a2be7f57",
+          "relationId": "relation:1eaf60328511666fb5e7ac8f547392c465fd9cd98e54238f159db4114fe91a80",
+          "cellId": "cell:350d92cf7cc19bac0d93de8fa5c8a62de2e2f3ebdb997af4e55107502dfafe60",
           "caseId": "dsh-plugin-subscriptions-node22",
-          "plugin": "dsh-plugin-subscriptions@0.8.0",
+          "plugin": "dsh-plugin-subscriptions@0.9.0",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^3.18.1",
@@ -4244,8 +4244,8 @@
           "resolvedVersion": "0.85.1"
         },
         {
-          "relationId": "relation:7d6373aeb5e5e4a7f0cd1e332ebf7c1550b1ae08b9383fd28be4751c5d359bf7",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:a0e3eaab6ec1dcba6e71412d1cc468443a86d665bb99b15fe310a5c31dfbd23c",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -4256,10 +4256,10 @@
           "resolvedVersion": "0.85.1"
         },
         {
-          "relationId": "relation:867c028f503becb8514a810fb94eb9023e3c0305cbd03bd2bfe8c18b7a4182bd",
-          "cellId": "cell:f65623ff8c8b16374005db85072196cda5f6dfaf58ea95aeb47f7fdff115d027",
+          "relationId": "relation:6dd40e19f3f865e8af5cc646c4629f76ed70bc52ecb8c866779e380297151e78",
+          "cellId": "cell:c6f4478750998890ce842a818a2f81297d7c9b8ef0d66c7deba08355b2724bf0",
           "caseId": "dsh-coding-subscription-oauth-node22",
-          "plugin": "dsh-coding-subscription-oauth@0.8.1",
+          "plugin": "dsh-coding-subscription-oauth@0.8.3",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "0.84.2",
@@ -4317,10 +4317,10 @@
           "staticUsage": "runtime-import-observed"
         },
         {
-          "relationId": "relation:05da8eb564685aad1c38b1deb5ce7e400420ff7e6395648744021ed3eb590f7f",
-          "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
+          "relationId": "relation:f9b6e6a4fcf731bdafb46845764f8ee693c0f589cde728943e5d1170b40b4d64",
+          "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
           "caseId": "dsh-skills-manager-node22",
-          "plugin": "@michengai/dsh-skills-manager@0.1.49",
+          "plugin": "@michengai/dsh-skills-manager@0.1.50",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^18.2.0",
@@ -4328,10 +4328,10 @@
           "staticUsage": "no-literal-reference-observed"
         },
         {
-          "relationId": "relation:470a98f253ff389985cd3ec815e2fbd2ce2266d922c3783cd3b0b88863a115de",
-          "cellId": "cell:34903369e6b7b3a584c2a947b7515545ddec2a4262c8519dae03cc22f4a69e54",
+          "relationId": "relation:1b2f4311f3fab39a0f88e9b8d7f5758c1af013657f1c02eb6f42916b9f1bcc5f",
+          "cellId": "cell:bd13ae0a514bfc76255aa025e05436d52eae76c0f54d54166ed49ff9f533c282",
           "caseId": "dsh-catppuccin-node22",
-          "plugin": "@nonamelego/dsh-catppuccin@0.5.0",
+          "plugin": "@nonamelego/dsh-catppuccin@0.5.1",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^18.2.0",
@@ -4372,10 +4372,10 @@
           "staticUsage": "runtime-import-observed"
         },
         {
-          "relationId": "relation:954a149e4c9c5664f5003bf2cbcbde51fffbeb355fd1065925f55a35c5d77068",
-          "cellId": "cell:477f88ab0cdd395b838252a5f820f0be5690f58383497a1c36259699629a8c1e",
+          "relationId": "relation:4754a93fa948573494578a51e5b869d0f9db14de60a46ac93287a5a1781acc97",
+          "cellId": "cell:3ef0f5ad907585971d49965feedaaac76265754e2e6a13891f2daef96880381e",
           "caseId": "dsh-chat-import-node22",
-          "plugin": "dsh-chat-import@0.11.1",
+          "plugin": "dsh-chat-import@0.11.2",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": ">=18.0.0",
@@ -4383,10 +4383,10 @@
           "staticUsage": "runtime-import-observed"
         },
         {
-          "relationId": "relation:dfb4382289b754e7a36b6737da3aae2561a6043d96a6a9fc839b3371ac9eb627",
-          "cellId": "cell:a70ca75f67874949632f12a2ff688e6296a96bbfbfc6bb2c770e57afd5adb3f6",
+          "relationId": "relation:553049c90ae2ebb3cd42b42d1eb32e3325f790804b111705fc7ce18f1bc45531",
+          "cellId": "cell:edba1b326e8427a32c9797339a2c45ba37623ac52e1c669ce705c84320fdf477",
           "caseId": "dsh-client-auto-continue-node22",
-          "plugin": "dsh-client-auto-continue@0.11.5",
+          "plugin": "dsh-client-auto-continue@0.11.6",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^18.2.0",
@@ -4405,8 +4405,8 @@
           "staticUsage": "runtime-import-observed"
         },
         {
-          "relationId": "relation:2913d294ac03e31635906e54e4408306947392baa0152ef592ec659598ca56d2",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:b9737e144d49a6407619138fa4d664270ab11b3417c9ace80289008340f82a06",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -4416,10 +4416,10 @@
           "staticUsage": "runtime-import-observed"
         },
         {
-          "relationId": "relation:d61a84d0254a8dbe2bebbeaf2a184814f7a4cd0ddf8c1c91f63693fe490814ff",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:61b0ffc4f4106b8e18315dcf57e82e2070b42594fb9a7da01354f73b378da3e0",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^18.2.0",
@@ -4482,8 +4482,8 @@
           "staticUsage": "runtime-import-observed"
         },
         {
-          "relationId": "relation:8099b072abe01f1c7de65abe2698a1fbfec96e7a3fe9ed1c10a489bec15a11fa",
-          "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+          "relationId": "relation:c7897005a16de87542df4889d226caa130f28ca52a9195b00e2ab82387ed365e",
+          "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
           "caseId": "dsh-pet-node22",
           "plugin": "dsh-pet@0.2.8",
           "dshVersion": "0.1.5-rc.2",
@@ -4564,8 +4564,8 @@
           "staticUsage": "runtime-import-observed"
         },
         {
-          "relationId": "relation:79e45f9c9c60b8569976217d126616039929cd0f200c5aa18b84fa425d1ceeb1",
-          "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+          "relationId": "relation:6cf9f1eb1a3818927bb35bcb36461158e49ae70b43f4c12c95a3d563c737c1dd",
+          "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
           "caseId": "dsh-codex-subscription-node22",
           "plugin": "dsh-codex-subscription@2.1.0",
           "dshVersion": "0.1.5-rc.2",
@@ -4575,10 +4575,10 @@
           "staticUsage": "runtime-import-observed"
         },
         {
-          "relationId": "relation:1e9d6a913b075955618bd26d1ddcc4a9bee6a9108d267112cf93237031b92203",
-          "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+          "relationId": "relation:4ff8004e2355575264e4661a3d53af8335ffbb64c1e7bf18e4778124d84d0184",
+          "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
           "caseId": "dsh-config-manager-node22",
-          "plugin": "dsh-config-manager@0.1.57",
+          "plugin": "dsh-config-manager@0.1.58",
           "dshVersion": "0.1.5-rc.2",
           "nodeMajor": 22,
           "required": "^18.2.0",

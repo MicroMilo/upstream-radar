@@ -2,16 +2,16 @@
   "schema": "upstream-radar.dsh-compatibility-ir/v1alpha1",
   "cells": [
     {
-      "id": "cell:bb5b8760a05821b8b169dd8c695f5b90c91d228d2cca7a47e42e38bef520ccf4",
+      "id": "cell:6e37cb6774ec423dc4efaaed1dc52bb743d385c2f4100de76489eadaae50f2f9",
       "caseId": "agent-teams-node22",
       "targetId": "agent-teams",
-      "observedAt": "2026-09-11T11:49:15.128Z",
+      "observedAt": "2026-09-13T12:18:40.269Z",
       "result": "compatible",
       "plugin": {
         "name": "@nanmicoder/dsh-agent-teams",
-        "version": "0.1.17",
-        "artifactSha256": "ff7a5fc24cda7232538b5646dfd72865f3911de28c1888a44ee1ba376b1b4b1a",
-        "staticFingerprint": "sha256:fba08e93e101280cac422a6b35bafca8890883c2f2708e826fe73beac7faa3dc"
+        "version": "0.1.18",
+        "artifactSha256": "f6c1950f66744fa5aa27f6f8d9f56df58fe144a16a2e32e765be2b5dc38f57ee",
+        "staticFingerprint": "sha256:9a03a3ff5fddadb8e48824bd676ca70423f033523eb8890f59c23b20a5c71335"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -20,27 +20,27 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:f058ddc0d4d57cd6f96c1021e8473b419a3d71d9f8986562e17f11b7f840da68"
+        "contractFingerprint": "sha256:95c786e4b37bb809a955de89e9c7160be0bbe9d5c573a7109a774deaac7d9f40"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:add8bbec97ab58b01edbb3b2453d2ba59167145f95117db86e7f8150c31a28fd",
-        "runtimeGraphNodes": 500,
-        "runtimeGraphEdges": 1972,
+        "runtimeGraphDigest": "sha256:1a24c5467570b2485f0ffb2a0cde61dc103e19acb7b5e7a6e9196cfd382205fb",
+        "runtimeGraphNodes": 501,
+        "runtimeGraphEdges": 1973,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0
       }
     },
     {
-      "id": "cell:4540352e383a665f09787b14d618001b5d3a604bf0acc64308116c41704213f7",
+      "id": "cell:278b631d40ea1a02ef955554ea672992c121b290eb67867b831e3af7cdabd7ab",
       "caseId": "anweat-dsh-browser-node22",
       "targetId": "anweat-dsh-browser",
-      "observedAt": "2026-09-12T11:10:20.575Z",
+      "observedAt": "2026-09-13T12:18:38.685Z",
       "result": "build-approval-required",
       "plugin": {
         "name": "@anweat/dsh-browser",
         "version": "0.1.12",
         "artifactSha256": "e1c1a20b989231bc82fd791518781725845cf5382555cf9b2ed87446e61b42a0",
-        "staticFingerprint": "sha256:3e5871cfd1985eb45429478691afe6eee36e5f9334f9782c8680493aab9eaef5"
+        "staticFingerprint": "sha256:1fa1cccc13f35f20144b449f21d677ea83bd7f523c4473fc1de214b9d303aafb"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -52,9 +52,9 @@
         "contractFingerprint": "sha256:f0e2f21d84dda70d7be6530848c66ec3165115a2420858636955b08d6f2feab8"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:793b5076adc61d024bd64ad8970f165117a5c4af371b075271f8a77f50f15747",
-        "runtimeGraphNodes": 521,
-        "runtimeGraphEdges": 1993,
+        "runtimeGraphDigest": "sha256:2a21d5ce2ededdf777ff03472533e1eb50a532a9bba55ae022135ee8d154b7f3",
+        "runtimeGraphNodes": 522,
+        "runtimeGraphEdges": 1994,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0,
         "requiredDependencyBuilds": [
@@ -63,16 +63,16 @@
       }
     },
     {
-      "id": "cell:9145f7dc48d0254c76b2d1bd3f157d9b269d3ce21a65a07254da00041ff4df82",
+      "id": "cell:afa23052e311d31f0ba66f23638ca3278e53ab648c6138242e13b39b0e842710",
       "caseId": "archify-dsh-node22",
       "targetId": "archify-dsh",
-      "observedAt": "2026-09-12T11:10:17.145Z",
+      "observedAt": "2026-09-13T12:18:43.502Z",
       "result": "compatible",
       "plugin": {
         "name": "@tt-a1i/archify-dsh",
         "version": "0.1.0",
         "artifactSha256": "3192afe54949da6494acea3bd2bf5113a58ea78651113b1289bcc7212130df38",
-        "staticFingerprint": "sha256:748c0ef6b0bb80b9fbca8abe15a9984fdc80e9efe7d09c3047c030ede22a5c0a"
+        "staticFingerprint": "sha256:78e231e8e2030ada8484fa6914c975239d35168ac4233b188ff5596346999972"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -84,9 +84,9 @@
         "contractFingerprint": "sha256:5cb6b254771f5f2b78fbce266a000cff0297681e9609561dea7944f2dbbb6ef6"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:d1013af6b77348243e737b2f63a27dd810011fea0e9fc2c3c9ae80cc83f94081",
-        "runtimeGraphNodes": 500,
-        "runtimeGraphEdges": 1972,
+        "runtimeGraphDigest": "sha256:a1f980be6699be8743fbe28560ecc70b91da0f5b2d0ed89dcb1e40a7217a9b31",
+        "runtimeGraphNodes": 501,
+        "runtimeGraphEdges": 1973,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0
       }
@@ -150,16 +150,16 @@
       }
     },
     {
-      "id": "cell:b80c7446947f94ccc7165e6e00961d132625526bfb43e7482c5858235be08bdc",
+      "id": "cell:1e3ab640e98dbe62461d8c927cb56897788aa893c1f8a699cebfc63646311dc4",
       "caseId": "context-node22",
       "targetId": "context",
-      "observedAt": "2026-09-12T11:10:57.960Z",
+      "observedAt": "2026-09-13T12:18:38.885Z",
       "result": "compatible",
       "plugin": {
         "name": "dsh-context",
-        "version": "0.50.0",
-        "artifactSha256": "c7a51b1ea2022e16aaa0e7e4d001897bc81e15ccdbb63181021660edd44c6c09",
-        "staticFingerprint": "sha256:87ae79960a00f0175a9db57a34584ca1361fad80d199cb8b2e234c7dbc9f85ea"
+        "version": "0.51.0",
+        "artifactSha256": "e7c0c42570370bae7f80aab74fc48692acb36f20a5577ca759ecac2b5e3d2b5f",
+        "staticFingerprint": "sha256:fd6943f94c708469942be0d0099b4e43f9093b3b5525e210f7598be8ad7d69b2"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -168,27 +168,27 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:b6c20c306a14618c887e12dfcc91096a273a2b0655fe8d6ffe8be57506c1ab99"
+        "contractFingerprint": "sha256:2c80c3922b33efccfaf424c4cf3831913db6e79d0f275f51102e3dc2a06ed8d5"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:d5f8f509b141c99611fa69a02b5b095488e981e201da48b1addf80820238c7ed",
-        "runtimeGraphNodes": 501,
-        "runtimeGraphEdges": 1977,
+        "runtimeGraphDigest": "sha256:8b975c2b0e3d7829ef543868915d6f82a07830f5365c3d82c8929542e934d527",
+        "runtimeGraphNodes": 502,
+        "runtimeGraphEdges": 1978,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 4
       }
     },
     {
-      "id": "cell:5c347a89ce49cc8c81776e44fe283a795aa49c1da7926f1be0f6ebc9139616fa",
+      "id": "cell:cab3785bed884005f8501b63c6f6dcc519956ba1fb8aabeab27c8b3926b74cf7",
       "caseId": "cost-meter-node22",
       "targetId": "cost-meter",
-      "observedAt": "2026-09-12T11:11:07.982Z",
+      "observedAt": "2026-09-13T12:18:49.886Z",
       "result": "compatible",
       "plugin": {
         "name": "dsh-cost-meter",
-        "version": "1.7.21",
-        "artifactSha256": "11c52a54dc9925a6302d5d0b2b1fb46f0e0bdaeed4bd169e2a7b168246a08b93",
-        "staticFingerprint": "sha256:c5e2929167ca33bf6e924e909291d7bbc88b2840b78bc28ab76486bda61faa12"
+        "version": "1.7.22",
+        "artifactSha256": "9456c72fea1a884c5d3b77ad487825be85571f400b1d9f979b4f5e979037c2eb",
+        "staticFingerprint": "sha256:7cb259001c72d1f1133795b6e2c38c11e13c65a0206abcb1ff3165f769457f4b"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -197,12 +197,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:cdd6949e872fab7a6aef9a05bb5c8d9bb2d179e11a844e726ba8c433d68b51a2"
+        "contractFingerprint": "sha256:f583be1a25ae614dd1535c435eed9c8041d320fbd20507750a8b0ad7d5577f9b"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:2791a344dcab93c57b52783cb87f4cb6a4bdbf834abb175e898b841a81c75d82",
-        "runtimeGraphNodes": 501,
-        "runtimeGraphEdges": 1975,
+        "runtimeGraphDigest": "sha256:ae1df752e608d408a46b5285094f2e6e94ea8b6bf2511b6f2e712bb78e91a67f",
+        "runtimeGraphNodes": 502,
+        "runtimeGraphEdges": 1976,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 2
       }
@@ -211,7 +211,7 @@
       "id": "cell:5bc085a3e72570c8d7c7f0a2fc983a4daa1693c3494bf840061c613338c6bfc9",
       "caseId": "deepseek-harness-acp-node22",
       "targetId": "deepseek-harness-acp",
-      "observedAt": "2026-09-11T11:49:05.690Z",
+      "observedAt": "2026-09-13T12:18:27.938Z",
       "result": "unknown",
       "plugin": {
         "name": "@openma/deepseek-harness-acp",
@@ -375,16 +375,16 @@
       }
     },
     {
-      "id": "cell:260d6fd66e89ac649055007ee527c80c7a672e0b4a92f11a37c803e7b61cf8b1",
+      "id": "cell:d6dd7e05b3e6d1c2c522196135c6accd1bd4370b533502d66e78633ce2f2471c",
       "caseId": "dsh-auth-gate-node22",
       "targetId": "dsh-auth-gate",
-      "observedAt": "2026-09-11T11:48:26.915Z",
+      "observedAt": "2026-09-13T12:18:38.533Z",
       "result": "compatible",
       "plugin": {
         "name": "dsh-auth-gate",
-        "version": "0.12.0",
-        "artifactSha256": "46c30238a4daaea56b67db10990dd799c37b049397c8710e43842b7d81fa8d67",
-        "staticFingerprint": "sha256:23937c3780062f43346ab85a0a83824793bc9af9b6695e47005b4b8c14ae009a"
+        "version": "0.13.0",
+        "artifactSha256": "9ea7452c97bc971ebc5bb3c0575ba2545830c42f7ea8e744104bb37cf3f22e6c",
+        "staticFingerprint": "sha256:e3e170683844fd02928a56940e6daa665040dd579c10888c3dbd7674dedaf2e6"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -393,12 +393,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:e82b0f580ee774f4c0c95d58b7769560508a947f04882ad1e25c53775c8e432c"
+        "contractFingerprint": "sha256:edd9f5755391ab42330b21dca70d95d56b37a6b86cb13c95bc44e970641bba2b"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:aec99b7993f091df5a0b20e04677edbae868a48ee4a4ef2f701f4f671629362c",
-        "runtimeGraphNodes": 506,
-        "runtimeGraphEdges": 1984,
+        "runtimeGraphDigest": "sha256:7093e99ef7ff5553bd23a004e805edd50d4a42339cae8e65532c8946d2a3e0cd",
+        "runtimeGraphNodes": 507,
+        "runtimeGraphEdges": 1985,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 1
       }
@@ -433,16 +433,16 @@
       }
     },
     {
-      "id": "cell:9f161ce8d04c295d0f6cfb51ffeb6793c0451bd793eda2906e60a53f4359f49a",
+      "id": "cell:a380e88cc0521f7bc95717c7ff763b06c60d1d24ab7a9fb317795f214285fa53",
       "caseId": "dsh-auto-memory-node22",
       "targetId": "dsh-auto-memory",
-      "observedAt": "2026-09-11T11:49:11.820Z",
+      "observedAt": "2026-09-13T12:18:40.319Z",
       "result": "build-approval-required",
       "plugin": {
         "name": "@a9i5k4/dsh-auto-memory",
-        "version": "2.4.2",
-        "artifactSha256": "976dbbaf2027a9552558232cda041f2c0e5db9e19cc16f3e8f308b973042cd1c",
-        "staticFingerprint": "sha256:a85ce864ea5eddcb1affe67004faee473e4df6de5b268bbdd5bebad181a14edf"
+        "version": "2.5.2",
+        "artifactSha256": "9e4b728f80fb33b11c61c20ac63b7d94f3e749b05e8d10d69994bd8d852c67fb",
+        "staticFingerprint": "sha256:56dfa1fc7e4631a35da14acebe163458a0e3087fcf43df28c9cc35d00e4048ea"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -451,12 +451,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:61e3d7a36b0946916d7ce683b8c6a765e96af010fdf26a210c2cee50e693afba"
+        "contractFingerprint": "sha256:b695141419e1488cf99a7c5e32d38438cfc9bdb5d84bec2626f934df6dcd3e18"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:3985950af201d9502c636e3e23cc93b98b75eb38ad4321d62323e61a1893a4a4",
-        "runtimeGraphNodes": 554,
-        "runtimeGraphEdges": 2036,
+        "runtimeGraphDigest": "sha256:1f67fd92e16f055065e1de6aeeda6dc0f4fed883396bf5abc07c8539b3d0d6ca",
+        "runtimeGraphNodes": 555,
+        "runtimeGraphEdges": 2037,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 1,
         "requiredDependencyBuilds": [
@@ -606,16 +606,16 @@
       }
     },
     {
-      "id": "cell:34903369e6b7b3a584c2a947b7515545ddec2a4262c8519dae03cc22f4a69e54",
+      "id": "cell:bd13ae0a514bfc76255aa025e05436d52eae76c0f54d54166ed49ff9f533c282",
       "caseId": "dsh-catppuccin-node22",
       "targetId": "dsh-catppuccin",
-      "observedAt": "2026-09-12T11:10:16.792Z",
+      "observedAt": "2026-09-13T12:18:35.808Z",
       "result": "peer-contract-incompatible",
       "plugin": {
         "name": "@nonamelego/dsh-catppuccin",
-        "version": "0.5.0",
-        "artifactSha256": "d806c5d0266b00d970afc4754129e062e4d891fcc717f3c60610b542e1eb7000",
-        "staticFingerprint": "sha256:3ed5935f825fee21dbea712c4257cbaa7d5d9518d51c23dd7909622778e9cf51"
+        "version": "0.5.1",
+        "artifactSha256": "eb0e71ba8be5e6854c543aa8897bd2f4f71754578d96d62b84b4b7454a0710bd",
+        "staticFingerprint": "sha256:c65c875b0aea023859318394a9ecc8443c78bc7427651c50c312bc89d51f7221"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -624,27 +624,27 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:0fe8a7deaad43602d930584038f2e0368be2218b7ba3b082f59dcb8e92196fd1"
+        "contractFingerprint": "sha256:639a0f3776a6554e4b764801c2102fa1b7ae4ca5c9b5cb7845a2a77af0e0c32b"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:03871ab675569cbb537b3be625323eb9868f9ac6e36e99d7ab17a29a847112ec",
-        "runtimeGraphNodes": 500,
-        "runtimeGraphEdges": 1972,
+        "runtimeGraphDigest": "sha256:aea0638aa5cc3a7b4bc468596d9aa23d7bd803a69fb7e782c6ddceba5b0e2cdb",
+        "runtimeGraphNodes": 501,
+        "runtimeGraphEdges": 1973,
         "requiredUnresolved": 1,
         "declaredPeerContracts": 1
       }
     },
     {
-      "id": "cell:477f88ab0cdd395b838252a5f820f0be5690f58383497a1c36259699629a8c1e",
+      "id": "cell:3ef0f5ad907585971d49965feedaaac76265754e2e6a13891f2daef96880381e",
       "caseId": "dsh-chat-import-node22",
       "targetId": "dsh-chat-import",
-      "observedAt": "2026-09-12T11:10:13.921Z",
+      "observedAt": "2026-09-13T12:18:43.569Z",
       "result": "peer-contract-incompatible",
       "plugin": {
         "name": "dsh-chat-import",
-        "version": "0.11.1",
-        "artifactSha256": "02dde23ddc9453491108ec0341abbf139e7bd89125596e0f7b446eadfacf2e11",
-        "staticFingerprint": "sha256:7f31287e3f55b331ce2b5ef6201cb719bc5b69c41702d514979ce3a01d6e9b3e"
+        "version": "0.11.2",
+        "artifactSha256": "d32f00a8f8b9c9d38b1c8555a22d779fc4c5592a9995a4cabd4c55c3efea68b1",
+        "staticFingerprint": "sha256:09e99a19837b1268155225e2aa9b1d5630c0776464c58297588e5bcde19a6c65"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -653,12 +653,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:b738ea34331414eb6948ead3da4c253b348ff3545aa67561ec0e68c5e10b880a"
+        "contractFingerprint": "sha256:a42cc4c94ab2940538da1f3dab1f77a40582a56a7d0e5ba52073ae16cf37d602"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:aa8ba0fbcdd0683fff31e564a6b515d0ecc96de5c023d89930d1b20305c6dc21",
-        "runtimeGraphNodes": 501,
-        "runtimeGraphEdges": 1977,
+        "runtimeGraphDigest": "sha256:d068e63e85b8a435651432feb7c48a12d09f2553ce7cf593e93b57f73a6135d8",
+        "runtimeGraphNodes": 502,
+        "runtimeGraphEdges": 1978,
         "requiredUnresolved": 1,
         "declaredPeerContracts": 5
       }
@@ -693,16 +693,16 @@
       }
     },
     {
-      "id": "cell:a70ca75f67874949632f12a2ff688e6296a96bbfbfc6bb2c770e57afd5adb3f6",
+      "id": "cell:edba1b326e8427a32c9797339a2c45ba37623ac52e1c669ce705c84320fdf477",
       "caseId": "dsh-client-auto-continue-node22",
       "targetId": "dsh-client-auto-continue",
-      "observedAt": "2026-09-11T11:48:42.915Z",
+      "observedAt": "2026-09-13T12:18:41.384Z",
       "result": "peer-contract-incompatible",
       "plugin": {
         "name": "dsh-client-auto-continue",
-        "version": "0.11.5",
-        "artifactSha256": "d054e70ced00c9e5e66b7e55b29470e73b7afd474d50ddfa032aa98c71d343be",
-        "staticFingerprint": "sha256:dd6b822a4f9ce7015fc5e479f46e07538ac28bdb5e080d2971e0e2259f827442"
+        "version": "0.11.6",
+        "artifactSha256": "affef01424e87a21cfd3c280f69c63bf569b830ae4102eb766fbbe3806768690",
+        "staticFingerprint": "sha256:384dbe988922320e46bf01c427b80861fde79ee0e518970d22a907199e4c1382"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -711,12 +711,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:66fe5ac207a7174c902f25e6a13491db17496ba5ae87b950d4f277794756cd46"
+        "contractFingerprint": "sha256:d11aabc24a5a24dc37a35080596204ec43f6b08d8ccb08236aaf9d34b4444b3e"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:ead5b948096c68beb3b124ed866d8f6e1f81679697dc8f20189750d885b00fb1",
-        "runtimeGraphNodes": 500,
-        "runtimeGraphEdges": 1975,
+        "runtimeGraphDigest": "sha256:8cb3ac0f55fd0fe286df7b1707f2749b556044193e231d0ea3807b83c04dee3f",
+        "runtimeGraphNodes": 501,
+        "runtimeGraphEdges": 1976,
         "requiredUnresolved": 1,
         "declaredPeerContracts": 4
       }
@@ -751,16 +751,16 @@
       }
     },
     {
-      "id": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+      "id": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
       "caseId": "dsh-codex-subscription-node22",
       "targetId": "dsh-codex-subscription",
-      "observedAt": "2026-09-12T11:10:14.682Z",
+      "observedAt": "2026-09-13T12:18:40.929Z",
       "result": "peer-contract-incompatible",
       "plugin": {
         "name": "dsh-codex-subscription",
         "version": "2.1.0",
         "artifactSha256": "59e659aa637d6241e51620b4a5332c2900dcedba8adc62239f1c6f52e8698679",
-        "staticFingerprint": "sha256:f5fe996f4c99989c4e4b6554c5cd991a436df254e19baf55d38d0fa30f3d2132"
+        "staticFingerprint": "sha256:567e62497dcddd27b263d79bfba442629537e0c7c69f845dd49f902f3c96f157"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -772,24 +772,24 @@
         "contractFingerprint": "sha256:f07e485bc137817a23b30e8e3604ce8bc8c48b93e5d80f6c43a6df2e05cb1f56"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:11537b1ff03e31efa9bc12488650657948a67051a5c937a4d27c049974de548b",
-        "runtimeGraphNodes": 505,
-        "runtimeGraphEdges": 1995,
+        "runtimeGraphDigest": "sha256:1774027cf900a618749ccf635abcb9de8a1e38eb9e9be5d1222bb97fced0bd42",
+        "runtimeGraphNodes": 506,
+        "runtimeGraphEdges": 1996,
         "requiredUnresolved": 4,
         "declaredPeerContracts": 20
       }
     },
     {
-      "id": "cell:f65623ff8c8b16374005db85072196cda5f6dfaf58ea95aeb47f7fdff115d027",
+      "id": "cell:c6f4478750998890ce842a818a2f81297d7c9b8ef0d66c7deba08355b2724bf0",
       "caseId": "dsh-coding-subscription-oauth-node22",
       "targetId": "dsh-coding-subscription-oauth",
-      "observedAt": "2026-09-12T11:10:15.978Z",
+      "observedAt": "2026-09-13T12:18:40.970Z",
       "result": "peer-contract-incompatible",
       "plugin": {
         "name": "dsh-coding-subscription-oauth",
-        "version": "0.8.1",
-        "artifactSha256": "f2b2eac917ec22a40d4301a46ff858bb7ca2b76aa979b17d30bf0941696de8e4",
-        "staticFingerprint": "sha256:848bed01b0b2c8ba19bb5b17c135c93dc065cdae7d58b7c561d8f115a79fffe8"
+        "version": "0.8.3",
+        "artifactSha256": "b624168d867ce9a37eaef328889976bdf5fee4d53c9500ea80bd997bbca45657",
+        "staticFingerprint": "sha256:7beb532e714f18dcdb96afcd7aa52f1bd0d55d5bd10830ec522bf2f8df69697b"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -798,12 +798,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:d9bd43abbf00edcf1f58e587ddcc4a6b42afd5da909a370969c35b84f200543f"
+        "contractFingerprint": "sha256:c85aab44ffdef0792554fb44e92e3d46a9b600289430b860562296bc7ec08157"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:2b54e71ab5d9313326cf40b5a730aa0df3f724bb99acca03a47d9d7c6f9bc8ad",
-        "runtimeGraphNodes": 502,
-        "runtimeGraphEdges": 1982,
+        "runtimeGraphDigest": "sha256:8d9ca1fa14c0f47ffe776918889c68c6f2c200ed7a035da444cf82646b9af82b",
+        "runtimeGraphNodes": 503,
+        "runtimeGraphEdges": 1983,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 6
       }
@@ -838,16 +838,16 @@
       }
     },
     {
-      "id": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+      "id": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
       "caseId": "dsh-config-manager-node22",
       "targetId": "dsh-config-manager",
-      "observedAt": "2026-09-12T11:10:48.543Z",
+      "observedAt": "2026-09-13T12:18:43.400Z",
       "result": "peer-contract-incompatible",
       "plugin": {
         "name": "dsh-config-manager",
-        "version": "0.1.57",
-        "artifactSha256": "891f711c3bb56ad6ca5bd7d8123dee45ad0caa8e9ef705c8e3b299f76300c551",
-        "staticFingerprint": "sha256:cb856ae7cdc3bdbf31e64c3596973beb3416db5cbe99f1902e040ae790befef9"
+        "version": "0.1.58",
+        "artifactSha256": "8ba39edfc075725b87624b71aefb64c784114a588d07da22450280fd1bc2c20b",
+        "staticFingerprint": "sha256:bac1e627e89e7899eac243bb20acddae72fba08978a26b75fd98253cfc500c48"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -856,12 +856,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:b8a2cbffd9e72dad564f27ad95aa32b3f70cd625e3bbd18541e224bacf038b6b"
+        "contractFingerprint": "sha256:4b20aa5a37e291faa55bb74e318ad742a6c3c9e46b4d364e5ff5d088f7a6ac55"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:8d5d059a2c9af1b093b8ff468609553eb3958ca7a92fe6b27def79b42550fdb7",
-        "runtimeGraphNodes": 528,
-        "runtimeGraphEdges": 2034,
+        "runtimeGraphDigest": "sha256:ab6bc1fd3eb42326ae4dcb89b9f7b581a27d9376b14741c72bddfaae878c3dfa",
+        "runtimeGraphNodes": 529,
+        "runtimeGraphEdges": 2035,
         "requiredUnresolved": 31,
         "declaredPeerContracts": 16
       }
@@ -954,16 +954,16 @@
       }
     },
     {
-      "id": "cell:6735930b98409a2ed994e02f484dca7b9888e4b798c6f6b43e03b67bfe86759f",
+      "id": "cell:198b9f5eca122af7f8de851acfa45b23ce413a8029648a91a76949a47176521a",
       "caseId": "dsh-doctor-node22",
       "targetId": "dsh-doctor",
-      "observedAt": "2026-09-12T11:10:16.947Z",
+      "observedAt": "2026-09-13T12:18:42.317Z",
       "result": "compatible",
       "plugin": {
         "name": "@moonquake2004/dsh-doctor",
-        "version": "0.4.7",
-        "artifactSha256": "c274b348f7a1a0bf23b617d672ebfe7e2edfe4d6ffdead4d391c91babc95fa35",
-        "staticFingerprint": "sha256:3b9664403c8a2ed5dbcdf8fb9a73071eceddec3770692805c1a8eb8b6a136ac4"
+        "version": "0.4.9",
+        "artifactSha256": "610d1e614956d195860ccd88dade39347842390445503304738ea8ebb7a125f9",
+        "staticFingerprint": "sha256:0b07c531f38823bed3f7e8b3ed6dc0a8e290b4cad919adfccde0b6d7364424b5"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -972,27 +972,27 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:1cc23b5fb4967e91f8ab5fc08988f3acb7940f1ba236a975e22f31402ac7698e"
+        "contractFingerprint": "sha256:fd13652d0d4c8b0dfcfb0acd8e8229015d5ac6c09720f5674eb2644c077f26db"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:71e09727c4dcef2d7ff262cdaffea9ba8a835d1b4e6f74f6644d1176986cdcb9",
-        "runtimeGraphNodes": 500,
-        "runtimeGraphEdges": 1973,
+        "runtimeGraphDigest": "sha256:41b18febdaeb4ac44d6356b53e19500d817363f364f2fdaf0804bee338ae18cd",
+        "runtimeGraphNodes": 501,
+        "runtimeGraphEdges": 1974,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 1
       }
     },
     {
-      "id": "cell:1a40eeb8bf5611d9da6e1706907100641a498b0b13aa86f99e51bd187577f9e8",
+      "id": "cell:b48f4e5591b12532ba92553d3bc34e3ecb70aac0c081a24ada7cad485709f31e",
       "caseId": "dsh-dream-skin-node22",
       "targetId": "dsh-dream-skin",
-      "observedAt": "2026-09-12T11:10:08.254Z",
+      "observedAt": "2026-09-13T12:18:37.644Z",
       "result": "compatible",
       "plugin": {
         "name": "dsh-dream-skin",
         "version": "9.10.0",
         "artifactSha256": "766bd56073fd2268b15e097963e86b7871a29bce39f4dd72cf4ca310e7fbe1ad",
-        "staticFingerprint": "sha256:b731bb0048366a17fd68e901cb0e566205786a34af024755764700e880849a12"
+        "staticFingerprint": "sha256:a7c96091c76c176da4ea9839cbf91da5572142afd2f6cd4e4e18d98d4196fec9"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -1004,9 +1004,9 @@
         "contractFingerprint": "sha256:2444434d6bf025e6f18e1eb045a39621fc1b8e1b6030ae69de4573f94a1f9e5d"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:c98ad081b07def3b1876febe8ec35d3b598ea05955c8fdbcf84397cd4f1eda97",
-        "runtimeGraphNodes": 500,
-        "runtimeGraphEdges": 1972,
+        "runtimeGraphDigest": "sha256:7b4fe7964f2d986e0aafb601c3de6b2869d43fc063cac93edeb8f113f76d4ca7",
+        "runtimeGraphNodes": 501,
+        "runtimeGraphEdges": 1973,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0
       }
@@ -1041,16 +1041,16 @@
       }
     },
     {
-      "id": "cell:d533c31eb15a48f294a9aa21e7882ed4b9d95c3ceef0227460b61dec8b3b974d",
+      "id": "cell:fa43c94102042f38c25e307ce360b373d3e37fbf40acc02c5f7efe71708a5a8b",
       "caseId": "dsh-email-node22",
       "targetId": "dsh-email",
-      "observedAt": "2026-09-12T11:10:19.848Z",
+      "observedAt": "2026-09-13T12:18:42.516Z",
       "result": "compatible",
       "plugin": {
         "name": "dsh-email",
-        "version": "0.10.6",
-        "artifactSha256": "db29b627191d6f9a5ebd0f7c5f70cbadb35d1876140984eb89e0a7765f1ce11d",
-        "staticFingerprint": "sha256:7fdc783f929502be4d5a4da06dcd47fc3441820b0b186618c0c6a9504ae0a073"
+        "version": "0.10.7",
+        "artifactSha256": "afd1073f71faf39e1b0ca43912602cf32f2ba2914b654569641142b2778a10ad",
+        "staticFingerprint": "sha256:0a26694e7214a73c74d34b5e1e47b19b30510e8397d6152c8bcd117751db245b"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -1059,12 +1059,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:e06a3aab4e5308f74849f10a6ffc8aa72ba77158abd70fa2485c5f5277135de1"
+        "contractFingerprint": "sha256:6a4b4615a2d38866294f624e564871431b37e5ef03188c94f24012d5dcebaacf"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:04606c5a609a5dbc0907ed74fa97d692964283b9dbe530bf88d37d574f7e842f",
-        "runtimeGraphNodes": 551,
-        "runtimeGraphEdges": 2044,
+        "runtimeGraphDigest": "sha256:6ebe95e759725300cfdb3d6b75e4ba59edefb934a02ff9999607d6a39ad47ea9",
+        "runtimeGraphNodes": 552,
+        "runtimeGraphEdges": 2045,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0
       }
@@ -1128,16 +1128,16 @@
       }
     },
     {
-      "id": "cell:e107d7ac6f246e723060ced02f0abdb5ba3280bef50f8728b4d3d0153c834805",
+      "id": "cell:8fbdf3ee6fff3c9c5aa23e05fa751f893e35bb2cd3497a6f3c75b9408c856626",
       "caseId": "dsh-free-search-node22",
       "targetId": "dsh-free-search",
-      "observedAt": "2026-09-11T11:48:23.636Z",
+      "observedAt": "2026-09-13T12:18:39.263Z",
       "result": "compatible",
       "plugin": {
         "name": "dsh-free-search",
         "version": "0.4.24",
         "artifactSha256": "ce3d6f52fa41a63c7ff21704b14780ece803812b958242c82cf953195e559ba4",
-        "staticFingerprint": "sha256:beaeaade243811ee0fcd5ddb3cdad131dcdc9fbc92cc3caa0d66f9ce4f2664a1"
+        "staticFingerprint": "sha256:7555b5fe4aefae41bed3d74e8e27c9fbf16ff01543ef195ffc063fadd46f1c77"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -1149,9 +1149,9 @@
         "contractFingerprint": "sha256:e0f0a1bbd23135a1db4b10eff25964d02539d070f68a3d7d1db3c3de6e3b7251"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:adf3d0751aa913f6f298ca527919765855ed426c16691166365ef16789dbd2c3",
-        "runtimeGraphNodes": 503,
-        "runtimeGraphEdges": 1977,
+        "runtimeGraphDigest": "sha256:4aefa8e8cf2f542b3bf83b1dfaad11bf9fee05410130f9b2f882b38ed4949b5c",
+        "runtimeGraphNodes": 504,
+        "runtimeGraphEdges": 1978,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 2
       }
@@ -1338,16 +1338,16 @@
       }
     },
     {
-      "id": "cell:b3876dca5d78067f5adce8d8c7573552fca415132316675a8edd6f2a63120b9e",
+      "id": "cell:26e49b73d57ccb1cfc4d8a95dcff025e3e67af7ca8dd3bfc9c12421ec626a46e",
       "caseId": "dsh-im-node22",
       "targetId": "dsh-im",
-      "observedAt": "2026-09-12T11:10:10.876Z",
+      "observedAt": "2026-09-13T12:18:44.538Z",
       "result": "compatible",
       "plugin": {
         "name": "@xmanrui/dsh-im",
-        "version": "4.20.0",
-        "artifactSha256": "f3d9ab343c9b5c2d7c85fd261ab92af31ff8fa76cad51523be37915d69736912",
-        "staticFingerprint": "sha256:f442a7b89f8d7e0e5ad337d0e9936f5b69948a2889843f3311495028accd2e9a"
+        "version": "4.20.2",
+        "artifactSha256": "31250dd573ca234ee271e7aa4bdfca53cc189359d359dd5e64105e160c1162a7",
+        "staticFingerprint": "sha256:b16ee22f70841567b9f1b5647b13a20aeaf302bda64f505b8f22e7211a5fa693"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -1356,12 +1356,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:957c6eb70afeb854100b62d89bc967d4f4fad877acad038bedf6771f10eb4f76"
+        "contractFingerprint": "sha256:24f5c721de32caeab6b043b8aeee352f2b1901d83e6827bf70e831a896944d1a"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:37fedbd7d8540da339ca77790fbda6292d6ff48e67ffe6b71a8a507933bb2856",
-        "runtimeGraphNodes": 564,
-        "runtimeGraphEdges": 2058,
+        "runtimeGraphDigest": "sha256:324edd43dc323b220af56241dae946ff49099f15017df332e67ba08e1d29f8a5",
+        "runtimeGraphNodes": 565,
+        "runtimeGraphEdges": 2059,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0
       }
@@ -1370,7 +1370,7 @@
       "id": "cell:0f6611a613a1135db43bc5d2243de0066551cb8914bd2f6fd3714a93116a5ad9",
       "caseId": "dsh-imagegen-node22",
       "targetId": "dsh-imagegen",
-      "observedAt": "2026-09-12T11:10:15.939Z",
+      "observedAt": "2026-09-13T12:18:47.084Z",
       "result": "unknown",
       "plugin": {
         "name": "@dickpy/dsh-imagegen",
@@ -1388,24 +1388,24 @@
         "contractFingerprint": "sha256:b03326876711bc85812ddd631877834f0e3bd224fa229a2bd307ebe109dc0c44"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:e1dc30b01d15fe6710ea136f04fd84ceeeeb2a028add0e541cfa4f66f46ada37",
-        "runtimeGraphNodes": 504,
-        "runtimeGraphEdges": 1976,
+        "runtimeGraphDigest": "sha256:6930cc3a3117a9711fe5fd9e60bccf278e64f253e30f59173b5925daf43d2efa",
+        "runtimeGraphNodes": 505,
+        "runtimeGraphEdges": 1977,
         "requiredUnresolved": 1,
         "declaredPeerContracts": 0
       }
     },
     {
-      "id": "cell:a46fbd01f2add89bc4a136fd72a0367e49abd6645b02b9ef83bea33f3a4d6f4a",
+      "id": "cell:53e023bc680a38a73a847167eafe95d73ece8875f7b2156894d760db0e4e3c5f",
       "caseId": "dsh-market-node22",
       "targetId": "dsh-market",
-      "observedAt": "2026-09-12T11:10:15.711Z",
+      "observedAt": "2026-09-13T12:18:44.501Z",
       "result": "compatible",
       "plugin": {
         "name": "dshmarket",
-        "version": "1.45.1",
-        "artifactSha256": "4733315682ce0a963ec34dd6e6d4532a3699985d0a5590f61c8054bf50f0326d",
-        "staticFingerprint": "sha256:228a263a7d74c5f405797ac97059a5a3c2e3da682e690a6c8eeed2be9882c4a6"
+        "version": "1.46.1",
+        "artifactSha256": "581bc616ecebb3cee6013d5f702432a84fe399534a77c5296843ab04d1e7b4aa",
+        "staticFingerprint": "sha256:4a0a2959ea5ef13673be9a8082b639cb1fe38f26ec7b2fa09545851eb059d05d"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -1414,12 +1414,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:558c49415bdb9ee4762a993c2638cf4a371d925b09c6580cfcf071b94d0d4639"
+        "contractFingerprint": "sha256:0b6554631d3a87784528c06076466b19c2b229a7d83c06ee363d9d40d6fccc1d"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:e31de1e7cef6b361dbaec03ed81762ff1d7c11bd94ae7807838bdd4a465f9148",
-        "runtimeGraphNodes": 503,
-        "runtimeGraphEdges": 1976,
+        "runtimeGraphDigest": "sha256:7b4e6832e08d76870d8285d4c494c1c602a07520b3b05e1df8e462ff29257bed",
+        "runtimeGraphNodes": 504,
+        "runtimeGraphEdges": 1977,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 1
       }
@@ -1454,16 +1454,16 @@
       }
     },
     {
-      "id": "cell:ebeb343884fb8684c82486c48ca09e8644069832d4f8e9824a6fc12361f8fde5",
+      "id": "cell:4d128b9ef7c0e863d05cf7ed3e2f20849c08264f52e26b01aee54d72597cf6d2",
       "caseId": "dsh-memory-plugin-node22",
       "targetId": "dsh-memory-plugin",
-      "observedAt": "2026-09-12T11:10:59.802Z",
+      "observedAt": "2026-09-13T12:18:33.747Z",
       "result": "compatible",
       "plugin": {
         "name": "@openviking/dsh-memory-plugin",
         "version": "0.3.0",
         "artifactSha256": "589289c0285a1c4ed8f41bccc8011c7b400a1d5a172d382c9e47dedc8095dae2",
-        "staticFingerprint": "sha256:9f3f310181ea6c54a35b4471aea2ee116d77132da1e7091ccb17592c78b138f8"
+        "staticFingerprint": "sha256:f6672b1079f46f92fc2dc24c1356e1d083d92c66ec6c82f4d6d3e2ee9d08b858"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -1475,24 +1475,24 @@
         "contractFingerprint": "sha256:36535f75baa2efbce21a25b96c51dc465a46c41ce1226017e1e0fbaf4691042a"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:ad907fc4ca67ef8b52c153c7f4bda54a59e2b8a0357bf8d7fcb721a6b2cedb85",
-        "runtimeGraphNodes": 500,
-        "runtimeGraphEdges": 1975,
+        "runtimeGraphDigest": "sha256:31fb161444eb98caa7337ed2323f3765763ad70495303e840bad2344e987a31d",
+        "runtimeGraphNodes": 501,
+        "runtimeGraphEdges": 1976,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 3
       }
     },
     {
-      "id": "cell:1706ee934a6443509168317b606e66e21026920b46784d46b9df3042917b737a",
+      "id": "cell:81ab1ba7cbddf570f8bee4324858579b400d333ed4400fda245c15dfea2429c0",
       "caseId": "dsh-mneme-node22",
       "targetId": "dsh-mneme",
-      "observedAt": "2026-09-12T11:10:12.295Z",
+      "observedAt": "2026-09-13T12:18:38.489Z",
       "result": "compatible",
       "plugin": {
         "name": "@modusensus/dsh-mneme",
         "version": "0.7.32",
         "artifactSha256": "ada4834ec7bd0b88a5b8cb178392c437ca82cd4f9632a675a06a604a1268b81a",
-        "staticFingerprint": "sha256:e8fdfbdcfd17aaf1e74fd0e0e8b25d5fa2bf788a94450a19497c931726f28df4"
+        "staticFingerprint": "sha256:5dd60594f6a3a66e5fcb6f7e2c0f643d490ea585272040b9421e88aff24535ad"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -1504,9 +1504,9 @@
         "contractFingerprint": "sha256:6cd3131a8bfb60242269747359dd8854bfde403b0ca7739126670f0b6f484593"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:0f5e132a9f81ee40e7a0773d21cf3e9b0d90b2267cdb7dfa4c757a367961755f",
-        "runtimeGraphNodes": 501,
-        "runtimeGraphEdges": 1979,
+        "runtimeGraphDigest": "sha256:36a4a212d0b2cf66740e811d175f5d26d226882b36fdfe9077e46f042f58e2a5",
+        "runtimeGraphNodes": 502,
+        "runtimeGraphEdges": 1980,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 6
       }
@@ -1599,16 +1599,16 @@
       }
     },
     {
-      "id": "cell:4f9f2d8700e5c613c03f691a143ac4ec5163fadcc7332c3c3dc9e0ec5dc578cc",
+      "id": "cell:6bff2e63b2a05684d54c7d0db9291ba17b9cb1c2ba5c986d185f818540a426a5",
       "caseId": "dsh-notifier-node22",
       "targetId": "dsh-notifier",
-      "observedAt": "2026-09-12T11:10:12.548Z",
+      "observedAt": "2026-09-13T12:18:36.877Z",
       "result": "build-approval-required",
       "plugin": {
         "name": "dsh-notifier",
-        "version": "0.9.6",
-        "artifactSha256": "f351564d92ce19c910a6d9d5ed47fd8574ab7709ddafce1080c0cbd5cdfb0fa6",
-        "staticFingerprint": "sha256:753ce90b899f5d80c6adc19ef47e6e9b3bb7ca3b4755384b1709ca4d6a2f439e"
+        "version": "0.10.2",
+        "artifactSha256": "e881b3e8951c05bc1e2950ceba6758a1286289e3c4aac630d45a831282d5ad63",
+        "staticFingerprint": "sha256:0fffb1eff68a79576b0ad1dda6542778518c15588be5f1ca23e4aab91e57dc55"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -1617,12 +1617,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:976dc7ec5294b4f8fb141ba12222a56a22849486f150c722901c00f647efa196"
+        "contractFingerprint": "sha256:b5499ea127c0671fa52f2cda651e08245bab8407a43a4aaa5e6a3d696a5dd7cf"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:e6509d2cede06327731e30bcc9a397e0f9043e158d7774437d068b992b6cd93b",
-        "runtimeGraphNodes": 553,
-        "runtimeGraphEdges": 2054,
+        "runtimeGraphDigest": "sha256:866a21d3bba10edd79310c992f8f42aac4164a75946efedea061b52459274cde",
+        "runtimeGraphNodes": 554,
+        "runtimeGraphEdges": 2055,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 1,
         "requiredDependencyBuilds": [
@@ -1660,16 +1660,16 @@
       }
     },
     {
-      "id": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+      "id": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
       "caseId": "dsh-pet-node22",
       "targetId": "dsh-pet",
-      "observedAt": "2026-09-11T11:49:25.171Z",
+      "observedAt": "2026-09-13T12:18:41.744Z",
       "result": "peer-contract-incompatible",
       "plugin": {
         "name": "dsh-pet",
         "version": "0.2.8",
         "artifactSha256": "b1713852313746cfc7334f4347311b0f3ef9721523c64d7df4c18c283b51e238",
-        "staticFingerprint": "sha256:1ca9ad29be84b374658828c9282a899a9102f69d31e93dc2abf8b847b7ea6ecc"
+        "staticFingerprint": "sha256:2ead6470ac875f17866b5fde81eff8ab00ddc0e795c7e76885c44692078510e8"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -1681,9 +1681,9 @@
         "contractFingerprint": "sha256:1e0a54b35afe28678af645e1502639fda0b421ea028b116601df06c0db636c35"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:48236c3b06c0e5bf2ce610778406113964ad616fdb2268625fb2ac241b8a82bc",
-        "runtimeGraphNodes": 510,
-        "runtimeGraphEdges": 1991,
+        "runtimeGraphDigest": "sha256:85c90aa9e94aecc7ee91741cb709fc1ae6f27d0d1507c779db66b512133135a7",
+        "runtimeGraphNodes": 511,
+        "runtimeGraphEdges": 1992,
         "requiredUnresolved": 3,
         "declaredPeerContracts": 11
       }
@@ -1718,16 +1718,16 @@
       }
     },
     {
-      "id": "cell:72e0b41953b5b659833c32947e0d21854cb5a0e4de6c0200588db849a2be7f57",
+      "id": "cell:350d92cf7cc19bac0d93de8fa5c8a62de2e2f3ebdb997af4e55107502dfafe60",
       "caseId": "dsh-plugin-subscriptions-node22",
       "targetId": "dsh-plugin-subscriptions",
-      "observedAt": "2026-09-11T11:49:20.385Z",
+      "observedAt": "2026-09-13T12:18:58.155Z",
       "result": "compatible",
       "plugin": {
         "name": "dsh-plugin-subscriptions",
-        "version": "0.8.0",
-        "artifactSha256": "4fb531bf0c709a7687136f8dfdb1eb458ec953e945165b849490fa3f570f1f9f",
-        "staticFingerprint": "sha256:ce0309e56162d6b6a13fe8d54047572e89a00e048049a12698f10874845e171a"
+        "version": "0.9.0",
+        "artifactSha256": "8a4d4d81908262565bc0ef7c620b40df45520dec3a3b0a4692dabcbbb73456e6",
+        "staticFingerprint": "sha256:7cf3a012ec4d8bce7c410bf6c9ebf05fa3df02f7482a5bcb931ec9033f9292f8"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -1736,12 +1736,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:203439ea70fa753ac4d35a4cd8eb6770d5509113a4d2ec814a79e58f5ffb0034"
+        "contractFingerprint": "sha256:6113fcb88ad75ff9adcd0d29147e23221b30e55545afeb86f82dee8df99c386b"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:3284ad214ff6203ee4c34bd0540b88912713ec902479ef448272672f1d970abc",
-        "runtimeGraphNodes": 501,
-        "runtimeGraphEdges": 1979,
+        "runtimeGraphDigest": "sha256:76f4d229a9cb39ce1427c0d6d94d7c22b0291c4da37c8cd73507fff4d90ad071",
+        "runtimeGraphNodes": 502,
+        "runtimeGraphEdges": 1980,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 6
       }
@@ -1866,16 +1866,16 @@
       }
     },
     {
-      "id": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
+      "id": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
       "caseId": "dsh-remote-node22",
       "targetId": "dsh-remote",
-      "observedAt": "2026-09-12T11:10:16.835Z",
+      "observedAt": "2026-09-13T12:18:52.592Z",
       "result": "build-approval-required",
       "plugin": {
         "name": "dsh-remote",
-        "version": "0.8.14",
-        "artifactSha256": "6c2e3d684f8c7b0e25ef07cd51170ced0748cb1d19bf27f96ec25360c4c97bbb",
-        "staticFingerprint": "sha256:e080343a22bc3105fad49102869faa5633ed5056055b142c0893112e002ccd20"
+        "version": "0.8.15",
+        "artifactSha256": "8b4f7570e62bf80d549ab33bb014e63ed9f3e10bba7826a0a0b84df4e96d9e17",
+        "staticFingerprint": "sha256:e31abdd10c98106aa2d7f8ccbbd3dbfe1a2b34fb13607f9f8914c7b948f070e2"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -1884,12 +1884,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:bec00fbc926c61d86624dcb0a6de495d229ee7b4767934e2a16b169b68567481"
+        "contractFingerprint": "sha256:eb334a2956c39a7da229ade11befacc25aa843a151649eabeee4a08778b8ccde"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:07ce04e803df889944b9434449bde6325b3b1d609d1f5b3f242b768755066b0c",
-        "runtimeGraphNodes": 674,
-        "runtimeGraphEdges": 2338,
+        "runtimeGraphDigest": "sha256:fbfa1d9675c9c0ee00c8a3aa4c50d89e564a5ffd76bb45760c2d31365a00b92c",
+        "runtimeGraphNodes": 677,
+        "runtimeGraphEdges": 2349,
         "requiredUnresolved": 5,
         "declaredPeerContracts": 7,
         "requiredDependencyBuilds": [
@@ -1929,16 +1929,16 @@
       }
     },
     {
-      "id": "cell:4042280a2aa6b15ed6e8168628b37de161b44c2607daeaba4a97e2417b47a82d",
+      "id": "cell:3af32f1c751847390e088827e4409f3e11f0baf9a0510de5993d0d3e8efd787d",
       "caseId": "dsh-rewind-plugin-node22",
       "targetId": "dsh-rewind-plugin",
-      "observedAt": "2026-09-12T11:10:17.119Z",
+      "observedAt": "2026-09-13T12:18:46.229Z",
       "result": "compatible",
       "plugin": {
         "name": "dsh-rewind-plugin",
-        "version": "0.12.0",
-        "artifactSha256": "a5a1069e3dc3fbe6b9d1d168bac9b281d5ccce5f8a81bed4fbb3b25158b0e2ef",
-        "staticFingerprint": "sha256:13c0c518cc8a385ba9afd5e6a68db2dc3ff26d961e0b01358a7ac4910000b98b"
+        "version": "0.12.2",
+        "artifactSha256": "4f91563f1be9ad3f0260d264f458bd4cdb44448e2ff89bb804a833089ff76e63",
+        "staticFingerprint": "sha256:fcb8d67449e0bd05dacc2ad1d0d792f9a12f790a02d21de6a9535ade197f018d"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -1947,27 +1947,27 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:640e8a8353fe5e99ca4b2ac96f0e516c7fbbb8edacb3e12550f47785c4c44b8b"
+        "contractFingerprint": "sha256:a46affd85d4fad3dcc1ab2f0acf026f58355881195384f650bec355f3399878a"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:8d8a97b6971dc57a5150797b03c2c191242caf23aa0b52a1b217a67db2ce1f54",
-        "runtimeGraphNodes": 500,
-        "runtimeGraphEdges": 1972,
+        "runtimeGraphDigest": "sha256:89377c21f3b43c04052eab13c5e81fb10c01df586be9abf745d0233f608dad41",
+        "runtimeGraphNodes": 501,
+        "runtimeGraphEdges": 1973,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0
       }
     },
     {
-      "id": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
+      "id": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
       "caseId": "dsh-skills-manager-node22",
       "targetId": "dsh-skills-manager",
-      "observedAt": "2026-09-12T11:10:22.868Z",
+      "observedAt": "2026-09-13T12:19:14.745Z",
       "result": "peer-contract-incompatible",
       "plugin": {
         "name": "@michengai/dsh-skills-manager",
-        "version": "0.1.49",
-        "artifactSha256": "726c6756bfed9702fcf293b3e536fb4a3dc188e0cc4522e471149788f4d3abd6",
-        "staticFingerprint": "sha256:20358e1cefce23cac6ca8ddc7c720113be866892f02c83e3219be99d76b6cb1d"
+        "version": "0.1.50",
+        "artifactSha256": "3e2b3b853b3d145865eedd4ae9848870ecf2c2aa920ee3836a7b58c443174b8c",
+        "staticFingerprint": "sha256:7803852c109567d068566a4efe4616a495257369adf07bd75483355f8a32c19b"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -1976,12 +1976,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:aeae36a3c0faf8cf87f96c44106311957c58732b0e72872b2f9f755ea5fa206c"
+        "contractFingerprint": "sha256:df417a7a1fac1d7f2d10b56ff059bc7c6b337e5a302a6283b598e17c5d850524"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:65bf30eb031e29ea3655fa827a2ae4635e1a4692b3ee6e209af277532f72569c",
-        "runtimeGraphNodes": 501,
-        "runtimeGraphEdges": 1980,
+        "runtimeGraphDigest": "sha256:2783eb7274c150c83d6657d2793333259acec86cb2c8948c65d4726d126ad673",
+        "runtimeGraphNodes": 502,
+        "runtimeGraphEdges": 1981,
         "requiredUnresolved": 3,
         "declaredPeerContracts": 10
       }
@@ -2074,16 +2074,16 @@
       }
     },
     {
-      "id": "cell:e92964538724797da963f9932d363ce592a4d105600f0147bf7c28d4c3fc0932",
+      "id": "cell:742307d577e62fe73572fab72e2387bc52cdce322680f3a9d150085107bcb8ce",
       "caseId": "dsh-tavern-node22",
       "targetId": "dsh-tavern",
-      "observedAt": "2026-09-11T11:49:25.739Z",
+      "observedAt": "2026-09-13T12:18:41.841Z",
       "result": "peer-contract-incompatible",
       "plugin": {
         "name": "dsh-tavern",
-        "version": "2.3.1",
-        "artifactSha256": "0f486a4294cb900c9d7acc5e68d5904df8ef7e053c37821825ce58fd96059c4c",
-        "staticFingerprint": "sha256:0e2d604b26896a11a5278ebdbdd212f9a1c11587bef8e17d83e1b9d99b61e04f"
+        "version": "2.3.6",
+        "artifactSha256": "2fc1aaa75b0b76c69686c7fb7c8dbfb145652a0acabc576c38d51b13314c2c81",
+        "staticFingerprint": "sha256:1f5a0ce831be408420eaf2c56fe22a176ca26bcbb482ce55e02f584acd3bcc0e"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -2092,12 +2092,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:01befcc47e110b3b03deb2054260839d02506ca84801c4234126ec916c49f8cd"
+        "contractFingerprint": "sha256:cb0c13853ebf2ba9bbff0ecea284d338e3e5f67158f0878a78010ce83bd0bb11"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:26728bd069409db7169c3042239fa66b99f804c2cd25d32fdae601fecfa0449f",
-        "runtimeGraphNodes": 502,
-        "runtimeGraphEdges": 1975,
+        "runtimeGraphDigest": "sha256:a2cf20267ec1786bc717336bc8ab1e058e43a97632438c43dd30deebc090e203",
+        "runtimeGraphNodes": 503,
+        "runtimeGraphEdges": 1976,
         "requiredUnresolved": 1,
         "declaredPeerContracts": 1
       }
@@ -2190,16 +2190,16 @@
       }
     },
     {
-      "id": "cell:f29afe019beb282ee4cd3a74108763adc30eba55b62a2bb6cf67f7c1653ac58d",
+      "id": "cell:6850329fd275f36101a1535481f3c14d8d185301a07232254669afd538d5aaad",
       "caseId": "dsh-tui-node22",
       "targetId": "dsh-tui",
-      "observedAt": "2026-09-12T11:11:06.143Z",
+      "observedAt": "2026-09-13T12:18:51.102Z",
       "result": "compatible",
       "plugin": {
         "name": "@deepseek-harness-tui/dsh-tui",
         "version": "0.10.1",
         "artifactSha256": "21833eba7569a3e814cb09aa85777fbfa191eef8d6f66269b239b6e6e54e0312",
-        "staticFingerprint": "sha256:368116c5a38b15ad8b70b5b0163be7abb1ff0cc1c56a5f4819e8a032fca82cb3"
+        "staticFingerprint": "sha256:e3c81a8a16f65bec4b6cf625110397d0e937bf8e0b9f3e067e8d91361b9161d7"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -2211,9 +2211,9 @@
         "contractFingerprint": "sha256:8b6860753aaed808ec4bd288e7fb1690463219bb168dfd1e19d627f1c7897b67"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:a945181a340ec5a3f18140582505b922d7c50a334e4891f49644471016a804b1",
-        "runtimeGraphNodes": 580,
-        "runtimeGraphEdges": 2091,
+        "runtimeGraphDigest": "sha256:933dd15b5862dee3b5288f638b6d840db00a1b74102d4f11a3bfd435423a52d7",
+        "runtimeGraphNodes": 581,
+        "runtimeGraphEdges": 2092,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0
       }
@@ -2397,16 +2397,16 @@
       }
     },
     {
-      "id": "cell:07de51bb1dfed1d53abc81c9f0112fb979b395eac48d8ec46e7c1525db8972e1",
+      "id": "cell:5f9ba568d23195c7b5a6d0e99b9db24f32aaeb59f57ea630e2dedcf2603946b5",
       "caseId": "dsh-vision-router-node22",
       "targetId": "dsh-vision-router",
-      "observedAt": "2026-09-12T11:10:44.660Z",
+      "observedAt": "2026-09-13T12:18:44.287Z",
       "result": "compatible",
       "plugin": {
         "name": "dsh-vision-router",
         "version": "2.1.6",
         "artifactSha256": "0304734df4747a254dc74c750c2323271d3e16137a762d9f9c0cedddb6398ff4",
-        "staticFingerprint": "sha256:3e7eed21cf3178592f09edba3e60276dc4ff1cd119f58cf6668f259ad1bbf542"
+        "staticFingerprint": "sha256:e1f840482a76b6161023ca9763e2918bb81895aa51337d63fc8d1885674efa4a"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -2418,9 +2418,9 @@
         "contractFingerprint": "sha256:4a605656c28a5334c1dfe726f1ab62aec3e4ea31894ef3d3c794b4c3cbd024e3"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:25dec7377612ff9a75c2fe5378e88d09ef38456923f3f559d298e408aa3ce947",
-        "runtimeGraphNodes": 605,
-        "runtimeGraphEdges": 2190,
+        "runtimeGraphDigest": "sha256:534d23cfa8395ce6dfe807c9c8e9934951a9ebd76ee5314dafe1e55e5999602a",
+        "runtimeGraphNodes": 606,
+        "runtimeGraphEdges": 2191,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0
       }
@@ -2484,16 +2484,16 @@
       }
     },
     {
-      "id": "cell:5fec08ac6fa44be6454e9e27cea768f682c66e0a4fc8f2a468e49866b4c82c0b",
+      "id": "cell:c48ba444b126bdb7f48319a25a7dd6bb626c8526d1315933c87587c0a43547c1",
       "caseId": "dsh-web-ui-all-node22",
       "targetId": "dsh-web-ui-all",
-      "observedAt": "2026-09-12T11:10:25.296Z",
+      "observedAt": "2026-09-13T12:18:54.345Z",
       "result": "build-approval-required",
       "plugin": {
         "name": "@linxin666/dsh-web-all",
-        "version": "0.3.20",
-        "artifactSha256": "f6776e77e0a23906c6c3d4e827d3fcb1b5d6f59532cfc705c91b53c33ef91b2b",
-        "staticFingerprint": "sha256:97b33606167dc987f0af2e282efcf286b54a299fd159965d2f47e0c517795a73"
+        "version": "0.3.21",
+        "artifactSha256": "869ebcb3f49fb9b98d5e913921cb4a6f11cac93fca5fda51ddcbf330a3e8a78a",
+        "staticFingerprint": "sha256:5e3562697d4bee667a5b041d0e3274d71e3847d93eb6e98d56654f3f7918e62f"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -2502,12 +2502,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:0c4a48bf4ff44a7542af9547ad4808cc43e1d608a355dda19acd5966939d2160"
+        "contractFingerprint": "sha256:e71ccae4143960689c064c2d566c03114e0cb1a7c83305585cf1bc8bcd9439ef"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:f7cb5f24361b58b28a3a6f542621e195137346f4826c1507e0f642d49cdb95c0",
-        "runtimeGraphNodes": 705,
-        "runtimeGraphEdges": 2386,
+        "runtimeGraphDigest": "sha256:2c582ba9845328491736e6b94c0d16dc3e903edfc387ec752bd812ec4e9e0e58",
+        "runtimeGraphNodes": 706,
+        "runtimeGraphEdges": 2387,
         "requiredUnresolved": 27,
         "declaredPeerContracts": 0,
         "requiredDependencyBuilds": [
@@ -2635,16 +2635,16 @@
       }
     },
     {
-      "id": "cell:d0e4d19a3e902f302a0c23e557be05890cdb2386df19b481ad86df15c7266722",
+      "id": "cell:a1eea913ac28cb00ea83f49fa35a6443744fe9f1505d1d37271139441ff2763a",
       "caseId": "graphflow-node22",
       "targetId": "graphflow",
-      "observedAt": "2026-09-12T11:11:04.941Z",
+      "observedAt": "2026-09-13T12:18:45.948Z",
       "result": "build-approval-required",
       "plugin": {
         "name": "@roarpeng/graphflow",
-        "version": "1.18.1",
-        "artifactSha256": "6323e561fb44a7d4a52a78004d94041758b475cc84dfabed6d15ff44e667b3d7",
-        "staticFingerprint": "sha256:5910d9cddcba38ee68aca9a32d16650583ebaf2f99573970c1f5b88ce5fcc7d8"
+        "version": "1.18.5",
+        "artifactSha256": "e5ffe1088b4561e4b1873c599d8b583143f89732ebc8c2595ac892661a654b6b",
+        "staticFingerprint": "sha256:f25d799cd7a6619ee80469ff7587d9c5c12ee43407b24f5182ed20db94e5e998"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -2653,12 +2653,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:c6d743dee291a44066387a4a6ddb0e399139848f07f1dfd3ebf91228cefad9cf"
+        "contractFingerprint": "sha256:707ace162f8de2ab287519e9863524e13ea4cc6fa6af3fc1ad89b8210a507859"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:9ef49e6502d92f39549be1f71d7bf3f7f1c1bae357e3d91a4386a354fe3a4d55",
-        "runtimeGraphNodes": 695,
-        "runtimeGraphEdges": 2261,
+        "runtimeGraphDigest": "sha256:e43bf8c81894e7827fd61fa5a5eae5937eb00e0fa9fd317f893ab3d8268e9a91",
+        "runtimeGraphNodes": 696,
+        "runtimeGraphEdges": 2262,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0,
         "requiredDependencyBuilds": [
@@ -2671,16 +2671,16 @@
       }
     },
     {
-      "id": "cell:4d8e1b81d39d5b25017b71f257af489f6f10dbee7f150a2d23cd13763cddd044",
+      "id": "cell:396e1153c64946ee3f88a7dd4b368dac625888de10877c14f010a2d555e1bd4a",
       "caseId": "hindsight-coding-agents-node22",
       "targetId": "hindsight-coding-agents",
-      "observedAt": "2026-09-12T11:10:17.769Z",
+      "observedAt": "2026-09-13T12:18:44.020Z",
       "result": "compatible",
       "plugin": {
         "name": "@vectorize-io/hindsight-coding-agents",
         "version": "0.6.0",
         "artifactSha256": "1d8d073a390522c9ce831850bb0775414af6812673db717208dac080252a9ac2",
-        "staticFingerprint": "sha256:7f86cec32098357f4ff14d2aa6896990933dca91427b868a9bb144617bef47a8"
+        "staticFingerprint": "sha256:01b8053a62c7ba1250336b9a0eb00601800a382572221286e846475241fe0a32"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -2692,24 +2692,24 @@
         "contractFingerprint": "sha256:5fa7e9855fd4271c04c5bd21b2002d1f571171c3c929c70c5c83e8df7b713b45"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:b7489c799fae466fa0961fe14b1cb540965ab31f7b585968e4c7d8d73897a095",
-        "runtimeGraphNodes": 596,
-        "runtimeGraphEdges": 2136,
+        "runtimeGraphDigest": "sha256:e0fb4b477ecf164d11b286feccf52703fafdeae8732d6406683282f55e78a1e7",
+        "runtimeGraphNodes": 597,
+        "runtimeGraphEdges": 2137,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0
       }
     },
     {
-      "id": "cell:6a96a9be135ddf0f5c44ecf19ac08e563e9995f82326d3104ee288c8df21df44",
+      "id": "cell:6e1b587b857de5b60e440e354d64c4a7354c6ae3bfc2f777764a39e80c4c6a05",
       "caseId": "iterate-plugin-node22",
       "targetId": "iterate-plugin",
-      "observedAt": "2026-09-12T11:10:11.776Z",
+      "observedAt": "2026-09-13T12:18:36.436Z",
       "result": "compatible",
       "plugin": {
         "name": "iterate-plugin",
-        "version": "3.5.1",
-        "artifactSha256": "b04c9dda3f49c5c8b8c86d2ec7c9fc369d47ee69595d7c1712a302a21992f11c",
-        "staticFingerprint": "sha256:f9795b92774a98a22bcb0062eaf5d71f05fe8de749c08d5d3d71081e5a814af3"
+        "version": "3.5.2",
+        "artifactSha256": "d5841845aee0620bf4a737dc29a5450a522b876f0b0aa88dc343286cbd5c741f",
+        "staticFingerprint": "sha256:26960dbd4e1fac51058e60195049906cf41c2399deecef3e2f024ddb670fc23c"
       },
       "runtime": {
         "dshVersion": "0.1.5-rc.2",
@@ -2718,12 +2718,12 @@
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:a1742a9b334cac2b06a62d050a9a8bcf60f63650918535a64f74dada75f4b07c"
+        "contractFingerprint": "sha256:2f838589cacaccf6d781d41d8ebdccf3f42463cb2e1df812e85dc3471bc38e2b"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:db8667e3daf2a222fb144bc540005295d2215a1a8bf8f0a1ce96ae30443430b2",
-        "runtimeGraphNodes": 509,
-        "runtimeGraphEdges": 1995,
+        "runtimeGraphDigest": "sha256:ea73a3bb2d84e9cd2868c66dd5ae49924c5c738579e62e092c41f37baf8d44ed",
+        "runtimeGraphNodes": 510,
+        "runtimeGraphEdges": 1996,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 0
       }
@@ -2926,30 +2926,30 @@
       "evidence": {}
     },
     {
-      "id": "cell:56fc4afb8efc83bedaa0ec71aa74391932646f349418bd1ea97edc790cbb12af",
+      "id": "cell:9b3d4af025eb9f4a26fe49dda8085cc82705283dc14b5753cd3a1a0211108531",
       "caseId": "wsl-workspace-node24",
       "targetId": "wsl-workspace",
-      "observedAt": "2026-08-30T12:15:56.999Z",
+      "observedAt": "2026-09-13T12:18:40.227Z",
       "result": "compatible",
       "plugin": {
         "name": "dsh-wsl-workspace",
-        "version": "0.4.0",
-        "artifactSha256": "425947f55f6bc28bac26a2f9ab58d62b0ea66232a75a9cd91a29de383f91fc34",
-        "staticFingerprint": "sha256:6d976e6b07781f9201159e5cd0471659bda426e29a2fd3de54304890083765a5"
+        "version": "0.4.3",
+        "artifactSha256": "00c8bd82ef532d1dee090cf3c7eca6043e5789654936fbf3ec1cb350a5a0cd83",
+        "staticFingerprint": "sha256:f5ad56411924f61adf7a80140f42c3df29636e25527d49ea9eaebbdaf442298d"
       },
       "runtime": {
-        "dshVersion": "0.1.1-rc.2",
+        "dshVersion": "0.1.5-rc.2",
         "nodeMajor": 24,
-        "nodeVersion": "24.20.0",
+        "nodeVersion": "24.21.0",
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0",
-        "contractFingerprint": "sha256:8f3b92ae20532ea434a28a62ea1317242667c96808a54d51b646c000a792184e"
+        "contractFingerprint": "sha256:ead58b0dae3562bed6f7d6db3961f630076d616c65cb8526d41ed08b4e902a72"
       },
       "evidence": {
-        "runtimeGraphDigest": "sha256:4e270a993d430a10bf34f20040c1e0079071f6c6039a7351a6c57695cdf816c8",
-        "runtimeGraphNodes": 448,
-        "runtimeGraphEdges": 2035,
+        "runtimeGraphDigest": "sha256:6e0d31d57542fd1cbb9fb4926132257fca25225ebefd4768cbbd53cbaec7628a",
+        "runtimeGraphNodes": 501,
+        "runtimeGraphEdges": 1979,
         "requiredUnresolved": 0,
         "declaredPeerContracts": 6
       }
@@ -3134,69 +3134,14 @@
       }
     },
     {
-      "id": "relation:57196d3aee0a914211b5757895f63f58b1465acb58df9627411bf2f38d789028",
-      "cellId": "cell:1706ee934a6443509168317b606e66e21026920b46784d46b9df3042917b737a",
+      "id": "relation:cdc71d5d15d80284420251a171f7c601a53cc6db7320839b69446e36260be8d7",
+      "cellId": "cell:198b9f5eca122af7f8de851acfa45b23ce413a8029648a91a76949a47176521a",
       "dependency": {
         "name": "@deepseek-ai/cordis",
         "required": "^4.0.1",
         "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
+        "staticUsage": "no-literal-reference-observed",
         "resolvedVersion": "4.0.2"
-      }
-    },
-    {
-      "id": "relation:1c976362fd1311b68227ad86ebc5cd94f5c483e4134e90c7b8dd4cd7a7f46cbc",
-      "cellId": "cell:1706ee934a6443509168317b606e66e21026920b46784d46b9df3042917b737a",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-host-webserver",
-        "required": ">=0.1.0-rc.6 <0.2.0 || >=0.1.5-rc.0 <0.3.0 || >=0.2.0-rc.0 <0.3.0",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:776d4663afffde03399ad5a37739c0466e1646efb287fca6973c5bb9f6dfef4c",
-      "cellId": "cell:1706ee934a6443509168317b606e66e21026920b46784d46b9df3042917b737a",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-llm",
-        "required": ">=0.1.0-rc.6 <0.2.0 || >=0.1.5-rc.0 <0.3.0 || >=0.2.0-rc.0 <0.3.0",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:c61b24753ab25a113864f5f22215a07008cda0745855e122687bb072473da2df",
-      "cellId": "cell:1706ee934a6443509168317b606e66e21026920b46784d46b9df3042917b737a",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-system-prompt",
-        "required": ">=0.1.0-rc.6 <0.2.0 || >=0.1.5-rc.0 <0.3.0 || >=0.2.0-rc.0 <0.3.0",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:a47aaf32a83e4d5dda0d64d759211e32ef29bc369319f327635e4a35e647838e",
-      "cellId": "cell:1706ee934a6443509168317b606e66e21026920b46784d46b9df3042917b737a",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-tools",
-        "required": ">=0.1.0-rc.6 <0.2.0 || >=0.1.5-rc.0 <0.3.0 || >=0.2.0-rc.0 <0.3.0",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:476c9d19273cff6810d06eed3bdda3fd3f5d38fe16fe173fc96b8e7ff981618d",
-      "cellId": "cell:1706ee934a6443509168317b606e66e21026920b46784d46b9df3042917b737a",
-      "dependency": {
-        "name": "@deepseek-ai/schemastery",
-        "required": "^3.18.1",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "3.18.2"
       }
     },
     {
@@ -3249,6 +3194,50 @@
       "dependency": {
         "name": "@deepseek-ai/schemastery",
         "required": "^3.18.1",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "3.18.2"
+      }
+    },
+    {
+      "id": "relation:789e7760c9c83a9ca1fc51ead60d2b78d012cb817f9655d320a1288149de6258",
+      "cellId": "cell:1e3ab640e98dbe62461d8c927cb56897788aa893c1f8a699cebfc63646311dc4",
+      "dependency": {
+        "name": "@deepseek-ai/cordis",
+        "required": "^4.0.2",
+        "status": "satisfied",
+        "staticUsage": "type-only-reference-observed",
+        "resolvedVersion": "4.0.2"
+      }
+    },
+    {
+      "id": "relation:85241a478f5e0bd08191e135020efb4f7e3c41c3abf987c4b658e2f3a9ecd8b3",
+      "cellId": "cell:1e3ab640e98dbe62461d8c927cb56897788aa893c1f8a699cebfc63646311dc4",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-session",
+        "required": ">=0.1.2-rc.1",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:1a053eb78bbf416a516a8c34c184f262cc680f54a856cc88e61e068cbd916712",
+      "cellId": "cell:1e3ab640e98dbe62461d8c927cb56897788aa893c1f8a699cebfc63646311dc4",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-settings",
+        "required": ">=0.1.2-rc.1",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:542dbeb1919380f3b78986179b43ed2272a9c270aa1408d8aa0ddb0ead8c84c4",
+      "cellId": "cell:1e3ab640e98dbe62461d8c927cb56897788aa893c1f8a699cebfc63646311dc4",
+      "dependency": {
+        "name": "@deepseek-ai/schemastery",
+        "required": "^3.18.2",
         "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "3.18.2"
@@ -3407,17 +3396,6 @@
     {
       "id": "relation:af5db4e424c841ac1f317aed301310fcc364244f46d3d9e7d75e31b3dabd8103",
       "cellId": "cell:2575787588a0b4880836d979d8d9d7fa3262cccfce59c93a0c13b30a74c14d99",
-      "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": "^4.0.1",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "4.0.2"
-      }
-    },
-    {
-      "id": "relation:f7578103042cfb8afd2644fd96fcb9e5b34754b1a23cdacee999d49a4c97cd73",
-      "cellId": "cell:260d6fd66e89ac649055007ee527c80c7a672e0b4a92f11a37c803e7b61cf8b1",
       "dependency": {
         "name": "@deepseek-ai/cordis",
         "required": "^4.0.1",
@@ -3613,11 +3591,239 @@
       }
     },
     {
-      "id": "relation:470a98f253ff389985cd3ec815e2fbd2ce2266d922c3783cd3b0b88863a115de",
-      "cellId": "cell:34903369e6b7b3a584c2a947b7515545ddec2a4262c8519dae03cc22f4a69e54",
+      "id": "relation:0a24e0d42ab48ffd1aa269b6532b9e4f7e87edb2ef452e4c1defd496538d622c",
+      "cellId": "cell:350d92cf7cc19bac0d93de8fa5c8a62de2e2f3ebdb997af4e55107502dfafe60",
+      "dependency": {
+        "name": "@deepseek-ai/cordis",
+        "required": "^4.0.1",
+        "status": "satisfied",
+        "staticUsage": "type-only-reference-observed",
+        "resolvedVersion": "4.0.2"
+      }
+    },
+    {
+      "id": "relation:a363aefc3a8410467d628cf63762865b6e0edc01088c6473f8e310878f597bd6",
+      "cellId": "cell:350d92cf7cc19bac0d93de8fa5c8a62de2e2f3ebdb997af4e55107502dfafe60",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-attachment",
+        "required": "^0.1.1-rc.2 || ^0.1.2-alpha.1",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:a753c1ed78f8934abf9dc2d64fba8320c3202e1a727389f103ef016e3fba4005",
+      "cellId": "cell:350d92cf7cc19bac0d93de8fa5c8a62de2e2f3ebdb997af4e55107502dfafe60",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-home-paths",
+        "required": "^0.1.1-rc.2 || ^0.1.2-alpha.1",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:1ce9ee4fed45ee9123ceede112425fa82ab5555f5a4ef9f9640d7fbe05e2d243",
+      "cellId": "cell:350d92cf7cc19bac0d93de8fa5c8a62de2e2f3ebdb997af4e55107502dfafe60",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-llm",
+        "required": "^0.1.1-rc.2 || ^0.1.2-alpha.1",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:c8074fb9c3abd9a0d30d1a50afeb55416d21c23216a1687dfcbc665a744460f9",
+      "cellId": "cell:350d92cf7cc19bac0d93de8fa5c8a62de2e2f3ebdb997af4e55107502dfafe60",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-tools",
+        "required": "^0.1.1-rc.2 || ^0.1.2-alpha.1",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:1eaf60328511666fb5e7ac8f547392c465fd9cd98e54238f159db4114fe91a80",
+      "cellId": "cell:350d92cf7cc19bac0d93de8fa5c8a62de2e2f3ebdb997af4e55107502dfafe60",
+      "dependency": {
+        "name": "@deepseek-ai/schemastery",
+        "required": "^3.18.1",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "3.18.2"
+      }
+    },
+    {
+      "id": "relation:0b2278550a6b34ad0727f2fc2dbb00f65df5027a07526b1ed7ab97d626af3af1",
+      "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
+      "dependency": {
+        "name": "@deepseek-ai/cordis",
+        "required": "^4.0.1",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "4.0.2"
+      }
+    },
+    {
+      "id": "relation:d68437524f196702b8026ce3afb5ec454f516d92f0113ce506e428dbffb62d9e",
+      "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-agent-default-model",
+        "required": "^0.1.1-rc.2",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:40a57e82767983e5f2cba312f81f498bba368ff4d330085a65478f909b037ca2",
+      "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-connection",
+        "required": "^0.1.1-rc.2",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:a1bfbc869cf7c261b9710e389717c8bebd8d789dac21e848bad98d965075c343",
+      "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-runtime",
+        "required": "^0.1.1-rc.2",
+        "status": "missing",
+        "staticUsage": "no-literal-reference-observed"
+      }
+    },
+    {
+      "id": "relation:4a9e72298ca365c6bdf526bd2c5bdfdc4b9a79f8174aa6801f42d2141f2ba981",
+      "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-ui-slots",
+        "required": "^0.1.1-rc.2",
+        "status": "missing",
+        "staticUsage": "no-literal-reference-observed"
+      }
+    },
+    {
+      "id": "relation:2c9a20f6218ae9c15616f640f5e02908d8a23eb9d0c96e95b509fabebde6d8e6",
+      "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-commands",
+        "required": "^0.1.1-rc.2",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:817a8ef414035c7cedc6989b3806426ed04fac7b8d13400798f3f435882ee433",
+      "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-credentials",
+        "required": "^0.1.1-rc.2",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:0848801bb839ac73f61fff00c175d4710dc536c43c372413c6882eda90afc39d",
+      "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-home-paths",
+        "required": "^0.1.1-rc.2",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:2c10e666d409f750a3670c63fb44e26c6e1869275a9b55c46618dacb3c99be13",
+      "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-host-webserver",
+        "required": "^0.1.1-rc.2",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:7e128f0c6329192f97218df9c63995e0f4b2c4796d04c9b6e13b9774237d9bb6",
+      "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-llm",
+        "required": "^0.1.1-rc.2",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:c7897005a16de87542df4889d226caa130f28ca52a9195b00e2ab82387ed365e",
+      "cellId": "cell:367496b3a1b0d5aade483f671c51b6cc6a3c2e15d7bfcb891851e6835fd9d4bd",
       "dependency": {
         "name": "react",
         "required": "^18.2.0",
+        "status": "missing",
+        "staticUsage": "runtime-import-observed"
+      }
+    },
+    {
+      "id": "relation:ffbbf1bbff67c102e0f406a02af6c813ef32da26123058e38fa33165220d2ae2",
+      "cellId": "cell:3ef0f5ad907585971d49965feedaaac76265754e2e6a13891f2daef96880381e",
+      "dependency": {
+        "name": "@deepseek-ai/cordis",
+        "required": "^4.0.1",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "4.0.2"
+      }
+    },
+    {
+      "id": "relation:ed899c925326d5b8dbeb6dd38c1d1a154a86a3a5f40cc97a120d390225b2900f",
+      "cellId": "cell:3ef0f5ad907585971d49965feedaaac76265754e2e6a13891f2daef96880381e",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-locale",
+        "required": ">=0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:a6c5a32a8fe9bad81bd04d5ca4ce7044f688419ce2bbd2a4b7665ddea533e91f",
+      "cellId": "cell:3ef0f5ad907585971d49965feedaaac76265754e2e6a13891f2daef96880381e",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-tools",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:3f96a2efc5445a90b23c1652698652dc6024d0de529f94e7cd23dff43ef841fc",
+      "cellId": "cell:3ef0f5ad907585971d49965feedaaac76265754e2e6a13891f2daef96880381e",
+      "dependency": {
+        "name": "@deepseek-ai/schemastery",
+        "required": ">=3.0.0",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "3.18.2"
+      }
+    },
+    {
+      "id": "relation:4754a93fa948573494578a51e5b869d0f9db14de60a46ac93287a5a1781acc97",
+      "cellId": "cell:3ef0f5ad907585971d49965feedaaac76265754e2e6a13891f2daef96880381e",
+      "dependency": {
+        "name": "react",
+        "required": ">=18.0.0",
         "status": "missing",
         "staticUsage": "runtime-import-observed"
       }
@@ -3653,60 +3859,6 @@
         "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "3.18.2"
-      }
-    },
-    {
-      "id": "relation:4d0065719f0e17c7770975be0cedebf7d6efe6bb47e02b06b106f1449bfd4b1a",
-      "cellId": "cell:477f88ab0cdd395b838252a5f820f0be5690f58383497a1c36259699629a8c1e",
-      "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": "^4.0.1",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "4.0.2"
-      }
-    },
-    {
-      "id": "relation:d44bf2287ff92cb5eaa9ebcd11c8a9aebb2fec34e1bb2336b35472bf1c4568e7",
-      "cellId": "cell:477f88ab0cdd395b838252a5f820f0be5690f58383497a1c36259699629a8c1e",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-locale",
-        "required": ">=0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:923c3ec3c1ef70fb02e8492e7ce2722cec477f0ea46f6a50a8ced4a5c60702f8",
-      "cellId": "cell:477f88ab0cdd395b838252a5f820f0be5690f58383497a1c36259699629a8c1e",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-tools",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:c95a9ada54112dadeecea85dd7ac4bdd63ff23f5523becc28557fc9ab86644e2",
-      "cellId": "cell:477f88ab0cdd395b838252a5f820f0be5690f58383497a1c36259699629a8c1e",
-      "dependency": {
-        "name": "@deepseek-ai/schemastery",
-        "required": ">=3.0.0",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "3.18.2"
-      }
-    },
-    {
-      "id": "relation:954a149e4c9c5664f5003bf2cbcbde51fffbeb355fd1065925f55a35c5d77068",
-      "cellId": "cell:477f88ab0cdd395b838252a5f820f0be5690f58383497a1c36259699629a8c1e",
-      "dependency": {
-        "name": "react",
-        "required": ">=18.0.0",
-        "status": "missing",
-        "staticUsage": "runtime-import-observed"
       }
     },
     {
@@ -3882,6 +4034,39 @@
         "status": "satisfied",
         "staticUsage": "no-literal-reference-observed",
         "resolvedVersion": "4.0.2"
+      }
+    },
+    {
+      "id": "relation:80f4ecff8026c9b3b60feca84058bfc56e0cd47c6148e53903d6b0a97215abf6",
+      "cellId": "cell:4d128b9ef7c0e863d05cf7ed3e2f20849c08264f52e26b01aee54d72597cf6d2",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-llm",
+        "required": ">=0.1.0-rc.6 <0.2.0",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:b10d69ff6fbc0ee448306a981064b847dcd934209d28685879a81a21135eff38",
+      "cellId": "cell:4d128b9ef7c0e863d05cf7ed3e2f20849c08264f52e26b01aee54d72597cf6d2",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-mcp-client",
+        "required": ">=0.1.0-rc.6 <0.2.0",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:216b8098078e4ae21ef5a74cd90eeebf7a5200acd8813e19e51816188b00d00f",
+      "cellId": "cell:4d128b9ef7c0e863d05cf7ed3e2f20849c08264f52e26b01aee54d72597cf6d2",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-skill-filesystem",
+        "required": ">=0.1.0-rc.6 <0.2.0",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
@@ -4102,102 +4287,14 @@
       }
     },
     {
-      "id": "relation:779204a0e36b5cb8a8dce6372fcd91d6edefb6acd3b015748de3f4685b44672b",
-      "cellId": "cell:4f9f2d8700e5c613c03f691a143ac4ec5163fadcc7332c3c3dc9e0ec5dc578cc",
+      "id": "relation:13bfe53c2dbea60be008cbcf9d282e10209bfe113876d34ff4fdc1a7ae52ec6c",
+      "cellId": "cell:53e023bc680a38a73a847167eafe95d73ece8875f7b2156894d760db0e4e3c5f",
       "dependency": {
         "name": "@deepseek-ai/cordis",
         "required": "^4.0.1",
         "status": "satisfied",
-        "staticUsage": "scan-incomplete",
+        "staticUsage": "type-only-reference-observed",
         "resolvedVersion": "4.0.2"
-      }
-    },
-    {
-      "id": "relation:9110bf1e4d259f464a19a109cd9ff68f908c24024a371c8493ad924cf1af0683",
-      "cellId": "cell:56fc4afb8efc83bedaa0ec71aa74391932646f349418bd1ea97edc790cbb12af",
-      "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": "*",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "4.0.1"
-      }
-    },
-    {
-      "id": "relation:341524038bbc40df0fcb439ec226f6919e2fcad302f9902efa7fe0cb29f12eea",
-      "cellId": "cell:56fc4afb8efc83bedaa0ec71aa74391932646f349418bd1ea97edc790cbb12af",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-fs",
-        "required": "*",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.1-rc.2"
-      }
-    },
-    {
-      "id": "relation:20c62785298c4c53120f8eafac3699b67e2ed3589f5aacf24e5b4cc43cdc0ce1",
-      "cellId": "cell:56fc4afb8efc83bedaa0ec71aa74391932646f349418bd1ea97edc790cbb12af",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-fs-local",
-        "required": "*",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.1-rc.2"
-      }
-    },
-    {
-      "id": "relation:a3dc339b19f6dd7cafa30dd4867bb6d526d6c0442c0b2c5ea806ecadab319733",
-      "cellId": "cell:56fc4afb8efc83bedaa0ec71aa74391932646f349418bd1ea97edc790cbb12af",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-shell",
-        "required": "*",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.1-rc.2"
-      }
-    },
-    {
-      "id": "relation:cddec65ea214fa354399ead5b538efdca5302fbd90a75a2448211007e8ce08a7",
-      "cellId": "cell:56fc4afb8efc83bedaa0ec71aa74391932646f349418bd1ea97edc790cbb12af",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-subprocess",
-        "required": "*",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.1-rc.2"
-      }
-    },
-    {
-      "id": "relation:f7591baa6aab222f60937c333e28ab1776e196fc8ebd3c41e4aa13c49ceeed7b",
-      "cellId": "cell:56fc4afb8efc83bedaa0ec71aa74391932646f349418bd1ea97edc790cbb12af",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-timeout",
-        "required": "*",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.1-rc.2"
-      }
-    },
-    {
-      "id": "relation:10591b90727d11fe2df08928fef3d2c4764b16125c7341fd4ba3a1303bd69d39",
-      "cellId": "cell:5c347a89ce49cc8c81776e44fe283a795aa49c1da7926f1be0f6ebc9139616fa",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-credentials",
-        "required": "^0.1.0-rc.6 || ^0.1.1-0 || ^0.1.2-0 || ^0.1.3-0 || ^0.1.5-0",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:acbeb707b11f666e82e0b8851c5152f499081d3f6acfb8c698ac832d9175ddb2",
-      "cellId": "cell:5c347a89ce49cc8c81776e44fe283a795aa49c1da7926f1be0f6ebc9139616fa",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-home-paths",
-        "required": "^0.1.0-rc.6 || ^0.1.1-0 || ^0.1.2-0 || ^0.1.3-0 || ^0.1.5-0",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
@@ -4223,80 +4320,24 @@
       }
     },
     {
-      "id": "relation:2c31dbb8bd503cc2cae21903475aab7d31847e141b35473613a9e5a3a79fa9a8",
-      "cellId": "cell:6735930b98409a2ed994e02f484dca7b9888e4b798c6f6b43e03b67bfe86759f",
+      "id": "relation:525b60ac9cd8ca9a2b8cec73e4fb93df409bfa52ee69b7efe36f5479e8009184",
+      "cellId": "cell:6bff2e63b2a05684d54c7d0db9291ba17b9cb1c2ba5c986d185f818540a426a5",
       "dependency": {
         "name": "@deepseek-ai/cordis",
         "required": "^4.0.1",
         "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
+        "staticUsage": "scan-incomplete",
         "resolvedVersion": "4.0.2"
       }
     },
     {
-      "id": "relation:cc34f861041c239ce099fa2d8a3da95db7898d9888826a581e90d15f8f5f9161",
-      "cellId": "cell:72e0b41953b5b659833c32947e0d21854cb5a0e4de6c0200588db849a2be7f57",
+      "id": "relation:71754e3143fd093df39d53641b7ef8cff011f3623af684df226291c15775ab9d",
+      "cellId": "cell:742307d577e62fe73572fab72e2387bc52cdce322680f3a9d150085107bcb8ce",
       "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": "^4.0.1",
-        "status": "satisfied",
-        "staticUsage": "type-only-reference-observed",
-        "resolvedVersion": "4.0.2"
-      }
-    },
-    {
-      "id": "relation:bd8769a76ec11da64c931f203d28dcac17cb9f63116a8d2bc2ebce61ea9a6765",
-      "cellId": "cell:72e0b41953b5b659833c32947e0d21854cb5a0e4de6c0200588db849a2be7f57",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-attachment",
-        "required": "^0.1.1-rc.2 || ^0.1.2-alpha.1",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:feba314ac32fe1733da0eb039f180f59acd1f572fcc8af56a389aa0c62ad07aa",
-      "cellId": "cell:72e0b41953b5b659833c32947e0d21854cb5a0e4de6c0200588db849a2be7f57",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-home-paths",
-        "required": "^0.1.1-rc.2 || ^0.1.2-alpha.1",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:43ad8acfede57d8e76436bfd06805917662c731a5e5141939df8d508c1bfb3b8",
-      "cellId": "cell:72e0b41953b5b659833c32947e0d21854cb5a0e4de6c0200588db849a2be7f57",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-llm",
-        "required": "^0.1.1-rc.2 || ^0.1.2-alpha.1",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:4bc14177c05d258a61b4c170a9a2a15a22137aa76537a4a0cd44ff2b1a0074d8",
-      "cellId": "cell:72e0b41953b5b659833c32947e0d21854cb5a0e4de6c0200588db849a2be7f57",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-tools",
-        "required": "^0.1.1-rc.2 || ^0.1.2-alpha.1",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:db7a4396a329323e4ea7e41c2e0da5c380f8bbbcfd62263b89d7bb7831e31525",
-      "cellId": "cell:72e0b41953b5b659833c32947e0d21854cb5a0e4de6c0200588db849a2be7f57",
-      "dependency": {
-        "name": "@deepseek-ai/schemastery",
-        "required": "^3.18.1",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "3.18.2"
+        "name": "@deepseek-ai/dsh-client-runtime",
+        "required": "^0.1.0-rc.6",
+        "status": "missing",
+        "staticUsage": "no-literal-reference-observed"
       }
     },
     {
@@ -4355,219 +4396,176 @@
       }
     },
     {
-      "id": "relation:07487bb5243689ba4296aaaab2ecc503f07d49efd7cd2e902c8d36330d35d70f",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+      "id": "relation:d36a28fb30b4767cc6eb12273d3a75490c27c69afa9168bbd1d490582cabf23c",
+      "cellId": "cell:81ab1ba7cbddf570f8bee4324858579b400d333ed4400fda245c15dfea2429c0",
       "dependency": {
         "name": "@deepseek-ai/cordis",
-        "required": "4.0.1 || 4.0.2",
+        "required": "^4.0.1",
         "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
+        "staticUsage": "runtime-import-observed",
         "resolvedVersion": "4.0.2"
       }
     },
     {
-      "id": "relation:ac31dd62f052f81a7b53b98c970ebe0149c5ad024479ce2190e8f614f09da447",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+      "id": "relation:89a5393c9458dfb1b4704b8837ebee6849333903f753a6e2034896e014914fff",
+      "cellId": "cell:81ab1ba7cbddf570f8bee4324858579b400d333ed4400fda245c15dfea2429c0",
       "dependency": {
-        "name": "@deepseek-ai/dsh-api-remotes",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "mismatched",
+        "name": "@deepseek-ai/dsh-host-webserver",
+        "required": ">=0.1.0-rc.6 <0.2.0 || >=0.1.5-rc.0 <0.3.0 || >=0.2.0-rc.0 <0.3.0",
+        "status": "satisfied",
         "staticUsage": "no-literal-reference-observed",
         "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
-      "id": "relation:564118f44edc12e941c4336b7d13d71b2b28baa7c3d5764b4b4ba8668f96623b",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-connection",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "mismatched",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:1570200682fd33fe52d36237d461cb73509dcdb48d43306bdba36dcf56805db6",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-locale",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "mismatched",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:0d00c36d03ebb78734c3c15b78a68081161150166c19f4021dc2054cc0c18fdb",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-ui-conversation",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "mismatched",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:d21c8c009abe9ce2908fa153936ed1385617555009eb623f8dc051772444f15e",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-ui-model-selection",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "mismatched",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:3eb02f081aa24319c9b1d6a9b5a313794b1177c651f5a7972c4746a623ff2f75",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-ui-primitives",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "missing",
-        "staticUsage": "runtime-import-observed"
-      }
-    },
-    {
-      "id": "relation:a144714a66a0baa4118439448a98c3242e6d7d74caa858fce986a6943a87dafb",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-ui-settings",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "mismatched",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:66f42cbacedab8577da9fa5a4cd384ad76435fc16f857db7a7f3366160334ea7",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-ui-slots",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "missing",
-        "staticUsage": "no-literal-reference-observed"
-      }
-    },
-    {
-      "id": "relation:c668c9cfbf64e3ed1833a5083384049ac734d7a32dc67cde3343d138ed0b81b9",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-ui-tool",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "mismatched",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:4e38bf502a17fe9a821f6abda5d3c3cc5e3a63e310f60542ac253282b3ebaebe",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-credentials",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "mismatched",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:cead4078508227d8ef317251331306726e062a5384e4d8bbe7b94d675a926a0a",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+      "id": "relation:1c60a7d94be4cd9130acd06f68f289a82758baa2e6bc80ca2fea4ed8212f9b12",
+      "cellId": "cell:81ab1ba7cbddf570f8bee4324858579b400d333ed4400fda245c15dfea2429c0",
       "dependency": {
         "name": "@deepseek-ai/dsh-llm",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "mismatched",
+        "required": ">=0.1.0-rc.6 <0.2.0 || >=0.1.5-rc.0 <0.3.0 || >=0.2.0-rc.0 <0.3.0",
+        "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
-      "id": "relation:9fc705fe129f7836eb0de00eb736224cd7615c4f73e4cdde1a1864ce305157bf",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+      "id": "relation:91bc81cc8efb3f176212c32c20d7b3bb3f771e27e427f0b6353be99301442bd7",
+      "cellId": "cell:81ab1ba7cbddf570f8bee4324858579b400d333ed4400fda245c15dfea2429c0",
       "dependency": {
-        "name": "@deepseek-ai/dsh-llm-pi-ai",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "mismatched",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:f478072302a3adebac29da99c60f1be86e22a42b0b4e651c0fbc88329d25100a",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-settings",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "mismatched",
+        "name": "@deepseek-ai/dsh-system-prompt",
+        "required": ">=0.1.0-rc.6 <0.2.0 || >=0.1.5-rc.0 <0.3.0 || >=0.2.0-rc.0 <0.3.0",
+        "status": "satisfied",
         "staticUsage": "no-literal-reference-observed",
         "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
-      "id": "relation:4cbf546095b1ac1a356f02a77c4fd24cc5d492d625b265de5ee1d2030c4481e3",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+      "id": "relation:3c1fa18444ea9b6149babcf75c5bc36ece8e14c68471d74081d30e50c064a907",
+      "cellId": "cell:81ab1ba7cbddf570f8bee4324858579b400d333ed4400fda245c15dfea2429c0",
       "dependency": {
         "name": "@deepseek-ai/dsh-tools",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "mismatched",
+        "required": ">=0.1.0-rc.6 <0.2.0 || >=0.1.5-rc.0 <0.3.0 || >=0.2.0-rc.0 <0.3.0",
+        "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
-      "id": "relation:09a4dabd7ca68bd607e8da050f4af3e1bbb555ee832ac27897b95b5a0a43f4b2",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-web",
-        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
-        "status": "mismatched",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:18e05d615da1bd83f59736755b26be20fdfd2e3873a24b86660f1aafb6259d80",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+      "id": "relation:18c622ae566f1eafee3794b7648b7824494c44867a2e6b8efc14e9ffb52e6c1a",
+      "cellId": "cell:81ab1ba7cbddf570f8bee4324858579b400d333ed4400fda245c15dfea2429c0",
       "dependency": {
         "name": "@deepseek-ai/schemastery",
-        "required": "3.18.1 || ^3.18.2",
+        "required": "^3.18.1",
         "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "3.18.2"
       }
     },
     {
-      "id": "relation:7d6373aeb5e5e4a7f0cd1e332ebf7c1550b1ae08b9383fd28be4751c5d359bf7",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+      "id": "relation:ce04a5f4a9affffafcff7b4675cb2a0ea0eccd5b626fb489be88025d13653f00",
+      "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
       "dependency": {
-        "name": "@earendil-works/pi-ai",
-        "required": "0.82.1 || 0.85.1",
+        "name": "@deepseek-ai/cordis",
+        "required": ">=4.0.1 <5.0.0",
         "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.85.1"
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "4.0.2"
       }
     },
     {
-      "id": "relation:2913d294ac03e31635906e54e4408306947392baa0152ef592ec659598ca56d2",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
+      "id": "relation:76c3cfc9fbe445f0f9ac7880f09761879aed52ac42514d8528f80e43d753749c",
+      "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-locale",
+        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:f2c4d0389468ceb608bf24bd8d57172a6b8911e3567499ba95d8c975d25db02c",
+      "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-ui-primitives",
+        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
+        "status": "missing",
+        "staticUsage": "no-literal-reference-observed"
+      }
+    },
+    {
+      "id": "relation:6f0bebe8ad5a0f2f3cdf5d538d69de651d860790f0a9c0a9eb57049bd1638c38",
+      "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-ui-slots",
+        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
+        "status": "missing",
+        "staticUsage": "no-literal-reference-observed"
+      }
+    },
+    {
+      "id": "relation:cf2bdbb7cb14ca263b278d90e921c29dfcb8d20e976b6b302d841cd57d3c9303",
+      "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-host-webserver",
+        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:d70228fb34acb835f6c89aae237deece7070282fda448d61b7daa4675273aa3d",
+      "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-session",
+        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:cde2462e164a5388b21d4945e6a07f78e24b4cb5decdfbefb87062ea30a0c074",
+      "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-skill",
+        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:7d2b11c88762e150a60a29fb17fbca9413c27a12bd67f8e0035eae0ab39d1151",
+      "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-tools",
+        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:1570dd3a96a895770eb2cb2466a3fbc7b31bc37b4ac8e65f268b0bf9116e1580",
+      "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-web-app",
+        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:f9b6e6a4fcf731bdafb46845764f8ee693c0f589cde728943e5d1170b40b4d64",
+      "cellId": "cell:83c62a21036cacbf22e4392fe7bcb910eb2fab4b574b64c08c525f9991e7cb8a",
       "dependency": {
         "name": "react",
         "required": "^18.2.0",
         "status": "missing",
-        "staticUsage": "runtime-import-observed"
-      }
-    },
-    {
-      "id": "relation:79e45f9c9c60b8569976217d126616039929cd0f200c5aa18b84fa425d1ceeb1",
-      "cellId": "cell:8470ff25217d0bee8e71045c5e7e5bfae8ff1444ced9758200f5866db0367a40",
-      "dependency": {
-        "name": "react-dom",
-        "required": "^18.2.0",
-        "status": "missing",
-        "staticUsage": "runtime-import-observed"
+        "staticUsage": "no-literal-reference-observed"
       }
     },
     {
@@ -4916,6 +4914,28 @@
       }
     },
     {
+      "id": "relation:43ca5507296926fb812b7ae60c662b808075997d6a1688aea341aaa15966a504",
+      "cellId": "cell:8fbdf3ee6fff3c9c5aa23e05fa751f893e35bb2cd3497a6f3c75b9408c856626",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-settings",
+        "required": ">=0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:aeb81419d36f0a89d994b8b9113304c76d09ccc7f27adef47c00b0e1f2685e89",
+      "cellId": "cell:8fbdf3ee6fff3c9c5aa23e05fa751f893e35bb2cd3497a6f3c75b9408c856626",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-tools",
+        "required": ">=0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
       "id": "relation:93f9ab5f53b831b3718a88a47ac02186b50604b7499b50979edcb3a5c03f464d",
       "cellId": "cell:922da5f4fe6858d9726893b5084514a7edcca709fe936756022f83f9c0aa421c",
       "dependency": {
@@ -4965,6 +4985,72 @@
         "required": "^18.2.0",
         "status": "missing",
         "staticUsage": "runtime-import-observed"
+      }
+    },
+    {
+      "id": "relation:25ff6f8c7191a5a3fb84e293aaa079db66638477af0bfb8245141be105ae2254",
+      "cellId": "cell:9b3d4af025eb9f4a26fe49dda8085cc82705283dc14b5753cd3a1a0211108531",
+      "dependency": {
+        "name": "@deepseek-ai/cordis",
+        "required": "*",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "4.0.2"
+      }
+    },
+    {
+      "id": "relation:deb027774b8e4c31f09a977e6dcb23be722afe46125f5002558e0b69c98b411e",
+      "cellId": "cell:9b3d4af025eb9f4a26fe49dda8085cc82705283dc14b5753cd3a1a0211108531",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-fs",
+        "required": "*",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:64043a00bff3bdd110791b523ebbe1b2818e7d401831f79457f9962e7000cdf2",
+      "cellId": "cell:9b3d4af025eb9f4a26fe49dda8085cc82705283dc14b5753cd3a1a0211108531",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-fs-local",
+        "required": "*",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:80c657cc8fc055b4e09bd47093fa94544ce9a61dcd32bd7de4eeac7aefe43467",
+      "cellId": "cell:9b3d4af025eb9f4a26fe49dda8085cc82705283dc14b5753cd3a1a0211108531",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-shell",
+        "required": "*",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:5ace1dd467beea053c096a0830f7756c54a482335fd69725dd06d2c4cc983f70",
+      "cellId": "cell:9b3d4af025eb9f4a26fe49dda8085cc82705283dc14b5753cd3a1a0211108531",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-subprocess",
+        "required": "*",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:5a26300b919ca2ae3fe3f53de3bb23f281dadbb8df6ec905f32afc7250256a76",
+      "cellId": "cell:9b3d4af025eb9f4a26fe49dda8085cc82705283dc14b5753cd3a1a0211108531",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-timeout",
+        "required": "*",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
@@ -5021,68 +5107,14 @@
       }
     },
     {
-      "id": "relation:1013708af4e86096468c6fe109fc04a0c416d1bce7186f530893ae9d436016ea",
-      "cellId": "cell:9f161ce8d04c295d0f6cfb51ffeb6793c0451bd793eda2906e60a53f4359f49a",
+      "id": "relation:9917c908e49900e577f3f778cbbdd55dd468f50bdf1cb67faae5aca92d9120c4",
+      "cellId": "cell:a380e88cc0521f7bc95717c7ff763b06c60d1d24ab7a9fb317795f214285fa53",
       "dependency": {
         "name": "@deepseek-ai/cordis",
         "required": "^4.0.1",
         "status": "satisfied",
         "staticUsage": "scan-incomplete",
         "resolvedVersion": "4.0.2"
-      }
-    },
-    {
-      "id": "relation:2b0ef20e9d8369d991b17e053fe18c760c13db9ac00936c49f04079b25a1db5a",
-      "cellId": "cell:a46fbd01f2add89bc4a136fd72a0367e49abd6645b02b9ef83bea33f3a4d6f4a",
-      "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": "^4.0.1",
-        "status": "satisfied",
-        "staticUsage": "type-only-reference-observed",
-        "resolvedVersion": "4.0.2"
-      }
-    },
-    {
-      "id": "relation:6c63da6dddc9bd7db94f50d8d56d59ef84f51b38af0cb754337167d0bd206e19",
-      "cellId": "cell:a70ca75f67874949632f12a2ff688e6296a96bbfbfc6bb2c770e57afd5adb3f6",
-      "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": "^4.0.1",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "4.0.2"
-      }
-    },
-    {
-      "id": "relation:51fe14291fc9f34b9b7f8ed03dba35ac1395484a34e5378b08b20a7c1ae18d49",
-      "cellId": "cell:a70ca75f67874949632f12a2ff688e6296a96bbfbfc6bb2c770e57afd5adb3f6",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-settings",
-        "required": "^0.1.0-rc.7",
-        "status": "satisfied",
-        "staticUsage": "type-only-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:6fb556bd7ec6165a9edcbacebaf27a006ec6a1b29cc2ef0af5b3251074e61659",
-      "cellId": "cell:a70ca75f67874949632f12a2ff688e6296a96bbfbfc6bb2c770e57afd5adb3f6",
-      "dependency": {
-        "name": "@deepseek-ai/schemastery",
-        "required": "^3.18.1",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "3.18.2"
-      }
-    },
-    {
-      "id": "relation:dfb4382289b754e7a36b6737da3aae2561a6043d96a6a9fc839b3371ac9eb627",
-      "cellId": "cell:a70ca75f67874949632f12a2ff688e6296a96bbfbfc6bb2c770e57afd5adb3f6",
-      "dependency": {
-        "name": "react",
-        "required": "^18.2.0",
-        "status": "missing",
-        "staticUsage": "runtime-import-observed"
       }
     },
     {
@@ -5110,83 +5142,6 @@
     {
       "id": "relation:9bbf4eb52bab573c63f3e0528f27e2992e6c79990f7dee70522a558cdfb870db",
       "cellId": "cell:a8d5d6574fdba75e3afaf3a96d72d2d37f70a4ae1297dca9c53d2a1703c36713",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-tools",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:c065767fd5a2812fb9c27f32daa597b116128c5a58980aa1608080c8f3b00a01",
-      "cellId": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
-      "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": "^4.0.1",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "4.0.2"
-      }
-    },
-    {
-      "id": "relation:53aad5671a652c78e59f1ef90e93ebb1060a34d06716515ec89d316317ef8742",
-      "cellId": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-locale",
-        "required": "^0.1.2-rc.1",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:05e56d7ef1704192b2f2cacf5ef918434a9be1b5db8f49a964d1e8d6e4125955",
-      "cellId": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-ui-renderer",
-        "required": "^0.1.2-rc.1",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:19925a7c83cfb0757a47da6b257a23b42fe7054c7228715a153505aad4f8e5d8",
-      "cellId": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-commands",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:06a1b72b25a31e2f7f451dd7ae40a95d5365ff2d27a84b1e2899f5b132d06c1c",
-      "cellId": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-host-webserver",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:6f0730137f209938f82ed642f40484eba5a09f29187e238adae9d21a3cf6d3e7",
-      "cellId": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-system-prompt",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "scan-incomplete",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:aaa605feb60f12e419e0070b21daa36cb499b23dda286607270457bf13b95ffd",
-      "cellId": "cell:aa42aa068a2ad1220de363b8289134fb9f8701db89fcef496422a685fe323994",
       "dependency": {
         "name": "@deepseek-ai/dsh-tools",
         "required": "^0.1.0-rc.6",
@@ -5282,219 +5237,13 @@
       }
     },
     {
-      "id": "relation:bc34f0172afb46c7ab547d0e8adcea042cfc2a2f7e25e0275859b80aac75533e",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-agent-presets",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:c17ba84decf1b3e9cce3a0a66a906fd57ff0e7d655d10fa0326810969f1743af",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-connection",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:90962fd130f9d053ccf414fe60569380c31107f1cc5865299c5f98f8fecc9488",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-locale",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "type-only-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:7d5aa51ae2aa2b343476c0396e8ada425572ed8c7267b584ddb9b6e9b706518b",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-runtime",
-        "required": "^0.1.0-rc.6",
-        "status": "missing",
-        "staticUsage": "type-only-reference-observed"
-      }
-    },
-    {
-      "id": "relation:f08c96ce120ad75839f376f63e72b19b897228689ec8e8b0c016b7e788885cb5",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-ui-settings",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "type-only-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:22442997c12e32555b4e0808f3a1523b26911ce217534d3c5667687d355173ae",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-ui-slots",
-        "required": "^0.1.0-rc.6",
-        "status": "missing",
-        "staticUsage": "runtime-import-observed"
-      }
-    },
-    {
-      "id": "relation:387d4839f47a83a1c4f21b4aaa58cc80e398a9ecc9d27599cf2fb0901c0bc8ba",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-credentials",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:0a319a234cf1cbbc66bbd3b57ba7dc342b124d0e137ba86d3c5c8b078029e19a",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-home-paths",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:63e2d8d8f7ffbec719a0d87a1892653a73c6af0f4380fc3614c0586e14b31350",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-host-plugin-inventory",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:4e088b9da1e0783559f0fbc6011f532604fe71fe153cd9ae1142132903ef694f",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-host-webserver",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "type-only-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:95b79816dfd0df09e117734959162d6df3b901b2e079a6f56716b7af8eebb1ff",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-llm",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:f864ead027d60c52b5d85efd900886fb6bcfb54eb686887bfbc43fa3c4650913",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-settings",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:6d41e5fa3c2b371d948e647e444de8f7a7ad9f5a96397b7d5f2dafeac3778725",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-system-prompt",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:430b1ed7bced538bb7898e93f1a1a1ccc80e7d759ec47ff6178672b838244b1f",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-tools",
-        "required": "^0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:d61a84d0254a8dbe2bebbeaf2a184814f7a4cd0ddf8c1c91f63693fe490814ff",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
+      "id": "relation:1b2f4311f3fab39a0f88e9b8d7f5758c1af013657f1c02eb6f42916b9f1bcc5f",
+      "cellId": "cell:bd13ae0a514bfc76255aa025e05436d52eae76c0f54d54166ed49ff9f533c282",
       "dependency": {
         "name": "react",
         "required": "^18.2.0",
         "status": "missing",
         "staticUsage": "runtime-import-observed"
-      }
-    },
-    {
-      "id": "relation:1e9d6a913b075955618bd26d1ddcc4a9bee6a9108d267112cf93237031b92203",
-      "cellId": "cell:b4fe846587b07a48a65f05ac8ba513f93b1a2d4265236c30de028cff80fccc0f",
-      "dependency": {
-        "name": "react-dom",
-        "required": "^18.2.0",
-        "status": "missing",
-        "staticUsage": "runtime-import-observed"
-      }
-    },
-    {
-      "id": "relation:f431551d69e4aed02fee9ff80e3ce6a02eb2ed07b6d8a61dfe9e72d2ed47a2e4",
-      "cellId": "cell:b80c7446947f94ccc7165e6e00961d132625526bfb43e7482c5858235be08bdc",
-      "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": "^4.0.2",
-        "status": "satisfied",
-        "staticUsage": "type-only-reference-observed",
-        "resolvedVersion": "4.0.2"
-      }
-    },
-    {
-      "id": "relation:05434e83fd97b52b8e24ef24ceeb0c3d1795c87d2666000e60b4d9bcd177aa25",
-      "cellId": "cell:b80c7446947f94ccc7165e6e00961d132625526bfb43e7482c5858235be08bdc",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-session",
-        "required": ">=0.1.2-rc.1",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:098241b52870a7a812937323758e6c65842575378bf0f8f87ea2a16137bc14e8",
-      "cellId": "cell:b80c7446947f94ccc7165e6e00961d132625526bfb43e7482c5858235be08bdc",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-settings",
-        "required": ">=0.1.2-rc.1",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:a2b06dd8f1b981eb62395fceb3b6b2d31ed3f3706f10765e244dafec719d6ec9",
-      "cellId": "cell:b80c7446947f94ccc7165e6e00961d132625526bfb43e7482c5858235be08bdc",
-      "dependency": {
-        "name": "@deepseek-ai/schemastery",
-        "required": "^3.18.2",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "3.18.2"
       }
     },
     {
@@ -5709,6 +5458,222 @@
       "cellId": "cell:be2a96f996baab00c9191c7354e32fc9ce309252193120c1b76052c6fb328c4d",
       "dependency": {
         "name": "react",
+        "required": "^18.2.0",
+        "status": "missing",
+        "staticUsage": "runtime-import-observed"
+      }
+    },
+    {
+      "id": "relation:9a93f9c69b07b323f9fefac33113947f93a249acb850efbd631926a29cf8abb3",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/cordis",
+        "required": "4.0.1 || 4.0.2",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "4.0.2"
+      }
+    },
+    {
+      "id": "relation:f9eae120eb6658b307bace61befb62d0cae0a15d4fb081777446c6056ce3e1c7",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-api-remotes",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "mismatched",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:c609ddc872357425eef7a0fe1e258cfb407254653d2c0acca055b6ad29e08faa",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-connection",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "mismatched",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:832b05c7de4b8acd34df94af734642e15b18be15c83b497d438d45dcf177a941",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-locale",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "mismatched",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:521e1346ca1f4a61d12c0c94e2e2c5a5de131128612f14721bd4d1be3c3bc97a",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-ui-conversation",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "mismatched",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:51a7a13c777c97746c275999ec6cde76ed3b3a2b9f115d438f20535a0fb75cab",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-ui-model-selection",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "mismatched",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:a1b176ac48bd190a39908f2636042c0acd63d86cd5f12e9747f303d659a1daef",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-ui-primitives",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "missing",
+        "staticUsage": "runtime-import-observed"
+      }
+    },
+    {
+      "id": "relation:b5776b3109a0a2304f195fed9bd2d3cfd14027271578eca990274af136c6cf0a",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-ui-settings",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "mismatched",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:f400e6ad51dece217903d17d9f125d373516778366e35286c96caa85a010000c",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-ui-slots",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "missing",
+        "staticUsage": "no-literal-reference-observed"
+      }
+    },
+    {
+      "id": "relation:bb04ba3896e339e784d80dcbf37c070d83f86558cdc7f49a65fa8618e4c88a61",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-ui-tool",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "mismatched",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:fce7f22baa4162b56605a788b7d5ab3ec208caf236eaa7c115dec6692a53dc20",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-credentials",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "mismatched",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:de1915cbf69e33ab2ac2b90c868f44dc0a84bafac0fbec40f9a602cb6dfb6ad7",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-llm",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "mismatched",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:e9be0f618b741cef8d571f4a83df2c8e0c2683152090a3b6d6c62fad0862581c",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-llm-pi-ai",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "mismatched",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:01a1546ce9f421b51e9579542adddebf58917b897c5f9f495cd0bacdf9a91960",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-settings",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "mismatched",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:627ca6cc0e8d22d6033b83f2ff29b68ae18654888995c356f32e6103b120698a",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-tools",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "mismatched",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:bcd67efdd1e25464dcf314e6a61715fe0f44c4a91f29143f952c3df30aba12fe",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-web",
+        "required": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
+        "status": "mismatched",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:3b9f848558c78e4d09190f9ec6f8c5f836ff054865f3b7c5316b4413a3f37348",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@deepseek-ai/schemastery",
+        "required": "3.18.1 || ^3.18.2",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "3.18.2"
+      }
+    },
+    {
+      "id": "relation:a0e3eaab6ec1dcba6e71412d1cc468443a86d665bb99b15fe310a5c31dfbd23c",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "@earendil-works/pi-ai",
+        "required": "0.82.1 || 0.85.1",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.85.1"
+      }
+    },
+    {
+      "id": "relation:b9737e144d49a6407619138fa4d664270ab11b3417c9ace80289008340f82a06",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "react",
+        "required": "^18.2.0",
+        "status": "missing",
+        "staticUsage": "runtime-import-observed"
+      }
+    },
+    {
+      "id": "relation:6cf9f1eb1a3818927bb35bcb36461158e49ae70b43f4c12c95a3d563c737c1dd",
+      "cellId": "cell:c3f8ce91bf60fc361bb038c7590409a71edee05381da8abc22e3c28b82c84587",
+      "dependency": {
+        "name": "react-dom",
         "required": "^18.2.0",
         "status": "missing",
         "staticUsage": "runtime-import-observed"
@@ -5985,6 +5950,94 @@
       }
     },
     {
+      "id": "relation:8d2c9fb044ae973a59fe714225c74d427e33eabbacb46fbd04fcec61551635a5",
+      "cellId": "cell:c6f4478750998890ce842a818a2f81297d7c9b8ef0d66c7deba08355b2724bf0",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-atomic-write",
+        "required": "0.1.1-rc.2",
+        "status": "mismatched",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:d0a9113db6350efec2241b50346bfb67006ea7c19982f6153b2c90e283e1154a",
+      "cellId": "cell:c6f4478750998890ce842a818a2f81297d7c9b8ef0d66c7deba08355b2724bf0",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-home-paths",
+        "required": "0.1.1-rc.2",
+        "status": "mismatched",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:85696ff4c5ed2278a98ab770e3630adf587457969fcb2e2db77832b355f92170",
+      "cellId": "cell:c6f4478750998890ce842a818a2f81297d7c9b8ef0d66c7deba08355b2724bf0",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-llm",
+        "required": "0.1.1-rc.2",
+        "status": "mismatched",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:4a409c84b0fb205e740bbd849c91eefeb8eba28f72e84992a139ce05a09943ac",
+      "cellId": "cell:c6f4478750998890ce842a818a2f81297d7c9b8ef0d66c7deba08355b2724bf0",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-llm-pi-ai",
+        "required": "0.1.1-rc.2",
+        "status": "mismatched",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:4276ceb2166e2b0db12c7778cd3d9072af536ce93ac03195c49f7e1d81e312a8",
+      "cellId": "cell:c6f4478750998890ce842a818a2f81297d7c9b8ef0d66c7deba08355b2724bf0",
+      "dependency": {
+        "name": "@deepseek-ai/schemastery",
+        "required": "3.18.1",
+        "status": "mismatched",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "3.18.2"
+      }
+    },
+    {
+      "id": "relation:6dd40e19f3f865e8af5cc646c4629f76ed70bc52ecb8c866779e380297151e78",
+      "cellId": "cell:c6f4478750998890ce842a818a2f81297d7c9b8ef0d66c7deba08355b2724bf0",
+      "dependency": {
+        "name": "@earendil-works/pi-ai",
+        "required": "0.84.2",
+        "status": "mismatched",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.85.1"
+      }
+    },
+    {
+      "id": "relation:a2d9609a0789f81a77788a9727e9919748dc0f63a818fcfeb12e912b67637229",
+      "cellId": "cell:cab3785bed884005f8501b63c6f6dcc519956ba1fb8aabeab27c8b3926b74cf7",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-credentials",
+        "required": "^0.1.0-rc.6 || ^0.1.1-0 || ^0.1.2-0 || ^0.1.3-0 || ^0.1.5-0",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:197e758b31c4918068ef4cfdc6d3bfdc04f7e2ecb1b3d380134644dcf2064859",
+      "cellId": "cell:cab3785bed884005f8501b63c6f6dcc519956ba1fb8aabeab27c8b3926b74cf7",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-home-paths",
+        "required": "^0.1.0-rc.6 || ^0.1.1-0 || ^0.1.2-0 || ^0.1.3-0 || ^0.1.5-0",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
       "id": "relation:8b9e1551cff9e2603fe16456da75ae837a4983d2152927981bcfe77c14069a08",
       "cellId": "cell:cbeaf070853f562f04aa66237b5bcc17f0aa320f4951bb15a0e8414ff3110368",
       "dependency": {
@@ -6157,6 +6210,17 @@
       }
     },
     {
+      "id": "relation:24812752c79e1265a9cb9e1293333339c848bb203da8e75d25d97b6f4370d2b7",
+      "cellId": "cell:d6dd7e05b3e6d1c2c522196135c6accd1bd4370b533502d66e78633ce2f2471c",
+      "dependency": {
+        "name": "@deepseek-ai/cordis",
+        "required": "^4.0.1",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "4.0.2"
+      }
+    },
+    {
       "id": "relation:9d5e9831a47963ab3667d0d9342f0f3fc60db872564f464dee95d4fcfca839bd",
       "cellId": "cell:d822219c106d6b06c45f9b82a6c8a2d5256565b55431bb02bf351f4bbd878550",
       "dependency": {
@@ -6179,140 +6243,172 @@
       }
     },
     {
-      "id": "relation:f80f32e0942dc030a17cd19e0fe35c08305e6fd77c1b7ad21508698366df5a0e",
-      "cellId": "cell:e107d7ac6f246e723060ced02f0abdb5ba3280bef50f8728b4d3d0153c834805",
+      "id": "relation:2954bab98661ee4bda55d8b850d732bac1a59dd9cd6deffdd724cdd56b0f06d9",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
       "dependency": {
-        "name": "@deepseek-ai/dsh-settings",
-        "required": ">=0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:11a1ab7306f6b942f2aad1f53b76961effd24c7f1ffb4c6f0df622fbd42a97c3",
-      "cellId": "cell:e107d7ac6f246e723060ced02f0abdb5ba3280bef50f8728b4d3d0153c834805",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-tools",
-        "required": ">=0.1.0-rc.6",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:29443565e6bd73b95bae621cc22125057875de015db55e17dbe6370e55bb9c00",
-      "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
-      "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": "^4.0.1",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "4.0.2"
-      }
-    },
-    {
-      "id": "relation:eb29002a1120291a8906acff594459b20328a6dcc7c48dc304733384d2725cc1",
-      "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-agent-default-model",
-        "required": "^0.1.1-rc.2",
+        "name": "@deepseek-ai/dsh-agent-presets",
+        "required": "^0.1.0-rc.6",
         "status": "satisfied",
         "staticUsage": "no-literal-reference-observed",
         "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
-      "id": "relation:755012146ec183b3fb41ac7027a9e8a4f05c75d0460b4cb0ef4874efcc0a904b",
-      "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+      "id": "relation:b8df2673283e669d4cb174a519e01ed565a72578e66068a739abca604a1fdd24",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
       "dependency": {
         "name": "@deepseek-ai/dsh-client-connection",
-        "required": "^0.1.1-rc.2",
+        "required": "^0.1.0-rc.6",
         "status": "satisfied",
         "staticUsage": "no-literal-reference-observed",
         "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
-      "id": "relation:94d34aaf63397d6f8bc3b0f3d2ab073dadadb4bbde961e4121384fa6b198a4d8",
-      "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+      "id": "relation:8c52406d46451058a41810f29a924394d58af76ce681063555184105e95b3ffe",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-locale",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "type-only-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:2a43db5a58ff25b2d882079a4a9b02eb8a45b2cff55a08fdfce80606b3351b9e",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
       "dependency": {
         "name": "@deepseek-ai/dsh-client-runtime",
-        "required": "^0.1.1-rc.2",
+        "required": "^0.1.0-rc.6",
         "status": "missing",
-        "staticUsage": "no-literal-reference-observed"
+        "staticUsage": "type-only-reference-observed"
       }
     },
     {
-      "id": "relation:abd141befc0cd01790c8e17963c54cda65485fc49baf3d956d677169e0677f23",
-      "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+      "id": "relation:4abaa9d5264b815b0c47dea973a7aa9b766af8949bf8d5b1af7b29e37e05570f",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-ui-settings",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "type-only-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:d8c8fe17d6f15cf9a575e172871031f2518ba57daf367ecd46c7ea348ebe70a6",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
       "dependency": {
         "name": "@deepseek-ai/dsh-client-ui-slots",
-        "required": "^0.1.1-rc.2",
+        "required": "^0.1.0-rc.6",
         "status": "missing",
-        "staticUsage": "no-literal-reference-observed"
+        "staticUsage": "runtime-import-observed"
       }
     },
     {
-      "id": "relation:edf37492f49edec66026203634f044d84e4ae701fb0bb09ea43ded900ddec80d",
-      "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-commands",
-        "required": "^0.1.1-rc.2",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:2fc18a03c0b00aeab682c924c03cef32ebeda0c47f572d3d1d5b63f0d348a886",
-      "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+      "id": "relation:6cc9253133e551434d39bda2ee6e4f0b5230d4e9116966a78a326c275f737320",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
       "dependency": {
         "name": "@deepseek-ai/dsh-credentials",
-        "required": "^0.1.1-rc.2",
+        "required": "^0.1.0-rc.6",
         "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
-      "id": "relation:f22670120af1d2f323c3fc8cc98650416bda3b366da4c657802134acd836c688",
-      "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+      "id": "relation:0ccd7304b02753aeb0602c625477c413668d45c6e9ff0edd547c59a6f19704e1",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
       "dependency": {
         "name": "@deepseek-ai/dsh-home-paths",
-        "required": "^0.1.1-rc.2",
+        "required": "^0.1.0-rc.6",
         "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
-      "id": "relation:85aaa2b7d191b83168fe94d7641b468e5a7f86eefeed3cc3dbef0290fc896ded",
-      "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+      "id": "relation:9a3cb2cd5066872f1d3bbf0ab52f17c1a7fe436e6fce1566e5bd5267b311047f",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
       "dependency": {
-        "name": "@deepseek-ai/dsh-host-webserver",
-        "required": "^0.1.1-rc.2",
+        "name": "@deepseek-ai/dsh-host-plugin-inventory",
+        "required": "^0.1.0-rc.6",
         "status": "satisfied",
         "staticUsage": "no-literal-reference-observed",
         "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
-      "id": "relation:48b5ed0d98eae84325724ed4fe284e48d4d31b9f2731557bd3a863bc716c7d0e",
-      "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+      "id": "relation:d83d92742b5e8c35ee17e9cb809f5cccf3233e31da5211ca4718694477a04737",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-host-webserver",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "type-only-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:3ee148068bdc7d4aa1f4e4ead65830e20c7672a9ce79d136ee304e86180a274d",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
       "dependency": {
         "name": "@deepseek-ai/dsh-llm",
-        "required": "^0.1.1-rc.2",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:4c964b725001711685f7d668f05e28b7ec2cb7b76de7cca08be15b8d4e09cf5d",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-settings",
+        "required": "^0.1.0-rc.6",
         "status": "satisfied",
         "staticUsage": "runtime-import-observed",
         "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
-      "id": "relation:8099b072abe01f1c7de65abe2698a1fbfec96e7a3fe9ed1c10a489bec15a11fa",
-      "cellId": "cell:e6f82a89b00c7df349e3241de4c78d75d327ee785100841fb4446f95bbd794ab",
+      "id": "relation:0af44b7bccc6ff5905191d952be73ab2e95085524df455e0ef207e6c3d787a69",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-system-prompt",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "no-literal-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:81a540a33f1575ef6b3ded623f6687e24d2c9f0fd6c8b8eacc8f330cc292dbc8",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-tools",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:61b0ffc4f4106b8e18315dcf57e82e2070b42594fb9a7da01354f73b378da3e0",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
       "dependency": {
         "name": "react",
+        "required": "^18.2.0",
+        "status": "missing",
+        "staticUsage": "runtime-import-observed"
+      }
+    },
+    {
+      "id": "relation:4ff8004e2355575264e4661a3d53af8335ffbb64c1e7bf18e4778124d84d0184",
+      "cellId": "cell:dfd36199e0816726f629b77cd5aa560177f9b49946528ebb5114f59b11f67f61",
+      "dependency": {
+        "name": "react-dom",
         "required": "^18.2.0",
         "status": "missing",
         "staticUsage": "runtime-import-observed"
@@ -6360,16 +6456,6 @@
       }
     },
     {
-      "id": "relation:2a2649b73f91b30679fc69d1cf14b3166eaf8d3f4b9872f8937c324098dd196e",
-      "cellId": "cell:e92964538724797da963f9932d363ce592a4d105600f0147bf7c28d4c3fc0932",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-runtime",
-        "required": "^0.1.0-rc.6",
-        "status": "missing",
-        "staticUsage": "no-literal-reference-observed"
-      }
-    },
-    {
       "id": "relation:4d0048eadaf5a1d5b444141f25b993051cabf64d1d46c081d4a50f5fa4253230",
       "cellId": "cell:eae571cbd92ef61c5eb1f8b7e7351d28fd10b3de44f919b11565c6e5af78637a",
       "dependency": {
@@ -6377,39 +6463,6 @@
         "required": "^18.2.0",
         "status": "missing",
         "staticUsage": "runtime-import-observed"
-      }
-    },
-    {
-      "id": "relation:759f4dd99ceb7e2c6d30840413193f3e588492023a9397b8c5311b79ee28e74c",
-      "cellId": "cell:ebeb343884fb8684c82486c48ca09e8644069832d4f8e9824a6fc12361f8fde5",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-llm",
-        "required": ">=0.1.0-rc.6 <0.2.0",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:725069af8f40681fe57ac67f5e9802f718e1fa938e2146fd22cc700504805cce",
-      "cellId": "cell:ebeb343884fb8684c82486c48ca09e8644069832d4f8e9824a6fc12361f8fde5",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-mcp-client",
-        "required": ">=0.1.0-rc.6 <0.2.0",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:860edf75f589d6c8fcc928d30dc96775793927f4fae64ba812cd99046dd18375",
-      "cellId": "cell:ebeb343884fb8684c82486c48ca09e8644069832d4f8e9824a6fc12361f8fde5",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-skill-filesystem",
-        "required": ">=0.1.0-rc.6 <0.2.0",
-        "status": "satisfied",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
@@ -6541,6 +6594,126 @@
         "required": "^18.2.0",
         "status": "missing",
         "staticUsage": "runtime-import-observed"
+      }
+    },
+    {
+      "id": "relation:af4ec634bd34cb121a8b111cdc643a4483787ccc68cc448f57255ad5fc5c0384",
+      "cellId": "cell:edba1b326e8427a32c9797339a2c45ba37623ac52e1c669ce705c84320fdf477",
+      "dependency": {
+        "name": "@deepseek-ai/cordis",
+        "required": "^4.0.1",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "4.0.2"
+      }
+    },
+    {
+      "id": "relation:40bd4883cdd940ffea200bde04e6a260bd6efd637d2f1f77d7ae2d2399207241",
+      "cellId": "cell:edba1b326e8427a32c9797339a2c45ba37623ac52e1c669ce705c84320fdf477",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-settings",
+        "required": "^0.1.0-rc.7",
+        "status": "satisfied",
+        "staticUsage": "type-only-reference-observed",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:3a253801ebe9943de3829655d50b3d377f13225fb0bfc024d954d9ab550b136f",
+      "cellId": "cell:edba1b326e8427a32c9797339a2c45ba37623ac52e1c669ce705c84320fdf477",
+      "dependency": {
+        "name": "@deepseek-ai/schemastery",
+        "required": "^3.18.1",
+        "status": "satisfied",
+        "staticUsage": "runtime-import-observed",
+        "resolvedVersion": "3.18.2"
+      }
+    },
+    {
+      "id": "relation:553049c90ae2ebb3cd42b42d1eb32e3325f790804b111705fc7ce18f1bc45531",
+      "cellId": "cell:edba1b326e8427a32c9797339a2c45ba37623ac52e1c669ce705c84320fdf477",
+      "dependency": {
+        "name": "react",
+        "required": "^18.2.0",
+        "status": "missing",
+        "staticUsage": "runtime-import-observed"
+      }
+    },
+    {
+      "id": "relation:7d659d205ce6af02a459e16e77394d73b909702cd7f83e92672a521a0a7d5e83",
+      "cellId": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
+      "dependency": {
+        "name": "@deepseek-ai/cordis",
+        "required": "^4.0.1",
+        "status": "satisfied",
+        "staticUsage": "scan-incomplete",
+        "resolvedVersion": "4.0.2"
+      }
+    },
+    {
+      "id": "relation:62e2ce1f9da732ae0d346f3b0c12db7640ba7a88610f688ef7b14811aebc2c4b",
+      "cellId": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-locale",
+        "required": "^0.1.2-rc.1",
+        "status": "satisfied",
+        "staticUsage": "scan-incomplete",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:c5447fe5fad6c6ddccd798b4d45d01351fc58ddcf5868c9338fc8f35183ff17b",
+      "cellId": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-client-ui-renderer",
+        "required": "^0.1.2-rc.1",
+        "status": "satisfied",
+        "staticUsage": "scan-incomplete",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:1f672a6d8a00c1d3d42bc9a0f565072741e2864b517ce1ce8747a91fde6324be",
+      "cellId": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-commands",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "scan-incomplete",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:e4452aa2d4a0849b5c254a763c12f4c77cc772dc4b45e6a3facff7a57d5a77cd",
+      "cellId": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-host-webserver",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "scan-incomplete",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:967bfc67a2a198a9153ca0078deec064622c05a05aed65eeee6d17f409ad80e1",
+      "cellId": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-system-prompt",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "scan-incomplete",
+        "resolvedVersion": "0.1.5-rc.2"
+      }
+    },
+    {
+      "id": "relation:18375c245593a6fba67a329ee43890123788bd8559bfdc1e1edae0c0aa75573d",
+      "cellId": "cell:eff92a1c3a2b3e5d0ab60cee14a4435c2196c7859ed865a84fb51f132f2a0997",
+      "dependency": {
+        "name": "@deepseek-ai/dsh-tools",
+        "required": "^0.1.0-rc.6",
+        "status": "satisfied",
+        "staticUsage": "scan-incomplete",
+        "resolvedVersion": "0.1.5-rc.2"
       }
     },
     {
@@ -6746,179 +6919,6 @@
         "required": "^18.2.0",
         "status": "missing",
         "staticUsage": "runtime-import-observed"
-      }
-    },
-    {
-      "id": "relation:0817099b8aa3f45e967b3743ccfea8561df1a8a4cc9177153b6fd20a2bb2f965",
-      "cellId": "cell:f65623ff8c8b16374005db85072196cda5f6dfaf58ea95aeb47f7fdff115d027",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-atomic-write",
-        "required": "0.1.1-rc.2",
-        "status": "mismatched",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:8281262b345d0f70cb4ec82f52c14e69d86ca05cca53d988ce059b4a2369f0c5",
-      "cellId": "cell:f65623ff8c8b16374005db85072196cda5f6dfaf58ea95aeb47f7fdff115d027",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-home-paths",
-        "required": "0.1.1-rc.2",
-        "status": "mismatched",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:a7d3d4fc033af9ac47406dc751fd0673f3911a578689af5d5e3fe8f19e39e470",
-      "cellId": "cell:f65623ff8c8b16374005db85072196cda5f6dfaf58ea95aeb47f7fdff115d027",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-llm",
-        "required": "0.1.1-rc.2",
-        "status": "mismatched",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:83a3586c3cbbdf12e293477f14d6244ffdfaa19fb732adbdbaa6b618c79b7c7e",
-      "cellId": "cell:f65623ff8c8b16374005db85072196cda5f6dfaf58ea95aeb47f7fdff115d027",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-llm-pi-ai",
-        "required": "0.1.1-rc.2",
-        "status": "mismatched",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:4c9e6fb661ff05a314dfbd62c66bbf415b3fae9debb3416637f1e9ae512c1f08",
-      "cellId": "cell:f65623ff8c8b16374005db85072196cda5f6dfaf58ea95aeb47f7fdff115d027",
-      "dependency": {
-        "name": "@deepseek-ai/schemastery",
-        "required": "3.18.1",
-        "status": "mismatched",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "3.18.2"
-      }
-    },
-    {
-      "id": "relation:867c028f503becb8514a810fb94eb9023e3c0305cbd03bd2bfe8c18b7a4182bd",
-      "cellId": "cell:f65623ff8c8b16374005db85072196cda5f6dfaf58ea95aeb47f7fdff115d027",
-      "dependency": {
-        "name": "@earendil-works/pi-ai",
-        "required": "0.84.2",
-        "status": "mismatched",
-        "staticUsage": "runtime-import-observed",
-        "resolvedVersion": "0.85.1"
-      }
-    },
-    {
-      "id": "relation:1f794403324c07822d239062692bfffeefee50ea09178aaa407d7e3b4a7bb193",
-      "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
-      "dependency": {
-        "name": "@deepseek-ai/cordis",
-        "required": ">=4.0.1 <5.0.0",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "4.0.2"
-      }
-    },
-    {
-      "id": "relation:eab368feeb7b43ec4fdc612f080a74f6af78a63b13c0a1148b00839854e51257",
-      "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-locale",
-        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:14f3bbc9fdd63b98d1a7c0ae762af35097661410488d9cc2596113667e0410c7",
-      "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-ui-primitives",
-        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
-        "status": "missing",
-        "staticUsage": "no-literal-reference-observed"
-      }
-    },
-    {
-      "id": "relation:35eb15b3ee40f09087212491584dc6378f1df0799724e4fab9392f01f460b477",
-      "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-client-ui-slots",
-        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
-        "status": "missing",
-        "staticUsage": "no-literal-reference-observed"
-      }
-    },
-    {
-      "id": "relation:37f50adbec00b981e6eafa4918543b19e171b0c62e2682e9fb3ccbb17b049c6b",
-      "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-host-webserver",
-        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:4c196da95b233fbcb70b2787b68f823a64ed8e9aae987f368a087c65cf30f4e6",
-      "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-session",
-        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:3e7011d3ffd054fdb9b2d88d036877e1ba10cb98402c7d85113b06552f2efecc",
-      "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-skill",
-        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:c581e3ee86a090303e2294a9ae09d521d629d8ae668a963cdf0e7fd100501dd5",
-      "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-tools",
-        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:e03d07f05683f0e12919f8feba5a3a9e7a0207b8246f6d1016ad87c92c5ec23d",
-      "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
-      "dependency": {
-        "name": "@deepseek-ai/dsh-web-app",
-        "required": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2",
-        "status": "satisfied",
-        "staticUsage": "no-literal-reference-observed",
-        "resolvedVersion": "0.1.5-rc.2"
-      }
-    },
-    {
-      "id": "relation:05da8eb564685aad1c38b1deb5ce7e400420ff7e6395648744021ed3eb590f7f",
-      "cellId": "cell:f6bb5f2813057e8891a6b1c09089c3700ef4e975aa5b3af986d1c2ae2ec7b1ed",
-      "dependency": {
-        "name": "react",
-        "required": "^18.2.0",
-        "status": "missing",
-        "staticUsage": "no-literal-reference-observed"
       }
     }
   ]
