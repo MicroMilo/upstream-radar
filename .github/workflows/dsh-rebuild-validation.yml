@@ -9,6 +9,11 @@ on:
         description: Run the real isolated plugin batch, review its build gates, retry, and verify unchanged reuse
         type: boolean
         default: false
+      adapter_matrix_json:
+        description: Optional exact planner-produced adapter matrix for the normal isolated job path
+        type: string
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -278,3 +283,16 @@ jobs:
           path: validation-output
           if-no-files-found: error
           retention-days: 14
+
+  adapter-case-validation:
+    needs: repository-review
+    if: github.event_name == 'workflow_dispatch' && inputs.adapter_matrix_json != ''
+    name: Adapter ${{ matrix.id }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(inputs.adapter_matrix_json) }}
+    permissions:
+      contents: read
+    uses: ./.github/workflows/observe-dsh-plugin-adapter.yml
+    with:
+      case_json: ${{ toJSON(matrix) }}

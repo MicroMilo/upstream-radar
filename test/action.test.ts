@@ -27,6 +27,16 @@ async function runActionInputDetector(files: string[], config = 'upstream-radar.
 }
 
 describe('reusable GitHub Action', () => {
+  it('can exercise the same scheduled adapter workflow on a validation branch without publishing project state', async () => {
+    const workflow = await readFile('.github/workflows/dsh-rebuild-validation.yml', 'utf8')
+    assert.ok(workflow.includes('adapter_matrix_json:'), 'validation dispatch must accept an exact planner-produced adapter matrix')
+    const job = workflow.split('\n  adapter-case-validation:')[1]
+    assert.ok(job)
+    assert.ok(job.includes('uses: ./.github/workflows/observe-dsh-plugin-adapter.yml'))
+    assert.ok(job.includes('case_json: ${{ toJSON(matrix) }}'))
+    assert.doesNotMatch(job, /contents: write|secrets:|git push/)
+  })
+
   it('routes the scheduled observer through independent adapter planning, secret-free jobs and exact result reconciliation', async () => {
     const workflow = await readFile('.github/workflows/upstream-observer.yml', 'utf8')
     assert.match(workflow, /plan-adapter-observations:[\s\S]*write-dsh-adapter-plan\.mjs/)
