@@ -127,6 +127,36 @@ function recommendations(overrides: Record<string, unknown> = {}) {
 }
 
 describe('DSH repository environment recommendation', () => {
+  it('preserves a Web-only author workflow without inventing headless intent', () => {
+    const parsed = parseDshEnvironmentRecommendationDecision({ ...decision(), executionProfiles: ['web'] }, candidate())
+    assert.deepEqual(parsed.executionProfiles, ['web'])
+    const applied = applyDshEnvironmentRecommendations(targets, observations, recommendations({ ...parsed }))
+    assert.deepEqual(applied.plugins[0]?.environmentRecommendation?.executionProfiles, ['web'])
+  })
+
+  it('carries an evidenced SDK-only workflow into the plan without inventing Web or TUI', () => {
+    const state = structuredClone(observations)
+    Reflect.deleteProperty(state.targets['web-plugin-source'].manifest, 'dsh')
+    const selected = selectDshEnvironmentRecommendationCandidates(targets, state, new Map([['web-plugin', [
+      { path: 'README.md', text: 'Use Node 24. The primary workflow is sdk.' },
+    ]]]))[0]!
+    const parsed = parseDshEnvironmentRecommendationDecision({
+      ...decision(), preferredNodeMajor: 24, nodeMajors: [24], executionProfiles: ['sdk'], evidence: ['README.md'],
+      authorEnvironment: { packageManagers: [], overrides: [], dshVersions: [], workflows: [
+        { kind: 'sdk', role: 'primary', evidence: [{ path: 'README.md', quote: 'The primary workflow is sdk.' }] },
+      ] },
+    }, selected)
+    const reviewed = { ...recommendations(), pendingTasks: [], entries: [{
+      ...recommendations().entries[0]!, ...parsed, sourceFingerprint: selected.sourceFingerprint,
+      inputFingerprint: createDshEnvironmentRecommendationInputFingerprint(selected),
+    }] }
+    const applied = applyDshEnvironmentRecommendations(targets, state, reviewed)
+    assert.deepEqual(applied.plugins[0]?.environmentRecommendation?.executionProfiles, ['sdk'])
+    const surfaces = applyDshEnvironmentRecommendationsToSurfaceTargets({ schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [] }, targets, state, reviewed)
+    assert.deepEqual(surfaces.surfaces, [])
+    assert.throws(() => parseDshEnvironmentRecommendationDecision({ ...parsed, authorEnvironment: decision().authorEnvironment }, selected), /sdk.*workflow evidence/)
+  })
+
   it('carries collector gaps into the reasoning input and deterministically preserves incomplete coverage', () => {
     const selected = candidate()
     const incomplete = { ...selected, collectionGaps: ['README_EN.md exceeds the per-file evidence byte budget.'] }
@@ -613,6 +643,49 @@ describe('DSH repository environment recommendation', () => {
       assert.ok(after.entries.some(entry => entry.targetId === 'task-32'), 'a failed prefix must not starve a healthy deferred plugin')
       assert.equal(after.pendingTasks.length, 32)
       assert.equal(persistFailure, undefined, 'every delivered task must already be durable')
+    } finally {
+      await new Promise<void>(resolve => server.close(() => resolve()))
+      await rm(directory, { recursive: true, force: true })
+    }
+  })
+
+  it('repairs invalid Agent output against the same evidence, then reuses the validated review', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'upstream-radar-environment-repair-'))
+    const received: Array<{ messages: Array<{ role: string; content: string }> }> = []
+    const server = createServer(async (request, response) => {
+      const chunks: Buffer[] = []
+      for await (const chunk of request) chunks.push(Buffer.from(chunk))
+      received.push(JSON.parse(Buffer.concat(chunks).toString()))
+      const durable = parseDshEnvironmentRecommendations(JSON.parse(await readFile(join(directory, 'recommendations.json'), 'utf8')))
+      assert.equal(durable.pendingTasks.length, 1, 'the repair remains part of a durable analysis task')
+      response.setHeader('content-type', 'application/json')
+      response.end(JSON.stringify({ choices: [{ message: { content: JSON.stringify({
+        ...decision(), preferredNodeMajor: 18, nodeMajors: [18], executionProfiles: ['web'], evidence: ['source-manifest'],
+        nodeEvidence: received.length === 1 ? [] : [{ nodeMajor: 18, kind: 'declared-support', evidence: ['source-manifest'] }],
+      }) } }] }))
+    })
+    try {
+      await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve))
+      const address = server.address()
+      assert.ok(address !== null && typeof address === 'object')
+      await writeFile(join(directory, 'targets.json'), JSON.stringify(targets))
+      await writeFile(join(directory, 'observations.json'), JSON.stringify({ targets: {
+        'deepseek-harness': { manifest: observations.targets['deepseek-harness'].manifest, package: observations.targets['deepseek-harness'].package },
+        'web-plugin-source': { manifest: observations.targets['web-plugin-source'].manifest, package: observations.targets['web-plugin-source'].package },
+      } }))
+      const run = () => execFile(process.execPath, ['scripts/plan-dsh-environment-recommendations.mjs',
+        ...['targets.json', 'observations.json', 'recommendations.json', 'report.md'].map(file => join(directory, file)),
+      ], { cwd: process.cwd(), env: { ...process.env, ISSUE_LOCATOR_LLM_BASE_URL: `http://127.0.0.1:${address.port}`,
+        ISSUE_LOCATOR_LLM_API_KEY: 'local-test-value', ISSUE_LOCATOR_LLM_MODEL: 'fixture' }, timeout: 15_000 })
+      const first = JSON.parse((await run()).stdout)
+      assert.equal(first.planned, 1)
+      assert.equal(received.length, 2)
+      assert.match(received[1]!.messages.at(-1)!.content, /nodeEvidence must describe every selected Node major/)
+      const persisted = parseDshEnvironmentRecommendations(JSON.parse(await readFile(join(directory, 'recommendations.json'), 'utf8')))
+      assert.equal(persisted.pendingTasks.length, 0)
+      const second = JSON.parse((await run()).stdout)
+      assert.equal(second.attempted, 0)
+      assert.equal(received.length, 2, 'unchanged evidence must not request a new review')
     } finally {
       await new Promise<void>(resolve => server.close(() => resolve()))
       await rm(directory, { recursive: true, force: true })

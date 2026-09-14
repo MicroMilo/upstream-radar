@@ -96,7 +96,7 @@ export interface DshDirectoryEnvironmentRecommendation {
   status: 'current' | 'missing'
   preferredNodeMajor?: number
   nodeMajors: number[]
-  executionProfiles: DshDirectoryExecutionPlane[]
+  executionProfiles: Array<DshDirectoryExecutionPlane | 'sdk' | 'acp'>
   expectedCells: string[]
   missingCells: string[]
   /** Explicit intended workflows/evidence gaps beyond the selected smoke cells. */

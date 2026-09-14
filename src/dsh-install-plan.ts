@@ -36,7 +36,7 @@ export interface DshInstallTarget {
     preferredNodeMajor: number
     nodeMajors: number[]
     unavailableNodeMajors: number[]
-    executionProfiles: Array<'headless' | 'web' | 'tui'>
+    executionProfiles: Array<'headless' | 'web' | 'tui' | 'sdk' | 'acp'>
     coverageGaps?: string[]
     authorEnvironment?: DshAuthorEnvironment
     summary: string
@@ -231,18 +231,18 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
       }
       if (!Array.isArray(rawEnvironmentRecommendation.executionProfiles)
         || rawEnvironmentRecommendation.executionProfiles.length === 0
-        || rawEnvironmentRecommendation.executionProfiles.length > 3) {
-        throw new Error(`plugins[${index}].environmentRecommendation.executionProfiles must contain headless, web, or tui`)
+        || rawEnvironmentRecommendation.executionProfiles.length > 5) {
+        throw new Error(`plugins[${index}].environmentRecommendation.executionProfiles must contain headless, web, tui, sdk, or acp`)
       }
       const executionProfiles = rawEnvironmentRecommendation.executionProfiles.map((value, profileIndex) => {
         const profile = boundedString(value, `plugins[${index}].environmentRecommendation.executionProfiles[${profileIndex}]`, 16)
-        if (profile !== 'headless' && profile !== 'web' && profile !== 'tui') {
+        if (profile !== 'headless' && profile !== 'web' && profile !== 'tui' && profile !== 'sdk' && profile !== 'acp') {
           throw new Error(`plugins[${index}].environmentRecommendation.executionProfiles[${profileIndex}] is unsupported`)
         }
         return profile
       })
-      if (new Set(executionProfiles).size !== executionProfiles.length || !executionProfiles.includes('headless')) {
-        throw new Error(`plugins[${index}].environmentRecommendation.executionProfiles must be unique and include headless`)
+      if (new Set(executionProfiles).size !== executionProfiles.length) {
+        throw new Error(`plugins[${index}].environmentRecommendation.executionProfiles must be unique`)
       }
       if (!Array.isArray(rawEnvironmentRecommendation.evidence)
         || rawEnvironmentRecommendation.evidence.length === 0
