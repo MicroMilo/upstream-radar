@@ -19,6 +19,7 @@ import {
 import { parseNpmSpec } from './npm.js'
 import { isExclusiveDshWebPeer } from './dsh-peer-planes.js'
 import { parseDshWebContractEvidence } from './dsh-web-contract.js'
+import type { DshInstallPlan } from './dsh-install-plan.js'
 
 function startupFields(value: unknown): { startupConfiguration?: DshStartupConfiguration } {
   const startupConfiguration = parseDshStartupConfiguration(value)
@@ -684,6 +685,24 @@ export function parseDshSurfaceLedger(input: unknown): DshSurfaceLedger {
   })
   entries.sort((left, right) => left.caseId.localeCompare(right.caseId))
   return { schema: DSH_SURFACE_LEDGER_SCHEMA, entries }
+}
+
+/** Carry the same intended surface to every author baseline in the current native plan. */
+export function expandDshSurfaceAuthorBaselines(targetsInput: unknown, native: Pick<DshInstallPlan, 'dshVersion' | 'matrix'>): DshSurfaceTargets {
+  const configured = parseDshSurfaceTargets(targetsInput)
+  const surfaces = [...configured.surfaces]
+  for (const target of configured.surfaces) {
+    const anchor = native.matrix.include.find(cell => cell.id === target.sourceCaseId)
+    if (!anchor || anchor.dshVersion !== native.dshVersion) continue
+    for (const baseline of native.matrix.include.filter(cell => cell.targetId === anchor.targetId
+      && cell.nodeMajor === anchor.nodeMajor && cell.dshVersion !== anchor.dshVersion)) {
+      if (surfaces.some(item => item.sourceCaseId === baseline.id && item.plane === target.plane && item.profile === target.profile
+        && JSON.stringify(item.startupConfiguration?.environment ?? {}) === JSON.stringify(target.startupConfiguration?.environment ?? {}))) continue
+      surfaces.push({ ...target, sourceCaseId: baseline.id,
+        id: `${target.id.slice(0, 45)}-dsh-${createHash('sha256').update(`${target.id}\u0000${baseline.dshVersion}`).digest('hex').slice(0, 12)}` })
+    }
+  }
+  return parseDshSurfaceTargets({ ...configured, surfaces })
 }
 
 export function buildDshSurfacePlan(

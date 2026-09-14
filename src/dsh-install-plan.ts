@@ -506,6 +506,20 @@ function hasCompleteResolutionEvidence(entry: DshCompatibilityLedger['entries'][
     && contracts.indeterminate === 0
 }
 
+/** Only current, exact installation evidence may anchor a downstream profile or adapter. */
+export function currentDshCompatibilitySources(
+  ledger: DshCompatibilityLedger,
+  desired: ReadonlyArray<DshCompatibilityExpectedCase>,
+  refreshAfterHours: number,
+  now: Date,
+): DshCompatibilityLedger {
+  return { ...ledger, entries: ledger.entries.filter(entry => desired.some(cell => (
+    cell.id === entry.caseId && cell.plugin === entry.plugin && cell.dshVersion === entry.dshVersion
+      && cell.staticFingerprint === entry.staticFingerprint && cell.contractFingerprint === entry.contractFingerprint
+      && now.getTime() - Date.parse(entry.observedAt) < refreshAfterHours * 3_600_000
+  ))) }
+}
+
 /**
  * Reconcile the desired current compatibility matrix with durable evidence.
  * Upstream diffs accelerate a retest, but do not decide whether a cell gets

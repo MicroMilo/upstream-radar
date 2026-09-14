@@ -127,6 +127,59 @@ function recommendations(overrides: Record<string, unknown> = {}) {
 }
 
 describe('DSH repository environment recommendation', () => {
+  it('keeps author DSH baselines and supplemental startup comparisons in the normal surface-planning command', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'radar-surface-baselines-'))
+    try {
+      const history = recommendations({ preferredNodeMajor: 22, nodeMajors: [22], executionProfiles: ['web'],
+        authorEnvironment: { packageManagers: [], overrides: [], workflows: [],
+          dshVersions: [{ version: '0.1.0-rc.8', evidence: [{ path: 'README.md', quote: 'DSH 0.1.0-rc.8' }] }],
+          startupConfigurations: [{ plane: 'web', scope: 'Bridge disabled comparison', environment: { DSH_BRIDGE_DISABLED: '1' },
+            evidence: [{ path: 'README.md', quote: 'DSH_BRIDGE_DISABLED=1' }] }] } })
+      const native = buildDshInstallPlan(applyDshEnvironmentRecommendations(targets, observations, history), observations,
+        { changes: [] }, { schema: 'upstream-radar.dsh-compatibility-ledger/v1alpha1', entries: [] })
+      assert.equal(native.matrix.include.length, 2)
+      const source = { schema: 'upstream-radar.dsh-compatibility-ledger/v1alpha1', entries: native.matrix.include.map(cell => ({
+        caseId: cell.id, targetId: cell.targetId, plugin: cell.plugin, dshVersion: cell.dshVersion,
+        staticFingerprint: cell.staticFingerprint, contractFingerprint: cell.contractFingerprint,
+        observedAt: new Date().toISOString(), profileEnvironment: cell.profileEnvironment,
+        runtime: { nodeMajor: cell.nodeMajor, nodeVersion: '22.23.2', platform: 'linux', architecture: 'x64', pnpmVersion: '11.7.0' },
+        result: 'compatible', reason: 'Exact source evidence for the planning boundary fixture.',
+        artifact: { sha256: 'a'.repeat(64), lifecycleScripts: [] },
+        resolution: { runtimeGraph: { digest: `sha256:${'b'.repeat(64)}`, nodes: 1, edges: 0, unresolved: 0 } },
+        observer: { schema: 'upstream-radar.dsh-install-observation/v1alpha1', version: '0.45.0' },
+      })) }
+      const values = [
+        { schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [] }, source,
+        { schema: 'upstream-radar.dsh-surface-ledger/v1alpha1', entries: [] },
+        { schema: 'upstream-radar.dsh-headless-agent-plans/v1alpha1', updatedAt: new Date().toISOString(), entries: [] },
+        { schema: 'upstream-radar.dsh-surface-agent-plans/v1alpha1', updatedAt: new Date().toISOString(), entries: [] }, targets, observations, history,
+      ]
+      const paths = values.map((_, index) => join(directory, `${index}.json`))
+      await Promise.all(values.map((value, index) => writeFile(paths[index]!, JSON.stringify(value))))
+      const { stdout } = await execFile(process.execPath, ['scripts/write-dsh-surface-plan.mjs', ...paths], { cwd: process.cwd(), timeout: 10_000 })
+      const plan = JSON.parse(stdout) as { matrix: { include: Array<{ dshVersion: string; startupConfiguration?: unknown; id: string }> }; blocked: unknown[] }
+      assert.deepEqual(plan.blocked, [])
+      assert.deepEqual(plan.matrix.include.map(cell => cell.dshVersion).sort(), ['0.1.0-rc.8', '0.1.0-rc.8', '0.1.5-rc.2', '0.1.5-rc.2'])
+      assert.equal(plan.matrix.include.filter(cell => cell.startupConfiguration !== undefined).length, 2)
+      assert.equal(new Set(plan.matrix.include.map(cell => cell.id)).size, 4)
+
+      // A new reviewed artifact cannot borrow the previous installation's bytes.
+      const changed = structuredClone(observations)
+      changed.targets['web-plugin-source'].manifest.version = '1.2.4'
+      changed.targets['web-plugin-source'].package.version = '1.2.4'
+      changed.targets['web-plugin-source'].source.commit = 'c'.repeat(40)
+      const current = selectDshEnvironmentRecommendationCandidates(targets, changed)[0]!
+      const changedHistory = { ...history, pendingTasks: [], entries: history.entries.map(entry => ({ ...entry,
+        plugin: current.plugin, sourceCommit: current.sourceCommit, sourceFingerprint: current.sourceFingerprint,
+        inputFingerprint: createDshEnvironmentRecommendationInputFingerprint(current) })) }
+      await writeFile(paths[6]!, JSON.stringify(changed))
+      await writeFile(paths[7]!, JSON.stringify(changedHistory))
+      const stale = JSON.parse((await execFile(process.execPath, ['scripts/write-dsh-surface-plan.mjs', ...paths], { cwd: process.cwd(), timeout: 10_000 })).stdout)
+      assert.equal(stale.matrix.include.length, 0, 'a failed or pending new installation must not schedule the previous artifact')
+      assert.equal(stale.blocked.length, 4)
+    } finally { await rm(directory, { recursive: true, force: true }) }
+  })
+
   it('turns an evidenced disabled Web configuration into an additional cell without replacing normal startup', () => {
     const selected = candidate()
     const quote = 'For Web settings without the bridge, set DSH_LARK_DISABLED=1.'

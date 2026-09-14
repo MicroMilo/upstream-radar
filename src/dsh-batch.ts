@@ -1,12 +1,12 @@
 import { createHash } from 'node:crypto'
 import { applyDshHeadlessAgentPlans } from './dsh-headless-agent-plan.js'
 import { applyDshEnvironmentRecommendations, applyDshEnvironmentRecommendationsToSurfaceTargets } from './dsh-environment-recommendation.js'
-import { buildDshInstallPlan, type DshInstallTargets, parseDshInstallTargets } from './dsh-install-plan.js'
+import { buildDshInstallPlan, currentDshCompatibilitySources, type DshInstallTargets, parseDshInstallTargets } from './dsh-install-plan.js'
 import {
   emptyDshCompatibilityLedger, parseDshCompatibilityLedger, mergeDshCompatibilityLedger,
   type DshCompatibilityExpectedCase, type DshCompatibilityLedger,
 } from './dsh-compatibility-ledger.js'
-import { emptyDshSurfaceLedger, parseDshSurfaceLedger, parseDshSurfaceTargets, buildDshSurfacePlan, mergeDshSurfaceLedger, type DshSurfaceExpectedCase, type DshSurfaceLedger } from './dsh-surface.js'
+import { emptyDshSurfaceLedger, parseDshSurfaceLedger, expandDshSurfaceAuthorBaselines, buildDshSurfacePlan, mergeDshSurfaceLedger, type DshSurfaceExpectedCase, type DshSurfaceLedger } from './dsh-surface.js'
 import { buildDshAdapterPlan, emptyDshAdapterLedger, parseDshAdapterLedger, mergeDshAdapterLedger, type DshAdapterExpectedCase, type DshAdapterLedger } from './dsh-adapter.js'
 
 const SCHEMA = 'upstream-radar.dsh-batch-state/v1alpha1' as const
@@ -100,29 +100,9 @@ export async function runDshCompatibilityBatch(options: DshBatchOptions) {
   const surfaces = options.recommendations === undefined ? configuredSurfaces
     : applyDshEnvironmentRecommendationsToSurfaceTargets(configuredSurfaces, options.installTargets, options.observations, options.recommendations)
   const allNative = () => buildDshInstallPlan(effectiveTargets(), options.observations, { changes: [] }, emptyDshCompatibilityLedger(), now, new Set(), options.runtime)
-  const currentNative = () => {
-    const cells = allNative().matrix.include
-    return { ...state.nativeLedger, entries: state.nativeLedger.entries.filter(entry => cells.some(cell => (
-      cell.id === entry.caseId && cell.plugin === entry.plugin && cell.dshVersion === entry.dshVersion
-      && cell.staticFingerprint === entry.staticFingerprint && cell.contractFingerprint === entry.contractFingerprint
-      && now.getTime() - Date.parse(entry.observedAt) < targets.refreshAfterHours * 3_600_000
-    ))) }
-  }
+  const currentNative = () => currentDshCompatibilitySources(state.nativeLedger, allNative().matrix.include, targets.refreshAfterHours, now)
   const planSurface = () => {
-    const configured = parseDshSurfaceTargets(surfaces), native = allNative()
-    const expanded = [...configured.surfaces]
-    for (const target of configured.surfaces) {
-      const anchor = native.matrix.include.find(cell => cell.id === target.sourceCaseId)
-      if (!anchor || anchor.dshVersion !== native.dshVersion) continue
-      for (const baseline of native.matrix.include.filter(cell => cell.targetId === anchor.targetId
-        && cell.nodeMajor === anchor.nodeMajor && cell.dshVersion !== anchor.dshVersion)) {
-        if (expanded.some(item => item.sourceCaseId === baseline.id && item.plane === target.plane && item.profile === target.profile
-          && JSON.stringify(item.startupConfiguration?.environment ?? {}) === JSON.stringify(target.startupConfiguration?.environment ?? {}))) continue
-        expanded.push({ ...target, sourceCaseId: baseline.id,
-          id: `${target.id.slice(0, 45)}-dsh-${createHash('sha256').update(`${target.id}\u0000${baseline.dshVersion}`).digest('hex').slice(0, 12)}` })
-      }
-    }
-    return buildDshSurfacePlan({ ...configured, surfaces: expanded }, currentNative(), state.surfaceLedger, now)
+    return buildDshSurfacePlan(expandDshSurfaceAuthorBaselines(surfaces, allNative()), currentNative(), state.surfaceLedger, now)
   }
   const planAdapter = () => {
     const native = currentNative(), targetVersion = allNative().dshVersion
