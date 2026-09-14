@@ -6,6 +6,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import { it } from 'node:test'
+import type { DshInstallObservationReport } from '../src/dsh-install-observation.js'
 
 const execFile = promisify(callback)
 const script = fileURLToPath(new URL('../../scripts/verify-dsh-input-change.mjs', import.meta.url))
@@ -60,7 +61,7 @@ it('prepares an isolated real-revision replay without editing the completed batc
   } finally { await rm(root, { recursive: true, force: true }) }
 })
 
-it('requires fresh isolated Context execution and byte-stable unrelated results before accepting a selective replay', async () => {
+it('requires fresh isolated Context execution and unchanged unrelated results before accepting a selective replay', async () => {
   const root = await mkdtemp(join(tmpdir(), 'radar-input-execution-'))
   const from = 'a'.repeat(40), to = 'b'.repeat(40)
   const plan = { matrix: { include: [] }, blocked: [] }
@@ -89,7 +90,10 @@ it('requires fresh isolated Context execution and byte-stable unrelated results 
       await mkdir(directory, { recursive: true })
       await writeFile(join(directory, 'container.json'), JSON.stringify({ id: 'f'.repeat(64), image: `sha256:${'a'.repeat(64)}`,
         user: '10001:10001', mounts: [], readonlyRootfs: true, state: { Running: false, Status: 'exited', ExitCode: 0 } }))
-      await writeFile(join(directory, 'report.json'), JSON.stringify({ caseId: task.cell.id, plugin: task.cell.plugin }))
+      const nativeReport: Pick<DshInstallObservationReport, 'caseId' | 'artifact'> = { caseId: task.cell.id,
+        artifact: { spec: 'npm:dsh-context@0.52.0', name: 'dsh-context', version: '0.52.0', lifecycleScripts: [] } }
+      await writeFile(join(directory, 'report.json'), JSON.stringify(task.kind === 'native'
+        ? nativeReport : { caseId: task.cell.id, plugin: task.cell.plugin }))
     }
     await execFile(process.execPath, [script, 'execution', root])
     assert.equal((await json(join(root, 'execution-proof.json'))).executed, 2)
@@ -97,6 +101,14 @@ it('requires fresh isolated Context execution and byte-stable unrelated results 
     await writeFile(join(root, 'batch/summary.json'), JSON.stringify({ ...summary, executed: 0 }))
     await execFile(process.execPath, [script, 'unchanged', root])
     assert.equal((await json(join(root, 'unchanged-proof.json'))).executed, 0)
+    await writeFile(join(root, 'batch/summary.json'), JSON.stringify(summary))
+    const native = tasks[0]!
+    const nativePath = join(root, 'batch/reports/native', native.cell.id, `${native.key}-${native.attempts}`, 'report.json')
+    const nativeReport = await json(nativePath)
+    await writeFile(nativePath, JSON.stringify({ ...nativeReport, plugin: native.cell.plugin,
+      artifact: { ...nativeReport.artifact, name: 'wrong-plugin' } }))
+    await assert.rejects(execFile(process.execPath, [script, 'execution', root]), /isolated report package does not match/)
+    await writeFile(nativePath, JSON.stringify(nativeReport))
     after.nativeLedger.entries[1]!.marker = 'silently changed'
     await writeFile(join(root, 'batch/state.json'), JSON.stringify(after))
     await assert.rejects(execFile(process.execPath, [script, 'execution', root]), /unrelated native evidence/)

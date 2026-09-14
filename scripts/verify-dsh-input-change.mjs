@@ -121,7 +121,9 @@ if (mode === 'prepare') {
     assert.match(container.id, /^[a-f0-9]{64}$/)
     assert.match(container.image, /^sha256:[a-f0-9]{64}$/)
     assert.equal(report.caseId, task.cell.id)
-    assert.equal(report.plugin, task.cell.plugin)
+    const observedPlugin = task.kind === 'native' ? `${report.artifact?.name}@${report.artifact?.version}` : report.plugin
+    assert.equal(observedPlugin, task.cell.plugin, 'isolated report package does not match its scheduled cell')
+    if (task.kind === 'native') assert.equal(report.artifact?.spec, `npm:${task.cell.plugin}`)
     reports.push({ kind: task.kind, caseId: task.cell.id, container: container.id, report: join(directory, 'report.json') })
   }
   await save(join(output, 'execution-state.json'), after)
