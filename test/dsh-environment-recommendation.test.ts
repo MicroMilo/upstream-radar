@@ -419,6 +419,28 @@ describe('DSH repository environment recommendation', () => {
     }
   })
 
+  it('reports independent environment errors together without relaxing any acceptance rule', () => {
+    const selected = candidate()
+    const quote = 'overrides: {"fixture-peer":"1.0.0"}\nDSH_BRIDGE_DISABLED=1'
+    selected.documents.push({ path: 'docs/configuration.md', text: quote })
+    const invalid = { ...decision(), preferredNodeMajor: 22, nodeMajors: [22],
+      nodeEvidence: [{ nodeMajor: 22, kind: 'author-recommended', evidence: ['README.md'] }],
+      authorEnvironment: { packageManagers: [], workflows: [], dshVersions: [],
+        overrides: [{ scope: 'development', values: { 'fixture-peer': '2.0.0' }, evidence: [{ path: 'docs/configuration.md', quote }] }],
+        startupConfigurations: [{ plane: 'tui', scope: 'Disabled bridge comparison', environment: { DSH_BRIDGE_DISABLED: '1' },
+          evidence: [{ path: 'docs/configuration.md', quote }] }],
+      },
+    }
+    assert.throws(() => parseDshEnvironmentRecommendationDecision(invalid, selected), error => {
+      assert.ok(error instanceof Error)
+      assert.match(error.message, /author override value/)
+      assert.match(error.message, /startup configuration requires/)
+      assert.match(error.message, /author-recommended Node/)
+      assert.ok(error.message.length <= 1024)
+      return true
+    })
+  })
+
   it('plans evidenced profile package managers and overrides without importing development settings', () => {
     const environment: DshAuthorEnvironment = {
       ...decision().authorEnvironment,

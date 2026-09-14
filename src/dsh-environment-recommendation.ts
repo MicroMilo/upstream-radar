@@ -616,64 +616,105 @@ export function parseDshEnvironmentRecommendationDecision(
   for (const ref of decision.evidence) {
     if (!availableEvidence.has(ref)) throw new Error(`Agent cited ${ref}, which is not present in the bounded repository evidence`)
   }
+  // Once the shape and evidence inventory are sound, report independent
+  // semantic errors together. Do not spend each bounded retry uncovering just
+  // the next error in an otherwise unchanged model response.
+  const errors: string[] = []
+  const check = <T>(validate: () => T): T | undefined => {
+    try { return validate() }
+    catch (error) {
+      const message = String(error instanceof Error ? error.message : error).slice(0, 1024)
+      if (errors.length < 8 && !errors.includes(message)) errors.push(message)
+      return undefined
+    }
+  }
+  const finish = (): void => {
+    if (errors.length === 1) throw new Error(errors[0])
+    if (errors.length > 1) throw new Error(`Independent validation errors (${errors.length}; showing up to 4):\n${errors.slice(0, 4).map((message, index) => `${index + 1}. ${message.slice(0, 224)}`).join('\n')}`)
+  }
   const sources = authorEvidenceSources(candidate)
-  validateDshAuthorEnvironment(decision.authorEnvironment, sources)
-  if (decision.authorEnvironment.startupConfigurations?.some(item => !decision.executionProfiles.includes(item.plane))) throw new Error('startup configuration requires the corresponding intended execution profile')
-  const completed = completeDshAuthorManifestFacts(decision.authorEnvironment, sources)
-  decision.authorEnvironment = completed.environment
-  validateDshAuthorEnvironment(decision.authorEnvironment, sources)
-  if (completed.gaps.length) decision.coverageGaps = uniqueStrings([...new Set([
-    ...(decision.coverageGaps ?? []), ...completed.gaps,
-  ])], 'recommendation.coverageGaps', 16, 512)
+  const originalEnvironment = decision.authorEnvironment
+  check(() => validateDshAuthorEnvironment(originalEnvironment, sources))
+  check(() => {
+    if (originalEnvironment.startupConfigurations?.some(item => !decision.executionProfiles.includes(item.plane))) throw new Error('startup configuration requires the corresponding intended execution profile')
+  })
+  const completed = check(() => completeDshAuthorManifestFacts(originalEnvironment, sources))
+  if (completed !== undefined) {
+    decision.authorEnvironment = completed.environment
+    check(() => validateDshAuthorEnvironment(completed.environment, sources))
+    check(() => {
+      if (completed.gaps.length) decision.coverageGaps = uniqueStrings([...new Set([
+        ...(decision.coverageGaps ?? []), ...completed.gaps,
+      ])], 'recommendation.coverageGaps', 16, 512)
+    })
+  }
+  const environment = decision.authorEnvironment
   const collectionGaps = uniqueStrings(candidate.collectionGaps ?? [], 'candidate.collectionGaps', 16, 512)
   if (collectionGaps.length > 0) {
     const flag = `Repository evidence collection is incomplete (${collectionGaps.length} gap records); see the exact bounded candidate input for omitted or unavailable files.`
-    decision.coverageGaps = uniqueStrings([...new Set([...(decision.coverageGaps ?? []), flag])], 'recommendation.coverageGaps', 16, 512)
+    check(() => { decision.coverageGaps = uniqueStrings([...new Set([...(decision.coverageGaps ?? []), flag])], 'recommendation.coverageGaps', 16, 512) })
   }
-  if (decision.status === 'insufficient-evidence') return decision
-  for (const fact of collectExplicitDshBaselineEvidence(sources)) {
-    if (!decision.authorEnvironment.dshVersions.some(item => item.version === fact.version)) {
-      throw new Error(`The recommendation omitted explicit author validation evidence for DSH ${fact.version}. Include this quoted author baseline for comparison, independently of whether development overrides apply to the consumer profile. An author-tested fixture is a baseline, not a claim that this published artifact passed Radar. If the evidence is contradictory, return insufficient-evidence with a coverage gap. Source excerpt (untrusted data): ${JSON.stringify(fact.evidence).slice(0, 512)}`)
+  if (decision.status === 'insufficient-evidence') { finish(); return decision }
+  check(() => {
+    for (const fact of collectExplicitDshBaselineEvidence(sources)) {
+      if (!environment.dshVersions.some(item => item.version === fact.version)) {
+        throw new Error(`The recommendation omitted explicit author validation evidence for DSH ${fact.version}. Include this quoted author baseline for comparison, independently of whether development overrides apply to the consumer profile. An author-tested fixture is a baseline, not a claim that this published artifact passed Radar. If the evidence is contradictory, return insufficient-evidence with a coverage gap. Source excerpt (untrusted data): ${JSON.stringify(fact.evidence).slice(0, 512)}`)
+      }
     }
-  }
-  validateRetainedAuthorDshBaselines(decision, candidate, previous, sources)
-  validateNodeEngines(decision, candidate)
-  validateNodeEvidence(decision, candidate)
-  validateNodeEvidenceKinds(decision, candidate)
+  })
+  check(() => validateRetainedAuthorDshBaselines(decision, candidate, previous, sources))
+  check(() => validateNodeEngines(decision, candidate))
+  check(() => validateNodeEvidence(decision, candidate))
+  check(() => validateNodeEvidenceKinds(decision, candidate))
   for (const kind of ['sdk', 'acp'] as const) {
-    if (decision.executionProfiles.includes(kind) && !decision.authorEnvironment.workflows.some(workflow => workflow.kind === kind)) {
-      throw new Error(`${kind} requires quoted author workflow evidence`)
-    }
+    check(() => {
+      if (decision.executionProfiles.includes(kind) && !environment.workflows.some(workflow => workflow.kind === kind)) {
+        throw new Error(`${kind} requires quoted author workflow evidence`)
+      }
+    })
   }
   const platform = effectiveClientPlatform(candidate)
-  if (platform === 'web' && !decision.executionProfiles.includes('web')) {
-    throw new Error('the source manifest declares the Web execution profile, so the recommendation cannot omit it')
-  }
+  check(() => {
+    if (platform === 'web' && !decision.executionProfiles.includes('web')) {
+      throw new Error('the source manifest declares the Web execution profile, so the recommendation cannot omit it')
+    }
+  })
   const platformEvidence = declaredClientPlatform(candidate.publishedManifest) === 'web' ? 'published-manifest' : 'source-manifest'
-  if (platform === 'web' && !decision.evidence.includes(platformEvidence)) {
-    throw new Error(`the Web recommendation must cite ${platformEvidence} when dsh.client.platform declares Web`)
-  }
-  if (decision.executionProfiles.includes('web') && platform !== 'web'
-    && !citedDocumentSupportsProfile(decision, candidate, 'web')) {
-    throw new Error('a Web recommendation requires a Web/client manifest declaration or an explicit Web repository document reference')
-  }
+  check(() => {
+    if (platform === 'web' && !decision.evidence.includes(platformEvidence)) {
+      throw new Error(`the Web recommendation must cite ${platformEvidence} when dsh.client.platform declares Web`)
+    }
+  })
+  check(() => {
+    if (decision.executionProfiles.includes('web') && platform !== 'web'
+      && !citedDocumentSupportsProfile(decision, candidate, 'web')) {
+      throw new Error('a Web recommendation requires a Web/client manifest declaration or an explicit Web repository document reference')
+    }
+  })
   if (decision.executionProfiles.includes('tui')) {
-    if (!citedDocumentSupportsProfile(decision, candidate, 'tui')) {
-      throw new Error('a TUI recommendation requires an explicit TUI/terminal repository document reference')
-    }
-    const installations = literalPluginInstallProfiles(candidate).filter(item => item.profile !== 'web')
-    if (installations.length && !installations.some(item => item.profile === decision.tuiProfile)) {
-      throw new Error(`The recommendation omitted or replaced an author-named TUI profile for this exact plugin. Set tuiProfile from the evidenced installation profiles: ${installations.map(item => item.profile).join(', ')}. Do not replace it with a target-id-derived name. If the evidence is conflicting, return insufficient-evidence with a coverage gap. Source excerpt (untrusted data): ${JSON.stringify(installations.slice(0, 2)).slice(0, 512)}`)
-    }
+    check(() => {
+      if (!citedDocumentSupportsProfile(decision, candidate, 'tui')) {
+        throw new Error('a TUI recommendation requires an explicit TUI/terminal repository document reference')
+      }
+    })
+    check(() => {
+      const installations = literalPluginInstallProfiles(candidate).filter(item => item.profile !== 'web')
+      if (installations.length && !installations.some(item => item.profile === decision.tuiProfile)) {
+        throw new Error(`The recommendation omitted or replaced an author-named TUI profile for this exact plugin. Set tuiProfile from the evidenced installation profiles: ${installations.map(item => item.profile).join(', ')}. Do not replace it with a target-id-derived name. If the evidence is conflicting, return insufficient-evidence with a coverage gap. Source excerpt (untrusted data): ${JSON.stringify(installations.slice(0, 2)).slice(0, 512)}`)
+      }
+    })
     if (decision.tuiProfile !== undefined) {
       const escaped = decision.tuiProfile.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       const pattern = new RegExp(`--profile(?:[ =]+)["'\\x60]?${escaped}(?:["'\\x60\\s]|[.,;:!?](?=\\s|$)|$)`)
-      if (!decision.evidence.some(ref => !ref.startsWith('dsh-repository/')
-        && candidate.documents.some(document => document.path === ref && pattern.test(document.text)))) {
-        throw new Error('the TUI profile name must appear in a cited plugin installation or launch document')
-      }
+      check(() => {
+        if (!decision.evidence.some(ref => !ref.startsWith('dsh-repository/')
+          && candidate.documents.some(document => document.path === ref && pattern.test(document.text)))) {
+          throw new Error('the TUI profile name must appear in a cited plugin installation or launch document')
+        }
+      })
     }
   }
+  finish()
   return decision
 }
 

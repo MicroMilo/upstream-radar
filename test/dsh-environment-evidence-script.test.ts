@@ -10,7 +10,7 @@ import { buildDshInstallPlan } from '../src/dsh-install-plan.js'
 
 const execFile = promisify(execFileCallback)
 
-async function fixture(authorDshVersion?: string, explicitBaseline = true, authorTuiProfile?: string) {
+async function fixture(authorDshVersion?: string, explicitBaseline = true, authorTuiProfile?: string, independentErrors = false) {
   const directory = await mkdtemp(join(tmpdir(), 'radar-environment-evidence-'))
   const targets = {
     schema: 'upstream-radar.dsh-install-targets/v1alpha1', refreshAfterHours: 168,
@@ -39,11 +39,12 @@ import { join } from 'node:path';
 const root = process.env.RADAR_EVIDENCE_FIXTURE;
 const authorDshVersion = ${JSON.stringify(authorDshVersion) ?? 'undefined'};
 const authorTuiProfile = ${JSON.stringify(authorTuiProfile) ?? 'undefined'};
+const configurationQuote = ${independentErrors} ? 'overrides: {"fixture-peer":"1.0.0"}\\nDSH_BRIDGE_DISABLED=1' : undefined;
 const recommended = !!(authorDshVersion || authorTuiProfile);
 const authorQuote = authorDshVersion ? (${explicitBaseline}
   ? 'Overrides force the whole\\n# @deepseek-ai tree to the ' + authorDshVersion + ' line locally (the primary\\n# validated line; see src/dsh-adapter/contract.ts).'
   : 'The repository names DSH ' + authorDshVersion + ' for its development fixture.') : undefined;
-const readme = [authorQuote, authorTuiProfile ? 'TUI requires Node 22.\\ndsh plugin --profile ' + authorTuiProfile + ' add fixture-plugin' : undefined].filter(Boolean).join('\\n') || 'Repository setup documentation.';
+const readme = [authorQuote, authorTuiProfile ? 'TUI requires Node 22.\\ndsh plugin --profile ' + authorTuiProfile + ' add fixture-plugin' : undefined, configurationQuote].filter(Boolean).join('\\n') || 'Repository setup documentation.';
 globalThis.fetch = async (url, options) => {
   const address = String(url);
   if (address.startsWith('https://fixture-agent.example/')) {
@@ -53,12 +54,19 @@ globalThis.fetch = async (url, options) => {
     await appendFile(join(root, 'model-inputs.jsonl'), JSON.stringify(request) + '\\n');
     const omitBaseline = process.env.RADAR_EVIDENCE_NETWORK === 'omit-always'
       || process.env.RADAR_EVIDENCE_NETWORK === 'omit-baseline' && request.messages.length === 2;
+    const correction = request.messages.length > 2 ? request.messages.at(-1).content : '';
+    const independentErrors = process.env.RADAR_EVIDENCE_NETWORK === 'multiple-errors'
+      && !['author override value', 'startup configuration requires', 'author-recommended Node'].every(error => correction.includes(error));
     return Response.json({ choices: [{ message: { content: JSON.stringify({
       status: recommended ? 'recommended' : 'insufficient-evidence',
       ...(recommended ? { preferredNodeMajor: 22 } : {}),
       nodeMajors: recommended ? [22] : [], executionProfiles: authorTuiProfile ? ['tui'] : authorDshVersion ? ['headless'] : [],
       ...(authorTuiProfile && !(process.env.RADAR_EVIDENCE_NETWORK === 'omit-tui-profile' && request.messages.length === 2) ? { tuiProfile: authorTuiProfile } : {}),
-      authorEnvironment: { packageManagers: [], overrides: [], workflows: [], dshVersions: authorDshVersion && !omitBaseline
+      ...(configurationQuote ? { nodeEvidence: [{ nodeMajor: 22, kind: independentErrors ? 'author-recommended' : 'declared-support', evidence: ['source-manifest'] }] } : {}),
+      authorEnvironment: { packageManagers: [],
+        overrides: independentErrors ? [{ scope: 'development', values: { 'fixture-peer': '2.0.0' }, evidence: [{ path: 'README.md', quote: configurationQuote }] }] : [],
+        ...(independentErrors ? { startupConfigurations: [{ plane: 'web', scope: 'Disabled bridge comparison', environment: { DSH_BRIDGE_DISABLED: '1' }, evidence: [{ path: 'README.md', quote: configurationQuote }] }] } : {}),
+        workflows: [], dshVersions: authorDshVersion && !omitBaseline
         ? [{ version: authorDshVersion, evidence: [{ path: 'README.md', quote: authorQuote }] }] : [] },
       summary: recommended ? 'Select the evidenced author environment for an isolated comparison.' : 'The bounded input does not establish an author-supported launch workflow.',
       evidence: authorTuiProfile ? ['source-manifest', 'README.md'] : ['source-manifest'],
@@ -156,6 +164,29 @@ it('corrects a missing author TUI profile through the normal review command befo
     assert.equal(reviewed.entries[0].tuiProfile, 'author-console')
     const attempts = JSON.parse(await readFile(join(directory, 'recommendations.json.attempts.json'), 'utf8')).attempts
     assert.deepEqual(attempts.map((item: { status: string }) => item.status), ['rejected', 'validated'])
+    const surfaces = applyDshEnvironmentRecommendationsToSurfaceTargets({
+      schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [],
+    }, targets, observations, reviewed)
+    assert.equal(surfaces.surfaces[0]?.profile, 'author-console')
+    assert.equal((await run('offline')).attempted, 0)
+  } finally { await rm(directory, { recursive: true, force: true }) }
+})
+
+it('returns independent validation errors together through the normal bounded review correction loop', async () => {
+  const { directory, targets, observations, run } = await fixture(undefined, true, 'author-console', true)
+  try {
+    assert.equal((await run('multiple-errors')).planned, 1)
+    const reviewed = JSON.parse(await readFile(join(directory, 'recommendations.json'), 'utf8'))
+    assert.equal(reviewed.pendingTasks.length, 0)
+    assert.equal(reviewed.entries[0].nodeEvidence[0].kind, 'declared-support')
+    assert.deepEqual(reviewed.entries[0].authorEnvironment.overrides, [])
+    assert.equal(reviewed.entries[0].authorEnvironment.startupConfigurations, undefined)
+    const attempts = JSON.parse(await readFile(join(directory, 'recommendations.json.attempts.json'), 'utf8')).attempts
+    assert.deepEqual(attempts.map((item: { status: string }) => item.status), ['rejected', 'validated'])
+    for (const error of ['author override value', 'startup configuration requires', 'author-recommended Node']) {
+      assert.ok(attempts[0].error.includes(error))
+    }
+    assert.ok(attempts[0].error.length <= 1024)
     const surfaces = applyDshEnvironmentRecommendationsToSurfaceTargets({
       schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [],
     }, targets, observations, reviewed)
