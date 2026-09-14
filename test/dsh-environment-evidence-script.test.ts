@@ -10,7 +10,7 @@ import { buildDshInstallPlan } from '../src/dsh-install-plan.js'
 
 const execFile = promisify(execFileCallback)
 
-async function fixture(authorDshVersion?: string) {
+async function fixture(authorDshVersion?: string, explicitBaseline = true) {
   const directory = await mkdtemp(join(tmpdir(), 'radar-environment-evidence-'))
   const targets = {
     schema: 'upstream-radar.dsh-install-targets/v1alpha1', refreshAfterHours: 168,
@@ -38,7 +38,9 @@ import { appendFile, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 const root = process.env.RADAR_EVIDENCE_FIXTURE;
 const authorDshVersion = ${JSON.stringify(authorDshVersion) ?? 'undefined'};
-const authorQuote = authorDshVersion ? 'Overrides force the whole\\n# @deepseek-ai tree to the ' + authorDshVersion + ' line locally (the primary\\n# validated line; see src/dsh-adapter/contract.ts).' : undefined;
+const authorQuote = authorDshVersion ? (${explicitBaseline}
+  ? 'Overrides force the whole\\n# @deepseek-ai tree to the ' + authorDshVersion + ' line locally (the primary\\n# validated line; see src/dsh-adapter/contract.ts).'
+  : 'The repository names DSH ' + authorDshVersion + ' for its development fixture.') : undefined;
 globalThis.fetch = async (url, options) => {
   const address = String(url);
   if (address.startsWith('https://fixture-agent.example/')) {
@@ -87,7 +89,7 @@ globalThis.fetch = async (url, options) => {
 }
 
 it('corrects a repeated review that silently drops a still-grounded author DSH baseline before planning', async () => {
-  const { directory, targets, observations, run } = await fixture('0.1.5-rc.1')
+  const { directory, targets, observations, run } = await fixture('0.1.5-rc.1', false)
   try {
     assert.equal((await run()).planned, 1)
     const prior = JSON.parse(await readFile(join(directory, 'recommendations.json'), 'utf8'))
@@ -106,7 +108,7 @@ it('corrects a repeated review that silently drops a still-grounded author DSH b
 })
 
 it('keeps an unresolved baseline omission pending after bounded corrections instead of publishing a smaller plan', async () => {
-  const { directory, targets, observations, run } = await fixture('0.1.5-rc.1')
+  const { directory, targets, observations, run } = await fixture('0.1.5-rc.1', false)
   try {
     await run()
     const prior = JSON.parse(await readFile(join(directory, 'recommendations.json'), 'utf8'))
@@ -122,6 +124,21 @@ it('keeps an unresolved baseline omission pending after bounded corrections inst
     assert.equal(plan.matrix.include.length, 0)
     assert.equal(plan.blocked.length, 1)
     assert.equal((await run('omit-baseline')).planned, 1, 'the next run can correct and finish the same durable task')
+    assert.equal((await run('offline')).attempted, 0)
+  } finally { await rm(directory, { recursive: true, force: true }) }
+})
+
+it('requires the first review to account for explicit author validation evidence without any prior recommendation', async () => {
+  const { directory, targets, observations, run } = await fixture('0.1.5-rc.1')
+  try {
+    assert.equal((await run('omit-baseline')).planned, 1)
+    const reviewed = JSON.parse(await readFile(join(directory, 'recommendations.json'), 'utf8'))
+    assert.deepEqual(reviewed.entries[0].authorEnvironment.dshVersions.map((fact: { version: string }) => fact.version), ['0.1.5-rc.1'])
+    const attempts = JSON.parse(await readFile(join(directory, 'recommendations.json.attempts.json'), 'utf8')).attempts
+    assert.deepEqual(attempts.map((item: { status: string }) => item.status), ['rejected', 'validated'])
+    assert.match(attempts[0].error, /omitted.*0\.1\.5-rc\.1/)
+    const plan = buildDshInstallPlan(applyDshEnvironmentRecommendations(targets, observations, reviewed), observations, { changes: [] })
+    assert.deepEqual(plan.matrix.include.map(item => item.dshVersion).sort(), ['0.1.5-rc.1', '0.1.5-rc.2'])
     assert.equal((await run('offline')).attempted, 0)
   } finally { await rm(directory, { recursive: true, force: true }) }
 })

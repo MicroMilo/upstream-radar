@@ -63,7 +63,7 @@ bounded documents. The install and surface planners apply only a
 recommendation whose source fingerprint is still current. Isolated VMs
 establish the eventual compatibility result.
 
-Review contract `dsh-environment/v8` preserves exact DSH release-table rows as
+Review contract `dsh-environment/v9` preserves exact DSH release-table rows as
 evidence when their own bounded Markdown table explicitly names the DSH
 release/version column. Other package columns, detached tables, ranges instead
 of exact versions, and DSH's own baseline documents cannot supply a plugin's
@@ -83,3 +83,16 @@ and evidence rejected by current rules do not constrain a new review. Unresolved
 contradictions can remain `insufficient-evidence`, which cannot schedule a reduced
 plan. This consistency check protects known claims; it does not replace a full
 first review of the collected repository evidence.
+
+First reviews also receive a bounded checklist for explicit positive validation
+phrases tied to a named DSH release (for example, `tested through DSH …` or a
+development tree's `primary validated line`). The checklist retains literal
+source quotations, scans at most three contiguous lines per excerpt and 2,048
+characters per quote, and rejects more than 16 required versions instead of
+silently truncating them. It excludes host-owned sources, negated validation,
+unrelated package versions and dependency ranges. A recommended response cannot
+omit these checkpoints; unresolved contradictions remain insufficient evidence.
+This is a conservative completeness guard for recognized source forms, not a
+replacement for repository reasoning or a compatibility result. Other prose,
+tables and declarations still require the full model review. Exact author
+release evidence must not promote `^`, `~`, `<` or `>` ranges into release pins.

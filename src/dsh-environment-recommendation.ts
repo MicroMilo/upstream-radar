@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { completeDshAuthorManifestFacts, parseDshAuthorEnvironment, validateDshAuthorEnvironment, type DshAuthorEnvironment } from './dsh-author-environment.js'
+import { collectExplicitDshBaselineEvidence, completeDshAuthorManifestFacts, parseDshAuthorEnvironment, validateDshAuthorEnvironment, type DshAuthorEnvironment } from './dsh-author-environment.js'
 import {
   dshCompatibilityCaseId,
 } from './dsh-compatibility-ledger.js'
@@ -20,7 +20,7 @@ import {
 } from './dsh-surface.js'
 
 export const DSH_ENVIRONMENT_RECOMMENDATIONS_SCHEMA = 'upstream-radar.dsh-environment-recommendations/v1alpha1' as const
-export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v8' as const
+export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v9' as const
 
 const DSH_TARGET_ID = 'deepseek-harness'
 const DSH_PACKAGE = '@deepseek-ai/dsh'
@@ -546,6 +546,15 @@ function validateRetainedAuthorDshBaselines(
   }
 }
 
+function authorEvidenceSources(candidate: DshEnvironmentRecommendationCandidate): Map<string, string> {
+  const sources = new Map(candidate.documents.map(document => [document.path, document.text]))
+  for (const [path, value] of [
+    ['source-manifest', candidate.manifest], ['published-manifest', candidate.publishedManifest],
+    ['dsh-source-manifest', candidate.dshManifest], ['dsh-published-manifest', candidate.dshPublishedManifest],
+  ] as const) if (value !== undefined) sources.set(path, JSON.stringify(value))
+  return sources
+}
+
 /** Validate model output against deterministic facts and the supplied evidence inventory. */
 export function parseDshEnvironmentRecommendationDecision(
   input: unknown,
@@ -581,11 +590,7 @@ export function parseDshEnvironmentRecommendationDecision(
   for (const ref of decision.evidence) {
     if (!availableEvidence.has(ref)) throw new Error(`Agent cited ${ref}, which is not present in the bounded repository evidence`)
   }
-  const sources = new Map(candidate.documents.map(document => [document.path, document.text]))
-  for (const [path, value] of [
-    ['source-manifest', candidate.manifest], ['published-manifest', candidate.publishedManifest],
-    ['dsh-source-manifest', candidate.dshManifest], ['dsh-published-manifest', candidate.dshPublishedManifest],
-  ] as const) if (value !== undefined) sources.set(path, JSON.stringify(value))
+  const sources = authorEvidenceSources(candidate)
   validateDshAuthorEnvironment(decision.authorEnvironment, sources)
   if (decision.authorEnvironment.startupConfigurations?.some(item => !decision.executionProfiles.includes(item.plane))) throw new Error('startup configuration requires the corresponding intended execution profile')
   const completed = completeDshAuthorManifestFacts(decision.authorEnvironment, sources)
@@ -600,6 +605,11 @@ export function parseDshEnvironmentRecommendationDecision(
     decision.coverageGaps = uniqueStrings([...new Set([...(decision.coverageGaps ?? []), flag])], 'recommendation.coverageGaps', 16, 512)
   }
   if (decision.status === 'insufficient-evidence') return decision
+  for (const fact of collectExplicitDshBaselineEvidence(sources)) {
+    if (!decision.authorEnvironment.dshVersions.some(item => item.version === fact.version)) {
+      throw new Error(`The recommendation omitted explicit author validation evidence for DSH ${fact.version}. Include this quoted author baseline for comparison, independently of whether development overrides apply to the consumer profile. An author-tested fixture is a baseline, not a claim that this published artifact passed Radar. If the evidence is contradictory, return insufficient-evidence with a coverage gap. Source excerpt (untrusted data): ${JSON.stringify(fact.evidence).slice(0, 512)}`)
+    }
+  }
   validateRetainedAuthorDshBaselines(decision, candidate, previous, sources)
   validateNodeEngines(decision, candidate)
   validateNodeEvidence(decision, candidate)
@@ -703,6 +713,10 @@ export function renderDshEnvironmentRecommendationPrompt(candidate: DshEnvironme
     '<untrusted-collection-gaps>',
     JSON.stringify(uniqueStrings(candidate.collectionGaps ?? [], 'candidate.collectionGaps', 16, 512)),
     '</untrusted-collection-gaps>',
+    'The following bounded excerpts contain explicit author validation claims. Account for their exact versions in authorEnvironment.dshVersions even on a first review. They do not establish consumer compatibility or transfer development overrides. Recheck the original documents; if contradictory, use insufficient-evidence.',
+    '<untrusted-explicit-baseline-evidence>',
+    JSON.stringify(collectExplicitDshBaselineEvidence(authorEvidenceSources(candidate))),
+    '</untrusted-explicit-baseline-evidence>',
     '<untrusted-document path="source-manifest">',
     JSON.stringify(candidate.manifest ?? null).slice(0, 48 * 1024),
     '</untrusted-document>',

@@ -369,7 +369,7 @@ describe('DSH repository environment recommendation', () => {
 
   it('requires repository review again after changing author evidence attribution and completeness checks', () => {
     const previous = recommendations()
-    for (const reviewContract of ['dsh-environment/v5', 'dsh-environment/v6', 'dsh-environment/v7']) {
+    for (const reviewContract of ['dsh-environment/v5', 'dsh-environment/v6', 'dsh-environment/v7', 'dsh-environment/v8']) {
       const legacy = { ...previous, entries: previous.entries.map(entry => ({ ...entry, reviewContract })) }
       const applied = applyDshEnvironmentRecommendations({ ...targets, environmentRecommendationsRequired: true }, observations, legacy)
       assert.equal(applied.plugins[0]!.environmentRecommendation, undefined, `${reviewContract} used obsolete evidence validation`)
@@ -378,7 +378,9 @@ describe('DSH repository environment recommendation', () => {
 
   it('revalidates old author baselines against the current plugin source without freezing removed or invalid claims', () => {
     const selected = candidate()
-    const quote = 'This plugin is primarily validated with DSH 0.1.5-rc.1.'
+    // Exercise retained claims independently of the first-review detector for
+    // explicit "tested with" or "primary validated line" prose.
+    const quote = 'The repository names DSH 0.1.5-rc.1 for its development fixture.'
     selected.documents.push({ path: 'docs/baseline.md', text: quote })
     const previous = parseDshEnvironmentRecommendations(recommendations({ authorEnvironment: {
       packageManagers: [], overrides: [], workflows: [],

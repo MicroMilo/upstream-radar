@@ -230,8 +230,60 @@ function namesVersion(quote: string, version: string): boolean {
   return new RegExp(`(^|[^0-9A-Za-z.-])${escape(version)}(?=$|[^0-9A-Za-z.-]|[.](?=\\s|$))`).test(quote)
 }
 
+function namesExactRelease(quote: string, version: string): boolean {
+  const pattern = new RegExp(`(^|[^0-9A-Za-z.-])${escape(version)}(?=$|[^0-9A-Za-z.-]|[.](?=\\s|$))`, 'g')
+  for (const match of quote.matchAll(pattern)) {
+    // Strip presentational tags only for the operator check; citations still
+    // have to match the original bytes. <code> is not a semver "greater than".
+    const prefix = quote.slice(0, match.index! + match[1]!.length).replace(/<\/?[A-Za-z][^<>]*>/g, '')
+    if (!/[~^<>]=?\s*["'`]*$/.test(prefix)) return true
+  }
+  return false
+}
+
 function pluginEvidence(path: string): boolean {
   return !path.startsWith('dsh-repository/') && !/^dsh-(?:source|published)-manifest$/.test(path)
+}
+
+/** A bounded completeness check for explicit, positive author validation prose.
+ * These are source claims to review, not automatically accepted compatibility.
+ * Other prose and declarations remain the full review's job.
+ */
+export function collectExplicitDshBaselineEvidence(sources: ReadonlyMap<string, string>): DshAuthorEnvironment['dshVersions'] {
+  const claims = new Map<string, DshAuthorEnvironment['dshVersions'][number]>()
+  for (const [path, source] of sources) {
+    if (!pluginEvidence(path) || Buffer.byteLength(source) > 48 * 1024) continue
+    const lines = source.split(/\r?\n/)
+    const newline = source.includes('\r\n') ? '\r\n' : '\n'
+    for (let start = 0; start < lines.length; start += 1) {
+      if (start > 0 && /\b(?:not|never)(?:\s+yet)?\s*$/i.test(lines[start - 1]!)) continue
+      for (let count = 1; count <= 3 && start + count <= lines.length; count += 1) {
+        const selected = lines.slice(start, start + count)
+        if (selected.some(line => line.trim() === '')) break
+        const quote = selected.join(newline)
+        if (quote.length > 2_048) break
+        const prose = quote.replace(/^\s*(?:#|\/\/)\s?/gm, '').replace(/<\/?[A-Za-z][^<>]*>/g, '').replace(/[`*]/g, '').replace(/\s+/g, ' ')
+        if (!/(^|[\s(（:])(?:tested|validated|verified)(?=\s|[.)）:])/i.test(prose)) continue
+        if (/\b(?:not|never|unverified|untested|unsupported|incompatible|pending|planned)\b/i.test(prose)) continue
+        const versions = [...new Set(quote.match(/\b\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\b/g) ?? [])]
+        for (const version of versions) {
+          const label = `(?:\\b(?:DSH|(?:DeepSeek\\s+)?harness)(?:\\s+(?:CLI|host|release|version))?\\s*(?:[=:]\\s*)?|@deepseek-ai\\s+tree\\s+(?:to|at|on)\\s+(?:the\\s+)?|@deepseek-ai/dsh@)${escape(version)}(?=$|[^0-9A-Za-z.-]|[.](?=\\s|$))`
+          const before = new RegExp(`\\b(?:tested|validated|verified)\\s+(?:(?:through|with|on|against|under)\\s+)?${label}`, 'i')
+          const after = new RegExp(`${label}(?:\\s+(?:line|release|version))?\\s*(?:locally\\s*)?\\(?\\s*(?:the\\s+)?(?:primary\\s+)?(?:is\\s+|was\\s+|has\\s+been\\s+)?(?:validated|tested|verified)\\b`, 'i')
+          if ((!before.test(prose) && !after.test(prose)) || !namesExactRelease(quote, version)) continue
+          const fact = { version, evidence: [{ path, quote }] }
+          try { validateDshAuthorEnvironment({ packageManagers: [], overrides: [], workflows: [], dshVersions: [fact] }, sources) }
+          catch { continue }
+          // One shortest, literal excerpt per version is enough for a check.
+          // The model still receives all bounded documents and can cite others.
+          const previous = claims.get(version)
+          if (!previous || quote.length < previous.evidence[0]!.quote.length) claims.set(version, fact)
+          if (claims.size > 16) throw new Error('Explicit author DSH baselines exceed the 16-version review bound; coverage remains incomplete')
+        }
+      }
+    }
+  }
+  return [...claims.values()].sort((a, b) => a.version.localeCompare(b.version))
 }
 
 /** Resolve quoted Markdown rows against their own DSH version columns. */
@@ -303,7 +355,7 @@ export function validateDshAuthorEnvironment(environment: DshAuthorEnvironment |
     if (!item.evidence.some(ref => pluginEvidence(ref.path) && (
       ref.quote.split(/\r?\n/).some(line => /^\s*\|.*\|\s*$/.test(line))
         ? dshReleaseTableEvidence(sources.get(ref.path), ref.quote, item.version)
-        : /dsh|harness/i.test(ref.quote) && namesVersion(ref.quote, item.version)
+        : /dsh|harness/i.test(ref.quote) && namesExactRelease(ref.quote, item.version)
     ))) {
       throw new Error('author DSH version is not supported by plugin evidence')
     }

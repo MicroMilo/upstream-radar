@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { it } from 'node:test'
-import { parseDshAuthorEnvironment, validateDshAuthorEnvironment } from '../src/dsh-author-environment.js'
+import { collectExplicitDshBaselineEvidence, parseDshAuthorEnvironment, validateDshAuthorEnvironment } from '../src/dsh-author-environment.js'
 
 // A bounded excerpt of bowenliang123/dsh-context docs/compatibility.md at
 // 33fd7ae6801d892ddbee7b76a964a4b2c6ff0416. The real model cited the row, not
@@ -79,4 +79,44 @@ it('does not turn DSH-owned manifests or documents into plugin author requiremen
       else assert.throws(validate, /not supported/, `${key}: ${evidencePath}`)
     }
   }
+})
+
+it('does not promote a DSH dependency range or minimum into an exact author release baseline', () => {
+  for (const quote of [
+    '"@deepseek-ai/dsh-tools":"^0.1.5-rc.2"',
+    '"@deepseek-ai/dsh-tools": "~0.1.5-rc.2"',
+    'Requires DSH >= 0.1.5-rc.2.',
+    'DSH < `0.1.5-rc.2` is required.',
+    'DSH <code>>=0.1.5-rc.2</code> is required.',
+  ]) assert.throws(() => validateDshAuthorEnvironment(environment(quote, '0.1.5-rc.2'), new Map([[path, quote]])), /not supported/)
+  for (const quote of ['Tested through DSH <code>0.1.5-rc.2</code>', 'DSH_VERSION=0.1.5-rc.2']) {
+    assert.doesNotThrow(() => validateDshAuthorEnvironment(environment(quote, '0.1.5-rc.2'), new Map([[path, quote]])))
+  }
+})
+
+it('ties a first-review validation checkpoint to the named DSH version, not another release or nearby test word', () => {
+  const text = 'Current plugin release: <code>0.1.0-rc.7</code> · Tested through DSH <code>0.1.1-rc.2</code>'
+  const facts = collectExplicitDshBaselineEvidence(new Map([['README.md', text]]))
+  assert.deepEqual(facts.map(fact => fact.version), ['0.1.1-rc.2'])
+  assert.ok(text.includes(facts[0]!.evidence[0]!.quote))
+  for (const unrelated of [
+    'DSH 0.1.1-rc.2 uses a tested compiler.',
+    'DSH 0.1.1-rc.2; tested pnpm 11.3.0.',
+    'Not yet tested with DSH 0.1.1-rc.2.',
+    'Not yet\nvalidated with DSH 0.1.1-rc.2.',
+    'Tested with DSH >=0.1.1-rc.2.',
+    'The plugin package 0.1.1-rc.2 was tested for its DSH integration.',
+  ]) assert.deepEqual(collectExplicitDshBaselineEvidence(new Map([['README.md', unrelated]])), [], unrelated)
+  assert.deepEqual(collectExplicitDshBaselineEvidence(new Map([['dsh-repository/README.md', text]])), [])
+})
+
+it('bounds baseline checkpoints, keeps CRLF quotations literal and rejects overflow instead of truncating required versions', () => {
+  const text = '# @deepseek-ai tree to the 0.1.5-rc.1 line locally (the primary\r\n# validated line; see src/dsh-adapter/contract.ts).'
+  const facts = collectExplicitDshBaselineEvidence(new Map([['pnpm-workspace.yaml', text]]))
+  assert.deepEqual(facts.map(fact => fact.version), ['0.1.5-rc.1'])
+  assert.equal(facts[0]!.evidence[0]!.quote, text)
+  assert.deepEqual(collectExplicitDshBaselineEvidence(new Map([['README.md', text + 'x'.repeat(48 * 1024)]])), [])
+  assert.deepEqual(collectExplicitDshBaselineEvidence(new Map([['README.md', 'Tested with DSH 0.1.5-rc.1. ' + 'x'.repeat(2048)]])), [])
+  const releases = Array.from({ length: 17 }, (_, index) => `Tested with DSH 0.1.${index}.`).join('\n')
+  assert.throws(() => collectExplicitDshBaselineEvidence(new Map([['README.md', releases]])), /exceed.*16-version.*incomplete/)
 })
