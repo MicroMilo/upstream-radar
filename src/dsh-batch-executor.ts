@@ -1,4 +1,19 @@
 import { observationNetworkEnvironment } from './dsh-observation-network.js'
+import { createHash } from 'node:crypto'
+
+/** Scheduling throughput is not part of an observation's runtime contract. */
+export function createDshBatchExecutorIdentity(input: {
+  sourceIdentity: string
+  images: Array<{ nodeMajor: number; pnpmVersion: string; id: string }>
+  config: { dockerContext: string; architecture: string; timeoutSeconds: number; networkProxy?: string; maxTasks: number }
+}): string {
+  const { dockerContext, architecture, timeoutSeconds, networkProxy } = input.config
+  observationNetworkEnvironment(networkProxy)
+  const images = input.images.map(({ nodeMajor, pnpmVersion, id }) => ({ nodeMajor, pnpmVersion, id }))
+    .sort((left, right) => left.nodeMajor - right.nodeMajor || left.pnpmVersion.localeCompare(right.pnpmVersion))
+  return createHash('sha256').update(JSON.stringify({ sourceIdentity: input.sourceIdentity, images,
+    runtime: { dockerContext, architecture, timeoutSeconds, networkProxy } })).digest('hex')
+}
 
 export function dshBatchDockerObjectAbsent(error: unknown): boolean {
   const stderr = typeof error === 'object' && error !== null ? Reflect.get(error, 'stderr') : undefined

@@ -7,7 +7,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import { runDshCompatibilityBatch } from '../dist/src/dsh-batch.js'
-import { dshBatchContainerArguments, dshBatchDockerObjectAbsent } from '../dist/src/dsh-batch-executor.js'
+import { createDshBatchExecutorIdentity, dshBatchContainerArguments, dshBatchDockerObjectAbsent } from '../dist/src/dsh-batch-executor.js'
 import { applyDshEnvironmentRecommendations } from '../dist/src/dsh-environment-recommendation.js'
 import { selectDshProfileEnvironment } from '../dist/src/dsh-profile-environment.js'
 import { buildDshCompatibilityIR } from '../dist/src/dsh-compatibility-ir.js'
@@ -128,7 +128,7 @@ try {
     images.set(key, { ...environment, id: inspected.Id, tag })
     process.stdout.write(`ready ${key}: ${inspected.Id}\n`)
   }
-  const executorIdentity = digest(JSON.stringify({ images: [...images], config, sourceIdentity }))
+  const executorIdentity = createDshBatchExecutorIdentity({ images: [...images.values()], config, sourceIdentity })
   await save(join(output, 'executor-evidence.json'), { sourceIdentity, executorIdentity, dockerContext: config.dockerContext,
     runtime: { platform: 'linux', architecture }, images: [...images.values()], hostMounts: [], inheritedHostCredentials: false })
   const statePath = join(output, 'state.json')

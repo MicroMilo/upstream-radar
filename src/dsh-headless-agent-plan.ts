@@ -48,6 +48,8 @@ export interface DshHeadlessAgentCandidate {
   /** Bounded facts captured by the disposable headless install/load run. */
   dynamicEvidence?: DshCompatibilityLedgerEntry['resolution']
   documents: Array<{ path: string, text: string }>
+  /** Collector-owned omissions; these are not model-authored conclusions. */
+  documentCoverageGaps?: string[]
 }
 
 export interface DshHeadlessAgentDecision {
@@ -75,6 +77,7 @@ export interface DshHeadlessAgentPlanEntry extends DshHeadlessAgentDecision {
   inputFingerprint: string
   plannedAt: string
   model: string
+  documentCoverageGaps?: string[]
 }
 
 export interface DshHeadlessAgentPlans {
@@ -208,6 +211,7 @@ export function createDshHeadlessAgentInputFingerprint(candidate: DshHeadlessAge
     sourceCommit: candidate.sourceCommit,
     manifest: candidate.manifest,
     dynamicEvidence: candidate.dynamicEvidence,
+    documentCoverageGaps: candidate.documentCoverageGaps ?? [],
     documents: candidate.documents.map(document => ({
       path: document.path,
       sha256: createHash('sha256').update(document.text).digest('hex'),
@@ -232,6 +236,7 @@ export function renderDshHeadlessAgentPrompt(candidate: DshHeadlessAgentCandidat
     'Choose retry-headless only when the reproduced result is build-approval-required and repository evidence supports approving a subset of the exact observed build packages.',
     'Build gates may appear in stages. A retry must keep every previously approved package and add any newly supported package; never drop an earlier approval.',
     'Otherwise choose stop-headless and classify the reason. Do not invent package names.',
+    'For stop-headless, allowedBuilds must be []; the runner retains any earlier approved builds separately, so do not copy them into a stopped decision.',
     'Return exactly one JSON object with keys: action, classification, allowedBuilds, summary, evidence.',
     'Allowed action: retry-headless | stop-headless.',
     'Allowed classification: build-approval | headless-contract | different-plane | insufficient-evidence.',
@@ -250,6 +255,7 @@ export function renderDshHeadlessAgentPrompt(candidate: DshHeadlessAgentCandidat
     `Source commit: ${candidate.sourceCommit ?? '(unknown)'}`,
     `Observed manifest: ${JSON.stringify(candidate.manifest ?? null).slice(0, 32 * 1024)}`,
     `Bounded dynamic headless evidence: ${JSON.stringify(candidate.dynamicEvidence ?? null).slice(0, 64 * 1024)}`,
+    `Document collection coverage gaps (do not treat omitted material as reviewed): ${JSON.stringify(candidate.documentCoverageGaps ?? [])}`,
     '',
     documents,
   ].join('\n')
@@ -321,6 +327,10 @@ export function parseDshHeadlessAgentPlans(input: unknown): DshHeadlessAgentPlan
       : boundedString(item.sourceCommit, `entries[${index}].sourceCommit`, 64)
     const artifactSha256 = exactSha256(item.artifactSha256, `entries[${index}].artifactSha256`)
     const executionEnvironment = parseBuildReviewEnvironment(item.executionEnvironment)
+    const documentCoverageGaps = item.documentCoverageGaps === undefined ? undefined : (() => {
+      if (!Array.isArray(item.documentCoverageGaps) || item.documentCoverageGaps.length > 16) throw new Error('build review document coverage gaps exceed bounds')
+      return item.documentCoverageGaps.map(value => boundedString(value, 'build review document coverage gap', 1_024))
+    })()
     return {
       caseId,
       targetId: boundedString(item.targetId, `entries[${index}].targetId`, 128),
@@ -337,6 +347,7 @@ export function parseDshHeadlessAgentPlans(input: unknown): DshHeadlessAgentPlan
       inputFingerprint: fingerprint,
       plannedAt: timestamp(item.plannedAt, `entries[${index}].plannedAt`),
       model: boundedString(item.model, `entries[${index}].model`, 256),
+      ...(documentCoverageGaps === undefined ? {} : { documentCoverageGaps }),
       ...decision,
     }
   })

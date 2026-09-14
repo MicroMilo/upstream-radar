@@ -1,6 +1,21 @@
 import assert from 'node:assert/strict'
 import { it } from 'node:test'
-import { dshBatchContainerArguments, dshBatchDockerObjectAbsent } from '../src/dsh-batch-executor.js'
+import { createDshBatchExecutorIdentity, dshBatchContainerArguments, dshBatchDockerObjectAbsent } from '../src/dsh-batch-executor.js'
+
+it('reuses the same executor across scheduling budgets and image enumeration order but not runtime changes', () => {
+  const input = { sourceIdentity: 'a'.repeat(64), images: [
+    { nodeMajor: 22, pnpmVersion: '11.7.0', id: `sha256:${'b'.repeat(64)}` },
+    { nodeMajor: 24, pnpmVersion: '11.7.0', id: `sha256:${'c'.repeat(64)}` },
+  ], config: { dockerContext: 'fixture', architecture: 'arm64', timeoutSeconds: 180, maxTasks: 1 } }
+  const initial = createDshBatchExecutorIdentity(input)
+  assert.equal(createDshBatchExecutorIdentity({ ...input, images: [...input.images].reverse(), config: { ...input.config, maxTasks: 100 } }), initial)
+  for (const config of [{ ...input.config, timeoutSeconds: 300 }, { ...input.config, architecture: 'x64' },
+    { ...input.config, networkProxy: 'http://127.0.0.1:7897' }, { ...input.config, dockerContext: 'another-daemon' }]) {
+    assert.notEqual(createDshBatchExecutorIdentity({ ...input, config }), initial)
+  }
+  assert.notEqual(createDshBatchExecutorIdentity({ ...input, sourceIdentity: 'd'.repeat(64) }), initial)
+  assert.notEqual(createDshBatchExecutorIdentity({ ...input, images: input.images.map(image => ({ ...image, id: `sha256:${'e'.repeat(64)}` })) }), initial)
+})
 
 it('recognizes Docker object absence without treating daemon or transport failures as a missing handle', () => {
   assert.equal(dshBatchDockerObjectAbsent({ stderr: 'error: no such object: radar-batch-fixture\n' }), true)
