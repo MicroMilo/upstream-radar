@@ -367,6 +367,13 @@ describe('DSH repository environment recommendation', () => {
     assert.match(plan.blocked[0]!.reason, /environment recommendation/)
   })
 
+  it('requires repository review again after changing DSH release-table evidence semantics', () => {
+    const previous = recommendations()
+    const legacy = { ...previous, entries: previous.entries.map(entry => ({ ...entry, reviewContract: 'dsh-environment/v5' })) }
+    const applied = applyDshEnvironmentRecommendations({ ...targets, environmentRecommendationsRequired: true }, observations, legacy)
+    assert.equal(applied.plugins[0]!.environmentRecommendation, undefined, 'v5 could reject supported release rows or accept the wrong table column')
+  })
+
   it('rejects executable override sources and mismatched key/value evidence', () => {
     const selected = candidate()
     const quote = '"overrides":{"peer-a":"1.0.0","peer-b":"2.0.0"}'

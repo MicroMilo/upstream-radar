@@ -20,7 +20,7 @@ import {
 } from './dsh-surface.js'
 
 export const DSH_ENVIRONMENT_RECOMMENDATIONS_SCHEMA = 'upstream-radar.dsh-environment-recommendations/v1alpha1' as const
-export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v5' as const
+export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v6' as const
 
 const DSH_TARGET_ID = 'deepseek-harness'
 const DSH_PACKAGE = '@deepseek-ai/dsh'
@@ -667,6 +667,7 @@ export function renderDshEnvironmentRecommendationPrompt(candidate: DshEnvironme
     'Output bounds: evidence must be 1-16 unique reference strings, NOT quote objects; nodeEvidence must contain exactly one item per selected nodeMajors entry and use those same integers. Each nodeEvidence.evidence is a non-empty subset of top-level evidence. summary <=2048 characters. Omit unavailable optional keys; do not emit null. authorEnvironment arrays: packageManagers <=8, overrides <=8 groups with <=64 simple entries each, workflows <=16, dshVersions <=16.',
     'Package manager version must be a complete x.y.z version (optional prerelease), not 10, latest, >=10, or a corepack integrity suffix. If no exact version is evidenced, leave that fact out and explain the unpinned constraint in coverageGaps. A copied packageManager value may have a +sha integrity suffix; retain its exact version without the integrity suffix. Override selectors such as parent>child and values such as workspace:, npm:, link:, file: or Git URLs are unsupported, so record them as gaps instead of substituting another version.',
     'Every author workflow quote must name that workflow (web, headless, sdk, acp; tui/terminal also accepted). Do not add a fabricated headless author workflow to describe a Radar check. Named profile quotes must include the exact --profile argument. authorEnvironment facts are independently quoted; top-level evidence is only the concise reference list.',
+    'Author DSH versions need an exact plugin-repository quote naming DSH/harness and the version, or an exact whole Markdown table row whose DSH release/version column contains that exact version. The table header is verified from the same document; another package column or a bare minimum range does not establish a release baseline. Copy quotes byte-for-byte, including comment prefixes; do not rewrite or join source lines.',
     'status is recommended or insufficient-evidence. evidence contains only exact refs from source-manifest, published-manifest, dsh-source-manifest, dsh-published-manifest, or the document paths below.',
     '',
     `Target: ${candidate.targetId}`,
