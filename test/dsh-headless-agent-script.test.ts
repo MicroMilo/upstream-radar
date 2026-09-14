@@ -28,8 +28,8 @@ it('persists bounded build-review handoffs before delivery and gives deferred pl
     if (id === 'plugin-33') {
       response.end(JSON.stringify({ choices: [{ message: { content: 'x'.repeat(300 * 1024) } }] })); return
     }
-    response.end(JSON.stringify({ choices: [{ message: { content: JSON.stringify({ action: 'stop-headless', classification: 'insufficient-evidence',
-      allowedBuilds: [], summary: 'No supported build retry in this fixture.', evidence: ['Observed build gate only.'] }) } }] }))
+    response.end(JSON.stringify({ choices: [{ message: { content: JSON.stringify({ action: 'retry-headless', classification: 'build-approval',
+      allowedBuilds: ['sharp'], summary: 'Approve the exact observed build in this fixture.', evidence: ['Observed sharp build gate.'] }) } }] }))
   })
   try {
     await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve))
@@ -64,6 +64,8 @@ it('persists bounded build-review handoffs before delivery and gives deferred pl
     assert.equal(saved.entries.length, 1)
     assert.equal(saved.pendingTasks.length, 33)
     assert.match(await readFile(join(root, 'report.md'), 'utf8'), /Agent response exceeds/)
+    await run()
+    assert.equal(delivered.filter(id => id === 'plugin-32').length, 1, 'an unexecuted approval must not invalidate its own unchanged review input')
   } finally {
     await new Promise<void>(resolve => server.close(() => resolve()))
     await rm(root, { recursive: true, force: true })

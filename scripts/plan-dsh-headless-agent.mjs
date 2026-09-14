@@ -329,7 +329,9 @@ const candidates = await mapConcurrent(reviewEntries, async entry => {
     && previous.nodeMajor === entry.runtime.nodeMajor
     && previous.artifactSha256 !== undefined
     && previous.artifactSha256 === entry.artifact.sha256
-      ? previous.approvedBuilds
+      // A saved approval is a plan, not proof that the corresponding retry ran.
+      // Only the observed execution policy can advance the staged-build input.
+      ? previous.approvedBuilds.filter(name => entry.approvedDependencyBuilds?.includes(name))
       : []
   return {
     caseId: entry.caseId,
