@@ -88,6 +88,7 @@ jobs:
             validation-output/observations.json \
             validation-output/recommendations.json \
             validation-output/recommendations.md \
+            validation-output/repeat-candidates.json \
             > validation-output/review-repeat-summary.json
           node --input-type=module -e 'import {readFile} from "node:fs/promises"; const result=JSON.parse(await readFile("validation-output/review-repeat-summary.json","utf8")); if(result.attempted !== 0 || result.failed !== 0) throw new Error("Unchanged evidence did not reuse the completed reviews")'
       - name: Form exact install plans without executing target code

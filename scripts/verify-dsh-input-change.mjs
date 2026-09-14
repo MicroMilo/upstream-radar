@@ -63,6 +63,9 @@ if (mode === 'prepare') {
   const observations = await json(join(review, 'observations.json'))
   const recommendations = await json(join(review, 'recommendations.json'))
   const buildPlans = await json(join(review, 'build-plans.json'))
+  let evidenceCache
+  try { evidenceCache = await json(join(review, 'recommendations.json.evidence.json')) }
+  catch (error) { if (error.code !== 'ENOENT') throw error }
   const state = await json(join(batch, 'state.json'))
   const summary = await json(join(batch, 'summary.json'))
   const source = observations.targets?.[observerTargetId]
@@ -76,6 +79,9 @@ if (mode === 'prepare') {
   for (const [name, value] of Object.entries({ observations, recommendations, 'build-plans': buildPlans })) {
     await save(join(output, 'review', `${name}.json`), value)
     await save(join(output, 'baseline', `${name}.json`), value)
+  }
+  if (evidenceCache !== undefined) {
+    for (const directory of ['review', 'baseline']) await save(join(output, directory, 'recommendations.json.evidence.json'), evidenceCache)
   }
   await save(join(output, 'batch/state.json'), state)
   await save(join(output, 'baseline/state.json'), state)

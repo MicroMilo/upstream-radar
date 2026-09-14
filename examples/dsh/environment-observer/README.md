@@ -38,6 +38,20 @@ failures into that exact input and its fingerprint. The validator adds an
 incomplete-collection coverage flag independently of the Agent's answer;
 logging a failed fetch alone is not sufficient coverage accounting.
 
+The planner atomically saves a bounded `recommendations.json.evidence.json`
+checkpoint before model delivery. Each collection is bound to the repository,
+immutable Git commit, package path, baseline/plugin role, collector code digest,
+and collected bytes. An unchanged collection does not refetch documents, so a
+later network outage cannot discard valid evidence or create a spurious review.
+Fixed file/count/byte omissions remain explicit coverage gaps in the cache;
+HTTP failures and parser errors are never cached as a completed collection and
+will be retried. Changed commits or collector code force collection again;
+changed published manifests still invalidate review independently of this cache.
+Only the current cohort's collections are retained (at most 101, including DSH),
+with a 64-MiB checkpoint input/output bound. Corrupt or symlinked checkpoints
+fail visibly before model delivery. The scheduled observer persists the sidecar
+with its recommendation state; validation runs retain it in their review artifact.
+
 Pending analysis tasks are written into
 [`recommendations.json`](recommendations.json) before Agent delivery, so model
 failure or interruption cannot lose the work. At most 32 tasks are delivered

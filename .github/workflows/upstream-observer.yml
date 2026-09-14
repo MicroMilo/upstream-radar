@@ -35,6 +35,8 @@ jobs:
       install_dsh_version: ${{ steps.install-plan.outputs.dsh_version }}
       install_matrix: ${{ steps.install-plan.outputs.matrix }}
       observer_exit: ${{ steps.observe.outputs.exit }}
+      environment_review_outcome: ${{ steps.environment-recommendations.outcome }}
+      build_review_outcome: ${{ steps.headless-agent-plan.outcome }}
     steps:
       - name: Check out the observer and its targets
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -233,6 +235,11 @@ jobs:
             examples/dsh/install-observer/agent-plans.md \
             feeds/dsh-plugin-compatibility.json \
             feeds/dsh-plugin-compatibility.md
+          # Fixed-commit repository bytes survive the next scheduled checkout.
+          # Agent-only retries may not have collected a checkpoint yet.
+          if [[ -f examples/dsh/environment-observer/recommendations.json.evidence.json ]]; then
+            git add -- examples/dsh/environment-observer/recommendations.json.evidence.json
+          fi
           if git diff --cached --quiet; then
             echo 'No observation point changed; no commit created.'
             exit 0
@@ -804,17 +811,22 @@ jobs:
           echo 'Missing or rejected adapter reports remain uncollected and will be planned again.'
           exit 1
 
-  # Keep a partial source outage or failed explicit Agent retry visible without
+  # Keep partial source outages and failed repository/build reviews visible without
   # letting it discard successful work from the same observer cycle.
   observer-final-health:
     needs: [observe, install-observation, reconcile-install-observations, plan-surface-observations, surface-observation, reconcile-surface-observations, plan-adapter-observations, adapter-observation, reconcile-adapter-observations]
-    if: always() && needs.observe.outputs.observer_exit != '' && needs.observe.outputs.observer_exit != '0'
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
       - name: Surface the deferred observer failure after downstream work
         env:
           OBSERVER_EXIT: ${{ needs.observe.outputs.observer_exit }}
+          ENVIRONMENT_REVIEW_OUTCOME: ${{ needs.observe.outputs.environment_review_outcome }}
+          BUILD_REVIEW_OUTCOME: ${{ needs.observe.outputs.build_review_outcome }}
         run: |
-          echo "The observer returned exit code ${OBSERVER_EXIT}; successful source observations, Agent conclusions, and isolated retests were still persisted."
-          exit 1
+          if [[ "$OBSERVER_EXIT" != '' && "$OBSERVER_EXIT" != '0' ]] || \
+             [[ "$ENVIRONMENT_REVIEW_OUTCOME" == 'failure' || "$BUILD_REVIEW_OUTCOME" == 'failure' ]]; then
+            echo "Incomplete observer cycle: source exit=${OBSERVER_EXIT}; repository review=${ENVIRONMENT_REVIEW_OUTCOME}; build review=${BUILD_REVIEW_OUTCOME}. Successful partial observations were preserved."
+            exit 1
+          fi

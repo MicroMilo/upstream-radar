@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { randomUUID } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
+import { constants } from 'node:fs'
 import { appendFile, mkdir, open, readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import { basename, dirname, join, posix, resolve } from 'node:path'
 import process from 'node:process'
@@ -25,14 +26,20 @@ const MAX_TREE_RESPONSE_BYTES = 256 * 1024
 const CONCURRENCY = 4
 const MAX_AGENT_TASKS_PER_RUN = 32
 const MAX_VALIDATION_ATTEMPTS = 3
+const EVIDENCE_CACHE_SCHEMA = 'upstream-radar.dsh-environment-evidence-cache/v1alpha1'
+const MAX_CACHE_BYTES = 64 * 1024 * 1024
+const hash = value => createHash('sha256').update(value).digest('hex')
+class EvidenceByteBoundError extends Error {}
 
-async function writeRecommendationState(path, state) {
+async function writeRecommendationState(path, state, maximum = MAX_INPUT_BYTES) {
+  const contents = `${JSON.stringify(state, null, 2)}\n`
+  if (Buffer.byteLength(contents) > maximum) throw new Error(`${path} exceeds ${maximum} output bytes`)
   const destination = resolve(path)
   const temporary = join(dirname(destination), `.${basename(destination)}.${randomUUID()}.tmp`)
   const handle = await open(temporary, 'wx', 0o600)
   try {
     try {
-      await handle.writeFile(`${JSON.stringify(state, null, 2)}\n`, 'utf8')
+      await handle.writeFile(contents, 'utf8')
       await handle.sync()
     } finally { await handle.close() }
     await rename(temporary, destination)
@@ -41,10 +48,21 @@ async function writeRecommendationState(path, state) {
   }
 }
 
-async function readJson(path) {
-  const contents = await readFile(resolve(path), 'utf8')
-  if (Buffer.byteLength(contents) > MAX_INPUT_BYTES) throw new Error(`${path} exceeds ${MAX_INPUT_BYTES} bytes`)
-  return JSON.parse(contents)
+async function readJson(path, maximum = MAX_INPUT_BYTES) {
+  const handle = await open(resolve(path), constants.O_RDONLY | constants.O_NOFOLLOW)
+  try {
+    const stat = await handle.stat()
+    if (!stat.isFile() || stat.size > maximum) throw new Error(`${path} is not a bounded regular JSON file`)
+    const bytes = Buffer.alloc(stat.size + 1)
+    let length = 0
+    while (length < bytes.length) {
+      const result = await handle.read(bytes, length, bytes.length - length, null)
+      if (result.bytesRead === 0) break
+      length += result.bytesRead
+    }
+    if (length !== stat.size) throw new Error(`${path} changed while it was being read`)
+    return JSON.parse(bytes.subarray(0, length).toString('utf8'))
+  } finally { await handle.close() }
 }
 
 async function readRecommendations(path) {
@@ -82,9 +100,44 @@ function rawGitHubUrl(repository, commit, path) {
   return `https://raw.githubusercontent.com/${repository}/${commit}/${encoded}`
 }
 
+async function readEvidenceCache(path, collectorFingerprint) {
+  let cache
+  try { cache = await readJson(path, MAX_CACHE_BYTES) }
+  catch (error) { if (error?.code === 'ENOENT') return new Map(); throw error }
+  if (cache?.schema !== EVIDENCE_CACHE_SCHEMA || !/^[a-f0-9]{64}$/.test(cache.collectorFingerprint)
+    || !Array.isArray(cache.entries) || cache.entries.length > 101) throw new Error('Invalid repository evidence cache')
+  const entries = new Map()
+  for (const entry of cache.entries) {
+    const identity = entry?.identity
+    if (cleanRepository(identity?.repository) !== identity?.repository || identity?.repository === undefined
+      || cleanCommit(identity?.commit) !== identity?.commit || identity?.commit === undefined
+      || (identity?.packagePath !== undefined && cleanPath(identity.packagePath) !== identity.packagePath)
+      || typeof identity?.baselineOnly !== 'boolean'
+      || !Array.isArray(entry.documents) || entry.documents.length > 24
+      || !Array.isArray(entry.gaps) || entry.gaps.length > 16
+      || entry.gaps.some(gap => typeof gap !== 'string' || gap.length > 512)) throw new Error('Invalid repository evidence cache entry')
+    const paths = new Set()
+    let bytes = 0
+    for (const document of entry.documents) {
+      if (cleanPath(document?.path) !== document?.path || document?.path === undefined
+        || paths.has(document.path) || typeof document.text !== 'string'
+        || Buffer.byteLength(document.text) > MAX_DOCUMENT_BYTES) throw new Error('Invalid cached repository document')
+      paths.add(document.path)
+      bytes += Buffer.byteLength(document.text)
+    }
+    if (bytes > MAX_DOCUMENT_TOTAL_BYTES || entry.digest !== hash(JSON.stringify({ identity, documents: entry.documents, gaps: entry.gaps }))) {
+      throw new Error('Repository evidence cache digest or byte bound mismatch')
+    }
+    const key = hash(JSON.stringify(identity))
+    if (entries.has(key)) throw new Error('Duplicate repository evidence cache identity')
+    entries.set(key, entry)
+  }
+  return cache.collectorFingerprint === collectorFingerprint ? entries : new Map()
+}
+
 async function boundedResponseText(response, maximum, label) {
   const declared = Number(response.headers.get('content-length'))
-  if (Number.isFinite(declared) && declared > maximum) throw new Error(`${label} exceeds ${maximum} bytes`)
+  if (Number.isFinite(declared) && declared > maximum) throw new EvidenceByteBoundError(`${label} exceeds ${maximum} bytes`)
   if (response.body === null) throw new Error(`${label} returned no body`)
   const reader = response.body.getReader()
   const chunks = []
@@ -95,7 +148,7 @@ async function boundedResponseText(response, maximum, label) {
     bytes += value.byteLength
     if (bytes > maximum) {
       await reader.cancel()
-      throw new Error(`${label} exceeds ${maximum} bytes`)
+      throw new EvidenceByteBoundError(`${label} exceeds ${maximum} bytes`)
     }
     chunks.push(Buffer.from(value))
   }
@@ -123,7 +176,7 @@ function boundedCollectionGaps(gaps) {
   return unique.length <= 16 ? unique : [...unique.slice(0, 15), `${unique.length - 15} additional evidence collection gaps omitted from the bounded detail list; coverage remains incomplete.`]
 }
 
-async function collectDocuments(repository, commit, packagePath, baselineOnly = false) {
+async function collectRemoteDocuments(repository, commit, packagePath, baselineOnly = false) {
   if (repository === undefined || commit === undefined) return { documents: [], gaps: ['Repository or immutable source commit is unavailable; setup/CI evidence was not collected.'] }
   const headers = { accept: 'application/vnd.github+json', 'user-agent': 'upstream-radar/environment-recommendation' }
   if (process.env.GITHUB_TOKEN) headers.authorization = `Bearer ${process.env.GITHUB_TOKEN}`
@@ -153,6 +206,7 @@ async function collectDocuments(repository, commit, packagePath, baselineOnly = 
     return { documents: [], gaps: boundedCollectionGaps([gap]) }
   }
   const documents = []
+  let reusable = true
   let bytes = 0
   for (const path of paths) {
     if (bytes >= MAX_DOCUMENT_TOTAL_BYTES) {
@@ -161,7 +215,11 @@ async function collectDocuments(repository, commit, packagePath, baselineOnly = 
     }
     try {
       const document = await fetchDocument(repository, commit, path)
-      if (document === undefined) { gaps.push(`${repository}/${path} was selected from the Git tree but returned HTTP 404.`); continue }
+      if (document === undefined) {
+        reusable = false
+        gaps.push(`${repository}/${path} was selected from the Git tree but returned HTTP 404.`)
+        continue
+      }
       const documentBytes = Buffer.byteLength(document.text)
       if (bytes + documentBytes > MAX_DOCUMENT_TOTAL_BYTES) {
         process.stderr.write(`environment-recommendation: evidence byte budget omitted ${repository}/${path}\n`)
@@ -171,12 +229,13 @@ async function collectDocuments(repository, commit, packagePath, baselineOnly = 
       documents.push(document)
       bytes += documentBytes
     } catch (error) {
+      if (!(error instanceof EvidenceByteBoundError)) reusable = false
       const gap = error instanceof Error ? error.message : String(error)
       process.stderr.write(`environment-recommendation: ${gap}\n`)
       gaps.push(gap)
     }
   }
-  return { documents, gaps: boundedCollectionGaps(gaps) }
+  return { documents, gaps: boundedCollectionGaps(gaps), reusable }
 }
 
 function sourceContext(target, observations) {
@@ -307,6 +366,34 @@ if ([targetsPath, observationsPath, recommendationsPath, reportPath].some(value 
   throw new Error('usage: plan-dsh-environment-recommendations.mjs <targets.json> <observations.json> <recommendations.json> <report.md> [candidates.json]')
 }
 
+// The cache binds fixed Git commits to the actual bounded collector code. A
+// changed collector recollects; an outage cannot erase already collected bytes.
+const collectorFingerprint = hash(Buffer.concat(await Promise.all([
+  readFile(new URL(import.meta.url)),
+  readFile(new URL('../dist/src/dsh-environment-evidence.js', import.meta.url)),
+])))
+const evidenceCachePath = `${recommendationsPath}.evidence.json`
+const previousCollections = await readEvidenceCache(evidenceCachePath, collectorFingerprint)
+const retainedCollections = new Map()
+async function collectDocuments(repository, commit, packagePath, baselineOnly = false) {
+  if (repository === undefined || commit === undefined) return collectRemoteDocuments(repository, commit, packagePath, baselineOnly)
+  const identity = { repository, commit, ...(packagePath === undefined ? {} : { packagePath }), baselineOnly }
+  const key = hash(JSON.stringify(identity))
+  const cached = previousCollections.get(key)
+  if (cached !== undefined) {
+    retainedCollections.set(key, cached)
+    return { documents: cached.documents, gaps: cached.gaps }
+  }
+  const collection = await collectRemoteDocuments(repository, commit, packagePath, baselineOnly)
+  // Size/selection omissions are fixed facts for this commit and contract;
+  // HTTP failures and parser errors are not. Never freeze a transient failure.
+  if (collection.reusable === true) {
+    const value = { identity, documents: collection.documents, gaps: collection.gaps }
+    retainedCollections.set(key, { ...value, digest: hash(JSON.stringify(value)) })
+  }
+  return collection
+}
+
 const [targetsInput, observations, existingRecommendations] = await Promise.all([
   readJson(targetsPath),
   readJson(observationsPath),
@@ -327,6 +414,13 @@ const collections = await mapConcurrent(targets.plugins, async target => {
     ...merged.omitted.map(path => `Shared evidence budget omitted ${path}.`),
   ]) }
 })
+// Only the current bounded cohort is retained; old commits cannot grow this
+// checkpoint without limit. Persist it before any model task is delivered.
+await mkdir(dirname(resolve(evidenceCachePath)), { recursive: true })
+await writeRecommendationState(evidenceCachePath, {
+  schema: EVIDENCE_CACHE_SCHEMA, collectorFingerprint,
+  entries: [...retainedCollections].sort(([left], [right]) => left.localeCompare(right)).map(([, entry]) => entry),
+}, MAX_CACHE_BYTES)
 const documentsByTarget = new Map(collections.map(item => [item.targetId, item.documents]))
 const collectionGapsByTarget = new Map(collections.map(item => [item.targetId, item.gaps]))
 const candidates = selectDshEnvironmentRecommendationCandidates(targets, observations, documentsByTarget, collectionGapsByTarget)

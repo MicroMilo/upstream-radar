@@ -27,6 +27,23 @@ async function runActionInputDetector(files: string[], config = 'upstream-radar.
 }
 
 describe('reusable GitHub Action', () => {
+  it('reports repository or build review failure after downstream work without hiding a successful partial observation', async () => {
+    const workflow = await readFile(new URL('../../.github/workflows/upstream-observer.yml', import.meta.url), 'utf8')
+    const health = workflow.slice(workflow.indexOf('\n  observer-final-health:'))
+    assert.match(health, /if: always\(\)\n/)
+    assert.match(workflow, /environment_review_outcome: \$\{\{ steps\.environment-recommendations\.outcome \}\}/)
+    assert.match(workflow, /build_review_outcome: \$\{\{ steps\.headless-agent-plan\.outcome \}\}/)
+    const command = health.split('        run: |\n')[1]!.split('\n').map(line => line.replace(/^          /, '')).join('\n')
+    for (const [observer, environment, builds, shouldFail] of [
+      ['0', 'success', 'success', false], ['', 'skipped', 'skipped', false],
+      ['2', 'success', 'success', true], ['0', 'failure', 'success', true], ['0', 'success', 'failure', true],
+    ] as const) {
+      const result = execFileAsync('bash', ['-c', command], { env: { ...process.env,
+        OBSERVER_EXIT: observer, ENVIRONMENT_REVIEW_OUTCOME: environment, BUILD_REVIEW_OUTCOME: builds } })
+      if (shouldFail) await assert.rejects(result, (error: unknown) => (error as { code?: number }).code === 1)
+      else await result
+    }
+  })
   it('can exercise the same scheduled adapter workflow on a validation branch without publishing project state', async () => {
     const workflow = await readFile('.github/workflows/dsh-rebuild-validation.yml', 'utf8')
     assert.ok(workflow.includes('adapter_matrix_json:'), 'validation dispatch must accept an exact planner-produced adapter matrix')
@@ -306,6 +323,7 @@ describe('reusable GitHub Action', () => {
     assert.match(observationPersistence, /feeds\/dsh-plugin-compatibility\.md/)
     assert.match(observationPersistence, /environment-observer\/recommendations\.json/)
     assert.match(observationPersistence, /environment-observer\/recommendations\.md/)
+    assert.match(observationPersistence, /if \[\[ -f examples\/dsh\/environment-observer\/recommendations\.json\.evidence\.json \]\]; then\s+git add -- examples\/dsh\/environment-observer\/recommendations\.json\.evidence\.json/)
     assert.ok(
       observationPersistence.indexOf('node scripts/write-dsh-directory-feed.mjs')
         < observationPersistence.indexOf('git add --'),
