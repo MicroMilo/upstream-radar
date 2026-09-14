@@ -58,6 +58,8 @@ function parseCell(input: unknown): DshAdapterExpectedCase {
   return structuredClone(cell) as unknown as DshAdapterExpectedCase
 }
 
+export const parseDshAdapterExpectedCase = parseCell
+
 function parseProfileGraph(input: unknown): InstalledProfileGraph {
   const graph = object(input)
   if (graph.schema !== 'upstream-radar.installed-profile-graph/v1alpha1'

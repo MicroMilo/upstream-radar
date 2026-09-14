@@ -646,10 +646,142 @@ jobs:
           echo 'Incomplete cells remain unsatisfied and will be selected by the next scheduled run.'
           exit 1
 
+  plan-adapter-observations:
+    needs: [observe, reconcile-install-observations]
+    if: always() && needs.observe.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      run: ${{ steps.adapter-plan.outputs.run }}
+      matrix: ${{ steps.adapter-plan.outputs.matrix }}
+      blocked: ${{ steps.adapter-plan.outputs.blocked }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.3.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Build the checked-out Radar
+        run: |
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm run build
+      - name: Plan independent author SDK and ACP observations
+        id: adapter-plan
+        run: |
+          node scripts/write-dsh-adapter-plan.mjs examples/dsh/install-observer/targets.json \
+            observations.json examples/dsh/environment-observer/recommendations.json \
+            compatibility-ledger.json adapter-ledger.json examples/dsh/install-observer/agent-plans.json \
+            | tee "$RUNNER_TEMP/adapter-plan.json"
+      # Downstream execution cannot start until its complete expected matrix
+      # has been uploaded, including when no adapter implementation is available.
+      - name: Preserve the adapter plan before dispatch
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: upstream-radar-adapter-plan-${{ github.run_id }}
+          path: ${{ runner.temp }}/adapter-plan.json
+          if-no-files-found: error
+          retention-days: 7
+
+  adapter-observation:
+    needs: plan-adapter-observations
+    if: always() && needs.plan-adapter-observations.result == 'success' && needs.plan-adapter-observations.outputs.run == 'true'
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan-adapter-observations.outputs.matrix) }}
+    permissions:
+      contents: read
+    uses: ./.github/workflows/observe-dsh-plugin-adapter.yml
+    with:
+      case_json: ${{ toJSON(matrix) }}
+
+  reconcile-adapter-observations:
+    needs: [plan-adapter-observations, adapter-observation]
+    if: always() && needs.plan-adapter-observations.result == 'success' && needs.plan-adapter-observations.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.3.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Build the checked-out Radar
+        run: |
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm run build
+      - name: Materialize the exact scheduled adapter matrix
+        env:
+          RADAR_ADAPTER_MATRIX: ${{ needs.plan-adapter-observations.outputs.matrix }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFile } from 'node:fs/promises'
+          import { join } from 'node:path'
+          const input = process.env.RADAR_ADAPTER_MATRIX ?? ''
+          if (Buffer.byteLength(input) > 1024 * 1024) throw new Error('adapter matrix exceeds its byte bound')
+          await writeFile(join(process.env.RUNNER_TEMP, 'adapter-matrix.json'), input, { flag: 'wx', mode: 0o600 })
+          NODE
+      - name: Download this run's isolated adapter reports
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: upstream-radar-adapter-case-*-${{ github.run_id }}
+          path: ${{ runner.temp }}/adapter-reports
+      - name: Reconcile exact adapter observations
+        id: adapter-ledger
+        continue-on-error: true
+        run: |
+          node scripts/merge-dsh-adapter-ledger.mjs adapter-ledger.json \
+            "$RUNNER_TEMP/adapter-matrix.json" "$RUNNER_TEMP/adapter-reports" "$RUNNER_TEMP/adapter-summary.json"
+      - name: Preserve the reconciled adapter evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: upstream-radar-adapter-ledger-${{ github.run_id }}
+          path: |
+            adapter-ledger.json
+            ${{ runner.temp }}/adapter-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Persist accepted adapter evidence before reporting missing jobs
+        if: always()
+        run: |
+          set -euo pipefail
+          if [[ ! -f adapter-ledger.json ]]; then exit 0; fi
+          git config user.name 'upstream-radar[bot]'
+          git config user.email 'upstream-radar[bot]@users.noreply.github.com'
+          git add -- adapter-ledger.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'chore: update independent DSH adapter observations [skip ci]'
+          git pull --rebase origin "${{ github.event.repository.default_branch }}"
+          git push
+      - name: Fail after preserving incomplete adapter reconciliation
+        if: always() && steps.adapter-ledger.outcome == 'failure'
+        run: |
+          echo 'Missing or rejected adapter reports remain uncollected and will be planned again.'
+          exit 1
+
   # Keep a partial source outage or failed explicit Agent retry visible without
   # letting it discard successful work from the same observer cycle.
   observer-final-health:
-    needs: [observe, install-observation, reconcile-install-observations, plan-surface-observations, surface-observation, reconcile-surface-observations]
+    needs: [observe, install-observation, reconcile-install-observations, plan-surface-observations, surface-observation, reconcile-surface-observations, plan-adapter-observations, adapter-observation, reconcile-adapter-observations]
     if: always() && needs.observe.outputs.observer_exit != '' && needs.observe.outputs.observer_exit != '0'
     runs-on: ubuntu-latest
     timeout-minutes: 2

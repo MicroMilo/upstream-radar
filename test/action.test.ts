@@ -27,6 +27,22 @@ async function runActionInputDetector(files: string[], config = 'upstream-radar.
 }
 
 describe('reusable GitHub Action', () => {
+  it('routes the scheduled observer through independent adapter planning, secret-free jobs and exact result reconciliation', async () => {
+    const workflow = await readFile('.github/workflows/upstream-observer.yml', 'utf8')
+    assert.match(workflow, /plan-adapter-observations:[\s\S]*write-dsh-adapter-plan\.mjs/)
+    const job = workflow.split('\n  adapter-observation:')[1]?.split('\n  reconcile-adapter-observations:')[0]
+    assert.ok(job)
+    assert.match(job, /uses: \.\/\.github\/workflows\/observe-dsh-plugin-adapter.yml/)
+    assert.match(job, /case_json: \$\{\{ toJSON\(matrix\) \}\}/)
+    assert.doesNotMatch(job, /secrets:|secrets\./)
+    const reconcile = workflow.split('\n  reconcile-adapter-observations:')[1]?.split('\n  observer-final-health:')[0]
+    assert.ok(reconcile)
+    assert.match(reconcile, /merge-dsh-adapter-ledger\.mjs/)
+    assert.match(reconcile, /if: always\(\)/)
+    assert.match(reconcile, /git add -- adapter-ledger\.json/)
+    assert.match(workflow, /name: upstream-radar-adapter-plan-\$\{\{ github.run_id \}\}/)
+  })
+
   it('offers a real rebuild batch loop that reviews observed gates, retries, and verifies unchanged reuse without giving model secrets to execution steps', async () => {
     const workflow = await readFile(fileURLToPath(new URL('../../.github/workflows/dsh-rebuild-validation.yml', import.meta.url)), 'utf8')
     assert.match(workflow, /execute_batch:/)
