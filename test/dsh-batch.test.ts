@@ -206,7 +206,7 @@ describe('durable DSH compatibility batch', () => {
         if (task.kind === 'native') return nativeReport(task)
         const cell = task.cell as DshSurfaceExpectedCase
         assert.equal(durable?.nativeLedger.entries[0]?.artifact.sha256, cell.artifactSha256)
-        return { schema: 'upstream-radar.dsh-surface-observation/v1alpha1', executionContract: 'dsh-surface/v1alpha11',
+        return { schema: 'upstream-radar.dsh-surface-observation/v1alpha1', executionContract: 'dsh-surface/v1alpha12',
           tool: { name: 'upstream-radar', version: '0.45.0' }, probe: 'dsh-surface', scope: 'surface-runtime-behavior',
           ...cell, caseId: cell.id, startedAt: '2026-09-14T05:00:00.000Z', completedAt: '2026-09-14T05:00:10.000Z',
           artifact: { sha256: cell.artifactSha256 }, runtime: { nodeMajor: 22, nodeVersion: '22.23.2', platform: 'linux', architecture: 'arm64', pnpmVersion: '11.7.0' },

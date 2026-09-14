@@ -38,7 +38,7 @@ jobs:
         run: |
           pnpm install --frozen-lockfile --ignore-scripts
           pnpm run build
-          node --test dist/test/dsh-environment-recommendation.test.js dist/test/dsh-environment-evidence.test.js dist/test/dsh-profile-environment.test.js dist/test/dsh-install-plan.test.js dist/test/dsh-headless-agent-plan.test.js dist/test/dsh-headless-agent-script.test.js dist/test/dsh-batch.test.js dist/test/dsh-batch-executor.test.js dist/test/dsh-adapter-observation.test.js
+          node --test dist/test/*.test.js
       - name: Restore the previous durable review checkpoint
         env:
           GH_TOKEN: ${{ github.token }}

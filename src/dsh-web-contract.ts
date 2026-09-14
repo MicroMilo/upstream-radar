@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
 import { parseDshClientContractEvidence, type DshClientContract } from './dsh-peer-planes.js'
+import { parseDshWebPackageProvenance, type DshWebPackageProvenance } from './dsh-web-package-provenance.js'
 
 export interface DshWebBootRoster {
   sha256: string
@@ -7,12 +8,14 @@ export interface DshWebBootRoster {
 }
 
 export interface DshWebContractEvidence {
-  revision: 'dsh-web-client-contract/1'
+  revision: 'dsh-web-client-contract/1' | 'dsh-web-client-contract/2'
   client?: DshClientContract
   boot?: DshWebBootRoster
   pluginBundle?: { sha256: string; bytes: number }
   /** DSH's boot revisions are opaque artifact revisions, not npm versions. */
-  peerVersions: 'not-observed'
+  peerVersions: 'not-observed' | 'partial'
+  /** Independently matched package rows; bundled/static aliases remain outside this evidence. */
+  packageVersions?: DshWebPackageProvenance
 }
 
 function object(value: unknown, label: string): Record<string, unknown> {
@@ -57,10 +60,15 @@ export function collectDshWebBootRoster(value: unknown): DshWebBootRoster {
 export function parseDshWebContractEvidence(value: unknown): DshWebContractEvidence | undefined {
   if (value === undefined) return undefined
   const item = object(value, 'Web client contract')
-  if (item.revision !== 'dsh-web-client-contract/1' || item.peerVersions !== 'not-observed') throw new Error('Web client contract revision or peer coverage is unsupported')
+  if (!['dsh-web-client-contract/1', 'dsh-web-client-contract/2'].includes(item.revision as string)
+    || (item.revision === 'dsh-web-client-contract/1' && item.packageVersions !== undefined)) throw new Error('Web client contract revision is unsupported')
   const client = parseDshClientContractEvidence(item.client)
   const boot = item.boot === undefined ? undefined : collectDshWebBootRoster(item.boot)
   if (boot !== undefined && object(item.boot, 'boot roster').sha256 !== boot.sha256) throw new Error('boot roster digest does not match its rows')
+  if (item.packageVersions !== undefined && boot === undefined) throw new Error('browser package versions require an independent boot roster')
+  const packageVersions = item.packageVersions === undefined ? undefined : parseDshWebPackageProvenance(item.packageVersions, boot!)
+  const peerVersions = packageVersions?.entries.some(entry => entry.status === 'version-observed') ? 'partial' : 'not-observed'
+  if (item.peerVersions !== peerVersions) throw new Error('Web peer coverage contradicts its package evidence')
   let pluginBundle: DshWebContractEvidence['pluginBundle']
   if (item.pluginBundle !== undefined) {
     const bundle = object(item.pluginBundle, 'plugin bundle')
@@ -68,7 +76,8 @@ export function parseDshWebContractEvidence(value: unknown): DshWebContractEvide
       || !Number.isSafeInteger(bundle.bytes) || (bundle.bytes as number) < 1 || (bundle.bytes as number) > 8 * 1024 * 1024) throw new Error('plugin bundle digest or bytes is invalid')
     pluginBundle = { sha256: bundle.sha256, bytes: bundle.bytes as number }
   }
-  return { revision: 'dsh-web-client-contract/1', peerVersions: 'not-observed',
+  return { revision: item.revision as DshWebContractEvidence['revision'], peerVersions,
+    ...(packageVersions === undefined ? {} : { packageVersions }),
     ...(client === undefined ? {} : { client }), ...(boot === undefined ? {} : { boot }),
     ...(pluginBundle === undefined ? {} : { pluginBundle }) }
 }

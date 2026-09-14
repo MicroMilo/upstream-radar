@@ -564,7 +564,8 @@ function parseReport(input: unknown): DshSurfaceObservationReport {
     ...(root.profileEnvironment === undefined ? {} : { profileEnvironment: parseDshProfileEnvironment(root.profileEnvironment) }),
     ...(root.executionContract === undefined ? {} : { executionContract: (() => {
       if (root.executionContract !== DSH_SURFACE_EXECUTION_CONTRACT && root.executionContract !== 'dsh-surface/v1alpha8'
-        && root.executionContract !== 'dsh-surface/v1alpha9' && root.executionContract !== 'dsh-surface/v1alpha10') throw new Error('report execution contract is unsupported')
+        && root.executionContract !== 'dsh-surface/v1alpha9' && root.executionContract !== 'dsh-surface/v1alpha10'
+        && root.executionContract !== 'dsh-surface/v1alpha11') throw new Error('report execution contract is unsupported')
       return root.executionContract
     })() }),
     startedAt: isoDate(root.startedAt, 'report.startedAt'),
@@ -829,6 +830,7 @@ function mismatch(expected: DshSurfaceExpectedCase, report: DshSurfaceObservatio
     if (report.plane === 'web' && report.result === 'compatible' && report.evidence.plane === 'web') {
       const proof = report.evidence.clientContract
       if (proof?.boot === undefined || report.evidence.pluginClientDeclared === undefined) return 'new Web report did not establish its independent browser contract'
+      if (proof.revision !== 'dsh-web-client-contract/2' || proof.packageVersions === undefined) return 'new Web report did not collect independent package provenance'
       if (report.evidence.pluginClientDeclared && (proof.client?.platform !== 'web' || proof.pluginBundle === undefined
         || !proof.boot.entries.some(entry => entry.id === expected.runtimeId))) return 'new Web report did not bind the declared client entry and bundle'
     }

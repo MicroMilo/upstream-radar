@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import type { DshCompatibilityLedger } from '../src/dsh-compatibility-ledger.js'
 import { collectDshWebBootRoster } from '../src/dsh-web-contract.js'
+import { bindDshWebPackageVersions } from '../src/dsh-web-package-provenance.js'
 import {
   DSH_SURFACE_EXECUTION_CONTRACT,
   DSH_SURFACE_OBSERVATION_SCHEMA,
@@ -85,6 +86,15 @@ describe('plane-aware surface routing and freshness', () => {
     const merged = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [report] })
     assert.equal(merged.acceptedCaseIds.length, 0)
     assert.match(merged.rejectedReports.join(' '), /browser contract/)
+  })
+
+  it('requires the independent package collection attempt for a current Web result, even when its versions remain unknown', () => {
+    const expected = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include.find(cell => cell.plane === 'web')!
+    const report = compatibleReport(expected)
+    if (report.evidence.plane === 'web') delete report.evidence.clientContract!.packageVersions
+    const merged = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [report] })
+    assert.equal(merged.acceptedCaseIds.length, 0)
+    assert.match(merged.rejectedReports.join(' '), /package provenance/)
   })
 })
 
@@ -302,9 +312,11 @@ function compatibleReport(expected: DshSurfaceExpectedCase, plane: 'web' | 'tui'
         evidence: {
           plane: 'web',
           pluginClientDeclared: true,
-          clientContract: { revision: 'dsh-web-client-contract/1', peerVersions: 'not-observed',
+          clientContract: { revision: 'dsh-web-client-contract/2', peerVersions: 'not-observed',
             client: { platform: 'web', inject: [], entryPoints: ['lib/client.js'] },
             boot: collectDshWebBootRoster({ entries: [{ id: expected.runtimeId, url: '/plugin.js', rev: 'fixture' }] }),
+            packageVersions: bindDshWebPackageVersions(collectDshWebBootRoster({ entries: [{ id: expected.runtimeId, url: '/plugin.js', rev: 'fixture' }] }),
+              [{ id: expected.runtimeId, url: '/plugin.js', status: 200, sha256: 'a'.repeat(64), bytes: 1024 }], { artifacts: [], gaps: [] }),
             pluginBundle: { sha256: 'a'.repeat(64), bytes: 1024 } },
           url: 'http://127.0.0.1:3080/',
           httpStatus: 200,

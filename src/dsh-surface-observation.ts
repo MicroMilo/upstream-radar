@@ -14,9 +14,12 @@ import { TOOL_VERSION } from './version.js'
 import { observationNetworkEnvironment } from './dsh-observation-network.js'
 import { parseDshClientContract, type DshClientContract } from './dsh-peer-planes.js'
 import { collectDshWebBootRoster, type DshWebContractEvidence } from './dsh-web-contract.js'
+import { bindDshWebPackageVersions, type DshWebBundleCapture } from './dsh-web-package-provenance.js'
+import { collectDshWebPackageInventory } from './dsh-web-package-inventory.js'
+import { captureDshWebBundles } from './dsh-web-bundle-capture.js'
 
 export const DSH_SURFACE_OBSERVATION_SCHEMA = 'upstream-radar.dsh-surface-observation/v1alpha1' as const
-export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha11' as const
+export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha12' as const
 
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const CASE_ID = /^[a-z0-9][a-z0-9._-]{0,63}$/
@@ -97,7 +100,7 @@ export interface DshSurfaceObservationReport {
   tool: { name: 'upstream-radar'; version: string }
   probe: 'dsh-surface'
   scope: 'surface-runtime-behavior'
-  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8' | 'dsh-surface/v1alpha9' | 'dsh-surface/v1alpha10'
+  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8' | 'dsh-surface/v1alpha9' | 'dsh-surface/v1alpha10' | 'dsh-surface/v1alpha11'
   profileEnvironment?: DshProfileEnvironment
   startedAt: string
   completedAt: string
@@ -792,6 +795,7 @@ async function observeWebSurface(input: {
   report: DshSurfaceObservationReport
   pnpmCommand: string
   cwd: string
+  sandboxRoot: string
   env: NodeJS.ProcessEnv
   timeoutMs: number
   driverRoot?: string
@@ -920,52 +924,39 @@ async function observeWebSurface(input: {
     evidence.bootManifestPresent = initial.bootManifestPresent
     evidence.bootEntryIds = boundedList(initial.bootEntryIds)
     evidence.pluginEntryPresent = initial.pluginEntryPresent
-    evidence.clientContract!.boot = collectDshWebBootRoster({ entries: initial.roster })
+    const boot = collectDshWebBootRoster({ entries: initial.roster })
+    evidence.clientContract!.boot = boot
+    let captures: DshWebBundleCapture[] = []
+    let captureError: string | undefined
+    try {
+      // Retain the authenticated browser context and prioritize the target when
+      // the shared byte budget cannot cover the entire independently observed roster.
+      const entries = boot.entries.map(({ id, url }) => ({ id, url }))
+        .sort((left, right) => Number(right.id === input.report.runtimeId) - Number(left.id === input.report.runtimeId))
+      captures = await page.evaluate(captureDshWebBundles, { baseUrl: evidence.url, entries })
+    } catch (error) { captureError = bounded(error instanceof Error ? error.message : String(error), 120) }
+    try {
+      const inventory = await collectDshWebPackageInventory(input.sandboxRoot,
+        [`dsh-home/profiles/${input.report.profile}`, 'cache/pnpm/dlx'], boot.entries.map(row => row.id))
+      if (captureError !== undefined && inventory.gaps.length < 64) inventory.gaps.push(`browser capture failed: ${captureError}`)
+      evidence.clientContract!.packageVersions = bindDshWebPackageVersions(boot, captures, inventory)
+    } catch {
+      // A collector failure never promotes a matching fragment to an exact version.
+      evidence.clientContract!.packageVersions = bindDshWebPackageVersions(boot, [],
+        { artifacts: [], gaps: ['independent browser package collection did not produce bounded evidence'] })
+    }
+    evidence.clientContract!.peerVersions = evidence.clientContract!.packageVersions.entries.some(row => row.status === 'version-observed') ? 'partial' : 'not-observed'
     if (initial.pluginBundleUrl !== undefined) {
       evidence.pluginBundleUrl = new URL(initial.pluginBundleUrl, evidence.url).href
-      try {
-        // The browser holds DSH's ephemeral authentication cookie. A separate
-        // Node fetch would test an unauthenticated endpoint and falsely report
-        // the protected bundle as incompatible. Browser routing still blocks
-        // non-loopback requests.
-        const bundle = await page.evaluate(async url => {
-          const value = globalThis as unknown as {
-            fetch(url: string, options: { credentials: string }): Promise<{ status: number;
-              body: { getReader(): { read(): Promise<{ done: boolean; value?: Uint8Array }>; cancel(): Promise<void> } } | null }>
-            crypto: { subtle: { digest(algorithm: string, bytes: Uint8Array): Promise<ArrayBuffer> } }
-          }
-          const response = await value.fetch(url, { credentials: 'same-origin' })
-          if (response.status < 200 || response.status >= 400) {
-            await response.body?.getReader().cancel().catch(() => {})
-            return { status: response.status }
-          }
-          const reader = response.body?.getReader()
-          if (reader === undefined) throw new Error('bundle body is unavailable')
-          const chunks: Uint8Array[] = []
-          let bytes = 0
-          try {
-            while (true) {
-              const chunk = await reader.read()
-              if (chunk.done) break
-              if (chunk.value === undefined) throw new Error('bundle body is incomplete')
-              bytes += chunk.value.length
-              if (bytes > 8 * 1024 * 1024) throw new Error('bundle byte budget exceeded')
-              chunks.push(chunk.value)
-            }
-          } finally { await reader.cancel().catch(() => {}) }
-          if (bytes === 0) throw new Error('bundle body is empty')
-          const body = new Uint8Array(bytes)
-          let offset = 0
-          for (const chunk of chunks) { body.set(chunk, offset); offset += chunk.length }
-          const digest = new Uint8Array(await value.crypto.subtle.digest('SHA-256', body))
-          return { status: response.status, bytes, sha256: [...digest].map(byte => byte.toString(16).padStart(2, '0')).join('') }
-        }, evidence.pluginBundleUrl)
+      const bundle = captures.find(row => row.id === input.report.runtimeId)
+      if (bundle !== undefined) {
         evidence.pluginBundleStatus = bundle.status
         if (typeof bundle.bytes === 'number' && typeof bundle.sha256 === 'string') {
           evidence.clientContract!.pluginBundle = { bytes: bundle.bytes, sha256: bundle.sha256 }
         }
-      } catch (error) {
-        evidence.pluginBundleCollectionError = bounded(error instanceof Error ? error.message : String(error), 512)
+        if (bundle.error !== undefined) evidence.pluginBundleCollectionError = bundle.error
+      } else {
+        evidence.pluginBundleCollectionError = captureError ?? 'browser bundle capture is unavailable'
       }
     }
     if (initial.pluginEntryPresent || evidence.pluginClientDeclared === false) {
@@ -1335,7 +1326,7 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
     }
     if (report.evidence.plane === 'web') {
       report.evidence.pluginClientDeclared = artifact.webClientDeclared
-      report.evidence.clientContract = { revision: 'dsh-web-client-contract/1', peerVersions: 'not-observed',
+      report.evidence.clientContract = { revision: 'dsh-web-client-contract/2', peerVersions: 'not-observed',
         ...(artifact.client === undefined ? {} : { client: artifact.client }) }
     }
     report.stages.artifact = { status: 'passed', code: packed.code }
@@ -1405,6 +1396,7 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
           report,
           pnpmCommand,
           cwd: artifactDirectory,
+          sandboxRoot,
           env: scriptsEnvironment,
           timeoutMs,
           artifactsDirectory,
