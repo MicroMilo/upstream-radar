@@ -59,3 +59,24 @@ it('applies the same DSH-column check when the model quotes several table lines'
   const source = document + '\n\n' + onlyOtherRow
   assert.throws(() => validateDshAuthorEnvironment(environment(onlyOtherRow), new Map([[path, source]])), /not supported/)
 })
+
+it('does not turn DSH-owned manifests or documents into plugin author requirements', () => {
+  const quote = 'DSH 0.1.5-rc.2 uses pnpm 11.3.0; sdk --profile bridge; DSH_BRIDGE_DISABLED=1; overrides: {"cordis":"3.18.0"}'
+  const facts = {
+    packageManagers: [{ name: 'pnpm', version: '11.3.0', scope: 'development' }],
+    overrides: [{ scope: 'development', values: { cordis: '3.18.0' } }],
+    workflows: [{ kind: 'sdk', role: 'primary', profile: 'bridge' }],
+    dshVersions: [{ version: '0.1.5-rc.2' }],
+    startupConfigurations: [{ plane: 'web', scope: 'Disabled bridge comparison', environment: { DSH_BRIDGE_DISABLED: '1' } }],
+  }
+  for (const [key, values] of Object.entries(facts)) {
+    for (const evidencePath of ['dsh-source-manifest', 'dsh-published-manifest', 'dsh-repository/README.md', 'README.md']) {
+      const input = parseDshAuthorEnvironment({ packageManagers: [], overrides: [], workflows: [], dshVersions: [],
+        [key]: values.map(value => ({ ...value, evidence: [{ path: evidencePath, quote }] })),
+      })!
+      const validate = () => validateDshAuthorEnvironment(input, new Map([[evidencePath, quote]]))
+      if (evidencePath === 'README.md') assert.doesNotThrow(validate, key)
+      else assert.throws(validate, /not supported/, `${key}: ${evidencePath}`)
+    }
+  }
+})

@@ -230,6 +230,10 @@ function namesVersion(quote: string, version: string): boolean {
   return new RegExp(`(^|[^0-9A-Za-z.-])${escape(version)}(?=$|[^0-9A-Za-z.-]|[.](?=\\s|$))`).test(quote)
 }
 
+function pluginEvidence(path: string): boolean {
+  return !path.startsWith('dsh-repository/') && !/^dsh-(?:source|published)-manifest$/.test(path)
+}
+
 /** Resolve quoted Markdown rows against their own DSH version columns. */
 function dshReleaseTableEvidence(source: string | undefined, quote: string, version: string): boolean {
   if (source === undefined || Buffer.byteLength(source) > 48 * 1024) return false
@@ -266,16 +270,16 @@ export function validateDshAuthorEnvironment(environment: DshAuthorEnvironment |
   for (const item of environment.startupConfigurations ?? []) {
     for (const [name, value] of Object.entries(item.environment)) {
       const literal = new RegExp(`\\b${escape(name)}\\s*=\\s*["']?${escape(value)}(?=$|["'\\s.,;:])`)
-      if (!item.evidence.some(ref => !ref.path.startsWith('dsh-repository/') && literal.test(ref.quote))) throw new Error('author startup flag is not supported by plugin evidence')
+      if (!item.evidence.some(ref => pluginEvidence(ref.path) && literal.test(ref.quote))) throw new Error('author startup flag is not supported by plugin evidence')
     }
   }
   for (const item of environment.packageManagers) {
-    if (!item.evidence.some(ref => new RegExp(`\\b${item.name}\\b`, 'i').test(ref.quote) && namesVersion(ref.quote, item.version))) {
+    if (!item.evidence.some(ref => pluginEvidence(ref.path) && new RegExp(`\\b${item.name}\\b`, 'i').test(ref.quote) && namesVersion(ref.quote, item.version))) {
       throw new Error('author package manager version is not supported by its evidence')
     }
   }
   for (const item of [...environment.packageManagers, ...environment.overrides]) {
-    if (item.profile !== undefined && !item.evidence.some(ref => !ref.path.startsWith('dsh-repository/')
+    if (item.profile !== undefined && !item.evidence.some(ref => pluginEvidence(ref.path)
       && new RegExp(`--profile[ =]+["'\x60]?${escape(item.profile!)}(?=$|["'\x60\\s.,;:])`).test(ref.quote))) {
       throw new Error('named author profile configuration is not supported by its evidence')
     }
@@ -283,20 +287,20 @@ export function validateDshAuthorEnvironment(environment: DshAuthorEnvironment |
   for (const item of environment.overrides) {
     for (const [name, version] of Object.entries(item.values)) {
       const pair = new RegExp(`(?:^|[\\s,{])["']?${escape(name)}["']?\\s*:\\s*["']?${escape(version)}["']?(?=$|[\\s,}])`)
-      if (!item.evidence.some(ref => /overrides|resolutions/i.test(ref.quote) && pair.test(ref.quote))) {
+      if (!item.evidence.some(ref => pluginEvidence(ref.path) && /overrides|resolutions/i.test(ref.quote) && pair.test(ref.quote))) {
         throw new Error('author override value is not supported by its evidence')
       }
     }
   }
   for (const item of environment.workflows) {
     const pattern = item.kind === 'tui' ? /\b(?:tui|terminal)\b|终端/i : new RegExp(`\\b${item.kind}\\b`, 'i')
-    if (!item.evidence.some(ref => !ref.path.startsWith('dsh-repository/') && pattern.test(ref.quote))) throw new Error('author workflow is not supported by plugin evidence')
+    if (!item.evidence.some(ref => pluginEvidence(ref.path) && pattern.test(ref.quote))) throw new Error('author workflow is not supported by plugin evidence')
     if (item.profile !== undefined && !item.evidence.some(ref => {
-      return !ref.path.startsWith('dsh-repository/') && new RegExp(`--profile[ =]+["'\x60]?${escape(item.profile!)}(?=$|["'\x60\\s.,;:])`).test(ref.quote)
+      return pluginEvidence(ref.path) && new RegExp(`--profile[ =]+["'\x60]?${escape(item.profile!)}(?=$|["'\x60\\s.,;:])`).test(ref.quote)
     })) throw new Error('author workflow profile is not named in its evidence')
   }
   for (const item of environment.dshVersions) {
-    if (!item.evidence.some(ref => !ref.path.startsWith('dsh-repository/') && (
+    if (!item.evidence.some(ref => pluginEvidence(ref.path) && (
       ref.quote.split(/\r?\n/).some(line => /^\s*\|.*\|\s*$/.test(line))
         ? dshReleaseTableEvidence(sources.get(ref.path), ref.quote, item.version)
         : /dsh|harness/i.test(ref.quote) && namesVersion(ref.quote, item.version)

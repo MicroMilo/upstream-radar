@@ -5,10 +5,12 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { it } from 'node:test'
 import { promisify } from 'node:util'
+import { applyDshEnvironmentRecommendations } from '../src/dsh-environment-recommendation.js'
+import { buildDshInstallPlan } from '../src/dsh-install-plan.js'
 
 const execFile = promisify(execFileCallback)
 
-async function fixture() {
+async function fixture(authorDshVersion?: string) {
   const directory = await mkdtemp(join(tmpdir(), 'radar-environment-evidence-'))
   const targets = {
     schema: 'upstream-radar.dsh-install-targets/v1alpha1', refreshAfterHours: 168,
@@ -35,6 +37,8 @@ async function fixture() {
 import { appendFile, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 const root = process.env.RADAR_EVIDENCE_FIXTURE;
+const authorDshVersion = ${JSON.stringify(authorDshVersion) ?? 'undefined'};
+const authorQuote = authorDshVersion ? 'Overrides force the whole\\n# @deepseek-ai tree to the ' + authorDshVersion + ' line locally (the primary\\n# validated line; see src/dsh-adapter/contract.ts).' : undefined;
 globalThis.fetch = async (url, options) => {
   const address = String(url);
   if (address.startsWith('https://fixture-agent.example/')) {
@@ -42,9 +46,14 @@ globalThis.fetch = async (url, options) => {
     if (state.pendingTasks.length !== 1) throw new Error('Agent task was not durable before delivery');
     const request = JSON.parse(options.body);
     await appendFile(join(root, 'model-inputs.jsonl'), JSON.stringify(request) + '\\n');
+    const omitBaseline = process.env.RADAR_EVIDENCE_NETWORK === 'omit-always'
+      || process.env.RADAR_EVIDENCE_NETWORK === 'omit-baseline' && request.messages.length === 2;
     return Response.json({ choices: [{ message: { content: JSON.stringify({
-      status: 'insufficient-evidence', nodeMajors: [], executionProfiles: [],
-      authorEnvironment: { packageManagers: [], overrides: [], workflows: [], dshVersions: [] },
+      status: authorDshVersion ? 'recommended' : 'insufficient-evidence',
+      ...(authorDshVersion ? { preferredNodeMajor: 22 } : {}),
+      nodeMajors: authorDshVersion ? [22] : [], executionProfiles: authorDshVersion ? ['headless'] : [],
+      authorEnvironment: { packageManagers: [], overrides: [], workflows: [], dshVersions: authorDshVersion && !omitBaseline
+        ? [{ version: authorDshVersion, evidence: [{ path: 'README.md', quote: authorQuote }] }] : [] },
       summary: 'The bounded input does not establish an author-supported launch workflow.', evidence: ['source-manifest'],
     }) } }] });
   }
@@ -58,7 +67,8 @@ globalThis.fetch = async (url, options) => {
   ] });
   if (address.endsWith('/README.md') && address.includes('/example/plugin/') && process.env.RADAR_EVIDENCE_NETWORK === 'document-timeout') throw new Error('fixture README collection timed out');
   if (address.endsWith('/README.md')) return new Response(process.env.RADAR_EVIDENCE_NETWORK === 'oversized'
-    && address.includes('/example/plugin/') ? 'x'.repeat(48 * 1024 + 1) : 'Repository setup documentation.');
+    && address.includes('/example/plugin/') ? 'x'.repeat(48 * 1024 + 1)
+      : address.includes('/example/plugin/') && authorQuote ? authorQuote : 'Repository setup documentation.');
   const dsh = address.includes('/example/dsh/');
   return Response.json({ name: dsh ? '@deepseek-ai/dsh' : 'fixture-plugin', version: dsh ? '0.1.5-rc.2' : '1.0.0', engines: { node: '>=22' } });
 };
@@ -73,8 +83,48 @@ globalThis.fetch = async (url, options) => {
     } })
     return JSON.parse(result.stdout)
   }
-  return { directory, observations, run }
+  return { directory, targets, observations, run }
 }
+
+it('corrects a repeated review that silently drops a still-grounded author DSH baseline before planning', async () => {
+  const { directory, targets, observations, run } = await fixture('0.1.5-rc.1')
+  try {
+    assert.equal((await run()).planned, 1)
+    const prior = JSON.parse(await readFile(join(directory, 'recommendations.json'), 'utf8'))
+    prior.entries[0].reviewContract = 'dsh-environment/v0'
+    await writeFile(join(directory, 'recommendations.json'), JSON.stringify(prior))
+    assert.equal((await run('omit-baseline')).planned, 1)
+    const reviewed = JSON.parse(await readFile(join(directory, 'recommendations.json'), 'utf8'))
+    assert.deepEqual(reviewed.entries[0].authorEnvironment.dshVersions, prior.entries[0].authorEnvironment.dshVersions)
+    const attempts = JSON.parse(await readFile(join(directory, 'recommendations.json.attempts.json'), 'utf8')).attempts
+    assert.deepEqual(attempts.map((item: { status: string }) => item.status), ['rejected', 'validated'])
+    assert.match(attempts[0].error, /omitted.*0\.1\.5-rc\.1/)
+    const plan = buildDshInstallPlan(applyDshEnvironmentRecommendations(targets, observations, reviewed), observations, { changes: [] })
+    assert.deepEqual(plan.matrix.include.map(item => item.dshVersion).sort(), ['0.1.5-rc.1', '0.1.5-rc.2'])
+    assert.equal((await run('offline')).attempted, 0, 'the corrected decision must not cause an endless review loop')
+  } finally { await rm(directory, { recursive: true, force: true }) }
+})
+
+it('keeps an unresolved baseline omission pending after bounded corrections instead of publishing a smaller plan', async () => {
+  const { directory, targets, observations, run } = await fixture('0.1.5-rc.1')
+  try {
+    await run()
+    const prior = JSON.parse(await readFile(join(directory, 'recommendations.json'), 'utf8'))
+    prior.entries[0].reviewContract = 'dsh-environment/v0'
+    await writeFile(join(directory, 'recommendations.json'), JSON.stringify(prior))
+    await assert.rejects(run('omit-always'), { code: 2 })
+    const unresolved = JSON.parse(await readFile(join(directory, 'recommendations.json'), 'utf8'))
+    assert.deepEqual(unresolved.entries, prior.entries, 'failed corrections cannot overwrite the last source claims')
+    assert.equal(unresolved.pendingTasks.length, 1)
+    const attempts = JSON.parse(await readFile(join(directory, 'recommendations.json.attempts.json'), 'utf8')).attempts
+    assert.deepEqual(attempts.map((item: { status: string }) => item.status), ['rejected', 'rejected', 'rejected'])
+    const plan = buildDshInstallPlan(applyDshEnvironmentRecommendations({ ...targets, environmentRecommendationsRequired: true }, observations, unresolved), observations, { changes: [] })
+    assert.equal(plan.matrix.include.length, 0)
+    assert.equal(plan.blocked.length, 1)
+    assert.equal((await run('omit-baseline')).planned, 1, 'the next run can correct and finish the same durable task')
+    assert.equal((await run('offline')).attempted, 0)
+  } finally { await rm(directory, { recursive: true, force: true }) }
+})
 
 it('reuses collected immutable repository bytes across processes without turning a later outage into a new review', async () => {
   const { directory, run } = await fixture()

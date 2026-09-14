@@ -367,13 +367,42 @@ describe('DSH repository environment recommendation', () => {
     assert.match(plan.blocked[0]!.reason, /environment recommendation/)
   })
 
-  it('requires repository review again after changing DSH release-table evidence semantics', () => {
+  it('requires repository review again after changing author evidence attribution and completeness checks', () => {
     const previous = recommendations()
-    for (const reviewContract of ['dsh-environment/v5', 'dsh-environment/v6']) {
+    for (const reviewContract of ['dsh-environment/v5', 'dsh-environment/v6', 'dsh-environment/v7']) {
       const legacy = { ...previous, entries: previous.entries.map(entry => ({ ...entry, reviewContract })) }
       const applied = applyDshEnvironmentRecommendations({ ...targets, environmentRecommendationsRequired: true }, observations, legacy)
-      assert.equal(applied.plugins[0]!.environmentRecommendation, undefined, `${reviewContract} could reject supported release rows or accept the wrong table column`)
+      assert.equal(applied.plugins[0]!.environmentRecommendation, undefined, `${reviewContract} used obsolete evidence validation`)
     }
+  })
+
+  it('revalidates old author baselines against the current plugin source without freezing removed or invalid claims', () => {
+    const selected = candidate()
+    const quote = 'This plugin is primarily validated with DSH 0.1.5-rc.1.'
+    selected.documents.push({ path: 'docs/baseline.md', text: quote })
+    const previous = parseDshEnvironmentRecommendations(recommendations({ authorEnvironment: {
+      packageManagers: [], overrides: [], workflows: [],
+      dshVersions: [{ version: '0.1.5-rc.1', evidence: [{ path: 'docs/baseline.md', quote }] }],
+    } })).entries[0]!
+    assert.throws(() => parseDshEnvironmentRecommendationDecision(decision(), selected, previous), /omitted.*0\.1\.5-rc\.1/)
+    const noCommit = { ...selected }
+    delete noCommit.sourceCommit
+    for (const changed of [
+      { ...selected, plugin: 'web-plugin@2.0.0' },
+      { ...selected, repository: 'other/web-plugin' },
+      { ...selected, sourceCommit: 'b'.repeat(40) },
+      noCommit,
+      { ...selected, documents: selected.documents.filter(document => document.path !== 'docs/baseline.md') },
+    ]) assert.doesNotThrow(() => parseDshEnvironmentRecommendationDecision(decision(), changed, previous))
+    const hostQuote = JSON.stringify(selected.dshManifest)
+    const invalidPrevious = { ...previous, authorEnvironment: { ...previous.authorEnvironment!,
+      dshVersions: [{ version: selected.dshVersion, evidence: [{ path: 'dsh-source-manifest', quote: hostQuote }] }],
+    } }
+    assert.doesNotThrow(() => parseDshEnvironmentRecommendationDecision(decision(), selected, invalidPrevious),
+      'an old host-attribution error must not acquire new authority just because it was previously accepted')
+    const unresolved = { ...decision(), status: 'insufficient-evidence', preferredNodeMajor: undefined, nodeMajors: [], executionProfiles: [],
+      coverageGaps: ['Contradictory author setup evidence requires further review.'] }
+    assert.equal(parseDshEnvironmentRecommendationDecision(unresolved, selected, previous).status, 'insufficient-evidence')
   })
 
   it('rejects executable override sources and mismatched key/value evidence', () => {

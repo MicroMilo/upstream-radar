@@ -63,7 +63,7 @@ bounded documents. The install and surface planners apply only a
 recommendation whose source fingerprint is still current. Isolated VMs
 establish the eventual compatibility result.
 
-Review contract `dsh-environment/v7` preserves exact DSH release-table rows as
+Review contract `dsh-environment/v8` preserves exact DSH release-table rows as
 evidence when their own bounded Markdown table explicitly names the DSH
 release/version column. Other package columns, detached tables, ranges instead
 of exact versions, and DSH's own baseline documents cannot supply a plugin's
@@ -71,3 +71,15 @@ release baseline. Single-row and multi-line table quotations use the same column
 check; citing an entire table cannot turn another package's version into a DSH
 release. Literal quotes must still match collected bytes. Earlier
 reviews are retained as history but must be reviewed again under this contract.
+
+DSH-owned manifest references and repository documents cannot establish plugin
+author package managers, overrides, workflows, startup settings or release
+baselines. On a repeated review of the same exact plugin coordinate, repository
+and immutable source commit, prior author DSH baselines are revalidated against
+the current collected bytes and rules. A recommended decision that drops a still
+supported baseline enters the bounded model-correction loop; old decisions are
+never copied into new execution authority. Removed quotes, changed plugin source,
+and evidence rejected by current rules do not constrain a new review. Unresolved
+contradictions can remain `insufficient-evidence`, which cannot schedule a reduced
+plan. This consistency check protects known claims; it does not replace a full
+first review of the collected repository evidence.

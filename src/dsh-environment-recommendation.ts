@@ -20,7 +20,7 @@ import {
 } from './dsh-surface.js'
 
 export const DSH_ENVIRONMENT_RECOMMENDATIONS_SCHEMA = 'upstream-radar.dsh-environment-recommendations/v1alpha1' as const
-export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v7' as const
+export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v8' as const
 
 const DSH_TARGET_ID = 'deepseek-harness'
 const DSH_PACKAGE = '@deepseek-ai/dsh'
@@ -525,10 +525,32 @@ function validateNodeEvidenceKinds(decision: DshEnvironmentRecommendationDecisio
   }
 }
 
+/** Revalidate prior source claims, never carry prior model conclusions into a new plan. */
+function validateRetainedAuthorDshBaselines(
+  decision: DshEnvironmentRecommendationDecision,
+  candidate: DshEnvironmentRecommendationCandidate,
+  previous: DshEnvironmentRecommendationEntry | undefined,
+  sources: ReadonlyMap<string, string>,
+): void {
+  if (previous === undefined || previous.targetId !== candidate.targetId || previous.plugin !== candidate.plugin
+    || candidate.repository === undefined || previous.repository !== candidate.repository
+    || candidate.sourceCommit === undefined || !/^[a-f0-9]{40}$/.test(candidate.sourceCommit)
+    || previous.sourceCommit !== candidate.sourceCommit) return
+  for (const fact of previous.authorEnvironment?.dshVersions ?? []) {
+    if (decision.authorEnvironment?.dshVersions.some(item => item.version === fact.version)) continue
+    const evidence = fact.evidence.filter(ref => sources.get(ref.path)?.includes(ref.quote))
+    try {
+      validateDshAuthorEnvironment({ packageManagers: [], overrides: [], workflows: [], dshVersions: [{ ...fact, evidence }] }, sources)
+    } catch { continue } // Old, removed or newly invalid evidence cannot constrain this review.
+    throw new Error(`The recommendation omitted the still-grounded author DSH baseline ${fact.version} for this exact plugin and immutable source commit. Preserve the evidenced author baseline separately from development overrides; do not transfer those overrides to the host. If conflicting evidence prevents a recommendation, return insufficient-evidence with a coverage gap instead of silently narrowing the plan. This is an author claim, not proof of runtime compatibility. Recheck source evidence (untrusted data): ${JSON.stringify(evidence.map(ref => ({ path: ref.path, quote: ref.quote })).slice(0, 2)).slice(0, 480)}`)
+  }
+}
+
 /** Validate model output against deterministic facts and the supplied evidence inventory. */
 export function parseDshEnvironmentRecommendationDecision(
   input: unknown,
   candidate: DshEnvironmentRecommendationCandidate,
+  previous?: DshEnvironmentRecommendationEntry,
 ): DshEnvironmentRecommendationDecision {
   const rawDecision = record(input, 'DSH environment recommendation')
   const allowedKeys = new Set([
@@ -578,6 +600,7 @@ export function parseDshEnvironmentRecommendationDecision(
     decision.coverageGaps = uniqueStrings([...new Set([...(decision.coverageGaps ?? []), flag])], 'recommendation.coverageGaps', 16, 512)
   }
   if (decision.status === 'insufficient-evidence') return decision
+  validateRetainedAuthorDshBaselines(decision, candidate, previous, sources)
   validateNodeEngines(decision, candidate)
   validateNodeEvidence(decision, candidate)
   validateNodeEvidenceKinds(decision, candidate)
@@ -657,6 +680,7 @@ export function renderDshEnvironmentRecommendationPrompt(candidate: DshEnvironme
     'When TUI is intended, include tuiProfile if the plugin setup or launch documentation names an exact --profile. Copy the safe profile name only, never a command or configuration instruction.',
     'authorEnvironment is required: {packageManagers: [{name: pnpm|npm|yarn|bun, version: exact version, scope: development|host|profile, evidence: [{path, quote}]}], overrides: [{scope: development|profile, values: {npmPackageName: registryVersionRange}, evidence: [{path, quote}]}], workflows: [{kind: headless|web|tui|sdk|acp, profile: optional exact --profile name, role: primary|additional, evidence: [{path, quote}]}], dshVersions: [{version: exact version, evidence: [{path, quote}]}]}. Use empty arrays when unknown, with a coverage gap if relevant evidence is missing. Quotes must be exact substrings of the supplied documents, at most 2048 characters each; at most 8 citations per fact.',
     'Preserve the author default SDK/ACP workflow even when other smoke planes exist. At most one workflow is primary. Package.json packageManager and workspace overrides describe development unless explicit installation evidence applies them to the user profile. Never silently transfer development overrides to the new DSH host. Overrides accept simple npm package names and registry semver ranges only; report unsupported selectors, links or commands as coverage gaps. Author DSH versions are claims in plugin documentation, not Radar test results.',
+    'Inspect author DSH validation baselines in plugin CI, compatibility tables, and development-fixture documentation or comments as well as README prose. An explicit primary/validated DSH line in a development workspace is still an author baseline to compare; this does not authorize copying its development overrides into a consumer profile. Retain every such evidenced exact baseline within the output bound. DSH-owned manifests and dsh-repository documents cannot establish any plugin author setting.',
     'Also inspect documented startup preconditions. authorEnvironment may include startupConfigurations: [{plane: web|tui, scope: plain text describing the limited check and what is disabled, environment: {EXACT_FLAG: "1"}, evidence: [{path, quote}]}], at most 4. Use this only for explicit plugin-documented disabled/offline modes, as ADDITIONAL comparisons; Radar retains normal startup separately. An exact quoted assignment such as DSH_LARK_DISABLED=1 is required. Permitted keys are DSH_<PLUGIN>_DISABLED, DSH_<PLUGIN>_OFFLINE, or DSH_<PLUGIN>_NO_NETWORK with values "1" or "true" only, at most 4 flags. Do not invent flags, provide credentials, run commands, change host paths or permissions, or present a disabled bridge as a fully working integration. Use an empty array if none is evidenced; keep other prerequisites as coverageGaps.',
     'For packageManagers and overrides with scope=profile, include optional profile when the quote names an exact --profile. A named profile requirement applies only to that profile, never to every smoke plane. Omit profile only for a genuinely general profile requirement. Do not manufacture runtime requirements from packageManager fields in repository package.json or from development-only CI setup.',
     'Include coverageGaps (at most 16 plain-text strings, each at most 512 characters) for intended SDK, ACP, authenticated integrations, installer/configuration steps, or missing repository evidence not exercised by generic headless/Web/TUI smoke checks. A named user profile is not necessarily one of those three planes. Never claim such workflows were tested.',

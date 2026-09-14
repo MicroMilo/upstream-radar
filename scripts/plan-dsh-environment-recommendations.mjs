@@ -500,7 +500,7 @@ if (config === undefined && attempted.length > 0) {
       for (let attempt = 1; attempt <= MAX_VALIDATION_ATTEMPTS; attempt += 1) {
         const output = await callAgent(prompt, config, correction)
         try {
-          decision = parseDshEnvironmentRecommendationDecision(jsonObject(output), candidate)
+          decision = parseDshEnvironmentRecommendationDecision(jsonObject(output), candidate, existingByTarget.get(candidate.targetId))
           validationAttempts.push({ targetId: candidate.targetId, attempt, status: 'validated', output })
           break
         } catch (error) {
