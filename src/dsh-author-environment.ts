@@ -321,7 +321,7 @@ export function validateDshAuthorEnvironment(environment: DshAuthorEnvironment |
   }
   for (const item of environment.startupConfigurations ?? []) {
     for (const [name, value] of Object.entries(item.environment)) {
-      const literal = new RegExp(`\\b${escape(name)}\\s*=\\s*["']?${escape(value)}(?=$|["'\\s.,;:])`)
+      const literal = new RegExp(`\\b${escape(name)}\\s*=\\s*["']?${escape(value)}(?=$|["'\\x60\\s),.;:，。；）])`)
       if (!item.evidence.some(ref => pluginEvidence(ref.path) && literal.test(ref.quote))) throw new Error('author startup flag is not supported by plugin evidence')
     }
   }

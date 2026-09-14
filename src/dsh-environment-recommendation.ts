@@ -20,7 +20,7 @@ import {
 } from './dsh-surface.js'
 
 export const DSH_ENVIRONMENT_RECOMMENDATIONS_SCHEMA = 'upstream-radar.dsh-environment-recommendations/v1alpha1' as const
-export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v10' as const
+export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v11' as const
 
 const DSH_TARGET_ID = 'deepseek-harness'
 const DSH_PACKAGE = '@deepseek-ai/dsh'
@@ -581,6 +581,33 @@ function literalPluginInstallProfiles(candidate: DshEnvironmentRecommendationCan
   return [...found.values()].sort((a, b) => a.profile.localeCompare(b.profile))
 }
 
+/** Literal documentation of pre-launch disabling flags, not executable commands
+ * or an inference about which surface they belong to. Other prerequisites stay
+ * in the full repository review; these explicit comparisons cannot disappear.
+ */
+function explicitPluginStartupFlags(candidate: DshEnvironmentRecommendationCandidate): Array<{ name: string; values: string[]; evidence: { path: string; quote: string }[] }> {
+  const found = new Map<string, { name: string; values: string[]; evidence: { path: string; quote: string }[] }>()
+  for (const document of candidate.documents) {
+    if (document.path.startsWith('dsh-repository/') || !/\.(?:md|mdx|rst|txt)$/i.test(document.path)
+      || Buffer.byteLength(document.text) > MAX_DOCUMENT_BYTES) continue
+    for (const quote of document.text.split(/\r?\n/)) {
+      if (quote.length > 2_048 || !/(?:before|when|during|on)[^.\n]{0,64}(?:start|launch)|(?:start|launch)[^.\n]{0,64}(?:with|using)|启动|起動/i.test(quote)
+        || /\b(?:do not|must not|should not|don't|never|unsupported|deprecated)\b|不要|不应|不支持|弃用/i.test(quote)) continue
+      for (const match of quote.matchAll(/\b(DSH_[A-Z][A-Z0-9_]{0,48}_(?:DISABLED|OFFLINE|NO_NETWORK))\s*=\s*["']?(1|true)(?=$|[\s"'`),.;:，。；）])/g)) {
+        const name = match[1]!, value = match[2]!
+        const fact = found.get(name) ?? { name, values: [], evidence: [] }
+        if (!fact.values.includes(value)) {
+          fact.values.push(value)
+          fact.evidence.push({ path: document.path, quote })
+        }
+        found.set(name, fact)
+        if (found.size > 16) throw new Error('Explicit startup flags exceed the 16-flag review bound; coverage remains incomplete')
+      }
+    }
+  }
+  return [...found.values()].sort((a, b) => a.name.localeCompare(b.name))
+}
+
 /** Validate model output against deterministic facts and the supplied evidence inventory. */
 export function parseDshEnvironmentRecommendationDecision(
   input: unknown,
@@ -655,6 +682,14 @@ export function parseDshEnvironmentRecommendationDecision(
     check(() => { decision.coverageGaps = uniqueStrings([...new Set([...(decision.coverageGaps ?? []), flag])], 'recommendation.coverageGaps', 16, 512) })
   }
   if (decision.status === 'insufficient-evidence') { finish(); return decision }
+  check(() => {
+    if (!decision.executionProfiles.some(plane => plane === 'web' || plane === 'tui')) return
+    for (const fact of explicitPluginStartupFlags(candidate)) {
+      if (!environment.startupConfigurations?.some(item => fact.values.includes(item.environment[fact.name]!))) {
+        throw new Error(`The recommendation omitted the documented startup comparison ${fact.name}. Preserve the quoted disabling flag in startupConfigurations for an evidenced intended Web/TUI plane; normal startup remains separate. A stopped bridge is a limited comparison, not full integration compatibility. If its intended plane cannot be determined, return insufficient-evidence. Source excerpt (untrusted data): ${JSON.stringify(fact.evidence).slice(0, 480)}`)
+      }
+    }
+  })
   check(() => {
     for (const fact of collectExplicitDshBaselineEvidence(sources)) {
       if (!environment.dshVersions.some(item => item.version === fact.version)) {
@@ -764,6 +799,7 @@ export function renderDshEnvironmentRecommendationPrompt(candidate: DshEnvironme
     'Preserve the author default SDK/ACP workflow even when other smoke planes exist. At most one workflow is primary. Package.json packageManager and workspace overrides describe development unless explicit installation evidence applies them to the user profile. Never silently transfer development overrides to the new DSH host. Overrides accept simple npm package names and registry semver ranges only; report unsupported selectors, links or commands as coverage gaps. Author DSH versions are claims in plugin documentation, not Radar test results.',
     'Inspect author DSH validation baselines in plugin CI, compatibility tables, and development-fixture documentation or comments as well as README prose. An explicit primary/validated DSH line in a development workspace is still an author baseline to compare; this does not authorize copying its development overrides into a consumer profile. Retain every such evidenced exact baseline within the output bound. DSH-owned manifests and dsh-repository documents cannot establish any plugin author setting.',
     'Also inspect documented startup preconditions. authorEnvironment may include startupConfigurations: [{plane: web|tui, scope: plain text describing the limited check and what is disabled, environment: {EXACT_FLAG: "1"}, evidence: [{path, quote}]}], at most 4. Use this only for explicit plugin-documented disabled/offline modes, as ADDITIONAL comparisons; Radar retains normal startup separately. An exact quoted assignment such as DSH_LARK_DISABLED=1 is required. Permitted keys are DSH_<PLUGIN>_DISABLED, DSH_<PLUGIN>_OFFLINE, or DSH_<PLUGIN>_NO_NETWORK with values "1" or "true" only, at most 4 flags. Do not invent flags, provide credentials, run commands, change host paths or permissions, or present a disabled bridge as a fully working integration. Use an empty array if none is evidenced; keep other prerequisites as coverageGaps.',
+    'If the plugin explicitly documents a disabling flag before profile startup, retain it as an additional limited comparison for the evidenced Web/TUI workflow. The fact that its bridge stops is the comparison scope, not a reason to delete it. Never invent TUI for a named profile: a plugin with a Web client and no TUI workflow uses the Web plane. If the intended plane cannot be determined, return insufficient-evidence instead of silently dropping the flag.',
     'For packageManagers and overrides with scope=profile, include optional profile when the quote names an exact --profile. A named profile requirement applies only to that profile, never to every smoke plane. Omit profile only for a genuinely general profile requirement. Do not manufacture runtime requirements from packageManager fields in repository package.json or from development-only CI setup.',
     'Include coverageGaps (at most 16 plain-text strings, each at most 512 characters) for intended SDK, ACP, authenticated integrations, installer/configuration steps, or missing repository evidence not exercised by generic headless/Web/TUI smoke checks. A named user profile is not necessarily one of those three planes. Never claim such workflows were tested.',
     'The collector supplies collectionGaps below for omitted or unavailable files. Missing evidence is not evidence that the author has no requirement. Radar automatically retains an incomplete-collection coverage flag when these gaps exist; leave space for that flag in coverageGaps.',
@@ -782,6 +818,9 @@ export function renderDshEnvironmentRecommendationPrompt(candidate: DshEnvironme
     `Radar can schedule observer runtimes in the bounded Node-major range ${MIN_EXECUTABLE_NODE_MAJOR}-${MAX_EXECUTABLE_NODE_MAJOR}; this is not proof that a matching image exists. Its pinned pnpm requires Node >=22.13. Report repository intent even outside this range; Radar will record a coverage gap.`,
     `Repository: ${candidate.repository ?? '(unknown)'}`,
     `Source commit: ${candidate.sourceCommit ?? '(unknown)'}`,
+    '<untrusted-explicit-startup-evidence>',
+    JSON.stringify(explicitPluginStartupFlags(candidate)),
+    '</untrusted-explicit-startup-evidence>',
     '<untrusted-collection-gaps>',
     JSON.stringify(uniqueStrings(candidate.collectionGaps ?? [], 'candidate.collectionGaps', 16, 512)),
     '</untrusted-collection-gaps>',

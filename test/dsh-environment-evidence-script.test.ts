@@ -10,7 +10,7 @@ import { buildDshInstallPlan } from '../src/dsh-install-plan.js'
 
 const execFile = promisify(execFileCallback)
 
-async function fixture(authorDshVersion?: string, explicitBaseline = true, authorTuiProfile?: string, independentErrors = false) {
+async function fixture(authorDshVersion?: string, explicitBaseline = true, authorTuiProfile?: string, independentErrors = false, startup = false) {
   const directory = await mkdtemp(join(tmpdir(), 'radar-environment-evidence-'))
   const targets = {
     schema: 'upstream-radar.dsh-install-targets/v1alpha1', refreshAfterHours: 168,
@@ -40,11 +40,12 @@ const root = process.env.RADAR_EVIDENCE_FIXTURE;
 const authorDshVersion = ${JSON.stringify(authorDshVersion) ?? 'undefined'};
 const authorTuiProfile = ${JSON.stringify(authorTuiProfile) ?? 'undefined'};
 const configurationQuote = ${independentErrors} ? 'overrides: {"fixture-peer":"1.0.0"}\\nDSH_BRIDGE_DISABLED=1' : undefined;
-const recommended = !!(authorDshVersion || authorTuiProfile);
+const startupQuote = ${startup} ? 'Disable: export \x60DSH_BRIDGE_DISABLED=1\x60 before starting the Web profile (plugin stays loaded).' : undefined;
+const recommended = !!(authorDshVersion || authorTuiProfile || startupQuote);
 const authorQuote = authorDshVersion ? (${explicitBaseline}
   ? 'Overrides force the whole\\n# @deepseek-ai tree to the ' + authorDshVersion + ' line locally (the primary\\n# validated line; see src/dsh-adapter/contract.ts).'
   : 'The repository names DSH ' + authorDshVersion + ' for its development fixture.') : undefined;
-const readme = [authorQuote, authorTuiProfile ? 'TUI requires Node 22.\\ndsh plugin --profile ' + authorTuiProfile + ' add fixture-plugin' : undefined, configurationQuote].filter(Boolean).join('\\n') || 'Repository setup documentation.';
+const readme = [authorQuote, authorTuiProfile ? 'TUI requires Node 22.\\ndsh plugin --profile ' + authorTuiProfile + ' add fixture-plugin' : undefined, configurationQuote, startupQuote].filter(Boolean).join('\\n') || 'Repository setup documentation.';
 globalThis.fetch = async (url, options) => {
   const address = String(url);
   if (address.startsWith('https://fixture-agent.example/')) {
@@ -57,19 +58,21 @@ globalThis.fetch = async (url, options) => {
     const correction = request.messages.length > 2 ? request.messages.at(-1).content : '';
     const independentErrors = process.env.RADAR_EVIDENCE_NETWORK === 'multiple-errors'
       && !['author override value', 'startup configuration requires', 'author-recommended Node'].every(error => correction.includes(error));
+    const omitStartup = process.env.RADAR_EVIDENCE_NETWORK === 'omit-startup' && request.messages.length === 2;
     return Response.json({ choices: [{ message: { content: JSON.stringify({
       status: recommended ? 'recommended' : 'insufficient-evidence',
       ...(recommended ? { preferredNodeMajor: 22 } : {}),
-      nodeMajors: recommended ? [22] : [], executionProfiles: authorTuiProfile ? ['tui'] : authorDshVersion ? ['headless'] : [],
+      nodeMajors: recommended ? [22] : [], executionProfiles: startupQuote ? ['web'] : authorTuiProfile ? ['tui'] : authorDshVersion ? ['headless'] : [],
       ...(authorTuiProfile && !(process.env.RADAR_EVIDENCE_NETWORK === 'omit-tui-profile' && request.messages.length === 2) ? { tuiProfile: authorTuiProfile } : {}),
       ...(configurationQuote ? { nodeEvidence: [{ nodeMajor: 22, kind: independentErrors ? 'author-recommended' : 'declared-support', evidence: ['source-manifest'] }] } : {}),
       authorEnvironment: { packageManagers: [],
         overrides: independentErrors ? [{ scope: 'development', values: { 'fixture-peer': '2.0.0' }, evidence: [{ path: 'README.md', quote: configurationQuote }] }] : [],
         ...(independentErrors ? { startupConfigurations: [{ plane: 'web', scope: 'Disabled bridge comparison', environment: { DSH_BRIDGE_DISABLED: '1' }, evidence: [{ path: 'README.md', quote: configurationQuote }] }] } : {}),
+        ...(startupQuote && !omitStartup ? { startupConfigurations: [{ plane: 'web', scope: 'Plugin loaded with bridge stopped; additional comparison only.', environment: { DSH_BRIDGE_DISABLED: '1' }, evidence: [{ path: 'README.md', quote: startupQuote }] }] } : {}),
         workflows: [], dshVersions: authorDshVersion && !omitBaseline
         ? [{ version: authorDshVersion, evidence: [{ path: 'README.md', quote: authorQuote }] }] : [] },
       summary: recommended ? 'Select the evidenced author environment for an isolated comparison.' : 'The bounded input does not establish an author-supported launch workflow.',
-      evidence: authorTuiProfile ? ['source-manifest', 'README.md'] : ['source-manifest'],
+      evidence: authorTuiProfile || startupQuote ? ['source-manifest', 'README.md'] : ['source-manifest'],
     }) } }] });
   }
   if (!/^https:\\/\\/(?:api.github.com|raw.githubusercontent.com)\\//.test(address)) throw new Error('Unexpected fixture URL');
@@ -191,6 +194,26 @@ it('returns independent validation errors together through the normal bounded re
       schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [],
     }, targets, observations, reviewed)
     assert.equal(surfaces.surfaces[0]?.profile, 'author-console')
+    assert.equal((await run('offline')).attempted, 0)
+  } finally { await rm(directory, { recursive: true, force: true }) }
+})
+
+it('corrects a first-review startup omission and plans both default and disabled Web comparisons before reusing the review', async () => {
+  const { directory, targets, observations, run } = await fixture(undefined, true, undefined, false, true)
+  try {
+    assert.equal((await run('omit-startup')).planned, 1)
+    const reviewed = JSON.parse(await readFile(join(directory, 'recommendations.json'), 'utf8'))
+    assert.equal(reviewed.pendingTasks.length, 0)
+    const attempts = JSON.parse(await readFile(join(directory, 'recommendations.json.attempts.json'), 'utf8')).attempts
+    assert.deepEqual(attempts.map((item: { status: string }) => item.status), ['rejected', 'validated'])
+    assert.match(attempts[0].error, /omitted.*DSH_BRIDGE_DISABLED/)
+    const surfaces = applyDshEnvironmentRecommendationsToSurfaceTargets({
+      schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [],
+    }, targets, observations, reviewed)
+    assert.equal(surfaces.surfaces.length, 2)
+    assert.ok(surfaces.surfaces.every(item => item.plane === 'web'))
+    assert.equal(surfaces.surfaces.filter(item => item.startupConfiguration === undefined).length, 1)
+    assert.equal(surfaces.surfaces.filter(item => item.startupConfiguration?.environment.DSH_BRIDGE_DISABLED === '1').length, 1)
     assert.equal((await run('offline')).attempted, 0)
   } finally { await rm(directory, { recursive: true, force: true }) }
 })

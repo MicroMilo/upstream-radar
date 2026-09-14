@@ -127,6 +127,53 @@ function recommendations(overrides: Record<string, unknown> = {}) {
 }
 
 describe('DSH repository environment recommendation', () => {
+  it('requires a first review to preserve an explicitly documented disabled startup comparison separately from default startup', () => {
+    const selected = candidate()
+    const quote = '- **Disable**: export `DSH_BRIDGE_DISABLED=1` before starting the profile (plugin stays loaded, bridge engine stops).'
+    selected.documents.push({ path: 'docs/setup.md', text: quote })
+    assert.throws(() => parseDshEnvironmentRecommendationDecision({ ...decision(),
+      coverageGaps: ['The bridge is disabled, so this is not a fully working integration.'],
+    }, selected), /omitted.*DSH_BRIDGE_DISABLED/)
+    const reviewed = parseDshEnvironmentRecommendationDecision({ ...decision(), authorEnvironment: {
+      ...decision().authorEnvironment,
+      startupConfigurations: [{ plane: 'web', scope: 'Bridge stopped; load-only comparison, not authenticated integration.',
+        environment: { DSH_BRIDGE_DISABLED: '1' }, evidence: [{ path: 'docs/setup.md', quote }] }],
+    } }, selected)
+    const surface = applyDshEnvironmentRecommendationsToSurfaceTargets({
+      schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [],
+    }, targets, observations, recommendations(reviewed as unknown as Record<string, unknown>))
+    assert.equal(surface.surfaces.filter(item => item.startupConfiguration === undefined).length, 2)
+    assert.equal(surface.surfaces.filter(item => item.startupConfiguration?.environment.DSH_BRIDGE_DISABLED === '1').length, 2)
+    assert.equal(parseDshEnvironmentRecommendationDecision({ ...decision(), status: 'insufficient-evidence',
+      preferredNodeMajor: undefined, nodeMajors: [], executionProfiles: [],
+      coverageGaps: ['Cannot resolve the documented startup comparison to an intended surface.'],
+    }, selected).status, 'insufficient-evidence')
+  })
+
+  it('bounds startup completeness checks to literal plugin launch documentation rather than host instructions or arbitrary source text', () => {
+    const launch = 'Disable: export `DSH_BRIDGE_DISABLED=1` before starting the profile.'
+    for (const document of [
+      { path: 'dsh-repository/README.md', text: launch },
+      { path: 'test/example.ts', text: launch },
+      { path: 'README.md', text: 'Do not export DSH_BRIDGE_DISABLED=1 before starting the profile.' },
+      { path: 'README.md', text: '启动前不要设置 DSH_BRIDGE_DISABLED=1。' },
+      { path: 'README.md', text: 'DSH_BRIDGE_DISABLED=1 is used in a test fixture.' },
+      { path: 'README.md', text: launch.replace('=1', '=10') },
+      { path: 'README.md', text: launch.replace('=1', '=trueish') },
+      { path: 'README.md', text: launch.replace('DISABLED', 'TOKEN') },
+      { path: 'README.md', text: launch + 'x'.repeat(2_048) },
+      { path: 'README.md', text: launch + '\n' + 'x'.repeat(48 * 1024) },
+    ]) {
+      const selected = candidate()
+      selected.documents.push({ ...document, path: document.path === 'README.md' ? 'docs/setup.md' : document.path })
+      assert.doesNotThrow(() => parseDshEnvironmentRecommendationDecision(decision(), selected), document.text.slice(0, 120))
+    }
+    const selected = candidate()
+    selected.documents.push({ path: 'docs/setup.md', text: Array.from({ length: 17 }, (_, i) =>
+      `Export DSH_BRIDGE${i}_DISABLED=1 before starting the profile.`).join('\n') })
+    assert.throws(() => parseDshEnvironmentRecommendationDecision(decision(), selected), /exceed.*16-flag.*incomplete/)
+  })
+
   it('keeps author DSH baselines and supplemental startup comparisons in the normal surface-planning command', async () => {
     const directory = await mkdtemp(join(tmpdir(), 'radar-surface-baselines-'))
     try {
@@ -369,7 +416,7 @@ describe('DSH repository environment recommendation', () => {
 
   it('requires repository review again after changing author evidence attribution and completeness checks', () => {
     const previous = recommendations()
-    for (const reviewContract of ['dsh-environment/v5', 'dsh-environment/v6', 'dsh-environment/v7', 'dsh-environment/v8', 'dsh-environment/v9']) {
+    for (const reviewContract of ['dsh-environment/v5', 'dsh-environment/v6', 'dsh-environment/v7', 'dsh-environment/v8', 'dsh-environment/v9', 'dsh-environment/v10']) {
       const legacy = { ...previous, entries: previous.entries.map(entry => ({ ...entry, reviewContract })) }
       const applied = applyDshEnvironmentRecommendations({ ...targets, environmentRecommendationsRequired: true }, observations, legacy)
       assert.equal(applied.plugins[0]!.environmentRecommendation, undefined, `${reviewContract} used obsolete evidence validation`)

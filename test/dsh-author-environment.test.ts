@@ -19,6 +19,19 @@ function environment(quote = row, version = '0.1.2-rc.1', evidencePath = path) {
   })!
 }
 
+it('accepts literal startup assignments in Markdown without accepting longer flag values or another variable name', () => {
+  for (const quote of ['Export `DSH_BRIDGE_DISABLED=1` before starting the profile.', '启动前设置 `DSH_BRIDGE_DISABLED=1`。',
+    'Set DSH_BRIDGE_DISABLED="1".', 'DSH_BRIDGE_DISABLED=10', 'DSH_BRIDGE_DISABLED=1other', 'NOT_DSH_BRIDGE_DISABLED=1']) {
+    const input = parseDshAuthorEnvironment({ packageManagers: [], overrides: [], workflows: [], dshVersions: [],
+      startupConfigurations: [{ plane: 'web', scope: 'Disabled bridge comparison', environment: { DSH_BRIDGE_DISABLED: '1' },
+        evidence: [{ path: 'README.md', quote }] }],
+    })!
+    const check = () => validateDshAuthorEnvironment(input, new Map([['README.md', quote]]))
+    if (/=10|=1other|NOT_DSH/.test(quote)) assert.throws(check, /startup flag.*evidence/)
+    else assert.doesNotThrow(check)
+  }
+})
+
 it('accepts an exact author DSH release table row through its own version-column header', () => {
   assert.doesNotThrow(() => validateDshAuthorEnvironment(environment(), new Map([[path, document]])))
 })
