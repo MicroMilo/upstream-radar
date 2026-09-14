@@ -1,16 +1,8 @@
 {
   "schema": "upstream-radar.dsh-install-targets/v1alpha1",
   "refreshAfterHours": 168,
-  "runtimeProfiles": [
-    {
-      "id": "node22",
-      "nodeMajor": 22
-    },
-    {
-      "id": "node24",
-      "nodeMajor": 24
-    }
-  ],
+  "environmentRecommendationsRequired": true,
+  "runtimeProfiles": [],
   "plugins": [
     {
       "id": "feishu-bot",
@@ -67,9 +59,6 @@
       "id": "dsh-agy-link",
       "spec": "dsh-agy-link@0.4.13",
       "observerTargetId": "dsh-agy-link",
-      "runtimeProfiles": [
-        "node24"
-      ],
       "reason": "Identity-checked npm artifact from the 50-plugin catalog cohort; selected with 4001 downloads and 10 GitHub stars to cover the model surface."
     },
     {
@@ -319,9 +308,6 @@
       "id": "openpencil",
       "spec": "@zseven-w/dsh-openpencil@0.1.0-rc.1",
       "observerTargetId": "dsh-openpencil",
-      "runtimeProfiles": [
-        "node24"
-      ],
       "reason": "A Node 24-targeted design plugin that exercises host tools and a broad web-client peer surface."
     },
     {

@@ -8,7 +8,12 @@ import {
 } from '../src/dsh-directory-feed.js'
 import { DSH_COMPATIBILITY_LEDGER_SCHEMA, type DshCompatibilityLedgerEntry } from '../src/dsh-compatibility-ledger.js'
 import { DSH_INSTALL_TARGETS_SCHEMA } from '../src/dsh-install-plan.js'
-import { DSH_SURFACE_LEDGER_SCHEMA, type DshSurfaceLedger } from '../src/dsh-surface.js'
+import { DSH_SURFACE_LEDGER_SCHEMA, createDshSurfaceSourceFingerprint, type DshSurfaceLedger } from '../src/dsh-surface.js'
+import {
+  createDshEnvironmentRecommendationInputFingerprint,
+  DSH_ENVIRONMENT_REVIEW_CONTRACT,
+  selectDshEnvironmentRecommendationCandidates,
+} from '../src/dsh-environment-recommendation.js'
 
 function ledgerEntry(targetId: string, result: DshCompatibilityLedgerEntry['result']): DshCompatibilityLedgerEntry {
   return {
@@ -114,7 +119,7 @@ function surfaceLedger(
       plane: 'web',
       profile: 'web',
       runtimeId: sourceTargetId,
-      sourceFingerprint: `sha256:${'d'.repeat(64)}`,
+      sourceFingerprint: createDshSurfaceSourceFingerprint(ledgerEntry(sourceTargetId, 'compatible')),
       contractFingerprint: `sha256:${'e'.repeat(64)}`,
       observedAt: '2026-08-23T00:30:00.000Z',
       runtime: {
@@ -203,6 +208,127 @@ describe('DSH directory compatibility feed', () => {
     })
   })
 
+  it('does not publish a global pass until every repository-recommended environment cell is covered', () => {
+    const input = fixture()
+    const installTargets = {
+      ...input.installTargets,
+      environmentRecommendationsRequired: true,
+      runtimeProfiles: [...input.installTargets.runtimeProfiles, { id: 'node24', nodeMajor: 24 }],
+    }
+    const observations = {
+      targets: {
+        ...input.observations.targets,
+        'deepseek-harness': {
+          source: { repository: 'deepseek-ai/deepseek-harness', commit: 'd'.repeat(40), packagePath: 'package.json' },
+          manifest: { name: '@deepseek-ai/dsh', version: '0.1.1-rc.2', engines: { node: '>=22' } },
+          package: { name: '@deepseek-ai/dsh', version: '0.1.1-rc.2', distTag: 'next' },
+        },
+        clean: {
+          source: { repository: 'example/clean', commit: 'e'.repeat(40), packagePath: 'package.json' },
+          manifest: {
+            name: 'clean',
+            version: '1.0.0',
+            engines: { node: '>=22' },
+            dsh: { client: { platform: 'web' } },
+          },
+          package: { name: 'clean', version: '1.0.0', distTag: 'latest' },
+        },
+      },
+    }
+    const candidate = selectDshEnvironmentRecommendationCandidates(installTargets, observations)
+      .find(item => item.targetId === 'clean')!
+    const environmentRecommendations = {
+      schema: 'upstream-radar.dsh-environment-recommendations/v1alpha1',
+      updatedAt: '2026-08-23T00:45:00.000Z',
+      pendingTasks: [],
+      entries: [{
+        reviewContract: DSH_ENVIRONMENT_REVIEW_CONTRACT,
+        authorEnvironment: { packageManagers: [], overrides: [], workflows: [], dshVersions: [] },
+        targetId: candidate.targetId,
+        plugin: candidate.plugin,
+        dshVersion: candidate.dshVersion,
+        repository: candidate.repository,
+        sourceCommit: candidate.sourceCommit,
+        sourceFingerprint: candidate.sourceFingerprint,
+        inputFingerprint: createDshEnvironmentRecommendationInputFingerprint(candidate),
+        plannedAt: '2026-08-23T00:45:00.000Z',
+        model: 'deepseek-chat',
+        status: 'recommended',
+        preferredNodeMajor: 22,
+        nodeMajors: [22, 24],
+        executionProfiles: ['headless', 'web'],
+        summary: 'The repository supports both configured Node runtimes and declares a Web client.',
+        evidence: ['source-manifest'],
+      }],
+    }
+
+    const feed = buildDshDirectoryCompatibilityFeed({
+      ...input,
+      installTargets,
+      observations,
+      environmentRecommendations,
+      generatedAt: '2026-08-23T01:00:00.000Z',
+    })
+
+    const clean = feed.plugins.find(item => item.id === 'clean')!
+    assert.equal(clean.status, 'needs-review')
+    assert.equal(clean.environmentRecommendation?.status, 'current')
+    assert.deepEqual(clean.environmentRecommendation?.nodeMajors, [22, 24])
+    assert.deepEqual(clean.environmentRecommendation?.executionProfiles, ['headless', 'web'])
+    assert.deepEqual(clean.environmentRecommendation?.missingCells, [
+      'clean-node22:web',
+      'clean-node24:headless',
+      'clean-node24:web',
+    ])
+  })
+
+  it('keeps untested intended workflows in review even when every selected smoke cell is compatible', () => {
+    const input = fixture()
+    const targets = { ...input.installTargets, environmentRecommendationsRequired: true }
+    const observations = { targets: { ...input.observations.targets, clean: {
+      manifest: { name: 'clean', version: '1.0.0', engines: { node: '>=22' } },
+      package: { name: 'clean', version: '1.0.0', distTag: 'latest' },
+    } } }
+    const candidate = selectDshEnvironmentRecommendationCandidates(targets, observations)
+      .find(item => item.targetId === 'clean')!
+    const feed = buildDshDirectoryCompatibilityFeed({
+      ...input,
+      installTargets: targets,
+      observations,
+      generatedAt: '2026-08-23T01:00:00.000Z',
+      environmentRecommendations: {
+        schema: 'upstream-radar.dsh-environment-recommendations/v1alpha1',
+        updatedAt: '2026-08-23T00:45:00.000Z',
+        pendingTasks: [],
+        entries: [{
+          reviewContract: DSH_ENVIRONMENT_REVIEW_CONTRACT,
+          authorEnvironment: { packageManagers: [], overrides: [], workflows: [], dshVersions: [] },
+          targetId: candidate.targetId,
+          plugin: candidate.plugin,
+          dshVersion: candidate.dshVersion,
+          repository: candidate.repository,
+          sourceCommit: candidate.sourceCommit,
+          sourceFingerprint: candidate.sourceFingerprint,
+          inputFingerprint: createDshEnvironmentRecommendationInputFingerprint(candidate),
+          plannedAt: '2026-08-23T00:45:00.000Z',
+          model: 'review-fixture',
+          status: 'recommended',
+          preferredNodeMajor: 22,
+          nodeMajors: [22],
+          executionProfiles: ['headless'],
+          coverageGaps: ['Author SDK default profile has not been exercised.'],
+          summary: 'Only the headless smoke baseline was selected.',
+          evidence: ['source-manifest'],
+        }],
+      },
+    })
+    const clean = feed.plugins.find(item => item.id === 'clean')!
+    assert.equal(clean.cells[0]?.status, 'observed-compatible')
+    assert.deepEqual(clean.environmentRecommendation?.missingCells, [])
+    assert.deepEqual(clean.environmentRecommendation?.coverageGaps, ['Author SDK default profile has not been exercised.'])
+    assert.equal(clean.status, 'needs-review')
+  })
+
   it('does not inherit old green cells after the selected DSH host changes', () => {
     const input = fixture()
     const feed = buildDshDirectoryCompatibilityFeed({
@@ -231,7 +357,7 @@ describe('DSH directory compatibility feed', () => {
     })
   })
 
-  it('joins an exact Web cell and lets it cover only a Web-client headless gap', () => {
+  it('retains Node coverage gaps independently of a successful Web startup', () => {
     const input = fixture()
     const peerGap = input.ledger.entries.find(entry => entry.caseId === 'peer-gap-node22')
     assert.ok(peerGap)
@@ -251,14 +377,14 @@ describe('DSH directory compatibility feed', () => {
     }
     const feed = buildDshDirectoryCompatibilityFeed({
       ...input,
-      surfaceLedger: surfaceLedger('peer-gap'),
+      surfaceLedger: surfaceLedger('peer-gap', 'compatible', { sourceFingerprint: createDshSurfaceSourceFingerprint(peerGap) }),
       generatedAt: '2026-08-23T01:00:00.000Z',
     })
 
     const plugin = feed.plugins.find(item => item.id === 'peer-gap')
-    assert.equal(plugin?.status, 'observed-compatible')
+    assert.equal(plugin?.status, 'needs-review')
     assert.deepEqual(plugin?.cells.map(cell => cell.executionPlane), ['headless', 'web'])
-    assert.deepEqual(plugin?.cells[0]?.coveredBy, ['peer-gap-web'])
+    assert.equal(plugin?.cells[0]?.coveredBy, undefined)
     assert.equal(plugin?.cells[1]?.sourceCaseId, 'peer-gap-node22')
     assert.equal(plugin?.cells[1]?.evidenceSource, 'surface-ledger')
     assert.deepEqual(feed.boundary.executionPlanes, ['headless', 'web'])
@@ -299,7 +425,7 @@ describe('DSH directory compatibility feed', () => {
     }
     const feed = buildDshDirectoryCompatibilityFeed({
       ...input,
-      surfaceLedger: surfaceLedger('peer-gap'),
+      surfaceLedger: surfaceLedger('peer-gap', 'compatible', { sourceFingerprint: createDshSurfaceSourceFingerprint(peerGap) }),
       generatedAt: '2026-08-23T01:00:00.000Z',
     })
 
@@ -322,6 +448,14 @@ describe('DSH directory compatibility feed', () => {
     const plugin = feed.plugins.find(item => item.id === 'peer-gap')
     assert.equal(plugin?.status, 'needs-review')
     assert.deepEqual(plugin?.cells.map(cell => cell.executionPlane), ['headless'])
+  })
+
+  it('does not reuse a same-artifact surface after the source graph fingerprint changed', () => {
+    const input = fixture()
+    const feed = buildDshDirectoryCompatibilityFeed({ ...input,
+      surfaceLedger: surfaceLedger('peer-gap', 'compatible', { sourceFingerprint: `sha256:${'9'.repeat(64)}` }),
+      generatedAt: '2026-08-23T01:00:00.000Z' })
+    assert.deepEqual(feed.plugins.find(item => item.id === 'peer-gap')?.cells.map(cell => cell.executionPlane), ['headless'])
   })
 
   it('lets an exact surface incompatibility override a green headless load', () => {
@@ -382,6 +516,9 @@ describe('DSH directory compatibility feed', () => {
     const ledger = JSON.parse(await readFile('compatibility-ledger.json', 'utf8')) as unknown
     const surfaceLedger = JSON.parse(await readFile('surface-ledger.json', 'utf8')) as unknown
     const observations = JSON.parse(await readFile('observations.json', 'utf8')) as unknown
+    const environmentRecommendations = JSON.parse(
+      await readFile('examples/dsh/environment-observer/recommendations.json', 'utf8'),
+    ) as unknown
     const checkedInFeed = JSON.parse(await readFile('feeds/dsh-plugin-compatibility.json', 'utf8')) as { generatedAt: string }
     const feed = buildDshDirectoryCompatibilityFeed({
       cohort,
@@ -389,6 +526,7 @@ describe('DSH directory compatibility feed', () => {
       ledger,
       surfaceLedger,
       observations,
+      environmentRecommendations,
       generatedAt: checkedInFeed.generatedAt,
     })
 

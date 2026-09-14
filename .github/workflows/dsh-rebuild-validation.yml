@@ -1,0 +1,78 @@
+name: DSH rebuild validation
+
+on:
+  push:
+    branches: [codex/dsh-rebuild-validation]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dsh-rebuild-validation
+  cancel-in-progress: false
+
+jobs:
+  repository-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.3.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Build and verify environment planning
+        run: |
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm run build
+          node --test dist/test/dsh-environment-recommendation.test.js dist/test/dsh-environment-evidence.test.js dist/test/dsh-profile-environment.test.js dist/test/dsh-install-plan.test.js
+      - name: Collect current upstream versions and repository facts
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p validation-output
+          node dist/src/cli.js observe examples/dsh/rebuild-batch/targets.yml \
+            --state validation-output/observations.json \
+            --report validation-output/observer-report.md --json \
+            > validation-output/observer-report.json
+      - name: Infer author environments from fresh evidence
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
+        run: |
+          node scripts/plan-dsh-environment-recommendations.mjs \
+            examples/dsh/rebuild-batch/install-targets.json \
+            validation-output/observations.json \
+            validation-output/recommendations.json \
+            validation-output/recommendations.md \
+            validation-output/candidates.json \
+            > validation-output/review-summary.json
+      - name: Form exact install plans without executing target code
+        run: |
+          node scripts/write-dsh-install-plan.mjs \
+            examples/dsh/rebuild-batch/install-targets.json \
+            validation-output/observations.json \
+            validation-output/observer-report.json \
+            validation-output/compatibility-ledger.json \
+            examples/dsh/rebuild-batch/agent-plans.json \
+            validation-output/recommendations.json \
+            > validation-output/install-plan.json
+      - name: Preserve evidence even when a stage is incomplete
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dsh-rebuild-review
+          path: validation-output
+          if-no-files-found: error
+          retention-days: 14

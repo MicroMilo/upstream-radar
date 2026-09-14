@@ -224,6 +224,25 @@ export {
   type DshInstallTargets,
 } from './dsh-install-plan.js'
 export {
+  DSH_ENVIRONMENT_RECOMMENDATIONS_SCHEMA,
+  applyDshEnvironmentRecommendations,
+  applyDshEnvironmentRecommendationsToSurfaceTargets,
+  createDshEnvironmentRecommendationInputFingerprint,
+  emptyDshEnvironmentRecommendations,
+  parseDshEnvironmentRecommendationDecision,
+  parseDshEnvironmentRecommendations,
+  renderDshEnvironmentRecommendationPrompt,
+  selectDshEnvironmentRecommendationCandidates,
+  type DshEnvironmentRecommendationCandidate,
+  type DshEnvironmentRecommendationDecision,
+  type DshEnvironmentRecommendationDocument,
+  type DshEnvironmentRecommendationEntry,
+  type DshEnvironmentRecommendations,
+  type DshEnvironmentRecommendationStatus,
+  type DshEnvironmentRecommendationTask,
+  type DshRecommendedExecutionProfile,
+} from './dsh-environment-recommendation.js'
+export {
   AWESOME_DSH_COHORT_SCHEMA,
   DSH_DIRECTORY_COMPATIBILITY_FEED_SCHEMA,
   buildDshDirectoryCompatibilityFeed,
@@ -233,6 +252,7 @@ export {
   type AwesomeDshCohortPlugin,
   type DshDirectoryCompatibilityEntry,
   type DshDirectoryCompatibilityFeed,
+  type DshDirectoryEnvironmentRecommendation,
   type DshDirectoryEvidenceCell,
   type DshDirectoryEvidenceStatus,
 } from './dsh-directory-feed.js'

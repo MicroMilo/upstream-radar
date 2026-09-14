@@ -15,9 +15,18 @@ async function readJson(path) {
   return JSON.parse(contents)
 }
 
-const [cohortPath, targetsPath, ledgerPath, jsonPath, markdownPath, observationsPath, surfaceLedgerPath] = process.argv.slice(2)
+const [
+  cohortPath,
+  targetsPath,
+  ledgerPath,
+  jsonPath,
+  markdownPath,
+  observationsPath,
+  surfaceLedgerPath,
+  environmentRecommendationsPath,
+] = process.argv.slice(2)
 if ([cohortPath, targetsPath, ledgerPath, jsonPath, markdownPath].some(value => value === undefined)) {
-  throw new Error('usage: write-dsh-directory-feed.mjs <cohort.json> <targets.json> <ledger.json> <feed.json> <feed.md> [observations.json] [surface-ledger.json]')
+  throw new Error('usage: write-dsh-directory-feed.mjs <cohort.json> <targets.json> <ledger.json> <feed.json> <feed.md> [observations.json] [surface-ledger.json] [environment-recommendations.json]')
 }
 
 const feed = buildDshDirectoryCompatibilityFeed({
@@ -26,6 +35,9 @@ const feed = buildDshDirectoryCompatibilityFeed({
   ledger: await readJson(ledgerPath),
   ...(observationsPath === undefined ? {} : { observations: await readJson(observationsPath) }),
   ...(surfaceLedgerPath === undefined ? {} : { surfaceLedger: await readJson(surfaceLedgerPath) }),
+  ...(environmentRecommendationsPath === undefined
+    ? {}
+    : { environmentRecommendations: await readJson(environmentRecommendationsPath) }),
   generatedAt: new Date().toISOString(),
 })
 

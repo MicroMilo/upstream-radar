@@ -5,6 +5,7 @@ import {
   mergeDshCompatibilityLedger,
   parseDshCompatibilityLedger,
   renderDshCompatibilityLedgerMerge,
+  createDshCompatibilityContractFingerprint,
   type DshCompatibilityExpectedCase,
 } from '../src/dsh-compatibility-ledger.js'
 
@@ -59,6 +60,84 @@ function report(overrides: Record<string, unknown> = {}): unknown {
 }
 
 describe('DSH compatibility ledger', () => {
+  it('accepts an author-selected profile environment only when the report proves the same settings', () => {
+    const profileEnvironment = { pnpmVersion: '10.33.0', overrides: { 'host-api': '1.0.0' } }
+    const selected = { ...expected, profileEnvironment, contractFingerprint: createDshCompatibilityContractFingerprint({
+      plugin: expected.plugin, dshVersion: expected.dshVersion, nodeMajor: 24, allowedBuilds: [], profileEnvironment,
+    }) }
+    const observed = report({ executionContract: 'dsh-install/v1alpha4', profileEnvironment,
+      runtime: { platform: 'linux', architecture: 'x64', nodeVersion: '24.11.1', packageManager: { name: 'pnpm', version: '10.33.0' } } })
+    const merged = mergeDshCompatibilityLedger({ ledger: emptyDshCompatibilityLedger(), expected: [selected], reports: [observed] })
+    assert.deepEqual(merged.rejectedReports, [])
+    assert.deepEqual(Reflect.get(merged.ledger.entries[0]!, 'profileEnvironment'), profileEnvironment)
+    assert.deepEqual(Reflect.get(parseDshCompatibilityLedger(merged.ledger).entries[0]!, 'profileEnvironment'), profileEnvironment)
+    for (const settings of [undefined, { ...profileEnvironment, overrides: {} }]) {
+      const bad = { ...observed as object, profileEnvironment: settings }
+      const rejected = mergeDshCompatibilityLedger({ ledger: emptyDshCompatibilityLedger(), expected: [selected], reports: [bad] })
+      assert.deepEqual(rejected.acceptedCaseIds, [])
+      assert.match(rejected.rejectedReports.join(' '), /profile environment/)
+    }
+  })
+
+  it('never stamps an old report with the new plane-aware execution contract', () => {
+    const fresh = { ...expected, contractFingerprint: createDshCompatibilityContractFingerprint({
+      plugin: expected.plugin, dshVersion: expected.dshVersion, nodeMajor: expected.nodeMajor, allowedBuilds: [],
+    }) }
+    const merged = mergeDshCompatibilityLedger({ ledger: emptyDshCompatibilityLedger(), expected: [fresh], reports: [report()] })
+    assert.deepEqual(merged.acceptedCaseIds, [])
+    assert.match(merged.rejectedReports.join(' '), /execution contract|plane-aware/)
+    const preRebuild = mergeDshCompatibilityLedger({ ledger: emptyDshCompatibilityLedger(), expected: [fresh],
+      reports: [report({ executionContract: 'dsh-install/v1alpha3' })] })
+    assert.deepEqual(preRebuild.acceptedCaseIds, [], 'the pre-rebuild collector must not satisfy a current execution')
+  })
+
+  it('preserves exact client metadata and per-plane usage, and rejects malformed new evidence', () => {
+    const usageByPlane = { host: 'no-literal-reference-observed', webClient: 'runtime-import-observed', unattributed: 'no-literal-reference-observed' }
+    const observation = report({ artifact: { spec: expected.plugin, lifecycleScripts: [], sha256: 'c'.repeat(64),
+      client: { platform: 'web', inject: ['slots'], entryPoints: ['lib/client.js'] } }, result: 'unknown', resolution: { runtimeGraph: {
+        digest: `sha256:${'d'.repeat(64)}`, nodes: 2, edges: 1, unresolved: 1, pluginPeerContracts: {
+          declared: 1, satisfied: 0, mismatched: 0, indeterminate: 0, missing: 1,
+          relations: [{ name: 'react', required: '^18.2.0', status: 'missing', staticUsage: 'runtime-import-observed', usageByPlane, declaredClientInject: false }],
+        },
+      } } })
+    const merged = mergeDshCompatibilityLedger({ ledger: emptyDshCompatibilityLedger(), expected: [expected], reports: [observation] })
+    assert.deepEqual(Reflect.get(merged.ledger.entries[0]!.artifact, 'client'), { platform: 'web', inject: ['slots'], entryPoints: ['lib/client.js'] })
+    assert.deepEqual(Reflect.get(merged.ledger.entries[0]!.resolution!.runtimeGraph!.pluginPeerContracts!.relations[0]!, 'usageByPlane'), usageByPlane)
+    const bad = structuredClone(observation) as { artifact: { client: { inject: unknown } } }
+    bad.artifact.client.inject = 'not-an-array'
+    assert.equal(mergeDshCompatibilityLedger({ ledger: emptyDshCompatibilityLedger(), expected: [expected], reports: [bad] }).rejectedReports.length, 1)
+  })
+
+  it('classifies incomplete observations as review signals and never as confirmed incompatibilities', () => {
+    const incomplete = report({ result: 'unknown', reason: 'DSH bootstrap timed out before plugin installation.' })
+    const first = mergeDshCompatibilityLedger({ ledger: emptyDshCompatibilityLedger(), expected: [expected], reports: [incomplete] })
+    assert.equal(first.transitions[0]?.status, 'new-review-signal')
+    const unchanged = mergeDshCompatibilityLedger({ ledger: first.ledger, expected: [expected], reports: [incomplete] })
+    assert.equal(unchanged.transitions[0]?.status, 'persisting-review-signal')
+    const failed = mergeDshCompatibilityLedger({ ledger: emptyDshCompatibilityLedger(), expected: [expected], reports: [report({ result: 'load-failed' })] })
+    const unconfirmed = mergeDshCompatibilityLedger({ ledger: failed.ledger, expected: [expected], reports: [incomplete] })
+    assert.equal(unconfirmed.transitions[0]?.status, 'reclassified-for-review')
+    const resolved = mergeDshCompatibilityLedger({ ledger: first.ledger, expected: [expected], reports: [report()] })
+    assert.equal(resolved.transitions[0]?.status, 'resolved-review-signal')
+  })
+
+  it('binds reports to the planned architecture and pinned package-manager version', () => {
+    const armReport = report({ runtime: { platform: 'linux', architecture: 'arm64', nodeVersion: '24.11.1', packageManager: { name: 'pnpm', version: '11.7.0' } } })
+    const rejected = mergeDshCompatibilityLedger({ ledger: emptyDshCompatibilityLedger(), expected: [expected], reports: [armReport] })
+    assert.deepEqual(rejected.acceptedCaseIds, [])
+    assert.match(rejected.rejectedReports.join(' '), /architecture/)
+    const armExpected = { ...expected, platform: 'linux' as const, architecture: 'arm64' as const }
+    assert.notEqual(createDshCompatibilityContractFingerprint({ plugin: expected.plugin, dshVersion: expected.dshVersion, nodeMajor: 24, allowedBuilds: [] }),
+      createDshCompatibilityContractFingerprint({ plugin: expected.plugin, dshVersion: expected.dshVersion, nodeMajor: 24, allowedBuilds: [], architecture: 'arm64' }))
+    const accepted = mergeDshCompatibilityLedger({ ledger: emptyDshCompatibilityLedger(), expected: [armExpected], reports: [armReport] })
+    assert.deepEqual(accepted.acceptedCaseIds, [expected.id])
+    const wrongPnpm = mergeDshCompatibilityLedger({ ledger: emptyDshCompatibilityLedger(), expected: [expected], reports: [report({ runtime: {
+      platform: 'linux', architecture: 'x64', nodeVersion: '24.11.1', packageManager: { name: 'pnpm', version: '9.0.0' },
+    } })] })
+    assert.deepEqual(wrongPnpm.acceptedCaseIds, [])
+    assert.match(wrongPnpm.rejectedReports.join(' '), /pnpm.*11\.7\.0/)
+  })
+
   it('preserves the Agent-approved build environment for later execution planes', () => {
     const approvedExpected = { ...expected, allowedBuilds: 'protobufjs' }
     const merged = mergeDshCompatibilityLedger({

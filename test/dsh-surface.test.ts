@@ -1,17 +1,22 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import type { DshCompatibilityLedger } from '../src/dsh-compatibility-ledger.js'
+import { collectDshWebBootRoster } from '../src/dsh-web-contract.js'
 import {
   DSH_SURFACE_OBSERVATION_SCHEMA,
   dshSurfaceProfileStrategy,
   evaluateDshTuiEvidence,
   evaluateDshWebEvidence,
+  dshWebLaunchUrl,
+  dshWebClientDeclared,
+  evaluateDshWebObservationError,
   type DshSurfaceObservationReport,
 } from '../src/dsh-surface-observation.js'
 import {
   buildDshSurfaceIR,
   buildDshSurfacePlan,
   emptyDshSurfaceLedger,
+  hasDshWebClientCoverageGap,
   mergeDshSurfaceLedger,
   parseDshSurfaceTargets,
   type DshSurfaceExpectedCase,
@@ -21,6 +26,66 @@ import {
 const SOURCE_STATIC = `sha256:${'a'.repeat(64)}`
 const SOURCE_CONTRACT = `sha256:${'b'.repeat(64)}`
 const ARTIFACT_SHA = 'c'.repeat(64)
+
+describe('plane-aware surface routing and freshness', () => {
+  it('keeps an unsupported author profile out of execution without blocking other profiles', () => {
+    const configured = { ...targets, surfaces: targets.surfaces.map((target, index) => ({ ...target,
+      ...(index === 0 ? { environmentGap: 'yarn profile runner is unsupported' } : {}),
+    })) }
+    const plan = buildDshSurfacePlan(configured, sourceLedger(), emptyDshSurfaceLedger())
+    assert.ok(!plan.matrix.include.some(cell => cell.id === configured.surfaces[0]!.id))
+    assert.match(plan.blocked.find(cell => cell.id === configured.surfaces[0]!.id)?.reason ?? '', /yarn.*unsupported/)
+    assert.equal(plan.matrix.include.length, configured.surfaces.length - 1)
+  })
+
+  it('carries the planned profile environment into a surface and verifies its observed settings', () => {
+    const profileEnvironment = { pnpmVersion: '10.33.0', overrides: { 'host-api': '1.0.0' } }
+    const source = sourceLedger({ profileEnvironment, runtime: { nodeMajor: 22, nodeVersion: '22.23.2',
+      platform: 'linux', architecture: 'x64', pnpmVersion: '10.33.0' } })
+    const expected = buildDshSurfacePlan(targets, source, emptyDshSurfaceLedger()).matrix.include[0]!
+    assert.deepEqual(Reflect.get(expected, 'profileEnvironment'), profileEnvironment)
+    const explicit = buildDshSurfacePlan({ ...targets, surfaces: targets.surfaces.map(target => ({ ...target, profileEnvironment })) }, sourceLedger(), emptyDshSurfaceLedger())
+    assert.deepEqual(Reflect.get(explicit.matrix.include[0]!, 'profileEnvironment'), profileEnvironment)
+    const baseline = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include[0]!
+    assert.notEqual(expected.contractFingerprint, baseline.contractFingerprint)
+    const observed = { ...compatibleReport(expected), profileEnvironment,
+      runtime: { ...compatibleReport(expected).runtime, pnpmVersion: '10.33.0' } }
+    const merge = (report: unknown) => mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [report] })
+    const result = merge(observed)
+    assert.deepEqual(result.rejectedReports, [])
+    assert.deepEqual(Reflect.get(result.ledger.entries[0]!, 'profileEnvironment'), profileEnvironment)
+    assert.deepEqual(merge({ ...observed, profileEnvironment: { ...profileEnvironment, overrides: {} } }).acceptedCaseIds, [])
+  })
+
+  it('routes a React-only gap from exact client metadata, not a DSH package-name prefix', () => {
+    const source = sourceLedger({ result: 'unknown', artifact: { sha256: ARTIFACT_SHA, lifecycleScripts: [],
+      client: { platform: 'web', inject: [], entryPoints: ['lib/client.js'] } }, resolution: { runtimeGraph: {
+        digest: SOURCE_STATIC, nodes: 1, edges: 1, unresolved: 1,
+        unresolvedDependencies: [{ from: 'plugin', name: 'react', spec: '^18.2.0', kind: 'peer' }] } } }).entries[0]!
+    assert.equal(hasDshWebClientCoverageGap(source), true)
+  })
+
+  it('rejects a legacy surface report stamped with the new execution fingerprint', () => {
+    const expected = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include[0]!
+    const report = compatibleReport(expected)
+    delete (report as unknown as Record<string, unknown>).executionContract
+    const merged = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [report] })
+    assert.equal(merged.acceptedCaseIds.length, 0)
+    assert.match(merged.rejectedReports.join(' '), /execution contract/)
+    const preRebuild = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected],
+      reports: [{ ...compatibleReport(expected), executionContract: 'dsh-surface/v1alpha8' }] })
+    assert.equal(preRebuild.acceptedCaseIds.length, 0, 'pre-rebuild attribution is historical evidence only')
+  })
+
+  it('requires independent browser roster and bundle evidence for a new green Web report', () => {
+    const expected = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include.find(cell => cell.plane === 'web')!
+    const report = compatibleReport(expected)
+    if (report.evidence.plane === 'web') delete report.evidence.clientContract
+    const merged = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [report] })
+    assert.equal(merged.acceptedCaseIds.length, 0)
+    assert.match(merged.rejectedReports.join(' '), /browser contract/)
+  })
+})
 
 function sourceLedger(overrides: Partial<DshCompatibilityLedger['entries'][number]> = {}): DshCompatibilityLedger {
   return {
@@ -102,12 +167,88 @@ const targets = {
   ],
 }
 
+describe('surface runtime identity binding', () => {
+  it('accepts only the locally generated DSH login URL for the expected origin', () => {
+    const origin = 'http://127.0.0.1:30880/'
+    assert.equal(dshWebLaunchUrl('dsh web: http://127.0.0.1:30880/?token=ephemeral-test-token', origin), origin + '?token=ephemeral-test-token')
+    for (const value of ['http://attacker.example/?token=x', 'http://127.0.0.1:30881/?token=x',
+      'http://127.0.0.1:30880/path?token=x', 'http://user:secret@127.0.0.1:30880/?token=x',
+      'http://127.0.0.1:30880/?token=x&redirect=http://attacker.example']) {
+      assert.equal(dshWebLaunchUrl('dsh web: ' + value, origin), origin)
+    }
+    assert.equal(dshWebLaunchUrl('older DSH without a token', origin), origin)
+  })
+
+  it('keeps an unestablished local Web login as incomplete setup, not plugin failure', () => {
+    const result = evaluateDshWebEvidence({ driverAvailable: true, hostStarted: true, httpStatus: 401,
+      rootMounted: false, bootManifestPresent: false, pluginEntryPresent: false, applicationMounted: false,
+      pluginMaterialized: false, consoleErrors: [], pageErrors: [], failedRequests: [] })
+    assert.equal(result.result, 'unknown')
+    assert.equal(result.failedStage, 'host')
+  })
+  it('includes the actual source architecture in the planned contract', () => {
+    const x64 = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include[0]!
+    const arm64 = buildDshSurfacePlan(targets, sourceLedger({ runtime: {
+      nodeMajor: 22, nodeVersion: '22.23.2', platform: 'linux', architecture: 'arm64', pnpmVersion: '11.7.0',
+    } }), emptyDshSurfaceLedger()).matrix.include[0]!
+    assert.equal(arm64.architecture, 'arm64')
+    assert.equal(arm64.platform, 'linux')
+    assert.notEqual(arm64.contractFingerprint, x64.contractFingerprint)
+  })
+
+  it('rejects a report from another architecture or package-manager version', () => {
+    const expected = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include[0]!
+    for (const runtime of [{ architecture: 'arm64' }, { platform: 'darwin' }, { pnpmVersion: '11.8.0' }]) {
+      const report = compatibleReport(expected)
+      Object.assign(report.runtime, runtime)
+      const merged = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [report] })
+      assert.equal(merged.acceptedCaseIds.length, 0)
+      assert.equal(merged.rejectedReports.length, 1)
+    }
+  })
+
+  it('does not silently turn an unsupported source runtime into Linux/x64', () => {
+    for (const runtime of [{ platform: 'darwin', architecture: 'arm64' }, { platform: 'linux', architecture: 'ppc64' }]) {
+      const source = sourceLedger()
+      Object.assign(source.entries[0]!.runtime, runtime)
+      const plan = buildDshSurfacePlan(targets, source, emptyDshSurfaceLedger())
+      assert.equal(plan.run, false)
+      assert.equal(plan.blocked.length, targets.surfaces.length)
+      assert.ok(plan.blocked.every(x => /unsupported.*runtime/.test(x.reason)))
+    }
+  })
+
+  it('retains the independently collected surface graph digest and rejects malformed graph evidence', () => {
+    const expected = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include[0]!
+    const report = compatibleReport(expected)
+    report.resolution!.runtimeGraph!.digest = `sha256:${'f'.repeat(64)}`
+    const merged = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [report] })
+    assert.equal(merged.ledger.entries[0]?.resolution?.runtimeGraph?.digest, report.resolution!.runtimeGraph!.digest)
+    report.resolution!.runtimeGraph!.digest = 'not-an-exact-graph'
+    assert.equal(mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [report] }).rejectedReports.length, 1)
+  })
+
+  it('rejects compatible surface conclusions without an independently bound exact host graph', () => {
+    const expected = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include[0]!
+    for (const failure of ['missing', 'wrong-host']) {
+      const report = compatibleReport(expected)
+      if (failure === 'missing') delete report.resolution
+      else report.resolution!.runtimeGraph!.hostRuntime!.dshVersion = '0.1.0-rc.8'
+      const merged = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [report] })
+      assert.equal(merged.acceptedCaseIds.length, 0)
+      assert.match(merged.rejectedReports[0] ?? '', /independent.*graph|exact.*host/)
+    }
+  })
+})
+
 function compatibleReport(expected: DshSurfaceExpectedCase, plane: 'web' | 'tui' = expected.plane): DshSurfaceObservationReport {
   const common = {
     schema: DSH_SURFACE_OBSERVATION_SCHEMA,
     tool: { name: 'upstream-radar' as const, version: '0.44.0' },
     probe: 'dsh-surface' as const,
     scope: 'surface-runtime-behavior' as const,
+    executionContract: 'dsh-surface/v1alpha9' as const,
+    profileEnvironment: expected.profileEnvironment ?? { pnpmVersion: '11.7.0', overrides: {} },
     startedAt: '2026-08-25T00:00:00.000Z',
     completedAt: '2026-08-25T00:01:00.000Z',
     caseId: expected.id,
@@ -127,6 +268,10 @@ function compatibleReport(expected: DshSurfaceExpectedCase, plane: 'web' | 'tui'
       pnpmVersion: '11.7.0',
     },
     artifact: { sha256: expected.artifactSha256, bytes: 1024 },
+    resolution: { runtimeGraph: {
+      digest: `sha256:${'e'.repeat(64)}`, nodes: 2, edges: 1, unresolved: 0,
+      hostRuntime: { source: 'dsh-process' as const, resolvedNodes: 1, dshVersion: expected.dshVersion },
+    } },
     stages: {
       runtime: { status: 'passed' as const },
       artifact: { status: 'passed' as const },
@@ -155,6 +300,11 @@ function compatibleReport(expected: DshSurfaceExpectedCase, plane: 'web' | 'tui'
         ...common,
         evidence: {
           plane: 'web',
+          pluginClientDeclared: true,
+          clientContract: { revision: 'dsh-web-client-contract/1', peerVersions: 'not-observed',
+            client: { platform: 'web', inject: [], entryPoints: ['lib/client.js'] },
+            boot: collectDshWebBootRoster({ entries: [{ id: expected.runtimeId, url: '/plugin.js', rev: 'fixture' }] }),
+            pluginBundle: { sha256: 'a'.repeat(64), bytes: 1024 } },
           url: 'http://127.0.0.1:3080/',
           httpStatus: 200,
           title: 'DSH',
@@ -191,6 +341,23 @@ function compatibleReport(expected: DshSurfaceExpectedCase, plane: 'web' | 'tui'
 }
 
 describe('DSH execution-plane evidence', () => {
+  it('does not label an observed DSH process failure as a browser-driver error', () => {
+    assert.equal(evaluateDshWebObservationError('page.goto failed', undefined).result, 'unknown')
+    const exited = evaluateDshWebObservationError('page.goto failed', 1)
+    assert.equal(exited.result, 'surface-incompatible')
+    assert.equal(exited.failedStage, 'host')
+    assert.match(exited.reason, /exited.*1/)
+  })
+  it('does not require a browser entry for a host-only plugin installed into Web', () => {
+    assert.equal(dshWebClientDeclared({ bundle: { patch: './cordis.patch.yml' } }), false)
+    assert.equal(dshWebClientDeclared({ client: { platform: 'web' } }), true)
+    assert.throws(() => dshWebClientDeclared({ client: 'malformed' }), /client declaration/)
+    const input = { driverAvailable: true, hostStarted: true, httpStatus: 200, rootMounted: true,
+      bootManifestPresent: true, pluginEntryPresent: false, applicationMounted: true, pluginMaterialized: false,
+      consoleErrors: [], pageErrors: [], failedRequests: [] }
+    assert.equal(evaluateDshWebEvidence({ ...input, pluginClientDeclared: false }).result, 'compatible')
+    assert.equal(evaluateDshWebEvidence({ ...input, pluginClientDeclared: true }).result, 'surface-incompatible')
+  })
   it('initializes the stock Web profile but lets plugin add create a custom TUI profile', () => {
     assert.equal(dshSurfaceProfileStrategy('web'), 'initialize-stock-profile')
     assert.equal(dshSurfaceProfileStrategy('tui'), 'create-with-plugin-add')
@@ -254,6 +421,15 @@ describe('DSH execution-plane evidence', () => {
     assert.equal(result.failedStage, 'surface')
   })
 
+  it('keeps a browser bundle collection limit as incomplete coverage, not a plugin HTTP failure', () => {
+    const result = evaluateDshWebEvidence({ driverAvailable: true, hostStarted: true, httpStatus: 200,
+      rootMounted: true, bootManifestPresent: true, pluginEntryPresent: true, pluginBundleStatus: 200,
+      pluginBundleCollectionError: 'bundle byte budget exceeded', applicationMounted: true,
+      pluginMaterialized: true, consoleErrors: [], pageErrors: [], failedRequests: [] })
+    assert.equal(result.result, 'unknown')
+    assert.match(result.reason, /collection|coverage/)
+  })
+
   it('requires a TUI frame, PTY input and controlled shutdown', () => {
     assert.equal(evaluateDshTuiEvidence({
       driverAvailable: true,
@@ -285,6 +461,38 @@ describe('DSH execution-plane reconciliation', () => {
     assert.equal(plan.matrix.include.every(item => item.artifactSha256 === ARTIFACT_SHA), true)
     assert.equal(plan.matrix.include.every(item => item.allowedBuilds === ''), true)
     assert.equal(plan.matrix.include.every(item => item.reasons.includes('missing-evidence')), true)
+  })
+
+  it('keeps the complete recommended surface set while scheduling it in bounded batches', () => {
+    const manyTargets = Array.from({ length: 40 }, (_, index) => ({
+      id: `plugin-${String(index).padStart(2, '0')}-web`,
+      sourceCaseId: `plugin-${String(index).padStart(2, '0')}-node22`,
+      plane: 'web',
+      profile: 'web',
+      runtimeId: `plugin-${String(index).padStart(2, '0')}`,
+      reason: 'Repository recommendation declares a Web client.',
+    }))
+    const source = sourceLedger().entries[0] as DshCompatibilityLedger['entries'][number]
+    const ledger: DshCompatibilityLedger = {
+      schema: 'upstream-radar.dsh-compatibility-ledger/v1alpha1',
+      entries: manyTargets.map((target, index) => ({
+        ...source,
+        caseId: target.sourceCaseId,
+        targetId: target.runtimeId,
+        plugin: `${target.runtimeId}@1.0.0`,
+        artifact: { ...source.artifact, sha256: index.toString(16).padStart(64, '0') },
+      })),
+    }
+
+    const plan = buildDshSurfacePlan({
+      schema: 'upstream-radar.dsh-surface-targets/v1alpha1',
+      refreshAfterHours: 168,
+      surfaces: manyTargets,
+    }, ledger, emptyDshSurfaceLedger(), new Date('2026-08-25T00:00:00.000Z'))
+
+    assert.equal(plan.matrix.include.length, 32)
+    assert.equal(plan.blocked.length, 8)
+    assert.equal(plan.blocked.every(item => /bounded 32-cell run budget/.test(item.reason)), true)
   })
 
   it('automatically routes Web-client headless gaps without duplicating explicit targets or swallowing host-only cases', () => {

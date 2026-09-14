@@ -3,6 +3,7 @@
 import { appendFile, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import process from 'node:process'
+import { applyDshEnvironmentRecommendationsToSurfaceTargets } from '../dist/src/dsh-environment-recommendation.js'
 import { buildDshSurfacePlan, emptyDshSurfaceLedger } from '../dist/src/dsh-surface.js'
 
 const MAX_INPUT_BYTES = 64 * 1024 * 1024
@@ -22,13 +23,31 @@ async function readOptionalLedger(path) {
   }
 }
 
-const [targetsPath, sourceLedgerPath, surfaceLedgerPath, agentPlansPath, surfaceAgentPlansPath] = process.argv.slice(2)
+const [
+  targetsPath,
+  sourceLedgerPath,
+  surfaceLedgerPath,
+  agentPlansPath,
+  surfaceAgentPlansPath,
+  installTargetsPath,
+  observationsPath,
+  environmentRecommendationsPath,
+] = process.argv.slice(2)
 if (targetsPath === undefined || sourceLedgerPath === undefined || surfaceLedgerPath === undefined) {
-  throw new Error('usage: write-dsh-surface-plan.mjs <surface-targets.json> <compatibility-ledger.json> <surface-ledger.json> [headless-agent-plans.json] [surface-agent-plans.json]')
+  throw new Error('usage: write-dsh-surface-plan.mjs <surface-targets.json> <compatibility-ledger.json> <surface-ledger.json> [headless-agent-plans.json] [surface-agent-plans.json] [install-targets.json observations.json environment-recommendations.json]')
 }
 
+const configuredSurfaceTargets = await readJson(targetsPath)
+const surfaceTargets = installTargetsPath === undefined || observationsPath === undefined || environmentRecommendationsPath === undefined
+  ? configuredSurfaceTargets
+  : applyDshEnvironmentRecommendationsToSurfaceTargets(
+      configuredSurfaceTargets,
+      await readJson(installTargetsPath),
+      await readJson(observationsPath),
+      await readJson(environmentRecommendationsPath),
+    )
 const plan = buildDshSurfacePlan(
-  await readJson(targetsPath),
+  surfaceTargets,
   await readJson(sourceLedgerPath),
   await readOptionalLedger(surfaceLedgerPath),
   new Date(),

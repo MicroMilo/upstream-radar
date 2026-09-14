@@ -93,6 +93,46 @@ describe('DSH compatibility reconciliation plan', () => {
     assert.deepEqual(plan.triggers, [])
   })
 
+  it('blocks a target instead of falling back to Node 22 when repository environment reasoning is required', () => {
+    const plan = buildDshInstallPlan({
+      ...corpus,
+      environmentRecommendationsRequired: true,
+    }, state(), { changes: [] }, emptyDshCompatibilityLedger(), now)
+
+    assert.equal(plan.run, false)
+    assert.deepEqual(plan.matrix.include, [])
+    assert.deepEqual(plan.blocked.map(item => item.targetId), ['browser', 'feishu'])
+    assert.match(plan.reason, /repository environment recommendation/)
+  })
+
+  it('preserves a repository-recommended Node major outside executor capability as a coverage gap', () => {
+    const plan = buildDshInstallPlan({
+      schema: 'upstream-radar.dsh-install-targets/v1alpha1',
+      refreshAfterHours: 168,
+      environmentRecommendationsRequired: true,
+      runtimeProfiles: [],
+      plugins: [{
+        id: 'legacy',
+        spec: 'legacy-plugin@1.0.0',
+        runtimeProfiles: [],
+        environmentRecommendation: {
+          sourceFingerprint: `sha256:${'a'.repeat(64)}`,
+          preferredNodeMajor: 14,
+          nodeMajors: [14],
+          unavailableNodeMajors: [14],
+          executionProfiles: ['headless'],
+          summary: 'The repository explicitly pins Node 14.',
+          evidence: ['.nvmrc'],
+        },
+        reason: 'exercise an honest executor coverage gap',
+      }],
+    }, state(), { changes: [] }, emptyDshCompatibilityLedger(), now)
+
+    assert.equal(plan.run, false)
+    assert.deepEqual(plan.matrix.include, [])
+    assert.match(plan.blocked[0]?.reason ?? '', /Node 14.*executable range 22-40/)
+  })
+
   it('stays quiet only after all desired cells have fresh exact evidence', () => {
     const first = baseline()
     const ledger = { schema: 'upstream-radar.dsh-compatibility-ledger/v1alpha1', entries: first.matrix.include.map(item => entry(item)) }

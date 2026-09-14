@@ -136,6 +136,22 @@ describe('CLI option parsing', () => {
     assert.equal(installWithInvalidBuildApproval.status, 1)
     assert.match(installWithInvalidBuildApproval.stderr, /invalid approved dependency build/)
 
+    const installWithCredentialedProxy = spawnSync(process.execPath, [cli, 'probe', 'dsh-install', 'demo-plugin@1.0.0',
+      '--dsh-version', '0.1.5-rc.2', '--isolation-provider', 'other', '--network-proxy', 'http://user:secret@proxy.example', '--execute'], {
+      encoding: 'utf8', env: { ...process.env, UPSTREAM_RADAR_ISOLATED_RUNNER: '1' },
+    })
+    assert.equal(installWithCredentialedProxy.status, 1)
+    assert.match(installWithCredentialedProxy.stderr, /credential-free HTTP proxy/)
+    assert.doesNotMatch(installWithCredentialedProxy.stderr, /user:secret/)
+
+    const invalidEnvironment = spawnSync(process.execPath, [cli, 'probe', 'dsh-install', 'demo-plugin@1.0.0',
+      '--dsh-version', '0.1.5-rc.2', '--isolation-provider', 'other', '--execute', '--profile-environment-json',
+      JSON.stringify({ pnpmVersion: '10.33.0', overrides: { peer: 'file:../outside' } })], {
+      encoding: 'utf8', env: { ...process.env, UPSTREAM_RADAR_ISOLATED_RUNNER: '1' },
+    })
+    assert.equal(invalidEnvironment.status, 1)
+    assert.match(invalidEnvironment.stderr, /profile override.*registry version range/)
+
     const incompleteReview = spawnSync(process.execPath, [cli, 'review', 'dsh-plugin', 'demo-plugin@1.0.0'], { encoding: 'utf8' })
     assert.equal(incompleteReview.status, 1)
     assert.match(incompleteReview.stderr, /requires at least two exact DSH versions/)

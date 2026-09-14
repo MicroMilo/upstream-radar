@@ -7,6 +7,25 @@ contains 100 exact published plugins: 96 identity-checked npm artifacts imported
 from the [`awesome-dsh-plugin` cohort](../awesome-observer/README.md), plus four
 maintained behavior and repair cases.
 
+## Repository environment recommendation comes first
+
+Before forming a headless cell, Radar binds the exact observed plugin and DSH
+coordinates to source and published manifests plus bounded repository files.
+The Agent reports every explicitly recommended or tested Node major visible in
+the bounded repository evidence, independently of any static runtime list,
+plus the intended headless/Web/TUI profiles. Radar materializes executable
+Node majors dynamically and retains out-of-range recommendations as explicit
+coverage gaps. Deterministic validation rejects Node choices outside exact aligned
+`engines.node` declarations, requires Web for a declared
+`dsh.client.platform=web`, and rejects references to files the collector did not
+supply. A missing, stale, or insufficient recommendation blocks the maintained
+target; it never silently falls back to Node 22.
+
+The durable signal and pending analysis tasks live in
+[`../environment-observer/recommendations.json`](../environment-observer/recommendations.json).
+It is input to matrix construction, not proof that the selected environment
+works.
+
 ## Agent-planned headless follow-up
 
 The first isolated run uses the reviewed clean headless contract. When that run
@@ -45,8 +64,9 @@ Inside the restricted container, Radar:
    only the dependency-build approvals explicitly declared for that target;
 8. verifies that DSH registered the bundle;
 9. runs a trusted one-shot wrapper from the real profile that resolves every
-   declared non-optional peer with `import.meta.resolve()`, imports the plugin,
-   and boots DSH headless with `--help`;
+   declared non-optional peer with `import.meta.resolve()`, and boots the composed
+   DSH headless profile with `--help` (the bundle patch owns entry loading; a
+   package-root export is not required);
 10. records install and load process execution, network destinations, write-like
    file syscalls, final filesystem changes, the resulting DSH profile lockfile,
    the effective profile-plus-DSH-host graph, and static literal-import evidence
@@ -82,6 +102,14 @@ contract explicitly approves named dependency scripts. The names become pnpm
 An absent list means no dependency build is approved; Radar never turns one
 blocked script into a global “allow all” policy.
 
+For an operator-run disposable environment whose registry access requires a
+proxy, the install and surface probes accept an explicit
+`--network-proxy http://host:port`. Proxy credentials, paths and query strings
+are rejected; host proxy variables and other host credentials are not inherited.
+This changes transport, not peer checks or script approval. Connections observed
+at a proxy do not identify the final remote destination. Prefer one DSH-only
+preflight before duplicating a shared bootstrap failure across a batch.
+
 - Every scheduled pass builds the desired current matrix from the observed
   DSH/plugin coordinates and retained runtime evidence.
 - A cell runs when it is missing, has become older than `refreshAfterHours`, or
@@ -89,7 +117,7 @@ blocked script into a global “allow all” policy.
   record in the ledger. DSH and mapped plugin publications are immediate
   invalidation signals, not the sole source of work.
 - A `runtime-incompatible` result records the artifact's Node engine before any
-  plugin code runs. If another configured runtime could satisfy that range,
+  plugin code runs. If another available runtime could satisfy that range,
   Radar adds one alternate-runtime cell rather than calling the plugin globally
   incompatible.
 - Every selected cell receives a separate hosted VM through the workflow
@@ -114,11 +142,18 @@ blocked script into a global “allow all” policy.
 | --- | --- |
 | `compatible` | The exact tarball installed, registered, and loaded under the exact DSH release and recorded build-approval set, with readable bounded traces. |
 | `runtime-incompatible` | The exact tarball requires a Node version that excludes the isolated runtime. No plugin or dependency code is executed. |
-| `peer-contract-incompatible` | Install and load passed, but a declared required peer is missing from the actual DSH profile or its resolved version is outside the declared range. This is not by itself proof that every UI/business path fails. |
+| `peer-contract-incompatible` | Install and load passed, but a resolved, non-client-only peer version is outside the exact artifact's declared range. This is a declared-support fact, not by itself proof of a runtime crash. Missing or indeterminate peers remain incomplete coverage. |
 | `build-approval-required` | pnpm stopped before registration and supplied an exact list of dependency packages whose lifecycle builds need explicit approval. This is a trust-policy gate, not proof that the plugin is incompatible. |
 | `install-failed` | The traced install failed or DSH did not register the plugin. |
 | `load-failed` | Installation and registration passed, but the traced profile load failed. |
-| `unknown` | The artifact, DSH bootstrap, timeout/output bound, tracer, or collector could not establish a reliable result. |
+| `unknown` | The artifact, DSH bootstrap, timeout/output bound, tracer, or collector could not establish a reliable result, or dependency coverage remained incomplete after successful install/load. These causes are recorded separately. |
+
+Install execution contract `dsh-install/v1alpha3` preserves the exact packed
+`dsh.client.platform`, injection names and client exports. Bounded literal
+imports from host/client entry closures and unattributed files are separate
+syntactic evidence, not proof of runtime absence. Node resolution facts are
+never rewritten as browser resolution. A v1alpha2 observation remains history
+but cannot be stamped with the new scheduled execution fingerprint.
 
 The report separately preserves `captured`, `truncated`, and `missing` trace
 coverage. A failed attempt is not silently converted into a compatibility

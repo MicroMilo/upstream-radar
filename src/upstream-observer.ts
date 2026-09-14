@@ -78,6 +78,8 @@ export interface ObserverConfig {
 export interface ObserverPackageObservation {
   name: string
   version: string
+  /** Exact manifest selected from the npm packument; no package code is run. */
+  manifest?: PackageManifestSnapshot
   distTag?: string
   integrity?: string
   tarball?: string
@@ -694,9 +696,13 @@ function parsePackageObservation(value: unknown, label: string): ObserverPackage
   const migrationTo = rawMigration === undefined ? undefined : boundedString(rawMigration.to, `${label}.migration.to`, 214)
   if (migrationTo !== undefined && !EXACT_NPM_PACKAGE_NAME.test(migrationTo)) throw new Error(`${label}.migration.to is not an npm package name`)
   const migrationSince = rawMigration === undefined ? undefined : optionalBoundedString(rawMigration.since, `${label}.migration.since`, 128)
+  const publishedManifest = source.manifest === undefined
+    ? undefined
+    : parsePackageManifestSnapshot(source.manifest)
   return {
     name,
     version,
+    ...(publishedManifest === undefined ? {} : { manifest: publishedManifest }),
     ...(distTag === undefined ? {} : { distTag }),
     ...(optionalBoundedString(source.integrity, `${label}.integrity`, 512) === undefined ? {} : { integrity: source.integrity as string }),
     ...(optionalBoundedString(source.tarball, `${label}.tarball`, 4_096) === undefined ? {} : { tarball: source.tarball as string }),
@@ -1146,10 +1152,18 @@ export class UpstreamObserverClient implements ObserverSource {
     const migrationSince = typeof rawMigration?.since === 'string' && rawMigration.since.length <= 128
       ? rawMigration.since
       : undefined
+    let publishedManifest: PackageManifestSnapshot | undefined
+    try {
+      publishedManifest = parsePackageManifestSnapshot(manifest)
+    } catch {
+      // A malformed abbreviated registry row remains usable as coordinate
+      // evidence, but cannot become an exact manifest fact.
+    }
     return {
       name,
       version: selectedVersion,
       distTag,
+      ...(publishedManifest === undefined ? {} : { manifest: publishedManifest }),
       ...(typeof dist?.integrity === 'string' ? { integrity: dist.integrity } : {}),
       ...(typeof dist?.tarball === 'string' ? { tarball: dist.tarball } : {}),
       ...(repository === undefined ? {} : { repository: repository.slice(0, 4_096) }),

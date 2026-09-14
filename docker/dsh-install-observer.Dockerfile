@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 ARG NODE_MAJOR=22
-FROM node:${NODE_MAJOR}-bookworm-slim AS build
+FROM node:24-bookworm-slim AS build
 
 RUN corepack enable \
   && attempt=1 \
@@ -19,12 +19,13 @@ COPY test ./test
 RUN pnpm run build
 
 FROM node:${NODE_MAJOR}-bookworm-slim AS runtime
+ARG PNPM_VERSION=11.7.0
 
-# DSH rc.7 and rc.8 declare pnpm@11.7.0 in the official source tree.
+# The plan selects an exact pnpm runtime independently from the scanner build.
 RUN apt-get update \
   && apt-get install --yes --no-install-recommends ca-certificates git strace python3 make g++ \
   && rm -rf /var/lib/apt/lists/* \
-  && npm install --global --ignore-scripts pnpm@11.7.0 \
+  && npm install --global --ignore-scripts "pnpm@${PNPM_VERSION}" \
   && useradd --create-home --uid 10001 --shell /usr/sbin/nologin observer
 
 WORKDIR /radar

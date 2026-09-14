@@ -1,6 +1,8 @@
 import { createHash } from 'node:crypto'
+import { parseDshProfileEnvironment, type DshProfileEnvironment } from './dsh-profile-environment.js'
 import { parseNpmSpec } from './npm.js'
 import type { DshInstallObservationResult, DshInstallPeerStaticUsage } from './dsh-install-observation.js'
+import { parseDshClientContractEvidence, parseDshPeerPlaneEvidence, type DshClientContract, type DshPeerPlaneEvidence } from './dsh-peer-planes.js'
 
 /**
  * Durable, current-state evidence for the exact plugin/DSH/runtime cells that
@@ -34,6 +36,13 @@ export interface DshCompatibilityProfileGraphGap {
   kind: 'runtime' | 'development' | 'optional' | 'peer' | 'host-runtime'
 }
 
+/** Independently collected evidence for one installed profile and its exact host. */
+export interface DshProfileResolutionEvidence {
+  profileLockfile?: DshCompatibilityProfileLockfile
+  runtimeGraph?: DshCompatibilityRuntimeGraph
+  runtimeGraphError?: string
+}
+
 export interface DshCompatibilityRuntimeGraph {
   digest: string
   nodes: number
@@ -56,6 +65,8 @@ export interface DshCompatibilityPeerContractIssue {
   required: string
   status: 'mismatched' | 'indeterminate' | 'missing'
   staticUsage: DshInstallPeerStaticUsage
+  usageByPlane?: DshPeerPlaneEvidence
+  declaredClientInject?: boolean
   resolvedVersion?: string
 }
 
@@ -65,6 +76,8 @@ export interface DshCompatibilityPeerContractRelation {
   required: string
   status: 'satisfied' | 'mismatched' | 'indeterminate' | 'missing'
   staticUsage: DshInstallPeerStaticUsage
+  usageByPlane?: DshPeerPlaneEvidence
+  declaredClientInject?: boolean
   resolvedVersion?: string
 }
 
@@ -79,6 +92,7 @@ export interface DshCompatibilityPluginPeerContracts {
 }
 
 export interface DshCompatibilityLedgerEntry {
+  profileEnvironment?: DshProfileEnvironment
   caseId: string
   targetId: string
   plugin: string
@@ -104,6 +118,7 @@ export interface DshCompatibilityLedgerEntry {
     sha256?: string
     integrity?: string
     nodeEngine?: string
+    client?: DshClientContract
   }
   resolution?: {
     profileLockfile?: DshCompatibilityProfileLockfile
@@ -122,11 +137,15 @@ export interface DshCompatibilityLedger {
 
 /** One matrix entry sent from the static reconciler to the isolated runner. */
 export interface DshCompatibilityExpectedCase {
+  profileEnvironment?: DshProfileEnvironment
   id: string
   targetId: string
   plugin: string
   dshVersion: string
   nodeMajor: number
+  /** Legacy CI cases default to Linux/x64; local isolated runs must opt into arm64. */
+  platform?: 'linux'
+  architecture?: 'x64' | 'arm64'
   allowedBuilds: string
   staticFingerprint: string
   contractFingerprint: string
@@ -177,6 +196,13 @@ function boundedString(value: unknown, label: string, maximum: number): string {
 
 function optionalBoundedString(value: unknown, label: string, maximum: number): string | undefined {
   return value === undefined ? undefined : boundedString(value, label, maximum)
+}
+
+function planeFields(item: Record<string, unknown>): { usageByPlane?: DshPeerPlaneEvidence, declaredClientInject?: boolean } {
+  const usageByPlane = parseDshPeerPlaneEvidence(item.usageByPlane)
+  if (item.declaredClientInject !== undefined && typeof item.declaredClientInject !== 'boolean') throw new Error('declaredClientInject must be a boolean')
+  return { ...(usageByPlane === undefined ? {} : { usageByPlane }),
+    ...(item.declaredClientInject === undefined ? {} : { declaredClientInject: item.declaredClientInject as boolean }) }
 }
 
 function exactVersion(value: unknown, label: string): string {
@@ -308,6 +334,7 @@ function parsePluginPeerContracts(value: unknown, label: string): DshCompatibili
       required: boundedString(relation.required, `${label}.relations[${index}].required`, 512),
       status,
       staticUsage: peerStaticUsage(relation.staticUsage, `${label}.relations[${index}].staticUsage`),
+      ...planeFields(relation),
       ...(resolvedVersion === undefined ? {} : { resolvedVersion }),
     }
   }).sort((left, right) => left.name.localeCompare(right.name))
@@ -345,6 +372,7 @@ function parsePluginPeerContracts(value: unknown, label: string): DshCompatibili
       required: boundedString(issue.required, `${label}.issues[${index}].required`, 512),
       status,
       staticUsage: peerStaticUsage(issue.staticUsage, `${label}.issues[${index}].staticUsage`),
+      ...planeFields(issue),
       ...(resolvedVersion === undefined ? {} : { resolvedVersion }),
     }
   })
@@ -429,6 +457,19 @@ function parseRuntimeGraph(value: unknown, label: string): DshCompatibilityRunti
   }
 }
 
+export function parseDshProfileResolutionEvidence(value: unknown, label = 'resolution'): DshProfileResolutionEvidence | undefined {
+  if (value === undefined) return undefined
+  const item = record(value, label)
+  const profileLockfile = parseProfileLockfile(item.profileLockfile, `${label}.profileLockfile`)
+  const runtimeGraph = parseRuntimeGraph(item.runtimeGraph, `${label}.runtimeGraph`)
+  const runtimeGraphError = optionalBoundedString(item.runtimeGraphError, `${label}.runtimeGraphError`, 512)
+  return {
+    ...(profileLockfile === undefined ? {} : { profileLockfile }),
+    ...(runtimeGraph === undefined ? {} : { runtimeGraph }),
+    ...(runtimeGraphError === undefined ? {} : { runtimeGraphError }),
+  }
+}
+
 function parseEntry(value: unknown, index: number): DshCompatibilityLedgerEntry {
   const item = record(value, `entries[${index}]`)
   const runtime = record(item.runtime, `entries[${index}].runtime`)
@@ -449,6 +490,7 @@ function parseEntry(value: unknown, index: number): DshCompatibilityLedgerEntry 
   const sha256 = optionalBareSha256(artifact.sha256, `entries[${index}].artifact.sha256`)
   const integrity = optionalBoundedString(artifact.integrity, `entries[${index}].artifact.integrity`, 1_024)
   const nodeEngine = optionalBoundedString(artifact.nodeEngine, `entries[${index}].artifact.nodeEngine`, 512)
+  const client = parseDshClientContractEvidence(artifact.client)
   const pnpmVersion = runtime.pnpmVersion === undefined ? undefined : exactVersion(runtime.pnpmVersion, `entries[${index}].runtime.pnpmVersion`)
   const requiredDependencyBuilds = item.requiredDependencyBuilds === undefined
     ? []
@@ -461,6 +503,7 @@ function parseEntry(value: unknown, index: number): DshCompatibilityLedgerEntry 
   }
   return {
     caseId: caseId(item.caseId, `entries[${index}].caseId`),
+    ...(item.profileEnvironment === undefined ? {} : { profileEnvironment: parseDshProfileEnvironment(item.profileEnvironment) }),
     targetId: caseId(item.targetId, `entries[${index}].targetId`),
     plugin: exactSpec(item.plugin, `entries[${index}].plugin`),
     dshVersion: exactVersion(item.dshVersion, `entries[${index}].dshVersion`),
@@ -483,6 +526,7 @@ function parseEntry(value: unknown, index: number): DshCompatibilityLedgerEntry 
       ...(sha256 === undefined ? {} : { sha256 }),
       ...(integrity === undefined ? {} : { integrity }),
       ...(nodeEngine === undefined ? {} : { nodeEngine }),
+      ...(client === undefined ? {} : { client }),
     },
     ...(profileLockfile === undefined && runtimeGraph === undefined
       ? {}
@@ -543,15 +587,19 @@ export function createDshCompatibilityContractFingerprint(value: {
   plugin: string
   dshVersion: string
   nodeMajor: number
+  platform?: 'linux'
+  architecture?: 'x64' | 'arm64'
   allowedBuilds: readonly string[]
+  profileEnvironment?: DshProfileEnvironment
 }): string {
+  const profileEnvironment = parseDshProfileEnvironment(value.profileEnvironment)
   return fingerprint({
-    // v1alpha2 boots the composed DSH profile instead of imposing a package-
-    // root ESM export that the DSH bundle contract does not require.
-    probe: 'dsh-install/v1alpha2',
-    platform: 'linux',
-    architecture: 'x64',
-    packageManager: 'pnpm@11.7.0',
+    // v1alpha4 requires exact client-platform attribution before Web-specific conclusions.
+    probe: 'dsh-install/v1alpha4',
+    platform: value.platform ?? 'linux',
+    architecture: value.architecture ?? 'x64',
+    packageManager: `pnpm@${profileEnvironment.pnpmVersion}`,
+    overrides: profileEnvironment.overrides,
     image: `node:${value.nodeMajor}-bookworm-slim`,
     plugin: value.plugin,
     dshVersion: value.dshVersion,
@@ -591,13 +639,20 @@ function parseExpectedCases(input: readonly DshCompatibilityExpectedCase[]): Map
     if (!FINGERPRINT.test(item.staticFingerprint) || !FINGERPRINT.test(item.contractFingerprint)) {
       throw new Error(`expected case ${id} has an invalid fingerprint`)
     }
+    if (item.platform !== undefined && item.platform !== 'linux') throw new Error(`expected case ${id} platform is unsupported`)
+    if (item.architecture !== undefined && item.architecture !== 'x64' && item.architecture !== 'arm64') {
+      throw new Error(`expected case ${id} architecture is unsupported`)
+    }
     expected.set(id, {
       ...item,
+      ...(item.profileEnvironment === undefined ? {} : { profileEnvironment: parseDshProfileEnvironment(item.profileEnvironment) }),
       id,
       targetId: caseId(item.targetId, `expected case ${id} targetId`),
       plugin,
       dshVersion,
       nodeMajor: nodeMajor(item.nodeMajor, `expected case ${id} nodeMajor`),
+      platform: item.platform ?? 'linux',
+      architecture: item.architecture ?? 'x64',
       allowedBuilds: allowedBuilds.sort().join(','),
       reasons: [...new Set(item.reasons)].sort(),
     })
@@ -619,14 +674,29 @@ function parseObservationReport(value: unknown, expected: DshCompatibilityExpect
   const runtimeNodeVersion = exactVersion(runtime.nodeVersion, 'report runtime.nodeVersion')
   const actualMajor = Number(runtimeNodeVersion.split('.')[0])
   if (actualMajor !== expected.nodeMajor) throw new Error(`report Node ${runtimeNodeVersion} does not match scheduled Node ${expected.nodeMajor}`)
+  const platform = reportString(runtime.platform, 'report runtime.platform', 64)
+  const architecture = reportString(runtime.architecture, 'report runtime.architecture', 64)
+  if (platform !== (expected.platform ?? 'linux')) throw new Error(`report platform ${platform} does not match the scheduled platform`)
+  if (architecture !== (expected.architecture ?? 'x64')) throw new Error(`report architecture ${architecture} does not match scheduled ${expected.architecture ?? 'x64'}`)
   const packageManager = reportRecord(runtime.packageManager, 'report runtime.packageManager')
   if (packageManager.name !== 'pnpm') throw new Error('report package manager is not pnpm')
   const pnpmVersion = packageManager.version === undefined ? undefined : exactVersion(packageManager.version, 'report runtime.packageManager.version')
+  const expectedEnvironment = parseDshProfileEnvironment(expected.profileEnvironment)
+  if (pnpmVersion !== undefined && pnpmVersion !== expectedEnvironment.pnpmVersion) throw new Error(`report pnpm ${pnpmVersion} does not match scheduled ${expectedEnvironment.pnpmVersion}`)
+  const observedEnvironment = report.profileEnvironment === undefined ? undefined : parseDshProfileEnvironment(report.profileEnvironment)
+  if (observedEnvironment !== undefined && JSON.stringify(observedEnvironment) !== JSON.stringify(expectedEnvironment)) throw new Error('report profile environment does not match the scheduled settings')
   const boundary = reportRecord(report.boundary, 'report boundary')
   const approved = parseLifecycleBuilds(boundary.approvedDependencyBuilds, 'report boundary.approvedDependencyBuilds')
   if (approved.join(',') !== expected.allowedBuilds) throw new Error('report approved dependency builds do not match the scheduled policy')
+  const currentContract = createDshCompatibilityContractFingerprint({ plugin: expected.plugin, dshVersion: expected.dshVersion,
+    nodeMajor: expected.nodeMajor, platform: expected.platform ?? 'linux', architecture: expected.architecture ?? 'x64', allowedBuilds: approved, profileEnvironment: expectedEnvironment })
+  if (expected.contractFingerprint === currentContract && report.executionContract !== 'dsh-install/v1alpha4') {
+    throw new Error('report did not establish the scheduled plane-aware execution contract')
+  }
   const result = reportString(report.result, 'report result', 64) as DshInstallObservationResult
   if (!RESULTS.has(result)) throw new Error('report result is unsupported')
+  if (result === 'compatible' && pnpmVersion === undefined) throw new Error(`a compatible report must establish pnpm ${expectedEnvironment.pnpmVersion}`)
+  if (result === 'compatible' && expected.profileEnvironment !== undefined && observedEnvironment === undefined) throw new Error('a compatible report must establish the scheduled profile environment')
   const requiredDependencyBuilds = boundary.requiredDependencyBuilds === undefined
     ? []
     : parseLifecycleBuilds(boundary.requiredDependencyBuilds, 'report boundary.requiredDependencyBuilds')
@@ -637,6 +707,7 @@ function parseObservationReport(value: unknown, expected: DshCompatibilityExpect
   const sha256 = optionalBareSha256(artifact.sha256, 'report artifact.sha256')
   const integrity = optionalBoundedString(artifact.integrity, 'report artifact.integrity', 1_024)
   const nodeEngine = optionalBoundedString(artifact.nodeEngine, 'report artifact.nodeEngine', 512)
+  const client = parseDshClientContractEvidence(artifact.client)
   const resolutionRecord = report.resolution === undefined ? undefined : reportRecord(report.resolution, 'report resolution')
   const profileLockfile = resolutionRecord === undefined ? undefined : parseProfileLockfile(resolutionRecord.profileLockfile, 'report resolution.profileLockfile')
   const runtimeGraph = resolutionRecord === undefined ? undefined : parseRuntimeGraph(resolutionRecord.runtimeGraph, 'report resolution.runtimeGraph')
@@ -646,14 +717,15 @@ function parseObservationReport(value: unknown, expected: DshCompatibilityExpect
   if (!Number.isFinite(Date.parse(observedAt))) throw new Error('report completedAt is not a timestamp')
   return {
     caseId: expected.id,
+    ...(observedEnvironment === undefined ? {} : { profileEnvironment: observedEnvironment }),
     targetId: expected.targetId,
     plugin,
     dshVersion,
     runtime: {
       nodeMajor: expected.nodeMajor,
       nodeVersion: runtimeNodeVersion,
-      platform: reportString(runtime.platform, 'report runtime.platform', 64),
-      architecture: reportString(runtime.architecture, 'report runtime.architecture', 64),
+      platform,
+      architecture,
       ...(pnpmVersion === undefined ? {} : { pnpmVersion }),
     },
     staticFingerprint: expected.staticFingerprint,
@@ -668,6 +740,7 @@ function parseObservationReport(value: unknown, expected: DshCompatibilityExpect
       ...(sha256 === undefined ? {} : { sha256 }),
       ...(integrity === undefined ? {} : { integrity }),
       ...(nodeEngine === undefined ? {} : { nodeEngine }),
+      ...(client === undefined ? {} : { client }),
     },
     ...(profileLockfile === undefined && runtimeGraph === undefined
       ? {}
@@ -693,11 +766,11 @@ function parseLifecycleBuilds(value: unknown, label: string): string[] {
 }
 
 function isIncompatible(result: DshInstallObservationResult): boolean {
-  return result !== 'compatible' && result !== 'build-approval-required'
+  return result !== 'compatible' && !isReviewSignal(result)
 }
 
 function isReviewSignal(result: DshInstallObservationResult): boolean {
-  return result === 'build-approval-required'
+  return result === 'build-approval-required' || result === 'unknown'
 }
 
 function sameResolution(
@@ -730,7 +803,7 @@ function transition(previous: DshCompatibilityLedgerEntry | undefined, current: 
   let status: DshCompatibilityTransitionStatus
   if (previous === undefined) status = currentReview ? 'new-review-signal' : currentIncompatible ? 'new-incompatibility' : 'compatible'
   else if (currentReview && previousReview) {
-    status = previous.reason === current.reason ? 'persisting-review-signal' : 'changed-review-signal'
+    status = previous.result === current.result && previous.reason === current.reason ? 'persisting-review-signal' : 'changed-review-signal'
   } else if (currentReview && previousIncompatible) status = 'reclassified-for-review'
   else if (currentReview) status = 'new-review-signal'
   else if (previousReview && !currentIncompatible) status = 'resolved-review-signal'

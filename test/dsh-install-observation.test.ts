@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { describe, it } from 'node:test'
 import {
   extractPnpmRequiredDependencyBuilds,
   observeDshPluginInstall,
+  observeDshProfileResolution,
   parseDshInstallTrace,
   renderDshInstallObservation,
   type InstallObservationCommand,
@@ -33,6 +35,136 @@ function passed(overrides: Partial<InstallObservationCommandResult> = {}): Insta
 }
 
 describe('DSH install observation', () => {
+  it('establishes the planned pnpm and profile overrides before executing the plugin', async () => {
+    const profileEnvironment = { pnpmVersion: '10.33.0', overrides: { 'host-api': '1.0.0' } }
+    const options = { packageSpec: 'environment-plugin@1.0.0', dshVersion: '0.1.5-rc.2',
+      allowExecution: true, isolationProvider: 'other' as const, profileEnvironment }
+    let actualPnpm = '10.33.0'
+    const phases: string[] = []
+    const runner = async (command: InstallObservationCommand): Promise<InstallObservationCommandResult> => {
+      phases.push(command.phase)
+      if (command.phase === 'runtime') return passed({ stdout: actualPnpm })
+      if (command.phase === 'artifact') {
+        await writeFile(join(command.cwd, 'environment-plugin-1.0.0.tgz'), makeTarball([
+          { path: 'package/package.json', contents: JSON.stringify({ name: 'environment-plugin', version: '1.0.0', dsh: { bundle: { patch: './cordis.patch.yml' } } }) },
+          { path: 'package/cordis.patch.yml', contents: '[]\n' },
+        ]))
+        return passed({ stdout: 'environment-plugin-1.0.0.tgz' })
+      }
+      if (command.args.includes('overrides')) return passed({ stdout: JSON.stringify(profileEnvironment.overrides) })
+      if (command.phase === 'install') {
+        const settings = JSON.parse(await readFile(join(command.env.DSH_HOME!, 'profiles', 'headless', 'pnpm-workspace.yaml'), 'utf8'))
+        assert.deepEqual(settings.overrides, profileEnvironment.overrides)
+        await writeFile(command.tracePath!, TRACE.replaceAll('/sandbox', command.sandboxRoot))
+        return passed({ code: 1, stderr: 'fixture stops at the dependency installation boundary' })
+      }
+      return passed()
+    }
+    const observed = await observeDshPluginInstall({ ...options, runner })
+    assert.equal(observed.result, 'install-failed')
+    assert.deepEqual(Reflect.get(observed, 'profileEnvironment'), profileEnvironment)
+    assert.ok(phases.includes('install'))
+    phases.length = 0
+    actualPnpm = '11.7.0'
+    const mismatch = await observeDshPluginInstall({ ...options, runner })
+    assert.equal(mismatch.result, 'unknown')
+    assert.match(mismatch.reason, /pnpm.*10\.33\.0/)
+    assert.deepEqual(phases, ['runtime'], 'no target code or artifact should be loaded under the wrong runtime')
+  })
+
+  it('records client declarations and keeps missing browser peers incomplete after a successful headless load', async () => {
+    const manifest = { name: 'web-plane-plugin', version: '1.0.0', main: './lib/host.js',
+      exports: { '.': './lib/host.js', './client': './lib/client.js' }, peerDependencies: { react: '^18.2.0' },
+      dsh: { bundle: { patch: './cordis.patch.yml' }, client: { platform: 'web', inject: ['slots'] } } }
+    const runner = async (command: InstallObservationCommand): Promise<InstallObservationCommandResult> => {
+      if (command.phase === 'runtime') return passed({ stdout: '11.7.0\n' })
+      if (command.phase === 'artifact') {
+        await writeFile(join(command.cwd, 'web-plane-plugin-1.0.0.tgz'), makeTarball([
+          { path: 'package/package.json', contents: JSON.stringify(manifest) },
+          { path: 'package/cordis.patch.yml', contents: '[]\n' },
+          { path: 'package/lib/host.js', contents: 'export {}\n' },
+          { path: 'package/lib/client.js', contents: "import 'react'\n" },
+        ]))
+        return passed({ stdout: JSON.stringify([{ filename: 'web-plane-plugin-1.0.0.tgz' }]) })
+      }
+      if (command.phase === 'install') {
+        const profile = join(command.env.DSH_HOME as string, 'profiles', 'headless')
+        await mkdir(join(profile, 'node_modules', 'web-plane-plugin'), { recursive: true })
+        await writeFile(join(profile, 'package.json'), JSON.stringify({ dsh: { profile: { bundles: ['web-plane-plugin'] } } }))
+        await writeFile(join(profile, 'node_modules', 'web-plane-plugin', 'package.json'), JSON.stringify(manifest))
+        const runtime = join(command.env.XDG_CACHE_HOME as string, 'pnpm', 'dlx', 'fixture', 'node_modules', '@deepseek-ai', 'dsh')
+        await mkdir(runtime, { recursive: true })
+        await writeFile(join(runtime, 'package.json'), JSON.stringify({ name: '@deepseek-ai/dsh', version: '0.1.5-rc.2' }))
+      }
+      if (command.phase === 'load') await writeFile(join(command.cwd, '.upstream-radar-peer-resolution.json'), JSON.stringify({
+        schema: 'upstream-radar.profile-peer-resolution/v1alpha1', peers: [{ name: 'react', status: 'missing' }],
+      }))
+      if (command.tracePath !== undefined) await writeFile(command.tracePath, TRACE.replaceAll('/sandbox', command.sandboxRoot))
+      return passed()
+    }
+    const report = await observeDshPluginInstall({ packageSpec: 'web-plane-plugin@1.0.0', dshVersion: '0.1.5-rc.2',
+      allowExecution: true, isolationProvider: 'other', runner })
+    assert.equal(report.stages.load.status, 'passed')
+    assert.equal(report.result, 'unknown')
+    assert.deepEqual(Reflect.get(report.artifact, 'client'), { platform: 'web', inject: ['slots'], entryPoints: ['lib/client.js'] })
+    assert.equal(report.resolution.runtimeGraph?.pluginPeerContracts.missing, 1)
+    assert.equal(report.resolution.runtimeGraph?.unresolved, 1)
+    assert.deepEqual(Reflect.get(report.resolution.runtimeGraph!.pluginPeerContracts.relations[0]!, 'usageByPlane'), {
+      clientPlatform: 'web',
+      host: 'no-literal-reference-observed', webClient: 'runtime-import-observed', unattributed: 'no-literal-reference-observed',
+    })
+    assert.equal(Reflect.get(report, 'executionContract'), 'dsh-install/v1alpha4')
+  })
+
+  it('collects the selected Web profile graph without executing package files', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'radar-web-graph-test-'))
+    try {
+      const home = join(root, 'home')
+      const profile = join(home, 'profiles', 'web')
+      const host = join(root, 'cache', 'pnpm', 'dlx', 'fixture', 'node_modules', '@deepseek-ai', 'dsh')
+      await mkdir(join(profile, 'node_modules', 'example-plugin'), { recursive: true })
+      await mkdir(host, { recursive: true })
+      await writeFile(join(host, 'package.json'), JSON.stringify({ name: '@deepseek-ai/dsh', version: '0.1.5-rc.2' }))
+      await writeFile(join(profile, 'node_modules', 'example-plugin', 'package.json'), JSON.stringify({ name: 'example-plugin', version: '1.0.0' }))
+      await writeFile(join(profile, 'package.json'), JSON.stringify({ name: 'web-profile', version: '0.0.0', dependencies: { 'example-plugin': '1.0.0' } }))
+      const evidence = await observeDshProfileResolution(home, 'web', { name: 'example-plugin', version: '1.0.0' }, '0.1.5-rc.2', join(root, 'cache'))
+      assert.match(evidence.runtimeGraph?.digest ?? '', /^sha256:[a-f0-9]{64}$/)
+      assert.equal(evidence.runtimeGraph?.hostRuntime?.dshVersion, '0.1.5-rc.2')
+      await assert.rejects(observeDshProfileResolution(home, '../web', { name: 'example-plugin', version: '1.0.0' }, '0.1.5-rc.2', join(root, 'cache')), /profile/)
+    } finally { await rm(root, { recursive: true, force: true }) }
+  })
+  it('uses an explicit proxy without forwarding host proxy credentials', async () => {
+    const report = await observeDshPluginInstall({
+      packageSpec: 'example-plugin@1.0.0',
+      dshVersion: '0.1.5-rc.2',
+      allowExecution: true,
+      isolationProvider: 'other',
+      networkProxy: 'http://192.168.5.2:7897',
+      hostEnvironment: { PATH: process.env.PATH, HTTPS_PROXY: 'http://user:secret@host.example', GITHUB_TOKEN: 'secret' },
+      runner: async command => {
+        assert.equal(command.env.HTTPS_PROXY, 'http://192.168.5.2:7897/')
+        assert.equal(command.env.NODE_USE_ENV_PROXY, '1')
+        assert.equal(command.env.GITHUB_TOKEN, undefined)
+        return passed({ stdout: 'unknown\n' })
+      },
+    })
+    assert.equal(report.result, 'unknown')
+    assert.match(report.boundary.note, /proxy/)
+  })
+
+  it('never inherits the host proxy without an explicit selection', async () => {
+    await observeDshPluginInstall({
+      packageSpec: 'example-plugin@1.0.0', dshVersion: '0.1.5-rc.2',
+      allowExecution: true, isolationProvider: 'other',
+      hostEnvironment: { HTTPS_PROXY: 'http://user:secret@host.example', NODE_USE_ENV_PROXY: '1' },
+      runner: async command => {
+        assert.equal(command.env.HTTPS_PROXY, undefined)
+        assert.equal(command.env.NODE_USE_ENV_PROXY, undefined)
+        return passed({ stdout: 'unknown\n' })
+      },
+    })
+  })
+
   it('extracts the exact pnpm dependency-build gate for later execution planes', () => {
     const output = '[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: cloudflared@0.7.3, @scope/native@1.2.3, node-pty@1.1.0\n\nRun "pnpm approve-builds" to pick which dependencies should be allowed to run scripts.\n'
     assert.deepEqual(extractPnpmRequiredDependencyBuilds(output, 'demo-plugin'), [

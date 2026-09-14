@@ -1,16 +1,22 @@
 import { createHash } from 'node:crypto'
+import { parseDshProfileEnvironment, prepareDshProfileOverrides, verifyDshProfileOverrides, type DshProfileEnvironment } from './dsh-profile-environment.js'
 import { spawn, type ChildProcess } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { constants } from 'node:fs'
 import { chmod, mkdir, mkdtemp, open, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { basename, join, relative, resolve, sep } from 'node:path'
-import { extractPnpmRequiredDependencyBuilds } from './dsh-install-observation.js'
+import { extractPnpmRequiredDependencyBuilds, observeDshProfileResolution } from './dsh-install-observation.js'
+import type { DshProfileResolutionEvidence } from './dsh-compatibility-ledger.js'
 import { parseNpmSpec } from './npm.js'
 import { parseNpmTarball } from './tar.js'
 import { TOOL_VERSION } from './version.js'
+import { observationNetworkEnvironment } from './dsh-observation-network.js'
+import { parseDshClientContract, type DshClientContract } from './dsh-peer-planes.js'
+import { collectDshWebBootRoster, type DshWebContractEvidence } from './dsh-web-contract.js'
 
 export const DSH_SURFACE_OBSERVATION_SCHEMA = 'upstream-radar.dsh-surface-observation/v1alpha1' as const
+export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha9' as const
 
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const CASE_ID = /^[a-z0-9][a-z0-9._-]{0,63}$/
@@ -42,6 +48,9 @@ export interface DshSurfaceStage {
 
 export interface DshWebSurfaceEvidence {
   plane: 'web'
+  /** Derived from the exact packed manifest, not from the selected profile. */
+  pluginClientDeclared?: boolean
+  clientContract?: DshWebContractEvidence
   url: string
   httpStatus?: number
   title?: string
@@ -52,6 +61,7 @@ export interface DshWebSurfaceEvidence {
   pluginEntryPresent: boolean
   pluginBundleUrl?: string
   pluginBundleStatus?: number
+  pluginBundleCollectionError?: string
   /** The framework-free DSH boot page handed the root to the assembled app. */
   applicationMounted: boolean
   /** Inferred from DSH's guarantee that hand-off follows activation of every graph entry. */
@@ -87,6 +97,8 @@ export interface DshSurfaceObservationReport {
   tool: { name: 'upstream-radar'; version: string }
   probe: 'dsh-surface'
   scope: 'surface-runtime-behavior'
+  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8'
+  profileEnvironment?: DshProfileEnvironment
   startedAt: string
   completedAt: string
   caseId: string
@@ -122,6 +134,7 @@ export interface DshSurfaceObservationReport {
     shutdown: DshSurfaceStage
   }
   evidence: DshWebSurfaceEvidence | DshTuiSurfaceEvidence
+  resolution?: DshProfileResolutionEvidence
   result: DshSurfaceObservationResult
   reason: string
   boundary: {
@@ -138,6 +151,7 @@ export interface DshSurfaceObservationReport {
 }
 
 export interface DshWebEvaluationInput {
+  pluginClientDeclared?: boolean
   driverAvailable: boolean
   hostStarted: boolean
   httpStatus?: number
@@ -145,6 +159,7 @@ export interface DshWebEvaluationInput {
   bootManifestPresent: boolean
   pluginEntryPresent: boolean
   pluginBundleStatus?: number
+  pluginBundleCollectionError?: string
   applicationMounted: boolean
   pluginMaterialized: boolean
   bootFailureText?: string
@@ -168,6 +183,7 @@ export interface DshSurfaceEvaluation {
 }
 
 export interface DshSurfaceObservationOptions {
+  profileEnvironment?: DshProfileEnvironment
   packageSpec: string
   dshVersion: string
   caseId: string
@@ -182,6 +198,7 @@ export interface DshSurfaceObservationOptions {
   allowExecution: boolean
   isolationProvider: DshSurfaceIsolationProvider
   timeoutMs?: number
+  networkProxy?: string
   artifactsDirectory?: string
   hostEnvironment?: NodeJS.ProcessEnv
   driverRoot?: string
@@ -202,6 +219,8 @@ interface PackedArtifact {
   filename: string
   sha256: string
   bytes: number
+  webClientDeclared: boolean
+  client?: DshClientContract
   integrity?: string
 }
 
@@ -270,12 +289,52 @@ function boundedList(values: readonly string[]): string[] {
   return values.slice(0, MAX_SURFACE_ERRORS).map(value => bounded(value, 512))
 }
 
+/** DSH's generated login link is untrusted text: accept only the exact disposable origin. */
+export function dshWebLaunchUrl(output: string, expectedUrl: string): string {
+  const expected = new URL(expectedUrl)
+  for (const match of output.slice(0, MAX_COMMAND_OUTPUT_BYTES).matchAll(/dsh web:\s+(https?:\/\/[^\s]+)/g)) {
+    try {
+      const url = new URL(match[1] as string)
+      const token = url.searchParams.get('token')
+      if (url.origin === expected.origin && url.pathname === expected.pathname && isLoopbackUrl(url.href)
+        && url.username === '' && url.password === '' && url.hash === '' && url.searchParams.size === 1
+        && token !== null && /^[a-zA-Z0-9_-]{1,256}$/.test(token)) return url.href
+    } catch { /* Do not follow arbitrary URLs printed by target code. */ }
+  }
+  return expectedUrl
+}
+
+function redactWebTokens(output: string): string {
+  return output.replace(/([?&]token=)[^&\s]+/g, '$1[ephemeral-token-redacted]')
+}
+
+export function dshWebClientDeclared(dsh: Record<string, unknown> | undefined): boolean {
+  if (dsh?.client === undefined) return false
+  if (typeof dsh.client !== 'object' || dsh.client === null || Array.isArray(dsh.client)) {
+    throw new Error('packed artifact has a malformed dsh.client declaration')
+  }
+  const client = dsh.client as Record<string, unknown>
+  if (typeof client.platform !== 'string') throw new Error('packed artifact has an incomplete dsh.client declaration')
+  return client.platform === 'web'
+}
+
+export function evaluateDshWebObservationError(error: string, hostExitCode: number | undefined): DshSurfaceEvaluation {
+  if (hostExitCode !== undefined) {
+    return { result: 'surface-incompatible', failedStage: 'host',
+      reason: `the exact DSH Web profile exited with ${hostExitCode} before surface observation completed` }
+  }
+  return { result: 'unknown', failedStage: 'surface', reason: `the browser driver failed while observing the Web surface: ${bounded(error)}` }
+}
+
 export function evaluateDshWebEvidence(input: DshWebEvaluationInput): DshSurfaceEvaluation {
   if (!input.driverAvailable) {
     return { result: 'environment-unsupported', failedStage: 'surface', reason: 'the isolated runner has no usable Chromium/Playwright driver' }
   }
   if (!input.hostStarted) {
     return { result: 'surface-incompatible', failedStage: 'host', reason: 'the exact DSH Web profile exited before exposing an HTTP surface' }
+  }
+  if (input.httpStatus === 401 || input.httpStatus === 403) {
+    return { result: 'unknown', failedStage: 'host', reason: 'the disposable DSH Web login was not established; this is incomplete setup, not a plugin incompatibility' }
   }
   if (input.httpStatus === undefined || input.httpStatus < 200 || input.httpStatus >= 400) {
     return { result: 'surface-incompatible', failedStage: 'host', reason: `the DSH Web endpoint returned HTTP ${input.httpStatus ?? 'unknown'}` }
@@ -286,17 +345,20 @@ export function evaluateDshWebEvidence(input: DshWebEvaluationInput): DshSurface
   if (!input.bootManifestPresent) {
     return { result: 'surface-incompatible', failedStage: 'surface', reason: 'the Web document did not expose a valid DSH boot manifest' }
   }
-  if (!input.pluginEntryPresent) {
+  if (input.pluginClientDeclared !== false && !input.pluginEntryPresent) {
     return { result: 'surface-incompatible', failedStage: 'surface', reason: 'the declared plugin client entry is absent from the DSH boot manifest' }
   }
-  if (input.pluginBundleStatus === undefined || input.pluginBundleStatus < 200 || input.pluginBundleStatus >= 400) {
+  if (input.pluginBundleCollectionError !== undefined) {
+    return { result: 'unknown', failedStage: 'surface', reason: `browser bundle collection coverage is incomplete: ${bounded(input.pluginBundleCollectionError, 512)}` }
+  }
+  if (input.pluginClientDeclared !== false && (input.pluginBundleStatus === undefined || input.pluginBundleStatus < 200 || input.pluginBundleStatus >= 400)) {
     return { result: 'surface-incompatible', failedStage: 'surface', reason: `the declared plugin client bundle returned HTTP ${input.pluginBundleStatus ?? 'unknown'}` }
   }
   if (!input.applicationMounted) {
     const detail = input.bootFailureText === undefined ? '' : `: ${bounded(input.bootFailureText, 512)}`
     return { result: 'surface-incompatible', failedStage: 'surface', reason: `DSH Web did not hand off from its boot page to the assembled application${detail}` }
   }
-  if (!input.pluginMaterialized) {
+  if (input.pluginClientDeclared !== false && !input.pluginMaterialized) {
     return { result: 'surface-incompatible', failedStage: 'surface', reason: 'DSH mounted the application but could not establish activation of the declared plugin client entry' }
   }
   if (input.pageErrors.length > 0) {
@@ -305,7 +367,9 @@ export function evaluateDshWebEvidence(input: DshWebEvaluationInput): DshSurface
   return {
     result: 'compatible',
     failedStage: undefined,
-    reason: 'the Web host mounted and the declared plugin client entry was published, fetched, and materialized',
+    reason: input.pluginClientDeclared === false
+      ? 'the exact artifact registered in the Web profile, the host booted, and the stock Web application mounted; the artifact declares no browser client entry'
+      : 'the Web host mounted and the declared plugin client entry was published, fetched, and materialized',
   }
 }
 
@@ -586,11 +650,14 @@ async function packedArtifact(result: CommandResult, directory: string, expected
     ? dsh.bundle as Record<string, unknown>
     : undefined
   if (typeof bundle?.patch !== 'string' || bundle.patch.trim() === '') throw new Error('packed artifact does not declare dsh.bundle.patch')
+  const client = parseDshClientContract(manifest)
   return {
     path,
     filename,
     sha256: createHash('sha256').update(bytes).digest('hex'),
     bytes: bytes.length,
+    webClientDeclared: dshWebClientDeclared(dsh),
+    ...(client === undefined ? {} : { client }),
     ...(typeof item.integrity === 'string' ? { integrity: bounded(item.integrity, 1_024) } : {}),
   }
 }
@@ -810,15 +877,28 @@ async function observeWebSurface(input: {
         await route.abort('blockedbyclient')
       }
     })
-    const response = await page.goto(evidence.url, { waitUntil: 'domcontentloaded', timeout: Math.min(input.timeoutMs, 90_000) })
+    const response = await page.goto(dshWebLaunchUrl(host.output(), evidence.url), { waitUntil: 'domcontentloaded', timeout: Math.min(input.timeoutMs, 90_000) })
     if (response !== null) evidence.httpStatus = response.status()
     evidence.title = bounded(await page.title(), 256)
     const initial = await page.evaluate(runtimeId => {
       const value = globalThis as unknown as {
         document?: { querySelector(selector: string): { childElementCount?: number } | null }
-        __DSH_BOOT__?: { entries?: Array<{ id?: string; url?: string }> }
+        __DSH_BOOT__?: { entries?: Array<{ id?: string; url?: string; rev?: string; inject?: string[]; external?: string[] }> }
       }
       const entries = Array.isArray(value.__DSH_BOOT__?.entries) ? value.__DSH_BOOT__?.entries ?? [] : []
+      if (entries.length > 512) throw new Error('boot roster entry budget exceeded')
+      const roster = entries.map(item => {
+        for (const [key, limit] of [['id', 214], ['url', 2048], ['rev', 256]] as const) {
+          if (typeof item[key] !== 'string' || item[key]!.length > limit) throw new Error('boot roster string budget exceeded')
+        }
+        for (const field of ['inject', 'external'] as const) {
+          const values = item[field]
+          if (values !== undefined && (!Array.isArray(values) || values.length > 64
+            || values.some(value => typeof value !== 'string' || value.length > 512))) throw new Error('boot roster edge budget exceeded')
+        }
+        return { id: item.id, url: item.url, rev: item.rev, inject: item.inject ?? [], external: item.external ?? [] }
+      })
+      if (JSON.stringify(roster).length > 256 * 1024) throw new Error('boot roster byte budget exceeded')
       const entry = entries.find(item => item.id === runtimeId)
       const ids = entries.map(item => typeof item.id === 'string' ? item.id : '').filter(id => id !== '')
       return {
@@ -829,21 +909,62 @@ async function observeWebSurface(input: {
         bootEntryIds: [...new Set([...ids.filter(id => !id.startsWith('@deepseek-ai/')), ...ids])].slice(0, 32),
         pluginEntryPresent: entry !== undefined,
         pluginBundleUrl: typeof entry?.url === 'string' ? entry.url : undefined,
+        roster,
       }
     }, input.report.runtimeId)
     evidence.rootMounted = initial.rootMounted
     evidence.bootManifestPresent = initial.bootManifestPresent
     evidence.bootEntryIds = boundedList(initial.bootEntryIds)
     evidence.pluginEntryPresent = initial.pluginEntryPresent
+    evidence.clientContract!.boot = collectDshWebBootRoster({ entries: initial.roster })
     if (initial.pluginBundleUrl !== undefined) {
       evidence.pluginBundleUrl = new URL(initial.pluginBundleUrl, evidence.url).href
       try {
-        evidence.pluginBundleStatus = (await fetch(evidence.pluginBundleUrl, { signal: AbortSignal.timeout(10_000) })).status
-      } catch {
-        evidence.pluginBundleStatus = 0
+        // The browser holds DSH's ephemeral authentication cookie. A separate
+        // Node fetch would test an unauthenticated endpoint and falsely report
+        // the protected bundle as incompatible. Browser routing still blocks
+        // non-loopback requests.
+        const bundle = await page.evaluate(async url => {
+          const value = globalThis as unknown as {
+            fetch(url: string, options: { credentials: string }): Promise<{ status: number;
+              body: { getReader(): { read(): Promise<{ done: boolean; value?: Uint8Array }>; cancel(): Promise<void> } } | null }>
+            crypto: { subtle: { digest(algorithm: string, bytes: Uint8Array): Promise<ArrayBuffer> } }
+          }
+          const response = await value.fetch(url, { credentials: 'same-origin' })
+          if (response.status < 200 || response.status >= 400) {
+            await response.body?.getReader().cancel().catch(() => {})
+            return { status: response.status }
+          }
+          const reader = response.body?.getReader()
+          if (reader === undefined) throw new Error('bundle body is unavailable')
+          const chunks: Uint8Array[] = []
+          let bytes = 0
+          try {
+            while (true) {
+              const chunk = await reader.read()
+              if (chunk.done) break
+              if (chunk.value === undefined) throw new Error('bundle body is incomplete')
+              bytes += chunk.value.length
+              if (bytes > 8 * 1024 * 1024) throw new Error('bundle byte budget exceeded')
+              chunks.push(chunk.value)
+            }
+          } finally { await reader.cancel().catch(() => {}) }
+          if (bytes === 0) throw new Error('bundle body is empty')
+          const body = new Uint8Array(bytes)
+          let offset = 0
+          for (const chunk of chunks) { body.set(chunk, offset); offset += chunk.length }
+          const digest = new Uint8Array(await value.crypto.subtle.digest('SHA-256', body))
+          return { status: response.status, bytes, sha256: [...digest].map(byte => byte.toString(16).padStart(2, '0')).join('') }
+        }, evidence.pluginBundleUrl)
+        evidence.pluginBundleStatus = bundle.status
+        if (typeof bundle.bytes === 'number' && typeof bundle.sha256 === 'string') {
+          evidence.clientContract!.pluginBundle = { bytes: bundle.bytes, sha256: bundle.sha256 }
+        }
+      } catch (error) {
+        evidence.pluginBundleCollectionError = bounded(error instanceof Error ? error.message : String(error), 512)
       }
     }
-    if (initial.pluginEntryPresent) {
+    if (initial.pluginEntryPresent || evidence.pluginClientDeclared === false) {
       try {
         await page.waitForFunction(() => {
           const value = globalThis as unknown as {
@@ -863,7 +984,7 @@ async function observeWebSurface(input: {
         // the UI renderer replaces [data-dsh-boot]. This is a public,
         // observable boundary; the old __DSH_MODULES__ page global no longer
         // exists in current DSH releases.
-        evidence.pluginMaterialized = true
+        evidence.pluginMaterialized = initial.pluginEntryPresent
       } catch {
         evidence.applicationMounted = false
         evidence.pluginMaterialized = false
@@ -894,7 +1015,9 @@ async function observeWebSurface(input: {
       rootMounted: evidence.rootMounted,
       bootManifestPresent: evidence.bootManifestPresent,
       pluginEntryPresent: evidence.pluginEntryPresent,
+      ...(evidence.pluginClientDeclared === undefined ? {} : { pluginClientDeclared: evidence.pluginClientDeclared }),
       ...(evidence.pluginBundleStatus === undefined ? {} : { pluginBundleStatus: evidence.pluginBundleStatus }),
+      ...(evidence.pluginBundleCollectionError === undefined ? {} : { pluginBundleCollectionError: evidence.pluginBundleCollectionError }),
       applicationMounted: evidence.applicationMounted,
       pluginMaterialized: evidence.pluginMaterialized,
       ...(evidence.bootFailureText === undefined ? {} : { bootFailureText: evidence.bootFailureText }),
@@ -902,17 +1025,25 @@ async function observeWebSurface(input: {
       pageErrors: evidence.pageErrors,
       failedRequests: evidence.failedRequests,
     })
-    input.report.stages.surface = evaluation.failedStage === 'surface'
-      ? { status: 'failed', detail: evaluation.reason }
-      : { status: 'passed' }
-    input.report.stages.interaction = evaluation.failedStage === 'interaction'
-      ? { status: 'failed', detail: evaluation.reason }
-      : { status: 'passed' }
+    if (evaluation.failedStage === 'host') input.report.stages.host = { status: 'failed', detail: evaluation.reason }
+    input.report.stages.surface = evaluation.failedStage === 'host'
+      ? { status: 'skipped' }
+      : evaluation.failedStage === 'surface' ? { status: 'failed', detail: evaluation.reason } : { status: 'passed' }
+    input.report.stages.interaction = evaluation.failedStage === 'host' || evaluation.failedStage === 'surface'
+      ? { status: 'skipped' }
+      : evaluation.failedStage === 'interaction' ? { status: 'failed', detail: evaluation.reason } : { status: 'passed' }
     return evaluation
   } catch (error: unknown) {
-    const reason = `the browser driver failed while observing the Web surface: ${bounded(error instanceof Error ? error.message : String(error))}`
-    input.report.stages.surface = { status: 'failed', detail: reason }
-    return { result: 'unknown', failedStage: 'surface', reason }
+    // A profile can expose an HTTP socket during asynchronous boot and then
+    // fail. Give its close event one bounded turn before blaming the browser.
+    if (!host.exited()) await new Promise(resolveDelay => setTimeout(resolveDelay, 200))
+    const evaluation = evaluateDshWebObservationError(error instanceof Error ? error.message : String(error),
+      host.exited() ? host.code() ?? undefined : undefined)
+    if (evaluation.failedStage === 'host') {
+      input.report.stages.host = { status: 'failed', code: host.code(), detail: bounded(redactWebTokens(host.output())) }
+      input.report.stages.surface = { status: 'skipped' }
+    } else input.report.stages.surface = { status: 'failed', detail: evaluation.reason }
+    return evaluation
   } finally {
     if (traceStarted && context !== undefined) {
       await context.tracing.stop({ path: join(input.artifactsDirectory, safeArtifactName(input.report.caseId, 'trace.zip')) }).catch(() => undefined)
@@ -923,7 +1054,7 @@ async function observeWebSurface(input: {
     input.report.stages.shutdown = stopped
       ? { status: 'passed' }
       : { status: 'failed', detail: 'DSH Web required a forced shutdown' }
-    await writeFile(hostLogPath, bounded(host.output(), MAX_COMMAND_OUTPUT_BYTES), { mode: 0o644 }).catch(() => undefined)
+    await writeFile(hostLogPath, bounded(redactWebTokens(host.output()), MAX_COMMAND_OUTPUT_BYTES), { mode: 0o644 }).catch(() => undefined)
   }
 }
 
@@ -1091,8 +1222,10 @@ function validateObservationOptions(options: DshSurfaceObservationOptions): void
 }
 
 export async function observeDshPluginSurface(options: DshSurfaceObservationOptions): Promise<DshSurfaceObservationReport> {
+  const profileEnvironment = parseDshProfileEnvironment(options.profileEnvironment)
   validateObservationOptions(options)
   const allowedBuilds = normalizeAllowedBuilds(options.allowedBuilds)
+  const networkEnvironment = observationNetworkEnvironment(options.networkProxy)
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
   if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 30_000 || timeoutMs > 600_000) {
     throw new Error('DSH surface observation timeout must be between 30000 and 600000 milliseconds')
@@ -1110,6 +1243,7 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
     tool: { name: 'upstream-radar', version: TOOL_VERSION },
     probe: 'dsh-surface',
     scope: 'surface-runtime-behavior',
+    executionContract: DSH_SURFACE_EXECUTION_CONTRACT,
     startedAt,
     completedAt: startedAt,
     caseId: options.caseId,
@@ -1135,14 +1269,15 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
       externalBrowserRequestsBlocked: options.plane === 'web',
       approvedDependencyBuilds: allowedBuilds,
       requiredDependencyBuilds: [],
-      note: 'The caller supplies a disposable VM and restricted container. Radar passes no repository or model secrets, binds the run to exact artifact bytes, blocks non-loopback browser requests, and collects bounded smoke evidence. This is compatibility evidence, not a malicious-code safety certificate.',
+      note: 'The caller supplies a disposable VM and restricted container. Radar passes no repository or model secrets, binds the run to exact artifact bytes, blocks non-loopback browser requests, and collects bounded smoke evidence. This is compatibility evidence, not a malicious-code safety certificate.'
+        + (options.networkProxy === undefined ? '' : ' Package transport uses an explicitly selected credential-free proxy; browser non-loopback requests remain blocked.'),
     },
   }
 
   const sandboxRoot = await mkdtemp(join(tmpdir(), 'upstream-radar-dsh-surface-'))
   const artifactDirectory = join(sandboxRoot, 'artifact')
   const artifactsDirectory = resolve(options.artifactsDirectory ?? join(sandboxRoot, 'evidence'))
-  const environment = controlledEnvironment(sandboxRoot, hostEnvironment)
+  const environment = { ...controlledEnvironment(sandboxRoot, hostEnvironment), ...networkEnvironment }
   const noScriptsEnvironment = scriptPolicy(environment, false)
   const scriptsEnvironment = scriptPolicy(environment, true)
   const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm'
@@ -1173,6 +1308,11 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
       return finish(report, 'unknown', 'the package-manager runtime could not be established')
     }
     report.runtime.pnpmVersion = pnpmVersion
+    if (pnpmVersion !== profileEnvironment.pnpmVersion) {
+      report.stages.runtime = { status: 'failed', detail: `observed pnpm ${pnpmVersion}, expected ${profileEnvironment.pnpmVersion}` }
+      return finish(report, 'unknown', `the isolated pnpm runtime does not match planned pnpm ${profileEnvironment.pnpmVersion}`)
+    }
+    if (Object.keys(profileEnvironment.overrides).length === 0) report.profileEnvironment = profileEnvironment
 
     const packed = await runCommand(npmCommand, [
       'pack', report.plugin, '--ignore-scripts', '--pack-destination', '.', '--json', '--silent',
@@ -1189,6 +1329,11 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
       bytes: artifact.bytes,
       ...(artifact.integrity === undefined ? {} : { integrity: artifact.integrity }),
     }
+    if (report.evidence.plane === 'web') {
+      report.evidence.pluginClientDeclared = artifact.webClientDeclared
+      report.evidence.clientContract = { revision: 'dsh-web-client-contract/1', peerVersions: 'not-observed',
+        ...(artifact.client === undefined ? {} : { client: artifact.client }) }
+    }
     report.stages.artifact = { status: 'passed', code: packed.code }
     if (artifact.sha256 !== options.expectedArtifactSha256) {
       report.stages.artifact = { status: 'failed', detail: `artifact sha256:${artifact.sha256} does not match scheduled sha256:${options.expectedArtifactSha256}` }
@@ -1204,6 +1349,17 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
       report.stages.profile = { status: 'skipped', detail: 'the custom TUI profile must be created by dsh plugin add' }
     }
 
+    const hasOverrides = Object.keys(profileEnvironment.overrides).length > 0
+    const verifyOverrides = async (): Promise<void> => {
+      const result = await runCommand(pnpmCommand, ['config', 'get', 'overrides', '--json'],
+        join(environment.DSH_HOME as string, 'profiles', report.profile), noScriptsEnvironment, timeoutMs)
+      if (commandStage(result).status !== 'passed') throw new Error('pnpm profile overrides could not be observed')
+      report.profileEnvironment = verifyDshProfileOverrides(profileEnvironment, result.stdout)
+    }
+    if (hasOverrides) {
+      await prepareDshProfileOverrides(environment.DSH_HOME as string, report.profile, profileEnvironment)
+      await verifyOverrides()
+    }
     const install = await runCommand(pnpmCommand, dshArgs(report.dshVersion, [
       'plugin', '--profile', report.profile, 'add', artifact.path,
       ...allowedBuilds.map(name => `--allow-build=${pnpmSurfaceBuildApproval(
@@ -1232,6 +1388,7 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
     if (profileStrategy === 'create-with-plugin-add') {
       report.stages.profile = { status: 'passed', detail: 'dsh plugin add created the custom TUI profile' }
     }
+    if (hasOverrides) await verifyOverrides()
 
     const registered = await registeredBundle(environment.DSH_HOME as string, report.profile, parsedSpec.name)
     report.stages.registration = registered
@@ -1259,10 +1416,25 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
           artifactsDirectory,
           ...(options.driverRoot === undefined ? {} : { driverRoot: options.driverRoot }),
         })
+    if (hasOverrides) await verifyOverrides()
     return finish(report, evaluation.result, evaluation.reason)
   } catch (error: unknown) {
     return finish(report, 'unknown', `the bounded surface observer failed: ${bounded(error instanceof Error ? error.message : String(error))}`)
   } finally {
+    if (report.stages.artifact.status === 'passed' && report.stages.install.status !== 'skipped') {
+      report.resolution = await observeDshProfileResolution(
+        environment.DSH_HOME as string,
+        report.profile,
+        { name: parsedSpec.name, version: parsedSpec.version },
+        report.dshVersion,
+        environment.XDG_CACHE_HOME as string,
+      ).catch(error => ({ runtimeGraphError: bounded(error instanceof Error ? error.message : String(error), 512) }))
+      if (report.result === 'compatible' && report.resolution.runtimeGraph?.digest === undefined) {
+        report.result = 'unknown'
+        report.reason = 'the surface smoke succeeded but its independent profile/host graph could not be established'
+      }
+      report.completedAt = new Date().toISOString()
+    }
     await rm(sandboxRoot, { recursive: true, force: true, maxRetries: 2 }).catch(() => undefined)
   }
 }

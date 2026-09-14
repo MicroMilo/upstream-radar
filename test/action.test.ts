@@ -167,7 +167,13 @@ describe('reusable GitHub Action', () => {
     assert.match(surfaceObserverDockerfile, /chromium/)
     assert.match(surfaceObserverDockerfile, /playwright-core@1\.62\.0/)
     assert.match(surfaceObserverDockerfile, /node-pty@1\.1\.0/)
+    for (const dockerfile of [installObserverDockerfile, surfaceObserverDockerfile]) {
+      assert.match(dockerfile, /FROM node:24-bookworm-slim AS build/)
+      assert.match(dockerfile, /FROM node:\$\{NODE_MAJOR\}-bookworm-slim AS runtime/)
+    }
     const observationPersistStep = checkedInObserverWorkflow.indexOf('name: Persist observation and Agent planning state')
+    const environmentRecommendationStep = checkedInObserverWorkflow.indexOf('name: Infer repository-recommended Node and execution profiles')
+    const installPlanStep = checkedInObserverWorkflow.indexOf('name: Reconcile the current DSH compatibility matrix')
     const initialCheckoutStep = checkedInObserverWorkflow.slice(
       checkedInObserverWorkflow.indexOf('name: Check out the observer and its targets'),
       checkedInObserverWorkflow.indexOf('name: Set up pnpm'),
@@ -180,6 +186,9 @@ describe('reusable GitHub Action', () => {
     const incompleteGate = checkedInObserverWorkflow.indexOf('name: Fail after persisting incomplete reconciliation')
     assert.ok(reconcileStep >= 0)
     assert.ok(observationPersistStep >= 0)
+    assert.ok(environmentRecommendationStep >= 0)
+    assert.ok(environmentRecommendationStep < installPlanStep)
+    assert.ok(installPlanStep < observationPersistStep)
     assert.match(initialCheckoutStep, /ref: \$\{\{ github\.event\.repository\.default_branch \}\}/)
     assert.ok(installObservationJob > observationPersistStep)
     assert.ok(observerHealthJob > incompleteGate)
@@ -195,10 +204,12 @@ describe('reusable GitHub Action', () => {
     assert.match(checkedInObserverWorkflow.slice(observerHealthJob), /needs\.observe\.outputs\.observer_exit/)
     assert.match(checkedInObserverWorkflow.slice(observerHealthJob), /exit 1/)
     const observationPersistence = checkedInObserverWorkflow.slice(observationPersistStep, installObservationJob)
-    assert.match(observationPersistence, /git diff --quiet -- observations\.json/)
+    assert.match(observationPersistence, /git diff --quiet -- \\\n\s+observations\.json \\\n\s+examples\/dsh\/environment-observer\/recommendations\.json/)
     assert.match(observationPersistence, /node scripts\/write-dsh-directory-feed\.mjs/)
     assert.match(observationPersistence, /feeds\/dsh-plugin-compatibility\.json/)
     assert.match(observationPersistence, /feeds\/dsh-plugin-compatibility\.md/)
+    assert.match(observationPersistence, /environment-observer\/recommendations\.json/)
+    assert.match(observationPersistence, /environment-observer\/recommendations\.md/)
     assert.ok(
       observationPersistence.indexOf('node scripts/write-dsh-directory-feed.mjs')
         < observationPersistence.indexOf('git add --'),
@@ -223,6 +234,7 @@ describe('reusable GitHub Action', () => {
     assert.match(surfacePlanJob, /secrets\.ISSUE_LOCATOR_LLM_BASE_URL/)
     assert.match(surfacePlanJob, /secrets\.ISSUE_LOCATOR_LLM_API_KEY/)
     assert.match(surfacePlanJob, /secrets\.ISSUE_LOCATOR_LLM_MODEL/)
+    assert.match(surfacePlanJob, /environment-observer\/recommendations\.json/)
     assert.match(surfacePlanJob, /git add --[\s\S]*surface-observer\/agent-plans\.json[\s\S]*surface-observer\/agent-plans\.md/)
     assert.match(installObserverDockerfile, /until corepack prepare pnpm@11\.3\.0 --activate/)
     assert.match(installObserverDockerfile, /if \[ "\$attempt" -ge 3 \]; then exit 1; fi/)

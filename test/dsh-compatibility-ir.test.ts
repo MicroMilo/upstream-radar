@@ -98,6 +98,23 @@ function ledger(): DshCompatibilityLedger {
 }
 
 describe('DSH compatibility IR', () => {
+  it('retains client injection contracts and per-plane provenance through the IR and reverse index', () => {
+    const value = ledger()
+    const client = { platform: 'web', inject: ['slots'], entryPoints: ['lib/client.js'] }
+    const usageByPlane = { host: 'no-literal-reference-observed', webClient: 'runtime-import-observed', unattributed: 'no-literal-reference-observed' }
+    Object.assign(value.entries[0]!.artifact, { client })
+    Object.assign(value.entries[0]!.resolution!.runtimeGraph!.pluginPeerContracts!.relations[0]!, { usageByPlane, declaredClientInject: true })
+    const ir = buildDshCompatibilityIR(value)
+    assert.deepEqual(Reflect.get(ir.cells[0]!.plugin, 'client'), client)
+    assert.equal(Reflect.get(ir.cells[0]!.runtime, 'profile'), 'headless')
+    assert.equal(Reflect.get(ir.cells[0]!.runtime, 'executionPlane'), 'headless')
+    assert.deepEqual(Reflect.get(ir.relations[0]!.dependency, 'usageByPlane'), usageByPlane)
+    assert.deepEqual(parseDshCompatibilityIR(ir), ir)
+    const reverse = buildDshCompatibilityReverseIndex(ir)
+    assert.deepEqual(Reflect.get(reverse.dependencies[0]!.impacts[0]!, 'usageByPlane'), usageByPlane)
+    assert.deepEqual(parseDshCompatibilityReverseIndex(reverse), reverse)
+  })
+
   it('normalizes the measured plugin-to-host contracts and materializes reverse impacts', () => {
     const ir = buildDshCompatibilityIR(ledger())
 

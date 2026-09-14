@@ -8,7 +8,9 @@ import {
   type DshCompatibilityLedger,
 } from './dsh-compatibility-ledger.js'
 import { parseNpmSpec } from './npm.js'
+import { parseDshAuthorEnvironment, type DshAuthorEnvironment } from './dsh-author-environment.js'
 import { satisfiesSemverRange } from './semver.js'
+import { selectDshProfileEnvironment, type DshProfileEnvironment } from './dsh-profile-environment.js'
 
 export const DSH_INSTALL_TARGETS_SCHEMA = 'upstream-radar.dsh-install-targets/v1alpha1' as const
 
@@ -16,7 +18,9 @@ const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const DSH_TARGET_ID = 'deepseek-harness'
 const DSH_PACKAGE = '@deepseek-ai/dsh'
 const MAX_TARGETS = 100
-const MAX_RUNTIME_PROFILES = 8
+const MAX_RUNTIME_PROFILES = 32
+const MIN_EXECUTABLE_NODE_MAJOR = 22
+const MAX_EXECUTABLE_NODE_MAJOR = 40
 const DEFAULT_REFRESH_AFTER_HOURS = 7 * 24
 
 export interface DshInstallTarget {
@@ -26,6 +30,18 @@ export interface DshInstallTarget {
   observerTargetId?: string
   allowedBuilds?: string[]
   runtimeProfiles?: string[]
+  /** Exact pre-execution repository reasoning applied by the recommendation module. */
+  environmentRecommendation?: {
+    sourceFingerprint: string
+    preferredNodeMajor: number
+    nodeMajors: number[]
+    unavailableNodeMajors: number[]
+    executionProfiles: Array<'headless' | 'web' | 'tui'>
+    coverageGaps?: string[]
+    authorEnvironment?: DshAuthorEnvironment
+    summary: string
+    evidence: string[]
+  }
 }
 
 export interface DshInstallRuntimeProfile {
@@ -36,6 +52,7 @@ export interface DshInstallRuntimeProfile {
 export interface DshInstallTargets {
   schema: typeof DSH_INSTALL_TARGETS_SCHEMA
   refreshAfterHours: number
+  environmentRecommendationsRequired: boolean
   runtimeProfiles: DshInstallRuntimeProfile[]
   plugins: DshInstallTarget[]
 }
@@ -46,6 +63,7 @@ export interface DshInstallPlan {
   matrix: {
     include: DshCompatibilityExpectedCase[]
   }
+  blocked: Array<{ targetId: string; plugin: string; reason: string }>
   triggers: string[]
   reason: string
 }
@@ -71,11 +89,19 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
   if (!Number.isSafeInteger(refreshAfterHours) || refreshAfterHours < 1 || refreshAfterHours > 90 * 24) {
     throw new Error('DSH install target refreshAfterHours must be an integer between 1 and 2160')
   }
+  const environmentRecommendationsRequired = root.environmentRecommendationsRequired === undefined
+    ? false
+    : root.environmentRecommendationsRequired
+  if (typeof environmentRecommendationsRequired !== 'boolean') {
+    throw new Error('DSH install target environmentRecommendationsRequired must be a boolean')
+  }
   const rawRuntimeProfiles = root.runtimeProfiles === undefined
     ? [{ id: 'node22', nodeMajor: 22 }]
     : root.runtimeProfiles
-  if (!Array.isArray(rawRuntimeProfiles) || rawRuntimeProfiles.length === 0 || rawRuntimeProfiles.length > MAX_RUNTIME_PROFILES) {
-    throw new Error(`DSH install targets runtimeProfiles must contain between 1 and ${MAX_RUNTIME_PROFILES} profiles`)
+  if (!Array.isArray(rawRuntimeProfiles)
+    || rawRuntimeProfiles.length > MAX_RUNTIME_PROFILES
+    || (rawRuntimeProfiles.length === 0 && !environmentRecommendationsRequired)) {
+    throw new Error(`DSH install targets runtimeProfiles must contain ${environmentRecommendationsRequired ? 'between 0' : 'between 1'} and ${MAX_RUNTIME_PROFILES} profiles`)
   }
   const runtimeProfileIds = new Set<string>()
   const nodeMajors = new Set<number>()
@@ -85,7 +111,7 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
     if (!/^[a-z0-9][a-z0-9._-]{0,47}$/.test(id)) throw new Error(`runtimeProfiles[${index}].id must be a short lowercase label`)
     if (runtimeProfileIds.has(id)) throw new Error(`duplicate DSH install runtime profile id: ${id}`)
     runtimeProfileIds.add(id)
-    if (!Number.isSafeInteger(item.nodeMajor) || (item.nodeMajor as number) < 16 || (item.nodeMajor as number) > 40) {
+    if (!Number.isSafeInteger(item.nodeMajor) || (item.nodeMajor as number) < MIN_EXECUTABLE_NODE_MAJOR || (item.nodeMajor as number) > MAX_EXECUTABLE_NODE_MAJOR) {
       throw new Error(`runtimeProfiles[${index}].nodeMajor must be a supported Node.js major version`)
     }
     const nodeMajor = item.nodeMajor as number
@@ -130,8 +156,8 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
     if (new Set(allowedBuilds).size !== allowedBuilds.length) throw new Error(`plugins[${index}].allowedBuilds must be unique`)
     allowedBuilds.sort()
     const rawRuntimeProfileIds = item.runtimeProfiles
-    if (rawRuntimeProfileIds !== undefined && (!Array.isArray(rawRuntimeProfileIds) || rawRuntimeProfileIds.length === 0 || rawRuntimeProfileIds.length > MAX_RUNTIME_PROFILES)) {
-      throw new Error(`plugins[${index}].runtimeProfiles must be an array of between 1 and ${MAX_RUNTIME_PROFILES} runtime profile ids`)
+    if (rawRuntimeProfileIds !== undefined && (!Array.isArray(rawRuntimeProfileIds) || rawRuntimeProfileIds.length > MAX_RUNTIME_PROFILES)) {
+      throw new Error(`plugins[${index}].runtimeProfiles must be an array of at most ${MAX_RUNTIME_PROFILES} runtime profile ids`)
     }
     const selectedRuntimeProfiles = rawRuntimeProfileIds === undefined
       ? undefined
@@ -143,6 +169,118 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
     if (selectedRuntimeProfiles !== undefined && new Set(selectedRuntimeProfiles).size !== selectedRuntimeProfiles.length) {
       throw new Error(`plugins[${index}].runtimeProfiles must be unique`)
     }
+    const rawEnvironmentRecommendation = item.environmentRecommendation === undefined
+      ? undefined
+      : record(item.environmentRecommendation, `plugins[${index}].environmentRecommendation`)
+    let environmentRecommendation: DshInstallTarget['environmentRecommendation']
+    if (rawEnvironmentRecommendation !== undefined) {
+      if (selectedRuntimeProfiles === undefined) {
+        throw new Error(`plugins[${index}].environmentRecommendation requires explicit runtimeProfiles`)
+      }
+      const sourceFingerprint = boundedString(rawEnvironmentRecommendation.sourceFingerprint, `plugins[${index}].environmentRecommendation.sourceFingerprint`, 71)
+      if (!/^sha256:[a-f0-9]{64}$/.test(sourceFingerprint)) {
+        throw new Error(`plugins[${index}].environmentRecommendation.sourceFingerprint must be a SHA-256 fingerprint`)
+      }
+      if (!Number.isSafeInteger(rawEnvironmentRecommendation.preferredNodeMajor)
+        || (rawEnvironmentRecommendation.preferredNodeMajor as number) < 1
+        || (rawEnvironmentRecommendation.preferredNodeMajor as number) > 99) {
+        throw new Error(`plugins[${index}].environmentRecommendation.preferredNodeMajor must be a Node.js major between 1 and 99`)
+      }
+      const preferredNodeMajor = rawEnvironmentRecommendation.preferredNodeMajor as number
+      if (!Array.isArray(rawEnvironmentRecommendation.nodeMajors)
+        || rawEnvironmentRecommendation.nodeMajors.length === 0
+        || rawEnvironmentRecommendation.nodeMajors.length > 16) {
+        throw new Error(`plugins[${index}].environmentRecommendation.nodeMajors must contain between 1 and 16 Node.js majors`)
+      }
+      const recommendationNodeMajors = rawEnvironmentRecommendation.nodeMajors.map((value, nodeIndex) => {
+        if (!Number.isSafeInteger(value) || (value as number) < 1 || (value as number) > 99) {
+          throw new Error(`plugins[${index}].environmentRecommendation.nodeMajors[${nodeIndex}] must be a Node.js major between 1 and 99`)
+        }
+        return value as number
+      })
+      if (new Set(recommendationNodeMajors).size !== recommendationNodeMajors.length
+        || !recommendationNodeMajors.includes(preferredNodeMajor)) {
+        throw new Error(`plugins[${index}].environmentRecommendation.nodeMajors must be unique and include preferredNodeMajor`)
+      }
+      if (!Array.isArray(rawEnvironmentRecommendation.unavailableNodeMajors)) {
+        throw new Error(`plugins[${index}].environmentRecommendation.unavailableNodeMajors must be an array`)
+      }
+      const unavailableNodeMajors = rawEnvironmentRecommendation.unavailableNodeMajors.map((value, nodeIndex) => {
+        if (!Number.isSafeInteger(value) || !recommendationNodeMajors.includes(value as number)) {
+          throw new Error(`plugins[${index}].environmentRecommendation.unavailableNodeMajors[${nodeIndex}] must be a recommended Node major`)
+        }
+        return value as number
+      })
+      const expectedUnavailable = recommendationNodeMajors.filter(nodeMajor => (
+        nodeMajor < MIN_EXECUTABLE_NODE_MAJOR || nodeMajor > MAX_EXECUTABLE_NODE_MAJOR
+      ))
+      if (new Set(unavailableNodeMajors).size !== unavailableNodeMajors.length
+        || unavailableNodeMajors.slice().sort((left, right) => left - right).join(',') !== expectedUnavailable.slice().sort((left, right) => left - right).join(',')) {
+        throw new Error(`plugins[${index}].environmentRecommendation.unavailableNodeMajors must exactly identify recommendations outside the executable range`)
+      }
+      const selectedNodeMajors = (selectedRuntimeProfiles ?? []).map(profileId => {
+        const runtime = runtimeProfiles.find(profile => profile.id === profileId)
+        if (runtime === undefined) throw new Error(`plugins[${index}] selected an unknown runtime profile`)
+        return runtime.nodeMajor
+      }).sort((left, right) => left - right)
+      const expectedSelectedNodeMajors = recommendationNodeMajors
+        .filter(nodeMajor => !unavailableNodeMajors.includes(nodeMajor))
+        .sort((left, right) => left - right)
+      if (selectedNodeMajors.join(',') !== expectedSelectedNodeMajors.join(',')) {
+        throw new Error(`plugins[${index}].runtimeProfiles must cover every executable recommended Node major exactly once`)
+      }
+      if (!Array.isArray(rawEnvironmentRecommendation.executionProfiles)
+        || rawEnvironmentRecommendation.executionProfiles.length === 0
+        || rawEnvironmentRecommendation.executionProfiles.length > 3) {
+        throw new Error(`plugins[${index}].environmentRecommendation.executionProfiles must contain headless, web, or tui`)
+      }
+      const executionProfiles = rawEnvironmentRecommendation.executionProfiles.map((value, profileIndex) => {
+        const profile = boundedString(value, `plugins[${index}].environmentRecommendation.executionProfiles[${profileIndex}]`, 16)
+        if (profile !== 'headless' && profile !== 'web' && profile !== 'tui') {
+          throw new Error(`plugins[${index}].environmentRecommendation.executionProfiles[${profileIndex}] is unsupported`)
+        }
+        return profile
+      })
+      if (new Set(executionProfiles).size !== executionProfiles.length || !executionProfiles.includes('headless')) {
+        throw new Error(`plugins[${index}].environmentRecommendation.executionProfiles must be unique and include headless`)
+      }
+      if (!Array.isArray(rawEnvironmentRecommendation.evidence)
+        || rawEnvironmentRecommendation.evidence.length === 0
+        || rawEnvironmentRecommendation.evidence.length > 16) {
+        throw new Error(`plugins[${index}].environmentRecommendation.evidence must contain between 1 and 16 references`)
+      }
+      const evidence = rawEnvironmentRecommendation.evidence.map((value, evidenceIndex) => (
+        boundedString(value, `plugins[${index}].environmentRecommendation.evidence[${evidenceIndex}]`, 512)
+      ))
+      if (new Set(evidence).size !== evidence.length) {
+        throw new Error(`plugins[${index}].environmentRecommendation.evidence must be unique`)
+      }
+      let coverageGaps: string[] | undefined
+      if (rawEnvironmentRecommendation.coverageGaps !== undefined) {
+        if (!Array.isArray(rawEnvironmentRecommendation.coverageGaps) || rawEnvironmentRecommendation.coverageGaps.length > 16) {
+          throw new Error(`plugins[${index}].environmentRecommendation.coverageGaps must contain at most 16 strings`)
+        }
+        coverageGaps = rawEnvironmentRecommendation.coverageGaps.map((value, gapIndex) => (
+          boundedString(value, `plugins[${index}].environmentRecommendation.coverageGaps[${gapIndex}]`, 512)
+        ))
+        if (new Set(coverageGaps).size !== coverageGaps.length) {
+          throw new Error(`plugins[${index}].environmentRecommendation.coverageGaps must be unique`)
+        }
+      }
+      environmentRecommendation = {
+        sourceFingerprint,
+        preferredNodeMajor,
+        nodeMajors: recommendationNodeMajors.slice().sort((left, right) => left - right),
+        unavailableNodeMajors: unavailableNodeMajors.slice().sort((left, right) => left - right),
+        executionProfiles,
+        ...(rawEnvironmentRecommendation.authorEnvironment === undefined ? {} : {
+          authorEnvironment: parseDshAuthorEnvironment(rawEnvironmentRecommendation.authorEnvironment)!,
+        }),
+        ...(coverageGaps === undefined ? {} : { coverageGaps }),
+        summary: boundedString(rawEnvironmentRecommendation.summary, `plugins[${index}].environmentRecommendation.summary`, 2_048),
+        evidence,
+      }
+    }
     return {
       id,
       spec,
@@ -150,10 +288,11 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
       ...(observerTargetId === undefined ? {} : { observerTargetId }),
       ...(allowedBuilds.length === 0 ? {} : { allowedBuilds }),
       ...(selectedRuntimeProfiles === undefined ? {} : { runtimeProfiles: selectedRuntimeProfiles }),
+      ...(environmentRecommendation === undefined ? {} : { environmentRecommendation }),
     }
   })
   plugins.sort((left, right) => left.id.localeCompare(right.id))
-  return { schema: DSH_INSTALL_TARGETS_SCHEMA, refreshAfterHours, runtimeProfiles, plugins }
+  return { schema: DSH_INSTALL_TARGETS_SCHEMA, refreshAfterHours, environmentRecommendationsRequired, runtimeProfiles, plugins }
 }
 
 interface PackageCoordinate {
@@ -377,6 +516,7 @@ export function buildDshInstallPlan(
     return {
       run: false,
       matrix: { include: [] },
+      blocked: [],
       triggers: [...triggers].sort(),
       reason: 'no exact observed DSH release is available, so the compatibility matrix cannot be formed',
     }
@@ -384,9 +524,26 @@ export function buildDshInstallPlan(
 
   const dshStatic = staticTargetEvidence(stateInput, DSH_TARGET_ID)
   const selected = new Map<string, DshCompatibilityExpectedCase>()
+  const blocked: DshInstallPlan['blocked'] = []
   let desiredCells = 0
   for (const target of corpus.plugins) {
     const plugin = resolveDshInstallTargetSpec(target, stateInput)
+    if (corpus.environmentRecommendationsRequired && target.environmentRecommendation === undefined) {
+      blocked.push({
+        targetId: target.id,
+        plugin,
+        reason: 'an exact repository environment recommendation is required before selecting Node and execution profiles',
+      })
+      continue
+    }
+    if ((target.environmentRecommendation?.unavailableNodeMajors.length ?? 0) > 0) {
+      blocked.push({
+        targetId: target.id,
+        plugin,
+        reason: `repository recommends Node ${target.environmentRecommendation?.unavailableNodeMajors.join(', ')}, outside the isolated observer's executable range ${MIN_EXECUTABLE_NODE_MAJOR}-${MAX_EXECUTABLE_NODE_MAJOR}`,
+      })
+    }
+    if (target.environmentRecommendation !== undefined && (target.runtimeProfiles?.length ?? 0) === 0) continue
     const staticFingerprint = createDshCompatibilityStaticFingerprint({
       plugin,
       dshVersion,
@@ -394,6 +551,12 @@ export function buildDshInstallPlan(
       dshStatic,
     })
     const allowedBuilds = target.allowedBuilds ?? []
+    let profileEnvironment: DshProfileEnvironment
+    try { profileEnvironment = selectDshProfileEnvironment(target.environmentRecommendation?.authorEnvironment) }
+    catch (error) {
+      blocked.push({ targetId: target.id, plugin, reason: error instanceof Error ? error.message : String(error) })
+      continue
+    }
     for (const runtimeProfile of candidateProfiles(corpus, target, plugin, ledger)) {
       desiredCells += 1
       const id = dshCompatibilityCaseId(target.id, runtimeProfile.id)
@@ -402,6 +565,7 @@ export function buildDshInstallPlan(
         dshVersion,
         nodeMajor: runtimeProfile.nodeMajor,
         allowedBuilds,
+        profileEnvironment,
       })
       const previous = ledger.entries.find(entry => entry.caseId === id)
       const reasons = new Set<string>()
@@ -443,6 +607,7 @@ export function buildDshInstallPlan(
         dshVersion,
         nodeMajor: runtimeProfile.nodeMajor,
         allowedBuilds: allowedBuilds.join(','),
+        profileEnvironment,
         staticFingerprint,
         contractFingerprint,
         reasons: [...reasons].sort(),
@@ -456,15 +621,19 @@ export function buildDshInstallPlan(
       run: false,
       dshVersion,
       matrix: { include: [] },
+      blocked: blocked.sort((left, right) => left.targetId.localeCompare(right.targetId)),
       triggers: [...triggers].sort(),
-      reason: `all ${desiredCells} active DSH compatibility cells have fresh evidence`,
+      reason: blocked.length > 0
+        ? `no runnable compatibility cells; ${blocked.length} plugin target(s) lack a current repository environment recommendation or executable coverage`
+        : `all ${desiredCells} active DSH compatibility cells have fresh evidence`,
     }
   }
   return {
     run: true,
     dshVersion,
     matrix: { include },
+    blocked: blocked.sort((left, right) => left.targetId.localeCompare(right.targetId)),
     triggers: [...triggers].sort(),
-    reason: `the compatibility ledger requires ${include.length} isolated recheck${include.length === 1 ? '' : 's'} across ${desiredCells} active cells`,
+    reason: `the compatibility ledger requires ${include.length} isolated recheck${include.length === 1 ? '' : 's'} across ${desiredCells} active cells${blocked.length === 0 ? '' : `; ${blocked.length} target(s) retain repository environment recommendation or executable-coverage gaps`}`,
   }
 }

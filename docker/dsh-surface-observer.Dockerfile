@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 ARG NODE_MAJOR=22
-FROM node:${NODE_MAJOR}-bookworm-slim AS build
+FROM node:24-bookworm-slim AS build
 
 RUN corepack enable \
   && attempt=1 \
@@ -19,6 +19,7 @@ COPY test ./test
 RUN pnpm run build
 
 FROM node:${NODE_MAJOR}-bookworm-slim AS runtime
+ARG PNPM_VERSION=11.7.0
 
 # Chromium exercises the browser/client plane. node-pty allocates a real PTY
 # for the terminal plane. They are observer-only drivers, not Radar runtime
@@ -26,7 +27,7 @@ FROM node:${NODE_MAJOR}-bookworm-slim AS runtime
 RUN apt-get update \
   && apt-get install --yes --no-install-recommends ca-certificates chromium git python3 make g++ \
   && rm -rf /var/lib/apt/lists/* \
-  && npm install --global --ignore-scripts pnpm@11.7.0 \
+  && npm install --global --ignore-scripts "pnpm@${PNPM_VERSION}" \
   && mkdir -p /surface-driver \
   && npm install --prefix /surface-driver --no-audit --no-fund playwright-core@1.62.0 node-pty@1.1.0 \
   && npm cache clean --force \

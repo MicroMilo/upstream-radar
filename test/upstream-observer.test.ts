@@ -308,8 +308,15 @@ targets:
             versions: {
               '1.0.0': { dist: { integrity: 'sha512-latest' } },
               '2.0.0-rc.1': {
+                name: 'dsh-demo',
+                version: '2.0.0-rc.1',
+                engines: { node: '>=24' },
+                exports: { '.': './dist/index.js', './client': './dist/client.js' },
                 dist: { integrity: 'sha512-next' },
-                dsh: { migrate: { to: '@acme/dsh-demo-next', since: '2.0.0-rc.1' } },
+                dsh: {
+                  migrate: { to: '@acme/dsh-demo-next', since: '2.0.0-rc.1' },
+                  client: { platform: 'web' },
+                },
               },
             },
           }), { status: 200 })
@@ -335,6 +342,16 @@ targets:
     assert.equal(result.package?.distTag, 'next')
     assert.equal(result.package?.integrity, 'sha512-next')
     assert.deepEqual(result.package?.migration, { to: '@acme/dsh-demo-next', since: '2.0.0-rc.1' })
+    assert.deepEqual(result.package?.manifest, {
+      name: 'dsh-demo',
+      version: '2.0.0-rc.1',
+      exports: { '.': './dist/index.js', './client': './dist/client.js' },
+      engines: { node: '>=24' },
+      dsh: {
+        migrate: { to: '@acme/dsh-demo-next', since: '2.0.0-rc.1' },
+        client: { platform: 'web' },
+      },
+    })
   })
 
   it('observes the source-declared npm release channel when no target override exists', async () => {

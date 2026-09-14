@@ -136,6 +136,27 @@ jobs:
         run: |
           node -e "require('node:fs').writeFileSync(process.env.OBSERVER_JSON, JSON.stringify({ changes: [] }))"
 
+      # This is the pre-execution reasoning pass. Repository material is
+      # bounded and treated as untrusted. It reports repository-recommended
+      # Node majors independently of executor inventory, then maps executable
+      # majors into the headless/Web/TUI vocabulary. The resulting signal is
+      # persisted separately from compatibility evidence.
+      - name: Infer repository-recommended Node and execution profiles
+        if: inputs.mode != 'agent-retry'
+        id: environment-recommendations
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
+        run: |
+          node scripts/plan-dsh-environment-recommendations.mjs \
+            examples/dsh/install-observer/targets.json \
+            observations.json \
+            examples/dsh/environment-observer/recommendations.json \
+            examples/dsh/environment-observer/recommendations.md
+
       # Repository prose is untrusted model input. This job never executes a
       # target package; it emits only a bounded headless retry contract. The
       # later reusable workflow receives that contract but no model secret.
@@ -167,7 +188,8 @@ jobs:
             observations.json \
             "$OBSERVER_JSON" \
             compatibility-ledger.json \
-            examples/dsh/install-observer/agent-plans.json
+            examples/dsh/install-observer/agent-plans.json \
+            examples/dsh/environment-observer/recommendations.json
 
       # State is written even when an upstream source or Agent call fails.
       # Successful plans remain bound to exact bytes/runtime; failed calls have
@@ -181,11 +203,13 @@ jobs:
             echo 'observations.json was not produced; nothing to persist.'
             exit 0
           fi
-          # observations.json may advance even when a later source fails and no
-          # dynamic matrix can run. Keep the directory feed in the same commit
-          # so default-branch consumers and PR merge refs never see stale
-          # distribution coordinates paired with the new observation point.
-          if ! git diff --quiet -- observations.json; then
+          # Observations or repository-environment recommendations may advance
+          # even when no dynamic matrix is needed. Keep the directory feed in
+          # the same commit so consumers never see stale coordinates or inherit
+          # a global pass from the previous required-cell set.
+          if ! git diff --quiet -- \
+            observations.json \
+            examples/dsh/environment-observer/recommendations.json; then
             node scripts/write-dsh-directory-feed.mjs \
               examples/dsh/awesome-observer/cohort.json \
               examples/dsh/install-observer/targets.json \
@@ -193,12 +217,15 @@ jobs:
               feeds/dsh-plugin-compatibility.json \
               feeds/dsh-plugin-compatibility.md \
               observations.json \
-              surface-ledger.json
+              surface-ledger.json \
+              examples/dsh/environment-observer/recommendations.json
           fi
           git config user.name 'upstream-radar[bot]'
           git config user.email 'upstream-radar[bot]@users.noreply.github.com'
           git add -- \
             observations.json \
+            examples/dsh/environment-observer/recommendations.json \
+            examples/dsh/environment-observer/recommendations.md \
             examples/dsh/install-observer/agent-plans.json \
             examples/dsh/install-observer/agent-plans.md \
             feeds/dsh-plugin-compatibility.json \
@@ -325,7 +352,8 @@ jobs:
             feeds/dsh-plugin-compatibility.json \
             feeds/dsh-plugin-compatibility.md \
             observations.json \
-            surface-ledger.json
+            surface-ledger.json \
+            examples/dsh/environment-observer/recommendations.json
 
       - name: Keep compatibility evidence artifacts
         if: always()
@@ -443,7 +471,10 @@ jobs:
             compatibility-ledger.json \
             surface-ledger.json \
             examples/dsh/install-observer/agent-plans.json \
-            examples/dsh/surface-observer/agent-plans.json | tee "$RUNNER_TEMP/upstream-radar-surface-plan.json"
+            examples/dsh/surface-observer/agent-plans.json \
+            examples/dsh/install-observer/targets.json \
+            observations.json \
+            examples/dsh/environment-observer/recommendations.json | tee "$RUNNER_TEMP/upstream-radar-surface-plan.json"
           node --input-type=module <<'NODE' >> "$GITHUB_STEP_SUMMARY"
           import { readFileSync } from 'node:fs'
           const plan = JSON.parse(readFileSync(process.env.RUNNER_TEMP + '/upstream-radar-surface-plan.json', 'utf8'))
@@ -565,7 +596,8 @@ jobs:
             feeds/dsh-plugin-compatibility.json \
             feeds/dsh-plugin-compatibility.md \
             observations.json \
-            surface-ledger.json
+            surface-ledger.json \
+            examples/dsh/environment-observer/recommendations.json
       - name: Keep execution-plane evidence artifacts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
