@@ -1,4 +1,6 @@
 import { createHash } from 'node:crypto'
+import { parseDshStartupConfiguration, type DshStartupConfiguration } from './dsh-startup-configuration.js'
+
 import { parseDshProfileEnvironment, type DshProfileEnvironment } from './dsh-profile-environment.js'
 import { parseDshCompatibilityLedger, parseDshProfileResolutionEvidence, type DshCompatibilityLedgerEntry } from './dsh-compatibility-ledger.js'
 import { parseDshHeadlessAgentPlans, type DshHeadlessAgentPlans } from './dsh-headless-agent-plan.js'
@@ -18,6 +20,11 @@ import { parseNpmSpec } from './npm.js'
 import { isExclusiveDshWebPeer } from './dsh-peer-planes.js'
 import { parseDshWebContractEvidence } from './dsh-web-contract.js'
 
+function startupFields(value: unknown): { startupConfiguration?: DshStartupConfiguration } {
+  const startupConfiguration = parseDshStartupConfiguration(value)
+  return startupConfiguration === undefined ? {} : { startupConfiguration }
+}
+
 export const DSH_SURFACE_TARGETS_SCHEMA = 'upstream-radar.dsh-surface-targets/v1alpha1' as const
 export const DSH_SURFACE_LEDGER_SCHEMA = 'upstream-radar.dsh-surface-ledger/v1alpha1' as const
 export const DSH_SURFACE_IR_SCHEMA = 'upstream-radar.dsh-surface-ir/v1alpha1' as const
@@ -33,9 +40,10 @@ const DEFAULT_REFRESH_AFTER_HOURS = 7 * 24
 const MAX_CONFIGURED_TARGETS = 400
 const MAX_RUN_TARGETS = 32
 const MAX_LEDGER_ENTRIES = 512
-const SURFACE_CONTRACT_REVISION = 'dsh-surface-contract/10'
+const SURFACE_CONTRACT_REVISION = 'dsh-surface-contract/11'
 
 export interface DshSurfaceTarget {
+  startupConfiguration?: DshStartupConfiguration
   profileEnvironment?: DshProfileEnvironment
   environmentGap?: string
   id: string
@@ -56,6 +64,7 @@ export interface DshSurfaceTargets {
 }
 
 export interface DshSurfaceExpectedCase {
+  startupConfiguration?: DshStartupConfiguration
   profileEnvironment?: DshProfileEnvironment
   id: string
   sourceCaseId: string
@@ -82,6 +91,7 @@ export interface DshSurfacePlan {
 }
 
 export interface DshSurfaceLedgerEntry {
+  startupConfiguration?: DshStartupConfiguration
   profileEnvironment?: DshProfileEnvironment
   caseId: string
   sourceCaseId: string
@@ -130,6 +140,7 @@ export interface DshSurfaceIR {
   schema: typeof DSH_SURFACE_IR_SCHEMA
   generatedAt: string
   cells: Array<{
+    startupConfiguration?: DshStartupConfiguration
     id: string
     sourceCaseId: string
     plane: DshExecutionPlane
@@ -250,10 +261,11 @@ export function parseDshSurfaceTargets(input: unknown): DshSurfaceTargets {
     if (plane === 'tui' && profile === 'web') throw new Error('a TUI target cannot use the reserved web profile')
     const runtimeId = boundedString(item.runtimeId, `surfaces[${index}].runtimeId`, 214)
     const reason = boundedString(item.reason, `surfaces[${index}].reason`, 2_048)
-    const pair = `${sourceCaseId}\u0000${plane}`
+    const startup = startupFields(item.startupConfiguration)
+    const pair = `${sourceCaseId}\u0000${plane}\u0000${JSON.stringify(startup.startupConfiguration?.environment ?? {})}`
     if (pairs.has(pair)) throw new Error(`duplicate DSH surface plane for source case: ${sourceCaseId} ${plane}`)
     pairs.add(pair)
-    return { id, sourceCaseId, plane, profile, runtimeId, reason,
+    return { id, sourceCaseId, plane, profile, runtimeId, reason, ...startup,
       ...(item.environmentGap === undefined ? {} : { environmentGap: boundedString(item.environmentGap, `surfaces[${index}].environmentGap`, 2_048) }),
       ...(item.profileEnvironment === undefined ? {} : { profileEnvironment: parseDshProfileEnvironment(item.profileEnvironment) }) }
   })
@@ -347,6 +359,7 @@ function contractFingerprint(
     platform: entry.runtime.platform,
     architecture: entry.runtime.architecture,
     profileEnvironment: parseDshProfileEnvironment(target.profileEnvironment ?? entry.profileEnvironment),
+    ...startupFields(target.startupConfiguration),
     graphEvidence: 'independent-profile-plus-exact-dsh-host',
     approvedDependencyBuilds,
     web: target.plane === 'web'
@@ -393,6 +406,7 @@ function desiredCase(
     runtimeId,
     artifactSha256: source.artifact.sha256,
     profileEnvironment: parseDshProfileEnvironment(target.profileEnvironment ?? source.profileEnvironment),
+    ...startupFields(target.startupConfiguration),
     allowedBuilds: [...approvedDependencyBuilds].sort().join(','),
     sourceFingerprint: createDshSurfaceSourceFingerprint(source),
     contractFingerprint: contractFingerprint(target, source, runtimeId, approvedDependencyBuilds),
@@ -562,10 +576,11 @@ function parseReport(input: unknown): DshSurfaceObservationReport {
     probe: 'dsh-surface',
     scope: 'surface-runtime-behavior',
     ...(root.profileEnvironment === undefined ? {} : { profileEnvironment: parseDshProfileEnvironment(root.profileEnvironment) }),
+    ...startupFields(root.startupConfiguration),
     ...(root.executionContract === undefined ? {} : { executionContract: (() => {
       if (root.executionContract !== DSH_SURFACE_EXECUTION_CONTRACT && root.executionContract !== 'dsh-surface/v1alpha8'
         && root.executionContract !== 'dsh-surface/v1alpha9' && root.executionContract !== 'dsh-surface/v1alpha10'
-        && root.executionContract !== 'dsh-surface/v1alpha11') throw new Error('report execution contract is unsupported')
+        && root.executionContract !== 'dsh-surface/v1alpha11' && root.executionContract !== 'dsh-surface/v1alpha12') throw new Error('report execution contract is unsupported')
       return root.executionContract
     })() }),
     startedAt: isoDate(root.startedAt, 'report.startedAt'),
@@ -643,6 +658,7 @@ export function parseDshSurfaceLedger(input: unknown): DshSurfaceLedger {
       plane,
       profile: profileName(item.profile, `entries[${index}].profile`),
       ...(item.profileEnvironment === undefined ? {} : { profileEnvironment: parseDshProfileEnvironment(item.profileEnvironment) }),
+      ...startupFields(item.startupConfiguration),
       runtimeId: boundedString(item.runtimeId, `entries[${index}].runtimeId`, 214),
       ...(item.approvedDependencyBuilds === undefined ? {} : { approvedDependencyBuilds: packageNames(item.approvedDependencyBuilds, `entries[${index}].approvedDependencyBuilds`) }),
       ...(requiredDependencyBuilds.length === 0 ? {} : { requiredDependencyBuilds }),
@@ -817,10 +833,12 @@ function mismatch(expected: DshSurfaceExpectedCase, report: DshSurfaceObservatio
     ['artifact SHA-256', expected.artifactSha256, report.artifact.sha256],
     ['source fingerprint', expected.sourceFingerprint, report.sourceFingerprint],
     ['contract fingerprint', expected.contractFingerprint, report.contractFingerprint],
+    ['startup configuration', JSON.stringify(expected.startupConfiguration), JSON.stringify(report.startupConfiguration)],
   ]
   const changed = comparisons.find(([, left, right]) => left !== right)
   const currentContract = contractFingerprint({ id: expected.id, sourceCaseId: expected.sourceCaseId,
     plane: expected.plane, profile: expected.profile, runtimeId: expected.runtimeId, reason: 'scheduled',
+    ...startupFields(expected.startupConfiguration),
     ...(expected.profileEnvironment === undefined ? {} : { profileEnvironment: expected.profileEnvironment }) },
   { runtime: { nodeMajor: expected.nodeMajor, nodeVersion: report.runtime.nodeVersion,
     platform: expected.platform ?? 'linux', architecture: expected.architecture ?? 'x64' } },
@@ -892,6 +910,7 @@ export function mergeDshSurfaceLedger(input: {
       plane: executionPlane(value.plane, `expected ${id}.plane`),
       profile: profileName(value.profile, `expected ${id}.profile`),
       ...(value.profileEnvironment === undefined ? {} : { profileEnvironment: parseDshProfileEnvironment(value.profileEnvironment) }),
+      ...startupFields(value.startupConfiguration),
       runtimeId: boundedString(value.runtimeId, `expected ${id}.runtimeId`, 214),
       artifactSha256: bareSha256(value.artifactSha256, `expected ${id}.artifactSha256`),
       allowedBuilds: allowedBuilds.join(','),
@@ -938,6 +957,7 @@ export function mergeDshSurfaceLedger(input: {
       plane: report.plane,
       profile: report.profile,
       ...(report.profileEnvironment === undefined ? {} : { profileEnvironment: report.profileEnvironment }),
+      ...startupFields(report.startupConfiguration),
       runtimeId: report.runtimeId,
       ...(report.boundary.approvedDependencyBuilds.length === 0 ? {} : { approvedDependencyBuilds: report.boundary.approvedDependencyBuilds }),
       ...((report.boundary.requiredDependencyBuilds?.length ?? 0) === 0
@@ -988,6 +1008,7 @@ export function buildDshSurfaceIR(ledgerInput: unknown): DshSurfaceIR {
       plane: entry.plane,
       profile: entry.profile,
       runtimeId: entry.runtimeId,
+      ...startupFields(entry.startupConfiguration),
       plugin: { spec: entry.plugin, artifactSha256: entry.artifact.sha256 },
       upstream: { package: '@deepseek-ai/dsh', dshVersion: entry.dshVersion },
       runtime: entry.runtime,

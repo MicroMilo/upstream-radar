@@ -2,6 +2,7 @@
 
 import process from 'node:process'
 import { parseDshProfileEnvironment, type DshProfileEnvironment } from './dsh-profile-environment.js'
+import { parseDshStartupConfiguration, type DshStartupConfiguration } from './dsh-startup-configuration.js'
 import { spawnSync } from 'node:child_process'
 import { access, mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
@@ -350,7 +351,7 @@ Usage:
     --plane <web|tui> --profile <name> --runtime-id <id>
     --artifact-sha256 <hex> --isolation-provider <provider> --execute
     [--allow-build <package>]... [--profile-environment-json <json>]
-    [--driver-root <path>] [--chromium-executable <path>]
+    [--startup-configuration-json <json>] [--driver-root <path>] [--chromium-executable <path>]
     [--artifacts <directory>] [--timeout <seconds>] [--report <report.json>] [--json]
 
 The load probes disable lifecycle scripts and check bundle registration/load.
@@ -1377,6 +1378,7 @@ async function runDshSurfaceObservation(args: readonly string[]): Promise<number
   let profile: string | undefined
   let runtimeId: string | undefined
   let artifactSha256: string | undefined
+  let startupConfiguration: DshStartupConfiguration | undefined
   let isolationProvider: DshSurfaceIsolationProvider | undefined
   let profileEnvironment: DshProfileEnvironment | undefined
   let networkProxy: string | undefined
@@ -1397,7 +1399,7 @@ async function runDshSurfaceObservation(args: readonly string[]): Promise<number
       || argument === '--profile' || argument === '--runtime-id' || argument === '--artifact-sha256'
       || argument === '--isolation-provider' || argument === '--timeout' || argument === '--report'
       || argument === '--artifacts' || argument === '--driver-root' || argument === '--chromium-executable'
-      || argument === '--allow-build' || argument === '--network-proxy' || argument === '--profile-environment-json') {
+      || argument === '--allow-build' || argument === '--network-proxy' || argument === '--profile-environment-json' || argument === '--startup-configuration-json') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--dsh-version') dshVersion = value
@@ -1424,6 +1426,13 @@ async function runDshSurfaceObservation(args: readonly string[]): Promise<number
       else if (argument === '--artifacts') artifactsDirectory = value
       else if (argument === '--driver-root') driverRoot = value
       else if (argument === '--chromium-executable') chromiumExecutable = value
+      else if (argument === '--startup-configuration-json') {
+        if (startupConfiguration !== undefined) throw new Error('probe dsh-surface accepts only one --startup-configuration-json')
+        if (Buffer.byteLength(value) > 4096) throw new Error('startup configuration exceeds its byte budget')
+        let parsed: unknown
+        try { parsed = JSON.parse(value) } catch { throw new Error('startup configuration must be valid JSON') }
+        startupConfiguration = parseDshStartupConfiguration(parsed)
+      }
       else if (argument === '--profile-environment-json') {
         if (profileEnvironment !== undefined) throw new Error('probe dsh-surface accepts only one --profile-environment-json')
         profileEnvironment = profileEnvironmentJson(value)
@@ -1467,6 +1476,7 @@ async function runDshSurfaceObservation(args: readonly string[]): Promise<number
     profile: profile as string,
     runtimeId: runtimeId as string,
     expectedArtifactSha256: artifactSha256 as string,
+    ...(startupConfiguration === undefined ? {} : { startupConfiguration }),
     ...(profileEnvironment === undefined ? {} : { profileEnvironment }),
     allowedBuilds,
     ...(networkProxy === undefined ? {} : { networkProxy }),

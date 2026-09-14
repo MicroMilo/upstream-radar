@@ -17,9 +17,10 @@ import { collectDshWebBootRoster, type DshWebContractEvidence } from './dsh-web-
 import { bindDshWebPackageVersions, type DshWebBundleCapture } from './dsh-web-package-provenance.js'
 import { collectDshWebPackageInventory } from './dsh-web-package-inventory.js'
 import { captureDshWebBundles } from './dsh-web-bundle-capture.js'
+import { parseDshStartupConfiguration, type DshStartupConfiguration } from './dsh-startup-configuration.js'
 
 export const DSH_SURFACE_OBSERVATION_SCHEMA = 'upstream-radar.dsh-surface-observation/v1alpha1' as const
-export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha12' as const
+export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha13' as const
 
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const CASE_ID = /^[a-z0-9][a-z0-9._-]{0,63}$/
@@ -96,11 +97,12 @@ export interface DshTuiSurfaceEvidence {
 }
 
 export interface DshSurfaceObservationReport {
+  startupConfiguration?: DshStartupConfiguration
   schema: typeof DSH_SURFACE_OBSERVATION_SCHEMA
   tool: { name: 'upstream-radar'; version: string }
   probe: 'dsh-surface'
   scope: 'surface-runtime-behavior'
-  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8' | 'dsh-surface/v1alpha9' | 'dsh-surface/v1alpha10' | 'dsh-surface/v1alpha11'
+  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8' | 'dsh-surface/v1alpha9' | 'dsh-surface/v1alpha10' | 'dsh-surface/v1alpha11' | 'dsh-surface/v1alpha12'
   profileEnvironment?: DshProfileEnvironment
   startedAt: string
   completedAt: string
@@ -186,6 +188,7 @@ export interface DshSurfaceEvaluation {
 }
 
 export interface DshSurfaceObservationOptions {
+  startupConfiguration?: DshStartupConfiguration
   profileEnvironment?: DshProfileEnvironment
   packageSpec: string
   dshVersion: string
@@ -1218,6 +1221,7 @@ function validateObservationOptions(options: DshSurfaceObservationOptions): void
 
 export async function observeDshPluginSurface(options: DshSurfaceObservationOptions): Promise<DshSurfaceObservationReport> {
   const profileEnvironment = parseDshProfileEnvironment(options.profileEnvironment)
+  const startupConfiguration = parseDshStartupConfiguration(options.startupConfiguration)
   validateObservationOptions(options)
   const allowedBuilds = normalizeAllowedBuilds(options.allowedBuilds)
   const networkEnvironment = observationNetworkEnvironment(options.networkProxy)
@@ -1238,6 +1242,7 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
     tool: { name: 'upstream-radar', version: TOOL_VERSION },
     probe: 'dsh-surface',
     scope: 'surface-runtime-behavior',
+    ...(startupConfiguration === undefined ? {} : { startupConfiguration }),
     executionContract: DSH_SURFACE_EXECUTION_CONTRACT,
     startedAt,
     completedAt: startedAt,
@@ -1272,7 +1277,7 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
   const sandboxRoot = await mkdtemp(join(tmpdir(), 'upstream-radar-dsh-surface-'))
   const artifactDirectory = join(sandboxRoot, 'artifact')
   const artifactsDirectory = resolve(options.artifactsDirectory ?? join(sandboxRoot, 'evidence'))
-  const environment = { ...controlledEnvironment(sandboxRoot, hostEnvironment), ...networkEnvironment }
+  const environment = { ...controlledEnvironment(sandboxRoot, hostEnvironment), ...networkEnvironment, ...startupConfiguration?.environment }
   const noScriptsEnvironment = scriptPolicy(environment, false)
   const scriptsEnvironment = scriptPolicy(environment, true)
   const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm'
@@ -1442,6 +1447,8 @@ export function renderDshSurfaceObservation(report: DshSurfaceObservationReport)
     `Plugin: ${report.plugin}`,
     `DSH: ${report.dshVersion}`,
     `Plane: ${report.plane} (profile ${report.profile}, runtime id ${report.runtimeId})`,
+    ...(report.startupConfiguration === undefined ? [] : [`Additional startup scope: ${report.startupConfiguration.scope}; default startup is a separate check.`,
+      `Startup flags: ${JSON.stringify(report.startupConfiguration.environment)}`]),
     `Artifact: ${report.artifact.sha256 === undefined ? 'not established' : `sha256:${report.artifact.sha256}`}`,
     `Result: ${report.result.toUpperCase()} — ${report.reason}`,
     '',

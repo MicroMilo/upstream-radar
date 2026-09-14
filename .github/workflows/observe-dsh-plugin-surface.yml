@@ -58,6 +58,11 @@ on:
         required: false
         default: '{"pnpmVersion":"11.7.0","overrides":{}}'
         type: string
+      startup_configuration_json:
+        description: Additional documented disabled or offline startup scope and flags; empty means default startup
+        required: false
+        default: ''
+        type: string
   workflow_call:
     inputs:
       plugin:
@@ -105,6 +110,10 @@ on:
       profile_environment_json:
         required: false
         default: '{"pnpmVersion":"11.7.0","overrides":{}}'
+        type: string
+      startup_configuration_json:
+        required: false
+        default: ''
         type: string
 
 # Target install and surface code may execute. The reusable workflow receives
@@ -208,6 +217,7 @@ jobs:
           RADAR_ARTIFACT_SHA256: ${{ inputs.artifact_sha256 }}
           RADAR_ALLOWED_BUILDS: ${{ inputs.allow_builds || '' }}
           RADAR_PROFILE_ENVIRONMENT: ${{ inputs.profile_environment_json }}
+          RADAR_STARTUP_CONFIGURATION: ${{ inputs.startup_configuration_json }}
           RADAR_TIMEOUT_SECONDS: ${{ inputs.timeout_seconds || '300' }}
           RADAR_REPORT_DIRECTORY: ${{ runner.temp }}/upstream-radar-surface-observation
           RADAR_CONTAINER_NAME: upstream-radar-surface-${{ github.run_id }}-${{ github.run_attempt }}
@@ -216,6 +226,10 @@ jobs:
           set -euo pipefail
           mkdir -p "$RADAR_REPORT_DIRECTORY"
           chmod 0777 "$RADAR_REPORT_DIRECTORY"
+          startup_args=()
+          if [[ -n "$RADAR_STARTUP_CONFIGURATION" ]]; then
+            startup_args+=(--startup-configuration-json "$RADAR_STARTUP_CONFIGURATION")
+          fi
           allow_build_args=()
           if [[ -n "$RADAR_ALLOWED_BUILDS" ]]; then
             IFS=',' read -ra approved_builds <<< "$RADAR_ALLOWED_BUILDS"
@@ -254,6 +268,7 @@ jobs:
             --runtime-id "$RADAR_RUNTIME_ID" \
             --artifact-sha256 "$RADAR_ARTIFACT_SHA256" \
             --profile-environment-json "$RADAR_PROFILE_ENVIRONMENT" \
+            "${startup_args[@]}" \
             "${allow_build_args[@]}" \
             --driver-root /surface-driver \
             --chromium-executable /usr/bin/chromium \

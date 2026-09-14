@@ -30,6 +30,28 @@ const SOURCE_CONTRACT = `sha256:${'b'.repeat(64)}`
 const ARTIFACT_SHA = 'c'.repeat(64)
 
 describe('plane-aware surface routing and freshness', () => {
+  it('keeps a disabled startup comparison separate from default startup across planning, reports and unchanged reuse', () => {
+    const base = targets.surfaces.find(target => target.plane === 'web')!
+    const startupConfiguration = { scope: 'Web settings only; bridge stopped', environment: { DSH_LARK_DISABLED: '1' } }
+    const configured = { ...targets, surfaces: [base, { ...base, id: `${base.id}-disabled`, startupConfiguration }] }
+    const plan = buildDshSurfacePlan(configured, sourceLedger(), emptyDshSurfaceLedger())
+    assert.equal(plan.matrix.include.length, 2)
+    const normal = plan.matrix.include.find(cell => cell.id === base.id)!
+    const disabled = plan.matrix.include.find(cell => cell.id !== base.id)!
+    assert.notEqual(normal.contractFingerprint, disabled.contractFingerprint)
+    assert.deepEqual(Reflect.get(disabled, 'startupConfiguration'), startupConfiguration)
+    const missing = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [disabled], reports: [compatibleReport(disabled)] })
+    assert.equal(missing.acceptedCaseIds.length, 0)
+    assert.match(missing.rejectedReports.join(' '), /startup/)
+    const merged = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: plan.matrix.include,
+      reports: [compatibleReport(normal), { ...compatibleReport(disabled), startupConfiguration }] })
+    assert.deepEqual(merged.rejectedReports, [])
+    assert.equal(merged.ledger.entries.length, 2)
+    assert.deepEqual(Reflect.get(merged.ledger.entries.find(entry => entry.caseId === disabled.id)!, 'startupConfiguration'), startupConfiguration)
+    assert.deepEqual(Reflect.get(buildDshSurfaceIR(merged.ledger).cells.find(cell => cell.id === disabled.id)!, 'startupConfiguration'), startupConfiguration)
+    assert.equal(buildDshSurfacePlan(configured, sourceLedger(), merged.ledger, new Date(merged.ledger.entries[0]!.observedAt)).matrix.include.length, 0)
+  })
+
   it('keeps an unsupported author profile out of execution without blocking other profiles', () => {
     const configured = { ...targets, surfaces: targets.surfaces.map((target, index) => ({ ...target,
       ...(index === 0 ? { environmentGap: 'yarn profile runner is unsupported' } : {}),

@@ -62,6 +62,17 @@ describe('reusable GitHub Action', () => {
     }
   })
 
+  it('forwards each supplemental startup configuration to the surface probe without changing default startup', async () => {
+    const workflow = await readFile(fileURLToPath(new URL('../../.github/workflows/upstream-observer.yml', import.meta.url)), 'utf8')
+    const observer = await readFile(fileURLToPath(new URL('../../.github/workflows/observe-dsh-plugin-surface.yml', import.meta.url)), 'utf8')
+    assert.equal(workflow.match(/startup_configuration_json: \$\{\{ matrix\.startupConfiguration && toJSON\(matrix\.startupConfiguration\) \|\| '' \}\}/g)?.length, 1)
+    assert.equal(observer.match(/^      startup_configuration_json:$/gm)?.length, 2, 'manual and reusable inputs')
+    assert.match(observer, /RADAR_STARTUP_CONFIGURATION: \$\{\{ inputs\.startup_configuration_json \}\}/)
+    assert.match(observer, /startup_args=\(\)\s+if \[\[ -n "\$RADAR_STARTUP_CONFIGURATION" \]\]; then\s+startup_args\+=\(--startup-configuration-json "\$RADAR_STARTUP_CONFIGURATION"\)/)
+    assert.match(observer, /"\$\{startup_args\[@\]\}"/)
+    assert.doesNotMatch(observer, /run:.*\$\{\{ inputs\.startup_configuration_json/)
+  })
+
   it('keeps the published Action thin, pinned, and frozen', async () => {
     const actionPath = fileURLToPath(new URL('../../action.yml', import.meta.url))
     const examplePath = fileURLToPath(new URL('../../examples/github-actions/upstream-radar.yml', import.meta.url))

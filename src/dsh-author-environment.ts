@@ -1,5 +1,6 @@
 import { parseNpmSpec } from './npm.js'
 import { satisfiesSemverRange } from './semver.js'
+import { parseDshStartupConfiguration, type DshStartupConfiguration } from './dsh-startup-configuration.js'
 
 export interface DshAuthorEvidence {
   path: string
@@ -8,6 +9,7 @@ export interface DshAuthorEvidence {
 
 /** Repository claims, not execution results or permission to run repository commands. */
 export interface DshAuthorEnvironment {
+  startupConfigurations?: Array<DshStartupConfiguration & { plane: 'web' | 'tui'; evidence: DshAuthorEvidence[] }>
   packageManagers: Array<{
     name: 'pnpm' | 'npm' | 'yarn' | 'bun'
     version: string
@@ -87,8 +89,13 @@ function profileScope(item: Record<string, unknown>): { profile?: string } {
 /** Parse a bounded, data-only vocabulary shared by review, plans and evidence fingerprints. */
 export function parseDshAuthorEnvironment(value: unknown): DshAuthorEnvironment | undefined {
   if (value === undefined) return undefined // Legacy history remains readable, not newly verified.
-  const root = object(value, 'author environment', ['packageManagers', 'overrides', 'workflows', 'dshVersions'])
+  const root = object(value, 'author environment', ['packageManagers', 'overrides', 'workflows', 'dshVersions', 'startupConfigurations'])
   const result: DshAuthorEnvironment = {
+    ...(root.startupConfigurations === undefined ? {} : { startupConfigurations: list(root.startupConfigurations, 'author startup configurations', 4, value => {
+      const item = object(value, 'author startup configuration', ['plane', 'scope', 'environment', 'evidence'])
+      return { plane: choice(item.plane, ['web', 'tui'], 'startup plane'),
+        ...parseDshStartupConfiguration({ scope: item.scope, environment: item.environment })!, evidence: evidence(item.evidence) }
+    }) }),
     packageManagers: list(root.packageManagers, 'author package managers', 8, value => {
       const item = object(value, 'author package manager', ['name', 'version', 'scope', 'profile', 'evidence'])
       return {
@@ -226,9 +233,15 @@ function namesVersion(quote: string, version: string): boolean {
 /** Quotes must exist in the exact collected bytes and support the claimed structured fact. */
 export function validateDshAuthorEnvironment(environment: DshAuthorEnvironment | undefined, sources: ReadonlyMap<string, string>): void {
   if (environment === undefined) return
-  for (const fact of [...environment.packageManagers, ...environment.overrides, ...environment.workflows, ...environment.dshVersions]) {
+  for (const fact of [...environment.packageManagers, ...environment.overrides, ...environment.workflows, ...environment.dshVersions, ...(environment.startupConfigurations ?? [])]) {
     for (const citation of fact.evidence) {
       if (!sources.get(citation.path)?.includes(citation.quote)) throw new Error(`author environment evidence does not match ${citation.path}`)
+    }
+  }
+  for (const item of environment.startupConfigurations ?? []) {
+    for (const [name, value] of Object.entries(item.environment)) {
+      const literal = new RegExp(`\\b${escape(name)}\\s*=\\s*["']?${escape(value)}(?=$|["'\\s.,;:])`)
+      if (!item.evidence.some(ref => !ref.path.startsWith('dsh-repository/') && literal.test(ref.quote))) throw new Error('author startup flag is not supported by plugin evidence')
     }
   }
   for (const item of environment.packageManagers) {

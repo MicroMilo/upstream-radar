@@ -39,6 +39,7 @@ if (kind === 'native') {
 } else {
   const {observeDshPluginSurface} = await import('/radar/dist/src/dsh-surface-observation.js');
   report = await observeDshPluginSurface({...common, sourceCaseId:cell.sourceCaseId,
+    startupConfiguration:cell.startupConfiguration,
     sourceFingerprint:cell.sourceFingerprint, contractFingerprint:cell.contractFingerprint,
     plane:cell.plane, profile:cell.profile, runtimeId:cell.runtimeId, expectedArtifactSha256:cell.artifactSha256,
     driverRoot:'/surface-driver', chromiumExecutable:'/usr/bin/chromium', artifactsDirectory:'/sandbox/export'});

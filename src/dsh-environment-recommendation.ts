@@ -20,7 +20,7 @@ import {
 } from './dsh-surface.js'
 
 export const DSH_ENVIRONMENT_RECOMMENDATIONS_SCHEMA = 'upstream-radar.dsh-environment-recommendations/v1alpha1' as const
-export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v4' as const
+export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v5' as const
 
 const DSH_TARGET_ID = 'deepseek-harness'
 const DSH_PACKAGE = '@deepseek-ai/dsh'
@@ -565,6 +565,7 @@ export function parseDshEnvironmentRecommendationDecision(
     ['dsh-source-manifest', candidate.dshManifest], ['dsh-published-manifest', candidate.dshPublishedManifest],
   ] as const) if (value !== undefined) sources.set(path, JSON.stringify(value))
   validateDshAuthorEnvironment(decision.authorEnvironment, sources)
+  if (decision.authorEnvironment.startupConfigurations?.some(item => !decision.executionProfiles.includes(item.plane))) throw new Error('startup configuration requires the corresponding intended execution profile')
   const completed = completeDshAuthorManifestFacts(decision.authorEnvironment, sources)
   decision.authorEnvironment = completed.environment
   validateDshAuthorEnvironment(decision.authorEnvironment, sources)
@@ -656,6 +657,7 @@ export function renderDshEnvironmentRecommendationPrompt(candidate: DshEnvironme
     'When TUI is intended, include tuiProfile if the plugin setup or launch documentation names an exact --profile. Copy the safe profile name only, never a command or configuration instruction.',
     'authorEnvironment is required: {packageManagers: [{name: pnpm|npm|yarn|bun, version: exact version, scope: development|host|profile, evidence: [{path, quote}]}], overrides: [{scope: development|profile, values: {npmPackageName: registryVersionRange}, evidence: [{path, quote}]}], workflows: [{kind: headless|web|tui|sdk|acp, profile: optional exact --profile name, role: primary|additional, evidence: [{path, quote}]}], dshVersions: [{version: exact version, evidence: [{path, quote}]}]}. Use empty arrays when unknown, with a coverage gap if relevant evidence is missing. Quotes must be exact substrings of the supplied documents, at most 2048 characters each; at most 8 citations per fact.',
     'Preserve the author default SDK/ACP workflow even when other smoke planes exist. At most one workflow is primary. Package.json packageManager and workspace overrides describe development unless explicit installation evidence applies them to the user profile. Never silently transfer development overrides to the new DSH host. Overrides accept simple npm package names and registry semver ranges only; report unsupported selectors, links or commands as coverage gaps. Author DSH versions are claims in plugin documentation, not Radar test results.',
+    'Also inspect documented startup preconditions. authorEnvironment may include startupConfigurations: [{plane: web|tui, scope: plain text describing the limited check and what is disabled, environment: {EXACT_FLAG: "1"}, evidence: [{path, quote}]}], at most 4. Use this only for explicit plugin-documented disabled/offline modes, as ADDITIONAL comparisons; Radar retains normal startup separately. An exact quoted assignment such as DSH_LARK_DISABLED=1 is required. Permitted keys are DSH_<PLUGIN>_DISABLED, DSH_<PLUGIN>_OFFLINE, or DSH_<PLUGIN>_NO_NETWORK with values "1" or "true" only, at most 4 flags. Do not invent flags, provide credentials, run commands, change host paths or permissions, or present a disabled bridge as a fully working integration. Use an empty array if none is evidenced; keep other prerequisites as coverageGaps.',
     'For packageManagers and overrides with scope=profile, include optional profile when the quote names an exact --profile. A named profile requirement applies only to that profile, never to every smoke plane. Omit profile only for a genuinely general profile requirement. Do not manufacture runtime requirements from packageManager fields in repository package.json or from development-only CI setup.',
     'Include coverageGaps (at most 16 plain-text strings, each at most 512 characters) for intended SDK, ACP, authenticated integrations, installer/configuration steps, or missing repository evidence not exercised by generic headless/Web/TUI smoke checks. A named user profile is not necessarily one of those three planes. Never claim such workflows were tested.',
     'The collector supplies collectionGaps below for omitted or unavailable files. Missing evidence is not evidence that the author has no requirement. Radar automatically retains an incomplete-collection coverage flag when these gaps exist; leave space for that flag in coverageGaps.',
@@ -877,7 +879,6 @@ export function applyDshEnvironmentRecommendationsToSurfaceTargets(
   const recommendations = parseDshEnvironmentRecommendations(recommendationsInput)
   const candidates = new Map(selectDshEnvironmentRecommendationCandidates(rawInstallTargets, stateInput).map(candidate => [candidate.targetId, candidate]))
   const usedIds = new Set(surfaceTargets.surfaces.map(target => target.id))
-  const usedPairs = new Set(surfaceTargets.surfaces.map(target => `${target.sourceCaseId}\u0000${target.plane}`))
   const generated: DshSurfaceTarget[] = []
   for (const target of installTargets.plugins) {
     const entry = applicableRecommendation(target, candidates.get(target.id), recommendations)
@@ -887,14 +888,15 @@ export function applyDshEnvironmentRecommendationsToSurfaceTargets(
       const sourceCaseId = dshCompatibilityCaseId(target.id, runtimeProfileId)
       for (const plane of entry.executionProfiles) {
         if (plane !== 'web' && plane !== 'tui') continue
-        const pair = `${sourceCaseId}\u0000${plane}`
-        if (usedPairs.has(pair)) continue
-        const id = generatedSurfaceId(sourceCaseId, plane, usedIds)
-        const profile = plane === 'web' ? 'web' : entry.tuiProfile ?? tuiProfileName(target.id)
+        const existing = surfaceTargets.surfaces.find(item => item.sourceCaseId === sourceCaseId && item.plane === plane && item.startupConfiguration === undefined)
+        const id = existing?.id ?? generatedSurfaceId(sourceCaseId, plane, usedIds)
+        const profile = existing?.profile ?? (plane === 'web' ? 'web' : entry.tuiProfile ?? tuiProfileName(target.id))
         let environment: Pick<DshSurfaceTarget, 'profileEnvironment' | 'environmentGap'>
-        try { environment = { profileEnvironment: selectDshProfileEnvironment(entry.authorEnvironment, profile) } }
+        try { environment = existing?.environmentGap === undefined
+          ? { profileEnvironment: existing?.profileEnvironment ?? selectDshProfileEnvironment(entry.authorEnvironment, profile) }
+          : { environmentGap: existing.environmentGap } }
         catch (error) { environment = { environmentGap: error instanceof Error ? error.message : String(error) } }
-        generated.push({
+        if (existing === undefined) generated.push({
           ...environment,
           id,
           sourceCaseId,
@@ -904,7 +906,16 @@ export function applyDshEnvironmentRecommendationsToSurfaceTargets(
           reason: `Repository environment recommendation: ${entry.summary}`.slice(0, 2_048),
         })
         usedIds.add(id)
-        usedPairs.add(pair)
+        for (const configuration of entry.authorEnvironment?.startupConfigurations?.filter(item => item.plane === plane) ?? []) {
+          const { scope, environment: flags } = configuration
+          const suffix = `-startup-${createHash('sha256').update(JSON.stringify(flags)).digest('hex').slice(0, 10)}`
+          const variantId = `${id.slice(0, 64 - suffix.length)}${suffix}`
+          if (usedIds.has(variantId)) continue
+          generated.push({ ...environment, id: variantId, sourceCaseId, plane, profile, runtimeId,
+            startupConfiguration: { scope, environment: flags },
+            reason: `Additional author-documented startup comparison: ${scope}. The default startup is retained.` })
+          usedIds.add(variantId)
+        }
       }
     }
   }

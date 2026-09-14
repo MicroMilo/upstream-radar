@@ -116,9 +116,10 @@ export async function runDshCompatibilityBatch(options: DshBatchOptions) {
       if (!anchor || anchor.dshVersion !== native.dshVersion) continue
       for (const baseline of native.matrix.include.filter(cell => cell.targetId === anchor.targetId
         && cell.nodeMajor === anchor.nodeMajor && cell.dshVersion !== anchor.dshVersion)) {
-        if (expanded.some(item => item.sourceCaseId === baseline.id && item.plane === target.plane && item.profile === target.profile)) continue
+        if (expanded.some(item => item.sourceCaseId === baseline.id && item.plane === target.plane && item.profile === target.profile
+          && JSON.stringify(item.startupConfiguration?.environment ?? {}) === JSON.stringify(target.startupConfiguration?.environment ?? {}))) continue
         expanded.push({ ...target, sourceCaseId: baseline.id,
-          id: `${target.id.slice(0, 45)}-dsh-${createHash('sha256').update(baseline.dshVersion).digest('hex').slice(0, 12)}` })
+          id: `${target.id.slice(0, 45)}-dsh-${createHash('sha256').update(`${target.id}\u0000${baseline.dshVersion}`).digest('hex').slice(0, 12)}` })
       }
     }
     return buildDshSurfacePlan({ ...configured, surfaces: expanded }, currentNative(), state.surfaceLedger, now)

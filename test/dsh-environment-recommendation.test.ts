@@ -127,6 +127,29 @@ function recommendations(overrides: Record<string, unknown> = {}) {
 }
 
 describe('DSH repository environment recommendation', () => {
+  it('turns an evidenced disabled Web configuration into an additional cell without replacing normal startup', () => {
+    const selected = candidate()
+    const quote = 'For Web settings without the bridge, set DSH_LARK_DISABLED=1.'
+    selected.documents = [...selected.documents, { path: 'cordis.patch.yml', text: `# ${quote}` }]
+    const startupConfigurations = [{ plane: 'web', scope: 'Web settings only; bridge stopped',
+      environment: { DSH_LARK_DISABLED: '1' }, evidence: [{ path: 'cordis.patch.yml', quote }] }]
+    const parsed = parseDshEnvironmentRecommendationDecision({ ...decision(), authorEnvironment: { ...decision().authorEnvironment, startupConfigurations } }, selected)
+    assert.deepEqual(Reflect.get(parsed.authorEnvironment!, 'startupConfigurations'), startupConfigurations)
+    const history = recommendations({ ...parsed })
+    const planned = applyDshEnvironmentRecommendationsToSurfaceTargets({ schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [] }, targets, observations, history)
+    assert.equal(planned.surfaces.length, 4)
+    assert.equal(planned.surfaces.filter(surface => surface.startupConfiguration === undefined).length, 2)
+    assert.equal(planned.surfaces.filter(surface => surface.startupConfiguration?.environment.DSH_LARK_DISABLED === '1').length, 2)
+    const withManualDefault = applyDshEnvironmentRecommendationsToSurfaceTargets({ schema: 'upstream-radar.dsh-surface-targets/v1alpha1',
+      surfaces: planned.surfaces.filter(surface => surface.startupConfiguration === undefined) }, targets, observations, history)
+    assert.equal(withManualDefault.surfaces.length, 4)
+    const withManualVariant = applyDshEnvironmentRecommendationsToSurfaceTargets({ schema: 'upstream-radar.dsh-surface-targets/v1alpha1',
+      surfaces: planned.surfaces.filter(surface => surface.startupConfiguration !== undefined) }, targets, observations, history)
+    assert.equal(withManualVariant.surfaces.filter(surface => surface.startupConfiguration === undefined).length, 2)
+    assert.throws(() => parseDshEnvironmentRecommendationDecision({ ...decision(), authorEnvironment: { ...decision().authorEnvironment,
+      startupConfigurations: [{ ...startupConfigurations[0], environment: { DSH_LARK_OFFLINE: '1' } }] } }, selected), /startup.*evidence/)
+  })
+
   it('preserves a Web-only author workflow without inventing headless intent', () => {
     const parsed = parseDshEnvironmentRecommendationDecision({ ...decision(), executionProfiles: ['web'] }, candidate())
     assert.deepEqual(parsed.executionProfiles, ['web'])

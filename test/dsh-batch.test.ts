@@ -19,15 +19,16 @@ function nativeReport(task: DshBatchTask) {
 }
 
 describe('durable DSH compatibility batch', () => {
-  it('hands author baseline cells to the same intended surface instead of testing their install stage only', async () => {
+  it('hands author baseline cells to both default and additional startup surfaces instead of dropping one configuration', async () => {
     const installTargets = { schema: 'upstream-radar.dsh-install-targets/v1alpha1', runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }],
       plugins: [{ id: 'terminal', spec: 'terminal@1.0.0', runtimeProfiles: ['node22'], reason: 'author baseline fixture',
         environmentRecommendation: { sourceFingerprint: `sha256:${'d'.repeat(64)}`, preferredNodeMajor: 22, nodeMajors: [22], unavailableNodeMajors: [],
           executionProfiles: ['tui'], summary: 'Author terminal workflow.', evidence: ['README.md'],
           authorEnvironment: { packageManagers: [], overrides: [], workflows: [],
             dshVersions: [{ version: '0.1.0-rc.8', evidence: [{ path: 'README.md', quote: 'DSH 0.1.0-rc.8' }] }] } } }] }
-    const surfaceTargets = { schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [{ id: 'terminal-tui', sourceCaseId: 'terminal-node22',
-      plane: 'tui', profile: 'author-tui', runtimeId: 'terminal', reason: 'author intended terminal' }] }
+    const base = { id: `terminal-tui-${'x'.repeat(33)}`, sourceCaseId: 'terminal-node22', plane: 'tui', profile: 'author-tui', runtimeId: 'terminal', reason: 'author intended terminal' }
+    const surfaceTargets = { schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [base, { ...base, id: `${base.id}-disabled`,
+      startupConfiguration: { scope: 'Terminal with bridge stopped', environment: { DSH_BRIDGE_DISABLED: '1' } } }] }
     const profiles: DshBatchTask[] = []
     const result = await runDshCompatibilityBatch({ installTargets, surfaceTargets,
       runtime: { platform: 'linux', architecture: 'arm64' }, now: new Date('2026-09-14T05:01:00.000Z'),
@@ -37,8 +38,9 @@ describe('durable DSH compatibility batch', () => {
         profiles.push(task)
         throw new Error('bounded surface executor fixture unavailable')
       } })
-    assert.equal(result.executed, 4)
-    assert.deepEqual(profiles.map(task => task.cell.dshVersion).sort(), ['0.1.0-rc.8', '0.1.5-rc.2'])
+    assert.equal(result.executed, 6)
+    assert.deepEqual(profiles.map(task => task.cell.dshVersion).sort(), ['0.1.0-rc.8', '0.1.0-rc.8', '0.1.5-rc.2', '0.1.5-rc.2'])
+    assert.equal(profiles.filter(task => Reflect.get(task.cell, 'startupConfiguration')).length, 2)
     assert.ok(profiles.every(task => task.kind === 'surface' && Reflect.get(task.cell, 'profile') === 'author-tui'))
     assert.notEqual(profiles[0]?.cell.id, profiles[1]?.cell.id)
   })
@@ -206,7 +208,7 @@ describe('durable DSH compatibility batch', () => {
         if (task.kind === 'native') return nativeReport(task)
         const cell = task.cell as DshSurfaceExpectedCase
         assert.equal(durable?.nativeLedger.entries[0]?.artifact.sha256, cell.artifactSha256)
-        return { schema: 'upstream-radar.dsh-surface-observation/v1alpha1', executionContract: 'dsh-surface/v1alpha12',
+        return { schema: 'upstream-radar.dsh-surface-observation/v1alpha1', executionContract: 'dsh-surface/v1alpha13',
           tool: { name: 'upstream-radar', version: '0.45.0' }, probe: 'dsh-surface', scope: 'surface-runtime-behavior',
           ...cell, caseId: cell.id, startedAt: '2026-09-14T05:00:00.000Z', completedAt: '2026-09-14T05:00:10.000Z',
           artifact: { sha256: cell.artifactSha256 }, runtime: { nodeMajor: 22, nodeVersion: '22.23.2', platform: 'linux', architecture: 'arm64', pnpmVersion: '11.7.0' },

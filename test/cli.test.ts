@@ -151,6 +151,12 @@ describe('CLI option parsing', () => {
     })
     assert.equal(invalidEnvironment.status, 1)
     assert.match(invalidEnvironment.stderr, /profile override.*registry version range/)
+    const startupArgs = [cli, 'probe', 'dsh-surface', 'demo-plugin@1.0.0', '--startup-configuration-json']
+    const acceptedStartup = spawnSync(process.execPath, [...startupArgs, JSON.stringify({ scope: 'Web settings only', environment: { DSH_LARK_DISABLED: '1' } })], { encoding: 'utf8' })
+    assert.match(acceptedStartup.stderr, /requires --dsh-version/)
+    const unsafeStartup = spawnSync(process.execPath, [...startupArgs, JSON.stringify({ scope: 'unsafe fixture', environment: { DSH_LARK_APP_SECRET: 'never-echo-this-secret' } })], { encoding: 'utf8' })
+    assert.match(unsafeStartup.stderr, /startup environment/)
+    assert.doesNotMatch(unsafeStartup.stderr, /never-echo-this-secret/)
     const invalidArtifact = spawnSync(process.execPath, [cli, 'probe', 'dsh-install', 'demo-plugin@1.0.0',
       '--dsh-version', '0.1.5-rc.2', '--isolation-provider', 'other', '--execute', '--artifact-sha256', 'wrong-digest'], {
       encoding: 'utf8', env: { ...process.env, UPSTREAM_RADAR_ISOLATED_RUNNER: '1' },

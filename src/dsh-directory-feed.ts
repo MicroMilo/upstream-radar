@@ -12,6 +12,7 @@ import {
   type DshSurfaceLedgerEntry,
 } from './dsh-surface.js'
 import type { DshSurfaceObservationResult } from './dsh-surface-observation.js'
+import type { DshStartupConfiguration } from './dsh-startup-configuration.js'
 import { parseNpmSpec } from './npm.js'
 import { TOOL_VERSION } from './version.js'
 
@@ -77,6 +78,7 @@ export interface DshDirectoryEvidenceCell {
   }
   executionPlane: DshDirectoryExecutionPlane
   profile: string
+  startupConfiguration?: DshStartupConfiguration
   status: Exclude<DshDirectoryEvidenceStatus, 'not-observed' | 'update-pending'>
   radarResult: DshCompatibilityLedgerEntry['result'] | DshSurfaceObservationResult
   requiredDependencyBuilds?: string[]
@@ -335,6 +337,7 @@ function surfaceCell(surface: DshSurfaceLedgerEntry, refreshAfterHours: number):
     },
     executionPlane: surface.plane,
     profile: surface.profile,
+    ...(surface.startupConfiguration === undefined ? {} : { startupConfiguration: surface.startupConfiguration }),
     status: surfaceCellStatus(surface.result),
     radarResult: surface.result,
     ...(surface.approvedDependencyBuilds === undefined
@@ -517,6 +520,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
                 expectedCells.push(expectedCell)
                 const covered = cells.some(cell => (
                   cell.artifact.spec === selectedArtifact
+                  && cell.startupConfiguration === undefined
                   && cell.dsh.version === selectedDshVersion
                   && cell.runtime.nodeMajor === nodeMajor
                   && (plane === 'headless'
@@ -619,7 +623,11 @@ function selectedCoordinate(entry: DshDirectoryCompatibilityEntry): string {
 
 function dshCoordinate(entry: DshDirectoryCompatibilityEntry): string {
   if (entry.cells.length === 0) return '—'
-  return entry.cells.map(cell => `\`${markdown(cell.dsh.version)}\` / Node ${cell.runtime.nodeMajor} / ${cell.executionPlane}`).join('<br>')
+  return entry.cells.map(cell => {
+    const startup = cell.startupConfiguration
+    const scope = startup === undefined ? '' : ` / additional: ${markdown(startup.scope)} (${markdown(Object.entries(startup.environment).map(([key, value]) => `${key}=${value}`).join(', '))})`
+    return `\`${markdown(cell.dsh.version)}\` / Node ${cell.runtime.nodeMajor} / ${cell.executionPlane}${scope}`
+  }).join('<br>')
 }
 
 function observedCoordinate(entry: DshDirectoryCompatibilityEntry): string {
@@ -663,6 +671,7 @@ export function renderDshDirectoryCompatibilityFeed(feed: DshDirectoryCompatibil
     '- `needs-review`: the repository environment recommendation is missing, one of its Node/profile cells is uncovered, or existing evidence cannot yet separate a plugin defect from an environment condition or explicit dependency-build approval gate.',
     '- `update-pending`: the selected npm artifact changed and has no exact cell yet; historical evidence is retained but never inherited as the current result.',
     '- `not-observed`: the catalog entry is monitored statically but has no matching executable npm artifact in this cohort.',
+    '- Additional disabled/offline startup comparisons retain their exact flags and limited scope; they never satisfy a missing default-startup requirement.',
     '',
     `A cell expires at its \`recheckDueAt\` value (${feed.boundary.refreshAfterHours} hours after observation). Consumers must then show it as stale. This is exact compatibility evidence, not a security review or endorsement.`,
     '',

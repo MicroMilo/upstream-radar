@@ -280,6 +280,17 @@ describe('DSH directory compatibility feed', () => {
       'clean-node24:headless',
       'clean-node24:web',
     ])
+
+    const startupConfiguration = { scope: 'Web settings only; bridge stopped', environment: { DSH_CLEAN_DISABLED: '1' } }
+    const supplemental = surfaceLedger('clean', 'compatible', { caseId: 'clean-web-disabled', startupConfiguration })
+    const supplementalFeed = buildDshDirectoryCompatibilityFeed({ ...input, installTargets, observations,
+      environmentRecommendations, surfaceLedger: supplemental, generatedAt: '2026-08-23T01:00:00.000Z' })
+    const limited = supplementalFeed.plugins.find(item => item.id === 'clean')!
+    assert.deepEqual(limited.environmentRecommendation?.missingCells, clean.environmentRecommendation?.missingCells,
+      'a disabled-startup comparison must not cover the default Web requirement')
+    assert.deepEqual(Reflect.get(limited.cells.find(cell => cell.caseId === 'clean-web-disabled')!, 'startupConfiguration'), startupConfiguration)
+    assert.match(renderDshDirectoryCompatibilityFeed(supplementalFeed), /Web settings only; bridge stopped/)
+    assert.match(renderDshDirectoryCompatibilityFeed(supplementalFeed), /DSH_CLEAN_DISABLED=1/)
   })
 
   it('keeps untested intended workflows in review even when every selected smoke cell is compatible', () => {
