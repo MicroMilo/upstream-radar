@@ -19,7 +19,7 @@
     },
     "probe": { "const": "dsh-install" },
     "scope": { "const": "install-and-load-behavior" },
-    "executionContract": { "const": "dsh-install/v1alpha4" },
+    "executionContract": { "const": "dsh-install/v1alpha6" },
     "profileEnvironment": {
       "type": "object", "additionalProperties": false,
       "required": ["pnpmVersion", "overrides"],

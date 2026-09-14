@@ -9,6 +9,7 @@ import {
   resolveDshInstallTargetSpec,
   type DshInstallTargets,
 } from './dsh-install-plan.js'
+import { parseDshProfileEnvironment } from './dsh-profile-environment.js'
 
 export const DSH_HEADLESS_AGENT_PLANS_SCHEMA = 'upstream-radar.dsh-headless-agent-plans/v1alpha1' as const
 
@@ -74,6 +75,9 @@ export interface DshHeadlessAgentPlans {
   schema: typeof DSH_HEADLESS_AGENT_PLANS_SCHEMA
   updatedAt: string
   entries: DshHeadlessAgentPlanEntry[]
+  pendingTasks?: Array<{
+    caseId: string; inputFingerprint: string; createdAt: string; attempts: number; lastAttemptAt?: string
+  }>
 }
 
 function record(value: unknown, label: string): Record<string, unknown> {
@@ -234,6 +238,7 @@ export function emptyDshHeadlessAgentPlans(now = new Date(0)): DshHeadlessAgentP
     schema: DSH_HEADLESS_AGENT_PLANS_SCHEMA,
     updatedAt: now.toISOString(),
     entries: [],
+    pendingTasks: [],
   }
 }
 
@@ -312,10 +317,22 @@ export function parseDshHeadlessAgentPlans(input: unknown): DshHeadlessAgentPlan
     }
   })
   entries.sort((left, right) => left.caseId.localeCompare(right.caseId))
+  if (root.pendingTasks !== undefined && (!Array.isArray(root.pendingTasks) || root.pendingTasks.length > MAX_ENTRIES)) throw new Error('headless pending tasks exceed bounds')
+  const pendingTasks = ((root.pendingTasks ?? []) as unknown[]).map(value => {
+    const task = record(value, 'headless pending task')
+    const inputFingerprint = boundedString(task.inputFingerprint, 'headless pending input fingerprint', 71)
+    if (!/^sha256:[a-f0-9]{64}$/.test(inputFingerprint) || !Number.isSafeInteger(task.attempts)
+      || Number(task.attempts) < 0 || Number(task.attempts) > 1_000_000) throw new Error('invalid headless pending task')
+    return { caseId: boundedString(task.caseId, 'headless pending case id', 128), inputFingerprint,
+      createdAt: timestamp(task.createdAt, 'headless pending createdAt'), attempts: Number(task.attempts),
+      ...(task.lastAttemptAt === undefined ? {} : { lastAttemptAt: timestamp(task.lastAttemptAt, 'headless pending lastAttemptAt') }) }
+  })
+  if (new Set(pendingTasks.map(task => task.caseId)).size !== pendingTasks.length) throw new Error('duplicate headless pending task')
   return {
     schema: DSH_HEADLESS_AGENT_PLANS_SCHEMA,
     updatedAt: timestamp(root.updatedAt, 'DSH headless Agent plans updatedAt'),
     entries,
+    pendingTasks,
   }
 }
 
@@ -369,10 +386,15 @@ export function applyDshHeadlessAgentPlans(
   for (const plan of plans.entries) {
     if (plan.approvedBuilds.length === 0) continue
     const observed = ledger.entries.find(entry => entry.caseId === plan.caseId)
-    if (observed === undefined || !planMatchesLedger(plan, observed)) continue
+    if (observed === undefined || !planMatchesLedger(plan, observed) || plan.artifactSha256 === undefined) continue
+    if (observed.runtime.platform !== 'linux' || !['x64', 'arm64'].includes(observed.runtime.architecture)) continue
     const target = targetById.get(plan.targetId)
     if (target === undefined) continue
-    target.allowedBuilds = [...plan.approvedBuilds]
+    target.buildApprovals ??= []
+    target.buildApprovals.push({ plugin: plan.plugin, dshVersion: plan.dshVersion, nodeMajor: plan.nodeMajor,
+      artifactSha256: plan.artifactSha256, platform: observed.runtime.platform, architecture: observed.runtime.architecture,
+      profileEnvironment: observed.profileEnvironment ?? parseDshProfileEnvironment({ pnpmVersion: observed.runtime.pnpmVersion ?? '11.7.0', overrides: {} }),
+      packages: [...plan.approvedBuilds] })
   }
   return targets
 }

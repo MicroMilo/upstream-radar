@@ -32,7 +32,7 @@ jobs:
         run: |
           pnpm install --frozen-lockfile --ignore-scripts
           pnpm run build
-          node --test dist/test/dsh-environment-recommendation.test.js dist/test/dsh-environment-evidence.test.js dist/test/dsh-profile-environment.test.js dist/test/dsh-install-plan.test.js
+          node --test dist/test/dsh-environment-recommendation.test.js dist/test/dsh-environment-evidence.test.js dist/test/dsh-profile-environment.test.js dist/test/dsh-install-plan.test.js dist/test/dsh-headless-agent-plan.test.js dist/test/dsh-headless-agent-script.test.js dist/test/dsh-batch.test.js
       - name: Collect current upstream versions and repository facts
         continue-on-error: true
         env:
@@ -82,6 +82,22 @@ jobs:
             examples/dsh/rebuild-batch/agent-plans.json \
             validation-output/recommendations.json \
             > validation-output/install-plan.json
+      - name: Review exact build gates from the completed isolated batch
+        if: ${{ !cancelled() }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
+        run: |
+          node scripts/plan-dsh-headless-agent.mjs \
+            examples/dsh/rebuild-batch/install-targets.json \
+            examples/dsh/awesome-observer/cohort.json \
+            validation-output/observations.json \
+            examples/dsh/rebuild-validation/2026-09-14/system-batch/compatibility-ledger.json \
+            validation-output/build-plans.json \
+            validation-output/build-plans.md \
+            > validation-output/build-review-summary.json
       - name: Preserve evidence even when a stage is incomplete
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

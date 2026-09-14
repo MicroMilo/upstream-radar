@@ -27,6 +27,20 @@ async function runActionInputDetector(files: string[], config = 'upstream-radar.
 }
 
 describe('reusable GitHub Action', () => {
+  it('carries the selected profile environment from each matrix into the image and isolated probe', async () => {
+    const workflow = await readFile(fileURLToPath(new URL('../../.github/workflows/upstream-observer.yml', import.meta.url)), 'utf8')
+    assert.equal(workflow.match(/profile_environment_json: \$\{\{ toJSON\(matrix\.profileEnvironment\) \}\}/g)?.length, 2)
+    assert.match(workflow, /artifact_sha256: \$\{\{ matrix\.expectedArtifactSha256 \|\| '' \}\}/)
+    for (const kind of ['install', 'surface']) {
+      const observer = await readFile(fileURLToPath(new URL(`../../.github/workflows/observe-dsh-plugin-${kind}.yml`, import.meta.url)), 'utf8')
+      assert.equal(observer.match(/^      profile_environment_json:$/gm)?.length, 2, `${kind}: manual and reusable inputs`)
+      assert.match(observer, /RADAR_PROFILE_ENVIRONMENT: \$\{\{ inputs\.profile_environment_json \}\}/)
+      assert.match(observer, /--build-arg PNPM_VERSION="\$RADAR_PNPM_VERSION"/)
+      assert.match(observer, /--profile-environment-json "\$RADAR_PROFILE_ENVIRONMENT"/)
+      assert.doesNotMatch(observer, /run:.*\$\{\{ inputs\.profile_environment_json/)
+    }
+  })
+
   it('keeps the published Action thin, pinned, and frozen', async () => {
     const actionPath = fileURLToPath(new URL('../../action.yml', import.meta.url))
     const examplePath = fileURLToPath(new URL('../../examples/github-actions/upstream-radar.yml', import.meta.url))

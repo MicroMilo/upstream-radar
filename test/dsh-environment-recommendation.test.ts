@@ -229,6 +229,42 @@ describe('DSH repository environment recommendation', () => {
     } }, selected), /package manager.*evidence/i)
   })
 
+  it('does not let a model omit exact package-manager and override facts already present in the repository manifest', () => {
+    const selected = candidate()
+    const values = { '@deepseek-ai/dsh-llm': '0.1.0-rc.8', '@deepseek-ai/dsh-sdk-server': '0.1.0-rc.8' }
+    selected.documents.push({ path: 'package.json', text: JSON.stringify({
+      packageManager: 'pnpm@10.33.0+sha512.abcdef', pnpm: { overrides: values },
+    }, null, 2) })
+    const parsed = parseDshEnvironmentRecommendationDecision(decision(), selected)
+    assert.deepEqual(parsed.authorEnvironment?.packageManagers.map(({ evidence, ...fact }) => fact), [
+      { name: 'pnpm', version: '10.33.0', scope: 'development' },
+    ])
+    assert.deepEqual(parsed.authorEnvironment?.overrides.map(({ evidence, ...fact }) => fact), [
+      { scope: 'development', values },
+    ])
+    const applied = applyDshEnvironmentRecommendations(targets, observations, recommendations({ ...parsed }))
+    const plan = buildDshInstallPlan(applied, observations, { changes: [] })
+    assert.deepEqual(plan.matrix.include[0]?.profileEnvironment, { pnpmVersion: '11.7.0', overrides: {} },
+      'repository development settings must not silently alter an installed host profile')
+  })
+
+  it('keeps supported manifest facts while recording unsupported override selectors and unpinned package managers', () => {
+    const selected = candidate()
+    selected.documents.push({ path: 'package.json', text: JSON.stringify({
+      packageManager: 'pnpm@10',
+      pnpm: { overrides: { 'valid-pnpm-pin': '1.2.3', 'parent>child': '4.5.6' } },
+      overrides: { 'valid-npm-pin': '^2.0.0', 'local-pin': 'file:../private' },
+      resolutions: { 'valid-yarn-pin': '3.0.0' },
+    }) })
+    const parsed = parseDshEnvironmentRecommendationDecision(decision(), selected)
+    assert.deepEqual(parsed.authorEnvironment?.overrides.flatMap(item => Object.entries(item.values)).sort(), [
+      ['valid-npm-pin', '^2.0.0'], ['valid-pnpm-pin', '1.2.3'], ['valid-yarn-pin', '3.0.0'],
+    ])
+    assert.equal(parsed.authorEnvironment?.packageManagers.length, 0)
+    assert.match(parsed.coverageGaps?.join(' ') ?? '', /packageManager.*not an exact/)
+    assert.match(parsed.coverageGaps?.join(' ') ?? '', /unsupported selectors or versions/)
+  })
+
   it('requires a current complete review instead of reusing a pre-rebuild recommendation', () => {
     const legacy = recommendations()
     Reflect.deleteProperty(legacy.entries[0]!, 'reviewContract')
@@ -240,6 +276,19 @@ describe('DSH repository environment recommendation', () => {
     Reflect.deleteProperty(incomplete, 'authorEnvironment')
     assert.throws(() => parseDshEnvironmentRecommendationDecision(incomplete, candidate()), /authorEnvironment.*required/)
     assert.match(renderDshEnvironmentRecommendationPrompt(candidate()), /authorEnvironment/)
+  })
+
+  it('withdraws an applied review when a newer evidence collection is pending', () => {
+    const prior = recommendations()
+    const applied = applyDshEnvironmentRecommendations({ ...targets, environmentRecommendationsRequired: true }, observations, prior)
+    assert.ok(applied.plugins[0]?.environmentRecommendation)
+    prior.pendingTasks[0]!.inputFingerprint = `sha256:${'b'.repeat(64)}`
+    const refreshed = applyDshEnvironmentRecommendations(applied, observations, prior)
+    assert.equal(refreshed.plugins[0]?.environmentRecommendation, undefined,
+      'a same-source review cannot override a newer pending input fingerprint')
+    const plan = buildDshInstallPlan(refreshed, observations, { changes: [] })
+    assert.equal(plan.matrix.include.length, 0)
+    assert.match(plan.blocked[0]!.reason, /environment recommendation/)
   })
 
   it('rejects executable override sources and mismatched key/value evidence', () => {
@@ -465,6 +514,7 @@ describe('DSH repository environment recommendation', () => {
     const c = selectDshEnvironmentRecommendationCandidates(targets, state, new Map([['web-plugin', selected.documents]]))[0]!
     const rs = recommendations({ ...parsed, sourceFingerprint: c.sourceFingerprint,
       inputFingerprint: createDshEnvironmentRecommendationInputFingerprint(c) })
+    rs.pendingTasks = [] // The fixture represents a completed review of these exact documents.
     const surfaceTargets = applyDshEnvironmentRecommendationsToSurfaceTargets({
       schema: 'upstream-radar.dsh-surface-targets/v1alpha1', refreshAfterHours: 168, surfaces: [],
     }, targets, state, rs)

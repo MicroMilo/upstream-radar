@@ -25,7 +25,7 @@ ARG PNPM_VERSION=11.7.0
 # for the terminal plane. They are observer-only drivers, not Radar runtime
 # dependencies and never enter the published npm package.
 RUN apt-get update \
-  && apt-get install --yes --no-install-recommends ca-certificates chromium git python3 make g++ \
+  && apt-get install --yes --no-install-recommends ca-certificates chromium git strace python3 make g++ \
   && rm -rf /var/lib/apt/lists/* \
   && npm install --global --ignore-scripts "pnpm@${PNPM_VERSION}" \
   && mkdir -p /surface-driver \

@@ -16,7 +16,7 @@ import { parseDshClientContract, type DshClientContract } from './dsh-peer-plane
 import { collectDshWebBootRoster, type DshWebContractEvidence } from './dsh-web-contract.js'
 
 export const DSH_SURFACE_OBSERVATION_SCHEMA = 'upstream-radar.dsh-surface-observation/v1alpha1' as const
-export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha9' as const
+export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha10' as const
 
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const CASE_ID = /^[a-z0-9][a-z0-9._-]{0,63}$/
@@ -97,7 +97,7 @@ export interface DshSurfaceObservationReport {
   tool: { name: 'upstream-radar'; version: string }
   probe: 'dsh-surface'
   scope: 'surface-runtime-behavior'
-  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8'
+  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8' | 'dsh-surface/v1alpha9'
   profileEnvironment?: DshProfileEnvironment
   startedAt: string
   completedAt: string

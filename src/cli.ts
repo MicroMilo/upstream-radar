@@ -1284,6 +1284,7 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
   let isolationProvider: InstallObservationIsolationProvider | undefined
   let profileEnvironment: DshProfileEnvironment | undefined
   let networkProxy: string | undefined
+  let expectedArtifactSha256: string | undefined
   let timeoutSeconds = 180
   let reportPath: string | undefined
   const allowedBuilds: string[] = []
@@ -1295,7 +1296,7 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
       execute = true
     } else if (argument === '--json') {
       json = true
-    } else if (argument === '--dsh-version' || argument === '--case-id' || argument === '--isolation-provider' || argument === '--allow-build' || argument === '--timeout' || argument === '--report' || argument === '--network-proxy' || argument === '--profile-environment-json') {
+    } else if (argument === '--dsh-version' || argument === '--case-id' || argument === '--isolation-provider' || argument === '--allow-build' || argument === '--timeout' || argument === '--report' || argument === '--network-proxy' || argument === '--profile-environment-json' || argument === '--artifact-sha256') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--dsh-version') {
@@ -1316,6 +1317,9 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
           throw new Error('--timeout must be an integer between 30 and 600 seconds')
         }
         timeoutSeconds = parsed
+      } else if (argument === '--artifact-sha256') {
+        if (expectedArtifactSha256 !== undefined || !/^[a-f0-9]{64}$/.test(value)) throw new Error('--artifact-sha256 requires one lowercase SHA-256 digest')
+        expectedArtifactSha256 = value
       } else if (argument === '--profile-environment-json') {
         if (profileEnvironment !== undefined) throw new Error('probe dsh-install accepts only one --profile-environment-json')
         profileEnvironment = profileEnvironmentJson(value)
@@ -1342,6 +1346,7 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
     packageSpec,
     dshVersion,
     ...(caseId === undefined ? {} : { caseId }),
+    ...(expectedArtifactSha256 === undefined ? {} : { expectedArtifactSha256 }),
     allowExecution: true,
     isolationProvider,
     allowedBuilds,

@@ -83,6 +83,20 @@ function baseline() {
 }
 
 describe('DSH compatibility reconciliation plan', () => {
+  it('plans and reuses the actual isolated architecture instead of rewriting an x64 plan after execution', () => {
+    const plan = buildDshInstallPlan(corpus, state(), { changes: [] }, emptyDshCompatibilityLedger(), now, new Set(),
+      { platform: 'linux', architecture: 'arm64' })
+    assert.equal(plan.matrix.include[0]?.architecture, 'arm64')
+    const ledger = { ...emptyDshCompatibilityLedger(), entries: plan.matrix.include.map(cell => entry(cell, {
+      runtime: { nodeMajor: cell.nodeMajor, nodeVersion: `${cell.nodeMajor}.23.2`, platform: 'linux', architecture: 'arm64', pnpmVersion: '11.7.0' },
+    })) }
+    assert.equal(buildDshInstallPlan(corpus, state(), { changes: [] }, ledger, now, new Set(),
+      { platform: 'linux', architecture: 'arm64' }).run, false)
+    const changed = buildDshInstallPlan(corpus, state(), { changes: [] }, ledger, now)
+    assert.equal(changed.matrix.include.length, plan.matrix.include.length)
+    assert.ok(changed.matrix.include.every(cell => cell.reasons.includes('execution-contract-changed')))
+  })
+
   it('backfills every default runtime cell even when no package coordinate changed', () => {
     const plan = baseline()
     assert.equal(plan.run, true)

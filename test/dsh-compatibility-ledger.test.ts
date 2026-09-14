@@ -65,7 +65,7 @@ describe('DSH compatibility ledger', () => {
     const selected = { ...expected, profileEnvironment, contractFingerprint: createDshCompatibilityContractFingerprint({
       plugin: expected.plugin, dshVersion: expected.dshVersion, nodeMajor: 24, allowedBuilds: [], profileEnvironment,
     }) }
-    const observed = report({ executionContract: 'dsh-install/v1alpha4', profileEnvironment,
+    const observed = report({ executionContract: 'dsh-install/v1alpha6', profileEnvironment,
       runtime: { platform: 'linux', architecture: 'x64', nodeVersion: '24.11.1', packageManager: { name: 'pnpm', version: '10.33.0' } } })
     const merged = mergeDshCompatibilityLedger({ ledger: emptyDshCompatibilityLedger(), expected: [selected], reports: [observed] })
     assert.deepEqual(merged.rejectedReports, [])

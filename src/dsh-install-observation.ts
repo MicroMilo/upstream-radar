@@ -23,7 +23,7 @@ import { collectDshPeerPlaneEvidence, evaluateDshPeerContractCoverage, parseDshC
   type DshClientContract, type DshPeerPlaneEvidence } from './dsh-peer-planes.js'
 
 export const DSH_INSTALL_OBSERVATION_SCHEMA = 'upstream-radar.dsh-install-observation/v1alpha1' as const
-export const DSH_INSTALL_EXECUTION_CONTRACT = 'dsh-install/v1alpha4' as const
+export const DSH_INSTALL_EXECUTION_CONTRACT = 'dsh-install/v1alpha6' as const
 
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const DEFAULT_TIMEOUT_MS = 180_000
@@ -309,6 +309,7 @@ export interface DshInstallObservationReport {
 
 export interface DshInstallObservationOptions {
   profileEnvironment?: DshProfileEnvironment
+  expectedArtifactSha256?: string
   packageSpec: string
   dshVersion: string
   caseId?: string
@@ -1575,6 +1576,9 @@ function finalCompatibilityConclusion(
 export async function observeDshPluginInstall(options: DshInstallObservationOptions): Promise<DshInstallObservationReport> {
   const profileEnvironment = parseDshProfileEnvironment(options.profileEnvironment)
   const spec = parseNpmSpec(options.packageSpec)
+  if (options.expectedArtifactSha256 !== undefined && !/^[a-f0-9]{64}$/.test(options.expectedArtifactSha256)) {
+    throw new Error('expected artifact must be a lowercase SHA-256 digest')
+  }
   if (!EXACT_VERSION.test(options.dshVersion)) throw new Error('DSH version must be an exact semantic version')
   if (options.caseId !== undefined && !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(options.caseId)) {
     throw new Error('DSH install observation caseId must be a short lowercase label')
@@ -1725,6 +1729,10 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       ...(artifact.nodeEngine === undefined ? {} : { nodeEngine: artifact.nodeEngine }),
       lifecycleScripts: artifact.lifecycleScripts,
       ...(artifact.client === undefined ? {} : { client: artifact.client }),
+    }
+    if (options.expectedArtifactSha256 !== undefined && artifact.sha256 !== options.expectedArtifactSha256) {
+      report.stages.artifact = { status: 'failed', detail: 'artifact digest differs from the approved bytes' }
+      return finishReport(report, 'unknown', 'the artifact does not match the approved bytes; no dependency build or host install was attempted')
     }
     report.stages.artifact = { status: 'passed', code: artifactResult.code }
 

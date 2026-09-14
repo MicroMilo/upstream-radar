@@ -138,6 +138,7 @@ export interface DshCompatibilityLedger {
 /** One matrix entry sent from the static reconciler to the isolated runner. */
 export interface DshCompatibilityExpectedCase {
   profileEnvironment?: DshProfileEnvironment
+  expectedArtifactSha256?: string
   id: string
   targetId: string
   plugin: string
@@ -591,11 +592,12 @@ export function createDshCompatibilityContractFingerprint(value: {
   architecture?: 'x64' | 'arm64'
   allowedBuilds: readonly string[]
   profileEnvironment?: DshProfileEnvironment
+  expectedArtifactSha256?: string
 }): string {
   const profileEnvironment = parseDshProfileEnvironment(value.profileEnvironment)
   return fingerprint({
-    // v1alpha4 requires exact client-platform attribution before Web-specific conclusions.
-    probe: 'dsh-install/v1alpha4',
+    // v1alpha6 also enforces byte-bound, environment-scoped build approvals before install.
+    probe: 'dsh-install/v1alpha6',
     platform: value.platform ?? 'linux',
     architecture: value.architecture ?? 'x64',
     packageManager: `pnpm@${profileEnvironment.pnpmVersion}`,
@@ -604,6 +606,7 @@ export function createDshCompatibilityContractFingerprint(value: {
     plugin: value.plugin,
     dshVersion: value.dshVersion,
     allowedBuilds: [...value.allowedBuilds].sort(),
+    ...(value.expectedArtifactSha256 === undefined ? {} : { expectedArtifactSha256: value.expectedArtifactSha256 }),
   })
 }
 
@@ -645,6 +648,7 @@ function parseExpectedCases(input: readonly DshCompatibilityExpectedCase[]): Map
     }
     expected.set(id, {
       ...item,
+      ...(item.expectedArtifactSha256 === undefined ? {} : { expectedArtifactSha256: optionalBareSha256(item.expectedArtifactSha256, 'expected artifact digest')! }),
       ...(item.profileEnvironment === undefined ? {} : { profileEnvironment: parseDshProfileEnvironment(item.profileEnvironment) }),
       id,
       targetId: caseId(item.targetId, `expected case ${id} targetId`),
@@ -668,6 +672,9 @@ function parseObservationReport(value: unknown, expected: DshCompatibilityExpect
   const dshVersion = exactVersion(report.dshVersion, 'report dshVersion')
   if (dshVersion !== expected.dshVersion) throw new Error(`report DSH version ${dshVersion} does not match scheduled ${expected.dshVersion}`)
   const artifact = reportRecord(report.artifact, 'report artifact')
+  if (expected.expectedArtifactSha256 !== undefined && artifact.sha256 !== expected.expectedArtifactSha256) {
+    throw new Error('report artifact digest does not match the approved bytes')
+  }
   const plugin = exactSpec(artifact.spec, 'report artifact spec')
   if (plugin !== expected.plugin) throw new Error(`report artifact ${plugin} does not match scheduled ${expected.plugin}`)
   const runtime = reportRecord(report.runtime, 'report runtime')
@@ -689,8 +696,10 @@ function parseObservationReport(value: unknown, expected: DshCompatibilityExpect
   const approved = parseLifecycleBuilds(boundary.approvedDependencyBuilds, 'report boundary.approvedDependencyBuilds')
   if (approved.join(',') !== expected.allowedBuilds) throw new Error('report approved dependency builds do not match the scheduled policy')
   const currentContract = createDshCompatibilityContractFingerprint({ plugin: expected.plugin, dshVersion: expected.dshVersion,
-    nodeMajor: expected.nodeMajor, platform: expected.platform ?? 'linux', architecture: expected.architecture ?? 'x64', allowedBuilds: approved, profileEnvironment: expectedEnvironment })
-  if (expected.contractFingerprint === currentContract && report.executionContract !== 'dsh-install/v1alpha4') {
+    nodeMajor: expected.nodeMajor, platform: expected.platform ?? 'linux', architecture: expected.architecture ?? 'x64', allowedBuilds: approved,
+    profileEnvironment: expectedEnvironment,
+    ...(expected.expectedArtifactSha256 === undefined ? {} : { expectedArtifactSha256: expected.expectedArtifactSha256 }) })
+  if (expected.contractFingerprint === currentContract && report.executionContract !== 'dsh-install/v1alpha6') {
     throw new Error('report did not establish the scheduled plane-aware execution contract')
   }
   const result = reportString(report.result, 'report result', 64) as DshInstallObservationResult

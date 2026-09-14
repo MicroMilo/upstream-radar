@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { appendFile, readFile, writeFile } from 'node:fs/promises'
+import { randomUUID } from 'node:crypto'
+import { appendFile, open, readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import { dirname, posix, resolve } from 'node:path'
 import process from 'node:process'
 import {
@@ -18,6 +19,38 @@ const MAX_INPUT_BYTES = 256 * 1024 * 1024
 const MAX_DOCUMENT_BYTES = 48 * 1024
 const MAX_DOCUMENT_TOTAL_BYTES = 128 * 1024
 const CONCURRENCY = 4
+const MAX_AGENT_TASKS_PER_RUN = 32
+
+async function boundedResponseText(response, maximum, label) {
+  const declared = Number(response.headers.get('content-length'))
+  if (Number.isFinite(declared) && declared > maximum) {
+    await response.body?.cancel()
+    throw new Error(`${label} exceeds ${maximum} bytes`)
+  }
+  if (!response.body) throw new Error(`${label} has no body`)
+  const reader = response.body.getReader()
+  const chunks = []
+  let bytes = 0
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    bytes += value.byteLength
+    if (bytes > maximum) { await reader.cancel(); throw new Error(`${label} exceeds ${maximum} bytes`) }
+    chunks.push(Buffer.from(value))
+  }
+  return Buffer.concat(chunks, bytes).toString('utf8')
+}
+
+async function savePlans(path, value) {
+  const destination = resolve(path)
+  const temporary = `${destination}.${randomUUID()}.tmp`
+  const handle = await open(temporary, 'wx', 0o600)
+  try {
+    try { await handle.writeFile(`${JSON.stringify(value, null, 2)}\n`); await handle.sync() }
+    finally { await handle.close() }
+    await rename(temporary, destination)
+  } finally { await unlink(temporary).catch(error => { if (error.code !== 'ENOENT') throw error }) }
+}
 
 async function readJson(path) {
   const contents = await readFile(resolve(path), 'utf8')
@@ -68,8 +101,8 @@ async function fetchDocument(repository, commit, path) {
   })
   if (response.status === 404) return undefined
   if (!response.ok) throw new Error(`GitHub returned HTTP ${response.status} for ${repository}/${path}`)
-  const text = await response.text()
-  return { path, text: text.slice(0, MAX_DOCUMENT_BYTES) }
+  const text = await boundedResponseText(response, MAX_DOCUMENT_BYTES, 'Repository document')
+  return { path, text }
 }
 
 async function collectDocuments(repository, commit, packagePath) {
@@ -156,7 +189,7 @@ async function callAgent(prompt, config) {
     signal: AbortSignal.timeout(120_000),
   })
   if (!response.ok) throw new Error(`Agent endpoint returned HTTP ${response.status}: ${safeEndpoint(endpoint)}`)
-  const body = await response.json()
+  const body = JSON.parse(await boundedResponseText(response, 256 * 1024, 'Agent response'))
   const content = body?.choices?.[0]?.message?.content
   if (typeof content !== 'string') throw new Error(`Agent response had no message content: ${safeEndpoint(endpoint)}`)
   return jsonObject(content)
@@ -325,13 +358,36 @@ const pending = candidates.filter(candidate => {
   const previous = existingByCase.get(candidate.caseId)
   return previous?.inputFingerprint !== createDshHeadlessAgentInputFingerprint(candidate)
 })
+const pendingTasks = new Map(pending.map(candidate => {
+  const inputFingerprint = createDshHeadlessAgentInputFingerprint(candidate)
+  const previous = existingPlans.pendingTasks?.find(task => task.caseId === candidate.caseId && task.inputFingerprint === inputFingerprint)
+  return [candidate.caseId, previous ?? { caseId: candidate.caseId, inputFingerprint, createdAt: new Date().toISOString(), attempts: 0 }]
+}))
+const selected = [...pending].sort((left, right) => {
+  const a = pendingTasks.get(left.caseId), b = pendingTasks.get(right.caseId)
+  return a.attempts - b.attempts || (a.lastAttemptAt ?? '').localeCompare(b.lastAttemptAt ?? '') || left.caseId.localeCompare(right.caseId)
+}).slice(0, MAX_AGENT_TASKS_PER_RUN)
+let writes = Promise.resolve()
+function checkpoint() {
+  const value = parseDshHeadlessAgentPlans({ schema: existingPlans.schema, updatedAt: new Date().toISOString(),
+    entries: [...existingByCase.values()], pendingTasks: [...pendingTasks.values()] })
+  writes = writes.then(() => savePlans(plansPath, value))
+  return writes
+}
+// Reserve the bounded handoffs before any model request. A crash retains them.
+if (config !== undefined) for (const candidate of selected) {
+  const task = pendingTasks.get(candidate.caseId)
+  task.attempts += 1
+  task.lastAttemptAt = new Date().toISOString()
+}
+await checkpoint()
 const failures = []
 let planned = 0
 
 if (config === undefined && pending.length > 0) {
   for (const candidate of pending) failures.push({ caseId: candidate.caseId, error: 'Agent is not configured; no static fallback was used.' })
 } else if (config !== undefined) {
-  await mapConcurrent(pending, async candidate => {
+  await mapConcurrent(selected, async candidate => {
     try {
       const decision = parseDshHeadlessAgentDecision(
         await callAgent(renderDshHeadlessAgentPrompt(candidate), config),
@@ -361,6 +417,8 @@ if (config === undefined && pending.length > 0) {
         ...decision,
       })
       planned += 1
+      pendingTasks.delete(candidate.caseId)
+      await checkpoint()
     } catch (error) {
       failures.push({ caseId: candidate.caseId, error: error instanceof Error ? error.message.slice(0, 1_024) : String(error).slice(0, 1_024) })
     }
@@ -375,11 +433,14 @@ const nextPlans = parseDshHeadlessAgentPlans({
   // exact build policy must remain active for later refreshes of the same
   // artifact/runtime. Exact-coordinate binding makes stale entries inert.
   entries: [...existingByCase.values()],
+  pendingTasks: [...pendingTasks.values()],
 })
-await writeFile(resolve(plansPath), `${JSON.stringify(nextPlans, null, 2)}\n`, 'utf8')
+await writes
+await savePlans(plansPath, nextPlans)
 await writeFile(resolve(reportPath), markdown(nextPlans, candidates, failures), 'utf8')
 
-process.stdout.write(`${JSON.stringify({ candidates: candidates.length, pending: pending.length, planned, failed: failures.length }, null, 2)}\n`)
+process.stdout.write(`${JSON.stringify({ candidates: candidates.length, pending: pending.length,
+  attempted: config === undefined ? 0 : selected.length, planned, failed: failures.length }, null, 2)}\n`)
 if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, markdown(nextPlans, candidates, failures), 'utf8')
 if (process.env.GITHUB_OUTPUT) {
   await appendFile(process.env.GITHUB_OUTPUT, `candidates=${candidates.length}\nplanned=${planned}\nfailed=${failures.length}\n`, 'utf8')

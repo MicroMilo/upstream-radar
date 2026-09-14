@@ -247,7 +247,7 @@ function compatibleReport(expected: DshSurfaceExpectedCase, plane: 'web' | 'tui'
     tool: { name: 'upstream-radar' as const, version: '0.44.0' },
     probe: 'dsh-surface' as const,
     scope: 'surface-runtime-behavior' as const,
-    executionContract: 'dsh-surface/v1alpha9' as const,
+    executionContract: 'dsh-surface/v1alpha10' as const,
     profileEnvironment: expected.profileEnvironment ?? { pnpmVersion: '11.7.0', overrides: {} },
     startedAt: '2026-08-25T00:00:00.000Z',
     completedAt: '2026-08-25T00:01:00.000Z',

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -35,6 +36,33 @@ function passed(overrides: Partial<InstallObservationCommandResult> = {}): Insta
 }
 
 describe('DSH install observation', () => {
+  it('verifies the approval-bound artifact bytes before any dependency build or host install', async () => {
+    const archive = makeTarball([
+      { path: 'package/package.json', contents: JSON.stringify({ name: 'bound-plugin', version: '1.0.0', dsh: { bundle: { patch: './cordis.patch.yml' } } }) },
+      { path: 'package/cordis.patch.yml', contents: '[]\n' },
+    ])
+    const phases: string[] = []
+    const runner = async (command: InstallObservationCommand): Promise<InstallObservationCommandResult> => {
+      phases.push(command.phase)
+      if (command.phase === 'runtime') return passed({ stdout: '11.7.0' })
+      if (command.phase === 'artifact') {
+        await writeFile(join(command.cwd, 'bound-plugin-1.0.0.tgz'), archive)
+        return passed({ stdout: 'bound-plugin-1.0.0.tgz' })
+      }
+      return passed({ code: 1, stderr: 'fixture stops before further execution' })
+    }
+    const options = { packageSpec: 'bound-plugin@1.0.0', dshVersion: '0.1.5-rc.2', allowExecution: true,
+      isolationProvider: 'other' as const, allowedBuilds: ['sharp'], expectedArtifactSha256: 'f'.repeat(64), runner }
+    const rejected = await observeDshPluginInstall(options)
+    assert.deepEqual(phases, ['runtime', 'artifact'])
+    assert.equal(rejected.stages.artifact.status, 'failed')
+    assert.match(rejected.reason, /artifact.*approved|approved.*artifact/)
+    phases.length = 0
+    const acceptedOptions = { ...options, expectedArtifactSha256: createHash('sha256').update(archive).digest('hex') }
+    await observeDshPluginInstall(acceptedOptions)
+    assert.ok(phases.length > 2, 'the same bytes may advance to the isolated host installation')
+  })
+
   it('establishes the planned pnpm and profile overrides before executing the plugin', async () => {
     const profileEnvironment = { pnpmVersion: '10.33.0', overrides: { 'host-api': '1.0.0' } }
     const options = { packageSpec: 'environment-plugin@1.0.0', dshVersion: '0.1.5-rc.2',
@@ -113,7 +141,7 @@ describe('DSH install observation', () => {
       clientPlatform: 'web',
       host: 'no-literal-reference-observed', webClient: 'runtime-import-observed', unattributed: 'no-literal-reference-observed',
     })
-    assert.equal(Reflect.get(report, 'executionContract'), 'dsh-install/v1alpha4')
+    assert.equal(Reflect.get(report, 'executionContract'), 'dsh-install/v1alpha6')
   })
 
   it('collects the selected Web profile graph without executing package files', async () => {

@@ -259,9 +259,11 @@ jobs:
       dsh_version: ${{ needs.observe.outputs.install_dsh_version }}
       case_id: ${{ matrix.id }}
       node_major: ${{ matrix.nodeMajor }}
+      profile_environment_json: ${{ toJSON(matrix.profileEnvironment) }}
       timeout_seconds: '180'
       allow_builds: ${{ matrix.allowedBuilds }}
       accept_bounded_unknown: true
+      artifact_sha256: ${{ matrix.expectedArtifactSha256 || '' }}
 
   # Dynamic reports are useful only if they become durable, comparable
   # evidence. This job accepts reports only when their exact case, plugin,
@@ -527,6 +529,7 @@ jobs:
       artifact_sha256: ${{ matrix.artifactSha256 }}
       allow_builds: ${{ matrix.allowedBuilds }}
       node_major: ${{ matrix.nodeMajor }}
+      profile_environment_json: ${{ toJSON(matrix.profileEnvironment) }}
       timeout_seconds: '300'
 
   reconcile-surface-observations:

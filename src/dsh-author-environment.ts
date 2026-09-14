@@ -133,6 +133,92 @@ export function parseDshAuthorEnvironment(value: unknown): DshAuthorEnvironment 
 }
 
 function escape(value: string): string { return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') }
+/** Locate an exact, bounded JSON property quote; never evaluate repository code. */
+function propertyQuote(source: string, name: string, expected: unknown): string | undefined {
+  const pattern = new RegExp(`"${escape(name)}"\\s*:\\s*`, 'g')
+  for (const match of source.matchAll(pattern)) {
+    const start = match.index!
+    const valueStart = start + match[0].length
+    let inString = false
+    let escaped = false
+    let depth = 0
+    for (let index = valueStart; index < Math.min(source.length, start + 2048); index += 1) {
+      const character = source[index]
+      if (escaped) { escaped = false; continue }
+      if (inString && character === '\\') { escaped = true; continue }
+      if (character === '"') inString = !inString
+      if (!inString && (character === '{' || character === '[')) depth += 1
+      if (!inString && (character === '}' || character === ']')) depth -= 1
+      if (!inString && depth === 0) {
+        const quote = source.slice(start, index + 1)
+        try {
+          const parsed = JSON.parse(`{${quote}}`) as Record<string, unknown>
+          if (JSON.stringify(parsed[name]) === JSON.stringify(expected)) return quote
+        } catch { /* Not the complete property yet. */ }
+      }
+    }
+  }
+  return undefined
+}
+
+/** Deterministic manifest facts cannot disappear when the model summarizes them. */
+export function completeDshAuthorManifestFacts(environment: DshAuthorEnvironment, sources: ReadonlyMap<string, string>): {
+  environment: DshAuthorEnvironment; gaps: string[]
+} {
+  const result = structuredClone(environment)
+  const gaps: string[] = []
+  for (const [path, source] of sources) {
+    if (path.startsWith('dsh-repository/') || !/(^|\/)package\.json$/.test(path)) continue
+    if (Buffer.byteLength(source) > 48 * 1024) throw new Error('author manifest exceeds its byte budget')
+    let manifest: Record<string, unknown>
+    try { manifest = JSON.parse(source) as Record<string, unknown> }
+    catch { gaps.push(`Cannot parse author manifest ${path}; its environment requirements are unknown.`); continue }
+    if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest)) {
+      gaps.push(`Author manifest ${path} is not an object; its environment requirements are unknown.`); continue
+    }
+    if (manifest.packageManager !== undefined) {
+      const manager = typeof manifest.packageManager === 'string'
+        ? /^(pnpm|npm|yarn|bun)@(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(?:\+sha(?:224|256|384|512)\.[a-fA-F0-9]+)?$/.exec(manifest.packageManager) : null
+      const quote = propertyQuote(source, 'packageManager', manifest.packageManager)
+      if (!manager || !quote) gaps.push(`Author packageManager in ${path} is not an exact supported version with bounded evidence.`)
+      else if (!result.packageManagers.some(item => item.scope === 'development' && item.name === manager[1] && item.version === manager[2])) {
+        result.packageManagers.push({ name: manager[1] as DshAuthorEnvironment['packageManagers'][number]['name'],
+          version: manager[2]!, scope: 'development', evidence: [{ path, quote }] })
+      }
+    }
+    const pnpm = manifest.pnpm && typeof manifest.pnpm === 'object' && !Array.isArray(manifest.pnpm)
+      ? manifest.pnpm as Record<string, unknown> : undefined
+    for (const [label, property, values] of [
+      ['pnpm overrides', 'overrides', pnpm?.overrides],
+      ['npm overrides', 'overrides', manifest.overrides],
+      ['Yarn resolutions', 'resolutions', manifest.resolutions],
+    ] as const) {
+      if (values === undefined) continue
+      if (!values || typeof values !== 'object' || Array.isArray(values)) {
+        gaps.push(`Author ${label} in ${path} are not an object; requirements remain incomplete.`); continue
+      }
+      const entries = Object.entries(values)
+      if (!entries.length) continue
+      const quote = propertyQuote(source, property, values)
+      if (!quote) { gaps.push(`Author ${label} in ${path} exceed the bounded evidence quote; requirements remain incomplete.`); continue }
+      const supported: Record<string, string> = {}
+      let unsupported = entries.length > 64
+      for (const [name, value] of entries.slice(0, 64)) {
+        try {
+          const fact = parseDshAuthorEnvironment({ packageManagers: [], workflows: [], dshVersions: [],
+            overrides: [{ scope: 'development', values: { [name]: value }, evidence: [{ path, quote }] }] })!.overrides[0]!
+          if (!result.overrides.some(item => item.scope === 'development' && item.values[name] === value)) {
+            Object.defineProperty(supported, name, { value: fact.values[name], enumerable: true })
+          }
+        } catch { unsupported = true }
+      }
+      if (Object.keys(supported).length) result.overrides.push({ scope: 'development', values: supported, evidence: [{ path, quote }] })
+      if (unsupported) gaps.push(`Author ${label} in ${path} contain unsupported selectors or versions, or exceed 64 entries; requirements remain incomplete.`)
+    }
+  }
+  return { environment: parseDshAuthorEnvironment(result)!, gaps }
+}
+
 function namesVersion(quote: string, version: string): boolean {
   return new RegExp(`(^|[^0-9A-Za-z.-])${escape(version)}(?=$|[^0-9A-Za-z.-]|[.](?=\\s|$))`).test(quote)
 }

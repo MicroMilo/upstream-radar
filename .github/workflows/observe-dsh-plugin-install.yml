@@ -38,6 +38,16 @@ on:
         required: false
         default: false
         type: boolean
+      profile_environment_json:
+        description: Reviewed exact pnpm version and profile-scoped overrides as bounded JSON
+        required: false
+        default: '{"pnpmVersion":"11.7.0","overrides":{}}'
+        type: string
+      artifact_sha256:
+        description: Required artifact digest for a byte-bound build approval retry
+        required: false
+        default: ''
+        type: string
   workflow_call:
     inputs:
       plugin:
@@ -65,6 +75,14 @@ on:
         required: false
         default: false
         type: boolean
+      profile_environment_json:
+        required: false
+        default: '{"pnpmVersion":"11.7.0","overrides":{}}'
+        type: string
+      artifact_sha256:
+        required: false
+        default: ''
+        type: string
 
 # The target package executes arbitrary lifecycle and load code. This workflow
 # deliberately has no write permission and declares no secrets.
@@ -138,7 +156,22 @@ jobs:
         shell: bash
         env:
           RADAR_NODE_MAJOR: ${{ inputs.node_major }}
-        run: docker build --build-arg NODE_MAJOR="$RADAR_NODE_MAJOR" --file docker/dsh-install-observer.Dockerfile --tag upstream-radar-install-observer:${{ github.run_id }} .
+          RADAR_PROFILE_ENVIRONMENT: ${{ inputs.profile_environment_json }}
+          RADAR_ARTIFACT_SHA256: ${{ inputs.artifact_sha256 }}
+        run: |
+          set -euo pipefail
+          # Only an exact registry version may reach the trusted image build.
+          [[ -z "$RADAR_ARTIFACT_SHA256" || "$RADAR_ARTIFACT_SHA256" =~ ^[a-f0-9]{64}$ ]] || { echo 'artifact digest is invalid' >&2; exit 1; }
+          # The probe validates the complete environment before target install.
+          RADAR_PNPM_VERSION="$(node --input-type=module <<'NODE'
+          const raw = process.env.RADAR_PROFILE_ENVIRONMENT ?? ''
+          if (Buffer.byteLength(raw) > 64 * 1024) throw new Error('profile environment exceeds 64 KiB')
+          const value = JSON.parse(raw)
+          if (!value || typeof value.pnpmVersion !== 'string' || !/^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$/.test(value.pnpmVersion)) throw new Error('profile pnpmVersion must be exact')
+          process.stdout.write(value.pnpmVersion)
+          NODE
+          )"
+          docker build --build-arg NODE_MAJOR="$RADAR_NODE_MAJOR" --build-arg PNPM_VERSION="$RADAR_PNPM_VERSION" --file docker/dsh-install-observer.Dockerfile --tag upstream-radar-install-observer:${{ github.run_id }} .
 
       - name: Install and load inside the restricted container
         id: observe
@@ -153,6 +186,8 @@ jobs:
           RADAR_REPORT_DIRECTORY: ${{ runner.temp }}/upstream-radar-install-observation
           RADAR_CONTAINER_NAME: upstream-radar-install-${{ github.run_id }}-${{ github.run_attempt }}
           RADAR_ALLOW_BUILDS: ${{ inputs.allow_builds }}
+          RADAR_PROFILE_ENVIRONMENT: ${{ inputs.profile_environment_json }}
+          RADAR_ARTIFACT_SHA256: ${{ inputs.artifact_sha256 }}
         run: |
           set -euo pipefail
           mkdir -p "$RADAR_REPORT_DIRECTORY"
@@ -162,6 +197,10 @@ jobs:
           }
           trap cleanup EXIT
           allow_build_args=()
+          artifact_args=()
+          if [[ -n "$RADAR_ARTIFACT_SHA256" ]]; then
+            artifact_args=(--artifact-sha256 "$RADAR_ARTIFACT_SHA256")
+          fi
           if [[ -n "$RADAR_ALLOW_BUILDS" ]]; then
             IFS=',' read -r -a approved <<< "$RADAR_ALLOW_BUILDS"
             for package_name in "${approved[@]}"; do
@@ -192,8 +231,10 @@ jobs:
             --case-id "$RADAR_CASE_ID" \
             --isolation-provider github-actions-hosted-runner \
             --timeout "$RADAR_TIMEOUT_SECONDS" \
+            --profile-environment-json "$RADAR_PROFILE_ENVIRONMENT" \
             --execute \
             "${allow_build_args[@]}" \
+            "${artifact_args[@]}" \
             --report /output/report.json \
             --json | tee "$RADAR_REPORT_DIRECTORY/stdout.json"
           observer_exit=${PIPESTATUS[0]}

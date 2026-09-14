@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
+import { buildDshInstallPlan } from '../src/dsh-install-plan.js'
 import {
   applyDshHeadlessAgentPlans,
   createDshHeadlessAgentInputFingerprint,
@@ -99,7 +100,29 @@ function ledger(overrides: Record<string, unknown> = {}) {
   }
 }
 
+function plannedBuilds(applied: unknown): string {
+  return buildDshInstallPlan(applied, { targets: { 'deepseek-harness': {
+    package: { name: '@deepseek-ai/dsh', version: candidate.dshVersion },
+  } } }, { changes: [] }).matrix.include[0]?.allowedBuilds ?? ''
+}
+
 describe('DSH headless Agent planning', () => {
+  it('does not transfer a Node-specific build approval to another runtime or a newer DSH/plugin coordinate', () => {
+    const twoRuntimes = { ...targets, runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }, { id: 'node24', nodeMajor: 24 }],
+      plugins: [{ ...targets.plugins[0]!, runtimeProfiles: ['node22', 'node24'] }] }
+    const applied = applyDshHeadlessAgentPlans(twoRuntimes, plans(), ledger())
+    const state = { targets: { 'deepseek-harness': { package: { name: '@deepseek-ai/dsh', version: candidate.dshVersion } } } }
+    const initial = buildDshInstallPlan(applied, state, { changes: [] })
+    assert.equal(initial.matrix.include.find(cell => cell.nodeMajor === 22)?.allowedBuilds, 'sharp')
+    assert.equal(Reflect.get(initial.matrix.include.find(cell => cell.nodeMajor === 22)!, 'expectedArtifactSha256'), candidate.artifactSha256)
+    assert.equal(initial.matrix.include.find(cell => cell.nodeMajor === 24)?.allowedBuilds, '')
+    state.targets['deepseek-harness'].package.version = '0.1.5-rc.2'
+    assert.ok(buildDshInstallPlan(applied, state, { changes: [] }).matrix.include.every(cell => cell.allowedBuilds === ''))
+    state.targets['deepseek-harness'].package.version = candidate.dshVersion
+    applied.plugins[0]!.spec = 'dsh-vision@1.1.0'
+    assert.ok(buildDshInstallPlan(applied, state, { changes: [] }).matrix.include.every(cell => cell.allowedBuilds === ''))
+  })
+
   it('selects the current observed plugin coordinate instead of the stale corpus coordinate', () => {
     const mappedTargets = {
       ...targets,
@@ -188,28 +211,28 @@ describe('DSH headless Agent planning', () => {
 
   it('overlays a retry only onto the exact artifact and runtime cell', () => {
     const applied = applyDshHeadlessAgentPlans(targets, plans(), ledger())
-    assert.deepEqual(applied.plugins[0]?.allowedBuilds, ['sharp'])
+    assert.equal(plannedBuilds(applied), 'sharp')
 
     const compatibleRefresh = applyDshHeadlessAgentPlans(targets, plans(), ledger({
       result: 'compatible',
       reason: 'the approved exact artifact installed and loaded',
       requiredDependencyBuilds: undefined,
     }))
-    assert.deepEqual(compatibleRefresh.plugins[0]?.allowedBuilds, ['sharp'])
+    assert.equal(plannedBuilds(compatibleRefresh), 'sharp')
 
     const differentArtifact = applyDshHeadlessAgentPlans(
       targets,
       plans(),
       ledger({ artifact: { lifecycleScripts: [], sha256: 'e'.repeat(64) } }),
     )
-    assert.equal(differentArtifact.plugins[0]?.allowedBuilds, undefined)
+    assert.equal(plannedBuilds(differentArtifact), '')
   })
 
   it('does not turn a stopped or missing Agent plan into a static fallback', () => {
     const stopped = applyDshHeadlessAgentPlans(targets, plans('stop-headless'), ledger())
-    assert.equal(stopped.plugins[0]?.allowedBuilds, undefined)
+    assert.equal(plannedBuilds(stopped), '')
     const missing = applyDshHeadlessAgentPlans(targets, emptyDshHeadlessAgentPlans(), ledger())
-    assert.equal(missing.plugins[0]?.allowedBuilds, undefined)
+    assert.equal(plannedBuilds(missing), '')
   })
 
   it('reviews an unknown post-retry result without permitting another headless retry', () => {
@@ -255,7 +278,7 @@ describe('DSH headless Agent planning', () => {
       reason: unknownCandidate.reason,
       requiredDependencyBuilds: undefined,
     }))
-    assert.deepEqual(retained.plugins[0]?.allowedBuilds, ['sharp'])
+    assert.equal(plannedBuilds(retained), 'sharp')
   })
 
   it('parses a bounded durable plan state', () => {

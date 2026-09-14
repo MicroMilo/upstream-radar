@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { parseDshAuthorEnvironment, validateDshAuthorEnvironment, type DshAuthorEnvironment } from './dsh-author-environment.js'
+import { completeDshAuthorManifestFacts, parseDshAuthorEnvironment, validateDshAuthorEnvironment, type DshAuthorEnvironment } from './dsh-author-environment.js'
 import {
   dshCompatibilityCaseId,
 } from './dsh-compatibility-ledger.js'
@@ -20,7 +20,7 @@ import {
 } from './dsh-surface.js'
 
 export const DSH_ENVIRONMENT_RECOMMENDATIONS_SCHEMA = 'upstream-radar.dsh-environment-recommendations/v1alpha1' as const
-export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v3' as const
+export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v4' as const
 
 const DSH_TARGET_ID = 'deepseek-harness'
 const DSH_PACKAGE = '@deepseek-ai/dsh'
@@ -565,6 +565,12 @@ export function parseDshEnvironmentRecommendationDecision(
     ['dsh-source-manifest', candidate.dshManifest], ['dsh-published-manifest', candidate.dshPublishedManifest],
   ] as const) if (value !== undefined) sources.set(path, JSON.stringify(value))
   validateDshAuthorEnvironment(decision.authorEnvironment, sources)
+  const completed = completeDshAuthorManifestFacts(decision.authorEnvironment, sources)
+  decision.authorEnvironment = completed.environment
+  validateDshAuthorEnvironment(decision.authorEnvironment, sources)
+  if (completed.gaps.length) decision.coverageGaps = uniqueStrings([...new Set([
+    ...(decision.coverageGaps ?? []), ...completed.gaps,
+  ])], 'recommendation.coverageGaps', 16, 512)
   const collectionGaps = uniqueStrings(candidate.collectionGaps ?? [], 'candidate.collectionGaps', 16, 512)
   if (collectionGaps.length > 0) {
     const flag = `Repository evidence collection is incomplete (${collectionGaps.length} gap records); see the exact bounded candidate input for omitted or unavailable files.`
@@ -773,6 +779,8 @@ function applicableRecommendation(
   if (candidate === undefined) return undefined
   const entry = recommendations.entries.find(item => item.targetId === target.id)
   if (entry === undefined || entry.status !== 'recommended') return undefined
+  const pending = recommendations.pendingTasks.find(item => item.targetId === target.id)
+  if (pending !== undefined && pending.inputFingerprint !== entry.inputFingerprint) return undefined
   if (entry.reviewContract !== DSH_ENVIRONMENT_REVIEW_CONTRACT || entry.authorEnvironment === undefined) return undefined
   if (entry.plugin !== candidate.plugin || entry.dshVersion !== candidate.dshVersion
     || entry.sourceFingerprint !== candidate.sourceFingerprint) return undefined
@@ -812,6 +820,8 @@ export function applyDshEnvironmentRecommendations(
   const recommendations = parseDshEnvironmentRecommendations(recommendationsInput)
   const candidates = new Map(selectDshEnvironmentRecommendationCandidates(targets, stateInput).map(candidate => [candidate.targetId, candidate]))
   for (const target of targets.plugins) {
+    // This is a derived view, not a source of authority on subsequent cycles.
+    delete target.environmentRecommendation
     const entry = applicableRecommendation(target, candidates.get(target.id), recommendations)
     if (entry !== undefined) {
       const unavailableNodeMajors = entry.nodeMajors.filter(nodeMajor => !executableNodeMajor(nodeMajor))

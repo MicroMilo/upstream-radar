@@ -10,7 +10,7 @@ import {
 import { parseNpmSpec } from './npm.js'
 import { parseDshAuthorEnvironment, type DshAuthorEnvironment } from './dsh-author-environment.js'
 import { satisfiesSemverRange } from './semver.js'
-import { selectDshProfileEnvironment, type DshProfileEnvironment } from './dsh-profile-environment.js'
+import { parseDshProfileEnvironment, selectDshProfileEnvironment, type DshProfileEnvironment } from './dsh-profile-environment.js'
 
 export const DSH_INSTALL_TARGETS_SCHEMA = 'upstream-radar.dsh-install-targets/v1alpha1' as const
 
@@ -29,6 +29,11 @@ export interface DshInstallTarget {
   reason: string
   observerTargetId?: string
   allowedBuilds?: string[]
+  /** Agent approvals remain scoped to the exact observed artifact and environment. */
+  buildApprovals?: Array<{
+    plugin: string; dshVersion: string; nodeMajor: number; artifactSha256: string
+    platform: string; architecture: string; profileEnvironment: DshProfileEnvironment; packages: string[]
+  }>
   runtimeProfiles?: string[]
   /** Exact pre-execution repository reasoning applied by the recommendation module. */
   environmentRecommendation?: {
@@ -155,6 +160,29 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
         })
     if (new Set(allowedBuilds).size !== allowedBuilds.length) throw new Error(`plugins[${index}].allowedBuilds must be unique`)
     allowedBuilds.sort()
+    if (item.buildApprovals !== undefined && (!Array.isArray(item.buildApprovals) || item.buildApprovals.length > 32)) {
+      throw new Error('buildApprovals must contain at most 32 exact environment approvals')
+    }
+    const buildApprovals = (item.buildApprovals as unknown[] | undefined)?.map(value => {
+      const approval = record(value, 'build approval')
+      const plugin = boundedString(approval.plugin, 'build approval plugin', 512)
+      parseNpmSpec(plugin)
+      const dshVersion = boundedString(approval.dshVersion, 'build approval DSH version', 128)
+      const artifactSha256 = boundedString(approval.artifactSha256, 'build approval artifact digest', 64)
+      if (!EXACT_VERSION.test(dshVersion) || !/^[a-f0-9]{64}$/.test(artifactSha256)
+        || !Number.isSafeInteger(approval.nodeMajor) || Number(approval.nodeMajor) < 16 || Number(approval.nodeMajor) > 40
+        || approval.platform !== 'linux' || !['x64', 'arm64'].includes(String(approval.architecture))) throw new Error('invalid exact build approval environment')
+      if (!Array.isArray(approval.packages) || approval.packages.length === 0 || approval.packages.length > 16) throw new Error('build approval requires 1–16 packages')
+      const packages = approval.packages.map(value => {
+        const name = boundedString(value, 'build approval package', 214)
+        if (!/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/.test(name)) throw new Error('invalid build approval package')
+        return name
+      }).sort()
+      if (new Set(packages).size !== packages.length) throw new Error('duplicate build approval package')
+      return { plugin, dshVersion, nodeMajor: Number(approval.nodeMajor), artifactSha256,
+        platform: approval.platform, architecture: String(approval.architecture),
+        profileEnvironment: parseDshProfileEnvironment(approval.profileEnvironment), packages }
+    })
     const rawRuntimeProfileIds = item.runtimeProfiles
     if (rawRuntimeProfileIds !== undefined && (!Array.isArray(rawRuntimeProfileIds) || rawRuntimeProfileIds.length > MAX_RUNTIME_PROFILES)) {
       throw new Error(`plugins[${index}].runtimeProfiles must be an array of at most ${MAX_RUNTIME_PROFILES} runtime profile ids`)
@@ -287,6 +315,7 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
       reason,
       ...(observerTargetId === undefined ? {} : { observerTargetId }),
       ...(allowedBuilds.length === 0 ? {} : { allowedBuilds }),
+      ...(buildApprovals === undefined ? {} : { buildApprovals }),
       ...(selectedRuntimeProfiles === undefined ? {} : { runtimeProfiles: selectedRuntimeProfiles }),
       ...(environmentRecommendation === undefined ? {} : { environmentRecommendation }),
     }
@@ -489,9 +518,11 @@ export function buildDshInstallPlan(
   ledgerInput: unknown = emptyDshCompatibilityLedger(),
   now = new Date(),
   reviewedInput: ReadonlySet<string> = new Set(),
+  runtime: { platform: 'linux'; architecture: 'x64' | 'arm64' } = { platform: 'linux', architecture: 'x64' },
 ): DshInstallPlan {
   const corpus = parseDshInstallTargets(corpusInput)
   const ledger = parseDshCompatibilityLedger(ledgerInput)
+  if (runtime.platform !== 'linux' || !['x64', 'arm64'].includes(runtime.architecture)) throw new Error('DSH install plan requires a supported isolated runtime')
   if (!Number.isFinite(now.getTime())) throw new Error('DSH install plan requires a valid current time')
   const report = record(reportInput, 'observer report')
   if (!Array.isArray(report.changes)) throw new Error('observer report changes must be an array')
@@ -550,7 +581,6 @@ export function buildDshInstallPlan(
       pluginStatic: target.observerTargetId === undefined ? undefined : staticTargetEvidence(stateInput, target.observerTargetId),
       dshStatic,
     })
-    const allowedBuilds = target.allowedBuilds ?? []
     let profileEnvironment: DshProfileEnvironment
     try { profileEnvironment = selectDshProfileEnvironment(target.environmentRecommendation?.authorEnvironment) }
     catch (error) {
@@ -558,6 +588,15 @@ export function buildDshInstallPlan(
       continue
     }
     for (const runtimeProfile of candidateProfiles(corpus, target, plugin, ledger)) {
+      const approvals = (target.buildApprovals ?? []).filter(item => item.plugin === plugin && item.dshVersion === dshVersion
+        && item.nodeMajor === runtimeProfile.nodeMajor && item.platform === runtime.platform && item.architecture === runtime.architecture
+        && JSON.stringify(item.profileEnvironment) === JSON.stringify(profileEnvironment))
+      if (new Set(approvals.map(item => item.artifactSha256)).size > 1) {
+        blocked.push({ targetId: target.id, plugin, reason: 'conflicting exact artifact build approvals require review' }); continue
+      }
+      const allowedBuilds = [...new Set([...(target.allowedBuilds ?? []), ...approvals.flatMap(item => item.packages)])].sort()
+      if (allowedBuilds.length > 16) throw new Error('combined build approvals exceed 16 packages')
+      const expectedArtifactSha256 = approvals[0]?.artifactSha256
       desiredCells += 1
       const id = dshCompatibilityCaseId(target.id, runtimeProfile.id)
       const contractFingerprint = createDshCompatibilityContractFingerprint({
@@ -565,7 +604,9 @@ export function buildDshInstallPlan(
         dshVersion,
         nodeMajor: runtimeProfile.nodeMajor,
         allowedBuilds,
+        ...(expectedArtifactSha256 === undefined ? {} : { expectedArtifactSha256 }),
         profileEnvironment,
+        ...runtime,
       })
       const previous = ledger.entries.find(entry => entry.caseId === id)
       const reasons = new Set<string>()
@@ -606,7 +647,9 @@ export function buildDshInstallPlan(
         plugin,
         dshVersion,
         nodeMajor: runtimeProfile.nodeMajor,
+        ...runtime,
         allowedBuilds: allowedBuilds.join(','),
+        ...(expectedArtifactSha256 === undefined ? {} : { expectedArtifactSha256 }),
         profileEnvironment,
         staticFingerprint,
         contractFingerprint,

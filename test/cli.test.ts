@@ -151,6 +151,12 @@ describe('CLI option parsing', () => {
     })
     assert.equal(invalidEnvironment.status, 1)
     assert.match(invalidEnvironment.stderr, /profile override.*registry version range/)
+    const invalidArtifact = spawnSync(process.execPath, [cli, 'probe', 'dsh-install', 'demo-plugin@1.0.0',
+      '--dsh-version', '0.1.5-rc.2', '--isolation-provider', 'other', '--execute', '--artifact-sha256', 'wrong-digest'], {
+      encoding: 'utf8', env: { ...process.env, UPSTREAM_RADAR_ISOLATED_RUNNER: '1' },
+    })
+    assert.equal(invalidArtifact.status, 1)
+    assert.match(invalidArtifact.stderr, /artifact-sha256.*SHA-256/)
 
     const incompleteReview = spawnSync(process.execPath, [cli, 'review', 'dsh-plugin', 'demo-plugin@1.0.0'], { encoding: 'utf8' })
     assert.equal(incompleteReview.status, 1)
