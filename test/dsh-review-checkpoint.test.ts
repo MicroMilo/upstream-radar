@@ -34,6 +34,15 @@ if (args[0] === 'run' && args[1] === 'list') {
   if (args[2] !== '200') { console.error('no artifact survived the newest run'); process.exit(1); }
   const output = args[args.indexOf('--dir') + 1];
   fs.mkdirSync(output,{recursive:true}); fs.writeFileSync(path.join(output,'recommendations.json'),JSON.stringify({pendingTasks:[{id:'preserved-review'}]}));
+  for (const name of ['observations.json','recommendations.json.evidence.json','recommendations.json.attempts.json','build-plans.json','build-plans.json.attempts.json',
+    'review-summary.json','review-repeat-summary.json','repeat-candidates.json','batch-build-review-summary.json']) {
+    fs.writeFileSync(path.join(output,name), JSON.stringify({fromPreviousRun:true}));
+  }
+  if (mode === 'symlink-checkpoint') {
+    const external = path.join(root,'outside-checkpoint.json'); fs.writeFileSync(external,'external bytes');
+    fs.unlinkSync(path.join(output,'recommendations.json')); fs.symlinkSync(external,path.join(output,'recommendations.json'));
+  }
+  if (mode === 'oversized-checkpoint') fs.truncateSync(path.join(output,'recommendations.json'),256*1024*1024+1);
   if (mode === 'download-error') { console.error('temporary artifact download failure'); process.exit(1); }
 } else { console.error('unexpected gh invocation'); process.exit(1); }
 `)
@@ -44,20 +53,25 @@ if (args[0] === 'run' && args[1] === 'list') {
     } })
     const saved = JSON.parse(await readFile(join(root, 'validation-output/recommendations.json'), 'utf8'))
     assert.deepEqual(saved.pendingTasks, [{ id: 'preserved-review' }])
+    assert.deepEqual((await readdir(join(root, 'validation-output'))).sort(), [
+      'build-plans.json', 'build-plans.json.attempts.json', 'observations.json', 'recommendations.json',
+      'recommendations.json.attempts.json', 'recommendations.json.evidence.json',
+    ], 'restore durable inputs and raw review history, not an earlier run\'s success summaries or derived plans')
     const calls = JSON.parse(await readFile(join(root, 'calls.json'), 'utf8')) as string[][]
     assert.deepEqual(calls.filter(args => args[1] === 'download').map(args => args[2]), ['200'])
     assert.ok(!calls.some(args => args[0] === 'api' && args[1]?.includes('/100/')), 'stop once the newest surviving checkpoint is found')
     const restoreScript = fileURLToPath(new URL('../../scripts/restore-dsh-review-checkpoint.mjs', import.meta.url))
-    for (const mode of ['metadata-error', 'download-error']) {
+    for (const mode of ['metadata-error', 'download-error', 'symlink-checkpoint', 'oversized-checkpoint']) {
       await writeFile(join(root, 'calls.json'), '[]')
       await assert.rejects(execFile(process.execPath, [restoreScript, 'fixture/radar', 'codex/test', join(root, mode)], {
         cwd: root, timeout: 20_000, env: { ...process.env, PATH: `${dirname(fakeGh)}:${process.env.PATH}`, RADAR_GH_FIXTURE: root, RADAR_GH_MODE: mode },
-      }), /temporary/)
+      }), mode.endsWith('checkpoint') ? /bounded regular file/ : /temporary/)
       assert.ok(!(await readdir(root)).includes(mode), 'a failed download must not become a partial checkpoint')
       assert.ok(!(await readdir(root)).some(name => name.startsWith('.dsh-review-restore-')), 'discard only the owned temporary extraction')
       const failureCalls = JSON.parse(await readFile(join(root, 'calls.json'), 'utf8')) as string[][]
       assert.ok(!failureCalls.some(args => args[0] === 'api' && args[1]?.includes('/100/')), 'a transport failure must not silently select older state')
     }
+    assert.equal(await readFile(join(root, 'outside-checkpoint.json'), 'utf8'), 'external bytes')
     assert.deepEqual(JSON.parse(await readFile(join(root, 'validation-output/recommendations.json'), 'utf8')), saved)
   } finally { await rm(root, { recursive: true, force: true }) }
 })

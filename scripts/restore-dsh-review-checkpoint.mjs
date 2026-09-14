@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFile as callback } from 'node:child_process'
-import { lstat, mkdtemp, rename, rm } from 'node:fs/promises'
+import { lstat, mkdir, mkdtemp, rename, rm } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { promisify } from 'node:util'
 
@@ -37,13 +37,27 @@ if (selected === undefined) {
   try { await lstat(destination); throw new Error('checkpoint output already exists; refusing to overwrite it') }
   catch (error) { if (error.code !== 'ENOENT') throw error }
   const temporary = await mkdtemp(join(dirname(destination), '.dsh-review-restore-'))
-  let moved = false
+  const restoredFiles = []
   try {
     // A transport or extraction failure is not evidence that the artifact is
     // absent. Do not silently fall back to older state after selecting it.
     await gh(['run', 'download', String(selected), '--repo', repository, '--name', 'dsh-rebuild-review', '--dir', temporary])
-    await rename(temporary, destination)
-    moved = true
-  } finally { if (!moved) await rm(temporary, { recursive: true, force: true }) }
-  console.log(JSON.stringify({ restored: true, runId: selected, skipped, note: 'Current evidence fingerprints still determine review reuse.' }))
+    const prepared = join(temporary, 'checkpoint')
+    await mkdir(prepared)
+    // Stage results must be produced by this run. In particular, a skipped
+    // repeat check cannot inherit a prior run's "attempted=0" success summary.
+    for (const name of ['observations.json', 'recommendations.json', 'recommendations.json.evidence.json',
+      'recommendations.json.attempts.json', 'build-plans.json', 'build-plans.json.attempts.json']) {
+      const source = join(temporary, name)
+      let metadata
+      try { metadata = await lstat(source) }
+      catch (error) { if (error.code === 'ENOENT') continue; throw error }
+      if (!metadata.isFile() || metadata.isSymbolicLink() || metadata.size > 256 * 1024 * 1024) throw new Error(`checkpoint ${name} is not a bounded regular file`)
+      await rename(source, join(prepared, name))
+      restoredFiles.push(name)
+    }
+    await rename(prepared, destination)
+  } finally { await rm(temporary, { recursive: true, force: true }) }
+  console.log(JSON.stringify({ restored: true, runId: selected, skipped, restoredFiles,
+    note: 'Only durable inputs and raw review history were restored; current evidence fingerprints still determine reuse. Stage summaries and derived plans must be generated again.' }))
 }
