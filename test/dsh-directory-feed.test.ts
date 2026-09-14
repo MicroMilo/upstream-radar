@@ -6,14 +6,24 @@ import {
   buildDshDirectoryCompatibilityFeed,
   renderDshDirectoryCompatibilityFeed,
 } from '../src/dsh-directory-feed.js'
-import { DSH_COMPATIBILITY_LEDGER_SCHEMA, type DshCompatibilityLedgerEntry } from '../src/dsh-compatibility-ledger.js'
-import { DSH_INSTALL_TARGETS_SCHEMA } from '../src/dsh-install-plan.js'
+import { DSH_COMPATIBILITY_LEDGER_SCHEMA, emptyDshCompatibilityLedger, type DshCompatibilityLedgerEntry } from '../src/dsh-compatibility-ledger.js'
+import { DSH_INSTALL_TARGETS_SCHEMA, buildDshInstallPlan } from '../src/dsh-install-plan.js'
 import { DSH_SURFACE_LEDGER_SCHEMA, createDshSurfaceSourceFingerprint, type DshSurfaceLedger } from '../src/dsh-surface.js'
 import {
   createDshEnvironmentRecommendationInputFingerprint,
   DSH_ENVIRONMENT_REVIEW_CONTRACT,
   selectDshEnvironmentRecommendationCandidates,
+  applyDshEnvironmentRecommendations,
 } from '../src/dsh-environment-recommendation.js'
+
+function bindFixtureSources(entries: DshCompatibilityLedgerEntry[], targets: unknown, observations: unknown, recommendations: unknown) {
+  const desired = buildDshInstallPlan(applyDshEnvironmentRecommendations(targets, observations, recommendations), observations,
+    { changes: [] }, emptyDshCompatibilityLedger(), new Date('2026-08-23T01:00:00.000Z'))
+  for (const entry of entries) {
+    const cell = desired.matrix.include.find(cell => cell.id === entry.caseId)
+    if (cell) Object.assign(entry, { staticFingerprint: cell.staticFingerprint, contractFingerprint: cell.contractFingerprint })
+  }
+}
 
 function ledgerEntry(targetId: string, result: DshCompatibilityLedgerEntry['result']): DshCompatibilityLedgerEntry {
   return {
@@ -262,6 +272,7 @@ describe('DSH directory compatibility feed', () => {
       }],
     }
 
+    bindFixtureSources(input.ledger.entries, installTargets, observations, environmentRecommendations)
     const feed = buildDshDirectoryCompatibilityFeed({
       ...input,
       installTargets,
@@ -282,7 +293,8 @@ describe('DSH directory compatibility feed', () => {
     ])
 
     const startupConfiguration = { scope: 'Web settings only; bridge stopped', environment: { DSH_CLEAN_DISABLED: '1' } }
-    const supplemental = surfaceLedger('clean', 'compatible', { caseId: 'clean-web-disabled', startupConfiguration })
+    const supplemental = surfaceLedger('clean', 'compatible', { caseId: 'clean-web-disabled', startupConfiguration,
+      sourceFingerprint: createDshSurfaceSourceFingerprint(input.ledger.entries.find(entry => entry.targetId === 'clean')!) })
     const supplementalFeed = buildDshDirectoryCompatibilityFeed({ ...input, installTargets, observations,
       environmentRecommendations, surfaceLedger: supplemental, generatedAt: '2026-08-23T01:00:00.000Z' })
     const limited = supplementalFeed.plugins.find(item => item.id === 'clean')!
@@ -302,7 +314,7 @@ describe('DSH directory compatibility feed', () => {
     } } }
     const candidate = selectDshEnvironmentRecommendationCandidates(targets, observations)
       .find(item => item.targetId === 'clean')!
-    const feed = buildDshDirectoryCompatibilityFeed({
+    const feedInput = {
       ...input,
       installTargets: targets,
       observations,
@@ -332,7 +344,9 @@ describe('DSH directory compatibility feed', () => {
           evidence: ['source-manifest'],
         }],
       },
-    })
+    }
+    bindFixtureSources(input.ledger.entries, targets, observations, feedInput.environmentRecommendations)
+    const feed = buildDshDirectoryCompatibilityFeed(feedInput)
     const clean = feed.plugins.find(item => item.id === 'clean')!
     assert.equal(clean.cells[0]?.status, 'observed-compatible')
     assert.deepEqual(clean.environmentRecommendation?.missingCells, [])

@@ -115,7 +115,9 @@ Selected host: `@deepseek-ai/dsh@0.1.1-rc.2`.
 - `needs-review`: the repository environment recommendation is missing, one of its Node/profile cells is uncovered, or existing evidence cannot yet separate a plugin defect from an environment condition or explicit dependency-build approval gate.
 - `update-pending`: the selected npm artifact changed and has no exact cell yet; historical evidence is retained but never inherited as the current result.
 - `not-observed`: the catalog entry is monitored statically but has no matching executable npm artifact in this cohort.
+- Additional disabled/offline startup comparisons retain their exact flags and limited scope; they never satisfy a missing default-startup requirement.
+- SDK/ACP evidence covers adapter initialization only, with separate author-baseline and target DSH results. It does not prove authentication, model generation or real user tasks; those untested boundaries remain explicit.
 
 A cell expires at its `recheckDueAt` value (168 hours after observation). Consumers must then show it as stale. This is exact compatibility evidence, not a security review or endorsement.
 
-[Machine-readable feed](dsh-plugin-compatibility.json) · [Headless ledger](https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json) · [Web/TUI ledger](https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json)
+[Machine-readable feed](dsh-plugin-compatibility.json) · [Headless ledger](https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json) · [Web/TUI ledger](https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json) · [SDK/ACP ledger](https://github.com/MicroMilo/upstream-radar/blob/main/adapter-ledger.json)

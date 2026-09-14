@@ -3,10 +3,12 @@
 // public collectors. This script never manufactures a changed snapshot or runs
 // target code. Execution is a separate, secret-free batch step.
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import { constants } from 'node:fs'
 import { mkdir, open, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { parseObserverConfig } from '../dist/src/upstream-observer.js'
+import { parseNpmSpec } from '../dist/src/npm.js'
 
 const targetId = 'context', observerTargetId = 'dsh-context', repository = 'bowenliang123/dsh-context'
 const [mode, ...args] = process.argv.slice(2)
@@ -22,6 +24,38 @@ async function json(path) {
 }
 const save = (path, value) => writeFile(path, `${JSON.stringify(value, null, 2)}\n`, { flag: 'wx', mode: 0o600 })
 const withoutTarget = value => Object.fromEntries(Object.entries(value).filter(([id]) => id !== observerTargetId))
+const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+function artifactIdentity(value) {
+  assert.equal(value?.name, 'dsh-context', 'replay package must remain Context')
+  parseNpmSpec(`${value.name}@${value.version}`)
+  return { name: value.name, version: value.version, integrity: value.integrity ?? null }
+}
+async function observationFacts(output) {
+  const fixture = await json(join(output, 'fixture.json'))
+  const before = await json(join(output, 'baseline/observations.json'))
+  const after = await json(join(output, 'review/observations.json'))
+  assert.equal(fixture.targetId, targetId)
+  assert.equal(fixture.observerTargetId, observerTargetId)
+  assert.equal(fixture.repository, repository)
+  assert.deepEqual(withoutTarget(after.targets), withoutTarget(before.targets), 'unrelated observation changed')
+  assert.equal(before.targets[observerTargetId].source.commit, fixture.revisions.from)
+  assert.equal(before.targets[observerTargetId].source.repository, repository)
+  assert.equal(after.targets[observerTargetId].source.commit, fixture.revisions.to)
+  assert.equal(after.targets[observerTargetId].source.repository, repository)
+  const previousArtifact = artifactIdentity(before.targets[observerTargetId].package)
+  const artifact = artifactIdentity(after.targets[observerTargetId].package)
+  const previousPlugin = `${previousArtifact.name}@${previousArtifact.version}`
+  assert.equal(previousPlugin, fixture.plugin, 'fixture must bind the initial observed package')
+  return { targetId, observerTargetId, repository, revisions: fixture.revisions, previousPlugin,
+    plugin: `${artifact.name}@${artifact.version}`, previousArtifact, artifact,
+    changeKind: digest(previousArtifact) === digest(artifact) ? 'repository-update' : 'repository-and-package-update',
+    previousObservationDigest: digest(before), observationDigest: digest(after) }
+}
+async function acceptedObservation(output) {
+  const accepted = await json(join(output, 'observed-change.json'))
+  assert.deepEqual(accepted, await observationFacts(output), 'observed facts changed after acceptance')
+  return accepted
+}
 
 if (mode === 'prepare') {
   const [review, batch, output, commit] = args
@@ -53,22 +87,31 @@ if (mode === 'prepare') {
 } else if (mode === 'observation') {
   const [output] = args
   if (args.length !== 1) throw new Error('observation requires one replay directory')
-  const fixture = await json(join(output, 'fixture.json'))
-  const before = await json(join(output, 'baseline/observations.json'))
-  const after = await json(join(output, 'review/observations.json'))
+  const facts = await observationFacts(output)
   const report = await json(join(output, 'review/observer-report.json'))
-  assert.deepEqual(withoutTarget(after.targets), withoutTarget(before.targets), 'unrelated observation changed')
   assert.deepEqual(report.errors, [], 'real repository collection was incomplete')
-  assert.equal(after.targets[observerTargetId].source.commit, fixture.revisions.to)
-  assert.equal(after.targets[observerTargetId].source.repository, repository)
-  const artifact = after.targets[observerTargetId].package
-  assert.equal(`${artifact.name}@${artifact.version}`, fixture.plugin, 'a simultaneous npm release changed the replay scope')
   // Documentation updates refresh repository intent without fabricating a
   // runtime/advisory event. The changed immutable snapshot above is the proof.
   assert.ok(report.changes.length <= 1 && report.changes.every(change => change.targetId === observerTargetId), 'an unrelated upstream event was emitted')
+  let accepted
+  try { accepted = await json(join(output, 'observed-change.json')) } catch (error) { if (error.code !== 'ENOENT') throw error }
+  if (accepted !== undefined) assert.deepEqual(accepted, facts, 'observed facts changed after acceptance')
+  if (facts.changeKind === 'repository-and-package-update') {
+    const event = report.changes[0]
+    if (event === undefined) assert.ok(accepted, 'a package change requires a matching meaningful event')
+    else {
+      assert.equal(event.meaningful, true, 'a package change requires a matching meaningful event')
+      assert.deepEqual(artifactIdentity(event.previous?.package), facts.previousArtifact, 'previous event package identity does not match observations')
+      assert.deepEqual(artifactIdentity(event.current?.package), facts.artifact, 'current event package identity does not match observations')
+      assert.equal(event.source?.beforeCommit, facts.revisions.from)
+      assert.equal(event.source?.afterCommit, facts.revisions.to)
+    }
+  }
+  if (accepted === undefined) await save(join(output, 'observed-change.json'), facts)
 } else if (mode === 'review') {
   const [output] = args
   if (args.length !== 1) throw new Error('review requires one replay directory')
+  await acceptedObservation(output)
   const fixture = await json(join(output, 'fixture.json'))
   const before = await json(join(output, 'baseline/recommendations.json'))
   const after = await json(join(output, 'review/recommendations.json'))
@@ -83,6 +126,7 @@ if (mode === 'prepare') {
 } else if (mode === 'execution') {
   const [output] = args
   if (args.length !== 1) throw new Error('execution requires one replay directory')
+  const observed = await acceptedObservation(output)
   const fixture = await json(join(output, 'fixture.json'))
   const before = await json(join(output, 'baseline/state.json'))
   const after = await json(join(output, 'batch/state.json'))
@@ -106,6 +150,7 @@ if (mode === 'prepare') {
   const reports = []
   for (const task of executed) {
     assert.ok(task.kind === 'surface' ? sourceCases.has(task.cell.sourceCaseId) : task.cell.targetId === targetId, 'an unrelated plugin executed again')
+    assert.equal(task.cell.plugin, observed.plugin, 'scheduled cell package does not match the accepted observation')
     assert.match(task.key, /^[a-f0-9]{64}$/)
     assert.match(task.cell.id, /^[a-z0-9][a-z0-9._-]{0,63}$/)
     assert.ok(Number.isSafeInteger(task.attempts) && task.attempts > 0)
@@ -127,7 +172,7 @@ if (mode === 'prepare') {
     reports.push({ kind: task.kind, caseId: task.cell.id, container: container.id, report: join(directory, 'report.json') })
   }
   await save(join(output, 'execution-state.json'), after)
-  await save(join(output, 'execution-proof.json'), { ...fixture, executed: executed.length, reports,
+  await save(join(output, 'execution-proof.json'), { ...fixture, ...observed, executed: executed.length, reports,
     unchangedPlugins: new Set(after.nativeLedger.entries.filter(entry => entry.targetId !== targetId).map(entry => entry.targetId)).size,
     executorUnchanged: true, compatibilityPass: false })
 } else if (mode === 'unchanged') {

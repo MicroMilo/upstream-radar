@@ -218,7 +218,9 @@ jobs:
               feeds/dsh-plugin-compatibility.md \
               observations.json \
               surface-ledger.json \
-              examples/dsh/environment-observer/recommendations.json
+              examples/dsh/environment-observer/recommendations.json \
+              adapter-ledger.json \
+              examples/dsh/install-observer/agent-plans.json
           fi
           git config user.name 'upstream-radar[bot]'
           git config user.email 'upstream-radar[bot]@users.noreply.github.com'
@@ -355,7 +357,9 @@ jobs:
             feeds/dsh-plugin-compatibility.md \
             observations.json \
             surface-ledger.json \
-            examples/dsh/environment-observer/recommendations.json
+            examples/dsh/environment-observer/recommendations.json \
+            adapter-ledger.json \
+            examples/dsh/install-observer/agent-plans.json
 
       - name: Keep compatibility evidence artifacts
         if: always()
@@ -601,7 +605,9 @@ jobs:
             feeds/dsh-plugin-compatibility.md \
             observations.json \
             surface-ledger.json \
-            examples/dsh/environment-observer/recommendations.json
+            examples/dsh/environment-observer/recommendations.json \
+            adapter-ledger.json \
+            examples/dsh/install-observer/agent-plans.json
       - name: Keep execution-plane evidence artifacts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -704,7 +710,7 @@ jobs:
       case_json: ${{ toJSON(matrix) }}
 
   reconcile-adapter-observations:
-    needs: [plan-adapter-observations, adapter-observation]
+    needs: [plan-adapter-observations, adapter-observation, reconcile-surface-observations]
     if: always() && needs.plan-adapter-observations.result == 'success' && needs.plan-adapter-observations.outputs.run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -750,6 +756,20 @@ jobs:
         run: |
           node scripts/merge-dsh-adapter-ledger.mjs adapter-ledger.json \
             "$RUNNER_TEMP/adapter-matrix.json" "$RUNNER_TEMP/adapter-reports" "$RUNNER_TEMP/adapter-summary.json"
+      - name: Refresh unified directory evidence after adapter reconciliation
+        if: always()
+        run: |
+          node scripts/write-dsh-directory-feed.mjs \
+            examples/dsh/awesome-observer/cohort.json \
+            examples/dsh/install-observer/targets.json \
+            compatibility-ledger.json \
+            feeds/dsh-plugin-compatibility.json \
+            feeds/dsh-plugin-compatibility.md \
+            observations.json \
+            surface-ledger.json \
+            examples/dsh/environment-observer/recommendations.json \
+            adapter-ledger.json \
+            examples/dsh/install-observer/agent-plans.json
       - name: Preserve the reconciled adapter evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -757,6 +777,8 @@ jobs:
           name: upstream-radar-adapter-ledger-${{ github.run_id }}
           path: |
             adapter-ledger.json
+            feeds/dsh-plugin-compatibility.json
+            feeds/dsh-plugin-compatibility.md
             ${{ runner.temp }}/adapter-summary.json
           if-no-files-found: warn
           retention-days: 7
@@ -767,7 +789,7 @@ jobs:
           if [[ ! -f adapter-ledger.json ]]; then exit 0; fi
           git config user.name 'upstream-radar[bot]'
           git config user.email 'upstream-radar[bot]@users.noreply.github.com'
-          git add -- adapter-ledger.json
+          git add -- adapter-ledger.json feeds/dsh-plugin-compatibility.json feeds/dsh-plugin-compatibility.md
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'chore: update independent DSH adapter observations [skip ci]'
           git pull --rebase origin "${{ github.event.repository.default_branch }}"

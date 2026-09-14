@@ -1,5 +1,5 @@
 {
-  "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha4",
+  "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha5",
   "generatedAt": "2026-09-13T12:59:05.519Z",
   "producer": {
     "name": "upstream-radar",

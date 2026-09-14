@@ -51,6 +51,11 @@ describe('reusable GitHub Action', () => {
     assert.match(reconcile, /if: always\(\)/)
     assert.match(reconcile, /git add -- adapter-ledger\.json/)
     assert.match(workflow, /name: upstream-radar-adapter-plan-\$\{\{ github.run_id \}\}/)
+    assert.match(reconcile, /needs: \[plan-adapter-observations, adapter-observation, reconcile-surface-observations\]/)
+    const feedSteps = workflow.split('      - name:').filter(step => step.includes('node scripts/write-dsh-directory-feed.mjs'))
+    assert.equal(feedSteps.length, 4, 'every result path, including adapters, must refresh the same unified feed')
+    for (const step of feedSteps) assert.match(step, /adapter-ledger\.json\s*\\\s*examples\/dsh\/install-observer\/agent-plans\.json/,
+      'later native/surface refreshes must not erase adapter evidence or drop exact build decisions')
   })
 
   it('offers a real rebuild batch loop that reviews observed gates, retries, and verifies unchanged reuse without giving model secrets to execution steps', async () => {
@@ -72,6 +77,12 @@ describe('reusable GitHub Action', () => {
     assert.match(workflow, /summary.executed !== 0/)
     assert.match(workflow, /build-approval-required/)
     assert.match(workflow, /independent adapter evidence is incomplete/)
+    const directoryStep = steps.find(step => step.includes('Join this batch to the maintained catalog feed'))
+    assert.ok(directoryStep, 'the real batch must exercise the same unified feed command')
+    assert.match(directoryStep, /scripts\/write-dsh-directory-feed\.mjs/)
+    assert.match(directoryStep, /batch-output\/adapter-ledger\.json/)
+    assert.match(directoryStep, /validation-output\/build-plans\.json/)
+    assert.doesNotMatch(directoryStep, /secrets\.|ISSUE_LOCATOR_LLM|git push/)
     const historical = workflow.indexOf('Collect an earlier real Context repository revision')
     const forward = workflow.indexOf('Collect the forward Context repository update')
     assert.ok(historical > unchanged && forward > historical)
@@ -79,6 +90,10 @@ describe('reusable GitHub Action', () => {
     assert.match(workflow, /verify-dsh-input-change\.mjs execution input-change-before/)
     assert.match(workflow, /verify-dsh-input-change\.mjs execution input-change-after/)
     assert.match(workflow, /verify-dsh-input-change\.mjs unchanged input-change-after/)
+    const replaySteps = steps.filter(step => /verify-dsh-input-change\.mjs/.test(step))
+    assert.equal(replaySteps.length, 6)
+    for (const step of replaySteps) assert.match(step, /if: \$\{\{ inputs.execute_batch && success\(\) \}\}/,
+      'a failed observation or review must stop subsequent replay execution')
   })
 
   it('carries the selected profile environment from each matrix into the image and isolated probe', async () => {

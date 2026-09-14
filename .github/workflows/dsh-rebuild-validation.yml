@@ -181,8 +181,48 @@ jobs:
           console.log(JSON.stringify({collectionClosed:true,compatibilityPass:false,nativeCells:summary.nativeCells,
             surfaceCells:summary.surfaceCells,adapterCells:summary.adapterCells,remainingCoverageGaps:summary.unimplementedChecks}))
           NODE
+      - name: Join this batch to the maintained catalog feed
+        if: ${{ inputs.execute_batch && success() }}
+        run: |
+          node scripts/write-dsh-directory-feed.mjs \
+            examples/dsh/rebuild-batch/catalog-cohort.json examples/dsh/rebuild-batch/install-targets.json \
+            batch-output/compatibility-ledger.json batch-output/catalog-feed.json batch-output/catalog-feed.md \
+            validation-output/observations.json batch-output/surface-ledger.json \
+            validation-output/recommendations.json batch-output/adapter-ledger.json validation-output/build-plans.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict'
+          import { readFile } from 'node:fs/promises'
+          const json = async path => JSON.parse(await readFile(path, 'utf8'))
+          const cohort = await json('examples/dsh/rebuild-batch/catalog-cohort.json')
+          const targets = await json('examples/dsh/rebuild-batch/install-targets.json')
+          const state = await json('batch-output/state.json')
+          const feed = await json('batch-output/catalog-feed.json')
+          const catalogIds = new Set(cohort.plugins.map(plugin => plugin.id))
+          const excludedIds = cohort.selection.notInCatalog.map(plugin => plugin.targetId)
+          assert.deepEqual(targets.plugins.map(plugin => plugin.observerTargetId).sort(), [...catalogIds, ...excludedIds].sort())
+          assert.deepEqual(feed.plugins.map(plugin => plugin.id).sort(), [...catalogIds].sort())
+          const includedTargets = new Set(targets.plugins.filter(plugin => catalogIds.has(plugin.observerTargetId)).map(plugin => plugin.id))
+          const native = state.nativeLedger.entries.filter(entry => includedTargets.has(entry.targetId))
+          const nativeIds = new Set(native.map(entry => entry.caseId))
+          const surfaces = state.surfaceLedger.entries.filter(entry => nativeIds.has(entry.sourceCaseId))
+          const adapters = state.adapterLedger.entries.filter(entry => includedTargets.has(entry.cell.targetId))
+          const cells = feed.plugins.flatMap(plugin => plugin.cells)
+          assert.equal(cells.filter(cell => cell.evidenceSource === 'compatibility-ledger').length, native.length)
+          assert.equal(cells.filter(cell => cell.evidenceSource === 'surface-ledger').length, surfaces.length)
+          assert.equal(cells.filter(cell => cell.evidenceSource === 'adapter-ledger').length, adapters.length)
+          for (const entry of adapters) {
+            const cell = cells.find(cell => cell.caseId === entry.cell.id)
+            assert.equal(cell.radarResult, entry.report.result)
+            assert.equal(cell.evidenceScope, 'adapter-initialize-only')
+            assert.deepEqual(cell.coverageGaps, entry.report.coverageGaps)
+            assert.equal(cell.dependencyGraphDigests.profile, entry.report.profileGraph.digest)
+            assert.equal(cell.dependencyGraphDigests.application, entry.report.applicationGraph.digest)
+          }
+          console.log(JSON.stringify({ batchPlugins: targets.plugins.length, catalogPlugins: feed.plugins.length,
+            outsideCatalogButStillInBatch: excludedIds, native: native.length, surfaces: surfaces.length, adapters: adapters.length }))
+          NODE
       - name: Collect an earlier real Context repository revision
-        if: ${{ inputs.execute_batch && !cancelled() }}
+        if: ${{ inputs.execute_batch && success() }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -196,7 +236,7 @@ jobs:
             > input-change-before/review/observer-report.json
           node scripts/verify-dsh-input-change.mjs observation input-change-before
       - name: Review the earlier real repository evidence
-        if: ${{ inputs.execute_batch && !cancelled() }}
+        if: ${{ inputs.execute_batch && success() }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
@@ -209,7 +249,7 @@ jobs:
             > input-change-before/review/review-summary.json
           node scripts/verify-dsh-input-change.mjs review input-change-before
       - name: Execute only the earlier Context environment
-        if: ${{ inputs.execute_batch && !cancelled() }}
+        if: ${{ inputs.execute_batch && success() }}
         run: |
           batch_exit=0
           node scripts/run-dsh-compatibility-batch.mjs examples/dsh/rebuild-batch/install-targets.json \
@@ -219,7 +259,7 @@ jobs:
           test -z "$(docker ps --quiet --filter label=upstream-radar.task)"
           node scripts/verify-dsh-input-change.mjs execution input-change-before
       - name: Collect the forward Context repository update
-        if: ${{ inputs.execute_batch && !cancelled() }}
+        if: ${{ inputs.execute_batch && success() }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -232,7 +272,7 @@ jobs:
             > input-change-after/review/observer-report.json
           node scripts/verify-dsh-input-change.mjs observation input-change-after
       - name: Review only the changed repository after the forward update
-        if: ${{ inputs.execute_batch && !cancelled() }}
+        if: ${{ inputs.execute_batch && success() }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
@@ -245,7 +285,7 @@ jobs:
             > input-change-after/review/review-summary.json
           node scripts/verify-dsh-input-change.mjs review input-change-after
       - name: Execute only changed Context cells and verify unchanged reuse again
-        if: ${{ inputs.execute_batch && !cancelled() }}
+        if: ${{ inputs.execute_batch && success() }}
         run: |
           batch_exit=0
           node scripts/run-dsh-compatibility-batch.mjs examples/dsh/rebuild-batch/install-targets.json \

@@ -55,13 +55,51 @@ it('prepares an isolated real-revision replay without editing the completed batc
     await writeFile(join(output, 'review/review-summary.json'), JSON.stringify({ attempted: 1, planned: 1, failed: 0, deferred: 0 }))
     const reviewed = { entries: [{ targetId: 'context', sourceCommit: to }, { targetId: 'untouched' }], pendingTasks: [] }
     await writeFile(join(output, 'review/recommendations.json'), JSON.stringify(reviewed))
+    await assert.rejects(execFile(process.execPath, [script, 'review', output]), /unrelated observation/)
+    changed.targets.untouched.source.commit = observations.targets.untouched.source.commit
+    await writeFile(join(output, 'review/observations.json'), JSON.stringify(changed))
     await execFile(process.execPath, [script, 'review', output])
     await writeFile(join(output, 'review/review-summary.json'), JSON.stringify({ attempted: 2, planned: 2, failed: 0, deferred: 0 }))
     await assert.rejects(execFile(process.execPath, [script, 'review', output]), /exactly one repository review/)
   } finally { await rm(root, { recursive: true, force: true }) }
 })
 
-it('requires fresh isolated Context execution and unchanged unrelated results before accepting a selective replay', async () => {
+it('records a concurrent npm release only when the observed event binds the actual before and after packages', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'radar-input-release-'))
+  const from = 'a'.repeat(40), to = 'b'.repeat(40)
+  const previous = { name: 'dsh-context', version: '0.52.0', integrity: 'sha512-before' }
+  const current = { name: 'dsh-context', version: '0.52.1', integrity: 'sha512-after' }
+  const snapshot = (commit: string, pkg: typeof previous) => ({ targets: {
+    'dsh-context': { source: { repository: 'bowenliang123/dsh-context', commit }, package: pkg },
+  } })
+  const event = { targetId: 'dsh-context', meaningful: true, previous: { package: previous }, current: { package: current },
+    source: { beforeCommit: from, afterCommit: to } }
+  try {
+    await mkdir(join(root, 'baseline')); await mkdir(join(root, 'review'))
+    await writeFile(join(root, 'fixture.json'), JSON.stringify({ targetId: 'context', observerTargetId: 'dsh-context',
+      repository: 'bowenliang123/dsh-context', revisions: { from, to }, plugin: 'dsh-context@0.52.0' }))
+    await writeFile(join(root, 'baseline/observations.json'), JSON.stringify(snapshot(from, previous)))
+    await writeFile(join(root, 'review/observations.json'), JSON.stringify(snapshot(to, current)))
+    await writeFile(join(root, 'review/observer-report.json'), JSON.stringify({ errors: [], changes: [event] }))
+    await execFile(process.execPath, [script, 'observation', root])
+    const proof = await json(join(root, 'observed-change.json'))
+    assert.equal(proof.plugin, 'dsh-context@0.52.1')
+    assert.equal(proof.previousPlugin, 'dsh-context@0.52.0')
+    assert.equal(proof.changeKind, 'repository-and-package-update')
+    assert.deepEqual(proof.artifact, current)
+    assert.match(proof.observationDigest, /^[a-f0-9]{64}$/)
+    await writeFile(join(root, 'review/observer-report.json'), JSON.stringify({ errors: [], changes: [] }))
+    await execFile(process.execPath, [script, 'observation', root])
+    assert.deepEqual(await json(join(root, 'observed-change.json')), proof, 'identical verified facts are reusable without another event')
+    await writeFile(join(root, 'review/observer-report.json'), JSON.stringify({ errors: [], changes: [{ ...event, current: { package: previous } }] }))
+    await assert.rejects(execFile(process.execPath, [script, 'observation', root]), /event package identity/)
+    await rm(join(root, 'observed-change.json'))
+    await writeFile(join(root, 'review/observer-report.json'), JSON.stringify({ errors: [], changes: [] }))
+    await assert.rejects(execFile(process.execPath, [script, 'observation', root]), /requires a matching meaningful event/)
+  } finally { await rm(root, { recursive: true, force: true }) }
+})
+
+for (const version of ['0.52.0', '0.52.1']) it(`binds selective execution to the accepted actual package ${version}, not the initial fixture label`, async () => {
   const root = await mkdtemp(join(tmpdir(), 'radar-input-execution-'))
   const from = 'a'.repeat(40), to = 'b'.repeat(40)
   const plan = { matrix: { include: [] }, blocked: [] }
@@ -72,15 +110,26 @@ it('requires fresh isolated Context execution and unchanged unrelated results be
     adapterLedger: { entries: [] },
   }
   const tasks = [
-    { key: 'd'.repeat(64), kind: 'native', cell: { id: 'context-node22', targetId: 'context', plugin: 'dsh-context@0.52.0' }, attempts: 1, status: 'accepted' },
-    { key: 'e'.repeat(64), kind: 'surface', cell: { id: 'context-web', sourceCaseId: 'context-node22', plugin: 'dsh-context@0.52.0' }, attempts: 1, status: 'accepted' },
+    { key: 'd'.repeat(64), kind: 'native', cell: { id: 'context-node22', targetId: 'context', plugin: `dsh-context@${version}` }, attempts: 1, status: 'accepted' },
+    { key: 'e'.repeat(64), kind: 'surface', cell: { id: 'context-web', sourceCaseId: 'context-node22', plugin: `dsh-context@${version}` }, attempts: 1, status: 'accepted' },
   ]
   const after = { ...structuredClone(original), tasks }
   after.nativeLedger.entries[0]!.marker = 'after'
   after.surfaceLedger.entries[0]!.marker = 'after'
   try {
-    await mkdir(join(root, 'baseline')); await mkdir(join(root, 'batch'))
-    await writeFile(join(root, 'fixture.json'), JSON.stringify({ targetId: 'context', observerTargetId: 'dsh-context', repository: 'bowenliang123/dsh-context', revisions: { from, to } }))
+    await mkdir(join(root, 'baseline')); await mkdir(join(root, 'batch')); await mkdir(join(root, 'review'))
+    await writeFile(join(root, 'fixture.json'), JSON.stringify({ targetId: 'context', observerTargetId: 'dsh-context', repository: 'bowenliang123/dsh-context',
+      revisions: { from, to }, plugin: 'dsh-context@0.52.0' }))
+    const previousPackage = { name: 'dsh-context', version: '0.52.0' }, currentPackage = { name: 'dsh-context', version }
+    for (const [directory, commit, pkg] of [['baseline', from, previousPackage], ['review', to, currentPackage]] as const) {
+      await writeFile(join(root, directory, 'observations.json'), JSON.stringify({ targets: {
+        'dsh-context': { source: { repository: 'bowenliang123/dsh-context', commit }, package: pkg },
+      } }))
+    }
+    await writeFile(join(root, 'review/observer-report.json'), JSON.stringify({ errors: [], changes: version === '0.52.0' ? [] : [{
+      targetId: 'dsh-context', meaningful: true, previous: { package: previousPackage }, current: { package: currentPackage },
+      source: { beforeCommit: from, afterCommit: to },
+    }] }))
     await writeFile(join(root, 'baseline/state.json'), JSON.stringify(original))
     await writeFile(join(root, 'baseline/summary.json'), JSON.stringify({ ...summary, executed: 0 }))
     await writeFile(join(root, 'batch/state.json'), JSON.stringify(after))
@@ -91,13 +140,17 @@ it('requires fresh isolated Context execution and unchanged unrelated results be
       await writeFile(join(directory, 'container.json'), JSON.stringify({ id: 'f'.repeat(64), image: `sha256:${'a'.repeat(64)}`,
         user: '10001:10001', mounts: [], readonlyRootfs: true, state: { Running: false, Status: 'exited', ExitCode: 0 } }))
       const nativeReport: Pick<DshInstallObservationReport, 'caseId' | 'artifact'> = { caseId: task.cell.id,
-        artifact: { spec: 'npm:dsh-context@0.52.0', name: 'dsh-context', version: '0.52.0', lifecycleScripts: [] } }
+        artifact: { spec: `npm:dsh-context@${version}`, name: 'dsh-context', version, lifecycleScripts: [] } }
       await writeFile(join(directory, 'report.json'), JSON.stringify(task.kind === 'native'
         ? nativeReport : { caseId: task.cell.id, plugin: task.cell.plugin }))
     }
+    await assert.rejects(execFile(process.execPath, [script, 'execution', root]), /observed-change.json/)
+    await execFile(process.execPath, [script, 'observation', root])
     await execFile(process.execPath, [script, 'execution', root])
     assert.equal((await json(join(root, 'execution-proof.json'))).executed, 2)
     assert.equal((await json(join(root, 'execution-proof.json'))).unchangedPlugins, 1)
+    assert.equal((await json(join(root, 'execution-proof.json'))).plugin, `dsh-context@${version}`)
+    assert.equal((await json(join(root, 'execution-proof.json'))).previousPlugin, 'dsh-context@0.52.0')
     await writeFile(join(root, 'batch/summary.json'), JSON.stringify({ ...summary, executed: 0 }))
     await execFile(process.execPath, [script, 'unchanged', root])
     assert.equal((await json(join(root, 'unchanged-proof.json'))).executed, 0)
@@ -105,6 +158,20 @@ it('requires fresh isolated Context execution and unchanged unrelated results be
     const native = tasks[0]!
     const nativePath = join(root, 'batch/reports/native', native.cell.id, `${native.key}-${native.attempts}`, 'report.json')
     const nativeReport = await json(nativePath)
+    if (version !== '0.52.0') {
+      const surface = tasks[1]!
+      const surfacePath = join(root, 'batch/reports/surface', surface.cell.id, `${surface.key}-${surface.attempts}`, 'report.json')
+      const surfaceReport = await json(surfacePath)
+      for (const task of tasks) task.cell.plugin = 'dsh-context@0.52.0'
+      await writeFile(join(root, 'batch/state.json'), JSON.stringify(after))
+      await writeFile(nativePath, JSON.stringify({ ...nativeReport, artifact: { ...nativeReport.artifact, spec: 'npm:dsh-context@0.52.0', version: '0.52.0' } }))
+      await writeFile(surfacePath, JSON.stringify({ ...surfaceReport, plugin: 'dsh-context@0.52.0' }))
+      await assert.rejects(execFile(process.execPath, [script, 'execution', root]), /scheduled cell package does not match the accepted observation/)
+      for (const task of tasks) task.cell.plugin = `dsh-context@${version}`
+      await writeFile(join(root, 'batch/state.json'), JSON.stringify(after))
+      await writeFile(nativePath, JSON.stringify(nativeReport))
+      await writeFile(surfacePath, JSON.stringify(surfaceReport))
+    }
     await writeFile(nativePath, JSON.stringify({ ...nativeReport, plugin: native.cell.plugin,
       artifact: { ...nativeReport.artifact, name: 'wrong-plugin' } }))
     await assert.rejects(execFile(process.execPath, [script, 'execution', root]), /isolated report package does not match/)
