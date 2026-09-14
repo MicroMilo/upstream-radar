@@ -514,7 +514,7 @@ function validateNodeEvidenceKinds(decision: DshEnvironmentRecommendationDecisio
         /recommend(?:ed|s|ation)?|建议|推荐/i.test(line)
         && documentNamesNodeMajor({ path: ref, text: line }, entry.nodeMajor)
       ))
-    ))) throw new Error('an author-recommended Node selection requires an explicit recommendation naming that major')
+    ))) throw new Error(`an author-recommended Node selection requires an explicit recommendation naming that major; nodeEvidence for Node ${entry.nodeMajor} must not keep kind=author-recommended for a prerequisite, badge, or engines minimum. Use kind=ci-tested if a cited CI configuration names this major, or kind=declared-support for an evidenced engine minimum. Keep the evidenced major; correct its evidence kind without inventing a recommendation.`)
     if (entry.kind === 'dsh-baseline' && !entry.evidence.some(ref => ref.startsWith('dsh-repository/') || /^dsh-(?:source|published)-manifest$/.test(ref))) {
       throw new Error('a DSH baseline selection requires DSH evidence')
     }

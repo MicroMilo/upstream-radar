@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: dsh-rebuild-validation
@@ -33,6 +34,18 @@ jobs:
           pnpm install --frozen-lockfile --ignore-scripts
           pnpm run build
           node --test dist/test/dsh-environment-recommendation.test.js dist/test/dsh-environment-evidence.test.js dist/test/dsh-profile-environment.test.js dist/test/dsh-install-plan.test.js dist/test/dsh-headless-agent-plan.test.js dist/test/dsh-headless-agent-script.test.js dist/test/dsh-batch.test.js
+      - name: Restore the previous durable review checkpoint
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RADAR_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          previous_run=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow dsh-rebuild-validation.yml --branch "$RADAR_BRANCH" --status completed --limit 1 --json databaseId --jq '.[0].databaseId // empty')
+          if [[ -n "$previous_run" ]]; then
+            [[ "$previous_run" =~ ^[0-9]+$ ]] || { echo 'invalid previous review run id' >&2; exit 1; }
+            gh run download "$previous_run" --repo "$GITHUB_REPOSITORY" --name dsh-rebuild-review --dir validation-output
+            echo "Restored review checkpoint from run $previous_run. Current evidence fingerprints still determine reuse."
+          fi
       - name: Collect current upstream versions and repository facts
         continue-on-error: true
         env:
