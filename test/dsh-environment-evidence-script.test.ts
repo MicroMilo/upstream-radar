@@ -5,12 +5,12 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { it } from 'node:test'
 import { promisify } from 'node:util'
-import { applyDshEnvironmentRecommendations } from '../src/dsh-environment-recommendation.js'
+import { applyDshEnvironmentRecommendations, applyDshEnvironmentRecommendationsToSurfaceTargets } from '../src/dsh-environment-recommendation.js'
 import { buildDshInstallPlan } from '../src/dsh-install-plan.js'
 
 const execFile = promisify(execFileCallback)
 
-async function fixture(authorDshVersion?: string, explicitBaseline = true) {
+async function fixture(authorDshVersion?: string, explicitBaseline = true, authorTuiProfile?: string) {
   const directory = await mkdtemp(join(tmpdir(), 'radar-environment-evidence-'))
   const targets = {
     schema: 'upstream-radar.dsh-install-targets/v1alpha1', refreshAfterHours: 168,
@@ -38,9 +38,12 @@ import { appendFile, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 const root = process.env.RADAR_EVIDENCE_FIXTURE;
 const authorDshVersion = ${JSON.stringify(authorDshVersion) ?? 'undefined'};
+const authorTuiProfile = ${JSON.stringify(authorTuiProfile) ?? 'undefined'};
+const recommended = !!(authorDshVersion || authorTuiProfile);
 const authorQuote = authorDshVersion ? (${explicitBaseline}
   ? 'Overrides force the whole\\n# @deepseek-ai tree to the ' + authorDshVersion + ' line locally (the primary\\n# validated line; see src/dsh-adapter/contract.ts).'
   : 'The repository names DSH ' + authorDshVersion + ' for its development fixture.') : undefined;
+const readme = [authorQuote, authorTuiProfile ? 'TUI requires Node 22.\\ndsh plugin --profile ' + authorTuiProfile + ' add fixture-plugin' : undefined].filter(Boolean).join('\\n') || 'Repository setup documentation.';
 globalThis.fetch = async (url, options) => {
   const address = String(url);
   if (address.startsWith('https://fixture-agent.example/')) {
@@ -51,12 +54,14 @@ globalThis.fetch = async (url, options) => {
     const omitBaseline = process.env.RADAR_EVIDENCE_NETWORK === 'omit-always'
       || process.env.RADAR_EVIDENCE_NETWORK === 'omit-baseline' && request.messages.length === 2;
     return Response.json({ choices: [{ message: { content: JSON.stringify({
-      status: authorDshVersion ? 'recommended' : 'insufficient-evidence',
-      ...(authorDshVersion ? { preferredNodeMajor: 22 } : {}),
-      nodeMajors: authorDshVersion ? [22] : [], executionProfiles: authorDshVersion ? ['headless'] : [],
+      status: recommended ? 'recommended' : 'insufficient-evidence',
+      ...(recommended ? { preferredNodeMajor: 22 } : {}),
+      nodeMajors: recommended ? [22] : [], executionProfiles: authorTuiProfile ? ['tui'] : authorDshVersion ? ['headless'] : [],
+      ...(authorTuiProfile && !(process.env.RADAR_EVIDENCE_NETWORK === 'omit-tui-profile' && request.messages.length === 2) ? { tuiProfile: authorTuiProfile } : {}),
       authorEnvironment: { packageManagers: [], overrides: [], workflows: [], dshVersions: authorDshVersion && !omitBaseline
         ? [{ version: authorDshVersion, evidence: [{ path: 'README.md', quote: authorQuote }] }] : [] },
-      summary: 'The bounded input does not establish an author-supported launch workflow.', evidence: ['source-manifest'],
+      summary: recommended ? 'Select the evidenced author environment for an isolated comparison.' : 'The bounded input does not establish an author-supported launch workflow.',
+      evidence: authorTuiProfile ? ['source-manifest', 'README.md'] : ['source-manifest'],
     }) } }] });
   }
   if (!/^https:\\/\\/(?:api.github.com|raw.githubusercontent.com)\\//.test(address)) throw new Error('Unexpected fixture URL');
@@ -70,7 +75,7 @@ globalThis.fetch = async (url, options) => {
   if (address.endsWith('/README.md') && address.includes('/example/plugin/') && process.env.RADAR_EVIDENCE_NETWORK === 'document-timeout') throw new Error('fixture README collection timed out');
   if (address.endsWith('/README.md')) return new Response(process.env.RADAR_EVIDENCE_NETWORK === 'oversized'
     && address.includes('/example/plugin/') ? 'x'.repeat(48 * 1024 + 1)
-      : address.includes('/example/plugin/') && authorQuote ? authorQuote : 'Repository setup documentation.');
+      : address.includes('/example/plugin/') ? readme : 'Repository setup documentation.');
   const dsh = address.includes('/example/dsh/');
   return Response.json({ name: dsh ? '@deepseek-ai/dsh' : 'fixture-plugin', version: dsh ? '0.1.5-rc.2' : '1.0.0', engines: { node: '>=22' } });
 };
@@ -139,6 +144,22 @@ it('requires the first review to account for explicit author validation evidence
     assert.match(attempts[0].error, /omitted.*0\.1\.5-rc\.1/)
     const plan = buildDshInstallPlan(applyDshEnvironmentRecommendations(targets, observations, reviewed), observations, { changes: [] })
     assert.deepEqual(plan.matrix.include.map(item => item.dshVersion).sort(), ['0.1.5-rc.1', '0.1.5-rc.2'])
+    assert.equal((await run('offline')).attempted, 0)
+  } finally { await rm(directory, { recursive: true, force: true }) }
+})
+
+it('corrects a missing author TUI profile through the normal review command before surface planning', async () => {
+  const { directory, targets, observations, run } = await fixture(undefined, true, 'author-console')
+  try {
+    assert.equal((await run('omit-tui-profile')).planned, 1)
+    const reviewed = JSON.parse(await readFile(join(directory, 'recommendations.json'), 'utf8'))
+    assert.equal(reviewed.entries[0].tuiProfile, 'author-console')
+    const attempts = JSON.parse(await readFile(join(directory, 'recommendations.json.attempts.json'), 'utf8')).attempts
+    assert.deepEqual(attempts.map((item: { status: string }) => item.status), ['rejected', 'validated'])
+    const surfaces = applyDshEnvironmentRecommendationsToSurfaceTargets({
+      schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [],
+    }, targets, observations, reviewed)
+    assert.equal(surfaces.surfaces[0]?.profile, 'author-console')
     assert.equal((await run('offline')).attempted, 0)
   } finally { await rm(directory, { recursive: true, force: true }) }
 })

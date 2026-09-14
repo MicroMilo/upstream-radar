@@ -20,7 +20,7 @@ import {
 } from './dsh-surface.js'
 
 export const DSH_ENVIRONMENT_RECOMMENDATIONS_SCHEMA = 'upstream-radar.dsh-environment-recommendations/v1alpha1' as const
-export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v9' as const
+export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v10' as const
 
 const DSH_TARGET_ID = 'deepseek-harness'
 const DSH_PACKAGE = '@deepseek-ai/dsh'
@@ -555,6 +555,32 @@ function authorEvidenceSources(candidate: DshEnvironmentRecommendationCandidate)
   return sources
 }
 
+/** Read literal install destinations for this package; never evaluate commands. */
+function literalPluginInstallProfiles(candidate: DshEnvironmentRecommendationCandidate): Array<{ profile: string; path: string; quote: string }> {
+  const packageName = parseNpmSpec(candidate.plugin).name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const name = '[A-Za-z0-9][A-Za-z0-9._-]{0,63}'
+  const profile = `(?<profile>${name}|"${name}"|'${name}')`
+  const packageToken = `["'\x60]?${packageName}(?:@[0-9A-Za-z.*^~+_-]+)?(?=$|[\\s"'\x60])`
+  const patterns = [
+    new RegExp(`(?:^|[\\s"'\x60])dsh\\s+plugin\\s+--profile(?:[ \\t]+|=)${profile}\\s+add\\s+${packageToken}`, 'g'),
+    new RegExp(`(?:^|[\\s"'\x60])dsh\\s+--profile(?:[ \\t]+|=)${profile}\\s+plugin\\s+add\\s+${packageToken}`, 'g'),
+  ]
+  const found = new Map<string, { profile: string; path: string; quote: string }>()
+  for (const document of candidate.documents) {
+    if (document.path.startsWith('dsh-repository/') || /^dsh-(?:source|published)-manifest$/.test(document.path)
+      || Buffer.byteLength(document.text) > MAX_DOCUMENT_BYTES) continue
+    for (const quote of document.text.split(/\r?\n/)) {
+      if (quote.length > 2_048) continue
+      for (const pattern of patterns) for (const match of quote.matchAll(pattern)) {
+        const profile = match.groups!.profile!.replace(/^["']|["']$/g, '')
+        if (!found.has(profile)) found.set(profile, { profile, path: document.path, quote })
+        if (found.size > 16) throw new Error('Literal plugin installation profiles exceed the 16-profile review bound; coverage remains incomplete')
+      }
+    }
+  }
+  return [...found.values()].sort((a, b) => a.profile.localeCompare(b.profile))
+}
+
 /** Validate model output against deterministic facts and the supplied evidence inventory. */
 export function parseDshEnvironmentRecommendationDecision(
   input: unknown,
@@ -635,6 +661,10 @@ export function parseDshEnvironmentRecommendationDecision(
     if (!citedDocumentSupportsProfile(decision, candidate, 'tui')) {
       throw new Error('a TUI recommendation requires an explicit TUI/terminal repository document reference')
     }
+    const installations = literalPluginInstallProfiles(candidate).filter(item => item.profile !== 'web')
+    if (installations.length && !installations.some(item => item.profile === decision.tuiProfile)) {
+      throw new Error(`The recommendation omitted or replaced an author-named TUI profile for this exact plugin. Set tuiProfile from the evidenced installation profiles: ${installations.map(item => item.profile).join(', ')}. Do not replace it with a target-id-derived name. If the evidence is conflicting, return insufficient-evidence with a coverage gap. Source excerpt (untrusted data): ${JSON.stringify(installations.slice(0, 2)).slice(0, 512)}`)
+    }
     if (decision.tuiProfile !== undefined) {
       const escaped = decision.tuiProfile.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       const pattern = new RegExp(`--profile(?:[ =]+)["'\\x60]?${escaped}(?:["'\\x60\\s]|[.,;:!?](?=\\s|$)|$)`)
@@ -688,6 +718,7 @@ export function renderDshEnvironmentRecommendationPrompt(candidate: DshEnvironme
     'If only engine minima are available, describe a declared-support baseline and say explicitly that no author preference was found. Prefer author-recommended or CI-configured majors over such baselines when they satisfy exact manifest constraints.',
     'DSH repository documents are separately prefixed dsh-repository/. They describe the platform, not evidence that this plugin intends every DSH surface. Do not use them to add Web or TUI to a plugin.',
     'When TUI is intended, include tuiProfile if the plugin setup or launch documentation names an exact --profile. Copy the safe profile name only, never a command or configuration instruction.',
+    'In particular, a literal dsh plugin --profile NAME add command for this plugin establishes a named installation profile. Preserve the author-selected TUI profile name in tuiProfile; omitting it would make the planner invent a different profile and can miss profile-scoped settings.',
     'authorEnvironment is required: {packageManagers: [{name: pnpm|npm|yarn|bun, version: exact version, scope: development|host|profile, evidence: [{path, quote}]}], overrides: [{scope: development|profile, values: {npmPackageName: registryVersionRange}, evidence: [{path, quote}]}], workflows: [{kind: headless|web|tui|sdk|acp, profile: optional exact --profile name, role: primary|additional, evidence: [{path, quote}]}], dshVersions: [{version: exact version, evidence: [{path, quote}]}]}. Use empty arrays when unknown, with a coverage gap if relevant evidence is missing. Quotes must be exact substrings of the supplied documents, at most 2048 characters each; at most 8 citations per fact.',
     'Preserve the author default SDK/ACP workflow even when other smoke planes exist. At most one workflow is primary. Package.json packageManager and workspace overrides describe development unless explicit installation evidence applies them to the user profile. Never silently transfer development overrides to the new DSH host. Overrides accept simple npm package names and registry semver ranges only; report unsupported selectors, links or commands as coverage gaps. Author DSH versions are claims in plugin documentation, not Radar test results.',
     'Inspect author DSH validation baselines in plugin CI, compatibility tables, and development-fixture documentation or comments as well as README prose. An explicit primary/validated DSH line in a development workspace is still an author baseline to compare; this does not authorize copying its development overrides into a consumer profile. Retain every such evidenced exact baseline within the output bound. DSH-owned manifests and dsh-repository documents cannot establish any plugin author setting.',

@@ -63,7 +63,7 @@ bounded documents. The install and surface planners apply only a
 recommendation whose source fingerprint is still current. Isolated VMs
 establish the eventual compatibility result.
 
-Review contract `dsh-environment/v9` preserves exact DSH release-table rows as
+Review contract `dsh-environment/v10` preserves exact DSH release-table rows as
 evidence when their own bounded Markdown table explicitly names the DSH
 release/version column. Other package columns, detached tables, ranges instead
 of exact versions, and DSH's own baseline documents cannot supply a plugin's
@@ -96,3 +96,11 @@ This is a conservative completeness guard for recognized source forms, not a
 replacement for repository reasoning or a compatibility result. Other prose,
 tables and declarations still require the full model review. Exact author
 release evidence must not promote `^`, `~`, `<` or `>` ranges into release pins.
+
+When TUI is selected, literal `dsh plugin --profile NAME add PACKAGE` and
+`dsh --profile NAME plugin add PACKAGE` examples for this exact package constrain
+the author profile name. A missing or replaced name goes through correction
+instead of letting the planner invent a different profile and lose named-profile
+settings. Other packages, dynamic shell variables and DSH-owned documents cannot
+supply that requirement. The scan is data-only and bounded to 16 distinct names;
+it does not run, approve, or emulate repository installation commands.

@@ -369,7 +369,7 @@ describe('DSH repository environment recommendation', () => {
 
   it('requires repository review again after changing author evidence attribution and completeness checks', () => {
     const previous = recommendations()
-    for (const reviewContract of ['dsh-environment/v5', 'dsh-environment/v6', 'dsh-environment/v7', 'dsh-environment/v8']) {
+    for (const reviewContract of ['dsh-environment/v5', 'dsh-environment/v6', 'dsh-environment/v7', 'dsh-environment/v8', 'dsh-environment/v9']) {
       const legacy = { ...previous, entries: previous.entries.map(entry => ({ ...entry, reviewContract })) }
       const applied = applyDshEnvironmentRecommendations({ ...targets, environmentRecommendationsRequired: true }, observations, legacy)
       assert.equal(applied.plugins[0]!.environmentRecommendation, undefined, `${reviewContract} used obsolete evidence validation`)
@@ -635,6 +635,52 @@ describe('DSH repository environment recommendation', () => {
       schema: 'upstream-radar.dsh-surface-targets/v1alpha1', refreshAfterHours: 168, surfaces: [],
     }, targets, state, rs)
     assert.equal(surfaceTargets.surfaces[0]?.profile, 'dsh-tui')
+  })
+
+  it('rejects a missing TUI profile when this plugin has a literal named installation profile', () => {
+    const selected: DshEnvironmentRecommendationCandidate = {
+      ...candidate(), manifest: { name: 'web-plugin', version: '1.2.3', engines: { node: '>=18' } },
+      documents: [{ path: 'README.md', text: 'TUI requires Node 24.\ndsh plugin --profile author-console add web-plugin' }],
+    }
+    const omitted = { ...decision(), nodeMajors: [24], executionProfiles: ['tui'], evidence: ['README.md'] }
+    assert.throws(() => parseDshEnvironmentRecommendationDecision(omitted, selected), /omitted.*TUI profile.*author-console/)
+    const parsed = parseDshEnvironmentRecommendationDecision({ ...omitted, tuiProfile: 'author-console' }, selected)
+    assert.equal(parsed.tuiProfile, 'author-console')
+    const state = { ...observations, targets: {
+      ...observations.targets, 'web-plugin-source': { ...observations.targets['web-plugin-source'], manifest: selected.manifest },
+    } }
+    const current = selectDshEnvironmentRecommendationCandidates(targets, state, new Map([['web-plugin', selected.documents]]))[0]!
+    const reviewed = recommendations({ ...parsed, sourceFingerprint: current.sourceFingerprint,
+      inputFingerprint: createDshEnvironmentRecommendationInputFingerprint(current) })
+    reviewed.pendingTasks = []
+    const surfaces = applyDshEnvironmentRecommendationsToSurfaceTargets({
+      schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [],
+    }, targets, state, reviewed)
+    assert.equal(surfaces.surfaces[0]?.profile, 'author-console')
+  })
+
+  it('binds named TUI installation evidence to this package and plugin-owned documents', () => {
+    const omitted = { ...decision(), nodeMajors: [24], executionProfiles: ['tui'], evidence: ['README.md'] }
+    const base = { ...candidate(), manifest: { name: 'web-plugin', version: '1.2.3', engines: { node: '>=18' } } }
+    for (const command of [
+      'dsh plugin --profile author-console add web-plugin@next',
+      'dsh --profile="author-console" plugin add "web-plugin@1.2.3"',
+    ]) {
+      const selected = { ...base, documents: [{ path: 'README.md', text: 'TUI requires Node 24.\n' + command }] }
+      assert.throws(() => parseDshEnvironmentRecommendationDecision(omitted, selected), /omitted.*TUI profile/)
+      assert.equal(parseDshEnvironmentRecommendationDecision({ ...omitted, tuiProfile: 'author-console' }, selected).tuiProfile, 'author-console')
+    }
+    for (const command of [
+      'dsh plugin --profile helper-console add other-plugin',
+      'dsh plugin --profile helper-console add web-plugin-extra',
+      'dsh plugin --profile "$PROFILE" add web-plugin',
+    ]) assert.doesNotThrow(() => parseDshEnvironmentRecommendationDecision(omitted, {
+      ...base, documents: [{ path: 'README.md', text: 'TUI requires Node 24.\n' + command }],
+    }))
+    assert.doesNotThrow(() => parseDshEnvironmentRecommendationDecision(omitted, {
+      ...base, documents: [{ path: 'README.md', text: 'TUI requires Node 24.' },
+        { path: 'dsh-repository/README.md', text: 'dsh plugin --profile unrelated-console add web-plugin' }],
+    }))
   })
 
   it('overlays the exact recommendation onto Node and execution-profile planners', () => {
