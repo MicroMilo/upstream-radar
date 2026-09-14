@@ -32,9 +32,10 @@ const [
   environmentRecommendationsPath,
   adapterLedgerPath,
   buildPlansPath,
+  surfaceBuildPlansPath,
 ] = process.argv.slice(2)
-if ([cohortPath, targetsPath, ledgerPath, jsonPath, markdownPath].some(value => value === undefined) || process.argv.length > 12) {
-  throw new Error('usage: write-dsh-directory-feed.mjs <cohort.json> <targets.json> <ledger.json> <feed.json> <feed.md> [observations.json] [surface-ledger.json] [environment-recommendations.json] [adapter-ledger.json] [build-plans.json]')
+if ([cohortPath, targetsPath, ledgerPath, jsonPath, markdownPath].some(value => value === undefined) || process.argv.length > 13) {
+  throw new Error('usage: write-dsh-directory-feed.mjs <cohort.json> <targets.json> <ledger.json> <feed.json> <feed.md> [observations.json] [surface-ledger.json] [environment-recommendations.json] [adapter-ledger.json] [build-plans.json] [surface-build-plans.json]')
 }
 
 let adapterLedger
@@ -54,6 +55,7 @@ const feed = buildDshDirectoryCompatibilityFeed({
     : { environmentRecommendations: await readJson(environmentRecommendationsPath) }),
   ...(adapterLedger === undefined ? {} : { adapterLedger }),
   ...(buildPlansPath === undefined ? {} : { buildPlans: await readJson(buildPlansPath) }),
+  ...(surfaceBuildPlansPath === undefined ? {} : { surfaceBuildPlans: await readJson(surfaceBuildPlansPath) }),
   generatedAt: new Date().toISOString(),
 })
 

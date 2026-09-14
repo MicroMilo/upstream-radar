@@ -121,8 +121,11 @@ it('plans independent author and target SDK/ACP cells through the scheduled comm
     const cohortPath = join(root, 'cohort.json'), feedPath = join(root, 'feed.json'), markdownPath = join(root, 'feed.md')
     await writeFile(cohortPath, JSON.stringify(feedInput.cohort))
     await writeFile(join(root, 'surface.json'), JSON.stringify({ schema: 'upstream-radar.dsh-surface-ledger/v1alpha1', entries: [] }))
+    const surfaceBuildPlansPath = join(root, 'surface-build-plans.json')
+    await writeFile(surfaceBuildPlansPath, JSON.stringify({ schema: 'upstream-radar.dsh-surface-agent-plans/v1alpha1',
+      updatedAt: new Date().toISOString(), entries: [] }))
     await execFile(process.execPath, ['scripts/write-dsh-directory-feed.mjs', cohortPath, paths[0]!, paths[3]!, feedPath, markdownPath,
-      paths[1]!, join(root, 'surface.json'), paths[2]!, paths[4]!, paths[5]!], { timeout: 10_000 })
+      paths[1]!, join(root, 'surface.json'), paths[2]!, paths[4]!, paths[5]!, surfaceBuildPlansPath], { timeout: 10_000 })
     const written = JSON.parse(await readFile(feedPath, 'utf8'))
     assert.ok(written.plugins[0].cells.some((item: { caseId: string }) => item.caseId === cell.id),
       'the scheduled feed command must consume the adapter ledger, not merely the library API')

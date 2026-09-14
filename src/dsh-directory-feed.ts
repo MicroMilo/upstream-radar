@@ -10,12 +10,17 @@ import { applyDshHeadlessAgentPlans } from './dsh-headless-agent-plan.js'
 import { buildDshAdapterPlan, emptyDshAdapterLedger, parseDshAdapterLedger, type DshAdapterLedger } from './dsh-adapter.js'
 import {
   DSH_SURFACE_LEDGER_SCHEMA,
+  DSH_SURFACE_TARGETS_SCHEMA,
+  buildDshSurfacePlan,
+  emptyDshSurfaceLedger,
   createDshSurfaceSourceFingerprint,
   parseDshSurfaceLedger,
   type DshSurfaceLedgerEntry,
 } from './dsh-surface.js'
 import type { DshSurfaceObservationResult } from './dsh-surface-observation.js'
 import type { DshStartupConfiguration } from './dsh-startup-configuration.js'
+import { selectDshProfileEnvironment } from './dsh-profile-environment.js'
+import { parseDshSurfaceAgentPlans } from './dsh-surface-agent-plan.js'
 import { parseNpmSpec } from './npm.js'
 import { TOOL_VERSION } from './version.js'
 
@@ -376,6 +381,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
   surfaceLedger?: unknown
   adapterLedger?: unknown
   buildPlans?: unknown
+  surfaceBuildPlans?: unknown
   observations?: unknown
   environmentRecommendations?: unknown
   generatedAt: string
@@ -396,6 +402,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
     entries: [],
   })
   const adapterLedger = parseDshAdapterLedger(input.adapterLedger)
+  const surfaceBuildPlans = input.surfaceBuildPlans === undefined ? undefined : parseDshSurfaceAgentPlans(input.surfaceBuildPlans)
   const generatedAt = timestamp(input.generatedAt, 'directory feed generatedAt')
   const repositoryBaseUrl = normalizedRepositoryBaseUrl(input.repositoryBaseUrl ?? 'https://github.com/MicroMilo/upstream-radar')
   const targetByObserverId = new Map(installTargets.plugins
@@ -433,8 +440,13 @@ export function buildDshDirectoryCompatibilityFeed(input: {
   const selectedDshVersion = observedDsh?.name === '@deepseek-ai/dsh' ? observedDsh.version : undefined
   const now = new Date(generatedAt)
   const effectiveTargets = input.buildPlans === undefined ? installTargets : applyDshHeadlessAgentPlans(installTargets, input.buildPlans, ledger)
-  const desiredNative = buildDshInstallPlan(effectiveTargets, input.observations, { changes: [] }, emptyDshCompatibilityLedger(), now)
-  const currentNative = currentDshCompatibilitySources(ledger, desiredNative.matrix.include, installTargets.refreshAfterHours, now)
+  // This is an evidence comparison set, not an execution matrix. Local Linux
+  // arm64 observations must not be compared against the GitHub x64 contract.
+  const architectures: Array<'x64' | 'arm64'> = ledger.entries.some(entry => entry.runtime.platform === 'linux' && entry.runtime.architecture === 'arm64')
+    ? ['x64', 'arm64'] : ['x64']
+  const desiredNativeCases = architectures.flatMap(architecture => buildDshInstallPlan(effectiveTargets, input.observations,
+    { changes: [] }, emptyDshCompatibilityLedger(), now, new Set(), { platform: 'linux', architecture }).matrix.include)
+  const currentNative = currentDshCompatibilitySources(ledger, desiredNativeCases, installTargets.refreshAfterHours, now)
   const currentNativeCaseIds = new Set(currentNative.entries.map(entry => entry.caseId))
   const desiredAdapters = buildDshAdapterPlan(installTargets,
     { ...currentNative, entries: currentNative.entries.filter(entry => entry.dshVersion === selectedDshVersion) }, emptyDshAdapterLedger(), now)
@@ -476,6 +488,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
           && (recommendation === undefined || recommendation.nodeMajors.includes(entry.runtime.nodeMajor))
         ))
     const cells: DshDirectoryEvidenceCell[] = []
+    const currentSurfaceCaseIds = new Set<string>()
     const adapters = currentAdapters.filter(entry => entry.cell.targetId === installTarget?.id)
     for (const entry of observations) {
       // Repository recommendations define the minimum required cells, not a
@@ -507,7 +520,19 @@ export function buildDshDirectoryCompatibilityFeed(input: {
         recheckDueAt: dueAt(entry.observedAt, installTargets.refreshAfterHours),
         reason: entry.reason,
       })
-      for (const surface of matchingSurfaces) cells.push(surfaceCell(surface, installTargets.refreshAfterHours))
+      for (const surface of matchingSurfaces) {
+        cells.push(surfaceCell(surface, installTargets.refreshAfterHours))
+        if (!currentNativeCaseIds.has(entry.caseId)) continue
+        let profileEnvironment
+        try { profileEnvironment = selectDshProfileEnvironment(recommendation?.authorEnvironment, surface.profile) }
+        catch { continue } // An unsupported author environment cannot establish current coverage.
+        const expected = buildDshSurfacePlan({ schema: DSH_SURFACE_TARGETS_SCHEMA, surfaces: [{
+          id: surface.caseId, sourceCaseId: surface.sourceCaseId, plane: surface.plane, profile: surface.profile,
+          runtimeId: surface.runtimeId, profileEnvironment, reason: 'current directory execution contract',
+          ...(surface.startupConfiguration === undefined ? {} : { startupConfiguration: surface.startupConfiguration }),
+        }] }, { ...ledger, entries: [entry] }, emptyDshSurfaceLedger(), now, input.buildPlans, surfaceBuildPlans).matrix.include[0]
+        if (expected?.contractFingerprint === surface.contractFingerprint) currentSurfaceCaseIds.add(surface.caseId)
+      }
     }
     for (const { cell, report } of adapters) {
       const sourceCaseId = caseIdByNodeMajor.get(cell.nodeMajor)
@@ -531,6 +556,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
     const distribution = observedDistribution(plugin)
     const cellIsCurrent = (cell: DshDirectoryEvidenceCell): boolean => cell.evidenceSource === 'adapter-ledger'
       || currentNativeCaseIds.has(cell.sourceCaseId ?? cell.caseId)
+        && (cell.evidenceSource !== 'surface-ledger' || currentSurfaceCaseIds.has(cell.caseId))
         && now.getTime() >= Date.parse(cell.observedAt)
         && now.getTime() - Date.parse(cell.observedAt) < installTargets.refreshAfterHours * 3_600_000
     const environmentRecommendation = installTarget === undefined
@@ -559,7 +585,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
                 const versions = new Set([selectedDshVersion, ...recommendation.authorEnvironment?.dshVersions.map(item => item.version) ?? []])
                 for (const version of versions) {
                   const expectedCell = `${sourceCaseId}:${plane}${version === selectedDshVersion ? '' : `:dsh-${version}`}`
-                  const nativeCaseId = desiredNative.matrix.include.find(cell => cell.targetId === installTarget.id
+                  const nativeCaseId = desiredNativeCases.find(cell => cell.targetId === installTarget.id
                     && cell.nodeMajor === nodeMajor && cell.dshVersion === version)?.id
                   expectedCells.push(expectedCell)
                   const covered = cells.some(cell => (

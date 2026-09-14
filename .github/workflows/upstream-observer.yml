@@ -220,7 +220,8 @@ jobs:
               surface-ledger.json \
               examples/dsh/environment-observer/recommendations.json \
               adapter-ledger.json \
-              examples/dsh/install-observer/agent-plans.json
+              examples/dsh/install-observer/agent-plans.json \
+              examples/dsh/surface-observer/agent-plans.json
           fi
           git config user.name 'upstream-radar[bot]'
           git config user.email 'upstream-radar[bot]@users.noreply.github.com'
@@ -359,7 +360,8 @@ jobs:
             surface-ledger.json \
             examples/dsh/environment-observer/recommendations.json \
             adapter-ledger.json \
-            examples/dsh/install-observer/agent-plans.json
+            examples/dsh/install-observer/agent-plans.json \
+            examples/dsh/surface-observer/agent-plans.json
 
       - name: Keep compatibility evidence artifacts
         if: always()
@@ -607,7 +609,8 @@ jobs:
             surface-ledger.json \
             examples/dsh/environment-observer/recommendations.json \
             adapter-ledger.json \
-            examples/dsh/install-observer/agent-plans.json
+            examples/dsh/install-observer/agent-plans.json \
+            examples/dsh/surface-observer/agent-plans.json
       - name: Keep execution-plane evidence artifacts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -769,7 +772,8 @@ jobs:
             surface-ledger.json \
             examples/dsh/environment-observer/recommendations.json \
             adapter-ledger.json \
-            examples/dsh/install-observer/agent-plans.json
+            examples/dsh/install-observer/agent-plans.json \
+            examples/dsh/surface-observer/agent-plans.json
       - name: Preserve the reconciled adapter evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

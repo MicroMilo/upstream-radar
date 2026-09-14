@@ -56,6 +56,8 @@ describe('reusable GitHub Action', () => {
     assert.equal(feedSteps.length, 4, 'every result path, including adapters, must refresh the same unified feed')
     for (const step of feedSteps) assert.match(step, /adapter-ledger\.json\s*\\\s*examples\/dsh\/install-observer\/agent-plans\.json/,
       'later native/surface refreshes must not erase adapter evidence or drop exact build decisions')
+    for (const step of feedSteps) assert.match(step, /examples\/dsh\/surface-observer\/agent-plans\.json/,
+      'directory coverage must bind the same Web/TUI build decisions as the scheduled surface planner')
   })
 
   it('offers a real rebuild batch loop that reviews observed gates, retries, and verifies unchanged reuse without giving model secrets to execution steps', async () => {

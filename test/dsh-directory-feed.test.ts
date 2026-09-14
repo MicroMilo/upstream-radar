@@ -8,7 +8,8 @@ import {
 } from '../src/dsh-directory-feed.js'
 import { DSH_COMPATIBILITY_LEDGER_SCHEMA, emptyDshCompatibilityLedger, type DshCompatibilityLedgerEntry } from '../src/dsh-compatibility-ledger.js'
 import { DSH_INSTALL_TARGETS_SCHEMA, buildDshInstallPlan } from '../src/dsh-install-plan.js'
-import { DSH_SURFACE_LEDGER_SCHEMA, createDshSurfaceSourceFingerprint, type DshSurfaceLedger } from '../src/dsh-surface.js'
+import { DSH_SURFACE_LEDGER_SCHEMA, DSH_SURFACE_TARGETS_SCHEMA, buildDshSurfacePlan, emptyDshSurfaceLedger,
+  createDshSurfaceSourceFingerprint, type DshSurfaceLedger } from '../src/dsh-surface.js'
 import {
   createDshEnvironmentRecommendationInputFingerprint,
   DSH_ENVIRONMENT_REVIEW_CONTRACT,
@@ -16,9 +17,10 @@ import {
   applyDshEnvironmentRecommendations,
 } from '../src/dsh-environment-recommendation.js'
 
-function bindFixtureSources(entries: DshCompatibilityLedgerEntry[], targets: unknown, observations: unknown, recommendations: unknown) {
+function bindFixtureSources(entries: DshCompatibilityLedgerEntry[], targets: unknown, observations: unknown, recommendations: unknown,
+  architecture: 'x64' | 'arm64' = 'x64') {
   const desired = buildDshInstallPlan(applyDshEnvironmentRecommendations(targets, observations, recommendations), observations,
-    { changes: [] }, emptyDshCompatibilityLedger(), new Date('2026-08-23T01:00:00.000Z'))
+    { changes: [] }, emptyDshCompatibilityLedger(), new Date('2026-08-23T01:00:00.000Z'), new Set(), { platform: 'linux', architecture })
   for (const entry of entries) {
     const cell = desired.matrix.include.find(cell => cell.id === entry.caseId)
     if (cell) Object.assign(entry, { staticFingerprint: cell.staticFingerprint, contractFingerprint: cell.contractFingerprint })
@@ -177,6 +179,11 @@ function surfaceLedger(
 }
 
 describe('DSH directory compatibility feed', () => {
+  it('rejects malformed surface build decisions even when there are no current surface cells', () => {
+    const input = { ...fixture(), surfaceBuildPlans: {}, generatedAt: '2026-08-23T01:00:00.000Z' }
+    assert.throws(() => buildDshDirectoryCompatibilityFeed(input), /schema/)
+  })
+
   it('publishes exact evidence without turning coverage gaps into pass or fail', () => {
     const input = fixture()
     const feed = buildDshDirectoryCompatibilityFeed({
@@ -303,6 +310,53 @@ describe('DSH directory compatibility feed', () => {
     assert.deepEqual(Reflect.get(limited.cells.find(cell => cell.caseId === 'clean-web-disabled')!, 'startupConfiguration'), startupConfiguration)
     assert.match(renderDshDirectoryCompatibilityFeed(supplementalFeed), /Web settings only; bridge stopped/)
     assert.match(renderDshDirectoryCompatibilityFeed(supplementalFeed), /DSH_CLEAN_DISABLED=1/)
+
+    const defaultSurface = surfaceLedger('clean', 'compatible', {
+      sourceFingerprint: createDshSurfaceSourceFingerprint(input.ledger.entries.find(entry => entry.targetId === 'clean')!),
+    })
+    const desired = buildDshSurfacePlan({ schema: DSH_SURFACE_TARGETS_SCHEMA, surfaces: [{
+      id: 'clean-web', sourceCaseId: 'clean-node22', plane: 'web', profile: 'web', runtimeId: 'clean', reason: 'current fixture',
+    }] }, input.ledger, emptyDshSurfaceLedger(), new Date('2026-08-23T01:00:00.000Z')).matrix.include[0]!
+    defaultSurface.entries[0]!.contractFingerprint = desired.contractFingerprint
+    defaultSurface.entries[0]!.profileEnvironment = desired.profileEnvironment!
+    const currentSurfaceFeed = buildDshDirectoryCompatibilityFeed({ ...input, installTargets, observations, environmentRecommendations,
+      surfaceLedger: defaultSurface, generatedAt: '2026-08-23T01:00:00.000Z' })
+    assert.ok(!currentSurfaceFeed.plugins.find(item => item.id === 'clean')!.environmentRecommendation?.missingCells.includes('clean-node22:web'))
+    defaultSurface.entries[0]!.contractFingerprint = `sha256:${'f'.repeat(64)}`
+    const staleCollectorFeed = buildDshDirectoryCompatibilityFeed({ ...input, installTargets, observations, environmentRecommendations,
+      surfaceLedger: defaultSurface, generatedAt: '2026-08-23T01:00:00.000Z' })
+    assert.ok(staleCollectorFeed.plugins.find(item => item.id === 'clean')!.environmentRecommendation?.missingCells.includes('clean-node22:web'),
+      'a source-bound old surface execution contract must not satisfy current Web coverage')
+    const surfaceBuildPlans = { schema: 'upstream-radar.dsh-surface-agent-plans/v1alpha1', updatedAt: '2026-08-23T00:40:00.000Z', entries: [{
+      caseId: 'clean-web', sourceCaseId: 'clean-node22', plugin: 'clean@1.0.0', dshVersion: '0.1.1-rc.2', nodeMajor: 22,
+      plane: 'web', profile: 'web', result: 'environment-unsupported', observedRequiredBuilds: ['node-pty'], approvedBuilds: ['node-pty'],
+      sourceFingerprint: defaultSurface.entries[0]!.sourceFingerprint, artifactSha256: 'c'.repeat(64),
+      inputFingerprint: `sha256:${'d'.repeat(64)}`, plannedAt: '2026-08-23T00:40:00.000Z', model: 'fixture',
+      action: 'retry-surface', classification: 'build-approval', allowedBuilds: ['node-pty'], summary: 'Exact fixture build review.', evidence: ['fixture source'],
+    }] }
+    const approved = buildDshSurfacePlan({ schema: DSH_SURFACE_TARGETS_SCHEMA, surfaces: [{
+      id: 'clean-web', sourceCaseId: 'clean-node22', plane: 'web', profile: 'web', runtimeId: 'clean', reason: 'reviewed fixture',
+    }] }, input.ledger, emptyDshSurfaceLedger(), new Date('2026-08-23T01:00:00.000Z'), undefined, surfaceBuildPlans).matrix.include[0]!
+    defaultSurface.entries[0]!.contractFingerprint = approved.contractFingerprint
+    defaultSurface.entries[0]!.approvedDependencyBuilds = ['node-pty']
+    const reviewedInput = { ...input, installTargets, observations, environmentRecommendations, surfaceBuildPlans,
+      surfaceLedger: defaultSurface, generatedAt: '2026-08-23T01:00:00.000Z' }
+    const reviewedSurfaceFeed = buildDshDirectoryCompatibilityFeed(reviewedInput)
+    assert.ok(!reviewedSurfaceFeed.plugins.find(item => item.id === 'clean')!.environmentRecommendation?.missingCells.includes('clean-node22:web'),
+      'the feed and scheduled surface planner must use the same exact surface build decisions')
+    const armLedger = structuredClone(input.ledger)
+    for (const entry of armLedger.entries) entry.runtime.architecture = 'arm64'
+    bindFixtureSources(armLedger.entries, installTargets, observations, environmentRecommendations, 'arm64')
+    const armPlan = buildDshSurfacePlan({ schema: DSH_SURFACE_TARGETS_SCHEMA, surfaces: [{
+      id: 'clean-web', sourceCaseId: 'clean-node22', plane: 'web', profile: 'web', runtimeId: 'clean', reason: 'arm64 fixture',
+    }] }, armLedger, emptyDshSurfaceLedger(), new Date('2026-08-23T01:00:00.000Z')).matrix.include[0]!
+    const armSurface = surfaceLedger('clean', 'compatible', { contractFingerprint: armPlan.contractFingerprint,
+      sourceFingerprint: armPlan.sourceFingerprint, profileEnvironment: armPlan.profileEnvironment!,
+      runtime: { ...defaultSurface.entries[0]!.runtime, architecture: 'arm64' } })
+    const armFeed = buildDshDirectoryCompatibilityFeed({ ...input, installTargets, observations, environmentRecommendations,
+      ledger: armLedger, surfaceLedger: armSurface, generatedAt: '2026-08-23T01:00:00.000Z' })
+    assert.deepEqual(armFeed.plugins.find(item => item.id === 'clean')!.environmentRecommendation?.missingCells,
+      ['clean-node24:headless', 'clean-node24:web'], 'the feed must compare exact arm64 evidence against an arm64 execution contract')
   })
 
   it('keeps untested intended workflows in review even when every selected smoke cell is compatible', () => {
