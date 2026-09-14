@@ -18,6 +18,7 @@ const candidate: DshHeadlessAgentCandidate = {
   plugin: 'dsh-vision@1.0.0',
   dshVersion: '0.1.1-rc.2',
   nodeMajor: 22,
+  executionEnvironment: { platform: 'linux', architecture: 'x64', profileEnvironment: { pnpmVersion: '11.7.0', overrides: {} } },
   result: 'build-approval-required',
   reason: 'the isolated install requires explicit approval for sharp',
   requiredDependencyBuilds: ['sharp'],
@@ -53,6 +54,7 @@ function plans(action: 'retry-headless' | 'stop-headless' = 'retry-headless') {
       plugin: candidate.plugin,
       dshVersion: candidate.dshVersion,
       nodeMajor: candidate.nodeMajor,
+      executionEnvironment: candidate.executionEnvironment,
       result: candidate.result,
       observedRequiredBuilds: candidate.requiredDependencyBuilds,
       approvedBuilds: action === 'retry-headless' ? ['sharp'] : [],
@@ -107,6 +109,21 @@ function plannedBuilds(applied: unknown): string {
 }
 
 describe('DSH headless Agent planning', () => {
+  it('does not rebind a saved build approval to a new architecture, package manager, or override environment', () => {
+    const saved = plans()
+    const bound = { ...saved, entries: saved.entries.map(entry => ({ ...entry, executionEnvironment: {
+      platform: 'linux', architecture: 'x64', profileEnvironment: { pnpmVersion: '11.7.0', overrides: {} },
+    } })) }
+    assert.equal(plannedBuilds(applyDshHeadlessAgentPlans(targets, bound, ledger())), 'sharp')
+    const legacy = { ...saved, entries: saved.entries.map(entry => ({ ...entry, executionEnvironment: undefined })) }
+    assert.equal(applyDshHeadlessAgentPlans(targets, legacy, ledger()).plugins[0]?.buildApprovals?.length ?? 0, 0)
+    for (const changes of [{ runtime: { nodeMajor: 22, nodeVersion: '22.23.0', platform: 'linux', architecture: 'arm64', pnpmVersion: '11.7.0' } },
+      { profileEnvironment: { pnpmVersion: '11.8.0', overrides: {} } },
+      { profileEnvironment: { pnpmVersion: '11.7.0', overrides: { sharp: '0.34.0' } } }]) {
+      assert.equal(applyDshHeadlessAgentPlans(targets, bound, ledger(changes)).plugins[0]?.buildApprovals?.length ?? 0, 0)
+    }
+  })
+
   it('does not transfer a Node-specific build approval to another runtime or a newer DSH/plugin coordinate', () => {
     const twoRuntimes = { ...targets, runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }, { id: 'node24', nodeMajor: 24 }],
       plugins: [{ ...targets.plugins[0]!, runtimeProfiles: ['node22', 'node24'] }] }
@@ -163,6 +180,8 @@ describe('DSH headless Agent planning', () => {
     assert.match(renderDshHeadlessAgentPrompt(candidate), /untrusted-document/)
     assert.match(renderDshHeadlessAgentPrompt(candidate), /cannot add a Web\/TUI plane/)
     assert.match(renderDshHeadlessAgentPrompt(candidate), /dsh-client-ui-primitives/)
+    assert.match(renderDshHeadlessAgentPrompt(candidate), /"architecture":"x64"/)
+    assert.match(renderDshHeadlessAgentPrompt(candidate), /"pnpmVersion":"11.7.0"/)
   })
 
   it('rejects invented build packages and retries for non-build evidence', () => {
@@ -212,6 +231,7 @@ describe('DSH headless Agent planning', () => {
   it('overlays a retry only onto the exact artifact and runtime cell', () => {
     const applied = applyDshHeadlessAgentPlans(targets, plans(), ledger())
     assert.equal(plannedBuilds(applied), 'sharp')
+    assert.deepEqual(applyDshHeadlessAgentPlans(applied, plans(), ledger()), applied, 'reapplying a saved review must not accumulate duplicate approvals')
 
     const compatibleRefresh = applyDshHeadlessAgentPlans(targets, plans(), ledger({
       result: 'compatible',
@@ -285,5 +305,7 @@ describe('DSH headless Agent planning', () => {
     const parsed = parseDshHeadlessAgentPlans(plans())
     assert.equal(parsed.entries[0]?.model, 'deepseek-v4-flash')
     assert.match(parsed.entries[0]?.inputFingerprint ?? '', /^sha256:/)
+    assert.throws(() => parseDshHeadlessAgentPlans({ ...plans(), entries: plans().entries.map(entry => ({ ...entry,
+      executionEnvironment: { platform: 'linux', architecture: 'x64' } })) }), /environment/)
   })
 })

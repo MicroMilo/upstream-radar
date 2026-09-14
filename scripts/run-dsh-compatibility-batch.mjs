@@ -99,7 +99,8 @@ try {
     if (!target.environmentRecommendation) continue
     for (const runtimeId of target.runtimeProfiles ?? []) {
       const nodeMajor = applied.runtimeProfiles.find(item => item.id === runtimeId)?.nodeMajor
-      for (const profile of ['headless', 'web', ...target.environmentRecommendation.authorEnvironment.workflows.map(item => item.profile).filter(Boolean)]) {
+      for (const profile of ['headless', 'web', ...target.environmentRecommendation.authorEnvironment.workflows
+        .map(item => item.profile ?? (item.kind === 'sdk' || item.kind === 'acp' ? `dsh-lark-${item.kind}` : item.kind))]) {
         try {
           const { pnpmVersion } = selectDshProfileEnvironment(target.environmentRecommendation.authorEnvironment, profile)
           imageEnvironments.set(`${nodeMajor}:${pnpmVersion}`, { nodeMajor, pnpmVersion })
@@ -195,17 +196,26 @@ try {
   })
   await save(join(output, 'compatibility-ledger.json'), result.state.nativeLedger)
   await save(join(output, 'surface-ledger.json'), result.state.surfaceLedger)
+  await save(join(output, 'adapter-ledger.json'), result.state.adapterLedger)
   await save(join(output, 'compatibility-ir.json'), buildDshCompatibilityIR(result.state.nativeLedger))
   await save(join(output, 'surface-ir.json'), buildDshSurfaceIR(result.state.surfaceLedger))
   const summary = { executed: result.executed, nativeCells: result.state.nativeLedger.entries.length,
-    surfaceCells: result.state.surfaceLedger.entries.length, nextNativePlan: result.nextNativePlan, nextSurfacePlan: result.nextSurfacePlan,
+    surfaceCells: result.state.surfaceLedger.entries.length, adapterCells: result.state.adapterLedger.entries.length,
+    nextNativePlan: result.nextNativePlan, nextSurfacePlan: result.nextSurfacePlan, nextAdapterPlan: result.nextAdapterPlan,
     failedTasks: result.state.tasks.filter(task => task.status === 'failed').map(({ key, kind, cell, error }) => ({ key, kind, id: cell.id, error })),
     orphanedRunningTasks: result.orphanedRunningTasks, transitions: result.transitions,
     authorScopes: applied.plugins.map(target => ({ id: target.id, recommendation: target.environmentRecommendation })),
-    unimplementedChecks: ['independent author SDK/ACP adapter execution', 'exact browser peer package versions'],
+    adapterScopes: result.state.adapterLedger.entries.map(({ cell, report }) => ({ id: cell.id, plugin: cell.plugin,
+      dshVersion: cell.dshVersion, versionRole: cell.versionRole, nodeMajor: cell.nodeMajor, adapter: cell.adapter,
+      profileEnvironment: cell.profileEnvironment, artifact: report.artifact, result: report.result, stages: report.stages,
+      applicationGraphDigest: report.applicationGraph?.digest, profileGraphDigest: report.profileGraph?.digest,
+      coverageGaps: report.coverageGaps, reason: report.reason })),
+    unimplementedChecks: ['exact browser peer package versions', 'authenticated integrations and user tasks beyond bounded profile initialization'],
     note: 'Completed collection is not a global compatibility pass; inspect each result and its remaining coverage gaps.' }
   await save(join(output, 'summary.json'), summary)
   process.stdout.write(`${JSON.stringify({ executed: summary.executed, nativeCells: summary.nativeCells, surfaceCells: summary.surfaceCells,
-    failedTasks: summary.failedTasks.length, nextNative: summary.nextNativePlan.matrix.include.length, nextSurface: summary.nextSurfacePlan.matrix.include.length })}\n`)
-  if (summary.failedTasks.length || summary.orphanedRunningTasks.length || summary.nextNativePlan.blocked.length || summary.nextSurfacePlan.blocked.length) process.exitCode = 2
+    adapterCells: summary.adapterCells, failedTasks: summary.failedTasks.length, nextNative: summary.nextNativePlan.matrix.include.length,
+    nextSurface: summary.nextSurfacePlan.matrix.include.length, nextAdapter: summary.nextAdapterPlan.matrix.include.length })}\n`)
+  if (summary.failedTasks.length || summary.orphanedRunningTasks.length || summary.nextNativePlan.blocked.length
+    || summary.nextSurfacePlan.blocked.length || summary.nextAdapterPlan.blocked.length) process.exitCode = 2
 } finally { await unlink(lockPath) }

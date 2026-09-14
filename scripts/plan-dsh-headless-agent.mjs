@@ -6,6 +6,7 @@ import { dirname, posix, resolve } from 'node:path'
 import process from 'node:process'
 import {
   createDshHeadlessAgentInputFingerprint,
+  dshBuildReviewEnvironment,
   emptyDshHeadlessAgentPlans,
   parseDshHeadlessAgentDecision,
   parseDshHeadlessAgentPlans,
@@ -339,6 +340,7 @@ const candidates = await mapConcurrent(reviewEntries, async entry => {
     plugin: entry.plugin,
     dshVersion: entry.dshVersion,
     nodeMajor: entry.runtime.nodeMajor,
+    executionEnvironment: dshBuildReviewEnvironment(entry),
     result: entry.result,
     reason: entry.reason,
     requiredDependencyBuilds: entry.requiredDependencyBuilds ?? [],
@@ -402,6 +404,7 @@ if (config === undefined && pending.length > 0) {
         plugin: candidate.plugin,
         dshVersion: candidate.dshVersion,
         nodeMajor: candidate.nodeMajor,
+        ...(candidate.executionEnvironment === undefined ? {} : { executionEnvironment: candidate.executionEnvironment }),
         result: candidate.result,
         observedRequiredBuilds: [...new Set([
           ...candidate.previouslyApprovedBuilds,

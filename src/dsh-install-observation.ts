@@ -84,6 +84,10 @@ export interface InstallObservationCommandResult {
 
 export type InstallObservationRunner = (command: InstallObservationCommand) => Promise<InstallObservationCommandResult>
 
+// Shared only by trusted isolated collectors; target packages never provide these functions.
+export { controlledEnvironment as createDshIsolatedEnvironment, defaultCommandRunner as runDshIsolatedCommand,
+  parsePackedArtifact as readDshPackedArtifact }
+
 export interface InstallObservationStage {
   status: 'passed' | 'failed' | 'skipped'
   code?: number | null

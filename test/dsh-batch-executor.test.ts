@@ -26,4 +26,9 @@ it('passes exact planned data into an unprivileged container without host mounts
   assert.throws(() => dshBatchContainerArguments({ ...input, image: 'some-image:latest' }), /exact image/)
   assert.throws(() => dshBatchContainerArguments({ ...input, networkProxy: 'http://user:secret@example.com' }), /credential-free/)
   assert.throws(() => dshBatchContainerArguments({ ...input, timeoutSeconds: 99999 }), /bounds/)
+  const adapterArgs = dshBatchContainerArguments({ ...input, kind: 'adapter', cell: { ...input.cell,
+    adapter: 'sdk', expectedArtifactSha256: 'c'.repeat(64) } })
+  assert.equal(JSON.parse(adapterArgs.at(-1)!).kind, 'adapter')
+  assert.ok(adapterArgs.some(value => value.includes('observeDshAuthorAdapter')))
+  assert.ok(!adapterArgs.includes('SYS_PTRACE'))
 })

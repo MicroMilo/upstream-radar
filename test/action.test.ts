@@ -27,6 +27,27 @@ async function runActionInputDetector(files: string[], config = 'upstream-radar.
 }
 
 describe('reusable GitHub Action', () => {
+  it('offers a real rebuild batch loop that reviews observed gates, retries, and verifies unchanged reuse without giving model secrets to execution steps', async () => {
+    const workflow = await readFile(fileURLToPath(new URL('../../.github/workflows/dsh-rebuild-validation.yml', import.meta.url)), 'utf8')
+    assert.match(workflow, /execute_batch:/)
+    const steps = workflow.split('      - name:')
+    const execution = steps.filter(step => step.includes('node scripts/run-dsh-compatibility-batch.mjs'))
+    assert.equal(execution.length, 3)
+    for (const step of execution) {
+      assert.match(step, /inputs.execute_batch/)
+      assert.doesNotMatch(step, /secrets\.|ISSUE_LOCATOR_LLM/)
+    }
+    const first = workflow.indexOf('Run the isolated batch against current repository intent')
+    const review = workflow.indexOf('Review build gates produced by this batch')
+    const retry = workflow.indexOf('Retry the batch with its own exact build decisions')
+    const unchanged = workflow.indexOf('Verify the completed batch does not execute unchanged cells')
+    assert.ok(first > 0 && review > first && retry > review && unchanged > retry)
+    assert.match(workflow.slice(review, retry), /batch-output\/compatibility-ledger.json/)
+    assert.match(workflow, /summary.executed !== 0/)
+    assert.match(workflow, /build-approval-required/)
+    assert.match(workflow, /independent adapter evidence is incomplete/)
+  })
+
   it('carries the selected profile environment from each matrix into the image and isolated probe', async () => {
     const workflow = await readFile(fileURLToPath(new URL('../../.github/workflows/upstream-observer.yml', import.meta.url)), 'utf8')
     assert.equal(workflow.match(/profile_environment_json: \$\{\{ toJSON\(matrix\.profileEnvironment\) \}\}/g)?.length, 2)

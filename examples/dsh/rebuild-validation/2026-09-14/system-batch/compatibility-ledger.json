@@ -18,11 +18,11 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:377fbdfb70c164103d7a8368bc368d9cb115c62c875e4d3dce20541bfb497835",
-      "contractFingerprint": "sha256:bf1452e819b9a724eee6bb258e76d1ba25c32ac8721b454fa9079fa069bac1ad",
-      "observedAt": "2026-09-14T04:44:04.763Z",
-      "result": "build-approval-required",
-      "reason": "the DSH plugin install requires explicit approval for dependency builds: node-pty",
-      "requiredDependencyBuilds": [
+      "contractFingerprint": "sha256:5838191ecb845e578aaff512b52b56ab39abc35cffac057725c196d6d2cbbb69",
+      "observedAt": "2026-09-14T05:50:28.645Z",
+      "result": "unknown",
+      "reason": "the exact artifact installed and loaded, but dependency coverage is incomplete (4 missing Node peers, 0 indeterminate peers, 0 version facts, 5 unresolved edges); this is not a demonstrated runtime failure",
+      "approvedDependencyBuilds": [
         "node-pty"
       ],
       "artifact": {
@@ -45,7 +45,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "54000c2b83dd1a00b2031a2c885909fda6644efbfae99fb55b19eac155785907",
+          "sha256": "8dfc425b42575eb8c1c663f7f7f2bb883163a87cb20801a8830d2878e492c861",
           "bytes": 44707,
           "graphDigest": "sha256:9f0297449e26d541cf15e3dc93679a666f80d47fd224eedc6a81f651e1cf3974",
           "nodes": 168,
@@ -423,14 +423,28 @@
                 "name": "@deepseek-ai/cordis",
                 "required": "^4.0.2",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
                 "resolvedVersion": "4.0.2"
               },
               {
                 "name": "@deepseek-ai/dsh-agent",
                 "required": "^0.1.5-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
                 "resolvedVersion": "0.1.5-rc.2"
               },
               {
@@ -438,6 +452,13 @@
                 "required": "^0.1.5-rc.1",
                 "status": "satisfied",
                 "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": true,
                 "resolvedVersion": "0.1.5-rc.2"
               },
               {
@@ -445,32 +466,67 @@
                 "required": "^0.1.5-rc.1",
                 "status": "satisfied",
                 "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": true,
                 "resolvedVersion": "0.1.5-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-client-ui-primitives",
                 "required": "^0.1.5-rc.1",
                 "status": "missing",
-                "staticUsage": "scan-incomplete"
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
               },
               {
                 "name": "@deepseek-ai/dsh-client-ui-settings",
                 "required": "^0.1.5-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
                 "resolvedVersion": "0.1.5-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-client-ui-slots",
                 "required": "^0.1.5-rc.1",
                 "status": "missing",
-                "staticUsage": "scan-incomplete"
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": true
               },
               {
                 "name": "@deepseek-ai/dsh-host-webserver",
                 "required": "^0.1.5-rc.1",
                 "status": "satisfied",
                 "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
                 "resolvedVersion": "0.1.5-rc.2"
               },
               {
@@ -478,54 +534,110 @@
                 "required": "^0.1.5-rc.1",
                 "status": "satisfied",
                 "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
                 "resolvedVersion": "0.1.5-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-llm",
                 "required": "^0.1.5-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "runtime-import-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false,
                 "resolvedVersion": "0.1.5-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-session",
                 "required": "^0.1.5-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "runtime-import-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false,
                 "resolvedVersion": "0.1.5-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-settings",
                 "required": "^0.1.5-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "runtime-import-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false,
                 "resolvedVersion": "0.1.5-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-subagent",
                 "required": "^0.1.5-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "runtime-import-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false,
                 "resolvedVersion": "0.1.5-rc.2"
               },
               {
                 "name": "@deepseek-ai/dsh-tools",
                 "required": "^0.1.5-rc.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "runtime-import-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false,
                 "resolvedVersion": "0.1.5-rc.2"
               },
               {
                 "name": "react",
                 "required": "^18.2.0",
                 "status": "missing",
-                "staticUsage": "scan-incomplete"
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
               },
               {
                 "name": "react-dom",
                 "required": "^18.2.0",
                 "status": "missing",
-                "staticUsage": "scan-incomplete"
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
               }
             ],
             "issues": [
@@ -533,25 +645,53 @@
                 "name": "@deepseek-ai/dsh-client-ui-primitives",
                 "required": "^0.1.5-rc.1",
                 "status": "missing",
-                "staticUsage": "scan-incomplete"
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
               },
               {
                 "name": "@deepseek-ai/dsh-client-ui-slots",
                 "required": "^0.1.5-rc.1",
                 "status": "missing",
-                "staticUsage": "scan-incomplete"
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": true
               },
               {
                 "name": "react",
                 "required": "^18.2.0",
                 "status": "missing",
-                "staticUsage": "scan-incomplete"
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
               },
               {
                 "name": "react-dom",
                 "required": "^18.2.0",
                 "status": "missing",
-                "staticUsage": "scan-incomplete"
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
               }
             ]
           },
@@ -584,8 +724,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:24895ba73214876fcbca96446e9d75dd484243f02426748bda1978e02c2dfaca",
-      "contractFingerprint": "sha256:0b95659efdafc3b418bfa0d6f1c47f9a51dc5670f2066b98160b2dd4cce1527b",
-      "observedAt": "2026-09-14T04:44:26.651Z",
+      "contractFingerprint": "sha256:24f58b7f0350602b0517413581600881a12e7b3401d708c76c9d0356a0117260",
+      "observedAt": "2026-09-14T05:51:49.779Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct Node peer contracts; client-plane compatibility requires its own profile evidence",
       "artifact": {
@@ -595,7 +735,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "cb0ed2758c59c807543c86f57f968c2a177cd214974d65ad057b38c722564f13",
+          "sha256": "918ec3168502ca863e3b6c24f98202252e5903ec9940b5bb88c0999734a96b45",
           "bytes": 4255,
           "graphDigest": "sha256:3ae2d7e6153fe37f703dd566123334968a111d36360b5895cf709c1baf6a6baf",
           "nodes": 9,
@@ -853,8 +993,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:5bdb276dba49b20784e3d1b2ddfb2f107be0814ffc0a7348128ed994bf92ebb2",
-      "contractFingerprint": "sha256:f786152d3d762565ae2c42c4932d5cecdd5a1f15eb8addb22a5153b96214aa23",
-      "observedAt": "2026-09-14T04:45:13.122Z",
+      "contractFingerprint": "sha256:d1e772cf25cafce646ff7529ab3dd58f528c701c29d561cae32c75ce7b169509",
+      "observedAt": "2026-09-14T05:53:27.427Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct Node peer contracts; client-plane compatibility requires its own profile evidence",
       "artifact": {
@@ -880,7 +1020,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "70602ec3b0a66a32840c1c9d978bc2c96e487e001c41305c4de6f6c6c3bb26a7",
+          "sha256": "f31bc24e2690a17d6c2ce1bbaae8ed59cfa82dad778ad2f20d6f00584da3af7a",
           "bytes": 1306,
           "graphDigest": "sha256:6b669bff02b12c684256f405d52b91f6bce535120f9648aab8d0409a2d7a6e58",
           "nodes": 3,
@@ -1219,8 +1359,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:5bdb276dba49b20784e3d1b2ddfb2f107be0814ffc0a7348128ed994bf92ebb2",
-      "contractFingerprint": "sha256:a1fc51039df512153eb29c1dd4b09c92c0afe4c3fd835b58d9fd8ee145ebb082",
-      "observedAt": "2026-09-14T04:46:19.172Z",
+      "contractFingerprint": "sha256:be08349cecde2200b8b9c7792c766155f82f1a1027ef9accbc48cdda91bb984f",
+      "observedAt": "2026-09-14T05:54:51.134Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct Node peer contracts; client-plane compatibility requires its own profile evidence",
       "artifact": {
@@ -1246,7 +1386,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "b927001aff9bc1850239f32d9f4d64268057d3dfa9fbd2f0f5005efb83c037a9",
+          "sha256": "b2794ed24b3c444920b0c913a11d4db3f1bc164fdb8a34465be93a1a946e5ce9",
           "bytes": 1306,
           "graphDigest": "sha256:6b669bff02b12c684256f405d52b91f6bce535120f9648aab8d0409a2d7a6e58",
           "nodes": 3,
@@ -1585,8 +1725,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:65fcb0e61a47eb57be1dad15dbad56457db99ce3784e78b75563a74a0aece540",
-      "contractFingerprint": "sha256:41214e85769dc8ff5ee01e615b704938fe62dc62ae8cc52a4fff40d56cb0d543",
-      "observedAt": "2026-09-14T04:47:33.799Z",
+      "contractFingerprint": "sha256:dc5245f93382b486dacbc00ae3b3bfba6959f63eb8acdf6d9f5941fc829a8ba9",
+      "observedAt": "2026-09-14T05:56:22.075Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct Node peer contracts; client-plane compatibility requires its own profile evidence",
       "artifact": {
@@ -1605,7 +1745,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "698278cda4ee8df203164bcf7684e911620c2a1bd4c22e8c5ce1dc747b159c64",
+          "sha256": "519af53d57b30896c3484f344d99b49688173ca268c9ff53ef208b11aa145886",
           "bytes": 7792,
           "graphDigest": "sha256:feddffe7270baad4ae794cce8721f97ad4dd52cced496e95b46f2325bc920933",
           "nodes": 31,
@@ -1881,8 +2021,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:e3ff7d6255967b270050a6a235726f85bb1a3fc20ca530fd12b9b023dd8975f2",
-      "contractFingerprint": "sha256:7665836f1f5f89561362c5bbc8634111313e544bbad892a623033580a98add1e",
-      "observedAt": "2026-09-14T04:48:54.823Z",
+      "contractFingerprint": "sha256:6f6f3110b8ad048628599b58031faaa10e5856dcf853bbd2259e67f822585d5c",
+      "observedAt": "2026-09-14T05:58:26.483Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct Node peer contracts; client-plane compatibility requires its own profile evidence",
       "artifact": {
@@ -1894,7 +2034,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "e7de746bdb2258a1f02fcfae1e44c880511f850c10a1d5738edd7c7e33f72bd6",
+          "sha256": "81e0e3471e1509848b8f9140cacb840c586d2c6dd6200c0b7e4e10c9418cd0e5",
           "bytes": 35794,
           "graphDigest": "sha256:718b489a52533d1308cdc72fdb217f93c03c1ccc8e6557dcfebee029befa8efa",
           "nodes": 99,
@@ -2320,8 +2460,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:e3ff7d6255967b270050a6a235726f85bb1a3fc20ca530fd12b9b023dd8975f2",
-      "contractFingerprint": "sha256:402fae1212c625bb84ce1919231e46c0a71a4ebaffefbeb5cb3bed2b44163b4b",
-      "observedAt": "2026-09-14T04:49:54.265Z",
+      "contractFingerprint": "sha256:6e1df7b8928148072ed6b213ce13b100a37b01a0284fd36ae5b7b34c004a9a67",
+      "observedAt": "2026-09-14T06:00:05.388Z",
       "result": "compatible",
       "reason": "the exact artifact installed, registered, loaded, and satisfied its direct Node peer contracts; client-plane compatibility requires its own profile evidence",
       "artifact": {
@@ -2333,7 +2473,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "8dbf995527fa941f59ad87a88d1c31c1f281b12e56d4b8c5da383f695e993f68",
+          "sha256": "430e2687c200758d9e00dc3ebd453fffad0b2faabcd62fd36bc4494565d993e6",
           "bytes": 35794,
           "graphDigest": "sha256:718b489a52533d1308cdc72fdb217f93c03c1ccc8e6557dcfebee029befa8efa",
           "nodes": 99,
@@ -2759,8 +2899,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:5a992547145b341a23ba90911e96ca325b8b21269ef984c072380c79e1e379b7",
-      "contractFingerprint": "sha256:9db668314b1957618dc8212d81043492f5900c4f16b6fe2348e545f51ed5abbf",
-      "observedAt": "2026-09-14T04:50:53.199Z",
+      "contractFingerprint": "sha256:a3463b8f717fc58c730deaba6501395b9d91615c027e892a2d0c00a494e158ab",
+      "observedAt": "2026-09-14T06:02:00.598Z",
       "result": "peer-contract-incompatible",
       "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-attachment@0.1.5-rc.2 does not satisfy 0.1.1-rc.2 || 0.1.2-rc.1; a declared-support fact, not proof of a runtime crash",
       "artifact": {
@@ -2787,7 +2927,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "bc189e06c4a054c6c19ce9049cd00cefa0108a5234a170e7fc3b0870de884f98",
+          "sha256": "e84e94727eb6225d0dc60621c6233a33fcaba108b30e7d06fafdf43d0a3c52be",
           "bytes": 15391,
           "graphDigest": "sha256:7ce67ff6b75d0f5ccf11c9f31a104fecb84378749fedf94ef34702a8954a06e7",
           "nodes": 49,
@@ -3338,11 +3478,11 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:7f06eb69ae37e48557f0087d11b8242d3ed4497d2e2707916bf9df4a54558ae3",
-      "contractFingerprint": "sha256:530e6a9946968db75be28393ba77dff4b1d50f801e82018eb16259a6d0abfc8a",
-      "observedAt": "2026-09-14T04:52:16.228Z",
-      "result": "build-approval-required",
-      "reason": "the DSH plugin install requires explicit approval for dependency builds: protobufjs",
-      "requiredDependencyBuilds": [
+      "contractFingerprint": "sha256:9def283f671aeeef09af546b8fa94810a001fc7b2e22d8d46dbef0d2aea449fd",
+      "observedAt": "2026-09-14T06:04:35.223Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct Node peer contracts; client-plane compatibility requires its own profile evidence",
+      "approvedDependencyBuilds": [
         "protobufjs"
       ],
       "artifact": {
@@ -3361,7 +3501,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "2cba1ac7528b0f540bfcec6fedc105dc6c8812d4bf3275a3a177cd545d0acecd",
+          "sha256": "c4b55b39781f0fcde13de72d57b3e8ecc95e92a4b85726115df596472bbc969b",
           "bytes": 41460,
           "graphDigest": "sha256:d9d0c4e4e89cf8308af4a4b915882ff10870c775f78b99fd347ab881ec2cd5cc",
           "nodes": 139,
@@ -3635,7 +3775,14 @@
                 "name": "@deepseek-ai/cordis",
                 "required": "^4.0.1",
                 "status": "satisfied",
-                "staticUsage": "scan-incomplete",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "clientPlatform": "web",
+                  "host": "runtime-import-observed",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "type-only-reference-observed"
+                },
+                "declaredClientInject": false,
                 "resolvedVersion": "4.0.2"
               }
             ]
@@ -3669,8 +3816,8 @@
         "pnpmVersion": "11.7.0"
       },
       "staticFingerprint": "sha256:6c0c7d92ce509aed026c2e4191bce40ec49a22234686774cbe75d6c0b2688ab5",
-      "contractFingerprint": "sha256:0fe2da45bd9ce72442dba6f92bdc37e77b624d0fbb344c341c847f4f2d247016",
-      "observedAt": "2026-09-14T04:52:47.766Z",
+      "contractFingerprint": "sha256:58ace7b239e1039fbde6361fd4152d8d63d4100338d9d80c11d32f946605797c",
+      "observedAt": "2026-09-14T06:09:41.485Z",
       "result": "unknown",
       "reason": "the exact artifact installed and loaded, but dependency coverage is incomplete (4 missing Node peers, 0 indeterminate peers, 0 version facts, 4 unresolved edges); this is not a demonstrated runtime failure",
       "artifact": {
@@ -3693,7 +3840,7 @@
       },
       "resolution": {
         "profileLockfile": {
-          "sha256": "d49c37c87ff718e449894825185043e7db434e1c5164500280043ec867868da3",
+          "sha256": "45f0814bae8b8fe51a0c291f1d61c8f0552b5aecee9fa65c89d1d85d4babe3a7",
           "bytes": 3785,
           "graphDigest": "sha256:6d0dc06686f206ee0006882ef17ba935c225808e7fbe5a5477342de3ad28512c",
           "nodes": 8,

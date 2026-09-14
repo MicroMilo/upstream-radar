@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import {
   createDshCompatibilityContractFingerprint,
   createDshCompatibilityStaticFingerprint,
@@ -571,90 +572,96 @@ export function buildDshInstallPlan(
       blocked.push({
         targetId: target.id,
         plugin,
-        reason: `repository recommends Node ${target.environmentRecommendation?.unavailableNodeMajors.join(', ')}, outside the isolated observer's executable range ${MIN_EXECUTABLE_NODE_MAJOR}-${MAX_EXECUTABLE_NODE_MAJOR}`,
+        reason: `repository evidence includes Node ${target.environmentRecommendation?.unavailableNodeMajors.join(', ')}, outside the isolated observer's executable range ${MIN_EXECUTABLE_NODE_MAJOR}-${MAX_EXECUTABLE_NODE_MAJOR}`,
       })
     }
     if (target.environmentRecommendation !== undefined && (target.runtimeProfiles?.length ?? 0) === 0) continue
-    const staticFingerprint = createDshCompatibilityStaticFingerprint({
-      plugin,
-      dshVersion,
-      pluginStatic: target.observerTargetId === undefined ? undefined : staticTargetEvidence(stateInput, target.observerTargetId),
-      dshStatic,
-    })
-    let profileEnvironment: DshProfileEnvironment
-    try { profileEnvironment = selectDshProfileEnvironment(target.environmentRecommendation?.authorEnvironment) }
-    catch (error) {
-      blocked.push({ targetId: target.id, plugin, reason: error instanceof Error ? error.message : String(error) })
-      continue
-    }
-    for (const runtimeProfile of candidateProfiles(corpus, target, plugin, ledger)) {
-      const approvals = (target.buildApprovals ?? []).filter(item => item.plugin === plugin && item.dshVersion === dshVersion
-        && item.nodeMajor === runtimeProfile.nodeMajor && item.platform === runtime.platform && item.architecture === runtime.architecture
-        && JSON.stringify(item.profileEnvironment) === JSON.stringify(profileEnvironment))
-      if (new Set(approvals.map(item => item.artifactSha256)).size > 1) {
-        blocked.push({ targetId: target.id, plugin, reason: 'conflicting exact artifact build approvals require review' }); continue
-      }
-      const allowedBuilds = [...new Set([...(target.allowedBuilds ?? []), ...approvals.flatMap(item => item.packages)])].sort()
-      if (allowedBuilds.length > 16) throw new Error('combined build approvals exceed 16 packages')
-      const expectedArtifactSha256 = approvals[0]?.artifactSha256
-      desiredCells += 1
-      const id = dshCompatibilityCaseId(target.id, runtimeProfile.id)
-      const contractFingerprint = createDshCompatibilityContractFingerprint({
+    const authorVersions = target.environmentRecommendation?.authorEnvironment?.dshVersions ?? []
+    for (const cellDshVersion of new Set([dshVersion, ...authorVersions.map(item => item.version)])) {
+      const isAuthorBaseline = cellDshVersion !== dshVersion
+      const staticFingerprint = createDshCompatibilityStaticFingerprint({
         plugin,
-        dshVersion,
-        nodeMajor: runtimeProfile.nodeMajor,
-        allowedBuilds,
-        ...(expectedArtifactSha256 === undefined ? {} : { expectedArtifactSha256 }),
-        profileEnvironment,
-        ...runtime,
+        dshVersion: cellDshVersion,
+        pluginStatic: target.observerTargetId === undefined ? undefined : staticTargetEvidence(stateInput, target.observerTargetId),
+        dshStatic: isAuthorBaseline ? { authorBaseline: authorVersions.find(item => item.version === cellDshVersion) } : dshStatic,
       })
-      const previous = ledger.entries.find(entry => entry.caseId === id)
-      const reasons = new Set<string>()
-      if (dshPackageChanged) reasons.add('dsh-coordinate-changed')
-      if (pluginChanges.has(target.id)) reasons.add('plugin-coordinate-changed')
-      if (previous === undefined) reasons.add('missing-evidence')
-      else {
-        if (previous.plugin !== plugin || previous.dshVersion !== dshVersion || previous.runtime.nodeMajor !== runtimeProfile.nodeMajor) {
-          reasons.add('exact-coordinate-changed')
-        }
-        if (previous.staticFingerprint !== staticFingerprint) reasons.add('static-evidence-changed')
-        if (previous.contractFingerprint !== contractFingerprint) reasons.add('execution-contract-changed')
-        if (isStale(previous, corpus.refreshAfterHours, now)) reasons.add('stale-evidence')
-        if (!hasCompleteResolutionEvidence(previous)) {
-          const graph = previous.resolution?.runtimeGraph
-          if (graph?.digest === undefined) reasons.add('runtime-graph-missing')
-          else if (graph.unresolved > 0) reasons.add('runtime-graph-incomplete')
-          else if (graph.pluginPeerContracts === undefined) reasons.add('peer-contract-not-evaluated')
-          else if (graph.pluginPeerContracts.indeterminate > 0) reasons.add('peer-contract-indeterminate')
-          else reasons.add('peer-contract-incomplete')
-        }
+      let profileEnvironment: DshProfileEnvironment
+      try { profileEnvironment = selectDshProfileEnvironment(target.environmentRecommendation?.authorEnvironment) }
+      catch (error) {
+        blocked.push({ targetId: target.id, plugin, reason: error instanceof Error ? error.message : String(error) })
+        continue
       }
-      if (reasons.size === 0) continue
-      // An Agent may explicitly stop on an unchanged, non-actionable headless
-      // result (for example a Web-only contract). Do not spin the same cell on
-      // every scheduled run; a DSH/plugin coordinate or evidence change must
-      // still invalidate that review and select it again.
-      if (reviewed.has(id)
-        && !dshPackageChanged
-        && !pluginChanges.has(target.id)
-        && !reasons.has('exact-coordinate-changed')
-        && !reasons.has('static-evidence-changed')
-        && !reasons.has('execution-contract-changed')
-        && !reasons.has('stale-evidence')) continue
-      selected.set(id, {
-        id,
-        targetId: target.id,
-        plugin,
-        dshVersion,
-        nodeMajor: runtimeProfile.nodeMajor,
-        ...runtime,
-        allowedBuilds: allowedBuilds.join(','),
-        ...(expectedArtifactSha256 === undefined ? {} : { expectedArtifactSha256 }),
-        profileEnvironment,
-        staticFingerprint,
-        contractFingerprint,
-        reasons: [...reasons].sort(),
-      })
+      for (const runtimeProfile of candidateProfiles(corpus, target, plugin, ledger)) {
+        const approvals = (target.buildApprovals ?? []).filter(item => item.plugin === plugin && item.dshVersion === cellDshVersion
+          && item.nodeMajor === runtimeProfile.nodeMajor && item.platform === runtime.platform && item.architecture === runtime.architecture
+          && JSON.stringify(item.profileEnvironment) === JSON.stringify(profileEnvironment))
+        if (new Set(approvals.map(item => item.artifactSha256)).size > 1) {
+          blocked.push({ targetId: target.id, plugin, reason: 'conflicting exact artifact build approvals require review' }); continue
+        }
+        const allowedBuilds = [...new Set([...(target.allowedBuilds ?? []), ...approvals.flatMap(item => item.packages)])].sort()
+        if (allowedBuilds.length > 16) throw new Error('combined build approvals exceed 16 packages')
+        const expectedArtifactSha256 = approvals[0]?.artifactSha256
+        desiredCells += 1
+        if (desiredCells > 500) throw new Error('DSH compatibility matrix exceeds 500 bounded cells')
+        const targetCaseId = dshCompatibilityCaseId(target.id, runtimeProfile.id)
+        const id = isAuthorBaseline ? `${targetCaseId.slice(0, 45)}-dsh-${createHash('sha256').update(cellDshVersion).digest('hex').slice(0, 12)}` : targetCaseId
+        const contractFingerprint = createDshCompatibilityContractFingerprint({
+          plugin,
+          dshVersion: cellDshVersion,
+          nodeMajor: runtimeProfile.nodeMajor,
+          allowedBuilds,
+          ...(expectedArtifactSha256 === undefined ? {} : { expectedArtifactSha256 }),
+          profileEnvironment,
+          ...runtime,
+        })
+        const previous = ledger.entries.find(entry => entry.caseId === id)
+        const reasons = new Set<string>()
+        if (dshPackageChanged && !isAuthorBaseline) reasons.add('dsh-coordinate-changed')
+        if (pluginChanges.has(target.id)) reasons.add('plugin-coordinate-changed')
+        if (previous === undefined) reasons.add('missing-evidence')
+        else {
+          if (previous.plugin !== plugin || previous.dshVersion !== cellDshVersion || previous.runtime.nodeMajor !== runtimeProfile.nodeMajor) {
+            reasons.add('exact-coordinate-changed')
+          }
+          if (previous.staticFingerprint !== staticFingerprint) reasons.add('static-evidence-changed')
+          if (previous.contractFingerprint !== contractFingerprint) reasons.add('execution-contract-changed')
+          if (isStale(previous, corpus.refreshAfterHours, now)) reasons.add('stale-evidence')
+          if (!hasCompleteResolutionEvidence(previous)) {
+            const graph = previous.resolution?.runtimeGraph
+            if (graph?.digest === undefined) reasons.add('runtime-graph-missing')
+            else if (graph.unresolved > 0) reasons.add('runtime-graph-incomplete')
+            else if (graph.pluginPeerContracts === undefined) reasons.add('peer-contract-not-evaluated')
+            else if (graph.pluginPeerContracts.indeterminate > 0) reasons.add('peer-contract-indeterminate')
+            else reasons.add('peer-contract-incomplete')
+          }
+        }
+        if (reasons.size === 0) continue
+        // An Agent may explicitly stop on an unchanged, non-actionable headless
+        // result (for example a Web-only contract). Do not spin the same cell on
+        // every scheduled run; a DSH/plugin coordinate or evidence change must
+        // still invalidate that review and select it again.
+        if (reviewed.has(id)
+          && !dshPackageChanged
+          && !pluginChanges.has(target.id)
+          && !reasons.has('exact-coordinate-changed')
+          && !reasons.has('static-evidence-changed')
+          && !reasons.has('execution-contract-changed')
+          && !reasons.has('stale-evidence')) continue
+        selected.set(id, {
+          id,
+          targetId: target.id,
+          plugin,
+          dshVersion: cellDshVersion,
+          nodeMajor: runtimeProfile.nodeMajor,
+          ...runtime,
+          allowedBuilds: allowedBuilds.join(','),
+          ...(expectedArtifactSha256 === undefined ? {} : { expectedArtifactSha256 }),
+          profileEnvironment,
+          staticFingerprint,
+          contractFingerprint,
+          reasons: [...reasons].sort(),
+        })
+      }
     }
   }
 

@@ -9,7 +9,7 @@ import {
   resolveDshInstallTargetSpec,
   type DshInstallTargets,
 } from './dsh-install-plan.js'
-import { parseDshProfileEnvironment } from './dsh-profile-environment.js'
+import { parseDshProfileEnvironment, type DshProfileEnvironment } from './dsh-profile-environment.js'
 
 export const DSH_HEADLESS_AGENT_PLANS_SCHEMA = 'upstream-radar.dsh-headless-agent-plans/v1alpha1' as const
 
@@ -26,12 +26,17 @@ export type DshHeadlessAgentClassification =
 
 export type DshHeadlessAgentAction = 'retry-headless' | 'stop-headless'
 
+export interface DshBuildReviewEnvironment {
+  platform: 'linux'; architecture: 'x64' | 'arm64'; profileEnvironment: DshProfileEnvironment
+}
+
 export interface DshHeadlessAgentCandidate {
   caseId: string
   targetId: string
   plugin: string
   dshVersion: string
   nodeMajor: number
+  executionEnvironment?: DshBuildReviewEnvironment
   result: 'build-approval-required' | 'peer-contract-incompatible' | 'unknown'
   reason: string
   requiredDependencyBuilds: string[]
@@ -59,6 +64,7 @@ export interface DshHeadlessAgentPlanEntry extends DshHeadlessAgentDecision {
   plugin: string
   dshVersion: string
   nodeMajor: number
+  executionEnvironment?: DshBuildReviewEnvironment
   result: DshHeadlessAgentCandidate['result']
   observedRequiredBuilds: string[]
   /** Cumulative build approvals already justified for these exact bytes/runtime. */
@@ -83,6 +89,20 @@ export interface DshHeadlessAgentPlans {
 function record(value: unknown, label: string): Record<string, unknown> {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) throw new Error(`${label} must be an object`)
   return value as Record<string, unknown>
+}
+
+function parseBuildReviewEnvironment(value: unknown): DshBuildReviewEnvironment | undefined {
+  if (value === undefined) return undefined
+  const item = record(value, 'build review environment')
+  if (item.platform !== 'linux' || !['x64', 'arm64'].includes(String(item.architecture)) || item.profileEnvironment === undefined) throw new Error('unsupported or incomplete build review environment')
+  return { platform: 'linux', architecture: item.architecture as 'x64' | 'arm64', profileEnvironment: parseDshProfileEnvironment(item.profileEnvironment) }
+}
+
+export function dshBuildReviewEnvironment(observed: DshCompatibilityLedgerEntry): DshBuildReviewEnvironment | undefined {
+  if (observed.runtime.platform !== 'linux' || !['x64', 'arm64'].includes(observed.runtime.architecture)
+    || !observed.profileEnvironment && !observed.runtime.pnpmVersion) return undefined
+  return parseBuildReviewEnvironment({ platform: observed.runtime.platform, architecture: observed.runtime.architecture,
+    profileEnvironment: observed.profileEnvironment ?? { pnpmVersion: observed.runtime.pnpmVersion, overrides: {} } })
 }
 
 function boundedString(value: unknown, label: string, maximum: number): string {
@@ -178,6 +198,7 @@ export function createDshHeadlessAgentInputFingerprint(candidate: DshHeadlessAge
     plugin: candidate.plugin,
     dshVersion: candidate.dshVersion,
     nodeMajor: candidate.nodeMajor,
+    executionEnvironment: candidate.executionEnvironment,
     result: candidate.result,
     reason: candidate.reason,
     requiredDependencyBuilds: [...candidate.requiredDependencyBuilds].sort(),
@@ -220,6 +241,7 @@ export function renderDshHeadlessAgentPrompt(candidate: DshHeadlessAgentCandidat
     `Plugin: ${candidate.plugin}`,
     `DSH: ${candidate.dshVersion}`,
     `Node major: ${candidate.nodeMajor}`,
+    `Observed execution environment: ${JSON.stringify(candidate.executionEnvironment ?? null)}`,
     `Observed result: ${candidate.result}`,
     `Observed reason: ${candidate.reason}`,
     `Build packages required by the latest retry: ${candidate.requiredDependencyBuilds.join(', ') || '(none)'}`,
@@ -298,12 +320,14 @@ export function parseDshHeadlessAgentPlans(input: unknown): DshHeadlessAgentPlan
       ? undefined
       : boundedString(item.sourceCommit, `entries[${index}].sourceCommit`, 64)
     const artifactSha256 = exactSha256(item.artifactSha256, `entries[${index}].artifactSha256`)
+    const executionEnvironment = parseBuildReviewEnvironment(item.executionEnvironment)
     return {
       caseId,
       targetId: boundedString(item.targetId, `entries[${index}].targetId`, 128),
       plugin: boundedString(item.plugin, `entries[${index}].plugin`, 512),
       dshVersion: boundedString(item.dshVersion, `entries[${index}].dshVersion`, 128),
       nodeMajor,
+      ...(executionEnvironment === undefined ? {} : { executionEnvironment }),
       result,
       observedRequiredBuilds,
       approvedBuilds,
@@ -343,6 +367,8 @@ function planMatchesLedger(entry: DshHeadlessAgentPlanEntry, observed: DshCompat
     && entry.dshVersion === observed.dshVersion
     && entry.nodeMajor === observed.runtime.nodeMajor
     && entry.artifactSha256 === observed.artifact.sha256
+    && entry.executionEnvironment !== undefined
+    && JSON.stringify(entry.executionEnvironment) === JSON.stringify(dshBuildReviewEnvironment(observed))
 }
 
 /**
@@ -391,10 +417,15 @@ export function applyDshHeadlessAgentPlans(
     const target = targetById.get(plan.targetId)
     if (target === undefined) continue
     target.buildApprovals ??= []
-    target.buildApprovals.push({ plugin: plan.plugin, dshVersion: plan.dshVersion, nodeMajor: plan.nodeMajor,
+    const approval = { plugin: plan.plugin, dshVersion: plan.dshVersion, nodeMajor: plan.nodeMajor,
       artifactSha256: plan.artifactSha256, platform: observed.runtime.platform, architecture: observed.runtime.architecture,
       profileEnvironment: observed.profileEnvironment ?? parseDshProfileEnvironment({ pnpmVersion: observed.runtime.pnpmVersion ?? '11.7.0', overrides: {} }),
-      packages: [...plan.approvedBuilds] })
+      packages: [...plan.approvedBuilds] }
+    if (!target.buildApprovals.some(item => item.plugin === approval.plugin && item.dshVersion === approval.dshVersion
+      && item.nodeMajor === approval.nodeMajor && item.artifactSha256 === approval.artifactSha256
+      && item.platform === approval.platform && item.architecture === approval.architecture
+      && JSON.stringify(item.profileEnvironment) === JSON.stringify(approval.profileEnvironment)
+      && JSON.stringify(item.packages) === JSON.stringify(approval.packages))) target.buildApprovals.push(approval)
   }
   return targets
 }

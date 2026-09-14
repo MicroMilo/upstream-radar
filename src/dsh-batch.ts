@@ -6,13 +6,14 @@ import {
   emptyDshCompatibilityLedger, parseDshCompatibilityLedger, mergeDshCompatibilityLedger,
   type DshCompatibilityExpectedCase, type DshCompatibilityLedger,
 } from './dsh-compatibility-ledger.js'
-import { emptyDshSurfaceLedger, parseDshSurfaceLedger, buildDshSurfacePlan, mergeDshSurfaceLedger, type DshSurfaceExpectedCase, type DshSurfaceLedger } from './dsh-surface.js'
+import { emptyDshSurfaceLedger, parseDshSurfaceLedger, parseDshSurfaceTargets, buildDshSurfacePlan, mergeDshSurfaceLedger, type DshSurfaceExpectedCase, type DshSurfaceLedger } from './dsh-surface.js'
+import { buildDshAdapterPlan, emptyDshAdapterLedger, parseDshAdapterLedger, mergeDshAdapterLedger, type DshAdapterExpectedCase, type DshAdapterLedger } from './dsh-adapter.js'
 
 const SCHEMA = 'upstream-radar.dsh-batch-state/v1alpha1' as const
 export interface DshBatchTask {
   key: string
-  kind: 'native' | 'surface'
-  cell: DshCompatibilityExpectedCase | DshSurfaceExpectedCase
+  kind: 'native' | 'surface' | 'adapter'
+  cell: DshCompatibilityExpectedCase | DshSurfaceExpectedCase | DshAdapterExpectedCase
   status: 'pending' | 'running' | 'accepted' | 'failed'
   attempts: number
   lastAttemptAt?: string
@@ -22,7 +23,10 @@ export interface DshBatchState {
   schema: typeof SCHEMA
   executorIdentity: string
   nativeLedger: DshCompatibilityLedger
+  /** Historical coordinates may bind build approvals, but never count as current runtime passes. */
+  buildReviewEvidence: DshCompatibilityLedger
   surfaceLedger: DshSurfaceLedger
+  adapterLedger: DshAdapterLedger
   tasks: DshBatchTask[]
 }
 export interface DshBatchOptions {
@@ -49,12 +53,13 @@ function object(value: unknown): Record<string, unknown> {
   return value as Record<string, unknown>
 }
 function parseState(value: unknown, executorIdentity: string): DshBatchState {
-  if (value === undefined) return { schema: SCHEMA, executorIdentity, nativeLedger: emptyDshCompatibilityLedger(), surfaceLedger: emptyDshSurfaceLedger(), tasks: [] }
+  if (value === undefined) return { schema: SCHEMA, executorIdentity, nativeLedger: emptyDshCompatibilityLedger(), buildReviewEvidence: emptyDshCompatibilityLedger(),
+    surfaceLedger: emptyDshSurfaceLedger(), adapterLedger: emptyDshAdapterLedger(), tasks: [] }
   const raw = object(value)
   if (raw.schema !== SCHEMA || typeof raw.executorIdentity !== 'string' || !Array.isArray(raw.tasks) || raw.tasks.length > 2048) throw new Error('unsupported or oversized batch state')
   const tasks = raw.tasks.map(value => {
     const item = object(value)
-    if (typeof item.key !== 'string' || !/^[a-f0-9]{64}$/.test(item.key) || !['native', 'surface'].includes(String(item.kind))
+    if (typeof item.key !== 'string' || !/^[a-f0-9]{64}$/.test(item.key) || !['native', 'surface', 'adapter'].includes(String(item.kind))
       || !['pending', 'running', 'accepted', 'failed'].includes(String(item.status))
       || !Number.isSafeInteger(item.attempts) || (item.attempts as number) < 0 || (item.attempts as number) > 1_000_000) throw new Error('invalid batch task')
     if (item.lastAttemptAt !== undefined && (typeof item.lastAttemptAt !== 'string' || !Number.isFinite(Date.parse(item.lastAttemptAt)))) throw new Error('invalid batch attempt timestamp')
@@ -65,9 +70,14 @@ function parseState(value: unknown, executorIdentity: string): DshBatchState {
   if (new Set(tasks.map(task => task.key)).size !== tasks.length) throw new Error('duplicate batch task')
   // Executor changes invalidate reuse; old report files remain separate history.
   const sameExecutor = raw.executorIdentity === executorIdentity
+  const historical = parseDshCompatibilityLedger(raw.buildReviewEvidence ?? raw.nativeLedger)
+  const current = parseDshCompatibilityLedger(raw.nativeLedger)
   return { schema: SCHEMA, executorIdentity,
-    nativeLedger: sameExecutor ? parseDshCompatibilityLedger(raw.nativeLedger) : emptyDshCompatibilityLedger(),
-    surfaceLedger: sameExecutor ? parseDshSurfaceLedger(raw.surfaceLedger) : emptyDshSurfaceLedger(), tasks }
+    nativeLedger: sameExecutor ? current : emptyDshCompatibilityLedger(),
+    buildReviewEvidence: parseDshCompatibilityLedger({ schema: historical.schema,
+      entries: [...new Map([...historical.entries, ...current.entries].map(entry => [entry.caseId, entry])).values()] }),
+    surfaceLedger: sameExecutor ? parseDshSurfaceLedger(raw.surfaceLedger) : emptyDshSurfaceLedger(),
+    adapterLedger: sameExecutor ? parseDshAdapterLedger(raw.adapterLedger) : emptyDshAdapterLedger(), tasks }
 }
 
 /** Reconcile current repository intent with durable, exact isolated observations. */
@@ -81,24 +91,41 @@ export async function runDshCompatibilityBatch(options: DshBatchOptions) {
   const targets: DshInstallTargets = options.recommendations === undefined
     ? parseDshInstallTargets(options.installTargets)
     : applyDshEnvironmentRecommendations(options.installTargets, options.observations, options.recommendations)
-  const historicalBuildEvidence = options.state === undefined ? emptyDshCompatibilityLedger()
-    : parseDshCompatibilityLedger(object(options.state).nativeLedger)
   const effectiveTargets = () => options.buildPlans === undefined ? targets : applyDshHeadlessAgentPlans(targets, options.buildPlans, {
-    schema: historicalBuildEvidence.schema,
-    entries: [...new Map([...historicalBuildEvidence.entries, ...state.nativeLedger.entries].map(entry => [entry.caseId, entry])).values()],
+    schema: state.buildReviewEvidence.schema,
+    entries: [...new Map([...state.buildReviewEvidence.entries, ...state.nativeLedger.entries].map(entry => [entry.caseId, entry])).values()],
   })
   const planNative = () => buildDshInstallPlan(effectiveTargets(), options.observations, { changes: [] }, state.nativeLedger, now, new Set(), options.runtime)
   const configuredSurfaces = options.surfaceTargets ?? { schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [] }
   const surfaces = options.recommendations === undefined ? configuredSurfaces
     : applyDshEnvironmentRecommendationsToSurfaceTargets(configuredSurfaces, options.installTargets, options.observations, options.recommendations)
   const allNative = () => buildDshInstallPlan(effectiveTargets(), options.observations, { changes: [] }, emptyDshCompatibilityLedger(), now, new Set(), options.runtime)
-  const planSurface = () => {
-    const currentNative = { ...state.nativeLedger, entries: state.nativeLedger.entries.filter(entry => allNative().matrix.include.some(cell => (
+  const currentNative = () => {
+    const cells = allNative().matrix.include
+    return { ...state.nativeLedger, entries: state.nativeLedger.entries.filter(entry => cells.some(cell => (
       cell.id === entry.caseId && cell.plugin === entry.plugin && cell.dshVersion === entry.dshVersion
       && cell.staticFingerprint === entry.staticFingerprint && cell.contractFingerprint === entry.contractFingerprint
       && now.getTime() - Date.parse(entry.observedAt) < targets.refreshAfterHours * 3_600_000
     ))) }
-    return buildDshSurfacePlan(surfaces, currentNative, state.surfaceLedger, now)
+  }
+  const planSurface = () => {
+    const configured = parseDshSurfaceTargets(surfaces), native = allNative()
+    const expanded = [...configured.surfaces]
+    for (const target of configured.surfaces) {
+      const anchor = native.matrix.include.find(cell => cell.id === target.sourceCaseId)
+      if (!anchor || anchor.dshVersion !== native.dshVersion) continue
+      for (const baseline of native.matrix.include.filter(cell => cell.targetId === anchor.targetId
+        && cell.nodeMajor === anchor.nodeMajor && cell.dshVersion !== anchor.dshVersion)) {
+        if (expanded.some(item => item.sourceCaseId === baseline.id && item.plane === target.plane && item.profile === target.profile)) continue
+        expanded.push({ ...target, sourceCaseId: baseline.id,
+          id: `${target.id.slice(0, 45)}-dsh-${createHash('sha256').update(baseline.dshVersion).digest('hex').slice(0, 12)}` })
+      }
+    }
+    return buildDshSurfacePlan({ ...configured, surfaces: expanded }, currentNative(), state.surfaceLedger, now)
+  }
+  const planAdapter = () => {
+    const native = currentNative(), targetVersion = allNative().dshVersion
+    return buildDshAdapterPlan(targets, { ...native, entries: native.entries.filter(entry => entry.dshVersion === targetVersion) }, state.adapterLedger, now)
   }
   const nativePlan = planNative()
   const surfacePlan = planSurface()
@@ -109,7 +136,7 @@ export async function runDshCompatibilityBatch(options: DshBatchOptions) {
   async function reconcile() {
     desiredKeys = new Set<string>()
     const pending: DshBatchTask[] = []
-    for (const [kind, cells] of [['native', planNative().matrix.include], ['surface', planSurface().matrix.include]] as const) {
+    for (const [kind, cells] of [['native', planNative().matrix.include], ['surface', planSurface().matrix.include], ['adapter', planAdapter().matrix.include]] as const) {
       for (const cell of cells) {
         const key = taskKey(kind, cell, executorIdentity)
         desiredKeys.add(key)
@@ -128,7 +155,8 @@ export async function runDshCompatibilityBatch(options: DshBatchOptions) {
       || newest.get(`${task.kind}:${task.cell.id}`) === task.key)
     if (state.tasks.length > 2048) throw new Error('batch state exceeded its bounded task inventory')
     await options.checkpoint(structuredClone(state))
-    return pending.sort((a, b) => a.attempts - b.attempts || (a.lastAttemptAt ?? '').localeCompare(b.lastAttemptAt ?? '') || a.cell.id.localeCompare(b.cell.id))
+    return pending.sort((a, b) => Number(b.status === 'running') - Number(a.status === 'running')
+      || a.attempts - b.attempts || (a.lastAttemptAt ?? '').localeCompare(b.lastAttemptAt ?? '') || a.cell.id.localeCompare(b.cell.id))
   }
   while (true) {
     const pending = await reconcile()
@@ -149,12 +177,18 @@ export async function runDshCompatibilityBatch(options: DshBatchOptions) {
           expected: [task.cell as DshCompatibilityExpectedCase], reports: [report] })
         if (merged.acceptedCaseIds.length !== 1) throw new Error(merged.rejectedReports.join('; ') || 'isolated report did not satisfy the scheduled case')
         state.nativeLedger = merged.ledger
+        state.buildReviewEvidence = parseDshCompatibilityLedger({ schema: state.buildReviewEvidence.schema,
+          entries: [...new Map([...state.buildReviewEvidence.entries, ...merged.ledger.entries].map(entry => [entry.caseId, entry])).values()] })
         transitions.push(...merged.transitions)
-      } else {
+      } else if (task.kind === 'surface') {
         const merged = mergeDshSurfaceLedger({ ledger: state.surfaceLedger,
           expected: [task.cell as DshSurfaceExpectedCase], reports: [report] })
         if (merged.acceptedCaseIds.length !== 1) throw new Error(merged.rejectedReports.join('; ') || 'isolated profile report did not satisfy the scheduled case')
         state.surfaceLedger = merged.ledger
+        transitions.push(...merged.transitions)
+      } else {
+        const merged = mergeDshAdapterLedger(state.adapterLedger, task.cell as DshAdapterExpectedCase, report)
+        state.adapterLedger = merged.ledger
         transitions.push(...merged.transitions)
       }
       task.status = 'accepted'
@@ -164,6 +198,6 @@ export async function runDshCompatibilityBatch(options: DshBatchOptions) {
     }
     await options.checkpoint(structuredClone(state))
   }
-  return { state, executed, nativePlan, surfacePlan, nextNativePlan: planNative(), nextSurfacePlan: planSurface(), transitions,
+  return { state, executed, nativePlan, surfacePlan, nextNativePlan: planNative(), nextSurfacePlan: planSurface(), nextAdapterPlan: planAdapter(), transitions,
     orphanedRunningTasks: state.tasks.filter(task => task.status === 'running' && !desiredKeys.has(task.key)).map(task => task.key) }
 }

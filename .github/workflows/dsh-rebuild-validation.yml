@@ -4,6 +4,11 @@ on:
   push:
     branches: [codex/dsh-rebuild-validation]
   workflow_dispatch:
+    inputs:
+      execute_batch:
+        description: Run the real isolated plugin batch, review its build gates, retry, and verify unchanged reuse
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -16,7 +21,7 @@ concurrency:
 jobs:
   repository-review:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -33,7 +38,7 @@ jobs:
         run: |
           pnpm install --frozen-lockfile --ignore-scripts
           pnpm run build
-          node --test dist/test/dsh-environment-recommendation.test.js dist/test/dsh-environment-evidence.test.js dist/test/dsh-profile-environment.test.js dist/test/dsh-install-plan.test.js dist/test/dsh-headless-agent-plan.test.js dist/test/dsh-headless-agent-script.test.js dist/test/dsh-batch.test.js
+          node --test dist/test/dsh-environment-recommendation.test.js dist/test/dsh-environment-evidence.test.js dist/test/dsh-profile-environment.test.js dist/test/dsh-install-plan.test.js dist/test/dsh-headless-agent-plan.test.js dist/test/dsh-headless-agent-script.test.js dist/test/dsh-batch.test.js dist/test/dsh-batch-executor.test.js dist/test/dsh-adapter-observation.test.js
       - name: Restore the previous durable review checkpoint
         env:
           GH_TOKEN: ${{ github.token }}
@@ -111,6 +116,82 @@ jobs:
             validation-output/build-plans.json \
             validation-output/build-plans.md \
             > validation-output/build-review-summary.json
+      - name: Prepare the disposable batch executor
+        if: ${{ inputs.execute_batch && !cancelled() }}
+        run: |
+          node --input-type=module -e 'import {writeFile} from "node:fs/promises"; await writeFile("validation-executor.json", JSON.stringify({dockerContext:"default",architecture:"x64",timeoutSeconds:180,maxTasks:100}))'
+      - name: Run the isolated batch against current repository intent
+        if: ${{ inputs.execute_batch && !cancelled() }}
+        run: |
+          batch_exit=0
+          node scripts/run-dsh-compatibility-batch.mjs examples/dsh/rebuild-batch/install-targets.json \
+            validation-output batch-output validation-executor.json --execute > batch-first.log 2>&1 || batch_exit=$?
+          if [[ "$batch_exit" != 0 && "$batch_exit" != 2 ]]; then tail -80 batch-first.log; exit "$batch_exit"; fi
+          cp batch-output/summary.json batch-first-summary.json
+          test -z "$(docker ps --quiet --filter label=upstream-radar.task)"
+      - name: Review build gates produced by this batch
+        if: ${{ inputs.execute_batch && !cancelled() }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
+        run: |
+          test -z "$(docker ps --quiet --filter label=upstream-radar.task)"
+          node scripts/plan-dsh-headless-agent.mjs \
+            examples/dsh/rebuild-batch/install-targets.json examples/dsh/awesome-observer/cohort.json \
+            validation-output/observations.json batch-output/compatibility-ledger.json \
+            validation-output/build-plans.json validation-output/build-plans.md \
+            > validation-output/batch-build-review-summary.json
+      - name: Retry the batch with its own exact build decisions
+        if: ${{ inputs.execute_batch && !cancelled() }}
+        run: |
+          batch_exit=0
+          node scripts/run-dsh-compatibility-batch.mjs examples/dsh/rebuild-batch/install-targets.json \
+            validation-output batch-output validation-executor.json --execute > batch-retry.log 2>&1 || batch_exit=$?
+          if [[ "$batch_exit" != 0 && "$batch_exit" != 2 ]]; then tail -80 batch-retry.log; exit "$batch_exit"; fi
+          cp batch-output/summary.json batch-retry-summary.json
+          test -z "$(docker ps --quiet --filter label=upstream-radar.task)"
+      - name: Verify the completed batch does not execute unchanged cells
+        if: ${{ inputs.execute_batch && !cancelled() }}
+        run: |
+          batch_exit=0
+          node scripts/run-dsh-compatibility-batch.mjs examples/dsh/rebuild-batch/install-targets.json \
+            validation-output batch-output validation-executor.json --execute > batch-unchanged.log 2>&1 || batch_exit=$?
+          if [[ "$batch_exit" != 0 && "$batch_exit" != 2 ]]; then tail -80 batch-unchanged.log; exit "$batch_exit"; fi
+          test -z "$(docker ps --quiet --filter label=upstream-radar.task)"
+          node --input-type=module <<'NODE'
+          import {readFile} from 'node:fs/promises'
+          const json = async path => JSON.parse(await readFile(path, 'utf8'))
+          const summary = await json('batch-output/summary.json')
+          const state = await json('batch-output/state.json')
+          if (summary.executed !== 0 || summary.failedTasks.length || summary.orphanedRunningTasks.length
+            || summary.nextNativePlan.matrix.include.length || summary.nextSurfacePlan.matrix.include.length
+            || summary.nextAdapterPlan.matrix.include.length) throw new Error('the batch has not reached unchanged reusable evidence')
+          if (summary.nextSurfacePlan.blocked.length || summary.nextAdapterPlan.blocked.length) throw new Error('an intended execution profile remains uncollected')
+          if (state.nativeLedger.entries.some(entry => entry.result === 'build-approval-required')) throw new Error('dependency build gates remain unresolved')
+          for (const scope of summary.authorScopes) {
+            if (!scope.recommendation || !state.nativeLedger.entries.some(entry => entry.targetId === scope.id)) throw new Error('a plugin lacks current repository or execution evidence')
+            for (const adapter of scope.recommendation.executionProfiles.filter(kind => kind === 'sdk' || kind === 'acp')) {
+              if (!state.adapterLedger.entries.some(entry => entry.cell.targetId === scope.id && entry.cell.adapter === adapter)) throw new Error('an intended adapter was omitted')
+            }
+          }
+          if (state.adapterLedger.entries.some(entry => entry.report.result === 'unknown')) throw new Error('independent adapter evidence is incomplete')
+          console.log(JSON.stringify({collectionClosed:true,compatibilityPass:false,nativeCells:summary.nativeCells,
+            surfaceCells:summary.surfaceCells,adapterCells:summary.adapterCells,remainingCoverageGaps:summary.unimplementedChecks}))
+          NODE
+      - name: Preserve the real batch and its intermediate checkpoints
+        if: ${{ always() && inputs.execute_batch }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dsh-rebuild-system-batch
+          path: |
+            batch-output
+            batch-*.log
+            batch-*-summary.json
+            validation-executor.json
+          if-no-files-found: error
+          retention-days: 14
       - name: Preserve evidence even when a stage is incomplete
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

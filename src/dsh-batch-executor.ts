@@ -18,6 +18,9 @@ let report;
 if (kind === 'native') {
   const {observeDshPluginInstall} = await import('/radar/dist/src/dsh-install-observation.js');
   report = await observeDshPluginInstall({...common, expectedArtifactSha256:cell.expectedArtifactSha256});
+} else if (kind === 'adapter') {
+  const {observeDshAuthorAdapter} = await import('/radar/dist/src/dsh-adapter-observation.js');
+  report = await observeDshAuthorAdapter({...common, adapter:cell.adapter, expectedArtifactSha256:cell.expectedArtifactSha256});
 } else {
   const {observeDshPluginSurface} = await import('/radar/dist/src/dsh-surface-observation.js');
   report = await observeDshPluginSurface({...common, sourceCaseId:cell.sourceCaseId,
@@ -54,13 +57,13 @@ console.log(JSON.stringify({report,attachments,attachmentGaps}));
 `
 
 export function dshBatchContainerArguments(input: {
-  name: string; key: string; image: string; kind: 'native' | 'surface'; cell: unknown
+  name: string; key: string; image: string; kind: 'native' | 'surface' | 'adapter'; cell: unknown
   timeoutSeconds: number; networkProxy?: string
 }): string[] {
   if (!/^radar-batch-[a-z0-9-]{1,80}$/.test(input.name) || !/^[a-f0-9]{64}$/.test(input.key)) throw new Error('invalid managed batch container identity')
   if (!/^sha256:[a-f0-9]{64}$/.test(input.image)) throw new Error('batch execution requires an exact image digest')
   if (!Number.isSafeInteger(input.timeoutSeconds) || input.timeoutSeconds < 30 || input.timeoutSeconds > 600) throw new Error('batch timeout exceeds bounds')
-  if (input.kind !== 'native' && input.kind !== 'surface') throw new Error('unsupported batch execution kind')
+  if (!['native', 'surface', 'adapter'].includes(input.kind)) throw new Error('unsupported batch execution kind')
   observationNetworkEnvironment(input.networkProxy)
   const data = JSON.stringify({ kind: input.kind, cell: input.cell, timeoutSeconds: input.timeoutSeconds, networkProxy: input.networkProxy })
   if (Buffer.byteLength(data) > 64 * 1024) throw new Error('batch execution input exceeds bounds')

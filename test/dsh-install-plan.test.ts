@@ -83,6 +83,24 @@ function baseline() {
 }
 
 describe('DSH compatibility reconciliation plan', () => {
+  it('tests quoted author DSH baselines as separate cells and does not invalidate them on an unrelated target release', () => {
+    const targets = { schema: 'upstream-radar.dsh-install-targets/v1alpha1', runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }],
+      plugins: [{ id: 'web-plugin', spec: 'web-plugin@1.0.0', runtimeProfiles: ['node22'], reason: 'author baseline fixture',
+        environmentRecommendation: { sourceFingerprint: `sha256:${'c'.repeat(64)}`, preferredNodeMajor: 22, nodeMajors: [22], unavailableNodeMajors: [],
+          executionProfiles: ['web'], summary: 'Author baseline comparison.', evidence: ['README.md'],
+          authorEnvironment: { packageManagers: [], overrides: [], workflows: [], dshVersions: [
+            { version: '0.1.1-rc.2', evidence: [{ path: 'README.md', quote: 'Supports 0.1.1-rc.2' }] },
+            { version: '0.1.2-rc.1', evidence: [{ path: 'README.md', quote: 'Supports 0.1.2-rc.1' }] },
+          ] } } }] }
+    const first = buildDshInstallPlan(targets, state('0.1.5-rc.2'), { changes: [] }, undefined, now)
+    assert.deepEqual(first.matrix.include.map(cell => cell.dshVersion).sort(), ['0.1.1-rc.2', '0.1.2-rc.1', '0.1.5-rc.2'])
+    assert.equal(new Set(first.matrix.include.map(cell => cell.id)).size, 3)
+    const ledger = { ...emptyDshCompatibilityLedger(), entries: first.matrix.include.map(cell => entry(cell)) }
+    assert.equal(buildDshInstallPlan(targets, state('0.1.5-rc.2'), { changes: [] }, ledger, now).matrix.include.length, 0)
+    const changed = buildDshInstallPlan(targets, state('0.1.6-rc.1'), { changes: [] }, ledger, now)
+    assert.deepEqual(changed.matrix.include.map(cell => cell.dshVersion), ['0.1.6-rc.1'])
+  })
+
   it('plans and reuses the actual isolated architecture instead of rewriting an x64 plan after execution', () => {
     const plan = buildDshInstallPlan(corpus, state(), { changes: [] }, emptyDshCompatibilityLedger(), now, new Set(),
       { platform: 'linux', architecture: 'arm64' })
@@ -145,6 +163,7 @@ describe('DSH compatibility reconciliation plan', () => {
     assert.equal(plan.run, false)
     assert.deepEqual(plan.matrix.include, [])
     assert.match(plan.blocked[0]?.reason ?? '', /Node 14.*executable range 22-40/)
+    assert.match(plan.blocked[0]?.reason ?? '', /repository evidence includes/, 'a declared or pinned runtime is not necessarily an author recommendation')
   })
 
   it('stays quiet only after all desired cells have fresh exact evidence', () => {

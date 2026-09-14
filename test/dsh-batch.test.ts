@@ -19,6 +19,127 @@ function nativeReport(task: DshBatchTask) {
 }
 
 describe('durable DSH compatibility batch', () => {
+  it('hands author baseline cells to the same intended surface instead of testing their install stage only', async () => {
+    const installTargets = { schema: 'upstream-radar.dsh-install-targets/v1alpha1', runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }],
+      plugins: [{ id: 'terminal', spec: 'terminal@1.0.0', runtimeProfiles: ['node22'], reason: 'author baseline fixture',
+        environmentRecommendation: { sourceFingerprint: `sha256:${'d'.repeat(64)}`, preferredNodeMajor: 22, nodeMajors: [22], unavailableNodeMajors: [],
+          executionProfiles: ['tui'], summary: 'Author terminal workflow.', evidence: ['README.md'],
+          authorEnvironment: { packageManagers: [], overrides: [], workflows: [],
+            dshVersions: [{ version: '0.1.0-rc.8', evidence: [{ path: 'README.md', quote: 'DSH 0.1.0-rc.8' }] }] } } }] }
+    const surfaceTargets = { schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [{ id: 'terminal-tui', sourceCaseId: 'terminal-node22',
+      plane: 'tui', profile: 'author-tui', runtimeId: 'terminal', reason: 'author intended terminal' }] }
+    const profiles: DshBatchTask[] = []
+    const result = await runDshCompatibilityBatch({ installTargets, surfaceTargets,
+      runtime: { platform: 'linux', architecture: 'arm64' }, now: new Date('2026-09-14T05:01:00.000Z'),
+      observations: { targets: { 'deepseek-harness': { package: { name: '@deepseek-ai/dsh', version: '0.1.5-rc.2' } } } },
+      checkpoint: async () => {}, execute: async task => {
+        if (task.kind === 'native') return nativeReport(task)
+        profiles.push(task)
+        throw new Error('bounded surface executor fixture unavailable')
+      } })
+    assert.equal(result.executed, 4)
+    assert.deepEqual(profiles.map(task => task.cell.dshVersion).sort(), ['0.1.0-rc.8', '0.1.5-rc.2'])
+    assert.ok(profiles.every(task => task.kind === 'surface' && Reflect.get(task.cell, 'profile') === 'author-tui'))
+    assert.notEqual(profiles[0]?.cell.id, profiles[1]?.cell.id)
+  })
+
+  it('keeps byte-bound build review evidence across an executor rebuild and a later process restart', async () => {
+    const installTargets = { schema: 'upstream-radar.dsh-install-targets/v1alpha1', runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }],
+      plugins: ['alpha', 'zulu'].map(id => ({ id, spec: `${id}@1.0.0`, reason: 'durable build review fixture' })) }
+    const options = { installTargets, runtime: { platform: 'linux' as const, architecture: 'arm64' as const },
+      observations: { targets: { 'deepseek-harness': { package: { name: '@deepseek-ai/dsh', version: '0.1.5-rc.2' } } } },
+      now: new Date('2026-09-14T05:01:00.000Z'), checkpoint: async () => {},
+      execute: async (task: DshBatchTask) => task.cell.plugin === 'zulu@1.0.0' && !task.cell.allowedBuilds
+        ? { ...nativeReport(task), result: 'build-approval-required', boundary: { approvedDependencyBuilds: [], requiredDependencyBuilds: ['sharp'] } }
+        : { ...nativeReport(task), boundary: { approvedDependencyBuilds: task.cell.allowedBuilds ? ['sharp'] : [] } } }
+    const original = await runDshCompatibilityBatch({ ...options, executorIdentity: 'original-image' })
+    const buildPlans = { schema: 'upstream-radar.dsh-headless-agent-plans/v1alpha1', updatedAt: '2026-09-14T05:01:00.000Z', entries: [{
+      caseId: 'zulu-node22', targetId: 'zulu', plugin: 'zulu@1.0.0', dshVersion: '0.1.5-rc.2', nodeMajor: 22,
+      executionEnvironment: { platform: 'linux', architecture: 'arm64', profileEnvironment: { pnpmVersion: '11.7.0', overrides: {} } },
+      result: 'build-approval-required', observedRequiredBuilds: ['sharp'], approvedBuilds: ['sharp'], allowedBuilds: ['sharp'],
+      artifactSha256: 'a'.repeat(64), inputFingerprint: `sha256:${'d'.repeat(64)}`, plannedAt: '2026-09-14T05:01:00.000Z',
+      model: 'test-boundary', action: 'retry-headless', classification: 'build-approval', summary: 'Observed sharp gate approved.', evidence: ['Observed sharp gate.'],
+    }] }
+    const rebuilt = await runDshCompatibilityBatch({ ...options, state: original.state, executorIdentity: 'rebuilt-image', buildPlans, maxTasks: 1 })
+    assert.equal(rebuilt.state.nativeLedger.entries.length, 1)
+    assert.equal(rebuilt.state.nativeLedger.entries[0]?.targetId, 'alpha')
+    const resumed: DshBatchTask[] = []
+    await runDshCompatibilityBatch({ ...options, state: JSON.parse(JSON.stringify(rebuilt.state)), executorIdentity: 'rebuilt-image', buildPlans,
+      execute: async task => { resumed.push(task); return options.execute(task) } })
+    assert.equal(resumed[0]?.cell.allowedBuilds, 'sharp', 'a restart must not lose the pending target\'s approved build binding')
+    assert.equal(resumed.length, 1, 'the approved target must not repeat its known build gate')
+  })
+
+  it('reattaches a persisted live task before starting new work without incrementing its attempt', async () => {
+    const installTargets = { schema: 'upstream-radar.dsh-install-targets/v1alpha1', runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }],
+      plugins: ['alpha', 'beta'].map(id => ({ id, spec: `${id}@1.0.0`, reason: 'live resume fixture' })) }
+    let durable: DshBatchState | undefined
+    const options = { installTargets, runtime: { platform: 'linux' as const, architecture: 'arm64' as const },
+      observations: { targets: { 'deepseek-harness': { package: { name: '@deepseek-ai/dsh', version: '0.1.5-rc.2' } } } },
+      now: new Date('2026-09-14T05:01:00.000Z'), maxTasks: 1,
+      checkpoint: async (state: DshBatchState) => { if (!durable && state.tasks.some(task => task.status === 'running')) durable = structuredClone(state) },
+      execute: async (task: DshBatchTask) => nativeReport(task) }
+    await runDshCompatibilityBatch(options)
+    const resumed: DshBatchTask[] = []
+    await runDshCompatibilityBatch({ ...options, state: durable, execute: async task => { resumed.push(task); return nativeReport(task) } })
+    assert.equal(resumed[0]?.cell.id, 'alpha-node22')
+    assert.equal(resumed[0]?.attempts, 1)
+  })
+
+  it('durably schedules the evidenced SDK and ACP workflows against author and target DSH without substituting generic profiles', async () => {
+    const installTargets = { schema: 'upstream-radar.dsh-install-targets/v1alpha1', runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }],
+      plugins: [{ id: 'feishu', spec: 'dsh-feishu-bot@0.19.16', reason: 'author adapter fixture', runtimeProfiles: ['node22'],
+        environmentRecommendation: { sourceFingerprint: `sha256:${'d'.repeat(64)}`, preferredNodeMajor: 22, nodeMajors: [22], unavailableNodeMajors: [],
+          executionProfiles: ['sdk', 'acp'], summary: 'SDK is primary; ACP is supported.', evidence: ['README.md'],
+          authorEnvironment: { packageManagers: [], overrides: [], workflows: [
+            { kind: 'sdk', role: 'primary', evidence: [{ path: 'README.md', quote: 'sdk default' }] },
+            { kind: 'acp', role: 'additional', evidence: [{ path: 'README.md', quote: 'acp supported' }] },
+          ], dshVersions: [{ version: '0.1.0-rc.8', evidence: [{ path: 'README.md', quote: 'DSH 0.1.0-rc.8' }] }] } } }] }
+    let durable: DshBatchState | undefined
+    const adapters: DshBatchTask[] = []
+    const options = { installTargets, runtime: { platform: 'linux' as const, architecture: 'arm64' as const },
+      observations: { targets: { 'deepseek-harness': { package: { name: '@deepseek-ai/dsh', version: '0.1.5-rc.2' } } } },
+      now: new Date('2026-09-14T05:01:00.000Z'), checkpoint: async (state: DshBatchState) => { durable = structuredClone(state) },
+      execute: async (task: DshBatchTask) => {
+        assert.ok(durable?.tasks.some(item => item.key === task.key && item.status === 'running'))
+        if (task.kind === 'native') return nativeReport(task)
+        adapters.push(task)
+        throw new Error('adapter executor temporarily unavailable')
+      } }
+    const first = await runDshCompatibilityBatch(options)
+    assert.equal(first.executed, 6, 'two native DSH cells plus four independent adapter cells')
+    assert.deepEqual(adapters.map(task => `${Reflect.get(task.cell, 'adapter')}:${task.cell.dshVersion}`).sort(), [
+      'acp:0.1.0-rc.8', 'acp:0.1.5-rc.2', 'sdk:0.1.0-rc.8', 'sdk:0.1.5-rc.2',
+    ])
+    for (const task of adapters) {
+      assert.equal(Reflect.get(task.cell, 'expectedArtifactSha256'), 'a'.repeat(64))
+      assert.deepEqual(task.cell.profileEnvironment, { pnpmVersion: '11.7.0', overrides: {} })
+    }
+    const resumed = await runDshCompatibilityBatch({ ...options, state: first.state, maxTasks: 1 })
+    assert.equal(resumed.executed, 1)
+    assert.equal(adapters.at(-1)?.attempts, 2)
+    const recoveredOptions = { ...options, execute: async (task: DshBatchTask) => {
+      assert.equal(task.kind, 'adapter')
+      return {
+        schema: 'upstream-radar.dsh-adapter-observation/v1alpha1', executionContract: 'dsh-author-adapter/v1alpha2',
+        recipe: Reflect.get(task.cell, 'recipe'), plugin: task.cell.plugin, dshVersion: task.cell.dshVersion,
+        adapter: Reflect.get(task.cell, 'adapter'), profile: Reflect.get(task.cell, 'profile'),
+        startedAt: '2026-09-14T05:00:00.000Z', completedAt: '2026-09-14T05:00:10.000Z',
+        runtime: { nodeVersion: '22.23.2', platform: 'linux', architecture: 'arm64', pnpmVersion: '11.7.0' },
+        profileEnvironment: task.cell.profileEnvironment, artifact: { sha256: 'a'.repeat(64), bytes: 128 },
+        stages: { runtime: 'passed', artifact: 'passed', install: 'failed', initialize: 'skipped', profileGraph: 'skipped' },
+        commands: [], fixtureRequests: 0, result: 'unknown', reason: 'Bounded registry fixture unavailable; initialization was not tested.',
+        coverageGaps: ['The independent runtime graph is unavailable.'], boundary: { lifecycleScripts: 'disabled', inheritedHostSecrets: false, note: 'Isolated boundary fixture.' },
+      }
+    } }
+    const recovered = await runDshCompatibilityBatch({ ...recoveredOptions, state: resumed.state })
+    assert.equal(recovered.state.adapterLedger.entries.length, 4)
+    assert.equal(recovered.state.adapterLedger.entries[0]?.report.result, 'unknown', 'collection completion is not compatibility')
+    assert.equal((await runDshCompatibilityBatch({ ...recoveredOptions, state: recovered.state })).executed, 0)
+    assert.equal((await runDshCompatibilityBatch({ ...recoveredOptions, state: recovered.state,
+      now: new Date('2026-09-15T05:01:00.000Z') })).executed, 4, 'unknown adapter evidence is retried after its bounded lifetime')
+  })
+
   it('resumes a build-gated plugin only with the durable byte-bound review and then reuses its result', async () => {
     const installTargets = { schema: 'upstream-radar.dsh-install-targets/v1alpha1', runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }],
       plugins: [{ id: 'native', spec: 'native@1.0.0', reason: 'build retry fixture' }] }
@@ -37,6 +158,7 @@ describe('durable DSH compatibility batch', () => {
     const first = await runDshCompatibilityBatch(options)
     const buildPlans = { schema: 'upstream-radar.dsh-headless-agent-plans/v1alpha1', updatedAt: '2026-09-14T05:01:00.000Z', entries: [{
       caseId: 'native-node22', targetId: 'native', plugin: 'native@1.0.0', dshVersion: '0.1.5-rc.2', nodeMajor: 22,
+      executionEnvironment: { platform: 'linux', architecture: 'arm64', profileEnvironment: { pnpmVersion: '11.7.0', overrides: {} } },
       result: 'build-approval-required', observedRequiredBuilds: ['sharp'], approvedBuilds: ['sharp'], allowedBuilds: ['sharp'],
       artifactSha256: 'a'.repeat(64), inputFingerprint: `sha256:${'d'.repeat(64)}`, plannedAt: '2026-09-14T05:01:00.000Z',
       model: 'test-boundary', action: 'retry-headless', classification: 'build-approval', summary: 'Fixture review approves the observed build.', evidence: ['Observed sharp build gate.'],
