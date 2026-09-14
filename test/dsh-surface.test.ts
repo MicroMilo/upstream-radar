@@ -3,6 +3,7 @@ import { describe, it } from 'node:test'
 import type { DshCompatibilityLedger } from '../src/dsh-compatibility-ledger.js'
 import { collectDshWebBootRoster } from '../src/dsh-web-contract.js'
 import {
+  DSH_SURFACE_EXECUTION_CONTRACT,
   DSH_SURFACE_OBSERVATION_SCHEMA,
   dshSurfaceProfileStrategy,
   evaluateDshTuiEvidence,
@@ -247,7 +248,7 @@ function compatibleReport(expected: DshSurfaceExpectedCase, plane: 'web' | 'tui'
     tool: { name: 'upstream-radar' as const, version: '0.44.0' },
     probe: 'dsh-surface' as const,
     scope: 'surface-runtime-behavior' as const,
-    executionContract: 'dsh-surface/v1alpha10' as const,
+    executionContract: DSH_SURFACE_EXECUTION_CONTRACT,
     profileEnvironment: expected.profileEnvironment ?? { pnpmVersion: '11.7.0', overrides: {} },
     startedAt: '2026-08-25T00:00:00.000Z',
     completedAt: '2026-08-25T00:01:00.000Z',
@@ -341,6 +342,17 @@ function compatibleReport(expected: DshSurfaceExpectedCase, plane: 'web' | 'tui'
 }
 
 describe('DSH execution-plane evidence', () => {
+  it('keeps an observed HTTP startup failure in the host stage without blaming the browser or confirming a plugin defect', () => {
+    for (const status of [401, 403, 404, 500]) {
+      const result = evaluateDshWebObservationError('page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE', undefined, status)
+      assert.equal(result.result, 'unknown')
+      assert.equal(result.failedStage, 'host')
+      assert.match(result.reason, new RegExp(`HTTP ${status}`))
+      assert.doesNotMatch(result.reason, /browser driver failed/)
+    }
+    assert.equal(evaluateDshWebObservationError('page.goto failed', 1, 404).result, 'surface-incompatible')
+    assert.equal(evaluateDshWebObservationError('page crashed', undefined, 200).failedStage, 'surface')
+  })
   it('does not label an observed DSH process failure as a browser-driver error', () => {
     assert.equal(evaluateDshWebObservationError('page.goto failed', undefined).result, 'unknown')
     const exited = evaluateDshWebObservationError('page.goto failed', 1)

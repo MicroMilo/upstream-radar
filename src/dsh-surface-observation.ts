@@ -16,7 +16,7 @@ import { parseDshClientContract, type DshClientContract } from './dsh-peer-plane
 import { collectDshWebBootRoster, type DshWebContractEvidence } from './dsh-web-contract.js'
 
 export const DSH_SURFACE_OBSERVATION_SCHEMA = 'upstream-radar.dsh-surface-observation/v1alpha1' as const
-export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha10' as const
+export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha11' as const
 
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const CASE_ID = /^[a-z0-9][a-z0-9._-]{0,63}$/
@@ -97,7 +97,7 @@ export interface DshSurfaceObservationReport {
   tool: { name: 'upstream-radar'; version: string }
   probe: 'dsh-surface'
   scope: 'surface-runtime-behavior'
-  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8' | 'dsh-surface/v1alpha9'
+  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8' | 'dsh-surface/v1alpha9' | 'dsh-surface/v1alpha10'
   profileEnvironment?: DshProfileEnvironment
   startedAt: string
   completedAt: string
@@ -318,10 +318,14 @@ export function dshWebClientDeclared(dsh: Record<string, unknown> | undefined): 
   return client.platform === 'web'
 }
 
-export function evaluateDshWebObservationError(error: string, hostExitCode: number | undefined): DshSurfaceEvaluation {
+export function evaluateDshWebObservationError(error: string, hostExitCode: number | undefined, lastHttpStatus?: number): DshSurfaceEvaluation {
   if (hostExitCode !== undefined) {
     return { result: 'surface-incompatible', failedStage: 'host',
       reason: `the exact DSH Web profile exited with ${hostExitCode} before surface observation completed` }
+  }
+  if (lastHttpStatus !== undefined && lastHttpStatus >= 400 && lastHttpStatus <= 599) {
+    return { result: 'unknown', failedStage: 'host',
+      reason: `the last observed DSH Web endpoint returned HTTP ${lastHttpStatus} before browser observation completed; profile startup or setup remains incomplete, not a confirmed plugin defect` }
   }
   return { result: 'unknown', failedStage: 'surface', reason: `the browser driver failed while observing the Web surface: ${bounded(error)}` }
 }
@@ -1038,7 +1042,7 @@ async function observeWebSurface(input: {
     // fail. Give its close event one bounded turn before blaming the browser.
     if (!host.exited()) await new Promise(resolveDelay => setTimeout(resolveDelay, 200))
     const evaluation = evaluateDshWebObservationError(error instanceof Error ? error.message : String(error),
-      host.exited() ? host.code() ?? undefined : undefined)
+      host.exited() ? host.code() ?? undefined : undefined, evidence.httpStatus)
     if (evaluation.failedStage === 'host') {
       input.report.stages.host = { status: 'failed', code: host.code(), detail: bounded(redactWebTokens(host.output())) }
       input.report.stages.surface = { status: 'skipped' }
