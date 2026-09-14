@@ -50,3 +50,12 @@ it('finds the supporting DSH occurrence when the same quoted row also appears in
   const repeated = document.replace('| dsh release |', '| package version |') + '\n\n' + document
   assert.doesNotThrow(() => validateDshAuthorEnvironment(environment(), new Map([[path, repeated]])))
 })
+
+it('applies the same DSH-column check when the model quotes several table lines', () => {
+  const otherPackage = '| DSH version | Other package |\n| --- | --- |\n| 0.1.0 | 0.1.2-rc.1 |'
+  assert.throws(() => validateDshAuthorEnvironment(environment(otherPackage), new Map([[path, otherPackage]])), /not supported/)
+  assert.doesNotThrow(() => validateDshAuthorEnvironment(environment(document), new Map([[path, document]])))
+  const onlyOtherRow = '| Other package | Version |\n| --- | --- |\n| DSH integration | 0.1.2-rc.1 |'
+  const source = document + '\n\n' + onlyOtherRow
+  assert.throws(() => validateDshAuthorEnvironment(environment(onlyOtherRow), new Map([[path, source]])), /not supported/)
+})

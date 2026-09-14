@@ -63,9 +63,11 @@ bounded documents. The install and surface planners apply only a
 recommendation whose source fingerprint is still current. Isolated VMs
 establish the eventual compatibility result.
 
-Review contract `dsh-environment/v6` preserves exact DSH release-table rows as
+Review contract `dsh-environment/v7` preserves exact DSH release-table rows as
 evidence when their own bounded Markdown table explicitly names the DSH
 release/version column. Other package columns, detached tables, ranges instead
 of exact versions, and DSH's own baseline documents cannot supply a plugin's
-release baseline. Literal quotes must still match collected bytes. Earlier
+release baseline. Single-row and multi-line table quotations use the same column
+check; citing an entire table cannot turn another package's version into a DSH
+release. Literal quotes must still match collected bytes. Earlier
 reviews are retained as history but must be reviewed again under this contract.

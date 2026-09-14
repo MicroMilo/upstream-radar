@@ -20,7 +20,7 @@ import {
 } from './dsh-surface.js'
 
 export const DSH_ENVIRONMENT_RECOMMENDATIONS_SCHEMA = 'upstream-radar.dsh-environment-recommendations/v1alpha1' as const
-export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v6' as const
+export const DSH_ENVIRONMENT_REVIEW_CONTRACT = 'dsh-environment/v7' as const
 
 const DSH_TARGET_ID = 'deepseek-harness'
 const DSH_PACKAGE = '@deepseek-ai/dsh'

@@ -230,9 +230,10 @@ function namesVersion(quote: string, version: string): boolean {
   return new RegExp(`(^|[^0-9A-Za-z.-])${escape(version)}(?=$|[^0-9A-Za-z.-]|[.](?=\\s|$))`).test(quote)
 }
 
-/** Resolve only a quoted whole Markdown row against its own DSH version column. */
-function dshReleaseTableRow(source: string | undefined, quote: string, version: string): boolean {
-  if (source === undefined || Buffer.byteLength(source) > 48 * 1024 || /[\r\n]/.test(quote)) return false
+/** Resolve quoted Markdown rows against their own DSH version columns. */
+function dshReleaseTableEvidence(source: string | undefined, quote: string, version: string): boolean {
+  if (source === undefined || Buffer.byteLength(source) > 48 * 1024) return false
+  const quotedLines = new Set(quote.split(/\r?\n/).map(line => line.trim()))
   const cells = (line: string): string[] | undefined => {
     const value = line.trim()
     if (!value.startsWith('|') || !value.endsWith('|') || /\\\|/.test(value)) return undefined
@@ -245,7 +246,7 @@ function dshReleaseTableRow(source: string | undefined, quote: string, version: 
     if (row?.every(cell => /^:?-{3,}:?$/.test(cell))) {
       header = previous?.length === row.length ? previous : undefined
     } else if (header !== undefined && row?.length === header.length) {
-      if (line.trim() === quote.trim() && header.some((label, index) =>
+      if (quotedLines.has(line.trim()) && header.some((label, index) =>
         /^(?:dsh|(?:deepseek )?harness)(?: (?:release|version)s?)?$/i.test(label.replace(/[`*_]/g, '').trim())
         && row[index]!.replace(/^`([^`]+)`$/, '$1') === version)) return true
     } else { header = undefined }
@@ -296,8 +297,8 @@ export function validateDshAuthorEnvironment(environment: DshAuthorEnvironment |
   }
   for (const item of environment.dshVersions) {
     if (!item.evidence.some(ref => !ref.path.startsWith('dsh-repository/') && (
-      /^\s*\|[^\r\n]*\|\s*$/.test(ref.quote)
-        ? dshReleaseTableRow(sources.get(ref.path), ref.quote, item.version)
+      ref.quote.split(/\r?\n/).some(line => /^\s*\|.*\|\s*$/.test(line))
+        ? dshReleaseTableEvidence(sources.get(ref.path), ref.quote, item.version)
         : /dsh|harness/i.test(ref.quote) && namesVersion(ref.quote, item.version)
     ))) {
       throw new Error('author DSH version is not supported by plugin evidence')
