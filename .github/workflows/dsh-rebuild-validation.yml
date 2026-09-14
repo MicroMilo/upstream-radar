@@ -180,6 +180,86 @@ jobs:
           console.log(JSON.stringify({collectionClosed:true,compatibilityPass:false,nativeCells:summary.nativeCells,
             surfaceCells:summary.surfaceCells,adapterCells:summary.adapterCells,remainingCoverageGaps:summary.unimplementedChecks}))
           NODE
+      - name: Collect an earlier real Context repository revision
+        if: ${{ inputs.execute_batch && !cancelled() }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          # Real upstream history preceding the README update, not a fabricated
+          # manifest. Preserve the completed batch and fetch through the normal observer.
+          node scripts/verify-dsh-input-change.mjs prepare validation-output batch-output \
+            input-change-before 33fd7ae6801d892ddbee7b76a964a4b2c6ff0416
+          node dist/src/cli.js observe input-change-before/observer-targets.json \
+            --state input-change-before/review/observations.json \
+            --report input-change-before/review/observer-report.md --json \
+            > input-change-before/review/observer-report.json
+          node scripts/verify-dsh-input-change.mjs observation input-change-before
+      - name: Review the earlier real repository evidence
+        if: ${{ inputs.execute_batch && !cancelled() }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
+        run: |
+          node scripts/plan-dsh-environment-recommendations.mjs \
+            examples/dsh/rebuild-batch/install-targets.json input-change-before/review/observations.json \
+            input-change-before/review/recommendations.json input-change-before/review/recommendations.md \
+            > input-change-before/review/review-summary.json
+          node scripts/verify-dsh-input-change.mjs review input-change-before
+      - name: Execute only the earlier Context environment
+        if: ${{ inputs.execute_batch && !cancelled() }}
+        run: |
+          batch_exit=0
+          node scripts/run-dsh-compatibility-batch.mjs examples/dsh/rebuild-batch/install-targets.json \
+            input-change-before/review input-change-before/batch validation-executor.json --execute \
+            > input-change-before/execution.log 2>&1 || batch_exit=$?
+          if [[ "$batch_exit" != 0 && "$batch_exit" != 2 ]]; then tail -80 input-change-before/execution.log; exit "$batch_exit"; fi
+          test -z "$(docker ps --quiet --filter label=upstream-radar.task)"
+          node scripts/verify-dsh-input-change.mjs execution input-change-before
+      - name: Collect the forward Context repository update
+        if: ${{ inputs.execute_batch && !cancelled() }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          current_commit=$(node --input-type=module -e 'import {readFile} from "node:fs/promises"; console.log(JSON.parse(await readFile("validation-output/observations.json","utf8")).targets["dsh-context"].source.commit)')
+          node scripts/verify-dsh-input-change.mjs prepare input-change-before/review input-change-before/batch \
+            input-change-after "$current_commit"
+          node dist/src/cli.js observe input-change-after/observer-targets.json \
+            --state input-change-after/review/observations.json \
+            --report input-change-after/review/observer-report.md --json \
+            > input-change-after/review/observer-report.json
+          node scripts/verify-dsh-input-change.mjs observation input-change-after
+      - name: Review only the changed repository after the forward update
+        if: ${{ inputs.execute_batch && !cancelled() }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
+        run: |
+          node scripts/plan-dsh-environment-recommendations.mjs \
+            examples/dsh/rebuild-batch/install-targets.json input-change-after/review/observations.json \
+            input-change-after/review/recommendations.json input-change-after/review/recommendations.md \
+            > input-change-after/review/review-summary.json
+          node scripts/verify-dsh-input-change.mjs review input-change-after
+      - name: Execute only changed Context cells and verify unchanged reuse again
+        if: ${{ inputs.execute_batch && !cancelled() }}
+        run: |
+          batch_exit=0
+          node scripts/run-dsh-compatibility-batch.mjs examples/dsh/rebuild-batch/install-targets.json \
+            input-change-after/review input-change-after/batch validation-executor.json --execute \
+            > input-change-after/execution.log 2>&1 || batch_exit=$?
+          if [[ "$batch_exit" != 0 && "$batch_exit" != 2 ]]; then tail -80 input-change-after/execution.log; exit "$batch_exit"; fi
+          test -z "$(docker ps --quiet --filter label=upstream-radar.task)"
+          node scripts/verify-dsh-input-change.mjs execution input-change-after
+          batch_exit=0
+          node scripts/run-dsh-compatibility-batch.mjs examples/dsh/rebuild-batch/install-targets.json \
+            input-change-after/review input-change-after/batch validation-executor.json --execute \
+            > input-change-after/unchanged.log 2>&1 || batch_exit=$?
+          if [[ "$batch_exit" != 0 && "$batch_exit" != 2 ]]; then tail -80 input-change-after/unchanged.log; exit "$batch_exit"; fi
+          test -z "$(docker ps --quiet --filter label=upstream-radar.task)"
+          node scripts/verify-dsh-input-change.mjs unchanged input-change-after
       - name: Preserve the real batch and its intermediate checkpoints
         if: ${{ always() && inputs.execute_batch }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -190,6 +270,8 @@ jobs:
             batch-*.log
             batch-*-summary.json
             validation-executor.json
+            input-change-before
+            input-change-after
           if-no-files-found: error
           retention-days: 14
       - name: Preserve evidence even when a stage is incomplete

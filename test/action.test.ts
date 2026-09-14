@@ -32,7 +32,7 @@ describe('reusable GitHub Action', () => {
     assert.match(workflow, /execute_batch:/)
     const steps = workflow.split('      - name:')
     const execution = steps.filter(step => step.includes('node scripts/run-dsh-compatibility-batch.mjs'))
-    assert.equal(execution.length, 3)
+    assert.equal(execution.length, 5)
     for (const step of execution) {
       assert.match(step, /inputs.execute_batch/)
       assert.doesNotMatch(step, /secrets\.|ISSUE_LOCATOR_LLM/)
@@ -46,6 +46,13 @@ describe('reusable GitHub Action', () => {
     assert.match(workflow, /summary.executed !== 0/)
     assert.match(workflow, /build-approval-required/)
     assert.match(workflow, /independent adapter evidence is incomplete/)
+    const historical = workflow.indexOf('Collect an earlier real Context repository revision')
+    const forward = workflow.indexOf('Collect the forward Context repository update')
+    assert.ok(historical > unchanged && forward > historical)
+    assert.match(workflow, /33fd7ae6801d892ddbee7b76a964a4b2c6ff0416/)
+    assert.match(workflow, /verify-dsh-input-change\.mjs execution input-change-before/)
+    assert.match(workflow, /verify-dsh-input-change\.mjs execution input-change-after/)
+    assert.match(workflow, /verify-dsh-input-change\.mjs unchanged input-change-after/)
   })
 
   it('carries the selected profile environment from each matrix into the image and isolated probe', async () => {
