@@ -28,7 +28,10 @@ export function parseDshProfileEnvironment(value: unknown = { pnpmVersion: '11.7
 }
 
 /** Development settings do not configure an installed user profile. */
-export function selectDshProfileEnvironment(author?: DshAuthorEnvironment, profile = 'headless'): DshProfileEnvironment {
+export function selectDshProfileEnvironment(author?: DshAuthorEnvironment, profile = 'headless', nodeMajor?: number): DshProfileEnvironment {
+  if (nodeMajor !== undefined && (!Number.isSafeInteger(nodeMajor) || nodeMajor < 20 || nodeMajor > 40)) {
+    throw new Error('profile environment requires a supported isolated Node major')
+  }
   const applies = (item: { profile?: string }) => item.profile === undefined || item.profile === profile
   const managers = author?.packageManagers.filter(item => item.scope !== 'development' && applies(item)) ?? []
   if (managers.some(item => item.name !== 'pnpm')) throw new Error(`${managers.find(item => item.name !== 'pnpm')!.name} profile package manager is unsupported by the DSH pnpm runner`)
@@ -41,7 +44,11 @@ export function selectDshProfileEnvironment(author?: DshAuthorEnvironment, profi
       Object.defineProperty(overrides, name, { value: version, enumerable: true, configurable: true })
     }
   }
-  return parseDshProfileEnvironment({ pnpmVersion: versions[0] ?? '11.7.0', overrides })
+  const pnpmVersion = versions[0] ?? (nodeMajor !== undefined && nodeMajor < 22 ? '10.33.0' : '11.7.0')
+  if (nodeMajor !== undefined && nodeMajor < 22 && Number(pnpmVersion.split('.')[0]) > 10) {
+    throw new Error(`Node ${nodeMajor} cannot run the exact profile pnpm ${pnpmVersion}; review a compatible author requirement`)
+  }
+  return parseDshProfileEnvironment({ pnpmVersion, overrides })
 }
 
 /** Called inside the isolated executor, before the first target install. */

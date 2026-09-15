@@ -524,7 +524,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
         cells.push(surfaceCell(surface, installTargets.refreshAfterHours))
         if (!currentNativeCaseIds.has(entry.caseId)) continue
         let profileEnvironment
-        try { profileEnvironment = selectDshProfileEnvironment(recommendation?.authorEnvironment, surface.profile) }
+        try { profileEnvironment = selectDshProfileEnvironment(recommendation?.authorEnvironment, surface.profile, entry.runtime.nodeMajor) }
         catch { continue } // An unsupported author environment cannot establish current coverage.
         const expected = buildDshSurfacePlan({ schema: DSH_SURFACE_TARGETS_SCHEMA, surfaces: [{
           id: surface.caseId, sourceCaseId: surface.sourceCaseId, plane: surface.plane, profile: surface.profile,

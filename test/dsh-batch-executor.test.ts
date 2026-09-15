@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 import { it } from 'node:test'
 import { createDshBatchExecutorIdentity, dshBatchContainerArguments, dshBatchDockerObjectAbsent } from '../src/dsh-batch-executor.js'
+
+it('builds an isolated image for the per-Node pnpm selected by the repository plan', async () => {
+  const script = await readFile(new URL('../../scripts/run-dsh-compatibility-batch.mjs', import.meta.url), 'utf8')
+  assert.match(script, /selectDshProfileEnvironment\(target\.environmentRecommendation\.authorEnvironment, profile, nodeMajor\)/)
+})
 
 it('reuses the same executor across scheduling budgets and image enumeration order but not runtime changes', () => {
   const input = { sourceIdentity: 'a'.repeat(64), images: [

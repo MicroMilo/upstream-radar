@@ -47,7 +47,7 @@ function parseCell(input: unknown): DshAdapterExpectedCase {
   if (cell.plugin !== 'dsh-feishu-bot@0.19.16' || cell.recipe !== 'feishu-0.19.16-doctor-initialize'
     || !['sdk', 'acp'].includes(String(cell.adapter)) || cell.profile !== `dsh-lark-${cell.adapter}`) throw new Error('unsupported exact adapter recipe')
   parseNpmSpec(`@deepseek-ai/dsh@${text(cell.dshVersion, 128)}`)
-  if (!Number.isSafeInteger(cell.nodeMajor) || (cell.nodeMajor as number) < 22 || (cell.nodeMajor as number) > 40
+  if (!Number.isSafeInteger(cell.nodeMajor) || (cell.nodeMajor as number) < 20 || (cell.nodeMajor as number) > 40
     || cell.platform !== 'linux' || !['arm64', 'x64'].includes(String(cell.architecture))
     || !['target', 'author-baseline'].includes(String(cell.versionRole)) || cell.allowedBuilds !== '') throw new Error('unsupported adapter runtime or build authority')
   hash(cell.expectedArtifactSha256); hash(cell.sourceFingerprint, true); hash(cell.contractFingerprint, true)
@@ -225,7 +225,7 @@ export function buildDshAdapterPlan(targetsInput: DshInstallTargets, nativeInput
         }
         const profile = `dsh-lark-${adapter}`
         let profileEnvironment: DshProfileEnvironment
-        try { profileEnvironment = selectDshProfileEnvironment(author, profile) }
+        try { profileEnvironment = selectDshProfileEnvironment(author, profile, source.runtime.nodeMajor) }
         catch (error) { blocked.push({ targetId: target.id, plugin: source.plugin, reason: String(error).slice(0, 1024) }); continue }
         for (const dshVersion of versions) {
           const id = `${target.id.slice(0, 25)}-node${source.runtime.nodeMajor}-${adapter}-${createHash('sha256').update(dshVersion).digest('hex').slice(0, 12)}`

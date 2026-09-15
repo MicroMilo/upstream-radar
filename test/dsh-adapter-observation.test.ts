@@ -4,7 +4,7 @@ import { mkdir, realpath, symlink, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { it } from 'node:test'
 import { observeDshAuthorAdapter } from '../src/dsh-adapter-observation.js'
-import { emptyDshAdapterLedger, mergeDshAdapterLedger, type DshAdapterExpectedCase } from '../src/dsh-adapter.js'
+import { emptyDshAdapterLedger, mergeDshAdapterLedger, parseDshAdapterExpectedCase, type DshAdapterExpectedCase } from '../src/dsh-adapter.js'
 import { makeTarball } from './helpers/tar.js'
 
 it('requires the adapter service and exact linked plugin roots, and retains independent SDK and ACP graphs', async () => {
@@ -62,6 +62,8 @@ it('requires the adapter service and exact linked plugin roots, and retains inde
       platform: 'linux', architecture: 'arm64', profileEnvironment: report.profileEnvironment,
       expectedArtifactSha256: report.artifact!.sha256, sourceFingerprint: `sha256:${'a'.repeat(64)}`,
       contractFingerprint: `sha256:${'b'.repeat(64)}`, versionRole: 'target', allowedBuilds: '', reasons: ['fixture'] }
+    assert.doesNotThrow(() => parseDshAdapterExpectedCase({ ...cell, id: `feishu-node20-${adapter}`, nodeMajor: 20,
+      profileEnvironment: { pnpmVersion: '10.33.0', overrides: {} } }), 'Node 20 adapter cases retain their own explicit runtime; this is not a compatibility pass')
     const isolated = { ...report, runtime: { nodeVersion: '22.23.2', platform: 'linux', architecture: 'arm64', pnpmVersion: '11.7.0' } }
     const accepted = mergeDshAdapterLedger(emptyDshAdapterLedger(), cell, isolated)
     assert.equal(accepted.ledger.entries[0]?.report.result, 'initialize-compatible')

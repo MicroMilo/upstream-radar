@@ -27,6 +27,11 @@ function bindFixtureSources(entries: DshCompatibilityLedgerEntry[], targets: unk
   }
 }
 
+it('reconstructs current surface coverage using the source case Node major, not a one-size-fits-all pnpm', async () => {
+  const source = await readFile(new URL('../../src/dsh-directory-feed.ts', import.meta.url), 'utf8')
+  assert.match(source, /selectDshProfileEnvironment\(recommendation\?\.authorEnvironment, surface\.profile, entry\.runtime\.nodeMajor\)/)
+})
+
 function ledgerEntry(targetId: string, result: DshCompatibilityLedgerEntry['result']): DshCompatibilityLedgerEntry {
   return {
     caseId: `${targetId}-node22`,

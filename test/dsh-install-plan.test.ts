@@ -162,8 +162,17 @@ describe('DSH compatibility reconciliation plan', () => {
 
     assert.equal(plan.run, false)
     assert.deepEqual(plan.matrix.include, [])
-    assert.match(plan.blocked[0]?.reason ?? '', /Node 14.*executable range 22-40/)
+    assert.match(plan.blocked[0]?.reason ?? '', /Node 14.*executable range 20-40/)
     assert.match(plan.blocked[0]?.reason ?? '', /repository evidence includes/, 'a declared or pinned runtime is not necessarily an author recommendation')
+  })
+
+  it('schedules a real Node 20 observer with pnpm 10 instead of silently replacing the declared runtime with Node 22', () => {
+    const target = { ...corpus, runtimeProfiles: [{ id: 'node20', nodeMajor: 20 }],
+      plugins: [{ ...corpus.plugins[0]!, runtimeProfiles: ['node20'] }] }
+    const plan = buildDshInstallPlan(target, state(), { changes: [] }, emptyDshCompatibilityLedger(), now)
+    assert.deepEqual(plan.matrix.include.map(cell => cell.nodeMajor), [20])
+    assert.equal(plan.matrix.include[0]?.profileEnvironment?.pnpmVersion, '10.33.0')
+    assert.deepEqual(plan.blocked, [])
   })
 
   it('stays quiet only after all desired cells have fresh exact evidence', () => {

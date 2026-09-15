@@ -100,10 +100,11 @@ try {
     if (!target.environmentRecommendation) continue
     for (const runtimeId of target.runtimeProfiles ?? []) {
       const nodeMajor = applied.runtimeProfiles.find(item => item.id === runtimeId)?.nodeMajor
+      if (!Number.isSafeInteger(nodeMajor)) throw new Error('inferred batch runtime profile has no exact Node major')
       for (const profile of ['headless', 'web', ...target.environmentRecommendation.authorEnvironment.workflows
         .map(item => item.profile ?? (item.kind === 'sdk' || item.kind === 'acp' ? `dsh-lark-${item.kind}` : item.kind))]) {
         try {
-          const { pnpmVersion } = selectDshProfileEnvironment(target.environmentRecommendation.authorEnvironment, profile)
+          const { pnpmVersion } = selectDshProfileEnvironment(target.environmentRecommendation.authorEnvironment, profile, nodeMajor)
           imageEnvironments.set(`${nodeMajor}:${pnpmVersion}`, { nodeMajor, pnpmVersion })
         } catch { /* The planner retains unsupported requirements as explicit gaps. */ }
       }

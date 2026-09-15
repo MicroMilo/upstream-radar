@@ -20,7 +20,7 @@ const DSH_TARGET_ID = 'deepseek-harness'
 const DSH_PACKAGE = '@deepseek-ai/dsh'
 const MAX_TARGETS = 100
 const MAX_RUNTIME_PROFILES = 32
-const MIN_EXECUTABLE_NODE_MAJOR = 22
+const MIN_EXECUTABLE_NODE_MAJOR = 20
 const MAX_EXECUTABLE_NODE_MAJOR = 40
 const DEFAULT_REFRESH_AFTER_HOURS = 7 * 24
 
@@ -599,13 +599,13 @@ export function buildDshInstallPlan(
         pluginStatic: target.observerTargetId === undefined ? undefined : staticTargetEvidence(stateInput, target.observerTargetId),
         dshStatic: isAuthorBaseline ? { authorBaseline: authorVersions.find(item => item.version === cellDshVersion) } : dshStatic,
       })
-      let profileEnvironment: DshProfileEnvironment
-      try { profileEnvironment = selectDshProfileEnvironment(target.environmentRecommendation?.authorEnvironment) }
-      catch (error) {
-        blocked.push({ targetId: target.id, plugin, reason: error instanceof Error ? error.message : String(error) })
-        continue
-      }
       for (const runtimeProfile of candidateProfiles(corpus, target, plugin, ledger)) {
+        let profileEnvironment: DshProfileEnvironment
+        try { profileEnvironment = selectDshProfileEnvironment(target.environmentRecommendation?.authorEnvironment, 'headless', runtimeProfile.nodeMajor) }
+        catch (error) {
+          blocked.push({ targetId: target.id, plugin, reason: error instanceof Error ? error.message : String(error) })
+          continue
+        }
         const approvals = (target.buildApprovals ?? []).filter(item => item.plugin === plugin && item.dshVersion === cellDshVersion
           && item.nodeMajor === runtimeProfile.nodeMajor && item.platform === runtime.platform && item.architecture === runtime.architecture
           && JSON.stringify(item.profileEnvironment) === JSON.stringify(profileEnvironment))

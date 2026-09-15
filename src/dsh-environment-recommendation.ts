@@ -34,7 +34,7 @@ const MAX_EVIDENCE = 16
 const MAX_RECOMMENDED_NODE_MAJORS = 16
 const MIN_RECOMMENDED_NODE_MAJOR = 1
 const MAX_RECOMMENDED_NODE_MAJOR = 99
-const MIN_EXECUTABLE_NODE_MAJOR = 22
+const MIN_EXECUTABLE_NODE_MAJOR = 20
 const MAX_EXECUTABLE_NODE_MAJOR = 40
 const EXECUTION_PROFILE_ORDER: DshRecommendedExecutionProfile[] = ['headless', 'web', 'tui', 'sdk', 'acp']
 
@@ -815,7 +815,7 @@ export function renderDshEnvironmentRecommendationPrompt(candidate: DshEnvironme
     `Target: ${candidate.targetId}`,
     `Plugin: ${candidate.plugin}`,
     `DSH: ${candidate.dshVersion}`,
-    `Radar can schedule observer runtimes in the bounded Node-major range ${MIN_EXECUTABLE_NODE_MAJOR}-${MAX_EXECUTABLE_NODE_MAJOR}; this is not proof that a matching image exists. Its pinned pnpm requires Node >=22.13. Report repository intent even outside this range; Radar will record a coverage gap.`,
+    `Radar can schedule observer runtimes in the bounded Node-major range ${MIN_EXECUTABLE_NODE_MAJOR}-${MAX_EXECUTABLE_NODE_MAJOR}; this is not proof that a matching image exists. The isolated runner selects pinned pnpm 10.33.0 for Node 20-21 and pinned pnpm 11.7.0 for Node 22+. Report repository intent even outside this range; Radar will record a coverage gap.`,
     `Repository: ${candidate.repository ?? '(unknown)'}`,
     `Source commit: ${candidate.sourceCommit ?? '(unknown)'}`,
     '<untrusted-explicit-startup-evidence>',
@@ -1035,6 +1035,8 @@ export function applyDshEnvironmentRecommendationsToSurfaceTargets(
     if (entry === undefined) continue
     const runtimeId = parseNpmSpec(entry.plugin).name
     for (const runtimeProfileId of target.runtimeProfiles ?? []) {
+      const nodeMajor = installTargets.runtimeProfiles.find(item => item.id === runtimeProfileId)?.nodeMajor
+      if (nodeMajor === undefined) throw new Error('recommended execution profile lacks its Node runtime')
       const sourceCaseId = dshCompatibilityCaseId(target.id, runtimeProfileId)
       for (const plane of entry.executionProfiles) {
         if (plane !== 'web' && plane !== 'tui') continue
@@ -1043,7 +1045,7 @@ export function applyDshEnvironmentRecommendationsToSurfaceTargets(
         const profile = existing?.profile ?? (plane === 'web' ? 'web' : entry.tuiProfile ?? tuiProfileName(target.id))
         let environment: Pick<DshSurfaceTarget, 'profileEnvironment' | 'environmentGap'>
         try { environment = existing?.environmentGap === undefined
-          ? { profileEnvironment: existing?.profileEnvironment ?? selectDshProfileEnvironment(entry.authorEnvironment, profile) }
+          ? { profileEnvironment: existing?.profileEnvironment ?? selectDshProfileEnvironment(entry.authorEnvironment, profile, nodeMajor) }
           : { environmentGap: existing.environmentGap } }
         catch (error) { environment = { environmentGap: error instanceof Error ? error.message : String(error) } }
         if (existing === undefined) generated.push({

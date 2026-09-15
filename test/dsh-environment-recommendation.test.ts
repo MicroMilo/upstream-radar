@@ -786,6 +786,15 @@ describe('DSH repository environment recommendation', () => {
     assert.equal(inferredNode18.runtimeProfiles.find(item => item.nodeMajor === 18), undefined)
     assert.deepEqual(inferredNode18.plugins[0]?.runtimeProfiles, [])
     assert.deepEqual(inferredNode18.plugins[0]?.environmentRecommendation?.unavailableNodeMajors, [18])
+
+    const inferredNode20 = recommendations({ preferredNodeMajor: 20, nodeMajors: [20] })
+    const node20Targets = applyDshEnvironmentRecommendations(targets, observations, inferredNode20)
+    assert.deepEqual(node20Targets.plugins[0]?.runtimeProfiles, ['node20'])
+    assert.deepEqual(node20Targets.plugins[0]?.environmentRecommendation?.unavailableNodeMajors, [])
+    const node20Surfaces = applyDshEnvironmentRecommendationsToSurfaceTargets({
+      schema: 'upstream-radar.dsh-surface-targets/v1alpha1', refreshAfterHours: 168, surfaces: [],
+    }, targets, observations, inferredNode20)
+    assert.equal(node20Surfaces.surfaces.find(item => item.sourceCaseId === 'web-plugin-node20')?.profileEnvironment?.pnpmVersion, '10.33.0')
   })
 
   it('ignores recommendations after the exact source evidence changes', () => {
