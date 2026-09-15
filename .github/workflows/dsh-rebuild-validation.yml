@@ -188,6 +188,7 @@ jobs:
           test -z "$(docker ps --quiet --filter label=upstream-radar.task)"
           node --input-type=module <<'NODE'
           import {readFile} from 'node:fs/promises'
+          import {unresolvedDshHostBuildGates} from './dist/src/dsh-batch-acceptance.js'
           const json = async path => JSON.parse(await readFile(path, 'utf8'))
           const summary = await json('batch-output/summary.json')
           const state = await json('batch-output/state.json')
@@ -197,6 +198,8 @@ jobs:
             || summary.nextAdapterPlan.matrix.include.length) throw new Error('the batch has not reached unchanged reusable evidence')
           if (summary.nextSurfacePlan.blocked.length || summary.nextAdapterPlan.blocked.length) throw new Error('an intended execution profile remains uncollected')
           if (state.nativeLedger.entries.some(entry => entry.result === 'build-approval-required')) throw new Error('dependency build gates remain unresolved')
+          const unresolvedHostBuildGates = unresolvedDshHostBuildGates(state.surfaceLedger.entries)
+          if (unresolvedHostBuildGates.length) throw new Error(`DSH host native build gates remain unresolved: ${JSON.stringify(unresolvedHostBuildGates)}`)
           for (const scope of summary.authorScopes) {
             if (!scope.recommendation || !state.nativeLedger.entries.some(entry => entry.targetId === scope.id)) throw new Error('a plugin lacks current repository or execution evidence')
             for (const adapter of scope.recommendation.executionProfiles.filter(kind => kind === 'sdk' || kind === 'acp')) {
