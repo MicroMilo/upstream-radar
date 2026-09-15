@@ -82,7 +82,7 @@ describe('reusable GitHub Action', () => {
     assert.match(workflow, /execute_batch:/)
     const steps = workflow.split('      - name:')
     const execution = steps.filter(step => step.includes('node scripts/run-dsh-compatibility-batch.mjs'))
-    assert.equal(execution.length, 5)
+    assert.equal(execution.length, 6)
     for (const step of execution) {
       assert.match(step, /inputs.execute_batch/)
       assert.doesNotMatch(step, /secrets\.|ISSUE_LOCATOR_LLM/)
@@ -90,8 +90,11 @@ describe('reusable GitHub Action', () => {
     const first = workflow.indexOf('Run the isolated batch against current repository intent')
     const review = workflow.indexOf('Review build gates produced by this batch')
     const retry = workflow.indexOf('Retry the batch with its own exact build decisions')
+    const refreshedReview = workflow.indexOf('Review refreshed host and surface build facts after retry')
+    const refreshedRetry = workflow.indexOf('Retry once more with refreshed exact host facts')
     const unchanged = workflow.indexOf('Verify the completed batch does not execute unchanged cells')
-    assert.ok(first > 0 && review > first && retry > review && unchanged > retry)
+    assert.ok(first > 0 && review > first && retry > review && refreshedReview > retry
+      && refreshedRetry > refreshedReview && unchanged > refreshedRetry)
     assert.match(workflow.slice(review, retry), /batch-output\/compatibility-ledger.json/)
     assert.match(workflow, /summary.executed !== 0/)
     assert.match(workflow, /summary.deferredTaskKeys.length/)

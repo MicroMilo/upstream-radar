@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { collectDshHostNativeLoadFailures, parseDshHostBuildInventory } from '../src/dsh-host-builds.js'
-import { createDshHostBuildApproval } from '../src/dsh-host-build-policy.js'
+import { assertDshHostBuildApproval, createDshHostBuildApproval } from '../src/dsh-host-build-policy.js'
 import {
   createDshSurfaceAgentInputFingerprint,
   emptyDshSurfaceAgentPlans,
@@ -91,6 +91,16 @@ describe('DSH execution-plane Agent planning', () => {
     const { hostBuild: _hostBuild, ...withoutHost } = observed
     assert.notEqual(createDshSurfaceAgentInputFingerprint(observed), createDshSurfaceAgentInputFingerprint(withoutHost))
     const approval = createDshHostBuildApproval({ ...hostBuild, packages: ['fs-ext@2.1.1'] })
+    const refreshedInventory = parseDshHostBuildInventory({ ...inventory, installation: {
+      ...inventory.installation!, lockfileSha256: '6'.repeat(64), lockGraphDigest: `sha256:${'7'.repeat(64)}` } })
+    assert.throws(() => assertDshHostBuildApproval(approval, refreshedInventory, context), /inventory changed/)
+    const refreshedCandidate = { ...observed, hostBuild: { ...hostBuild, inventory: refreshedInventory } }
+    assert.notEqual(createDshSurfaceAgentInputFingerprint(refreshedCandidate), createDshSurfaceAgentInputFingerprint(observed),
+      'a new physical DSH dependency graph must be reviewed as a new bounded task')
+    const refreshedDecision = parseDshSurfaceAgentDecision(proposed, refreshedCandidate)
+    const refreshedApproval = createDshHostBuildApproval({ ...hostBuild, inventory: refreshedInventory, packages: ['fs-ext@2.1.1'] })
+    assert.notEqual(refreshedApproval.inventoryFingerprint, approval.inventoryFingerprint)
+    assert.deepEqual(refreshedDecision.allowedHostBuilds, ['fs-ext@2.1.1'])
     const stored = { ...plans(), entries: [{ ...plans().entries[0], ...decision, observedRequiredBuilds: [], approvedBuilds: [], hostBuild, hostBuildApproval: approval }] }
     const parsed = parseDshSurfaceAgentPlans(stored)
     assert.deepEqual(Reflect.get(parsed.entries[0]!, 'hostBuildApproval'), approval)

@@ -178,6 +178,29 @@ jobs:
           if [[ "$batch_exit" != 0 && "$batch_exit" != 2 ]]; then tail -80 batch-retry.log; exit "$batch_exit"; fi
           cp batch-output/summary.json batch-retry-summary.json
           test -z "$(docker ps --quiet --filter label=upstream-radar.task)"
+      - name: Review refreshed host and surface build facts after retry
+        if: ${{ inputs.execute_batch && !cancelled() }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
+        run: |
+          test -z "$(docker ps --quiet --filter label=upstream-radar.task)"
+          node scripts/plan-dsh-surface-agent.mjs \
+            examples/dsh/rebuild-batch/install-targets.json examples/dsh/awesome-observer/cohort.json \
+            validation-output/observations.json batch-output/compatibility-ledger.json batch-output/surface-ledger.json \
+            validation-output/surface-build-plans.json validation-output/surface-build-plans.md \
+            > validation-output/batch-refreshed-surface-review-summary.json
+      - name: Retry once more with refreshed exact host facts
+        if: ${{ inputs.execute_batch && !cancelled() }}
+        run: |
+          batch_exit=0
+          node scripts/run-dsh-compatibility-batch.mjs examples/dsh/rebuild-batch/install-targets.json \
+            validation-output batch-output validation-executor.json --execute > batch-refreshed-retry.log 2>&1 || batch_exit=$?
+          if [[ "$batch_exit" != 0 && "$batch_exit" != 2 ]]; then tail -80 batch-refreshed-retry.log; exit "$batch_exit"; fi
+          cp batch-output/summary.json batch-refreshed-retry-summary.json
+          test -z "$(docker ps --quiet --filter label=upstream-radar.task)"
       - name: Verify the completed batch does not execute unchanged cells
         if: ${{ inputs.execute_batch && !cancelled() }}
         run: |

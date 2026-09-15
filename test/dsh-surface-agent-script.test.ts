@@ -81,6 +81,19 @@ it('reviews an independent host native failure without a plugin build gate and d
     assert.equal(JSON.parse((await run()).stdout).attempted, 0)
     assert.equal(requests.length, 1)
     assert.deepEqual(JSON.parse(await readFile(plansPath, 'utf8')), saved)
+    const refreshedInventory = parseDshHostBuildInventory({ ...inventory, installation: {
+      ...inventory.installation!, lockfileSha256: '6'.repeat(64), lockGraphDigest: `sha256:${'7'.repeat(64)}` } })
+    const refreshedSurface = JSON.parse(await readFile(paths[4]!, 'utf8'))
+    refreshedSurface.entries[0].hostBuildInventory = refreshedInventory
+    await writeFile(paths[4]!, JSON.stringify(refreshedSurface))
+    assert.equal(JSON.parse((await run()).stdout).planned, 1)
+    assert.equal(requests.length, 2, 'a new exact DSH graph needs another durable model handoff')
+    const refreshed = JSON.parse(await readFile(plansPath, 'utf8'))
+    assert.notEqual(refreshed.entries[0].inputFingerprint, saved.entries[0].inputFingerprint)
+    assert.notEqual(refreshed.entries[0].hostBuildApproval.inventoryFingerprint, saved.entries[0].hostBuildApproval.inventoryFingerprint)
+    assertDshHostBuildApproval(refreshed.entries[0].hostBuildApproval, refreshedInventory,
+      { ...entry, plane: 'web', artifactSha256: source.artifact.sha256! })
+    assert.equal(JSON.parse((await run()).stdout).attempted, 0)
   } finally {
     server.closeAllConnections()
     await new Promise<void>(resolve => server.close(() => resolve()))
