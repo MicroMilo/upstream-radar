@@ -443,8 +443,10 @@ function desiredCase(
   // and establishes its own result.
   if (source.artifact.sha256 === undefined || !BARE_SHA256.test(source.artifact.sha256)) return undefined
   if (source.runtime.platform !== 'linux' || !['x64', 'arm64'].includes(source.runtime.architecture)) return undefined
-  if (source.result === 'build-approval-required' || source.result === 'runtime-incompatible'
-    || source.result === 'install-failed' || source.result === 'load-failed') return undefined
+  // A failed install or load in Radar's internal headless profile is not a
+  // finding about an author-intended Web/TUI profile. The plane runner checks
+  // the artifact again and establishes its own install and usage evidence.
+  if (source.result === 'build-approval-required' || source.result === 'runtime-incompatible') return undefined
   if (source.result === 'unknown' && source.resolution?.runtimeGraph?.digest === undefined) return undefined
   // DSH's browser manifest is keyed by the client package name. The Cordis
   // patch row id is a different namespace and may remain stable while a

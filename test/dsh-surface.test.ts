@@ -1114,6 +1114,18 @@ describe('DSH execution-plane reconciliation', () => {
     assert.match(plan.blocked[0]?.reason ?? '', /headless environment must be resolved/)
   })
 
+  it('observes an author-intended plane independently when only the internal headless profile failed to register or load an exact artifact', () => {
+    for (const result of ['install-failed', 'load-failed'] as const) {
+      const source = sourceLedger({ result, reason: 'The internal headless profile did not complete.' })
+      const plan = buildDshSurfacePlan(targets, source, emptyDshSurfaceLedger(), new Date('2026-08-25T00:00:00.000Z'))
+      assert.equal(plan.run, true, `${result} must not decide the author plane`)
+      assert.deepEqual(plan.blocked, [])
+      assert.deepEqual(plan.matrix.include.map(cell => cell.plane).sort(), ['tui', 'web'])
+      assert.ok(plan.matrix.include.every(cell => cell.artifactSha256 === source.entries[0]?.artifact.sha256),
+        'each plane independently rechecks the same exact artifact')
+    }
+  })
+
   it('stays quiet with fresh exact evidence and invalidates both planes after an upstream artifact change', () => {
     const first = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger(), new Date('2026-08-25T00:00:00.000Z'))
     const reports = first.matrix.include.map(expected => compatibleReport(expected))
