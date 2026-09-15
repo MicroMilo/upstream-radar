@@ -20,10 +20,31 @@ import { parseNpmSpec } from './npm.js'
 import { isExclusiveDshWebPeer } from './dsh-peer-planes.js'
 import { parseDshWebContractEvidence } from './dsh-web-contract.js'
 import type { DshInstallPlan } from './dsh-install-plan.js'
+import { parseDshHostBuildInventory, parseDshHostNativeLoadFailures, type DshHostBuildInventory, type DshHostNativeLoadFailure } from './dsh-host-builds.js'
 
 function startupFields(value: unknown): { startupConfiguration?: DshStartupConfiguration } {
   const startupConfiguration = parseDshStartupConfiguration(value)
   return startupConfiguration === undefined ? {} : { startupConfiguration }
+}
+
+function hostBuildFields(value: unknown, dshVersion: unknown, runtime: unknown, result: unknown, failures: unknown, hostStage: DshSurfaceStage): {
+  hostBuildInventory?: DshHostBuildInventory; hostBuildFailures?: DshHostNativeLoadFailure[]
+} {
+  if (value === undefined) {
+    if (failures !== undefined) throw new Error('host native-load failures require independent host build inventory')
+    return {}
+  }
+  const hostBuildInventory = parseDshHostBuildInventory(value)
+  if (hostBuildInventory.dshVersion !== dshVersion) throw new Error('host build inventory DSH version does not match the surface')
+  if (hostBuildInventory.pnpmVersion !== undefined && hostBuildInventory.pnpmVersion !== record(runtime, 'surface runtime').pnpmVersion) {
+    throw new Error('host build inventory pnpm version does not match the surface')
+  }
+  if (result === 'compatible' && hostBuildInventory.coverageGaps.length) throw new Error('a compatible surface cannot have incomplete host build inventory coverage')
+  const hostBuildFailures = failures === undefined ? undefined : parseDshHostNativeLoadFailures(failures, hostBuildInventory)
+  if (hostBuildFailures?.length && (result !== 'environment-unsupported' || hostStage.status !== 'failed')) {
+    throw new Error('host native-load failures require an environment-unsupported result and a failed host stage')
+  }
+  return { hostBuildInventory, ...(hostBuildFailures === undefined ? {} : { hostBuildFailures }) }
 }
 
 export const DSH_SURFACE_TARGETS_SCHEMA = 'upstream-radar.dsh-surface-targets/v1alpha1' as const
@@ -41,7 +62,7 @@ const DEFAULT_REFRESH_AFTER_HOURS = 7 * 24
 const MAX_CONFIGURED_TARGETS = 400
 const MAX_RUN_TARGETS = 32
 const MAX_LEDGER_ENTRIES = 512
-const SURFACE_CONTRACT_REVISION = 'dsh-surface-contract/12'
+const SURFACE_CONTRACT_REVISION = 'dsh-surface-contract/13'
 
 export interface DshSurfaceTarget {
   startupConfiguration?: DshStartupConfiguration
@@ -92,6 +113,8 @@ export interface DshSurfacePlan {
 }
 
 export interface DshSurfaceLedgerEntry {
+  hostBuildInventory?: DshHostBuildInventory
+  hostBuildFailures?: DshHostNativeLoadFailure[]
   startupConfiguration?: DshStartupConfiguration
   profileEnvironment?: DshProfileEnvironment
   caseId: string
@@ -151,6 +174,8 @@ export interface DshSurfaceIR {
     upstream: { package: '@deepseek-ai/dsh'; dshVersion: string }
     runtime: DshSurfaceObservationReport['runtime']
     observation: {
+      hostBuildInventory?: DshHostBuildInventory
+      hostBuildFailures?: DshHostNativeLoadFailure[]
       observedAt: string
       result: DshSurfaceObservationResult
       reason: string
@@ -582,7 +607,7 @@ function parseReport(input: unknown): DshSurfaceObservationReport {
       if (root.executionContract !== DSH_SURFACE_EXECUTION_CONTRACT && root.executionContract !== 'dsh-surface/v1alpha8'
         && root.executionContract !== 'dsh-surface/v1alpha9' && root.executionContract !== 'dsh-surface/v1alpha10'
         && root.executionContract !== 'dsh-surface/v1alpha11' && root.executionContract !== 'dsh-surface/v1alpha12'
-        && root.executionContract !== 'dsh-surface/v1alpha13') throw new Error('report execution contract is unsupported')
+        && root.executionContract !== 'dsh-surface/v1alpha13' && root.executionContract !== 'dsh-surface/v1alpha14') throw new Error('report execution contract is unsupported')
       return root.executionContract
     })() }),
     startedAt: isoDate(root.startedAt, 'report.startedAt'),
@@ -603,6 +628,7 @@ function parseReport(input: unknown): DshSurfaceObservationReport {
       ...(artifact.integrity === undefined ? {} : { integrity: boundedString(artifact.integrity, 'report.artifact.integrity', 1_024) }),
     },
     stages,
+    ...hostBuildFields(root.hostBuildInventory, root.dshVersion, root.runtime, result, root.hostBuildFailures, stages.host),
     evidence: parseEvidence(root.evidence, plane, 'report.evidence'),
     ...(resolution === undefined ? {} : { resolution }),
     result,
@@ -674,6 +700,7 @@ export function parseDshSurfaceLedger(input: unknown): DshSurfaceLedger {
         ...(artifact.integrity === undefined ? {} : { integrity: boundedString(artifact.integrity, `entries[${index}].artifact.integrity`, 1_024) }),
       },
       stages,
+      ...hostBuildFields(item.hostBuildInventory, item.dshVersion, item.runtime, result, item.hostBuildFailures, stages.host),
       evidence: parseEvidence(item.evidence, plane, `entries[${index}].evidence`),
       ...(resolution === undefined ? {} : { resolution }),
       result,
@@ -865,6 +892,9 @@ function mismatch(expected: DshSurfaceExpectedCase, report: DshSurfaceObservatio
   expected.runtimeId, expected.allowedBuilds === '' ? [] : expected.allowedBuilds.split(','))
   if (changed === undefined && expected.contractFingerprint === currentContract) {
     if (report.executionContract !== DSH_SURFACE_EXECUTION_CONTRACT) return 'report did not establish the scheduled plane-aware execution contract'
+    if ((report.stages.profile.status === 'passed' || report.stages.install.status !== 'skipped') && report.hostBuildInventory === undefined) {
+      return 'new surface report did not attempt the independent host build inventory collector'
+    }
     if (report.plane === 'web' && report.result === 'compatible' && report.evidence.plane === 'web') {
       const proof = report.evidence.clientContract
       if (proof?.boot === undefined || report.evidence.pluginClientDeclared === undefined) return 'new Web report did not establish its independent browser contract'
@@ -993,6 +1023,8 @@ export function mergeDshSurfaceLedger(input: {
         ...(report.artifact.integrity === undefined ? {} : { integrity: report.artifact.integrity }),
       },
       stages: report.stages,
+      ...(report.hostBuildInventory === undefined ? {} : { hostBuildInventory: report.hostBuildInventory }),
+      ...(report.hostBuildFailures === undefined ? {} : { hostBuildFailures: report.hostBuildFailures }),
       evidence: report.evidence,
       ...(report.resolution === undefined ? {} : { resolution: report.resolution }),
       result: report.result,
@@ -1038,6 +1070,8 @@ export function buildDshSurfaceIR(ledgerInput: unknown): DshSurfaceIR {
         reason: entry.reason,
         ...(entry.requiredDependencyBuilds === undefined ? {} : { requiredDependencyBuilds: entry.requiredDependencyBuilds }),
         stages: entry.stages,
+        ...(entry.hostBuildInventory === undefined ? {} : { hostBuildInventory: entry.hostBuildInventory }),
+        ...(entry.hostBuildFailures === undefined ? {} : { hostBuildFailures: entry.hostBuildFailures }),
         evidence: entry.evidence,
       },
     })),

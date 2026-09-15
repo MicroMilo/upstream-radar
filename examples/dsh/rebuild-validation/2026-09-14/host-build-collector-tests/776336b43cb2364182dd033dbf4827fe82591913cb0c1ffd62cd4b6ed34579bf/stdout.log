@@ -1,0 +1,34 @@
+✔ attributes a native module error only to its exact physical DSH host package, never the plugin profile (1.726209ms)
+✔ collects exact pending host-build facts from pnpm JSON metadata without treating pending as a verdict (10.363834ms)
+✔ ignores the pnpm virtual-store hoisted alias directory without losing physical build facts (4.3265ms)
+✔ preserves duplicate package versions and scoped peer locators as distinct physical facts (8.275667ms)
+✔ does not follow a replaced manifest or a symlinked cache ancestor (8.049208ms)
+✔ retains incomplete coverage for unsupported, absent and oversized build metadata (23.440334ms)
+✖ never emits a physical package coordinate that its persisted inventory parser cannot accept (9.712166ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 67.818834
+
+✖ failing tests:
+
+test at ../sandbox/current/test/dsh-host-builds.test.js:199:1
+✖ never emits a physical package coordinate that its persisted inventory parser cannot accept (9.712166ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(!inventory.packages.some(item => item.spec === `${name}@1.0.0`))
+  
+      at TestContext.<anonymous> (file:///sandbox/current/test/dsh-host-builds.test.js:210:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

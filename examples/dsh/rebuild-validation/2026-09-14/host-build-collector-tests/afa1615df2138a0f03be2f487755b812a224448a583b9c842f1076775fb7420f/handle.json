@@ -1,0 +1,9 @@
+{
+  "id": "9f6801545428f61c13c89abb2c8fe3ffe0e7d346ceafc2563264289708a049ba",
+  "key": "afa1615df2138a0f03be2f487755b812a224448a583b9c842f1076775fb7420f",
+  "imageId": "sha256:0a68f95329ff3e88425b7d2211ed22107ce111827573ecebef78513f9645a09c",
+  "sourceSha256": "528e6ea436a4b4ed5df1c9f5c87db738396193c3e9d1517d8325bc8d420a3a7c",
+  "loadedModuleSha256": "17dd40e76dd618e61b3b10eac694c998f191ea877381bd2939960c957fd3dc7a",
+  "testSha256": "ed6ffb4936438450f27d17e74b5947186addfd5d9d9929b0348f692b62d05d55",
+  "scope": "Linux fixture tests only; no plugin or DSH code execution"
+}

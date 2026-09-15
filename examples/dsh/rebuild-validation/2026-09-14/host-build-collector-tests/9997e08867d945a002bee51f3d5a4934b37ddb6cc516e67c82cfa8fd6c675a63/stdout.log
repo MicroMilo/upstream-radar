@@ -1,0 +1,14 @@
+✔ attributes a native module error only to its exact physical DSH host package, never the plugin profile (2.249208ms)
+✔ collects exact pending host-build facts from pnpm JSON metadata without treating pending as a verdict (12.345875ms)
+✔ ignores the pnpm virtual-store hoisted alias directory without losing physical build facts (5.9905ms)
+✔ preserves duplicate package versions and scoped peer locators as distinct physical facts (9.626083ms)
+✔ does not follow a replaced manifest or a symlinked cache ancestor (6.98875ms)
+✔ retains incomplete coverage for unsupported, absent and oversized build metadata (22.966042ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 62.623792

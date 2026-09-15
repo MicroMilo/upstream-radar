@@ -1,0 +1,36 @@
+✔ collects exact pending host-build facts from pnpm JSON metadata without treating pending as a verdict (13.3145ms)
+✔ ignores the pnpm virtual-store hoisted alias directory without losing physical build facts (8.751125ms)
+✖ preserves duplicate package versions and scoped peer locators as distinct physical facts (10.972708ms)
+✔ does not follow a replaced manifest or a symlinked cache ancestor (7.230208ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 42.713542
+
+✖ failing tests:
+
+test at ../sandbox/current/test/dsh-host-builds.test.js:98:1
+✖ preserves duplicate package versions and scoped peer locators as distinct physical facts (10.972708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'the host lock graph contains unresolved required dependencies',
+  +   'reported build coordinate is absent from the host lock graph: fs-ext@2.0.0'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///sandbox/current/test/dsh-host-builds.test.js:117:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Array],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

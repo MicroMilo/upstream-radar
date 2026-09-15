@@ -31,6 +31,61 @@ const SOURCE_CONTRACT = `sha256:${'b'.repeat(64)}`
 const ARTIFACT_SHA = 'c'.repeat(64)
 
 describe('plane-aware surface routing and freshness', () => {
+  it('preserves bounded DSH host build facts through report, ledger and IR without approving plugin builds', () => {
+    const expected = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include.find(cell => cell.plane === 'web')!
+    const location = 'pnpm/dlx/exact-key/exact-instance'
+    const hostBuildInventory = { revision: 'dsh-host-build-inventory/1', scope: 'dsh-host-build-facts', dshVersion: expected.dshVersion,
+      pnpmVersion: '11.7.0', installation: { location, manifestSha256: '1'.repeat(64), hostManifestSha256: '2'.repeat(64),
+        lockfileSha256: '3'.repeat(64), lockGraphDigest: `sha256:${'4'.repeat(64)}` },
+      packages: [{ spec: 'fs-ext@2.1.1', location: `${location}/node_modules/.pnpm/fs-ext@2.1.1/node_modules/fs-ext`,
+        manifestSha256: '5'.repeat(64), lifecycleScripts: { install: 'node-gyp configure build' },
+        reportedLocators: ['fs-ext@2.1.1'], metadataSources: ['pendingBuilds'] }], coverageGaps: [] }
+    const report = { ...compatibleReport(expected), hostBuildInventory }
+    const merge = (value: unknown) => mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [value] })
+    const result = merge(report)
+    assert.deepEqual(result.rejectedReports, [])
+    assert.deepEqual(Reflect.get(result.ledger.entries[0]!, 'hostBuildInventory'), hostBuildInventory)
+    assert.deepEqual(Reflect.get(buildDshSurfaceIR(result.ledger).cells[0]!.observation, 'hostBuildInventory'), hostBuildInventory)
+    assert.equal(result.ledger.entries[0]!.approvedDependencyBuilds, undefined)
+    assert.equal(result.ledger.entries[0]!.requiredDependencyBuilds, undefined)
+    for (const changed of [
+      { ...hostBuildInventory, dshVersion: '0.0.1' },
+      { ...hostBuildInventory, pnpmVersion: '11.6.0' },
+      { ...hostBuildInventory, packages: [{ ...hostBuildInventory.packages[0], location: '../escape' }] },
+      { ...hostBuildInventory, coverageGaps: ['metadata is incomplete'] },
+    ]) assert.equal(merge({ ...report, hostBuildInventory: changed }).acceptedCaseIds.length, 0)
+    const incomplete = merge({ ...report, result: 'unknown', reason: 'host build inventory incomplete',
+      hostBuildInventory: { ...hostBuildInventory, coverageGaps: ['metadata is incomplete'] } })
+    assert.deepEqual(incomplete.rejectedReports, [])
+    assert.deepEqual(Reflect.get(incomplete.ledger.entries[0]!, 'hostBuildInventory'), { ...hostBuildInventory, coverageGaps: ['metadata is incomplete'] })
+    const hostBuildFailures = [{ scope: 'dsh-host-native-load-failure', packageSpec: 'fs-ext@2.1.1', manifestSha256: '5'.repeat(64),
+      missingModule: './build/Release/fs_ext.node', requiringFile: `${hostBuildInventory.packages[0]!.location}/fs-ext.js`, outputSha256: '6'.repeat(64) }]
+    const failedReport = { ...report, result: 'environment-unsupported', reason: 'the host reported an unbuilt native module',
+      stages: { ...report.stages, host: { status: 'failed', code: 1 } }, hostBuildFailures }
+    const failed = merge(failedReport)
+    assert.deepEqual(failed.rejectedReports, [])
+    assert.deepEqual(Reflect.get(failed.ledger.entries[0]!, 'hostBuildFailures'), hostBuildFailures)
+    assert.deepEqual(Reflect.get(buildDshSurfaceIR(failed.ledger).cells[0]!.observation, 'hostBuildFailures'), hostBuildFailures)
+    assert.equal(failed.ledger.entries[0]!.requiredDependencyBuilds, undefined, 'host builds are not plugin-profile builds')
+    for (const changed of [
+      { ...failedReport, result: 'compatible' },
+      { ...failedReport, hostBuildInventory: undefined },
+      { ...failedReport, hostBuildFailures: [{ ...hostBuildFailures[0], packageSpec: 'invented@1.0.0' }] },
+    ]) assert.equal(merge(changed).acceptedCaseIds.length, 0)
+  })
+
+  it('requires the current host inventory collector attempt and rejects pre-collector evidence reuse', () => {
+    const expected = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include.find(cell => cell.plane === 'web')!
+    const report = compatibleReport(expected)
+    Reflect.deleteProperty(report, 'hostBuildInventory')
+    const result = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [report] })
+    assert.equal(result.acceptedCaseIds.length, 0)
+    assert.match(result.rejectedReports.join(' '), /host build inventory/)
+    const legacy = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected],
+      reports: [{ ...compatibleReport(expected), executionContract: 'dsh-surface/v1alpha14' }] })
+    assert.equal(legacy.acceptedCaseIds.length, 0)
+  })
+
   it('keeps a disabled startup comparison separate from default startup across planning, reports and unchanged reuse', () => {
     const base = targets.surfaces.find(target => target.plane === 'web')!
     const startupConfiguration = { scope: 'Web settings only; bridge stopped', environment: { DSH_LARK_DISABLED: '1' } }
@@ -294,6 +349,10 @@ function compatibleReport(expected: DshSurfaceExpectedCase, plane: 'web' | 'tui'
     contractFingerprint: expected.contractFingerprint,
     plugin: expected.plugin,
     dshVersion: expected.dshVersion,
+    hostBuildInventory: { revision: 'dsh-host-build-inventory/1' as const, scope: 'dsh-host-build-facts' as const,
+      dshVersion: expected.dshVersion, pnpmVersion: expected.profileEnvironment?.pnpmVersion ?? '11.7.0', packages: [], coverageGaps: [],
+      installation: { location: 'pnpm/dlx/fixture/instance', manifestSha256: '1'.repeat(64), hostManifestSha256: '2'.repeat(64),
+        lockfileSha256: '3'.repeat(64), lockGraphDigest: `sha256:${'4'.repeat(64)}` } },
     plane,
     profile: expected.profile,
     runtimeId: expected.runtimeId,

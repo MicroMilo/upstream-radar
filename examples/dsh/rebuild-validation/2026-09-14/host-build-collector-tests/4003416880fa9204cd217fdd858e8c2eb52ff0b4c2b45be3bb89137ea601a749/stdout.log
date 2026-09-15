@@ -1,0 +1,10 @@
+✔ collects exact pending host-build facts from pnpm JSON metadata without treating pending as a verdict (15.701584ms)
+✔ ignores the pnpm virtual-store hoisted alias directory without losing physical build facts (4.231791ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22.022917

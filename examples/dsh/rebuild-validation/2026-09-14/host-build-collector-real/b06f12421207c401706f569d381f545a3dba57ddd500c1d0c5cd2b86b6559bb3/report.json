@@ -1,0 +1,124 @@
+{
+  "scope": "stock-dsh-host-build-inventory",
+  "pluginInstalled": false,
+  "dependencyBuildsApproved": [],
+  "nodeVersion": "v24.21.0",
+  "prepare": {
+    "args": [
+      "dlx",
+      "--package=@deepseek-ai/dsh@0.1.3-alpha.2",
+      "dsh",
+      "--profile",
+      "web",
+      "--help"
+    ],
+    "terminal": {
+      "code": 0,
+      "signal": null
+    },
+    "exceeded": false,
+    "timedOut": false,
+    "output": "Progress: resolved 1, reused 0, downloaded 0, added 0\nProgress: resolved 6, reused 0, downloaded 0, added 0\nProgress: resolved 68, reused 0, downloaded 53, added 0\nProgress: resolved 103, reused 0, downloaded 74, added 0\nProgress: resolved 146, reused 0, downloaded 134, added 0\nProgress: resolved 217, reused 0, downloaded 196, added 0\nProgress: resolved 288, reused 0, downloaded 233, added 0\nProgress: resolved 320, reused 0, downloaded 277, added 0\nProgress: resolved 339, reused 0, downloaded 286, added 0\nProgress: resolved 430, reused 0, downloaded 364, added 0\nProgress: resolved 517, reused 0, downloaded 416, added 0\nProgress: resolved 548, reused 0, downloaded 487, added 0\nProgress: resolved 573, reused 0, downloaded 515, added 0\nProgress: resolved 575, reused 0, downloaded 517, added 0\n[WARN] 1 deprecated subdependencies found: node-domexception@1.0.0\nPackages: +516\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 576, reused 0, downloaded 518, added 516, done\n[WARN] Issues with peer dependencies found. Run \"pnpm peers check\" to list them.\nUsage: dsh --profile web [options]\n\nServe the DeepSeek Harness browser UI.\n\nOptions:\n  --host <host>                  bind host\n  --no-open                      do not open the Web UI in the default browser\n  --port <port>                  listen port; pass 0 to let the OS pick a free\n                                 one\n  --trusted-host <authority...>  extra authority the /api browser-trust fence\n                                 accepts (host or host:port; repeatable)\n  -h, --help                     show this help\n\nExamples:\n  dsh --profile web                          serve on the composed host and port\n  dsh --profile web --no-open                serve without opening a browser\n  dsh --profile web --port 8080              serve on another port\n\n"
+  },
+  "inventory": {
+    "revision": "dsh-host-build-inventory/1",
+    "scope": "dsh-host-build-facts",
+    "dshVersion": "0.1.3-alpha.2",
+    "packages": [
+      {
+        "spec": "@deepseek-ai/dsh-subprocess-local@0.1.3-alpha.2",
+        "location": "pnpm/dlx/c5acde164aea5de5077c5406f24641e105180663a3025f5fd0db2cc6cc6dfdbc/1a0a32ef891-11/node_modules/.pnpm/@deepseek-ai+dsh-subprocess-local@0.1.3-alpha.2_@deepseek-ai+cordis@4.0.2_@deepseek-ai+_31ffca8ba72e59dfa798e021c3f9fc4f/node_modules/@deepseek-ai/dsh-subprocess-local",
+        "manifestSha256": "dcd5fb8d1f720a1fa747fd6bbe74906a80a294586badbaf9be709d5b7f3c1fac",
+        "lifecycleScripts": {
+          "postinstall": "node scripts/ensure-spawn-helper.mjs"
+        },
+        "reportedLocators": [
+          "@deepseek-ai/dsh-subprocess-local@0.1.3-alpha.2(@deepseek-ai/cordis@4.0.2)(@deepseek-ai/dsh-subprocess@0.1.3-alpha.2(@deepseek-ai/cordis@4.0.2)(@deepseek-ai/dsh-http-proxy@0.1.3-alpha.2(@deepseek-ai/cordis@4.0.2)))(@deepseek-ai/dsh-timeout@0.1.3-alpha.2(@deepseek-ai/cordis@4.0.2))"
+        ],
+        "metadataSources": [
+          "pendingBuilds"
+        ]
+      },
+      {
+        "spec": "@google/genai@1.52.0",
+        "location": "pnpm/dlx/c5acde164aea5de5077c5406f24641e105180663a3025f5fd0db2cc6cc6dfdbc/1a0a32ef891-11/node_modules/.pnpm/@google+genai@1.52.0_@modelcontextprotocol+sdk@1.30.0_zod@4.6.5_/node_modules/@google/genai",
+        "manifestSha256": "ec761756421ea5502c23dbebfb4bc2b74c3ff842597199f2f330afc49cbdedc7",
+        "lifecycleScripts": {
+          "preinstall": "echo 'preinstall: no-op'"
+        },
+        "reportedLocators": [
+          "@google/genai@1.52.0(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))"
+        ],
+        "metadataSources": [
+          "pendingBuilds"
+        ]
+      },
+      {
+        "spec": "fs-ext@2.1.1",
+        "location": "pnpm/dlx/c5acde164aea5de5077c5406f24641e105180663a3025f5fd0db2cc6cc6dfdbc/1a0a32ef891-11/node_modules/.pnpm/fs-ext@2.1.1/node_modules/fs-ext",
+        "manifestSha256": "adf78ce46360a6b78f89c7dfbd898cfcbb2524cbd36076df091a2f85249adc6a",
+        "lifecycleScripts": {
+          "install": "node-gyp configure build"
+        },
+        "reportedLocators": [
+          "fs-ext@2.1.1"
+        ],
+        "metadataSources": [
+          "pendingBuilds"
+        ]
+      },
+      {
+        "spec": "koffi@3.2.1",
+        "location": "pnpm/dlx/c5acde164aea5de5077c5406f24641e105180663a3025f5fd0db2cc6cc6dfdbc/1a0a32ef891-11/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+        "manifestSha256": "9ed5909da5972d5c0edf9d0f6f936393bc00d92cec8aa28df7e1c02240ef9b48",
+        "lifecycleScripts": {
+          "install": "node ./cnoke.cjs -P . -D src/koffi --prebuild --release"
+        },
+        "reportedLocators": [
+          "koffi@3.2.1"
+        ],
+        "metadataSources": [
+          "pendingBuilds"
+        ]
+      },
+      {
+        "spec": "node-pty@1.2.0-beta.15",
+        "location": "pnpm/dlx/c5acde164aea5de5077c5406f24641e105180663a3025f5fd0db2cc6cc6dfdbc/1a0a32ef891-11/node_modules/.pnpm/node-pty@1.2.0-beta.15/node_modules/node-pty",
+        "manifestSha256": "f4a19bbc7cf4c2e35c081e6a18a3d11d21c54c2f3cc25bfe48142742a781b71d",
+        "lifecycleScripts": {
+          "install": "node scripts/prebuild.js || node-gyp rebuild",
+          "postinstall": "node scripts/post-install.js"
+        },
+        "reportedLocators": [
+          "node-pty@1.2.0-beta.15"
+        ],
+        "metadataSources": [
+          "pendingBuilds"
+        ]
+      },
+      {
+        "spec": "protobufjs@7.6.6",
+        "location": "pnpm/dlx/c5acde164aea5de5077c5406f24641e105180663a3025f5fd0db2cc6cc6dfdbc/1a0a32ef891-11/node_modules/.pnpm/protobufjs@7.6.6/node_modules/protobufjs",
+        "manifestSha256": "0e56b70de03bffc143e74311b42ae22b557370a4a1f4b5066568fbc77857639a",
+        "lifecycleScripts": {
+          "postinstall": "node scripts/postinstall"
+        },
+        "reportedLocators": [
+          "protobufjs@7.6.6"
+        ],
+        "metadataSources": [
+          "pendingBuilds"
+        ]
+      }
+    ],
+    "coverageGaps": [],
+    "pnpmVersion": "11.7.0",
+    "installation": {
+      "location": "pnpm/dlx/c5acde164aea5de5077c5406f24641e105180663a3025f5fd0db2cc6cc6dfdbc/1a0a32ef891-11",
+      "manifestSha256": "4751573a2c8fe78a393012be149a34c92292fd6611b30d4a928d528d3177cff7",
+      "hostManifestSha256": "d5b4ed2ce39b4581339e15ae9aad14e1ba2c68bb0d43c8fed98dbe44a45d8b8d",
+      "lockfileSha256": "4b65d37b920093ec72d66c03145820d64de03b6fbde693c05f5ae11c92119fd9",
+      "lockGraphDigest": "sha256:a82bb8b7f2b23a24434656189c4577b3971c3a24cce008f411a0fc5224741d00"
+    }
+  }
+}

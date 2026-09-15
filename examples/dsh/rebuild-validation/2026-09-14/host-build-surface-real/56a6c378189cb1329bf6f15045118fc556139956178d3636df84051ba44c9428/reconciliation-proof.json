@@ -1,0 +1,20 @@
+{
+  "sourceIdentity": "56a6c378189cb1329bf6f15045118fc556139956178d3636df84051ba44c9428",
+  "sourceFiles": 165,
+  "containerId": "2dc1db0626ab8f030c94ce3c3952668fdbfd975958d4dd2bafb3c67a831c6900",
+  "imageId": "sha256:f68a6ddfd24e45a5a1ab4eb776a4c6aa99497aed532a53cfcf2e652de64465fc",
+  "executionContract": "dsh-surface/v1alpha15",
+  "hostLogSha256": "c4ec8224e8b31a9ef3fa1531431b9d5ab467e997fd60be2d586a07507b78a099",
+  "acceptedCaseIds": [
+    "context-host-build-regression"
+  ],
+  "result": "environment-unsupported",
+  "verified": {
+    "currentSourceMatchesImageInputs": true,
+    "failureBoundToSavedLog": true,
+    "reportAccepted": true,
+    "hostFactsPreservedInIR": true,
+    "pluginBuildPermissionsUnchanged": true
+  },
+  "scope": "Focused real observer and report-ingestion regression, not repository inference, a native arm64 verdict, the whole batch or a recovery test."
+}

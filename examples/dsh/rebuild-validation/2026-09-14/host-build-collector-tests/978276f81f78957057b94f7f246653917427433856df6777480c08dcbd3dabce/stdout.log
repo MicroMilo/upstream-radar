@@ -1,0 +1,33 @@
+✔ collects exact pending host-build facts from pnpm JSON metadata without treating pending as a verdict (18.61625ms)
+✖ ignores the pnpm virtual-store hoisted alias directory without losing physical build facts (8.68325ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29.270042
+
+✖ failing tests:
+
+test at ../sandbox/current/test/dsh-host-builds.test.js:83:1
+✖ ignores the pnpm virtual-store hoisted alias directory without losing physical build facts (8.68325ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   "ENOENT: no such file or directory, open '/proc/self/fd/24/node_modules'"
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///sandbox/current/test/dsh-host-builds.test.js:90:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Array],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

@@ -18,9 +18,10 @@ import { bindDshWebPackageVersions, type DshWebBundleCapture } from './dsh-web-p
 import { collectDshWebPackageInventory } from './dsh-web-package-inventory.js'
 import { captureDshWebBundles } from './dsh-web-bundle-capture.js'
 import { parseDshStartupConfiguration, type DshStartupConfiguration } from './dsh-startup-configuration.js'
+import { collectDshHostBuildInventory, collectDshHostNativeLoadFailures, type DshHostBuildInventory, type DshHostNativeLoadFailure } from './dsh-host-builds.js'
 
 export const DSH_SURFACE_OBSERVATION_SCHEMA = 'upstream-radar.dsh-surface-observation/v1alpha1' as const
-export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha14' as const
+export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha15' as const
 
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const CASE_ID = /^[a-z0-9][a-z0-9._-]{0,63}$/
@@ -97,12 +98,14 @@ export interface DshTuiSurfaceEvidence {
 }
 
 export interface DshSurfaceObservationReport {
+  hostBuildInventory?: DshHostBuildInventory
+  hostBuildFailures?: DshHostNativeLoadFailure[]
   startupConfiguration?: DshStartupConfiguration
   schema: typeof DSH_SURFACE_OBSERVATION_SCHEMA
   tool: { name: 'upstream-radar'; version: string }
   probe: 'dsh-surface'
   scope: 'surface-runtime-behavior'
-  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8' | 'dsh-surface/v1alpha9' | 'dsh-surface/v1alpha10' | 'dsh-surface/v1alpha11' | 'dsh-surface/v1alpha12' | 'dsh-surface/v1alpha13'
+  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8' | 'dsh-surface/v1alpha9' | 'dsh-surface/v1alpha10' | 'dsh-surface/v1alpha11' | 'dsh-surface/v1alpha12' | 'dsh-surface/v1alpha13' | 'dsh-surface/v1alpha14'
   profileEnvironment?: DshProfileEnvironment
   startedAt: string
   completedAt: string
@@ -1073,6 +1076,11 @@ async function observeWebSurface(input: {
     return recordDshWebObservationError(input.report, error instanceof Error ? error.message : String(error),
       { exited: host.exited(), code: host.code(), output: host.output() })
   } finally {
+    if (host.exited() && !host.outputExceeded() && host.launchError() === undefined
+      && input.report.stages.host.status === 'failed' && input.report.hostBuildInventory !== undefined) {
+      const failures = collectDshHostNativeLoadFailures(input.report.hostBuildInventory, input.env.XDG_CACHE_HOME as string, host.output())
+      if (failures.length) input.report.hostBuildFailures = failures
+    }
     if (traceStarted && context !== undefined) {
       await context.tracing.stop({ path: join(input.artifactsDirectory, safeArtifactName(input.report.caseId, 'trace.zip')) }).catch(() => undefined)
     }
@@ -1426,6 +1434,7 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
       : { status: 'failed', detail: `the profile did not register ${parsedSpec.name}` }
     if (!registered) return finish(report, 'surface-incompatible', 'DSH accepted the install command but did not register the plugin in the declared profile')
 
+    report.hostBuildInventory = await collectDshHostBuildInventory(environment.XDG_CACHE_HOME as string, report.dshVersion)
     const evaluation = report.plane === 'web'
       ? await observeWebSurface({
           report,
@@ -1448,10 +1457,19 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
           ...(options.driverRoot === undefined ? {} : { driverRoot: options.driverRoot }),
         })
     if (hasOverrides) await verifyOverrides()
+    if (report.hostBuildFailures?.length) return finish(report, 'environment-unsupported',
+      `the isolated DSH host reported native-load failures requiring separate host build review: ${[...new Set(report.hostBuildFailures.map(item => item.packageSpec))].join(', ')}`)
     return finish(report, evaluation.result, evaluation.reason)
   } catch (error: unknown) {
     return finish(report, 'unknown', `the bounded surface observer failed: ${bounded(error instanceof Error ? error.message : String(error))}`)
   } finally {
+    if (report.stages.profile.status === 'passed' || report.stages.install.status !== 'skipped') {
+      report.hostBuildInventory ??= await collectDshHostBuildInventory(environment.XDG_CACHE_HOME as string, report.dshVersion)
+      if (report.result === 'compatible' && report.hostBuildInventory.coverageGaps.length > 0) {
+        report.result = 'unknown'
+        report.reason = 'the surface smoke succeeded but DSH host build metadata could not be completely established'
+      }
+    }
     if (report.stages.artifact.status === 'passed' && report.stages.install.status !== 'skipped') {
       report.resolution = await observeDshProfileResolution(
         environment.DSH_HOME as string,

@@ -1,0 +1,62 @@
+Sending build context to Docker daemon  2.608MB
+Step 1/19 : ARG NODE_MAJOR=22
+Step 2/19 : FROM node:24-bookworm-slim AS build
+ ---> 2fe369e96955
+Step 3/19 : RUN corepack enable   && attempt=1   && until corepack prepare pnpm@11.3.0 --activate; do     if [ "$attempt" -ge 3 ]; then exit 1; fi;     sleep "$((attempt * 2))";     attempt="$((attempt + 1))";   done
+ ---> Using cache
+ ---> d86533fa5455
+Step 4/19 : WORKDIR /build
+ ---> Using cache
+ ---> 2fe4e3af02f3
+Step 5/19 : COPY package.json pnpm-lock.yaml tsconfig.json .npmrc ./
+ ---> Using cache
+ ---> cfadf51a2c72
+Step 6/19 : RUN pnpm install --frozen-lockfile --ignore-scripts
+ ---> Using cache
+ ---> 8e06739ed8fa
+Step 7/19 : COPY src ./src
+ ---> 74345bf51b97
+Step 8/19 : COPY test ./test
+ ---> 071e10983c8c
+Step 9/19 : RUN pnpm run build
+ ---> Running in 4a1fc788e29c
+[91m$ tsc -p tsconfig.json
+[0m ---> Removed intermediate container 4a1fc788e29c
+ ---> dc51d8cbd7da
+Step 10/19 : FROM node:${NODE_MAJOR}-bookworm-slim AS runtime
+ ---> 2fe369e96955
+Step 11/19 : ARG PNPM_VERSION=11.7.0
+ ---> Using cache
+ ---> 375a43e957b0
+Step 12/19 : RUN apt-get update   && apt-get install --yes --no-install-recommends ca-certificates chromium git strace python3 make g++   && rm -rf /var/lib/apt/lists/*   && npm install --global --ignore-scripts "pnpm@${PNPM_VERSION}"   && mkdir -p /surface-driver   && npm install --prefix /surface-driver --no-audit --no-fund playwright-core@1.62.0 node-pty@1.1.0   && npm cache clean --force   && useradd --create-home --uid 10001 --shell /usr/sbin/nologin observer
+ ---> Using cache
+ ---> 4eb916a64830
+Step 13/19 : WORKDIR /radar
+ ---> Using cache
+ ---> 36c05aabc21f
+Step 14/19 : COPY --from=build /build/dist/src ./dist/src
+ ---> 31ed1c729223
+Step 15/19 : COPY package.json ./package.json
+ ---> f995590009f7
+Step 16/19 : ENV UPSTREAM_RADAR_SURFACE_DRIVER_ROOT=/surface-driver
+ ---> Running in c81fdc954af4
+ ---> Removed intermediate container c81fdc954af4
+ ---> 61ed49b66d5c
+Step 17/19 : ENV UPSTREAM_RADAR_CHROMIUM_EXECUTABLE=/usr/bin/chromium
+ ---> Running in 307a482b1040
+ ---> Removed intermediate container 307a482b1040
+ ---> 41b8355d4261
+Step 18/19 : ENTRYPOINT ["node", "/radar/dist/src/cli.js", "probe", "dsh-surface"]
+ ---> Running in 8789e7dbad69
+ ---> Removed intermediate container 8789e7dbad69
+ ---> a0152fe430a3
+Step 19/19 : LABEL upstream-radar.scanner-source=c52478f2609158dd07d37e274ed8ae8f81b8661637d59bbce716c9e18be661d7
+ ---> Running in 7a751c2f3cfc
+ ---> Removed intermediate container 7a751c2f3cfc
+ ---> de8a5344023b
+Successfully built de8a5344023b
+Successfully tagged upstream-radar-host-build-surface:c52478f2609158dd
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+

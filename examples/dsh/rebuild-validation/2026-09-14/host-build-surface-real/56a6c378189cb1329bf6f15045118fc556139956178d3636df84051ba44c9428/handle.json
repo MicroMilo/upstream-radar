@@ -1,0 +1,26 @@
+{
+  "id": "2dc1db0626ab8f030c94ce3c3952668fdbfd975958d4dd2bafb3c67a831c6900",
+  "imageId": "sha256:f68a6ddfd24e45a5a1ab4eb776a4c6aa99497aed532a53cfcf2e652de64465fc",
+  "sourceIdentity": "56a6c378189cb1329bf6f15045118fc556139956178d3636df84051ba44c9428",
+  "executionContract": "dsh-surface/v1alpha15",
+  "cell": {
+    "id": "context-host-build-regression",
+    "sourceCaseId": "context-node24-dsh-09024d4a86b3",
+    "plugin": "dsh-context@0.52.2",
+    "dshVersion": "0.1.3-alpha.2",
+    "nodeMajor": 24,
+    "platform": "linux",
+    "architecture": "arm64",
+    "plane": "web",
+    "profile": "web",
+    "runtimeId": "dsh-context",
+    "artifactSha256": "7e951194997d289c054349e2046d2c241a119ff63fc718750a18fbb9dfad9256",
+    "allowedBuilds": "",
+    "profileEnvironment": {
+      "pnpmVersion": "11.7.0",
+      "overrides": {}
+    },
+    "sourceFingerprint": "sha256:5b030e6b5d3455de6ad21582a5c2e6fd28df52fa74f4d1ab52a4330ec5a2eaf5",
+    "contractFingerprint": "sha256:56a6c378189cb1329bf6f15045118fc556139956178d3636df84051ba44c9428"
+  }
+}

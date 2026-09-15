@@ -1,0 +1,35 @@
+{
+  "id": "940767587b9eecead2bb75bc37ed0b31370c6f6fe3b5e9846a6b4d9f703ec857",
+  "imageId": "sha256:de8a5344023b09bde5a48a7c5c80b5fe75135c50b343d305fd9ebcd77f8f53b7",
+  "sourceIdentity": "c52478f2609158dd07d37e274ed8ae8f81b8661637d59bbce716c9e18be661d7",
+  "executionContract": "dsh-surface/v1alpha15",
+  "plugin": "dsh-context@0.52.2",
+  "dshVersion": "0.1.3-alpha.2",
+  "runtime": {
+    "nodeMajor": 24,
+    "nodeVersion": "24.21.0",
+    "platform": "linux",
+    "architecture": "arm64",
+    "pnpmVersion": "11.7.0"
+  },
+  "result": "environment-unsupported",
+  "hostBuildPackages": [
+    "@deepseek-ai/dsh-subprocess-local@0.1.3-alpha.2",
+    "@google/genai@1.52.0",
+    "fs-ext@2.1.1",
+    "koffi@3.2.1",
+    "node-pty@1.2.0-beta.15",
+    "protobufjs@7.6.6"
+  ],
+  "hostNativeFailures": [
+    {
+      "scope": "dsh-host-native-load-failure",
+      "packageSpec": "fs-ext@2.1.1",
+      "manifestSha256": "adf78ce46360a6b78f89c7dfbd898cfcbb2524cbd36076df091a2f85249adc6a",
+      "missingModule": "./build/Release/fs_ext.node",
+      "requiringFile": "pnpm/dlx/c5acde164aea5de5077c5406f24641e105180663a3025f5fd0db2cc6cc6dfdbc/1a0a339d697-29/node_modules/.pnpm/fs-ext@2.1.1/node_modules/fs-ext/fs-ext.js",
+      "outputSha256": "27bcf916adb511aa4aa77b6c7e14f632a8b419432e2804d797a41d044fd3b4e3"
+    }
+  ],
+  "scope": "Current-code real-plugin host failure attribution regression; no host build permission and not the full batch."
+}

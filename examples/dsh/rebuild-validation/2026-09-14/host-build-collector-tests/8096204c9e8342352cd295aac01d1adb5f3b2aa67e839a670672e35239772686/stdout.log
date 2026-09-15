@@ -1,0 +1,12 @@
+✔ collects exact pending host-build facts from pnpm JSON metadata without treating pending as a verdict (15.620209ms)
+✔ ignores the pnpm virtual-store hoisted alias directory without losing physical build facts (8.566917ms)
+✔ preserves duplicate package versions and scoped peer locators as distinct physical facts (11.53475ms)
+✔ does not follow a replaced manifest or a symlinked cache ancestor (7.438041ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 45.693334

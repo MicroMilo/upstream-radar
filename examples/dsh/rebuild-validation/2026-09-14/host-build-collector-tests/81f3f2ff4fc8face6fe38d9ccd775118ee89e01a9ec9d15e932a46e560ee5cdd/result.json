@@ -1,0 +1,23 @@
+{
+  "id": "ce8d641194dc47ceb0d3fc32de461cc02beb102e0c29d625cef42ab8a35adb2c",
+  "imageId": "sha256:0a68f95329ff3e88425b7d2211ed22107ce111827573ecebef78513f9645a09c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-09-15T03:42:00.250910136Z",
+    "FinishedAt": "2026-09-15T03:42:00.348212428Z"
+  },
+  "sourceSha256": "850e2e5e11d8f4f51b667f3e9d2796e1068db09bd17ff0fc7eb6c7c7a2cb3141",
+  "loadedModuleSha256": "f0df8350cac24c6b4707dddd9b42fee9e62ef27ea914711ee37a2b2abb7076ed",
+  "testSha256": "a5c6fdbe2728f6bc285567eca16281de755ca3278c69e22975dc205868d485ec",
+  "network": "none",
+  "hostMounts": false,
+  "pluginExecuted": false
+}
