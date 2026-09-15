@@ -1,0 +1,130 @@
+{
+  "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.45.0"
+  },
+  "probe": "dsh-surface",
+  "scope": "surface-runtime-behavior",
+  "startedAt": "2026-09-13T12:00:43.720Z",
+  "completedAt": "2026-09-13T12:02:12.843Z",
+  "caseId": "cloudflare-browser-node22-web",
+  "sourceCaseId": "cloudflare-browser-node22",
+  "sourceFingerprint": "sha256:4b7a3f5812776e3badd6bba4385be775843204a804ad9ab3723714164bdf29c4",
+  "contractFingerprint": "sha256:ff49d2832125a36fd4e9b639a7653e55a0934f1a13baae8913fce5c4795f2aa7",
+  "plugin": "dsh-cloudflare-browser-run@0.1.9",
+  "dshVersion": "0.1.5-rc.2",
+  "plane": "web",
+  "profile": "web",
+  "runtimeId": "dsh-cloudflare-browser-run",
+  "runtime": {
+    "nodeMajor": 22,
+    "nodeVersion": "22.23.2",
+    "platform": "linux",
+    "architecture": "arm64",
+    "pnpmVersion": "11.7.0"
+  },
+  "artifact": {
+    "sha256": "887ea8a5170bd39f841adef7678961ea31f7676ea9c50cee7fd5b412ba8fe77a",
+    "bytes": 8499,
+    "integrity": "sha512-OAxzVn9D1IQUC/m1YkZKMhqUx+3RSdoV5qLtS9jgIfXKKmKMjjFfyYYTnyML/pd5OP+R3GqRF/ZL268xNTRpIw=="
+  },
+  "stages": {
+    "runtime": {
+      "status": "passed",
+      "code": 0
+    },
+    "artifact": {
+      "status": "passed",
+      "code": 0
+    },
+    "profile": {
+      "status": "passed",
+      "code": 0
+    },
+    "install": {
+      "status": "passed",
+      "code": 0
+    },
+    "registration": {
+      "status": "passed"
+    },
+    "host": {
+      "status": "passed"
+    },
+    "surface": {
+      "status": "failed",
+      "detail": "the declared plugin client entry is absent from the DSH boot manifest"
+    },
+    "interaction": {
+      "status": "skipped"
+    },
+    "shutdown": {
+      "status": "passed"
+    }
+  },
+  "evidence": {
+    "plane": "web",
+    "url": "http://127.0.0.1:30880/",
+    "rootMounted": true,
+    "bootManifestPresent": true,
+    "bootEntryIds": [
+      "@deepseek-ai/dsh-api-gateway",
+      "@deepseek-ai/dsh-client-ui-open-in-app",
+      "@deepseek-ai/dsh-api-workspace-files",
+      "@deepseek-ai/dsh-client-hmr",
+      "@deepseek-ai/dsh-client-modules",
+      "@deepseek-ai/dsh-cordis-client-runner",
+      "@deepseek-ai/dsh-client-ui-theme",
+      "@deepseek-ai/dsh-client-locale",
+      "@deepseek-ai/dsh-client-ui-layout",
+      "@deepseek-ai/dsh-client-ui-renderer",
+      "@deepseek-ai/dsh-client-ui-session",
+      "@deepseek-ai/dsh-client-resources",
+      "@deepseek-ai/dsh-client-ui-sidebar",
+      "@deepseek-ai/dsh-client-ui-sidebar-right",
+      "@deepseek-ai/dsh-client-ui-sidebar-documentpreview",
+      "@deepseek-ai/dsh-client-ui-sidebar-files",
+      "@deepseek-ai/dsh-client-ui-settings",
+      "@deepseek-ai/dsh-client-ui-settings-general",
+      "@deepseek-ai/dsh-client-ui-settings-models",
+      "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+      "@deepseek-ai/dsh-client-ui-conversation",
+      "@deepseek-ai/dsh-client-ui-approval",
+      "@deepseek-ai/dsh-client-ui-chat",
+      "@deepseek-ai/dsh-client-ui-brand-official",
+      "@deepseek-ai/dsh-client-ui-attachment",
+      "@deepseek-ai/dsh-client-ui-tool",
+      "@deepseek-ai/dsh-client-ui-cordis",
+      "@deepseek-ai/dsh-client-ui-workflow-run",
+      "@deepseek-ai/dsh-client-ui-workspace",
+      "@deepseek-ai/dsh-client-ui-input-trigger",
+      "@deepseek-ai/dsh-client-ui-commands",
+      "@deepseek-ai/dsh-client-ui-skill"
+    ],
+    "pluginEntryPresent": false,
+    "applicationMounted": false,
+    "pluginMaterialized": false,
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedRequests": [],
+    "hostLog": "cloudflare-browser-node22-web.host.log",
+    "httpStatus": 200,
+    "title": "DeepSeek Harness",
+    "blockedExternalRequests": [],
+    "screenshot": "cloudflare-browser-node22-web.png",
+    "trace": "cloudflare-browser-node22-web.trace.zip"
+  },
+  "result": "surface-incompatible",
+  "reason": "the declared plugin client entry is absent from the DSH boot manifest",
+  "boundary": {
+    "isolationProviderClaim": "other",
+    "isolationVerifiedByRadar": false,
+    "disposableEnvironmentRequired": true,
+    "inheritedHostSecrets": false,
+    "externalBrowserRequestsBlocked": true,
+    "approvedDependencyBuilds": [],
+    "requiredDependencyBuilds": [],
+    "note": "The caller supplies a disposable VM and restricted container. Radar passes no repository or model secrets, binds the run to exact artifact bytes, blocks non-loopback browser requests, and collects bounded smoke evidence. This is compatibility evidence, not a malicious-code safety certificate. Package transport uses an explicitly selected credential-free proxy; browser non-loopback requests remain blocked."
+  }
+}

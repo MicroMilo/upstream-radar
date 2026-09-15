@@ -1,0 +1,4327 @@
+{
+  "schema": "upstream-radar.dsh-compatibility-ledger/v1alpha1",
+  "entries": [
+    {
+      "caseId": "better-sidebar-node22",
+      "targetId": "better-sidebar",
+      "plugin": "dsh-better-sidebar@0.19.1",
+      "dshVersion": "0.1.5-rc.2",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "arm64",
+        "pnpmVersion": "11.7.0"
+      },
+      "staticFingerprint": "sha256:3325df55263b9e3f15bf52611bca7f896d59cbfd311a8c724c96d37e704d51bc",
+      "contractFingerprint": "sha256:5535d83ed951fa712336033dd2c1da30f987c90f0bfd0fa11fe196ec2b0a4385",
+      "observedAt": "2026-09-13T12:59:26.585Z",
+      "result": "unknown",
+      "reason": "the exact artifact installed and loaded, but dependency coverage is incomplete (4 missing Node peers, 0 indeterminate peers, 0 version facts, 5 unresolved edges); this is not a demonstrated runtime failure",
+      "approvedDependencyBuilds": [
+        "node-pty"
+      ],
+      "artifact": {
+        "lifecycleScripts": [],
+        "sha256": "67969b94e96747ad910ce945bafa2b8176af584fb8bc02f87dce5ed132986884",
+        "nodeEngine": ">=20",
+        "client": {
+          "platform": "web",
+          "inject": [
+            "@deepseek-ai/dsh-client-locale",
+            "@deepseek-ai/dsh-client-ui-slots",
+            "@deepseek-ai/dsh-client-ui-conversation",
+            "@deepseek-ai/dsh-client-ui-sidebar-right",
+            "@deepseek-ai/dsh-client-modules"
+          ],
+          "entryPoints": [
+            "lib/client.js"
+          ]
+        }
+      },
+      "resolution": {
+        "profileLockfile": {
+          "sha256": "95248a85e2301082cc0d5242fe7fa28737e2c9c993ec56768a8535cf54b41a85",
+          "bytes": 44707,
+          "graphDigest": "sha256:9f0297449e26d541cf15e3dc93679a666f80d47fd224eedc6a81f651e1cf3974",
+          "nodes": 168,
+          "edges": 344,
+          "unresolved": 21,
+          "unresolvedDependencies": [
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/cordis",
+              "spec": "^4.0.2",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/dsh-agent",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/dsh-client-locale",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/dsh-client-ui-conversation",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/dsh-client-ui-primitives",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/dsh-client-ui-settings",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/dsh-client-ui-sidebar-right",
+              "spec": "^0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/dsh-client-ui-slots",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/dsh-host-webserver",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/dsh-invariants",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/dsh-llm",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/dsh-session",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/dsh-settings",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/dsh-subagent",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@deepseek-ai/dsh-tools",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "@huanlin/dsh-plugin-better-locale",
+              "spec": "^0.1.0",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "react",
+              "spec": "^18.2.0",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-better-sidebar@file:../../../artifact/dsh-better-sidebar-0.19.1.tgz",
+              "name": "react-dom",
+              "spec": "^18.2.0",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:react-icons@5.7.0",
+              "name": "react",
+              "spec": "*",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:ws@8.21.3",
+              "name": "bufferutil",
+              "spec": "^4.0.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:ws@8.21.3",
+              "name": "utf-8-validate",
+              "spec": ">=5.0.2",
+              "kind": "optional"
+            }
+          ]
+        },
+        "runtimeGraph": {
+          "digest": "sha256:4586142bc10d847c48ebfb586b27a433b487f60c150855b553aa46ae0d16a6c8",
+          "nodes": 667,
+          "edges": 2328,
+          "unresolved": 5,
+          "unresolvedDependencies": [
+            {
+              "from": "node_modules/dsh-better-sidebar",
+              "name": "@deepseek-ai/dsh-client-ui-primitives",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-better-sidebar",
+              "name": "@deepseek-ai/dsh-client-ui-slots",
+              "spec": "^0.1.5-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-better-sidebar",
+              "name": "react",
+              "spec": "^18.2.0",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/dsh-better-sidebar",
+              "name": "react-dom",
+              "spec": "^18.2.0",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/react-icons",
+              "name": "react",
+              "spec": "*",
+              "kind": "peer"
+            }
+          ],
+          "optionalUnavailable": 67,
+          "optionalUnavailableDependencies": [
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-arm64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-linux-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.6.2/node_modules/@modelcontextprotocol/sdk",
+              "name": "@cfworker/json-schema",
+              "spec": "^4.1.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-arm",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ppc64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-riscv64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-s390x",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-arm",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-loong64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-riscv64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            }
+          ],
+          "pluginPeerContracts": {
+            "declared": 16,
+            "satisfied": 12,
+            "mismatched": 0,
+            "indeterminate": 0,
+            "missing": 4,
+            "relations": [
+              {
+                "name": "@deepseek-ai/cordis",
+                "required": "^4.0.2",
+                "status": "satisfied",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "4.0.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-agent",
+                "required": "^0.1.5-rc.1",
+                "status": "satisfied",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-client-locale",
+                "required": "^0.1.5-rc.1",
+                "status": "satisfied",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": true,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-client-ui-conversation",
+                "required": "^0.1.5-rc.1",
+                "status": "satisfied",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": true,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-client-ui-primitives",
+                "required": "^0.1.5-rc.1",
+                "status": "missing",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
+              },
+              {
+                "name": "@deepseek-ai/dsh-client-ui-settings",
+                "required": "^0.1.5-rc.1",
+                "status": "satisfied",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-client-ui-slots",
+                "required": "^0.1.5-rc.1",
+                "status": "missing",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": true
+              },
+              {
+                "name": "@deepseek-ai/dsh-host-webserver",
+                "required": "^0.1.5-rc.1",
+                "status": "satisfied",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-invariants",
+                "required": "^0.1.5-rc.1",
+                "status": "satisfied",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-llm",
+                "required": "^0.1.5-rc.1",
+                "status": "satisfied",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "runtime-import-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-session",
+                "required": "^0.1.5-rc.1",
+                "status": "satisfied",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "runtime-import-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-settings",
+                "required": "^0.1.5-rc.1",
+                "status": "satisfied",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "runtime-import-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-subagent",
+                "required": "^0.1.5-rc.1",
+                "status": "satisfied",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "runtime-import-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-tools",
+                "required": "^0.1.5-rc.1",
+                "status": "satisfied",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "runtime-import-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "react",
+                "required": "^18.2.0",
+                "status": "missing",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
+              },
+              {
+                "name": "react-dom",
+                "required": "^18.2.0",
+                "status": "missing",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
+              }
+            ],
+            "issues": [
+              {
+                "name": "@deepseek-ai/dsh-client-ui-primitives",
+                "required": "^0.1.5-rc.1",
+                "status": "missing",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
+              },
+              {
+                "name": "@deepseek-ai/dsh-client-ui-slots",
+                "required": "^0.1.5-rc.1",
+                "status": "missing",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": true
+              },
+              {
+                "name": "react",
+                "required": "^18.2.0",
+                "status": "missing",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
+              },
+              {
+                "name": "react-dom",
+                "required": "^18.2.0",
+                "status": "missing",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
+              }
+            ]
+          },
+          "hostRuntime": {
+            "source": "dsh-process",
+            "resolvedNodes": 500,
+            "dshVersion": "0.1.5-rc.2"
+          }
+        }
+      },
+      "observer": {
+        "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+        "version": "0.45.0"
+      }
+    },
+    {
+      "caseId": "cloudflare-browser-node22",
+      "targetId": "cloudflare-browser",
+      "plugin": "dsh-cloudflare-browser-run@0.1.9",
+      "dshVersion": "0.1.5-rc.2",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "arm64",
+        "pnpmVersion": "11.7.0"
+      },
+      "staticFingerprint": "sha256:16ddd1cab85feb5b11c40243540498a75d7d60c57afccd1a4bf6fdb5f7c3ffec",
+      "contractFingerprint": "sha256:329edca892590949a33f0763fdfc7e7bedcbb115d6e427d28bdbd86d41f12c8e",
+      "observedAt": "2026-09-13T12:58:14.163Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct Node peer contracts; client-plane compatibility requires its own profile evidence",
+      "artifact": {
+        "lifecycleScripts": [],
+        "sha256": "887ea8a5170bd39f841adef7678961ea31f7676ea9c50cee7fd5b412ba8fe77a",
+        "nodeEngine": ">=20.0.0"
+      },
+      "resolution": {
+        "profileLockfile": {
+          "sha256": "39cd4ad0eb086b2ab9253e83c44971dcffba16fa914fb5b048b71b02795a3116",
+          "bytes": 4255,
+          "graphDigest": "sha256:3ae2d7e6153fe37f703dd566123334968a111d36360b5895cf709c1baf6a6baf",
+          "nodes": 9,
+          "edges": 14,
+          "unresolved": 2,
+          "unresolvedDependencies": [
+            {
+              "from": "pnpm:@deepseek-ai/cordis@4.0.2",
+              "name": "@deepseek-ai/cordis-plugin-include",
+              "spec": "^1.0.7",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-ai/cordis@4.0.2",
+              "name": "@deepseek-ai/cordis-plugin-loader",
+              "spec": "^1.0.3",
+              "kind": "optional"
+            }
+          ]
+        },
+        "runtimeGraph": {
+          "digest": "sha256:5b0310119bade3a20f2a28df597db06a3e27268921be70808d12223191c8f01c",
+          "nodes": 508,
+          "edges": 1994,
+          "unresolved": 0,
+          "optionalUnavailable": 65,
+          "optionalUnavailableDependencies": [
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-arm64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-linux-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.6.2/node_modules/@modelcontextprotocol/sdk",
+              "name": "@cfworker/json-schema",
+              "spec": "^4.1.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-arm",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ppc64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-riscv64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-s390x",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-arm",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-loong64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-riscv64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            }
+          ],
+          "pluginPeerContracts": {
+            "declared": 0,
+            "satisfied": 0,
+            "mismatched": 0,
+            "indeterminate": 0,
+            "missing": 0,
+            "relations": []
+          },
+          "hostRuntime": {
+            "source": "dsh-process",
+            "resolvedNodes": 500,
+            "dshVersion": "0.1.5-rc.2"
+          }
+        }
+      },
+      "observer": {
+        "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+        "version": "0.45.0"
+      }
+    },
+    {
+      "caseId": "context-node22",
+      "targetId": "context",
+      "plugin": "dsh-context@0.51.0",
+      "dshVersion": "0.1.5-rc.2",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "arm64",
+        "pnpmVersion": "11.7.0"
+      },
+      "staticFingerprint": "sha256:fb3744b14df916e6991c5ff9be70f95c2cb34007ceccfa679d08aa6ce28cac3c",
+      "contractFingerprint": "sha256:9db047bf98e78e8246fe88feb9fb58bc2511dcf79252205796e354f9b344748c",
+      "observedAt": "2026-09-13T12:58:48.506Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct Node peer contracts; client-plane compatibility requires its own profile evidence",
+      "artifact": {
+        "lifecycleScripts": [
+          "prepare"
+        ],
+        "sha256": "e7c0c42570370bae7f80aab74fc48692acb36f20a5577ca759ecac2b5e3d2b5f",
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "client": {
+          "platform": "web",
+          "inject": [
+            "@deepseek-ai/dsh-api-remotes",
+            "@deepseek-ai/dsh-client-connection",
+            "@deepseek-ai/dsh-client-locale",
+            "@deepseek-ai/dsh-client-ui-conversation",
+            "@deepseek-ai/dsh-client-ui-settings",
+            "@deepseek-ai/dsh-client-ui-sidebar-right"
+          ],
+          "entryPoints": [
+            "lib/client.js"
+          ]
+        }
+      },
+      "resolution": {
+        "profileLockfile": {
+          "sha256": "58d7b42d4a72a4f34e7df370d2980ce60dd38368657af365044beb6cd5114137",
+          "bytes": 1306,
+          "graphDigest": "sha256:7af13c1b225775fc70bc40c851f830a4612d8d0de5d0d010de6ff32b6a2016d7",
+          "nodes": 3,
+          "edges": 2,
+          "unresolved": 6,
+          "unresolvedDependencies": [
+            {
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.51.0.tgz",
+              "name": "@deepseek-ai/cordis",
+              "spec": "^4.0.2",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.51.0.tgz",
+              "name": "@deepseek-ai/dsh-client-ui-primitives",
+              "spec": ">=0.1.2-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.51.0.tgz",
+              "name": "@deepseek-ai/dsh-session",
+              "spec": ">=0.1.2-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.51.0.tgz",
+              "name": "@deepseek-ai/dsh-settings",
+              "spec": ">=0.1.2-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.51.0.tgz",
+              "name": "@deepseek-ai/schemastery",
+              "spec": "^3.18.2",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.51.0.tgz",
+              "name": "react",
+              "spec": "^18.3.1",
+              "kind": "optional"
+            }
+          ]
+        },
+        "runtimeGraph": {
+          "digest": "sha256:b301a9191c937f7cc0477bff0e98ab5629769bc5a4988876c3fcde3f82d07aa5",
+          "nodes": 502,
+          "edges": 1978,
+          "unresolved": 0,
+          "optionalUnavailable": 65,
+          "optionalUnavailableDependencies": [
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-arm64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-linux-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.6.2/node_modules/@modelcontextprotocol/sdk",
+              "name": "@cfworker/json-schema",
+              "spec": "^4.1.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-arm",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ppc64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-riscv64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-s390x",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-arm",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-loong64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-riscv64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            }
+          ],
+          "pluginPeerContracts": {
+            "declared": 4,
+            "satisfied": 4,
+            "mismatched": 0,
+            "indeterminate": 0,
+            "missing": 0,
+            "relations": [
+              {
+                "name": "@deepseek-ai/cordis",
+                "required": "^4.0.2",
+                "status": "satisfied",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "type-only-reference-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "4.0.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-session",
+                "required": ">=0.1.2-rc.1",
+                "status": "satisfied",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "runtime-import-observed",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "type-only-reference-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-settings",
+                "required": ">=0.1.2-rc.1",
+                "status": "satisfied",
+                "staticUsage": "no-literal-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "no-literal-reference-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/schemastery",
+                "required": "^3.18.2",
+                "status": "satisfied",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "runtime-import-observed",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "no-literal-reference-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "3.18.2"
+              }
+            ]
+          },
+          "hostRuntime": {
+            "source": "dsh-process",
+            "resolvedNodes": 500,
+            "dshVersion": "0.1.5-rc.2"
+          }
+        }
+      },
+      "observer": {
+        "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+        "version": "0.45.0"
+      }
+    },
+    {
+      "caseId": "context-node24",
+      "targetId": "context",
+      "plugin": "dsh-context@0.51.0",
+      "dshVersion": "0.1.5-rc.2",
+      "runtime": {
+        "nodeMajor": 24,
+        "nodeVersion": "24.21.0",
+        "platform": "linux",
+        "architecture": "arm64",
+        "pnpmVersion": "11.7.0"
+      },
+      "staticFingerprint": "sha256:fb3744b14df916e6991c5ff9be70f95c2cb34007ceccfa679d08aa6ce28cac3c",
+      "contractFingerprint": "sha256:1076581e51611098fb4598ae873880a9777a673af85d68e4172bf08e85d02945",
+      "observedAt": "2026-09-13T12:59:16.330Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct Node peer contracts; client-plane compatibility requires its own profile evidence",
+      "artifact": {
+        "lifecycleScripts": [
+          "prepare"
+        ],
+        "sha256": "e7c0c42570370bae7f80aab74fc48692acb36f20a5577ca759ecac2b5e3d2b5f",
+        "nodeEngine": "^22.19.0 || >=24.0.0",
+        "client": {
+          "platform": "web",
+          "inject": [
+            "@deepseek-ai/dsh-api-remotes",
+            "@deepseek-ai/dsh-client-connection",
+            "@deepseek-ai/dsh-client-locale",
+            "@deepseek-ai/dsh-client-ui-conversation",
+            "@deepseek-ai/dsh-client-ui-settings",
+            "@deepseek-ai/dsh-client-ui-sidebar-right"
+          ],
+          "entryPoints": [
+            "lib/client.js"
+          ]
+        }
+      },
+      "resolution": {
+        "profileLockfile": {
+          "sha256": "15be247947bf26a37bd41c7df10feebca73c5b4a8a2ba8be0e1efee99c117bab",
+          "bytes": 1306,
+          "graphDigest": "sha256:7af13c1b225775fc70bc40c851f830a4612d8d0de5d0d010de6ff32b6a2016d7",
+          "nodes": 3,
+          "edges": 2,
+          "unresolved": 6,
+          "unresolvedDependencies": [
+            {
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.51.0.tgz",
+              "name": "@deepseek-ai/cordis",
+              "spec": "^4.0.2",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.51.0.tgz",
+              "name": "@deepseek-ai/dsh-client-ui-primitives",
+              "spec": ">=0.1.2-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.51.0.tgz",
+              "name": "@deepseek-ai/dsh-session",
+              "spec": ">=0.1.2-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.51.0.tgz",
+              "name": "@deepseek-ai/dsh-settings",
+              "spec": ">=0.1.2-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.51.0.tgz",
+              "name": "@deepseek-ai/schemastery",
+              "spec": "^3.18.2",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-context@file:../../../artifact/dsh-context-0.51.0.tgz",
+              "name": "react",
+              "spec": "^18.3.1",
+              "kind": "optional"
+            }
+          ]
+        },
+        "runtimeGraph": {
+          "digest": "sha256:b301a9191c937f7cc0477bff0e98ab5629769bc5a4988876c3fcde3f82d07aa5",
+          "nodes": 502,
+          "edges": 1978,
+          "unresolved": 0,
+          "optionalUnavailable": 65,
+          "optionalUnavailableDependencies": [
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-arm64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-linux-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.6.2/node_modules/@modelcontextprotocol/sdk",
+              "name": "@cfworker/json-schema",
+              "spec": "^4.1.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-arm",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ppc64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-riscv64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-s390x",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-arm",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-loong64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-riscv64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            }
+          ],
+          "pluginPeerContracts": {
+            "declared": 4,
+            "satisfied": 4,
+            "mismatched": 0,
+            "indeterminate": 0,
+            "missing": 0,
+            "relations": [
+              {
+                "name": "@deepseek-ai/cordis",
+                "required": "^4.0.2",
+                "status": "satisfied",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "type-only-reference-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "4.0.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-session",
+                "required": ">=0.1.2-rc.1",
+                "status": "satisfied",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "runtime-import-observed",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "type-only-reference-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-settings",
+                "required": ">=0.1.2-rc.1",
+                "status": "satisfied",
+                "staticUsage": "no-literal-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "no-literal-reference-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/schemastery",
+                "required": "^3.18.2",
+                "status": "satisfied",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "runtime-import-observed",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "no-literal-reference-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "3.18.2"
+              }
+            ]
+          },
+          "hostRuntime": {
+            "source": "dsh-process",
+            "resolvedNodes": 500,
+            "dshVersion": "0.1.5-rc.2"
+          }
+        }
+      },
+      "observer": {
+        "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+        "version": "0.45.0"
+      }
+    },
+    {
+      "caseId": "dsh-agy-link-node24",
+      "targetId": "dsh-agy-link",
+      "plugin": "dsh-agy-link@0.4.27",
+      "dshVersion": "0.1.5-rc.2",
+      "runtime": {
+        "nodeMajor": 24,
+        "nodeVersion": "24.21.0",
+        "platform": "linux",
+        "architecture": "arm64",
+        "pnpmVersion": "11.7.0"
+      },
+      "staticFingerprint": "sha256:faf1f254ceff19ac3e73df8a0a49d065d90225a6f0d7b05c44f4844df0df1e11",
+      "contractFingerprint": "sha256:8d2ba42ecf296209e8bc123f942b80975d65e8fb1aee0d63c6d706c5be8d9b96",
+      "observedAt": "2026-09-13T12:59:45.817Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct Node peer contracts; client-plane compatibility requires its own profile evidence",
+      "artifact": {
+        "lifecycleScripts": [],
+        "sha256": "e6cc28a0f6a484f6007ceaa1aa950edc3a5ae513a0d65f784a1edde70b105bb0",
+        "nodeEngine": ">=24.0.0",
+        "client": {
+          "platform": "web",
+          "inject": [
+            "slots"
+          ],
+          "entryPoints": [
+            "dist/client.js"
+          ]
+        }
+      },
+      "resolution": {
+        "profileLockfile": {
+          "sha256": "3bd495313c97f18e6dab4417304a50e824f334d54f0f917e439a205403ebc617",
+          "bytes": 7792,
+          "graphDigest": "sha256:feddffe7270baad4ae794cce8721f97ad4dd52cced496e95b46f2325bc920933",
+          "nodes": 31,
+          "edges": 35,
+          "unresolved": 5,
+          "unresolvedDependencies": [
+            {
+              "from": "pnpm:dsh-agy-link@file:../../../artifact/dsh-agy-link-0.4.27.tgz",
+              "name": "@deepseek-ai/cordis",
+              "spec": "*",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:dsh-agy-link@file:../../../artifact/dsh-agy-link-0.4.27.tgz",
+              "name": "@deepseek-ai/dsh-commands",
+              "spec": "*",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:dsh-agy-link@file:../../../artifact/dsh-agy-link-0.4.27.tgz",
+              "name": "@deepseek-ai/dsh-llm",
+              "spec": "*",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:dsh-agy-link@file:../../../artifact/dsh-agy-link-0.4.27.tgz",
+              "name": "@deepseek-ai/dsh-tools",
+              "spec": "*",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:dsh-agy-link@file:../../../artifact/dsh-agy-link-0.4.27.tgz",
+              "name": "react",
+              "spec": "^18.0.0",
+              "kind": "optional"
+            }
+          ]
+        },
+        "runtimeGraph": {
+          "digest": "sha256:45ed483762a21c1f1ab2a870cea8b619c86281f43db470d209122f4a54a05d68",
+          "nodes": 530,
+          "edges": 2007,
+          "unresolved": 0,
+          "optionalUnavailable": 68,
+          "optionalUnavailableDependencies": [
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-arm64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-linux-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.6.2/node_modules/@modelcontextprotocol/sdk",
+              "name": "@cfworker/json-schema",
+              "spec": "^4.1.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-arm",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ppc64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-riscv64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-s390x",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-arm",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-loong64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-riscv64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            }
+          ],
+          "pluginPeerContracts": {
+            "declared": 0,
+            "satisfied": 0,
+            "mismatched": 0,
+            "indeterminate": 0,
+            "missing": 0,
+            "relations": []
+          },
+          "hostRuntime": {
+            "source": "dsh-process",
+            "resolvedNodes": 500,
+            "dshVersion": "0.1.5-rc.2"
+          }
+        }
+      },
+      "observer": {
+        "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+        "version": "0.45.0"
+      }
+    },
+    {
+      "caseId": "dsh-tui-node22",
+      "targetId": "dsh-tui",
+      "plugin": "@deepseek-harness-tui/dsh-tui@0.10.1",
+      "dshVersion": "0.1.5-rc.2",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "arm64",
+        "pnpmVersion": "11.7.0"
+      },
+      "staticFingerprint": "sha256:7214abaeada464bcda141640f65f9593c1ba7ce5ecf886c8e8acbd10e59ddf4a",
+      "contractFingerprint": "sha256:e3c8a2178e070dcc9a0737dabf009edc492f7496559780550495f1df324441f4",
+      "observedAt": "2026-09-13T13:00:13.104Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct Node peer contracts; client-plane compatibility requires its own profile evidence",
+      "artifact": {
+        "lifecycleScripts": [
+          "prepare"
+        ],
+        "sha256": "21833eba7569a3e814cb09aa85777fbfa191eef8d6f66269b239b6e6e54e0312",
+        "nodeEngine": "^22.19 || >=24"
+      },
+      "resolution": {
+        "profileLockfile": {
+          "sha256": "c14a4a83a67845ebd6bc8f88c45487d41358ceeba6682db234438466fad8e87e",
+          "bytes": 35794,
+          "graphDigest": "sha256:572d3dfd2bcb1650685d29023767165bea0c923515d22cbaa745b055d443ed01",
+          "nodes": 99,
+          "edges": 125,
+          "unresolved": 30,
+          "unresolvedDependencies": [
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/cordis",
+              "spec": "^4.0.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-agent",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-agent-instructions",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-agent-presets",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-atomic-write",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-code-runtime-worker-thread",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-commands",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-cordis-host-runner",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-invariants",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-llm",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-llm-pi-ai",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-persona",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-session",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-settings",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-skill",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-storage",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-storage-domain",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-storage-json",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-system-prompt",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-terminal",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-terminal-bash",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-tool-ask-user",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-tool-bash-persistent",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-tool-cordis",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-tool-subagent",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-user-approval",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-user-questions",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-workspace",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/schemastery",
+              "spec": "^3.18.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:sharp@0.35.3",
+              "name": "@types/node",
+              "spec": "*",
+              "kind": "optional"
+            }
+          ]
+        },
+        "runtimeGraph": {
+          "digest": "sha256:e0c383f5b62ee75a9c2e818faeaee66222ab744de6ed4788ca6063e97c978803",
+          "nodes": 581,
+          "edges": 2092,
+          "unresolved": 0,
+          "optionalUnavailable": 119,
+          "optionalUnavailableDependencies": [
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-arm64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-linux-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.6.2/node_modules/@modelcontextprotocol/sdk",
+              "name": "@cfworker/json-schema",
+              "spec": "^4.1.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-arm",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ppc64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-riscv64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-s390x",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-arm",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-loong64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-riscv64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            }
+          ],
+          "pluginPeerContracts": {
+            "declared": 0,
+            "satisfied": 0,
+            "mismatched": 0,
+            "indeterminate": 0,
+            "missing": 0,
+            "relations": []
+          },
+          "hostRuntime": {
+            "source": "dsh-process",
+            "resolvedNodes": 500,
+            "dshVersion": "0.1.5-rc.2"
+          }
+        }
+      },
+      "observer": {
+        "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+        "version": "0.45.0"
+      }
+    },
+    {
+      "caseId": "dsh-tui-node24",
+      "targetId": "dsh-tui",
+      "plugin": "@deepseek-harness-tui/dsh-tui@0.10.1",
+      "dshVersion": "0.1.5-rc.2",
+      "runtime": {
+        "nodeMajor": 24,
+        "nodeVersion": "24.21.0",
+        "platform": "linux",
+        "architecture": "arm64",
+        "pnpmVersion": "11.7.0"
+      },
+      "staticFingerprint": "sha256:7214abaeada464bcda141640f65f9593c1ba7ce5ecf886c8e8acbd10e59ddf4a",
+      "contractFingerprint": "sha256:8883a0f5391423e1981784a3394c0c2fcaddff7b9f473d9a7e651626e7ee6aed",
+      "observedAt": "2026-09-13T13:00:28.908Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct Node peer contracts; client-plane compatibility requires its own profile evidence",
+      "artifact": {
+        "lifecycleScripts": [
+          "prepare"
+        ],
+        "sha256": "21833eba7569a3e814cb09aa85777fbfa191eef8d6f66269b239b6e6e54e0312",
+        "nodeEngine": "^22.19 || >=24"
+      },
+      "resolution": {
+        "profileLockfile": {
+          "sha256": "01c5ec1de80893b8fc0d7f53477a167f880c9f3b98abfb7e24bef1070a95729f",
+          "bytes": 35794,
+          "graphDigest": "sha256:572d3dfd2bcb1650685d29023767165bea0c923515d22cbaa745b055d443ed01",
+          "nodes": 99,
+          "edges": 125,
+          "unresolved": 30,
+          "unresolvedDependencies": [
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/cordis",
+              "spec": "^4.0.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-agent",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-agent-instructions",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-agent-presets",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-atomic-write",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-code-runtime-worker-thread",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-commands",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-cordis-host-runner",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-invariants",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-llm",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-llm-pi-ai",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-persona",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-session",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-settings",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-skill",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-storage",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-storage-domain",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-storage-json",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-system-prompt",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-terminal",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-terminal-bash",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-tool-ask-user",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-tool-bash-persistent",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-tool-cordis",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-tool-subagent",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-user-approval",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-user-questions",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/dsh-workspace",
+              "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+              "name": "@deepseek-ai/schemastery",
+              "spec": "^3.18.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:sharp@0.35.3",
+              "name": "@types/node",
+              "spec": "*",
+              "kind": "optional"
+            }
+          ]
+        },
+        "runtimeGraph": {
+          "digest": "sha256:e0c383f5b62ee75a9c2e818faeaee66222ab744de6ed4788ca6063e97c978803",
+          "nodes": 581,
+          "edges": 2092,
+          "unresolved": 0,
+          "optionalUnavailable": 119,
+          "optionalUnavailableDependencies": [
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-arm64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-linux-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.6.2/node_modules/@modelcontextprotocol/sdk",
+              "name": "@cfworker/json-schema",
+              "spec": "^4.1.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-arm",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ppc64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-riscv64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-s390x",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-arm",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-loong64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-riscv64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            }
+          ],
+          "pluginPeerContracts": {
+            "declared": 0,
+            "satisfied": 0,
+            "mismatched": 0,
+            "indeterminate": 0,
+            "missing": 0,
+            "relations": []
+          },
+          "hostRuntime": {
+            "source": "dsh-process",
+            "resolvedNodes": 500,
+            "dshVersion": "0.1.5-rc.2"
+          }
+        }
+      },
+      "observer": {
+        "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+        "version": "0.45.0"
+      }
+    },
+    {
+      "caseId": "dsh-univer-office-node22",
+      "targetId": "dsh-univer-office",
+      "plugin": "dsh-univer-office@0.2.14",
+      "dshVersion": "0.1.5-rc.2",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "arm64",
+        "pnpmVersion": "11.7.0"
+      },
+      "staticFingerprint": "sha256:94c0f4b308e9df20089c5cad93197dec0788156df15c8ba9f972be7a094f4d28",
+      "contractFingerprint": "sha256:99c127660cb58956e3658f7f12e07f5d85899944d8048590907a55ce6be69b53",
+      "observedAt": "2026-09-13T13:01:06.362Z",
+      "result": "peer-contract-incompatible",
+      "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-attachment@0.1.5-rc.2 does not satisfy 0.1.1-rc.2 || 0.1.2-rc.1; a declared-support fact, not proof of a runtime crash",
+      "artifact": {
+        "lifecycleScripts": [
+          "prepare"
+        ],
+        "sha256": "a0c208db0001f44ff271f3f20def64aec474826069bbf3dc1b49c2000fcce33a",
+        "nodeEngine": ">=22.19.0",
+        "client": {
+          "platform": "web",
+          "inject": [
+            "@deepseek-ai/dsh-client-locale",
+            "@deepseek-ai/dsh-client-ui-chat",
+            "@deepseek-ai/dsh-client-ui-conversation",
+            "@deepseek-ai/dsh-client-ui-renderer",
+            "@deepseek-ai/dsh-client-ui-session",
+            "@deepseek-ai/dsh-client-ui-settings",
+            "@deepseek-ai/dsh-client-ui-settings-plugins"
+          ],
+          "entryPoints": [
+            "lib/client.js"
+          ]
+        }
+      },
+      "resolution": {
+        "profileLockfile": {
+          "sha256": "2797bf83847465a4bdf682b51dfc434a3439f6eaaf1869891fecbc7a6f7148f6",
+          "bytes": 15391,
+          "graphDigest": "sha256:7ce67ff6b75d0f5ccf11c9f31a104fecb84378749fedf94ef34702a8954a06e7",
+          "nodes": 49,
+          "edges": 55,
+          "unresolved": 13,
+          "unresolvedDependencies": [
+            {
+              "from": "pnpm:@puppeteer/browsers@3.2.2",
+              "name": "proxy-agent",
+              "spec": ">=8.0.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@puppeteer/browsers@3.2.2",
+              "name": "yauzl",
+              "spec": "^2.10.0 || ^3.4.0",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.14.tgz",
+              "name": "@deepseek-ai/cordis",
+              "spec": "^4.0.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.14.tgz",
+              "name": "@deepseek-ai/dsh-attachment",
+              "spec": "0.1.1-rc.2 || 0.1.2-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.14.tgz",
+              "name": "@deepseek-ai/dsh-host-webserver",
+              "spec": "0.1.1-rc.2 || 0.1.2-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.14.tgz",
+              "name": "@deepseek-ai/dsh-llm",
+              "spec": "0.1.1-rc.2 || 0.1.2-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.14.tgz",
+              "name": "@deepseek-ai/dsh-session",
+              "spec": "0.1.1-rc.2 || 0.1.2-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.14.tgz",
+              "name": "@deepseek-ai/dsh-settings",
+              "spec": "0.1.1-rc.2 || 0.1.2-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.14.tgz",
+              "name": "@deepseek-ai/dsh-skill",
+              "spec": "0.1.1-rc.2 || 0.1.2-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.14.tgz",
+              "name": "@deepseek-ai/dsh-tools",
+              "spec": "0.1.1-rc.2 || 0.1.2-rc.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:dsh-univer-office@file:../../../artifact/dsh-univer-office-0.2.14.tgz",
+              "name": "@deepseek-ai/schemastery",
+              "spec": "^3.18.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:ws@8.21.3",
+              "name": "bufferutil",
+              "spec": "^4.0.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:ws@8.21.3",
+              "name": "utf-8-validate",
+              "spec": ">=5.0.2",
+              "kind": "optional"
+            }
+          ]
+        },
+        "runtimeGraph": {
+          "digest": "sha256:7fd2bd1eeddf2592a9e6ba8fc0c2ea7f0a03c08cc5ec3ebd87bec282f6dcca97",
+          "nodes": 534,
+          "edges": 2022,
+          "unresolved": 0,
+          "optionalUnavailable": 81,
+          "optionalUnavailableDependencies": [
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-arm64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-linux-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.6.2/node_modules/@modelcontextprotocol/sdk",
+              "name": "@cfworker/json-schema",
+              "spec": "^4.1.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-arm",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ppc64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-riscv64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-s390x",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-arm",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-loong64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-riscv64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            }
+          ],
+          "pluginPeerContracts": {
+            "declared": 9,
+            "satisfied": 2,
+            "mismatched": 7,
+            "indeterminate": 0,
+            "missing": 0,
+            "relations": [
+              {
+                "name": "@deepseek-ai/cordis",
+                "required": "^4.0.1",
+                "status": "satisfied",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "4.0.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-attachment",
+                "required": "0.1.1-rc.2 || 0.1.2-rc.1",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-host-webserver",
+                "required": "0.1.1-rc.2 || 0.1.2-rc.1",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-llm",
+                "required": "0.1.1-rc.2 || 0.1.2-rc.1",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-session",
+                "required": "0.1.1-rc.2 || 0.1.2-rc.1",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-settings",
+                "required": "0.1.1-rc.2 || 0.1.2-rc.1",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-skill",
+                "required": "0.1.1-rc.2 || 0.1.2-rc.1",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-tools",
+                "required": "0.1.1-rc.2 || 0.1.2-rc.1",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/schemastery",
+                "required": "^3.18.1",
+                "status": "satisfied",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "3.18.2"
+              }
+            ],
+            "issues": [
+              {
+                "name": "@deepseek-ai/dsh-attachment",
+                "required": "0.1.1-rc.2 || 0.1.2-rc.1",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-host-webserver",
+                "required": "0.1.1-rc.2 || 0.1.2-rc.1",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-llm",
+                "required": "0.1.1-rc.2 || 0.1.2-rc.1",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-session",
+                "required": "0.1.1-rc.2 || 0.1.2-rc.1",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-settings",
+                "required": "0.1.1-rc.2 || 0.1.2-rc.1",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-skill",
+                "required": "0.1.1-rc.2 || 0.1.2-rc.1",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-tools",
+                "required": "0.1.1-rc.2 || 0.1.2-rc.1",
+                "status": "mismatched",
+                "staticUsage": "scan-incomplete",
+                "usageByPlane": {
+                  "host": "scan-incomplete",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              }
+            ]
+          },
+          "hostRuntime": {
+            "source": "dsh-process",
+            "resolvedNodes": 500,
+            "dshVersion": "0.1.5-rc.2"
+          }
+        }
+      },
+      "observer": {
+        "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+        "version": "0.45.0"
+      }
+    },
+    {
+      "caseId": "feishu-bot-node22",
+      "targetId": "feishu-bot",
+      "plugin": "dsh-feishu-bot@0.19.16",
+      "dshVersion": "0.1.5-rc.2",
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "arm64",
+        "pnpmVersion": "11.7.0"
+      },
+      "staticFingerprint": "sha256:e4aaee1b834b0669356c4f3d28197f67ad447e5e70f597dc65d8a307705b0f56",
+      "contractFingerprint": "sha256:e640bb44f95ccb71916518b1acebf62988bc22f1b8851fe0cb91a066580b947f",
+      "observedAt": "2026-09-13T13:01:11.361Z",
+      "result": "compatible",
+      "reason": "the exact artifact installed, registered, loaded, and satisfied its direct Node peer contracts; client-plane compatibility requires its own profile evidence",
+      "approvedDependencyBuilds": [
+        "protobufjs"
+      ],
+      "artifact": {
+        "lifecycleScripts": [],
+        "sha256": "53692cc42a65e2857215603f930d8a0885a7e4ea48b8c51a6026f00f9747c34b",
+        "nodeEngine": ">=22.19.0",
+        "client": {
+          "platform": "web",
+          "inject": [
+            "@deepseek-ai/dsh-client-ui-settings-plugins"
+          ],
+          "entryPoints": [
+            "dist/client.js"
+          ]
+        }
+      },
+      "resolution": {
+        "profileLockfile": {
+          "sha256": "6634dc59e36dcb5412d1a88f9751f8e8118dfeb2b31fed9dcd3f1be20e17d143",
+          "bytes": 41460,
+          "graphDigest": "sha256:d9d0c4e4e89cf8308af4a4b915882ff10870c775f78b99fd347ab881ec2cd5cc",
+          "nodes": 139,
+          "edges": 196,
+          "unresolved": 9,
+          "unresolvedDependencies": [
+            {
+              "from": "pnpm:@agentclientprotocol/sdk@0.25.1",
+              "name": "zod",
+              "spec": "^3.25.0 || ^4.0.0",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:@deepseek-ai/cordis@4.0.2",
+              "name": "@deepseek-ai/cordis-plugin-include",
+              "spec": "^1.0.7",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:@deepseek-ai/cordis@4.0.2",
+              "name": "@deepseek-ai/cordis-plugin-loader",
+              "spec": "^1.0.3",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:debug@4.4.3",
+              "name": "supports-color",
+              "spec": "*",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:follow-redirects@1.16.0",
+              "name": "debug",
+              "spec": "*",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:proxy-agent-negotiate@1.1.0",
+              "name": "kerberos",
+              "spec": "^2.0.0",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:sharp@0.35.4",
+              "name": "@types/node",
+              "spec": "*",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:ws@8.21.3",
+              "name": "bufferutil",
+              "spec": "^4.0.1",
+              "kind": "optional"
+            },
+            {
+              "from": "pnpm:ws@8.21.3",
+              "name": "utf-8-validate",
+              "spec": ">=5.0.2",
+              "kind": "optional"
+            }
+          ]
+        },
+        "runtimeGraph": {
+          "digest": "sha256:0accb69884744acfd8c7fc84761d06427a18231d8e3de6d2e641b4b90d013efc",
+          "nodes": 612,
+          "edges": 2154,
+          "unresolved": 0,
+          "optionalUnavailable": 91,
+          "optionalUnavailableDependencies": [
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-arm64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-linux-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.6.2/node_modules/@modelcontextprotocol/sdk",
+              "name": "@cfworker/json-schema",
+              "spec": "^4.1.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-arm",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ppc64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-riscv64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-s390x",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-arm",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-loong64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-riscv64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            }
+          ],
+          "pluginPeerContracts": {
+            "declared": 1,
+            "satisfied": 1,
+            "mismatched": 0,
+            "indeterminate": 0,
+            "missing": 0,
+            "relations": [
+              {
+                "name": "@deepseek-ai/cordis",
+                "required": "^4.0.1",
+                "status": "satisfied",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "runtime-import-observed",
+                  "webClient": "no-literal-reference-observed",
+                  "unattributed": "type-only-reference-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "4.0.2"
+              }
+            ]
+          },
+          "hostRuntime": {
+            "source": "dsh-process",
+            "resolvedNodes": 500,
+            "dshVersion": "0.1.5-rc.2"
+          }
+        }
+      },
+      "observer": {
+        "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+        "version": "0.45.0"
+      }
+    },
+    {
+      "caseId": "openpencil-node24",
+      "targetId": "openpencil",
+      "plugin": "@zseven-w/dsh-openpencil@0.1.0-rc.9",
+      "dshVersion": "0.1.5-rc.2",
+      "runtime": {
+        "nodeMajor": 24,
+        "nodeVersion": "24.21.0",
+        "platform": "linux",
+        "architecture": "arm64",
+        "pnpmVersion": "11.7.0"
+      },
+      "staticFingerprint": "sha256:1e080fbc482dd443f03046b0281d9dcbe2e9cd3edbb0950dc0a5243023608e2e",
+      "contractFingerprint": "sha256:c96bf177c3da0bfbd275894b3b0558ffb6c888bc403d90031c002035c3f745ab",
+      "observedAt": "2026-09-13T13:01:38.988Z",
+      "result": "unknown",
+      "reason": "the exact artifact installed and loaded, but dependency coverage is incomplete (4 missing Node peers, 0 indeterminate peers, 0 version facts, 4 unresolved edges); this is not a demonstrated runtime failure",
+      "artifact": {
+        "lifecycleScripts": [],
+        "sha256": "6c875083b26593e669b57e96d4018d168f5c26484a0740ddde9652e2e9cef6cf",
+        "nodeEngine": ">=24.11.0",
+        "client": {
+          "platform": "web",
+          "inject": [
+            "@deepseek-ai/dsh-client-runtime",
+            "@deepseek-ai/dsh-client-locale",
+            "@deepseek-ai/dsh-client-ui-conversation",
+            "@deepseek-ai/dsh-client-ui-tool",
+            "@deepseek-ai/dsh-client-ui-theme"
+          ],
+          "entryPoints": [
+            "lib/client.js"
+          ]
+        }
+      },
+      "resolution": {
+        "profileLockfile": {
+          "sha256": "7b188189478eeaacfed91731fa853e48ce10d3e6481b889856a5e06a454300ba",
+          "bytes": 3785,
+          "graphDigest": "sha256:6d0dc06686f206ee0006882ef17ba935c225808e7fbe5a5477342de3ad28512c",
+          "nodes": 8,
+          "edges": 7,
+          "unresolved": 14,
+          "unresolvedDependencies": [
+            {
+              "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+              "name": "@deepseek-ai/cordis",
+              "spec": "^4.0.1",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+              "name": "@deepseek-ai/dsh-client-locale",
+              "spec": "^0.1.0-rc.6",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+              "name": "@deepseek-ai/dsh-client-runtime",
+              "spec": "^0.1.0-rc.6",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+              "name": "@deepseek-ai/dsh-client-ui-conversation",
+              "spec": "^0.1.0-rc.6",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+              "name": "@deepseek-ai/dsh-client-ui-slots",
+              "spec": "^0.1.0-rc.6",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+              "name": "@deepseek-ai/dsh-client-ui-theme",
+              "spec": "^0.1.0-rc.6",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+              "name": "@deepseek-ai/dsh-client-ui-tool",
+              "spec": "^0.1.0-rc.6",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+              "name": "@deepseek-ai/dsh-fs",
+              "spec": "^0.1.0-rc.6",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+              "name": "@deepseek-ai/dsh-host-webserver",
+              "spec": "^0.1.0-rc.6",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+              "name": "@deepseek-ai/dsh-sandbox-policy",
+              "spec": "^0.1.0-rc.6",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+              "name": "@deepseek-ai/dsh-session",
+              "spec": "^0.1.0-rc.6",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+              "name": "@deepseek-ai/dsh-tools",
+              "spec": "^0.1.0-rc.6",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+              "name": "react",
+              "spec": "^18.2.0",
+              "kind": "peer"
+            },
+            {
+              "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+              "name": "react-dom",
+              "spec": "^18.2.0",
+              "kind": "peer"
+            }
+          ]
+        },
+        "runtimeGraph": {
+          "digest": "sha256:06af473c11c8b3e81a56561c11dda51f2e95d49c8181f112d13fd783b3c4ec28",
+          "nodes": 502,
+          "edges": 1984,
+          "unresolved": 4,
+          "unresolvedDependencies": [
+            {
+              "from": "node_modules/@zseven-w/dsh-openpencil",
+              "name": "@deepseek-ai/dsh-client-runtime",
+              "spec": "^0.1.0-rc.6",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@zseven-w/dsh-openpencil",
+              "name": "@deepseek-ai/dsh-client-ui-slots",
+              "spec": "^0.1.0-rc.6",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@zseven-w/dsh-openpencil",
+              "name": "react",
+              "spec": "^18.2.0",
+              "kind": "peer"
+            },
+            {
+              "from": "node_modules/@zseven-w/dsh-openpencil",
+              "name": "react-dom",
+              "spec": "^18.2.0",
+              "kind": "peer"
+            }
+          ],
+          "optionalUnavailable": 68,
+          "optionalUnavailableDependencies": [
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-arm64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-darwin-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+              "name": "@deepseek-ai/node-addon-system-linux-x64",
+              "spec": "0.1.2",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.6.2/node_modules/@modelcontextprotocol/sdk",
+              "name": "@cfworker/json-schema",
+              "spec": "^4.1.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-darwin-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-arm",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-ppc64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-riscv64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-s390x",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-linux-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-arm64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-ia32",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+              "name": "@vscode/ripgrep-win32-x64",
+              "spec": "1.18.0",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-android-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-darwin-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-freebsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-arm",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-loong64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-riscv64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-linux-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-openbsd-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-arm64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-ia32",
+              "spec": "3.2.1",
+              "kind": "optional"
+            },
+            {
+              "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+              "name": "@koromix/koffi-win32-x64",
+              "spec": "3.2.1",
+              "kind": "optional"
+            }
+          ],
+          "pluginPeerContracts": {
+            "declared": 14,
+            "satisfied": 10,
+            "mismatched": 0,
+            "indeterminate": 0,
+            "missing": 4,
+            "relations": [
+              {
+                "name": "@deepseek-ai/cordis",
+                "required": "^4.0.1",
+                "status": "satisfied",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "4.0.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-client-locale",
+                "required": "^0.1.0-rc.6",
+                "status": "satisfied",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": true,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-client-runtime",
+                "required": "^0.1.0-rc.6",
+                "status": "missing",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": true
+              },
+              {
+                "name": "@deepseek-ai/dsh-client-ui-conversation",
+                "required": "^0.1.0-rc.6",
+                "status": "satisfied",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": true,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-client-ui-slots",
+                "required": "^0.1.0-rc.6",
+                "status": "missing",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false
+              },
+              {
+                "name": "@deepseek-ai/dsh-client-ui-theme",
+                "required": "^0.1.0-rc.6",
+                "status": "satisfied",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": true,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-client-ui-tool",
+                "required": "^0.1.0-rc.6",
+                "status": "satisfied",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": true,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-fs",
+                "required": "^0.1.0-rc.6",
+                "status": "satisfied",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-host-webserver",
+                "required": "^0.1.0-rc.6",
+                "status": "satisfied",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-sandbox-policy",
+                "required": "^0.1.0-rc.6",
+                "status": "satisfied",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-session",
+                "required": "^0.1.0-rc.6",
+                "status": "satisfied",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "runtime-import-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "@deepseek-ai/dsh-tools",
+                "required": "^0.1.0-rc.6",
+                "status": "satisfied",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "runtime-import-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false,
+                "resolvedVersion": "0.1.5-rc.2"
+              },
+              {
+                "name": "react",
+                "required": "^18.2.0",
+                "status": "missing",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
+              },
+              {
+                "name": "react-dom",
+                "required": "^18.2.0",
+                "status": "missing",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
+              }
+            ],
+            "issues": [
+              {
+                "name": "@deepseek-ai/dsh-client-runtime",
+                "required": "^0.1.0-rc.6",
+                "status": "missing",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": true
+              },
+              {
+                "name": "@deepseek-ai/dsh-client-ui-slots",
+                "required": "^0.1.0-rc.6",
+                "status": "missing",
+                "staticUsage": "type-only-reference-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "scan-incomplete",
+                  "unattributed": "scan-incomplete"
+                },
+                "declaredClientInject": false
+              },
+              {
+                "name": "react",
+                "required": "^18.2.0",
+                "status": "missing",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
+              },
+              {
+                "name": "react-dom",
+                "required": "^18.2.0",
+                "status": "missing",
+                "staticUsage": "runtime-import-observed",
+                "usageByPlane": {
+                  "host": "no-literal-reference-observed",
+                  "webClient": "runtime-import-observed",
+                  "unattributed": "runtime-import-observed"
+                },
+                "declaredClientInject": false
+              }
+            ]
+          },
+          "hostRuntime": {
+            "source": "dsh-process",
+            "resolvedNodes": 500,
+            "dshVersion": "0.1.5-rc.2"
+          }
+        }
+      },
+      "observer": {
+        "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+        "version": "0.45.0"
+      }
+    }
+  ]
+}

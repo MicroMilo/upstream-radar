@@ -1,0 +1,316 @@
+{
+  "schema": "upstream-radar.dsh-environment-recommendations/v1alpha1",
+  "updatedAt": "2026-09-13T11:39:44.718Z",
+  "pendingTasks": [],
+  "entries": [
+    {
+      "targetId": "better-sidebar",
+      "plugin": "dsh-better-sidebar@0.19.1",
+      "dshVersion": "0.1.5-rc.2",
+      "repository": "omdsh-dev/DSH-better-sidebar",
+      "sourceCommit": "1fcf43ccbedd6e66370b7fb81df2b4dd0ef2604e",
+      "sourceFingerprint": "sha256:77859e4eca634adf2ae9f1927a38d2a199cbfd5eb799695a35bc0474cb86f2f1",
+      "inputFingerprint": "sha256:289c99ac560ca2c672b2f7dcf8e36febe898ffe9aa36fa3adce320d73413671b",
+      "plannedAt": "2026-09-13T11:39:44.715Z",
+      "model": "Codex repository review; not a configured DSH Agent invocation",
+      "status": "recommended",
+      "preferredNodeMajor": 22,
+      "nodeMajors": [
+        22
+      ],
+      "executionProfiles": [
+        "headless",
+        "web"
+      ],
+      "nodeEvidence": [
+        {
+          "nodeMajor": 22,
+          "kind": "ci-tested",
+          "evidence": [
+            ".github/workflows/ci.yml"
+          ]
+        }
+      ],
+      "coverageGaps": [
+        "Repository evidence collection is incomplete (2 gap records); see the exact bounded candidate input for omitted or unavailable files."
+      ],
+      "summary": "Plugin declares >=20, but CI configures Node 22 and tests the Web profile; use that stronger repository signal. This is not proof that Node 20 is incompatible. Oversized READMEs are explicitly omitted from bounded evidence; native node-pty build approval is not pre-granted.",
+      "evidence": [
+        ".github/workflows/ci.yml",
+        "published-manifest"
+      ]
+    },
+    {
+      "targetId": "cloudflare-browser",
+      "plugin": "dsh-cloudflare-browser-run@0.1.9",
+      "dshVersion": "0.1.5-rc.2",
+      "repository": "RealAlexandreAI/dsh-cloudflare-browser-run",
+      "sourceCommit": "3eb2195bf49da651eb35e652149246d7611f48d2",
+      "sourceFingerprint": "sha256:b933f3d80a5212fc75968a42ab39fea59aa6b3ef8d682c94772d02f083195aae",
+      "inputFingerprint": "sha256:ec3d7cecd6b6d1e46d2116e9acac4eaf62a5a3d601db4a59b8f27f5c2075b59f",
+      "plannedAt": "2026-09-13T11:39:44.717Z",
+      "model": "Codex repository review; not a configured DSH Agent invocation",
+      "status": "recommended",
+      "preferredNodeMajor": 22,
+      "nodeMajors": [
+        22
+      ],
+      "executionProfiles": [
+        "headless",
+        "web"
+      ],
+      "nodeEvidence": [
+        {
+          "nodeMajor": 22,
+          "kind": "ci-tested",
+          "evidence": [
+            ".github/workflows/ci.yml"
+          ]
+        }
+      ],
+      "summary": "CI configures Node 22. README explicitly installs into --profile web; Web is justified by that instruction, not merely by the remote browser feature. Credential-dependent Cloudflare requests remain outside the smoke-test scope.",
+      "evidence": [
+        ".github/workflows/ci.yml",
+        "README.md",
+        "published-manifest"
+      ]
+    },
+    {
+      "targetId": "context",
+      "plugin": "dsh-context@0.51.0",
+      "dshVersion": "0.1.5-rc.2",
+      "repository": "bowenliang123/dsh-context",
+      "sourceCommit": "de2d971b8a9e36352b99053323161241353cbed2",
+      "sourceFingerprint": "sha256:2efab374f448dde498bde372ff44e6f4f419d0888de884fe1597af7830b75c5a",
+      "inputFingerprint": "sha256:f2de0675f739b6c9d4dca5f9bba5483b775025070ef23b6a4997da25a58ada16",
+      "plannedAt": "2026-09-13T11:39:44.717Z",
+      "model": "Codex repository review; not a configured DSH Agent invocation",
+      "status": "recommended",
+      "preferredNodeMajor": 24,
+      "nodeMajors": [
+        22,
+        24
+      ],
+      "executionProfiles": [
+        "headless",
+        "web"
+      ],
+      "nodeEvidence": [
+        {
+          "nodeMajor": 22,
+          "kind": "declared-support",
+          "evidence": [
+            "published-manifest"
+          ]
+        },
+        {
+          "nodeMajor": 24,
+          "kind": "ci-tested",
+          "evidence": [
+            ".github/workflows/pr-checks.yml"
+          ]
+        }
+      ],
+      "summary": "Manifest explicitly supports ^22.19 || >=24. CI configures 24, so prefer that declared test version while retaining 22 as a lower supported boundary, not as an author recommendation. The exact package declares a Web client.",
+      "evidence": [
+        ".github/workflows/pr-checks.yml",
+        "README.md",
+        "published-manifest"
+      ]
+    },
+    {
+      "targetId": "dsh-agy-link",
+      "plugin": "dsh-agy-link@0.4.27",
+      "dshVersion": "0.1.5-rc.2",
+      "repository": "amlyczz/dsh-agy-link",
+      "sourceCommit": "8b14fc097e2cf0727b0d93fcdac18806cb39d2d3",
+      "sourceFingerprint": "sha256:f880a1a4f4f87befa3ce959d01a266e408c821b6771ea89a6fe3c1ab07e8bfc6",
+      "inputFingerprint": "sha256:7a53acbc4dafa53484657280e488d7e92f536603b29fbcd6323b0b7748ce6206",
+      "plannedAt": "2026-09-13T11:39:44.717Z",
+      "model": "Codex repository review; not a configured DSH Agent invocation",
+      "status": "recommended",
+      "preferredNodeMajor": 24,
+      "nodeMajors": [
+        24
+      ],
+      "executionProfiles": [
+        "headless",
+        "web"
+      ],
+      "nodeEvidence": [
+        {
+          "nodeMajor": 24,
+          "kind": "ci-tested",
+          "evidence": [
+            ".github/workflows/ci.yml"
+          ]
+        }
+      ],
+      "summary": "Exact manifest and setup require Node >=24; CI also configures 24. The author installs into Web for OAuth/settings. Real Google OAuth and model traffic require user credentials and are not exercised.",
+      "evidence": [
+        ".github/workflows/ci.yml",
+        "README.md",
+        "published-manifest"
+      ]
+    },
+    {
+      "targetId": "dsh-tui",
+      "plugin": "@deepseek-harness-tui/dsh-tui@0.10.1",
+      "dshVersion": "0.1.5-rc.2",
+      "repository": "ccch1mneyyy/dsh-TUI",
+      "sourceCommit": "f5cb232ba5dfa51f4a4869cb0f990d95a2971b79",
+      "sourceFingerprint": "sha256:d0ed5514cf2b55573358a5de5000f686cdc1724b9ce10444940bd389e4d7e8cd",
+      "inputFingerprint": "sha256:1cd9cad50cd7497187186be30d62c631329134fb8127b46104b1e5a754af9c41",
+      "plannedAt": "2026-09-13T11:39:44.718Z",
+      "model": "Codex repository review; not a configured DSH Agent invocation",
+      "status": "recommended",
+      "preferredNodeMajor": 24,
+      "nodeMajors": [
+        22,
+        24
+      ],
+      "executionProfiles": [
+        "headless",
+        "tui"
+      ],
+      "tuiProfile": "dsh-tui",
+      "nodeEvidence": [
+        {
+          "nodeMajor": 22,
+          "kind": "declared-support",
+          "evidence": [
+            "published-manifest"
+          ]
+        },
+        {
+          "nodeMajor": 24,
+          "kind": "ci-tested",
+          "evidence": [
+            ".github/workflows/ci.yml"
+          ]
+        }
+      ],
+      "coverageGaps": [
+        "Repository evidence collection is incomplete (4 gap records); see the exact bounded candidate input for omitted or unavailable files."
+      ],
+      "summary": "Manifest supports ^22.19 || >=24; CI configures 24. The author names dsh-tui as the actual terminal profile. Browser-related feature descriptions do not make this a DSH Web client. Interactive model behavior requires an API key and is not covered.",
+      "evidence": [
+        ".github/workflows/ci.yml",
+        "README.md",
+        "docs/getting-started.en.md",
+        "published-manifest"
+      ]
+    },
+    {
+      "targetId": "dsh-univer-office",
+      "plugin": "dsh-univer-office@0.2.14",
+      "dshVersion": "0.1.5-rc.2",
+      "repository": "dream-num/dsh-univer-office",
+      "sourceCommit": "5c190b6ee367660f8589daad493a889611f7d19d",
+      "sourceFingerprint": "sha256:638080a290a7499f912f3846b68f1d97e9e31453f5c6c98e49779c282bd3b1bd",
+      "inputFingerprint": "sha256:d43b9fc22b0a9179302d266d6e9d57c4ddc14388bbc2443afb32a7892fdcb5e1",
+      "plannedAt": "2026-09-13T11:39:44.718Z",
+      "model": "Codex repository review; not a configured DSH Agent invocation",
+      "status": "recommended",
+      "preferredNodeMajor": 22,
+      "nodeMajors": [
+        22
+      ],
+      "executionProfiles": [
+        "headless",
+        "web"
+      ],
+      "nodeEvidence": [
+        {
+          "nodeMajor": 22,
+          "kind": "ci-tested",
+          "evidence": [
+            ".github/workflows/release.yml"
+          ]
+        }
+      ],
+      "summary": "Exact package/setup require Node >=22.19 and declare Web. Release CI configures Node 22; no explicit author preference was found. Spreadsheet usefulness and credential-dependent integrations are outside this compatibility review.",
+      "evidence": [
+        ".github/workflows/release.yml",
+        "README.md",
+        "published-manifest"
+      ]
+    },
+    {
+      "targetId": "feishu-bot",
+      "plugin": "dsh-feishu-bot@0.19.16",
+      "dshVersion": "0.1.5-rc.2",
+      "repository": "PlutoKeating/dsh-lark-bot",
+      "sourceCommit": "6e722e0272f370fa0071715703294490e2f89bf8",
+      "sourceFingerprint": "sha256:3ccfb5fca2a26e5117e601f0b9bdaa58556db83d2ab6ccd967c9da2b47f93ca5",
+      "inputFingerprint": "sha256:13b42adbda50f7fa124388efc02edbef9e05988b0a6cb024a22aac3b22329271",
+      "plannedAt": "2026-09-13T11:39:44.718Z",
+      "model": "Codex repository review; not a configured DSH Agent invocation",
+      "status": "recommended",
+      "preferredNodeMajor": 22,
+      "nodeMajors": [
+        22
+      ],
+      "executionProfiles": [
+        "headless",
+        "web"
+      ],
+      "nodeEvidence": [
+        {
+          "nodeMajor": 22,
+          "kind": "ci-tested",
+          "evidence": [
+            ".github/workflows/ci.yml"
+          ]
+        }
+      ],
+      "coverageGaps": [
+        "Author default dsh-lark SDK adapter and authenticated Feishu interaction have not been exercised by the smoke planes."
+      ],
+      "summary": "Node >=22.19 is a declared minimum; CI configures Node 22, not an explicit author preference. Default user setup is dsh-lark with the SDK adapter; Web is an additional declared settings client. The generic headless/Web checks do not cover the SDK workflow.",
+      "evidence": [
+        ".github/workflows/ci.yml",
+        "README.md",
+        "published-manifest"
+      ]
+    },
+    {
+      "targetId": "openpencil",
+      "plugin": "@zseven-w/dsh-openpencil@0.1.0-rc.9",
+      "dshVersion": "0.1.5-rc.2",
+      "repository": "ZSeven-W/dsh-openpencil",
+      "sourceCommit": "99e05cdbae5e26c920cc20e0793c66446685b0cd",
+      "sourceFingerprint": "sha256:1f192200ac6b60c513da425792d4c499cd71a7992832e01c1c24568f1d57ec6f",
+      "inputFingerprint": "sha256:8a933d926930141eaba1afb0bbb4e9254cb64087c20b591ca525f509752b855d",
+      "plannedAt": "2026-09-13T11:39:44.718Z",
+      "model": "Codex repository review; not a configured DSH Agent invocation",
+      "status": "recommended",
+      "preferredNodeMajor": 24,
+      "nodeMajors": [
+        24
+      ],
+      "executionProfiles": [
+        "headless",
+        "web"
+      ],
+      "nodeEvidence": [
+        {
+          "nodeMajor": 24,
+          "kind": "ci-tested",
+          "evidence": [
+            ".github/workflows/check.yml"
+          ]
+        }
+      ],
+      "coverageGaps": [
+        "Repository evidence collection is incomplete (11 gap records); see the exact bounded candidate input for omitted or unavailable files."
+      ],
+      "summary": "Author setup explicitly installs npm next into Web. Exact package requires Node >=24.11; CI pins 24.11.0. Large WASM/editor assets may exceed scanner budgets; an incomplete artifact inspection is not a plugin vulnerability or a compatibility pass.",
+      "evidence": [
+        ".github/workflows/check.yml",
+        "README.md",
+        "published-manifest"
+      ]
+    }
+  ]
+}

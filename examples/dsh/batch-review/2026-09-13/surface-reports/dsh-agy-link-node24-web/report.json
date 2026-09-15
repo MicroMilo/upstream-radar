@@ -1,0 +1,98 @@
+{
+  "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.45.0"
+  },
+  "probe": "dsh-surface",
+  "scope": "surface-runtime-behavior",
+  "startedAt": "2026-09-13T11:58:10.030Z",
+  "completedAt": "2026-09-13T11:58:33.970Z",
+  "caseId": "dsh-agy-link-node24-web",
+  "sourceCaseId": "dsh-agy-link-node24",
+  "sourceFingerprint": "sha256:a698beeb882b1fc2a8e207d7bbfb0193a9c849333349374e825d277d475e2b99",
+  "contractFingerprint": "sha256:41907b9308cf2aaa1cb22768dc3a0cec7b75c2e05dc22cb0a3bc28c1c59c7c7a",
+  "plugin": "dsh-agy-link@0.4.27",
+  "dshVersion": "0.1.5-rc.2",
+  "plane": "web",
+  "profile": "web",
+  "runtimeId": "dsh-agy-link",
+  "runtime": {
+    "nodeMajor": 24,
+    "nodeVersion": "24.21.0",
+    "platform": "linux",
+    "architecture": "arm64",
+    "pnpmVersion": "11.7.0"
+  },
+  "artifact": {
+    "sha256": "e6cc28a0f6a484f6007ceaa1aa950edc3a5ae513a0d65f784a1edde70b105bb0",
+    "bytes": 716226,
+    "integrity": "sha512-ICGdh7OKr+rLAXzTHAsv0Bjeh+kEMCD4C0DNO2db/AuaCIKxnxDYtYQp/SdIBTbjraOL+e7yAGaOD6WU5vNVAw=="
+  },
+  "stages": {
+    "runtime": {
+      "status": "passed",
+      "code": 0
+    },
+    "artifact": {
+      "status": "passed",
+      "code": 0
+    },
+    "profile": {
+      "status": "passed",
+      "code": 0
+    },
+    "install": {
+      "status": "passed",
+      "code": 0
+    },
+    "registration": {
+      "status": "passed"
+    },
+    "host": {
+      "status": "passed"
+    },
+    "surface": {
+      "status": "passed"
+    },
+    "interaction": {
+      "status": "passed"
+    },
+    "shutdown": {
+      "status": "passed"
+    }
+  },
+  "evidence": {
+    "plane": "web",
+    "url": "http://127.0.0.1:30880/",
+    "rootMounted": false,
+    "bootManifestPresent": false,
+    "bootEntryIds": [],
+    "pluginEntryPresent": false,
+    "applicationMounted": false,
+    "pluginMaterialized": false,
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    ],
+    "pageErrors": [],
+    "failedRequests": [],
+    "hostLog": "dsh-agy-link-node24-web.host.log",
+    "httpStatus": 401,
+    "title": "",
+    "blockedExternalRequests": [],
+    "screenshot": "dsh-agy-link-node24-web.png",
+    "trace": "dsh-agy-link-node24-web.trace.zip"
+  },
+  "result": "surface-incompatible",
+  "reason": "the DSH Web endpoint returned HTTP 401",
+  "boundary": {
+    "isolationProviderClaim": "other",
+    "isolationVerifiedByRadar": false,
+    "disposableEnvironmentRequired": true,
+    "inheritedHostSecrets": false,
+    "externalBrowserRequestsBlocked": true,
+    "approvedDependencyBuilds": [],
+    "requiredDependencyBuilds": [],
+    "note": "The caller supplies a disposable VM and restricted container. Radar passes no repository or model secrets, binds the run to exact artifact bytes, blocks non-loopback browser requests, and collects bounded smoke evidence. This is compatibility evidence, not a malicious-code safety certificate. Package transport uses an explicitly selected credential-free proxy; browser non-loopback requests remain blocked."
+  }
+}

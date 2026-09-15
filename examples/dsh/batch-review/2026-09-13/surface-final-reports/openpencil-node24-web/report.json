@@ -1,0 +1,589 @@
+{
+  "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.45.0"
+  },
+  "probe": "dsh-surface",
+  "scope": "surface-runtime-behavior",
+  "startedAt": "2026-09-13T12:14:56.926Z",
+  "completedAt": "2026-09-13T12:16:55.044Z",
+  "caseId": "openpencil-node24-web",
+  "sourceCaseId": "openpencil-node24",
+  "sourceFingerprint": "sha256:2a764ff6971c174e9dc7714e51cc2247d8a57e05b3a26fdd95f82211ec62118f",
+  "contractFingerprint": "sha256:cc7c1eaf3c4bc04b82783fc72fcd7c29aade7962b7245ca440dea313983a7f0e",
+  "plugin": "@zseven-w/dsh-openpencil@0.1.0-rc.9",
+  "dshVersion": "0.1.5-rc.2",
+  "plane": "web",
+  "profile": "web",
+  "runtimeId": "@zseven-w/dsh-openpencil",
+  "runtime": {
+    "nodeMajor": 24,
+    "nodeVersion": "24.21.0",
+    "platform": "linux",
+    "architecture": "arm64",
+    "pnpmVersion": "11.7.0"
+  },
+  "artifact": {
+    "sha256": "6c875083b26593e669b57e96d4018d168f5c26484a0740ddde9652e2e9cef6cf",
+    "bytes": 11541087,
+    "integrity": "sha512-Ax7m2WRGFoPE0LdED4ITNYnJZyyQsJpmRpjPI3qXRYzElZoTr5sOqRGOqsKtnJl4o10Ha7IMN7+VrVZJg74eXA=="
+  },
+  "stages": {
+    "runtime": {
+      "status": "passed",
+      "code": 0
+    },
+    "artifact": {
+      "status": "passed",
+      "code": 0
+    },
+    "profile": {
+      "status": "passed",
+      "code": 0
+    },
+    "install": {
+      "status": "passed",
+      "code": 0
+    },
+    "registration": {
+      "status": "passed"
+    },
+    "host": {
+      "status": "passed"
+    },
+    "surface": {
+      "status": "passed"
+    },
+    "interaction": {
+      "status": "passed"
+    },
+    "shutdown": {
+      "status": "passed"
+    }
+  },
+  "evidence": {
+    "plane": "web",
+    "url": "http://127.0.0.1:30880/",
+    "rootMounted": true,
+    "bootManifestPresent": true,
+    "bootEntryIds": [
+      "@zseven-w/dsh-openpencil",
+      "@deepseek-ai/dsh-api-gateway",
+      "@deepseek-ai/dsh-client-ui-open-in-app",
+      "@deepseek-ai/dsh-api-workspace-files",
+      "@deepseek-ai/dsh-client-hmr",
+      "@deepseek-ai/dsh-client-modules",
+      "@deepseek-ai/dsh-cordis-client-runner",
+      "@deepseek-ai/dsh-client-ui-theme",
+      "@deepseek-ai/dsh-client-locale",
+      "@deepseek-ai/dsh-client-ui-layout",
+      "@deepseek-ai/dsh-client-ui-renderer",
+      "@deepseek-ai/dsh-client-ui-session",
+      "@deepseek-ai/dsh-client-resources",
+      "@deepseek-ai/dsh-client-ui-sidebar",
+      "@deepseek-ai/dsh-client-ui-sidebar-right",
+      "@deepseek-ai/dsh-client-ui-sidebar-documentpreview",
+      "@deepseek-ai/dsh-client-ui-sidebar-files",
+      "@deepseek-ai/dsh-client-ui-settings",
+      "@deepseek-ai/dsh-client-ui-settings-general",
+      "@deepseek-ai/dsh-client-ui-settings-models",
+      "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+      "@deepseek-ai/dsh-client-ui-conversation",
+      "@deepseek-ai/dsh-client-ui-approval",
+      "@deepseek-ai/dsh-client-ui-chat",
+      "@deepseek-ai/dsh-client-ui-brand-official",
+      "@deepseek-ai/dsh-client-ui-attachment",
+      "@deepseek-ai/dsh-client-ui-tool",
+      "@deepseek-ai/dsh-client-ui-cordis",
+      "@deepseek-ai/dsh-client-ui-workflow-run",
+      "@deepseek-ai/dsh-client-ui-workspace",
+      "@deepseek-ai/dsh-client-ui-input-trigger",
+      "@deepseek-ai/dsh-client-ui-commands"
+    ],
+    "pluginEntryPresent": true,
+    "applicationMounted": true,
+    "pluginMaterialized": true,
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedRequests": [],
+    "pluginClientDeclared": true,
+    "hostLog": "openpencil-node24-web.host.log",
+    "httpStatus": 200,
+    "title": "DeepSeek Harness",
+    "pluginBundleUrl": "http://127.0.0.1:30880/plugins/??@zseven-w/dsh-openpencil/client.js&rev=8efbd2417be01f62-48",
+    "pluginBundleStatus": 200,
+    "blockedExternalRequests": [],
+    "screenshot": "openpencil-node24-web.png",
+    "trace": "openpencil-node24-web.trace.zip"
+  },
+  "result": "compatible",
+  "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+  "boundary": {
+    "isolationProviderClaim": "other",
+    "isolationVerifiedByRadar": false,
+    "disposableEnvironmentRequired": true,
+    "inheritedHostSecrets": false,
+    "externalBrowserRequestsBlocked": true,
+    "approvedDependencyBuilds": [],
+    "requiredDependencyBuilds": [],
+    "note": "The caller supplies a disposable VM and restricted container. Radar passes no repository or model secrets, binds the run to exact artifact bytes, blocks non-loopback browser requests, and collects bounded smoke evidence. This is compatibility evidence, not a malicious-code safety certificate. Package transport uses an explicitly selected credential-free proxy; browser non-loopback requests remain blocked."
+  },
+  "resolution": {
+    "profileLockfile": {
+      "sha256": "7ed6df4f7341832c1ee8a115c4b37ee7fe17a1b27b39cb829929294adf796f91",
+      "bytes": 3785,
+      "graphDigest": "sha256:6d0dc06686f206ee0006882ef17ba935c225808e7fbe5a5477342de3ad28512c",
+      "nodes": 8,
+      "edges": 7,
+      "unresolved": 14,
+      "unresolvedDependencies": [
+        {
+          "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+          "name": "@deepseek-ai/cordis",
+          "spec": "^4.0.1",
+          "kind": "peer"
+        },
+        {
+          "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+          "name": "@deepseek-ai/dsh-client-locale",
+          "spec": "^0.1.0-rc.6",
+          "kind": "peer"
+        },
+        {
+          "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+          "name": "@deepseek-ai/dsh-client-runtime",
+          "spec": "^0.1.0-rc.6",
+          "kind": "peer"
+        },
+        {
+          "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+          "name": "@deepseek-ai/dsh-client-ui-conversation",
+          "spec": "^0.1.0-rc.6",
+          "kind": "peer"
+        },
+        {
+          "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+          "name": "@deepseek-ai/dsh-client-ui-slots",
+          "spec": "^0.1.0-rc.6",
+          "kind": "peer"
+        },
+        {
+          "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+          "name": "@deepseek-ai/dsh-client-ui-theme",
+          "spec": "^0.1.0-rc.6",
+          "kind": "peer"
+        },
+        {
+          "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+          "name": "@deepseek-ai/dsh-client-ui-tool",
+          "spec": "^0.1.0-rc.6",
+          "kind": "peer"
+        },
+        {
+          "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+          "name": "@deepseek-ai/dsh-fs",
+          "spec": "^0.1.0-rc.6",
+          "kind": "peer"
+        },
+        {
+          "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+          "name": "@deepseek-ai/dsh-host-webserver",
+          "spec": "^0.1.0-rc.6",
+          "kind": "peer"
+        },
+        {
+          "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+          "name": "@deepseek-ai/dsh-sandbox-policy",
+          "spec": "^0.1.0-rc.6",
+          "kind": "peer"
+        },
+        {
+          "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+          "name": "@deepseek-ai/dsh-session",
+          "spec": "^0.1.0-rc.6",
+          "kind": "peer"
+        },
+        {
+          "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+          "name": "@deepseek-ai/dsh-tools",
+          "spec": "^0.1.0-rc.6",
+          "kind": "peer"
+        },
+        {
+          "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+          "name": "react",
+          "spec": "^18.2.0",
+          "kind": "peer"
+        },
+        {
+          "from": "pnpm:@zseven-w/dsh-openpencil@file:../../../artifact/zseven-w-dsh-openpencil-0.1.0-rc.9.tgz",
+          "name": "react-dom",
+          "spec": "^18.2.0",
+          "kind": "peer"
+        }
+      ]
+    },
+    "runtimeGraph": {
+      "digest": "sha256:06af473c11c8b3e81a56561c11dda51f2e95d49c8181f112d13fd783b3c4ec28",
+      "nodes": 502,
+      "edges": 1984,
+      "unresolved": 4,
+      "unresolvedDependencies": [
+        {
+          "from": "node_modules/@zseven-w/dsh-openpencil",
+          "name": "@deepseek-ai/dsh-client-runtime",
+          "spec": "^0.1.0-rc.6",
+          "kind": "peer"
+        },
+        {
+          "from": "node_modules/@zseven-w/dsh-openpencil",
+          "name": "@deepseek-ai/dsh-client-ui-slots",
+          "spec": "^0.1.0-rc.6",
+          "kind": "peer"
+        },
+        {
+          "from": "node_modules/@zseven-w/dsh-openpencil",
+          "name": "react",
+          "spec": "^18.2.0",
+          "kind": "peer"
+        },
+        {
+          "from": "node_modules/@zseven-w/dsh-openpencil",
+          "name": "react-dom",
+          "spec": "^18.2.0",
+          "kind": "peer"
+        }
+      ],
+      "optionalUnavailable": 68,
+      "optionalUnavailableDependencies": [
+        {
+          "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+          "name": "@deepseek-ai/node-addon-system-darwin-arm64",
+          "spec": "0.1.2",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+          "name": "@deepseek-ai/node-addon-system-darwin-x64",
+          "spec": "0.1.2",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+          "name": "@deepseek-ai/node-addon-system-linux-x64",
+          "spec": "0.1.2",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.6.2/node_modules/@modelcontextprotocol/sdk",
+          "name": "@cfworker/json-schema",
+          "spec": "^4.1.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-darwin-arm64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-darwin-x64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-arm",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-ia32",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-ppc64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-riscv64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-s390x",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-x64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-win32-arm64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-win32-ia32",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-win32-x64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-android-arm64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-android-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-darwin-arm64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-darwin-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-freebsd-arm64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-freebsd-ia32",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-freebsd-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-arm",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-ia32",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-loong64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-riscv64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-openbsd-ia32",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-openbsd-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-win32-arm64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-win32-ia32",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-win32-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        }
+      ],
+      "pluginPeerContracts": {
+        "declared": 14,
+        "satisfied": 10,
+        "mismatched": 0,
+        "indeterminate": 0,
+        "missing": 4,
+        "relations": [
+          {
+            "name": "@deepseek-ai/cordis",
+            "required": "^4.0.1",
+            "status": "satisfied",
+            "staticUsage": "scan-incomplete",
+            "resolvedVersion": "4.0.2"
+          },
+          {
+            "name": "@deepseek-ai/dsh-client-locale",
+            "required": "^0.1.0-rc.6",
+            "status": "satisfied",
+            "staticUsage": "scan-incomplete",
+            "resolvedVersion": "0.1.5-rc.2"
+          },
+          {
+            "name": "@deepseek-ai/dsh-client-runtime",
+            "required": "^0.1.0-rc.6",
+            "status": "missing",
+            "staticUsage": "scan-incomplete"
+          },
+          {
+            "name": "@deepseek-ai/dsh-client-ui-conversation",
+            "required": "^0.1.0-rc.6",
+            "status": "satisfied",
+            "staticUsage": "scan-incomplete",
+            "resolvedVersion": "0.1.5-rc.2"
+          },
+          {
+            "name": "@deepseek-ai/dsh-client-ui-slots",
+            "required": "^0.1.0-rc.6",
+            "status": "missing",
+            "staticUsage": "scan-incomplete"
+          },
+          {
+            "name": "@deepseek-ai/dsh-client-ui-theme",
+            "required": "^0.1.0-rc.6",
+            "status": "satisfied",
+            "staticUsage": "scan-incomplete",
+            "resolvedVersion": "0.1.5-rc.2"
+          },
+          {
+            "name": "@deepseek-ai/dsh-client-ui-tool",
+            "required": "^0.1.0-rc.6",
+            "status": "satisfied",
+            "staticUsage": "scan-incomplete",
+            "resolvedVersion": "0.1.5-rc.2"
+          },
+          {
+            "name": "@deepseek-ai/dsh-fs",
+            "required": "^0.1.0-rc.6",
+            "status": "satisfied",
+            "staticUsage": "scan-incomplete",
+            "resolvedVersion": "0.1.5-rc.2"
+          },
+          {
+            "name": "@deepseek-ai/dsh-host-webserver",
+            "required": "^0.1.0-rc.6",
+            "status": "satisfied",
+            "staticUsage": "scan-incomplete",
+            "resolvedVersion": "0.1.5-rc.2"
+          },
+          {
+            "name": "@deepseek-ai/dsh-sandbox-policy",
+            "required": "^0.1.0-rc.6",
+            "status": "satisfied",
+            "staticUsage": "scan-incomplete",
+            "resolvedVersion": "0.1.5-rc.2"
+          },
+          {
+            "name": "@deepseek-ai/dsh-session",
+            "required": "^0.1.0-rc.6",
+            "status": "satisfied",
+            "staticUsage": "scan-incomplete",
+            "resolvedVersion": "0.1.5-rc.2"
+          },
+          {
+            "name": "@deepseek-ai/dsh-tools",
+            "required": "^0.1.0-rc.6",
+            "status": "satisfied",
+            "staticUsage": "scan-incomplete",
+            "resolvedVersion": "0.1.5-rc.2"
+          },
+          {
+            "name": "react",
+            "required": "^18.2.0",
+            "status": "missing",
+            "staticUsage": "scan-incomplete"
+          },
+          {
+            "name": "react-dom",
+            "required": "^18.2.0",
+            "status": "missing",
+            "staticUsage": "scan-incomplete"
+          }
+        ],
+        "issues": [
+          {
+            "name": "@deepseek-ai/dsh-client-runtime",
+            "required": "^0.1.0-rc.6",
+            "status": "missing",
+            "staticUsage": "scan-incomplete"
+          },
+          {
+            "name": "@deepseek-ai/dsh-client-ui-slots",
+            "required": "^0.1.0-rc.6",
+            "status": "missing",
+            "staticUsage": "scan-incomplete"
+          },
+          {
+            "name": "react",
+            "required": "^18.2.0",
+            "status": "missing",
+            "staticUsage": "scan-incomplete"
+          },
+          {
+            "name": "react-dom",
+            "required": "^18.2.0",
+            "status": "missing",
+            "staticUsage": "scan-incomplete"
+          }
+        ]
+      },
+      "hostRuntime": {
+        "source": "dsh-process",
+        "resolvedNodes": 500,
+        "dshVersion": "0.1.5-rc.2"
+      }
+    }
+  }
+}

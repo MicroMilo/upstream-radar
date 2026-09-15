@@ -47,7 +47,8 @@ if (selected === undefined) {
     // Stage results must be produced by this run. In particular, a skipped
     // repeat check cannot inherit a prior run's "attempted=0" success summary.
     for (const name of ['observations.json', 'recommendations.json', 'recommendations.json.evidence.json',
-      'recommendations.json.attempts.json', 'build-plans.json', 'build-plans.json.attempts.json']) {
+      'recommendations.json.attempts.json', 'build-plans.json', 'build-plans.json.attempts.json',
+      'surface-build-plans.json']) {
       const source = join(temporary, name)
       let metadata
       try { metadata = await lstat(source) }

@@ -1,0 +1,158 @@
+{
+  "generatedAt": "2026-09-13T13:07:45.142Z",
+  "plugins": 8,
+  "dshVersion": "0.1.5-rc.2",
+  "executionContract": {
+    "install": "dsh-install/v1alpha3",
+    "surface": "dsh-surface/v1alpha8",
+    "freshReportsOnly": true,
+    "priorEvidencePreserved": true
+  },
+  "repositoryReviews": 8,
+  "reviewProvider": "Codex manual repository review, not a configured DSH Agent invocation",
+  "intendedCells": {
+    "headless": 10,
+    "web": 8,
+    "tui": 2
+  },
+  "attemptedHeadlessCells": 10,
+  "dependencyTransport": {
+    "explicitCredentialFreeProxy": true,
+    "allFinalHeadlessBootstrapsEstablished": true,
+    "broadBuildApproval": false,
+    "approvals": [
+      {
+        "caseId": "better-sidebar-node22",
+        "plugin": "dsh-better-sidebar@0.19.1",
+        "artifactSha256": "67969b94e96747ad910ce945bafa2b8176af584fb8bc02f87dce5ed132986884",
+        "dshVersion": "0.1.5-rc.2",
+        "nodeMajor": 22,
+        "platform": "linux",
+        "architecture": "arm64",
+        "dependency": "node-pty@1.1.0",
+        "approvedBuilds": [
+          "node-pty"
+        ],
+        "provider": "Codex manual bounded dependency review, not a DSH Agent invocation",
+        "authority": "User requested dependency resolution and completion of this isolated batch test.",
+        "purpose": "Published native PTY dependency used by the sidebar terminal. Recorded install gate identifies this exact version.",
+        "scope": "Only this disposable, non-root, mount-free Colima test; no host execution, no general package-script approval, no installation receipt.",
+        "sourceReport": "final-reports/better-sidebar-node22/report.json",
+        "contractFingerprint": "sha256:dc21a56c9148c6de5ea8f4b2f1b5307bf2ffab88bd6a5c6b55d82191cfd38411"
+      },
+      {
+        "caseId": "feishu-bot-node22",
+        "plugin": "dsh-feishu-bot@0.19.16",
+        "artifactSha256": "53692cc42a65e2857215603f930d8a0885a7e4ea48b8c51a6026f00f9747c34b",
+        "dshVersion": "0.1.5-rc.2",
+        "nodeMajor": 22,
+        "platform": "linux",
+        "architecture": "arm64",
+        "dependency": "protobufjs@7.6.6",
+        "approvedBuilds": [
+          "protobufjs"
+        ],
+        "provider": "Codex manual bounded dependency review, not a DSH Agent invocation",
+        "authority": "User requested dependency resolution and completion of this isolated batch test.",
+        "purpose": "Published protobuf runtime used by the Lark client; package declares a postinstall script. Recorded install gate identifies this exact version.",
+        "scope": "Only this disposable, non-root, mount-free Colima test; no host execution, no general package-script approval, no installation receipt.",
+        "sourceReport": "final-reports/feishu-bot-node22/report.json",
+        "contractFingerprint": "sha256:f63137ea387d4699ecac03a50d7b280d5d578f9fd88e87db26235fc17cece045"
+      }
+    ]
+  },
+  "results": {
+    "compatible": 7,
+    "runtime-incompatible": 0,
+    "peer-contract-incompatible": 1,
+    "build-approval-required": 0,
+    "install-failed": 0,
+    "load-failed": 0,
+    "unknown": 2
+  },
+  "unknownCauses": {
+    "artifactNotEstablished": 0,
+    "dshBootstrapNotEstablished": 0
+  },
+  "surfaceExecuted": 10,
+  "blockedSurfaceCells": 0,
+  "remainingSurfaceCells": 0,
+  "surfaceResults": {
+    "compatible": 9,
+    "surface-incompatible": 1,
+    "environment-unsupported": 0,
+    "unknown": 0
+  },
+  "actualSurfaceProfiles": {
+    "web": {
+      "attempted": 8,
+      "compatible": 7,
+      "incompatible": 1
+    },
+    "tui": {
+      "attempted": 2,
+      "compatible": 2,
+      "incompatible": 0
+    }
+  },
+  "graphEvidence": {
+    "headless": 10,
+    "surface": 10,
+    "hostVersionOnlyDoesNotPinWholeGraph": true
+  },
+  "loop": {
+    "allTwentyPlannedObservationsCompleted": true,
+    "unresolvedInfrastructureResults": 0,
+    "incompleteDependencyCoverageCells": 2,
+    "additionalAuthorSdkInitializeComparisonsCompleted": true,
+    "allAuthenticatedAuthorWorkflowsValidated": false,
+    "remoteWrites": false
+  },
+  "exactPluginArtifactsAcquired": 8,
+  "validatedNewCommunityBugs": 0,
+  "validatedRuntimeCompatibilityFindings": 1,
+  "communityCandidates": [
+    {
+      "repository": "PlutoKeating/dsh-lark-bot",
+      "issue": 139,
+      "status": "Latest DSH Web startup failed with exit 1 (assertNever export mismatch). Author pnpm 10 / old DSH SDK recipe initialized; newer-host SDK recipe failed with exit 1 (ImageVariantId export mismatch). Author verifies only 0.1.0-rc.8; follow up existing upgrade review, not a claimed supported-version regression or single-variable experiment."
+    },
+    {
+      "repository": "dream-num/dsh-univer-office",
+      "issue": 66,
+      "status": "Actual Web mount passed under 0.1.5-rc.2; seven declared peers still exclude it. Follow up existing issue; typecheck and old-version regressions remain unverified."
+    }
+  ],
+  "additionalAuthorSdkObservations": [
+    {
+      "dshVersion": "0.1.0-rc.8",
+      "result": "sdk-initialize-compatible",
+      "pnpmVersion": "10.33.0",
+      "artifactSha256": "53692cc42a65e2857215603f930d8a0885a7e4ea48b8c51a6026f00f9747c34b",
+      "graphDigest": "sha256:c1f3345a599f3359131411d15d0e0db3ba4f20cf355e015415233c9c818cfc15",
+      "graphScope": "installed-plugin-and-host-root-not-independent-sdk-profile",
+      "coverage": "Published Feishu CLI doctor: managed SDK profile bootstrap and initialize only. No guardian install, real Feishu authentication, real model, task, resume or ACP claim."
+    },
+    {
+      "dshVersion": "0.1.5-rc.2",
+      "result": "sdk-initialize-failed",
+      "pnpmVersion": "10.33.0",
+      "artifactSha256": "53692cc42a65e2857215603f930d8a0885a7e4ea48b8c51a6026f00f9747c34b",
+      "graphDigest": "sha256:ed38b17f24eeff92376aa7dbb9f0e71171f30f43f971fa40bc1ac6f78022712c",
+      "graphScope": "installed-plugin-and-host-root-not-independent-sdk-profile",
+      "coverage": "Published Feishu CLI doctor: managed SDK profile bootstrap and initialize only. No guardian install, real Feishu authentication, real model, task, resume or ACP claim."
+    }
+  ],
+  "additionalAuthorSdkEvidenceReusedFromPriorRun": true,
+  "runtime": {
+    "platform": "linux",
+    "architecture": "arm64",
+    "isolation": "Dedicated Colima VM with no host mounts, restricted non-root containers; no host credentials passed."
+  },
+  "browserContractCoverage": {
+    "rosters": 7,
+    "exactBundleDigests": 6,
+    "browserPeerVersionsObserved": false,
+    "nodeGraphDoesNotEstablishBrowserVersions": true
+  }
+}

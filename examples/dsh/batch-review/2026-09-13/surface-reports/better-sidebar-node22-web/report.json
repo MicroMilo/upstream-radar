@@ -1,0 +1,100 @@
+{
+  "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.45.0"
+  },
+  "probe": "dsh-surface",
+  "scope": "surface-runtime-behavior",
+  "startedAt": "2026-09-13T11:57:20.262Z",
+  "completedAt": "2026-09-13T11:58:09.202Z",
+  "caseId": "better-sidebar-node22-web",
+  "sourceCaseId": "better-sidebar-node22",
+  "sourceFingerprint": "sha256:3c707a9b0b2e8183fbf8b34434b45f92aebc10dad72c31a1b461c3a5cba2a819",
+  "contractFingerprint": "sha256:56892738410be6de62c198235b931c2be84585609757c0f281781592c5731475",
+  "plugin": "dsh-better-sidebar@0.19.1",
+  "dshVersion": "0.1.5-rc.2",
+  "plane": "web",
+  "profile": "web",
+  "runtimeId": "dsh-better-sidebar",
+  "runtime": {
+    "nodeMajor": 22,
+    "nodeVersion": "22.23.2",
+    "platform": "linux",
+    "architecture": "arm64",
+    "pnpmVersion": "11.7.0"
+  },
+  "artifact": {
+    "sha256": "67969b94e96747ad910ce945bafa2b8176af584fb8bc02f87dce5ed132986884",
+    "bytes": 3484248,
+    "integrity": "sha512-Jr0tPJoDKUVkq+fioL6Td+YwXZ+PULx3CnBJ4iktaQGNP5y9hgpz6V7o7f4Yh2czheVKZsewurqCaiN10GQYeQ=="
+  },
+  "stages": {
+    "runtime": {
+      "status": "passed",
+      "code": 0
+    },
+    "artifact": {
+      "status": "passed",
+      "code": 0
+    },
+    "profile": {
+      "status": "passed",
+      "code": 0
+    },
+    "install": {
+      "status": "passed",
+      "code": 0
+    },
+    "registration": {
+      "status": "passed"
+    },
+    "host": {
+      "status": "passed"
+    },
+    "surface": {
+      "status": "passed"
+    },
+    "interaction": {
+      "status": "passed"
+    },
+    "shutdown": {
+      "status": "passed"
+    }
+  },
+  "evidence": {
+    "plane": "web",
+    "url": "http://127.0.0.1:30880/",
+    "rootMounted": false,
+    "bootManifestPresent": false,
+    "bootEntryIds": [],
+    "pluginEntryPresent": false,
+    "applicationMounted": false,
+    "pluginMaterialized": false,
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    ],
+    "pageErrors": [],
+    "failedRequests": [],
+    "hostLog": "better-sidebar-node22-web.host.log",
+    "httpStatus": 401,
+    "title": "",
+    "blockedExternalRequests": [],
+    "screenshot": "better-sidebar-node22-web.png",
+    "trace": "better-sidebar-node22-web.trace.zip"
+  },
+  "result": "surface-incompatible",
+  "reason": "the DSH Web endpoint returned HTTP 401",
+  "boundary": {
+    "isolationProviderClaim": "other",
+    "isolationVerifiedByRadar": false,
+    "disposableEnvironmentRequired": true,
+    "inheritedHostSecrets": false,
+    "externalBrowserRequestsBlocked": true,
+    "approvedDependencyBuilds": [
+      "node-pty"
+    ],
+    "requiredDependencyBuilds": [],
+    "note": "The caller supplies a disposable VM and restricted container. Radar passes no repository or model secrets, binds the run to exact artifact bytes, blocks non-loopback browser requests, and collects bounded smoke evidence. This is compatibility evidence, not a malicious-code safety certificate. Package transport uses an explicitly selected credential-free proxy; browser non-loopback requests remain blocked."
+  }
+}

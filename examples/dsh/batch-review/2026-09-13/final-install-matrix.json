@@ -1,0 +1,154 @@
+{
+  "include": [
+    {
+      "id": "better-sidebar-node22",
+      "targetId": "better-sidebar",
+      "plugin": "dsh-better-sidebar@0.19.1",
+      "dshVersion": "0.1.5-rc.2",
+      "nodeMajor": 22,
+      "allowedBuilds": "node-pty",
+      "staticFingerprint": "sha256:3325df55263b9e3f15bf52611bca7f896d59cbfd311a8c724c96d37e704d51bc",
+      "contractFingerprint": "sha256:dc21a56c9148c6de5ea8f4b2f1b5307bf2ffab88bd6a5c6b55d82191cfd38411",
+      "reasons": [
+        "missing-evidence"
+      ],
+      "platform": "linux",
+      "architecture": "arm64"
+    },
+    {
+      "id": "cloudflare-browser-node22",
+      "targetId": "cloudflare-browser",
+      "plugin": "dsh-cloudflare-browser-run@0.1.9",
+      "dshVersion": "0.1.5-rc.2",
+      "nodeMajor": 22,
+      "allowedBuilds": "",
+      "staticFingerprint": "sha256:16ddd1cab85feb5b11c40243540498a75d7d60c57afccd1a4bf6fdb5f7c3ffec",
+      "contractFingerprint": "sha256:818673564364554e19897e597e5b5fec73f4516a81cd8dc86df3b8ecfacdc926",
+      "reasons": [
+        "missing-evidence"
+      ],
+      "platform": "linux",
+      "architecture": "arm64"
+    },
+    {
+      "id": "context-node22",
+      "targetId": "context",
+      "plugin": "dsh-context@0.51.0",
+      "dshVersion": "0.1.5-rc.2",
+      "nodeMajor": 22,
+      "allowedBuilds": "",
+      "staticFingerprint": "sha256:fb3744b14df916e6991c5ff9be70f95c2cb34007ceccfa679d08aa6ce28cac3c",
+      "contractFingerprint": "sha256:6795724c2a6c9660666d01987e2dd614f7645567c50242d3d4a0d9169797967c",
+      "reasons": [
+        "missing-evidence"
+      ],
+      "platform": "linux",
+      "architecture": "arm64"
+    },
+    {
+      "id": "context-node24",
+      "targetId": "context",
+      "plugin": "dsh-context@0.51.0",
+      "dshVersion": "0.1.5-rc.2",
+      "nodeMajor": 24,
+      "allowedBuilds": "",
+      "staticFingerprint": "sha256:fb3744b14df916e6991c5ff9be70f95c2cb34007ceccfa679d08aa6ce28cac3c",
+      "contractFingerprint": "sha256:280433e1d8ad6cb9062491837d4611c27d30f51d6cf8befef65f8f632b6f5d13",
+      "reasons": [
+        "missing-evidence"
+      ],
+      "platform": "linux",
+      "architecture": "arm64"
+    },
+    {
+      "id": "dsh-agy-link-node24",
+      "targetId": "dsh-agy-link",
+      "plugin": "dsh-agy-link@0.4.27",
+      "dshVersion": "0.1.5-rc.2",
+      "nodeMajor": 24,
+      "allowedBuilds": "",
+      "staticFingerprint": "sha256:faf1f254ceff19ac3e73df8a0a49d065d90225a6f0d7b05c44f4844df0df1e11",
+      "contractFingerprint": "sha256:31ee828a4ad56a871ca134877d46679a1a52b71bcb23e96402f74acaf089d29c",
+      "reasons": [
+        "missing-evidence"
+      ],
+      "platform": "linux",
+      "architecture": "arm64"
+    },
+    {
+      "id": "dsh-tui-node22",
+      "targetId": "dsh-tui",
+      "plugin": "@deepseek-harness-tui/dsh-tui@0.10.1",
+      "dshVersion": "0.1.5-rc.2",
+      "nodeMajor": 22,
+      "allowedBuilds": "",
+      "staticFingerprint": "sha256:7214abaeada464bcda141640f65f9593c1ba7ce5ecf886c8e8acbd10e59ddf4a",
+      "contractFingerprint": "sha256:abafdb9e96a1101aec2ca65f87cdc2b80ff6c677e309401954ccb23affaf33a1",
+      "reasons": [
+        "missing-evidence"
+      ],
+      "platform": "linux",
+      "architecture": "arm64"
+    },
+    {
+      "id": "dsh-tui-node24",
+      "targetId": "dsh-tui",
+      "plugin": "@deepseek-harness-tui/dsh-tui@0.10.1",
+      "dshVersion": "0.1.5-rc.2",
+      "nodeMajor": 24,
+      "allowedBuilds": "",
+      "staticFingerprint": "sha256:7214abaeada464bcda141640f65f9593c1ba7ce5ecf886c8e8acbd10e59ddf4a",
+      "contractFingerprint": "sha256:df9e6f6337c27d7a6a4a0bdac5e48ac42e9f44355fc95ff01a44f752d0a482c0",
+      "reasons": [
+        "missing-evidence"
+      ],
+      "platform": "linux",
+      "architecture": "arm64"
+    },
+    {
+      "id": "dsh-univer-office-node22",
+      "targetId": "dsh-univer-office",
+      "plugin": "dsh-univer-office@0.2.14",
+      "dshVersion": "0.1.5-rc.2",
+      "nodeMajor": 22,
+      "allowedBuilds": "",
+      "staticFingerprint": "sha256:94c0f4b308e9df20089c5cad93197dec0788156df15c8ba9f972be7a094f4d28",
+      "contractFingerprint": "sha256:ee8d4011461b3438048d05e3ced9ae9cb7253cecdd75c1910c752c3366a32fa7",
+      "reasons": [
+        "missing-evidence"
+      ],
+      "platform": "linux",
+      "architecture": "arm64"
+    },
+    {
+      "id": "feishu-bot-node22",
+      "targetId": "feishu-bot",
+      "plugin": "dsh-feishu-bot@0.19.16",
+      "dshVersion": "0.1.5-rc.2",
+      "nodeMajor": 22,
+      "allowedBuilds": "protobufjs",
+      "staticFingerprint": "sha256:e4aaee1b834b0669356c4f3d28197f67ad447e5e70f597dc65d8a307705b0f56",
+      "contractFingerprint": "sha256:f63137ea387d4699ecac03a50d7b280d5d578f9fd88e87db26235fc17cece045",
+      "reasons": [
+        "missing-evidence"
+      ],
+      "platform": "linux",
+      "architecture": "arm64"
+    },
+    {
+      "id": "openpencil-node24",
+      "targetId": "openpencil",
+      "plugin": "@zseven-w/dsh-openpencil@0.1.0-rc.9",
+      "dshVersion": "0.1.5-rc.2",
+      "nodeMajor": 24,
+      "allowedBuilds": "",
+      "staticFingerprint": "sha256:1e080fbc482dd443f03046b0281d9dcbe2e9cd3edbb0950dc0a5243023608e2e",
+      "contractFingerprint": "sha256:682e598fe07f70794f04dcb31b6f0955bec0ef18bf4ef9eb6543a77c17ad405a",
+      "reasons": [
+        "missing-evidence"
+      ],
+      "platform": "linux",
+      "architecture": "arm64"
+    }
+  ]
+}

@@ -1,0 +1,498 @@
+{
+  "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.45.0"
+  },
+  "probe": "dsh-surface",
+  "scope": "surface-runtime-behavior",
+  "startedAt": "2026-09-13T12:13:58.860Z",
+  "completedAt": "2026-09-13T12:14:23.929Z",
+  "caseId": "dsh-tui-node22-tui",
+  "sourceCaseId": "dsh-tui-node22",
+  "sourceFingerprint": "sha256:57ee8478b7e22d6c3cb0156d8d27eca52550cde5bf5c6ab72618a88b9d1c21fa",
+  "contractFingerprint": "sha256:40df8abec7bf9745c5f46f6ad073933fac5f69edaaa5ee85f1af2cafd53a469c",
+  "plugin": "@deepseek-harness-tui/dsh-tui@0.10.1",
+  "dshVersion": "0.1.5-rc.2",
+  "plane": "tui",
+  "profile": "dsh-tui",
+  "runtimeId": "@deepseek-harness-tui/dsh-tui",
+  "runtime": {
+    "nodeMajor": 22,
+    "nodeVersion": "22.23.2",
+    "platform": "linux",
+    "architecture": "arm64",
+    "pnpmVersion": "11.7.0"
+  },
+  "artifact": {
+    "sha256": "21833eba7569a3e814cb09aa85777fbfa191eef8d6f66269b239b6e6e54e0312",
+    "bytes": 2245889,
+    "integrity": "sha512-xnwLON+c28zt1Yg5nrI2fNHysUEF63TsIC7XndtIJIiDOBEomcSfydnc9DrT+Xzx7p2/qAi6d7+GFB0eSyJ2uw=="
+  },
+  "stages": {
+    "runtime": {
+      "status": "passed",
+      "code": 0
+    },
+    "artifact": {
+      "status": "passed",
+      "code": 0
+    },
+    "profile": {
+      "status": "passed",
+      "detail": "dsh plugin add created the custom TUI profile"
+    },
+    "install": {
+      "status": "passed",
+      "code": 0
+    },
+    "registration": {
+      "status": "passed"
+    },
+    "host": {
+      "status": "passed"
+    },
+    "surface": {
+      "status": "passed"
+    },
+    "interaction": {
+      "status": "passed"
+    },
+    "shutdown": {
+      "status": "passed"
+    }
+  },
+  "evidence": {
+    "plane": "tui",
+    "terminal": "xterm-256color",
+    "columns": 100,
+    "rows": 32,
+    "frameObserved": true,
+    "inputSent": true,
+    "exitedAfterShutdown": true,
+    "normalizedFrame": "██\n█▄▄▄▀\n██\n██\n█▀▀▀█\n██\n██\nExplo\nPress Ctrl+C again to exit\n█▀▀▀▄\n██\n██\n██\n█▄▄▄▀\n██\n██\n█▀▀▀█\n██\n██\nExplor\n▀▀\n█▀▀▀▄█\n███\n███\n███\n█▄▄▄▀█\n██\n███\n█▀▀▀██\n███\n███\nExplore",
+    "capturedBytes": 10567,
+    "truncated": false,
+    "transcript": "dsh-tui-node22-tui.ansi",
+    "exitCode": 0,
+    "signal": 0
+  },
+  "result": "compatible",
+  "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown",
+  "boundary": {
+    "isolationProviderClaim": "other",
+    "isolationVerifiedByRadar": false,
+    "disposableEnvironmentRequired": true,
+    "inheritedHostSecrets": false,
+    "externalBrowserRequestsBlocked": false,
+    "approvedDependencyBuilds": [],
+    "requiredDependencyBuilds": [],
+    "note": "The caller supplies a disposable VM and restricted container. Radar passes no repository or model secrets, binds the run to exact artifact bytes, blocks non-loopback browser requests, and collects bounded smoke evidence. This is compatibility evidence, not a malicious-code safety certificate. Package transport uses an explicitly selected credential-free proxy; browser non-loopback requests remain blocked."
+  },
+  "resolution": {
+    "profileLockfile": {
+      "sha256": "00521f83be1063709b3817a694f79694ed43a4f4abc5c66d1025d69b49a89c75",
+      "bytes": 35794,
+      "graphDigest": "sha256:572d3dfd2bcb1650685d29023767165bea0c923515d22cbaa745b055d443ed01",
+      "nodes": 99,
+      "edges": 125,
+      "unresolved": 30,
+      "unresolvedDependencies": [
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/cordis",
+          "spec": "^4.0.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-agent",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-agent-instructions",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-agent-presets",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-atomic-write",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-code-runtime-worker-thread",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-commands",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-cordis-host-runner",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-invariants",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-llm",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-llm-pi-ai",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-persona",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-session",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-settings",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-skill",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-storage",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-storage-domain",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-storage-json",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-system-prompt",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-terminal",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-terminal-bash",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-tool-ask-user",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-tool-bash-persistent",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-tool-cordis",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-tool-subagent",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-user-approval",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-user-questions",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/dsh-workspace",
+          "spec": "^0.1.0-rc.6 || ^0.1.1-rc.1 || 0.1.2-alpha.3 || 0.1.2-alpha.4 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.3-alpha.2 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-harness-tui/dsh-tui@file:../../../artifact/deepseek-harness-tui-dsh-tui-0.10.1.tgz",
+          "name": "@deepseek-ai/schemastery",
+          "spec": "^3.18.1",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:sharp@0.35.3",
+          "name": "@types/node",
+          "spec": "*",
+          "kind": "optional"
+        }
+      ]
+    },
+    "runtimeGraph": {
+      "digest": "sha256:e0c383f5b62ee75a9c2e818faeaee66222ab744de6ed4788ca6063e97c978803",
+      "nodes": 581,
+      "edges": 2092,
+      "unresolved": 0,
+      "optionalUnavailable": 119,
+      "optionalUnavailableDependencies": [
+        {
+          "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+          "name": "@deepseek-ai/node-addon-system-darwin-arm64",
+          "spec": "0.1.2",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+          "name": "@deepseek-ai/node-addon-system-darwin-x64",
+          "spec": "0.1.2",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+          "name": "@deepseek-ai/node-addon-system-linux-x64",
+          "spec": "0.1.2",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.6.2/node_modules/@modelcontextprotocol/sdk",
+          "name": "@cfworker/json-schema",
+          "spec": "^4.1.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-darwin-arm64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-darwin-x64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-arm",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-ia32",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-ppc64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-riscv64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-s390x",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-x64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-win32-arm64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-win32-ia32",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-win32-x64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-android-arm64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-android-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-darwin-arm64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-darwin-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-freebsd-arm64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-freebsd-ia32",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-freebsd-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-arm",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-ia32",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-loong64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-riscv64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-openbsd-ia32",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-openbsd-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-win32-arm64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-win32-ia32",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-win32-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        }
+      ],
+      "pluginPeerContracts": {
+        "declared": 0,
+        "satisfied": 0,
+        "mismatched": 0,
+        "indeterminate": 0,
+        "missing": 0,
+        "relations": []
+      },
+      "hostRuntime": {
+        "source": "dsh-process",
+        "resolvedNodes": 500,
+        "dshVersion": "0.1.5-rc.2"
+      }
+    }
+  }
+}

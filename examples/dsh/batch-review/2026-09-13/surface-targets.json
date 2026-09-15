@@ -1,0 +1,86 @@
+{
+  "schema": "upstream-radar.dsh-surface-targets/v1alpha1",
+  "refreshAfterHours": 168,
+  "surfaces": [
+    {
+      "id": "better-sidebar-node22-web",
+      "sourceCaseId": "better-sidebar-node22",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-better-sidebar",
+      "reason": "Repository environment recommendation: Plugin declares >=20, but CI configures Node 22 and tests the Web profile; use that stronger repository signal. This is not proof that Node 20 is incompatible. Oversized READMEs are explicitly omitted from bounded evidence; native node-pty build approval is not pre-granted."
+    },
+    {
+      "id": "cloudflare-browser-node22-web",
+      "sourceCaseId": "cloudflare-browser-node22",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-cloudflare-browser-run",
+      "reason": "Repository environment recommendation: CI configures Node 22. README explicitly installs into --profile web; Web is justified by that instruction, not merely by the remote browser feature. Credential-dependent Cloudflare requests remain outside the smoke-test scope."
+    },
+    {
+      "id": "context-node22-web",
+      "sourceCaseId": "context-node22",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-context",
+      "reason": "Repository environment recommendation: Manifest explicitly supports ^22.19 || >=24. CI configures 24, so prefer that declared test version while retaining 22 as a lower supported boundary, not as an author recommendation. The exact package declares a Web client."
+    },
+    {
+      "id": "context-node24-web",
+      "sourceCaseId": "context-node24",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-context",
+      "reason": "Repository environment recommendation: Manifest explicitly supports ^22.19 || >=24. CI configures 24, so prefer that declared test version while retaining 22 as a lower supported boundary, not as an author recommendation. The exact package declares a Web client."
+    },
+    {
+      "id": "dsh-agy-link-node24-web",
+      "sourceCaseId": "dsh-agy-link-node24",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-agy-link",
+      "reason": "Repository environment recommendation: Exact manifest and setup require Node >=24; CI also configures 24. The author installs into Web for OAuth/settings. Real Google OAuth and model traffic require user credentials and are not exercised."
+    },
+    {
+      "id": "dsh-tui-node22-tui",
+      "sourceCaseId": "dsh-tui-node22",
+      "plane": "tui",
+      "profile": "dsh-tui",
+      "runtimeId": "@deepseek-harness-tui/dsh-tui",
+      "reason": "Repository environment recommendation: Manifest supports ^22.19 || >=24; CI configures 24. The author names dsh-tui as the actual terminal profile. Browser-related feature descriptions do not make this a DSH Web client. Interactive model behavior requires an API key and is not covered."
+    },
+    {
+      "id": "dsh-tui-node24-tui",
+      "sourceCaseId": "dsh-tui-node24",
+      "plane": "tui",
+      "profile": "dsh-tui",
+      "runtimeId": "@deepseek-harness-tui/dsh-tui",
+      "reason": "Repository environment recommendation: Manifest supports ^22.19 || >=24; CI configures 24. The author names dsh-tui as the actual terminal profile. Browser-related feature descriptions do not make this a DSH Web client. Interactive model behavior requires an API key and is not covered."
+    },
+    {
+      "id": "dsh-univer-office-node22-web",
+      "sourceCaseId": "dsh-univer-office-node22",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-univer-office",
+      "reason": "Repository environment recommendation: Exact package/setup require Node >=22.19 and declare Web. Release CI configures Node 22; no explicit author preference was found. Spreadsheet usefulness and credential-dependent integrations are outside this compatibility review."
+    },
+    {
+      "id": "feishu-bot-node22-web",
+      "sourceCaseId": "feishu-bot-node22",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-feishu-bot",
+      "reason": "Repository environment recommendation: Node >=22.19 is a declared minimum; CI configures Node 22, not an explicit author preference. Default user setup is dsh-lark with the SDK adapter; Web is an additional declared settings client. The generic headless/Web checks do not cover the SDK workflow."
+    },
+    {
+      "id": "openpencil-node24-web",
+      "sourceCaseId": "openpencil-node24",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "@zseven-w/dsh-openpencil",
+      "reason": "Repository environment recommendation: Author setup explicitly installs npm next into Web. Exact package requires Node >=24.11; CI pins 24.11.0. Large WASM/editor assets may exceed scanner budgets; an incomplete artifact inspection is not a plugin vulnerability or a compatibility pass."
+    }
+  ]
+}

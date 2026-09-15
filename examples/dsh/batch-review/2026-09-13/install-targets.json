@@ -1,0 +1,16 @@
+{
+  "schema": "upstream-radar.dsh-install-targets/v1alpha1",
+  "refreshAfterHours": 168,
+  "environmentRecommendationsRequired": true,
+  "runtimeProfiles": [],
+  "plugins": [
+    { "id": "feishu-bot", "spec": "dsh-feishu-bot@0.16.0", "observerTargetId": "dsh-feishu-bot", "reason": "Backend messaging plugin with dependency build gates." },
+    { "id": "cloudflare-browser", "spec": "dsh-cloudflare-browser-run@0.1.3", "observerTargetId": "dsh-cloudflare-browser-run", "reason": "Browser tool; distinguish browser use from the DSH Web client profile." },
+    { "id": "dsh-agy-link", "spec": "dsh-agy-link@0.4.13", "observerTargetId": "dsh-agy-link", "reason": "Plugin with an author-declared Node 24 requirement." },
+    { "id": "context", "spec": "dsh-context@0.25.3", "observerTargetId": "dsh-context", "reason": "Backend context lifecycle with source/release drift." },
+    { "id": "dsh-tui", "spec": "@deepseek-harness-tui/dsh-tui@0.9.0", "observerTargetId": "dsh-tui", "reason": "Real TUI with a multi-major Node engine range." },
+    { "id": "better-sidebar", "spec": "dsh-better-sidebar@0.15.2", "observerTargetId": "dsh-better-sidebar", "reason": "Web workbench with a native terminal dependency." },
+    { "id": "openpencil", "spec": "@zseven-w/dsh-openpencil@0.1.0-rc.1", "observerTargetId": "dsh-openpencil", "reason": "Web UI with Node >=24.11 and a separate release channel." },
+    { "id": "dsh-univer-office", "spec": "dsh-univer-office@0.2.9", "observerTargetId": "dsh-univer-office", "reason": "Web client baseline without a native install build." }
+  ]
+}

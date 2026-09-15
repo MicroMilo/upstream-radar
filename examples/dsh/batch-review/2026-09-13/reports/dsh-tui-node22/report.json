@@ -1,0 +1,131 @@
+{
+  "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.45.0"
+  },
+  "probe": "dsh-install",
+  "scope": "install-and-load-behavior",
+  "startedAt": "2026-09-13T11:18:44.392Z",
+  "completedAt": "2026-09-13T11:20:48.442Z",
+  "caseId": "dsh-tui-node22",
+  "dshVersion": "0.1.5-rc.2",
+  "runtime": {
+    "platform": "linux",
+    "architecture": "arm64",
+    "nodeVersion": "22.23.2",
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.7.0"
+    }
+  },
+  "artifact": {
+    "spec": "npm:@deepseek-harness-tui/dsh-tui@0.10.1",
+    "name": "@deepseek-harness-tui/dsh-tui",
+    "version": "0.10.1",
+    "lifecycleScripts": [
+      "prepare"
+    ],
+    "sha256": "21833eba7569a3e814cb09aa85777fbfa191eef8d6f66269b239b6e6e54e0312",
+    "bytes": 2245889,
+    "bundlePatch": "cordis.patch.yml",
+    "nodeEngine": "^22.19 || >=24"
+  },
+  "stages": {
+    "runtime": {
+      "status": "passed",
+      "code": 0
+    },
+    "artifact": {
+      "status": "passed",
+      "code": 0
+    },
+    "profile": {
+      "status": "failed",
+      "code": null,
+      "detail": "command timed out: Progress: resolved 1, reused 0, downloaded 0, added 0\\u000aProgress: resolved 3, reused 0, downloaded 0, added 0\\u000aProgress: resolved 34, reused 0, downloaded 11, added 0\\u000aProgress: resolved 48, reused 0, downloaded 43, added 0\\u000a[WARN] Tarball download average speed 12 KiB/s (size 13 KiB) is below 50 KiB/s: https://registry.npmjs.org/@deepseek-ai/dsh-tool-subagent-control/-/dsh-tool-subagent-control-0.1.5-rc.2.tgz (GET)\\u000aProgress: resolved 61, reused 0, downloaded 55, added 0\\u000aProgress: resolved 65, reused 0, downloaded 61, added 0\\u000aProgress: resolved 67, reused 0, downloaded 65, added 0\\u000aProgress: resolved 68, reused 0, downloaded 66, added 0\\u000a[WARN] Tarball download average speed 14 KiB/s (size 32 KiB) is below 50 KiB/s: https://registry.npmjs.org/@deepseek-ai/dsh-compaction-basic/-/dsh-compaction-basic-0.1.5-rc.2.tgz (GET)\\u000aProgress: resolved 68, reused 0, downloaded 67, added 0\\u000a[WARN] Request took 13168ms: https://registry.npmjs.org/@deepseek-ai%2Fdsh-tool-bash\\u000aProgress: resolved 69, reused 0, downloaded 67, added 0\\u000aProgress: resolved 69, reused 0, downloaded 68, added 0\\u000a[WARN] GET https://registry.npmjs.org/@deepseek-ai%2Fdsh-base error (23). Will retry in 10 seconds. 2 retries left.\\u000a[WARN] GET https://registry.npmjs.org/@deepseek-ai%2Fdsh-hooks-codex error (23). Will retry in 10 seconds. 2 retries left.\\u000a[WARN] GET https://registry.npmjs.org/@deepseek-ai%2Fdsh-skill-filesystem error (23). Will retry in 10 seconds. 2 retries left.\\u000a[WARN] GET https://registry.npmjs.org/@deepseek-ai%2Fdsh-token-meter error (23). Will retry in 10 seconds. 2 retries left.\\u000a[WARN] GET https://registry.npmjs.org/@deepseek-ai/dsh-terminal/-/dsh-terminal-0.1.5-rc.2.tgz error (23). Will retry in 10 seconds. 2 retries left.\\u000a[WARN] Request took 70410ms: https://registry.npmjs.org/@deepseek-ai%2Fdsh-skill-filesystem\\u000aProgress: resolved 70, reused 0, downloaded 68, added 0\\u000a[WARN] Request took 70840ms: https://registry.npmjs.org/@deepseek-ai%2Fdsh-hooks-codex\\u000a[WARN] Request took 71165ms: https://registry.npmjs.org/@deepseek-ai%2Fdsh-token-meter\\u000aProgress: resolved 73, reused 0, downloaded 70, added 0\\u000aProgress: resolved 97, reused 0, downloaded 77, added 0\\u000aProgress: resolved 114, reused 0, downloaded 96, added 0\\u000aProgress: resolved 119, reused 0, downloaded 109, added 0\\u000aProgress: resolved 122, reused 0, downloaded 113, added 0\\u000aProgress: resolved 133, reused 0, downloaded 118, added 0\\u000aProgress: resolved 146, reused 0, downloaded 131, added 0\\u000aProgress: resolved 194, reused 0, downloaded 163, added 0\\u000a[WARN] Tarball download average speed 30 KiB/s (size 31 KiB) is below 50 KiB/s: https://registry.npmjs.org/@deepseek-ai/dsh-client-ui-input-trigger/-/dsh-client-ui-input-trigger-0.1.5-rc.2.tgz (GET)\\u000aProgress: resolved 223, reused 0, downloaded 209, added 0\\u000aProgress: resolved 224, reused 0, downloaded 214, added 0\\u000aProgress: resolved 224, reused 0, downloaded 217, added 0\\u000a[WARN] Request took 12723ms: https://registry.npmjs.org/@deepseek-ai%2Fdsh-command-feedback\\u000aProgress: resolved 225, reused 0, downloaded 217, added 0\\u000aProgress: resolved 225, reused 0, downloaded 218, added 0\\u000a[WARN] Request took 31556ms: https://registry.npmjs.org/@deepseek-ai%2Fdsh-subagent-spawn-in-process\\u000aProgress: resolved 226, reused 0, downloaded 218, added 0\\u000aProgress: resolved 226, reused 0, downloaded 219, added 0",
+      "timedOut": true
+    },
+    "install": {
+      "status": "skipped"
+    },
+    "registration": {
+      "status": "skipped"
+    },
+    "load": {
+      "status": "skipped"
+    }
+  },
+  "observations": {
+    "install": {
+      "coverage": {
+        "status": "missing",
+        "tracer": "strace",
+        "traceFiles": 0,
+        "bytes": 0,
+        "lines": 0,
+        "parsedEvents": 0,
+        "otherLines": 0,
+        "tamperResistance": "best-effort-same-container"
+      },
+      "processes": [],
+      "network": [],
+      "fileWrites": []
+    },
+    "load": {
+      "coverage": {
+        "status": "missing",
+        "tracer": "strace",
+        "traceFiles": 0,
+        "bytes": 0,
+        "lines": 0,
+        "parsedEvents": 0,
+        "otherLines": 0,
+        "tamperResistance": "best-effort-same-container"
+      },
+      "processes": [],
+      "network": [],
+      "fileWrites": []
+    }
+  },
+  "filesystem": {
+    "install": {
+      "created": [],
+      "modified": [],
+      "deleted": [],
+      "totals": {
+        "created": 0,
+        "modified": 0,
+        "deleted": 0
+      },
+      "truncated": false,
+      "snapshotErrors": 0
+    },
+    "load": {
+      "created": [],
+      "modified": [],
+      "deleted": [],
+      "totals": {
+        "created": 0,
+        "modified": 0,
+        "deleted": 0
+      },
+      "truncated": false,
+      "snapshotErrors": 0
+    }
+  },
+  "resolution": {},
+  "result": "unknown",
+  "reason": "the exact DSH runtime could not initialize the disposable profile",
+  "boundary": {
+    "isolationProviderClaim": "other",
+    "isolationVerifiedByRadar": false,
+    "disposableEnvironmentRequired": true,
+    "lifecycleScriptsEnabledForPluginInstall": true,
+    "pluginCodeMayExecuteDuringLoad": true,
+    "inheritedHostSecrets": false,
+    "approvedDependencyBuilds": [],
+    "requiredDependencyBuilds": [],
+    "note": "Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate."
+  }
+}

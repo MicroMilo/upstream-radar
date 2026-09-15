@@ -1,0 +1,2466 @@
+{
+  "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.45.0"
+  },
+  "probe": "dsh-install",
+  "scope": "install-and-load-behavior",
+  "startedAt": "2026-09-13T11:51:52.392Z",
+  "completedAt": "2026-09-13T11:52:17.192Z",
+  "caseId": "cloudflare-browser-node22",
+  "dshVersion": "0.1.5-rc.2",
+  "runtime": {
+    "platform": "linux",
+    "architecture": "arm64",
+    "nodeVersion": "22.23.2",
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.7.0"
+    }
+  },
+  "artifact": {
+    "spec": "npm:dsh-cloudflare-browser-run@0.1.9",
+    "name": "dsh-cloudflare-browser-run",
+    "version": "0.1.9",
+    "lifecycleScripts": [],
+    "sha256": "887ea8a5170bd39f841adef7678961ea31f7676ea9c50cee7fd5b412ba8fe77a",
+    "bytes": 8499,
+    "bundlePatch": "cordis.patch.yml",
+    "nodeEngine": ">=20.0.0"
+  },
+  "stages": {
+    "runtime": {
+      "status": "passed",
+      "code": 0
+    },
+    "artifact": {
+      "status": "passed",
+      "code": 0
+    },
+    "profile": {
+      "status": "passed",
+      "code": 0
+    },
+    "install": {
+      "status": "passed",
+      "code": 0
+    },
+    "registration": {
+      "status": "passed"
+    },
+    "load": {
+      "status": "passed",
+      "code": 0
+    }
+  },
+  "observations": {
+    "install": {
+      "coverage": {
+        "status": "captured",
+        "tracer": "strace",
+        "traceFiles": 1,
+        "bytes": 532679,
+        "lines": 2439,
+        "parsedEvents": 263,
+        "otherLines": 2176,
+        "tamperResistance": "best-effort-same-container"
+      },
+      "processes": [
+        {
+          "executable": "/usr/local/bin/pnpm",
+          "arguments": [
+            "pnpm",
+            "dlx",
+            "--package=@deepseek-ai/dsh@0.1.5-rc.2",
+            "dsh",
+            "plugin",
+            "--profile",
+            "headless",
+            "add",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/artifact/dsh-cloudflare-browser-run-0.1.9.tgz"
+          ],
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "executable": "/usr/local/sbin/node",
+          "arguments": [
+            "node",
+            "/usr/local/bin/pnpm",
+            "dlx",
+            "--package=@deepseek-ai/dsh@0.1.5-rc.2",
+            "dsh",
+            "plugin",
+            "--profile",
+            "headless",
+            "add",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/artifact/dsh-cloudflare-browser-run-0.1.9.tgz"
+          ],
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "executable": "/usr/local/bin/node",
+          "arguments": [
+            "node",
+            "/usr/local/bin/pnpm",
+            "dlx",
+            "--package=@deepseek-ai/dsh@0.1.5-rc.2",
+            "dsh",
+            "plugin",
+            "--profile",
+            "headless",
+            "add",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/artifact/dsh-cloudflare-browser-run-0.1.9.tgz"
+          ],
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "executable": "$SANDBOX/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/dsh",
+          "arguments": [
+            "dsh",
+            "plugin",
+            "--profile",
+            "headless",
+            "add",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/artifact/dsh-cloudflare-browser-run-0.1.9.tgz"
+          ],
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "executable": "/usr/bin/sed",
+          "arguments": [
+            "sed",
+            "-e",
+            "s,\\\\,/,g"
+          ],
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "executable": "/usr/bin/dirname",
+          "arguments": [
+            "dirname",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/dsh"
+          ],
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "executable": "/usr/bin/uname",
+          "arguments": [
+            "uname",
+            "-a"
+          ],
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "executable": "$SANDBOX/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/node",
+          "arguments": [
+            "node",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/../.pnpm/@deepseek-ai+dsh@0.1.5-rc.2_e7d7ea831f3e577d660131f4f90a9aee/node_modules/@deepseek-ai/",
+            "plugin",
+            "--profile",
+            "headless",
+            "add",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/artifact/dsh-cloudflare-browser-run-0.1.9.tgz"
+          ],
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "executable": "/usr/local/sbin/node",
+          "arguments": [
+            "node",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/../.pnpm/@deepseek-ai+dsh@0.1.5-rc.2_e7d7ea831f3e577d660131f4f90a9aee/node_modules/@deepseek-ai/",
+            "plugin",
+            "--profile",
+            "headless",
+            "add",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/artifact/dsh-cloudflare-browser-run-0.1.9.tgz"
+          ],
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "executable": "/usr/local/bin/node",
+          "arguments": [
+            "node",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/../.pnpm/@deepseek-ai+dsh@0.1.5-rc.2_e7d7ea831f3e577d660131f4f90a9aee/node_modules/@deepseek-ai/",
+            "plugin",
+            "--profile",
+            "headless",
+            "add",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/artifact/dsh-cloudflare-browser-run-0.1.9.tgz"
+          ],
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "executable": "$SANDBOX/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/pnpm",
+          "arguments": [
+            "pnpm",
+            "add",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/artifact/dsh-cloudflare-browser-run-0.1.9.tgz"
+          ],
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "executable": "/usr/local/sbin/pnpm",
+          "arguments": [
+            "pnpm",
+            "add",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/artifact/dsh-cloudflare-browser-run-0.1.9.tgz"
+          ],
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "executable": "/usr/local/bin/pnpm",
+          "arguments": [
+            "pnpm",
+            "add",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/artifact/dsh-cloudflare-browser-run-0.1.9.tgz"
+          ],
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "executable": "$SANDBOX/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/node",
+          "arguments": [
+            "node",
+            "/usr/local/bin/pnpm",
+            "add",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/artifact/dsh-cloudflare-browser-run-0.1.9.tgz"
+          ],
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "executable": "/usr/local/sbin/node",
+          "arguments": [
+            "node",
+            "/usr/local/bin/pnpm",
+            "add",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/artifact/dsh-cloudflare-browser-run-0.1.9.tgz"
+          ],
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "executable": "/usr/local/bin/node",
+          "arguments": [
+            "node",
+            "/usr/local/bin/pnpm",
+            "add",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/artifact/dsh-cloudflare-browser-run-0.1.9.tgz"
+          ],
+          "succeeded": true,
+          "count": 1
+        }
+      ],
+      "network": [],
+      "fileWrites": [
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/tmp/node-compile-cache/v22.23.2-arm64-2b4477fa-10001",
+          "succeeded": false,
+          "count": 2
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "/dev/null",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless",
+          "succeeded": false,
+          "count": 2
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/_tmp_99_ea444de9d874511aa38042a28e7037b8",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/pnpm-home/_tmp_99_cc746515b92e53c166e19abaf1b72ce2",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/pnpm-home/_tmp_99_cc746515b92e53c166e19abaf1b72ce2/_tmp_99_ce3fc45e4eb934e2e9721692722683ef",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/_tmp_99_ea444de9d874511aa38042a28e7037b8",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "unlinkat",
+          "path": "$SANDBOX/pnpm-home/_tmp_99_cc746515b92e53c166e19abaf1b72ce2/_tmp_99_ce3fc45e4eb934e2e9721692722683ef",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "unlinkat",
+          "path": "$SANDBOX/pnpm-home/_tmp_99_cc746515b92e53c166e19abaf1b72ce2",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "unlinkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/_tmp_99_ea444de9d874511aa38042a28e7037b8",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/pnpm-home/store/v11",
+          "succeeded": false,
+          "count": 4
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/pnpm-home/store/v11/index.db",
+          "succeeded": true,
+          "count": 2
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/pnpm-home/store/v11/index.db-wal",
+          "succeeded": true,
+          "count": 2
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/pnpm-home/store/v11/index.db-shm",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/pnpm-home/store/v11/projects",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "symlinkat",
+          "path": "$SANDBOX/pnpm-home/store/v11/projects/602e38410da002c536762d7d11a8de7f",
+          "sourcePath": "../../../../dsh-home/profiles/headless",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/a8",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/a8/5e35ff9c3982b01abd5bc005fc12e341ae24bfb2f1ba9cfefcf00d00a150b6207399b5d030404f74d4ea9ea9b4fb47109211a897df8b7473c7abab28f969df",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/f3",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/f3/676d0b094272c8c0fd67d0ef377ebe8c9d4700c93cf6d03b6b6d47e254e840a4a9f29917017a6de0c14c228cf115354bc5b6df79cd6e96fee64c072fef0181",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/77",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/77/65044483cda93229c15d8d9c2c67ce8cefde552514e09039e09d641e6e05b3464b6ffa248520f2fe1b67346a2b2a87145171778eb21c22e4a00fc35efe71f6",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/b8",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/b8/ce28da6271ff0da8d684ad84ce456fe364e88eef951025ba47d9b5ffe20214de0302dcd5039ee2d2ec2b8b8aabbdbb9bfc390bf0d9defbef00d9cb45108a9a",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/02",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/02/0a4be231926c276d7f0f4147b57d42a8316d205b2777258baa58c350105ecac22d27fc7e1ebfc5328233976f19f0495757a63e6098c210710fbbfee699723e",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/19",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/19/e48ad59b1cf0676f5f461cb61744eebeb0a5321f663610e55496fa6343a406c62a49d9164e5a94e5238e457d90cdbe604536fae592fbc87da45228c9265205",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/48",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/48/e1ecce91854daeb4d1cb1375d0512a23170da29ecbd93810b668ed7b4e2415b940985ede0c677342592fb89e99104992f6f761a86fbc1339c2167dad0ae4a1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/f1",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/f1/a1f179917c32dd0dc67f60bb48fabcd818145a5d24d47cbb2e659cdf137c514fd41e8de621d92a9da33801e58892865fa5d56f667be2c0c951de9bea69c272",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/bb",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/pnpm-home/store/v11/files/bb/5a88fc702d8b63ba800b72c77a048ff901c6af692d0c6298c53bc7b4fa5d8cb3ad712ec3640049bb4d73075e3f6757770301f43353a26d964162756905a9c0",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/pnpm-home/store/v11/file+..+..+..+artifact+dsh-cloudflare-browser-run-0.1.9.tgz",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/pnpm-home/store/v11/file+..+..+..+artifact+dsh-cloudflare-browser-run-0.1.9.tgz/tarball-integrity",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/pnpm-lock.yaml.2717528809",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/pnpm-lock.yaml",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/pnpm-lock.yaml.2717528809",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "unlinkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/pnpm-lock.yaml.2717528809",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/xdg-cache/pnpm",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/xdg-cache/pnpm/lockfile-verified.jsonl",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules",
+          "succeeded": false,
+          "count": 4
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1",
+          "succeeded": true,
+          "count": 2
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1/dist",
+          "succeeded": true,
+          "count": 2
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1/LICENSE",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "unlinkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1/LICENSE",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "unlinkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "unlinkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1/dist",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "unlinkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1/LICENSE",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/a8/5e35ff9c3982b01abd5bc005fc12e341ae24bfb2f1ba9cfefcf00d00a150b6207399b5d030404f74d4ea9ea9b4fb47109211a897df8b7473c7abab28f969df",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1/dist/api.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/f3/676d0b094272c8c0fd67d0ef377ebe8c9d4700c93cf6d03b6b6d47e254e840a4a9f29917017a6de0c14c228cf115354bc5b6df79cd6e96fee64c072fef0181",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1/dist/index.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/77/65044483cda93229c15d8d9c2c67ce8cefde552514e09039e09d641e6e05b3464b6ffa248520f2fe1b67346a2b2a87145171778eb21c22e4a00fc35efe71f6",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1/README.md",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/02/0a4be231926c276d7f0f4147b57d42a8316d205b2777258baa58c350105ecac22d27fc7e1ebfc5328233976f19f0495757a63e6098c210710fbbfee699723e",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1/README.zh.md",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/19/e48ad59b1cf0676f5f461cb61744eebeb0a5321f663610e55496fa6343a406c62a49d9164e5a94e5238e457d90cdbe604536fae592fbc87da45228c9265205",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1/dist/api.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/48/e1ecce91854daeb4d1cb1375d0512a23170da29ecbd93810b668ed7b4e2415b940985ede0c677342592fb89e99104992f6f761a86fbc1339c2167dad0ae4a1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1/dist/index.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/f1/a1f179917c32dd0dc67f60bb48fabcd818145a5d24d47cbb2e659cdf137c514fd41e8de621d92a9da33801e58892865fa5d56f667be2c0c951de9bea69c272",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1/cordis.patch.yml",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/bb/5a88fc702d8b63ba800b72c77a048ff901c6af692d0c6298c53bc7b4fa5d8cb3ad712ec3640049bb4d73075e3f6757770301f43353a26d964162756905a9c0",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1/package.json",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/b8/ce28da6271ff0da8d684ad84ce456fe364e88eef951025ba47d9b5ffe20214de0302dcd5039ee2d2ec2b8b8aabbdbb9bfc390bf0d9defbef00d9cb45108a9a",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1/node_modules",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run/node_modules",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/src",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/LICENSE",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/ca/99a0ecfb4fb3ccbeac500b4e7021046a967077df021b633d2dc70ec1a2a16b3f1a45f8ebf6222139382a9c7d8f8d3720e2da46fe7a5233639151c2360d53b0",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/bin.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/7d/8200ed16d0d3778a9d055da255e3c54c3c2ad7355ae0dc46dd109692a09cac1c004e0861683bcc2567b78aa5a1a043a74b42dce259e0428fc6bff1c96b8b94-exec",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/index.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/fc/b93b8f259ef8d994533b19ba9898d7a8f884ee10b60c73f35d8ba9385039f512abf9104002a414022ac164587559493672e1bb050755353493c432ae6fb6ad",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/context.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/9a/61c1d2c32e319c09cfed2c599e4ef9a6bcb19def71664d0669bbded99aebeba849c4dcd2e3d63fa3ece011db1e5c308ab8090b9e33547034f6e1dee3d21c29",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/events.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/26/cef2ed4adaf6a0b953394910c73c7f430efa938fd1ebd667e491ea3c50b0b2d6d03d0bc20302dc26eedd1c31650135b7beff215c9c7a487231589be87ca5bf",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/fiber.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/4f/1a55abded346e701d5d6f3065bf0ac4ed03e476778cc2e71677540db8190cc291095170d25072e91d8a8543195f57555e077f0555c1aeaa3297f07a2916793",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/index.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/59/983f450905e85447c937a2d7825abd6f20e5a3d4ec235bb63429fb57e8109631afc9a20bd7d75f475980c4a6d3d1d94596387c4f857ff42775ee15418a5b0d",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/logger.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/55/0533770f12067a0630b6078d9db141cb18b2facb7919669e757ae0c2b37d784845895868d7d7061c19fbc9808b5bd615a79ef8725a452c0f319344f8c07e3a",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/reflect.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/73/aeb995da4d1115e412f75f18ec5d7a964d078edbf4cb9068d7b71c737515e71eedcffe4be92dc71643241a7d2ce789d71c49b3f1e2fd612a3e96481c25670e",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/registry.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/53/10d9d2bdaefac8682e99ed8051b01d8a1780045b9ae54ddcbbd682f39841964a1aefc5d7f69f2f3e26c5b832afe300d1c1c6c383492a38a36ad9d7d7b39f31",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/service.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/10/984f4aef5723a022fb743508d0ca86afd4d6415788d1dee56342ed25da5e018efc2a1a544a3d1b7999a402f3a3bf5ef32ec1b217f31771afacb19f6ceafb36",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/utils.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/e6/439c2b325cafcfd3c9e797387827427a6ce6f9e4dd8eaf386cff9a2151dc87c672865a81428070b3ee07fb5f9497891ed84a38690445bf0e6c285d9356438d",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/README.md",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/3d/2ccca5ef52ed0b70001a419f78b53be604202dff5e4f611f8520d5f264d87b4c76299fb5ea5ab11b4c412289b6af97800bae1119f9f69a1e5b2dac46e7562f",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/context.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/c4/b6e6b442c1c22a4fda25791cd0d0b8ca59f4244fc2725e9d7dedde9fed2ef7e47f71b922fb6d57d8ebe42bead74fb74d22ec39e9110e5c70af489cc8b40195",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/src/context.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/b6/32791b65344742ba6c9611271404b7244413e58d1ce614298204dbbcd62361bdfe45d299e08247e63d5ce809d15548a4f33722756e2a5ccc016868cd44a3c8",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/events.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/99/58082dc777ca98d1feda8e8f48ff1201621189f0fa63941afc5f0b074b965bc1e073f89ade5fd5bf1d8166faeae8a95fad92ee47bcc77ae5d6b48b452e61b3",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/src/events.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/89/23ea68efdb6850eb4cf03ae72489f4266f17bbe1e4fb1bea1a082d6a3ec0e641149390418baafcbcba178523629fb15268ae972c2a3ef50e056305edd136d3",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/fiber.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/ae/a3ba57e6203b5052053e8134a929063334da7c83a8bd0b4853f1c10fb0a51b36e3030cd35f95fa32790a75ffe078b9cbd7665eb928c3786a2115a7269798d8",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/src/fiber.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/b8/fff1008ed658b26d863ef82ab5925fa7b5e4d712aec46933d9aea961545bbafcae448025698f81bf08497223acf3f73542120ab760f1ab46902dc1bba1037b",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/index.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/de/3f4c8b697e00606c700fffda6217a71220e4fcf73b593a93b30d5dc077a6f58842894c831e6b065cc7f6e2cebfea1899c30f6549109e3adedff3aede311250",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/src/index.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/65/473108ceada97010524f14981be962a798744f6939b4b105f7125893111dee2f43b73120342c719ca2a6f2d63730df69ea5792de990e267be326195557a35a",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/logger.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/6f/b0d7be02fcb424b695a2373012d2f7b45b23c50999ef13fc3479b0fc97481854b57f77ec097dc9eef1ecd6fa7527506e523dc80ba9589133f25cdf606e303c",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/src/logger.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/01/f3cfadc83de33e245d5d280520390ab48d879988f255da1c26d8420d1698e0d453614ede1ccfec11a2ab568256ebd5af51d884c2a2a479648a1a4f00b60190",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/reflect.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/fc/83928d0df1d016b5225ede5c355f8f0fcaa969bfa80c4e48e9b62fab3d56653d257441da466968c27ddc3c48af6d14de7a133b69c50d131e5e979e826bc643",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/src/reflect.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/35/9e2f8f82cb56a7030fdf971dfe4afe36f6ccb093e92b945165d9f0f334a24d078cba810c75b40629621e899f0a176fe9728dd41bace963d9de1eff66e98e58",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/registry.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/d1/f660ed6b7c2ab1d37bd13ca91a9246a54d41a88788242848ecd73e931742844bc9549b3d8f1dd75f3b4ea31b05e8c84e8efa499828d9360f81c94cadc4061c",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/src/registry.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/ac/a5908f223626b261192bc0e32a791a4fec6d4a8e55b1d1cb2c9125880670ced8ad2f172b340d9c9e965ab845648462341211f927272d2b751a4d57f535f153",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/service.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/de/224e72914d05d5c03a12988b7e7d07562f04ea0abb47230f7d861e4737dc4c0a9055e2cef20fbad31abf2e4e5eeea6c858ca099d8c83a9d9cabe4e6e4c18ba",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/src/service.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/2f/50dff1f603342e0ec2d238dbbfca86ce97a73c089d420c168d5fad6bae11c8167869eac52545990a9aa971a63c663bcdf932d1fee7bd69525004d9a807c834",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/lib/types/utils.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/bd/53a49eb5cbbfd2a44bf1ee741b2b27cda8c57b7d6331ef44d18fdbab6d162432662cc0ac290f869db908d763300af13088faa83f60afbf1db6bc1cd965a4d1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/src/utils.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/a9/e6606ce26056f12df041dc95b3acd49b59303af62ee635e1c024bd0043d1109e912b1f6143503b62fa3845a4e461494e40540f814e61408cca6635b9ee0248",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/package.json",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/98/2e17d6e015cee15e392d2a5f26938c46701a8ad7232d05cd0478b8fd8da33d1b93341eb81e9e31b8bf676951c071eebc8207f1476aa3338757515b7caa84d8",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1/node_modules",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/node_modules",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai",
+          "succeeded": false,
+          "count": 5
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/index.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/dd/48248af82c1da830acbc4460f30f069f6fc3ac2010be3129275fdc140a6f54dbc20ab47dc23a8956517939858aa4a0bebc6ce3a8170cf5f6c5a14764afb6b1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/index.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/95/4a8e838baf8bcdfbfb52c8707f98265f7941d14a409458288d146a9e95f2b94cca4fe3059899d56a2be73f5aed580e0fcaeb01361b181559cd462ac1e9c11e",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/invariant.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/40/ed959a586d52bb7ab78fe396f70661696cd8bd9bfea09c1de817c272dd035cf9fa1180de8b894be7a92b721c02cb7db1a9f3b3a1261563095e177eb86aa227",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/invariant.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/12/61db6bfda45d8cc6098809bef6313a3c87dd8bbc6a2f5fae8fc870b8ac03ceb171d375087f7b77eb3688afdc6ca032e05a67f668f91c580ae4c34751ab4fa9",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/json-schema.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/72/d9954f0aaf0cb1f6fb7ee20e07bac7b81a8bcb0fa691c2d6f6b8826abaa2cbdd03629aeb825667f6c68ef5337b08446f246595a7699f6d7011ffefcf578603",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/presentation.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/8f/e053cff44b3be243fca5b428d1336add234d9ce9a0700832652a529d8bae764d27cef1250ac38aed69b92d90d3be86ec724211ceb920241b02a8024d27fb66",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/ptc.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/3b/f40e831730cd4684c9ed5dd515a9e4c6f0037b333841535a8f1956cfda6967a9e245a99ae378b26478b31e7dc7022432785cb902cc5361498a8e72b8b1d55b",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/py-types.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/46/9ca765e766724f4f33ecb695e7fce6a6af038945d96d88e18101341c0ff4884197af2fa1a11f6a387ed65e2eea5b077e3f8fe2bc26a3086fe629c0f6fcbd33",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/schema.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/d8/2c7d73da1960f83109aa6aead4eb6067b2340c997e7466b3379510463d4b4b5bbb2225fb8f84dd7ddbfe9a0037c70236051081b6c01b5c7d8de89817f79922",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/testing.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/74/4f755e6e99df369e6938e0e79daeba86f3f84129643b61cdc9a1e2bf44991a66fa80044e61914b760930188fb36117d7123d8139e4d2dea2c59fd51b7e3393",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/ts-types.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/e5/b28a4205c34c4f1620dbe9fa97b9d66227621f0055ba154457394e230938af6aed7674497834e8be6046dc012e8e0da6ad435ffff2635dd7997146a16caf46",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/types.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/b3/05d7f1eee06b695311cd1b0dd0b74be687697db9be2eed164b2bfb50a8d68d89a405fe96a97e2df214a4ff6588542671665b136c406680d3348a8f0142859a",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/README.md",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/17/4276931a531ddeedff5ef60bfd9486c4b3cbf02e74dcda575c82b410b2dead6d930c3956ed426283094c143eafc5379cae7eaa2b7c857ae8764ba45fc8532a",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/README.zh.md",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/4d/c65ce0f34a8b1f044e6388ea7e45b305adf53019afb70bbb8ef304b11b595415e9683f14a16fcc99dc64b22d8d3bd51153fa9ca82575a782abd254f52f8e24",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/index.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/b6/dfcafd1e5f800285525a6620dc145d5de24a8b7846832be46f17a7170b61709c1059062129e6f5216f7a8608d2d874548bd0c9e0563f61984c5db37f1aff36",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/invariant.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/83/a8cb52548159170305412ea7faecfdaf0296bffaf707e92367b6d9964e353d2f48e0dbca983e915b5a5736a682cb486daf45c08bbded15c5c3aa4320fb3bcf",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/json-schema.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/6a/202583565fe130f93c4725526b7e5b11862f5af75b6b2e01f2fa6dfe385ffecafcbf163686a0e978d0f00c5916c0f1a0da0598391293c0cb6e5aef16bec44d",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/presentation.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/22/9a4e9f018a3d0f43adbdc0753872c9dd3dc30fa09c40ce43877cab23810d6aae4c4f8448788b00baaabf6c211e342226e1d0de69a0e2bd39b6f077264420c0",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/ptc.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/37/a74accda4e1883e707c86c79fc944dfbc9941adb5300107217090127f55b6483d6c70b5f56ea9d8f01322f993ef7fbd2cc1aca853cc826418aaa83c0aa928f",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/py-types.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/31/4ca9ecb48ae71e6402413419972ff4fc4de57bcd8e1679579718a72b42480b9a8677cd98b92e16c5c378e0042c8a22ccf5bfd08eafc2c6b8e86570d666a2e1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/schema.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/35/0d8cfd87fe1a94860a51444738959b6583bdace594c7cef8cff9b0e2a739771ea194024b9d954e94b431947cabdcd1ed2578d39d0bf21d301a3fb2b486c37a",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/testing.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/94/32b989dbf7f292f3ea83a71611f5f57bfdb79915dae27781981fd53b131c965ef600f39c4187bb650537602ea386f4207b15d7c474e8e940f738dfea048adc",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/ts-types.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/80/23e7936f9043188b840db2f3718443f79984a9f7a9e0fa023fc557fee9228b404a12b9e7a96434a8818f0e3514afe1a0f2ad73fc34a9849580b7ec289c1eed",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/lib/types/types.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/50/4875df1e771ac3ccd1bb0c3ac8b67b73b79d198a797283e1631e70a168122e5e7f37c2ef0c20b71b2752704f7386a39e8075c1aa61a348d3f027a6cfd9389c",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/README.i18n.yaml",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/16/6082f09874e18658175f7053e959f0c0749c59bd2fa16c28e386c25ee8b9eaea3f2669268cfb4440f41d3859b5854dd42046d2fa7e74153f5d86162ab2c786",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/LICENSE",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/05/447c65b475a487cdc6c440bace4e01d34bc93e38154be27d308e043cd622fc65041d1709aa272bf0ba7704f29a8835e5e4a2e9e8cc94d754a0e7b449a0d141",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/package.json",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/7f/65a27416ba0f2b5902b181668addd1936fb2526b4d15de5c45aac51342ef6f01fca2b1c59f32241329d441635480d019c4ac25d06b4dd00f804d20e22702a9",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1/node_modules",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/node_modules",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery_tmp_99_1/lib",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery_tmp_99_1/src",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery_tmp_99_1/lib/types",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery_tmp_99_1/LICENSE",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/ca/99a0ecfb4fb3ccbeac500b4e7021046a967077df021b633d2dc70ec1a2a16b3f1a45f8ebf6222139382a9c7d8f8d3720e2da46fe7a5233639151c2360d53b0",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery_tmp_99_1/lib/index.cjs",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/05/aedeaf9c36fa1b4d5a2f72b0b372e30acb18b1f3ca0fa16887c88e7d9bd44127548232a69858b88036cfd5c1de63653ee098e9dcb2c0832deaca2dd2a70d9f",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery_tmp_99_1/lib/types/index.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/1c/a98592f3b767e740a3bae04af00ed980dbf7a0ab7b09f7ed7347788a934de4f8d1fd0497f83874a5e9b3a79a67301aa154c0715554aac12d253d20bf636a67",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery_tmp_99_1/README.md",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/ea/3667b6a954bf38adcb9c1b4df76483eca885718c6c33ba13967ef05048c08caed58742256581b1eee9c277ec6cc4f759f3174d2325b1711d27667a85f9eee4",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery_tmp_99_1/lib/index.mjs",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/89/e604acc767a46a7cc1abf6678abc8ec16aab48a391a553c1d6e71eb151c70828a93107428e57385b02c7f4ff7b86b1de2684e5687dd28dfc95f3d6a3cc4ade",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery_tmp_99_1/lib/types/index.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/d0/833b1516814b3b853f3cca5e90fb952e7e4d897507909c6851a6d549efdb3f7899ac2ac5a0c674da36e3721b884e34cba5248c497b7052dff6c8198cfc566f",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery_tmp_99_1/src/index.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/ee/4a48451c9bbf0eee10e2fbea2e1bfd57c3cdf81ca62af1b344feec3afbef5c73cf3ec18ecfb1575cf4e4c78a8d46b66f22336e975595cb29b91fb11cf4cda6",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery_tmp_99_1/package.json",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/02/ff930b8dba1c537d4e2a052f2e60ba0ef490d8b9e556fab2017f13fbcfbdf8479631f23722fec975af859b0c7856cd958bca175ae0a5faee2a3c96761bef15",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery_tmp_99_1/node_modules",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery/node_modules",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec_tmp_99_1/dist",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec_tmp_99_1/LICENSE",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/13/aedd579292840369d8ec9833e6799004b9fa99df90ef18e21694faf4ad3e3cc2d00d861e01a4d02eb95f57b9c4656fddaef2d2c9c22d1725febf594273d908",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec_tmp_99_1/dist/index.cjs",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/e9/26753a0bf804c23384c7b95e0bc096bcf581b4e6ee5f28c0a3e73f8efe629ab3a1a56ea9dc1d9b680cd13f5c0cb8a65aa14c71812d708258d2d8520b8c925c",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec_tmp_99_1/dist/index.d.cts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/92/044c0cb55deccbaf8ffa0194cef56e70ec2bbe597f1f50a303135a85d04d4d439089eb327ccbc5fb315ca8a4cf78dd500abad2f91d8ab6cc8c000b02913d2f",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec_tmp_99_1/dist/index.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/cf/83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec_tmp_99_1/README.md",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/5a/ea9109ef9a1e126d59b5793e3b2cc5db48698f322b4243b08a5b1d7d9755db7b494a16ee265667549abc8e6062ec818ca0efc3a6677745885210faa2edb3d7",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec_tmp_99_1/dist/index.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/92/044c0cb55deccbaf8ffa0194cef56e70ec2bbe597f1f50a303135a85d04d4d439089eb327ccbc5fb315ca8a4cf78dd500abad2f91d8ab6cc8c000b02913d2f",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec_tmp_99_1/package.json",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/7a/a6be31e9f904a4ed786492a14f7f968407ac913d7cb0b346f0a31a8a88caeb68340dc06c28a8fd1b40af54936aa4f7ac40bc0a1e9a6cef47441f51750cd3bf",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec_tmp_99_1/node_modules",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec/node_modules",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/src",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib/types",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/LICENSE",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/ca/99a0ecfb4fb3ccbeac500b4e7021046a967077df021b633d2dc70ec1a2a16b3f1a45f8ebf6222139382a9c7d8f8d3720e2da46fe7a5233639151c2360d53b0",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib/index.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/5d/50734b5961de1346de249c7d488a4e74eb03fffc902c32f043303ac3102d87fc107ca52eb2052b16b36c6000d87d88761aedd774f69149f14349e5a3f6d559",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib/types/array.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/9b/51d4f43663e4a6045fa281de73d57d58c56873e4de54875aae2ff8aee33350d5b8b3d19f4ac433f6b1cd28a9f958da35a74a95589c42672fefc8a16927f595",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib/types/index.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/8c/4696962751f51b9bcadb4736cb93fce13266655bc872dfe4b0645cb46837a108200c4f2abd6a4fc9840e959db4afc64ed5ef048501a9410b58b322c1eed9e0",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib/types/misc.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/10/79cf69f59c090d0163bd791950adbb4338c1007467d72ae37a54f802fd7848119aaa84c8c30cda0545e15f953750749fe0e6338f0ec437f651dc4779d2845a",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib/types/string.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/40/facafde215da8ecc4ff4abfd2599e1e8ed62ef5d62c997c342bd20e1bb004f7172fa5691ccbfd47c6d1fb57af2b005b64a84499dc87c0a77ade2fb064a5c1c",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib/types/time.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/27/e2fd1349e6e3e2c6f912eff8f81b5b602de627a3035841fccced18d039eb4c683abed15f079bb8183acde8bd87029664636aadc663cace9ba18c7a6c663b8b",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib/types/types.d.ts.map",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/80/5e057bb74b38669939961166da63b39e75c46619a55dfdc3808e0a22aa9aa35ac941c7f881784b4b21a44005e297aab3198520f0fab302bbb05bad90c59903",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/README.md",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/ba/44f6e54cbf01c25a6b6646324aa659c4d4b3b84d229838a01e109076ee75c5a5de1d173d32ed36313cdd5e0da2967fc21fe9694c1aa27c053ce85b4e7e1179",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib/types/array.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/42/1ab56e6d478d59a2887cae9f1d775d124e1096b153eb2199ef0c28d51fd18de687ff96541ed839e80f5c6c3e9273b66c856cf3ccee4c2e60c7956f61930c5c",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/src/array.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/a3/dbf0682ec2d28fecd709d8cc06ab87ebe9fea886ad5094f6728f1e71bac93c1c0f2f31fbbc36c5976f9c9cf95a258f4aaa8fbfd2181c136b45a89eb95cf5a9",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib/types/index.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/4e/cc6a459aed529778501a7193f304a5c94235ef53eda0413180d108612a10dde0c3913f67c82ee76ca972c67ba1cedd400d1a285447acc4946d5f39d470de99",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/src/index.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/a0/8e039a276062ff6eb26c72f3bc4d4d18179a2813ade914ce9931cbe6e3a1d1174876f57ebefb0d06d2e60f370a29d3db26f8c3844943b9b67cd9f0bcbbe97d",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib/types/misc.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/26/1f8b2c7565fecf7b73221e2aa51eba0dcf741c8a312a94c3bf19bd0f8cb816693cc55b8eef3359dc21d01ba227a96e2b38f331a3c0d21ad01528c886ffd6db",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/src/misc.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/60/2e5a8a32a76b16b87509010f2fad278675a4b72931131d5832d6f90059518e364de91a38a6b493c7ca5cea6cc155bea3ca83f4b40b7c5936d6f6888d52dcd6",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib/types/string.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/b8/5ae2f0ad505b533cd772464e7148ec553f226063c3da5edf361374059c42092af6c2105d730c6385be90d8d990c720a40a08741e9217fc5d9519e5af58625f",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/src/string.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/f3/0b040f64d21716b2a29484b879680b2b46980bf2f18e4c4e3a8a2605fdf82c7d2dc0adf2988f7c013936dbf0524337b9c23dd06b49c19090714f3e0240d7c2",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib/types/time.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/2c/6b1992dae6702be6a5ee1f76b09c02653d1fd56328373e9abb682421ca73a9bfb77739064886723ab7eee251da913e47141e2c0bc4cd0e679b264fe56f68d4",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/src/time.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/43/ccea7ce51f2c464491e906073eaa3b8c2e06315dac20dec38e99d4c28569b5aaa205f6e4534597b0b1da1195e1a44da373a72e4d5800aef034cea36b8b69b4",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/lib/types/types.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/d4/81c4aa52715a48ddf793d6164d9e35b7448995f170c8ee76b2d48ddb60ba4a0fa4362e131bb0431e5e28abba90dfe642c288e1f873cf18b7aa67e9627dcb15",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/src/types.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/a8/6a244a3167d8fb46eb525c45fe21c46c24f4693b16a26928b2d2d520d1fdb18a06fb24d62230c61c88bdbb8d6f5f8acade5d6ef76c3714660f1b4fc0dd9e08",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/package.json",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/10/b1e559a47364e7d23ecef15d34079f0aeb063c5ea630072048f29605fccd105359215a82f7094333732089a2d5abf4d5f5160c31112ecc8064510e612d397d",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1/node_modules",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/node_modules",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand_tmp_99_1/lib",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand_tmp_99_1/lib/types",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand_tmp_99_1/lib/index.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/cc/bb4375d68f11a04ef20ee23e8fc58af6503e7a75b10e89cea15f32ad7f2bf19f4d79db3d2ec66cf5286a6df6f267d2f51e566de7199c2edc62fcfcf2b9c5e0",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand_tmp_99_1/README.md",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/8f/0f2ffe687c905b387af6d56a8127f9c9bc97b94eb03de319c9ee6ef4c12edbbe2425b500bd0e5cc685a68f852cc4bb481aa752cabb9e37efe1303a6c0f9432",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand_tmp_99_1/README.zh.md",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/58/1c3cdd97c44f9987ef67fbb59ee88cd32ed7395fd2764dee4e171a4ecf7fc79f7274a7f8ba1c8b0350c1655f85cc3dcbb9081267e3cd91f9df0a5b9164cba5",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand_tmp_99_1/lib/types/index.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/90/0490bf86dbb4f86d1582ed91283d185f7907544cc90a6f3f59ef5cde78e3e43ac80394b9baefea875db66cd77fc125a7d0e1e3b34f2e41ded1339a8e42c36a",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand_tmp_99_1/README.i18n.yaml",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/c0/3b069fc2d3b514a0db121643e0f137cb797b7135ee413cc56ecaf13df70612faabd97c28f021e7245cc71e857f5ca4b30092346944a11bfd8d7398baa9645c",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand_tmp_99_1/LICENSE",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/05/447c65b475a487cdc6c440bace4e01d34bc93e38154be27d308e043cd622fc65041d1709aa272bf0ba7704f29a8835e5e4a2e9e8cc94d754a0e7b449a0d141",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand_tmp_99_1/package.json",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/d1/8eefa3808610aa7fb176e7434444800b8a4da4abf5bf5aae35a8702338967787d05b7648f8fc1ef7aa80dfa4e52c0108ed2b26b5b1df1307715a0bb14ca8c1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand_tmp_99_1/node_modules",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand/node_modules",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values_tmp_99_1/lib",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values_tmp_99_1/lib/types",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values_tmp_99_1/lib/index.js",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/a9/6d5fb12eaf546f1df2de376ad93f30c99d6e35cf15c6bbacec1029d3424971ad6a3f2314113620db3939241ca9ffcfbdc4afcadb315c4cdcd37acdff0c80c8",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values_tmp_99_1/README.md",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/e7/d1803be37fcd6bd835ee0ca24d56228dcafd65b4ba2ee4e093de6e0e4c29e8fb8a4feae4921bbea0076114efac8aa4ca45a77927bcfa004ced7da7948de96b",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values_tmp_99_1/README.zh.md",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/0d/5f5d6c8eed44a78fb4f399b69abeec9eecf3b39a1b5c5f6154591cee657e40f957e11b16c7ca30b0384ca5568cc3cf7ee3ab6c8ecd8146d21b2df5092832e3",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values_tmp_99_1/lib/types/index.d.ts",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/78/227ae861d66a76e73ebe3e0f94314d3f2ac11bf71d37a33dece26951a585762cbe826a73e91b7debb7dbfa91cd91b14fbfbb4084ac57c646b170a6a22722a0",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values_tmp_99_1/README.i18n.yaml",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/03/ab58393ba72462fd6cd38ba6933aefd74f5631929064d33c2f85902d3c96bd7d76cc0c62f68cbdf4ca9db0c67ad1b198a1c1fae2f04411918d5e26315cdc94",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values_tmp_99_1/LICENSE",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/05/447c65b475a487cdc6c440bace4e01d34bc93e38154be27d308e043cd622fc65041d1709aa272bf0ba7704f29a8835e5e4a2e9e8cc94d754a0e7b449a0d141",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "linkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values_tmp_99_1/package.json",
+          "sourcePath": "$SANDBOX/pnpm-home/store/v11/files/c0/7cd96d503a818327c72a565ef07f7161c2641deb5f9344a910682f1e8230c88642753ba27f680c4f244d967d0abee08c1899eaa55ff8565761979540a85c79",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values_tmp_99_1/node_modules",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values/node_modules",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values_tmp_99_1",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/.bin",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "symlinkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/.bin/cordis",
+          "sourcePath": "../@deepseek-ai/cordis/bin.js",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "fchmodat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/bin.js",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/.bin",
+          "succeeded": false,
+          "count": 2
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/.modules.yaml",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/.pnpm",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/.pnpm/lock.yaml.194231898",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/.pnpm/lock.yaml",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/.pnpm/lock.yaml.194231898",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "unlinkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/.pnpm/lock.yaml.194231898",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/package.json.2002440112",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "fchownat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/package.json.2002440112",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "fchmodat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/package.json.2002440112",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/package.json",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/package.json.2002440112",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "unlinkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/package.json.2002440112",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/.pnpm-workspace-state-v1.json.481982110",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "renameat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/.pnpm-workspace-state-v1.json",
+          "sourcePath": "$SANDBOX/dsh-home/profiles/headless/node_modules/.pnpm-workspace-state-v1.json.481982110",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "unlinkat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules/.pnpm-workspace-state-v1.json.481982110",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "unlinkat",
+          "path": "$SANDBOX/pnpm-home/store/v11/index.db-shm",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "unlinkat",
+          "path": "$SANDBOX/pnpm-home/store/v11/index.db-wal",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/package.json",
+          "succeeded": true,
+          "count": 1
+        }
+      ]
+    },
+    "load": {
+      "coverage": {
+        "status": "captured",
+        "tracer": "strace",
+        "traceFiles": 1,
+        "bytes": 10219675,
+        "lines": 28146,
+        "parsedEvents": 23,
+        "otherLines": 28123,
+        "tamperResistance": "best-effort-same-container"
+      },
+      "processes": [
+        {
+          "executable": "/usr/local/bin/node",
+          "arguments": [
+            "/usr/local/bin/node",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/dsh-home/profiles/headless/.upstream-radar-load-probe.mjs"
+          ],
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "executable": "/usr/local/sbin/pnpm",
+          "arguments": [
+            "pnpm",
+            "dlx",
+            "--package=@deepseek-ai/dsh@0.1.5-rc.2",
+            "dsh",
+            "--profile",
+            "headless",
+            "--help"
+          ],
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "executable": "/usr/local/bin/pnpm",
+          "arguments": [
+            "pnpm",
+            "dlx",
+            "--package=@deepseek-ai/dsh@0.1.5-rc.2",
+            "dsh",
+            "--profile",
+            "headless",
+            "--help"
+          ],
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "executable": "/usr/local/sbin/node",
+          "arguments": [
+            "node",
+            "/usr/local/bin/pnpm",
+            "dlx",
+            "--package=@deepseek-ai/dsh@0.1.5-rc.2",
+            "dsh",
+            "--profile",
+            "headless",
+            "--help"
+          ],
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "executable": "/usr/local/bin/node",
+          "arguments": [
+            "node",
+            "/usr/local/bin/pnpm",
+            "dlx",
+            "--package=@deepseek-ai/dsh@0.1.5-rc.2",
+            "dsh",
+            "--profile",
+            "headless",
+            "--help"
+          ],
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "executable": "$SANDBOX/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/dsh",
+          "arguments": [
+            "dsh",
+            "--profile",
+            "headless",
+            "--help"
+          ],
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "executable": "/usr/bin/sed",
+          "arguments": [
+            "sed",
+            "-e",
+            "s,\\\\,/,g"
+          ],
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "executable": "/usr/bin/dirname",
+          "arguments": [
+            "dirname",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/dsh"
+          ],
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "executable": "/usr/bin/uname",
+          "arguments": [
+            "uname",
+            "-a"
+          ],
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "executable": "$SANDBOX/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/node",
+          "arguments": [
+            "node",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/../.pnpm/@deepseek-ai+dsh@0.1.5-rc.2_e7d7ea831f3e577d660131f4f90a9aee/node_modules/@deepseek-ai/",
+            "--profile",
+            "headless",
+            "--help"
+          ],
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "executable": "$SANDBOX/dsh-home/profiles/headless/node_modules/.bin/node",
+          "arguments": [
+            "node",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/../.pnpm/@deepseek-ai+dsh@0.1.5-rc.2_e7d7ea831f3e577d660131f4f90a9aee/node_modules/@deepseek-ai/",
+            "--profile",
+            "headless",
+            "--help"
+          ],
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "executable": "/usr/local/sbin/node",
+          "arguments": [
+            "node",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/../.pnpm/@deepseek-ai+dsh@0.1.5-rc.2_e7d7ea831f3e577d660131f4f90a9aee/node_modules/@deepseek-ai/",
+            "--profile",
+            "headless",
+            "--help"
+          ],
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "executable": "/usr/local/bin/node",
+          "arguments": [
+            "node",
+            "/sandbox/upstream-radar-dsh-install-aGdkoQ/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267/1a09a9c12f4-29/node_modules/.bin/../.pnpm/@deepseek-ai+dsh@0.1.5-rc.2_e7d7ea831f3e577d660131f4f90a9aee/node_modules/@deepseek-ai/",
+            "--profile",
+            "headless",
+            "--help"
+          ],
+          "succeeded": true,
+          "count": 1
+        }
+      ],
+      "network": [],
+      "fileWrites": [
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/.upstream-radar-peer-resolution.json",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/tmp/node-compile-cache/v22.23.2-arm64-2b4477fa-10001",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/xdg-cache/pnpm/dlx/6965350abb16b8c62b536f8805d535d796255dd8ef123230da2d4a5ed9f55267",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "/dev/null",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "openat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/cordis.yml",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/node_modules",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/node_modules",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/dsh-home/profiles/headless/.dsh-module-fallback/node_modules",
+          "succeeded": false,
+          "count": 1
+        },
+        {
+          "operation": "mkdirat",
+          "path": "$SANDBOX/tmp/dsh-spill-Ok2Vyx",
+          "succeeded": true,
+          "count": 1
+        },
+        {
+          "operation": "unlinkat",
+          "path": "$SANDBOX/tmp/dsh-spill-bL9HXB",
+          "succeeded": true,
+          "count": 1
+        }
+      ]
+    }
+  },
+  "filesystem": {
+    "install": {
+      "created": [
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/.bin",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/.bin/cordis",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/.modules.yaml",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/.pnpm",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/.pnpm-workspace-state-v1.json",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/.pnpm/lock.yaml",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/LICENSE",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/README.md",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/bin.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/index.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/context.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/context.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/events.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/events.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/fiber.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/fiber.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/index.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/index.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/logger.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/logger.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/reflect.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/reflect.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/registry.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/registry.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/service.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/service.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/utils.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/lib/types/utils.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/package.json",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/src",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/src/context.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/src/events.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/src/fiber.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/src/index.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/src/logger.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/src/reflect.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/src/registry.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/src/service.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cordis/src/utils.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/LICENSE",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/README.md",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib/index.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib/types",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib/types/array.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib/types/array.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib/types/index.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib/types/index.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib/types/misc.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib/types/misc.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib/types/string.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib/types/string.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib/types/time.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib/types/time.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib/types/types.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/lib/types/types.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/package.json",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/src",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/src/array.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/src/index.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/src/misc.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/src/string.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/src/time.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/cosmokit/src/types.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand/LICENSE",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand/README.i18n.yaml",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand/README.md",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand/README.zh.md",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand/lib",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand/lib/index.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand/lib/types",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand/lib/types/index.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-brand/package.json",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/LICENSE",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/README.i18n.yaml",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/README.md",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/README.zh.md",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/index.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/invariant.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/index.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/index.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/invariant.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/invariant.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/json-schema.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/json-schema.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/presentation.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/presentation.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/ptc.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/ptc.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/py-types.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/py-types.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/schema.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/schema.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/testing.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/testing.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/ts-types.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/ts-types.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/types.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/lib/types/types.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-tools/package.json",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values/LICENSE",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values/README.i18n.yaml",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values/README.md",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values/README.zh.md",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values/lib",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values/lib/index.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values/lib/types",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values/lib/types/index.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/dsh-util-values/package.json",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery/LICENSE",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery/README.md",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery/lib",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery/lib/index.cjs",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery/lib/index.mjs",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery/lib/types",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery/lib/types/index.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery/lib/types/index.d.ts.map",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery/package.json",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery/src",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@deepseek-ai/schemastery/src/index.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec/LICENSE",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec/README.md",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec/dist",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec/dist/index.cjs",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec/dist/index.d.cts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec/dist/index.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec/dist/index.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/@standard-schema/spec/package.json",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run/LICENSE",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run/README.md",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run/README.zh.md",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run/cordis.patch.yml",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run/dist",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run/dist/api.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run/dist/api.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run/dist/index.d.ts",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run/dist/index.js",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules/dsh-cloudflare-browser-run/package.json",
+        "$SANDBOX/dsh-home/profiles/headless/pnpm-lock.yaml"
+      ],
+      "modified": [
+        "$SANDBOX/dsh-home/profiles/headless",
+        "$SANDBOX/dsh-home/profiles/headless/node_modules",
+        "$SANDBOX/dsh-home/profiles/headless/package.json"
+      ],
+      "deleted": [],
+      "totals": {
+        "created": 153,
+        "modified": 3,
+        "deleted": 0
+      },
+      "truncated": false,
+      "snapshotErrors": 0
+    },
+    "load": {
+      "created": [
+        "$SANDBOX/dsh-home/profiles/headless/.upstream-radar-load-probe.mjs",
+        "$SANDBOX/dsh-home/profiles/headless/.upstream-radar-peer-resolution.json"
+      ],
+      "modified": [
+        "$SANDBOX/dsh-home/profiles/headless",
+        "$SANDBOX/dsh-home/profiles/headless/cordis.yml"
+      ],
+      "deleted": [],
+      "totals": {
+        "created": 2,
+        "modified": 2,
+        "deleted": 0
+      },
+      "truncated": false,
+      "snapshotErrors": 0
+    }
+  },
+  "resolution": {
+    "profileLockfile": {
+      "sha256": "bd52ec2d06ac3fc28ff6c9a994b0787205abf15f68dd4779e1c3aa3861acc7af",
+      "bytes": 4255,
+      "graphDigest": "sha256:3ae2d7e6153fe37f703dd566123334968a111d36360b5895cf709c1baf6a6baf",
+      "nodes": 9,
+      "edges": 14,
+      "unresolved": 2,
+      "unresolvedDependencies": [
+        {
+          "from": "pnpm:@deepseek-ai/cordis@4.0.2",
+          "name": "@deepseek-ai/cordis-plugin-include",
+          "spec": "^1.0.7",
+          "kind": "optional"
+        },
+        {
+          "from": "pnpm:@deepseek-ai/cordis@4.0.2",
+          "name": "@deepseek-ai/cordis-plugin-loader",
+          "spec": "^1.0.3",
+          "kind": "optional"
+        }
+      ]
+    },
+    "runtimeGraph": {
+      "digest": "sha256:5b0310119bade3a20f2a28df597db06a3e27268921be70808d12223191c8f01c",
+      "nodes": 508,
+      "edges": 1994,
+      "unresolved": 0,
+      "optionalUnavailable": 65,
+      "optionalUnavailableDependencies": [
+        {
+          "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+          "name": "@deepseek-ai/node-addon-system-darwin-arm64",
+          "spec": "0.1.2",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+          "name": "@deepseek-ai/node-addon-system-darwin-x64",
+          "spec": "0.1.2",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@deepseek-ai+node-addon-system@0.1.2/node_modules/@deepseek-ai/node-addon-system",
+          "name": "@deepseek-ai/node-addon-system-linux-x64",
+          "spec": "0.1.2",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.6.2/node_modules/@modelcontextprotocol/sdk",
+          "name": "@cfworker/json-schema",
+          "spec": "^4.1.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-darwin-arm64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-darwin-x64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-arm",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-ia32",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-ppc64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-riscv64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-s390x",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-linux-x64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-win32-arm64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-win32-ia32",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+          "name": "@vscode/ripgrep-win32-x64",
+          "spec": "1.18.0",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-android-arm64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-android-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-darwin-arm64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-darwin-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-freebsd-arm64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-freebsd-ia32",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-freebsd-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-arm",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-ia32",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-loong64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-riscv64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-linux-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-openbsd-ia32",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-openbsd-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-win32-arm64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-win32-ia32",
+          "spec": "3.2.1",
+          "kind": "optional"
+        },
+        {
+          "from": "dsh-host/node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+          "name": "@koromix/koffi-win32-x64",
+          "spec": "3.2.1",
+          "kind": "optional"
+        }
+      ],
+      "pluginPeerContracts": {
+        "declared": 0,
+        "satisfied": 0,
+        "mismatched": 0,
+        "indeterminate": 0,
+        "missing": 0,
+        "relations": []
+      },
+      "hostRuntime": {
+        "source": "dsh-process",
+        "resolvedNodes": 500,
+        "dshVersion": "0.1.5-rc.2"
+      }
+    }
+  },
+  "result": "compatible",
+  "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version",
+  "boundary": {
+    "isolationProviderClaim": "other",
+    "isolationVerifiedByRadar": false,
+    "disposableEnvironmentRequired": true,
+    "lifecycleScriptsEnabledForPluginInstall": true,
+    "pluginCodeMayExecuteDuringLoad": true,
+    "inheritedHostSecrets": false,
+    "approvedDependencyBuilds": [],
+    "requiredDependencyBuilds": [],
+    "note": "Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate. An explicitly selected credential-free proxy carries network traffic; traced connections to the proxy do not establish the final remote destination."
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+  "tool": {
+    "name": "upstream-radar",
+    "version": "0.45.0"
+  },
+  "probe": "dsh-install",
+  "scope": "install-and-load-behavior",
+  "startedAt": "2026-09-13T11:22:23.023Z",
+  "completedAt": "2026-09-13T11:28:53.106Z",
+  "caseId": "context-node24",
+  "dshVersion": "0.1.5-rc.2",
+  "runtime": {
+    "platform": "linux",
+    "architecture": "arm64",
+    "nodeVersion": "24.21.0",
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.7.0"
+    }
+  },
+  "artifact": {
+    "spec": "npm:dsh-context@0.51.0",
+    "name": "dsh-context",
+    "version": "0.51.0",
+    "lifecycleScripts": [
+      "prepare"
+    ],
+    "sha256": "e7c0c42570370bae7f80aab74fc48692acb36f20a5577ca759ecac2b5e3d2b5f",
+    "bytes": 170317,
+    "bundlePatch": "cordis.patch.yml",
+    "nodeEngine": "^22.19.0 || >=24.0.0"
+  },
+  "stages": {
+    "runtime": {
+      "status": "passed",
+      "code": 0
+    },
+    "artifact": {
+      "status": "passed",
+      "code": 0
+    },
+    "profile": {
+      "status": "failed",
+      "code": null,
+      "detail": "command timed out: Progress: resolved 1, reused 0, downloaded 0, added 0\\u000aProgress: resolved 9, reused 0, downloaded 0, added 0\\u000aProgress: resolved 44, reused 0, downloaded 27, added 0\\u000aProgress: resolved 62, reused 0, downloaded 55, added 0\\u000aProgress: resolved 68, reused 0, downloaded 67, added 0\\u000aProgress: resolved 68, reused 0, downloaded 68, added 0\\u000aProgress: resolved 69, reused 0, downloaded 69, added 0\\u000aProgress: resolved 70, reused 0, downloaded 69, added 0\\u000aProgress: resolved 70, reused 0, downloaded 70, added 0\\u000aProgress: resolved 71, reused 0, downloaded 71, added 0\\u000a[WARN] GET https://registry.npmjs.org/@deepseek-ai%2Fdsh-goal error (UND_ERR_SOCKET). Will retry in 10 seconds. 2 retries left.\\u000a[WARN] Request took 27096ms: https://registry.npmjs.org/@deepseek-ai%2Fdsh-goal\\u000aProgress: resolved 72, reused 0, downloaded 71, added 0\\u000aProgress: resolved 72, reused 0, downloaded 72, added 0\\u000a[WARN] GET https://registry.npmjs.org/@deepseek-ai%2Fcordis-plugin-include error (23). Will retry in 10 seconds. 2 retries left.\\u000aProgress: resolved 73, reused 0, downloaded 72, added 0\\u000aProgress: resolved 79, reused 0, downloaded 72, added 0\\u000aProgress: resolved 102, reused 0, downloaded 80, added 0\\u000a[WARN] Tarball download average speed 6 KiB/s (size 7 KiB) is below 50 KiB/s: https://registry.npmjs.org/resolve.exports/-/resolve.exports-2.0.3.tgz (GET)\\u000aProgress: resolved 132, reused 0, downloaded 114, added 0\\u000aProgress: resolved 158, reused 0, downloaded 139, added 0\\u000aProgress: resolved 202, reused 0, downloaded 179, added 0\\u000aProgress: resolved 212, reused 0, downloaded 200, added 0\\u000aProgress: resolved 224, reused 0, downloaded 209, added 0\\u000a[WARN] Tarball download average speed 13 KiB/s (size 22 KiB) is below 50 KiB/s: https://registry.npmjs.org/@deepseek-ai/dsh-session-log-export/-/dsh-session-log-export-0.1.5-rc.2.tgz (GET)\\u000aProgress: resolved 225, reused 0, downloaded 217, added 0\\u000aProgress: resolved 225, reused 0, downloaded 219, added 0\\u000a[WARN] GET https://registry.npmjs.org/@deepseek-ai%2Fdsh-credentials-local error (ECONNRESET). Will retry in 10 seconds. 2 retries left.\\u000a[WARN] Request took 56210ms: https://registry.npmjs.org/@deepseek-ai%2Fdsh-credentials-local\\u000aProgress: resolved 226, reused 0, downloaded 219, added 0\\u000aProgress: resolved 226, reused 0, downloaded 220, added 0\\u000a[WARN] GET https://registry.npmjs.org/@deepseek-ai%2Fdsh-acp error (23). Will retry in 10 seconds. 2 retries left.\\u000a[WARN] GET https://registry.npmjs.org/@deepseek-ai%2Fdsh-shell-env error (23). Will retry in 10 seconds. 2 retries left.\\u000a[WARN] GET https://registry.npmjs.org/@deepseek-ai%2Fdsh-api-gateway error (23). Will retry in 10 seconds. 2 retries left.\\u000a[WARN] GET https://registry.npmjs.org/@deepseek-ai%2Fdsh-sandbox-policy error (23). Will retry in 10 seconds. 2 retries left.\\u000a[WARN] Request took 70238ms: https://registry.npmjs.org/@deepseek-ai%2Fdsh-acp\\u000aProgress: resolved 227, reused 0, downloaded 220, added 0\\u000a[WARN] Request took 70931ms: https://registry.npmjs.org/@deepseek-ai%2Fdsh-sandbox-policy\\u000aProgress: resolved 229, reused 0, downloaded 222, added 0\\u000a[WARN] Request took 71393ms: https://registry.npmjs.org/@deepseek-ai%2Fdsh-shell-env\\u000aProgress: resolved 242, reused 0, downloaded 223, added 0\\u000aProgress: resolved 275, reused 0, downloaded 239, added 0\\u000aProgress: resolved 312, reused 0, downloaded 266, added 0\\u000aProgress: resolved 318, reused 0, downloaded 282, added 0\\u000aProgress: resolved 318, reused 0, downloaded 283, added 0\\u000aProgress: resolved 318, reused 0, downloaded 284, added 0\\u000a[WARN] GET https://registry.npmjs.org/eventsource-parser error (23). Will retry in 10 seconds. 2 retries left.\\u000a[WARN] GET https://registry.npmjs.org/powershell-utils error (23). Will retry in 10 seconds. 2 retries left.\\u000a[WARN] GET https://registry.npmjs.org/cors error (23). Will retry in 10 seconds. 2 retries left.\\u000a[WARN] Request took 70871ms: https://registry.npmjs.org/even…",
+      "timedOut": true
+    },
+    "install": {
+      "status": "skipped"
+    },
+    "registration": {
+      "status": "skipped"
+    },
+    "load": {
+      "status": "skipped"
+    }
+  },
+  "observations": {
+    "install": {
+      "coverage": {
+        "status": "missing",
+        "tracer": "strace",
+        "traceFiles": 0,
+        "bytes": 0,
+        "lines": 0,
+        "parsedEvents": 0,
+        "otherLines": 0,
+        "tamperResistance": "best-effort-same-container"
+      },
+      "processes": [],
+      "network": [],
+      "fileWrites": []
+    },
+    "load": {
+      "coverage": {
+        "status": "missing",
+        "tracer": "strace",
+        "traceFiles": 0,
+        "bytes": 0,
+        "lines": 0,
+        "parsedEvents": 0,
+        "otherLines": 0,
+        "tamperResistance": "best-effort-same-container"
+      },
+      "processes": [],
+      "network": [],
+      "fileWrites": []
+    }
+  },
+  "filesystem": {
+    "install": {
+      "created": [],
+      "modified": [],
+      "deleted": [],
+      "totals": {
+        "created": 0,
+        "modified": 0,
+        "deleted": 0
+      },
+      "truncated": false,
+      "snapshotErrors": 0
+    },
+    "load": {
+      "created": [],
+      "modified": [],
+      "deleted": [],
+      "totals": {
+        "created": 0,
+        "modified": 0,
+        "deleted": 0
+      },
+      "truncated": false,
+      "snapshotErrors": 0
+    }
+  },
+  "resolution": {},
+  "result": "unknown",
+  "reason": "the exact DSH runtime could not initialize the disposable profile",
+  "boundary": {
+    "isolationProviderClaim": "other",
+    "isolationVerifiedByRadar": false,
+    "disposableEnvironmentRequired": true,
+    "lifecycleScriptsEnabledForPluginInstall": true,
+    "pluginCodeMayExecuteDuringLoad": true,
+    "inheritedHostSecrets": false,
+    "approvedDependencyBuilds": [],
+    "requiredDependencyBuilds": [],
+    "note": "Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate."
+  }
+}
