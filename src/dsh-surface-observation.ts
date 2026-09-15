@@ -333,7 +333,25 @@ export function evaluateDshWebObservationError(error: string, hostExitCode: numb
     return { result: 'unknown', failedStage: 'host',
       reason: `the last observed DSH Web endpoint returned HTTP ${lastHttpStatus} before browser observation completed; profile startup or setup remains incomplete, not a confirmed plugin defect` }
   }
-  return { result: 'unknown', failedStage: 'surface', reason: `the browser driver failed while observing the Web surface: ${bounded(error)}` }
+  return { result: 'unknown', failedStage: 'surface', reason: bounded(`the browser driver failed while observing the Web surface: ${error}`) }
+}
+
+/** Record one observed Web failure without treating absent host logs as a
+ * different failure or weakening the receiving report validator. */
+export function recordDshWebObservationError(
+  report: DshSurfaceObservationReport,
+  error: string,
+  host: { exited: boolean; code: number | null; output: string },
+): DshSurfaceEvaluation {
+  if (report.evidence.plane !== 'web') throw new Error('Web observation errors require Web evidence')
+  const evaluation = evaluateDshWebObservationError(error, host.exited ? host.code ?? undefined : undefined, report.evidence.httpStatus)
+  if (evaluation.failedStage === 'host') {
+    const hostDetail = bounded(redactWebTokens(host.output))
+    report.stages.host = { status: 'failed', code: host.code,
+      detail: hostDetail.trim() === '' ? bounded(evaluation.reason) : hostDetail }
+    report.stages.surface = { status: 'skipped' }
+  } else report.stages.surface = { status: 'failed', detail: evaluation.reason }
+  return evaluation
 }
 
 export function evaluateDshWebEvidence(input: DshWebEvaluationInput): DshSurfaceEvaluation {
@@ -1035,13 +1053,8 @@ async function observeWebSurface(input: {
     // A profile can expose an HTTP socket during asynchronous boot and then
     // fail. Give its close event one bounded turn before blaming the browser.
     if (!host.exited()) await new Promise(resolveDelay => setTimeout(resolveDelay, 200))
-    const evaluation = evaluateDshWebObservationError(error instanceof Error ? error.message : String(error),
-      host.exited() ? host.code() ?? undefined : undefined, evidence.httpStatus)
-    if (evaluation.failedStage === 'host') {
-      input.report.stages.host = { status: 'failed', code: host.code(), detail: bounded(redactWebTokens(host.output())) }
-      input.report.stages.surface = { status: 'skipped' }
-    } else input.report.stages.surface = { status: 'failed', detail: evaluation.reason }
-    return evaluation
+    return recordDshWebObservationError(input.report, error instanceof Error ? error.message : String(error),
+      { exited: host.exited(), code: host.code(), output: host.output() })
   } finally {
     if (traceStarted && context !== undefined) {
       await context.tracing.stop({ path: join(input.artifactsDirectory, safeArtifactName(input.report.caseId, 'trace.zip')) }).catch(() => undefined)

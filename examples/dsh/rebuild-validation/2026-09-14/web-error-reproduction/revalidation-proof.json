@@ -1,0 +1,45 @@
+{
+  "scope": "offline-producer-and-report-receiver-regression",
+  "runtimeExecution": false,
+  "originalRun": "https://github.com/MicroMilo/upstream-radar/actions/runs/34847607310",
+  "collectorSourceSha256": "fdc6786a787361b7331b52c4e7b6d0ce349e9bb1f4d802c80cd84501618315e8",
+  "cases": [
+    {
+      "attempt": 1,
+      "report": "examples/dsh/rebuild-validation/2026-09-14/ci-batch-34847607310/batch-output/reports/surface/context-node24-web-dsh-1589c6e4adb4/aaff13b0d8a4126b85e861442c837c877feb2fcc0beac0bbf845871a34da19af-1/report.json",
+      "originalSha256": "350ead3e1b64bf30410152e9dade2ece5b6f30c3ee80cee97739e3c3b04cbaeb",
+      "originalDetailLength": 0,
+      "originalAccepted": false,
+      "derivedDetailLength": 165,
+      "derivedAccepted": true,
+      "result": "unknown",
+      "changes": [
+        "stages.host.detail"
+      ]
+    },
+    {
+      "attempt": 2,
+      "report": "examples/dsh/rebuild-validation/2026-09-14/ci-batch-34847607310/batch-output/reports/surface/context-node24-web-dsh-1589c6e4adb4/aaff13b0d8a4126b85e861442c837c877feb2fcc0beac0bbf845871a34da19af-2/report.json",
+      "originalSha256": "9063608c9b07e46003cd29718792841d60222bcb238c54f886bdbcc880d138c7",
+      "originalDetailLength": 0,
+      "originalAccepted": false,
+      "derivedDetailLength": 165,
+      "derivedAccepted": true,
+      "result": "unknown",
+      "changes": [
+        "stages.host.detail"
+      ]
+    },
+    {
+      "attempt": 3,
+      "report": "examples/dsh/rebuild-validation/2026-09-14/ci-batch-34847607310/batch-output/reports/surface/context-node24-web-dsh-1589c6e4adb4/aaff13b0d8a4126b85e861442c837c877feb2fcc0beac0bbf845871a34da19af-3/report.json",
+      "originalSha256": "35e09e9215a7286fe009481540a4f000ee1ccb461e5df09fe8610b90e6d6a892",
+      "originalDetailLength": 2048,
+      "originalAccepted": true,
+      "derivedDetailLength": 2048,
+      "derivedAccepted": true,
+      "result": "unknown",
+      "changes": []
+    }
+  ]
+}

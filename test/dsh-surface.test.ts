@@ -12,6 +12,7 @@ import {
   dshWebLaunchUrl,
   dshWebClientDeclared,
   evaluateDshWebObservationError,
+  recordDshWebObservationError,
   type DshSurfaceObservationReport,
 } from '../src/dsh-surface-observation.js'
 import {
@@ -376,6 +377,71 @@ function compatibleReport(expected: DshSurfaceExpectedCase, plane: 'web' | 'tui'
 }
 
 describe('DSH execution-plane evidence', () => {
+  it('records a silent HTTP startup failure as reusable unknown evidence instead of producing an invalid empty stage detail', () => {
+    const expected = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include.find(cell => cell.plane === 'web')!
+    for (const output of ['', '  \n\t']) {
+      const report: DshSurfaceObservationReport = compatibleReport(expected)
+      assert.equal(report.evidence.plane, 'web')
+      if (report.evidence.plane !== 'web') throw new Error('Expected Web fixture')
+      report.evidence.httpStatus = 404
+      const evaluation = recordDshWebObservationError(report, 'page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE',
+        { exited: false, code: null, output })
+      report.result = evaluation.result
+      report.reason = evaluation.reason
+      assert.equal(report.result, 'unknown')
+      assert.equal(report.stages.host.status, 'failed')
+      assert.equal(report.stages.surface.status, 'skipped')
+      assert.match(report.stages.host.detail ?? '', /HTTP 404.*incomplete/)
+      const merged = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [report] })
+      assert.deepEqual(merged.rejectedReports, [])
+      assert.deepEqual(merged.acceptedCaseIds, [expected.id])
+      const next = buildDshSurfacePlan({ ...targets, surfaces: targets.surfaces.filter(surface => surface.id === expected.id) },
+        sourceLedger(), merged.ledger, new Date(report.completedAt))
+      assert.equal(next.matrix.include.length, 0, 'unchanged unknown evidence must not require another container just to obtain a nonempty log')
+      const invalid = structuredClone(report)
+      invalid.stages.host.detail = ''
+      assert.equal(mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [invalid] }).acceptedCaseIds.length, 0,
+        'the incoming-report validator stays strict')
+    }
+  })
+
+  it('records bounded browser-driver failures as valid unknown evidence even when the driver returns a long error', () => {
+    const expected = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include.find(cell => cell.plane === 'web')!
+    const report: DshSurfaceObservationReport = compatibleReport(expected)
+    const evaluation = recordDshWebObservationError(report, `page.goto failed: ${'diagnostic '.repeat(512)}`,
+      { exited: false, code: null, output: '' })
+    report.result = evaluation.result
+    report.reason = evaluation.reason
+    assert.equal(report.result, 'unknown')
+    assert.equal(report.stages.host.status, 'passed')
+    assert.equal(report.stages.surface.status, 'failed')
+    assert.match(report.reason, /^the browser driver failed/)
+    const merged = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [report] })
+    assert.deepEqual(merged.rejectedReports, [])
+    assert.deepEqual(merged.acceptedCaseIds, [expected.id])
+    assert.ok(report.reason.length <= 2_048)
+    assert.equal(report.stages.surface.detail, report.reason)
+  })
+
+  it('preserves bounded redacted host diagnostics and an observed host exit when recording a Web error', () => {
+    const expected = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include.find(cell => cell.plane === 'web')!
+    for (const output of ['', `dsh web: http://127.0.0.1:19845/?token=disposable_test_token\n${'host diagnostic '.repeat(256)}`]) {
+      const report: DshSurfaceObservationReport = compatibleReport(expected)
+      const evaluation = recordDshWebObservationError(report, 'page.goto failed', { exited: true, code: 1, output })
+      report.result = evaluation.result
+      report.reason = evaluation.reason
+      assert.equal(report.result, 'surface-incompatible')
+      assert.equal(report.stages.host.code, 1)
+      assert.equal(report.stages.surface.status, 'skipped')
+      assert.doesNotMatch(report.stages.host.detail ?? '', /disposable_test_token/)
+      if (output === '') assert.match(report.stages.host.detail ?? '', /exited with 1/)
+      else assert.match(report.stages.host.detail ?? '', /ephemeral-token-redacted.*\n.*host diagnostic/)
+      const merged = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [report] })
+      assert.deepEqual(merged.rejectedReports, [])
+      assert.deepEqual(merged.acceptedCaseIds, [expected.id])
+    }
+  })
+
   it('keeps an observed HTTP startup failure in the host stage without blaming the browser or confirming a plugin defect', () => {
     for (const status of [401, 403, 404, 500]) {
       const result = evaluateDshWebObservationError('page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE', undefined, status)
