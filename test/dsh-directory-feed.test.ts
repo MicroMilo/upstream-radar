@@ -327,6 +327,31 @@ describe('DSH directory compatibility feed', () => {
     const currentSurfaceFeed = buildDshDirectoryCompatibilityFeed({ ...input, installTargets, observations, environmentRecommendations,
       surfaceLedger: defaultSurface, generatedAt: '2026-08-23T01:00:00.000Z' })
     assert.ok(!currentSurfaceFeed.plugins.find(item => item.id === 'clean')!.environmentRecommendation?.missingCells.includes('clean-node22:web'))
+    const webOnlyReview = structuredClone(environmentRecommendations)
+    webOnlyReview.entries[0]!.nodeMajors = [22]
+    webOnlyReview.entries[0]!.executionProfiles = ['web']
+    const failedNative = structuredClone(input.ledger)
+    failedNative.entries.find(entry => entry.targetId === 'clean')!.result = 'install-failed'
+    const webOnlySurface = structuredClone(defaultSurface)
+    webOnlySurface.entries[0]!.sourceFingerprint = createDshSurfaceSourceFingerprint(failedNative.entries.find(entry => entry.targetId === 'clean')!)
+    const independentWeb = buildDshSurfacePlan({ schema: DSH_SURFACE_TARGETS_SCHEMA, surfaces: [{
+      id: 'clean-web', sourceCaseId: 'clean-node22', plane: 'web', profile: 'web', runtimeId: 'clean', reason: 'author Web fixture',
+    }] }, failedNative, emptyDshSurfaceLedger(), new Date('2026-08-23T01:00:00.000Z')).matrix.include[0]!
+    webOnlySurface.entries[0]!.contractFingerprint = independentWeb.contractFingerprint
+    webOnlySurface.entries[0]!.profileEnvironment = independentWeb.profileEnvironment!
+    const webOnlyFeed = buildDshDirectoryCompatibilityFeed({ ...input, ledger: failedNative, installTargets, observations,
+      environmentRecommendations: webOnlyReview, surfaceLedger: webOnlySurface, generatedAt: '2026-08-23T01:00:00.000Z' })
+    const webOnly = webOnlyFeed.plugins.find(item => item.id === 'clean')!
+    assert.equal(webOnly.status, 'observed-compatible', 'the internal headless failure must not override a current author-intended Web pass')
+    assert.equal(webOnly.cells.find(cell => cell.executionPlane === 'headless')?.status, 'observed-incompatible')
+    assert.deepEqual(webOnly.environmentRecommendation?.missingCells, [])
+    const headlessOnlyReview = structuredClone(webOnlyReview)
+    headlessOnlyReview.entries[0]!.executionProfiles = ['headless', 'web']
+    const headlessOnlyFeed = buildDshDirectoryCompatibilityFeed({ ...input, ledger: failedNative, installTargets, observations,
+      environmentRecommendations: headlessOnlyReview, surfaceLedger: webOnlySurface, generatedAt: '2026-08-23T01:00:00.000Z' })
+    const headlessOnly = headlessOnlyFeed.plugins.find(item => item.id === 'clean')!
+    assert.equal(headlessOnly.status, 'observed-incompatible',
+      'a headless failure still decides status when headless is author-intended alongside Web')
     defaultSurface.entries[0]!.contractFingerprint = `sha256:${'f'.repeat(64)}`
     const staleCollectorFeed = buildDshDirectoryCompatibilityFeed({ ...input, installTargets, observations, environmentRecommendations,
       surfaceLedger: defaultSurface, generatedAt: '2026-08-23T01:00:00.000Z' })

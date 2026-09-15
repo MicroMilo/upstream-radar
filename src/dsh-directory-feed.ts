@@ -620,7 +620,14 @@ export function buildDshDirectoryCompatibilityFeed(input: {
               evidence: [...recommendation.evidence],
             }
           })()
-    const exactCellStatus = aggregateStatus(distribution, recommendation === undefined ? cells : cells.filter(cellIsCurrent), selectedDshVersion)
+    // The native headless probe remains visible as exact evidence, but it is
+    // an internal provenance check unless the author actually intends that
+    // profile. Optional startup comparisons likewise do not decide the
+    // default-profile status.
+    const intendedCells = recommendation === undefined ? cells : cells.filter(cell =>
+      cellIsCurrent(cell) && cell.startupConfiguration === undefined
+      && recommendation.executionProfiles.includes(cell.executionPlane))
+    const exactCellStatus = aggregateStatus(distribution, intendedCells, selectedDshVersion)
     const status = environmentRecommendation?.status === 'missing'
       ? 'needs-review'
       : ((environmentRecommendation?.missingCells.length ?? 0) > 0
