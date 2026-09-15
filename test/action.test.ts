@@ -134,6 +134,20 @@ describe('reusable GitHub Action', () => {
     for (const item of execution) assert.doesNotMatch(item, /ISSUE_LOCATOR_LLM|secrets\./)
   })
 
+  it('runs Linux host rebuild boundary tests only inside a disposable restricted container', async () => {
+    const workflow = await readFile(fileURLToPath(new URL('../../.github/workflows/dsh-rebuild-validation.yml', import.meta.url)), 'utf8')
+    const step = workflow.split('      - name:').find(item => item.startsWith(' Verify host rebuild boundary in a disposable container'))
+    assert.ok(step)
+    assert.match(step, /docker build --target build/)
+    assert.match(step, /docker run --rm --read-only --network none/)
+    assert.match(step, /--user 10001:10001/)
+    assert.match(step, /--cap-drop ALL --security-opt no-new-privileges/)
+    assert.match(step, /--tmpfs \/tmp:rw,exec,nosuid,nodev,size=64m/)
+    assert.match(step, /UPSTREAM_RADAR_ISOLATED_RUNNER=1/)
+    assert.match(step, /dist\/test\/dsh-host-build-execution\.test\.js/)
+    assert.doesNotMatch(step, /secrets\.|ISSUE_LOCATOR_LLM|--mount|--volume/)
+  })
+
   it('carries the selected profile environment from each matrix into the image and isolated probe', async () => {
     const workflow = await readFile(fileURLToPath(new URL('../../.github/workflows/upstream-observer.yml', import.meta.url)), 'utf8')
     assert.equal(workflow.match(/profile_environment_json: \$\{\{ toJSON\(matrix\.profileEnvironment\) \}\}/g)?.length, 2)

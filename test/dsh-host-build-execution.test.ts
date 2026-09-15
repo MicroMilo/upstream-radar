@@ -8,6 +8,7 @@ import { createDshHostBuildApproval } from '../src/dsh-host-build-policy.js'
 import { executeDshHostBuildApproval, parseDshHostBuildExecution } from '../src/dsh-host-build-execution.js'
 
 const version = '0.1.3-alpha.2'
+const isolatedLinux = process.platform === 'linux' && process.env.UPSTREAM_RADAR_ISOLATED_RUNNER === '1'
 async function fixture(program: string, scripts?: Record<string, string>) {
   const root = await mkdtemp(join(tmpdir(), 'radar-host-rebuild-'))
   const cache = join(root, 'cache')
@@ -54,14 +55,14 @@ snapshots:
   } catch (error) { await cleanup(); throw error }
 }
 
-it('executes only exact approved rebuild selectors in the pinned installation and verifies unchanged bindings afterwards', { skip: process.platform !== 'linux' }, async () => {
+it('executes only exact approved rebuild selectors in the pinned installation and verifies unchanged bindings afterwards', { skip: !isolatedLinux }, async () => {
   const state = await fixture(`import {readFile} from 'node:fs/promises';
 console.log(JSON.stringify({cwd:process.cwd(),args:process.argv.slice(2),
  policy:JSON.parse(await readFile('pnpm-workspace.yaml','utf8')),
  ignoreScripts:[process.env.NPM_CONFIG_IGNORE_SCRIPTS,process.env.npm_config_ignore_scripts,process.env.PNPM_CONFIG_IGNORE_SCRIPTS]}));`)
   try {
     const result = await executeDshHostBuildApproval(state.options)
-    assert.equal(result.status, 'command-completed')
+    assert.equal(result.status, 'command-completed', JSON.stringify({ reason: result.reason, command: result.command }))
     assert.equal(result.bindingVerified, true)
     assert.deepEqual(result.command?.args, ['rebuild', 'fs-ext@2.1.1'])
     const observed = JSON.parse(result.command!.output)
@@ -80,7 +81,7 @@ console.log(JSON.stringify({cwd:process.cwd(),args:process.argv.slice(2),
   } finally { await state.cleanup() }
 })
 
-it('rejects stale, symlinked or independently configured installations before launching a rebuild', { skip: process.platform !== 'linux' }, async () => {
+it('rejects stale, symlinked or independently configured installations before launching a rebuild', { skip: !isolatedLinux }, async () => {
   for (const scenario of ['changed-lock', 'linked-cache', 'existing-policy', 'root-script', 'no-consent'] as const) {
     const state = await fixture('throw new Error("This command must never be launched")', scenario === 'root-script' ? { rebuild: 'target-controlled override' } : undefined)
     try {
@@ -97,7 +98,7 @@ it('rejects stale, symlinked or independently configured installations before la
   }
 })
 
-it('does not treat exit zero as a verified command when the build changed its graph or permission', { skip: process.platform !== 'linux' }, async () => {
+it('does not treat exit zero as a verified command when the build changed its graph or permission', { skip: !isolatedLinux }, async () => {
   for (const program of [
     "import {appendFile} from 'node:fs/promises'; await appendFile('pnpm-lock.yaml','\\n# graph binding changed\\n');",
     "import {writeFile} from 'node:fs/promises'; await writeFile('pnpm-workspace.yaml',JSON.stringify({dangerouslyAllowAllBuilds:true}));",
@@ -105,7 +106,7 @@ it('does not treat exit zero as a verified command when the build changed its gr
     const state = await fixture(program)
     try {
       const result = await executeDshHostBuildApproval(state.options)
-      assert.equal(result.command?.code, 0)
+      assert.equal(result.command?.code, 0, JSON.stringify({ reason: result.reason, command: result.command }))
       assert.equal(result.status, 'failed')
       assert.equal(result.bindingVerified, false)
       assert.match(result.reason, /changed/)
@@ -113,7 +114,7 @@ it('does not treat exit zero as a verified command when the build changed its gr
   }
 })
 
-it('bounds a rebuild process by output and time without reporting a completed build', { skip: process.platform !== 'linux' }, async () => {
+it('bounds a rebuild process by output and time without reporting a completed build', { skip: !isolatedLinux }, async () => {
   for (const kind of ['output', 'time'] as const) {
     const state = await fixture(`${kind === 'output' ? "process.stdout.write('x'.repeat(1024*1024));" : ''} setInterval(()=>{},1000);`)
     try {
@@ -126,7 +127,7 @@ it('bounds a rebuild process by output and time without reporting a completed bu
   }
 })
 
-it('keeps non-UTF8 command output within the serialized evidence byte bound', { skip: process.platform !== 'linux' }, async () => {
+it('keeps non-UTF8 command output within the serialized evidence byte bound', { skip: !isolatedLinux }, async () => {
   const state = await fixture('process.stdout.write(Buffer.alloc(100*1024,255));')
   try {
     const result = await executeDshHostBuildApproval(state.options)

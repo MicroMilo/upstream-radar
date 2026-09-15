@@ -44,6 +44,16 @@ jobs:
           pnpm install --frozen-lockfile --ignore-scripts
           pnpm run build
           node --test dist/test/*.test.js
+      - name: Verify host rebuild boundary in a disposable container
+        run: |
+          docker build --target build --file docker/dsh-surface-observer.Dockerfile \
+            --tag "upstream-radar-host-build-test:${{ github.sha }}" .
+          docker run --rm --read-only --network none --user 10001:10001 \
+            --cap-drop ALL --security-opt no-new-privileges --pids-limit 64 --memory 512m \
+            --tmpfs /tmp:rw,exec,nosuid,nodev,size=64m \
+            --env UPSTREAM_RADAR_ISOLATED_RUNNER=1 \
+            --entrypoint node "upstream-radar-host-build-test:${{ github.sha }}" \
+            --test --test-reporter=dot dist/test/dsh-host-build-execution.test.js
       - name: Restore the previous durable review checkpoint
         env:
           GH_TOKEN: ${{ github.token }}
