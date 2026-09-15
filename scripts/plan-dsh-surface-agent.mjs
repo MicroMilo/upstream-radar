@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { appendFile, readFile, writeFile } from 'node:fs/promises'
+import { randomUUID } from 'node:crypto'
+import { appendFile, open, readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import { dirname, posix, resolve } from 'node:path'
 import process from 'node:process'
 import {
@@ -18,6 +19,17 @@ const MAX_INPUT_BYTES = 256 * 1024 * 1024
 const MAX_DOCUMENT_BYTES = 48 * 1024
 const MAX_DOCUMENT_TOTAL_BYTES = 128 * 1024
 const CONCURRENCY = 4
+
+async function savePlans(path, value) {
+  const destination = resolve(path)
+  const temporary = `${destination}.${randomUUID()}.tmp`
+  const handle = await open(temporary, 'wx', 0o600)
+  try {
+    try { await handle.writeFile(`${JSON.stringify(value, null, 2)}\n`); await handle.sync() }
+    finally { await handle.close() }
+    await rename(temporary, destination)
+  } finally { await unlink(temporary).catch(error => { if (error.code !== 'ENOENT') throw error }) }
+}
 
 async function readJson(path) {
   const contents = await readFile(resolve(path), 'utf8')
@@ -287,7 +299,8 @@ const candidates = await mapConcurrent(candidateEntries, async entry => {
     requiredDependencyBuilds: entry.requiredDependencyBuilds ?? [],
     previouslyApprovedBuilds: [...new Set([
       ...(entry.approvedDependencyBuilds ?? []),
-      ...(exactPrevious?.approvedBuilds ?? []),
+      // A saved approval is a plan, not evidence that a retry used it.
+      ...(exactPrevious?.approvedBuilds.filter(name => entry.approvedDependencyBuilds?.includes(name)) ?? []),
     ])].sort(),
     sourceFingerprint: entry.sourceFingerprint,
     artifactSha256: entry.artifact.sha256,
@@ -307,6 +320,23 @@ const pending = candidates.filter(candidate => {
   const previous = existingByCase.get(candidate.caseId)
   return previous?.inputFingerprint !== createDshSurfaceAgentInputFingerprint(candidate)
 })
+const pendingTasks = new Map(pending.map(candidate => {
+  const inputFingerprint = createDshSurfaceAgentInputFingerprint(candidate)
+  const previous = existingPlans.pendingTasks?.find(task => task.caseId === candidate.caseId && task.inputFingerprint === inputFingerprint)
+  return [candidate.caseId, previous ?? { caseId: candidate.caseId, inputFingerprint, createdAt: new Date().toISOString(), attempts: 0 }]
+}))
+let writes = Promise.resolve()
+function checkpoint() {
+  const value = parseDshSurfaceAgentPlans({ schema: existingPlans.schema, updatedAt: new Date().toISOString(),
+    entries: [...existingByCase.values()], pendingTasks: [...pendingTasks.values()] })
+  writes = writes.then(() => savePlans(plansPath, value))
+  return writes
+}
+if (config !== undefined) for (const task of pendingTasks.values()) {
+  task.attempts += 1
+  task.lastAttemptAt = new Date().toISOString()
+}
+if (pending.length > 0) await checkpoint()
 const failures = []
 let planned = 0
 
@@ -345,6 +375,8 @@ if (config === undefined && pending.length > 0) {
         ...decision,
       })
       planned += 1
+      pendingTasks.delete(candidate.caseId)
+      await checkpoint()
     } catch (error) {
       failures.push({ caseId: candidate.caseId, error: error instanceof Error ? error.message.slice(0, 1_024) : String(error).slice(0, 1_024) })
     }
@@ -353,13 +385,16 @@ if (config === undefined && pending.length > 0) {
 
 const nextPlans = parseDshSurfaceAgentPlans({
   schema: existingPlans.schema,
-  updatedAt: planned > 0 ? new Date().toISOString() : existingPlans.updatedAt,
+  updatedAt: pending.length > 0 ? new Date().toISOString() : existingPlans.updatedAt,
   entries: [...existingByCase.values()],
+  pendingTasks: [...pendingTasks.values()],
 })
 const rendered = markdown(nextPlans, candidates, failures, skipped)
-await writeFile(resolve(plansPath), `${JSON.stringify(nextPlans, null, 2)}\n`, 'utf8')
+await writes
+await savePlans(plansPath, nextPlans)
 await writeFile(resolve(reportPath), rendered, 'utf8')
-process.stdout.write(`${JSON.stringify({ candidates: candidates.length, pending: pending.length, planned, failed: failures.length, skipped: skipped.length }, null, 2)}\n`)
+process.stdout.write(`${JSON.stringify({ candidates: candidates.length, pending: pending.length, attempted: config === undefined ? 0 : pending.length,
+  planned, failed: failures.length, skipped: skipped.length }, null, 2)}\n`)
 if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, rendered, 'utf8')
 if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `candidates=${candidates.length}\nplanned=${planned}\nfailed=${failures.length}\n`, 'utf8')
 if (failures.length > 0) process.exitCode = 2

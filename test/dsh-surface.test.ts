@@ -100,6 +100,9 @@ describe('plane-aware surface routing and freshness', () => {
     const preRebuild = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected],
       reports: [{ ...compatibleReport(expected), executionContract: 'dsh-surface/v1alpha8' }] })
     assert.equal(preRebuild.acceptedCaseIds.length, 0, 'pre-rebuild attribution is historical evidence only')
+    const preReadiness = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected],
+      reports: [{ ...compatibleReport(expected), executionContract: 'dsh-surface/v1alpha13' }] })
+    assert.equal(preReadiness.acceptedCaseIds.length, 0, 'pre-readiness reports cannot satisfy the corrected host observation contract')
   })
 
   it('requires independent browser roster and bundle evidence for a new green Web report', () => {

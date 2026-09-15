@@ -79,6 +79,7 @@ try {
   const observations = await readJson(join(reviewDirectory, 'observations.json'))
   const recommendations = await readJson(join(reviewDirectory, 'recommendations.json'))
   const buildPlans = await optionalJson(join(reviewDirectory, 'build-plans.json'))
+  const surfaceBuildPlans = await optionalJson(join(reviewDirectory, 'surface-build-plans.json'))
   const applied = applyDshEnvironmentRecommendations(installTargets, observations, recommendations)
   const info = JSON.parse((await docker(['info', '--format', '{{json .}}'])).stdout)
   const architecture = ['aarch64', 'arm64'].includes(info.Architecture) ? 'arm64' : info.Architecture === 'x86_64' ? 'x64' : info.Architecture
@@ -141,7 +142,7 @@ try {
       || item.HostConfig?.ReadonlyRootfs !== true) throw new Error('container ownership or isolation verification failed')
     return item
   }
-  const result = await runDshCompatibilityBatch({ installTargets, observations, recommendations, buildPlans,
+  const result = await runDshCompatibilityBatch({ installTargets, observations, recommendations, buildPlans, surfaceBuildPlans,
     state: await optionalJson(statePath), runtime: { platform: 'linux', architecture }, executorIdentity, maxTasks: config.maxTasks,
     checkpoint: async state => { await save(statePath, state) },
     execute: async task => {

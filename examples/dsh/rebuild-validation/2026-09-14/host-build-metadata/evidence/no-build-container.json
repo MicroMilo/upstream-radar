@@ -1,0 +1,20 @@
+{
+  "id": "3284cdc0ee42db3fd1be44270bf0a14170f9027922921db5bfb7118a574d490f",
+  "imageId": "sha256:0a68f95329ff3e88425b7d2211ed22107ce111827573ecebef78513f9645a09c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-09-15T02:48:02.238901842Z",
+    "FinishedAt": "2026-09-15T02:48:40.10016286Z"
+  },
+  "user": "10001:10001",
+  "mounts": [],
+  "readonlyRootfs": true
+}

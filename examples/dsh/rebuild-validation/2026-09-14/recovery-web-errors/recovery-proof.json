@@ -1,0 +1,84 @@
+{
+  "validationCommit": "18145360fb3fb536cd9726e1356b72bc8788893f",
+  "verifiedAt": "2026-09-15T02:32:34.833Z",
+  "sourceIdentity": "cb3d220d6f64e2567c394b9082f6b2e73b77ac3fb28f269835bf438788e4db00",
+  "sourceFiles": 79,
+  "runnerSha256": "b2541ca6a1cd55b40178f711f62db59e4bb9bfe9a3e9b40f2288397b5079886a",
+  "buildApprovalBindings": {
+    "before": [
+      {
+        "targetId": "better-sidebar",
+        "plugin": "dsh-better-sidebar@0.19.1",
+        "dshVersion": "0.1.5-rc.2",
+        "nodeMajor": 22,
+        "artifactSha256": "67969b94e96747ad910ce945bafa2b8176af584fb8bc02f87dce5ed132986884",
+        "platform": "linux",
+        "architecture": "arm64",
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "packages": [
+          "node-pty"
+        ]
+      }
+    ],
+    "after": [
+      {
+        "targetId": "better-sidebar",
+        "plugin": "dsh-better-sidebar@0.19.1",
+        "dshVersion": "0.1.5-rc.2",
+        "nodeMajor": 22,
+        "artifactSha256": "67969b94e96747ad910ce945bafa2b8176af584fb8bc02f87dce5ed132986884",
+        "platform": "linux",
+        "architecture": "arm64",
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "packages": [
+          "node-pty"
+        ]
+      }
+    ]
+  },
+  "historicalEvidenceSnapshot": "initial-state.json",
+  "beforeDeliverySnapshot": "state-before-interruption.json",
+  "executorIdentity": "90d0a67014ed679bb1f780327cef4c233a8e6fddbcd57f9ec057cba29115399d",
+  "before": {
+    "observedAt": "2026-09-15T02:31:37.809Z",
+    "runnerPid": 22124,
+    "caseId": "better-sidebar-node22",
+    "kind": "native",
+    "taskKey": "548382e2554288e2c2bb83801ceba49e1d218244728d44190919d1518c5adfc9",
+    "attempts": 1,
+    "containerId": "cb8edbb81d8a2d258b6730fa419fc4276d8bf2a4f964129b6869212b48b07d4a",
+    "containerStartedAt": "2026-09-15T02:31:37.676742415Z",
+    "executorIdentity": "90d0a67014ed679bb1f780327cef4c233a8e6fddbcd57f9ec057cba29115399d",
+    "defaultDockerContext": "colima",
+    "runnerTerminal": {
+      "code": null,
+      "signal": "SIGTERM"
+    }
+  },
+  "resumedRunnerTerminal": {
+    "code": 2,
+    "signal": null
+  },
+  "executed": 1,
+  "reportPath": "batch/reports/native/better-sidebar-node22/548382e2554288e2c2bb83801ceba49e1d218244728d44190919d1518c5adfc9-1/report.json",
+  "result": "unknown",
+  "reason": "the exact artifact installed and loaded, but dependency coverage is incomplete (4 missing Node peers, 0 indeterminate peers, 0 version facts, 5 unresolved edges); this is not a demonstrated runtime failure",
+  "verified": {
+    "sameContainer": true,
+    "sameAttempt": true,
+    "sameStartTime": true,
+    "acceptedAfterResume": true,
+    "historicalBuildEvidenceRetained": true,
+    "exactBuildApprovalsStillApplicable": true,
+    "noRunningTargetContainers": true,
+    "defaultDockerContextUnchanged": true
+  },
+  "reviewContract": "dsh-environment/v11",
+  "scope": "A real Linux arm64 one-task recovery using the current review and exact scanner source. This is not the full eight-plugin execution or a global compatibility pass."
+}

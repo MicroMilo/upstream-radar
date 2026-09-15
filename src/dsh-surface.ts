@@ -41,7 +41,7 @@ const DEFAULT_REFRESH_AFTER_HOURS = 7 * 24
 const MAX_CONFIGURED_TARGETS = 400
 const MAX_RUN_TARGETS = 32
 const MAX_LEDGER_ENTRIES = 512
-const SURFACE_CONTRACT_REVISION = 'dsh-surface-contract/11'
+const SURFACE_CONTRACT_REVISION = 'dsh-surface-contract/12'
 
 export interface DshSurfaceTarget {
   startupConfiguration?: DshStartupConfiguration
@@ -581,7 +581,8 @@ function parseReport(input: unknown): DshSurfaceObservationReport {
     ...(root.executionContract === undefined ? {} : { executionContract: (() => {
       if (root.executionContract !== DSH_SURFACE_EXECUTION_CONTRACT && root.executionContract !== 'dsh-surface/v1alpha8'
         && root.executionContract !== 'dsh-surface/v1alpha9' && root.executionContract !== 'dsh-surface/v1alpha10'
-        && root.executionContract !== 'dsh-surface/v1alpha11' && root.executionContract !== 'dsh-surface/v1alpha12') throw new Error('report execution contract is unsupported')
+        && root.executionContract !== 'dsh-surface/v1alpha11' && root.executionContract !== 'dsh-surface/v1alpha12'
+        && root.executionContract !== 'dsh-surface/v1alpha13') throw new Error('report execution contract is unsupported')
       return root.executionContract
     })() }),
     startedAt: isoDate(root.startedAt, 'report.startedAt'),

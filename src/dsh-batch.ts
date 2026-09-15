@@ -34,6 +34,7 @@ export interface DshBatchOptions {
   observations: unknown
   recommendations?: unknown
   buildPlans?: unknown
+  surfaceBuildPlans?: unknown
   surfaceTargets?: unknown
   state?: unknown
   runtime: { platform: 'linux'; architecture: 'arm64' | 'x64' }
@@ -102,7 +103,8 @@ export async function runDshCompatibilityBatch(options: DshBatchOptions) {
   const allNative = () => buildDshInstallPlan(effectiveTargets(), options.observations, { changes: [] }, emptyDshCompatibilityLedger(), now, new Set(), options.runtime)
   const currentNative = () => currentDshCompatibilitySources(state.nativeLedger, allNative().matrix.include, targets.refreshAfterHours, now)
   const planSurface = () => {
-    return buildDshSurfacePlan(expandDshSurfaceAuthorBaselines(surfaces, allNative()), currentNative(), state.surfaceLedger, now)
+    return buildDshSurfacePlan(expandDshSurfaceAuthorBaselines(surfaces, allNative()), currentNative(), state.surfaceLedger, now,
+      undefined, options.surfaceBuildPlans)
   }
   const planAdapter = () => {
     const native = currentNative(), targetVersion = allNative().dshVersion

@@ -20,7 +20,7 @@ import { captureDshWebBundles } from './dsh-web-bundle-capture.js'
 import { parseDshStartupConfiguration, type DshStartupConfiguration } from './dsh-startup-configuration.js'
 
 export const DSH_SURFACE_OBSERVATION_SCHEMA = 'upstream-radar.dsh-surface-observation/v1alpha1' as const
-export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha13' as const
+export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha14' as const
 
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const CASE_ID = /^[a-z0-9][a-z0-9._-]{0,63}$/
@@ -102,7 +102,7 @@ export interface DshSurfaceObservationReport {
   tool: { name: 'upstream-radar'; version: string }
   probe: 'dsh-surface'
   scope: 'surface-runtime-behavior'
-  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8' | 'dsh-surface/v1alpha9' | 'dsh-surface/v1alpha10' | 'dsh-surface/v1alpha11' | 'dsh-surface/v1alpha12'
+  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8' | 'dsh-surface/v1alpha9' | 'dsh-surface/v1alpha10' | 'dsh-surface/v1alpha11' | 'dsh-surface/v1alpha12' | 'dsh-surface/v1alpha13'
   profileEnvironment?: DshProfileEnvironment
   startedAt: string
   completedAt: string
@@ -159,6 +159,8 @@ export interface DshWebEvaluationInput {
   pluginClientDeclared?: boolean
   driverAvailable: boolean
   hostStarted: boolean
+  /** True only for an observed process exit, not an observer deadline or output limit. */
+  hostExited?: boolean
   httpStatus?: number
   rootMounted: boolean
   bootManifestPresent: boolean
@@ -359,6 +361,9 @@ export function evaluateDshWebEvidence(input: DshWebEvaluationInput): DshSurface
     return { result: 'environment-unsupported', failedStage: 'surface', reason: 'the isolated runner has no usable Chromium/Playwright driver' }
   }
   if (!input.hostStarted) {
+    if (input.hostExited !== true) {
+      return { result: 'unknown', failedStage: 'host', reason: `DSH Web readiness was not established within the bounded observation${input.httpStatus === undefined ? '' : `; last HTTP status ${input.httpStatus}`}; a host exit was not established` }
+    }
     return { result: 'surface-incompatible', failedStage: 'host', reason: 'the exact DSH Web profile exited before exposing an HTTP surface' }
   }
   if (input.httpStatus === 401 || input.httpStatus === 403) {
@@ -789,17 +794,25 @@ function startHost(command: string, args: string[], cwd: string, env: NodeJS.Pro
   }
 }
 
-async function waitForHttp(url: string, host: HostHandle, timeoutMs: number): Promise<number | undefined> {
+/** Observe bounded host readiness; callers still check the process state and
+ * use the returned last HTTP status as evidence, not as a success by itself. */
+export async function waitForDshWebHttp(url: string, host: Pick<HostHandle, 'exited' | 'launchError' | 'outputExceeded'>, timeoutMs: number): Promise<number | undefined> {
   const deadline = Date.now() + timeoutMs
+  let lastStatus: number | undefined
   while (Date.now() < deadline && !host.exited() && host.launchError() === undefined && !host.outputExceeded()) {
     try {
-      const response = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(2_000) })
-      return response.status
-    } catch {
-      await new Promise(resolveWait => setTimeout(resolveWait, 250))
-    }
+      const response = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(Math.max(1, Math.min(2_000, deadline - Date.now()))) })
+      lastStatus = response.status
+      // Stock DSH briefly exposes a routing 404 while its Web plugins load.
+      // A ready document/redirect or login challenge can be handed to the
+      // browser. Other statuses remain observations, not readiness evidence.
+      await response.body?.cancel()
+      if ((lastStatus >= 200 && lastStatus < 400) || lastStatus === 401 || lastStatus === 403) return lastStatus
+    } catch { /* Startup connection failures remain bounded by this deadline. */ }
+    const remaining = deadline - Date.now()
+    if (remaining > 0) await new Promise(resolveWait => setTimeout(resolveWait, Math.min(250, remaining)))
   }
-  return undefined
+  return lastStatus
 }
 
 function loadDriver<T>(root: string | undefined, packageName: string): T | undefined {
@@ -852,21 +865,25 @@ async function observeWebSurface(input: {
   let context: BrowserContext | undefined
   let traceStarted = false
   try {
-    const httpStatus = await waitForHttp(evidence.url, host, Math.min(input.timeoutMs, 120_000))
+    const httpStatus = await waitForDshWebHttp(evidence.url, host, Math.min(input.timeoutMs, 120_000))
     if (httpStatus !== undefined) evidence.httpStatus = httpStatus
-    const hostStarted = httpStatus !== undefined
+    const readinessStatus = httpStatus !== undefined && ((httpStatus >= 200 && httpStatus < 400) || httpStatus === 401 || httpStatus === 403)
+    const hostStarted = readinessStatus && !host.exited() && host.launchError() === undefined && !host.outputExceeded()
     input.report.stages.host = hostStarted
       ? { status: 'passed' }
       : {
           status: 'failed',
           code: host.code(),
-          detail: bounded(host.launchError() ?? (host.output() || 'DSH Web did not expose an HTTP endpoint')),
+          detail: bounded(redactWebTokens(host.launchError() ?? (host.output().trim() || 'DSH Web readiness was not established within the bounded observation'))),
+          ...(!host.exited() && host.launchError() === undefined && !host.outputExceeded() ? { timedOut: true } : {}),
           ...(host.outputExceeded() ? { outputExceeded: true } : {}),
         }
     if (!hostStarted) {
       return evaluateDshWebEvidence({
         driverAvailable: true,
         hostStarted: false,
+        hostExited: host.exited() && host.launchError() === undefined && !host.outputExceeded(),
+        ...(httpStatus === undefined ? {} : { httpStatus }),
         rootMounted: false,
         bootManifestPresent: false,
         pluginEntryPresent: false,

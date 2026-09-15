@@ -1,0 +1,51 @@
+{
+  "scope": "stock-dsh-exact-installed-rebuild",
+  "pluginInstalled": false,
+  "policyExperiment": true,
+  "productionPolicyChanged": false,
+  "executor": {
+    "sourceIdentity": "cb3d220d6f64e2567c394b9082f6b2e73b77ac3fb28f269835bf438788e4db00",
+    "executorIdentity": "90d0a67014ed679bb1f780327cef4c233a8e6fddbcd57f9ec057cba29115399d",
+    "dockerContext": "colima-upstream-radar-review-20260913",
+    "runtime": {
+      "platform": "linux",
+      "architecture": "arm64"
+    },
+    "images": [
+      {
+        "nodeMajor": 22,
+        "pnpmVersion": "11.7.0",
+        "id": "sha256:4cb3624391ded73b7578ef71cda70a1b5e94831a130f9edb6860e0bde101341e",
+        "tag": "upstream-radar-rebuild:cb3d220d6f64e256-node22-pnpm11.7.0"
+      },
+      {
+        "nodeMajor": 24,
+        "pnpmVersion": "11.7.0",
+        "id": "sha256:0a68f95329ff3e88425b7d2211ed22107ce111827573ecebef78513f9645a09c",
+        "tag": "upstream-radar-rebuild:cb3d220d6f64e256-node24-pnpm11.7.0"
+      }
+    ],
+    "hostMounts": [],
+    "inheritedHostCredentials": false
+  },
+  "outcomes": [
+    {
+      "mode": "rebuild-fs-ext",
+      "containerId": "c30c03e0e5b829be8cebacaa89c546874b6bc9632865987e24afaef8e7b6097c",
+      "nodeVersion": "v24.21.0",
+      "prepareCode": 0,
+      "naturalHostTerminal": {
+        "code": 1,
+        "signal": null
+      },
+      "aliveAtEndOfObservation": false,
+      "missingFsExtBinary": true,
+      "statuses": [
+        {
+          "status": 404,
+          "observedAt": "2026-09-15T03:01:23.642Z"
+        }
+      ]
+    }
+  ]
+}

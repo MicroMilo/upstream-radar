@@ -1,0 +1,555 @@
+{
+  "scope": "stock-dsh-host-only-diagnostic",
+  "pluginInstalled": false,
+  "dshVersion": "0.1.3-alpha.2",
+  "mode": "rebuild-fs-ext",
+  "nodeVersion": "v24.21.0",
+  "prepare": {
+    "args": [
+      "dlx",
+      "--package=@deepseek-ai/dsh@0.1.3-alpha.2",
+      "dsh",
+      "--profile",
+      "web",
+      "--help"
+    ],
+    "terminal": {
+      "code": 0,
+      "signal": null
+    },
+    "exceeded": false,
+    "output": "Progress: resolved 1, reused 0, downloaded 0, added 0\nProgress: resolved 40, reused 0, downloaded 0, added 0\nProgress: resolved 74, reused 0, downloaded 69, added 0\nProgress: resolved 178, reused 0, downloaded 138, added 0\nProgress: resolved 223, reused 0, downloaded 210, added 0\nProgress: resolved 302, reused 0, downloaded 247, added 0\nProgress: resolved 323, reused 0, downloaded 284, added 0\nProgress: resolved 424, reused 0, downloaded 342, added 0\nProgress: resolved 468, reused 0, downloaded 372, added 0\nProgress: resolved 474, reused 0, downloaded 415, added 0\nProgress: resolved 518, reused 0, downloaded 459, added 0\nProgress: resolved 518, reused 0, downloaded 460, added 0\nProgress: resolved 519, reused 0, downloaded 460, added 0\nProgress: resolved 530, reused 0, downloaded 471, added 0\nProgress: resolved 530, reused 0, downloaded 472, added 0\nProgress: resolved 542, reused 0, downloaded 473, added 0\nProgress: resolved 570, reused 0, downloaded 506, added 0\nProgress: resolved 572, reused 0, downloaded 514, added 0\nProgress: resolved 573, reused 0, downloaded 514, added 0\nProgress: resolved 573, reused 0, downloaded 515, added 0\nProgress: resolved 574, reused 0, downloaded 515, added 0\nProgress: resolved 575, reused 0, downloaded 517, added 0\n[WARN] 1 deprecated subdependencies found: node-domexception@1.0.0\nProgress: resolved 576, reused 0, downloaded 518, added 0\nPackages: +516\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 576, reused 0, downloaded 518, added 516, done\n[WARN] Issues with peer dependencies found. Run \"pnpm peers check\" to list them.\nUsage: dsh --profile web [options]\n\nServe the DeepSeek Harness browser UI.\n\nOptions:\n  --host <host>                  bind host\n  --no-open                      do not open the Web UI in the default browser\n  --port <port>                  listen port; pass 0 to let the OS pick a free\n                                 one\n  --trusted-host <authority...>  extra authority the /api browser-trust fence\n                                 accepts (host or host:port; repeatable)\n  -h, --help                     show this help\n\nExamples:\n  dsh --profile web                          serve on the composed host and port\n  dsh --profile web --no-open                serve without opening a browser\n  dsh --profile web --port 8080              serve on another port\n\n"
+  },
+  "metadata": [
+    {
+      "rebuild": {
+        "args": [
+          "rebuild",
+          "fs-ext@2.1.1"
+        ],
+        "terminal": {
+          "code": 0,
+          "signal": null
+        },
+        "exceeded": false,
+        "output": ".../fs-ext@2.1.1/node_modules/fs-ext install$ node-gyp configure build\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info it worked if it ends with ok\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info using node-gyp@12.4.0\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info using node@24.21.0 | linux | arm64\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info find Python using Python version 3.11.2 found at \"/usr/bin/python3\"\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp http GET https://nodejs.org/download/release/v24.21.0/node-v24.21.0-headers.tar.gz\n.../fs-ext@2.1.1/node_modules/fs-ext install: (node:61) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n.../fs-ext@2.1.1/node_modules/fs-ext install: (Use `node --trace-warnings ...` to show where the warning was created)\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp http 200 https://nodejs.org/download/release/v24.21.0/node-v24.21.0-headers.tar.gz\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp http GET https://nodejs.org/download/release/v24.21.0/SHASUMS256.txt\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp http 200 https://nodejs.org/download/release/v24.21.0/SHASUMS256.txt\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn /usr/bin/python3\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args [\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '/usr/local/lib/node_modules/pnpm/dist/node_modules/node-gyp/gyp/gyp_main.py',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args 'binding.gyp',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '-f',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args 'make',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '-I',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '/sandbox/host-build-diagnostic/cache/pnpm/dlx/c5acde164aea5de5077c5406f24641e105180663a3025f5fd0db2cc6cc6dfdbc/1a0a303db24-11/node_modules/.pnpm/fs-ext@2.1.1/node_modules/fs-ext/build/config.gypi',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '-I',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '/usr/local/lib/node_modules/pnpm/dist/node_modules/node-gyp/addon.gypi',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '-I',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '/sandbox/host-build-diagnostic/cache/node-gyp/24.21.0/include/node/common.gypi',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '-Dlibrary=shared_library',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '-Dvisibility=default',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '-Dnode_root_dir=/sandbox/host-build-diagnostic/cache/node-gyp/24.21.0',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '-Dnode_gyp_dir=/usr/local/lib/node_modules/pnpm/dist/node_modules/node-gyp',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '-Dnode_lib_file=/sandbox/host-build-diagnostic/cache/node-gyp/24.21.0/<(target_arch)/node.lib',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '-Dmodule_root_dir=/sandbox/host-build-diagnostic/cache/pnpm/dlx/c5acde164aea5de5077c5406f24641e105180663a3025f5fd0db2cc6cc6dfdbc/1a0a303db24-11/node_modules/.pnpm/fs-ext@2.1.1/node_modules/fs-ext',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '-Dnode_engine=v8',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '--depth=.',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '--no-parallel',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '--generator-output',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args 'build',\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args '-Goutput_dir=.'\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args ]\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn make\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info spawn args [ 'BUILDTYPE=Release', '-C', 'build' ]\n.../fs-ext@2.1.1/node_modules/fs-ext install: make: Entering directory '/sandbox/host-build-diagnostic/cache/pnpm/dlx/c5acde164aea5de5077c5406f24641e105180663a3025f5fd0db2cc6cc6dfdbc/1a0a303db24-11/node_modules/.pnpm/fs-ext@2.1.1/node_modules/fs-ext/build'\n.../fs-ext@2.1.1/node_modules/fs-ext install:   CXX(target) Release/obj.target/fs_ext/fs-ext.o\n.../fs-ext@2.1.1/node_modules/fs-ext install: ../fs-ext.cc: In function ‘Nan::NAN_METHOD_RETURN_TYPE Flock(Nan::NAN_METHOD_ARGS_TYPE)’:\n.../fs-ext@2.1.1/node_modules/fs-ext install: ../fs-ext.cc:357:54: warning: cast between incompatible function types from ‘void (*)(uv_work_t*)’ {aka ‘void (*)(uv_work_s*)’} to ‘uv_after_work_cb’ {aka ‘void (*)(uv_work_s*, int)’} [-Wcast-function-type]\n.../fs-ext@2.1.1/node_modules/fs-ext install:   357 |     uv_queue_work(uv_default_loop(), req, EIO_Flock, (uv_after_work_cb)EIO_After);\n.../fs-ext@2.1.1/node_modules/fs-ext install:       |                                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~\n.../fs-ext@2.1.1/node_modules/fs-ext install: ../fs-ext.cc: In function ‘Nan::NAN_METHOD_RETURN_TYPE Seek(Nan::NAN_METHOD_ARGS_TYPE)’:\n.../fs-ext@2.1.1/node_modules/fs-ext install: ../fs-ext.cc:427:51: warning: cast between incompatible function types from ‘void (*)(uv_work_t*)’ {aka ‘void (*)(uv_work_s*)’} to ‘uv_after_work_cb’ {aka ‘void (*)(uv_work_s*, int)’} [-Wcast-function-type]\n.../fs-ext@2.1.1/node_modules/fs-ext install:   427 |   uv_queue_work(uv_default_loop(), req, EIO_Seek, (uv_after_work_cb)EIO_After);\n.../fs-ext@2.1.1/node_modules/fs-ext install:       |                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~\n.../fs-ext@2.1.1/node_modules/fs-ext install: ../fs-ext.cc: In function ‘Nan::NAN_METHOD_RETURN_TYPE Fcntl(Nan::NAN_METHOD_ARGS_TYPE)’:\n.../fs-ext@2.1.1/node_modules/fs-ext install: ../fs-ext.cc:464:52: warning: cast between incompatible function types from ‘void (*)(uv_work_t*)’ {aka ‘void (*)(uv_work_s*)’} to ‘uv_after_work_cb’ {aka ‘void (*)(uv_work_s*, int)’} [-Wcast-function-type]\n.../fs-ext@2.1.1/node_modules/fs-ext install:   464 |   uv_queue_work(uv_default_loop(), req, EIO_Fcntl, (uv_after_work_cb)EIO_After);\n.../fs-ext@2.1.1/node_modules/fs-ext install:       |                                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~\n.../fs-ext@2.1.1/node_modules/fs-ext install: ../fs-ext.cc: In function ‘Nan::NAN_METHOD_RETURN_TYPE StatVFS(Nan::NAN_METHOD_ARGS_TYPE)’:\n.../fs-ext@2.1.1/node_modules/fs-ext install: ../fs-ext.cc:514:53: warning: cast between incompatible function types from ‘void (*)(uv_work_t*)’ {aka ‘void (*)(uv_work_s*)’} to ‘uv_after_work_cb’ {aka ‘void (*)(uv_work_s*, int)’} [-Wcast-function-type]\n.../fs-ext@2.1.1/node_modules/fs-ext install:   514 |   uv_queue_work(uv_default_loop(), req, EIO_StatVFS,(uv_after_work_cb)EIO_After);\n.../fs-ext@2.1.1/node_modules/fs-ext install:       |                                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~\n.../fs-ext@2.1.1/node_modules/fs-ext install: In file included from ../fs-ext.cc:20:\n.../fs-ext@2.1.1/node_modules/fs-ext install: ../fs-ext.cc: At global scope:\n.../fs-ext@2.1.1/node_modules/fs-ext install: /sandbox/host-build-diagnostic/cache/node-gyp/24.21.0/include/node/node.h:1394:7: warning: cast between incompatible function types from ‘void (*)(v8::Local<v8::Object>, v8::Local<v8::Value>, v8::Local<v8::Context>)’ to ‘node::addon_context_register_func’ {aka ‘void (*)(v8::Local<v8::Object>, v8::Local<v8::Value>, v8::Local<v8::Context>, void*)’} [-Wcast-function-type]\n.../fs-ext@2.1.1/node_modules/fs-ext install:  1394 |       (node::addon_context_register_func) (regfunc),                  \\\n.../fs-ext@2.1.1/node_modules/fs-ext install:       |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n.../fs-ext@2.1.1/node_modules/fs-ext install: /sandbox/host-build-diagnostic/cache/node-gyp/24.21.0/include/node/node.h:1412:3: note: in expansion of macro ‘NODE_MODULE_CONTEXT_AWARE_X’\n.../fs-ext@2.1.1/node_modules/fs-ext install:  1412 |   NODE_MODULE_CONTEXT_AWARE_X(modname, regfunc, NULL, 0)\n.../fs-ext@2.1.1/node_modules/fs-ext install:       |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~\n.../fs-ext@2.1.1/node_modules/fs-ext install: /sandbox/host-build-diagnostic/cache/node-gyp/24.21.0/include/node/node.h:1443:3: note: in expansion of macro ‘NODE_MODULE_CONTEXT_AWARE’\n.../fs-ext@2.1.1/node_modules/fs-ext install:  1443 |   NODE_MODULE_CONTEXT_AWARE(NODE_GYP_MODULE_NAME,                     \\\n.../fs-ext@2.1.1/node_modules/fs-ext install:       |   ^~~~~~~~~~~~~~~~~~~~~~~~~\n.../fs-ext@2.1.1/node_modules/fs-ext install: ../fs-ext.cc:619:3: note: in expansion of macro ‘NODE_MODULE_INIT’\n.../fs-ext@2.1.1/node_modules/fs-ext install:   619 |   NODE_MODULE_INIT() {\n.../fs-ext@2.1.1/node_modules/fs-ext install:       |   ^~~~~~~~~~~~~~~~\n.../fs-ext@2.1.1/node_modules/fs-ext install:   SOLINK_MODULE(target) Release/obj.target/fs_ext.node\n.../fs-ext@2.1.1/node_modules/fs-ext install:   COPY Release/fs_ext.node\n.../fs-ext@2.1.1/node_modules/fs-ext install: make: Leaving directory '/sandbox/host-build-diagnostic/cache/pnpm/dlx/c5acde164aea5de5077c5406f24641e105180663a3025f5fd0db2cc6cc6dfdbc/1a0a303db24-11/node_modules/.pnpm/fs-ext@2.1.1/node_modules/fs-ext/build'\n.../fs-ext@2.1.1/node_modules/fs-ext install: gyp info ok \n.../fs-ext@2.1.1/node_modules/fs-ext install: Done\n"
+      },
+      "after": {
+        "lockfileSha256": "4b65d37b920093ec72d66c03145820d64de03b6fbde693c05f5ae11c92119fd9",
+        "graphDigest": "sha256:5bfd03ebbf0255c2e5335a7720d1d1c0d7fcbcf151da83e7aec23c663a6187be",
+        "pendingBuilds": [
+          "@google/genai@1.52.0(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))",
+          "protobufjs@7.6.6",
+          "koffi@3.2.1",
+          "@deepseek-ai/dsh-subprocess-local@0.1.3-alpha.2(@deepseek-ai/cordis@4.0.2)(@deepseek-ai/dsh-subprocess@0.1.3-alpha.2(@deepseek-ai/cordis@4.0.2)(@deepseek-ai/dsh-http-proxy@0.1.3-alpha.2(@deepseek-ai/cordis@4.0.2)))(@deepseek-ai/dsh-timeout@0.1.3-alpha.2(@deepseek-ai/cordis@4.0.2))",
+          "node-pty@1.2.0-beta.15",
+          "fs-ext@2.1.1"
+        ]
+      },
+      "manifest": {
+        "dependencies": {
+          "@deepseek-ai/dsh": "0.1.3-alpha.2"
+        }
+      },
+      "manifestSha256": "4751573a2c8fe78a393012be149a34c92292fd6611b30d4a928d528d3177cff7",
+      "modulesSha256": "1a384118de0375332c0c7924640a45e27f4369355e6f48b06a0d33664d437f94",
+      "lockfileSha256": "4b65d37b920093ec72d66c03145820d64de03b6fbde693c05f5ae11c92119fd9",
+      "lockfileExcerpt": "lockfileVersion: '9.0'\n\nsettings:\n  autoInstallPeers: true\n  excludeLinksFromLockfile: false\n\nimporters:\n\n  .:\n    dependencies:\n      '@deepseek-ai/dsh':\n        specifier: 0.1.3-alpha.2\n        version: 0.1.3-alpha.2(bb2c35cc2fa8419ca93ba6a3d964f3fc)\n\npackages:\n\n  '@agentclientprotocol/sdk@1.4.0':\n    resolution: {integrity: sha512-/eufudw+aFY1LKLolT6yFE6UMmYRl7fMJ/DEONSIyR6wI3slHWITBsANRGqXEY8FRzqUxwh7QEaGiZHcJPVThg==}\n    peerDependencies:\n      zod: ^3.25.0 || ^4.0.0\n\n  '@anthropic-ai/sdk@0.123.0':\n    resolution: {integrity: sha512-Y9oX9mPNGZClHQOFqrWRk43Srcu/UHuPq3rfxxOq7JgW0gi+lJA2MAOK4Ul3k/+AUrwRWFJvd0tK3oC0Pw25dw==}\n    hasBin: true\n    peerDependencies:\n      zod: ^3.25.0 || ^4.0.0\n    peerDependenciesMeta:\n      zod:\n        optional: true\n\n  '@aws-crypto/sha256-browser@5.2.0':\n    resolution: {integrity: sha512-AXfN/lGotSQwu6HNcEsIASo7kWXZ5HYWvfOmSNKDsEqC4OashTp8alTmaz+F7TC2L083SFv5RdB+qU3Vs1kZqw==}\n\n  '@aws-crypto/sha256-js@5.2.0':\n    resolution: {integrity: sha512-FFQQyu7edu4ufvIZ+OadFpHHOt+eSTBaYaki44c+akjg7qZg9oOQeLlk77F6tSYqjDAFClrHJk9tMf0HdVyOvA==}\n    engines: {node: '>=16.0.0'}\n\n  '@aws-crypto/supports-web-crypto@5.2.0':\n    resolution: {integrity: sha512-iAvUotm021kM33eCdNfwIN//F77/IADDSs58i+MDaOqFrVjZo9bAal0NK7HurRuWLLpF1iLX7gbWrjHjeo+YFg==}\n\n  '@aws-crypto/util@5.2.0':\n    resolution: {integrity: sha512-4RkU9EsI6ZpBve5fseQlGNUWKMa1RLPQ1dnjnQoe07ldfIzcsGb5hC5W0Dm7u423KWzawlrpbjXBrXCEv9zazQ==}\n\n  '@aws-sdk/client-bedrock-runtime@3.1048.0':\n    resolution: {integrity: sha512-u+NT61JZEkRFtpL0CAw1N1dwxnaLgwVXQl/zjJxTGgLyS/jTIdg2SdoEoCTHxgDyCnqa1HEi9QOoE9/pYRNpOQ==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/core@3.978.0':\n    resolution: {integrity: sha512-2yX9LUmxPklVjSGTb8dfnWRJSiFQ3TeH2nn7G1mdKHTfnabzF0+gfrS8rYfLWmZrQ8A3mEcxMJjRc51dL5KWaA==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/credential-provider-env@3.972.71':\n    resolution: {integrity: sha512-JN+JHruYZw3GUZB8YGAlDk4wTDPOEAEEdEzj5nS0xodWR4smzHsN7PnK2j6IeOsDIj2aqua5DSbhXl9Gtf90FQ==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/credential-provider-http@3.972.73':\n    resolution: {integrity: sha512-uyYYnJOnlis8uQzaYGPd7N1JoioCoNpXgnkXYixsWJXHXgXyYi8WXJSDfofxJeWfQIGWLe2Nwyq60Uc7MZdVOg==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/credential-provider-ini@3.973.16':\n    resolution: {integrity: sha512-i++ly+0Uxa+u3ebSSyr0S/3CFhFJDxCXT3+Zj+mW2bXenEx5bKGCdTIKFu39SgXBNhWDjex/8cXUx9MUTMCrTw==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/credential-provider-login@3.972.78':\n    resolution: {integrity: sha512-eUtswnXu0+Ii9ieRK+0L7aPFV3Z/dnW2VntJzjBP9xs8s+8p5nBNuymIXtXwZ+5r5+XJP3e32nMkuZ/r0HozEA==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/credential-provider-node@3.972.83':\n    resolution: {integrity: sha512-jdso7ejzfRnatxMUZK4S/U6KbaDPCvfIV4XL+IQAPFDBt5rj5Fq595euqlK8Le4lNCMFR9oUpt+1l0aMgaayOQ==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/credential-provider-process@3.972.71':\n    resolution: {integrity: sha512-lYmXJa4gvq4xN1lrT5NiP5vIYYKcGWAdj8y+8o6dlcateB5eF3Dn8DtmjjHKfMBrTPAMr2pebIiX/UOj8c1/UA==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/credential-provider-sso@3.973.15':\n    resolution: {integrity: sha512-6Jhcf4v0pSFdjk1EW2kvzuEBKD+UZ2uNcHUIglKKLndD20YhvkL2kdmDOV5/j4mYuWWwe/a1FQ1aomU86/Cg5Q==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/credential-provider-web-identity@3.972.77':\n    resolution: {integrity: sha512-uylIQSUWpfLuH2LovxEEfwzJGM/SabLOfLMg6YXu/E8jJEKUdpdILCVCQCdFvHyu/7dLJOHPMfrSwduxO56NkQ==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/eventstream-handler-node@3.972.34':\n    resolution: {integrity: sha512-cTeVzpu1xEAkryTZBYhGwnQ6gOGyp8ZYZvmn0Sg/nI/ABmy/CRHHxPDJDUi9PxwxUtGGaatvfRUB3FCgT/rSWw==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/middleware-eventstream@3.972.29':\n    resolution: {integrity: sha512-dlRzHCgyB8W6hLuDC5pcT5q+ziPt00n4QGgGBE17ucLVU4zMa6lsbuUdQ2Pm75Z5VA8GF+R/+SgrRcaTdIzSIQ==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/middleware-websocket@3.972.53':\n    resolution: {integrity: sha512-bIrDaMENQmYRBHntOiOheqkiw5+fhKW4Lqb+mS1uqF0VwvdWI22fW2HFgWrng66CmYd+4k8ePlpj38sEfTuMLQ==}\n    engines: {node: '>= 14.0.0'}\n\n  '@aws-sdk/nested-clients@3.997.45':\n    resolution: {integrity: sha512-mooq9Q+jLa18VoM7HouczmslZU60iiB0aKc/Ztnq/luIL1ud0z4DnYprLR/ZO1gp331S9tJctM1HZr7u6YKBXQ==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/signature-v4-multi-region@3.996.46':\n    resolution: {integrity: sha512-L+2xZTye/2T96f3lwCws0Zw6GG2JHZW9e8FpVgGBeeExSKyeoZ6CWRpBml/7DNiK/O26jrgPM9F+Ay8VkgzUWQ==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/token-providers@3.1048.0':\n    resolution: {integrity: sha512-k0y/GcuesuSfWyUM0WamrGyeZmltRYaPbHO82UDA6mZ/doB+FOHKutikPAtSXMn/hDz970cF+iRuuiYO9VEbAA==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/token-providers@3.1129.0':\n    resolution: {integrity: sha512-Sbl3rpzQdsG4ZK2zh0JWUYyZPKKorJlVOddA2T0DVbKJFrsW8J6wgnslxxUH04+WaBMr4A1HzJZvZX0xUvkniA==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/types@3.974.5':\n    resolution: {integrity: sha512-LkwLL2BLbC6wNNm4JaH9mbEqBMdOZCct6VAYqhdN4U1xrWM+fUJQEfbHwQgDypapOWTRtlk25akb5afM0P8CIQ==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/util-locate-window@3.965.10':\n    resolution: {integrity: sha512-ycwH6Zd2GhuSqdXX9ihbCjeGTB6xOJs+O3+Jb8/zDG9978XU80qs75dfkPJRMNKe5MvBZPuNeFpd4JZKPoUF4g==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws-sdk/xml-builder@3.972.40':\n    resolution: {integrity: sha512-wlFmCIGUlwF4zx/kncw+bmxTQh1HeSJq4mYV/V5cZUSJadDP3kXvGW8Rn21cimj/7y9ju+47oYWXi97vF7czaA==}\n    engines: {node: '>=20.0.0'}\n\n  '@aws/lambda-invoke-store@0.3.0':\n    resolution: {integrity: sha512-sl4Bm6yiMNYrZKkqqDFWN0UfnWhlS8ivKxrYl+6t0gCLrqr8y3B2IqZZbFRkfaVVp7C/baApyh71P+LeE1A2sQ==}\n    engines: {node: '>=18.0.0'}\n\n  '@babel/code-frame@7.29.7':\n    resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}\n    engines: {node: '>=6.9.0'}\n\n  '@babel/helper-validator-identifier@7.29.7':\n    resolution: {integrity: sha512-qehxGkRj55h/ff8EMaJ+cYhyaKlHIxqYDn682wQD7RNp9UujOQsHog2uS0r2vzr4pW+sXf90NeeayjcNaX3fFg==}\n    engines: {node: '>=6.9.0'}\n\n  '@babel/runtime@7.29.7':\n    resolution: {integrity: sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==}\n    engines: {node: '>=6.9.0'}\n\n  '@deepseek-ai/cordis-plugin-group@1.0.2':\n    resolution: {integrity: sha512-OeGiPD793Mhma9+rGIox95neuufwOFTqQ5jooFgrMK/Mn7Fp7Hkv/d7VKMXZz40iks2fZCbiFE6p9WjTVTQRdg==}\n    peerDependencies:\n      '@deepseek-ai/cordis': ^4.0.2\n      '@deepseek-ai/cordis-plugin-loader': ^1.0.3\n\n  '@deepseek-ai/cordis-plugin-hmr@1.0.17':\n    resolution: {integrity: sha512-o1BooaJpwd+C80Tn5+B48MGqrfNZydlfRVQjmCrrULA4nCmlMqBKjDF2FmcZoNP+L2uX9m/6DdGKVtFpQRQVUQ==}\n    peerDependencies:\n      '@deepseek-ai/cordis': ^4.0.2\n      '@deepseek-ai/cordis-plugin-timer': ^1.1.4\n\n  '@deepseek-ai/cordis-plugin-include@1.0.7':\n    resolution: {integrity: sha512-bZ4S1YuOmwOeE97HnslQ6ggVQbaWz4GejJ8OcY4P/DIyc1Qhu/3Szt1XSw6c/pd37kRkxxJXGwt4cmCxWSBBuw==}\n    peerDependencies:\n      '@deepseek-ai/cordis': ^4.0.2\n      '@deepseek-ai/cordis-plugin-loader': ^1.0.3\n\n  '@deepseek-ai/cordis-plugin-loader@1.0.3':\n    resolution: {integrity: sha512-YNcHiH7TRFrgnRbQU7qdS1spABUFFHg04QpB9DdboPEjgKLTFfeEAvr6Y7qll3/nGgqywDQdk1tYshqKO0p1WQ==}\n    peerDependencies:\n      '@deepseek-ai/cordis': ^4.0.2\n      node-addon-require-builtin: ^0.1.4\n    peerDependenciesMeta:\n      node-addon-require-builtin:\n        optional: true\n\n  '@deepseek-ai/cordis-plugin-timer@1.1.4':\n    resolution: {integrity: sha512-GhxOiU+TF2BbNBKlV2N24zvfv2Kh7RxkFW1hjML6s+DOb+y2zomzbeC5zHIIjsc/rpRwbKpDNucPGSwkH0ChXw==}\n    peerDependencies:\n      '@deepseek-ai/cordis': ^4.0.2\n\n  '@deepseek-ai/cordis@4.0.2':\n    resolution: {integrity: sha512-asOnXP1TzFSFQlHb1iegDZp0z/8WD1c7YNrwJR/Tx2bzNuMXfcekE/I67Iv6SQXeLB4csxqCngzQKANP7gdw0g==}\n    hasBin: true\n    peerDependencies:\n      '@deepseek-ai/cordis-plugin-include': ^1.0.7\n      '@deepseek-ai/cordis-plugin-loader': ^1.0.3\n    peerDependenciesMeta:\n      '@deepseek-ai/cordis-plugin-include':\n        optional: true\n      '@deepseek-ai/cordis-plugin-loader':\n        optional: true\n\n  '@deepseek-ai/cosmokit@1.8.3':\n    resolution: {integrity: sha512-qBo+ronV",
+      "packageManager": "pnpm@11.7.0",
+      "pendingBuilds": [
+        "@google/genai@1.52.0(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))",
+        "protobufjs@7.6.6",
+        "koffi@3.2.1",
+        "@deepseek-ai/dsh-subprocess-local@0.1.3-alpha.2(@deepseek-ai/cordis@4.0.2)(@deepseek-ai/dsh-subprocess@0.1.3-alpha.2(@deepseek-ai/cordis@4.0.2)(@deepseek-ai/dsh-http-proxy@0.1.3-alpha.2(@deepseek-ai/cordis@4.0.2)))(@deepseek-ai/dsh-timeout@0.1.3-alpha.2(@deepseek-ai/cordis@4.0.2))",
+        "node-pty@1.2.0-beta.15",
+        "fs-ext@2.1.1"
+      ],
+      "allowBuilds": {
+        "@deepseek-ai/dsh": true
+      },
+      "graph": {
+        "digest": "sha256:5bfd03ebbf0255c2e5335a7720d1d1c0d7fcbcf151da83e7aec23c663a6187be",
+        "nodes": 516,
+        "unresolved": [
+          {
+            "from": "node_modules/.pnpm/@deepseek-ai+node-addon-landlock-run@0.1.1/node_modules/@deepseek-ai/node-addon-landlock-run",
+            "name": "@deepseek-ai/node-addon-landlock-run-linux-x64",
+            "spec": "0.1.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@lexical+clipboard@0.49.0/node_modules/@lexical/clipboard",
+            "name": "typescript",
+            "spec": ">=5.2",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@lexical+dragon@0.49.0/node_modules/@lexical/dragon",
+            "name": "typescript",
+            "spec": ">=5.2",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@lexical+extension@0.49.0/node_modules/@lexical/extension",
+            "name": "typescript",
+            "spec": ">=5.2",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@lexical+history@0.49.0/node_modules/@lexical/history",
+            "name": "typescript",
+            "spec": ">=5.2",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@lexical+html@0.49.0/node_modules/@lexical/html",
+            "name": "typescript",
+            "spec": ">=5.2",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@lexical+internal@0.49.0/node_modules/@lexical/internal",
+            "name": "typescript",
+            "spec": ">=5.2",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@lexical+list@0.49.0/node_modules/@lexical/list",
+            "name": "typescript",
+            "spec": ">=5.2",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@lexical+plain-text@0.49.0/node_modules/@lexical/plain-text",
+            "name": "typescript",
+            "spec": ">=5.2",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@lexical+selection@0.49.0/node_modules/@lexical/selection",
+            "name": "typescript",
+            "spec": ">=5.2",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@lexical+text@0.49.0/node_modules/@lexical/text",
+            "name": "typescript",
+            "spec": ">=5.2",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@lexical+utils@0.49.0/node_modules/@lexical/utils",
+            "name": "typescript",
+            "spec": ">=5.2",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@modelcontextprotocol+sdk@1.30.0_zod@4.6.5/node_modules/@modelcontextprotocol/sdk",
+            "name": "@cfworker/json-schema",
+            "spec": "^4.1.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+            "name": "@vscode/ripgrep-darwin-arm64",
+            "spec": "1.18.0",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+            "name": "@vscode/ripgrep-darwin-x64",
+            "spec": "1.18.0",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+            "name": "@vscode/ripgrep-linux-arm",
+            "spec": "1.18.0",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+            "name": "@vscode/ripgrep-linux-ia32",
+            "spec": "1.18.0",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+            "name": "@vscode/ripgrep-linux-ppc64",
+            "spec": "1.18.0",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+            "name": "@vscode/ripgrep-linux-riscv64",
+            "spec": "1.18.0",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+            "name": "@vscode/ripgrep-linux-s390x",
+            "spec": "1.18.0",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+            "name": "@vscode/ripgrep-linux-x64",
+            "spec": "1.18.0",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+            "name": "@vscode/ripgrep-win32-arm64",
+            "spec": "1.18.0",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+            "name": "@vscode/ripgrep-win32-ia32",
+            "spec": "1.18.0",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/@vscode+ripgrep@1.18.0/node_modules/@vscode/ripgrep",
+            "name": "@vscode/ripgrep-win32-x64",
+            "spec": "1.18.0",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-android-arm64",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-android-x64",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-darwin-arm64",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-darwin-x64",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-freebsd-arm64",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-freebsd-ia32",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-freebsd-x64",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-linux-arm",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-linux-ia32",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-linux-loong64",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-linux-riscv64",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-linux-x64",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-openbsd-ia32",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-openbsd-x64",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-win32-arm64",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-win32-ia32",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/koffi@3.2.1/node_modules/koffi",
+            "name": "@koromix/koffi-win32-x64",
+            "spec": "3.2.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/lexical@0.49.0/node_modules/lexical",
+            "name": "typescript",
+            "spec": ">=5.2",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/node-addon-require-builtin@0.1.5/node_modules/node-addon-require-builtin",
+            "name": "node-addon-require-builtin-darwin-arm64",
+            "spec": "0.1.5",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/node-addon-require-builtin@0.1.5/node_modules/node-addon-require-builtin",
+            "name": "node-addon-require-builtin-darwin-x64",
+            "spec": "0.1.5",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/node-addon-require-builtin@0.1.5/node_modules/node-addon-require-builtin",
+            "name": "node-addon-require-builtin-linux-x64-gnu",
+            "spec": "0.1.5",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/node-addon-require-builtin@0.1.5/node_modules/node-addon-require-builtin",
+            "name": "node-addon-require-builtin-win32-arm64-msvc",
+            "spec": "0.1.5",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/node-addon-require-builtin@0.1.5/node_modules/node-addon-require-builtin",
+            "name": "node-addon-require-builtin-win32-ia32-msvc",
+            "spec": "0.1.5",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/node-addon-require-builtin@0.1.5/node_modules/node-addon-require-builtin",
+            "name": "node-addon-require-builtin-win32-x64-msvc",
+            "spec": "0.1.5",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-darwin-arm64",
+            "spec": "0.35.4",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-darwin-x64",
+            "spec": "0.35.4",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-freebsd-wasm32",
+            "spec": "0.35.4",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-libvips-darwin-arm64",
+            "spec": "1.3.3",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-libvips-darwin-x64",
+            "spec": "1.3.3",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-libvips-linux-arm",
+            "spec": "1.3.3",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-libvips-linux-ppc64",
+            "spec": "1.3.3",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-libvips-linux-riscv64",
+            "spec": "1.3.3",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-libvips-linux-s390x",
+            "spec": "1.3.3",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-libvips-linux-x64",
+            "spec": "1.3.3",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-libvips-linuxmusl-arm64",
+            "spec": "1.3.3",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-libvips-linuxmusl-x64",
+            "spec": "1.3.3",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-linux-arm",
+            "spec": "0.35.4",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-linux-ppc64",
+            "spec": "0.35.4",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-linux-riscv64",
+            "spec": "0.35.4",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-linux-s390x",
+            "spec": "0.35.4",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-linux-x64",
+            "spec": "0.35.4",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-linuxmusl-arm64",
+            "spec": "0.35.4",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-linuxmusl-x64",
+            "spec": "0.35.4",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-webcontainers-wasm32",
+            "spec": "0.35.4",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-win32-arm64",
+            "spec": "0.35.4",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-win32-ia32",
+            "spec": "0.35.4",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/sharp@0.35.4/node_modules/sharp",
+            "name": "@img/sharp-win32-x64",
+            "spec": "0.35.4",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/ws@8.21.3/node_modules/ws",
+            "name": "bufferutil",
+            "spec": "^4.0.1",
+            "kind": "optional"
+          },
+          {
+            "from": "node_modules/.pnpm/ws@8.21.3/node_modules/ws",
+            "name": "utf-8-validate",
+            "spec": ">=5.0.2",
+            "kind": "optional"
+          }
+        ],
+        "fsExt": [
+          {
+            "id": "node_modules/.pnpm/fs-ext@2.1.1/node_modules/fs-ext",
+            "name": "fs-ext",
+            "version": "2.1.1",
+            "source": "profile"
+          }
+        ]
+      }
+    }
+  ],
+  "host": {
+    "args": [
+      "dlx",
+      "--package=@deepseek-ai/dsh@0.1.3-alpha.2",
+      "dsh",
+      "--profile",
+      "web",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "19845"
+    ],
+    "terminal": {
+      "code": null,
+      "signal": "SIGTERM"
+    },
+    "exceeded": false,
+    "output": "dsh web: http://127.0.0.1:19845/?token=[ephemeral-token-redacted]\ndsh web: opening the default browser; pass --no-open to disable\n",
+    "aliveAtEndOfObservation": true,
+    "statuses": [
+      {
+        "status": 404,
+        "observedAt": "2026-09-15T03:02:48.623Z"
+      },
+      {
+        "status": 401,
+        "observedAt": "2026-09-15T03:02:48.894Z"
+      }
+    ],
+    "missingFsExtBinary": false
+  }
+}

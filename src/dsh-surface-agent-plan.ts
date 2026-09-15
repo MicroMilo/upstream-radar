@@ -71,6 +71,9 @@ export interface DshSurfaceAgentPlans {
   schema: typeof DSH_SURFACE_AGENT_PLANS_SCHEMA
   updatedAt: string
   entries: DshSurfaceAgentPlanEntry[]
+  pendingTasks?: Array<{
+    caseId: string; inputFingerprint: string; createdAt: string; attempts: number; lastAttemptAt?: string
+  }>
 }
 
 function record(value: unknown, label: string): Record<string, unknown> {
@@ -324,5 +327,22 @@ export function parseDshSurfaceAgentPlans(input: unknown): DshSurfaceAgentPlans 
     }
   })
   entries.sort((left, right) => left.caseId.localeCompare(right.caseId))
-  return { schema: DSH_SURFACE_AGENT_PLANS_SCHEMA, updatedAt: timestamp(root.updatedAt, 'DSH surface Agent plans updatedAt'), entries }
+  const pendingIds = new Set<string>()
+  let pendingTasks: DshSurfaceAgentPlans['pendingTasks']
+  if (root.pendingTasks !== undefined) {
+    if (!Array.isArray(root.pendingTasks) || root.pendingTasks.length > MAX_ENTRIES) throw new Error('surface pending tasks exceed their bound')
+    pendingTasks = root.pendingTasks.map((value, index) => {
+      const label = `pendingTasks[${index}]`
+      const item = record(value, label)
+      const id = caseId(item.caseId, `${label}.caseId`)
+      if (pendingIds.has(id)) throw new Error('duplicate surface pending task')
+      pendingIds.add(id)
+      if (!Number.isSafeInteger(item.attempts) || (item.attempts as number) < 0 || (item.attempts as number) > 1_000_000) throw new Error(`${label}.attempts must be a bounded nonnegative integer`)
+      return { caseId: id, inputFingerprint: fingerprint(item.inputFingerprint, `${label}.inputFingerprint`),
+        createdAt: timestamp(item.createdAt, `${label}.createdAt`), attempts: item.attempts as number,
+        ...(item.lastAttemptAt === undefined ? {} : { lastAttemptAt: timestamp(item.lastAttemptAt, `${label}.lastAttemptAt`) }) }
+    })
+  }
+  return { schema: DSH_SURFACE_AGENT_PLANS_SCHEMA, updatedAt: timestamp(root.updatedAt, 'DSH surface Agent plans updatedAt'), entries,
+    ...(pendingTasks === undefined ? {} : { pendingTasks }) }
 }

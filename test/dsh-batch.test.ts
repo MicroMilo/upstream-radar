@@ -173,6 +173,55 @@ describe('durable DSH compatibility batch', () => {
     assert.deepEqual(delivered.map(task => task.cell.allowedBuilds), ['', 'sharp'])
   })
 
+  it('retries a surface-only build gate through its exact reviewed plan without rerunning the native cell', async () => {
+    const installTargets = { schema: 'upstream-radar.dsh-install-targets/v1alpha1', runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }],
+      plugins: [{ id: 'terminal', spec: 'terminal@1.0.0', reason: 'surface-only build gate fixture' }] }
+    const surfaceTargets = { schema: 'upstream-radar.dsh-surface-targets/v1alpha1', surfaces: [{ id: 'terminal-tui', sourceCaseId: 'terminal-node22',
+      plane: 'tui', profile: 'author-tui', runtimeId: 'terminal', reason: 'author intended terminal' }] }
+    let durable: DshBatchState | undefined
+    const delivered: DshBatchTask[] = []
+    const options = { installTargets, surfaceTargets, runtime: { platform: 'linux' as const, architecture: 'arm64' as const },
+      observations: { targets: { 'deepseek-harness': { package: { name: '@deepseek-ai/dsh', version: '0.1.5-rc.2' } } } },
+      now: new Date('2026-09-14T05:01:00.000Z'), checkpoint: async (state: DshBatchState) => { durable = structuredClone(state) },
+      execute: async (task: DshBatchTask) => {
+        delivered.push(task)
+        assert.ok(durable?.tasks.some(item => item.key === task.key && item.status === 'running'))
+        if (task.kind === 'native') return nativeReport(task)
+        const cell = task.cell as DshSurfaceExpectedCase
+        const approved = cell.allowedBuilds === 'node-pty'
+        return { schema: 'upstream-radar.dsh-surface-observation/v1alpha1', executionContract: 'dsh-surface/v1alpha14',
+          tool: { name: 'upstream-radar', version: '0.45.0' }, probe: 'dsh-surface', scope: 'surface-runtime-behavior',
+          ...cell, caseId: cell.id, startedAt: '2026-09-14T05:00:00.000Z', completedAt: '2026-09-14T05:00:10.000Z',
+          artifact: { sha256: cell.artifactSha256 }, runtime: { nodeMajor: 22, nodeVersion: '22.23.2', platform: 'linux', architecture: 'arm64', pnpmVersion: '11.7.0' },
+          resolution: { runtimeGraph: { digest: `sha256:${'c'.repeat(64)}`, nodes: 2, edges: 1, unresolved: 0,
+            hostRuntime: { source: 'dsh-process', resolvedNodes: 1, dshVersion: cell.dshVersion } } },
+          stages: Object.fromEntries(['runtime', 'artifact', 'profile', 'install', 'registration', 'host', 'surface', 'interaction', 'shutdown'].map(stage => [stage, { status: approved ? 'passed' : 'skipped' }])),
+          evidence: { plane: 'tui', terminal: 'xterm-256color', columns: 100, rows: 32, frameObserved: approved, inputSent: approved,
+            exitedAfterShutdown: approved, exitCode: 0, normalizedFrame: approved ? 'Ready' : '', capturedBytes: approved ? 128 : 0, truncated: false },
+          result: approved ? 'compatible' : 'environment-unsupported', reason: approved ? 'Fixture exact TUI completed.' : 'The TUI profile requires node-pty build approval.',
+          boundary: { isolationProviderClaim: 'other', approvedDependencyBuilds: approved ? ['node-pty'] : [],
+            requiredDependencyBuilds: approved ? [] : ['node-pty'], note: 'Fixture isolated executor.' } }
+      } }
+    const first = await runDshCompatibilityBatch(options)
+    assert.equal(first.executed, 2)
+    assert.equal(first.state.surfaceLedger.entries[0]?.result, 'environment-unsupported')
+    const surface = first.state.surfaceLedger.entries[0]!
+    const surfaceBuildPlans = { schema: 'upstream-radar.dsh-surface-agent-plans/v1alpha1', updatedAt: '2026-09-14T05:01:00.000Z', entries: [{
+      caseId: surface.caseId, sourceCaseId: surface.sourceCaseId, plugin: surface.plugin, dshVersion: surface.dshVersion,
+      nodeMajor: surface.runtime.nodeMajor, plane: surface.plane, profile: surface.profile, result: surface.result,
+      observedRequiredBuilds: ['node-pty'], approvedBuilds: ['node-pty'], allowedBuilds: ['node-pty'],
+      sourceFingerprint: surface.sourceFingerprint, artifactSha256: surface.artifact.sha256, inputFingerprint: `sha256:${'d'.repeat(64)}`,
+      plannedAt: '2026-09-14T05:01:00.000Z', model: 'test-boundary', action: 'retry-surface', classification: 'build-approval',
+      summary: 'The observed surface-only node-pty build is approved.', evidence: ['The TUI profile requires node-pty build approval.'],
+    }] }
+    const retryOptions = { ...options, state: JSON.parse(JSON.stringify(first.state)), surfaceBuildPlans }
+    const retried = await runDshCompatibilityBatch(retryOptions)
+    assert.equal(retried.executed, 1, 'the persisted surface gate must enter the reviewed retry')
+    assert.equal(retried.state.surfaceLedger.entries[0]?.result, 'compatible')
+    assert.deepEqual(delivered.map(task => [task.kind, task.cell.allowedBuilds]), [['native', ''], ['surface', ''], ['surface', 'node-pty']])
+    assert.equal((await runDshCompatibilityBatch({ ...retryOptions, state: retried.state })).executed, 0)
+  })
+
   it('does not let repeated installation failures starve a ready profile task under a small run budget', async () => {
     const installTargets = { schema: 'upstream-radar.dsh-install-targets/v1alpha1', runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }],
       plugins: ['alpha', 'beta'].map(id => ({ id, spec: `${id}@1.0.0`, reason: 'fair execution fixture' })) }
@@ -208,7 +257,7 @@ describe('durable DSH compatibility batch', () => {
         if (task.kind === 'native') return nativeReport(task)
         const cell = task.cell as DshSurfaceExpectedCase
         assert.equal(durable?.nativeLedger.entries[0]?.artifact.sha256, cell.artifactSha256)
-        return { schema: 'upstream-radar.dsh-surface-observation/v1alpha1', executionContract: 'dsh-surface/v1alpha13',
+        return { schema: 'upstream-radar.dsh-surface-observation/v1alpha1', executionContract: 'dsh-surface/v1alpha14',
           tool: { name: 'upstream-radar', version: '0.45.0' }, probe: 'dsh-surface', scope: 'surface-runtime-behavior',
           ...cell, caseId: cell.id, startedAt: '2026-09-14T05:00:00.000Z', completedAt: '2026-09-14T05:00:10.000Z',
           artifact: { sha256: cell.artifactSha256 }, runtime: { nodeMajor: 22, nodeVersion: '22.23.2', platform: 'linux', architecture: 'arm64', pnpmVersion: '11.7.0' },

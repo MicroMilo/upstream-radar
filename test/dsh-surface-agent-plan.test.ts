@@ -114,4 +114,16 @@ describe('DSH execution-plane Agent planning', () => {
     assert.equal(parsed.entries[0]?.plane, 'web')
     assert.deepEqual(emptyDshSurfaceAgentPlans().entries, [])
   })
+
+  it('retains bounded exact pending handoffs and rejects malformed recovery state', () => {
+    const task = { caseId: candidate.caseId, inputFingerprint: createDshSurfaceAgentInputFingerprint(candidate),
+      createdAt: '2026-09-15T03:00:00.000Z', attempts: 1, lastAttemptAt: '2026-09-15T03:01:00.000Z' }
+    const parse = (pendingTasks: unknown) => parseDshSurfaceAgentPlans({ ...emptyDshSurfaceAgentPlans(), pendingTasks })
+    assert.deepEqual(parse([task]).pendingTasks, [task])
+    assert.throws(() => parse([task, task]), /duplicate/)
+    assert.throws(() => parse([{ ...task, attempts: -1 }]), /attempts/)
+    assert.throws(() => parse([{ ...task, inputFingerprint: 'latest' }]), /fingerprint/)
+    assert.throws(() => parse([{ ...task, lastAttemptAt: 'not-a-time' }]), /timestamp/)
+    assert.throws(() => parse(Array.from({ length: 129 }, () => task)), /bound/)
+  })
 })
