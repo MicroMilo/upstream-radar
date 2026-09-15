@@ -19,9 +19,11 @@ import { collectDshWebPackageInventory } from './dsh-web-package-inventory.js'
 import { captureDshWebBundles } from './dsh-web-bundle-capture.js'
 import { parseDshStartupConfiguration, type DshStartupConfiguration } from './dsh-startup-configuration.js'
 import { collectDshHostBuildInventory, collectDshHostNativeLoadFailures, type DshHostBuildInventory, type DshHostNativeLoadFailure } from './dsh-host-builds.js'
+import { parseDshHostBuildApproval, type DshHostBuildApproval } from './dsh-host-build-policy.js'
+import { executeDshHostBuildApproval, type DshHostBuildExecution } from './dsh-host-build-execution.js'
 
 export const DSH_SURFACE_OBSERVATION_SCHEMA = 'upstream-radar.dsh-surface-observation/v1alpha1' as const
-export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha15' as const
+export const DSH_SURFACE_EXECUTION_CONTRACT = 'dsh-surface/v1alpha16' as const
 
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const CASE_ID = /^[a-z0-9][a-z0-9._-]{0,63}$/
@@ -100,12 +102,13 @@ export interface DshTuiSurfaceEvidence {
 export interface DshSurfaceObservationReport {
   hostBuildInventory?: DshHostBuildInventory
   hostBuildFailures?: DshHostNativeLoadFailure[]
+  hostBuildExecution?: DshHostBuildExecution
   startupConfiguration?: DshStartupConfiguration
   schema: typeof DSH_SURFACE_OBSERVATION_SCHEMA
   tool: { name: 'upstream-radar'; version: string }
   probe: 'dsh-surface'
   scope: 'surface-runtime-behavior'
-  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8' | 'dsh-surface/v1alpha9' | 'dsh-surface/v1alpha10' | 'dsh-surface/v1alpha11' | 'dsh-surface/v1alpha12' | 'dsh-surface/v1alpha13' | 'dsh-surface/v1alpha14'
+  executionContract?: typeof DSH_SURFACE_EXECUTION_CONTRACT | 'dsh-surface/v1alpha8' | 'dsh-surface/v1alpha9' | 'dsh-surface/v1alpha10' | 'dsh-surface/v1alpha11' | 'dsh-surface/v1alpha12' | 'dsh-surface/v1alpha13' | 'dsh-surface/v1alpha14' | 'dsh-surface/v1alpha15'
   profileEnvironment?: DshProfileEnvironment
   startedAt: string
   completedAt: string
@@ -154,6 +157,8 @@ export interface DshSurfaceObservationReport {
     approvedDependencyBuilds: string[]
     /** Exact packages pnpm refused to build in this execution plane. */
     requiredDependencyBuilds?: string[]
+    /** Requested permission, not a claim that its rebuild was executed. */
+    requestedHostBuildApproval?: DshHostBuildApproval
     note: string
   }
 }
@@ -193,6 +198,7 @@ export interface DshSurfaceEvaluation {
 }
 
 export interface DshSurfaceObservationOptions {
+  hostBuildApproval?: DshHostBuildApproval
   startupConfiguration?: DshStartupConfiguration
   profileEnvironment?: DshProfileEnvironment
   packageSpec: string
@@ -1258,6 +1264,7 @@ function validateObservationOptions(options: DshSurfaceObservationOptions): void
 }
 
 export async function observeDshPluginSurface(options: DshSurfaceObservationOptions): Promise<DshSurfaceObservationReport> {
+  const hostBuildApproval = options.hostBuildApproval === undefined ? undefined : parseDshHostBuildApproval(options.hostBuildApproval)
   const profileEnvironment = parseDshProfileEnvironment(options.profileEnvironment)
   const startupConfiguration = parseDshStartupConfiguration(options.startupConfiguration)
   validateObservationOptions(options)
@@ -1307,6 +1314,7 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
       externalBrowserRequestsBlocked: options.plane === 'web',
       approvedDependencyBuilds: allowedBuilds,
       requiredDependencyBuilds: [],
+      ...(hostBuildApproval === undefined ? {} : { requestedHostBuildApproval: hostBuildApproval }),
       note: 'The caller supplies a disposable VM and restricted container. Radar passes no repository or model secrets, binds the run to exact artifact bytes, blocks non-loopback browser requests, and collects bounded smoke evidence. This is compatibility evidence, not a malicious-code safety certificate.'
         + (options.networkProxy === undefined ? '' : ' Package transport uses an explicitly selected credential-free proxy; browser non-loopback requests remain blocked.'),
     },
@@ -1435,6 +1443,16 @@ export async function observeDshPluginSurface(options: DshSurfaceObservationOpti
     if (!registered) return finish(report, 'surface-incompatible', 'DSH accepted the install command but did not register the plugin in the declared profile')
 
     report.hostBuildInventory = await collectDshHostBuildInventory(environment.XDG_CACHE_HOME as string, report.dshVersion)
+    if (hostBuildApproval !== undefined) {
+      report.hostBuildExecution = await executeDshHostBuildApproval({ approval: hostBuildApproval,
+        context: { caseId: report.caseId, plugin: report.plugin, artifactSha256: report.artifact.sha256!, sourceFingerprint: report.sourceFingerprint,
+          dshVersion: report.dshVersion, plane: report.plane, profile: report.profile, runtime: report.runtime,
+          profileEnvironment, ...(startupConfiguration === undefined ? {} : { startupConfiguration }) },
+        cacheHome: environment.XDG_CACHE_HOME as string, pnpmCommand, environment, timeoutMs, allowExecution: true })
+      if (report.hostBuildExecution.status === 'failed') return finish(report, 'unknown', `the isolated host rebuild failed: ${report.hostBuildExecution.reason}`)
+      // A stale permission must not execute. Still observe the unmodified host
+      // so a new exact failure can enter review instead of retrying stale input.
+    }
     const evaluation = report.plane === 'web'
       ? await observeWebSurface({
           report,
