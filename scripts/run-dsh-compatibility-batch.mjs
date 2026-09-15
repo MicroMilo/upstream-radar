@@ -6,7 +6,7 @@ import { mkdir, open, readdir, rename, unlink } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
-import { runDshCompatibilityBatch } from '../dist/src/dsh-batch.js'
+import { DshBatchExecutionDeferred, runDshCompatibilityBatch } from '../dist/src/dsh-batch.js'
 import { createDshBatchExecutorIdentity, dshBatchContainerArguments, dshBatchDockerObjectAbsent } from '../dist/src/dsh-batch-executor.js'
 import { applyDshEnvironmentRecommendations } from '../dist/src/dsh-environment-recommendation.js'
 import { selectDshProfileEnvironment } from '../dist/src/dsh-profile-environment.js'
@@ -165,9 +165,13 @@ try {
       // A running saved handle is resumed, never duplicated because an observation timed out.
       try { await docker(['wait', name], (config.timeoutSeconds * 8 + 60) * 1000) }
       catch (error) {
-        current = await inspectManaged(name, task.key)
-        if (current?.State.Running) await docker(['stop', '--time', '2', name])
         await save(join(directory, 'runner-error.json'), { message: String(error).slice(0, 2048) })
+        try { current = await inspectManaged(name, task.key) }
+        catch (inspectionError) {
+          throw new DshBatchExecutionDeferred(`Docker wait failed and the exact handle could not yet be inspected: ${String(inspectionError).slice(0, 512)}`)
+        }
+        if (current?.State.Running) throw new DshBatchExecutionDeferred('Docker wait ended while the exact isolated container remains running')
+        if (!current) throw new Error('Docker wait failed and the exact isolated container is absent')
       }
       current = await inspectManaged(name, task.key)
       const logs = await docker(['logs', name])
@@ -204,7 +208,7 @@ try {
     surfaceCells: result.state.surfaceLedger.entries.length, adapterCells: result.state.adapterLedger.entries.length,
     nextNativePlan: result.nextNativePlan, nextSurfacePlan: result.nextSurfacePlan, nextAdapterPlan: result.nextAdapterPlan,
     failedTasks: result.state.tasks.filter(task => task.status === 'failed').map(({ key, kind, cell, error }) => ({ key, kind, id: cell.id, error })),
-    orphanedRunningTasks: result.orphanedRunningTasks, transitions: result.transitions,
+    deferredTaskKeys: result.deferredTaskKeys, orphanedRunningTasks: result.orphanedRunningTasks, transitions: result.transitions,
     authorScopes: applied.plugins.map(target => ({ id: target.id, recommendation: target.environmentRecommendation })),
     adapterScopes: result.state.adapterLedger.entries.map(({ cell, report }) => ({ id: cell.id, plugin: cell.plugin,
       dshVersion: cell.dshVersion, versionRole: cell.versionRole, nodeMajor: cell.nodeMajor, adapter: cell.adapter,
@@ -217,6 +221,6 @@ try {
   process.stdout.write(`${JSON.stringify({ executed: summary.executed, nativeCells: summary.nativeCells, surfaceCells: summary.surfaceCells,
     adapterCells: summary.adapterCells, failedTasks: summary.failedTasks.length, nextNative: summary.nextNativePlan.matrix.include.length,
     nextSurface: summary.nextSurfacePlan.matrix.include.length, nextAdapter: summary.nextAdapterPlan.matrix.include.length })}\n`)
-  if (summary.failedTasks.length || summary.orphanedRunningTasks.length || summary.nextNativePlan.blocked.length
+  if (summary.failedTasks.length || summary.deferredTaskKeys.length || summary.orphanedRunningTasks.length || summary.nextNativePlan.blocked.length
     || summary.nextSurfacePlan.blocked.length || summary.nextAdapterPlan.blocked.length) process.exitCode = 2
 } finally { await unlink(lockPath) }

@@ -46,4 +46,9 @@ it('passes exact planned data into an unprivileged container without host mounts
   assert.equal(JSON.parse(adapterArgs.at(-1)!).kind, 'adapter')
   assert.ok(adapterArgs.some(value => value.includes('observeDshAuthorAdapter')))
   assert.ok(!adapterArgs.includes('SYS_PTRACE'))
+  const hostBuildApproval = { revision: 'dsh-host-build-approval/1', scope: 'dsh-host-dependency-builds',
+    contextFingerprint: `sha256:${'d'.repeat(64)}`, inventoryFingerprint: `sha256:${'e'.repeat(64)}`, packages: ['fs-ext@2.1.1'] }
+  const surfaceArgs = dshBatchContainerArguments({ ...input, kind: 'surface', cell: { ...input.cell, hostBuildApproval } })
+  assert.deepEqual(JSON.parse(surfaceArgs.at(-1)!).cell.hostBuildApproval, hostBuildApproval)
+  assert.ok(surfaceArgs[surfaceArgs.indexOf('-e') + 1]!.includes('hostBuildApproval:cell.hostBuildApproval'), 'the isolated surface observer must receive the separate host permission')
 })

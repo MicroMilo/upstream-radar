@@ -94,6 +94,8 @@ describe('reusable GitHub Action', () => {
     assert.ok(first > 0 && review > first && retry > review && unchanged > retry)
     assert.match(workflow.slice(review, retry), /batch-output\/compatibility-ledger.json/)
     assert.match(workflow, /summary.executed !== 0/)
+    assert.match(workflow, /summary.deferredTaskKeys.length/)
+    assert.match(workflow, /state.tasks.some\(task => task.status === 'running'\)/)
     assert.match(workflow, /build-approval-required/)
     assert.match(workflow, /independent adapter evidence is incomplete/)
     const directoryStep = steps.find(step => step.includes('Join this batch to the maintained catalog feed'))
@@ -113,6 +115,23 @@ describe('reusable GitHub Action', () => {
     assert.equal(replaySteps.length, 6)
     for (const step of replaySteps) assert.match(step, /if: \$\{\{ inputs.execute_batch && success\(\) \}\}/,
       'a failed observation or review must stop subsequent replay execution')
+  })
+
+  it('reviews host build failures from the actual surface ledger before an isolated retry and retains the durable decisions across validation runs', async () => {
+    const workflow = await readFile(fileURLToPath(new URL('../../.github/workflows/dsh-rebuild-validation.yml', import.meta.url)), 'utf8')
+    const restore = await readFile(fileURLToPath(new URL('../../scripts/restore-dsh-review-checkpoint.mjs', import.meta.url)), 'utf8')
+    const first = workflow.indexOf('Run the isolated batch against current repository intent')
+    const review = workflow.indexOf('Review host and surface build failures produced by this batch')
+    const retry = workflow.indexOf('Retry the batch with its own exact build decisions')
+    assert.ok(first >= 0 && review > first && retry > review)
+    const step = workflow.slice(review, retry)
+    assert.match(step, /scripts\/plan-dsh-surface-agent\.mjs/)
+    assert.match(step, /batch-output\/surface-ledger\.json/)
+    assert.match(step, /validation-output\/surface-build-plans\.json/)
+    assert.match(step, /ISSUE_LOCATOR_LLM_API_KEY/)
+    assert.match(restore, /surface-build-plans\.json/)
+    const execution = workflow.split('      - name:').filter(item => item.includes('node scripts/run-dsh-compatibility-batch.mjs'))
+    for (const item of execution) assert.doesNotMatch(item, /ISSUE_LOCATOR_LLM|secrets\./)
   })
 
   it('carries the selected profile environment from each matrix into the image and isolated probe', async () => {

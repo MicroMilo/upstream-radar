@@ -6,6 +6,7 @@ import { dirname, posix, resolve } from 'node:path'
 import process from 'node:process'
 import {
   createDshSurfaceAgentInputFingerprint,
+  createDshSurfaceAgentHostBuildApproval,
   emptyDshSurfaceAgentPlans,
   parseDshSurfaceAgentDecision,
   parseDshSurfaceAgentPlans,
@@ -18,7 +19,22 @@ import { createDshSurfaceSourceFingerprint, parseDshSurfaceLedger } from '../dis
 const MAX_INPUT_BYTES = 256 * 1024 * 1024
 const MAX_DOCUMENT_BYTES = 48 * 1024
 const MAX_DOCUMENT_TOTAL_BYTES = 128 * 1024
+const MAX_AGENT_RESPONSE_BYTES = 256 * 1024
 const CONCURRENCY = 4
+
+async function boundedResponseText(response, maximum) {
+  const declared = response.headers.get('content-length')
+  if (declared !== null && /^\d+$/.test(declared) && Number(declared) > maximum) throw new Error('Agent/document response exceeds its response byte budget')
+  if (!response.body) throw new Error('Agent/document response had no body')
+  const chunks = []
+  let bytes = 0
+  for await (const chunk of response.body) {
+    bytes += chunk.length
+    if (bytes > maximum) throw new Error('Agent/document response exceeds its response byte budget')
+    chunks.push(Buffer.from(chunk))
+  }
+  return Buffer.concat(chunks, bytes).toString('utf8')
+}
 
 async function savePlans(path, value) {
   const destination = resolve(path)
@@ -80,7 +96,9 @@ async function fetchDocument(repository, commit, path) {
   })
   if (response.status === 404) return undefined
   if (!response.ok) throw new Error(`GitHub returned HTTP ${response.status} for ${repository}/${path}`)
-  return { path, text: (await response.text()).slice(0, MAX_DOCUMENT_BYTES) }
+  const text = await boundedResponseText(response, MAX_DOCUMENT_BYTES)
+  return { path, text: Buffer.byteLength(text) <= MAX_DOCUMENT_BYTES
+    ? text : Buffer.from(text).subarray(0, MAX_DOCUMENT_BYTES - 4).toString('utf8') }
 }
 
 async function collectDocuments(repository, commit, packagePath) {
@@ -166,7 +184,7 @@ async function callAgent(prompt, config) {
     signal: AbortSignal.timeout(120_000),
   })
   if (!response.ok) throw new Error(`Agent endpoint returned HTTP ${response.status}: ${safeEndpoint(endpoint)}`)
-  const body = await response.json()
+  const body = JSON.parse(await boundedResponseText(response, MAX_AGENT_RESPONSE_BYTES))
   const content = body?.choices?.[0]?.message?.content
   if (typeof content !== 'string') throw new Error(`Agent response had no message content: ${safeEndpoint(endpoint)}`)
   return jsonObject(content)
@@ -215,7 +233,7 @@ function markdown(plans, candidates, failures, skipped) {
     '',
     `Updated: ${plans.updatedAt}`,
     '',
-    'DeepSeek reviews only dependency-build package names observed in a disposable Web/TUI VM. An approval is bound to the exact plugin bytes, DSH version, Node major, plane, profile and source evidence; the no-secret runner receives only that package list.',
+    'DeepSeek reviews separate plugin-profile build names and exact DSH-host build coordinates observed in a disposable Web/TUI VM. Host permission additionally binds the full runtime, physical host manifests and lock graph; Radar constructs the permission and the no-secret runner rechecks it before execution.',
     '',
     `- Current review set: ${candidates.length}`,
     `- Exact-evidence skips: ${skipped.length}`,
@@ -228,8 +246,10 @@ function markdown(plans, candidates, failures, skipped) {
     const plan = currentPlan(candidate)
     const failure = failureByCase.get(candidate.caseId)
     const action = plan?.action ?? (failure === undefined ? 'pending' : 'agent-failed')
-    const policy = plan?.approvedBuilds.length ? plan.approvedBuilds.map(name => `\`${name}\``).join(', ') : 'none'
-    lines.push(`| \`${candidate.caseId}\` | ${candidate.requiredDependencyBuilds.map(name => `\`${name}\``).join(', ')} | \`${action}\` | ${policy} |`)
+    const pluginPolicy = plan?.approvedBuilds.length ? plan.approvedBuilds.map(name => `\`${name}\``).join(', ') : 'none'
+    const hostPolicy = plan?.hostBuildApproval?.packages.map(name => `\`${name}\``).join(', ') ?? 'none'
+    const gates = [...candidate.requiredDependencyBuilds, ...(candidate.hostBuild?.failures.map(item => `host:${item.packageSpec}`) ?? [])]
+    lines.push(`| \`${candidate.caseId}\` | ${gates.map(name => `\`${name}\``).join(', ')} | \`${action}\` | plugin: ${pluginPolicy}; host: ${hostPolicy} |`)
     if (plan !== undefined) lines.push(`|  |  |  | ${inline(plan.summary)} |`)
     if (failure !== undefined) lines.push(`|  |  |  | ${inline(failure)} |`)
   }
@@ -259,7 +279,8 @@ const sourceByCase = new Map(sourceLedger.entries.map(entry => [entry.caseId, en
 const existingByCase = new Map(existingPlans.entries.map(entry => [entry.caseId, entry]))
 const skipped = []
 const candidateEntries = surfaceLedger.entries.filter(entry => {
-  if (entry.result !== 'environment-unsupported' || (entry.requiredDependencyBuilds?.length ?? 0) === 0) return false
+  if (entry.result !== 'environment-unsupported'
+    || (entry.requiredDependencyBuilds?.length ?? 0) + (entry.hostBuildFailures?.length ?? 0) === 0) return false
   const source = sourceByCase.get(entry.sourceCaseId)
   const exact = source !== undefined
     && source.plugin === entry.plugin
@@ -286,6 +307,16 @@ const candidates = await mapConcurrent(candidateEntries, async entry => {
     && previous.artifactSha256 === entry.artifact.sha256
       ? previous
       : undefined
+  const hostBuild = entry.hostBuildInventory === undefined ? undefined : {
+    inventory: entry.hostBuildInventory,
+    failures: entry.hostBuildFailures ?? [],
+    context: { caseId: entry.caseId, plugin: entry.plugin, artifactSha256: entry.artifact.sha256,
+      sourceFingerprint: entry.sourceFingerprint, dshVersion: entry.dshVersion, plane: entry.plane, profile: entry.profile,
+      runtime: entry.runtime, profileEnvironment: entry.profileEnvironment,
+      ...(entry.startupConfiguration === undefined ? {} : { startupConfiguration: entry.startupConfiguration }) },
+    ...(entry.hostBuildExecution?.status === 'command-completed' && entry.hostBuildExecution.bindingVerified
+      ? { previousApproval: entry.hostBuildExecution.requestedApproval } : {}),
+  }
   return {
     caseId: entry.caseId,
     sourceCaseId: entry.sourceCaseId,
@@ -307,7 +338,8 @@ const candidates = await mapConcurrent(candidateEntries, async entry => {
     ...(context.repository === undefined ? {} : { repository: context.repository }),
     ...(context.sourceCommit === undefined ? {} : { sourceCommit: context.sourceCommit }),
     ...(context.manifest === undefined ? {} : { manifest: context.manifest }),
-    dynamicEvidence: { stages: entry.stages, evidence: entry.evidence, reason: entry.reason },
+    dynamicEvidence: { stages: entry.stages, evidence: entry.evidence, reason: entry.reason, hostBuildExecution: entry.hostBuildExecution },
+    ...(hostBuild === undefined || (!hostBuild.failures.length && !hostBuild.previousApproval) ? {} : { hostBuild }),
     documents: await collectDocuments(context.repository, context.sourceCommit, context.packagePath),
   }
 })
@@ -346,6 +378,7 @@ if (config === undefined && pending.length > 0) {
   await mapConcurrent(pending, async candidate => {
     try {
       const decision = parseDshSurfaceAgentDecision(await callAgent(renderDshSurfaceAgentPrompt(candidate), config), candidate)
+      const hostBuildApproval = createDshSurfaceAgentHostBuildApproval(decision, candidate)
       const previous = existingByCase.get(candidate.caseId)
       const observedRequiredBuilds = [...new Set([
         ...(previous?.sourceFingerprint === candidate.sourceFingerprint && previous.artifactSha256 === candidate.artifactSha256
@@ -372,6 +405,8 @@ if (config === undefined && pending.length > 0) {
         inputFingerprint: createDshSurfaceAgentInputFingerprint(candidate),
         plannedAt: new Date().toISOString(),
         model: config.model,
+        ...(candidate.hostBuild === undefined ? {} : { hostBuild: candidate.hostBuild }),
+        ...(hostBuildApproval === undefined ? {} : { hostBuildApproval }),
         ...decision,
       })
       planned += 1

@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import { describe, it } from 'node:test'
 import type { DshCompatibilityLedger } from '../src/dsh-compatibility-ledger.js'
 import { collectDshWebBootRoster } from '../src/dsh-web-contract.js'
 import { bindDshWebPackageVersions } from '../src/dsh-web-package-provenance.js'
+import { collectDshHostNativeLoadFailures, parseDshHostBuildInventory } from '../src/dsh-host-builds.js'
+import { createDshHostBuildApproval } from '../src/dsh-host-build-policy.js'
 import {
   DSH_SURFACE_EXECUTION_CONTRACT,
   DSH_SURFACE_OBSERVATION_SCHEMA,
@@ -31,6 +34,105 @@ const SOURCE_CONTRACT = `sha256:${'b'.repeat(64)}`
 const ARTIFACT_SHA = 'c'.repeat(64)
 
 describe('plane-aware surface routing and freshness', () => {
+  it('rejects a report that copies an arbitrary expected contract digest without implementing the current surface contract', () => {
+    const expected = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include.find(cell => cell.plane === 'web')!
+    const arbitrary = `sha256:${'9'.repeat(64)}`
+    const report = { ...compatibleReport(expected), contractFingerprint: arbitrary }
+    const accepted = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(),
+      expected: [{ ...expected, contractFingerprint: arbitrary }], reports: [report] })
+    assert.equal(accepted.acceptedCaseIds.length, 0)
+    assert.match(accepted.rejectedReports.join(' '), /contract/)
+  })
+
+  it('routes a reviewed host native build into the next exact surface attempt and invalidates it when startup requirements change', () => {
+    const source = sourceLedger()
+    const scheduled = buildDshSurfacePlan(targets, source, emptyDshSurfaceLedger()).matrix.include.find(cell => cell.plane === 'web')!
+    const base = compatibleReport(scheduled)
+    const location = base.hostBuildInventory!.installation!.location
+    const inventory = parseDshHostBuildInventory({ ...base.hostBuildInventory, packages: [{ spec: 'fs-ext@2.1.1',
+      location: `${location}/node_modules/.pnpm/fs-ext@2.1.1/node_modules/fs-ext`, manifestSha256: '5'.repeat(64),
+      lifecycleScripts: { install: 'node-gyp configure build' }, reportedLocators: ['fs-ext@2.1.1'], metadataSources: ['pendingBuilds'] }] })
+    const failures = collectDshHostNativeLoadFailures(inventory, '/cache',
+      `Cannot find module './build/Release/fs_ext.node'\nRequire stack:\n- /cache/${inventory.packages[0]!.location}/fs-ext.js\n`)
+    const context = { caseId: scheduled.id, plugin: scheduled.plugin, artifactSha256: scheduled.artifactSha256,
+      sourceFingerprint: scheduled.sourceFingerprint, dshVersion: scheduled.dshVersion, plane: 'web' as const,
+      profile: 'web', runtime: base.runtime, profileEnvironment: base.profileEnvironment ?? { pnpmVersion: '11.7.0', overrides: {} } }
+    const approval = createDshHostBuildApproval({ inventory, failures, context, packages: ['fs-ext@2.1.1'] })
+    const failed = { ...base, hostBuildInventory: inventory, hostBuildFailures: failures,
+      stages: { ...base.stages, host: { status: 'failed' as const } },
+      result: 'environment-unsupported' as const, reason: 'the installed DSH host could not load fs-ext' }
+    const merged = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [scheduled], reports: [failed] })
+    assert.deepEqual(merged.rejectedReports, [])
+    const plans = { schema: 'upstream-radar.dsh-surface-agent-plans/v1alpha1', updatedAt: '2026-08-25T00:01:00.000Z', entries: [{
+      caseId: scheduled.id, sourceCaseId: scheduled.sourceCaseId, plugin: scheduled.plugin, dshVersion: scheduled.dshVersion,
+      nodeMajor: scheduled.nodeMajor, plane: 'web', profile: 'web', result: 'environment-unsupported',
+      observedRequiredBuilds: [], approvedBuilds: [], sourceFingerprint: scheduled.sourceFingerprint,
+      artifactSha256: scheduled.artifactSha256, inputFingerprint: `sha256:${'9'.repeat(64)}`,
+      plannedAt: '2026-08-25T00:01:00.000Z', model: 'fixture-model', action: 'retry-surface', classification: 'build-approval',
+      allowedBuilds: [], allowedHostBuilds: ['fs-ext@2.1.1'], summary: 'Build the independently identified DSH host package.',
+      evidence: ['The first require path and physical host manifest match.'], hostBuild: { inventory, failures, context }, hostBuildApproval: approval,
+    }] }
+    const plan = buildDshSurfacePlan(targets, source, merged.ledger, new Date('2026-08-25T00:02:00.000Z'), undefined, plans)
+    const retry = plan.matrix.include.find(cell => cell.id === scheduled.id)!
+    assert.deepEqual(retry.hostBuildApproval, approval)
+    assert.equal(retry.allowedBuilds, '')
+    assert.notEqual(retry.contractFingerprint, scheduled.contractFingerprint)
+    assert.deepEqual(retry.reasons, ['surface-contract-changed'])
+    const changedTargets = { ...targets, surfaces: targets.surfaces.map(target => target.id === scheduled.id
+      ? { ...target, startupConfiguration: { scope: 'Web bridge disabled', environment: { DSH_LARK_DISABLED: '1' } } }
+      : target) }
+    const changed = buildDshSurfacePlan(changedTargets, source, merged.ledger, new Date('2026-08-25T00:02:00.000Z'), undefined, plans)
+    assert.equal(changed.matrix.include.find(cell => cell.id === scheduled.id)?.hostBuildApproval, undefined)
+  })
+
+  it('accepts a scoped host rebuild only when it was requested and its binding survives report ingestion', () => {
+    const expected = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include.find(cell => cell.plane === 'web')!
+    const base = compatibleReport(expected)
+    const location = base.hostBuildInventory!.installation!.location
+    const inventory = parseDshHostBuildInventory({ ...base.hostBuildInventory, packages: [{ spec: 'fs-ext@2.1.1',
+      location: `${location}/node_modules/.pnpm/fs-ext@2.1.1/node_modules/fs-ext`, manifestSha256: '5'.repeat(64),
+      lifecycleScripts: { install: 'node-gyp configure build' }, reportedLocators: ['fs-ext@2.1.1'], metadataSources: ['pendingBuilds'] }] })
+    const failures = collectDshHostNativeLoadFailures(inventory, '/cache',
+      `Cannot find module './build/Release/fs_ext.node'\nRequire stack:\n- /cache/${inventory.packages[0]!.location}/fs-ext.js\n`)
+    const approval = createDshHostBuildApproval({ inventory, failures, packages: ['fs-ext@2.1.1'],
+      context: { ...base, artifactSha256: expected.artifactSha256 } })
+    const previous = mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [{ ...base,
+      hostBuildInventory: inventory, hostBuildFailures: failures, result: 'environment-unsupported',
+      reason: 'the exact DSH host could not load fs-ext', stages: { ...base.stages, host: { status: 'failed' } } }] })
+    assert.deepEqual(previous.rejectedReports, [])
+    const plans = { schema: 'upstream-radar.dsh-surface-agent-plans/v1alpha1', updatedAt: '2026-08-25T00:01:00.000Z', entries: [{
+      caseId: expected.id, sourceCaseId: expected.sourceCaseId, plugin: expected.plugin, dshVersion: expected.dshVersion,
+      nodeMajor: expected.nodeMajor, plane: expected.plane, profile: expected.profile, result: 'environment-unsupported',
+      observedRequiredBuilds: [], approvedBuilds: [], sourceFingerprint: expected.sourceFingerprint, artifactSha256: expected.artifactSha256,
+      inputFingerprint: `sha256:${'9'.repeat(64)}`, plannedAt: '2026-08-25T00:01:00.000Z', model: 'fixture-model',
+      action: 'retry-surface', classification: 'build-approval', allowedBuilds: [], allowedHostBuilds: ['fs-ext@2.1.1'],
+      summary: 'Review exact host native-load failure.', evidence: ['The physical host manifest and requiring file match.'],
+      hostBuild: { inventory, failures, context: { caseId: expected.id, plugin: expected.plugin, artifactSha256: expected.artifactSha256,
+        sourceFingerprint: expected.sourceFingerprint, dshVersion: expected.dshVersion, plane: expected.plane, profile: expected.profile,
+        runtime: base.runtime, profileEnvironment: base.profileEnvironment } }, hostBuildApproval: approval,
+    }] }
+    const requested = buildDshSurfacePlan(targets, sourceLedger(), previous.ledger, new Date('2026-08-25T00:02:00.000Z'), undefined, plans)
+      .matrix.include.find(cell => cell.id === expected.id)!
+    assert.deepEqual(requested.hostBuildApproval, approval)
+    const execution = { revision: 'dsh-host-build-execution/1', requestedApproval: approval, status: 'command-completed', bindingVerified: true,
+      reason: 'fixture exact rebuild command completed; Web is observed separately', command: { args: ['rebuild', 'fs-ext@2.1.1'], code: 0, signal: null,
+        timedOut: false, outputExceeded: false, output: 'fixture completed', outputSha256: createHash('sha256').update('fixture completed').digest('hex') } }
+    const report = { ...compatibleReport(requested), hostBuildInventory: inventory, hostBuildExecution: execution,
+      boundary: { ...base.boundary, requestedHostBuildApproval: approval } }
+    const merge = (value: unknown, cell = requested) => mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [cell], reports: [value] })
+    const accepted = merge(report)
+    assert.deepEqual(accepted.rejectedReports, [])
+    assert.deepEqual(Reflect.get(accepted.ledger.entries[0]!, 'hostBuildExecution'), execution)
+    assert.deepEqual(Reflect.get(buildDshSurfaceIR(accepted.ledger).cells[0]!.observation, 'hostBuildExecution'), execution)
+    assert.equal(mergeDshSurfaceLedger({ ledger: emptyDshSurfaceLedger(), expected: [expected], reports: [report] }).acceptedCaseIds.length, 0)
+    for (const changed of [
+      { ...report, boundary: base.boundary },
+      { ...report, hostBuildExecution: undefined },
+      { ...report, hostBuildExecution: { ...execution, status: 'failed', bindingVerified: false } },
+      { ...report, hostBuildExecution: { ...execution, command: { ...execution.command, output: 'changed evidence' } } },
+    ]) assert.equal(merge(changed).acceptedCaseIds.length, 0)
+  })
+
   it('preserves bounded DSH host build facts through report, ledger and IR without approving plugin builds', () => {
     const expected = buildDshSurfacePlan(targets, sourceLedger(), emptyDshSurfaceLedger()).matrix.include.find(cell => cell.plane === 'web')!
     const location = 'pnpm/dlx/exact-key/exact-instance'

@@ -10,6 +10,13 @@ import { emptyDshSurfaceLedger, parseDshSurfaceLedger, expandDshSurfaceAuthorBas
 import { buildDshAdapterPlan, emptyDshAdapterLedger, parseDshAdapterLedger, mergeDshAdapterLedger, type DshAdapterExpectedCase, type DshAdapterLedger } from './dsh-adapter.js'
 
 const SCHEMA = 'upstream-radar.dsh-batch-state/v1alpha1' as const
+/** The exact isolated handle remains live; a later invocation must reattach it. */
+export class DshBatchExecutionDeferred extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'DshBatchExecutionDeferred'
+  }
+}
 export interface DshBatchTask {
   key: string
   kind: 'native' | 'surface' | 'adapter'
@@ -114,6 +121,7 @@ export async function runDshCompatibilityBatch(options: DshBatchOptions) {
   const surfacePlan = planSurface()
   let executed = 0
   const transitions: unknown[] = []
+  const deferredTaskKeys: string[] = []
   const attempted = new Set<string>()
   let desiredKeys = new Set<string>()
   async function reconcile() {
@@ -153,6 +161,7 @@ export async function runDshCompatibilityBatch(options: DshBatchOptions) {
     delete task.error
     await options.checkpoint(structuredClone(state))
     executed += 1
+    let deferred = false
     try {
       const report = await options.execute(structuredClone(task))
       if (task.kind === 'native') {
@@ -176,11 +185,16 @@ export async function runDshCompatibilityBatch(options: DshBatchOptions) {
       }
       task.status = 'accepted'
     } catch (error) {
-      task.status = 'failed'
+      if (error instanceof DshBatchExecutionDeferred) {
+        task.status = 'running'
+        deferredTaskKeys.push(task.key)
+        deferred = true
+      } else task.status = 'failed'
       task.error = String(error instanceof Error ? error.message : error).replace(/[\u0000-\u001f\u007f]/g, ' ').slice(0, 2048)
     }
     await options.checkpoint(structuredClone(state))
+    if (deferred) break
   }
   return { state, executed, nativePlan, surfacePlan, nextNativePlan: planNative(), nextSurfacePlan: planSurface(), nextAdapterPlan: planAdapter(), transitions,
-    orphanedRunningTasks: state.tasks.filter(task => task.status === 'running' && !desiredKeys.has(task.key)).map(task => task.key) }
+    deferredTaskKeys, orphanedRunningTasks: state.tasks.filter(task => task.status === 'running' && !desiredKeys.has(task.key)).map(task => task.key) }
 }

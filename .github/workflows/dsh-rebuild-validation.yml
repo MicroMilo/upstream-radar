@@ -145,6 +145,20 @@ jobs:
             validation-output/observations.json batch-output/compatibility-ledger.json \
             validation-output/build-plans.json validation-output/build-plans.md \
             > validation-output/batch-build-review-summary.json
+      - name: Review host and surface build failures produced by this batch
+        if: ${{ inputs.execute_batch && !cancelled() }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
+        run: |
+          test -z "$(docker ps --quiet --filter label=upstream-radar.task)"
+          node scripts/plan-dsh-surface-agent.mjs \
+            examples/dsh/rebuild-batch/install-targets.json examples/dsh/awesome-observer/cohort.json \
+            validation-output/observations.json batch-output/compatibility-ledger.json batch-output/surface-ledger.json \
+            validation-output/surface-build-plans.json validation-output/surface-build-plans.md \
+            > validation-output/batch-surface-review-summary.json
       - name: Retry the batch with its own exact build decisions
         if: ${{ inputs.execute_batch && !cancelled() }}
         run: |
@@ -167,7 +181,8 @@ jobs:
           const json = async path => JSON.parse(await readFile(path, 'utf8'))
           const summary = await json('batch-output/summary.json')
           const state = await json('batch-output/state.json')
-          if (summary.executed !== 0 || summary.failedTasks.length || summary.orphanedRunningTasks.length
+          if (summary.executed !== 0 || summary.failedTasks.length || summary.deferredTaskKeys.length
+            || summary.orphanedRunningTasks.length || state.tasks.some(task => task.status === 'running')
             || summary.nextNativePlan.matrix.include.length || summary.nextSurfacePlan.matrix.include.length
             || summary.nextAdapterPlan.matrix.include.length) throw new Error('the batch has not reached unchanged reusable evidence')
           if (summary.nextSurfacePlan.blocked.length || summary.nextAdapterPlan.blocked.length) throw new Error('an intended execution profile remains uncollected')

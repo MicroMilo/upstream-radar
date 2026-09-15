@@ -1,0 +1,41 @@
+{
+  "context": {
+    "caseId": "context-host-build-regression",
+    "plugin": "dsh-context@0.52.2",
+    "artifactSha256": "7e951194997d289c054349e2046d2c241a119ff63fc718750a18fbb9dfad9256",
+    "sourceFingerprint": "sha256:5b030e6b5d3455de6ad21582a5c2e6fd28df52fa74f4d1ab52a4330ec5a2eaf5",
+    "dshVersion": "0.1.3-alpha.2",
+    "plane": "web",
+    "profile": "web",
+    "runtime": {
+      "nodeMajor": 24,
+      "nodeVersion": "24.21.0",
+      "platform": "linux",
+      "architecture": "arm64",
+      "pnpmVersion": "11.7.0"
+    },
+    "profileEnvironment": {
+      "pnpmVersion": "11.7.0",
+      "overrides": {}
+    }
+  },
+  "approval": {
+    "revision": "dsh-host-build-approval/1",
+    "scope": "dsh-host-dependency-builds",
+    "contextFingerprint": "sha256:4484276d3b8b5d962943ef0805f39d89a27903566a79a5cb8ebab3d348f23921",
+    "inventoryFingerprint": "sha256:d4060e049fdeb2e7e3a7b7238283391dce124a99c8d712d7e799e994e3396787",
+    "packages": [
+      "fs-ext@2.1.1"
+    ]
+  },
+  "priorReport": "/Users/deng/github/upstream-radar/examples/dsh/rebuild-validation/2026-09-14/host-build-surface-real/56a6c378189cb1329bf6f15045118fc556139956178d3636df84051ba44c9428/report.json",
+  "priorNodeVersion": "24.21.0",
+  "selectedFailure": {
+    "scope": "dsh-host-native-load-failure",
+    "packageSpec": "fs-ext@2.1.1",
+    "manifestSha256": "adf78ce46360a6b78f89c7dfbd898cfcbb2524cbd36076df091a2f85249adc6a",
+    "missingModule": "./build/Release/fs_ext.node",
+    "requiringFile": "pnpm/dlx/c5acde164aea5de5077c5406f24641e105180663a3025f5fd0db2cc6cc6dfdbc/1a0a33e613a-29/node_modules/.pnpm/fs-ext@2.1.1/node_modules/fs-ext/fs-ext.js",
+    "outputSha256": "c4ec8224e8b31a9ef3fa1531431b9d5ab467e997fd60be2d586a07507b78a099"
+  }
+}

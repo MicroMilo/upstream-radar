@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
+import { collectDshHostNativeLoadFailures, parseDshHostBuildInventory } from '../src/dsh-host-builds.js'
+import { createDshHostBuildApproval } from '../src/dsh-host-build-policy.js'
 import {
   createDshSurfaceAgentInputFingerprint,
   emptyDshSurfaceAgentPlans,
@@ -62,6 +64,48 @@ function plans() {
 }
 
 describe('DSH execution-plane Agent planning', () => {
+  it('keeps exact host build approvals separate from plugin builds and validates the durable evidence binding', () => {
+    const location = 'pnpm/dlx/fixture/instance'
+    const inventory = parseDshHostBuildInventory({ revision: 'dsh-host-build-inventory/1', scope: 'dsh-host-build-facts',
+      dshVersion: candidate.dshVersion, pnpmVersion: '11.7.0', coverageGaps: [],
+      installation: { location, manifestSha256: '1'.repeat(64), hostManifestSha256: '2'.repeat(64),
+        lockfileSha256: '3'.repeat(64), lockGraphDigest: `sha256:${'4'.repeat(64)}` },
+      packages: [{ spec: 'fs-ext@2.1.1', location: `${location}/node_modules/.pnpm/fs-ext@2.1.1/node_modules/fs-ext`,
+        manifestSha256: '5'.repeat(64), lifecycleScripts: { install: 'node-gyp configure build' },
+        reportedLocators: ['fs-ext@2.1.1'], metadataSources: ['pendingBuilds'] }] })
+    const failures = collectDshHostNativeLoadFailures(inventory, '/cache',
+      `Cannot find module './build/Release/fs_ext.node'\nRequire stack:\n- /cache/${inventory.packages[0]!.location}/fs-ext.js\n`)
+    const context = { ...candidate, runtime: { nodeMajor: 22, nodeVersion: '22.23.2', platform: 'linux', architecture: 'x64', pnpmVersion: '11.7.0' },
+      profileEnvironment: { pnpmVersion: '11.7.0', overrides: {} } }
+    const hostBuild = { inventory, failures, context }
+    const observed = { ...candidate, requiredDependencyBuilds: [], hostBuild }
+    const proposed = { action: 'retry-surface', classification: 'build-approval', allowedBuilds: [], allowedHostBuilds: ['fs-ext@2.1.1'],
+      summary: 'Build the exact host package that required the missing native module.', evidence: ['The independently collected host package manifest and first requiring file both identify fs-ext@2.1.1.'] }
+    const decision = parseDshSurfaceAgentDecision(proposed, observed)
+    assert.deepEqual(Reflect.get(decision, 'allowedHostBuilds'), ['fs-ext@2.1.1'])
+    assert.deepEqual(decision.allowedBuilds, [])
+    assert.match(renderDshSurfaceAgentPrompt(observed), /allowedHostBuilds/)
+    assert.match(renderDshSurfaceAgentPrompt(observed), /fs-ext@2.1.1/)
+    const { hostBuild: _hostBuild, ...withoutHost } = observed
+    assert.notEqual(createDshSurfaceAgentInputFingerprint(observed), createDshSurfaceAgentInputFingerprint(withoutHost))
+    const approval = createDshHostBuildApproval({ ...hostBuild, packages: ['fs-ext@2.1.1'] })
+    const stored = { ...plans(), entries: [{ ...plans().entries[0], ...decision, observedRequiredBuilds: [], approvedBuilds: [], hostBuild, hostBuildApproval: approval }] }
+    const parsed = parseDshSurfaceAgentPlans(stored)
+    assert.deepEqual(Reflect.get(parsed.entries[0]!, 'hostBuildApproval'), approval)
+    assert.deepEqual(Reflect.get(parsed.entries[0]!, 'hostBuild')?.inventory, inventory)
+    for (const changed of [
+      { ...proposed, allowedHostBuilds: ['fs-ext'] },
+      { ...proposed, allowedHostBuilds: ['fs-ext@2.1.0'] },
+      { ...proposed, allowedBuilds: ['fs-ext'], allowedHostBuilds: [] },
+      { ...proposed, action: 'stop-surface' },
+    ]) assert.throws(() => parseDshSurfaceAgentDecision(changed, observed))
+    for (const changed of [
+      { ...stored.entries[0], hostBuild: undefined },
+      { ...stored.entries[0], hostBuildApproval: { ...approval, inventoryFingerprint: `sha256:${'9'.repeat(64)}` } },
+      { ...stored.entries[0], hostBuild: { ...hostBuild, context: { ...context, caseId: 'other-surface' } } },
+    ]) assert.throws(() => parseDshSurfaceAgentPlans({ ...stored, entries: [changed] }))
+  })
+
   it('allows only observed build packages and keeps repository text untrusted', () => {
     const decision = parseDshSurfaceAgentDecision({
       action: 'retry-surface',

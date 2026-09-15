@@ -1,0 +1,19 @@
+{
+  "id": "7fdbb9c4a602d28910c660d26883d7f2a2fa024489d99a1e26202ea9d76e51de",
+  "imageId": "sha256:c8e83177b36fadbd6812f1361997ec40c6458c646c7f8e5ea6eda9193743485c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-09-15T06:23:58.558456145Z",
+    "FinishedAt": "2026-09-15T06:24:39.223665956Z"
+  },
+  "hostMounts": false,
+  "user": "10001:10001"
+}

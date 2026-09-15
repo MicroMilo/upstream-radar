@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { runDshCompatibilityBatch, type DshBatchState, type DshBatchTask } from '../src/dsh-batch.js'
+import { DshBatchExecutionDeferred, runDshCompatibilityBatch, type DshBatchState, type DshBatchTask } from '../src/dsh-batch.js'
 import type { DshSurfaceExpectedCase } from '../src/dsh-surface.js'
+import { DSH_SURFACE_EXECUTION_CONTRACT } from '../src/dsh-surface-observation.js'
 
 function nativeReport(task: DshBatchTask) {
   const cell = task.cell
@@ -19,6 +20,33 @@ function nativeReport(task: DshBatchTask) {
 }
 
 describe('durable DSH compatibility batch', () => {
+  it('keeps an observed live handle for the next invocation when waiting expires', async () => {
+    const installTargets = { schema: 'upstream-radar.dsh-install-targets/v1alpha1', runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }],
+      plugins: ['alpha', 'beta'].map(id => ({ id, spec: `${id}@1.0.0`, reason: 'live wait boundary fixture' })) }
+    let durable: DshBatchState | undefined
+    const options = { installTargets, runtime: { platform: 'linux' as const, architecture: 'arm64' as const },
+      observations: { targets: { 'deepseek-harness': { package: { name: '@deepseek-ai/dsh', version: '0.1.5-rc.2' } } } },
+      now: new Date('2026-09-14T05:01:00.000Z'), checkpoint: async (state: DshBatchState) => { durable = structuredClone(state) } }
+    const firstCalls: DshBatchTask[] = []
+    const first = await runDshCompatibilityBatch({ ...options, execute: async task => {
+      firstCalls.push(task)
+      throw new DshBatchExecutionDeferred('Docker wait expired while this exact container is still running')
+    } })
+    assert.equal(firstCalls.length, 1, 'do not start another plugin while a live handle is deferred')
+    assert.equal(first.state.tasks.find(task => task.key === firstCalls[0]?.key)?.status, 'running')
+    assert.equal(first.state.tasks.find(task => task.key === firstCalls[0]?.key)?.attempts, 1)
+    assert.deepEqual(first.deferredTaskKeys, [firstCalls[0]?.key])
+    assert.equal(first.state.tasks.filter(task => task.status === 'failed').length, 0)
+    assert.equal(durable?.tasks.find(task => task.key === firstCalls[0]?.key)?.status, 'running')
+    const resumed: DshBatchTask[] = []
+    const second = await runDshCompatibilityBatch({ ...options, state: JSON.parse(JSON.stringify(first.state)), maxTasks: 1,
+      execute: async task => { resumed.push(task); return nativeReport(task) } })
+    assert.equal(resumed[0]?.key, firstCalls[0]?.key)
+    assert.equal(resumed[0]?.attempts, 1, 'reattach the same attempt instead of starting a duplicate container')
+    assert.equal(second.state.nativeLedger.entries.length, 1)
+    assert.deepEqual(second.deferredTaskKeys, [])
+  })
+
   it('hands author baseline cells to both default and additional startup surfaces instead of dropping one configuration', async () => {
     const installTargets = { schema: 'upstream-radar.dsh-install-targets/v1alpha1', runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }],
       plugins: [{ id: 'terminal', spec: 'terminal@1.0.0', runtimeProfiles: ['node22'], reason: 'author baseline fixture',
@@ -189,7 +217,7 @@ describe('durable DSH compatibility batch', () => {
         if (task.kind === 'native') return nativeReport(task)
         const cell = task.cell as DshSurfaceExpectedCase
         const approved = cell.allowedBuilds === 'node-pty'
-        return { schema: 'upstream-radar.dsh-surface-observation/v1alpha1', executionContract: 'dsh-surface/v1alpha15',
+        return { schema: 'upstream-radar.dsh-surface-observation/v1alpha1', executionContract: DSH_SURFACE_EXECUTION_CONTRACT,
           hostBuildInventory: { revision: 'dsh-host-build-inventory/1', scope: 'dsh-host-build-facts', dshVersion: cell.dshVersion,
             pnpmVersion: '11.7.0', packages: [], coverageGaps: [], installation: { location: 'pnpm/dlx/fixture/instance',
               manifestSha256: '1'.repeat(64), hostManifestSha256: '2'.repeat(64), lockfileSha256: '3'.repeat(64), lockGraphDigest: `sha256:${'4'.repeat(64)}` } },
@@ -260,7 +288,7 @@ describe('durable DSH compatibility batch', () => {
         if (task.kind === 'native') return nativeReport(task)
         const cell = task.cell as DshSurfaceExpectedCase
         assert.equal(durable?.nativeLedger.entries[0]?.artifact.sha256, cell.artifactSha256)
-        return { schema: 'upstream-radar.dsh-surface-observation/v1alpha1', executionContract: 'dsh-surface/v1alpha15',
+        return { schema: 'upstream-radar.dsh-surface-observation/v1alpha1', executionContract: DSH_SURFACE_EXECUTION_CONTRACT,
           hostBuildInventory: { revision: 'dsh-host-build-inventory/1', scope: 'dsh-host-build-facts', dshVersion: cell.dshVersion,
             pnpmVersion: '11.7.0', packages: [], coverageGaps: [], installation: { location: 'pnpm/dlx/fixture/instance',
               manifestSha256: '1'.repeat(64), hostManifestSha256: '2'.repeat(64), lockfileSha256: '3'.repeat(64), lockGraphDigest: `sha256:${'4'.repeat(64)}` } },
