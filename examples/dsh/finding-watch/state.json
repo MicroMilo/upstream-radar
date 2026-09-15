@@ -1307,13 +1307,13 @@
             "detail": "The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.",
             "evidence": {
               "packages": [
-                "koffi@3.2.1"
+                "koffi@3.3.0"
               ],
               "scripts": [
-                "koffi@3.2.1 install: node ./cnoke.cjs -P . -D src/koffi --prebuild --release"
+                "koffi@3.3.0 install: node ./cnoke.cjs -P . -D src/koffi --prebuild --release"
               ]
             },
-            "fingerprint": "sha256:277043a9c8ee27abd57e63846d89ad5a0304c5a26b74df93a83d0cc4e61008a2"
+            "fingerprint": "sha256:8b3cbf911013e244fea3204c1f768fe239db851b8bd602da8d8e245db653eb14"
           },
           {
             "code": "floating-dependency-spec",
