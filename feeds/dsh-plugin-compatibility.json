@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-09-14T13:23:45.574Z",
+  "generatedAt": "2026-09-15T12:14:15.782Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -37,10 +37,10 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 39,
-    "observed-incompatible": 1,
-    "needs-review": 29,
-    "update-pending": 27,
+    "observed-compatible": 36,
+    "observed-incompatible": 0,
+    "needs-review": 24,
+    "update-pending": 36,
     "not-observed": 4
   },
   "plugins": [
@@ -143,7 +143,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@awiki/dsh-plugin",
-        "selectedVersion": "0.3.11",
+        "selectedVersion": "0.3.12",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -307,10 +307,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-agy-link",
-        "selectedVersion": "0.4.27",
+        "selectedVersion": "0.4.29",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-agy-link-node24",
@@ -574,7 +574,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-context",
-        "selectedVersion": "0.52.1",
+        "selectedVersion": "0.52.2",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -1085,10 +1085,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dshmarket",
-        "selectedVersion": "1.46.1",
+        "selectedVersion": "1.47.0",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-market-node22",
@@ -1305,10 +1305,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-remote",
-        "selectedVersion": "0.8.15",
+        "selectedVersion": "0.8.16",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-remote-node22",
@@ -1555,7 +1555,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-cost-meter",
-        "selectedVersion": "1.7.24",
+        "selectedVersion": "1.7.25",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -1907,10 +1907,10 @@
       "distribution": {
         "kind": "npm",
         "name": "@liustack/modsearch",
-        "selectedVersion": "5.10.2",
+        "selectedVersion": "5.10.3",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "modsearch-node22",
@@ -1951,10 +1951,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-coding-subscription-oauth",
-        "selectedVersion": "0.8.3",
+        "selectedVersion": "0.8.4",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-coding-subscription-oauth-node22",
@@ -2011,10 +2011,10 @@
       "distribution": {
         "kind": "npm",
         "name": "@mars-sea/dsh-commandcode-provider",
-        "selectedVersion": "0.10.6",
+        "selectedVersion": "0.11.2",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-commandcode-provider-node22",
@@ -2234,7 +2234,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@modusensus/dsh-mneme",
-        "selectedVersion": "0.8.0",
+        "selectedVersion": "0.8.1",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2278,7 +2278,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@moonquake2004/dsh-doctor",
-        "selectedVersion": "0.4.13",
+        "selectedVersion": "0.5.1",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2366,10 +2366,10 @@
       "distribution": {
         "kind": "npm",
         "name": "@nonamelego/dsh-catppuccin",
-        "selectedVersion": "0.5.1",
+        "selectedVersion": "0.5.2",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-catppuccin-node22",
@@ -2454,7 +2454,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-chat-import",
-        "selectedVersion": "0.11.3",
+        "selectedVersion": "0.12.0",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2545,10 +2545,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-mnemon",
-        "selectedVersion": "0.5.8",
+        "selectedVersion": "0.5.9",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-mnemon-node22",
@@ -2869,7 +2869,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-dream-skin",
-        "selectedVersion": "9.14.0",
+        "selectedVersion": "9.15.2",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2913,10 +2913,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-better-edit",
-        "selectedVersion": "0.8.1",
+        "selectedVersion": "0.8.2",
         "distTag": "latest"
       },
-      "status": "observed-incompatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-better-edit-node22",
@@ -2982,7 +2982,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@roarpeng/graphflow",
-        "selectedVersion": "1.18.6",
+        "selectedVersion": "1.19.0",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -3033,7 +3033,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-mobile",
-        "selectedVersion": "0.4.0",
+        "selectedVersion": "0.4.1",
         "distTag": "latest"
       },
       "status": "update-pending",
