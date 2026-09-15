@@ -86,6 +86,8 @@ describe('DSH execution-plane Agent planning', () => {
     assert.deepEqual(decision.allowedBuilds, [])
     assert.match(renderDshSurfaceAgentPrompt(observed), /allowedHostBuilds/)
     assert.match(renderDshSurfaceAgentPrompt(observed), /fs-ext@2.1.1/)
+    assert.match(renderDshSurfaceAgentPrompt(observed), /metadataSources.*discovery trigger.*physical manifest/i)
+    assert.match(renderDshSurfaceAgentPrompt(observed), /previous approval is not required for the first host build/i)
     const { hostBuild: _hostBuild, ...withoutHost } = observed
     assert.notEqual(createDshSurfaceAgentInputFingerprint(observed), createDshSurfaceAgentInputFingerprint(withoutHost))
     const approval = createDshHostBuildApproval({ ...hostBuild, packages: ['fs-ext@2.1.1'] })
