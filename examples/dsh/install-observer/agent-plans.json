@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-headless-agent-plans/v1alpha1",
-  "updatedAt": "2026-09-16T12:09:10.786Z",
+  "updatedAt": "2026-09-17T12:02:05.769Z",
   "entries": [
     {
       "caseId": "anweat-dsh-browser-node22",
@@ -238,21 +238,21 @@
       "approvedBuilds": [],
       "artifactSha256": "785d6a40323ab0763fc9c4e86f5686dba15e1e6e03f128b781ababb5b1d521cc",
       "repository": "franksong2702/dsh-codex-connect",
-      "sourceCommit": "78c8f71e35755e90e0437371b4365c778c05f955",
-      "inputFingerprint": "sha256:babe4858b1ef6971b1d1b18f23198bfc8a3ad9ab3ad11e58c466e5bebb7c7ef7",
-      "plannedAt": "2026-09-16T12:09:00.422Z",
+      "sourceCommit": "c1301ded13f44d54dd0c70a09452efd6208d358a",
+      "inputFingerprint": "sha256:6754a549219d7f82e17f6c400ecd4d755616aab52a2fe6db8ef4b0aecd097e76",
+      "plannedAt": "2026-09-17T12:02:03.753Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
       "classification": "headless-contract",
       "allowedBuilds": [],
-      "summary": "The reproduced failure is a runtime peer-contract gap, not a build-approval gate. The artifact installed and loaded, but the DSH runtime did not resolve @deepseek-ai/dsh-client-ui-primitives (and react) for the plugin, so the plugin's runtime import of that peer fails. No build packages are required or were previously approved, and the runner may only change the pnpm dependency-build approval list, which cannot supply missing runtime peer resolutions. A retry on the existing headless profile would reproduce the same contract failure, so stop.",
+      "summary": "The reproduced result is peer-contract-incompatible, not build-approval-required. The artifact installed and loaded, but the DSH runtime did not resolve two runtime-imported peers: @deepseek-ai/dsh-client-ui-primitives (declared range 0.1.2-rc.1 || 0.1.5-alpha.1 || 0.1.5-rc.1 || 0.1.5-rc.2) and react (^18.2.0). No build packages are required or previously approved, so the only permitted runner change (the pnpm dependency-build approval list) cannot address missing runtime peer resolution. A retry would not add any newly supported build package and would not change the headless contract outcome.",
       "evidence": [
-        "Observed result: peer-contract-incompatible; reason: @deepseek-ai/dsh-client-ui-primitives@0.1.2-rc.1 || 0.1.5-alpha.1 || 0.1.5-rc.1 || 0.1.5-rc.2 was not resolved by the DSH runtime (runtime-import-observed)",
-        "runtimeGraph unresolvedDependencies: node_modules/dsh-codex-connect -> @deepseek-ai/dsh-client-ui-primitives (peer) and react (peer)",
-        "pluginPeerContracts: declared 21, satisfied 19, missing 2; issues list @deepseek-ai/dsh-client-ui-primitives (runtime-import-observed) and react (runtime-import-observed)",
-        "Build packages required by the latest retry: (none); Build packages approved in earlier retries: (none)",
-        "Observed manifest peerDependencies include @deepseek-ai/dsh-client-ui-primitives and react; dsh.client.platform is web",
-        "Runner may change only the explicit pnpm dependency-build approval list; cannot add planes, secrets, services, or arbitrary commands"
+        "Observed result: peer-contract-incompatible; reason states the exact artifact installed and loaded but @deepseek-ai/dsh-client-ui-primitives was not resolved by the DSH runtime (runtime-import-observed).",
+        "Bounded dynamic evidence runtimeGraph.unresolvedDependencies: node_modules/dsh-codex-connect -> @deepseek-ai/dsh-client-ui-primitives (peer) and react (peer).",
+        "pluginPeerContracts: declared 21, satisfied 19, missing 2; issues list @deepseek-ai/dsh-client-ui-primitives and react as missing with staticUsage runtime-import-observed.",
+        "Build packages required by the latest retry: (none); build packages approved in earlier retries: (none).",
+        "Manifest peerDependencies declares @deepseek-ai/dsh-client-ui-primitives and react as peers; dsh.client.platform is web and injects client UI packages.",
+        "Runner constraint: may change only the explicit pnpm dependency-build approval list; cannot add a Web/TUI plane, secrets, services, system packages, or arbitrary commands."
       ]
     },
     {
@@ -897,8 +897,8 @@
       "artifactSha256": "ede1c99584a6560059258b912dbb14325780daa564632392c93e789230702b56",
       "repository": "Flyvhidbwo/dsh-vision-proxy",
       "sourceCommit": "d4ac2622e8eb0d9f0121d99466c7946f1567fbf8",
-      "inputFingerprint": "sha256:6e1c2f6620d9bce5f3b62c5bf99c180fc9da191bf9430938b576e4a70c62622f",
-      "plannedAt": "2026-09-16T12:09:05.970Z",
+      "inputFingerprint": "sha256:3dde7cb2ae9d44c5bd5422c32cf79e44bc16e2376f8d3b0d659e99d5668cb8b4",
+      "plannedAt": "2026-09-17T12:02:05.769Z",
       "model": "deepseek-v4-flash",
       "action": "retry-headless",
       "classification": "build-approval",
@@ -906,14 +906,14 @@
         "dsh-vision-proxy",
         "sharp"
       ],
-      "summary": "The reproduced headless result is build-approval-required for exactly two packages, dsh-vision-proxy and sharp. Repository evidence supports approving both: package.json declares a postinstall script (node scripts/postinstall.js) for the plugin itself and lists sharp under optionalDependencies with a pnpm.onlyBuiltDependencies entry of [\"sharp\"], and the README's troubleshooting section explicitly instructs approving both dsh-vision-proxy and sharp before re-running the install. No earlier approvals exist, so the retry adds both observed packages without dropping anything.",
+      "summary": "The reproduced headless result is build-approval-required for exactly two packages, dsh-vision-proxy and sharp, both of which were already approved in earlier retries, so no earlier approval is dropped and no new package is introduced. Repository evidence supports approving both: package.json declares a postinstall script (node scripts/postinstall.js) for the plugin itself and lists sharp under optionalDependencies with a pnpm.onlyBuiltDependencies entry of [\"sharp\"], and the README documents the pnpm >= 10 ignored-build-scripts prompt for exactly 'dsh-vision-proxy, sharp' with an allowBuilds example enabling both. The bounded dynamic evidence shows a resolved profile lockfile (35 nodes, 0 unresolved) and runtime graph (509 nodes, 0 unresolved) on DSH 0.1.5-rc.2 / Node 22, with no plugin peer contract mismatches, so the only remaining gate is the explicit dependency-build approval list, which the runner is permitted to change.",
       "evidence": [
-        "Observed result: build-approval-required; reason lists dsh-vision-proxy, sharp",
-        "Latest retry required build packages: dsh-vision-proxy, sharp; earlier approvals: none",
-        "package.json scripts.postinstall = node scripts/postinstall.js (plugin build/install step)",
-        "package.json optionalDependencies.sharp = ^0.34.0 and pnpm.onlyBuiltDependencies = [\"sharp\"]",
-        "README troubleshooting: 'Ignored build scripts: dsh-vision-proxy, sharp' -> approve both, then re-run install",
-        "Bounded dynamic evidence: profileLockfile unresolved 0, runtimeGraph unresolved 0, hostRuntime dshVersion 0.1.5-rc.2"
+        "Observed result: build-approval-required; reason names build packages dsh-vision-proxy, sharp",
+        "Latest retry required builds: dsh-vision-proxy, sharp; earlier retries approved: dsh-vision-proxy, sharp (no approval dropped)",
+        "package.json: scripts.postinstall = node scripts/postinstall.js; optionalDependencies.sharp = ^0.34.0; pnpm.onlyBuiltDependencies = [\"sharp\"]",
+        "README.md: pnpm >= 10 blocks dependency build scripts, prompt 'Ignored build scripts: dsh-vision-proxy, sharp', allowBuilds example sets both to true",
+        "Bounded dynamic evidence: profileLockfile unresolved 0 (35 nodes/44 edges); runtimeGraph unresolved 0 (509 nodes/1982 edges); pluginPeerContracts all zero; hostRuntime dshVersion 0.1.5-rc.2",
+        "Manifest engines: node >=22.19.0, dsh >=0.1.0-rc.6, consistent with Node major 22 and DSH 0.1.5-rc.2"
       ]
     },
     {
@@ -1089,22 +1089,21 @@
       "approvedBuilds": [],
       "artifactSha256": "a4563e560e91bcd3a2a9302ee7dbee046b146c1bd0de6b27b7c7524fd52e77ca",
       "repository": "ZSeven-W/dsh-openpencil",
-      "sourceCommit": "5be62124a59adf7eaf3d5506d277f779836dc167",
-      "inputFingerprint": "sha256:037d069431fe413c6c867c93c6b1e61977c9b3ab1debf2d0e1fa8e931e5d7cd9",
-      "plannedAt": "2026-09-16T12:09:08.429Z",
+      "sourceCommit": "20065e60194a93cc10f5fe5e5c42a4e58628ccb9",
+      "inputFingerprint": "sha256:705596c2faed7cbaeb2791da04834ad600d8f66d5452a9623be257f7be11cbc3",
+      "plannedAt": "2026-09-17T12:02:05.638Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
       "classification": "headless-contract",
       "allowedBuilds": [],
-      "summary": "The reproduced result is peer-contract-incompatible, not build-approval-required. The exact artifact installed and loaded, and the runtime graph shows 10 of 14 declared peer contracts satisfied with 0 mismatched; the 4 missing peers (@deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-ui-slots, react, react-dom) are unresolved peer dependencies, not packages gated behind a pnpm dependency-build approval. No build packages are required by the latest retry and none were approved earlier, so there is no approval subset to add and no build gate to advance. The runner may only change the explicit pnpm dependency-build approval list, which cannot resolve missing peer contracts, so a further headless retry is not justified.",
+      "summary": "The reproduced result is peer-contract-incompatible, not build-approval-required: the artifact installed and loaded, and the runtime graph shows 10 of 14 declared peer contracts satisfied with 4 missing (@deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-ui-slots, react, react-dom). No build packages are required or previously approved, so the only permitted runner change (the pnpm dependency-build approval list) cannot affect this outcome. The missing peers are runtime/type resolution gaps in the headless profile, not native build scripts, so a retry would reproduce the same contract failure.",
       "evidence": [
         "Observed result: peer-contract-incompatible; reason: artifact installed and loaded but @deepseek-ai/dsh-client-runtime@^0.1.0-rc.6 was not resolved (type-only-reference-observed)",
+        "runtimeGraph.pluginPeerContracts: declared 14, satisfied 10, missing 4; issues list @deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-ui-slots, react, react-dom",
+        "runtimeGraph.unresolvedDependencies: 4 unresolved peers from node_modules/@zseven-w/dsh-openpencil",
         "Build packages required by the latest retry: (none); approved in earlier retries: (none)",
-        "runtimeGraph.pluginPeerContracts: declared 14, satisfied 10, mismatched 0, missing 4; issues list @deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-ui-slots, react, react-dom as missing peers",
-        "runtimeGraph.unresolvedDependencies: 4 peer entries from node_modules/@zseven-w/dsh-openpencil (client-runtime, ui-slots, react, react-dom)",
-        "profileLockfile.unresolvedDependencies: 14 peer entries, all kind=peer, none build-approval related",
-        "package.json pnpm.onlyBuiltDependencies lists only esbuild; no build-approval gate is implicated by the observed failure",
-        "Runner constraint: may change only the explicit pnpm dependency-build approval list; cannot add planes, secrets, services, or arbitrary commands"
+        "package.json peerDependencies declare @deepseek-ai/dsh-client-runtime and @deepseek-ai/dsh-client-ui-slots only via the installed artifact's rc.6 specs; manifest has no build-script dependency needing approval (onlyBuiltDependencies: esbuild)",
+        "hostRuntime: dsh-process, dshVersion 0.1.5-rc.2, resolvedNodes 499"
       ]
     },
     {
