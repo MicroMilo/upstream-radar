@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-09-17T12:08:24.803Z",
+  "generatedAt": "2026-09-18T11:38:20.722Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -37,10 +37,10 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 27,
+    "observed-compatible": 26,
     "observed-incompatible": 0,
-    "needs-review": 18,
-    "update-pending": 51,
+    "needs-review": 17,
+    "update-pending": 53,
     "not-observed": 4
   },
   "plugins": [
@@ -307,7 +307,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-agy-link",
-        "selectedVersion": "0.4.32",
+        "selectedVersion": "0.4.36",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -574,7 +574,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-context",
-        "selectedVersion": "0.53.2",
+        "selectedVersion": "0.53.3",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -953,7 +953,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-free-search",
-        "selectedVersion": "0.4.28",
+        "selectedVersion": "0.4.32",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -1305,7 +1305,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-remote",
-        "selectedVersion": "0.8.18",
+        "selectedVersion": "0.8.21",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -1402,10 +1402,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-codex-connect",
-        "selectedVersion": "0.1.0-alpha.4.35",
+        "selectedVersion": "0.1.0-alpha.4.36",
         "distTag": "alpha"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-codex-connect-node22",
@@ -1555,7 +1555,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-cost-meter",
-        "selectedVersion": "1.7.29",
+        "selectedVersion": "1.7.30",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -1687,7 +1687,7 @@
       "distribution": {
         "kind": "npm",
         "name": "iterate-plugin",
-        "selectedVersion": "3.5.3",
+        "selectedVersion": "3.5.4",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2011,7 +2011,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@mars-sea/dsh-commandcode-provider",
-        "selectedVersion": "0.11.4",
+        "selectedVersion": "0.11.5",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2055,7 +2055,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-agency-agents",
-        "selectedVersion": "0.1.43",
+        "selectedVersion": "0.1.44",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2099,7 +2099,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-archive-manager",
-        "selectedVersion": "0.1.43",
+        "selectedVersion": "0.1.44",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2143,7 +2143,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-im-connect",
-        "selectedVersion": "0.1.50",
+        "selectedVersion": "0.1.51",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2190,7 +2190,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-skills-manager",
-        "selectedVersion": "0.1.52",
+        "selectedVersion": "0.1.53",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2454,7 +2454,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-chat-import",
-        "selectedVersion": "0.18.1",
+        "selectedVersion": "0.18.2",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2545,7 +2545,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-mnemon",
-        "selectedVersion": "0.5.10",
+        "selectedVersion": "0.5.11",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2632,7 +2632,7 @@
       "distribution": {
         "kind": "npm",
         "name": "odai-dsh-plugin",
-        "selectedVersion": "0.2.31",
+        "selectedVersion": "0.2.32",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2825,7 +2825,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-easyrewrite",
-        "selectedVersion": "2.5.2",
+        "selectedVersion": "2.5.3",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -3297,7 +3297,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-win32",
-        "selectedVersion": "0.17.9",
+        "selectedVersion": "0.17.11",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -3473,10 +3473,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-auth-gate",
-        "selectedVersion": "0.13.0",
+        "selectedVersion": "0.13.1",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-auth-gate-node22",
@@ -3564,7 +3564,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-any-background",
-        "selectedVersion": "0.2.9",
+        "selectedVersion": "0.2.10",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -4109,7 +4109,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-config-manager",
-        "selectedVersion": "0.1.59",
+        "selectedVersion": "0.1.60",
         "distTag": "latest"
       },
       "status": "update-pending",

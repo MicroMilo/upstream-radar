@@ -1,11 +1,11 @@
 # DSH headless Agent review
 
-Updated: 2026-09-17T12:02:05.769Z
+Updated: 2026-09-18T11:38:20.178Z
 
 The Agent reads bounded repository evidence and the latest isolated headless result. There is no static environment-planning fallback. Only an exact observed build-package name can reach the no-secret retry runner.
 
-- Current review set: 19
-- Agent-reviewed: 16
+- Current review set: 18
+- Agent-reviewed: 15
 - Agent failures awaiting retry: 3
 
 | Case | Previous evidence | Agent action | Classification | Retained build policy |
@@ -18,8 +18,6 @@ The Agent reads bounded repository evidence and the latest isolated headless res
 |  |  |  |  | The reproduced failure is a peer-contract incompatibility, not a build-approval gate. The exact artifact installed and loaded, but the runtime graph shows @dsh-plugin/dsh-loader@^1.3.0 as a missing peer with runtime-import-observed usage, so the plugin's runtime import cannot resolve in the headless DSH profile. No build packages are required or previously approved, and the runner may only change the pnpm dependency-build approval list, which cannot supply a missing runtime peer. A retry would not change the outcome. |
 | `dsh-client-auto-continue-node22` | `peer-contract-incompatible` | `stop-headless` | `different-plane` | none |
 |  |  |  |  | The artifact installed and loaded, but the failure is a missing runtime peer (react@^18.2.0) in the DSH host runtime, not a build-approval gate. No build packages are required or previously approved, and the runner cannot add a Web/TUI plane, services, or arbitrary dependencies, so a headless retry cannot resolve a missing runtime peer. |
-| `dsh-codex-connect-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
-|  |  |  |  | The reproduced result is peer-contract-incompatible, not build-approval-required. The artifact installed and loaded, but the DSH runtime did not resolve two runtime-imported peers: @deepseek-ai/dsh-client-ui-primitives (declared range 0.1.2-rc.1 0.1.5-alpha.1 0.1.5-rc.1 0.1.5-rc.2) and react (^18.2.0). No build packages are required or previously approved, so the only permitted runner change (the pnpm dependency-build approval list) cannot address missing runtime peer resolution. A retry would not add any newly supported build package and would not change the headless contract outcome. |
 | `dsh-deepread-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The reproduced failure is a peer-contract incompatibility, not a build-approval gate. The artifact installed and loaded, but the DSH headless runtime did not resolve the declared peer react@^18.2.0 (runtime-import-observed), leaving one missing peer contract. No build packages are required or previously approved, and the runner may only edit the pnpm dependency-build approval list, which cannot supply a missing runtime peer. A retry would not change this outcome. |
 | `dsh-free-vision-node22` | `build-approval-required` | `agent-failed` | `unknown` | none |
@@ -30,8 +28,8 @@ The Agent reads bounded repository evidence and the latest isolated headless res
 |  |  |  |  | The reproduced failure is a peer-contract incompatibility, not a build-approval gate. The exact artifact installed and loaded, but the runtime graph shows @deepseek-ai/dsh-client-locale resolved to 0.1.5-rc.2 while the manifest pins the peer to exactly 0.1.2-rc.1, and react is missing as a peer. No build packages are required or previously approved, so there is nothing for the runner's only allowed lever (the pnpm dependency-build approval list) to change. A headless retry cannot alter peer resolution or supply the missing react peer, so it would reproduce the same contract mismatch. |
 | `dsh-history-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The reproduced result is peer-contract-incompatible, not build-approval-required. The exact artifact installed and loaded, but the DSH runtime did not resolve the declared peer @deepseek-ai/dsh-client-runtime ( =0.0.1-rc.1 0.1.0 =0.1.0-rc.1 0.2.0-0); the runtime graph shows it missing with no-literal-reference-observed, and react is also missing with runtime-import-observed. No build packages are required or were previously approved, so there is nothing to add to the dependency-build approval list. The plugin's dsh.client.platform is web and its inject list targets client-runtime/UI packages, which is a different execution plane than the existing headless DSH profile. A headless retry cannot change the approval list to fix an unresolved peer contract, so stop. |
-| `dsh-imagegen-node22` | `unknown` | `stop-headless` | `different-plane` | none |
-|  |  |  |  | The reproduced failure is not a build-approval gate: no build packages are required or previously approved, and the single unresolved edge is a peer dependency (react) of lucide-react, which the runner cannot fix by editing the pnpm dependency-build approval list. The plugin's declared dsh.client platform is web and its client injects web-only DSH client packages, so the effective headless runtime graph cannot satisfy this plugin's contract; this belongs to a different execution plane than the bounded headless DSH profile. |
+| `dsh-imagegen-node22` | `unknown` | `stop-headless` | `headless-contract` | none |
+|  |  |  |  | The artifact installed and loaded, but the effective DSH runtime graph retains one unresolved required edge: the peer dependency 'react' (spec ^16.5.1 ^17.0.0 ^18.0.0 ^19.0.0) required by node_modules/lucide-react. This is a peer-contract resolution gap in the headless runtime graph, not a build-approval gate: no build packages are required or previously approved, and the runner may only modify the pnpm dependency-build approval list, which cannot supply a missing peer. Repository evidence (package.json lists lucide-react as a runtime dependency and react only under devDependencies) does not support approving any build package, so no retry is justified. |
 | `dsh-notifier-node22` | `build-approval-required` | `agent-failed` | `unknown` | none |
 |  |  |  |  | a stopped headless plan cannot approve dependency builds |
 | `dsh-plugin-writing-guard-node22` | `build-approval-required` | `stop-headless` | `insufficient-evidence` | none |

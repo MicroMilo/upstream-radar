@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-headless-agent-plans/v1alpha1",
-  "updatedAt": "2026-09-17T12:02:05.769Z",
+  "updatedAt": "2026-09-18T11:38:20.178Z",
   "entries": [
     {
       "caseId": "anweat-dsh-browser-node22",
@@ -553,23 +553,22 @@
       "approvedBuilds": [],
       "artifactSha256": "54861229cc8673d0802b7575699377ba7b140f24a5809003bba0359484e38d5f",
       "repository": "dickpy/dsh-imagegen",
-      "sourceCommit": "fd4a0b6ecd6ea82f443acab12920e576a40b06a5",
-      "inputFingerprint": "sha256:3d73ecf6950a1bfb49c21c63c120b805d9848b782c296cc99b61be9184ef73fb",
-      "plannedAt": "2026-09-16T12:09:03.993Z",
+      "sourceCommit": "5b492f9ce0e2ba7dd804bb19fe48ba1aeea4b0cf",
+      "inputFingerprint": "sha256:db8aabfe057b490d689ada9930e0f400eabee64c5597fb06da9faedbca965d7c",
+      "plannedAt": "2026-09-18T11:38:20.177Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
-      "classification": "different-plane",
+      "classification": "headless-contract",
       "allowedBuilds": [],
-      "summary": "The reproduced failure is not a build-approval gate: no build packages are required or previously approved, and the single unresolved edge is a peer dependency (react) of lucide-react, which the runner cannot fix by editing the pnpm dependency-build approval list. The plugin's declared dsh.client platform is web and its client injects web-only DSH client packages, so the effective headless runtime graph cannot satisfy this plugin's contract; this belongs to a different execution plane than the bounded headless DSH profile.",
+      "summary": "The artifact installed and loaded, but the effective DSH runtime graph retains one unresolved required edge: the peer dependency 'react' (spec ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0) required by node_modules/lucide-react. This is a peer-contract resolution gap in the headless runtime graph, not a build-approval gate: no build packages are required or previously approved, and the runner may only modify the pnpm dependency-build approval list, which cannot supply a missing peer. Repository evidence (package.json lists lucide-react as a runtime dependency and react only under devDependencies) does not support approving any build package, so no retry is justified.",
       "evidence": [
         "Observed result: unknown; reason: exact artifact installed and loaded, but effective DSH runtime graph has 1 required unresolved edge",
-        "Build packages required by latest retry: (none); approved in earlier retries: (none)",
-        "runtimeGraph.unresolvedDependencies: from node_modules/lucide-react, name react, spec ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0, kind peer",
-        "profileLockfile.unresolvedDependencies: from pnpm:lucide-react@1.45.0, name react, kind peer",
-        "package.json dsh.client: platform web, inject includes @deepseek-ai/dsh-client-store, dsh-api-remotes, dsh-api-session-controller, dsh-client-connection, dsh-client-ui-conversation, dsh-client-ui-renderer, dsh-client-ui-settings, dsh-client-ui-tool",
+        "runtimeGraph.unresolved=1: from node_modules/lucide-react, name react, spec ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0, kind peer",
+        "profileLockfile.unresolved=1: from pnpm:lucide-react@1.45.0, name react, kind peer",
+        "Build packages required by latest retry: none; approved in earlier retries: none",
         "package.json dependencies: lucide-react ^1.41.0, schemastery ^3.18.0; react only in devDependencies",
-        "cordis.patch.yml: bare plugin row by package name; browser half served at /plugins/<id>/client.js in the web GUI",
-        "Runner constraint: may change only the explicit pnpm dependency-build approval list; cannot add planes, secrets, services, system packages, or arbitrary commands"
+        "pluginPeerContracts: declared 0, satisfied 0, mismatched 0, indeterminate 0, missing 0",
+        "Runner may change only the explicit pnpm dependency-build approval list; cannot add packages or planes"
       ]
     },
     {
