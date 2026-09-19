@@ -1024,15 +1024,15 @@
       ],
       "source": {
         "name": "dsh-msg-hub",
-        "version": "0.1.10",
-        "digest": "sha256:d5972f267b300009789b6e2616c4dfe5a088540a7b379ae70fa572bc24a33918",
+        "version": "0.1.11",
+        "digest": "sha256:8c074f8496996ad58c21f6deeb9a8d4a22d53f94dfcbeb109d03696e2caa748a",
         "findings": []
       },
       "artifact": {
-        "spec": "npm:dsh-msg-hub@0.1.10",
+        "spec": "npm:dsh-msg-hub@0.1.11",
         "name": "dsh-msg-hub",
-        "version": "0.1.10",
-        "digest": "sha256:7f4dc332fd04207c1ba8ec025e7d33c3f2a943fef70b27feb7d03ed8a60d88cd",
+        "version": "0.1.11",
+        "digest": "sha256:0d6793fbcd16020c2d9954a5e3a7afb05177c1234e8deee2880f5a10162bf8c8",
         "findings": [
           {
             "code": "dependency-install-script-present",
@@ -1048,13 +1048,6 @@
               ]
             },
             "fingerprint": "sha256:2bb34dff0ebcff22f7f25f808aca6e368c4083a1dafae268371d39c49a261f48"
-          },
-          {
-            "code": "npm-provenance-missing",
-            "severity": "medium",
-            "summary": "npm artifact has no build provenance",
-            "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
-            "fingerprint": "sha256:8213fb7b557a0549cc2f89474f4fdcb1010c8775a30a819d060589744662c58f"
           }
         ]
       }
@@ -1207,8 +1200,8 @@
       ],
       "source": {
         "name": "dsh-wsl-workspace",
-        "version": "0.4.3",
-        "digest": "sha256:9ea898266e7303cbadddf967c09dd62d6a06084077887e3434e5933d2a1f882c",
+        "version": "0.4.4",
+        "digest": "sha256:e9304aeb95273166d43d5f60c606e14be36647aefe246c4a62c5f2f63f795ada",
         "findings": [
           {
             "code": "dependency-graph-unlocked",
