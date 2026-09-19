@@ -365,7 +365,7 @@
       "runtimeId": "@awiki/dsh-plugin",
       "sourceFingerprint": "sha256:456d6c693412651159fd0bc4629f82d8f201130575b3f5d82f46805c486fca63",
       "contractFingerprint": "sha256:910d6cd7e3e3db3d44c9f034cc6214687feab6408412dd6e905b6717e792638d",
-      "observedAt": "2026-09-11T11:53:52.093Z",
+      "observedAt": "2026-09-19T11:26:30.361Z",
       "runtime": {
         "nodeMajor": 22,
         "nodeVersion": "22.23.2",

@@ -1,6 +1,6 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-09-19T11:24:04.877Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-09-19T11:26:49.754Z`.
 Selected host: `@deepseek-ai/dsh@0.1.5-rc.2`.
 
 **24 observed compatible · 0 observed incompatible · 16 needs review · 56 update pending · 4 not observed**
@@ -9,7 +9,7 @@ Selected host: `@deepseek-ai/dsh@0.1.5-rc.2`.
 | --- | --- | --- | --- | --- | --- |
 | [1e0zj/dsh-plugin-mall](https://github.com/1e0zj/dsh-plugin-mall) | `@1e0zj/dsh-plugin-mall@0.4.17` | `@1e0zj/dsh-plugin-mall@0.4.17` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:48:23.078Z |
 | [263311487-ux/dsh-verify](https://github.com/263311487-ux/dsh-verify) | `dsh-verify@0.9.4` | `dsh-verify@0.9.4` | `0.1.5-rc.2` / Node 22 / headless | `observed-compatible` | 2026-09-11T11:50:10.851Z |
-| [AgentConnect/dsh-awiki](https://github.com/AgentConnect/dsh-awiki) | `@awiki/dsh-plugin@0.3.12` | `@awiki/dsh-plugin@0.3.7`<br>`@awiki/dsh-plugin@0.3.7` | `0.1.5-rc.2` / Node 22 / headless<br>`0.1.5-rc.2` / Node 22 / web | `update-pending` | 2026-09-11T11:48:28.662Z<br>2026-09-11T11:53:52.093Z |
+| [AgentConnect/dsh-awiki](https://github.com/AgentConnect/dsh-awiki) | `@awiki/dsh-plugin@0.3.12` | `@awiki/dsh-plugin@0.3.7`<br>`@awiki/dsh-plugin@0.3.7` | `0.1.5-rc.2` / Node 22 / headless<br>`0.1.5-rc.2` / Node 22 / web | `update-pending` | 2026-09-11T11:48:28.662Z<br>2026-09-19T11:26:30.361Z |
 | [Aik358/dsh-auto-memory](https://github.com/Aik358/dsh-auto-memory) | `@a9i5k4/dsh-auto-memory@3.0.0` | `@a9i5k4/dsh-auto-memory@2.5.2` | `0.1.5-rc.2` / Node 22 / headless | `update-pending` | 2026-09-13T12:18:40.319Z |
 | [Airmetro/dsh-update-checker](https://github.com/Airmetro/dsh-update-checker) | `dsh-update-checker@1.5.0` | `dsh-update-checker@1.4.22` | `0.1.5-rc.2` / Node 22 / headless | `update-pending` | 2026-09-12T11:10:11.610Z |
 | [amlyczz/dsh-agy-link](https://github.com/amlyczz/dsh-agy-link) | `dsh-agy-link@0.4.36` | `dsh-agy-link@0.4.27` | `0.1.5-rc.2` / Node 24 / headless | `update-pending` | 2026-09-11T11:49:00.756Z |

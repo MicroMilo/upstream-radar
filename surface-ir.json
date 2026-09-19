@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-surface-ir/v1alpha1",
-  "generatedAt": "2026-09-13T12:21:21.403Z",
+  "generatedAt": "2026-09-19T11:26:30.361Z",
   "cells": [
     {
       "id": "better-sidebar-node22-web",
@@ -366,7 +366,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-09-11T11:53:52.093Z",
+        "observedAt": "2026-09-19T11:26:30.361Z",
         "result": "unknown",
         "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
