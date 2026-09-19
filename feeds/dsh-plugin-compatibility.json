@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-09-18T11:44:18.634Z",
+  "generatedAt": "2026-09-19T11:20:28.458Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -37,10 +37,10 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 26,
+    "observed-compatible": 24,
     "observed-incompatible": 0,
-    "needs-review": 17,
-    "update-pending": 53,
+    "needs-review": 16,
+    "update-pending": 56,
     "not-observed": 4
   },
   "plugins": [
@@ -997,10 +997,10 @@
       "distribution": {
         "kind": "npm",
         "name": "@dickpy/dsh-imagegen",
-        "selectedVersion": "1.5.12",
+        "selectedVersion": "1.6.0",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-imagegen-node22",
@@ -1085,7 +1085,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dshmarket",
-        "selectedVersion": "1.47.0",
+        "selectedVersion": "1.48.0",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -1402,7 +1402,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-codex-connect",
-        "selectedVersion": "0.1.0-alpha.4.36",
+        "selectedVersion": "0.1.0-alpha.4.37",
         "distTag": "alpha"
       },
       "status": "update-pending",
@@ -1863,10 +1863,10 @@
       "distribution": {
         "kind": "npm",
         "name": "@liustack/modlens",
-        "selectedVersion": "3.26.1",
+        "selectedVersion": "3.26.2",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "modlens-node22",
@@ -2011,7 +2011,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@mars-sea/dsh-commandcode-provider",
-        "selectedVersion": "0.11.5",
+        "selectedVersion": "0.11.6",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2234,7 +2234,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@modusensus/dsh-mneme",
-        "selectedVersion": "0.8.3",
+        "selectedVersion": "0.8.4",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2454,7 +2454,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-chat-import",
-        "selectedVersion": "0.18.2",
+        "selectedVersion": "0.18.3",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2825,7 +2825,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-easyrewrite",
-        "selectedVersion": "2.5.3",
+        "selectedVersion": "2.5.4",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2982,7 +2982,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@roarpeng/graphflow",
-        "selectedVersion": "1.20.1",
+        "selectedVersion": "1.23.2",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -3033,7 +3033,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-mobile",
-        "selectedVersion": "0.4.2",
+        "selectedVersion": "0.4.3",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -3341,7 +3341,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-passwords",
-        "selectedVersion": "2.7.2",
+        "selectedVersion": "2.7.3",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -3385,10 +3385,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-email",
-        "selectedVersion": "0.10.7",
+        "selectedVersion": "0.13.1",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-email-node22",
@@ -4109,7 +4109,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-config-manager",
-        "selectedVersion": "0.1.60",
+        "selectedVersion": "0.1.61",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -4288,7 +4288,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-vision-router",
-        "selectedVersion": "2.1.7",
+        "selectedVersion": "2.2.0",
         "distTag": "latest"
       },
       "status": "update-pending",
