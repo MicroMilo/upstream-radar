@@ -4,8 +4,8 @@ Updated: 2026-09-18T11:38:20.178Z
 
 The Agent reads bounded repository evidence and the latest isolated headless result. There is no static environment-planning fallback. Only an exact observed build-package name can reach the no-secret retry runner.
 
-- Current review set: 17
-- Agent-reviewed: 14
+- Current review set: 16
+- Agent-reviewed: 13
 - Agent failures awaiting retry: 3
 
 | Case | Previous evidence | Agent action | Classification | Retained build policy |
@@ -16,8 +16,6 @@ The Agent reads bounded repository evidence and the latest isolated headless res
 |  |  |  |  | The artifact installed and loaded, but the headless runtime did not resolve the plugin's client UI peer contracts: @deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots are missing, and react/react-dom are missing, with runtime-import-observed usage. This is a peer/runtime resolution contract failure, not a pnpm build-approval gate; no build packages are required or previously approved, so a headless retry that only edits the dependency-build approval list cannot change the outcome. |
 | `dsh-auxiliary-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The reproduced failure is a peer-contract incompatibility, not a build-approval gate. The exact artifact installed and loaded, but the runtime graph shows @dsh-plugin/dsh-loader@^1.3.0 as a missing peer with runtime-import-observed usage, so the plugin's runtime import cannot resolve in the headless DSH profile. No build packages are required or previously approved, and the runner may only change the pnpm dependency-build approval list, which cannot supply a missing runtime peer. A retry would not change the outcome. |
-| `dsh-client-auto-continue-node22` | `peer-contract-incompatible` | `stop-headless` | `different-plane` | none |
-|  |  |  |  | The artifact installed and loaded, but the failure is a missing runtime peer (react@^18.2.0) in the DSH host runtime, not a build-approval gate. No build packages are required or previously approved, and the runner cannot add a Web/TUI plane, services, or arbitrary dependencies, so a headless retry cannot resolve a missing runtime peer. |
 | `dsh-deepread-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The reproduced failure is a peer-contract incompatibility, not a build-approval gate. The artifact installed and loaded, but the DSH headless runtime did not resolve the declared peer react@^18.2.0 (runtime-import-observed), leaving one missing peer contract. No build packages are required or previously approved, and the runner may only edit the pnpm dependency-build approval list, which cannot supply a missing runtime peer. A retry would not change this outcome. |
 | `dsh-free-vision-node22` | `build-approval-required` | `agent-failed` | `unknown` | none |

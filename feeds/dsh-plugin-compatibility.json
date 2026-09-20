@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-09-19T11:26:49.754Z",
+  "generatedAt": "2026-09-20T11:44:00.837Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -39,8 +39,8 @@
     "total": 100,
     "observed-compatible": 24,
     "observed-incompatible": 0,
-    "needs-review": 16,
-    "update-pending": 56,
+    "needs-review": 15,
+    "update-pending": 57,
     "not-observed": 4
   },
   "plugins": [
@@ -574,7 +574,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-context",
-        "selectedVersion": "0.53.3",
+        "selectedVersion": "0.54.0",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -689,7 +689,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-tavern",
-        "selectedVersion": "2.3.9",
+        "selectedVersion": "2.4.1",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -1085,7 +1085,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dshmarket",
-        "selectedVersion": "1.48.0",
+        "selectedVersion": "1.50.0",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -1402,7 +1402,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-codex-connect",
-        "selectedVersion": "0.1.0-alpha.4.37",
+        "selectedVersion": "0.1.0-alpha.4.38",
         "distTag": "alpha"
       },
       "status": "update-pending",
@@ -1599,10 +1599,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-client-auto-continue",
-        "selectedVersion": "0.11.6",
+        "selectedVersion": "0.11.7",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-client-auto-continue-node22",
@@ -2011,7 +2011,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@mars-sea/dsh-commandcode-provider",
-        "selectedVersion": "0.11.6",
+        "selectedVersion": "0.11.7",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2454,7 +2454,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-chat-import",
-        "selectedVersion": "0.18.3",
+        "selectedVersion": "0.18.4",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2545,7 +2545,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-mnemon",
-        "selectedVersion": "0.5.11",
+        "selectedVersion": "0.5.12",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2589,7 +2589,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@openma/deepseek-harness-acp",
-        "selectedVersion": "0.4.32",
+        "selectedVersion": "0.4.33",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2632,7 +2632,7 @@
       "distribution": {
         "kind": "npm",
         "name": "odai-dsh-plugin",
-        "selectedVersion": "0.2.32",
+        "selectedVersion": "0.2.33",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2825,7 +2825,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-easyrewrite",
-        "selectedVersion": "2.5.4",
+        "selectedVersion": "2.5.5",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2982,7 +2982,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@roarpeng/graphflow",
-        "selectedVersion": "1.23.2",
+        "selectedVersion": "1.25.1",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -4197,7 +4197,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@xmanrui/dsh-im",
-        "selectedVersion": "4.21.2",
+        "selectedVersion": "4.23.0",
         "distTag": "latest"
       },
       "status": "update-pending",
