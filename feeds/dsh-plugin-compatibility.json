@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-09-20T11:50:38.842Z",
+  "generatedAt": "2026-09-21T13:10:12.809Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -37,10 +37,10 @@
   },
   "summary": {
     "total": 100,
-    "observed-compatible": 24,
+    "observed-compatible": 23,
     "observed-incompatible": 0,
-    "needs-review": 15,
-    "update-pending": 57,
+    "needs-review": 14,
+    "update-pending": 59,
     "not-observed": 4
   },
   "plugins": [
@@ -214,7 +214,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@a9i5k4/dsh-auto-memory",
-        "selectedVersion": "3.0.0",
+        "selectedVersion": "3.0.1",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -263,7 +263,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-update-checker",
-        "selectedVersion": "1.5.0",
+        "selectedVersion": "1.6.1",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -307,7 +307,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-agy-link",
-        "selectedVersion": "0.4.36",
+        "selectedVersion": "0.4.38",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -574,7 +574,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-context",
-        "selectedVersion": "0.54.0",
+        "selectedVersion": "0.54.2",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -777,10 +777,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-vibe-math",
-        "selectedVersion": "2.0.21",
+        "selectedVersion": "2.2.2",
         "distTag": "latest"
       },
-      "status": "observed-compatible",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-vibe-math-node22",
@@ -865,7 +865,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-taskboard",
-        "selectedVersion": "0.7.2",
+        "selectedVersion": "0.7.5",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -997,7 +997,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@dickpy/dsh-imagegen",
-        "selectedVersion": "1.6.0",
+        "selectedVersion": "1.6.1",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -1085,7 +1085,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dshmarket",
-        "selectedVersion": "1.50.0",
+        "selectedVersion": "1.52.0",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -1173,7 +1173,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-plugin-wallpaper-engine",
-        "selectedVersion": "0.7.3",
+        "selectedVersion": "0.7.5",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -1402,7 +1402,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-codex-connect",
-        "selectedVersion": "0.1.0-alpha.4.38",
+        "selectedVersion": "0.1.0-alpha.4.39",
         "distTag": "alpha"
       },
       "status": "update-pending",
@@ -2055,7 +2055,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-agency-agents",
-        "selectedVersion": "0.1.44",
+        "selectedVersion": "1.0.1",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2099,7 +2099,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-archive-manager",
-        "selectedVersion": "0.1.44",
+        "selectedVersion": "1.0.2",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2190,7 +2190,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-skills-manager",
-        "selectedVersion": "0.1.53",
+        "selectedVersion": "1.0.1",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2366,7 +2366,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@nonamelego/dsh-catppuccin",
-        "selectedVersion": "0.5.3",
+        "selectedVersion": "0.5.5",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -2632,7 +2632,7 @@
       "distribution": {
         "kind": "npm",
         "name": "odai-dsh-plugin",
-        "selectedVersion": "0.2.33",
+        "selectedVersion": "0.2.35",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -3033,7 +3033,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-mobile",
-        "selectedVersion": "0.4.3",
+        "selectedVersion": "0.4.4",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -3297,7 +3297,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-win32",
-        "selectedVersion": "0.17.11",
+        "selectedVersion": "0.17.12",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -3757,7 +3757,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-plugin-subscriptions",
-        "selectedVersion": "0.9.2",
+        "selectedVersion": "0.9.3",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -3845,7 +3845,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@openviking/dsh-memory-plugin",
-        "selectedVersion": "0.3.2",
+        "selectedVersion": "0.4.4",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -3889,10 +3889,10 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-git-worktree",
-        "selectedVersion": "0.9.0",
+        "selectedVersion": "0.9.2",
         "distTag": "latest"
       },
-      "status": "needs-review",
+      "status": "update-pending",
       "cells": [
         {
           "caseId": "dsh-git-worktree-node22",
@@ -4197,7 +4197,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@xmanrui/dsh-im",
-        "selectedVersion": "4.23.0",
+        "selectedVersion": "4.24.0",
         "distTag": "latest"
       },
       "status": "update-pending",
@@ -4376,7 +4376,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@linxin666/dsh-web-all",
-        "selectedVersion": "0.3.23",
+        "selectedVersion": "0.3.24",
         "distTag": "latest"
       },
       "status": "update-pending",
