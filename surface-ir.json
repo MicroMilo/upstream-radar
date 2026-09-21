@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-surface-ir/v1alpha1",
-  "generatedAt": "2026-09-19T11:26:30.361Z",
+  "generatedAt": "2026-09-21T13:16:15.638Z",
   "cells": [
     {
       "id": "better-sidebar-node22-web",
@@ -351,8 +351,8 @@
       "profile": "web",
       "runtimeId": "@awiki/dsh-plugin",
       "plugin": {
-        "spec": "@awiki/dsh-plugin@0.3.7",
-        "artifactSha256": "6c215ffda68303747d5d702d62e575f0c53bacc2247a9cb02546dedc6c6ff4f9"
+        "spec": "@awiki/dsh-plugin@0.3.12",
+        "artifactSha256": "beae75e2f545063fc4522506783ed1eabf4649eda84f1a956bd753d1cfea31ea"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
@@ -366,7 +366,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-09-19T11:26:30.361Z",
+        "observedAt": "2026-09-21T13:16:15.638Z",
         "result": "unknown",
         "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
@@ -1647,8 +1647,8 @@
       "profile": "dsh-tui",
       "runtimeId": "@deepseek-harness-tui/dsh-tui",
       "plugin": {
-        "spec": "@deepseek-harness-tui/dsh-tui@0.10.1",
-        "artifactSha256": "21833eba7569a3e814cb09aa85777fbfa191eef8d6f66269b239b6e6e54e0312"
+        "spec": "@deepseek-harness-tui/dsh-tui@0.10.2",
+        "artifactSha256": "d680e6e5704e6724940233cab12045d87c71c30820c9e169727de271ee8c629c"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
@@ -1662,7 +1662,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-09-13T12:21:21.403Z",
+        "observedAt": "2026-09-21T13:16:03.024Z",
         "result": "compatible",
         "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown",
         "stages": {
@@ -1709,8 +1709,8 @@
           "exitCode": 0,
           "signal": 0,
           "transcript": "dsh-tui-tui.ansi",
-          "normalizedFrame": "▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc\n ▀▀▀▀\n▀▄▄\n▄▄▄▄\n▄▄▄\n▀▀▀▀█▀▀▀\n█\n▀▀▀█▀▀▀\n█\n▄▄▄▄█▄▄▄\n▄▀▄█▀▀▀\n██\n▀▀▀██▄▄▄\n███\n██\nre the unch",
-          "capturedBytes": 24712,
+          "normalizedFrame": "████\n██▀▀▀██\n████\n████\nplore the u\nPress Ctrl+C again to exit\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc\n ▀▀▀▀\n▀▄▄\n▄▄▄▄\n▄▄▄",
+          "capturedBytes": 24295,
           "truncated": false
         }
       }
