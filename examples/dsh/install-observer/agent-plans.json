@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-headless-agent-plans/v1alpha1",
-  "updatedAt": "2026-09-22T11:59:16.363Z",
+  "updatedAt": "2026-09-23T12:01:51.827Z",
   "entries": [
     {
       "caseId": "anweat-dsh-browser-node22",
@@ -215,21 +215,21 @@
       "approvedBuilds": [],
       "artifactSha256": "0995abd9409fddaaa9dcfad250b484df7aa70b4254e6182fb498feb44897a7d2",
       "repository": "NoNameLeGo/dsh-catppuccin-theme",
-      "sourceCommit": "85e2eb2aa947625de5aa77d98c62148958b6cf75",
-      "inputFingerprint": "sha256:4af2f7eb457c312918aca9a0c19a816969b1e9f2a14e370dd0a128ef1df7ce2f",
-      "plannedAt": "2026-09-22T11:59:01.151Z",
+      "sourceCommit": "012031ab98f63d0dbf29f352935058a5700b93c9",
+      "inputFingerprint": "sha256:af408084a401a81efb056d767899f72b2ae565fa5c8c4b02b732bb747d3d32ee",
+      "plannedAt": "2026-09-23T12:01:49.541Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
       "classification": "headless-contract",
       "allowedBuilds": [],
-      "summary": "The artifact installed and loaded, but the failure is a missing peer contract: react@^18.2.0 is unresolved in both the profile lockfile and the runtime graph, and the plugin's client row targets the web plane (dsh.client.platform=web with web-only injects). No build-approval gate is present (no build packages required or previously approved), so a headless retry cannot change this outcome; the incompatibility is a peer/runtime contract issue, not an approval-list issue.",
+      "summary": "The artifact installed and loaded, but the failure is a missing runtime peer (react@^18.2.0) in the DSH headless runtime graph, not a pnpm build-approval gate. No build packages are required or previously approved, so there is nothing to approve and no headless retry can resolve a missing runtime peer.",
       "evidence": [
-        "Observed result: peer-contract-incompatible; reason: exact artifact installed and loaded, react@^18.2.0 not resolved by DSH runtime (runtime-import-observed)",
-        "profileLockfile: unresolved=1, unresolvedDependencies react ^18.2.0 kind=peer from the plugin tarball",
-        "runtimeGraph: unresolved=1, pluginPeerContracts declared=1 satisfied=0 missing=1, relation react ^18.2.0 status=missing staticUsage=runtime-import-observed",
-        "Build packages required by latest retry: (none); approved in earlier retries: (none)",
-        "Manifest peerDependencies react ^18.2.0; dsh.client.platform=web with web-only injects (dsh-client-ui-renderer, dsh-client-locale, dsh-client-ui-theme, dsh-client-ui-settings, dsh-client-connection, dsh-api-remotes)",
-        "cordis.patch.yml inserts a web client row plus a no-inject tui-themes row; no build-approval gate referenced"
+        "Observed result: peer-contract-incompatible; reason: react@^18.2.0 not resolved by DSH runtime (runtime-import-observed)",
+        "runtimeGraph: unresolvedDependencies from node_modules/@nonamelego/dsh-catppuccin name react spec ^18.2.0 kind peer; pluginPeerContracts missing=1",
+        "profileLockfile: unresolved 1, react ^18.2.0 peer from the plugin tarball",
+        "Build packages required by the latest retry: (none); approved in earlier retries: (none)",
+        "Manifest peerDependencies react ^18.2.0; dsh.client.platform web with web-only inject list",
+        "cordis.patch.yml: main row stays pending on webServer in headless profiles; tui-themes row is a no-op without ~/.dsh-tui"
       ]
     },
     {
@@ -724,20 +724,21 @@
       "approvedBuilds": [],
       "artifactSha256": "0130ae262fc3f8beeb55ba0a51512b1b1bfc5e5866f35fe46905151baed1e80b",
       "repository": "PC2005-cloud/dsh-pet",
-      "sourceCommit": "d3988fa52fccaae8249d94ba31e9e4bae073362d",
-      "inputFingerprint": "sha256:fb38ab5070c07527c007a05a4018119fe2ca9ed554f8d773f8b6b2960619f4e2",
-      "plannedAt": "2026-09-22T11:59:07.893Z",
+      "sourceCommit": "93d1ed6b757bde747405583292338edbf5099ba9",
+      "inputFingerprint": "sha256:76a67d45883b63921380d6039cbf91ff89c41f627b1ae7aceefa667b2eda5e0b",
+      "plannedAt": "2026-09-23T12:01:49.530Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
       "classification": "headless-contract",
       "allowedBuilds": [],
-      "summary": "The artifact installed and loaded, but the failure is a peer-contract incompatibility: three declared peer dependencies (@deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-ui-slots, react) are unresolved in the runtime graph, and the plugin's dsh.client.inject requires the client-runtime and client-connection modules. No build-approval gate is present (latest retry requires no build packages; none approved earlier), so changing the pnpm dependency-build approval list cannot resolve missing peer resolution. This is a headless-contract limitation, not a build-approval case.",
+      "summary": "The reproduced result is peer-contract-incompatible, not build-approval-required. The artifact installed and loaded, and the runtime graph shows 8 of 11 declared peer contracts satisfied with 0 mismatched; the 3 missing peers (@deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-ui-slots, react) are absent from the DSH runtime graph, not blocked by a pnpm build-approval gate. No build packages are required or previously approved, so there is nothing to approve and no headless retry can change the outcome.",
       "evidence": [
-        "Observed result: peer-contract-incompatible; reason: @deepseek-ai/dsh-client-runtime@^0.1.1-rc.2 not resolved (no-literal-reference-observed)",
-        "runtimeGraph.unresolvedDependencies: dsh-pet -> @deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-ui-slots, react (peer)",
-        "pluginPeerContracts: declared 11, satisfied 8, missing 3 (client-runtime, client-ui-slots, react)",
-        "manifest dsh.client.inject: [@deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-connection]; platform web",
-        "Build packages required by latest retry: (none); approved in earlier retries: (none)"
+        "Observed result: peer-contract-incompatible; reason: artifact installed and loaded but @deepseek-ai/dsh-client-runtime@^0.1.1-rc.2 not resolved by DSH runtime (no-literal-reference-observed)",
+        "runtimeGraph.pluginPeerContracts: declared 11, satisfied 8, mismatched 0, missing 3",
+        "runtimeGraph.unresolvedDependencies: node_modules/dsh-pet -> @deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-ui-slots, react (all kind peer)",
+        "Build packages required by latest retry: (none); approved in earlier retries: (none)",
+        "dsh-pet/package.json peerDependencies and dsh.client.inject declare @deepseek-ai/dsh-client-runtime and @deepseek-ai/dsh-client-connection with platform web",
+        "dsh-pet/cordis.patch.yml inserts plugin row name 'dsh-pet' resolving to lib/index.js"
       ]
     },
     {
@@ -789,8 +790,8 @@
       "artifactSha256": "3785b80e9f63aa2673025817825e5814ca7dc879a57ed8dc4d464fd6ae7286dc",
       "repository": "flymysql/dsh-remote",
       "sourceCommit": "6d372f424f17c05f10e0ab8e4653179a5ce84a2f",
-      "inputFingerprint": "sha256:de7e9cb7fbaff82237956fdf6a8c1b8ff30ebf5f89161c7db444af95380bfde3",
-      "plannedAt": "2026-09-22T11:59:07.787Z",
+      "inputFingerprint": "sha256:b48544acf122f9df819a22e02f05b72857d8c8dabc657abde6f14c86b4865def",
+      "plannedAt": "2026-09-23T12:01:49.794Z",
       "model": "deepseek-v4-flash",
       "action": "retry-headless",
       "classification": "build-approval",
@@ -798,14 +799,16 @@
         "cpu-features",
         "ssh2"
       ],
-      "summary": "Reproduced result is build-approval-required for exactly two dependency build scripts, cpu-features and ssh2, both traceable to the plugin's declared ssh2 dependency; no earlier approvals exist to preserve, and the runner may only extend the explicit pnpm dependency-build approval list, so one more headless retry approving this exact observed subset is justified.",
+      "summary": "The reproduced headless result is build-approval-required for exactly cpu-features and ssh2, both of which are already in the earlier approval list, so a retry keeps every prior approval and adds nothing new. Repository evidence supports approving these exact observed packages: ssh2 is a declared runtime dependency (^1.16.0) and cpu-features is its optional native build companion; the README explicitly notes the Desktop package installer may require an explicit policy for the optional ssh2 / cpu-features build scripts. No new package names are introduced, and the retry stays within the existing headless DSH profile and the dependency-build approval list only.",
       "evidence": [
-        "Observed result: build-approval-required; reason names dependency builds cpu-features, ssh2",
-        "Latest retry build packages required: cpu-features, ssh2; earlier approved builds: (none)",
-        "Manifest dependencies include ssh2 ^1.16.0 (cpu-features is ssh2's optional native build)",
-        "README states Desktop's package installer may require an explicit policy for the optional ssh2 / cpu-features build scripts and that the isolated transport test disabled those optional scripts",
-        "Runtime graph shows 0 unresolved and all 6 declared peer contracts satisfied, so no headless-contract or different-plane blocker is present",
-        "cordis.patch.yml inserts only dsh-remote; no additional plane, secrets, or services are needed"
+        "Observed result: build-approval-required; reason names cpu-features, ssh2",
+        "Build packages required by latest retry: cpu-features, ssh2",
+        "Build packages approved in earlier retries: cpu-features, ssh2",
+        "package.json dependencies: ssh2 ^1.16.0",
+        "README: Desktop package installer may require an explicit policy for the optional ssh2 / cpu-features build scripts",
+        "README: isolated transport test disabled those optional scripts; change does not loosen an application's build allowlist",
+        "cordis.patch.yml inserts only dsh-remote; no extra plane or service required",
+        "runtimeGraph: pluginPeerContracts declared 6, satisfied 6, mismatched 0; unresolved 0"
       ]
     },
     {
@@ -1058,21 +1061,21 @@
       "approvedBuilds": [],
       "artifactSha256": "0d1720b34d1ea3c17e46874fff9d6a7fc0df31ca491920273aa3730943c6e926",
       "repository": "elysia395/dsh-wallpaper-engine",
-      "sourceCommit": "b3937a3a15537bd890df825ce685244c5fa8a856",
-      "inputFingerprint": "sha256:18963ec0a568d5e74c50dacf5bae151d142f0f3c13cacbc5288c44a494ba7c21",
-      "plannedAt": "2026-09-22T11:59:12.422Z",
+      "sourceCommit": "d5f98e76be12f1b5d73cf2c9a5cec3ae777779ca",
+      "inputFingerprint": "sha256:baf4d85ede85a0edd4c15fbd8b818695eef771ffedc4804027a4056a04794504",
+      "plannedAt": "2026-09-23T12:01:51.827Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
       "classification": "headless-contract",
       "allowedBuilds": [],
-      "summary": "The reproduced result is a peer-contract incompatibility, not a build-approval gate. The exact artifact installed and loaded, but the DSH runtime did not resolve @deepseek-ai/dsh-client-runtime@>=0.1.0-rc.6 (no-literal-reference-observed), and the runtime graph also shows missing @deepseek-ai/dsh-client-ui-slots and react peers. No build packages are required or previously approved, so there is nothing to add to the approval list; a headless retry cannot change peer resolution.",
+      "summary": "The artifact installed and loaded, but the reproduced failure is a peer-contract incompatibility: the DSH runtime did not resolve @deepseek-ai/dsh-client-runtime (>=0.1.0-rc.6), reported as missing with no-literal-reference-observed. This is not a build-approval-required result, and no build packages are required or previously approved, so no dependency-build approval change could alter the outcome. The plugin's client half targets the web plane (dsh.client.platform=web, immediately=true, injects the client runtime), which the headless DSH profile cannot satisfy; retrying headless would not resolve the missing peer contract.",
       "evidence": [
         "Observed result: peer-contract-incompatible; reason: exact artifact installed and loaded but @deepseek-ai/dsh-client-runtime@>=0.1.0-rc.6 not resolved (no-literal-reference-observed)",
+        "runtimeGraph.pluginPeerContracts: @deepseek-ai/dsh-client-runtime status=missing, staticUsage=no-literal-reference-observed; @deepseek-ai/dsh-client-ui-slots status=missing; react status=missing (runtime-import-observed)",
+        "runtimeGraph.unresolvedDependencies lists @deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-ui-slots, react as unresolved peers from node_modules/dsh-plugin-wallpaper-engine",
         "Build packages required by latest retry: (none); approved in earlier retries: (none)",
-        "runtimeGraph unresolvedDependencies: @deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-ui-slots, react (peer)",
-        "pluginPeerContracts: declared 4, satisfied 1, missing 3; @deepseek-ai/dsh-client-runtime status missing, staticUsage no-literal-reference-observed",
-        "Manifest peerDependencies require @deepseek-ai/dsh-client-runtime >=0.1.0-rc.6 and dsh.client.inject lists @deepseek-ai/dsh-client-runtime",
-        "hostRuntime: dshVersion 0.1.5-rc.2, resolvedNodes 500"
+        "Manifest dsh.client: inject [@deepseek-ai/dsh-client-runtime], platform web, immediately true; peerDependencies require dsh-client-runtime/ui-slots >=0.1.0-rc.6",
+        "cordis.patch.yml notes webServer is optional so the bundle loads in headless/TUI, but the client half still depends on the web client runtime"
       ]
     },
     {
