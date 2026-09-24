@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-headless-agent-plans/v1alpha1",
-  "updatedAt": "2026-09-23T12:01:51.827Z",
+  "updatedAt": "2026-09-24T12:10:17.259Z",
   "entries": [
     {
       "caseId": "anweat-dsh-browser-node22",
@@ -215,21 +215,21 @@
       "approvedBuilds": [],
       "artifactSha256": "0995abd9409fddaaa9dcfad250b484df7aa70b4254e6182fb498feb44897a7d2",
       "repository": "NoNameLeGo/dsh-catppuccin-theme",
-      "sourceCommit": "012031ab98f63d0dbf29f352935058a5700b93c9",
-      "inputFingerprint": "sha256:af408084a401a81efb056d767899f72b2ae565fa5c8c4b02b732bb747d3d32ee",
-      "plannedAt": "2026-09-23T12:01:49.541Z",
+      "sourceCommit": "7d8d9ef6da8492c45602cf7aa8be1fd1d7a3e57c",
+      "inputFingerprint": "sha256:2703188909b0f4cc0396b4a0c89a4685577d9ca99b44f94be5478b2ba7c31ae4",
+      "plannedAt": "2026-09-24T12:10:17.259Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
-      "classification": "headless-contract",
+      "classification": "different-plane",
       "allowedBuilds": [],
-      "summary": "The artifact installed and loaded, but the failure is a missing runtime peer (react@^18.2.0) in the DSH headless runtime graph, not a pnpm build-approval gate. No build packages are required or previously approved, so there is nothing to approve and no headless retry can resolve a missing runtime peer.",
+      "summary": "The reproduced failure is a missing peer contract (react@^18.2.0 unresolved in the DSH runtime), not a build-approval gate. No build packages are required or previously approved, and the plugin's own manifest declares a web client plane (dsh.client.platform=web with client UI injections) that the headless profile cannot satisfy. Approving build packages cannot resolve a missing runtime peer, so no retry is justified.",
       "evidence": [
         "Observed result: peer-contract-incompatible; reason: react@^18.2.0 not resolved by DSH runtime (runtime-import-observed)",
-        "runtimeGraph: unresolvedDependencies from node_modules/@nonamelego/dsh-catppuccin name react spec ^18.2.0 kind peer; pluginPeerContracts missing=1",
-        "profileLockfile: unresolved 1, react ^18.2.0 peer from the plugin tarball",
-        "Build packages required by the latest retry: (none); approved in earlier retries: (none)",
-        "Manifest peerDependencies react ^18.2.0; dsh.client.platform web with web-only inject list",
-        "cordis.patch.yml: main row stays pending on webServer in headless profiles; tui-themes row is a no-op without ~/.dsh-tui"
+        "runtimeGraph.pluginPeerContracts: declared=1, satisfied=0, missing=1; relation react required ^18.2.0 status missing",
+        "profileLockfile.unresolvedDependencies: react ^18.2.0 (peer) from the plugin tarball",
+        "Build packages required by latest retry: (none); approved in earlier retries: (none)",
+        "Manifest dsh.client: platform=web with inject list of @deepseek-ai/dsh-client-* packages",
+        "cordis.patch.yml: main row stays pending on webServer in headless profiles"
       ]
     },
     {
