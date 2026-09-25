@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-headless-agent-plans/v1alpha1",
-  "updatedAt": "2026-09-24T12:10:17.259Z",
+  "updatedAt": "2026-09-25T12:12:03.566Z",
   "entries": [
     {
       "caseId": "anweat-dsh-browser-node22",
@@ -188,20 +188,21 @@
       "approvedBuilds": [],
       "artifactSha256": "beae75e2f545063fc4522506783ed1eabf4649eda84f1a956bd753d1cfea31ea",
       "repository": "AgentConnect/dsh-awiki",
-      "sourceCommit": "9f4bcd2015c81139d25cfcf0d05f64563cbb2484",
-      "inputFingerprint": "sha256:8f736400869e9b5f75fd30b1d957f264f48be91a49020e9582f7206d34ff202b",
-      "plannedAt": "2026-09-22T11:59:00.864Z",
+      "sourceCommit": "35eba12af8a80cc2d432344f2cbe457bd5268441",
+      "inputFingerprint": "sha256:465823cb65494ae153bbc13f15406c1ebefabe18e484991fcece52b90eca8cbe",
+      "plannedAt": "2026-09-25T12:12:03.182Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
       "classification": "headless-contract",
       "allowedBuilds": [],
-      "summary": "The artifact installed and loaded, but the runtime graph shows five unresolved peer contracts, including @agent-network-protocol/dsh-anp-identity@0.1.3 with runtime-import-observed usage. These are missing peer resolutions, not pnpm build-approval gates; the runner's only lever is the dependency-build approval list, which cannot supply missing peer packages. No build packages were required or previously approved, so no retry is justified.",
+      "summary": "The reproduced result is peer-contract-incompatible, not build-approval-required. The artifact installed and loaded, but the runtime graph shows five unresolved peer contracts, including @agent-network-protocol/dsh-anp-identity@0.1.3 with runtime-import-observed usage. No build packages were required or previously approved, and the runner may only change the pnpm dependency-build approval list, which cannot resolve missing peer packages or add a Web/TUI plane. A headless retry would not change this outcome.",
       "evidence": [
         "Observed result: peer-contract-incompatible; reason: artifact installed and loaded but @agent-network-protocol/dsh-anp-identity@0.1.3 not resolved (runtime-import-observed)",
-        "runtimeGraph.unresolvedDependencies: @agent-network-protocol/dsh-anp-identity@0.1.3, @deepseek-ai/dsh-client-store, @deepseek-ai/dsh-client-ui-primitives, @deepseek-ai/dsh-client-ui-slots, react — all kind peer",
-        "pluginPeerContracts: declared 22, satisfied 17, missing 5, mismatched 0",
+        "runtimeGraph.unresolvedDependencies: @agent-network-protocol/dsh-anp-identity@0.1.3 (peer), @deepseek-ai/dsh-client-store, @deepseek-ai/dsh-client-ui-primitives, @deepseek-ai/dsh-client-ui-slots, react ^18.2.0",
+        "pluginPeerContracts: declared 22, satisfied 17, missing 5; issues list matches the five unresolved peers",
         "Build packages required by latest retry: none; approved in earlier retries: none",
-        "Runner may change only the pnpm dependency-build approval list; cannot add packages, secrets, services, or arbitrary commands"
+        "Manifest dsh.client.platform=web and inject list includes client-runtime/api-remotes/client-connection/client-locale/client-ui-layout/client-ui-settings",
+        "Runner constraint: may change only the explicit pnpm dependency-build approval list; cannot add Web/TUI plane, secrets, services, system packages, or arbitrary commands"
       ]
     },
     {
@@ -1061,21 +1062,21 @@
       "approvedBuilds": [],
       "artifactSha256": "0d1720b34d1ea3c17e46874fff9d6a7fc0df31ca491920273aa3730943c6e926",
       "repository": "elysia395/dsh-wallpaper-engine",
-      "sourceCommit": "d5f98e76be12f1b5d73cf2c9a5cec3ae777779ca",
-      "inputFingerprint": "sha256:baf4d85ede85a0edd4c15fbd8b818695eef771ffedc4804027a4056a04794504",
-      "plannedAt": "2026-09-23T12:01:51.827Z",
+      "sourceCommit": "101debc3dcd7953347b97dda0b593af20a79a144",
+      "inputFingerprint": "sha256:945c6cecf0b4d76867f1c4b9771b104cf9d329d102da50f2db443ab3336b54eb",
+      "plannedAt": "2026-09-25T12:12:03.074Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
       "classification": "headless-contract",
       "allowedBuilds": [],
-      "summary": "The artifact installed and loaded, but the reproduced failure is a peer-contract incompatibility: the DSH runtime did not resolve @deepseek-ai/dsh-client-runtime (>=0.1.0-rc.6), reported as missing with no-literal-reference-observed. This is not a build-approval-required result, and no build packages are required or previously approved, so no dependency-build approval change could alter the outcome. The plugin's client half targets the web plane (dsh.client.platform=web, immediately=true, injects the client runtime), which the headless DSH profile cannot satisfy; retrying headless would not resolve the missing peer contract.",
+      "summary": "The reproduced failure is a peer-contract incompatibility, not a build-approval gate. The exact artifact installed and loaded, but the DSH runtime did not resolve @deepseek-ai/dsh-client-runtime@>=0.1.0-rc.6 (no-literal-reference-observed), and the runtime graph also shows missing @deepseek-ai/dsh-client-ui-slots and react peers. No build packages are required or previously approved, so there is nothing to add to the approval list; a headless retry cannot change peer resolution.",
       "evidence": [
-        "Observed result: peer-contract-incompatible; reason: exact artifact installed and loaded but @deepseek-ai/dsh-client-runtime@>=0.1.0-rc.6 not resolved (no-literal-reference-observed)",
-        "runtimeGraph.pluginPeerContracts: @deepseek-ai/dsh-client-runtime status=missing, staticUsage=no-literal-reference-observed; @deepseek-ai/dsh-client-ui-slots status=missing; react status=missing (runtime-import-observed)",
-        "runtimeGraph.unresolvedDependencies lists @deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-ui-slots, react as unresolved peers from node_modules/dsh-plugin-wallpaper-engine",
-        "Build packages required by latest retry: (none); approved in earlier retries: (none)",
-        "Manifest dsh.client: inject [@deepseek-ai/dsh-client-runtime], platform web, immediately true; peerDependencies require dsh-client-runtime/ui-slots >=0.1.0-rc.6",
-        "cordis.patch.yml notes webServer is optional so the bundle loads in headless/TUI, but the client half still depends on the web client runtime"
+        "Observed result: peer-contract-incompatible; reason: exact artifact installed and loaded but @deepseek-ai/dsh-client-runtime@>=0.1.0-rc.6 was not resolved by the DSH runtime (no-literal-reference-observed)",
+        "Build packages required by the latest retry: (none); Build packages approved in earlier retries: (none)",
+        "runtimeGraph.pluginPeerContracts: declared 4, satisfied 1, missing 3; @deepseek-ai/dsh-client-runtime status missing, staticUsage no-literal-reference-observed",
+        "runtimeGraph.unresolvedDependencies: @deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-ui-slots, react (peer)",
+        "package.json peerDependencies: @deepseek-ai/dsh-client-runtime >=0.1.0-rc.6, @deepseek-ai/dsh-client-ui-slots >=0.1.0-rc.6, react ^18.2.0; dsh.client.inject: [@deepseek-ai/dsh-client-runtime]",
+        "hostRuntime: dshVersion 0.1.5-rc.2, resolvedNodes 500"
       ]
     },
     {
@@ -1235,21 +1236,21 @@
       "approvedBuilds": [],
       "artifactSha256": "a4563e560e91bcd3a2a9302ee7dbee046b146c1bd0de6b27b7c7524fd52e77ca",
       "repository": "ZSeven-W/dsh-openpencil",
-      "sourceCommit": "20065e60194a93cc10f5fe5e5c42a4e58628ccb9",
-      "inputFingerprint": "sha256:703058ca454867209862392793014ed02a25a127b26fad0ea66ba0a394295110",
-      "plannedAt": "2026-09-22T11:59:15.152Z",
+      "sourceCommit": "7c2f10504bb9d988d5f80d3fed5ab22ccbd19faf",
+      "inputFingerprint": "sha256:f8d73d9dbf93ca5e7a7017f2c65f257ad30d5dd48d313cff032b816ade4d0e49",
+      "plannedAt": "2026-09-25T12:12:03.566Z",
       "model": "deepseek-v4-flash",
       "action": "stop-headless",
       "classification": "headless-contract",
       "allowedBuilds": [],
-      "summary": "The reproduced result is peer-contract-incompatible, not build-approval-required. The exact artifact installed and loaded, but the DSH runtime did not resolve @deepseek-ai/dsh-client-runtime@^0.1.0-rc.6 (type-only-reference-observed). No build packages are required or were previously approved, so there is nothing to add to the dependency-build approval list; the runner's only permitted change cannot address a missing peer contract.",
+      "summary": "The reproduced result is peer-contract-incompatible, not build-approval-required. The exact artifact installed and loaded, but the DSH runtime did not resolve @deepseek-ai/dsh-client-runtime@^0.1.0-rc.6 (type-only-reference-observed). No build packages are required by the latest retry and none were approved earlier, so there is no build-approval subset to add. The unresolved peers are runtime/peer contract gaps (missing @deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-ui-slots, react, react-dom) that the runner cannot fix by editing the pnpm dependency-build approval list, and the observed manifest's declared peer ranges (e.g. 0.1.5-rc.1) differ from the artifact's resolved peer specs (^0.1.0-rc.6), indicating a contract mismatch rather than a build gate.",
       "evidence": [
-        "Observed result: peer-contract-incompatible; reason: artifact installed and loaded but @deepseek-ai/dsh-client-runtime@^0.1.0-rc.6 was not resolved by the DSH runtime (type-only-reference-observed)",
-        "Build packages required by the latest retry: (none); approved in earlier retries: (none)",
-        "runtimeGraph.pluginPeerContracts: declared 14, satisfied 10, missing 4; issues include @deepseek-ai/dsh-client-runtime (missing, type-only-reference-observed), @deepseek-ai/dsh-client-ui-slots (missing), react and react-dom (missing, runtime-import-observed)",
-        "runtimeGraph.unresolvedDependencies from node_modules/@zseven-w/dsh-openpencil: @deepseek-ai/dsh-client-runtime ^0.1.0-rc.6, @deepseek-ai/dsh-client-ui-slots ^0.1.0-rc.6, react ^18.2.0, react-dom ^18.2.0 (all peer)",
-        "hostRuntime: dsh-process, dshVersion 0.1.5-rc.2, resolvedNodes 500",
-        "Manifest peerDependencies declare @deepseek-ai/dsh-client-runtime is not listed while the installed artifact's lockfile peers reference ^0.1.0-rc.6; no build-approval gate is present in the evidence"
+        "Observed result: peer-contract-incompatible; reason: exact artifact installed and loaded but @deepseek-ai/dsh-client-runtime@^0.1.0-rc.6 was not resolved (type-only-reference-observed)",
+        "Build packages required by latest retry: (none); approved in earlier retries: (none)",
+        "runtimeGraph pluginPeerContracts: declared 14, satisfied 10, missing 4; issues list @deepseek-ai/dsh-client-runtime, @deepseek-ai/dsh-client-ui-slots, react, react-dom as missing",
+        "profileLockfile unresolvedDependencies include @deepseek-ai/dsh-client-runtime spec ^0.1.0-rc.6 (peer)",
+        "Observed manifest peerDependencies declare 0.1.5-rc.1 ranges while dynamic evidence shows ^0.1.0-rc.6 peer specs",
+        "Runner may change only the explicit pnpm dependency-build approval list; cannot add planes, secrets, services, or arbitrary commands"
       ]
     },
     {
