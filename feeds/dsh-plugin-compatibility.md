@@ -1,6 +1,6 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-09-26T11:42:39.482Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-09-26T11:48:45.900Z`.
 Selected host: `@deepseek-ai/dsh@0.1.7-rc.2`.
 
 **0 observed compatible · 0 observed incompatible · 0 needs review · 96 update pending · 4 not observed**
