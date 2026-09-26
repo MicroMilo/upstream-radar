@@ -1200,8 +1200,8 @@
       ],
       "source": {
         "name": "dsh-wsl-workspace",
-        "version": "0.7.2",
-        "digest": "sha256:6268977fe3e7df3cf3c60c8577862c830f36c161b62cab36d809c23f52eaf095",
+        "version": "0.7.3",
+        "digest": "sha256:6166a200c50c907337777e4872f3f4b83455751bea65d0ee6471acc4e0a99d22",
         "findings": [
           {
             "code": "dependency-graph-unlocked",
@@ -1209,9 +1209,9 @@
             "summary": "Runtime dependency graph is not locked in the reviewed source tree",
             "detail": "A future resolution of the same manifest may select different transitive artifacts.",
             "evidence": {
-              "runtimeDependencyCount": 10
+              "runtimeDependencyCount": 12
             },
-            "fingerprint": "sha256:ac233189b4b0f0fe3b596a5346363807be0b817696b9b0151d04297d55907107"
+            "fingerprint": "sha256:d78a313cb5af742903ab64e8eb3343264a674d4f5e56a2fd6d2e54c037de10b8"
           },
           {
             "code": "floating-dependency-spec",
@@ -1320,6 +1320,30 @@
               "spec": "*"
             },
             "fingerprint": "sha256:886a6bbf60fecf14541260fa486768c39fab22f5c1b420176aac2082a33c1dee"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency js-yaml uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "js-yaml",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:9ec66f039d1ade8f713a22c06d6f8f634986844f8ebc09a0e5474dff4771c634"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/cordis-plugin-include uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/cordis-plugin-include",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:ad51389dca7810e837199be5ffca56d1c80e3f86534f962d5f92bfeb504ef391"
           },
           {
             "code": "floating-dependency-spec",
