@@ -1,6 +1,6 @@
 # DSH headless Agent review
 
-Updated: 2026-09-26T11:42:38.856Z
+Updated: 2026-09-27T12:22:06.077Z
 
 The Agent reads bounded repository evidence and the latest isolated headless result. There is no static environment-planning fallback. Only an exact observed build-package name can reach the no-secret retry runner.
 
@@ -29,7 +29,7 @@ The Agent reads bounded repository evidence and the latest isolated headless res
 | `dsh-thirteen-bg-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The reproduced failure is a peer-contract incompatibility, not a build-approval gate. The artifact installed and loaded, but the DSH runtime did not resolve the declared peer @deepseek-ai/dsh-client-runtime (and @deepseek-ai/dsh-client-ui-slots, react) for the headless profile. No build packages are required or were previously approved, so there is nothing to add to the dependency-build approval list; a headless retry cannot change peer resolution. |
 | `dsh-vision-toolkit-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
-|  |  |  |  | The reproduced result is peer-contract-incompatible, not build-approval-required. The exact artifact installed and loaded, but the DSH runtime did not resolve @deepseek-ai/dsh-client-ui-primitives (runtime-import-observed) and also left @deepseek-ai/dsh-client-ui-slots and react unresolved. No build packages are required by the latest retry and none were approved earlier, so there is nothing to add to the dependency-build approval list. The runner can only change the pnpm dependency-build approval list, which cannot supply missing runtime peer modules, so a headless retry is not justified. |
+|  |  |  |  | The reproduced result is peer-contract-incompatible, not build-approval-required. The exact artifact installed and loaded, but the DSH runtime did not resolve @deepseek-ai/dsh-client-ui-primitives (runtime-import-observed), and the runtime graph also shows @deepseek-ai/dsh-client-ui-slots and react unresolved. No build packages are required or previously approved, so there is nothing for the dependency-build approval list to change; a headless retry cannot add the missing runtime peers. |
 | `dshscan-node22` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
 |  |  |  |  | The artifact installed and loaded, but the failure is a peer-contract mismatch: the plugin declares peerDependency @deepseek-ai/dsh-tools@0.1.0-rc.6 while the host DSH 0.1.5-rc.2 resolves @deepseek-ai/dsh-tools@0.1.5-rc.2, and the runtime import is observed. No build-approval gate is present (no required or previously approved build packages), so a headless retry cannot change the outcome; the runner may only edit the pnpm dependency-build approval list. |
 | `openpencil-node24` | `peer-contract-incompatible` | `stop-headless` | `headless-contract` | none |
