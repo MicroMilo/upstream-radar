@@ -981,8 +981,8 @@
       ],
       "source": {
         "name": "dsh-hdc-bridge",
-        "version": "0.7.3",
-        "digest": "sha256:c005a7b014a72ae9674ff01290b6a1310d1d1f0ae9b134f8cbf894bff8748e0c",
+        "version": "0.9.1",
+        "digest": "sha256:e4c1016b9c4f570845a279e9b4fcd13acd17986a69dc9dc7ab0793abd6ce084c",
         "findings": [
           {
             "code": "custom-registry-config",
@@ -997,10 +997,10 @@
         ]
       },
       "artifact": {
-        "spec": "npm:dsh-hdc-bridge@0.7.3",
+        "spec": "npm:dsh-hdc-bridge@0.9.1",
         "name": "dsh-hdc-bridge",
-        "version": "0.7.3",
-        "digest": "sha256:f2fd58883c31f44758e7a0201df9a7e2dc62d4710a6b99a015eecfe1ca4668ae",
+        "version": "0.9.1",
+        "digest": "sha256:aa34501ec043a2be0851bf3444155800c47955f474d2b9afc3c97eef2c7ce018",
         "findings": [
           {
             "code": "npm-provenance-missing",
@@ -1024,15 +1024,15 @@
       ],
       "source": {
         "name": "dsh-msg-hub",
-        "version": "0.1.9",
-        "digest": "sha256:05efb1c6d353e792e34468a9d5c7de1725e4c4e3340c7ee4a73e4fd47142b932",
+        "version": "0.1.11",
+        "digest": "sha256:8c074f8496996ad58c21f6deeb9a8d4a22d53f94dfcbeb109d03696e2caa748a",
         "findings": []
       },
       "artifact": {
-        "spec": "npm:dsh-msg-hub@0.1.9",
+        "spec": "npm:dsh-msg-hub@0.1.11",
         "name": "dsh-msg-hub",
-        "version": "0.1.9",
-        "digest": "sha256:0047e135f648e73bb5ac73f925f276f0627532f23492ead397aa7c81d3756263",
+        "version": "0.1.11",
+        "digest": "sha256:0d6793fbcd16020c2d9954a5e3a7afb05177c1234e8deee2880f5a10162bf8c8",
         "findings": [
           {
             "code": "dependency-install-script-present",
@@ -1041,20 +1041,13 @@
             "detail": "The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.",
             "evidence": {
               "packages": [
-                "protobufjs@7.6.5"
+                "protobufjs@7.6.6"
               ],
               "scripts": [
-                "protobufjs@7.6.5 postinstall: node scripts/postinstall"
+                "protobufjs@7.6.6 postinstall: node scripts/postinstall"
               ]
             },
-            "fingerprint": "sha256:e52d9339a71c4614955dd2bfb04751dc5d287d2e8ef2355acc450f575c287fe3"
-          },
-          {
-            "code": "npm-provenance-missing",
-            "severity": "medium",
-            "summary": "npm artifact has no build provenance",
-            "detail": "The published bytes are not cryptographically linked to a declared source commit and build workflow.",
-            "fingerprint": "sha256:8213fb7b557a0549cc2f89474f4fdcb1010c8775a30a819d060589744662c58f"
+            "fingerprint": "sha256:2bb34dff0ebcff22f7f25f808aca6e368c4083a1dafae268371d39c49a261f48"
           }
         ]
       }
@@ -1122,8 +1115,8 @@
       ],
       "source": {
         "name": "dsh-verification-receipt",
-        "version": "0.1.0",
-        "digest": "sha256:01ab83c4c6af508c3eb8e6cc0bf6d659ee1267f6d542e64d025c9bbd3884c10d",
+        "version": "0.1.1",
+        "digest": "sha256:832672a6b511bb8b5f30d85ba394fb047505521d67f3a00c600ec3da72de1cb6",
         "findings": [
           {
             "code": "lifecycle-script-present",
@@ -1207,8 +1200,8 @@
       ],
       "source": {
         "name": "dsh-wsl-workspace",
-        "version": "0.3.1",
-        "digest": "sha256:d9f88bc668d0c3d769f0e6e7d7d5ee1f590a0a9fa59980ee87a26dabbfafee40",
+        "version": "0.7.3",
+        "digest": "sha256:5a73518aa914d5f426f4f2f858d19b9f3e7876e864da3c642561b1a2630cbc04",
         "findings": [
           {
             "code": "dependency-graph-unlocked",
@@ -1216,9 +1209,21 @@
             "summary": "Runtime dependency graph is not locked in the reviewed source tree",
             "detail": "A future resolution of the same manifest may select different transitive artifacts.",
             "evidence": {
-              "runtimeDependencyCount": 6
+              "runtimeDependencyCount": 12
             },
-            "fingerprint": "sha256:e7f8d9d424f38b21a49bb290700f8cc277f2b4d6009c036c97f84b93a212f635"
+            "fingerprint": "sha256:d78a313cb5af742903ab64e8eb3343264a674d4f5e56a2fd6d2e54c037de10b8"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/schemastery uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/schemastery",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:0189c3700d23804203d33c2c4de2d08fd7599d3d426164cff5719deef378a0ca"
           },
           {
             "code": "floating-dependency-spec",
@@ -1259,6 +1264,18 @@
           {
             "code": "floating-dependency-spec",
             "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-tool-fs-search uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-tool-fs-search",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:4aab5564ceb058c49988110d193c59257a25b0914e213d8fa0b8aa84b04b2e1c"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
             "summary": "Dependency @deepseek-ai/dsh-shell uses a floating version",
             "detail": "The same manifest can resolve to a different artifact without a source change.",
             "evidence": {
@@ -1267,6 +1284,18 @@
               "spec": "*"
             },
             "fingerprint": "sha256:57d05d8789b8ef53a0ccdaef41333a5bdc499f3469dd0c443b77a642502c1152"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-sandbox uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-sandbox",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:67344576fcc6f8c10400d8b7a18cc906270738ced1d97fd28230fb4640e9a845"
           },
           {
             "code": "floating-dependency-spec",
@@ -1291,29 +1320,62 @@
               "spec": "*"
             },
             "fingerprint": "sha256:886a6bbf60fecf14541260fa486768c39fab22f5c1b420176aac2082a33c1dee"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency js-yaml uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "js-yaml",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:9ec66f039d1ade8f713a22c06d6f8f634986844f8ebc09a0e5474dff4771c634"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/cordis-plugin-include uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/cordis-plugin-include",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:ad51389dca7810e837199be5ffca56d1c80e3f86534f962d5f92bfeb504ef391"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-tools uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-tools",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:bb491491f1c6c0d081625268517b77d5b07d59d05c02b97479665c6c1b721d13"
           }
         ]
       },
       "artifact": {
-        "spec": "npm:dsh-wsl-workspace@0.3.1",
+        "spec": "npm:dsh-wsl-workspace@0.7.3",
         "name": "dsh-wsl-workspace",
-        "version": "0.3.1",
-        "digest": "sha256:d16e4690bccaef753ace75e887be8e4eabcf94e1a39462f1598f2776dbedd79d",
+        "version": "0.7.3",
+        "digest": "sha256:b8a517cbd4a0799e61cf446a19d34cae7c9b11cca4b45c22bac6fdfe95c0376f",
         "findings": [
           {
-            "code": "dependency-install-script-present",
-            "severity": "high",
-            "summary": "Resolved dependency graph contains install-time scripts",
-            "detail": "The exact npm lockfile marks one or more reachable dependencies as having an install-time lifecycle script. Scripts were disabled during this review; a normal DSH installation may execute or stop on these scripts.",
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/schemastery uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
             "evidence": {
-              "packages": [
-                "koffi@3.1.6"
-              ],
-              "scripts": [
-                "koffi@3.1.6 install: node ./cnoke.cjs -P . -D src/koffi --prebuild --release"
-              ]
+              "dependency": "@deepseek-ai/schemastery",
+              "scope": "peerDependency",
+              "spec": "*"
             },
-            "fingerprint": "sha256:19464641cb76149ddfd541b25cfd61d4ed02ca435ec7a21051b417ff35cc6dea"
+            "fingerprint": "sha256:0189c3700d23804203d33c2c4de2d08fd7599d3d426164cff5719deef378a0ca"
           },
           {
             "code": "floating-dependency-spec",
@@ -1354,6 +1416,18 @@
           {
             "code": "floating-dependency-spec",
             "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-tool-fs-search uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-tool-fs-search",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:4aab5564ceb058c49988110d193c59257a25b0914e213d8fa0b8aa84b04b2e1c"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
             "summary": "Dependency @deepseek-ai/dsh-shell uses a floating version",
             "detail": "The same manifest can resolve to a different artifact without a source change.",
             "evidence": {
@@ -1362,6 +1436,18 @@
               "spec": "*"
             },
             "fingerprint": "sha256:57d05d8789b8ef53a0ccdaef41333a5bdc499f3469dd0c443b77a642502c1152"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-sandbox uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-sandbox",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:67344576fcc6f8c10400d8b7a18cc906270738ced1d97fd28230fb4640e9a845"
           },
           {
             "code": "floating-dependency-spec",
@@ -1386,6 +1472,42 @@
               "spec": "*"
             },
             "fingerprint": "sha256:886a6bbf60fecf14541260fa486768c39fab22f5c1b420176aac2082a33c1dee"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency js-yaml uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "js-yaml",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:9ec66f039d1ade8f713a22c06d6f8f634986844f8ebc09a0e5474dff4771c634"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/cordis-plugin-include uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/cordis-plugin-include",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:ad51389dca7810e837199be5ffca56d1c80e3f86534f962d5f92bfeb504ef391"
+          },
+          {
+            "code": "floating-dependency-spec",
+            "severity": "medium",
+            "summary": "Dependency @deepseek-ai/dsh-tools uses a floating version",
+            "detail": "The same manifest can resolve to a different artifact without a source change.",
+            "evidence": {
+              "dependency": "@deepseek-ai/dsh-tools",
+              "scope": "peerDependency",
+              "spec": "*"
+            },
+            "fingerprint": "sha256:bb491491f1c6c0d081625268517b77d5b07d59d05c02b97479665c6c1b721d13"
           },
           {
             "code": "npm-provenance-missing",

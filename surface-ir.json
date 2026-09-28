@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-surface-ir/v1alpha1",
-  "generatedAt": "2026-08-25T10:08:13.193Z",
+  "generatedAt": "2026-09-23T12:07:55.051Z",
   "cells": [
     {
       "id": "better-sidebar-node22-web",
@@ -9,12 +9,12 @@
       "profile": "web",
       "runtimeId": "dsh-better-sidebar",
       "plugin": {
-        "spec": "dsh-better-sidebar@0.16.1",
-        "artifactSha256": "350486c712e17287c316ddb6ba15bc05741796ab0f4de6c5c0daae729913f2b3"
+        "spec": "dsh-better-sidebar@0.19.1",
+        "artifactSha256": "67969b94e96747ad910ce945bafa2b8176af584fb8bc02f87dce5ed132986884"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -24,9 +24,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T10:08:13.193Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:36.606Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -51,10 +51,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -63,55 +64,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "dsh-better-sidebar",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-better-sidebar/client.js?rev=3ae56a444a61",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "better-sidebar-node22-web.png",
-          "trace": "better-sidebar-node22-web.trace.zip",
           "hostLog": "better-sidebar-node22-web.host.log"
         }
       }
@@ -123,12 +85,12 @@
       "profile": "web",
       "runtimeId": "@michengai/dsh-agency-agents",
       "plugin": {
-        "spec": "@michengai/dsh-agency-agents@0.1.21",
-        "artifactSha256": "8256aba3b054ecf33d9490fb0cafb93447e8f43180a82b0b2fc0df892d739d31"
+        "spec": "@michengai/dsh-agency-agents@1.0.1",
+        "artifactSha256": "2bd203dd66fa7f5622992f6ecb02bbfc314d6742455579fc9121f7260819dae7"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -138,9 +100,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:36:29.386Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:55.051Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -165,10 +127,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -177,55 +140,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "@michengai/dsh-agency-agents",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@michengai/dsh-agency-agents/client.js?rev=913cbdc5b8ca",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "dsh-agency-agents-node22-web.png",
-          "trace": "dsh-agency-agents-node22-web.trace.zip",
           "hostLog": "dsh-agency-agents-node22-web.host.log"
         }
       }
@@ -237,12 +161,12 @@
       "profile": "web",
       "runtimeId": "@michengai/dsh-archive-manager",
       "plugin": {
-        "spec": "@michengai/dsh-archive-manager@0.1.14",
-        "artifactSha256": "f8d76d265dbd96e68a777e4b88e06d844a592750abea2559109d9c90486dcf3e"
+        "spec": "@michengai/dsh-archive-manager@1.0.2",
+        "artifactSha256": "890ea4f212f791fd8152d685ce3299e9c1898b782e4b7ec3fd5d5b630ff081df"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -252,9 +176,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:37:03.689Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:23.389Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -279,10 +203,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -291,55 +216,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "@michengai/dsh-archive-manager",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference",
-            "@deepseek-ai/dsh-client-ui-jobs"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@michengai/dsh-archive-manager/client.js?rev=288c2c8ac2b4",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "dsh-archive-manager-node22-web.png",
-          "trace": "dsh-archive-manager-node22-web.trace.zip",
           "hostLog": "dsh-archive-manager-node22-web.host.log"
         }
       }
@@ -351,12 +237,12 @@
       "profile": "web",
       "runtimeId": "@awiki/dsh-plugin",
       "plugin": {
-        "spec": "@awiki/dsh-plugin@0.3.3",
-        "artifactSha256": "0a4b43e67b15323d648552020e839777d6ee48ced7d61fbf36022358541696b4"
+        "spec": "@awiki/dsh-plugin@0.3.12",
+        "artifactSha256": "beae75e2f545063fc4522506783ed1eabf4649eda84f1a956bd753d1cfea31ea"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -366,9 +252,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:37:23.394Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-21T13:16:15.638Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -393,10 +279,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -405,55 +292,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "@awiki/dsh-plugin",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@awiki/dsh-plugin/client.js?rev=dcdc645b0006",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "dsh-awiki-node22-web.png",
-          "trace": "dsh-awiki-node22-web.trace.zip",
           "hostLog": "dsh-awiki-node22-web.host.log"
         }
       }
@@ -465,12 +313,12 @@
       "profile": "web",
       "runtimeId": "dsh-codex-connect",
       "plugin": {
-        "spec": "dsh-codex-connect@0.1.0-alpha.4.19",
-        "artifactSha256": "3876106f058f94d3451fc2941a66b02b924ba0e93041fd5028252484ae6c451c"
+        "spec": "dsh-codex-connect@0.1.0-alpha.4.39",
+        "artifactSha256": "2dff58e6eaf53d18acc14ac8b094a35b34c1cb9c8e54c51677ce8e2d37fb3aca"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -480,9 +328,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:36:32.125Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:38.006Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -507,10 +355,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -519,55 +368,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "dsh-codex-connect",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-codex-connect/client.js?rev=0e4b6dc8577b",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "dsh-codex-connect-node22-web.png",
-          "trace": "dsh-codex-connect-node22-web.trace.zip",
           "hostLog": "dsh-codex-connect-node22-web.host.log"
         }
       }
@@ -579,12 +389,12 @@
       "profile": "web",
       "runtimeId": "dsh-codex-subscription",
       "plugin": {
-        "spec": "dsh-codex-subscription@1.8.0",
-        "artifactSha256": "1737b140a9a435a7f304ac69c9bdb66979a57843f0bc803ce6baa1680f2f6020"
+        "spec": "dsh-codex-subscription@2.1.2",
+        "artifactSha256": "cd0f768d043a9824ed8b5f2c8da5de4867cd3ac15d01e50330c8cc4410ddfe0b"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -594,9 +404,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:50:44.103Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:25.533Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -621,10 +431,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -633,55 +444,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "dsh-codex-subscription",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-codex-subscription/client.js?rev=e52867508bc5",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "dsh-codex-subscription-node22-web.png",
-          "trace": "dsh-codex-subscription-node22-web.trace.zip",
           "hostLog": "dsh-codex-subscription-node22-web.host.log"
         }
       }
@@ -693,8 +465,8 @@
       "profile": "web",
       "runtimeId": "@mars-sea/dsh-commandcode-provider",
       "plugin": {
-        "spec": "@mars-sea/dsh-commandcode-provider@0.8.1",
-        "artifactSha256": "245acceadf2fc86d1cb5d6a13d5c45b2ac7cc25f10e1436ad3c66810c3f86eea"
+        "spec": "@mars-sea/dsh-commandcode-provider@0.9.1",
+        "artifactSha256": "5e09049f1024bad6ca32cce8358242e7677e66129629b20db134f1c978688147"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
@@ -708,7 +480,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:36:39.842Z",
+        "observedAt": "2026-09-05T11:04:45.182Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -786,7 +558,7 @@
             "@deepseek-ai/dsh-client-ui-reference"
           ],
           "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@mars-sea/dsh-commandcode-provider/client.js?rev=74805bd7ed2f",
+          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@mars-sea/dsh-commandcode-provider/client.js?rev=25bcdc189981",
           "pluginBundleStatus": 200,
           "applicationMounted": true,
           "pluginMaterialized": true,
@@ -807,8 +579,8 @@
       "profile": "web",
       "runtimeId": "dsh-config-manager",
       "plugin": {
-        "spec": "dsh-config-manager@0.1.53",
-        "artifactSha256": "ecee0aaf8b8d8117ab8e4470496f1ae7d2cb20f81453bb92d5c3d35a5932a31c"
+        "spec": "dsh-config-manager@0.1.54",
+        "artifactSha256": "4ba117477558991006be548d609ae8d29f5316ab0522206e1859f54df7c7ada2"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
@@ -822,7 +594,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:50:38.765Z",
+        "observedAt": "2026-09-05T11:04:49.415Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -900,7 +672,7 @@
             "@deepseek-ai/dsh-client-ui-reference"
           ],
           "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-config-manager/client.js?rev=50de063d56aa",
+          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-config-manager/client.js?rev=6f37c4bb9d1c",
           "pluginBundleStatus": 200,
           "applicationMounted": true,
           "pluginMaterialized": true,
@@ -911,6 +683,124 @@
           "screenshot": "dsh-config-manager-node22-web.png",
           "trace": "dsh-config-manager-node22-web.trace.zip",
           "hostLog": "dsh-config-manager-node22-web.host.log"
+        }
+      }
+    },
+    {
+      "id": "dsh-dream-skin-node22-web",
+      "sourceCaseId": "dsh-dream-skin-node22",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-dream-skin",
+      "plugin": {
+        "spec": "dsh-dream-skin@8.29.0",
+        "artifactSha256": "b7d7904115cbca0fc2e8708c7b772af3e0f81786d991bc2421eba36cc2ce20c4"
+      },
+      "upstream": {
+        "package": "@deepseek-ai/dsh",
+        "dshVersion": "0.1.1-rc.2"
+      },
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "observation": {
+        "observedAt": "2026-08-29T13:05:30.939Z",
+        "result": "surface-incompatible",
+        "reason": "DSH Web did not hand off from its boot page to the assembled application: HARNESSFailed to load pluginsfailed to import loader entry 6f6829b2 (dsh-dream-skin): client-modules: require(\"@deepseek-ai/dsh-client-store\") missed the module table — not a platform seed word, not a materialized module, and no registered package factory (a build-time externals drift, or a dynamic dependency that did not arrive)",
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "passed",
+            "code": 0
+          },
+          "profile": {
+            "status": "passed",
+            "code": 0
+          },
+          "install": {
+            "status": "passed",
+            "code": 0
+          },
+          "registration": {
+            "status": "passed"
+          },
+          "host": {
+            "status": "passed"
+          },
+          "surface": {
+            "status": "failed",
+            "detail": "DSH Web did not hand off from its boot page to the assembled application: HARNESSFailed to load pluginsfailed to import loader entry 6f6829b2 (dsh-dream-skin): client-modules: require(\"@deepseek-ai/dsh-client-store\") missed the module table — not a platform seed word, not a materialized module, and no registered package factory (a build-time externals drift, or a dynamic dependency that did not arrive)"
+          },
+          "interaction": {
+            "status": "passed"
+          },
+          "shutdown": {
+            "status": "passed"
+          }
+        },
+        "evidence": {
+          "plane": "web",
+          "url": "http://127.0.0.1:30880/",
+          "httpStatus": 200,
+          "title": "DeepSeek Harness",
+          "rootMounted": true,
+          "bootManifestPresent": true,
+          "bootEntryIds": [
+            "dsh-dream-skin",
+            "@deepseek-ai/dsh-typert-registry",
+            "@deepseek-ai/dsh-api-gateway",
+            "@deepseek-ai/dsh-session-log-export",
+            "@deepseek-ai/dsh-client-hmr",
+            "@deepseek-ai/dsh-client-modules",
+            "@deepseek-ai/dsh-client-connection",
+            "@deepseek-ai/dsh-api-remotes",
+            "@deepseek-ai/dsh-client-runtime",
+            "@deepseek-ai/dsh-cordis-client-runner",
+            "@deepseek-ai/dsh-client-ui-theme",
+            "@deepseek-ai/dsh-client-locale",
+            "@deepseek-ai/dsh-client-ui-layout",
+            "@deepseek-ai/dsh-client-ui-renderer",
+            "@deepseek-ai/dsh-client-ui-sidebar",
+            "@deepseek-ai/dsh-client-ui-settings",
+            "@deepseek-ai/dsh-client-ui-settings-general",
+            "@deepseek-ai/dsh-client-ui-settings-models",
+            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+            "@deepseek-ai/dsh-client-ui-conversation",
+            "@deepseek-ai/dsh-client-ui-brand-official",
+            "@deepseek-ai/dsh-client-ui-attachment",
+            "@deepseek-ai/dsh-client-ui-tool",
+            "@deepseek-ai/dsh-client-ui-cordis",
+            "@deepseek-ai/dsh-client-ui-workflow-run",
+            "@deepseek-ai/dsh-client-ui-deliverables",
+            "@deepseek-ai/dsh-client-ui-workspace",
+            "@deepseek-ai/dsh-client-ui-input-trigger",
+            "@deepseek-ai/dsh-client-ui-commands",
+            "@deepseek-ai/dsh-client-ui-skill",
+            "@deepseek-ai/dsh-client-ui-subagent",
+            "@deepseek-ai/dsh-client-ui-reference"
+          ],
+          "pluginEntryPresent": true,
+          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-dream-skin/client.js?rev=75a79f24af77",
+          "pluginBundleStatus": 200,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
+          "bootFailureText": "HARNESSFailed to load pluginsfailed to import loader entry 6f6829b2 (dsh-dream-skin): client-modules: require(\"@deepseek-ai/dsh-client-store\") missed the module table — not a platform seed word, not a materialized module, and no registered package factory (a build-time externals drift, or a dynamic dependency that did not arrive)",
+          "consoleErrors": [
+            "Error: failed to import loader entry 6f6829b2 (dsh-dream-skin): client-modules: require(\"@deepseek-ai/dsh-client-store\") missed the module table — not a platform seed word, not a materialized module, and no registered package factory (a build-time externals drift, or a dynamic dependency that did not arrive)\n    at Dt (http://127.0.0.1:30880/assets/index-ClqxG24t.js:17:259)\n    at Dn._init (http://127.0.0.1:30880/assets/index-ClqxG24t.js:17:4088)\n    at async Dn.init (http://127.0.0.1:30880/assets/index-Clq"
+          ],
+          "pageErrors": [],
+          "failedRequests": [],
+          "blockedExternalRequests": [],
+          "screenshot": "dsh-dream-skin-node22-web.png",
+          "trace": "dsh-dream-skin-node22-web.trace.zip",
+          "hostLog": "dsh-dream-skin-node22-web.host.log"
         }
       }
     },
@@ -926,7 +816,7 @@
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -936,9 +826,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:50:40.205Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:20.588Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -963,10 +853,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -975,56 +866,169 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "dsh-full-remote",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-full-remote/client.js?rev=87613a1e94b1",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "dsh-full-remote-node22-web.png",
-          "trace": "dsh-full-remote-node22-web.trace.zip",
           "hostLog": "dsh-full-remote-node22-web.host.log"
+        }
+      }
+    },
+    {
+      "id": "dsh-git-worktree-node22-web",
+      "sourceCaseId": "dsh-git-worktree-node22",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-git-worktree",
+      "plugin": {
+        "spec": "dsh-git-worktree@0.9.2",
+        "artifactSha256": "3e1b32416eed6ff3f4de96cf7e8747b9acc082ce0148e74d27b79ee7749fce03"
+      },
+      "upstream": {
+        "package": "@deepseek-ai/dsh",
+        "dshVersion": "0.1.5-rc.2"
+      },
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "observation": {
+        "observedAt": "2026-09-23T12:07:23.187Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "passed",
+            "code": 0
+          },
+          "profile": {
+            "status": "passed",
+            "code": 0
+          },
+          "install": {
+            "status": "passed",
+            "code": 0
+          },
+          "registration": {
+            "status": "passed"
+          },
+          "host": {
+            "status": "passed"
+          },
+          "surface": {
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
+          },
+          "interaction": {
+            "status": "skipped"
+          },
+          "shutdown": {
+            "status": "passed"
+          }
+        },
+        "evidence": {
+          "plane": "web",
+          "url": "http://127.0.0.1:30880/",
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "failedRequests": [],
+          "hostLog": "dsh-git-worktree-node22-web.host.log"
+        }
+      }
+    },
+    {
+      "id": "dsh-history-node22-web",
+      "sourceCaseId": "dsh-history-node22",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-history",
+      "plugin": {
+        "spec": "dsh-history@0.1.25",
+        "artifactSha256": "de1dea5ffd3f1d33e9248268e32b1b60c460fcc0d7d07d843163b158d7529b51"
+      },
+      "upstream": {
+        "package": "@deepseek-ai/dsh",
+        "dshVersion": "0.1.5-rc.2"
+      },
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "observation": {
+        "observedAt": "2026-09-23T12:07:31.472Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "passed",
+            "code": 0
+          },
+          "profile": {
+            "status": "passed",
+            "code": 0
+          },
+          "install": {
+            "status": "passed",
+            "code": 0
+          },
+          "registration": {
+            "status": "passed"
+          },
+          "host": {
+            "status": "passed"
+          },
+          "surface": {
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
+          },
+          "interaction": {
+            "status": "skipped"
+          },
+          "shutdown": {
+            "status": "passed"
+          }
+        },
+        "evidence": {
+          "plane": "web",
+          "url": "http://127.0.0.1:30880/",
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "failedRequests": [],
+          "hostLog": "dsh-history-node22-web.host.log"
         }
       }
     },
@@ -1035,12 +1039,12 @@
       "profile": "web",
       "runtimeId": "dsh-mnemon",
       "plugin": {
-        "spec": "dsh-mnemon@0.3.0",
-        "artifactSha256": "da19e5219a53066426bcea66c6c231b78db1f0abd4cc01b431cb350f4af9e6c8"
+        "spec": "dsh-mnemon@0.5.12",
+        "artifactSha256": "9691ff6df9da8882328edc48a35cac1b1e6175f9b07909087fca3d70dc31d555"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -1050,9 +1054,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:50:40.465Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:26.688Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -1077,10 +1081,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -1089,55 +1094,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "dsh-mnemon",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-mnemon/client.js?rev=3e86b4f62d93",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "dsh-mnemon-node22-web.png",
-          "trace": "dsh-mnemon-node22-web.trace.zip",
           "hostLog": "dsh-mnemon-node22-web.host.log"
         }
       }
@@ -1149,12 +1115,12 @@
       "profile": "web",
       "runtimeId": "dsh-pet",
       "plugin": {
-        "spec": "dsh-pet@0.1.8",
-        "artifactSha256": "9a25c7a4cfc49f74f5dff4ba3292b18fa4bca4a08e656fdd57b8a28d9f9fd121"
+        "spec": "dsh-pet@0.2.11",
+        "artifactSha256": "0130ae262fc3f8beeb55ba0a51512b1b1bfc5e5866f35fe46905151baed1e80b"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -1164,9 +1130,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:36:32.513Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:36.674Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -1191,10 +1157,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -1203,55 +1170,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "dsh-pet",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-pet/client.js?rev=b658734642b2",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "dsh-pet-node22-web.png",
-          "trace": "dsh-pet-node22-web.trace.zip",
           "hostLog": "dsh-pet-node22-web.host.log"
         }
       }
@@ -1263,12 +1191,12 @@
       "profile": "web",
       "runtimeId": "dsh-remote",
       "plugin": {
-        "spec": "dsh-remote@0.8.8",
-        "artifactSha256": "ccedc839d6038e6f09fe18e028017f30d5e9290c20cbd209ef470f0f7c100804"
+        "spec": "dsh-remote@0.8.14",
+        "artifactSha256": "6c2e3d684f8c7b0e25ef07cd51170ced0748cb1d19bf27f96ec25360c4c97bbb"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -1278,9 +1206,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:45:55.678Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-11T11:53:50.432Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -1305,10 +1233,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -1317,55 +1246,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "dsh-remote",
-            "dsh-better-sidebar",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-remote/client.js?rev=3abb2809ceaf",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "dsh-remote-node22-web.png",
-          "trace": "dsh-remote-node22-web.trace.zip",
           "hostLog": "dsh-remote-node22-web.host.log"
         }
       }
@@ -1377,12 +1267,12 @@
       "profile": "web",
       "runtimeId": "@michengai/dsh-skills-manager",
       "plugin": {
-        "spec": "@michengai/dsh-skills-manager@0.1.24",
-        "artifactSha256": "0d22316d9ecc4373f2ab597634da9a9a0c8df16c02627c4852024839cdeb283b"
+        "spec": "@michengai/dsh-skills-manager@1.0.1",
+        "artifactSha256": "3c7de9e64d99968ee450ccf75bf08e5d3c639f6748d035b1913b55aa607b6b30"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -1392,9 +1282,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:36:34.853Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:30.215Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -1419,10 +1309,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -1431,56 +1322,93 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "@michengai/dsh-skills-manager",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@michengai/dsh-skills-manager/client.js?rev=8a2ee4a927d0",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "dsh-skills-manager-node22-web.png",
-          "trace": "dsh-skills-manager-node22-web.trace.zip",
           "hostLog": "dsh-skills-manager-node22-web.host.log"
+        }
+      }
+    },
+    {
+      "id": "dsh-tavern-node22-web",
+      "sourceCaseId": "dsh-tavern-node22",
+      "plane": "web",
+      "profile": "web",
+      "runtimeId": "dsh-tavern",
+      "plugin": {
+        "spec": "dsh-tavern@2.4.1",
+        "artifactSha256": "1ee8024e9e53a2a0aa503c6643386fb152e09bc018f275d074a81dfc7f9f50a1"
+      },
+      "upstream": {
+        "package": "@deepseek-ai/dsh",
+        "dshVersion": "0.1.5-rc.2"
+      },
+      "runtime": {
+        "nodeMajor": 22,
+        "nodeVersion": "22.23.2",
+        "platform": "linux",
+        "architecture": "x64",
+        "pnpmVersion": "11.7.0"
+      },
+      "observation": {
+        "observedAt": "2026-09-23T12:07:24.077Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "passed",
+            "code": 0
+          },
+          "profile": {
+            "status": "passed",
+            "code": 0
+          },
+          "install": {
+            "status": "passed",
+            "code": 0
+          },
+          "registration": {
+            "status": "passed"
+          },
+          "host": {
+            "status": "passed"
+          },
+          "surface": {
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
+          },
+          "interaction": {
+            "status": "skipped"
+          },
+          "shutdown": {
+            "status": "passed"
+          }
+        },
+        "evidence": {
+          "plane": "web",
+          "url": "http://127.0.0.1:30880/",
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "failedRequests": [],
+          "hostLog": "dsh-tavern-node22-web.host.log"
         }
       }
     },
@@ -1496,7 +1424,7 @@
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -1506,9 +1434,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:36:35.433Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:22.080Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -1533,10 +1461,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -1545,55 +1474,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "dsh-thirteen-bg",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-thirteen-bg/client.js?rev=cf52c503e94a",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "dsh-thirteen-bg-node22-web.png",
-          "trace": "dsh-thirteen-bg-node22-web.trace.zip",
           "hostLog": "dsh-thirteen-bg-node22-web.host.log"
         }
       }
@@ -1605,12 +1495,12 @@
       "profile": "dsh-tui",
       "runtimeId": "@deepseek-harness-tui/dsh-tui",
       "plugin": {
-        "spec": "@deepseek-harness-tui/dsh-tui@0.9.2",
-        "artifactSha256": "16109da55dcac367d3ae7ebb4465d9c05831776f52cebd2195552cf3bc626021"
+        "spec": "@deepseek-harness-tui/dsh-tui@0.10.2",
+        "artifactSha256": "d680e6e5704e6724940233cab12045d87c71c30820c9e169727de271ee8c629c"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -1620,7 +1510,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T08:53:30.961Z",
+        "observedAt": "2026-09-21T13:16:03.024Z",
         "result": "compatible",
         "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown",
         "stages": {
@@ -1667,8 +1557,8 @@
           "exitCode": 0,
           "signal": 0,
           "transcript": "dsh-tui-tui.ansi",
-          "normalizedFrame": "▀█▄▄▄▄█\n█▄▀▄█\n████\n██▀▀▀██\n████\n████\nplore the u\nPress Ctrl+C again to exit\nsh-TUI\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\nh-TUI\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc",
-          "capturedBytes": 24028,
+          "normalizedFrame": "████\n██▀▀▀██\n████\n████\nplore the u\nPress Ctrl+C again to exit\n█▀▀▀▀█▀\n██\n█▀▀▀█▀\n██\n█▄▄▄▄█▄\n▄▀▄█▀\n███\n█▀▀▀██▄\n███\n███\nlore the un\n█▀▀▀▀█▀▀\n██\n█▀▀▀█▀▀\n██\n█▄▄▄▄█▄▄\n▄▀▄█▀▀\n███\n█▀▀▀██▄▄\n████\n███\nore the unc\n ▀▀▀▀\n▀▄▄\n▄▄▄▄\n▄▄▄",
+          "capturedBytes": 24295,
           "truncated": false
         }
       }
@@ -1680,12 +1570,12 @@
       "profile": "web",
       "runtimeId": "dsh-univer-office",
       "plugin": {
-        "spec": "dsh-univer-office@0.2.9",
-        "artifactSha256": "dcd5cdbd02ffc240f18fdd45318205345cccb29dde3694f1efe51ee0211c746a"
+        "spec": "dsh-univer-office@0.3.2",
+        "artifactSha256": "6e5cbb6fec55535311d1c02e55ecbf933121cf567ad4b319a397d3c6d9d6bf98"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -1695,9 +1585,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T08:53:37.752Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:20.491Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -1722,10 +1612,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -1734,55 +1625,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "dsh-univer-office",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-univer-office/client.js?rev=d8df9eba8538",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "dsh-univer-office-web.png",
-          "trace": "dsh-univer-office-web.trace.zip",
           "hostLog": "dsh-univer-office-web.host.log"
         }
       }
@@ -1794,12 +1646,12 @@
       "profile": "web",
       "runtimeId": "@anionex/dsh-vision-toolkit",
       "plugin": {
-        "spec": "@anionex/dsh-vision-toolkit@0.1.39",
-        "artifactSha256": "81b4029142f0f3c2fbe88a8ee22c90da8cf449b68b345eebfd2e643c0a06efb1"
+        "spec": "@anionex/dsh-vision-toolkit@0.1.45",
+        "artifactSha256": "09b0382d14c9792ee2430eec7793f7c1932de96863c847c6623499f67ba4739e"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -1809,9 +1661,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:36:25.355Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:31.762Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -1836,10 +1688,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -1848,55 +1701,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "@anionex/dsh-vision-toolkit",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@anionex/dsh-vision-toolkit/client.js?rev=1a2c6952ba20",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "dsh-vision-toolkit-node22-web.png",
-          "trace": "dsh-vision-toolkit-node22-web.trace.zip",
           "hostLog": "dsh-vision-toolkit-node22-web.host.log"
         }
       }
@@ -1908,12 +1722,12 @@
       "profile": "web",
       "runtimeId": "dsh-plugin-wallpaper-engine",
       "plugin": {
-        "spec": "dsh-plugin-wallpaper-engine@0.6.5",
-        "artifactSha256": "528ae9a9068574cc3a01752f2cfcf495418d099a9e9b42267666a999fc1ea7d4"
+        "spec": "dsh-plugin-wallpaper-engine@0.7.5",
+        "artifactSha256": "0d1720b34d1ea3c17e46874fff9d6a7fc0df31ca491920273aa3730943c6e926"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -1923,9 +1737,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:36:31.780Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:25.358Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -1950,10 +1764,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -1962,55 +1777,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "dsh-plugin-wallpaper-engine",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/dsh-plugin-wallpaper-engine/client.js?rev=6c47c3624ebd",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "dsh-wallpaper-engine-node22-web.png",
-          "trace": "dsh-wallpaper-engine-node22-web.trace.zip",
           "hostLog": "dsh-wallpaper-engine-node22-web.host.log"
         }
       }
@@ -2022,8 +1798,8 @@
       "profile": "web",
       "runtimeId": "@linxin666/dsh-web-all",
       "plugin": {
-        "spec": "@linxin666/dsh-web-all@0.3.3",
-        "artifactSha256": "64ee0f111afe4700d278c97af6f92316b750538d821338399a2c89a290ea6ff9"
+        "spec": "@linxin666/dsh-web-all@0.3.6",
+        "artifactSha256": "b7429637feff4728240fd0983faa0e91dd3c0274ba61c3f334170c2386bf22d1"
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
@@ -2037,7 +1813,7 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T08:53:46.265Z",
+        "observedAt": "2026-09-07T13:03:27.190Z",
         "result": "compatible",
         "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
         "stages": {
@@ -2088,11 +1864,11 @@
             "@linxin666/dsh-client-ui-aionui-panel",
             "@linxin666/dsh-client-ui-task-board",
             "@linxin666/dsh-client-ui-git-graph",
+            "@linxin666/dsh-perf",
             "@linxin666/dsh-remote-web-ui",
             "@linxin666/dsh-pet",
             "@linxin666/dsh-ssh",
             "@linxin666/dsh-tool-describe-image",
-            "@linxin666/dsh-chat-recovery",
             "@linxin666/dsh-client-ui-skill-explorer",
             "@linxin666/dsh-desktop-launcher",
             "@linxin666/dsh-doctor",
@@ -2120,12 +1896,10 @@
           "applicationMounted": true,
           "pluginMaterialized": true,
           "consoleErrors": [
-            "Failed to load resource: the server responded with a status of 404 (Not Found)"
+            "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
           ],
           "pageErrors": [],
-          "failedRequests": [
-            "http://127.0.0.1:30880/status: net::ERR_ABORTED"
-          ],
+          "failedRequests": [],
           "blockedExternalRequests": [],
           "screenshot": "dsh-web-all-web.png",
           "trace": "dsh-web-all-web.trace.zip",
@@ -2145,19 +1919,19 @@
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 24,
-        "nodeVersion": "24.19.0",
+        "nodeVersion": "24.21.0",
         "platform": "linux",
         "architecture": "x64",
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:51:09.708Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:28.195Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -2182,10 +1956,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -2194,55 +1969,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "@zseven-w/dsh-openpencil",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@zseven-w/dsh-openpencil/client.js?rev=9bc964f36154",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "openpencil-node24-web.png",
-          "trace": "openpencil-node24-web.trace.zip",
           "hostLog": "openpencil-node24-web.host.log"
         }
       }
@@ -2259,7 +1995,7 @@
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -2269,9 +2005,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:36:50.812Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:26.126Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -2296,10 +2032,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -2308,55 +2045,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "@sanqi-normal/dsh-webui-market-plugin",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/@sanqi-normal/dsh-webui-market-plugin/client.js?rev=bbf0516a1f3a",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "sanqi-market-node22-web.png",
-          "trace": "sanqi-market-node22-web.trace.zip",
           "hostLog": "sanqi-market-node22-web.host.log"
         }
       }
@@ -2373,7 +2071,7 @@
       },
       "upstream": {
         "package": "@deepseek-ai/dsh",
-        "dshVersion": "0.1.1-rc.2"
+        "dshVersion": "0.1.5-rc.2"
       },
       "runtime": {
         "nodeMajor": 22,
@@ -2383,9 +2081,9 @@
         "pnpmVersion": "11.7.0"
       },
       "observation": {
-        "observedAt": "2026-08-25T09:36:34.803Z",
-        "result": "compatible",
-        "reason": "the Web host mounted and the declared plugin client entry was published, fetched, and materialized",
+        "observedAt": "2026-09-23T12:07:21.998Z",
+        "result": "unknown",
+        "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n",
         "stages": {
           "runtime": {
             "status": "passed",
@@ -2410,10 +2108,11 @@
             "status": "passed"
           },
           "surface": {
-            "status": "passed"
+            "status": "failed",
+            "detail": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
           },
           "interaction": {
-            "status": "passed"
+            "status": "skipped"
           },
           "shutdown": {
             "status": "passed"
@@ -2422,55 +2121,16 @@
         "evidence": {
           "plane": "web",
           "url": "http://127.0.0.1:30880/",
-          "httpStatus": 200,
-          "title": "DeepSeek Harness",
-          "rootMounted": true,
-          "bootManifestPresent": true,
-          "bootEntryIds": [
-            "whale-on-desk",
-            "@deepseek-ai/dsh-typert-registry",
-            "@deepseek-ai/dsh-api-gateway",
-            "@deepseek-ai/dsh-session-log-export",
-            "@deepseek-ai/dsh-client-hmr",
-            "@deepseek-ai/dsh-client-modules",
-            "@deepseek-ai/dsh-client-connection",
-            "@deepseek-ai/dsh-api-remotes",
-            "@deepseek-ai/dsh-client-runtime",
-            "@deepseek-ai/dsh-cordis-client-runner",
-            "@deepseek-ai/dsh-client-ui-theme",
-            "@deepseek-ai/dsh-client-locale",
-            "@deepseek-ai/dsh-client-ui-layout",
-            "@deepseek-ai/dsh-client-ui-renderer",
-            "@deepseek-ai/dsh-client-ui-sidebar",
-            "@deepseek-ai/dsh-client-ui-settings",
-            "@deepseek-ai/dsh-client-ui-settings-general",
-            "@deepseek-ai/dsh-client-ui-settings-models",
-            "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-            "@deepseek-ai/dsh-client-ui-conversation",
-            "@deepseek-ai/dsh-client-ui-brand-official",
-            "@deepseek-ai/dsh-client-ui-attachment",
-            "@deepseek-ai/dsh-client-ui-tool",
-            "@deepseek-ai/dsh-client-ui-cordis",
-            "@deepseek-ai/dsh-client-ui-workflow-run",
-            "@deepseek-ai/dsh-client-ui-deliverables",
-            "@deepseek-ai/dsh-client-ui-workspace",
-            "@deepseek-ai/dsh-client-ui-input-trigger",
-            "@deepseek-ai/dsh-client-ui-commands",
-            "@deepseek-ai/dsh-client-ui-skill",
-            "@deepseek-ai/dsh-client-ui-subagent",
-            "@deepseek-ai/dsh-client-ui-reference"
-          ],
-          "pluginEntryPresent": true,
-          "pluginBundleUrl": "http://127.0.0.1:30880/plugins/whale-on-desk/client.js?rev=a35027ddb7c2",
-          "pluginBundleStatus": 200,
-          "applicationMounted": true,
-          "pluginMaterialized": true,
+          "httpStatus": 404,
+          "rootMounted": false,
+          "bootManifestPresent": false,
+          "bootEntryIds": [],
+          "pluginEntryPresent": false,
+          "applicationMounted": false,
+          "pluginMaterialized": false,
           "consoleErrors": [],
           "pageErrors": [],
           "failedRequests": [],
-          "blockedExternalRequests": [],
-          "screenshot": "whale-on-desk-node22-web.png",
-          "trace": "whale-on-desk-node22-web.trace.zip",
           "hostLog": "whale-on-desk-node22-web.host.log"
         }
       }
