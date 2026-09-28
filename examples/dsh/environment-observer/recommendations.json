@@ -1,6 +1,871 @@
 {
   "schema": "upstream-radar.dsh-environment-recommendations/v1alpha1",
-  "updatedAt": "1970-01-01T00:00:00.000Z",
-  "pendingTasks": [],
+  "updatedAt": "2026-09-28T08:34:39.555Z",
+  "pendingTasks": [
+    {
+      "targetId": "agent-teams",
+      "plugin": "@nanmicoder/dsh-agent-teams@0.1.21",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:e56ff0d05d5d3660558a8d8991fc3cdbcd2ab17b8615b622c4f0da10bfc590fc",
+      "inputFingerprint": "sha256:52e5c82fc2c025adbd5e2dae4ff56708e33502ea837cf8aa56dcb63b87f4db0a",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "anweat-dsh-browser",
+      "plugin": "@anweat/dsh-browser@0.1.12",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:5f399b28542064ebabd037179a825f6cae95c4b57c48c21569e16c0cd1f111ff",
+      "inputFingerprint": "sha256:e66eda7c3e4ad18d56f6c4fb607497bf901fa012968208de80d86edb72373384",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "archify-dsh",
+      "plugin": "@tt-a1i/archify-dsh@0.1.0",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:19e438a3cebceb7488269e9b2b4ce435057f1b2a9cf5ac455c196e368a2ab456",
+      "inputFingerprint": "sha256:13ed3e385ea585303812a3f94c9f8c7282b2040d277f41e7e405b0adc3b7bdfc",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "better-sidebar",
+      "plugin": "dsh-better-sidebar@0.21.1",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:e5c55b8ef4d84da850a6185fd471cb91aaedb7836306e662a033b0343a1b8b26",
+      "inputFingerprint": "sha256:1082b0024723ac30ea91d1c94120e2562fd4356e696c3f3cbeda00f9db2a1c2e",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "cloudflare-browser",
+      "plugin": "dsh-cloudflare-browser-run@0.2.2",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:9bfe996e9b6750dbfe3befa52a5ea19da24f5dec3b529adb803a9e89f2e69dc1",
+      "inputFingerprint": "sha256:43ad618a90f622d6f22ddf5af9ab8cad139f40f660d4bcf81c00984b2ab27712",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "context",
+      "plugin": "dsh-context@0.57.0",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:04ebba8f550c77d5bfe3a05668ab235777b16e8ccb0ca1076415933c28a5ef94",
+      "inputFingerprint": "sha256:efb2738fd91c73e208f84ce2244bdaf67c3f344c2de2d8477ac5c542ef0eda76",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "cost-meter",
+      "plugin": "dsh-cost-meter@1.7.40",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:d975d744ec6afff46f5a957158fcdc881305c08a218ef0dd17e16878352bbda5",
+      "inputFingerprint": "sha256:1be68761b9994f431bbd32dd27ec33bb504c11af71b611dee8aa8a6b071f13b3",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "deepseek-harness-acp",
+      "plugin": "@openma/deepseek-harness-acp@0.4.33",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:39fed13a21c25161f035c898c79ede465f65e3c2a81aa0324d30dc9eaafa75ad",
+      "inputFingerprint": "sha256:82d598d425cae9f8305b50c25a031e05ae09851906496ab3012b3c9b9d87f0db",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "deepseek-harness-wallet",
+      "plugin": "deepseek-harness-wallet@0.3.13",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:33ee405f9665c75526a55735566c05c84b5d6c8616a56ce914a614c239436315",
+      "inputFingerprint": "sha256:0269bbfaee6b68b51d8a38b74db03afaff0638d720e2ff2724303bde9295c902",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-agency-agents",
+      "plugin": "@michengai/dsh-agency-agents@1.0.5",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:516570df0df6cc2ad5a8ed468fd8b298c40ef4c3786288d7a96b5f43b51dfe50",
+      "inputFingerprint": "sha256:400727fcb9e3df353da62efbc20f661b45f0334b1eb466e8ec534fc2fd39caca",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-agy-link",
+      "plugin": "dsh-agy-link@0.4.38",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:a2de351201e6988b2722034a0e4edbe5d4c03de5002c60bacb241354db8b37d8",
+      "inputFingerprint": "sha256:1cc7d6ed074522ebdcaa3b6f8ce624589538f1de096ef572b0cc033d67ec79af",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-any-background",
+      "plugin": "dsh-any-background@0.3.2",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:32f3ac736c3db219d615d072e54f6a7e8b5765324d2d18533852f7d57ec773de",
+      "inputFingerprint": "sha256:0ffb60eb22c33b2ce246f401a5ed12bb467752a827146ca0c6df448d80fcdeaf",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-archive-manager",
+      "plugin": "@michengai/dsh-archive-manager@1.0.6",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:704a9d183dc3ef529a912d8410afe23ef4318d6f132849c1dcc1776472e0c363",
+      "inputFingerprint": "sha256:ee6a3307a2a799b3d7f09afcb4ecc38e0eea3dca1b49e5c158cff7279fecc9d3",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-auth-gate",
+      "plugin": "dsh-auth-gate@0.15.0",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:b727552093e983cb9c7251925da505c907f8aeaddd55d61668d370cb922ed176",
+      "inputFingerprint": "sha256:6bfdbeb34c0437ea851cac74ab53a7b0c10d117c40bbc342ab52fce0be55ecee",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-auto-classifier",
+      "plugin": "dsh-auto-classifier@0.1.14",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:ca077518ecd3327854c0e8473a542a8cb0551b33eeeafdf40b54c5c467887ae4",
+      "inputFingerprint": "sha256:2d3e99c7ce4ddf1054de39e4ffde280120c7124623df37a9c50bf08bed935dea",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-auto-memory",
+      "plugin": "@a9i5k4/dsh-auto-memory@3.1.7",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:51813323185a80747304ebc85ee5f91f7607a405314f601e2bf8684d23f84974",
+      "inputFingerprint": "sha256:a27ae5a6f5eafa09803260962033d6f55d01ef43e8cc6adccb8f416871e6f2e4",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-auxiliary",
+      "plugin": "@dsh-plugin/dsh-auxiliary@0.6.4",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:2a57226bf6bd1f8bdde96d0f08d93f410b2b82d3c1d5dfb20586532404e17bf8",
+      "inputFingerprint": "sha256:b14da6ab5bf59024ba8960c1fab89a260e616f0db8dc4b8af478a7f853d7a744",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-awiki",
+      "plugin": "@awiki/dsh-plugin@0.3.12",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:ffb7b8e26f0c0b0a3381a465d835d7bb0795a0e14e8515dd4ffba61de33fdb56",
+      "inputFingerprint": "sha256:bc42befa1eb0cfb289ae962d574487f0b3a8244fd645ce1e764c33d17d882547",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-better-edit",
+      "plugin": "dsh-better-edit@0.8.2",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:3c8f384bb82883d28850895f2046c241c8c0a2e7704668e9a07ede93664104f6",
+      "inputFingerprint": "sha256:f75611f1775108badeecc06185ca286d7c69078fefc791b36d06333af1fdafad",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-builtin-browser",
+      "plugin": "dsh-builtin-browser@0.1.22",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:841eead99784741cd1bc6d1f1ba966f82f53d4f5a99d098ce00e3a6da9753fcf",
+      "inputFingerprint": "sha256:2a9254fef4826e48cf311aad6eabdf4dc8a3ead065b2d9386a4986094162ee6a",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-catppuccin",
+      "plugin": "@nonamelego/dsh-catppuccin@0.5.7",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:180b4ec7791a8655c2ee207c5c662d46f27c286da269a12847c4dd86d9da18ce",
+      "inputFingerprint": "sha256:a7cecfc78a80c67438058c8482a6bf7578f29fe3f1585b9ce9e675a96c9fc257",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-chat-import",
+      "plugin": "dsh-chat-import@0.19.7",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:4f1bf8ba917228adde24848826fb90b321a7a19b96f189992f7b0140fcf7be7f",
+      "inputFingerprint": "sha256:a9bbbda80a4ee6d44330025c04d6b4dab94e6b4ae198ec84daccffbe3db64f62",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-chatvoice",
+      "plugin": "dsh-chatvoice@0.1.7",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:9d1ed5d325f6aab64dcd5d4d53a3e303a932c0803bbc250d37a282536886edd3",
+      "inputFingerprint": "sha256:1c763511dca1a7c927acd517661c8726d53fd4284b76c5a7d59732a5cfd131f8",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-client-auto-continue",
+      "plugin": "dsh-client-auto-continue@0.11.9",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:86582634d8c3e67ff3bf39e11e712829bbd6b48cd85dcdeaa039cd72edbe20c1",
+      "inputFingerprint": "sha256:ebd5910f04f05ffbf4493a183471e033a52d89e0ba6e0ecc06a5c0589f647795",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-codex-connect",
+      "plugin": "dsh-codex-connect@0.1.0-alpha.4.50",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:b3a870833f0ff74ef061316a3d5a3be627467e516a8226a3ea6ed1b0a847d0ee",
+      "inputFingerprint": "sha256:9ac77e21205f2509a51a01920c81c6e7cd1930f6fd2f04175883e0632871a52b",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-codex-subscription",
+      "plugin": "dsh-codex-subscription@2.2.2",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:80ea0ef06915807c688ea21cb2d123019d5cb497af7098e7174182378982cd38",
+      "inputFingerprint": "sha256:0bc220616c5abc6bbacf169f8a448a62be9f18009d3ef7aad870a54e31c53a04",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-coding-subscription-oauth",
+      "plugin": "dsh-coding-subscription-oauth@0.8.5",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:ed58b2755b9d164f568d6228e5df2bff8f53d3b9a86fde4fdb20c1c48dace1d6",
+      "inputFingerprint": "sha256:c45296cf7cd25bf85e567edf439060bebf65d0d945651b2754e0d3c13654bfb5",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-commandcode-provider",
+      "plugin": "@mars-sea/dsh-commandcode-provider@0.11.17",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:84f7316af0490f401087ee9427a2f33a953597a9a7594a2ae5d69227e753598f",
+      "inputFingerprint": "sha256:471184e7bf21f0c9e43f0a1ee7bf7cdbcd9adba4c72786ce19d32147614329dd",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-config-manager",
+      "plugin": "dsh-config-manager@0.1.64",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:2c6513522f29185c9a2b5ae0cef37ab2a60f52da7fa97e626664e0877ab005ad",
+      "inputFingerprint": "sha256:db8f16b4b7e1cd3e395418f701fdb4c275eb7e0b61939a3b97fdf79f77f6bfb4",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-crew",
+      "plugin": "dsh-crew@0.10.0",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:40080dab01bf0833ee812a916a180f798cea8f7110fe89f31a7cb58f56c66ea4",
+      "inputFingerprint": "sha256:f37c8838be8178058d7c5be1462a88bff809992b550da6b69ba5943b93c655ef",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-deepread",
+      "plugin": "dsh-deepread@1.0.1",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:dd791626054ff7c4e1c38bb940d20142c66343290ba0cec523b5412679d64219",
+      "inputFingerprint": "sha256:118a15f76ef85529cf15d6e4ad3da84e3909bc0637fdaa42452d09ad580f6465",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-deepseek-vision",
+      "plugin": "dsh-deepseek-vision@0.1.7",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:26f787605f70b01992e77b86aca32ccff23d48d5f16c1dba97d2785cdb6c846d",
+      "inputFingerprint": "sha256:2d0ebf733425cd7be5f87118d244ccf7664152218439a28e88e6bff115a448b8",
+      "createdAt": "2026-09-28T08:34:39.555Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-doctor",
+      "plugin": "@moonquake2004/dsh-doctor@0.8.5",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:4cbccde3289600cfc1ad2ae30ae65a3edb52c679bc2a35c6e843e91106847aef",
+      "inputFingerprint": "sha256:d40698c8f1dd9eb63721880b77779ebc99744b40f38f8307986844c9bfe9efc2",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-dream-skin",
+      "plugin": "dsh-dream-skin@9.27.1",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:77587c40704edfa4e4ff694aa488ff142869f6e377c312319f5197048ae17c95",
+      "inputFingerprint": "sha256:fa111403c2459dde4aa2f4c1efa6a5e7cee76bfd7bb73d19ae8ce9b2574a1d76",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-easyrewrite",
+      "plugin": "dsh-easyrewrite@2.6.0",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:b818129442a16874607384866ed5912465c659cac08c8d3fe2004edc74a31a34",
+      "inputFingerprint": "sha256:027ff3d5f686aab5cbb03cd515b2ee2db4821ef14c82ea8675eae790806126d8",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-email",
+      "plugin": "dsh-email@0.14.1",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:2d2d0e9e35c13744f47a79a0914152d4b80f66366f2a7fb67d1fa44cfb190223",
+      "inputFingerprint": "sha256:7008ea8488db1f4537047e11e8a6a4b0508fdac294792623f42fbdaabee45b78",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-extension-hub",
+      "plugin": "dsh-extension-hub@0.2.19",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:da5defa7893f62b2c1c581cf8125f5dc93658c2995223fcea7e8c9784d927644",
+      "inputFingerprint": "sha256:6ba6474e3b9e853093674a5281e1ef847596e234188a43ca66e82e2ba22a0f9c",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-find-plugin",
+      "plugin": "dsh-find-plugin@0.4.0",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:11a9086284b759180bdb4aab7e7e2ac329d264f020afe313c9285c99af7f54b1",
+      "inputFingerprint": "sha256:4132844e9b8f14ee8216413a5f0355698e4fda7f34da6a36243ddc08adfa3f47",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-free-search",
+      "plugin": "dsh-free-search@0.4.39",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:f85d86322331e499ee3fedc0577996963cb8f1e12f4dce0a07d58bc401d749af",
+      "inputFingerprint": "sha256:72a3cb36e8e7f30b894096da9713f0f5bdce103553d25a2175c16042ffeef5ea",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-free-vision",
+      "plugin": "dsh-free-vision@1.0.8",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:596ebf93df26dab47874562befbd5dae2defe938a1e9fa8e56c9fb3aa3077512",
+      "inputFingerprint": "sha256:b3bf55e9fdbed8cbf9c71f16751ede8c6356cbdd632ba48817e687d5dc4578ee",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-full-remote",
+      "plugin": "dsh-full-remote@0.3.7",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:7d19430a1d6600d3b15aa69ec85a23aee952a0f10ff6f7c247264d808e952e53",
+      "inputFingerprint": "sha256:1d7c7d6dccf4ea03f14f069e87d71f0536c071f8c4073591ffdeb16e682d9e18",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-gateway",
+      "plugin": "dsh-gateway@1.7.0",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:7915fcd78b2e4607fe0265ded9534921ade225cb3c9cbc9ee73d87173a0eeab6",
+      "inputFingerprint": "sha256:3b9ab18196b26d6bd9efeeff64075347a545d55319fcb0fff36bbf24fb714e9b",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-git-worktree",
+      "plugin": "dsh-git-worktree@0.9.3",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:d757b0d6468186b92ba54ecb100a99fae2e690e17bafe1651bae40fc0943c263",
+      "inputFingerprint": "sha256:905c4259937abedde3bdf75a7fbe1f993bc5f92a571c92b4359455667a07c94c",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-history",
+      "plugin": "dsh-history@0.1.25",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:2b9547bbc625c4344006f7409a3fe01a13cfba8d2ff7d6b9eca07aa1a607f9ef",
+      "inputFingerprint": "sha256:190862bf16ee6c109d39e23ed65d47344449b40676acbb907f67187e1cb9d766",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-im",
+      "plugin": "@xmanrui/dsh-im@4.28.1",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:a98a79b3a32a21e521b77c1b75faaceff64d50a9339f69baf106238c43d3bb10",
+      "inputFingerprint": "sha256:7279f3a25672ce11455f33fe600f293b722585fa78dc6fe005af6456f9ad0ad3",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-im-connect",
+      "plugin": "@michengai/dsh-im-connect@0.1.55",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:faab79134d16ce9ee12fa95ed651325014fcdeedf82d087bdd422071499f985e",
+      "inputFingerprint": "sha256:d0db83d8e09b7addc72ea5dedbda9257a77b7a82062e8065f93889cf3ad1b0fc",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-imagegen",
+      "plugin": "@dickpy/dsh-imagegen@1.6.5",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:da8056f7f121ab31e01c53520d4395c6c57f240ffe863a0a8be2dbaf1c86c20b",
+      "inputFingerprint": "sha256:165c703e3188a62e97a106365e65f6a73cfc2462d30613adb4eb75806102c189",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-market",
+      "plugin": "dshmarket@1.66.2",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:590ff9b108ddf98914000f121c658ff8cfc13c9ee3b44321790a678504f60e7f",
+      "inputFingerprint": "sha256:1b9cc6aaa4b446ea736d67950534a43894864f583bea00598fa940563790483f",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-meme",
+      "plugin": "dsh-meme@0.1.43",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:545251755c9982c8eabd86f96f856df603ac7aa16886fc5040e67bada9a54f89",
+      "inputFingerprint": "sha256:c92005a79a1b0b42f34a794402eb845dcfde49e54c22df89a311da5b9b32bf78",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-memory-plugin",
+      "plugin": "@openviking/dsh-memory-plugin@0.5.8",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:faf1501ae42f2aab26dce6e06d8246628244224bc4e4bc1170460a70cc54aa63",
+      "inputFingerprint": "sha256:ce2a7783b5e5f13ecc6a5d65a7486428bea14ddcce68763b0585b4996c2a38cd",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-mneme",
+      "plugin": "@modusensus/dsh-mneme@0.8.4",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:002ffa8eeb49a517dff610963257db5060ee55026ace3062e591b6756c80bb14",
+      "inputFingerprint": "sha256:9de603e31c66c8143d33200e252c38828c864f3dbea5f4a439eab868ee3ad383",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-mnemon",
+      "plugin": "dsh-mnemon@0.5.16",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:da97a5115b93e9c24fe17531c388a8f8cb91557b4d5528bbf29a2f53b890afd2",
+      "inputFingerprint": "sha256:25e1495c279fb267230eec00f062efd2be25e1782c61db83a6b819674f634a77",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-mobile",
+      "plugin": "dsh-mobile@0.5.0",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:8e829326f7fda19da85fe126a5f8ac4018c60a65a5553ff47a39e35c2ba44821",
+      "inputFingerprint": "sha256:66442d1b644a93c77258b367e3de79bbc8f7e741a5f33c0664fda5f424504755",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-movein",
+      "plugin": "dsh-movein@0.13.8",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:2cbe955a2b52ac2f5c9cd6c9cc9656b076529bc373a60c00ed84d78c37f74464",
+      "inputFingerprint": "sha256:a79cddbdde225c0ce550c8483b4c8cd55bccfe4e83e277f8ce618860516492e7",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-notifier",
+      "plugin": "dsh-notifier@0.13.1",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:1f7eab5e00690508da24fe0984e0e7dffd13a3f00b7401928356804f885e54c9",
+      "inputFingerprint": "sha256:135494a171debb519a47a4f2a0588ef1f9411d879492315f492fd3c62e2ff3c9",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-passwords",
+      "plugin": "dsh-passwords@2.7.5",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:297c9d231683cd498f043166f549aadc3a18552363b9ba9b92f85dae657d9956",
+      "inputFingerprint": "sha256:2b832558707a8a557795be1c8c7560ee8bb2f41ce8820d506292a757aedc3f39",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-pet",
+      "plugin": "dsh-pet@0.2.12",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:af10ca0fb81a284642df5ff714813933fd103e78eb2543279c939f08c0d0d48a",
+      "inputFingerprint": "sha256:31c3bb679e69f641f01cb39ba4a064a3a8634186ec31453c0590ddf6006bdd6a",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-plugin-mall",
+      "plugin": "@1e0zj/dsh-plugin-mall@0.4.17",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:94a3dcfe423b1f9479f060428e5d371e1a64bba3a7217e5c063acc9b4f2dd64f",
+      "inputFingerprint": "sha256:0b39916f331fec8302302ff34d6b8729f021fb1fbb5f595ef6d013ad6b7d7551",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-plugin-subscriptions",
+      "plugin": "dsh-plugin-subscriptions@0.9.4",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:f81010efabd7707d8f68521cf51787e78d1fc5d05147cd4148eda3d95ffbb665",
+      "inputFingerprint": "sha256:ae51458141f321c5596387326430264c84b530b2ca89b08f5cdf23751166860e",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-plugin-vet",
+      "plugin": "@jieai/dsh-plugin-vet@0.3.15",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:513404a54942632d69721a3eda8091260799c8d0c773c628ebc0d47f58c210e1",
+      "inputFingerprint": "sha256:8b07090b654369f70969d115a0daef5055eae0e99f921d0b88ed4be920118335",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-plugin-vetting",
+      "plugin": "dsh-plugin-vetting@0.5.6",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:ea7c0f7a2b772f6123bbd545d9e06e68f51586516d69cd825dc35c37a57613cd",
+      "inputFingerprint": "sha256:ced73e69c9d276a230359166641305fdc3f22b944ef784063d33aa2dcc7654c4",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-plugin-writing-guard",
+      "plugin": "dsh-plugin-writing-guard@2.0.1",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:a64b302ea59b6c862c4aa80a1c734c4bc05bf33faed7d93c697cb89d40854562",
+      "inputFingerprint": "sha256:d4c33e96af57a3090dc12a86051248108b2a07ec24b0764a1a7f3e3c4ad592b0",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-pocket",
+      "plugin": "dsh-pocket@2.10.6",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:fd805fb632f0d9862c8ad156f66dc71d838238aa385abad70dcbeca1cd5247d8",
+      "inputFingerprint": "sha256:e572eba864dc5a442e598813b1f514ad2d18adef9902988d25a972d8611c19dc",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-remote",
+      "plugin": "dsh-remote@0.8.22",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:28c4f9ccf3bebe55928d84c03565b7c919d6245a18156c56541e70284785903a",
+      "inputFingerprint": "sha256:317fe360e5f4d372ebbd4349cc0a44af85c63757ef7c1e94dbf8b7e530c7aa5f",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-remote-plugin",
+      "plugin": "dsh-remote-plugin@0.7.0",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:a4585bbec0b847f0d94ac51519b201a94b411958c9343c17352fee9b1f8d174e",
+      "inputFingerprint": "sha256:e52f9e8a35853aa465230c0d8ffea351d6bd3f35468b9b853c67d6666e8de13f",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-rewind-plugin",
+      "plugin": "dsh-rewind-plugin@0.12.2",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:114d1ac14863d83dbddc6339978842ba44323b17250b939e49e5efc3b027d54d",
+      "inputFingerprint": "sha256:50b689f7b1073cd971621e3d49931c5dd11af09653408722b422ef2fe8544c85",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-skills-manager",
+      "plugin": "@michengai/dsh-skills-manager@1.1.4",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:93dfc89e526246a6c454df966d8dea36b306746533c23003a6e344e5b3f01ce3",
+      "inputFingerprint": "sha256:4320264ac52987daa409c7d5d19a692f4c57973a5357aa835d266f11acb20449",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-spend",
+      "plugin": "dsh-spend@0.6.3",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:3febcc8d49be76e68f8f8624442f524fdad49b6552dd977372cd55a7b1e9c0ba",
+      "inputFingerprint": "sha256:19d5e854c8ae9e38cebb03db7899958c367ee08e25879f572266090706e774a0",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-strata",
+      "plugin": "dsh-strata@0.12.1",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:08c8e98861a53339c61bce61752ee11d883cfee00749aa071fbb96f45f5e9ae8",
+      "inputFingerprint": "sha256:373789930b6a9928128be59f3120b677d0dee18d661b6e14f902683cca90c47b",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-taskboard",
+      "plugin": "dsh-taskboard@0.8.3",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:40e9f040df2fb4859ecc46c356a79f172ce8b900028308f7b5dd9af9c40f76ee",
+      "inputFingerprint": "sha256:83e6cf3ce8b680dd62859a2849dfa1b2356acf3e6e11e8a4cddfe0e76e1ffb08",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-tavern",
+      "plugin": "dsh-tavern@2.5.0",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:3019367ebc97b44db57e818eaf1a921af5792ed2a2afab67ab4a8f160a7a0f9a",
+      "inputFingerprint": "sha256:0f6300c71f144c17b012bae43d1ba76a3bc3fbb0a2a114ce65066aee18d9ba4c",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-testkit",
+      "plugin": "dsh-testkit@0.4.4",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:b1d1a3d8d58e11346caeabf2d1d38a21ec59197eaf69235e94bbcf17eb98e4a9",
+      "inputFingerprint": "sha256:0ebe460612bad50f50a372ae809730e96bfacfde60684e90b0d14892b9cf627a",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-thirteen-bg",
+      "plugin": "dsh-thirteen-bg@0.5.2",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:e5a6d0d50f637f75b3ed39cefc8c460a8b5a75b91921a754064a3f1d4db8e2b8",
+      "inputFingerprint": "sha256:0d9135f6a99b35840bd6b9b93139081dbdbeefbe95aa40656aea4f6583936a4e",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-tool-lens",
+      "plugin": "@trench-xinxin/dsh-tool-lens@2.0.5",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:c5600d3ea0c06676fd894307644bf0d39423c219ce52972f03b6353a42d964fc",
+      "inputFingerprint": "sha256:9e80d376fe15fbb125a85b1cc60b93976cf8afb381c907f4c987dc8231c3c60a",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-tui",
+      "plugin": "@deepseek-harness-tui/dsh-tui@0.11.1",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:4671b2e3cb76ccf63760dfee5e98443bf1e20d2e22a6c3ede86ba3b9028309af",
+      "inputFingerprint": "sha256:8685e4fb5b59765342381d136603976e61340747966fd2b64f06294a2506ff5a",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-turn-rewind",
+      "plugin": "@anionex/dsh-turn-rewind@0.3.8",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:6a5f04da2e2d6ff9929ed24b5bde54838bae6b8f7a1f0106235f4ed283941123",
+      "inputFingerprint": "sha256:7500baa6b4ebb34ddf7905435c5879a647a79343d938d0252fe385c42c6340b6",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-univer-office",
+      "plugin": "dsh-univer-office@0.3.5",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:bb5ba262696d3d5a73248344ad8fade950dd1ebd6d884fb728536c5c6ec8f9c9",
+      "inputFingerprint": "sha256:acc55de43bcea98327ce729e1f741cb7e894607588e7a8773b5d9c14d5eea0e8",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-update-checker",
+      "plugin": "dsh-update-checker@1.6.3",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:565dc9563568c94eb263988039da4655960c11a04487f1279a03522f9e46a2d8",
+      "inputFingerprint": "sha256:39007524cf836bb350c65b827f945a92f126ab90f073291f60679d98f7c0f427",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-verify",
+      "plugin": "dsh-verify@0.9.4",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:7d39c38f5d2489759b2204baf9650a6a0936c7d8a2a3ddfa0850807d72f776dc",
+      "inputFingerprint": "sha256:03a6df6b1f91fc8b16f99b741a4839d7dd540a9f6d0acad6b8c2110f822d3632",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-vibe-math",
+      "plugin": "dsh-vibe-math@2.3.16",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:3ad240f62720b792849a266b44669dc10f46482c6c97172f56c5538777227d71",
+      "inputFingerprint": "sha256:1133a5507355657ec04927e2d74a40c93d9937749c27d093d3d8ca14c84398aa",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-vision-proxy",
+      "plugin": "dsh-vision-proxy@0.4.1",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:108ef9f757ea123a238aab40f1733d4349e40e6da451bd0484d3a030f81150e1",
+      "inputFingerprint": "sha256:92a159e0ac23b2935e336a50892c9b91361be5ffc991c1afe78b6e74b57623e2",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-vision-router",
+      "plugin": "dsh-vision-router@2.2.4",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:7f2b376fd6e9d4adfb34942ffdf524e57cb694bac816a0126734b369ff4a5f3d",
+      "inputFingerprint": "sha256:e217f4e06a03cf4b3eace7bca4981defc5a72faa43e167b17f358b47956ded2a",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-vision-toolkit",
+      "plugin": "@anionex/dsh-vision-toolkit@0.1.45",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:7d834f7f9f361bb7be68a515fbe0067812f6e09e5e3d057e64d18a1f073ced05",
+      "inputFingerprint": "sha256:495a3e6f69c59ac7c08d700b80f138839033704e6cfa169fcaa50b8b2bf0d171",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-wallpaper-engine",
+      "plugin": "dsh-plugin-wallpaper-engine@1.0.1",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:3ae9b811172886b02c1799d2989b22101576303850986579d91421ec57d5793a",
+      "inputFingerprint": "sha256:879022a510cdfe980cafc67435cd35b2d9d2755d075fddc53404e5c23ad74885",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-web-ui-all",
+      "plugin": "@linxin666/dsh-web-all@0.4.3",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:0fc5cadd39af8fe784aa8e516f754ba2eb2813070e94e05ecfd23b35d1d6a0f0",
+      "inputFingerprint": "sha256:4e3719483c6ae38dd6f6ae1d00fdc31d1ba58e2e6b1f7847e45e68e8e02d9aa4",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-win32",
+      "plugin": "dsh-win32@0.17.14",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:27fb5d6ee3f6570fc432360fb693b2625863279d6dda8c68e808565921ace819",
+      "inputFingerprint": "sha256:3d798e3fcb58f964f2843a6f89251da84c77c123e51f1e519e7e1d1b33cf2194",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dsh-xueqiu",
+      "plugin": "dsh-xueqiu@1.22.13",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:5fef21d754760b26ce88f962d13efd0e5746352bd85ad4ecb6d07515df475d2d",
+      "inputFingerprint": "sha256:25067f43e175d50d446af35775e27324132bc53405fa0490c35581a01e561d7b",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "dshscan",
+      "plugin": "@shaoshi/dshscan@0.5.0",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:8ea222fbfb5e341b781eb8cfe35a5cb7eeda4bda154459948f85897e25cc90ae",
+      "inputFingerprint": "sha256:5913141f74fab62ff70ececbe92ec23da01f74895cf4c6b7049363d7ebfc62f0",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "feishu-bot",
+      "plugin": "dsh-feishu-bot@0.19.16",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:e1fab0794abf4d2d9824c2674b87710486127adddc6011f1021ffba3d8350e29",
+      "inputFingerprint": "sha256:b425f57ebef4411ac6f34dd77691cf48bc160217bd2f69f3d70dd3e30760bcf2",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "graphflow",
+      "plugin": "@roarpeng/graphflow@1.26.0",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:fdb85c1c9bbcf95280dffcbb032c58503563ca03eea95d8617105fbc0edec8ec",
+      "inputFingerprint": "sha256:8cb21ddce2d11d0d8cf996ddd6e4fe14af771cc2446fbd44c41778f8ff09c6b1",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "hindsight-coding-agents",
+      "plugin": "@vectorize-io/hindsight-coding-agents@0.7.0",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:225781e5936e1359db92127f0e94e9e120a2df4c34208c885101e97634cc261e",
+      "inputFingerprint": "sha256:c7e7af5c1f71cbe070cf334b3bd5ff7f54231bf9cec97cf9f0120a1a00ff861a",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "iterate-plugin",
+      "plugin": "iterate-plugin@3.5.7",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:ac23e9207267923beb1ae5a6c9d46d148583ba52331da511a735fe02bfe4f69c",
+      "inputFingerprint": "sha256:a3e8aacf0a54da958602a074376b88d169bc088407b1b22dea1ccd0f81706bd8",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "modlens",
+      "plugin": "@liustack/modlens@3.26.5",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:4257692f91e194ae34c78e8bc1958f2227bf1111e230ce80c063b081677bb5d3",
+      "inputFingerprint": "sha256:6d5425850059edd5a6dacb6458b2a04247fcf0260eff552907804fe196a6ea77",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "modsearch",
+      "plugin": "@liustack/modsearch@5.10.5",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:58eba6a2998773e7267ebc38e289b8d7f6ceb1089c1e1fb0771ff35e5645bd55",
+      "inputFingerprint": "sha256:8fc10b72077d922f765204b146806e9a0fea91d959ead273e5fe0e38090be0e7",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "odai-dsh-plugin",
+      "plugin": "odai-dsh-plugin@0.2.39",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:3410f68f30cdcc995dd0c288e33f27082014d8c1b9c2869546f8a1f929832470",
+      "inputFingerprint": "sha256:6908d1e87b1f82d8258e09c4b240ac94d12f7b32390548bdcfbe3aa69506ed48",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "openpencil",
+      "plugin": "@zseven-w/dsh-openpencil@0.1.0-rc.1",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:6ee580cf8a5c78f0dfd061b5af2f0f091fc81ab924d81ff14cd9720547483d0a",
+      "inputFingerprint": "sha256:17cfc99a86c292c7bcd08d9371fd1dbb2f19309e6bff75ec0540e3b46c4483d1",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "sanqi-market",
+      "plugin": "@sanqi-normal/dsh-webui-market-plugin@0.5.5",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:cefa905258a82e8c987d3b38e40415b84f415d89db2dd5da8c4017c094f877a0",
+      "inputFingerprint": "sha256:12d58d43921cf2ffb22e6df08eea2168c602f089ad3ee8c3fd715317d686d2cb",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "whale-on-desk",
+      "plugin": "whale-on-desk@3.0.0",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:e23e208efc0fb1a092b85824dffdf1e90f0d65a1ce6773db25359346535cfecd",
+      "inputFingerprint": "sha256:cf42ac69f0e4cd605b955ae90c40e167889c6bd23ff9afed26a45fb6ead588c5",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "wsl-workspace",
+      "plugin": "dsh-wsl-workspace@0.7.3",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:0798927bb9629c1536c22de9a89b2813b2293802ffb050768192a8934524b5fb",
+      "inputFingerprint": "sha256:31da600a03a707644c165736e91d1497f4f6095c9d7ab861d7d0af88fcce5d89",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    },
+    {
+      "targetId": "xgone-dsh-remote",
+      "plugin": "@xgone/dsh-remote@0.3.3",
+      "dshVersion": "0.1.7-rc.2",
+      "sourceFingerprint": "sha256:65c2e9580739df3403c54787365276d351f015e4adacf8ada59e31089e6946e3",
+      "inputFingerprint": "sha256:749916aa349d4fb53476f1305816d858447c4b3d434d911aeb7918607716931d",
+      "createdAt": "2026-09-28T08:34:39.555Z"
+    }
+  ],
   "entries": []
 }
