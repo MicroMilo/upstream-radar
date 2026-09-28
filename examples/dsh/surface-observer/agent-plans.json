@@ -36,5 +36,6 @@
         "install log: [ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: node-pty@1.1.0"
       ]
     }
-  ]
+  ],
+  "pendingTasks": []
 }

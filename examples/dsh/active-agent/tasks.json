@@ -1,5 +1,278 @@
 {
   "schema": "upstream-radar.dsh-active-task-state/v1alpha1",
-  "updatedAt": "2026-09-28T00:00:00.000Z",
-  "tasks": []
+  "updatedAt": "2026-09-28T08:40:25.293Z",
+  "tasks": [
+    {
+      "id": "active-4797b25090719afc8f6dde5fb1d8fbe0",
+      "inputFingerprint": "sha256:4797b25090719afc8f6dde5fb1d8fbe09f48833a24437ec1d03b3e97cbf5d7f9",
+      "targetId": "dsh-agy-link",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "477b4f420553e8a52c2fbccc464d7561b239c443",
+        "afterCommit": "21638c56315ae6a2b552d6091945d3144c9af32e",
+        "beforeVersion": "0.1.7-rc.2",
+        "afterVersion": "0.1.7-rc.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "dsh-agy-link",
+          "version": "0.4.38",
+          "integrity": "sha512-LGidbZIc9MAY0++Z2gWqnT1mq091V3QEtEKO2OUQaETFE5uW63v3uNVg8n105V7S7566oa+uQB9PQqT/k3AguA==",
+          "sourceCommit": "3ee8416a4433fa3e8032f4832b217da0c4ab0e71"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.7-rc.2",
+          "integrity": "sha512-SQFhriLvza8GnFApnC5/32AgpcyKxrWnYXhvwDOLJdgWpkCX2EexyR9c8kCkMITJXnFLEN3Qb2CEh0W36vkLyw==",
+          "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "lastRunId": "36398282114",
+      "lastFailure": "the isolated Agent artifact is incomplete"
+    },
+    {
+      "id": "active-4f1c6e8b2710921435ad4d5fd7356efd",
+      "inputFingerprint": "sha256:4f1c6e8b2710921435ad4d5fd7356efd513b2bcb47bba726e730b360d48fe39d",
+      "targetId": "cloudflare-browser",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "477b4f420553e8a52c2fbccc464d7561b239c443",
+        "afterCommit": "21638c56315ae6a2b552d6091945d3144c9af32e",
+        "beforeVersion": "0.1.7-rc.2",
+        "afterVersion": "0.1.7-rc.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "dsh-cloudflare-browser-run",
+          "version": "0.2.2",
+          "integrity": "sha512-kX0Vifrqd0JKmFu+Uo47+iMGEcStaqTLs9kEatnR7ic4Vap8IKrw1jT9KajZ20UdwZSkr0eeWnBjpRXP6SsSqQ==",
+          "sourceCommit": "b26117df22e5cee580eff8c98a50c6557055f2ba"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.7-rc.2",
+          "integrity": "sha512-SQFhriLvza8GnFApnC5/32AgpcyKxrWnYXhvwDOLJdgWpkCX2EexyR9c8kCkMITJXnFLEN3Qb2CEh0W36vkLyw==",
+          "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "lastRunId": "36398282114",
+      "lastFailure": "the isolated Agent job produced no artifact"
+    },
+    {
+      "id": "active-59e94d099dcbe2f58cf53cd9ba2d7340",
+      "inputFingerprint": "sha256:59e94d099dcbe2f58cf53cd9ba2d7340aa205cecbc1caf8128dad05c55d8b41c",
+      "targetId": "context",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "477b4f420553e8a52c2fbccc464d7561b239c443",
+        "afterCommit": "21638c56315ae6a2b552d6091945d3144c9af32e",
+        "beforeVersion": "0.1.7-rc.2",
+        "afterVersion": "0.1.7-rc.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "dsh-context",
+          "version": "0.59.0",
+          "integrity": "sha512-ViPqZoMeQkMwJ62Gfl3ThfBseDKChmOhdh+RCp2JEHLTUws+wbSriIpTccJbru4Lws9QMl1YxArVXBnXw834cg==",
+          "sourceCommit": "addccdd4aa95b4e01b054d1d7f7e6ff9b468d2d4"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.7-rc.2",
+          "integrity": "sha512-SQFhriLvza8GnFApnC5/32AgpcyKxrWnYXhvwDOLJdgWpkCX2EexyR9c8kCkMITJXnFLEN3Qb2CEh0W36vkLyw==",
+          "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "lastRunId": "36398282114",
+      "lastFailure": "the isolated Agent artifact is incomplete"
+    },
+    {
+      "id": "active-793440543cc91681e3c83e85ab3f529e",
+      "inputFingerprint": "sha256:793440543cc91681e3c83e85ab3f529ee0e2ef60edbaa7d73ed7998481ebc9b6",
+      "targetId": "dsh-tui",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "477b4f420553e8a52c2fbccc464d7561b239c443",
+        "afterCommit": "21638c56315ae6a2b552d6091945d3144c9af32e",
+        "beforeVersion": "0.1.7-rc.2",
+        "afterVersion": "0.1.7-rc.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "@deepseek-harness-tui/dsh-tui",
+          "version": "0.11.0",
+          "integrity": "sha512-yoH6BQ5mtC3J1V6wxGZCoPFPUT0zARphrBJWz1WMXrl5DZ/5RS6ufr1CA5ELViDJMal+n8vN/8NbCJe5AR/jjA==",
+          "sourceCommit": "cb211f7c1b5ef1cfbf0c3b9873a71683457d9d9a"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.7-rc.2",
+          "integrity": "sha512-SQFhriLvza8GnFApnC5/32AgpcyKxrWnYXhvwDOLJdgWpkCX2EexyR9c8kCkMITJXnFLEN3Qb2CEh0W36vkLyw==",
+          "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "lastRunId": "36398282114",
+      "lastFailure": "the isolated Agent artifact is incomplete"
+    },
+    {
+      "id": "active-989d765920d6fb2ac248676adc78b16c",
+      "inputFingerprint": "sha256:989d765920d6fb2ac248676adc78b16c371667be5af516a080efb0266cc983a5",
+      "targetId": "openpencil",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "477b4f420553e8a52c2fbccc464d7561b239c443",
+        "afterCommit": "21638c56315ae6a2b552d6091945d3144c9af32e",
+        "beforeVersion": "0.1.7-rc.2",
+        "afterVersion": "0.1.7-rc.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "@zseven-w/dsh-openpencil",
+          "version": "0.1.0-rc.1",
+          "integrity": "sha512-0equagOeBdSpaEfgH2UnxykoDDAA1UxRHCzscMVNktha6xWQPT7+NhA7aBaH4HhGPP0MAqXznMrF5g2v4kxQIg==",
+          "sourceCommit": "7c2f10504bb9d988d5f80d3fed5ab22ccbd19faf"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.7-rc.2",
+          "integrity": "sha512-SQFhriLvza8GnFApnC5/32AgpcyKxrWnYXhvwDOLJdgWpkCX2EexyR9c8kCkMITJXnFLEN3Qb2CEh0W36vkLyw==",
+          "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "lastRunId": "36398282114",
+      "lastFailure": "the isolated Agent artifact is incomplete"
+    },
+    {
+      "id": "active-a9ca2a833a8e0cf69849b599c6d45356",
+      "inputFingerprint": "sha256:a9ca2a833a8e0cf69849b599c6d453567d5caf96d8c87623c2e59f8f0bf4add8",
+      "targetId": "feishu-bot",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "477b4f420553e8a52c2fbccc464d7561b239c443",
+        "afterCommit": "21638c56315ae6a2b552d6091945d3144c9af32e",
+        "beforeVersion": "0.1.7-rc.2",
+        "afterVersion": "0.1.7-rc.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "dsh-feishu-bot",
+          "version": "0.19.16",
+          "integrity": "sha512-+fFFrE0/mQsxgh0IWUX/XyoTUf9BE8/ApoVAwL2NBpgq12J1nONZkXo6iXrR3O193uEmm5Ow0iSTDaHrhSBgIA==",
+          "sourceCommit": "6e722e0272f370fa0071715703294490e2f89bf8"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.7-rc.2",
+          "integrity": "sha512-SQFhriLvza8GnFApnC5/32AgpcyKxrWnYXhvwDOLJdgWpkCX2EexyR9c8kCkMITJXnFLEN3Qb2CEh0W36vkLyw==",
+          "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "lastRunId": "36398282114",
+      "lastFailure": "the isolated Agent artifact is incomplete"
+    },
+    {
+      "id": "active-c98cfb6342843b803ef292c53530e427",
+      "inputFingerprint": "sha256:c98cfb6342843b803ef292c53530e427998d5933153de9832b1ff529397f8c86",
+      "targetId": "better-sidebar",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "477b4f420553e8a52c2fbccc464d7561b239c443",
+        "afterCommit": "21638c56315ae6a2b552d6091945d3144c9af32e",
+        "beforeVersion": "0.1.7-rc.2",
+        "afterVersion": "0.1.7-rc.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "dsh-better-sidebar",
+          "version": "0.21.1",
+          "integrity": "sha512-gbE5E9pwoJeHeedefBftSpTjGjd3TUOPUGYc4LlXUkW+NuYHwY6Hhfcsd//OKuohQLv6snle+sWhrdGWc8ARCg==",
+          "sourceCommit": "d641d2e2117c427f8373f37b786ea0613455bf28"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.7-rc.2",
+          "integrity": "sha512-SQFhriLvza8GnFApnC5/32AgpcyKxrWnYXhvwDOLJdgWpkCX2EexyR9c8kCkMITJXnFLEN3Qb2CEh0W36vkLyw==",
+          "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "lastRunId": "36398282114",
+      "lastFailure": "the isolated Agent artifact is incomplete"
+    },
+    {
+      "id": "active-fc00c97a52182b00a18c35dc68f6fe52",
+      "inputFingerprint": "sha256:fc00c97a52182b00a18c35dc68f6fe528069cbcbfbff926709941711648be94e",
+      "targetId": "dsh-univer-office",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "477b4f420553e8a52c2fbccc464d7561b239c443",
+        "afterCommit": "21638c56315ae6a2b552d6091945d3144c9af32e",
+        "beforeVersion": "0.1.7-rc.2",
+        "afterVersion": "0.1.7-rc.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "dsh-univer-office",
+          "version": "0.3.5",
+          "integrity": "sha512-kMfqAfKJBRUVETqZYLiGg5QVBgoOHkES1O8hhLFTTl9TiHUZEpVnB+1CUFeMjHAArp47QOElGe82iKETgAqDMw==",
+          "sourceCommit": "5ce30f6eb88cf48e24e731782020c1d811144990"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.1.7-rc.2",
+          "integrity": "sha512-SQFhriLvza8GnFApnC5/32AgpcyKxrWnYXhvwDOLJdgWpkCX2EexyR9c8kCkMITJXnFLEN3Qb2CEh0W36vkLyw==",
+          "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "lastRunId": "36398282114",
+      "lastFailure": "the isolated Agent artifact is incomplete"
+    }
+  ]
 }
