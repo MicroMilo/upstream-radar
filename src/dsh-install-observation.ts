@@ -17,8 +17,14 @@ import type { DependencyKind, RootPeerContract } from './radar-types.js'
 import { satisfiesSemverRange } from './semver.js'
 import { parseNpmTarball, type TarEntry } from './tar.js'
 import { TOOL_VERSION } from './version.js'
+import { observationNetworkEnvironment } from './dsh-observation-network.js'
+import { dshExternalAuthPrompt, redactDshExternalAuthPrompt } from './dsh-auth-redaction.js'
+import { parseDshProfileEnvironment, prepareDshProfileOverrides, verifyDshProfileOverrides, type DshProfileEnvironment } from './dsh-profile-environment.js'
+import { collectDshPeerPlaneEvidence, evaluateDshPeerContractCoverage, parseDshClientContract,
+  type DshClientContract, type DshPeerPlaneEvidence } from './dsh-peer-planes.js'
 
 export const DSH_INSTALL_OBSERVATION_SCHEMA = 'upstream-radar.dsh-install-observation/v1alpha1' as const
+export const DSH_INSTALL_EXECUTION_CONTRACT = 'dsh-install/v1alpha6' as const
 
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const DEFAULT_TIMEOUT_MS = 180_000
@@ -66,6 +72,19 @@ export interface InstallObservationCommand {
   timeoutMs: number
   sandboxRoot: string
   tracePath?: string
+  /** Trusted collector telemetry only; never receives raw target output. */
+  onProgress?: (event: InstallObservationCommandProgress) => void
+}
+
+export interface InstallObservationCommandProgress {
+  phase: InstallObservationPhase
+  kind: 'started' | 'heartbeat' | 'finished'
+  elapsedMs: number
+  stdoutBytes: number
+  stderrBytes: number
+  code?: number | null
+  timedOut?: boolean
+  outputExceeded?: boolean
 }
 
 export interface InstallObservationCommandResult {
@@ -78,6 +97,10 @@ export interface InstallObservationCommandResult {
 }
 
 export type InstallObservationRunner = (command: InstallObservationCommand) => Promise<InstallObservationCommandResult>
+
+// Shared only by trusted isolated collectors; target packages never provide these functions.
+export { controlledEnvironment as createDshIsolatedEnvironment, defaultCommandRunner as runDshIsolatedCommand,
+  parsePackedArtifact as readDshPackedArtifact }
 
 export interface InstallObservationStage {
   status: 'passed' | 'failed' | 'skipped'
@@ -165,6 +188,8 @@ export interface DshInstallPeerContractIssue {
   status: 'mismatched' | 'indeterminate' | 'missing'
   /** Static evidence explains whether a literal runtime import was observed. */
   staticUsage: DshInstallPeerStaticUsage
+  usageByPlane?: DshPeerPlaneEvidence
+  declaredClientInject?: boolean
   resolvedVersion?: string
 }
 
@@ -185,6 +210,8 @@ export interface DshInstallPeerContractRelation {
   required: string
   status: 'satisfied' | 'mismatched' | 'indeterminate' | 'missing'
   staticUsage: DshInstallPeerStaticUsage
+  usageByPlane?: DshPeerPlaneEvidence
+  declaredClientInject?: boolean
   resolvedVersion?: string
 }
 
@@ -231,6 +258,8 @@ export interface DshInstallObservationReport {
   schema: typeof DSH_INSTALL_OBSERVATION_SCHEMA
   tool: { name: 'upstream-radar'; version: string }
   probe: 'dsh-install'
+  executionContract: typeof DSH_INSTALL_EXECUTION_CONTRACT
+  profileEnvironment?: DshProfileEnvironment
   scope: 'install-and-load-behavior'
   startedAt: string
   completedAt: string
@@ -254,6 +283,7 @@ export interface DshInstallObservationReport {
     bytes?: number
     bundlePatch?: string
     nodeEngine?: string
+    client?: DshClientContract
     lifecycleScripts: string[]
   }
   stages: {
@@ -296,6 +326,8 @@ export interface DshInstallObservationReport {
 }
 
 export interface DshInstallObservationOptions {
+  profileEnvironment?: DshProfileEnvironment
+  expectedArtifactSha256?: string
   packageSpec: string
   dshVersion: string
   caseId?: string
@@ -303,8 +335,10 @@ export interface DshInstallObservationOptions {
   isolationProvider: InstallObservationIsolationProvider
   allowedBuilds?: readonly string[]
   timeoutMs?: number
+  networkProxy?: string
   hostEnvironment?: NodeJS.ProcessEnv
   runner?: InstallObservationRunner
+  onProgress?: (event: InstallObservationCommandProgress) => void
 }
 
 interface SnapshotEntry {
@@ -341,6 +375,7 @@ interface ParsedArtifact {
   integrity?: string
   bytes: number
   bundlePatch: string
+  client?: DshClientContract
   nodeEngine?: string
   lifecycleScripts: string[]
   requiredPeerDependencies: ProfilePeerRequirement[]
@@ -470,9 +505,12 @@ function requiredPeerDependencies(manifest: Record<string, unknown>, entries: re
     throw new Error(`packed artifact declares more than ${MAX_PLUGIN_PEERS} required peer dependencies`)
   }
   const usages = staticPeerUsage(entries, requirements)
+  const client = parseDshClientContract(manifest)
+  const planes = client === undefined ? undefined : collectDshPeerPlaneEvidence(manifest, entries, requirements)
   return requirements.map((requirement, index) => ({
     ...requirement,
     staticUsage: usages[index] ?? 'scan-incomplete',
+    ...(planes === undefined ? {} : { usageByPlane: planes[index], declaredClientInject: client?.inject.includes(requirement.name) === true }),
   }))
 }
 
@@ -712,6 +750,7 @@ function dshArgs(dshVersion: string, args: readonly string[]): string[] {
 
 function defaultCommandRunner(input: InstallObservationCommand): Promise<InstallObservationCommandResult> {
   return new Promise(resolveResult => {
+    const startedAt = Date.now()
     const traced = input.tracePath !== undefined
     const command = traced ? 'strace' : input.command
     const args = traced
@@ -733,6 +772,16 @@ function defaultCommandRunner(input: InstallObservationCommand): Promise<Install
     let launchError: string | undefined
     let settled = false
     let timer: NodeJS.Timeout | undefined
+    let heartbeat: NodeJS.Timeout | undefined
+
+    const progress = (kind: InstallObservationCommandProgress['kind'], code?: number | null): void => {
+      if (input.onProgress === undefined) return
+      try {
+        input.onProgress({ phase: input.phase, kind, elapsedMs: Math.max(0, Date.now() - startedAt),
+          stdoutBytes, stderrBytes, ...(code === undefined ? {} : { code }),
+          ...(timedOut ? { timedOut: true } : {}), ...(outputExceeded ? { outputExceeded: true } : {}) })
+      } catch { /* Telemetry cannot change an isolated command result. */ }
+    }
 
     const terminate = (): void => {
       try {
@@ -746,6 +795,8 @@ function defaultCommandRunner(input: InstallObservationCommand): Promise<Install
       if (settled) return
       settled = true
       if (timer !== undefined) clearTimeout(timer)
+      if (heartbeat !== undefined) clearInterval(heartbeat)
+      progress('finished', code)
       resolveResult({
         code,
         timedOut,
@@ -776,6 +827,9 @@ function defaultCommandRunner(input: InstallObservationCommand): Promise<Install
       timedOut = true
       terminate()
     }, input.timeoutMs)
+    progress('started')
+    heartbeat = setInterval(() => progress('heartbeat'), 1000)
+    heartbeat.unref()
   })
 }
 
@@ -794,7 +848,7 @@ function commandStage(result: InstallObservationCommandResult): InstallObservati
   return {
     status: 'failed',
     code: result.code,
-    detail: output === '' ? prefix : `${prefix}: ${bounded(output)}`,
+    detail: output === '' ? prefix : `${prefix}: ${bounded(redactDshExternalAuthPrompt(output))}`,
     ...(result.timedOut ? { timedOut: true } : {}),
     ...(result.outputExceeded ? { outputExceeded: true } : {}),
   }
@@ -914,6 +968,7 @@ async function parsePackedArtifact(
   }
   const nodeEngine = rawNodeEngine === undefined || rawNodeEngine === '' ? undefined : bounded(rawNodeEngine, 512)
   const peerRequirements = requiredPeerDependencies(manifest, parsed.entries)
+  const client = parseDshClientContract(manifest)
   return {
     path,
     filename,
@@ -924,6 +979,7 @@ async function parsePackedArtifact(
     ...(nodeEngine === undefined ? {} : { nodeEngine }),
     lifecycleScripts,
     requiredPeerDependencies: peerRequirements,
+    ...(client === undefined ? {} : { client }),
   }
 }
 
@@ -1065,8 +1121,8 @@ function isNotFound(error: unknown): boolean {
  * lockfile. Read only those fixed descendants, refuse every symlink in their
  * path, and never retain the lockfile contents outside the disposable runner.
  */
-async function readProfileLockfile(dshHome: string): Promise<Buffer | undefined> {
-  const profileDirectory = join(dshHome, 'profiles', PROFILE)
+async function readProfileLockfile(dshHome: string, profileName = PROFILE): Promise<Buffer | undefined> {
+  const profileDirectory = join(dshHome, 'profiles', profileName)
   try {
     const profileMetadata = await lstat(profileDirectory)
     if (!profileMetadata.isDirectory() || profileMetadata.isSymbolicLink()) return undefined
@@ -1126,6 +1182,8 @@ function pluginPeerContractEvidence(contracts: readonly ObservedPeerContract[] |
       required: bounded(entry.required, 512),
       status: entry.status,
       staticUsage: entry.staticUsage,
+      ...(entry.usageByPlane === undefined ? {} : { usageByPlane: entry.usageByPlane }),
+      ...(entry.declaredClientInject === undefined ? {} : { declaredClientInject: entry.declaredClientInject }),
       ...(entry.resolvedVersion === undefined ? {} : { resolvedVersion: bounded(entry.resolvedVersion, 256) }),
     })),
     ...(issues.length === 0 ? {} : {
@@ -1134,6 +1192,8 @@ function pluginPeerContractEvidence(contracts: readonly ObservedPeerContract[] |
         required: bounded(issue.required, 512),
         status: issue.status,
         staticUsage: issue.staticUsage,
+        ...(issue.usageByPlane === undefined ? {} : { usageByPlane: issue.usageByPlane }),
+        ...(issue.declaredClientInject === undefined ? {} : { declaredClientInject: issue.declaredClientInject }),
         ...(issue.resolvedVersion === undefined ? {} : { resolvedVersion: bounded(issue.resolvedVersion, 256) }),
       })),
     }),
@@ -1162,10 +1222,14 @@ interface ProfilePeerRequirement {
   name: string
   required: string
   staticUsage: DshInstallPeerStaticUsage
+  usageByPlane?: DshPeerPlaneEvidence
+  declaredClientInject?: boolean
 }
 
 interface ObservedPeerContract extends RootPeerContract {
   staticUsage: DshInstallPeerStaticUsage
+  usageByPlane?: DshPeerPlaneEvidence
+  declaredClientInject?: boolean
 }
 
 interface ProfilePeerResolutionRecord {
@@ -1396,9 +1460,9 @@ async function discoverExactDshRuntime(cacheHome: string, dshVersion: string): P
   }
 }
 
-async function profileResolutionEvidence(dshHome: string): Promise<DshInstallObservationReport['resolution']> {
-  const profileDirectory = join(dshHome, 'profiles', PROFILE)
-  const lockfile = await readProfileLockfile(dshHome)
+async function profileResolutionEvidence(dshHome: string, profileName = PROFILE): Promise<DshInstallObservationReport['resolution']> {
+  const profileDirectory = join(dshHome, 'profiles', profileName)
+  const lockfile = await readProfileLockfile(dshHome, profileName)
   if (lockfile === undefined) return {}
   const profileLockfile: DshInstallProfileLockfileEvidence = {
     sha256: createHash('sha256').update(lockfile).digest('hex'),
@@ -1430,11 +1494,12 @@ async function runtimeGraphEvidence(
   dshVersion: string,
   cacheHome: string,
   profileResolvedPeerContracts?: readonly ObservedPeerContract[],
+  profileName = PROFILE,
 ): Promise<Pick<DshInstallObservationReport['resolution'], 'runtimeGraph' | 'runtimeGraphError'>> {
   try {
     const dshRuntime = await discoverExactDshRuntime(cacheHome, dshVersion)
     const graph = await parseInstalledNodeModulesGraph(
-      join(dshHome, 'profiles', PROFILE),
+      join(dshHome, 'profiles', profileName),
       rootPackage,
       {
         hostNodeModulesDirectory: dshRuntime.nodeModulesDirectory,
@@ -1493,12 +1558,27 @@ async function resolutionEvidence(
   dshVersion: string,
   cacheHome: string,
   profileResolvedPeerContracts?: readonly ObservedPeerContract[],
+  profileName = PROFILE,
 ): Promise<DshInstallObservationReport['resolution']> {
   const [profile, runtime] = await Promise.all([
-    profileResolutionEvidence(dshHome),
-    runtimeGraphEvidence(dshHome, rootPackage, dshVersion, cacheHome, profileResolvedPeerContracts),
+    profileResolutionEvidence(dshHome, profileName),
+    runtimeGraphEvidence(dshHome, rootPackage, dshVersion, cacheHome, profileResolvedPeerContracts, profileName),
   ])
   return { ...profile, ...runtime }
+}
+
+/** Read a bounded profile/host graph; this never imports or executes package files. */
+export async function observeDshProfileResolution(
+  dshHome: string,
+  profileName: string,
+  rootPackage: { name: string, version: string },
+  dshVersion: string,
+  cacheHome: string,
+): Promise<DshInstallObservationReport['resolution']> {
+  if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,63}$/.test(profileName)) throw new Error('profile must be a short safe profile name')
+  if (!EXACT_VERSION.test(dshVersion)) throw new Error('profile graph requires an exact DSH version')
+  parseNpmSpec(`${rootPackage.name}@${rootPackage.version}`)
+  return resolutionEvidence(dshHome, rootPackage, dshVersion, cacheHome, undefined, profileName)
 }
 
 function finishReport(report: DshInstallObservationReport, result: DshInstallObservationResult, reason: string): DshInstallObservationReport {
@@ -1525,44 +1605,21 @@ function finalCompatibilityConclusion(
         : `the exact artifact installed and loaded, but the effective DSH runtime graph could not be established: ${resolution.runtimeGraphError}`,
     }
   }
-  const contracts = graph.pluginPeerContracts
-  const firstIssue = contracts.issues?.[0]
-  if (contracts.mismatched > 0 || contracts.missing > 0) {
-    const detail = firstIssue === undefined
-      ? `${contracts.mismatched + contracts.missing} required plugin peer contract(s) do not match the DSH runtime`
-      : firstIssue.status === 'missing'
-        ? `${firstIssue.name}@${firstIssue.required} was not resolved by the DSH runtime (${firstIssue.staticUsage})`
-        : `${firstIssue.name}@${firstIssue.resolvedVersion ?? 'unknown'} does not satisfy ${firstIssue.required} (${firstIssue.staticUsage})`
-    return {
-      result: 'peer-contract-incompatible',
-      reason: `the exact artifact installed and loaded, but ${detail}`,
-    }
-  }
-  if (graph.unresolved > 0) {
-    return {
-      result: 'unknown',
-      reason: `the exact artifact installed and loaded, but the effective DSH runtime graph has ${graph.unresolved} required unresolved edge(s)`,
-    }
-  }
-  if (contracts.indeterminate > 0) {
-    return {
-      result: 'unknown',
-      reason: `the exact artifact installed and loaded, but ${contracts.indeterminate} required plugin peer range(s) could not be evaluated safely`,
-    }
-  }
-  return {
-    result: 'compatible',
-    reason: 'the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version',
-  }
+  return evaluateDshPeerContractCoverage(graph)
 }
 
 export async function observeDshPluginInstall(options: DshInstallObservationOptions): Promise<DshInstallObservationReport> {
+  const profileEnvironment = parseDshProfileEnvironment(options.profileEnvironment)
   const spec = parseNpmSpec(options.packageSpec)
+  if (options.expectedArtifactSha256 !== undefined && !/^[a-f0-9]{64}$/.test(options.expectedArtifactSha256)) {
+    throw new Error('expected artifact must be a lowercase SHA-256 digest')
+  }
   if (!EXACT_VERSION.test(options.dshVersion)) throw new Error('DSH version must be an exact semantic version')
   if (options.caseId !== undefined && !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(options.caseId)) {
     throw new Error('DSH install observation caseId must be a short lowercase label')
   }
   const allowedBuilds = normalizeAllowedBuilds(options.allowedBuilds)
+  const networkEnvironment = observationNetworkEnvironment(options.networkProxy)
   if (!options.allowExecution) throw new Error('DSH install observation requires explicit execution consent')
   if (!['github-actions-hosted-runner', 'firecracker', 'other'].includes(options.isolationProvider)) {
     throw new Error('unsupported isolation provider')
@@ -1582,6 +1639,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
     schema: DSH_INSTALL_OBSERVATION_SCHEMA,
     tool: { name: 'upstream-radar', version: TOOL_VERSION },
     probe: 'dsh-install',
+    executionContract: DSH_INSTALL_EXECUTION_CONTRACT,
     scope: 'install-and-load-behavior',
     startedAt,
     completedAt: startedAt,
@@ -1621,7 +1679,8 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       inheritedHostSecrets: false,
       approvedDependencyBuilds: allowedBuilds,
       requiredDependencyBuilds: [],
-      note: 'Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate.',
+      note: 'Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate.'
+        + (options.networkProxy === undefined ? '' : ' An explicitly selected credential-free proxy carries network traffic; traced connections to the proxy do not establish the final remote destination.'),
     },
   }
 
@@ -1629,10 +1688,12 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
   const artifactDirectory = join(sandboxRoot, 'artifact')
   const traceDirectory = join(sandboxRoot, 'trace')
   const hostEnvironment = options.hostEnvironment ?? process.env
-  const environment = controlledEnvironment(sandboxRoot, hostEnvironment)
+  const environment = { ...controlledEnvironment(sandboxRoot, hostEnvironment), ...networkEnvironment }
   const noScriptsEnvironment = scriptPolicy(environment, false)
   const scriptsEnvironment = scriptPolicy(environment, true)
-  const runner = options.runner ?? defaultCommandRunner
+  const configuredRunner = options.runner ?? defaultCommandRunner
+  const runner: InstallObservationRunner = input => configuredRunner({ ...input,
+    ...(options.onProgress === undefined ? {} : { onProgress: options.onProgress }) })
   const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm'
   const pnpmCommand = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
 
@@ -1670,6 +1731,11 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       return finishReport(report, 'unknown', 'the package-manager runtime could not be established before execution')
     }
     report.runtime.packageManager.version = packageManagerVersion
+    if (packageManagerVersion !== profileEnvironment.pnpmVersion) {
+      report.stages.runtime = { status: 'failed', detail: `observed pnpm ${packageManagerVersion}, expected ${profileEnvironment.pnpmVersion}` }
+      return finishReport(report, 'unknown', `the isolated pnpm runtime does not match planned pnpm ${profileEnvironment.pnpmVersion}`)
+    }
+    if (Object.keys(profileEnvironment.overrides).length === 0) report.profileEnvironment = profileEnvironment
 
     const artifactResult = await runSafely(runner, {
       phase: 'artifact',
@@ -1699,6 +1765,11 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       bundlePatch: artifact.bundlePatch,
       ...(artifact.nodeEngine === undefined ? {} : { nodeEngine: artifact.nodeEngine }),
       lifecycleScripts: artifact.lifecycleScripts,
+      ...(artifact.client === undefined ? {} : { client: artifact.client }),
+    }
+    if (options.expectedArtifactSha256 !== undefined && artifact.sha256 !== options.expectedArtifactSha256) {
+      report.stages.artifact = { status: 'failed', detail: 'artifact digest differs from the approved bytes' }
+      return finishReport(report, 'unknown', 'the artifact does not match the approved bytes; no dependency build or host install was attempted')
     }
     report.stages.artifact = { status: 'passed', code: artifactResult.code }
 
@@ -1733,6 +1804,21 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
       report.stages.profile = commandStage(profileResult)
       if (report.stages.profile.status !== 'passed') {
         return finishReport(report, 'unknown', 'the exact DSH runtime could not initialize the disposable profile')
+      }
+
+      const profileDirectory = join(environment.DSH_HOME as string, 'profiles', PROFILE)
+      const hasOverrides = Object.keys(profileEnvironment.overrides).length > 0
+      const verifyOverrides = async (): Promise<void> => {
+        // This command executes only in the disposable runner. Its bounded JSON
+        // output confirms pnpm reads the profile settings rather than a parent project.
+        const result = await runSafely(runner, { phase: 'profile', command: pnpmCommand,
+          args: ['config', 'get', 'overrides', '--json'], cwd: profileDirectory, env: noScriptsEnvironment, timeoutMs, sandboxRoot })
+        if (commandStage(result).status !== 'passed') throw new Error('pnpm profile overrides could not be observed')
+        report.profileEnvironment = verifyDshProfileOverrides(profileEnvironment, result.stdout)
+      }
+      if (hasOverrides) {
+        await prepareDshProfileOverrides(environment.DSH_HOME as string, PROFILE, profileEnvironment)
+        await verifyOverrides()
       }
 
       const beforeInstall = await snapshotSandbox(sandboxRoot, environment)
@@ -1783,6 +1869,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
         }
         return finishReport(report, 'install-failed', 'the traced DSH plugin install command failed')
       }
+      if (hasOverrides) await verifyOverrides()
 
       const registered = await registeredBundle(environment.DSH_HOME as string, spec.name)
       report.stages.registration = registered
@@ -1825,6 +1912,10 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
         profilePeerContracts,
       )
       report.stages.load = commandStage(loadResult)
+      if (dshExternalAuthPrompt(`${loadResult.stderr}\n${loadResult.stdout}`)) {
+        return finishReport(report, 'unknown',
+          'the plugin load entered external account authorization; one-time login evidence was withheld and coverage remains incomplete')
+      }
       if (loadResult.timedOut || loadResult.outputExceeded || loadResult.launchError !== undefined) {
         return finishReport(report, 'unknown', 'the plugin load did not produce a bounded command result')
       }
@@ -1833,6 +1924,7 @@ export async function observeDshPluginInstall(options: DshInstallObservationOpti
         return finishReport(report, 'unknown', 'the load command ran without readable trace evidence')
       }
       if (loadResult.code !== 0) return finishReport(report, 'load-failed', 'the traced DSH profile load command failed')
+      if (hasOverrides) await verifyOverrides()
       const conclusion = finalCompatibilityConclusion(report.resolution)
       return finishReport(report, conclusion.result, conclusion.reason)
     } catch (error: unknown) {

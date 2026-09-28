@@ -1,4 +1,6 @@
-import { readFile, realpath } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
+import { constants } from 'node:fs'
+import { open, readFile, realpath } from 'node:fs/promises'
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import { parsePackageManifestSnapshot } from './inventory.js'
 import { dependencyGraphDigest } from './graph.js'
@@ -124,7 +126,9 @@ async function readProfileManifest(
     throw new Error(`installed package manifest is not valid JSON: ${packageDirectory}`)
   }
   const manifest = parseInstalledManifestSnapshot(parsed)
-  return { id: nodeId(profileRoot, packageDirectory), directory: packageDirectory, source: 'profile', manifest }
+  // Node resolves imports beside the physical package, including pnpm's
+  // virtual-store siblings. The public alias is not a resolution directory.
+  return { id: nodeId(profileRoot, realDirectory), directory: realDirectory, source: 'profile', manifest }
 }
 
 async function readHostManifest(
@@ -267,14 +271,17 @@ export async function parseInstalledNodeModulesGraph(
   profileDirectory: string,
   rootPackage: RootPackage,
   options: {
+    /** Explicit collector-owned workspace boundary for managed profiles linking their application. Never take this path from target metadata. */
+    workspaceDirectory?: string
     hostNodeModulesDirectory?: string
     hostRuntimeSource?: DependencyHostRuntimeSource
     hostRuntimePackage?: PackageCoordinate
     hostRuntimePackageDirectory?: string
   } = {},
 ): Promise<DependencyGraph> {
-  const profileRoot = resolve(profileDirectory)
-  const profileRootReal = await realpath(profileRoot)
+  const profileRoot = await realpath(resolve(profileDirectory))
+  const profileRootReal = options.workspaceDirectory === undefined ? profileRoot : await realpath(resolve(options.workspaceDirectory))
+  if (!isLexicallyInside(profileRootReal, profileRoot)) throw new Error('DSH profile escapes its explicit workspace boundary')
   const hostNodeModulesDirectory = options.hostNodeModulesDirectory === undefined
     ? undefined
     : resolve(options.hostNodeModulesDirectory)
@@ -292,7 +299,7 @@ export async function parseInstalledNodeModulesGraph(
     && (options.hostRuntimePackage.ecosystem !== 'npm' || options.hostRuntimePackage.name !== DSH_RUNTIME_PACKAGE_NAME)) {
     throw new Error(`DSH host runtime package must be ${DSH_RUNTIME_PACKAGE_NAME}`)
   }
-  const root = await findProfilePackage(profileRoot, rootPackage.name, profileRoot, profileRootReal)
+  const root = await findProfilePackage(profileRoot, rootPackage.name, profileRootReal, profileRootReal)
   if (root === undefined) {
     throw new Error(`installed root package is not present in the DSH profile: ${rootPackage.name}@${rootPackage.version}`)
   }
@@ -376,7 +383,7 @@ export async function parseInstalledNodeModulesGraph(
               hostNodeModulesDirectory,
               hostNodeModulesDirectoryReal,
             ))
-        : (await findProfilePackage(current.directory, dependency.name, profileRoot, profileRootReal)
+        : (await findProfilePackage(current.directory, dependency.name, profileRootReal, profileRootReal)
           ?? (hostNodeModulesDirectory === undefined || hostNodeModulesDirectoryReal === undefined
               ? undefined
               : await findHostPackage(
@@ -451,4 +458,72 @@ export async function parseInstalledNodeModulesGraph(
     }),
     ...(reachableUnresolved.length === 0 ? {} : { unresolved: reachableUnresolved }),
   }
+}
+
+export interface InstalledProfileGraph {
+  schema: 'upstream-radar.installed-profile-graph/v1alpha1'
+  profilePath: string
+  manifest: { sha256: string; bytes: number }
+  roots: Array<{ name: string; requested: string; kind: 'dependency' | 'bundle'; version: string; versionStatus: 'satisfied' | 'mismatched' | 'indeterminate' | 'linked'; graph: DependencyGraph }>
+  gaps: Array<{ name: string; reason: string }>
+  digest: string
+}
+
+/** A managed profile has its own manifest and root set, not the outer application's graph under another label. */
+export async function parseInstalledProfileGraph(
+  profileDirectory: string,
+  options: NonNullable<Parameters<typeof parseInstalledNodeModulesGraph>[2]> = {},
+): Promise<InstalledProfileGraph> {
+  const profile = await realpath(resolve(profileDirectory))
+  const workspace = options.workspaceDirectory === undefined ? profile : await realpath(resolve(options.workspaceDirectory))
+  if (!isLexicallyInside(workspace, profile)) throw new Error('managed profile escapes its explicit workspace boundary')
+  const file = await open(join(profile, 'package.json'), constants.O_RDONLY | constants.O_NOFOLLOW)
+  let bytes: Buffer
+  try {
+    const stat = await file.stat()
+    if (!stat.isFile() || stat.size > 256 * 1024) throw new Error('managed profile manifest exceeds its byte bound')
+    bytes = await file.readFile()
+    if (bytes.length !== stat.size) throw new Error('managed profile manifest changed while reading')
+  } finally { await file.close() }
+  const manifest = JSON.parse(bytes.toString('utf8')) as Record<string, unknown>
+  if (typeof manifest !== 'object' || manifest === null || Array.isArray(manifest)) throw new Error('managed profile manifest must be an object')
+  const dependencies = manifest.dependencies
+  if (typeof dependencies !== 'object' || dependencies === null || Array.isArray(dependencies)
+    || Object.values(dependencies).some(value => typeof value !== 'string' || value.length > 2048)) throw new Error('managed profile dependencies must be bounded version requests')
+  const requests = Object.entries(dependencies).map(([name, requested]) => ({ name, requested: requested as string, kind: 'dependency' as 'dependency' | 'bundle' }))
+  const bundles = (manifest.dsh as { profile?: { bundles?: unknown } } | undefined)?.profile?.bundles
+  if (bundles !== undefined) {
+    if (!Array.isArray(bundles) || bundles.some(value => typeof value !== 'string')) throw new Error('managed profile bundles must be package names')
+    for (const name of bundles as string[]) if (!requests.some(request => request.name === name)) requests.push({ name, requested: '*', kind: 'bundle' })
+  }
+  if (requests.length === 0 || requests.length > 32 || requests.some(request => !isPackageName(request.name))) throw new Error('managed profile root set is invalid or exceeds its bound')
+  const roots: InstalledProfileGraph['roots'] = []
+  const gaps: InstalledProfileGraph['gaps'] = []
+  let nodes = 0, edges = 0
+  for (const request of requests.sort((a, b) => a.name.localeCompare(b.name))) {
+    try {
+      const root = await findProfilePackage(profile, request.name, workspace, workspace)
+      if (root === undefined) throw new Error('declared profile root is not installed within the explicit workspace')
+      let versionStatus: InstalledProfileGraph['roots'][number]['versionStatus']
+      if (request.requested.startsWith('link:')) {
+        const expectedLink = resolve(profile, request.requested.slice(5))
+        if (!isLexicallyInside(workspace, expectedLink) || await realpath(expectedLink) !== root.directory) throw new Error('profile link does not identify the installed application inside the workspace')
+        versionStatus = 'linked'
+      } else {
+        const matches = satisfiesSemverRange(root.manifest.version, request.requested)
+        versionStatus = matches === true ? 'satisfied' : matches === false ? 'mismatched' : 'indeterminate'
+      }
+      const graph = await parseInstalledNodeModulesGraph(profile, { name: root.manifest.name, version: root.manifest.version }, options)
+      nodes += graph.nodes.length
+      edges += graph.edges.length
+      if (nodes > MAX_NODES || edges > MAX_EDGES) throw new Error('managed profile graph exceeds the combined node or edge bound')
+      roots.push({ ...request, version: root.manifest.version, versionStatus, graph })
+    } catch (error) {
+      gaps.push({ name: request.name, reason: String(error instanceof Error ? error.message : error).slice(0, 1024) })
+    }
+  }
+  const value = { schema: 'upstream-radar.installed-profile-graph/v1alpha1' as const,
+    profilePath: relative(workspace, profile).split(sep).join('/') || '.',
+    manifest: { sha256: createHash('sha256').update(bytes).digest('hex'), bytes: bytes.length }, roots, gaps }
+  return { ...value, digest: `sha256:${createHash('sha256').update(JSON.stringify(value)).digest('hex')}` }
 }

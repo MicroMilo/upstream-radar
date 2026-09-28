@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
+import { buildDshInstallPlan } from '../src/dsh-install-plan.js'
 import {
   applyDshHeadlessAgentPlans,
   createDshHeadlessAgentInputFingerprint,
@@ -17,6 +18,7 @@ const candidate: DshHeadlessAgentCandidate = {
   plugin: 'dsh-vision@1.0.0',
   dshVersion: '0.1.1-rc.2',
   nodeMajor: 22,
+  executionEnvironment: { platform: 'linux', architecture: 'x64', profileEnvironment: { pnpmVersion: '11.7.0', overrides: {} } },
   result: 'build-approval-required',
   reason: 'the isolated install requires explicit approval for sharp',
   requiredDependencyBuilds: ['sharp'],
@@ -52,10 +54,12 @@ function plans(action: 'retry-headless' | 'stop-headless' = 'retry-headless') {
       plugin: candidate.plugin,
       dshVersion: candidate.dshVersion,
       nodeMajor: candidate.nodeMajor,
+      executionEnvironment: candidate.executionEnvironment,
       result: candidate.result,
       observedRequiredBuilds: candidate.requiredDependencyBuilds,
       approvedBuilds: action === 'retry-headless' ? ['sharp'] : [],
       artifactSha256: candidate.artifactSha256,
+      dependencyGraphDigest: candidate.dynamicEvidence?.runtimeGraph?.digest,
       repository: candidate.repository,
       sourceCommit: candidate.sourceCommit,
       inputFingerprint: createDshHeadlessAgentInputFingerprint(candidate),
@@ -93,13 +97,51 @@ function ledger(overrides: Record<string, unknown> = {}) {
       reason: candidate.reason,
       requiredDependencyBuilds: ['sharp'],
       artifact: { lifecycleScripts: [], sha256: candidate.artifactSha256 },
+      resolution: candidate.dynamicEvidence,
       observer: { schema: 'upstream-radar.dsh-install-observation/v1alpha1', version: '0.42.0' },
       ...overrides,
     }],
   }
 }
 
+function plannedBuilds(applied: unknown): string {
+  return buildDshInstallPlan(applied, { targets: { 'deepseek-harness': {
+    package: { name: '@deepseek-ai/dsh', version: candidate.dshVersion },
+  } } }, { changes: [] }).matrix.include[0]?.allowedBuilds ?? ''
+}
+
 describe('DSH headless Agent planning', () => {
+  it('does not rebind a saved build approval to a new architecture, package manager, or override environment', () => {
+    const saved = plans()
+    const bound = { ...saved, entries: saved.entries.map(entry => ({ ...entry, executionEnvironment: {
+      platform: 'linux', architecture: 'x64', profileEnvironment: { pnpmVersion: '11.7.0', overrides: {} },
+    } })) }
+    assert.equal(plannedBuilds(applyDshHeadlessAgentPlans(targets, bound, ledger())), 'sharp')
+    const legacy = { ...saved, entries: saved.entries.map(entry => ({ ...entry, executionEnvironment: undefined })) }
+    assert.equal(applyDshHeadlessAgentPlans(targets, legacy, ledger()).plugins[0]?.buildApprovals?.length ?? 0, 0)
+    for (const changes of [{ runtime: { nodeMajor: 22, nodeVersion: '22.23.0', platform: 'linux', architecture: 'arm64', pnpmVersion: '11.7.0' } },
+      { profileEnvironment: { pnpmVersion: '11.8.0', overrides: {} } },
+      { profileEnvironment: { pnpmVersion: '11.7.0', overrides: { sharp: '0.34.0' } } }]) {
+      assert.equal(applyDshHeadlessAgentPlans(targets, bound, ledger(changes)).plugins[0]?.buildApprovals?.length ?? 0, 0)
+    }
+  })
+
+  it('does not transfer a Node-specific build approval to another runtime or a newer DSH/plugin coordinate', () => {
+    const twoRuntimes = { ...targets, runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }, { id: 'node24', nodeMajor: 24 }],
+      plugins: [{ ...targets.plugins[0]!, runtimeProfiles: ['node22', 'node24'] }] }
+    const applied = applyDshHeadlessAgentPlans(twoRuntimes, plans(), ledger())
+    const state = { targets: { 'deepseek-harness': { package: { name: '@deepseek-ai/dsh', version: candidate.dshVersion } } } }
+    const initial = buildDshInstallPlan(applied, state, { changes: [] })
+    assert.equal(initial.matrix.include.find(cell => cell.nodeMajor === 22)?.allowedBuilds, 'sharp')
+    assert.equal(Reflect.get(initial.matrix.include.find(cell => cell.nodeMajor === 22)!, 'expectedArtifactSha256'), candidate.artifactSha256)
+    assert.equal(initial.matrix.include.find(cell => cell.nodeMajor === 24)?.allowedBuilds, '')
+    state.targets['deepseek-harness'].package.version = '0.1.5-rc.2'
+    assert.ok(buildDshInstallPlan(applied, state, { changes: [] }).matrix.include.every(cell => cell.allowedBuilds === ''))
+    state.targets['deepseek-harness'].package.version = candidate.dshVersion
+    applied.plugins[0]!.spec = 'dsh-vision@1.1.0'
+    assert.ok(buildDshInstallPlan(applied, state, { changes: [] }).matrix.include.every(cell => cell.allowedBuilds === ''))
+  })
+
   it('selects the current observed plugin coordinate instead of the stale corpus coordinate', () => {
     const mappedTargets = {
       ...targets,
@@ -140,6 +182,8 @@ describe('DSH headless Agent planning', () => {
     assert.match(renderDshHeadlessAgentPrompt(candidate), /untrusted-document/)
     assert.match(renderDshHeadlessAgentPrompt(candidate), /cannot add a Web\/TUI plane/)
     assert.match(renderDshHeadlessAgentPrompt(candidate), /dsh-client-ui-primitives/)
+    assert.match(renderDshHeadlessAgentPrompt(candidate), /"architecture":"x64"/)
+    assert.match(renderDshHeadlessAgentPrompt(candidate), /"pnpmVersion":"11.7.0"/)
   })
 
   it('rejects invented build packages and retries for non-build evidence', () => {
@@ -188,28 +232,34 @@ describe('DSH headless Agent planning', () => {
 
   it('overlays a retry only onto the exact artifact and runtime cell', () => {
     const applied = applyDshHeadlessAgentPlans(targets, plans(), ledger())
-    assert.deepEqual(applied.plugins[0]?.allowedBuilds, ['sharp'])
+    assert.equal(plannedBuilds(applied), 'sharp')
+    const changedGraph = applyDshHeadlessAgentPlans(targets, plans(), ledger({
+      resolution: { runtimeGraph: { ...candidate.dynamicEvidence!.runtimeGraph!,
+        digest: `sha256:${'f'.repeat(64)}` } },
+    }))
+    assert.equal(plannedBuilds(changedGraph), '', 'a new dependency graph cannot reuse a build-script approval')
+    assert.deepEqual(applyDshHeadlessAgentPlans(applied, plans(), ledger()), applied, 'reapplying a saved review must not accumulate duplicate approvals')
 
     const compatibleRefresh = applyDshHeadlessAgentPlans(targets, plans(), ledger({
       result: 'compatible',
       reason: 'the approved exact artifact installed and loaded',
       requiredDependencyBuilds: undefined,
     }))
-    assert.deepEqual(compatibleRefresh.plugins[0]?.allowedBuilds, ['sharp'])
+    assert.equal(plannedBuilds(compatibleRefresh), 'sharp')
 
     const differentArtifact = applyDshHeadlessAgentPlans(
       targets,
       plans(),
       ledger({ artifact: { lifecycleScripts: [], sha256: 'e'.repeat(64) } }),
     )
-    assert.equal(differentArtifact.plugins[0]?.allowedBuilds, undefined)
+    assert.equal(plannedBuilds(differentArtifact), '')
   })
 
   it('does not turn a stopped or missing Agent plan into a static fallback', () => {
     const stopped = applyDshHeadlessAgentPlans(targets, plans('stop-headless'), ledger())
-    assert.equal(stopped.plugins[0]?.allowedBuilds, undefined)
+    assert.equal(plannedBuilds(stopped), '')
     const missing = applyDshHeadlessAgentPlans(targets, emptyDshHeadlessAgentPlans(), ledger())
-    assert.equal(missing.plugins[0]?.allowedBuilds, undefined)
+    assert.equal(plannedBuilds(missing), '')
   })
 
   it('reviews an unknown post-retry result without permitting another headless retry', () => {
@@ -255,12 +305,14 @@ describe('DSH headless Agent planning', () => {
       reason: unknownCandidate.reason,
       requiredDependencyBuilds: undefined,
     }))
-    assert.deepEqual(retained.plugins[0]?.allowedBuilds, ['sharp'])
+    assert.equal(plannedBuilds(retained), 'sharp')
   })
 
   it('parses a bounded durable plan state', () => {
     const parsed = parseDshHeadlessAgentPlans(plans())
     assert.equal(parsed.entries[0]?.model, 'deepseek-v4-flash')
     assert.match(parsed.entries[0]?.inputFingerprint ?? '', /^sha256:/)
+    assert.throws(() => parseDshHeadlessAgentPlans({ ...plans(), entries: plans().entries.map(entry => ({ ...entry,
+      executionEnvironment: { platform: 'linux', architecture: 'x64' } })) }), /environment/)
   })
 })

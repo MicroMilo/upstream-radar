@@ -1,10 +1,14 @@
 import { createHash } from 'node:crypto'
-import { parseDshCompatibilityLedger, type DshCompatibilityLedgerEntry } from './dsh-compatibility-ledger.js'
+import { parseDshStartupConfiguration, type DshStartupConfiguration } from './dsh-startup-configuration.js'
+
+import { parseDshProfileEnvironment, type DshProfileEnvironment } from './dsh-profile-environment.js'
+import { parseDshCompatibilityLedger, parseDshProfileResolutionEvidence, type DshCompatibilityLedgerEntry } from './dsh-compatibility-ledger.js'
 import { parseDshHeadlessAgentPlans, type DshHeadlessAgentPlans } from './dsh-headless-agent-plan.js'
 import { parseDshSurfaceAgentPlans, type DshSurfaceAgentPlans } from './dsh-surface-agent-plan.js'
 import { extractPnpmRequiredDependencyBuilds } from './dsh-install-observation.js'
 import {
   DSH_SURFACE_OBSERVATION_SCHEMA,
+  DSH_SURFACE_EXECUTION_CONTRACT,
   type DshExecutionPlane,
   type DshSurfaceObservationReport,
   type DshSurfaceObservationResult,
@@ -13,6 +17,59 @@ import {
   type DshWebSurfaceEvidence,
 } from './dsh-surface-observation.js'
 import { parseNpmSpec } from './npm.js'
+import { isExclusiveDshWebPeer } from './dsh-peer-planes.js'
+import { parseDshWebContractEvidence } from './dsh-web-contract.js'
+import type { DshInstallPlan } from './dsh-install-plan.js'
+import { parseDshHostBuildInventory, parseDshHostNativeLoadFailures, type DshHostBuildInventory, type DshHostNativeLoadFailure } from './dsh-host-builds.js'
+import { assertDshHostBuildApproval, parseDshHostBuildApproval, type DshHostBuildApproval } from './dsh-host-build-policy.js'
+import { parseDshHostBuildExecution, type DshHostBuildExecution } from './dsh-host-build-execution.js'
+
+function startupFields(value: unknown): { startupConfiguration?: DshStartupConfiguration } {
+  const startupConfiguration = parseDshStartupConfiguration(value)
+  return startupConfiguration === undefined ? {} : { startupConfiguration }
+}
+
+function hostBuildFields(value: unknown, dshVersion: unknown, runtime: unknown, result: unknown, failures: unknown, hostStage: DshSurfaceStage): {
+  hostBuildInventory?: DshHostBuildInventory; hostBuildFailures?: DshHostNativeLoadFailure[]
+} {
+  if (value === undefined) {
+    if (failures !== undefined) throw new Error('host native-load failures require independent host build inventory')
+    return {}
+  }
+  const hostBuildInventory = parseDshHostBuildInventory(value)
+  if (hostBuildInventory.dshVersion !== dshVersion) throw new Error('host build inventory DSH version does not match the surface')
+  if (hostBuildInventory.pnpmVersion !== undefined && hostBuildInventory.pnpmVersion !== record(runtime, 'surface runtime').pnpmVersion) {
+    throw new Error('host build inventory pnpm version does not match the surface')
+  }
+  if (result === 'compatible' && hostBuildInventory.coverageGaps.length) throw new Error('a compatible surface cannot have incomplete host build inventory coverage')
+  const hostBuildFailures = failures === undefined ? undefined : parseDshHostNativeLoadFailures(failures, hostBuildInventory)
+  if (hostBuildFailures?.length && (result !== 'environment-unsupported' || hostStage.status !== 'failed')) {
+    throw new Error('host native-load failures require an environment-unsupported result and a failed host stage')
+  }
+  return { hostBuildInventory, ...(hostBuildFailures === undefined ? {} : { hostBuildFailures }) }
+}
+
+function hostExecutionFields(root: Record<string, unknown>, requested: unknown, inventory: DshHostBuildInventory | undefined,
+  stages: DshSurfaceObservationReport['stages'], result: DshSurfaceObservationResult): {
+    requestedHostBuildApproval?: DshHostBuildApproval; hostBuildExecution?: DshHostBuildExecution
+  } {
+  const permission = requested === undefined ? undefined : parseDshHostBuildApproval(requested)
+  if (root.hostBuildExecution === undefined) {
+    if (permission !== undefined && stages.registration.status === 'passed') throw new Error('the requested host build permission has no execution attempt')
+    return permission === undefined ? {} : { requestedHostBuildApproval: permission }
+  }
+  if (!permission || !inventory) throw new Error('a host rebuild requires its requested permission and independent inventory')
+  const artifact = record(root.artifact, 'surface artifact')
+  const hostBuildExecution = parseDshHostBuildExecution(root.hostBuildExecution, { inventory,
+    context: { caseId: caseId(root.caseId, 'surface case id'), plugin: exactSpec(root.plugin, 'surface plugin'),
+      artifactSha256: bareSha256(artifact.sha256, 'surface artifact'), sourceFingerprint: fingerprint(root.sourceFingerprint, 'surface source'),
+      dshVersion: exactVersion(root.dshVersion, 'surface DSH'), plane: executionPlane(root.plane, 'surface plane'),
+      profile: profileName(root.profile, 'surface profile'), runtime: parseRuntime(root.runtime, 'surface runtime'),
+      profileEnvironment: parseDshProfileEnvironment(root.profileEnvironment), ...startupFields(root.startupConfiguration) } })
+  if (JSON.stringify(permission) !== JSON.stringify(hostBuildExecution.requestedApproval)) throw new Error('host rebuild differs from its requested permission')
+  if (hostBuildExecution.status === 'failed' && result === 'compatible') throw new Error('a failed host rebuild cannot establish a compatible surface')
+  return { requestedHostBuildApproval: permission, hostBuildExecution }
+}
 
 export const DSH_SURFACE_TARGETS_SCHEMA = 'upstream-radar.dsh-surface-targets/v1alpha1' as const
 export const DSH_SURFACE_LEDGER_SCHEMA = 'upstream-radar.dsh-surface-ledger/v1alpha1' as const
@@ -26,11 +83,15 @@ const BARE_SHA256 = /^[a-f0-9]{64}$/
 const RESULTS = new Set<DshSurfaceObservationResult>(['compatible', 'surface-incompatible', 'environment-unsupported', 'unknown'])
 const STAGE_STATUS = new Set(['passed', 'failed', 'skipped'])
 const DEFAULT_REFRESH_AFTER_HOURS = 7 * 24
-const MAX_TARGETS = 32
-const MAX_LEDGER_ENTRIES = 128
-const SURFACE_CONTRACT_REVISION = 'dsh-surface-contract/4'
+const MAX_CONFIGURED_TARGETS = 400
+const MAX_RUN_TARGETS = 32
+const MAX_LEDGER_ENTRIES = 512
+const SURFACE_CONTRACT_REVISION = 'dsh-surface-contract/14'
 
 export interface DshSurfaceTarget {
+  startupConfiguration?: DshStartupConfiguration
+  profileEnvironment?: DshProfileEnvironment
+  environmentGap?: string
   id: string
   sourceCaseId: string
   plane: DshExecutionPlane
@@ -49,11 +110,16 @@ export interface DshSurfaceTargets {
 }
 
 export interface DshSurfaceExpectedCase {
+  hostBuildApproval?: DshHostBuildApproval
+  startupConfiguration?: DshStartupConfiguration
+  profileEnvironment?: DshProfileEnvironment
   id: string
   sourceCaseId: string
   plugin: string
   dshVersion: string
   nodeMajor: number
+  platform?: 'linux'
+  architecture?: 'x64' | 'arm64'
   plane: DshExecutionPlane
   profile: string
   runtimeId: string
@@ -72,6 +138,12 @@ export interface DshSurfacePlan {
 }
 
 export interface DshSurfaceLedgerEntry {
+  requestedHostBuildApproval?: DshHostBuildApproval
+  hostBuildExecution?: DshHostBuildExecution
+  hostBuildInventory?: DshHostBuildInventory
+  hostBuildFailures?: DshHostNativeLoadFailure[]
+  startupConfiguration?: DshStartupConfiguration
+  profileEnvironment?: DshProfileEnvironment
   caseId: string
   sourceCaseId: string
   plugin: string
@@ -88,6 +160,7 @@ export interface DshSurfaceLedgerEntry {
   artifact: { sha256: string; bytes?: number; integrity?: string }
   stages: DshSurfaceObservationReport['stages']
   evidence: DshWebSurfaceEvidence | DshTuiSurfaceEvidence
+  resolution?: DshSurfaceObservationReport['resolution']
   result: DshSurfaceObservationResult
   reason: string
   observer: { schema: typeof DSH_SURFACE_OBSERVATION_SCHEMA; version: string }
@@ -96,6 +169,19 @@ export interface DshSurfaceLedgerEntry {
 export interface DshSurfaceLedger {
   schema: typeof DSH_SURFACE_LEDGER_SCHEMA
   entries: DshSurfaceLedgerEntry[]
+}
+
+/** A build gate may occur before the plugin has an installed runtime graph. */
+export function dshSurfaceDependencyGraphBinding(entry: DshSurfaceLedgerEntry): {
+  source: 'runtime' | 'profile-lock'; digest: string
+} | undefined {
+  const runtime = entry.resolution?.runtimeGraph?.digest
+  const profileLock = entry.resolution?.profileLockfile?.graphDigest
+  const exact = (value: unknown): value is string => typeof value === 'string' && /^sha256:[a-f0-9]{64}$/.test(value)
+  if (entry.stages.install.status === 'failed' && exact(profileLock)) return { source: 'profile-lock', digest: profileLock }
+  if (exact(runtime)) return { source: 'runtime', digest: runtime }
+  if (exact(profileLock)) return { source: 'profile-lock', digest: profileLock }
+  return undefined
 }
 
 export interface DshSurfaceTransition {
@@ -118,6 +204,7 @@ export interface DshSurfaceIR {
   schema: typeof DSH_SURFACE_IR_SCHEMA
   generatedAt: string
   cells: Array<{
+    startupConfiguration?: DshStartupConfiguration
     id: string
     sourceCaseId: string
     plane: DshExecutionPlane
@@ -127,6 +214,10 @@ export interface DshSurfaceIR {
     upstream: { package: '@deepseek-ai/dsh'; dshVersion: string }
     runtime: DshSurfaceObservationReport['runtime']
     observation: {
+      requestedHostBuildApproval?: DshHostBuildApproval
+      hostBuildExecution?: DshHostBuildExecution
+      hostBuildInventory?: DshHostBuildInventory
+      hostBuildFailures?: DshHostNativeLoadFailure[]
       observedAt: string
       result: DshSurfaceObservationResult
       reason: string
@@ -212,8 +303,8 @@ export function parseDshSurfaceTargets(input: unknown): DshSurfaceTargets {
   if (!Number.isSafeInteger(refreshAfterHours) || refreshAfterHours < 1 || refreshAfterHours > 90 * 24) {
     throw new Error('DSH surface target refreshAfterHours must be an integer between 1 and 2160')
   }
-  if (!Array.isArray(root.surfaces) || root.surfaces.length === 0 || root.surfaces.length > MAX_TARGETS) {
-    throw new Error(`DSH surface targets must contain between 1 and ${MAX_TARGETS} surfaces`)
+  if (!Array.isArray(root.surfaces) || root.surfaces.length > MAX_CONFIGURED_TARGETS) {
+    throw new Error(`DSH surface targets must contain at most ${MAX_CONFIGURED_TARGETS} surfaces`)
   }
   const autoDiscoverRecord = root.autoDiscover === undefined
     ? undefined
@@ -238,10 +329,13 @@ export function parseDshSurfaceTargets(input: unknown): DshSurfaceTargets {
     if (plane === 'tui' && profile === 'web') throw new Error('a TUI target cannot use the reserved web profile')
     const runtimeId = boundedString(item.runtimeId, `surfaces[${index}].runtimeId`, 214)
     const reason = boundedString(item.reason, `surfaces[${index}].reason`, 2_048)
-    const pair = `${sourceCaseId}\u0000${plane}`
+    const startup = startupFields(item.startupConfiguration)
+    const pair = `${sourceCaseId}\u0000${plane}\u0000${JSON.stringify(startup.startupConfiguration?.environment ?? {})}`
     if (pairs.has(pair)) throw new Error(`duplicate DSH surface plane for source case: ${sourceCaseId} ${plane}`)
     pairs.add(pair)
-    return { id, sourceCaseId, plane, profile, runtimeId, reason }
+    return { id, sourceCaseId, plane, profile, runtimeId, reason, ...startup,
+      ...(item.environmentGap === undefined ? {} : { environmentGap: boundedString(item.environmentGap, `surfaces[${index}].environmentGap`, 2_048) }),
+      ...(item.profileEnvironment === undefined ? {} : { profileEnvironment: parseDshProfileEnvironment(item.profileEnvironment) }) }
   })
   surfaces.sort((left, right) => left.id.localeCompare(right.id))
   return {
@@ -271,18 +365,21 @@ function dshCompatibilityGapNames(entry: DshCompatibilityLedgerEntry): string[] 
 /** Route any review cell with a DSH browser-client gap into Web observation. */
 export function hasDshWebClientCoverageGap(entry: DshCompatibilityLedgerEntry): boolean {
   if (entry.result !== 'peer-contract-incompatible' && entry.result !== 'unknown') return false
-  return dshCompatibilityGapNames(entry).some(isWebClientPackage)
+  return entry.artifact.client?.platform === 'web' || dshCompatibilityGapNames(entry).some(isWebClientPackage)
 }
 
 /**
- * True only when the headless result is unresolved exclusively because the
- * stock Web profile is absent. The intended Web plane may cover this gap; a
- * host/runtime mismatch must remain visible even when browser boot succeeds.
+ * Syntactic routing evidence only; it does not establish browser peer versions
+ * and must never erase Node gaps after a successful Web boot.
  */
 export function isDshWebClientOnlyCoverageGap(entry: DshCompatibilityLedgerEntry): boolean {
   if (entry.result !== 'peer-contract-incompatible' && entry.result !== 'unknown') return false
   const names = dshCompatibilityGapNames(entry)
-  return names.length > 0 && names.every(isWebClientPackage)
+  const graph = entry.resolution?.runtimeGraph
+  if (entry.artifact.client?.platform !== 'web' || graph === undefined
+    || graph.unresolved !== (graph.unresolvedDependencies?.length ?? 0)) return false
+  return names.length > 0 && names.every(name => graph.pluginPeerContracts?.relations
+    .some(relation => relation.name === name && isExclusiveDshWebPeer(relation)))
 }
 
 function automaticWebTargetId(sourceCaseId: string, usedIds: ReadonlySet<string>): string {
@@ -302,7 +399,12 @@ export function createDshSurfaceSourceFingerprint(entry: DshCompatibilityLedgerE
     plugin: entry.plugin,
     dshVersion: entry.dshVersion,
     nodeMajor: entry.runtime.nodeMajor,
+    platform: entry.runtime.platform,
+    architecture: entry.runtime.architecture,
+    pnpmVersion: entry.runtime.pnpmVersion,
+    profileEnvironment: entry.profileEnvironment,
     artifactSha256: entry.artifact.sha256,
+    runtimeGraphDigest: entry.resolution?.runtimeGraph?.digest,
     staticFingerprint: entry.staticFingerprint,
     contractFingerprint: entry.contractFingerprint,
     approvedDependencyBuilds: entry.approvedDependencyBuilds ?? [],
@@ -312,9 +414,10 @@ export function createDshSurfaceSourceFingerprint(entry: DshCompatibilityLedgerE
 
 function contractFingerprint(
   target: DshSurfaceTarget,
-  entry: DshCompatibilityLedgerEntry,
+  entry: Pick<DshCompatibilityLedgerEntry, 'runtime' | 'profileEnvironment'>,
   runtimeId: string,
   approvedDependencyBuilds: readonly string[],
+  hostBuildApproval?: DshHostBuildApproval,
 ): string {
   return digest({
     revision: SURFACE_CONTRACT_REVISION,
@@ -322,9 +425,17 @@ function contractFingerprint(
     profile: target.profile,
     runtimeId,
     nodeMajor: entry.runtime.nodeMajor,
+    platform: entry.runtime.platform,
+    architecture: entry.runtime.architecture,
+    profileEnvironment: parseDshProfileEnvironment(target.profileEnvironment ?? entry.profileEnvironment),
+    ...startupFields(target.startupConfiguration),
+    graphEvidence: 'independent-profile-plus-exact-dsh-host',
     approvedDependencyBuilds,
+    ...(hostBuildApproval === undefined ? {} : { hostBuildApproval: parseDshHostBuildApproval(hostBuildApproval) }),
     web: target.plane === 'web'
-      ? { browser: 'chromium', root: '#root', manifest: '__DSH_BOOT__', bootHandoff: '[data-dsh-boot] removed after graph activation', externalRequests: 'blocked' }
+      ? { browser: 'chromium', root: '#root', manifest: '__DSH_BOOT__', bootHandoff: '[data-dsh-boot] removed after graph activation',
+          authentication: 'generated-exact-loopback-login-url', bundleFetch: 'authenticated-browser-context',
+          clientEntryRequired: 'only-if-exact-packed-manifest-declares-web-client', externalRequests: 'blocked' }
       : undefined,
     tui: target.plane === 'tui'
       ? { terminal: 'xterm-256color', columns: 100, rows: 32, frame: 'ansi-and-printable', interaction: 'ctrl-l', shutdown: 'double-ctrl-c' }
@@ -336,6 +447,7 @@ function desiredCase(
   target: DshSurfaceTarget,
   source: DshCompatibilityLedgerEntry,
   approvedDependencyBuilds: readonly string[],
+  hostBuildApproval?: DshHostBuildApproval,
 ): DshSurfaceExpectedCase | undefined {
   // The headless result may legitimately remain unknown when the unresolved
   // edges belong to the Web or TUI host that this target is about to provide.
@@ -343,8 +455,11 @@ function desiredCase(
   // plane observer independently reinstalls the package, verifies this digest,
   // and establishes its own result.
   if (source.artifact.sha256 === undefined || !BARE_SHA256.test(source.artifact.sha256)) return undefined
-  if (source.result === 'build-approval-required' || source.result === 'runtime-incompatible'
-    || source.result === 'install-failed' || source.result === 'load-failed') return undefined
+  if (source.runtime.platform !== 'linux' || !['x64', 'arm64'].includes(source.runtime.architecture)) return undefined
+  // A failed install or load in Radar's internal headless profile is not a
+  // finding about an author-intended Web/TUI profile. The plane runner checks
+  // the artifact again and establishes its own install and usage evidence.
+  if (source.result === 'build-approval-required' || source.result === 'runtime-incompatible') return undefined
   if (source.result === 'unknown' && source.resolution?.runtimeGraph?.digest === undefined) return undefined
   // DSH's browser manifest is keyed by the client package name. The Cordis
   // patch row id is a different namespace and may remain stable while a
@@ -357,13 +472,18 @@ function desiredCase(
     plugin: source.plugin,
     dshVersion: source.dshVersion,
     nodeMajor: source.runtime.nodeMajor,
+    platform: 'linux',
+    architecture: source.runtime.architecture as 'x64' | 'arm64',
     plane: target.plane,
     profile: target.profile,
     runtimeId,
     artifactSha256: source.artifact.sha256,
+    profileEnvironment: parseDshProfileEnvironment(target.profileEnvironment ?? source.profileEnvironment),
+    ...startupFields(target.startupConfiguration),
     allowedBuilds: [...approvedDependencyBuilds].sort().join(','),
+    ...(hostBuildApproval === undefined ? {} : { hostBuildApproval }),
     sourceFingerprint: createDshSurfaceSourceFingerprint(source),
-    contractFingerprint: contractFingerprint(target, source, runtimeId, approvedDependencyBuilds),
+    contractFingerprint: contractFingerprint(target, source, runtimeId, approvedDependencyBuilds, hostBuildApproval),
     reasons: [],
   }
 }
@@ -432,8 +552,11 @@ function parseEvidence(value: unknown, plane: DshExecutionPlane, label: string):
   if (plane === 'web') {
     const booleanKeys = ['rootMounted', 'bootManifestPresent', 'pluginEntryPresent', 'pluginMaterialized'] as const
     for (const key of booleanKeys) if (typeof item[key] !== 'boolean') throw new Error(`${label}.${key} must be boolean`)
+    if (item.pluginClientDeclared !== undefined && typeof item.pluginClientDeclared !== 'boolean') throw new Error(`${label}.pluginClientDeclared must be boolean`)
     return {
       plane: 'web',
+      ...(item.pluginClientDeclared === undefined ? {} : { pluginClientDeclared: item.pluginClientDeclared as boolean }),
+      ...(item.clientContract === undefined ? {} : { clientContract: parseDshWebContractEvidence(item.clientContract)! }),
       url: boundedString(item.url, `${label}.url`, 2_048),
       ...(optionalInteger(item.httpStatus, `${label}.httpStatus`) === undefined ? {} : { httpStatus: optionalInteger(item.httpStatus, `${label}.httpStatus`) as number }),
       ...(item.title === undefined ? {} : { title: boundedString(item.title, `${label}.title`, 256) }),
@@ -443,6 +566,7 @@ function parseEvidence(value: unknown, plane: DshExecutionPlane, label: string):
       pluginEntryPresent: item.pluginEntryPresent as boolean,
       ...(item.pluginBundleUrl === undefined ? {} : { pluginBundleUrl: boundedString(item.pluginBundleUrl, `${label}.pluginBundleUrl`, 2_048) }),
       ...(optionalInteger(item.pluginBundleStatus, `${label}.pluginBundleStatus`) === undefined ? {} : { pluginBundleStatus: optionalInteger(item.pluginBundleStatus, `${label}.pluginBundleStatus`) as number }),
+      ...(item.pluginBundleCollectionError === undefined ? {} : { pluginBundleCollectionError: boundedString(item.pluginBundleCollectionError, `${label}.pluginBundleCollectionError`, 512) }),
       applicationMounted: typeof item.applicationMounted === 'boolean'
         ? item.applicationMounted
         : item.pluginMaterialized as boolean,
@@ -512,11 +636,31 @@ function parseReport(input: unknown): DshSurfaceObservationReport {
   if (requiredDependencyBuilds.length > 0 && result !== 'environment-unsupported') {
     throw new Error('report may require dependency builds only for environment-unsupported')
   }
+  const resolution = parseDshProfileResolutionEvidence(root.resolution, 'report.resolution')
+  const hostFacts = hostBuildFields(root.hostBuildInventory, root.dshVersion, root.runtime, result, root.hostBuildFailures, stages.host)
+  const hostExecution = hostExecutionFields(root, boundary.requestedHostBuildApproval, hostFacts.hostBuildInventory, stages, result)
+  if (result === 'compatible') {
+    const graph = resolution?.runtimeGraph
+    if (graph === undefined) throw new Error('a compatible surface report must establish its independent profile/host graph')
+    if (graph.hostRuntime?.source !== 'dsh-process' || graph.hostRuntime.dshVersion !== root.dshVersion) {
+      throw new Error('a compatible surface report must establish the exact DSH host in its independent graph')
+    }
+  }
   return {
     schema: DSH_SURFACE_OBSERVATION_SCHEMA,
     tool: { name: 'upstream-radar', version: boundedString(tool.version, 'report.tool.version', 64) },
     probe: 'dsh-surface',
     scope: 'surface-runtime-behavior',
+    ...(root.profileEnvironment === undefined ? {} : { profileEnvironment: parseDshProfileEnvironment(root.profileEnvironment) }),
+    ...startupFields(root.startupConfiguration),
+    ...(root.executionContract === undefined ? {} : { executionContract: (() => {
+      if (root.executionContract !== DSH_SURFACE_EXECUTION_CONTRACT && root.executionContract !== 'dsh-surface/v1alpha8'
+        && root.executionContract !== 'dsh-surface/v1alpha9' && root.executionContract !== 'dsh-surface/v1alpha10'
+        && root.executionContract !== 'dsh-surface/v1alpha11' && root.executionContract !== 'dsh-surface/v1alpha12'
+        && root.executionContract !== 'dsh-surface/v1alpha13' && root.executionContract !== 'dsh-surface/v1alpha14'
+        && root.executionContract !== 'dsh-surface/v1alpha15') throw new Error('report execution contract is unsupported')
+      return root.executionContract
+    })() }),
     startedAt: isoDate(root.startedAt, 'report.startedAt'),
     completedAt: isoDate(root.completedAt, 'report.completedAt'),
     caseId: caseId(root.caseId, 'report.caseId'),
@@ -535,7 +679,10 @@ function parseReport(input: unknown): DshSurfaceObservationReport {
       ...(artifact.integrity === undefined ? {} : { integrity: boundedString(artifact.integrity, 'report.artifact.integrity', 1_024) }),
     },
     stages,
+    ...hostFacts,
+    ...(hostExecution.hostBuildExecution === undefined ? {} : { hostBuildExecution: hostExecution.hostBuildExecution }),
     evidence: parseEvidence(root.evidence, plane, 'report.evidence'),
+    ...(resolution === undefined ? {} : { resolution }),
     result,
     reason,
     boundary: {
@@ -550,6 +697,7 @@ function parseReport(input: unknown): DshSurfaceObservationReport {
       externalBrowserRequestsBlocked: boundary.externalBrowserRequestsBlocked === true,
       approvedDependencyBuilds: packageNames(boundary.approvedDependencyBuilds ?? [], 'report.boundary.approvedDependencyBuilds'),
       ...(requiredDependencyBuilds.length === 0 ? {} : { requiredDependencyBuilds }),
+      ...(hostExecution.requestedHostBuildApproval === undefined ? {} : { requestedHostBuildApproval: hostExecution.requestedHostBuildApproval }),
       note: boundedString(boundary.note, 'report.boundary.note', 2_048),
     },
   }
@@ -574,6 +722,9 @@ export function parseDshSurfaceLedger(input: unknown): DshSurfaceLedger {
     const plugin = exactSpec(item.plugin, `entries[${index}].plugin`)
     const stages = parseStages(item.stages, `entries[${index}].stages`)
     const reason = boundedString(item.reason, `entries[${index}].reason`, 2_048)
+    const resolution = parseDshProfileResolutionEvidence(item.resolution, `entries[${index}].resolution`)
+    const hostFacts = hostBuildFields(item.hostBuildInventory, item.dshVersion, item.runtime, result, item.hostBuildFailures, stages.host)
+    const hostExecution = hostExecutionFields(item, item.requestedHostBuildApproval, hostFacts.hostBuildInventory, stages, result)
     const requiredDependencyBuilds = item.requiredDependencyBuilds === undefined
       ? (result === 'environment-unsupported'
           ? extractPnpmRequiredDependencyBuilds(`${stages.install.detail ?? ''}\n${reason}`, parseNpmSpec(plugin).name)
@@ -589,6 +740,8 @@ export function parseDshSurfaceLedger(input: unknown): DshSurfaceLedger {
       dshVersion: exactVersion(item.dshVersion, `entries[${index}].dshVersion`),
       plane,
       profile: profileName(item.profile, `entries[${index}].profile`),
+      ...(item.profileEnvironment === undefined ? {} : { profileEnvironment: parseDshProfileEnvironment(item.profileEnvironment) }),
+      ...startupFields(item.startupConfiguration),
       runtimeId: boundedString(item.runtimeId, `entries[${index}].runtimeId`, 214),
       ...(item.approvedDependencyBuilds === undefined ? {} : { approvedDependencyBuilds: packageNames(item.approvedDependencyBuilds, `entries[${index}].approvedDependencyBuilds`) }),
       ...(requiredDependencyBuilds.length === 0 ? {} : { requiredDependencyBuilds }),
@@ -602,7 +755,10 @@ export function parseDshSurfaceLedger(input: unknown): DshSurfaceLedger {
         ...(artifact.integrity === undefined ? {} : { integrity: boundedString(artifact.integrity, `entries[${index}].artifact.integrity`, 1_024) }),
       },
       stages,
+      ...hostFacts,
+      ...hostExecution,
       evidence: parseEvidence(item.evidence, plane, `entries[${index}].evidence`),
+      ...(resolution === undefined ? {} : { resolution }),
       result,
       reason,
       observer: {
@@ -613,6 +769,24 @@ export function parseDshSurfaceLedger(input: unknown): DshSurfaceLedger {
   })
   entries.sort((left, right) => left.caseId.localeCompare(right.caseId))
   return { schema: DSH_SURFACE_LEDGER_SCHEMA, entries }
+}
+
+/** Carry the same intended surface to every author baseline in the current native plan. */
+export function expandDshSurfaceAuthorBaselines(targetsInput: unknown, native: Pick<DshInstallPlan, 'dshVersion' | 'matrix'>): DshSurfaceTargets {
+  const configured = parseDshSurfaceTargets(targetsInput)
+  const surfaces = [...configured.surfaces]
+  for (const target of configured.surfaces) {
+    const anchor = native.matrix.include.find(cell => cell.id === target.sourceCaseId)
+    if (!anchor || anchor.dshVersion !== native.dshVersion) continue
+    for (const baseline of native.matrix.include.filter(cell => cell.targetId === anchor.targetId
+      && cell.nodeMajor === anchor.nodeMajor && cell.dshVersion !== anchor.dshVersion)) {
+      if (surfaces.some(item => item.sourceCaseId === baseline.id && item.plane === target.plane && item.profile === target.profile
+        && JSON.stringify(item.startupConfiguration?.environment ?? {}) === JSON.stringify(target.startupConfiguration?.environment ?? {}))) continue
+      surfaces.push({ ...target, sourceCaseId: baseline.id,
+        id: `${target.id.slice(0, 45)}-dsh-${createHash('sha256').update(`${target.id}\u0000${baseline.dshVersion}`).digest('hex').slice(0, 12)}` })
+    }
+  }
+  return parseDshSurfaceTargets({ ...configured, surfaces })
 }
 
 export function buildDshSurfacePlan(
@@ -644,8 +818,8 @@ export function buildDshSurfacePlan(
       const pair = `${source.caseId}\u0000web`
       if (usedSurfacePairs.has(pair) || !hasDshWebClientCoverageGap(source)) continue
       const id = automaticWebTargetId(source.caseId, usedTargetIds)
-      if (desiredTargets.length >= MAX_TARGETS) {
-        blocked.push({ id, reason: `automatic Web observation skipped because the ${MAX_TARGETS}-surface run budget is full` })
+      if (desiredTargets.length >= MAX_CONFIGURED_TARGETS) {
+        blocked.push({ id, reason: `automatic Web observation skipped because the ${MAX_CONFIGURED_TARGETS}-surface configured coverage bound is full` })
         continue
       }
       const runtimeId = parseNpmSpec(source.plugin).name
@@ -663,6 +837,10 @@ export function buildDshSurfacePlan(
   }
   const staleBefore = now.getTime() - targets.refreshAfterHours * 60 * 60 * 1_000
   for (const target of desiredTargets) {
+    if (target.environmentGap !== undefined) {
+      blocked.push({ id: target.id, reason: target.environmentGap })
+      continue
+    }
     const source = sourceById.get(target.sourceCaseId)
     if (source === undefined) {
       blocked.push({ id: target.id, reason: `source compatibility case ${target.sourceCaseId} is missing` })
@@ -688,20 +866,39 @@ export function buildDshSurfacePlan(
       && plan.profile === target.profile
       && plan.sourceFingerprint === expectedSourceFingerprint
       && plan.artifactSha256 === source.artifact.sha256
+      && plan.surfaceGraphDigest !== undefined
+      && plan.surfaceGraphSource === (currentById.get(target.id)
+        ? dshSurfaceDependencyGraphBinding(currentById.get(target.id)!)?.source : undefined)
+      && plan.surfaceGraphDigest === (currentById.get(target.id)
+        ? dshSurfaceDependencyGraphBinding(currentById.get(target.id)!)?.digest : undefined)
     ))
     const approvedDependencyBuilds = [...new Set([
       ...(source.approvedDependencyBuilds ?? []),
       ...(retainedAgentPlan?.approvedBuilds ?? []),
       ...(retainedSurfaceAgentPlan?.approvedBuilds ?? []),
     ])].sort()
-    const desired = desiredCase(target, source, approvedDependencyBuilds)
+    let hostBuildApproval: DshHostBuildApproval | undefined
+    if (retainedSurfaceAgentPlan?.hostBuildApproval !== undefined && retainedSurfaceAgentPlan.hostBuild !== undefined) {
+      try {
+        hostBuildApproval = assertDshHostBuildApproval(retainedSurfaceAgentPlan.hostBuildApproval,
+          retainedSurfaceAgentPlan.hostBuild.inventory, {
+            caseId: target.id, plugin: source.plugin, artifactSha256: source.artifact.sha256!, sourceFingerprint: expectedSourceFingerprint,
+            dshVersion: source.dshVersion, plane: target.plane, profile: target.profile, runtime: source.runtime,
+            profileEnvironment: parseDshProfileEnvironment(target.profileEnvironment ?? source.profileEnvironment),
+            ...startupFields(target.startupConfiguration),
+          })
+      } catch { /* A stale permission is never sent for execution. Fresh facts require another review. */ }
+    }
+    const desired = desiredCase(target, source, approvedDependencyBuilds, hostBuildApproval)
     if (desired === undefined) {
       const hasExactArtifact = source.artifact.sha256 !== undefined && BARE_SHA256.test(source.artifact.sha256)
       blocked.push({
         id: target.id,
-        reason: hasExactArtifact
-          ? `source compatibility case ${target.sourceCaseId} is ${source.result}; its headless environment must be resolved before entering ${target.plane}`
-          : `source compatibility case ${target.sourceCaseId} has no exact artifact bytes`,
+        reason: source.runtime.platform !== 'linux' || !['x64', 'arm64'].includes(source.runtime.architecture)
+          ? `unsupported source runtime ${source.runtime.platform}/${source.runtime.architecture}; surface runners support Linux/x64 or Linux/arm64`
+          : hasExactArtifact
+            ? `source compatibility case ${target.sourceCaseId} is ${source.result}; its headless environment must be resolved before entering ${target.plane}`
+            : `source compatibility case ${target.sourceCaseId} has no exact artifact bytes`,
       })
       continue
     }
@@ -718,7 +915,13 @@ export function buildDshSurfacePlan(
       }
       if (Date.parse(current.observedAt) < staleBefore) desired.reasons.push('stale-evidence')
     }
-    if (desired.reasons.length > 0) include.push(desired)
+    if (desired.reasons.length > 0) {
+      if (include.length >= MAX_RUN_TARGETS) {
+        blocked.push({ id: desired.id, reason: `deferred to a later reconciliation by the bounded ${MAX_RUN_TARGETS}-cell run budget` })
+      } else {
+        include.push(desired)
+      }
+    }
   }
   include.sort((left, right) => left.id.localeCompare(right.id))
   blocked.sort((left, right) => left.id.localeCompare(right.id))
@@ -741,15 +944,46 @@ function mismatch(expected: DshSurfaceExpectedCase, report: DshSurfaceObservatio
     ['plugin', expected.plugin, report.plugin],
     ['DSH version', expected.dshVersion, report.dshVersion],
     ['Node major', expected.nodeMajor, report.runtime.nodeMajor],
+    ['platform', expected.platform ?? 'linux', report.runtime.platform],
+    ['architecture', expected.architecture ?? 'x64', report.runtime.architecture],
     ['plane', expected.plane, report.plane],
     ['profile', expected.profile, report.profile],
     ['runtime id', expected.runtimeId, report.runtimeId],
     ['approved dependency builds', expected.allowedBuilds, report.boundary.approvedDependencyBuilds.join(',')],
+    ['requested host build permission', JSON.stringify(expected.hostBuildApproval === undefined ? undefined : parseDshHostBuildApproval(expected.hostBuildApproval)), JSON.stringify(report.boundary.requestedHostBuildApproval)],
     ['artifact SHA-256', expected.artifactSha256, report.artifact.sha256],
     ['source fingerprint', expected.sourceFingerprint, report.sourceFingerprint],
     ['contract fingerprint', expected.contractFingerprint, report.contractFingerprint],
+    ['startup configuration', JSON.stringify(expected.startupConfiguration), JSON.stringify(report.startupConfiguration)],
   ]
   const changed = comparisons.find(([, left, right]) => left !== right)
+  const currentContract = contractFingerprint({ id: expected.id, sourceCaseId: expected.sourceCaseId,
+    plane: expected.plane, profile: expected.profile, runtimeId: expected.runtimeId, reason: 'scheduled',
+    ...startupFields(expected.startupConfiguration),
+    ...(expected.profileEnvironment === undefined ? {} : { profileEnvironment: expected.profileEnvironment }) },
+  { runtime: { nodeMajor: expected.nodeMajor, nodeVersion: report.runtime.nodeVersion,
+    platform: expected.platform ?? 'linux', architecture: expected.architecture ?? 'x64' } },
+  expected.runtimeId, expected.allowedBuilds === '' ? [] : expected.allowedBuilds.split(','), expected.hostBuildApproval)
+  if (expected.hostBuildApproval !== undefined && report.executionContract !== DSH_SURFACE_EXECUTION_CONTRACT) return 'host rebuild requires the current execution contract'
+  if (changed === undefined && expected.contractFingerprint !== currentContract) return 'expected surface contract does not match the current collector requirements'
+  if (changed === undefined && expected.contractFingerprint === currentContract) {
+    if (report.executionContract !== DSH_SURFACE_EXECUTION_CONTRACT) return 'report did not establish the scheduled plane-aware execution contract'
+    if ((report.stages.profile.status === 'passed' || report.stages.install.status !== 'skipped') && report.hostBuildInventory === undefined) {
+      return 'new surface report did not attempt the independent host build inventory collector'
+    }
+    if (report.plane === 'web' && report.result === 'compatible' && report.evidence.plane === 'web') {
+      const proof = report.evidence.clientContract
+      if (proof?.boot === undefined || report.evidence.pluginClientDeclared === undefined) return 'new Web report did not establish its independent browser contract'
+      if (proof.revision !== 'dsh-web-client-contract/2' || proof.packageVersions === undefined) return 'new Web report did not collect independent package provenance'
+      if (report.evidence.pluginClientDeclared && (proof.client?.platform !== 'web' || proof.pluginBundle === undefined
+        || !proof.boot.entries.some(entry => entry.id === expected.runtimeId))) return 'new Web report did not bind the declared client entry and bundle'
+    }
+  }
+  const expectedEnvironment = parseDshProfileEnvironment(expected.profileEnvironment)
+  if (changed === undefined && (report.runtime.pnpmVersion !== undefined || report.result === 'compatible')
+    && report.runtime.pnpmVersion !== expectedEnvironment.pnpmVersion) return `pnpm version mismatch: expected ${expectedEnvironment.pnpmVersion}`
+  if (report.profileEnvironment !== undefined && JSON.stringify(report.profileEnvironment) !== JSON.stringify(expectedEnvironment)) return 'profile environment mismatch'
+  if (report.result === 'compatible' && expected.profileEnvironment !== undefined && report.profileEnvironment === undefined) return 'report did not establish the scheduled profile environment'
   return changed === undefined ? undefined : `${changed[0]} mismatch: expected ${String(changed[1])}, observed ${String(changed[2])}`
 }
 
@@ -780,12 +1014,14 @@ export function mergeDshSurfaceLedger(input: {
   reports: readonly unknown[]
 }): DshSurfaceLedgerMerge {
   const ledger = parseDshSurfaceLedger(input.ledger)
-  if (input.expected.length > MAX_TARGETS) throw new Error(`surface reconciliation accepts at most ${MAX_TARGETS} expected cases`)
-  if (input.reports.length > MAX_TARGETS) throw new Error(`surface reconciliation accepts at most ${MAX_TARGETS} reports`)
+  if (input.expected.length > MAX_RUN_TARGETS) throw new Error(`surface reconciliation accepts at most ${MAX_RUN_TARGETS} expected cases`)
+  if (input.reports.length > MAX_RUN_TARGETS) throw new Error(`surface reconciliation accepts at most ${MAX_RUN_TARGETS} reports`)
   const expectedById = new Map<string, DshSurfaceExpectedCase>()
   for (const value of input.expected) {
     const id = caseId(value.id, 'expected.id')
     if (expectedById.has(id)) throw new Error(`duplicate expected DSH surface case: ${id}`)
+    if (value.platform !== undefined && value.platform !== 'linux') throw new Error(`expected ${id}.platform is unsupported`)
+    if (value.architecture !== undefined && value.architecture !== 'x64' && value.architecture !== 'arm64') throw new Error(`expected ${id}.architecture is unsupported`)
     const allowedBuilds = value.allowedBuilds === ''
       ? []
       : packageNames(value.allowedBuilds.split(','), `expected ${id}.allowedBuilds`)
@@ -795,11 +1031,16 @@ export function mergeDshSurfaceLedger(input: {
       plugin: exactSpec(value.plugin, `expected ${id}.plugin`),
       dshVersion: exactVersion(value.dshVersion, `expected ${id}.dshVersion`),
       nodeMajor: nodeMajor(value.nodeMajor, `expected ${id}.nodeMajor`),
+      platform: value.platform ?? 'linux',
+      architecture: value.architecture ?? 'x64',
       plane: executionPlane(value.plane, `expected ${id}.plane`),
       profile: profileName(value.profile, `expected ${id}.profile`),
+      ...(value.profileEnvironment === undefined ? {} : { profileEnvironment: parseDshProfileEnvironment(value.profileEnvironment) }),
+      ...startupFields(value.startupConfiguration),
       runtimeId: boundedString(value.runtimeId, `expected ${id}.runtimeId`, 214),
       artifactSha256: bareSha256(value.artifactSha256, `expected ${id}.artifactSha256`),
       allowedBuilds: allowedBuilds.join(','),
+      ...(value.hostBuildApproval === undefined ? {} : { hostBuildApproval: parseDshHostBuildApproval(value.hostBuildApproval) }),
       sourceFingerprint: fingerprint(value.sourceFingerprint, `expected ${id}.sourceFingerprint`),
       contractFingerprint: fingerprint(value.contractFingerprint, `expected ${id}.contractFingerprint`),
       reasons: Array.isArray(value.reasons) ? value.reasons.map((reason, index) => boundedString(reason, `expected ${id}.reasons[${index}]`, 128)) : [],
@@ -842,6 +1083,8 @@ export function mergeDshSurfaceLedger(input: {
       dshVersion: report.dshVersion,
       plane: report.plane,
       profile: report.profile,
+      ...(report.profileEnvironment === undefined ? {} : { profileEnvironment: report.profileEnvironment }),
+      ...startupFields(report.startupConfiguration),
       runtimeId: report.runtimeId,
       ...(report.boundary.approvedDependencyBuilds.length === 0 ? {} : { approvedDependencyBuilds: report.boundary.approvedDependencyBuilds }),
       ...((report.boundary.requiredDependencyBuilds?.length ?? 0) === 0
@@ -857,7 +1100,12 @@ export function mergeDshSurfaceLedger(input: {
         ...(report.artifact.integrity === undefined ? {} : { integrity: report.artifact.integrity }),
       },
       stages: report.stages,
+      ...(report.hostBuildInventory === undefined ? {} : { hostBuildInventory: report.hostBuildInventory }),
+      ...(report.hostBuildFailures === undefined ? {} : { hostBuildFailures: report.hostBuildFailures }),
+      ...(report.boundary.requestedHostBuildApproval === undefined ? {} : { requestedHostBuildApproval: report.boundary.requestedHostBuildApproval }),
+      ...(report.hostBuildExecution === undefined ? {} : { hostBuildExecution: report.hostBuildExecution }),
       evidence: report.evidence,
+      ...(report.resolution === undefined ? {} : { resolution: report.resolution }),
       result: report.result,
       reason: report.reason,
       observer: { schema: DSH_SURFACE_OBSERVATION_SCHEMA, version: report.tool.version },
@@ -891,6 +1139,7 @@ export function buildDshSurfaceIR(ledgerInput: unknown): DshSurfaceIR {
       plane: entry.plane,
       profile: entry.profile,
       runtimeId: entry.runtimeId,
+      ...startupFields(entry.startupConfiguration),
       plugin: { spec: entry.plugin, artifactSha256: entry.artifact.sha256 },
       upstream: { package: '@deepseek-ai/dsh', dshVersion: entry.dshVersion },
       runtime: entry.runtime,
@@ -900,6 +1149,10 @@ export function buildDshSurfaceIR(ledgerInput: unknown): DshSurfaceIR {
         reason: entry.reason,
         ...(entry.requiredDependencyBuilds === undefined ? {} : { requiredDependencyBuilds: entry.requiredDependencyBuilds }),
         stages: entry.stages,
+        ...(entry.hostBuildInventory === undefined ? {} : { hostBuildInventory: entry.hostBuildInventory }),
+        ...(entry.hostBuildFailures === undefined ? {} : { hostBuildFailures: entry.hostBuildFailures }),
+        ...(entry.hostBuildExecution === undefined ? {} : { hostBuildExecution: entry.hostBuildExecution }),
+        ...(entry.requestedHostBuildApproval === undefined ? {} : { requestedHostBuildApproval: entry.requestedHostBuildApproval }),
         evidence: entry.evidence,
       },
     })),

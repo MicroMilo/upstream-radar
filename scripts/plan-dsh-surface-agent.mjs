@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
-import { appendFile, readFile, writeFile } from 'node:fs/promises'
+import { randomUUID } from 'node:crypto'
+import { appendFile, open, readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import { dirname, posix, resolve } from 'node:path'
 import process from 'node:process'
 import {
   createDshSurfaceAgentInputFingerprint,
+  createDshSurfaceAgentHostBuildApproval,
   emptyDshSurfaceAgentPlans,
   parseDshSurfaceAgentDecision,
   parseDshSurfaceAgentPlans,
@@ -12,12 +14,38 @@ import {
 } from '../dist/src/dsh-surface-agent-plan.js'
 import { parseDshInstallTargets } from '../dist/src/dsh-install-plan.js'
 import { parseDshCompatibilityLedger } from '../dist/src/dsh-compatibility-ledger.js'
-import { createDshSurfaceSourceFingerprint, parseDshSurfaceLedger } from '../dist/src/dsh-surface.js'
+import { createDshSurfaceSourceFingerprint, dshSurfaceDependencyGraphBinding, parseDshSurfaceLedger } from '../dist/src/dsh-surface.js'
 
 const MAX_INPUT_BYTES = 256 * 1024 * 1024
 const MAX_DOCUMENT_BYTES = 48 * 1024
 const MAX_DOCUMENT_TOTAL_BYTES = 128 * 1024
+const MAX_AGENT_RESPONSE_BYTES = 256 * 1024
 const CONCURRENCY = 4
+
+async function boundedResponseText(response, maximum) {
+  const declared = response.headers.get('content-length')
+  if (declared !== null && /^\d+$/.test(declared) && Number(declared) > maximum) throw new Error('Agent/document response exceeds its response byte budget')
+  if (!response.body) throw new Error('Agent/document response had no body')
+  const chunks = []
+  let bytes = 0
+  for await (const chunk of response.body) {
+    bytes += chunk.length
+    if (bytes > maximum) throw new Error('Agent/document response exceeds its response byte budget')
+    chunks.push(Buffer.from(chunk))
+  }
+  return Buffer.concat(chunks, bytes).toString('utf8')
+}
+
+async function savePlans(path, value) {
+  const destination = resolve(path)
+  const temporary = `${destination}.${randomUUID()}.tmp`
+  const handle = await open(temporary, 'wx', 0o600)
+  try {
+    try { await handle.writeFile(`${JSON.stringify(value, null, 2)}\n`); await handle.sync() }
+    finally { await handle.close() }
+    await rename(temporary, destination)
+  } finally { await unlink(temporary).catch(error => { if (error.code !== 'ENOENT') throw error }) }
+}
 
 async function readJson(path) {
   const contents = await readFile(resolve(path), 'utf8')
@@ -68,7 +96,9 @@ async function fetchDocument(repository, commit, path) {
   })
   if (response.status === 404) return undefined
   if (!response.ok) throw new Error(`GitHub returned HTTP ${response.status} for ${repository}/${path}`)
-  return { path, text: (await response.text()).slice(0, MAX_DOCUMENT_BYTES) }
+  const text = await boundedResponseText(response, MAX_DOCUMENT_BYTES)
+  return { path, text: Buffer.byteLength(text) <= MAX_DOCUMENT_BYTES
+    ? text : Buffer.from(text).subarray(0, MAX_DOCUMENT_BYTES - 4).toString('utf8') }
 }
 
 async function collectDocuments(repository, commit, packagePath) {
@@ -154,7 +184,7 @@ async function callAgent(prompt, config) {
     signal: AbortSignal.timeout(120_000),
   })
   if (!response.ok) throw new Error(`Agent endpoint returned HTTP ${response.status}: ${safeEndpoint(endpoint)}`)
-  const body = await response.json()
+  const body = JSON.parse(await boundedResponseText(response, MAX_AGENT_RESPONSE_BYTES))
   const content = body?.choices?.[0]?.message?.content
   if (typeof content !== 'string') throw new Error(`Agent response had no message content: ${safeEndpoint(endpoint)}`)
   return jsonObject(content)
@@ -203,7 +233,7 @@ function markdown(plans, candidates, failures, skipped) {
     '',
     `Updated: ${plans.updatedAt}`,
     '',
-    'DeepSeek reviews only dependency-build package names observed in a disposable Web/TUI VM. An approval is bound to the exact plugin bytes, DSH version, Node major, plane, profile and source evidence; the no-secret runner receives only that package list.',
+    'DeepSeek reviews separate plugin-profile build names and exact DSH-host build coordinates observed in a disposable Web/TUI VM. Host permission additionally binds the full runtime, physical host manifests and lock graph; Radar constructs the permission and the no-secret runner rechecks it before execution.',
     '',
     `- Current review set: ${candidates.length}`,
     `- Exact-evidence skips: ${skipped.length}`,
@@ -216,8 +246,10 @@ function markdown(plans, candidates, failures, skipped) {
     const plan = currentPlan(candidate)
     const failure = failureByCase.get(candidate.caseId)
     const action = plan?.action ?? (failure === undefined ? 'pending' : 'agent-failed')
-    const policy = plan?.approvedBuilds.length ? plan.approvedBuilds.map(name => `\`${name}\``).join(', ') : 'none'
-    lines.push(`| \`${candidate.caseId}\` | ${candidate.requiredDependencyBuilds.map(name => `\`${name}\``).join(', ')} | \`${action}\` | ${policy} |`)
+    const pluginPolicy = plan?.approvedBuilds.length ? plan.approvedBuilds.map(name => `\`${name}\``).join(', ') : 'none'
+    const hostPolicy = plan?.hostBuildApproval?.packages.map(name => `\`${name}\``).join(', ') ?? 'none'
+    const gates = [...candidate.requiredDependencyBuilds, ...(candidate.hostBuild?.failures.map(item => `host:${item.packageSpec}`) ?? [])]
+    lines.push(`| \`${candidate.caseId}\` | ${gates.map(name => `\`${name}\``).join(', ')} | \`${action}\` | plugin: ${pluginPolicy}; host: ${hostPolicy} |`)
     if (plan !== undefined) lines.push(`|  |  |  | ${inline(plan.summary)} |`)
     if (failure !== undefined) lines.push(`|  |  |  | ${inline(failure)} |`)
   }
@@ -247,7 +279,8 @@ const sourceByCase = new Map(sourceLedger.entries.map(entry => [entry.caseId, en
 const existingByCase = new Map(existingPlans.entries.map(entry => [entry.caseId, entry]))
 const skipped = []
 const candidateEntries = surfaceLedger.entries.filter(entry => {
-  if (entry.result !== 'environment-unsupported' || (entry.requiredDependencyBuilds?.length ?? 0) === 0) return false
+  if (entry.result !== 'environment-unsupported'
+    || (entry.requiredDependencyBuilds?.length ?? 0) + (entry.hostBuildFailures?.length ?? 0) === 0) return false
   const source = sourceByCase.get(entry.sourceCaseId)
   const exact = source !== undefined
     && source.plugin === entry.plugin
@@ -255,6 +288,7 @@ const candidateEntries = surfaceLedger.entries.filter(entry => {
     && source.runtime.nodeMajor === entry.runtime.nodeMajor
     && source.artifact.sha256 === entry.artifact.sha256
     && createDshSurfaceSourceFingerprint(source) === entry.sourceFingerprint
+    && dshSurfaceDependencyGraphBinding(entry) !== undefined
   if (!exact) skipped.push({ caseId: entry.caseId, reason: 'surface evidence no longer matches the selected headless artifact' })
   return exact
 })
@@ -272,8 +306,20 @@ const candidates = await mapConcurrent(candidateEntries, async entry => {
     && previous.profile === entry.profile
     && previous.sourceFingerprint === entry.sourceFingerprint
     && previous.artifactSha256 === entry.artifact.sha256
+    && previous.surfaceGraphSource === dshSurfaceDependencyGraphBinding(entry).source
+    && previous.surfaceGraphDigest === dshSurfaceDependencyGraphBinding(entry).digest
       ? previous
       : undefined
+  const hostBuild = entry.hostBuildInventory === undefined ? undefined : {
+    inventory: entry.hostBuildInventory,
+    failures: entry.hostBuildFailures ?? [],
+    context: { caseId: entry.caseId, plugin: entry.plugin, artifactSha256: entry.artifact.sha256,
+      sourceFingerprint: entry.sourceFingerprint, dshVersion: entry.dshVersion, plane: entry.plane, profile: entry.profile,
+      runtime: entry.runtime, profileEnvironment: entry.profileEnvironment,
+      ...(entry.startupConfiguration === undefined ? {} : { startupConfiguration: entry.startupConfiguration }) },
+    ...(entry.hostBuildExecution?.status === 'command-completed' && entry.hostBuildExecution.bindingVerified
+      ? { previousApproval: entry.hostBuildExecution.requestedApproval } : {}),
+  }
   return {
     caseId: entry.caseId,
     sourceCaseId: entry.sourceCaseId,
@@ -287,14 +333,19 @@ const candidates = await mapConcurrent(candidateEntries, async entry => {
     requiredDependencyBuilds: entry.requiredDependencyBuilds ?? [],
     previouslyApprovedBuilds: [...new Set([
       ...(entry.approvedDependencyBuilds ?? []),
-      ...(exactPrevious?.approvedBuilds ?? []),
+      // A saved approval is a plan, not evidence that a retry used it.
+      ...(exactPrevious?.approvedBuilds.filter(name => entry.approvedDependencyBuilds?.includes(name)) ?? []),
     ])].sort(),
     sourceFingerprint: entry.sourceFingerprint,
     artifactSha256: entry.artifact.sha256,
+    surfaceGraphDigest: dshSurfaceDependencyGraphBinding(entry).digest,
+    surfaceGraphSource: dshSurfaceDependencyGraphBinding(entry).source,
     ...(context.repository === undefined ? {} : { repository: context.repository }),
     ...(context.sourceCommit === undefined ? {} : { sourceCommit: context.sourceCommit }),
     ...(context.manifest === undefined ? {} : { manifest: context.manifest }),
-    dynamicEvidence: { stages: entry.stages, evidence: entry.evidence, reason: entry.reason },
+    dynamicEvidence: { stages: entry.stages, evidence: entry.evidence, reason: entry.reason,
+      resolution: entry.resolution, hostBuildExecution: entry.hostBuildExecution },
+    ...(hostBuild === undefined || (!hostBuild.failures.length && !hostBuild.previousApproval) ? {} : { hostBuild }),
     documents: await collectDocuments(context.repository, context.sourceCommit, context.packagePath),
   }
 })
@@ -307,6 +358,23 @@ const pending = candidates.filter(candidate => {
   const previous = existingByCase.get(candidate.caseId)
   return previous?.inputFingerprint !== createDshSurfaceAgentInputFingerprint(candidate)
 })
+const pendingTasks = new Map(pending.map(candidate => {
+  const inputFingerprint = createDshSurfaceAgentInputFingerprint(candidate)
+  const previous = existingPlans.pendingTasks?.find(task => task.caseId === candidate.caseId && task.inputFingerprint === inputFingerprint)
+  return [candidate.caseId, previous ?? { caseId: candidate.caseId, inputFingerprint, createdAt: new Date().toISOString(), attempts: 0 }]
+}))
+let writes = Promise.resolve()
+function checkpoint() {
+  const value = parseDshSurfaceAgentPlans({ schema: existingPlans.schema, updatedAt: new Date().toISOString(),
+    entries: [...existingByCase.values()], pendingTasks: [...pendingTasks.values()] })
+  writes = writes.then(() => savePlans(plansPath, value))
+  return writes
+}
+if (config !== undefined) for (const task of pendingTasks.values()) {
+  task.attempts += 1
+  task.lastAttemptAt = new Date().toISOString()
+}
+if (pending.length > 0) await checkpoint()
 const failures = []
 let planned = 0
 
@@ -316,6 +384,7 @@ if (config === undefined && pending.length > 0) {
   await mapConcurrent(pending, async candidate => {
     try {
       const decision = parseDshSurfaceAgentDecision(await callAgent(renderDshSurfaceAgentPrompt(candidate), config), candidate)
+      const hostBuildApproval = createDshSurfaceAgentHostBuildApproval(decision, candidate)
       const previous = existingByCase.get(candidate.caseId)
       const observedRequiredBuilds = [...new Set([
         ...(previous?.sourceFingerprint === candidate.sourceFingerprint && previous.artifactSha256 === candidate.artifactSha256
@@ -337,14 +406,20 @@ if (config === undefined && pending.length > 0) {
         approvedBuilds: decision.action === 'retry-surface' ? decision.allowedBuilds : candidate.previouslyApprovedBuilds,
         sourceFingerprint: candidate.sourceFingerprint,
         artifactSha256: candidate.artifactSha256,
+        surfaceGraphDigest: candidate.surfaceGraphDigest,
+        surfaceGraphSource: candidate.surfaceGraphSource,
         ...(candidate.repository === undefined ? {} : { repository: candidate.repository }),
         ...(candidate.sourceCommit === undefined ? {} : { sourceCommit: candidate.sourceCommit }),
         inputFingerprint: createDshSurfaceAgentInputFingerprint(candidate),
         plannedAt: new Date().toISOString(),
         model: config.model,
+        ...(candidate.hostBuild === undefined ? {} : { hostBuild: candidate.hostBuild }),
+        ...(hostBuildApproval === undefined ? {} : { hostBuildApproval }),
         ...decision,
       })
       planned += 1
+      pendingTasks.delete(candidate.caseId)
+      await checkpoint()
     } catch (error) {
       failures.push({ caseId: candidate.caseId, error: error instanceof Error ? error.message.slice(0, 1_024) : String(error).slice(0, 1_024) })
     }
@@ -353,13 +428,16 @@ if (config === undefined && pending.length > 0) {
 
 const nextPlans = parseDshSurfaceAgentPlans({
   schema: existingPlans.schema,
-  updatedAt: planned > 0 ? new Date().toISOString() : existingPlans.updatedAt,
+  updatedAt: pending.length > 0 ? new Date().toISOString() : existingPlans.updatedAt,
   entries: [...existingByCase.values()],
+  pendingTasks: [...pendingTasks.values()],
 })
 const rendered = markdown(nextPlans, candidates, failures, skipped)
-await writeFile(resolve(plansPath), `${JSON.stringify(nextPlans, null, 2)}\n`, 'utf8')
+await writes
+await savePlans(plansPath, nextPlans)
 await writeFile(resolve(reportPath), rendered, 'utf8')
-process.stdout.write(`${JSON.stringify({ candidates: candidates.length, pending: pending.length, planned, failed: failures.length, skipped: skipped.length }, null, 2)}\n`)
+process.stdout.write(`${JSON.stringify({ candidates: candidates.length, pending: pending.length, attempted: config === undefined ? 0 : pending.length,
+  planned, failed: failures.length, skipped: skipped.length }, null, 2)}\n`)
 if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, rendered, 'utf8')
 if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `candidates=${candidates.length}\nplanned=${planned}\nfailed=${failures.length}\n`, 'utf8')
 if (failures.length > 0) process.exitCode = 2

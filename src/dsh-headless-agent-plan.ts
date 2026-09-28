@@ -9,6 +9,7 @@ import {
   resolveDshInstallTargetSpec,
   type DshInstallTargets,
 } from './dsh-install-plan.js'
+import { parseDshProfileEnvironment, type DshProfileEnvironment } from './dsh-profile-environment.js'
 
 export const DSH_HEADLESS_AGENT_PLANS_SCHEMA = 'upstream-radar.dsh-headless-agent-plans/v1alpha1' as const
 
@@ -25,12 +26,17 @@ export type DshHeadlessAgentClassification =
 
 export type DshHeadlessAgentAction = 'retry-headless' | 'stop-headless'
 
+export interface DshBuildReviewEnvironment {
+  platform: 'linux'; architecture: 'x64' | 'arm64'; profileEnvironment: DshProfileEnvironment
+}
+
 export interface DshHeadlessAgentCandidate {
   caseId: string
   targetId: string
   plugin: string
   dshVersion: string
   nodeMajor: number
+  executionEnvironment?: DshBuildReviewEnvironment
   result: 'build-approval-required' | 'peer-contract-incompatible' | 'unknown'
   reason: string
   requiredDependencyBuilds: string[]
@@ -42,6 +48,8 @@ export interface DshHeadlessAgentCandidate {
   /** Bounded facts captured by the disposable headless install/load run. */
   dynamicEvidence?: DshCompatibilityLedgerEntry['resolution']
   documents: Array<{ path: string, text: string }>
+  /** Collector-owned omissions; these are not model-authored conclusions. */
+  documentCoverageGaps?: string[]
 }
 
 export interface DshHeadlessAgentDecision {
@@ -58,27 +66,48 @@ export interface DshHeadlessAgentPlanEntry extends DshHeadlessAgentDecision {
   plugin: string
   dshVersion: string
   nodeMajor: number
+  executionEnvironment?: DshBuildReviewEnvironment
   result: DshHeadlessAgentCandidate['result']
   observedRequiredBuilds: string[]
   /** Cumulative build approvals already justified for these exact bytes/runtime. */
   approvedBuilds: string[]
   artifactSha256?: string
+  /** Reusable build-script policy is limited to the exact observed installed graph. */
+  dependencyGraphDigest?: string
   repository?: string
   sourceCommit?: string
   inputFingerprint: string
   plannedAt: string
   model: string
+  documentCoverageGaps?: string[]
 }
 
 export interface DshHeadlessAgentPlans {
   schema: typeof DSH_HEADLESS_AGENT_PLANS_SCHEMA
   updatedAt: string
   entries: DshHeadlessAgentPlanEntry[]
+  pendingTasks?: Array<{
+    caseId: string; inputFingerprint: string; createdAt: string; attempts: number; lastAttemptAt?: string
+  }>
 }
 
 function record(value: unknown, label: string): Record<string, unknown> {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) throw new Error(`${label} must be an object`)
   return value as Record<string, unknown>
+}
+
+function parseBuildReviewEnvironment(value: unknown): DshBuildReviewEnvironment | undefined {
+  if (value === undefined) return undefined
+  const item = record(value, 'build review environment')
+  if (item.platform !== 'linux' || !['x64', 'arm64'].includes(String(item.architecture)) || item.profileEnvironment === undefined) throw new Error('unsupported or incomplete build review environment')
+  return { platform: 'linux', architecture: item.architecture as 'x64' | 'arm64', profileEnvironment: parseDshProfileEnvironment(item.profileEnvironment) }
+}
+
+export function dshBuildReviewEnvironment(observed: DshCompatibilityLedgerEntry): DshBuildReviewEnvironment | undefined {
+  if (observed.runtime.platform !== 'linux' || !['x64', 'arm64'].includes(observed.runtime.architecture)
+    || !observed.profileEnvironment && !observed.runtime.pnpmVersion) return undefined
+  return parseBuildReviewEnvironment({ platform: observed.runtime.platform, architecture: observed.runtime.architecture,
+    profileEnvironment: observed.profileEnvironment ?? { pnpmVersion: observed.runtime.pnpmVersion, overrides: {} } })
 }
 
 function boundedString(value: unknown, label: string, maximum: number): string {
@@ -149,6 +178,9 @@ export function parseDshHeadlessAgentDecision(
       throw new Error('a headless retry must be classified as build-approval')
     }
     if (decision.allowedBuilds.length === 0) throw new Error('a headless retry requires at least one approved dependency build')
+    if (!/^sha256:[a-f0-9]{64}$/.test(candidate.dynamicEvidence?.runtimeGraph?.digest ?? '')) {
+      throw new Error('a dependency-build retry requires the exact observed runtime dependency-graph digest')
+    }
     const observed = new Set([
       ...candidate.previouslyApprovedBuilds,
       ...candidate.requiredDependencyBuilds,
@@ -174,6 +206,7 @@ export function createDshHeadlessAgentInputFingerprint(candidate: DshHeadlessAge
     plugin: candidate.plugin,
     dshVersion: candidate.dshVersion,
     nodeMajor: candidate.nodeMajor,
+    executionEnvironment: candidate.executionEnvironment,
     result: candidate.result,
     reason: candidate.reason,
     requiredDependencyBuilds: [...candidate.requiredDependencyBuilds].sort(),
@@ -183,6 +216,7 @@ export function createDshHeadlessAgentInputFingerprint(candidate: DshHeadlessAge
     sourceCommit: candidate.sourceCommit,
     manifest: candidate.manifest,
     dynamicEvidence: candidate.dynamicEvidence,
+    documentCoverageGaps: candidate.documentCoverageGaps ?? [],
     documents: candidate.documents.map(document => ({
       path: document.path,
       sha256: createHash('sha256').update(document.text).digest('hex'),
@@ -207,6 +241,7 @@ export function renderDshHeadlessAgentPrompt(candidate: DshHeadlessAgentCandidat
     'Choose retry-headless only when the reproduced result is build-approval-required and repository evidence supports approving a subset of the exact observed build packages.',
     'Build gates may appear in stages. A retry must keep every previously approved package and add any newly supported package; never drop an earlier approval.',
     'Otherwise choose stop-headless and classify the reason. Do not invent package names.',
+    'For stop-headless, allowedBuilds must be []; the runner retains any earlier approved builds separately, so do not copy them into a stopped decision.',
     'Return exactly one JSON object with keys: action, classification, allowedBuilds, summary, evidence.',
     'Allowed action: retry-headless | stop-headless.',
     'Allowed classification: build-approval | headless-contract | different-plane | insufficient-evidence.',
@@ -216,6 +251,7 @@ export function renderDshHeadlessAgentPrompt(candidate: DshHeadlessAgentCandidat
     `Plugin: ${candidate.plugin}`,
     `DSH: ${candidate.dshVersion}`,
     `Node major: ${candidate.nodeMajor}`,
+    `Observed execution environment: ${JSON.stringify(candidate.executionEnvironment ?? null)}`,
     `Observed result: ${candidate.result}`,
     `Observed reason: ${candidate.reason}`,
     `Build packages required by the latest retry: ${candidate.requiredDependencyBuilds.join(', ') || '(none)'}`,
@@ -224,6 +260,7 @@ export function renderDshHeadlessAgentPrompt(candidate: DshHeadlessAgentCandidat
     `Source commit: ${candidate.sourceCommit ?? '(unknown)'}`,
     `Observed manifest: ${JSON.stringify(candidate.manifest ?? null).slice(0, 32 * 1024)}`,
     `Bounded dynamic headless evidence: ${JSON.stringify(candidate.dynamicEvidence ?? null).slice(0, 64 * 1024)}`,
+    `Document collection coverage gaps (do not treat omitted material as reviewed): ${JSON.stringify(candidate.documentCoverageGaps ?? [])}`,
     '',
     documents,
   ].join('\n')
@@ -234,6 +271,7 @@ export function emptyDshHeadlessAgentPlans(now = new Date(0)): DshHeadlessAgentP
     schema: DSH_HEADLESS_AGENT_PLANS_SCHEMA,
     updatedAt: now.toISOString(),
     entries: [],
+    pendingTasks: [],
   }
 }
 
@@ -293,29 +331,54 @@ export function parseDshHeadlessAgentPlans(input: unknown): DshHeadlessAgentPlan
       ? undefined
       : boundedString(item.sourceCommit, `entries[${index}].sourceCommit`, 64)
     const artifactSha256 = exactSha256(item.artifactSha256, `entries[${index}].artifactSha256`)
+    const dependencyGraphDigest = item.dependencyGraphDigest === undefined ? undefined
+      : boundedString(item.dependencyGraphDigest, `entries[${index}].dependencyGraphDigest`, 71)
+    if (dependencyGraphDigest !== undefined && !/^sha256:[a-f0-9]{64}$/.test(dependencyGraphDigest)) {
+      throw new Error(`entries[${index}].dependencyGraphDigest must identify an exact runtime graph`)
+    }
+    const executionEnvironment = parseBuildReviewEnvironment(item.executionEnvironment)
+    const documentCoverageGaps = item.documentCoverageGaps === undefined ? undefined : (() => {
+      if (!Array.isArray(item.documentCoverageGaps) || item.documentCoverageGaps.length > 16) throw new Error('build review document coverage gaps exceed bounds')
+      return item.documentCoverageGaps.map(value => boundedString(value, 'build review document coverage gap', 1_024))
+    })()
     return {
       caseId,
       targetId: boundedString(item.targetId, `entries[${index}].targetId`, 128),
       plugin: boundedString(item.plugin, `entries[${index}].plugin`, 512),
       dshVersion: boundedString(item.dshVersion, `entries[${index}].dshVersion`, 128),
       nodeMajor,
+      ...(executionEnvironment === undefined ? {} : { executionEnvironment }),
       result,
       observedRequiredBuilds,
       approvedBuilds,
       ...(artifactSha256 === undefined ? {} : { artifactSha256 }),
+      ...(dependencyGraphDigest === undefined ? {} : { dependencyGraphDigest }),
       ...(repository === undefined ? {} : { repository }),
       ...(sourceCommit === undefined ? {} : { sourceCommit }),
       inputFingerprint: fingerprint,
       plannedAt: timestamp(item.plannedAt, `entries[${index}].plannedAt`),
       model: boundedString(item.model, `entries[${index}].model`, 256),
+      ...(documentCoverageGaps === undefined ? {} : { documentCoverageGaps }),
       ...decision,
     }
   })
   entries.sort((left, right) => left.caseId.localeCompare(right.caseId))
+  if (root.pendingTasks !== undefined && (!Array.isArray(root.pendingTasks) || root.pendingTasks.length > MAX_ENTRIES)) throw new Error('headless pending tasks exceed bounds')
+  const pendingTasks = ((root.pendingTasks ?? []) as unknown[]).map(value => {
+    const task = record(value, 'headless pending task')
+    const inputFingerprint = boundedString(task.inputFingerprint, 'headless pending input fingerprint', 71)
+    if (!/^sha256:[a-f0-9]{64}$/.test(inputFingerprint) || !Number.isSafeInteger(task.attempts)
+      || Number(task.attempts) < 0 || Number(task.attempts) > 1_000_000) throw new Error('invalid headless pending task')
+    return { caseId: boundedString(task.caseId, 'headless pending case id', 128), inputFingerprint,
+      createdAt: timestamp(task.createdAt, 'headless pending createdAt'), attempts: Number(task.attempts),
+      ...(task.lastAttemptAt === undefined ? {} : { lastAttemptAt: timestamp(task.lastAttemptAt, 'headless pending lastAttemptAt') }) }
+  })
+  if (new Set(pendingTasks.map(task => task.caseId)).size !== pendingTasks.length) throw new Error('duplicate headless pending task')
   return {
     schema: DSH_HEADLESS_AGENT_PLANS_SCHEMA,
     updatedAt: timestamp(root.updatedAt, 'DSH headless Agent plans updatedAt'),
     entries,
+    pendingTasks,
   }
 }
 
@@ -326,6 +389,10 @@ function planMatchesLedger(entry: DshHeadlessAgentPlanEntry, observed: DshCompat
     && entry.dshVersion === observed.dshVersion
     && entry.nodeMajor === observed.runtime.nodeMajor
     && entry.artifactSha256 === observed.artifact.sha256
+    && entry.dependencyGraphDigest !== undefined
+    && entry.dependencyGraphDigest === observed.resolution?.runtimeGraph?.digest
+    && entry.executionEnvironment !== undefined
+    && JSON.stringify(entry.executionEnvironment) === JSON.stringify(dshBuildReviewEnvironment(observed))
 }
 
 /**
@@ -369,10 +436,20 @@ export function applyDshHeadlessAgentPlans(
   for (const plan of plans.entries) {
     if (plan.approvedBuilds.length === 0) continue
     const observed = ledger.entries.find(entry => entry.caseId === plan.caseId)
-    if (observed === undefined || !planMatchesLedger(plan, observed)) continue
+    if (observed === undefined || !planMatchesLedger(plan, observed) || plan.artifactSha256 === undefined) continue
+    if (observed.runtime.platform !== 'linux' || !['x64', 'arm64'].includes(observed.runtime.architecture)) continue
     const target = targetById.get(plan.targetId)
     if (target === undefined) continue
-    target.allowedBuilds = [...plan.approvedBuilds]
+    target.buildApprovals ??= []
+    const approval = { plugin: plan.plugin, dshVersion: plan.dshVersion, nodeMajor: plan.nodeMajor,
+      artifactSha256: plan.artifactSha256, platform: observed.runtime.platform, architecture: observed.runtime.architecture,
+      profileEnvironment: observed.profileEnvironment ?? parseDshProfileEnvironment({ pnpmVersion: observed.runtime.pnpmVersion ?? '11.7.0', overrides: {} }),
+      packages: [...plan.approvedBuilds] }
+    if (!target.buildApprovals.some(item => item.plugin === approval.plugin && item.dshVersion === approval.dshVersion
+      && item.nodeMajor === approval.nodeMajor && item.artifactSha256 === approval.artifactSha256
+      && item.platform === approval.platform && item.architecture === approval.architecture
+      && JSON.stringify(item.profileEnvironment) === JSON.stringify(approval.profileEnvironment)
+      && JSON.stringify(item.packages) === JSON.stringify(approval.packages))) target.buildApprovals.push(approval)
   }
   return targets
 }

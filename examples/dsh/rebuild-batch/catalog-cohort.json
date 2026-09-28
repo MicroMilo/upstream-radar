@@ -1,0 +1,116 @@
+{
+  "schema": "upstream-radar.awesome-dsh-cohort/v1alpha1",
+  "selectedAt": "2026-09-14T10:25:12.888Z",
+  "source": {
+    "repository": "awesome-dsh-plugin/awesome-dsh-plugin",
+    "commit": "2e19b3c5bd42f2f688eba9df7933ace9e13e66ea",
+    "commitUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea",
+    "entryDirectory": "data/plugins",
+    "entryCount": 1884,
+    "license": "CC0-1.0"
+  },
+  "selection": {
+    "strategy": "rebuild-validation-catalog-subset",
+    "reason": "Seven of the eight validation targets have verified entries in this immutable catalog. This catalog view does not replace the eight-plugin batch state.",
+    "notInCatalog": [
+      {
+        "targetId": "dsh-cloudflare-browser-run",
+        "repository": "RealAlexandreAI/dsh-cloudflare-browser-run",
+        "reason": "No entry found in the complete pinned catalog tree; retained in batch execution and summary, not assigned an invented catalog URL."
+      }
+    ]
+  },
+  "plugins": [
+    {
+      "id": "dsh-agy-link",
+      "catalogEntry": "data/plugins/amlyczz__dsh-agy-link.yml",
+      "catalogUrl": "https://github.com/amlyczz/dsh-agy-link",
+      "repository": "amlyczz/dsh-agy-link",
+      "category": "model",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-agy-link",
+        "selectedVersion": "0.4.13",
+        "distTag": "latest"
+      }
+    },
+    {
+      "id": "dsh-context",
+      "catalogEntry": "data/plugins/bowenliang123__dsh-context.yml",
+      "catalogUrl": "https://github.com/bowenliang123/dsh-context",
+      "repository": "bowenliang123/dsh-context",
+      "category": "usage",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-context",
+        "selectedVersion": "0.25.3",
+        "distTag": "latest"
+      }
+    },
+    {
+      "id": "dsh-tui",
+      "catalogEntry": "data/plugins/ccch1mneyyy__dsh-TUI.yml",
+      "catalogUrl": "https://github.com/ccch1mneyyy/dsh-TUI",
+      "repository": "ccch1mneyyy/dsh-TUI",
+      "category": "ui",
+      "distribution": {
+        "kind": "npm",
+        "name": "@deepseek-harness-tui/dsh-tui",
+        "selectedVersion": "0.9.0",
+        "distTag": "latest"
+      }
+    },
+    {
+      "id": "dsh-better-sidebar",
+      "catalogEntry": "data/plugins/omdsh-dev__DSH-better-sidebar.yml",
+      "catalogUrl": "https://github.com/omdsh-dev/DSH-better-sidebar",
+      "repository": "omdsh-dev/DSH-better-sidebar",
+      "category": "ui",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-better-sidebar",
+        "selectedVersion": "0.15.2",
+        "distTag": "latest"
+      }
+    },
+    {
+      "id": "dsh-openpencil",
+      "catalogEntry": "data/plugins/ZSeven-W__dsh-openpencil.yml",
+      "catalogUrl": "https://github.com/ZSeven-W/dsh-openpencil",
+      "repository": "ZSeven-W/dsh-openpencil",
+      "category": "ui",
+      "distribution": {
+        "kind": "npm",
+        "name": "@zseven-w/dsh-openpencil",
+        "selectedVersion": "0.1.0-rc.1",
+        "distTag": "latest"
+      }
+    },
+    {
+      "id": "dsh-univer-office",
+      "catalogEntry": "data/plugins/dream-num__dsh-univer-office.yml",
+      "catalogUrl": "https://github.com/dream-num/dsh-univer-office",
+      "repository": "dream-num/dsh-univer-office",
+      "category": "docs",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-univer-office",
+        "selectedVersion": "0.2.9",
+        "distTag": "latest"
+      }
+    },
+    {
+      "id": "dsh-feishu-bot",
+      "catalogEntry": "data/plugins/PlutoKeating__dsh-lark-bot.yml",
+      "catalogUrl": "https://github.com/PlutoKeating/dsh-lark-bot",
+      "repository": "PlutoKeating/dsh-lark-bot",
+      "category": "notify",
+      "distribution": {
+        "kind": "npm",
+        "name": "dsh-feishu-bot",
+        "selectedVersion": "0.19.16",
+        "distTag": "latest"
+      }
+    }
+  ]
+}

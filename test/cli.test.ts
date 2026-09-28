@@ -16,6 +16,19 @@ const cli = resolve(repository, 'dist/src/cli.js')
 const fixture = resolve(repository, 'examples/fixtures/clean-dsh-plugin')
 
 describe('CLI option parsing', () => {
+  it('accepts only one bounded scope-bound host build permission before requiring an isolated surface execution', () => {
+    const args = [cli, 'probe', 'dsh-surface', 'demo-plugin@1.0.0', '--host-build-approval-json']
+    const approval = { revision: 'dsh-host-build-approval/1', scope: 'dsh-host-dependency-builds',
+      contextFingerprint: `sha256:${'a'.repeat(64)}`, inventoryFingerprint: `sha256:${'b'.repeat(64)}`, packages: ['fs-ext@2.1.1'] }
+    const run = (value: string, rest: string[] = []) => spawnSync(process.execPath, [...args, value, ...rest], { encoding: 'utf8' })
+    assert.match(run(JSON.stringify(approval)).stderr, /requires --dsh-version/)
+    assert.match(run(JSON.stringify({ ...approval, scope: 'all-builds' })).stderr, /scope/)
+    assert.match(run(JSON.stringify({ ...approval, packages: ['fs-ext'] })).stderr, /exact|version/)
+    assert.match(run('{').stderr, /valid JSON/)
+    assert.match(run(JSON.stringify({ ...approval, extra: 'x'.repeat(8192) })).stderr, /byte budget/)
+    assert.match(run(JSON.stringify(approval), ['--host-build-approval-json', JSON.stringify(approval)]).stderr, /only one/)
+  })
+
   it('advertises a one-command watch loop and validates its safety interval', () => {
     const help = spawnSync(process.execPath, [cli, '--help'], { encoding: 'utf8' })
     assert.equal(help.status, 0)
@@ -135,6 +148,34 @@ describe('CLI option parsing', () => {
     })
     assert.equal(installWithInvalidBuildApproval.status, 1)
     assert.match(installWithInvalidBuildApproval.stderr, /invalid approved dependency build/)
+
+    const installWithCredentialedProxy = spawnSync(process.execPath, [cli, 'probe', 'dsh-install', 'demo-plugin@1.0.0',
+      '--dsh-version', '0.1.5-rc.2', '--isolation-provider', 'other', '--network-proxy', 'http://user:secret@proxy.example', '--execute'], {
+      encoding: 'utf8', env: { ...process.env, UPSTREAM_RADAR_ISOLATED_RUNNER: '1' },
+    })
+    assert.equal(installWithCredentialedProxy.status, 1)
+    assert.match(installWithCredentialedProxy.stderr, /credential-free HTTP proxy/)
+    assert.doesNotMatch(installWithCredentialedProxy.stderr, /user:secret/)
+
+    const invalidEnvironment = spawnSync(process.execPath, [cli, 'probe', 'dsh-install', 'demo-plugin@1.0.0',
+      '--dsh-version', '0.1.5-rc.2', '--isolation-provider', 'other', '--execute', '--profile-environment-json',
+      JSON.stringify({ pnpmVersion: '10.33.0', overrides: { peer: 'file:../outside' } })], {
+      encoding: 'utf8', env: { ...process.env, UPSTREAM_RADAR_ISOLATED_RUNNER: '1' },
+    })
+    assert.equal(invalidEnvironment.status, 1)
+    assert.match(invalidEnvironment.stderr, /profile override.*registry version range/)
+    const startupArgs = [cli, 'probe', 'dsh-surface', 'demo-plugin@1.0.0', '--startup-configuration-json']
+    const acceptedStartup = spawnSync(process.execPath, [...startupArgs, JSON.stringify({ scope: 'Web settings only', environment: { DSH_LARK_DISABLED: '1' } })], { encoding: 'utf8' })
+    assert.match(acceptedStartup.stderr, /requires --dsh-version/)
+    const unsafeStartup = spawnSync(process.execPath, [...startupArgs, JSON.stringify({ scope: 'unsafe fixture', environment: { DSH_LARK_APP_SECRET: 'never-echo-this-secret' } })], { encoding: 'utf8' })
+    assert.match(unsafeStartup.stderr, /startup environment/)
+    assert.doesNotMatch(unsafeStartup.stderr, /never-echo-this-secret/)
+    const invalidArtifact = spawnSync(process.execPath, [cli, 'probe', 'dsh-install', 'demo-plugin@1.0.0',
+      '--dsh-version', '0.1.5-rc.2', '--isolation-provider', 'other', '--execute', '--artifact-sha256', 'wrong-digest'], {
+      encoding: 'utf8', env: { ...process.env, UPSTREAM_RADAR_ISOLATED_RUNNER: '1' },
+    })
+    assert.equal(invalidArtifact.status, 1)
+    assert.match(invalidArtifact.stderr, /artifact-sha256.*SHA-256/)
 
     const incompleteReview = spawnSync(process.execPath, [cli, 'review', 'dsh-plugin', 'demo-plugin@1.0.0'], { encoding: 'utf8' })
     assert.equal(incompleteReview.status, 1)

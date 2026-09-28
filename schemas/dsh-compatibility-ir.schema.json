@@ -29,7 +29,8 @@
               "name": { "type": "string", "minLength": 1, "maxLength": 214 },
               "version": { "type": "string", "minLength": 1, "maxLength": 256 },
               "artifactSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-              "staticFingerprint": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+              "staticFingerprint": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+              "client": { "$ref": "#/$defs/clientContract" }
             }
           },
           "runtime": {
@@ -43,6 +44,8 @@
               "platform": { "type": "string", "minLength": 1, "maxLength": 64 },
               "architecture": { "type": "string", "minLength": 1, "maxLength": 64 },
               "pnpmVersion": { "type": "string", "minLength": 1, "maxLength": 256 },
+              "profile": { "const": "headless" },
+              "executionPlane": { "const": "headless" },
               "contractFingerprint": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
             }
           },
@@ -86,9 +89,44 @@
               "required": { "type": "string", "minLength": 1, "maxLength": 512 },
               "status": { "enum": ["satisfied", "mismatched", "indeterminate", "missing"] },
               "staticUsage": { "enum": ["runtime-import-observed", "type-only-reference-observed", "no-literal-reference-observed", "scan-incomplete"] },
+              "usageByPlane": { "$ref": "#/$defs/peerPlaneUsage" },
+              "declaredClientInject": { "type": "boolean" },
               "resolvedVersion": { "type": "string", "minLength": 1, "maxLength": 256 }
             }
           }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "peerUsage": {
+      "enum": ["runtime-import-observed", "type-only-reference-observed", "no-literal-reference-observed", "scan-incomplete"]
+    },
+    "peerPlaneUsage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["host", "webClient", "unattributed"],
+      "properties": {
+        "clientPlatform": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,31}$" },
+        "host": { "$ref": "#/$defs/peerUsage" },
+        "webClient": { "$ref": "#/$defs/peerUsage" },
+        "unattributed": { "$ref": "#/$defs/peerUsage" }
+      }
+    },
+    "clientContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform", "inject", "entryPoints"],
+      "properties": {
+        "platform": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,31}$" },
+        "inject": {
+          "type": "array", "maxItems": 64, "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 214, "pattern": "^[A-Za-z@_][A-Za-z0-9@._/:-]*$" }
+        },
+        "entryPoints": {
+          "type": "array", "maxItems": 64, "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 1024,
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*/$)[^*\\\\\\u0000-\\u0020\\u007f]+$" }
         }
       }
     }

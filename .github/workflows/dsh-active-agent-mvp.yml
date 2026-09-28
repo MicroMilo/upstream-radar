@@ -1,0 +1,221 @@
+name: DSH active-agent MVP
+
+on:
+  workflow_dispatch:
+    inputs:
+      execute_agents:
+        description: Run disposable YOLO agents from repository review through isolated plugin checks
+        type: boolean
+        default: true
+      target_ids_json:
+        description: Exact plugin target ids; one isolated agent job per plugin and DSH channel
+        type: string
+        required: false
+        default: '["cloudflare-browser","context","dsh-tui","feishu-bot","dsh-agy-link","dsh-univer-office","openpencil","better-sidebar"]'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  active-case:
+    if: ${{ inputs.execute_agents }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        targetId: ${{ fromJSON(inputs.target_ids_json) }}
+        dshChannel: [next, alpha]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Require a credential for the isolated proactive agent
+        env:
+          CODEX_ACCESS_TOKEN: ${{ secrets.CODEX_ACCESS_TOKEN }}
+          CODEX_API_KEY: ${{ secrets.CODEX_API_KEY }}
+        run: |
+          if [[ -z "${CODEX_ACCESS_TOKEN:-}" && -z "${CODEX_API_KEY:-}" ]]; then
+            echo '::error::Configure CODEX_ACCESS_TOKEN or CODEX_API_KEY in repository Actions Secrets before executing agent jobs.'
+            exit 1
+          fi
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.3.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Build the trusted broker and collector
+        run: |
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm run build
+          node --test dist/test/dsh-active-agent-supervisor.test.js dist/test/dsh-active-case-protocol.test.js dist/test/dsh-active-case-broker.test.js dist/test/dsh-active-build-review.test.js dist/test/dsh-active-surface-build-review.test.js dist/test/dsh-active-build-broker-script.test.js dist/test/dsh-active-case-monitor-state.test.js dist/test/dsh-active-case-conclusion.test.js dist/test/dsh-active-runtime-inspection.test.js dist/test/dsh-active-repository-evidence.test.js dist/test/dsh-live-progress.test.js
+      - name: Observe exact current package and repository versions
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          RADAR_DSH_CHANNEL: ${{ matrix.dshChannel }}
+        run: |
+          mkdir -p active-output/review active-output/batch active-output/control
+          if [[ "$RADAR_DSH_CHANNEL" == alpha ]]; then
+            targets_file=examples/dsh/rebuild-batch/targets-alpha.yml
+          else
+            targets_file=examples/dsh/rebuild-batch/targets.yml
+          fi
+          node dist/src/cli.js observe "$targets_file" \
+            --state active-output/review/observations.json \
+            --report active-output/review/observer-report.md --json \
+            > active-output/review/observer-report.json
+      - name: Collect bounded repository evidence without a one-shot model call
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          node scripts/plan-dsh-environment-recommendations.mjs \
+            examples/dsh/rebuild-batch/install-targets.json \
+            active-output/review/observations.json \
+            active-output/review/recommendations.json \
+            active-output/review/recommendations.md \
+            active-output/review/candidates.json --collect-only \
+            > active-output/review/collection-summary.json
+      - name: Prepare exact disposable Docker runtime
+        env:
+          RADAR_RECOVERY_PROXY: ${{ vars.DSH_RECOVERY_PROXY }}
+        run: |
+          node --input-type=module -e 'import {writeFile} from "node:fs/promises"; await writeFile("active-output/executor.json", JSON.stringify({dockerContext:"default",architecture:"x64",timeoutSeconds:180,maxTasks:100,...(process.env.RADAR_RECOVERY_PROXY?{recoveryNetworkProxy:process.env.RADAR_RECOVERY_PROXY}:{})}))'
+      - name: Let the agent own the case from review through continuous watch
+        env:
+          RADAR_TARGET_ID: ${{ matrix.targetId }}
+          GITHUB_TOKEN: ${{ github.token }}
+          CODEX_ACCESS_TOKEN: ${{ secrets.CODEX_ACCESS_TOKEN }}
+          CODEX_API_KEY: ${{ secrets.CODEX_API_KEY }}
+        run: |
+          set -euo pipefail
+          env -u CODEX_ACCESS_TOKEN -u CODEX_API_KEY \
+            node scripts/dsh-active-case-broker.mjs "$RADAR_TARGET_ID" \
+              active-output/review/candidates.json \
+              examples/dsh/rebuild-batch/install-targets.json \
+              active-output/review/observations.json \
+              active-output/review active-output/batch active-output/executor.json \
+              active-output/control --execute \
+              > active-output/broker.log 2>&1 &
+          broker_pid=$!
+          trap 'kill "$broker_pid" 2>/dev/null || true' EXIT
+          node scripts/run-dsh-active-agent.mjs "$RADAR_TARGET_ID" \
+            active-output/control active-output/executor.json active-output active-output/batch --execute
+      - name: Re-run the same case without changing evidence
+        run: |
+          set -euo pipefail
+          mkdir -p active-output/reuse
+          cp active-output/batch/state.json active-output/reuse/state.json
+          node scripts/run-dsh-compatibility-batch.mjs \
+            active-output/batch/scoped-install-targets.json \
+            active-output/review active-output/reuse \
+            active-output/batch/agent-executor.json --execute \
+            > active-output/reuse/run.log
+      - name: Verify the agent reached every intended runnable combination
+        env:
+          RADAR_TARGET_ID: ${{ matrix.targetId }}
+          RADAR_DSH_CHANNEL: ${{ matrix.dshChannel }}
+        run: |
+          node --input-type=module -e '
+            import {readFile} from "node:fs/promises";
+            import {createHash} from "node:crypto";
+            import {dshActiveCaseMonitorCovered} from "./dist/src/dsh-active-case-monitor-state.js";
+            const launch=JSON.parse(await readFile("active-output/batch/agent-launch.json","utf8"));
+            const launchResult=JSON.parse(await readFile("active-output/batch/agent-launch-result.json","utf8"));
+            const summary=JSON.parse(await readFile("active-output/batch/summary.json","utf8"));
+            const state=JSON.parse(await readFile("active-output/batch/state.json","utf8"));
+            const reuseSummary=JSON.parse(await readFile("active-output/reuse/summary.json","utf8"));
+            const reuseState=JSON.parse(await readFile("active-output/reuse/state.json","utf8"));
+            const monitor=JSON.parse(await readFile("active-output/batch/agent-monitor.json","utf8"));
+            const conclusion=JSON.parse(await readFile("active-output/batch/agent-conclusion.json","utf8"));
+            const supervisor=JSON.parse(await readFile("active-output/batch/agent-session-supervisor.json","utf8"));
+            const reasoningInput=JSON.parse(await readFile("active-output/batch/agent-reasoning-input.json","utf8"));
+            const observations=JSON.parse(await readFile("active-output/review/observations.json","utf8"));
+            const published=observations.targets?.["deepseek-harness"]?.package;
+            if(published?.distTag!==process.env.RADAR_DSH_CHANNEL
+              || !published.version || summary.nextNativePlan.dshVersion!==published.version)
+              throw new Error("the exact DSH release channel and isolated result do not match");
+            if(!/^[a-f0-9]{32}$/.test(launch.id) || launch.targetId!==process.env.RADAR_TARGET_ID
+              || summary.activeLaunchId!==launch.id || summary.authorScopes.length!==1
+              || summary.authorScopes[0].id!==process.env.RADAR_TARGET_ID
+              || reasoningInput.targetId!==process.env.RADAR_TARGET_ID
+              || !/^sha256:[a-f0-9]{64}$/.test(reasoningInput.inputFingerprint)
+              || summary.authorScopes[0].recommendation?.inputFingerprint!==reasoningInput.inputFingerprint
+              || monitor.targetId!==process.env.RADAR_TARGET_ID || monitor.launchId!==launch.id)
+              throw new Error("the newest exact agent launch lacks its own scoped completion report");
+            if(supervisor.targetId!==process.env.RADAR_TARGET_ID || supervisor.status!=="closed"
+              || !Number.isSafeInteger(supervisor.turns) || supervisor.turns<1
+              || supervisor.lastLaunchId!==launch.id || !supervisor.sessionId)
+              throw new Error("the exact case lacks its durable proactive agent session record");
+            if(summary.executed>0 && (launchResult.id!==launch.id
+              || !dshActiveCaseMonitorCovered(monitor,launch.id,launchResult.finishedAt,45000)))
+              throw new Error("the agent did not repeatedly observe this exact case throughout execution");
+            const explicitGap=[summary.nextNativePlan,summary.nextSurfacePlan,summary.nextAdapterPlan]
+              .some(plan=>Array.isArray(plan.blocked)&&plan.blocked.length>0);
+            if(launchResult.id!==launch.id || (launchResult.exitCode!==0
+              && !(launchResult.exitCode===2&&explicitGap)))
+              throw new Error("the batch exit cannot be attributed to a completed case or an explicit coverage gap");
+            const evidenceDigest="sha256:"+createHash("sha256").update(JSON.stringify({summary,
+              nativeLedger:state.nativeLedger,surfaceLedger:state.surfaceLedger,
+              adapterLedger:state.adapterLedger,executorIdentity:state.executorIdentity})).digest("hex");
+            if(conclusion.activeLaunchId!==launch.id || conclusion.targetId!==process.env.RADAR_TARGET_ID
+              || conclusion.evidenceDigest!==evidenceDigest || conclusion.modelAuthored!==true
+              || conclusion.compatibilityPass!==false || !conclusion.statement)
+              throw new Error("the agent did not persist a current evidence-bound attribution receipt");
+            if(summary.nextNativePlan.matrix.include.length || summary.nextSurfacePlan.matrix.include.length
+              || summary.nextAdapterPlan.matrix.include.length || summary.failedTasks.length
+              || summary.deferredTaskKeys.length || summary.orphanedRunningTasks.length
+              || state.tasks.some(t=>t.status==="running"))
+              throw new Error("the agent stopped before runnable Node/profile work closed");
+            if(reuseSummary.executed!==0 || reuseState.executorIdentity!==state.executorIdentity
+              || JSON.stringify(reuseState.nativeLedger)!==JSON.stringify(state.nativeLedger)
+              || JSON.stringify(reuseState.surfaceLedger)!==JSON.stringify(state.surfaceLedger)
+              || JSON.stringify(reuseState.adapterLedger)!==JSON.stringify(state.adapterLedger)
+              || reuseSummary.nextNativePlan.matrix.include.length
+              || reuseSummary.nextSurfacePlan.matrix.include.length
+              || reuseSummary.nextAdapterPlan.matrix.include.length)
+              throw new Error("the second unchanged batch executed again or changed exact evidence");
+            console.log(JSON.stringify({collectionClosed:true,compatibilityPass:false,
+              dshChannel:published.distTag,dshVersion:published.version,
+              proactiveRunningWatches:monitor.runningWatches,proactiveRunningEvents:monitor.runningEvents,
+              proactiveAgentTurns:supervisor.turns,
+              unchangedSecondBatchExecuted:reuseSummary.executed,
+              agentAttributionReceipt:true,
+              nativeCells:summary.nativeCells,surfaceCells:summary.surfaceCells,
+              adapterCells:summary.adapterCells,blockedNative:summary.nextNativePlan.blocked.length,
+              blockedSurface:summary.nextSurfacePlan.blocked.length,
+              blockedAdapter:summary.nextAdapterPlan.blocked.length}));'
+      - name: Upload bounded case evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dsh-active-agent-${{ matrix.targetId }}-${{ matrix.dshChannel }}-${{ github.run_id }}
+          path: |
+            active-output/review/collection-summary.json
+            active-output/review/observations.json
+            active-output/review/candidates.json
+            active-output/review/agent-evidence.json
+            active-output/review/recommendations.json
+            active-output/review/build-plans.json
+            active-output/review/surface-build-plans.json
+            active-output/batch/agent-launch.json
+            active-output/batch/agent-launch-result.json
+            active-output/batch/agent-monitor.json
+            active-output/batch/agent-session-supervisor.json
+            active-output/batch/agent-reasoning-input.json
+            active-output/batch/agent-conclusion.json
+            active-output/batch/agent-network-route.json
+            active-output/batch/summary.json
+            active-output/batch/state.json
+            active-output/batch/compatibility-ledger.json
+            active-output/batch/surface-ledger.json
+            active-output/batch/adapter-ledger.json
+            active-output/batch/reports/**/report.json
+            active-output/batch/reports/**/progress-status.json
+            active-output/reuse/summary.json
+            active-output/reuse/state.json
+            active-output/reuse/executor-evidence.json
+          if-no-files-found: warn

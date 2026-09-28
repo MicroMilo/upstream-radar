@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { describe, it } from 'node:test'
 import { findDependencyPaths } from '../src/graph.js'
-import { parseInstalledNodeModulesGraph } from '../src/installed-graph.js'
+import { parseInstalledNodeModulesGraph, parseInstalledProfileGraph } from '../src/installed-graph.js'
 
 async function writeManifest(path: string, value: Record<string, unknown>): Promise<void> {
   await mkdir(dirname(path), { recursive: true })
@@ -12,6 +12,68 @@ async function writeManifest(path: string, value: Record<string, unknown>): Prom
 }
 
 describe('installed DSH dependency graph', () => {
+  it('binds independent managed-profile manifests and all direct roots, even when they link the same application', async () => {
+    const workspace = await mkdtemp(join(tmpdir(), 'upstream-radar-profile-forest-'))
+    try {
+      const application = join(workspace, 'application')
+      await writeManifest(join(application, 'package.json'), { name: 'plugin', version: '1.0.0' })
+      for (const version of ['1.0.0', '2.0.0']) {
+        const profile = join(workspace, `profiles/sdk-${version}`)
+        await writeManifest(join(profile, 'package.json'), { name: `sdk-${version}`, private: true,
+          dependencies: { plugin: 'link:../../application', 'sdk-server': version } })
+        await writeManifest(join(profile, 'node_modules/sdk-server/package.json'), { name: 'sdk-server', version })
+        await symlink(application, join(profile, 'node_modules/plugin'), 'dir')
+      }
+      const one = await parseInstalledProfileGraph(join(workspace, 'profiles/sdk-1.0.0'), { workspaceDirectory: workspace })
+      const two = await parseInstalledProfileGraph(join(workspace, 'profiles/sdk-2.0.0'), { workspaceDirectory: workspace })
+      assert.equal(one.roots.length, 2)
+      assert.deepEqual(one.gaps, [])
+      assert.notEqual(one.manifest.sha256, two.manifest.sha256)
+      assert.notEqual(one.digest, two.digest, 'the outer application graph alone cannot describe the managed SDK profile')
+      assert.equal(one.roots.find(root => root.name === 'sdk-server')?.version, '1.0.0')
+      assert.equal(two.roots.find(root => root.name === 'sdk-server')?.version, '2.0.0')
+    } finally { await rm(workspace, { recursive: true, force: true }) }
+  })
+
+  it('keeps an SDK workspace boundary explicit while resolving its actual linked application', async () => {
+    const workspace = await mkdtemp(join(tmpdir(), 'upstream-radar-sdk-workspace-'))
+    const outside = await mkdtemp(join(tmpdir(), 'upstream-radar-sdk-outside-'))
+    try {
+      const profile = join(workspace, 'profiles/sdk')
+      const application = join(workspace, 'application')
+      await writeManifest(join(application, 'package.json'), { name: 'plugin', version: '1.0.0', dependencies: { dep: '2.0.0' } })
+      await writeManifest(join(workspace, 'node_modules/dep/package.json'), { name: 'dep', version: '2.0.0' })
+      await mkdir(join(profile, 'node_modules'), { recursive: true })
+      await symlink(application, join(profile, 'node_modules/plugin'), 'dir')
+      await assert.rejects(parseInstalledNodeModulesGraph(profile, { name: 'plugin', version: '1.0.0' }), /escapes/)
+      const graph = await parseInstalledNodeModulesGraph(profile, { name: 'plugin', version: '1.0.0' }, { workspaceDirectory: workspace })
+      assert.equal(graph.unresolved, undefined)
+      assert.equal(graph.rootNodeId, 'application')
+      assert.equal(graph.nodes.find(node => node.name === 'dep')?.version, '2.0.0')
+      await writeManifest(join(outside, 'package.json'), { name: 'escape', version: '1.0.0' })
+      await symlink(outside, join(profile, 'node_modules/escape'), 'dir')
+      await assert.rejects(parseInstalledNodeModulesGraph(profile, { name: 'escape', version: '1.0.0' }, { workspaceDirectory: workspace }), /escapes/)
+    } finally {
+      await rm(workspace, { recursive: true, force: true })
+      await rm(outside, { recursive: true, force: true })
+    }
+  })
+
+  it('resolves a pnpm profile dependency beside the real package, not beside its public alias', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upstream-radar-installed-pnpm-'))
+    try {
+      const plugin = join(root, 'node_modules/.pnpm/plugin@1.0.0/node_modules/plugin')
+      const dependency = join(root, 'node_modules/.pnpm/dep@2.0.0/node_modules/dep')
+      await writeManifest(join(plugin, 'package.json'), { name: 'plugin', version: '1.0.0', dependencies: { dep: '2.0.0' } })
+      await writeManifest(join(dependency, 'package.json'), { name: 'dep', version: '2.0.0' })
+      await symlink(plugin, join(root, 'node_modules/plugin'), 'dir')
+      await symlink(dependency, join(dirname(plugin), 'dep'), 'dir')
+      const graph = await parseInstalledNodeModulesGraph(root, { name: 'plugin', version: '1.0.0' })
+      assert.equal(graph.unresolved, undefined, 'pnpm virtual-store siblings are part of the actual resolution graph')
+      assert.equal(graph.nodes.find(node => node.name === 'dep')?.version, '2.0.0')
+    } finally { await rm(root, { recursive: true, force: true }) }
+  })
+
   it('follows the profile node_modules tree and preserves duplicate versions', async () => {
     const root = await mkdtemp(join(tmpdir(), 'upstream-radar-installed-graph-'))
     try {

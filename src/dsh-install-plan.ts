@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import {
   createDshCompatibilityContractFingerprint,
   createDshCompatibilityStaticFingerprint,
@@ -8,7 +9,9 @@ import {
   type DshCompatibilityLedger,
 } from './dsh-compatibility-ledger.js'
 import { parseNpmSpec } from './npm.js'
+import { parseDshAuthorEnvironment, type DshAuthorEnvironment } from './dsh-author-environment.js'
 import { satisfiesSemverRange } from './semver.js'
+import { parseDshProfileEnvironment, selectDshProfileEnvironment, type DshProfileEnvironment } from './dsh-profile-environment.js'
 
 export const DSH_INSTALL_TARGETS_SCHEMA = 'upstream-radar.dsh-install-targets/v1alpha1' as const
 
@@ -16,7 +19,9 @@ const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 const DSH_TARGET_ID = 'deepseek-harness'
 const DSH_PACKAGE = '@deepseek-ai/dsh'
 const MAX_TARGETS = 100
-const MAX_RUNTIME_PROFILES = 8
+const MAX_RUNTIME_PROFILES = 32
+const MIN_EXECUTABLE_NODE_MAJOR = 20
+const MAX_EXECUTABLE_NODE_MAJOR = 40
 const DEFAULT_REFRESH_AFTER_HOURS = 7 * 24
 
 export interface DshInstallTarget {
@@ -25,7 +30,26 @@ export interface DshInstallTarget {
   reason: string
   observerTargetId?: string
   allowedBuilds?: string[]
+  /** Agent approvals remain scoped to the exact observed artifact and environment. */
+  buildApprovals?: Array<{
+    plugin: string; dshVersion: string; nodeMajor: number; artifactSha256: string
+    platform: string; architecture: string; profileEnvironment: DshProfileEnvironment; packages: string[]
+  }>
   runtimeProfiles?: string[]
+  /** Exact pre-execution repository reasoning applied by the recommendation module. */
+  environmentRecommendation?: {
+    sourceFingerprint: string
+    /** Exact repository evidence reviewed before this execution plan was formed. */
+    inputFingerprint?: string
+    preferredNodeMajor: number
+    nodeMajors: number[]
+    unavailableNodeMajors: number[]
+    executionProfiles: Array<'headless' | 'web' | 'tui' | 'sdk' | 'acp'>
+    coverageGaps?: string[]
+    authorEnvironment?: DshAuthorEnvironment
+    summary: string
+    evidence: string[]
+  }
 }
 
 export interface DshInstallRuntimeProfile {
@@ -36,6 +60,7 @@ export interface DshInstallRuntimeProfile {
 export interface DshInstallTargets {
   schema: typeof DSH_INSTALL_TARGETS_SCHEMA
   refreshAfterHours: number
+  environmentRecommendationsRequired: boolean
   runtimeProfiles: DshInstallRuntimeProfile[]
   plugins: DshInstallTarget[]
 }
@@ -46,6 +71,7 @@ export interface DshInstallPlan {
   matrix: {
     include: DshCompatibilityExpectedCase[]
   }
+  blocked: Array<{ targetId: string; plugin: string; reason: string }>
   triggers: string[]
   reason: string
 }
@@ -71,11 +97,19 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
   if (!Number.isSafeInteger(refreshAfterHours) || refreshAfterHours < 1 || refreshAfterHours > 90 * 24) {
     throw new Error('DSH install target refreshAfterHours must be an integer between 1 and 2160')
   }
+  const environmentRecommendationsRequired = root.environmentRecommendationsRequired === undefined
+    ? false
+    : root.environmentRecommendationsRequired
+  if (typeof environmentRecommendationsRequired !== 'boolean') {
+    throw new Error('DSH install target environmentRecommendationsRequired must be a boolean')
+  }
   const rawRuntimeProfiles = root.runtimeProfiles === undefined
     ? [{ id: 'node22', nodeMajor: 22 }]
     : root.runtimeProfiles
-  if (!Array.isArray(rawRuntimeProfiles) || rawRuntimeProfiles.length === 0 || rawRuntimeProfiles.length > MAX_RUNTIME_PROFILES) {
-    throw new Error(`DSH install targets runtimeProfiles must contain between 1 and ${MAX_RUNTIME_PROFILES} profiles`)
+  if (!Array.isArray(rawRuntimeProfiles)
+    || rawRuntimeProfiles.length > MAX_RUNTIME_PROFILES
+    || (rawRuntimeProfiles.length === 0 && !environmentRecommendationsRequired)) {
+    throw new Error(`DSH install targets runtimeProfiles must contain ${environmentRecommendationsRequired ? 'between 0' : 'between 1'} and ${MAX_RUNTIME_PROFILES} profiles`)
   }
   const runtimeProfileIds = new Set<string>()
   const nodeMajors = new Set<number>()
@@ -85,7 +119,7 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
     if (!/^[a-z0-9][a-z0-9._-]{0,47}$/.test(id)) throw new Error(`runtimeProfiles[${index}].id must be a short lowercase label`)
     if (runtimeProfileIds.has(id)) throw new Error(`duplicate DSH install runtime profile id: ${id}`)
     runtimeProfileIds.add(id)
-    if (!Number.isSafeInteger(item.nodeMajor) || (item.nodeMajor as number) < 16 || (item.nodeMajor as number) > 40) {
+    if (!Number.isSafeInteger(item.nodeMajor) || (item.nodeMajor as number) < MIN_EXECUTABLE_NODE_MAJOR || (item.nodeMajor as number) > MAX_EXECUTABLE_NODE_MAJOR) {
       throw new Error(`runtimeProfiles[${index}].nodeMajor must be a supported Node.js major version`)
     }
     const nodeMajor = item.nodeMajor as number
@@ -129,9 +163,32 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
         })
     if (new Set(allowedBuilds).size !== allowedBuilds.length) throw new Error(`plugins[${index}].allowedBuilds must be unique`)
     allowedBuilds.sort()
+    if (item.buildApprovals !== undefined && (!Array.isArray(item.buildApprovals) || item.buildApprovals.length > 32)) {
+      throw new Error('buildApprovals must contain at most 32 exact environment approvals')
+    }
+    const buildApprovals = (item.buildApprovals as unknown[] | undefined)?.map(value => {
+      const approval = record(value, 'build approval')
+      const plugin = boundedString(approval.plugin, 'build approval plugin', 512)
+      parseNpmSpec(plugin)
+      const dshVersion = boundedString(approval.dshVersion, 'build approval DSH version', 128)
+      const artifactSha256 = boundedString(approval.artifactSha256, 'build approval artifact digest', 64)
+      if (!EXACT_VERSION.test(dshVersion) || !/^[a-f0-9]{64}$/.test(artifactSha256)
+        || !Number.isSafeInteger(approval.nodeMajor) || Number(approval.nodeMajor) < 16 || Number(approval.nodeMajor) > 40
+        || approval.platform !== 'linux' || !['x64', 'arm64'].includes(String(approval.architecture))) throw new Error('invalid exact build approval environment')
+      if (!Array.isArray(approval.packages) || approval.packages.length === 0 || approval.packages.length > 16) throw new Error('build approval requires 1–16 packages')
+      const packages = approval.packages.map(value => {
+        const name = boundedString(value, 'build approval package', 214)
+        if (!/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/.test(name)) throw new Error('invalid build approval package')
+        return name
+      }).sort()
+      if (new Set(packages).size !== packages.length) throw new Error('duplicate build approval package')
+      return { plugin, dshVersion, nodeMajor: Number(approval.nodeMajor), artifactSha256,
+        platform: approval.platform, architecture: String(approval.architecture),
+        profileEnvironment: parseDshProfileEnvironment(approval.profileEnvironment), packages }
+    })
     const rawRuntimeProfileIds = item.runtimeProfiles
-    if (rawRuntimeProfileIds !== undefined && (!Array.isArray(rawRuntimeProfileIds) || rawRuntimeProfileIds.length === 0 || rawRuntimeProfileIds.length > MAX_RUNTIME_PROFILES)) {
-      throw new Error(`plugins[${index}].runtimeProfiles must be an array of between 1 and ${MAX_RUNTIME_PROFILES} runtime profile ids`)
+    if (rawRuntimeProfileIds !== undefined && (!Array.isArray(rawRuntimeProfileIds) || rawRuntimeProfileIds.length > MAX_RUNTIME_PROFILES)) {
+      throw new Error(`plugins[${index}].runtimeProfiles must be an array of at most ${MAX_RUNTIME_PROFILES} runtime profile ids`)
     }
     const selectedRuntimeProfiles = rawRuntimeProfileIds === undefined
       ? undefined
@@ -143,17 +200,139 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
     if (selectedRuntimeProfiles !== undefined && new Set(selectedRuntimeProfiles).size !== selectedRuntimeProfiles.length) {
       throw new Error(`plugins[${index}].runtimeProfiles must be unique`)
     }
+    const rawEnvironmentRecommendation = item.environmentRecommendation === undefined
+      ? undefined
+      : record(item.environmentRecommendation, `plugins[${index}].environmentRecommendation`)
+    let environmentRecommendation: DshInstallTarget['environmentRecommendation']
+    if (rawEnvironmentRecommendation !== undefined) {
+      if (selectedRuntimeProfiles === undefined) {
+        throw new Error(`plugins[${index}].environmentRecommendation requires explicit runtimeProfiles`)
+      }
+      const sourceFingerprint = boundedString(rawEnvironmentRecommendation.sourceFingerprint, `plugins[${index}].environmentRecommendation.sourceFingerprint`, 71)
+      if (!/^sha256:[a-f0-9]{64}$/.test(sourceFingerprint)) {
+        throw new Error(`plugins[${index}].environmentRecommendation.sourceFingerprint must be a SHA-256 fingerprint`)
+      }
+      const inputFingerprint = rawEnvironmentRecommendation.inputFingerprint === undefined
+        ? undefined
+        : boundedString(rawEnvironmentRecommendation.inputFingerprint,
+          `plugins[${index}].environmentRecommendation.inputFingerprint`, 71)
+      if (inputFingerprint !== undefined && !/^sha256:[a-f0-9]{64}$/.test(inputFingerprint)) {
+        throw new Error(`plugins[${index}].environmentRecommendation.inputFingerprint must be a SHA-256 fingerprint`)
+      }
+      if (!Number.isSafeInteger(rawEnvironmentRecommendation.preferredNodeMajor)
+        || (rawEnvironmentRecommendation.preferredNodeMajor as number) < 1
+        || (rawEnvironmentRecommendation.preferredNodeMajor as number) > 99) {
+        throw new Error(`plugins[${index}].environmentRecommendation.preferredNodeMajor must be a Node.js major between 1 and 99`)
+      }
+      const preferredNodeMajor = rawEnvironmentRecommendation.preferredNodeMajor as number
+      if (!Array.isArray(rawEnvironmentRecommendation.nodeMajors)
+        || rawEnvironmentRecommendation.nodeMajors.length === 0
+        || rawEnvironmentRecommendation.nodeMajors.length > 16) {
+        throw new Error(`plugins[${index}].environmentRecommendation.nodeMajors must contain between 1 and 16 Node.js majors`)
+      }
+      const recommendationNodeMajors = rawEnvironmentRecommendation.nodeMajors.map((value, nodeIndex) => {
+        if (!Number.isSafeInteger(value) || (value as number) < 1 || (value as number) > 99) {
+          throw new Error(`plugins[${index}].environmentRecommendation.nodeMajors[${nodeIndex}] must be a Node.js major between 1 and 99`)
+        }
+        return value as number
+      })
+      if (new Set(recommendationNodeMajors).size !== recommendationNodeMajors.length
+        || !recommendationNodeMajors.includes(preferredNodeMajor)) {
+        throw new Error(`plugins[${index}].environmentRecommendation.nodeMajors must be unique and include preferredNodeMajor`)
+      }
+      if (!Array.isArray(rawEnvironmentRecommendation.unavailableNodeMajors)) {
+        throw new Error(`plugins[${index}].environmentRecommendation.unavailableNodeMajors must be an array`)
+      }
+      const unavailableNodeMajors = rawEnvironmentRecommendation.unavailableNodeMajors.map((value, nodeIndex) => {
+        if (!Number.isSafeInteger(value) || !recommendationNodeMajors.includes(value as number)) {
+          throw new Error(`plugins[${index}].environmentRecommendation.unavailableNodeMajors[${nodeIndex}] must be a recommended Node major`)
+        }
+        return value as number
+      })
+      const expectedUnavailable = recommendationNodeMajors.filter(nodeMajor => (
+        nodeMajor < MIN_EXECUTABLE_NODE_MAJOR || nodeMajor > MAX_EXECUTABLE_NODE_MAJOR
+      ))
+      if (new Set(unavailableNodeMajors).size !== unavailableNodeMajors.length
+        || unavailableNodeMajors.slice().sort((left, right) => left - right).join(',') !== expectedUnavailable.slice().sort((left, right) => left - right).join(',')) {
+        throw new Error(`plugins[${index}].environmentRecommendation.unavailableNodeMajors must exactly identify recommendations outside the executable range`)
+      }
+      const selectedNodeMajors = (selectedRuntimeProfiles ?? []).map(profileId => {
+        const runtime = runtimeProfiles.find(profile => profile.id === profileId)
+        if (runtime === undefined) throw new Error(`plugins[${index}] selected an unknown runtime profile`)
+        return runtime.nodeMajor
+      }).sort((left, right) => left - right)
+      const expectedSelectedNodeMajors = recommendationNodeMajors
+        .filter(nodeMajor => !unavailableNodeMajors.includes(nodeMajor))
+        .sort((left, right) => left - right)
+      if (selectedNodeMajors.join(',') !== expectedSelectedNodeMajors.join(',')) {
+        throw new Error(`plugins[${index}].runtimeProfiles must cover every executable recommended Node major exactly once`)
+      }
+      if (!Array.isArray(rawEnvironmentRecommendation.executionProfiles)
+        || rawEnvironmentRecommendation.executionProfiles.length === 0
+        || rawEnvironmentRecommendation.executionProfiles.length > 5) {
+        throw new Error(`plugins[${index}].environmentRecommendation.executionProfiles must contain headless, web, tui, sdk, or acp`)
+      }
+      const executionProfiles = rawEnvironmentRecommendation.executionProfiles.map((value, profileIndex) => {
+        const profile = boundedString(value, `plugins[${index}].environmentRecommendation.executionProfiles[${profileIndex}]`, 16)
+        if (profile !== 'headless' && profile !== 'web' && profile !== 'tui' && profile !== 'sdk' && profile !== 'acp') {
+          throw new Error(`plugins[${index}].environmentRecommendation.executionProfiles[${profileIndex}] is unsupported`)
+        }
+        return profile
+      })
+      if (new Set(executionProfiles).size !== executionProfiles.length) {
+        throw new Error(`plugins[${index}].environmentRecommendation.executionProfiles must be unique`)
+      }
+      if (!Array.isArray(rawEnvironmentRecommendation.evidence)
+        || rawEnvironmentRecommendation.evidence.length === 0
+        || rawEnvironmentRecommendation.evidence.length > 16) {
+        throw new Error(`plugins[${index}].environmentRecommendation.evidence must contain between 1 and 16 references`)
+      }
+      const evidence = rawEnvironmentRecommendation.evidence.map((value, evidenceIndex) => (
+        boundedString(value, `plugins[${index}].environmentRecommendation.evidence[${evidenceIndex}]`, 512)
+      ))
+      if (new Set(evidence).size !== evidence.length) {
+        throw new Error(`plugins[${index}].environmentRecommendation.evidence must be unique`)
+      }
+      let coverageGaps: string[] | undefined
+      if (rawEnvironmentRecommendation.coverageGaps !== undefined) {
+        if (!Array.isArray(rawEnvironmentRecommendation.coverageGaps) || rawEnvironmentRecommendation.coverageGaps.length > 16) {
+          throw new Error(`plugins[${index}].environmentRecommendation.coverageGaps must contain at most 16 strings`)
+        }
+        coverageGaps = rawEnvironmentRecommendation.coverageGaps.map((value, gapIndex) => (
+          boundedString(value, `plugins[${index}].environmentRecommendation.coverageGaps[${gapIndex}]`, 512)
+        ))
+        if (new Set(coverageGaps).size !== coverageGaps.length) {
+          throw new Error(`plugins[${index}].environmentRecommendation.coverageGaps must be unique`)
+        }
+      }
+      environmentRecommendation = {
+        sourceFingerprint,
+        ...(inputFingerprint === undefined ? {} : { inputFingerprint }),
+        preferredNodeMajor,
+        nodeMajors: recommendationNodeMajors.slice().sort((left, right) => left - right),
+        unavailableNodeMajors: unavailableNodeMajors.slice().sort((left, right) => left - right),
+        executionProfiles,
+        ...(rawEnvironmentRecommendation.authorEnvironment === undefined ? {} : {
+          authorEnvironment: parseDshAuthorEnvironment(rawEnvironmentRecommendation.authorEnvironment)!,
+        }),
+        ...(coverageGaps === undefined ? {} : { coverageGaps }),
+        summary: boundedString(rawEnvironmentRecommendation.summary, `plugins[${index}].environmentRecommendation.summary`, 2_048),
+        evidence,
+      }
+    }
     return {
       id,
       spec,
       reason,
       ...(observerTargetId === undefined ? {} : { observerTargetId }),
       ...(allowedBuilds.length === 0 ? {} : { allowedBuilds }),
+      ...(buildApprovals === undefined ? {} : { buildApprovals }),
       ...(selectedRuntimeProfiles === undefined ? {} : { runtimeProfiles: selectedRuntimeProfiles }),
+      ...(environmentRecommendation === undefined ? {} : { environmentRecommendation }),
     }
   })
   plugins.sort((left, right) => left.id.localeCompare(right.id))
-  return { schema: DSH_INSTALL_TARGETS_SCHEMA, refreshAfterHours, runtimeProfiles, plugins }
+  return { schema: DSH_INSTALL_TARGETS_SCHEMA, refreshAfterHours, environmentRecommendationsRequired, runtimeProfiles, plugins }
 }
 
 interface PackageCoordinate {
@@ -337,6 +516,20 @@ function hasCompleteResolutionEvidence(entry: DshCompatibilityLedger['entries'][
     && contracts.indeterminate === 0
 }
 
+/** Only current, exact installation evidence may anchor a downstream profile or adapter. */
+export function currentDshCompatibilitySources(
+  ledger: DshCompatibilityLedger,
+  desired: ReadonlyArray<DshCompatibilityExpectedCase>,
+  refreshAfterHours: number,
+  now: Date,
+): DshCompatibilityLedger {
+  return { ...ledger, entries: ledger.entries.filter(entry => desired.some(cell => (
+    cell.id === entry.caseId && cell.plugin === entry.plugin && cell.dshVersion === entry.dshVersion
+      && cell.staticFingerprint === entry.staticFingerprint && cell.contractFingerprint === entry.contractFingerprint
+      && now.getTime() - Date.parse(entry.observedAt) < refreshAfterHours * 3_600_000
+  ))) }
+}
+
 /**
  * Reconcile the desired current compatibility matrix with durable evidence.
  * Upstream diffs accelerate a retest, but do not decide whether a cell gets
@@ -350,9 +543,11 @@ export function buildDshInstallPlan(
   ledgerInput: unknown = emptyDshCompatibilityLedger(),
   now = new Date(),
   reviewedInput: ReadonlySet<string> = new Set(),
+  runtime: { platform: 'linux'; architecture: 'x64' | 'arm64' } = { platform: 'linux', architecture: 'x64' },
 ): DshInstallPlan {
   const corpus = parseDshInstallTargets(corpusInput)
   const ledger = parseDshCompatibilityLedger(ledgerInput)
+  if (runtime.platform !== 'linux' || !['x64', 'arm64'].includes(runtime.architecture)) throw new Error('DSH install plan requires a supported isolated runtime')
   if (!Number.isFinite(now.getTime())) throw new Error('DSH install plan requires a valid current time')
   const report = record(reportInput, 'observer report')
   if (!Array.isArray(report.changes)) throw new Error('observer report changes must be an array')
@@ -377,6 +572,7 @@ export function buildDshInstallPlan(
     return {
       run: false,
       matrix: { include: [] },
+      blocked: [],
       triggers: [...triggers].sort(),
       reason: 'no exact observed DSH release is available, so the compatibility matrix cannot be formed',
     }
@@ -384,69 +580,112 @@ export function buildDshInstallPlan(
 
   const dshStatic = staticTargetEvidence(stateInput, DSH_TARGET_ID)
   const selected = new Map<string, DshCompatibilityExpectedCase>()
+  const blocked: DshInstallPlan['blocked'] = []
   let desiredCells = 0
   for (const target of corpus.plugins) {
     const plugin = resolveDshInstallTargetSpec(target, stateInput)
-    const staticFingerprint = createDshCompatibilityStaticFingerprint({
-      plugin,
-      dshVersion,
-      pluginStatic: target.observerTargetId === undefined ? undefined : staticTargetEvidence(stateInput, target.observerTargetId),
-      dshStatic,
-    })
-    const allowedBuilds = target.allowedBuilds ?? []
-    for (const runtimeProfile of candidateProfiles(corpus, target, plugin, ledger)) {
-      desiredCells += 1
-      const id = dshCompatibilityCaseId(target.id, runtimeProfile.id)
-      const contractFingerprint = createDshCompatibilityContractFingerprint({
-        plugin,
-        dshVersion,
-        nodeMajor: runtimeProfile.nodeMajor,
-        allowedBuilds,
-      })
-      const previous = ledger.entries.find(entry => entry.caseId === id)
-      const reasons = new Set<string>()
-      if (dshPackageChanged) reasons.add('dsh-coordinate-changed')
-      if (pluginChanges.has(target.id)) reasons.add('plugin-coordinate-changed')
-      if (previous === undefined) reasons.add('missing-evidence')
-      else {
-        if (previous.plugin !== plugin || previous.dshVersion !== dshVersion || previous.runtime.nodeMajor !== runtimeProfile.nodeMajor) {
-          reasons.add('exact-coordinate-changed')
-        }
-        if (previous.staticFingerprint !== staticFingerprint) reasons.add('static-evidence-changed')
-        if (previous.contractFingerprint !== contractFingerprint) reasons.add('execution-contract-changed')
-        if (isStale(previous, corpus.refreshAfterHours, now)) reasons.add('stale-evidence')
-        if (!hasCompleteResolutionEvidence(previous)) {
-          const graph = previous.resolution?.runtimeGraph
-          if (graph?.digest === undefined) reasons.add('runtime-graph-missing')
-          else if (graph.unresolved > 0) reasons.add('runtime-graph-incomplete')
-          else if (graph.pluginPeerContracts === undefined) reasons.add('peer-contract-not-evaluated')
-          else if (graph.pluginPeerContracts.indeterminate > 0) reasons.add('peer-contract-indeterminate')
-          else reasons.add('peer-contract-incomplete')
-        }
-      }
-      if (reasons.size === 0) continue
-      // An Agent may explicitly stop on an unchanged, non-actionable headless
-      // result (for example a Web-only contract). Do not spin the same cell on
-      // every scheduled run; a DSH/plugin coordinate or evidence change must
-      // still invalidate that review and select it again.
-      if (reviewed.has(id)
-        && !dshPackageChanged
-        && !pluginChanges.has(target.id)
-        && !reasons.has('exact-coordinate-changed')
-        && !reasons.has('static-evidence-changed')
-        && !reasons.has('execution-contract-changed')
-        && !reasons.has('stale-evidence')) continue
-      selected.set(id, {
-        id,
+    if (corpus.environmentRecommendationsRequired && target.environmentRecommendation === undefined) {
+      blocked.push({
         targetId: target.id,
         plugin,
-        dshVersion,
-        nodeMajor: runtimeProfile.nodeMajor,
-        allowedBuilds: allowedBuilds.join(','),
-        staticFingerprint,
-        contractFingerprint,
-        reasons: [...reasons].sort(),
+        reason: 'an exact repository environment recommendation is required before selecting Node and execution profiles',
       })
+      continue
+    }
+    if ((target.environmentRecommendation?.unavailableNodeMajors.length ?? 0) > 0) {
+      blocked.push({
+        targetId: target.id,
+        plugin,
+        reason: `repository evidence includes Node ${target.environmentRecommendation?.unavailableNodeMajors.join(', ')}, outside the isolated observer's executable range ${MIN_EXECUTABLE_NODE_MAJOR}-${MAX_EXECUTABLE_NODE_MAJOR}`,
+      })
+    }
+    if (target.environmentRecommendation !== undefined && (target.runtimeProfiles?.length ?? 0) === 0) continue
+    const authorVersions = target.environmentRecommendation?.authorEnvironment?.dshVersions ?? []
+    for (const cellDshVersion of new Set([dshVersion, ...authorVersions.map(item => item.version)])) {
+      const isAuthorBaseline = cellDshVersion !== dshVersion
+      const staticFingerprint = createDshCompatibilityStaticFingerprint({
+        plugin,
+        dshVersion: cellDshVersion,
+        pluginStatic: target.observerTargetId === undefined ? undefined : staticTargetEvidence(stateInput, target.observerTargetId),
+        dshStatic: isAuthorBaseline ? { authorBaseline: authorVersions.find(item => item.version === cellDshVersion) } : dshStatic,
+      })
+      for (const runtimeProfile of candidateProfiles(corpus, target, plugin, ledger)) {
+        let profileEnvironment: DshProfileEnvironment
+        try { profileEnvironment = selectDshProfileEnvironment(target.environmentRecommendation?.authorEnvironment, 'headless', runtimeProfile.nodeMajor) }
+        catch (error) {
+          blocked.push({ targetId: target.id, plugin, reason: error instanceof Error ? error.message : String(error) })
+          continue
+        }
+        const approvals = (target.buildApprovals ?? []).filter(item => item.plugin === plugin && item.dshVersion === cellDshVersion
+          && item.nodeMajor === runtimeProfile.nodeMajor && item.platform === runtime.platform && item.architecture === runtime.architecture
+          && JSON.stringify(item.profileEnvironment) === JSON.stringify(profileEnvironment))
+        if (new Set(approvals.map(item => item.artifactSha256)).size > 1) {
+          blocked.push({ targetId: target.id, plugin, reason: 'conflicting exact artifact build approvals require review' }); continue
+        }
+        const allowedBuilds = [...new Set([...(target.allowedBuilds ?? []), ...approvals.flatMap(item => item.packages)])].sort()
+        if (allowedBuilds.length > 16) throw new Error('combined build approvals exceed 16 packages')
+        const expectedArtifactSha256 = approvals[0]?.artifactSha256
+        desiredCells += 1
+        if (desiredCells > 500) throw new Error('DSH compatibility matrix exceeds 500 bounded cells')
+        const targetCaseId = dshCompatibilityCaseId(target.id, runtimeProfile.id)
+        const id = isAuthorBaseline ? `${targetCaseId.slice(0, 45)}-dsh-${createHash('sha256').update(cellDshVersion).digest('hex').slice(0, 12)}` : targetCaseId
+        const contractFingerprint = createDshCompatibilityContractFingerprint({
+          plugin,
+          dshVersion: cellDshVersion,
+          nodeMajor: runtimeProfile.nodeMajor,
+          allowedBuilds,
+          ...(expectedArtifactSha256 === undefined ? {} : { expectedArtifactSha256 }),
+          profileEnvironment,
+          ...runtime,
+        })
+        const previous = ledger.entries.find(entry => entry.caseId === id)
+        const reasons = new Set<string>()
+        if (dshPackageChanged && !isAuthorBaseline) reasons.add('dsh-coordinate-changed')
+        if (pluginChanges.has(target.id)) reasons.add('plugin-coordinate-changed')
+        if (previous === undefined) reasons.add('missing-evidence')
+        else {
+          if (previous.plugin !== plugin || previous.dshVersion !== cellDshVersion || previous.runtime.nodeMajor !== runtimeProfile.nodeMajor) {
+            reasons.add('exact-coordinate-changed')
+          }
+          if (previous.staticFingerprint !== staticFingerprint) reasons.add('static-evidence-changed')
+          if (previous.contractFingerprint !== contractFingerprint) reasons.add('execution-contract-changed')
+          if (isStale(previous, corpus.refreshAfterHours, now)) reasons.add('stale-evidence')
+          if (!hasCompleteResolutionEvidence(previous)) {
+            const graph = previous.resolution?.runtimeGraph
+            if (graph?.digest === undefined) reasons.add('runtime-graph-missing')
+            else if (graph.unresolved > 0) reasons.add('runtime-graph-incomplete')
+            else if (graph.pluginPeerContracts === undefined) reasons.add('peer-contract-not-evaluated')
+            else if (graph.pluginPeerContracts.indeterminate > 0) reasons.add('peer-contract-indeterminate')
+            else reasons.add('peer-contract-incomplete')
+          }
+        }
+        if (reasons.size === 0) continue
+        // An Agent may explicitly stop on an unchanged, non-actionable headless
+        // result (for example a Web-only contract). Do not spin the same cell on
+        // every scheduled run; a DSH/plugin coordinate or evidence change must
+        // still invalidate that review and select it again.
+        if (reviewed.has(id)
+          && !dshPackageChanged
+          && !pluginChanges.has(target.id)
+          && !reasons.has('exact-coordinate-changed')
+          && !reasons.has('static-evidence-changed')
+          && !reasons.has('execution-contract-changed')
+          && !reasons.has('stale-evidence')) continue
+        selected.set(id, {
+          id,
+          targetId: target.id,
+          plugin,
+          dshVersion: cellDshVersion,
+          nodeMajor: runtimeProfile.nodeMajor,
+          ...runtime,
+          allowedBuilds: allowedBuilds.join(','),
+          ...(expectedArtifactSha256 === undefined ? {} : { expectedArtifactSha256 }),
+          profileEnvironment,
+          staticFingerprint,
+          contractFingerprint,
+          reasons: [...reasons].sort(),
+        })
+      }
     }
   }
 
@@ -456,15 +695,19 @@ export function buildDshInstallPlan(
       run: false,
       dshVersion,
       matrix: { include: [] },
+      blocked: blocked.sort((left, right) => left.targetId.localeCompare(right.targetId)),
       triggers: [...triggers].sort(),
-      reason: `all ${desiredCells} active DSH compatibility cells have fresh evidence`,
+      reason: blocked.length > 0
+        ? `no runnable compatibility cells; ${blocked.length} plugin target(s) lack a current repository environment recommendation or executable coverage`
+        : `all ${desiredCells} active DSH compatibility cells have fresh evidence`,
     }
   }
   return {
     run: true,
     dshVersion,
     matrix: { include },
+    blocked: blocked.sort((left, right) => left.targetId.localeCompare(right.targetId)),
     triggers: [...triggers].sort(),
-    reason: `the compatibility ledger requires ${include.length} isolated recheck${include.length === 1 ? '' : 's'} across ${desiredCells} active cells`,
+    reason: `the compatibility ledger requires ${include.length} isolated recheck${include.length === 1 ? '' : 's'} across ${desiredCells} active cells${blocked.length === 0 ? '' : `; ${blocked.length} target(s) retain repository environment recommendation or executable-coverage gaps`}`,
   }
 }

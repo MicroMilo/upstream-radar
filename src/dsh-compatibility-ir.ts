@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import { parseDshCompatibilityLedger, type DshCompatibilityLedger, type DshCompatibilityLedgerEntry, type DshCompatibilityPeerContractRelation } from './dsh-compatibility-ledger.js'
 import { parseNpmSpec } from './npm.js'
+import { parseDshClientContractEvidence, parseDshPeerPlaneEvidence, type DshClientContract, type DshPeerPlaneEvidence } from './dsh-peer-planes.js'
 
 /**
  * A normalized, durable view of the exact direct contracts between one plugin
@@ -29,6 +30,7 @@ export interface DshCompatibilityIrPlugin {
   artifactSha256?: string
   /** Static identity evidence that scheduled this cell. */
   staticFingerprint: string
+  client?: DshClientContract
 }
 
 export interface DshCompatibilityIrRuntime {
@@ -40,6 +42,8 @@ export interface DshCompatibilityIrRuntime {
   pnpmVersion?: string
   /** Controlled execution policy that produced the observation. */
   contractFingerprint: string
+  profile?: 'headless'
+  executionPlane?: 'headless'
 }
 
 export interface DshCompatibilityIrCell {
@@ -69,6 +73,8 @@ export interface DshCompatibilityIrRelation {
     required: string
     status: DshCompatibilityPeerStatus
     staticUsage: DshCompatibilityPeerContractRelation['staticUsage']
+    usageByPlane?: DshPeerPlaneEvidence
+    declaredClientInject?: boolean
     /** Concrete version from `import.meta.resolve()` inside the DSH profile. */
     resolvedVersion?: string
   }
@@ -90,6 +96,8 @@ export interface DshCompatibilityReverseImpact {
   required: string
   status: DshCompatibilityPeerStatus
   staticUsage: DshCompatibilityPeerContractRelation['staticUsage']
+  usageByPlane?: DshPeerPlaneEvidence
+  declaredClientInject?: boolean
   resolvedVersion?: string
 }
 
@@ -146,6 +154,13 @@ function peerStaticUsage(value: unknown, label: string): DshCompatibilityPeerCon
   return usage
 }
 
+function planeFields(item: Record<string, unknown>): { usageByPlane?: DshPeerPlaneEvidence, declaredClientInject?: boolean } {
+  const usageByPlane = parseDshPeerPlaneEvidence(item.usageByPlane)
+  if (item.declaredClientInject !== undefined && typeof item.declaredClientInject !== 'boolean') throw new Error('declaredClientInject must be a boolean')
+  return { ...(usageByPlane === undefined ? {} : { usageByPlane }),
+    ...(item.declaredClientInject === undefined ? {} : { declaredClientInject: item.declaredClientInject as boolean }) }
+}
+
 function result(value: unknown, label: string): DshCompatibilityLedgerEntry['result'] {
   const parsed = boundedString(value, label, 64)
   if (parsed !== 'compatible' && parsed !== 'runtime-incompatible' && parsed !== 'peer-contract-incompatible'
@@ -191,6 +206,8 @@ function relationId(cellId: string, relation: DshCompatibilityPeerContractRelati
     required: relation.required,
     status: relation.status,
     staticUsage: relation.staticUsage,
+    ...(relation.usageByPlane === undefined ? {} : { usageByPlane: relation.usageByPlane }),
+    ...(relation.declaredClientInject === undefined ? {} : { declaredClientInject: relation.declaredClientInject }),
     ...(relation.resolvedVersion === undefined ? {} : { resolvedVersion: relation.resolvedVersion }),
   })
 }
@@ -242,6 +259,7 @@ export function buildDshCompatibilityIR(ledgerInput: DshCompatibilityLedger | un
         version: plugin.version,
         ...(entry.artifact.sha256 === undefined ? {} : { artifactSha256: entry.artifact.sha256 }),
         staticFingerprint: entry.staticFingerprint,
+        ...(entry.artifact.client === undefined ? {} : { client: entry.artifact.client }),
       },
       runtime: {
         dshVersion: entry.dshVersion,
@@ -251,6 +269,8 @@ export function buildDshCompatibilityIR(ledgerInput: DshCompatibilityLedger | un
         architecture: entry.runtime.architecture,
         ...(entry.runtime.pnpmVersion === undefined ? {} : { pnpmVersion: entry.runtime.pnpmVersion }),
         contractFingerprint: entry.contractFingerprint,
+        profile: 'headless',
+        executionPlane: 'headless',
       },
       evidence: {
         ...(runtimeGraph?.digest === undefined ? {} : { runtimeGraphDigest: runtimeGraph.digest }),
@@ -270,6 +290,8 @@ export function buildDshCompatibilityIR(ledgerInput: DshCompatibilityLedger | un
           required: relation.required,
           status: relation.status,
           staticUsage: relation.staticUsage,
+          ...(relation.usageByPlane === undefined ? {} : { usageByPlane: relation.usageByPlane }),
+          ...(relation.declaredClientInject === undefined ? {} : { declaredClientInject: relation.declaredClientInject }),
           ...(relation.resolvedVersion === undefined ? {} : { resolvedVersion: relation.resolvedVersion }),
         },
       })
@@ -299,6 +321,8 @@ export function buildDshCompatibilityReverseIndex(irInput: DshCompatibilityIR | 
       required: relation.dependency.required,
       status: relation.dependency.status,
       staticUsage: relation.dependency.staticUsage,
+      ...(relation.dependency.usageByPlane === undefined ? {} : { usageByPlane: relation.dependency.usageByPlane }),
+      ...(relation.dependency.declaredClientInject === undefined ? {} : { declaredClientInject: relation.dependency.declaredClientInject }),
       ...(relation.dependency.resolvedVersion === undefined ? {} : { resolvedVersion: relation.dependency.resolvedVersion }),
     })
     dependencies.set(relation.dependency.name, impacts)
@@ -325,6 +349,9 @@ function parseCell(value: unknown, index: number): DshCompatibilityIrCell {
   const evidence = record(item.evidence, `cells[${index}].evidence`)
   const parsedPlugin = exactPackage(`${boundedString(plugin.name, `cells[${index}].plugin.name`, 214)}@${exactVersion(plugin.version, `cells[${index}].plugin.version`)}`, `cells[${index}].plugin`)
   const artifactSha256 = plugin.artifactSha256 === undefined ? undefined : sha256(plugin.artifactSha256, `cells[${index}].plugin.artifactSha256`)
+  const client = parseDshClientContractEvidence(plugin.client)
+  if (runtime.profile !== undefined && runtime.profile !== 'headless') throw new Error('compatibility IR runtime.profile must be headless')
+  if (runtime.executionPlane !== undefined && runtime.executionPlane !== 'headless') throw new Error('compatibility IR runtime.executionPlane must be headless')
   const observedAt = boundedString(item.observedAt, `cells[${index}].observedAt`, 64)
   if (!Number.isFinite(Date.parse(observedAt))) throw new Error(`cells[${index}].observedAt must be an ISO timestamp`)
   const nodeMajor = boundedInteger(runtime.nodeMajor, `cells[${index}].runtime.nodeMajor`, 40)
@@ -362,6 +389,7 @@ function parseCell(value: unknown, index: number): DshCompatibilityIrCell {
       version: parsedPlugin.version,
       ...(artifactSha256 === undefined ? {} : { artifactSha256 }),
       staticFingerprint: boundedString(plugin.staticFingerprint, `cells[${index}].plugin.staticFingerprint`, 80),
+      ...(client === undefined ? {} : { client }),
     },
     runtime: {
       dshVersion: exactVersion(runtime.dshVersion, `cells[${index}].runtime.dshVersion`),
@@ -371,6 +399,8 @@ function parseCell(value: unknown, index: number): DshCompatibilityIrCell {
       architecture: boundedString(runtime.architecture, `cells[${index}].runtime.architecture`, 64),
       ...(pnpmVersion === undefined ? {} : { pnpmVersion }),
       contractFingerprint: boundedString(runtime.contractFingerprint, `cells[${index}].runtime.contractFingerprint`, 80),
+      ...(runtime.profile === undefined ? {} : { profile: 'headless' as const }),
+      ...(runtime.executionPlane === undefined ? {} : { executionPlane: 'headless' as const }),
     },
     evidence: {
       ...(runtimeGraphDigest === undefined ? {} : { runtimeGraphDigest }),
@@ -405,6 +435,7 @@ function parseRelation(value: unknown, index: number): DshCompatibilityIrRelatio
       required: boundedString(dependency.required, `relations[${index}].dependency.required`, 512),
       status,
       staticUsage: peerStaticUsage(dependency.staticUsage, `relations[${index}].dependency.staticUsage`),
+      ...planeFields(dependency),
       ...(resolvedVersion === undefined ? {} : { resolvedVersion }),
     },
   }
@@ -487,6 +518,7 @@ export function parseDshCompatibilityReverseIndex(input: unknown): DshCompatibil
         required: boundedString(impact.required, `dependencies[${index}].impacts[${impactIndex}].required`, 512),
         status,
         staticUsage: peerStaticUsage(impact.staticUsage, `dependencies[${index}].impacts[${impactIndex}].staticUsage`),
+        ...planeFields(impact),
         ...(resolvedVersion === undefined ? {} : { resolvedVersion }),
       }
     })

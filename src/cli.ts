@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
 import process from 'node:process'
+import { parseDshProfileEnvironment, type DshProfileEnvironment } from './dsh-profile-environment.js'
+import { parseDshStartupConfiguration, type DshStartupConfiguration } from './dsh-startup-configuration.js'
+import { parseDshHostBuildApproval, type DshHostBuildApproval } from './dsh-host-build-policy.js'
 import { spawnSync } from 'node:child_process'
 import { access, mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
@@ -342,14 +345,14 @@ Usage:
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>,<v2>,... [--json]
   upstream-radar probe dsh-install [npm:]<package>@<exact-version>
     --dsh-version <exact-version> --isolation-provider <provider> --execute
-    [--allow-build <package>]... [--timeout <seconds>] [--report <report.json>] [--json]
+    [--allow-build <package>]... [--profile-environment-json <json>] [--timeout <seconds>] [--report <report.json>] [--json]
   upstream-radar probe dsh-surface [npm:]<package>@<exact-version>
     --dsh-version <exact-version> --case-id <id> --source-case-id <id>
     --source-fingerprint <sha256:...> --contract-fingerprint <sha256:...>
     --plane <web|tui> --profile <name> --runtime-id <id>
     --artifact-sha256 <hex> --isolation-provider <provider> --execute
-    [--allow-build <package>]...
-    [--driver-root <path>] [--chromium-executable <path>]
+    [--allow-build <package>]... [--profile-environment-json <json>]
+    [--startup-configuration-json <json>] [--driver-root <path>] [--chromium-executable <path>]
     [--artifacts <directory>] [--timeout <seconds>] [--report <report.json>] [--json]
 
 The load probes disable lifecycle scripts and check bundle registration/load.
@@ -557,8 +560,8 @@ Usage:
   upstream-radar profile-check [profile-directory] [--patch <path>] [--report <path>] [--summary] [--json]
   upstream-radar probe dsh-load <package.tgz> [--dsh-version <exact-version>] [--timeout <seconds>] [--keep-profile] [--json]
   upstream-radar probe dsh-matrix <package.tgz> --dsh-version <v1>[,<v2>,...] [--timeout <seconds>] [--keep-profile] [--json]
-  upstream-radar probe dsh-install [npm:]<package>@<exact-version> --dsh-version <exact-version> [--case-id <stable-label>] --isolation-provider <github-actions-hosted-runner|firecracker|other> --execute [--allow-build <package>]... [--timeout <seconds>] [--report <report.json>] [--json]
-  upstream-radar probe dsh-surface [npm:]<package>@<exact-version> --dsh-version <exact-version> --case-id <stable-label> --source-case-id <stable-label> --source-fingerprint <sha256:...> --contract-fingerprint <sha256:...> --plane <web|tui> --profile <name> --runtime-id <id> --artifact-sha256 <hex> --isolation-provider <github-actions-hosted-runner|firecracker|other> --execute [--allow-build <package>]... [--driver-root <path>] [--chromium-executable <path>] [--artifacts <directory>] [--timeout <seconds>] [--report <report.json>] [--json]
+  upstream-radar probe dsh-install [npm:]<package>@<exact-version> --dsh-version <exact-version> [--case-id <stable-label>] --isolation-provider <github-actions-hosted-runner|firecracker|other> --execute [--allow-build <package>]... [--network-proxy <http[s]://host:port>] [--timeout <seconds>] [--report <report.json>] [--json]
+  upstream-radar probe dsh-surface [npm:]<package>@<exact-version> --dsh-version <exact-version> --case-id <stable-label> --source-case-id <stable-label> --source-fingerprint <sha256:...> --contract-fingerprint <sha256:...> --plane <web|tui> --profile <name> --runtime-id <id> --artifact-sha256 <hex> --isolation-provider <github-actions-hosted-runner|firecracker|other> --execute [--allow-build <package>]... [--network-proxy <http[s]://host:port>] [--driver-root <path>] [--chromium-executable <path>] [--artifacts <directory>] [--timeout <seconds>] [--report <report.json>] [--json]
   upstream-radar review dsh-plugin [npm:]<package>@<exact-version> --dsh-version <v1>,<v2>,... [--json]
   upstream-radar demo [--json]
   upstream-radar case dsh-web-ui [--json]
@@ -1268,6 +1271,11 @@ async function runProbe(args: readonly string[]): Promise<number> {
   return report.result === 'compatible' ? 0 : report.result === 'incompatible' ? 2 : 1
 }
 
+function profileEnvironmentJson(value: string): DshProfileEnvironment {
+  if (Buffer.byteLength(value) > 64 * 1024) throw new Error('profile environment JSON exceeds 64 KiB')
+  return parseDshProfileEnvironment(JSON.parse(value))
+}
+
 async function runDshInstallObservation(args: readonly string[]): Promise<number> {
   const packageSpec = args[0]
   if (packageSpec === undefined || packageSpec.startsWith('-')) {
@@ -1276,6 +1284,9 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
   let dshVersion: string | undefined
   let caseId: string | undefined
   let isolationProvider: InstallObservationIsolationProvider | undefined
+  let profileEnvironment: DshProfileEnvironment | undefined
+  let networkProxy: string | undefined
+  let expectedArtifactSha256: string | undefined
   let timeoutSeconds = 180
   let reportPath: string | undefined
   const allowedBuilds: string[] = []
@@ -1287,7 +1298,7 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
       execute = true
     } else if (argument === '--json') {
       json = true
-    } else if (argument === '--dsh-version' || argument === '--case-id' || argument === '--isolation-provider' || argument === '--allow-build' || argument === '--timeout' || argument === '--report') {
+    } else if (argument === '--dsh-version' || argument === '--case-id' || argument === '--isolation-provider' || argument === '--allow-build' || argument === '--timeout' || argument === '--report' || argument === '--network-proxy' || argument === '--profile-environment-json' || argument === '--artifact-sha256') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--dsh-version') {
@@ -1308,8 +1319,17 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
           throw new Error('--timeout must be an integer between 30 and 600 seconds')
         }
         timeoutSeconds = parsed
+      } else if (argument === '--artifact-sha256') {
+        if (expectedArtifactSha256 !== undefined || !/^[a-f0-9]{64}$/.test(value)) throw new Error('--artifact-sha256 requires one lowercase SHA-256 digest')
+        expectedArtifactSha256 = value
+      } else if (argument === '--profile-environment-json') {
+        if (profileEnvironment !== undefined) throw new Error('probe dsh-install accepts only one --profile-environment-json')
+        profileEnvironment = profileEnvironmentJson(value)
       } else if (argument === '--allow-build') {
         allowedBuilds.push(value)
+      } else if (argument === '--network-proxy') {
+        if (networkProxy !== undefined) throw new Error('probe dsh-install accepts only one --network-proxy')
+        networkProxy = value
       } else {
         reportPath = value
       }
@@ -1328,9 +1348,12 @@ async function runDshInstallObservation(args: readonly string[]): Promise<number
     packageSpec,
     dshVersion,
     ...(caseId === undefined ? {} : { caseId }),
+    ...(expectedArtifactSha256 === undefined ? {} : { expectedArtifactSha256 }),
     allowExecution: true,
     isolationProvider,
     allowedBuilds,
+    ...(profileEnvironment === undefined ? {} : { profileEnvironment }),
+    ...(networkProxy === undefined ? {} : { networkProxy }),
     timeoutMs: timeoutSeconds * 1_000,
   })
   if (reportPath !== undefined) {
@@ -1356,7 +1379,11 @@ async function runDshSurfaceObservation(args: readonly string[]): Promise<number
   let profile: string | undefined
   let runtimeId: string | undefined
   let artifactSha256: string | undefined
+  let startupConfiguration: DshStartupConfiguration | undefined
+  let hostBuildApproval: DshHostBuildApproval | undefined
   let isolationProvider: DshSurfaceIsolationProvider | undefined
+  let profileEnvironment: DshProfileEnvironment | undefined
+  let networkProxy: string | undefined
   let timeoutSeconds = 300
   let reportPath: string | undefined
   let artifactsDirectory: string | undefined
@@ -1374,7 +1401,8 @@ async function runDshSurfaceObservation(args: readonly string[]): Promise<number
       || argument === '--profile' || argument === '--runtime-id' || argument === '--artifact-sha256'
       || argument === '--isolation-provider' || argument === '--timeout' || argument === '--report'
       || argument === '--artifacts' || argument === '--driver-root' || argument === '--chromium-executable'
-      || argument === '--allow-build') {
+      || argument === '--allow-build' || argument === '--network-proxy' || argument === '--profile-environment-json'
+      || argument === '--startup-configuration-json' || argument === '--host-build-approval-json') {
       const value = args[index + 1]
       if (value === undefined || value.startsWith('-')) throw new Error(`${argument} requires a value`)
       if (argument === '--dsh-version') dshVersion = value
@@ -1401,6 +1429,28 @@ async function runDshSurfaceObservation(args: readonly string[]): Promise<number
       else if (argument === '--artifacts') artifactsDirectory = value
       else if (argument === '--driver-root') driverRoot = value
       else if (argument === '--chromium-executable') chromiumExecutable = value
+      else if (argument === '--host-build-approval-json') {
+        if (hostBuildApproval !== undefined) throw new Error('probe dsh-surface accepts only one --host-build-approval-json')
+        if (Buffer.byteLength(value) > 8192) throw new Error('host build permission exceeds its byte budget')
+        let parsed: unknown
+        try { parsed = JSON.parse(value) } catch { throw new Error('host build permission must be valid JSON') }
+        hostBuildApproval = parseDshHostBuildApproval(parsed)
+      }
+      else if (argument === '--startup-configuration-json') {
+        if (startupConfiguration !== undefined) throw new Error('probe dsh-surface accepts only one --startup-configuration-json')
+        if (Buffer.byteLength(value) > 4096) throw new Error('startup configuration exceeds its byte budget')
+        let parsed: unknown
+        try { parsed = JSON.parse(value) } catch { throw new Error('startup configuration must be valid JSON') }
+        startupConfiguration = parseDshStartupConfiguration(parsed)
+      }
+      else if (argument === '--profile-environment-json') {
+        if (profileEnvironment !== undefined) throw new Error('probe dsh-surface accepts only one --profile-environment-json')
+        profileEnvironment = profileEnvironmentJson(value)
+      }
+      else if (argument === '--network-proxy') {
+        if (networkProxy !== undefined) throw new Error('probe dsh-surface accepts only one --network-proxy')
+        networkProxy = value
+      }
       else allowedBuilds.push(value)
       index += 1
     } else {
@@ -1436,7 +1486,11 @@ async function runDshSurfaceObservation(args: readonly string[]): Promise<number
     profile: profile as string,
     runtimeId: runtimeId as string,
     expectedArtifactSha256: artifactSha256 as string,
+    ...(hostBuildApproval === undefined ? {} : { hostBuildApproval }),
+    ...(startupConfiguration === undefined ? {} : { startupConfiguration }),
+    ...(profileEnvironment === undefined ? {} : { profileEnvironment }),
     allowedBuilds,
+    ...(networkProxy === undefined ? {} : { networkProxy }),
     allowExecution: true,
     isolationProvider: isolationProvider as DshSurfaceIsolationProvider,
     timeoutMs: timeoutSeconds * 1_000,

@@ -53,6 +53,16 @@ on:
         description: SHA-256 from the source install observation
         required: true
         type: string
+      profile_environment_json:
+        description: Reviewed exact pnpm version and profile-scoped overrides as bounded JSON
+        required: false
+        default: '{"pnpmVersion":"11.7.0","overrides":{}}'
+        type: string
+      startup_configuration_json:
+        description: Additional documented disabled or offline startup scope and flags; empty means default startup
+        required: false
+        default: ''
+        type: string
   workflow_call:
     inputs:
       plugin:
@@ -96,6 +106,14 @@ on:
       timeout_seconds:
         required: false
         default: '300'
+        type: string
+      profile_environment_json:
+        required: false
+        default: '{"pnpmVersion":"11.7.0","overrides":{}}'
+        type: string
+      startup_configuration_json:
+        required: false
+        default: ''
         type: string
 
 # Target install and surface code may execute. The reusable workflow receives
@@ -167,7 +185,20 @@ jobs:
         shell: bash
         env:
           RADAR_NODE_MAJOR: ${{ inputs.node_major || '22' }}
-        run: docker build --build-arg NODE_MAJOR="$RADAR_NODE_MAJOR" --file docker/dsh-surface-observer.Dockerfile --tag upstream-radar-surface-observer:${{ github.run_id }} .
+          RADAR_PROFILE_ENVIRONMENT: ${{ inputs.profile_environment_json }}
+        run: |
+          set -euo pipefail
+          # Only an exact registry version may reach the trusted image build.
+          # The probe validates the complete environment before target install.
+          RADAR_PNPM_VERSION="$(node --input-type=module <<'NODE'
+          const raw = process.env.RADAR_PROFILE_ENVIRONMENT ?? ''
+          if (Buffer.byteLength(raw) > 64 * 1024) throw new Error('profile environment exceeds 64 KiB')
+          const value = JSON.parse(raw)
+          if (!value || typeof value.pnpmVersion !== 'string' || !/^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$/.test(value.pnpmVersion)) throw new Error('profile pnpmVersion must be exact')
+          process.stdout.write(value.pnpmVersion)
+          NODE
+          )"
+          docker build --build-arg NODE_MAJOR="$RADAR_NODE_MAJOR" --build-arg PNPM_VERSION="$RADAR_PNPM_VERSION" --file docker/dsh-surface-observer.Dockerfile --tag upstream-radar-surface-observer:${{ github.run_id }} .
 
       - name: Exercise the declared DSH execution plane
         id: observe
@@ -185,6 +216,8 @@ jobs:
           RADAR_RUNTIME_ID: ${{ inputs.runtime_id }}
           RADAR_ARTIFACT_SHA256: ${{ inputs.artifact_sha256 }}
           RADAR_ALLOWED_BUILDS: ${{ inputs.allow_builds || '' }}
+          RADAR_PROFILE_ENVIRONMENT: ${{ inputs.profile_environment_json }}
+          RADAR_STARTUP_CONFIGURATION: ${{ inputs.startup_configuration_json }}
           RADAR_TIMEOUT_SECONDS: ${{ inputs.timeout_seconds || '300' }}
           RADAR_REPORT_DIRECTORY: ${{ runner.temp }}/upstream-radar-surface-observation
           RADAR_CONTAINER_NAME: upstream-radar-surface-${{ github.run_id }}-${{ github.run_attempt }}
@@ -193,6 +226,10 @@ jobs:
           set -euo pipefail
           mkdir -p "$RADAR_REPORT_DIRECTORY"
           chmod 0777 "$RADAR_REPORT_DIRECTORY"
+          startup_args=()
+          if [[ -n "$RADAR_STARTUP_CONFIGURATION" ]]; then
+            startup_args+=(--startup-configuration-json "$RADAR_STARTUP_CONFIGURATION")
+          fi
           allow_build_args=()
           if [[ -n "$RADAR_ALLOWED_BUILDS" ]]; then
             IFS=',' read -ra approved_builds <<< "$RADAR_ALLOWED_BUILDS"
@@ -230,6 +267,8 @@ jobs:
             --profile "$RADAR_PROFILE" \
             --runtime-id "$RADAR_RUNTIME_ID" \
             --artifact-sha256 "$RADAR_ARTIFACT_SHA256" \
+            --profile-environment-json "$RADAR_PROFILE_ENVIRONMENT" \
+            "${startup_args[@]}" \
             "${allow_build_args[@]}" \
             --driver-root /surface-driver \
             --chromium-executable /usr/bin/chromium \

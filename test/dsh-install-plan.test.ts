@@ -83,6 +83,51 @@ function baseline() {
 }
 
 describe('DSH compatibility reconciliation plan', () => {
+  it('tests quoted author DSH baselines as separate cells and does not invalidate them on an unrelated target release', () => {
+    const targets = { schema: 'upstream-radar.dsh-install-targets/v1alpha1', runtimeProfiles: [{ id: 'node22', nodeMajor: 22 }],
+      plugins: [{ id: 'web-plugin', spec: 'web-plugin@1.0.0', runtimeProfiles: ['node22'], reason: 'author baseline fixture',
+        environmentRecommendation: { sourceFingerprint: `sha256:${'c'.repeat(64)}`, preferredNodeMajor: 22, nodeMajors: [22], unavailableNodeMajors: [],
+          executionProfiles: ['web'], summary: 'Author baseline comparison.', evidence: ['README.md'],
+          authorEnvironment: { packageManagers: [], overrides: [], workflows: [], dshVersions: [
+            { version: '0.1.1-rc.2', evidence: [{ path: 'README.md', quote: 'Supports 0.1.1-rc.2' }] },
+            { version: '0.1.2-rc.1', evidence: [{ path: 'README.md', quote: 'Supports 0.1.2-rc.1' }] },
+          ] } } }] }
+    const first = buildDshInstallPlan(targets, state('0.1.5-rc.2'), { changes: [] }, undefined, now)
+    assert.deepEqual(first.matrix.include.map(cell => cell.dshVersion).sort(), ['0.1.1-rc.2', '0.1.2-rc.1', '0.1.5-rc.2'])
+    assert.equal(new Set(first.matrix.include.map(cell => cell.id)).size, 3)
+    const ledger = { ...emptyDshCompatibilityLedger(), entries: first.matrix.include.map(cell => entry(cell)) }
+    assert.equal(buildDshInstallPlan(targets, state('0.1.5-rc.2'), { changes: [] }, ledger, now).matrix.include.length, 0)
+    const changed = buildDshInstallPlan(targets, state('0.1.6-rc.1'), { changes: [] }, ledger, now)
+    assert.deepEqual(changed.matrix.include.map(cell => cell.dshVersion), ['0.1.6-rc.1'])
+  })
+
+  it('preserves a valid exact reasoning input fingerprint and rejects a malformed one', () => {
+    const fixture = { ...corpus, plugins: [{ ...corpus.plugins[0]!, runtimeProfiles: ['node22'],
+      environmentRecommendation: { sourceFingerprint: `sha256:${'a'.repeat(64)}`,
+        inputFingerprint: `sha256:${'b'.repeat(64)}`, preferredNodeMajor: 22,
+        nodeMajors: [22], unavailableNodeMajors: [], executionProfiles: ['headless'],
+        summary: 'Evidence-bound fixture.', evidence: ['README.md'] } }] }
+    assert.equal(parseDshInstallTargets(fixture).plugins[0]?.environmentRecommendation?.inputFingerprint,
+      `sha256:${'b'.repeat(64)}`)
+    assert.throws(() => parseDshInstallTargets({ ...fixture, plugins: [{ ...fixture.plugins[0],
+      environmentRecommendation: { ...fixture.plugins[0]!.environmentRecommendation, inputFingerprint: 'stale' } }] }),
+    /inputFingerprint.*SHA-256/)
+  })
+
+  it('plans and reuses the actual isolated architecture instead of rewriting an x64 plan after execution', () => {
+    const plan = buildDshInstallPlan(corpus, state(), { changes: [] }, emptyDshCompatibilityLedger(), now, new Set(),
+      { platform: 'linux', architecture: 'arm64' })
+    assert.equal(plan.matrix.include[0]?.architecture, 'arm64')
+    const ledger = { ...emptyDshCompatibilityLedger(), entries: plan.matrix.include.map(cell => entry(cell, {
+      runtime: { nodeMajor: cell.nodeMajor, nodeVersion: `${cell.nodeMajor}.23.2`, platform: 'linux', architecture: 'arm64', pnpmVersion: '11.7.0' },
+    })) }
+    assert.equal(buildDshInstallPlan(corpus, state(), { changes: [] }, ledger, now, new Set(),
+      { platform: 'linux', architecture: 'arm64' }).run, false)
+    const changed = buildDshInstallPlan(corpus, state(), { changes: [] }, ledger, now)
+    assert.equal(changed.matrix.include.length, plan.matrix.include.length)
+    assert.ok(changed.matrix.include.every(cell => cell.reasons.includes('execution-contract-changed')))
+  })
+
   it('backfills every default runtime cell even when no package coordinate changed', () => {
     const plan = baseline()
     assert.equal(plan.run, true)
@@ -91,6 +136,56 @@ describe('DSH compatibility reconciliation plan', () => {
     assert.deepEqual(plan.matrix.include.map(item => item.allowedBuilds), ['', 'protobufjs'])
     assert.deepEqual(plan.matrix.include.map(item => item.reasons), [['missing-evidence'], ['missing-evidence']])
     assert.deepEqual(plan.triggers, [])
+  })
+
+  it('blocks a target instead of falling back to Node 22 when repository environment reasoning is required', () => {
+    const plan = buildDshInstallPlan({
+      ...corpus,
+      environmentRecommendationsRequired: true,
+    }, state(), { changes: [] }, emptyDshCompatibilityLedger(), now)
+
+    assert.equal(plan.run, false)
+    assert.deepEqual(plan.matrix.include, [])
+    assert.deepEqual(plan.blocked.map(item => item.targetId), ['browser', 'feishu'])
+    assert.match(plan.reason, /repository environment recommendation/)
+  })
+
+  it('preserves a repository-recommended Node major outside executor capability as a coverage gap', () => {
+    const plan = buildDshInstallPlan({
+      schema: 'upstream-radar.dsh-install-targets/v1alpha1',
+      refreshAfterHours: 168,
+      environmentRecommendationsRequired: true,
+      runtimeProfiles: [],
+      plugins: [{
+        id: 'legacy',
+        spec: 'legacy-plugin@1.0.0',
+        runtimeProfiles: [],
+        environmentRecommendation: {
+          sourceFingerprint: `sha256:${'a'.repeat(64)}`,
+          preferredNodeMajor: 14,
+          nodeMajors: [14],
+          unavailableNodeMajors: [14],
+          executionProfiles: ['headless'],
+          summary: 'The repository explicitly pins Node 14.',
+          evidence: ['.nvmrc'],
+        },
+        reason: 'exercise an honest executor coverage gap',
+      }],
+    }, state(), { changes: [] }, emptyDshCompatibilityLedger(), now)
+
+    assert.equal(plan.run, false)
+    assert.deepEqual(plan.matrix.include, [])
+    assert.match(plan.blocked[0]?.reason ?? '', /Node 14.*executable range 20-40/)
+    assert.match(plan.blocked[0]?.reason ?? '', /repository evidence includes/, 'a declared or pinned runtime is not necessarily an author recommendation')
+  })
+
+  it('schedules a real Node 20 observer with pnpm 10 instead of silently replacing the declared runtime with Node 22', () => {
+    const target = { ...corpus, runtimeProfiles: [{ id: 'node20', nodeMajor: 20 }],
+      plugins: [{ ...corpus.plugins[0]!, runtimeProfiles: ['node20'] }] }
+    const plan = buildDshInstallPlan(target, state(), { changes: [] }, emptyDshCompatibilityLedger(), now)
+    assert.deepEqual(plan.matrix.include.map(cell => cell.nodeMajor), [20])
+    assert.equal(plan.matrix.include[0]?.profileEnvironment?.pnpmVersion, '10.33.0')
+    assert.deepEqual(plan.blocked, [])
   })
 
   it('stays quiet only after all desired cells have fresh exact evidence', () => {

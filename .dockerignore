@@ -7,3 +7,6 @@
 !src/**
 !test
 !test/**
+!scripts
+!scripts/dsh-active-case-tool.mjs
+!scripts/dsh-agent-egress-proxy.mjs

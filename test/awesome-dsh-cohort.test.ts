@@ -50,6 +50,10 @@ describe('awesome-dsh-plugin monitored cohort', () => {
     assert.ok(maximumFrequency(cohort.plugins.map(plugin => plugin.category)) <= 8)
     assert.ok(maximumFrequency(cohort.plugins.map(plugin => plugin.repository.split('/')[0]?.toLowerCase() ?? '')) <= 4)
     assert.equal(installTargets.plugins.length, 100)
+    assert.deepEqual(
+      installTargets.runtimeProfiles.map(profile => profile.nodeMajor).sort((left, right) => left - right),
+      [],
+    )
 
     const importedIds = new Set(cohort.plugins.map(plugin => plugin.id))
     const importedObserverTargets = observer.targets.filter(target => importedIds.has(target.id))
@@ -91,21 +95,37 @@ describe('awesome-dsh-plugin monitored cohort', () => {
       assert.equal(installTargets.plugins.some(target => target.observerTargetId === plugin.id), false)
     }
 
-    // The published OpenPencil artifact declares Node >=24.11. Running its
-    // maintained cell on Node 22 only proves the engine gate, not DSH behavior.
-    assert.deepEqual(
-      installTargets.plugins.find(target => target.id === 'openpencil')?.runtimeProfiles,
-      ['node24'],
-    )
-    assert.deepEqual(
-      installTargets.plugins.find(target => target.id === 'dsh-agy-link')?.runtimeProfiles,
-      ['node24'],
-    )
+    // Maintained targets do not preselect Node. Exact repository analysis
+    // materializes the runtime profiles before any compatibility cell exists.
+    assert.equal(installTargets.plugins.some(target => target.runtimeProfiles !== undefined), false)
 
     const nonCohortTargets = installTargets.plugins
       .filter(target => target.observerTargetId === undefined || !importedIds.has(target.observerTargetId))
       .map(target => target.id)
       .sort()
     assert.deepEqual(nonCohortTargets, ['cloudflare-browser', 'feishu-bot', 'sanqi-market', 'wsl-workspace'])
+  })
+})
+
+describe('DSH rebuild release channels', () => {
+  it('keeps the same plugin cohort while independently observing next and alpha DSH', async () => {
+    const next = parseObserverConfigText(await readFile('examples/dsh/rebuild-batch/targets.yml', 'utf8'))
+    const alpha = parseObserverConfigText(await readFile('examples/dsh/rebuild-batch/targets-alpha.yml', 'utf8'))
+    const install = parseDshInstallTargets(JSON.parse(await readFile(
+      'examples/dsh/rebuild-batch/install-targets.json', 'utf8',
+    )) as unknown)
+    const nextDsh = next.targets.find(target => target.id === 'deepseek-harness')
+    const alphaDsh = alpha.targets.find(target => target.id === 'deepseek-harness')
+    assert.equal(nextDsh?.packageTag, 'next')
+    assert.equal(alphaDsh?.packageTag, 'alpha')
+    assert.deepEqual(
+      next.targets.filter(target => target.id !== 'deepseek-harness'),
+      alpha.targets.filter(target => target.id !== 'deepseek-harness'),
+    )
+    assert.deepEqual({ ...nextDsh, packageTag: 'alpha' }, alphaDsh)
+    for (const plugin of install.plugins) {
+      assert.ok(next.targets.some(target => target.id === plugin.observerTargetId))
+      assert.ok(alpha.targets.some(target => target.id === plugin.observerTargetId))
+    }
   })
 })

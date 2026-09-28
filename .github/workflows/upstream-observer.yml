@@ -35,6 +35,8 @@ jobs:
       install_dsh_version: ${{ steps.install-plan.outputs.dsh_version }}
       install_matrix: ${{ steps.install-plan.outputs.matrix }}
       observer_exit: ${{ steps.observe.outputs.exit }}
+      environment_review_outcome: ${{ steps.environment-recommendations.outcome }}
+      build_review_outcome: ${{ steps.headless-agent-plan.outcome }}
     steps:
       - name: Check out the observer and its targets
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -136,6 +138,27 @@ jobs:
         run: |
           node -e "require('node:fs').writeFileSync(process.env.OBSERVER_JSON, JSON.stringify({ changes: [] }))"
 
+      # This is the pre-execution reasoning pass. Repository material is
+      # bounded and treated as untrusted. It reports repository-recommended
+      # Node majors independently of executor inventory, then maps executable
+      # majors into the headless/Web/TUI vocabulary. The resulting signal is
+      # persisted separately from compatibility evidence.
+      - name: Infer repository-recommended Node and execution profiles
+        if: inputs.mode != 'agent-retry'
+        id: environment-recommendations
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
+        run: |
+          node scripts/plan-dsh-environment-recommendations.mjs \
+            examples/dsh/install-observer/targets.json \
+            observations.json \
+            examples/dsh/environment-observer/recommendations.json \
+            examples/dsh/environment-observer/recommendations.md
+
       # Repository prose is untrusted model input. This job never executes a
       # target package; it emits only a bounded headless retry contract. The
       # later reusable workflow receives that contract but no model secret.
@@ -167,7 +190,8 @@ jobs:
             observations.json \
             "$OBSERVER_JSON" \
             compatibility-ledger.json \
-            examples/dsh/install-observer/agent-plans.json
+            examples/dsh/install-observer/agent-plans.json \
+            examples/dsh/environment-observer/recommendations.json
 
       # State is written even when an upstream source or Agent call fails.
       # Successful plans remain bound to exact bytes/runtime; failed calls have
@@ -181,11 +205,13 @@ jobs:
             echo 'observations.json was not produced; nothing to persist.'
             exit 0
           fi
-          # observations.json may advance even when a later source fails and no
-          # dynamic matrix can run. Keep the directory feed in the same commit
-          # so default-branch consumers and PR merge refs never see stale
-          # distribution coordinates paired with the new observation point.
-          if ! git diff --quiet -- observations.json; then
+          # Observations or repository-environment recommendations may advance
+          # even when no dynamic matrix is needed. Keep the directory feed in
+          # the same commit so consumers never see stale coordinates or inherit
+          # a global pass from the previous required-cell set.
+          if ! git diff --quiet -- \
+            observations.json \
+            examples/dsh/environment-observer/recommendations.json; then
             node scripts/write-dsh-directory-feed.mjs \
               examples/dsh/awesome-observer/cohort.json \
               examples/dsh/install-observer/targets.json \
@@ -193,16 +219,27 @@ jobs:
               feeds/dsh-plugin-compatibility.json \
               feeds/dsh-plugin-compatibility.md \
               observations.json \
-              surface-ledger.json
+              surface-ledger.json \
+              examples/dsh/environment-observer/recommendations.json \
+              adapter-ledger.json \
+              examples/dsh/install-observer/agent-plans.json \
+              examples/dsh/surface-observer/agent-plans.json
           fi
           git config user.name 'upstream-radar[bot]'
           git config user.email 'upstream-radar[bot]@users.noreply.github.com'
           git add -- \
             observations.json \
+            examples/dsh/environment-observer/recommendations.json \
+            examples/dsh/environment-observer/recommendations.md \
             examples/dsh/install-observer/agent-plans.json \
             examples/dsh/install-observer/agent-plans.md \
             feeds/dsh-plugin-compatibility.json \
             feeds/dsh-plugin-compatibility.md
+          # Fixed-commit repository bytes survive the next scheduled checkout.
+          # Agent-only retries may not have collected a checkpoint yet.
+          if [[ -f examples/dsh/environment-observer/recommendations.json.evidence.json ]]; then
+            git add -- examples/dsh/environment-observer/recommendations.json.evidence.json
+          fi
           if git diff --cached --quiet; then
             echo 'No observation point changed; no commit created.'
             exit 0
@@ -232,9 +269,11 @@ jobs:
       dsh_version: ${{ needs.observe.outputs.install_dsh_version }}
       case_id: ${{ matrix.id }}
       node_major: ${{ matrix.nodeMajor }}
+      profile_environment_json: ${{ toJSON(matrix.profileEnvironment) }}
       timeout_seconds: '180'
       allow_builds: ${{ matrix.allowedBuilds }}
       accept_bounded_unknown: true
+      artifact_sha256: ${{ matrix.expectedArtifactSha256 || '' }}
 
   # Dynamic reports are useful only if they become durable, comparable
   # evidence. This job accepts reports only when their exact case, plugin,
@@ -325,7 +364,11 @@ jobs:
             feeds/dsh-plugin-compatibility.json \
             feeds/dsh-plugin-compatibility.md \
             observations.json \
-            surface-ledger.json
+            surface-ledger.json \
+            examples/dsh/environment-observer/recommendations.json \
+            adapter-ledger.json \
+            examples/dsh/install-observer/agent-plans.json \
+            examples/dsh/surface-observer/agent-plans.json
 
       - name: Keep compatibility evidence artifacts
         if: always()
@@ -443,7 +486,10 @@ jobs:
             compatibility-ledger.json \
             surface-ledger.json \
             examples/dsh/install-observer/agent-plans.json \
-            examples/dsh/surface-observer/agent-plans.json | tee "$RUNNER_TEMP/upstream-radar-surface-plan.json"
+            examples/dsh/surface-observer/agent-plans.json \
+            examples/dsh/install-observer/targets.json \
+            observations.json \
+            examples/dsh/environment-observer/recommendations.json | tee "$RUNNER_TEMP/upstream-radar-surface-plan.json"
           node --input-type=module <<'NODE' >> "$GITHUB_STEP_SUMMARY"
           import { readFileSync } from 'node:fs'
           const plan = JSON.parse(readFileSync(process.env.RUNNER_TEMP + '/upstream-radar-surface-plan.json', 'utf8'))
@@ -496,6 +542,8 @@ jobs:
       artifact_sha256: ${{ matrix.artifactSha256 }}
       allow_builds: ${{ matrix.allowedBuilds }}
       node_major: ${{ matrix.nodeMajor }}
+      profile_environment_json: ${{ toJSON(matrix.profileEnvironment) }}
+      startup_configuration_json: ${{ matrix.startupConfiguration && toJSON(matrix.startupConfiguration) || '' }}
       timeout_seconds: '300'
 
   reconcile-surface-observations:
@@ -565,7 +613,11 @@ jobs:
             feeds/dsh-plugin-compatibility.json \
             feeds/dsh-plugin-compatibility.md \
             observations.json \
-            surface-ledger.json
+            surface-ledger.json \
+            examples/dsh/environment-observer/recommendations.json \
+            adapter-ledger.json \
+            examples/dsh/install-observer/agent-plans.json \
+            examples/dsh/surface-observer/agent-plans.json
       - name: Keep execution-plane evidence artifacts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -610,17 +662,171 @@ jobs:
           echo 'Incomplete cells remain unsatisfied and will be selected by the next scheduled run.'
           exit 1
 
-  # Keep a partial source outage or failed explicit Agent retry visible without
+  plan-adapter-observations:
+    needs: [observe, reconcile-install-observations]
+    if: always() && needs.observe.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      run: ${{ steps.adapter-plan.outputs.run }}
+      matrix: ${{ steps.adapter-plan.outputs.matrix }}
+      blocked: ${{ steps.adapter-plan.outputs.blocked }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.3.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Build the checked-out Radar
+        run: |
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm run build
+      - name: Plan independent author SDK and ACP observations
+        id: adapter-plan
+        run: |
+          node scripts/write-dsh-adapter-plan.mjs examples/dsh/install-observer/targets.json \
+            observations.json examples/dsh/environment-observer/recommendations.json \
+            compatibility-ledger.json adapter-ledger.json examples/dsh/install-observer/agent-plans.json \
+            | tee "$RUNNER_TEMP/adapter-plan.json"
+      # Downstream execution cannot start until its complete expected matrix
+      # has been uploaded, including when no adapter implementation is available.
+      - name: Preserve the adapter plan before dispatch
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: upstream-radar-adapter-plan-${{ github.run_id }}
+          path: ${{ runner.temp }}/adapter-plan.json
+          if-no-files-found: error
+          retention-days: 7
+
+  adapter-observation:
+    needs: plan-adapter-observations
+    if: always() && needs.plan-adapter-observations.result == 'success' && needs.plan-adapter-observations.outputs.run == 'true'
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan-adapter-observations.outputs.matrix) }}
+    permissions:
+      contents: read
+    uses: ./.github/workflows/observe-dsh-plugin-adapter.yml
+    with:
+      case_json: ${{ toJSON(matrix) }}
+
+  reconcile-adapter-observations:
+    needs: [plan-adapter-observations, adapter-observation, reconcile-surface-observations]
+    if: always() && needs.plan-adapter-observations.result == 'success' && needs.plan-adapter-observations.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.3.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Build the checked-out Radar
+        run: |
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm run build
+      - name: Materialize the exact scheduled adapter matrix
+        env:
+          RADAR_ADAPTER_MATRIX: ${{ needs.plan-adapter-observations.outputs.matrix }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFile } from 'node:fs/promises'
+          import { join } from 'node:path'
+          const input = process.env.RADAR_ADAPTER_MATRIX ?? ''
+          if (Buffer.byteLength(input) > 1024 * 1024) throw new Error('adapter matrix exceeds its byte bound')
+          await writeFile(join(process.env.RUNNER_TEMP, 'adapter-matrix.json'), input, { flag: 'wx', mode: 0o600 })
+          NODE
+      - name: Download this run's isolated adapter reports
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: upstream-radar-adapter-case-*-${{ github.run_id }}
+          path: ${{ runner.temp }}/adapter-reports
+      - name: Reconcile exact adapter observations
+        id: adapter-ledger
+        continue-on-error: true
+        run: |
+          node scripts/merge-dsh-adapter-ledger.mjs adapter-ledger.json \
+            "$RUNNER_TEMP/adapter-matrix.json" "$RUNNER_TEMP/adapter-reports" "$RUNNER_TEMP/adapter-summary.json"
+      - name: Refresh unified directory evidence after adapter reconciliation
+        if: always()
+        run: |
+          node scripts/write-dsh-directory-feed.mjs \
+            examples/dsh/awesome-observer/cohort.json \
+            examples/dsh/install-observer/targets.json \
+            compatibility-ledger.json \
+            feeds/dsh-plugin-compatibility.json \
+            feeds/dsh-plugin-compatibility.md \
+            observations.json \
+            surface-ledger.json \
+            examples/dsh/environment-observer/recommendations.json \
+            adapter-ledger.json \
+            examples/dsh/install-observer/agent-plans.json \
+            examples/dsh/surface-observer/agent-plans.json
+      - name: Preserve the reconciled adapter evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: upstream-radar-adapter-ledger-${{ github.run_id }}
+          path: |
+            adapter-ledger.json
+            feeds/dsh-plugin-compatibility.json
+            feeds/dsh-plugin-compatibility.md
+            ${{ runner.temp }}/adapter-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Persist accepted adapter evidence before reporting missing jobs
+        if: always()
+        run: |
+          set -euo pipefail
+          if [[ ! -f adapter-ledger.json ]]; then exit 0; fi
+          git config user.name 'upstream-radar[bot]'
+          git config user.email 'upstream-radar[bot]@users.noreply.github.com'
+          git add -- adapter-ledger.json feeds/dsh-plugin-compatibility.json feeds/dsh-plugin-compatibility.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'chore: update independent DSH adapter observations [skip ci]'
+          git pull --rebase origin "${{ github.event.repository.default_branch }}"
+          git push
+      - name: Fail after preserving incomplete adapter reconciliation
+        if: always() && steps.adapter-ledger.outcome == 'failure'
+        run: |
+          echo 'Missing or rejected adapter reports remain uncollected and will be planned again.'
+          exit 1
+
+  # Keep partial source outages and failed repository/build reviews visible without
   # letting it discard successful work from the same observer cycle.
   observer-final-health:
-    needs: [observe, install-observation, reconcile-install-observations, plan-surface-observations, surface-observation, reconcile-surface-observations]
-    if: always() && needs.observe.outputs.observer_exit != '' && needs.observe.outputs.observer_exit != '0'
+    needs: [observe, install-observation, reconcile-install-observations, plan-surface-observations, surface-observation, reconcile-surface-observations, plan-adapter-observations, adapter-observation, reconcile-adapter-observations]
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
       - name: Surface the deferred observer failure after downstream work
         env:
           OBSERVER_EXIT: ${{ needs.observe.outputs.observer_exit }}
+          ENVIRONMENT_REVIEW_OUTCOME: ${{ needs.observe.outputs.environment_review_outcome }}
+          BUILD_REVIEW_OUTCOME: ${{ needs.observe.outputs.build_review_outcome }}
         run: |
-          echo "The observer returned exit code ${OBSERVER_EXIT}; successful source observations, Agent conclusions, and isolated retests were still persisted."
-          exit 1
+          if [[ "$OBSERVER_EXIT" != '' && "$OBSERVER_EXIT" != '0' ]] || \
+             [[ "$ENVIRONMENT_REVIEW_OUTCOME" == 'failure' || "$BUILD_REVIEW_OUTCOME" == 'failure' ]]; then
+            echo "Incomplete observer cycle: source exit=${OBSERVER_EXIT}; repository review=${ENVIRONMENT_REVIEW_OUTCOME}; build review=${BUILD_REVIEW_OUTCOME}. Successful partial observations were preserved."
+            exit 1
+          fi

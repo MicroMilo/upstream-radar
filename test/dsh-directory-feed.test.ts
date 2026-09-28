@@ -6,9 +6,31 @@ import {
   buildDshDirectoryCompatibilityFeed,
   renderDshDirectoryCompatibilityFeed,
 } from '../src/dsh-directory-feed.js'
-import { DSH_COMPATIBILITY_LEDGER_SCHEMA, type DshCompatibilityLedgerEntry } from '../src/dsh-compatibility-ledger.js'
-import { DSH_INSTALL_TARGETS_SCHEMA } from '../src/dsh-install-plan.js'
-import { DSH_SURFACE_LEDGER_SCHEMA, type DshSurfaceLedger } from '../src/dsh-surface.js'
+import { DSH_COMPATIBILITY_LEDGER_SCHEMA, emptyDshCompatibilityLedger, type DshCompatibilityLedgerEntry } from '../src/dsh-compatibility-ledger.js'
+import { DSH_INSTALL_TARGETS_SCHEMA, buildDshInstallPlan } from '../src/dsh-install-plan.js'
+import { DSH_SURFACE_LEDGER_SCHEMA, DSH_SURFACE_TARGETS_SCHEMA, buildDshSurfacePlan, emptyDshSurfaceLedger,
+  createDshSurfaceSourceFingerprint, type DshSurfaceLedger } from '../src/dsh-surface.js'
+import {
+  createDshEnvironmentRecommendationInputFingerprint,
+  DSH_ENVIRONMENT_REVIEW_CONTRACT,
+  selectDshEnvironmentRecommendationCandidates,
+  applyDshEnvironmentRecommendations,
+} from '../src/dsh-environment-recommendation.js'
+
+function bindFixtureSources(entries: DshCompatibilityLedgerEntry[], targets: unknown, observations: unknown, recommendations: unknown,
+  architecture: 'x64' | 'arm64' = 'x64') {
+  const desired = buildDshInstallPlan(applyDshEnvironmentRecommendations(targets, observations, recommendations), observations,
+    { changes: [] }, emptyDshCompatibilityLedger(), new Date('2026-08-23T01:00:00.000Z'), new Set(), { platform: 'linux', architecture })
+  for (const entry of entries) {
+    const cell = desired.matrix.include.find(cell => cell.id === entry.caseId)
+    if (cell) Object.assign(entry, { staticFingerprint: cell.staticFingerprint, contractFingerprint: cell.contractFingerprint })
+  }
+}
+
+it('reconstructs current surface coverage using the source case Node major, not a one-size-fits-all pnpm', async () => {
+  const source = await readFile(new URL('../../src/dsh-directory-feed.ts', import.meta.url), 'utf8')
+  assert.match(source, /selectDshProfileEnvironment\(recommendation\?\.authorEnvironment, surface\.profile, entry\.runtime\.nodeMajor\)/)
+})
 
 function ledgerEntry(targetId: string, result: DshCompatibilityLedgerEntry['result']): DshCompatibilityLedgerEntry {
   return {
@@ -114,7 +136,7 @@ function surfaceLedger(
       plane: 'web',
       profile: 'web',
       runtimeId: sourceTargetId,
-      sourceFingerprint: `sha256:${'d'.repeat(64)}`,
+      sourceFingerprint: createDshSurfaceSourceFingerprint(ledgerEntry(sourceTargetId, 'compatible')),
       contractFingerprint: `sha256:${'e'.repeat(64)}`,
       observedAt: '2026-08-23T00:30:00.000Z',
       runtime: {
@@ -162,6 +184,11 @@ function surfaceLedger(
 }
 
 describe('DSH directory compatibility feed', () => {
+  it('rejects malformed surface build decisions even when there are no current surface cells', () => {
+    const input = { ...fixture(), surfaceBuildPlans: {}, generatedAt: '2026-08-23T01:00:00.000Z' }
+    assert.throws(() => buildDshDirectoryCompatibilityFeed(input), /schema/)
+  })
+
   it('publishes exact evidence without turning coverage gaps into pass or fail', () => {
     const input = fixture()
     const feed = buildDshDirectoryCompatibilityFeed({
@@ -203,6 +230,214 @@ describe('DSH directory compatibility feed', () => {
     })
   })
 
+  it('does not publish a global pass until every repository-recommended environment cell is covered', () => {
+    const input = fixture()
+    const installTargets = {
+      ...input.installTargets,
+      environmentRecommendationsRequired: true,
+      runtimeProfiles: [...input.installTargets.runtimeProfiles, { id: 'node24', nodeMajor: 24 }],
+    }
+    const observations = {
+      targets: {
+        ...input.observations.targets,
+        'deepseek-harness': {
+          source: { repository: 'deepseek-ai/deepseek-harness', commit: 'd'.repeat(40), packagePath: 'package.json' },
+          manifest: { name: '@deepseek-ai/dsh', version: '0.1.1-rc.2', engines: { node: '>=22' } },
+          package: { name: '@deepseek-ai/dsh', version: '0.1.1-rc.2', distTag: 'next' },
+        },
+        clean: {
+          source: { repository: 'example/clean', commit: 'e'.repeat(40), packagePath: 'package.json' },
+          manifest: {
+            name: 'clean',
+            version: '1.0.0',
+            engines: { node: '>=22' },
+            dsh: { client: { platform: 'web' } },
+          },
+          package: { name: 'clean', version: '1.0.0', distTag: 'latest' },
+        },
+      },
+    }
+    const candidate = selectDshEnvironmentRecommendationCandidates(installTargets, observations)
+      .find(item => item.targetId === 'clean')!
+    const environmentRecommendations = {
+      schema: 'upstream-radar.dsh-environment-recommendations/v1alpha1',
+      updatedAt: '2026-08-23T00:45:00.000Z',
+      pendingTasks: [],
+      entries: [{
+        reviewContract: DSH_ENVIRONMENT_REVIEW_CONTRACT,
+        authorEnvironment: { packageManagers: [], overrides: [], workflows: [], dshVersions: [] },
+        targetId: candidate.targetId,
+        plugin: candidate.plugin,
+        dshVersion: candidate.dshVersion,
+        repository: candidate.repository,
+        sourceCommit: candidate.sourceCommit,
+        sourceFingerprint: candidate.sourceFingerprint,
+        inputFingerprint: createDshEnvironmentRecommendationInputFingerprint(candidate),
+        plannedAt: '2026-08-23T00:45:00.000Z',
+        model: 'deepseek-chat',
+        status: 'recommended',
+        preferredNodeMajor: 22,
+        nodeMajors: [22, 24],
+        executionProfiles: ['headless', 'web'],
+        summary: 'The repository supports both configured Node runtimes and declares a Web client.',
+        evidence: ['source-manifest'],
+      }],
+    }
+
+    bindFixtureSources(input.ledger.entries, installTargets, observations, environmentRecommendations)
+    const feed = buildDshDirectoryCompatibilityFeed({
+      ...input,
+      installTargets,
+      observations,
+      environmentRecommendations,
+      generatedAt: '2026-08-23T01:00:00.000Z',
+    })
+
+    const clean = feed.plugins.find(item => item.id === 'clean')!
+    assert.equal(clean.status, 'needs-review')
+    assert.equal(clean.environmentRecommendation?.status, 'current')
+    assert.deepEqual(clean.environmentRecommendation?.nodeMajors, [22, 24])
+    assert.deepEqual(clean.environmentRecommendation?.executionProfiles, ['headless', 'web'])
+    assert.deepEqual(clean.environmentRecommendation?.missingCells, [
+      'clean-node22:web',
+      'clean-node24:headless',
+      'clean-node24:web',
+    ])
+
+    const startupConfiguration = { scope: 'Web settings only; bridge stopped', environment: { DSH_CLEAN_DISABLED: '1' } }
+    const supplemental = surfaceLedger('clean', 'compatible', { caseId: 'clean-web-disabled', startupConfiguration,
+      sourceFingerprint: createDshSurfaceSourceFingerprint(input.ledger.entries.find(entry => entry.targetId === 'clean')!) })
+    const supplementalFeed = buildDshDirectoryCompatibilityFeed({ ...input, installTargets, observations,
+      environmentRecommendations, surfaceLedger: supplemental, generatedAt: '2026-08-23T01:00:00.000Z' })
+    const limited = supplementalFeed.plugins.find(item => item.id === 'clean')!
+    assert.deepEqual(limited.environmentRecommendation?.missingCells, clean.environmentRecommendation?.missingCells,
+      'a disabled-startup comparison must not cover the default Web requirement')
+    assert.deepEqual(Reflect.get(limited.cells.find(cell => cell.caseId === 'clean-web-disabled')!, 'startupConfiguration'), startupConfiguration)
+    assert.match(renderDshDirectoryCompatibilityFeed(supplementalFeed), /Web settings only; bridge stopped/)
+    assert.match(renderDshDirectoryCompatibilityFeed(supplementalFeed), /DSH_CLEAN_DISABLED=1/)
+
+    const defaultSurface = surfaceLedger('clean', 'compatible', {
+      sourceFingerprint: createDshSurfaceSourceFingerprint(input.ledger.entries.find(entry => entry.targetId === 'clean')!),
+    })
+    const desired = buildDshSurfacePlan({ schema: DSH_SURFACE_TARGETS_SCHEMA, surfaces: [{
+      id: 'clean-web', sourceCaseId: 'clean-node22', plane: 'web', profile: 'web', runtimeId: 'clean', reason: 'current fixture',
+    }] }, input.ledger, emptyDshSurfaceLedger(), new Date('2026-08-23T01:00:00.000Z')).matrix.include[0]!
+    defaultSurface.entries[0]!.contractFingerprint = desired.contractFingerprint
+    defaultSurface.entries[0]!.profileEnvironment = desired.profileEnvironment!
+    const currentSurfaceFeed = buildDshDirectoryCompatibilityFeed({ ...input, installTargets, observations, environmentRecommendations,
+      surfaceLedger: defaultSurface, generatedAt: '2026-08-23T01:00:00.000Z' })
+    assert.ok(!currentSurfaceFeed.plugins.find(item => item.id === 'clean')!.environmentRecommendation?.missingCells.includes('clean-node22:web'))
+    const webOnlyReview = structuredClone(environmentRecommendations)
+    webOnlyReview.entries[0]!.nodeMajors = [22]
+    webOnlyReview.entries[0]!.executionProfiles = ['web']
+    const failedNative = structuredClone(input.ledger)
+    failedNative.entries.find(entry => entry.targetId === 'clean')!.result = 'install-failed'
+    const webOnlySurface = structuredClone(defaultSurface)
+    webOnlySurface.entries[0]!.sourceFingerprint = createDshSurfaceSourceFingerprint(failedNative.entries.find(entry => entry.targetId === 'clean')!)
+    const independentWeb = buildDshSurfacePlan({ schema: DSH_SURFACE_TARGETS_SCHEMA, surfaces: [{
+      id: 'clean-web', sourceCaseId: 'clean-node22', plane: 'web', profile: 'web', runtimeId: 'clean', reason: 'author Web fixture',
+    }] }, failedNative, emptyDshSurfaceLedger(), new Date('2026-08-23T01:00:00.000Z')).matrix.include[0]!
+    webOnlySurface.entries[0]!.contractFingerprint = independentWeb.contractFingerprint
+    webOnlySurface.entries[0]!.profileEnvironment = independentWeb.profileEnvironment!
+    const webOnlyFeed = buildDshDirectoryCompatibilityFeed({ ...input, ledger: failedNative, installTargets, observations,
+      environmentRecommendations: webOnlyReview, surfaceLedger: webOnlySurface, generatedAt: '2026-08-23T01:00:00.000Z' })
+    const webOnly = webOnlyFeed.plugins.find(item => item.id === 'clean')!
+    assert.equal(webOnly.status, 'observed-compatible', 'the internal headless failure must not override a current author-intended Web pass')
+    assert.equal(webOnly.cells.find(cell => cell.executionPlane === 'headless')?.status, 'observed-incompatible')
+    assert.deepEqual(webOnly.environmentRecommendation?.missingCells, [])
+    const headlessOnlyReview = structuredClone(webOnlyReview)
+    headlessOnlyReview.entries[0]!.executionProfiles = ['headless', 'web']
+    const headlessOnlyFeed = buildDshDirectoryCompatibilityFeed({ ...input, ledger: failedNative, installTargets, observations,
+      environmentRecommendations: headlessOnlyReview, surfaceLedger: webOnlySurface, generatedAt: '2026-08-23T01:00:00.000Z' })
+    const headlessOnly = headlessOnlyFeed.plugins.find(item => item.id === 'clean')!
+    assert.equal(headlessOnly.status, 'observed-incompatible',
+      'a headless failure still decides status when headless is author-intended alongside Web')
+    defaultSurface.entries[0]!.contractFingerprint = `sha256:${'f'.repeat(64)}`
+    const staleCollectorFeed = buildDshDirectoryCompatibilityFeed({ ...input, installTargets, observations, environmentRecommendations,
+      surfaceLedger: defaultSurface, generatedAt: '2026-08-23T01:00:00.000Z' })
+    assert.ok(staleCollectorFeed.plugins.find(item => item.id === 'clean')!.environmentRecommendation?.missingCells.includes('clean-node22:web'),
+      'a source-bound old surface execution contract must not satisfy current Web coverage')
+    const surfaceBuildPlans = { schema: 'upstream-radar.dsh-surface-agent-plans/v1alpha1', updatedAt: '2026-08-23T00:40:00.000Z', entries: [{
+      caseId: 'clean-web', sourceCaseId: 'clean-node22', plugin: 'clean@1.0.0', dshVersion: '0.1.1-rc.2', nodeMajor: 22,
+      plane: 'web', profile: 'web', result: 'environment-unsupported', observedRequiredBuilds: ['node-pty'], approvedBuilds: ['node-pty'],
+      sourceFingerprint: defaultSurface.entries[0]!.sourceFingerprint, artifactSha256: 'c'.repeat(64),
+      inputFingerprint: `sha256:${'d'.repeat(64)}`, plannedAt: '2026-08-23T00:40:00.000Z', model: 'fixture',
+      action: 'retry-surface', classification: 'build-approval', allowedBuilds: ['node-pty'], summary: 'Exact fixture build review.', evidence: ['fixture source'],
+    }] }
+    const approved = buildDshSurfacePlan({ schema: DSH_SURFACE_TARGETS_SCHEMA, surfaces: [{
+      id: 'clean-web', sourceCaseId: 'clean-node22', plane: 'web', profile: 'web', runtimeId: 'clean', reason: 'reviewed fixture',
+    }] }, input.ledger, emptyDshSurfaceLedger(), new Date('2026-08-23T01:00:00.000Z'), undefined, surfaceBuildPlans).matrix.include[0]!
+    defaultSurface.entries[0]!.contractFingerprint = approved.contractFingerprint
+    defaultSurface.entries[0]!.approvedDependencyBuilds = ['node-pty']
+    const reviewedInput = { ...input, installTargets, observations, environmentRecommendations, surfaceBuildPlans,
+      surfaceLedger: defaultSurface, generatedAt: '2026-08-23T01:00:00.000Z' }
+    const reviewedSurfaceFeed = buildDshDirectoryCompatibilityFeed(reviewedInput)
+    assert.ok(!reviewedSurfaceFeed.plugins.find(item => item.id === 'clean')!.environmentRecommendation?.missingCells.includes('clean-node22:web'),
+      'the feed and scheduled surface planner must use the same exact surface build decisions')
+    const armLedger = structuredClone(input.ledger)
+    for (const entry of armLedger.entries) entry.runtime.architecture = 'arm64'
+    bindFixtureSources(armLedger.entries, installTargets, observations, environmentRecommendations, 'arm64')
+    const armPlan = buildDshSurfacePlan({ schema: DSH_SURFACE_TARGETS_SCHEMA, surfaces: [{
+      id: 'clean-web', sourceCaseId: 'clean-node22', plane: 'web', profile: 'web', runtimeId: 'clean', reason: 'arm64 fixture',
+    }] }, armLedger, emptyDshSurfaceLedger(), new Date('2026-08-23T01:00:00.000Z')).matrix.include[0]!
+    const armSurface = surfaceLedger('clean', 'compatible', { contractFingerprint: armPlan.contractFingerprint,
+      sourceFingerprint: armPlan.sourceFingerprint, profileEnvironment: armPlan.profileEnvironment!,
+      runtime: { ...defaultSurface.entries[0]!.runtime, architecture: 'arm64' } })
+    const armFeed = buildDshDirectoryCompatibilityFeed({ ...input, installTargets, observations, environmentRecommendations,
+      ledger: armLedger, surfaceLedger: armSurface, generatedAt: '2026-08-23T01:00:00.000Z' })
+    assert.deepEqual(armFeed.plugins.find(item => item.id === 'clean')!.environmentRecommendation?.missingCells,
+      ['clean-node24:headless', 'clean-node24:web'], 'the feed must compare exact arm64 evidence against an arm64 execution contract')
+  })
+
+  it('keeps untested intended workflows in review even when every selected smoke cell is compatible', () => {
+    const input = fixture()
+    const targets = { ...input.installTargets, environmentRecommendationsRequired: true }
+    const observations = { targets: { ...input.observations.targets, clean: {
+      manifest: { name: 'clean', version: '1.0.0', engines: { node: '>=22' } },
+      package: { name: 'clean', version: '1.0.0', distTag: 'latest' },
+    } } }
+    const candidate = selectDshEnvironmentRecommendationCandidates(targets, observations)
+      .find(item => item.targetId === 'clean')!
+    const feedInput = {
+      ...input,
+      installTargets: targets,
+      observations,
+      generatedAt: '2026-08-23T01:00:00.000Z',
+      environmentRecommendations: {
+        schema: 'upstream-radar.dsh-environment-recommendations/v1alpha1',
+        updatedAt: '2026-08-23T00:45:00.000Z',
+        pendingTasks: [],
+        entries: [{
+          reviewContract: DSH_ENVIRONMENT_REVIEW_CONTRACT,
+          authorEnvironment: { packageManagers: [], overrides: [], workflows: [], dshVersions: [] },
+          targetId: candidate.targetId,
+          plugin: candidate.plugin,
+          dshVersion: candidate.dshVersion,
+          repository: candidate.repository,
+          sourceCommit: candidate.sourceCommit,
+          sourceFingerprint: candidate.sourceFingerprint,
+          inputFingerprint: createDshEnvironmentRecommendationInputFingerprint(candidate),
+          plannedAt: '2026-08-23T00:45:00.000Z',
+          model: 'review-fixture',
+          status: 'recommended',
+          preferredNodeMajor: 22,
+          nodeMajors: [22],
+          executionProfiles: ['headless'],
+          coverageGaps: ['Author SDK default profile has not been exercised.'],
+          summary: 'Only the headless smoke baseline was selected.',
+          evidence: ['source-manifest'],
+        }],
+      },
+    }
+    bindFixtureSources(input.ledger.entries, targets, observations, feedInput.environmentRecommendations)
+    const feed = buildDshDirectoryCompatibilityFeed(feedInput)
+    const clean = feed.plugins.find(item => item.id === 'clean')!
+    assert.equal(clean.cells[0]?.status, 'observed-compatible')
+    assert.deepEqual(clean.environmentRecommendation?.missingCells, [])
+    assert.deepEqual(clean.environmentRecommendation?.coverageGaps, ['Author SDK default profile has not been exercised.'])
+    assert.equal(clean.status, 'needs-review')
+  })
+
   it('does not inherit old green cells after the selected DSH host changes', () => {
     const input = fixture()
     const feed = buildDshDirectoryCompatibilityFeed({
@@ -231,7 +466,7 @@ describe('DSH directory compatibility feed', () => {
     })
   })
 
-  it('joins an exact Web cell and lets it cover only a Web-client headless gap', () => {
+  it('retains Node coverage gaps independently of a successful Web startup', () => {
     const input = fixture()
     const peerGap = input.ledger.entries.find(entry => entry.caseId === 'peer-gap-node22')
     assert.ok(peerGap)
@@ -251,14 +486,14 @@ describe('DSH directory compatibility feed', () => {
     }
     const feed = buildDshDirectoryCompatibilityFeed({
       ...input,
-      surfaceLedger: surfaceLedger('peer-gap'),
+      surfaceLedger: surfaceLedger('peer-gap', 'compatible', { sourceFingerprint: createDshSurfaceSourceFingerprint(peerGap) }),
       generatedAt: '2026-08-23T01:00:00.000Z',
     })
 
     const plugin = feed.plugins.find(item => item.id === 'peer-gap')
-    assert.equal(plugin?.status, 'observed-compatible')
+    assert.equal(plugin?.status, 'needs-review')
     assert.deepEqual(plugin?.cells.map(cell => cell.executionPlane), ['headless', 'web'])
-    assert.deepEqual(plugin?.cells[0]?.coveredBy, ['peer-gap-web'])
+    assert.equal(plugin?.cells[0]?.coveredBy, undefined)
     assert.equal(plugin?.cells[1]?.sourceCaseId, 'peer-gap-node22')
     assert.equal(plugin?.cells[1]?.evidenceSource, 'surface-ledger')
     assert.deepEqual(feed.boundary.executionPlanes, ['headless', 'web'])
@@ -299,7 +534,7 @@ describe('DSH directory compatibility feed', () => {
     }
     const feed = buildDshDirectoryCompatibilityFeed({
       ...input,
-      surfaceLedger: surfaceLedger('peer-gap'),
+      surfaceLedger: surfaceLedger('peer-gap', 'compatible', { sourceFingerprint: createDshSurfaceSourceFingerprint(peerGap) }),
       generatedAt: '2026-08-23T01:00:00.000Z',
     })
 
@@ -322,6 +557,14 @@ describe('DSH directory compatibility feed', () => {
     const plugin = feed.plugins.find(item => item.id === 'peer-gap')
     assert.equal(plugin?.status, 'needs-review')
     assert.deepEqual(plugin?.cells.map(cell => cell.executionPlane), ['headless'])
+  })
+
+  it('does not reuse a same-artifact surface after the source graph fingerprint changed', () => {
+    const input = fixture()
+    const feed = buildDshDirectoryCompatibilityFeed({ ...input,
+      surfaceLedger: surfaceLedger('peer-gap', 'compatible', { sourceFingerprint: `sha256:${'9'.repeat(64)}` }),
+      generatedAt: '2026-08-23T01:00:00.000Z' })
+    assert.deepEqual(feed.plugins.find(item => item.id === 'peer-gap')?.cells.map(cell => cell.executionPlane), ['headless'])
   })
 
   it('lets an exact surface incompatibility override a green headless load', () => {
@@ -382,6 +625,9 @@ describe('DSH directory compatibility feed', () => {
     const ledger = JSON.parse(await readFile('compatibility-ledger.json', 'utf8')) as unknown
     const surfaceLedger = JSON.parse(await readFile('surface-ledger.json', 'utf8')) as unknown
     const observations = JSON.parse(await readFile('observations.json', 'utf8')) as unknown
+    const environmentRecommendations = JSON.parse(
+      await readFile('examples/dsh/environment-observer/recommendations.json', 'utf8'),
+    ) as unknown
     const checkedInFeed = JSON.parse(await readFile('feeds/dsh-plugin-compatibility.json', 'utf8')) as { generatedAt: string }
     const feed = buildDshDirectoryCompatibilityFeed({
       cohort,
@@ -389,6 +635,7 @@ describe('DSH directory compatibility feed', () => {
       ledger,
       surfaceLedger,
       observations,
+      environmentRecommendations,
       generatedAt: checkedInFeed.generatedAt,
     })
 

@@ -1,0 +1,68 @@
+name: Observe an exact DSH author adapter
+
+on:
+  workflow_call:
+    inputs:
+      case_json:
+        description: Exact SDK or ACP case produced by the repository-aware planner
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      case_json:
+        description: Exact SDK or ACP case produced by the repository-aware planner
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.3.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Build the checked-out Radar
+        run: |
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm run build
+      - name: Observe the exact author adapter
+        id: adapter-case
+        env:
+          RADAR_CASE_JSON: ${{ inputs.case_json }}
+          RADAR_DOCKER_CONTEXT: default
+        run: |
+          node --input-type=module <<'NODE'
+          import { appendFile, writeFile } from 'node:fs/promises'
+          import { join } from 'node:path'
+          import { parseDshAdapterExpectedCase } from './dist/src/dsh-adapter.js'
+          const input = process.env.RADAR_CASE_JSON ?? ''
+          if (Buffer.byteLength(input) > 64 * 1024) throw new Error('adapter case exceeds its byte bound')
+          const cell = parseDshAdapterExpectedCase(JSON.parse(input))
+          if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `case_id=${cell.id}\n`, 'utf8')
+          await writeFile(join(process.env.RUNNER_TEMP, 'adapter-case.json'), JSON.stringify(cell), { flag: 'wx', mode: 0o600 })
+          await writeFile(join(process.env.RUNNER_TEMP, 'adapter-executor.json'), JSON.stringify({
+            dockerContext: process.env.RADAR_DOCKER_CONTEXT, architecture: cell.architecture, timeoutSeconds: 180, maxTasks: 1,
+          }), { flag: 'wx', mode: 0o600 })
+          NODE
+          node scripts/run-dsh-adapter-case.mjs "$RUNNER_TEMP/adapter-case.json" \
+            "$RUNNER_TEMP/adapter-report" "$RUNNER_TEMP/adapter-executor.json" --execute
+      - name: Preserve adapter evidence even after incomplete execution
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: upstream-radar-adapter-case-${{ steps.adapter-case.outputs.case_id || 'invalid-case' }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/adapter-report
+          if-no-files-found: warn
+          retention-days: 7

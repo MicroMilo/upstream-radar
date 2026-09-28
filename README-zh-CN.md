@@ -38,16 +38,17 @@ Upstream Radar 把精确的插件发布物、DSH 宿主和运行环境绑定在�
 
 ## Radar 做什么
 
-1. **建立统一兼容记录（IR）。** 对齐 npm 发布物、源码 commit、DSH 宿主、运行环境/profile、依赖路径和漏洞情报。
-2. **推导运行环境。** Agent 读取作者声明的安装说明和失败证据，只输出边界明确的安装计划。
-3. **验证不同执行平面。** 全新、无密钥的 runner 分别验证 headless 加载、Chromium Web 启动或真实 PTY TUI 交互。
+1. **绑定精确的执行前证据。** 对齐 npm 发布物、源码 commit、DSH 宿主、manifest 和受限仓库说明。
+2. **先推导作者期望的环境，再检查执行器能力。** Agent 在有界输出协议内报告仓库明确推荐或测试的全部 Node 大版本，并推导 headless/Web/TUI profile；Radar 随后动态生成可执行环境，把暂时无法执行的版本明确记为覆盖缺口。确定性规则会拒绝违反 `engines.node`、引用不存在证据或漏掉已声明 Web 客户端的结论。推荐缺失时阻塞测试格子，不再默认回退。
+3. **建立统一兼容记录（IR）并验证执行平面。** 全新、无密钥的 runner 分别验证 headless 加载、Chromium Web 启动或真实 PTY TUI 交互。
 4. **让结果持续有效。** DSH/插件/依赖变化以及证据过期都会触发复测；确认的问题变成可修报告，干净复测后完成闭环。
 
 ```mermaid
 flowchart TB
-  Trigger["定时运行 / 上游变化 / 证据过期"] --> IR["精确 IR：插件字节 ↔ DSH ↔ 运行环境 ↔ 依赖"]
-  IR --> Agent["Agent 推导受限安装计划"]
-  Agent --> VM{"全新、无密钥的 GitHub VM"}
+  Trigger["定时运行 / 上游变化 / 证据过期"] --> Intent["受限仓库证据：manifest + 文档 + CI/运行环境文件"]
+  Intent --> Agent["Agent 推导仓库推荐的 Node/profile 测试格子"]
+  Agent --> IR["精确 IR：插件字节 ↔ DSH ↔ Node/profile ↔ 依赖"]
+  IR --> VM{"全新、无密钥的 GitHub VM"}
   VM --> Headless["Headless：安装 → 注册 → 加载"]
   VM --> Web["Web：Chromium → 启动交接 → 客户端包"]
   VM --> TUI["TUI：PTY → 画面 → 输入 → 声明的退出方式"]
@@ -61,7 +62,7 @@ flowchart TB
   Hold --> Trigger
 ```
 
-Agent 可以选择作者声明的构建包、profile 设置和下一次受限重试。精确指纹决定一份报告能填入
+Agent 可以推荐有证据支持的 Node/profile 测试格子，并选择作者声明的构建包、profile 设置和下一次受限重试。环境推荐始终是独立的兼容性信号，只有隔离执行才能产生结果。精确指纹决定一份报告能填入
 哪个测试格子；真正的结果由一次性虚拟机执行得出，而不是模型判断。缺失证据永远不能变成通过。
 
 ## 试试一个真实检查
@@ -101,13 +102,11 @@ npx --yes upstream-radar@0.45.0 scan \
 
 ## 来自真实生态的结果
 
-当前的[100 插件兼容性 feed](feeds/dsh-plugin-compatibility.md)记录了 **87 个已观测兼容、
-9 个待复核、0 个已复现不兼容和 4 个尚未观测**。执行平面账本包含 22 个精确 Web/TUI
-格子；目前 22 个都已在隔离 GitHub VM 中通过。
-
-剩余 9 个待复核格子不是被藏起来的失败：其中 7 个已有绿色 Web 证明，但仍保留独立的
-headless 宿主/peer 契约证据；另 2 个仍声明旧 DSH 宿主包范围，并已有维护者 Issue 跟踪。
-Radar 会保留这些事实，但不会把能正常运行的浏览器插件说成坏了。
+当前的[100 插件兼容性 feed](feeds/dsh-plugin-compatibility.md)记录了 **0 个全局已观测兼容、
+96 个待复核、0 个已复现不兼容和 4 个尚未观测**。这是一次有意的迁移状态：原有账本仍
+保留 87 个此前为绿色的汇总结果和 22 个已经通过的精确 Web/TUI 格子，但新的仓库环境推荐
+账本尚未填充。历史绿色证据继续保留；只有推荐的 Node/profile 格子全部补齐后，才会重新
+汇总为全局通过。
 
 首批非 headless 测试已经在 GitHub 托管 VM 中跑通：
 

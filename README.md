@@ -42,11 +42,17 @@ repositories are checked separately.
 
 ## What Radar does
 
-1. **Build one exact compatibility record (IR).** Align the npm artifact,
-   source commit, DSH host, runtime/profile, dependency paths, and advisories.
-2. **Derive the environment.** An Agent reads declared installation guidance
-   and failed evidence, then emits only a bounded install plan.
-3. **Prove each execution plane.** Fresh, secret-free runners exercise headless
+1. **Bind exact pre-execution evidence.** Align the npm artifact, source commit,
+   DSH host, manifests, and bounded repository guidance.
+2. **Derive the intended environment before checking executor availability.**
+   An Agent reports every repository-evidenced Node major (within the bounded
+   contract) and the evidenced headless/Web/TUI profiles. Radar then
+   materializes supported runtimes and records unsupported recommendations as
+   coverage gaps. Deterministic rules
+   reject engine conflicts, invented evidence, and omission of a declared Web
+   client; a missing recommendation blocks the cell instead of falling back.
+3. **Build the exact compatibility record (IR) and prove each plane.** Fresh,
+   secret-free runners exercise headless
    load, Chromium Web boot, or a real PTY TUI interaction.
 4. **Keep the result alive.** DSH/plugin/dependency changes and evidence expiry
    trigger retests; confirmed failures become fixable reports and clean retests
@@ -54,9 +60,10 @@ repositories are checked separately.
 
 ```mermaid
 flowchart TB
-  Trigger["Schedule / upstream change / evidence expiry"] --> IR["Exact IR: plugin bytes ↔ DSH ↔ runtime ↔ dependencies"]
-  IR --> Agent["Agent derives a bounded install plan"]
-  Agent --> VM{"Fresh secret-free GitHub VM"}
+  Trigger["Schedule / upstream change / evidence expiry"] --> Intent["Bounded repository evidence: manifests + docs + CI/runtime files"]
+  Intent --> Agent["Agent infers repository-recommended Node/profile cells"]
+  Agent --> IR["Exact IR: plugin bytes ↔ DSH ↔ runtime/profile ↔ dependencies"]
+  IR --> VM{"Fresh secret-free GitHub VM"}
   VM --> Headless["Headless: install → register → load"]
   VM --> Web["Web: Chromium → boot handoff → client bundle"]
   VM --> TUI["TUI: PTY → frame → input → declared shutdown"]
@@ -70,8 +77,10 @@ flowchart TB
   Hold --> Trigger
 ```
 
-The Agent may choose declared build packages, profile setup, and the next bounded
-retry. Exact fingerprints decide which cell a report can satisfy, and the
+The Agent may recommend evidenced runtime/profile cells, choose declared build
+packages, profile setup, and the next bounded retry. Environment recommendations
+remain separate compatibility signals; isolated execution establishes results.
+Exact fingerprints decide which cell a report can satisfy, and the
 disposable runner—not the model—establishes the result. Missing evidence can
 never become a pass.
 
@@ -123,14 +132,12 @@ model secrets.
 ## Evidence from the ecosystem
 
 The current [100-plugin compatibility feed](feeds/dsh-plugin-compatibility.md)
-records **87 observed compatible, 9 needs review, 0 reproduced incompatible,
-and 4 not observed**. Its execution-plane ledger contains 22 exact Web/TUI
-cells; all 22 now pass in isolated GitHub VMs.
-
-The nine review cells are not hidden failures. Seven have a green Web proof but
-retain separate headless host/peer-contract evidence; two retain known old DSH
-host-package ranges tracked by existing maintainer issues. Radar keeps those
-facts visible without calling a working browser plugin broken.
+records **0 globally observed compatible, 96 needs review, 0 reproduced
+incompatible, and 4 not observed**. This is an intentional migration state:
+the existing ledgers still retain 87 previously green aggregate results and 22
+passing exact Web/TUI cells, but the new repository-environment recommendation
+ledger has not been populated yet. Historical green cells remain visible and
+do not become global passes until every recommended Node/profile cell exists.
 
 The first non-headless cells now run in GitHub-hosted VMs:
 

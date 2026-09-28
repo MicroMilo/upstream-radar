@@ -225,13 +225,14 @@ async function verifyCandidate(item, input) {
     ? npmManifest.engines
     : {}
   const nodeEngine = engines.node === undefined ? undefined : string(engines.node, `${item.npm} engines.node`, 512)
-  let runtimeProfiles
   if (nodeEngine !== undefined) {
-    const node22 = satisfiesSemverRange('22.23.2', nodeEngine)
-    const node24 = satisfiesSemverRange('24.11.1', nodeEngine)
-    if (node22 === undefined || node24 === undefined) throw new Error('Node engine range cannot be evaluated safely')
-    if (!node22 && !node24) throw new Error('Node engine excludes both maintained runtimes')
-    if (!node22 && node24) runtimeProfiles = ['node24']
+    const matches = Array.from({ length: 25 }, (_, index) => index + 16).map(nodeMajor => ({
+      nodeMajor,
+      matches: satisfiesSemverRange(`${nodeMajor}.999.999`, nodeEngine),
+    }))
+    if (matches.some(item => item.matches === undefined)) throw new Error('Node engine range cannot be evaluated safely')
+    const supported = matches.filter(item => item.matches === true)
+    if (supported.length === 0) throw new Error('Node engine excludes every executable observation runtime (Node 16-40)')
   }
   const scripts = typeof npmManifest.scripts === 'object' && npmManifest.scripts !== null && !Array.isArray(npmManifest.scripts)
     ? npmManifest.scripts
@@ -256,7 +257,6 @@ async function verifyCandidate(item, input) {
       nodeEngine: nodeEngine ?? null,
       lifecycleScripts,
     },
-    ...(runtimeProfiles === undefined ? {} : { runtimeProfiles }),
   }
 }
 
@@ -330,7 +330,11 @@ while (additions.length < needed && cursor < ranked.length) {
     if ((ownerCounts.get(owner) ?? 0) >= MAX_OWNER_ENTRIES) continue
     batch.push(item)
   }
-  const verified = await Promise.allSettled(batch.map(item => verifyCandidate(item, { token, catalogRoot, usedIds })))
+  const verified = await Promise.allSettled(batch.map(item => verifyCandidate(item, {
+    token,
+    catalogRoot,
+    usedIds,
+  })))
   for (const [index, result] of verified.entries()) {
     const item = batch[index]
     if (result.status === 'rejected') {

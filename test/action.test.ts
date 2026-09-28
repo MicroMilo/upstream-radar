@@ -27,6 +27,177 @@ async function runActionInputDetector(files: string[], config = 'upstream-radar.
 }
 
 describe('reusable GitHub Action', () => {
+  it('requires a second unchanged real batch after the active agent case closes', async () => {
+    const workflow = await readFile('.github/workflows/dsh-active-agent-mvp.yml', 'utf8')
+    const rerun = workflow.split('      - name: Re-run the same case without changing evidence')[1]
+      ?.split('      - name: Verify the agent reached every intended runnable combination')[0]
+    assert.ok(rerun)
+    assert.match(rerun, /run-dsh-compatibility-batch\.mjs/)
+    assert.match(rerun, /active-output\/reuse\/state\.json/)
+    assert.doesNotMatch(rerun, /secrets\.|CODEX_ACCESS_TOKEN|CODEX_API_KEY/)
+    assert.match(workflow, /reuseSummary\.executed!==0/)
+    assert.match(workflow, /reuseState\.executorIdentity!==state\.executorIdentity/)
+    assert.match(workflow, /reuseState\.nativeLedger/)
+  })
+  it('offers the full eight-plugin bounded MVP cohort as the manual active-agent default', async () => {
+    const workflow = await readFile('.github/workflows/dsh-active-agent-mvp.yml', 'utf8')
+    const targets = JSON.parse((workflow.match(/target_ids_json:[\s\S]*?default: '(\[[^\n']+\])'/) ?? [])[1] ?? 'null')
+    const cohort = JSON.parse(await readFile('examples/dsh/rebuild-batch/install-targets.json', 'utf8'))
+    assert.deepEqual([...targets].sort(), cohort.plugins.map((plugin: { id: string }) => plugin.id).sort())
+    assert.match(workflow, /dshChannel: \[next, alpha\]/)
+  })
+  it('reports repository or build review failure after downstream work without hiding a successful partial observation', async () => {
+    const workflow = await readFile(new URL('../../.github/workflows/upstream-observer.yml', import.meta.url), 'utf8')
+    const health = workflow.slice(workflow.indexOf('\n  observer-final-health:'))
+    assert.match(health, /if: always\(\)\n/)
+    assert.match(workflow, /environment_review_outcome: \$\{\{ steps\.environment-recommendations\.outcome \}\}/)
+    assert.match(workflow, /build_review_outcome: \$\{\{ steps\.headless-agent-plan\.outcome \}\}/)
+    const command = health.split('        run: |\n')[1]!.split('\n').map(line => line.replace(/^          /, '')).join('\n')
+    for (const [observer, environment, builds, shouldFail] of [
+      ['0', 'success', 'success', false], ['', 'skipped', 'skipped', false],
+      ['2', 'success', 'success', true], ['0', 'failure', 'success', true], ['0', 'success', 'failure', true],
+    ] as const) {
+      const result = execFileAsync('bash', ['-c', command], { env: { ...process.env,
+        OBSERVER_EXIT: observer, ENVIRONMENT_REVIEW_OUTCOME: environment, BUILD_REVIEW_OUTCOME: builds } })
+      if (shouldFail) await assert.rejects(result, (error: unknown) => (error as { code?: number }).code === 1)
+      else await result
+    }
+  })
+  it('can exercise the same scheduled adapter workflow on a validation branch without publishing project state', async () => {
+    const workflow = await readFile('.github/workflows/dsh-rebuild-validation.yml', 'utf8')
+    assert.ok(workflow.includes('adapter_matrix_json:'), 'validation dispatch must accept an exact planner-produced adapter matrix')
+    const job = workflow.split('\n  adapter-case-validation:')[1]
+    assert.ok(job)
+    assert.ok(job.includes('uses: ./.github/workflows/observe-dsh-plugin-adapter.yml'))
+    assert.ok(job.includes('case_json: ${{ toJSON(matrix) }}'))
+    assert.doesNotMatch(job, /contents: write|secrets:|git push/)
+  })
+
+  it('routes the scheduled observer through independent adapter planning, secret-free jobs and exact result reconciliation', async () => {
+    const workflow = await readFile('.github/workflows/upstream-observer.yml', 'utf8')
+    assert.match(workflow, /plan-adapter-observations:[\s\S]*write-dsh-adapter-plan\.mjs/)
+    const job = workflow.split('\n  adapter-observation:')[1]?.split('\n  reconcile-adapter-observations:')[0]
+    assert.ok(job)
+    assert.match(job, /uses: \.\/\.github\/workflows\/observe-dsh-plugin-adapter.yml/)
+    assert.match(job, /case_json: \$\{\{ toJSON\(matrix\) \}\}/)
+    assert.doesNotMatch(job, /secrets:|secrets\./)
+    const reconcile = workflow.split('\n  reconcile-adapter-observations:')[1]?.split('\n  observer-final-health:')[0]
+    assert.ok(reconcile)
+    assert.match(reconcile, /merge-dsh-adapter-ledger\.mjs/)
+    assert.match(reconcile, /if: always\(\)/)
+    assert.match(reconcile, /git add -- adapter-ledger\.json/)
+    assert.match(workflow, /name: upstream-radar-adapter-plan-\$\{\{ github.run_id \}\}/)
+    assert.match(reconcile, /needs: \[plan-adapter-observations, adapter-observation, reconcile-surface-observations\]/)
+    const feedSteps = workflow.split('      - name:').filter(step => step.includes('node scripts/write-dsh-directory-feed.mjs'))
+    assert.equal(feedSteps.length, 4, 'every result path, including adapters, must refresh the same unified feed')
+    for (const step of feedSteps) assert.match(step, /adapter-ledger\.json\s*\\\s*examples\/dsh\/install-observer\/agent-plans\.json/,
+      'later native/surface refreshes must not erase adapter evidence or drop exact build decisions')
+    for (const step of feedSteps) assert.match(step, /examples\/dsh\/surface-observer\/agent-plans\.json/,
+      'directory coverage must bind the same Web/TUI build decisions as the scheduled surface planner')
+  })
+
+  it('offers a real rebuild batch loop that reviews observed gates, retries, and verifies unchanged reuse without giving model secrets to execution steps', async () => {
+    const workflow = await readFile(fileURLToPath(new URL('../../.github/workflows/dsh-rebuild-validation.yml', import.meta.url)), 'utf8')
+    assert.match(workflow, /execute_batch:/)
+    const steps = workflow.split('      - name:')
+    const execution = steps.filter(step => step.includes('node scripts/run-dsh-compatibility-batch.mjs'))
+    assert.equal(execution.length, 6)
+    for (const step of execution) {
+      assert.match(step, /inputs.execute_batch/)
+      assert.doesNotMatch(step, /secrets\.|ISSUE_LOCATOR_LLM/)
+    }
+    const first = workflow.indexOf('Run the isolated batch against current repository intent')
+    const review = workflow.indexOf('Review build gates produced by this batch')
+    const retry = workflow.indexOf('Retry the batch with its own exact build decisions')
+    const refreshedReview = workflow.indexOf('Review refreshed host and surface build facts after retry')
+    const refreshedRetry = workflow.indexOf('Retry once more with refreshed exact host facts')
+    const unchanged = workflow.indexOf('Verify the completed batch does not execute unchanged cells')
+    assert.ok(first > 0 && review > first && retry > review && refreshedReview > retry
+      && refreshedRetry > refreshedReview && unchanged > refreshedRetry)
+    assert.match(workflow.slice(review, retry), /batch-output\/compatibility-ledger.json/)
+    assert.match(workflow, /summary.executed !== 0/)
+    assert.match(workflow, /summary.deferredTaskKeys.length/)
+    assert.match(workflow, /state.tasks.some\(task => task.status === 'running'\)/)
+    assert.match(workflow, /build-approval-required/)
+    assert.match(workflow, /independent adapter evidence is incomplete/)
+    assert.match(workflow, /entry\.plugin === 'dsh-feishu-bot@0\.19\.16'/)
+    assert.match(workflow, /kind === 'headless' && feishuHeadless/,
+      'the full-batch gate must demand the author-declared legacy headless adapter independently of native loading')
+    const directoryStep = steps.find(step => step.includes('Join this batch to the maintained catalog feed'))
+    assert.ok(directoryStep, 'the real batch must exercise the same unified feed command')
+    assert.match(directoryStep, /scripts\/write-dsh-directory-feed\.mjs/)
+    assert.match(directoryStep, /batch-output\/adapter-ledger\.json/)
+    assert.match(directoryStep, /validation-output\/build-plans\.json/)
+    assert.doesNotMatch(directoryStep, /secrets\.|ISSUE_LOCATOR_LLM|git push/)
+    const historical = workflow.indexOf('Collect an earlier real Context repository revision')
+    const forward = workflow.indexOf('Collect the forward Context repository update')
+    assert.ok(historical > unchanged && forward > historical)
+    assert.match(workflow, /33fd7ae6801d892ddbee7b76a964a4b2c6ff0416/)
+    assert.match(workflow, /verify-dsh-input-change\.mjs execution input-change-before/)
+    assert.match(workflow, /verify-dsh-input-change\.mjs execution input-change-after/)
+    assert.match(workflow, /verify-dsh-input-change\.mjs unchanged input-change-after/)
+    const replaySteps = steps.filter(step => /verify-dsh-input-change\.mjs/.test(step))
+    assert.equal(replaySteps.length, 6)
+    for (const step of replaySteps) assert.match(step, /if: \$\{\{ inputs.execute_batch && success\(\) \}\}/,
+      'a failed observation or review must stop subsequent replay execution')
+  })
+
+  it('reviews host build failures from the actual surface ledger before an isolated retry and retains the durable decisions across validation runs', async () => {
+    const workflow = await readFile(fileURLToPath(new URL('../../.github/workflows/dsh-rebuild-validation.yml', import.meta.url)), 'utf8')
+    const restore = await readFile(fileURLToPath(new URL('../../scripts/restore-dsh-review-checkpoint.mjs', import.meta.url)), 'utf8')
+    const first = workflow.indexOf('Run the isolated batch against current repository intent')
+    const review = workflow.indexOf('Review host and surface build failures produced by this batch')
+    const retry = workflow.indexOf('Retry the batch with its own exact build decisions')
+    assert.ok(first >= 0 && review > first && retry > review)
+    const step = workflow.slice(review, retry)
+    assert.match(step, /scripts\/plan-dsh-surface-agent\.mjs/)
+    assert.match(step, /batch-output\/surface-ledger\.json/)
+    assert.match(step, /validation-output\/surface-build-plans\.json/)
+    assert.match(step, /ISSUE_LOCATOR_LLM_API_KEY/)
+    assert.match(restore, /surface-build-plans\.json/)
+    const execution = workflow.split('      - name:').filter(item => item.includes('node scripts/run-dsh-compatibility-batch.mjs'))
+    for (const item of execution) assert.doesNotMatch(item, /ISSUE_LOCATOR_LLM|secrets\./)
+  })
+
+  it('runs Linux host rebuild boundary tests only inside a disposable restricted container', async () => {
+    const workflow = await readFile(fileURLToPath(new URL('../../.github/workflows/dsh-rebuild-validation.yml', import.meta.url)), 'utf8')
+    const step = workflow.split('      - name:').find(item => item.startsWith(' Verify host rebuild boundary in a disposable container'))
+    assert.ok(step)
+    assert.match(step, /docker build --target build/)
+    assert.match(step, /docker run --rm --read-only --network none/)
+    assert.match(step, /--user 10001:10001/)
+    assert.match(step, /--cap-drop ALL --security-opt no-new-privileges/)
+    assert.match(step, /--tmpfs \/tmp:rw,exec,nosuid,nodev,size=64m/)
+    assert.match(step, /UPSTREAM_RADAR_ISOLATED_RUNNER=1/)
+    assert.match(step, /dist\/test\/dsh-host-build-execution\.test\.js/)
+    assert.doesNotMatch(step, /secrets\.|ISSUE_LOCATOR_LLM|--mount|--volume/)
+  })
+
+  it('carries the selected profile environment from each matrix into the image and isolated probe', async () => {
+    const workflow = await readFile(fileURLToPath(new URL('../../.github/workflows/upstream-observer.yml', import.meta.url)), 'utf8')
+    assert.equal(workflow.match(/profile_environment_json: \$\{\{ toJSON\(matrix\.profileEnvironment\) \}\}/g)?.length, 2)
+    assert.match(workflow, /artifact_sha256: \$\{\{ matrix\.expectedArtifactSha256 \|\| '' \}\}/)
+    for (const kind of ['install', 'surface']) {
+      const observer = await readFile(fileURLToPath(new URL(`../../.github/workflows/observe-dsh-plugin-${kind}.yml`, import.meta.url)), 'utf8')
+      assert.equal(observer.match(/^      profile_environment_json:$/gm)?.length, 2, `${kind}: manual and reusable inputs`)
+      assert.match(observer, /RADAR_PROFILE_ENVIRONMENT: \$\{\{ inputs\.profile_environment_json \}\}/)
+      assert.match(observer, /--build-arg PNPM_VERSION="\$RADAR_PNPM_VERSION"/)
+      assert.match(observer, /--profile-environment-json "\$RADAR_PROFILE_ENVIRONMENT"/)
+      assert.doesNotMatch(observer, /run:.*\$\{\{ inputs\.profile_environment_json/)
+    }
+  })
+
+  it('forwards each supplemental startup configuration to the surface probe without changing default startup', async () => {
+    const workflow = await readFile(fileURLToPath(new URL('../../.github/workflows/upstream-observer.yml', import.meta.url)), 'utf8')
+    const observer = await readFile(fileURLToPath(new URL('../../.github/workflows/observe-dsh-plugin-surface.yml', import.meta.url)), 'utf8')
+    assert.equal(workflow.match(/startup_configuration_json: \$\{\{ matrix\.startupConfiguration && toJSON\(matrix\.startupConfiguration\) \|\| '' \}\}/g)?.length, 1)
+    assert.equal(observer.match(/^      startup_configuration_json:$/gm)?.length, 2, 'manual and reusable inputs')
+    assert.match(observer, /RADAR_STARTUP_CONFIGURATION: \$\{\{ inputs\.startup_configuration_json \}\}/)
+    assert.match(observer, /startup_args=\(\)\s+if \[\[ -n "\$RADAR_STARTUP_CONFIGURATION" \]\]; then\s+startup_args\+=\(--startup-configuration-json "\$RADAR_STARTUP_CONFIGURATION"\)/)
+    assert.match(observer, /"\$\{startup_args\[@\]\}"/)
+    assert.doesNotMatch(observer, /run:.*\$\{\{ inputs\.startup_configuration_json/)
+  })
+
   it('keeps the published Action thin, pinned, and frozen', async () => {
     const actionPath = fileURLToPath(new URL('../../action.yml', import.meta.url))
     const examplePath = fileURLToPath(new URL('../../examples/github-actions/upstream-radar.yml', import.meta.url))
@@ -167,7 +338,13 @@ describe('reusable GitHub Action', () => {
     assert.match(surfaceObserverDockerfile, /chromium/)
     assert.match(surfaceObserverDockerfile, /playwright-core@1\.62\.0/)
     assert.match(surfaceObserverDockerfile, /node-pty@1\.1\.0/)
+    for (const dockerfile of [installObserverDockerfile, surfaceObserverDockerfile]) {
+      assert.match(dockerfile, /FROM node:24-bookworm-slim AS build/)
+      assert.match(dockerfile, /FROM node:\$\{NODE_MAJOR\}-bookworm-slim AS runtime/)
+    }
     const observationPersistStep = checkedInObserverWorkflow.indexOf('name: Persist observation and Agent planning state')
+    const environmentRecommendationStep = checkedInObserverWorkflow.indexOf('name: Infer repository-recommended Node and execution profiles')
+    const installPlanStep = checkedInObserverWorkflow.indexOf('name: Reconcile the current DSH compatibility matrix')
     const initialCheckoutStep = checkedInObserverWorkflow.slice(
       checkedInObserverWorkflow.indexOf('name: Check out the observer and its targets'),
       checkedInObserverWorkflow.indexOf('name: Set up pnpm'),
@@ -180,6 +357,9 @@ describe('reusable GitHub Action', () => {
     const incompleteGate = checkedInObserverWorkflow.indexOf('name: Fail after persisting incomplete reconciliation')
     assert.ok(reconcileStep >= 0)
     assert.ok(observationPersistStep >= 0)
+    assert.ok(environmentRecommendationStep >= 0)
+    assert.ok(environmentRecommendationStep < installPlanStep)
+    assert.ok(installPlanStep < observationPersistStep)
     assert.match(initialCheckoutStep, /ref: \$\{\{ github\.event\.repository\.default_branch \}\}/)
     assert.ok(installObservationJob > observationPersistStep)
     assert.ok(observerHealthJob > incompleteGate)
@@ -195,10 +375,13 @@ describe('reusable GitHub Action', () => {
     assert.match(checkedInObserverWorkflow.slice(observerHealthJob), /needs\.observe\.outputs\.observer_exit/)
     assert.match(checkedInObserverWorkflow.slice(observerHealthJob), /exit 1/)
     const observationPersistence = checkedInObserverWorkflow.slice(observationPersistStep, installObservationJob)
-    assert.match(observationPersistence, /git diff --quiet -- observations\.json/)
+    assert.match(observationPersistence, /git diff --quiet -- \\\n\s+observations\.json \\\n\s+examples\/dsh\/environment-observer\/recommendations\.json/)
     assert.match(observationPersistence, /node scripts\/write-dsh-directory-feed\.mjs/)
     assert.match(observationPersistence, /feeds\/dsh-plugin-compatibility\.json/)
     assert.match(observationPersistence, /feeds\/dsh-plugin-compatibility\.md/)
+    assert.match(observationPersistence, /environment-observer\/recommendations\.json/)
+    assert.match(observationPersistence, /environment-observer\/recommendations\.md/)
+    assert.match(observationPersistence, /if \[\[ -f examples\/dsh\/environment-observer\/recommendations\.json\.evidence\.json \]\]; then\s+git add -- examples\/dsh\/environment-observer\/recommendations\.json\.evidence\.json/)
     assert.ok(
       observationPersistence.indexOf('node scripts/write-dsh-directory-feed.mjs')
         < observationPersistence.indexOf('git add --'),
@@ -223,6 +406,7 @@ describe('reusable GitHub Action', () => {
     assert.match(surfacePlanJob, /secrets\.ISSUE_LOCATOR_LLM_BASE_URL/)
     assert.match(surfacePlanJob, /secrets\.ISSUE_LOCATOR_LLM_API_KEY/)
     assert.match(surfacePlanJob, /secrets\.ISSUE_LOCATOR_LLM_MODEL/)
+    assert.match(surfacePlanJob, /environment-observer\/recommendations\.json/)
     assert.match(surfacePlanJob, /git add --[\s\S]*surface-observer\/agent-plans\.json[\s\S]*surface-observer\/agent-plans\.md/)
     assert.match(installObserverDockerfile, /until corepack prepare pnpm@11\.3\.0 --activate/)
     assert.match(installObserverDockerfile, /if \[ "\$attempt" -ge 3 \]; then exit 1; fi/)

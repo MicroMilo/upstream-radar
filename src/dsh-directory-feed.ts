@@ -1,17 +1,31 @@
-import { parseDshCompatibilityLedger, type DshCompatibilityLedgerEntry } from './dsh-compatibility-ledger.js'
-import { parseDshInstallTargets } from './dsh-install-plan.js'
+import {
+  dshCompatibilityCaseId,
+  emptyDshCompatibilityLedger,
+  parseDshCompatibilityLedger,
+  type DshCompatibilityLedgerEntry,
+} from './dsh-compatibility-ledger.js'
+import { applyDshEnvironmentRecommendations } from './dsh-environment-recommendation.js'
+import { buildDshInstallPlan, currentDshCompatibilitySources, parseDshInstallTargets } from './dsh-install-plan.js'
+import { applyDshHeadlessAgentPlans } from './dsh-headless-agent-plan.js'
+import { buildDshAdapterPlan, emptyDshAdapterLedger, parseDshAdapterLedger, type DshAdapterLedger } from './dsh-adapter.js'
 import {
   DSH_SURFACE_LEDGER_SCHEMA,
-  isDshWebClientOnlyCoverageGap,
+  DSH_SURFACE_TARGETS_SCHEMA,
+  buildDshSurfacePlan,
+  emptyDshSurfaceLedger,
+  createDshSurfaceSourceFingerprint,
   parseDshSurfaceLedger,
   type DshSurfaceLedgerEntry,
 } from './dsh-surface.js'
 import type { DshSurfaceObservationResult } from './dsh-surface-observation.js'
+import type { DshStartupConfiguration } from './dsh-startup-configuration.js'
+import { selectDshProfileEnvironment } from './dsh-profile-environment.js'
+import { parseDshSurfaceAgentPlans } from './dsh-surface-agent-plan.js'
 import { parseNpmSpec } from './npm.js'
 import { TOOL_VERSION } from './version.js'
 
 export const AWESOME_DSH_COHORT_SCHEMA = 'upstream-radar.awesome-dsh-cohort/v1alpha1' as const
-export const DSH_DIRECTORY_COMPATIBILITY_FEED_SCHEMA = 'upstream-radar.dsh-directory-compatibility-feed/v1alpha3' as const
+export const DSH_DIRECTORY_COMPATIBILITY_FEED_SCHEMA = 'upstream-radar.dsh-directory-compatibility-feed/v1alpha5' as const
 
 const MAX_COHORT_PLUGINS = 100
 const REPOSITORY = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/
@@ -24,7 +38,8 @@ export type DshDirectoryEvidenceStatus =
   | 'update-pending'
   | 'not-observed'
 
-export type DshDirectoryExecutionPlane = 'headless' | 'web' | 'tui'
+export type DshDirectoryExecutionPlane = 'headless' | 'web' | 'tui' | 'sdk' | 'acp'
+const PLANE_ORDER = { headless: 0, web: 1, tui: 2, sdk: 3, acp: 4 } as const
 
 export interface AwesomeDshCohortPlugin {
   id: string
@@ -55,7 +70,7 @@ export interface AwesomeDshCohort {
 export interface DshDirectoryEvidenceCell {
   caseId: string
   sourceCaseId?: string
-  evidenceSource: 'compatibility-ledger' | 'surface-ledger'
+  evidenceSource: 'compatibility-ledger' | 'surface-ledger' | 'adapter-ledger'
   artifact: {
     spec: string
     sha256?: string
@@ -72,8 +87,13 @@ export interface DshDirectoryEvidenceCell {
   }
   executionPlane: DshDirectoryExecutionPlane
   profile: string
+  startupConfiguration?: DshStartupConfiguration
+  evidenceScope?: 'adapter-initialize-only'
+  versionRole?: 'target' | 'author-baseline'
+  coverageGaps?: string[]
+  dependencyGraphDigests?: { profile?: string; application?: string }
   status: Exclude<DshDirectoryEvidenceStatus, 'not-observed' | 'update-pending'>
-  radarResult: DshCompatibilityLedgerEntry['result'] | DshSurfaceObservationResult
+  radarResult: DshCompatibilityLedgerEntry['result'] | DshSurfaceObservationResult | DshAdapterLedger['entries'][number]['report']['result']
   requiredDependencyBuilds?: string[]
   approvedDependencyBuilds?: string[]
   /** Compatible intended-plane cells that resolve this headless-only coverage gap. */
@@ -81,6 +101,24 @@ export interface DshDirectoryEvidenceCell {
   observedAt: string
   recheckDueAt: string
   reason: string
+}
+
+/**
+ * The exact repository-derived environment scope that must be covered before
+ * a directory consumer can treat the plugin as globally observed-compatible.
+ */
+export interface DshDirectoryEnvironmentRecommendation {
+  status: 'current' | 'missing'
+  preferredNodeMajor?: number
+  nodeMajors: number[]
+  executionProfiles: Array<DshDirectoryExecutionPlane | 'sdk' | 'acp'>
+  expectedCells: string[]
+  missingCells: string[]
+  /** Explicit intended workflows/evidence gaps beyond the selected smoke cells. */
+  coverageGaps: string[]
+  sourceFingerprint?: string
+  summary?: string
+  evidence?: string[]
 }
 
 export interface DshDirectoryCompatibilityEntry {
@@ -94,8 +132,10 @@ export interface DshDirectoryCompatibilityEntry {
   distribution: AwesomeDshCohortPlugin['distribution']
   status: DshDirectoryEvidenceStatus
   cells: DshDirectoryEvidenceCell[]
+  environmentRecommendation?: DshDirectoryEnvironmentRecommendation
   evidenceUrl: string
   surfaceEvidenceUrl?: string
+  adapterEvidenceUrl?: string
 }
 
 export interface DshDirectoryCompatibilityFeed {
@@ -260,7 +300,7 @@ function surfaceCellStatus(result: DshSurfaceObservationResult): Exclude<DshDire
 function aggregateExactCellStatus(cells: readonly DshDirectoryEvidenceCell[]): DshDirectoryEvidenceStatus {
   if (cells.length === 0) return 'not-observed'
   if (cells.some(cell => cell.status === 'observed-incompatible')) return 'observed-incompatible'
-  if (cells.some(cell => cell.status === 'needs-review' && (cell.coveredBy?.length ?? 0) === 0)) return 'needs-review'
+  if (cells.some(cell => cell.status === 'needs-review')) return 'needs-review'
   return 'observed-compatible'
 }
 
@@ -291,6 +331,7 @@ function exactSurfaceBinding(source: DshCompatibilityLedgerEntry, surface: DshSu
     && surface.runtime.nodeMajor === source.runtime.nodeMajor
     && surface.runtime.platform === source.runtime.platform
     && surface.runtime.architecture === source.runtime.architecture
+    && surface.sourceFingerprint === createDshSurfaceSourceFingerprint(source)
     && source.artifact.sha256 !== undefined
     && surface.artifact.sha256 === source.artifact.sha256
 }
@@ -310,6 +351,7 @@ function surfaceCell(surface: DshSurfaceLedgerEntry, refreshAfterHours: number):
     },
     executionPlane: surface.plane,
     profile: surface.profile,
+    ...(surface.startupConfiguration === undefined ? {} : { startupConfiguration: surface.startupConfiguration }),
     status: surfaceCellStatus(surface.result),
     radarResult: surface.result,
     ...(surface.approvedDependencyBuilds === undefined
@@ -337,17 +379,30 @@ export function buildDshDirectoryCompatibilityFeed(input: {
   installTargets: unknown
   ledger: unknown
   surfaceLedger?: unknown
+  adapterLedger?: unknown
+  buildPlans?: unknown
+  surfaceBuildPlans?: unknown
   observations?: unknown
+  environmentRecommendations?: unknown
   generatedAt: string
   repositoryBaseUrl?: string
 }): DshDirectoryCompatibilityFeed {
   const cohort = parseAwesomeDshCohort(input.cohort)
-  const installTargets = parseDshInstallTargets(input.installTargets)
+  const configuredInstallTargets = parseDshInstallTargets(input.installTargets)
+  const installTargets = input.environmentRecommendations === undefined
+    ? configuredInstallTargets
+    : applyDshEnvironmentRecommendations(
+        configuredInstallTargets,
+        input.observations,
+        input.environmentRecommendations,
+      )
   const ledger = parseDshCompatibilityLedger(input.ledger)
   const surfaceLedger = parseDshSurfaceLedger(input.surfaceLedger ?? {
     schema: DSH_SURFACE_LEDGER_SCHEMA,
     entries: [],
   })
+  const adapterLedger = parseDshAdapterLedger(input.adapterLedger)
+  const surfaceBuildPlans = input.surfaceBuildPlans === undefined ? undefined : parseDshSurfaceAgentPlans(input.surfaceBuildPlans)
   const generatedAt = timestamp(input.generatedAt, 'directory feed generatedAt')
   const repositoryBaseUrl = normalizedRepositoryBaseUrl(input.repositoryBaseUrl ?? 'https://github.com/MicroMilo/upstream-radar')
   const targetByObserverId = new Map(installTargets.plugins
@@ -383,6 +438,24 @@ export function buildDshDirectoryCompatibilityFeed(input: {
 
   const observedDsh = observedPackage('deepseek-harness')
   const selectedDshVersion = observedDsh?.name === '@deepseek-ai/dsh' ? observedDsh.version : undefined
+  const now = new Date(generatedAt)
+  const effectiveTargets = input.buildPlans === undefined ? installTargets : applyDshHeadlessAgentPlans(installTargets, input.buildPlans, ledger)
+  // This is an evidence comparison set, not an execution matrix. Local Linux
+  // arm64 observations must not be compared against the GitHub x64 contract.
+  const architectures: Array<'x64' | 'arm64'> = ledger.entries.some(entry => entry.runtime.platform === 'linux' && entry.runtime.architecture === 'arm64')
+    ? ['x64', 'arm64'] : ['x64']
+  const desiredNativeCases = architectures.flatMap(architecture => buildDshInstallPlan(effectiveTargets, input.observations,
+    { changes: [] }, emptyDshCompatibilityLedger(), now, new Set(), { platform: 'linux', architecture }).matrix.include)
+  const currentNative = currentDshCompatibilitySources(ledger, desiredNativeCases, installTargets.refreshAfterHours, now)
+  const currentNativeCaseIds = new Set(currentNative.entries.map(entry => entry.caseId))
+  const desiredAdapters = buildDshAdapterPlan(installTargets,
+    { ...currentNative, entries: currentNative.entries.filter(entry => entry.dshVersion === selectedDshVersion) }, emptyDshAdapterLedger(), now)
+  const currentAdapters = adapterLedger.entries.filter(entry => desiredAdapters.matrix.include.some(cell => (
+    cell.id === entry.cell.id && cell.sourceFingerprint === entry.cell.sourceFingerprint
+      && cell.contractFingerprint === entry.cell.contractFingerprint && cell.versionRole === entry.cell.versionRole
+      && now.getTime() >= Date.parse(entry.report.completedAt)
+      && now.getTime() - Date.parse(entry.report.completedAt) < installTargets.refreshAfterHours * 3_600_000
+  )))
 
   const observedDistribution = (plugin: AwesomeDshCohortPlugin): AwesomeDshCohortPlugin['distribution'] => {
     if (plugin.distribution.kind !== 'npm') return plugin.distribution
@@ -398,18 +471,31 @@ export function buildDshDirectoryCompatibilityFeed(input: {
 
   const plugins = cohort.plugins.map((plugin): DshDirectoryCompatibilityEntry => {
     const installTarget = targetByObserverId.get(plugin.id)
+    const recommendation = installTarget?.environmentRecommendation
+    const selectedRuntimeProfiles = recommendation === undefined
+      ? []
+      : (installTarget?.runtimeProfiles ?? [])
+    const runtimeById = new Map(installTargets.runtimeProfiles.map(profile => [profile.id, profile]))
+    const caseIdByNodeMajor = new Map(selectedRuntimeProfiles.map(runtimeProfileId => {
+      const runtime = runtimeById.get(runtimeProfileId)
+      if (runtime === undefined) throw new Error(`recommended runtime profile ${runtimeProfileId} is not configured`)
+      return [runtime.nodeMajor, dshCompatibilityCaseId(installTarget?.id as string, runtime.id)] as const
+    }))
     const observations = installTarget === undefined
       ? []
-      : ledger.entries.filter(entry => entry.targetId === installTarget.id)
+      : ledger.entries.filter(entry => (
+          entry.targetId === installTarget.id
+          && (recommendation === undefined || recommendation.nodeMajors.includes(entry.runtime.nodeMajor))
+        ))
     const cells: DshDirectoryEvidenceCell[] = []
+    const currentSurfaceCaseIds = new Set<string>()
+    const adapters = currentAdapters.filter(entry => entry.cell.targetId === installTarget?.id)
     for (const entry of observations) {
+      // Repository recommendations define the minimum required cells, not a
+      // ceiling. Retain exact manually reviewed or runtime-discovered surface
+      // evidence as well. A successful browser startup does not establish the
+      // exact versions of browser peers or erase incomplete Node coverage.
       const matchingSurfaces = surfaceLedger.entries.filter(surface => exactSurfaceBinding(entry, surface))
-      const compatibleCover = isDshWebClientOnlyCoverageGap(entry)
-        ? matchingSurfaces
-          .filter(surface => surface.plane === 'web' && surface.result === 'compatible')
-          .map(surface => surface.caseId)
-          .sort()
-        : []
       cells.push({
         caseId: entry.caseId,
         evidenceSource: 'compatibility-ledger',
@@ -430,19 +516,126 @@ export function buildDshDirectoryCompatibilityFeed(input: {
         radarResult: entry.result,
         ...(entry.requiredDependencyBuilds === undefined ? {} : { requiredDependencyBuilds: entry.requiredDependencyBuilds }),
         ...(entry.approvedDependencyBuilds === undefined ? {} : { approvedDependencyBuilds: entry.approvedDependencyBuilds }),
-        ...(compatibleCover.length === 0 ? {} : { coveredBy: compatibleCover }),
         observedAt: entry.observedAt,
         recheckDueAt: dueAt(entry.observedAt, installTargets.refreshAfterHours),
         reason: entry.reason,
       })
-      for (const surface of matchingSurfaces) cells.push(surfaceCell(surface, installTargets.refreshAfterHours))
+      for (const surface of matchingSurfaces) {
+        cells.push(surfaceCell(surface, installTargets.refreshAfterHours))
+        if (!currentNativeCaseIds.has(entry.caseId)) continue
+        let profileEnvironment
+        try { profileEnvironment = selectDshProfileEnvironment(recommendation?.authorEnvironment, surface.profile, entry.runtime.nodeMajor) }
+        catch { continue } // An unsupported author environment cannot establish current coverage.
+        const expected = buildDshSurfacePlan({ schema: DSH_SURFACE_TARGETS_SCHEMA, surfaces: [{
+          id: surface.caseId, sourceCaseId: surface.sourceCaseId, plane: surface.plane, profile: surface.profile,
+          runtimeId: surface.runtimeId, profileEnvironment, reason: 'current directory execution contract',
+          ...(surface.startupConfiguration === undefined ? {} : { startupConfiguration: surface.startupConfiguration }),
+        }] }, { ...ledger, entries: [entry] }, emptyDshSurfaceLedger(), now, input.buildPlans, surfaceBuildPlans).matrix.include[0]
+        if (expected?.contractFingerprint === surface.contractFingerprint) currentSurfaceCaseIds.add(surface.caseId)
+      }
+    }
+    for (const { cell, report } of adapters) {
+      const sourceCaseId = caseIdByNodeMajor.get(cell.nodeMajor)
+      cells.push({ caseId: cell.id, ...(sourceCaseId === undefined ? {} : { sourceCaseId }), evidenceSource: 'adapter-ledger',
+        artifact: { spec: cell.plugin, ...(report.artifact === undefined ? {} : { sha256: report.artifact.sha256 }) },
+        dsh: { package: '@deepseek-ai/dsh', version: cell.dshVersion },
+        runtime: { nodeMajor: cell.nodeMajor, nodeVersion: report.runtime.nodeVersion, platform: cell.platform, architecture: cell.architecture },
+        executionPlane: cell.adapter, profile: cell.profile, versionRole: cell.versionRole, evidenceScope: 'adapter-initialize-only',
+        coverageGaps: [...report.coverageGaps],
+        dependencyGraphDigests: { ...(report.profileGraph === undefined ? {} : { profile: report.profileGraph.digest }),
+          ...(report.applicationGraph === undefined ? {} : { application: report.applicationGraph.digest }) },
+        status: report.result === 'initialize-compatible' ? 'observed-compatible'
+          : report.result === 'initialize-failed' ? 'observed-incompatible' : 'needs-review',
+        radarResult: report.result, observedAt: report.completedAt,
+        recheckDueAt: dueAt(report.completedAt, installTargets.refreshAfterHours), reason: report.reason })
     }
     cells.sort((left, right) => {
-      const planeOrder = { headless: 0, web: 1, tui: 2 } as const
-      return planeOrder[left.executionPlane] - planeOrder[right.executionPlane]
+      return PLANE_ORDER[left.executionPlane] - PLANE_ORDER[right.executionPlane]
         || left.caseId.localeCompare(right.caseId)
     })
     const distribution = observedDistribution(plugin)
+    const cellIsCurrent = (cell: DshDirectoryEvidenceCell): boolean => cell.evidenceSource === 'adapter-ledger'
+      || currentNativeCaseIds.has(cell.sourceCaseId ?? cell.caseId)
+        && (cell.evidenceSource !== 'surface-ledger' || currentSurfaceCaseIds.has(cell.caseId))
+        && now.getTime() >= Date.parse(cell.observedAt)
+        && now.getTime() - Date.parse(cell.observedAt) < installTargets.refreshAfterHours * 3_600_000
+    const environmentRecommendation = installTarget === undefined
+      || (!installTargets.environmentRecommendationsRequired && recommendation === undefined)
+      ? undefined
+      : recommendation === undefined
+        ? {
+            status: 'missing' as const,
+            nodeMajors: [],
+            executionProfiles: [],
+            expectedCells: [],
+            missingCells: ['repository-environment-recommendation'],
+            coverageGaps: [],
+          }
+        : (() => {
+            const selectedArtifact = distribution.kind === 'npm'
+              ? `${distribution.name}@${distribution.selectedVersion}`
+              : installTarget.spec
+            const expectedCells: string[] = []
+            const missingCells: string[] = []
+            for (const nodeMajor of recommendation.nodeMajors) {
+              const sourceCaseId = caseIdByNodeMajor.get(nodeMajor)
+                ?? dshCompatibilityCaseId(installTarget.id, `node${nodeMajor}`)
+              for (const plane of recommendation.executionProfiles) {
+                const adapter = plane === 'sdk' || plane === 'acp'
+                  || (plane === 'headless' && selectedArtifact === 'dsh-feishu-bot@0.19.16'
+                    && recommendation.authorEnvironment?.workflows.some(item => item.kind === 'headless'))
+                const versions = new Set([selectedDshVersion, ...recommendation.authorEnvironment?.dshVersions.map(item => item.version) ?? []])
+                for (const version of versions) {
+                  const expectedCell = `${sourceCaseId}:${plane}${version === selectedDshVersion ? '' : `:dsh-${version}`}`
+                  const nativeCaseId = desiredNativeCases.find(cell => cell.targetId === installTarget.id
+                    && cell.nodeMajor === nodeMajor && cell.dshVersion === version)?.id
+                  expectedCells.push(expectedCell)
+                  const covered = cells.some(cell => (
+                    cell.artifact.spec === selectedArtifact
+                    && cellIsCurrent(cell)
+                    && cell.startupConfiguration === undefined
+                    && cell.dsh.version === version
+                    && cell.runtime.nodeMajor === nodeMajor
+                    && (plane === 'headless' && !adapter
+                      ? cell.evidenceSource === 'compatibility-ledger'
+                        && cell.caseId === nativeCaseId
+                      : cell.evidenceSource === (adapter ? 'adapter-ledger' : 'surface-ledger')
+                        && cell.sourceCaseId === (adapter ? sourceCaseId : nativeCaseId)
+                        && cell.executionPlane === plane)
+                  ))
+                  if (!covered) missingCells.push(expectedCell)
+                }
+              }
+            }
+            return {
+              status: 'current' as const,
+              preferredNodeMajor: recommendation.preferredNodeMajor,
+              nodeMajors: [...recommendation.nodeMajors],
+              executionProfiles: [...recommendation.executionProfiles],
+              expectedCells,
+              missingCells,
+              coverageGaps: [...new Set([...(recommendation.coverageGaps ?? []),
+                ...adapters.flatMap(entry => entry.report.coverageGaps),
+                ...desiredAdapters.blocked.filter(entry => entry.targetId === installTarget.id).map(entry => entry.reason)])],
+              sourceFingerprint: recommendation.sourceFingerprint,
+              summary: recommendation.summary,
+              evidence: [...recommendation.evidence],
+            }
+          })()
+    // The native headless probe remains visible as exact evidence, but it is
+    // an internal provenance check unless the author actually intends that
+    // profile. Optional startup comparisons likewise do not decide the
+    // default-profile status.
+    const intendedCells = recommendation === undefined ? cells : cells.filter(cell =>
+      cellIsCurrent(cell) && cell.startupConfiguration === undefined
+      && recommendation.executionProfiles.includes(cell.executionPlane))
+    const exactCellStatus = aggregateStatus(distribution, intendedCells, selectedDshVersion)
+    const status = environmentRecommendation?.status === 'missing'
+      ? 'needs-review'
+      : ((environmentRecommendation?.missingCells.length ?? 0) > 0
+          || (environmentRecommendation?.coverageGaps.length ?? 0) > 0)
+        ? exactCellStatus === 'observed-incompatible' ? exactCellStatus : 'needs-review'
+        : exactCellStatus
     return {
       id: plugin.id,
       repository: plugin.repository,
@@ -452,12 +645,14 @@ export function buildDshDirectoryCompatibilityFeed(input: {
       catalogEntryUrl: `https://github.com/${cohort.source.repository}/blob/${cohort.source.commit}/${plugin.catalogEntry}`,
       category: plugin.category,
       distribution,
-      status: aggregateStatus(distribution, cells, selectedDshVersion),
+      status,
       cells,
+      ...(environmentRecommendation === undefined ? {} : { environmentRecommendation }),
       evidenceUrl: `${repositoryBaseUrl}/blob/main/compatibility-ledger.json`,
       ...(cells.some(cell => cell.evidenceSource === 'surface-ledger')
         ? { surfaceEvidenceUrl: `${repositoryBaseUrl}/blob/main/surface-ledger.json` }
         : {}),
+      ...(adapters.length === 0 ? {} : { adapterEvidenceUrl: `${repositoryBaseUrl}/blob/main/adapter-ledger.json` }),
     }
   }).sort((left, right) => left.repository.localeCompare(right.repository))
 
@@ -472,7 +667,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
   for (const plugin of plugins) summary[plugin.status] += 1
 
   const executionPlanes = [...new Set(plugins.flatMap(plugin => plugin.cells.map(cell => cell.executionPlane)))]
-    .sort((left, right) => ({ headless: 0, web: 1, tui: 2 })[left] - ({ headless: 0, web: 1, tui: 2 })[right])
+    .sort((left, right) => PLANE_ORDER[left] - PLANE_ORDER[right])
   const profiles = [...new Set(plugins.flatMap(plugin => plugin.cells.map(cell => cell.profile)))].sort()
 
   return {
@@ -488,7 +683,7 @@ export function buildDshDirectoryCompatibilityFeed(input: {
       executionPlanes,
       profiles,
       isolation: 'fresh GitHub-hosted VM plus restricted container',
-      consumptionRule: 'A plugin status applies only when a cell exactly matches the selected artifact. Treat update-pending, needs-review and not-observed as neither pass nor fail, and treat a cell as stale after recheckDueAt.',
+      consumptionRule: 'A plugin status applies only when a cell exactly matches the selected artifact and every current repository-recommended Node/profile cell is covered. Treat a missing recommendation, a missing recommended cell, update-pending, needs-review and not-observed as neither pass nor fail, and treat a cell as stale after recheckDueAt.',
       refreshAfterHours: installTargets.refreshAfterHours,
     },
     summary,
@@ -512,12 +707,29 @@ function selectedCoordinate(entry: DshDirectoryCompatibilityEntry): string {
 
 function dshCoordinate(entry: DshDirectoryCompatibilityEntry): string {
   if (entry.cells.length === 0) return '—'
-  return entry.cells.map(cell => `\`${markdown(cell.dsh.version)}\` / Node ${cell.runtime.nodeMajor} / ${cell.executionPlane}`).join('<br>')
+  return entry.cells.map(cell => {
+    const startup = cell.startupConfiguration
+    const scope = startup === undefined ? '' : ` / additional: ${markdown(startup.scope)} (${markdown(Object.entries(startup.environment).map(([key, value]) => `${key}=${value}`).join(', '))})`
+    const adapter = cell.evidenceScope === 'adapter-initialize-only' ? ` / initialize only (${cell.versionRole})` : ''
+    return `\`${markdown(cell.dsh.version)}\` / Node ${cell.runtime.nodeMajor} / ${cell.executionPlane}${scope}${adapter}`
+  }).join('<br>')
 }
 
 function observedCoordinate(entry: DshDirectoryCompatibilityEntry): string {
   if (entry.cells.length === 0) return '—'
   return entry.cells.map(cell => markdown(cell.observedAt)).join('<br>')
+}
+
+function recommendedEnvironment(entry: DshDirectoryCompatibilityEntry): string {
+  const recommendation = entry.environmentRecommendation
+  if (recommendation === undefined) return 'not required'
+  if (recommendation.status === 'missing') return '`missing`'
+  const nodes = recommendation.nodeMajors.map(major => `Node ${major}`).join(', ')
+  const profiles = recommendation.executionProfiles.join(', ')
+  const coverage = recommendation.missingCells.length === 0 && recommendation.coverageGaps.length === 0
+    ? 'smoke cells covered'
+    : `${recommendation.missingCells.length} missing cells, ${recommendation.coverageGaps.length} workflow/evidence gaps`
+  return `${markdown(nodes)} / ${markdown(profiles)} (${coverage})`
 }
 
 export function renderDshDirectoryCompatibilityFeed(feed: DshDirectoryCompatibilityFeed): string {
@@ -529,11 +741,11 @@ export function renderDshDirectoryCompatibilityFeed(feed: DshDirectoryCompatibil
     '',
     `**${feed.summary['observed-compatible']} observed compatible · ${feed.summary['observed-incompatible']} observed incompatible · ${feed.summary['needs-review']} needs review · ${feed.summary['update-pending']} update pending · ${feed.summary['not-observed']} not observed**`,
     '',
-    '| Catalog plugin | Selected artifact | Tested artifact | Exact DSH / runtime | Evidence status | Observed |',
-    '| --- | --- | --- | --- | --- | --- |',
+    '| Catalog plugin | Selected artifact | Recommended environment | Tested artifact | Exact DSH / runtime | Evidence status | Observed |',
+    '| --- | --- | --- | --- | --- | --- | --- |',
   ]
   for (const entry of feed.plugins) {
-    lines.push(`| [${markdown(entry.repository)}](${entry.catalogUrl}) | ${selectedCoordinate(entry)} | ${cellCoordinate(entry)} | ${dshCoordinate(entry)} | \`${entry.status}\` | ${observedCoordinate(entry)} |`)
+    lines.push(`| [${markdown(entry.repository)}](${entry.catalogUrl}) | ${selectedCoordinate(entry)} | ${recommendedEnvironment(entry)} | ${cellCoordinate(entry)} | ${dshCoordinate(entry)} | \`${entry.status}\` | ${observedCoordinate(entry)} |`)
   }
   lines.push(
     '',
@@ -541,13 +753,15 @@ export function renderDshDirectoryCompatibilityFeed(feed: DshDirectoryCompatibil
     '',
     '- `observed-compatible`: every currently required exact cell passed; a plane-specific pass may cover only a headless gap made exclusively of that plane\'s client packages.',
     '- `observed-incompatible`: the exact cell reproduced a runtime gate, install, registration or load failure.',
-    '- `needs-review`: evidence exists, but Radar cannot yet separate a plugin defect from an uncovered execution plane, environment condition, or explicit dependency-build approval gate.',
+    '- `needs-review`: the repository environment recommendation is missing, one of its Node/profile cells is uncovered, or existing evidence cannot yet separate a plugin defect from an environment condition or explicit dependency-build approval gate.',
     '- `update-pending`: the selected npm artifact changed and has no exact cell yet; historical evidence is retained but never inherited as the current result.',
     '- `not-observed`: the catalog entry is monitored statically but has no matching executable npm artifact in this cohort.',
+    '- Additional disabled/offline startup comparisons retain their exact flags and limited scope; they never satisfy a missing default-startup requirement.',
+    '- SDK/ACP evidence covers adapter initialization only, with separate author-baseline and target DSH results. It does not prove authentication, model generation or real user tasks; those untested boundaries remain explicit.',
     '',
     `A cell expires at its \`recheckDueAt\` value (${feed.boundary.refreshAfterHours} hours after observation). Consumers must then show it as stale. This is exact compatibility evidence, not a security review or endorsement.`,
     '',
-    `[Machine-readable feed](dsh-plugin-compatibility.json) · [Headless ledger](${feed.producer.repository}/blob/main/compatibility-ledger.json) · [Web/TUI ledger](${feed.producer.repository}/blob/main/surface-ledger.json)`,
+    `[Machine-readable feed](dsh-plugin-compatibility.json) · [Headless ledger](${feed.producer.repository}/blob/main/compatibility-ledger.json) · [Web/TUI ledger](${feed.producer.repository}/blob/main/surface-ledger.json) · [SDK/ACP ledger](${feed.producer.repository}/blob/main/adapter-ledger.json)`,
     '',
   )
   return lines.join('\n')
