@@ -1,6 +1,6 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-09-28T14:39:59.023Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-09-28T14:54:01.076Z`.
 Selected host: `@deepseek-ai/dsh@0.2.0-rc.1`.
 
 **0 observed compatible · 0 observed incompatible · 96 needs review · 0 update pending · 4 not observed**
@@ -54,7 +54,7 @@ Selected host: `@deepseek-ai/dsh@0.2.0-rc.1`.
 | [Mars-Sea/dsh-commandcode-provider](https://github.com/Mars-Sea/dsh-commandcode-provider) | `@mars-sea/dsh-commandcode-provider@0.11.17` | `missing` | `@mars-sea/dsh-commandcode-provider@0.11.7` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:12:10.714Z |
 | [MichengAI/dsh-agency-agents](https://github.com/MichengAI/dsh-agency-agents) | `@michengai/dsh-agency-agents@1.0.6` | `missing` | `@michengai/dsh-agency-agents@1.0.1` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:14.543Z |
 | [MichengAI/dsh-archive-manager](https://github.com/MichengAI/dsh-archive-manager) | `@michengai/dsh-archive-manager@1.0.7` | `missing` | `@michengai/dsh-archive-manager@1.0.2` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:10.750Z |
-| [MichengAI/dsh-im-connect](https://github.com/MichengAI/dsh-im-connect) | `@michengai/dsh-im-connect@0.1.56` | `missing` | `@michengai/dsh-im-connect@0.1.51` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:05.721Z |
+| [MichengAI/dsh-im-connect](https://github.com/MichengAI/dsh-im-connect) | `@michengai/dsh-im-connect@0.1.57` | `missing` | `@michengai/dsh-im-connect@0.1.51` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:05.721Z |
 | [MichengAI/dsh-skills-manager](https://github.com/MichengAI/dsh-skills-manager) | `@michengai/dsh-skills-manager@1.1.4` | `missing` | `@michengai/dsh-skills-manager@1.0.1` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:12:49.489Z |
 | [modusensus/dsh-mneme](https://github.com/modusensus/dsh-mneme/tree/main/dsh-mneme) | `@modusensus/dsh-mneme@0.8.4` | `missing` | `@modusensus/dsh-mneme@0.8.4` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:12:35.197Z |
 | [moonquake2004/dsh-doctor](https://github.com/moonquake2004/dsh-doctor/tree/main/plugin) | `@moonquake2004/dsh-doctor@0.8.5` | `missing` | `@moonquake2004/dsh-doctor@0.8.5` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:09.931Z |

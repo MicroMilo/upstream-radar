@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha5",
-  "generatedAt": "2026-09-28T14:39:59.023Z",
+  "generatedAt": "2026-09-28T14:54:01.076Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -2534,7 +2534,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-im-connect",
-        "selectedVersion": "0.1.56",
+        "selectedVersion": "0.1.57",
         "distTag": "latest"
       },
       "status": "needs-review",
