@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-active-task-state/v1alpha1",
-  "updatedAt": "2026-09-28T08:40:25.293Z",
+  "updatedAt": "2026-09-28T08:47:36.013Z",
   "tasks": [
     {
       "id": "active-4797b25090719afc8f6dde5fb1d8fbe0",
@@ -29,7 +29,7 @@
           "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 1,
       "lastAttemptAt": "2026-09-28T08:38:01.329Z",
@@ -63,7 +63,7 @@
           "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 1,
       "lastAttemptAt": "2026-09-28T08:38:01.329Z",
@@ -97,7 +97,7 @@
           "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 1,
       "lastAttemptAt": "2026-09-28T08:38:01.329Z",
@@ -131,7 +131,7 @@
           "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 1,
       "lastAttemptAt": "2026-09-28T08:38:01.329Z",
@@ -165,7 +165,7 @@
           "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 1,
       "lastAttemptAt": "2026-09-28T08:38:01.329Z",
@@ -199,7 +199,7 @@
           "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 1,
       "lastAttemptAt": "2026-09-28T08:38:01.329Z",
@@ -233,7 +233,7 @@
           "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 1,
       "lastAttemptAt": "2026-09-28T08:38:01.329Z",
@@ -267,7 +267,7 @@
           "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 1,
       "lastAttemptAt": "2026-09-28T08:38:01.329Z",
