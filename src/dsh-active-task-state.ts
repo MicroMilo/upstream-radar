@@ -235,21 +235,12 @@ export function planDshActiveTasks(targetsInput: unknown, observationsInput: unk
   const previous = parseDshActiveTaskState(stateInput)
   const inputs = currentInputs(targetsInput, observationsInput)
   const byObserver = new Map(inputs.map(item => [item.observerTargetId, item]))
-  const currentByTarget = new Map(inputs.map(item => [`${item.targetId}:${item.dshChannel}`, item]))
   const report = record(reportInput, 'observer report')
   if (!Array.isArray(report.changes) || report.changes.length > 500) throw new Error('observer report must contain bounded changes')
   const tasks = previous.tasks.map(task => ({ ...task, trigger: { ...task.trigger }, input: {
     plugin: { ...task.input.plugin }, dsh: { ...task.input.dsh },
   } }))
   let changed = false
-  for (const task of tasks) {
-    if (task.status !== 'pending') continue
-    const current = currentByTarget.get(`${task.targetId}:${task.dshChannel}`)
-    if (current === undefined || current.inputFingerprint !== task.inputFingerprint) {
-      task.status = 'superseded'
-      changed = true
-    }
-  }
   const byFingerprint = new Map(tasks.map(task => [task.inputFingerprint, task]))
   let created = 0, deduplicated = 0
   const blocked: string[] = []
@@ -265,7 +256,24 @@ export function planDshActiveTasks(targetsInput: unknown, observationsInput: unk
       const existing = byFingerprint.get(exact.inputFingerprint)
       if (existing !== undefined) {
         if (existing.status === 'completed') deduplicated += 1
+        else if (existing.status === 'superseded') {
+          existing.status = 'pending'
+          existing.trigger = trigger
+          changed = true
+        }
         continue
+      }
+      // A pending task is an immutable retry unit. Merely noticing that the
+      // live observation point moved cannot discard it: the executor may have
+      // been interrupted after persistence. Supersede it only in the same
+      // transaction that durably records a newer exact task for this target.
+      for (const previousTask of tasks) {
+        if (previousTask.status === 'pending' && previousTask.targetId === exact.targetId
+          && previousTask.dshChannel === exact.dshChannel
+          && previousTask.inputFingerprint !== exact.inputFingerprint) {
+          previousTask.status = 'superseded'
+          changed = true
+        }
       }
       const id = `active-${exact.inputFingerprint.slice('sha256:'.length, 'sha256:'.length + 32)}`
       const task: DshActiveTask = { id, inputFingerprint: exact.inputFingerprint,

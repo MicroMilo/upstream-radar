@@ -49,6 +49,10 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          # The observer persists the immutable task before calling this
+          # workflow. Read that latest durable state, not the dispatch SHA.
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 1
           persist-credentials: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
@@ -78,6 +82,10 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          # The observer persists the immutable task before calling this
+          # workflow. Read that latest durable state, not the dispatch SHA.
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 1
           persist-credentials: false
       - name: Require the provider configuration proven by the tool-loop probe
         env:
@@ -117,12 +125,31 @@ jobs:
             --state active-output/review/observations.json \
             --report active-output/review/observer-report.md --json \
             > active-output/review/observer-report.json
+      - name: Rehydrate the immutable persisted task input
+        if: ${{ inputs.persist_results }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          RADAR_TASK_ID: ${{ matrix.taskId }}
+          RADAR_INPUT_FINGERPRINT: ${{ matrix.inputFingerprint }}
+        run: |
+          node scripts/materialize-dsh-active-task.mjs \
+            examples/dsh/active-agent/tasks.json \
+            "$RADAR_TASK_ID" "$RADAR_INPUT_FINGERPRINT" \
+            examples/dsh/rebuild-batch/install-targets.json \
+            active-output/review/observations.json \
+            active-output/review/exact-observations.json \
+            active-output/review/scoped-install-targets.json \
+            > active-output/review/exact-task.json
+          mv active-output/review/exact-observations.json active-output/review/observations.json
+      - name: Keep the configured cohort for an unpersisted manual run
+        if: ${{ !inputs.persist_results }}
+        run: cp examples/dsh/rebuild-batch/install-targets.json active-output/review/scoped-install-targets.json
       - name: Collect bounded repository evidence without a one-shot model call
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           node scripts/plan-dsh-environment-recommendations.mjs \
-            examples/dsh/rebuild-batch/install-targets.json \
+            active-output/review/scoped-install-targets.json \
             active-output/review/observations.json \
             active-output/review/recommendations.json \
             active-output/review/recommendations.md \
@@ -145,7 +172,7 @@ jobs:
           env -u ISSUE_LOCATOR_LLM_BASE_URL -u ISSUE_LOCATOR_LLM_API_KEY -u ISSUE_LOCATOR_LLM_MODEL \
             node scripts/dsh-active-case-broker.mjs "$RADAR_TARGET_ID" \
               active-output/review/candidates.json \
-              examples/dsh/rebuild-batch/install-targets.json \
+              active-output/review/scoped-install-targets.json \
               active-output/review/observations.json \
               active-output/review active-output/batch active-output/executor.json \
               active-output/control --execute \
@@ -248,6 +275,8 @@ jobs:
             active-output/broker.log
             active-output/review/collection-summary.json
             active-output/review/observations.json
+            active-output/review/exact-task.json
+            active-output/review/scoped-install-targets.json
             active-output/review/candidates.json
             active-output/review/agent-evidence.json
             active-output/review/recommendations.json

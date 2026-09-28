@@ -49,6 +49,8 @@ describe('reusable GitHub Action', () => {
     assert.match(workflow, /workflow_call:/)
     assert.match(workflow, /matrix: \$\{\{ fromJSON\(inputs\.task_matrix_json\) \}\}/)
     assert.match(workflow, /run-dsh-active-agent-provider\.mjs/)
+    assert.match(workflow, /materialize-dsh-active-task\.mjs/)
+    assert.match(workflow, /active-output\/review\/scoped-install-targets\.json/)
     assert.match(workflow, /env -u ISSUE_LOCATOR_LLM_BASE_URL -u ISSUE_LOCATOR_LLM_API_KEY -u ISSUE_LOCATOR_LLM_MODEL/)
     assert.match(workflow, /reconcile-dsh-active-tasks\.mjs/)
     assert.match(workflow, /active-output\/batch\/acceptance\.json/)

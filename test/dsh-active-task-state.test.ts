@@ -91,4 +91,37 @@ describe('durable active Agent task state', () => {
     assert.equal(retry.state.tasks[0]?.attempts, 2)
     assert.equal(retry.state.tasks[0]?.lastFailure, 'runner interrupted')
   })
+
+  it('keeps an interrupted exact task retryable when the live observation point has already advanced', () => {
+    const first = planDshActiveTasks(cohort, observations, { changes: [change('dsh-context', '0.56.2', '0.57.0')] },
+      emptyDshActiveTaskState(), checkedAt)
+    const failed = reconcileDshActiveTaskResults(first.state, first.matrix, [],
+      new Date('2026-09-28T09:00:00.000Z'), '124')
+    const advanced = structuredClone(observations)
+    advanced.targets['deepseek-harness'].source.commit = 'f'.repeat(40)
+    advanced.targets['dsh-context'].source.commit = '1'.repeat(40)
+    advanced.targets['dsh-context'].package.version = '0.59.0'
+    const retry = planDshActiveTasks(cohort, advanced, { changes: [] }, failed,
+      new Date('2026-09-28T10:00:00.000Z'))
+    assert.equal(retry.matrix.include[0]?.taskId, first.matrix.include[0]?.taskId)
+    assert.equal(retry.state.tasks[0]?.status, 'pending')
+    assert.equal(retry.state.tasks[0]?.input.plugin.version, '0.57.0')
+    assert.equal(retry.state.tasks[0]?.attempts, 2)
+  })
+
+  it('supersedes an older pending input only while persisting its newer replacement', () => {
+    const first = planDshActiveTasks(cohort, observations, { changes: [change('dsh-context', '0.56.2', '0.57.0')] },
+      emptyDshActiveTaskState(), checkedAt)
+    const advanced = structuredClone(observations)
+    advanced.targets['dsh-context'].source.commit = '1'.repeat(40)
+    advanced.targets['dsh-context'].package.version = '0.59.0'
+    const next = planDshActiveTasks(cohort, advanced,
+      { changes: [change('dsh-context', '0.57.0', '0.59.0')] }, first.state,
+      new Date('2026-09-28T10:00:00.000Z'))
+    assert.equal(next.created, 1)
+    assert.equal(next.state.tasks.find(task => task.id === first.state.tasks[0]?.id)?.status, 'superseded')
+    assert.equal(next.matrix.include.length, 1)
+    assert.notEqual(next.matrix.include[0]?.taskId, first.matrix.include[0]?.taskId)
+    assert.equal(next.state.tasks.find(task => task.id === next.matrix.include[0]?.taskId)?.input.plugin.version, '0.59.0')
+  })
 })
