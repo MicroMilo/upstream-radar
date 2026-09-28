@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-active-task-state/v1alpha1",
-  "updatedAt": "2026-09-28T09:54:52.836Z",
+  "updatedAt": "2026-09-28T10:00:46.664Z",
   "tasks": [
     {
       "id": "active-4797b25090719afc8f6dde5fb1d8fbe0",
@@ -211,8 +211,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 3,
-      "lastAttemptAt": "2026-09-28T09:41:47.057Z",
+      "attempts": 4,
+      "lastAttemptAt": "2026-09-28T10:00:46.664Z",
       "lastRunId": "36405100578",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
