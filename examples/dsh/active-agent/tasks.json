@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-active-task-state/v1alpha1",
-  "updatedAt": "2026-09-28T08:54:51.000Z",
+  "updatedAt": "2026-09-28T08:59:52.451Z",
   "tasks": [
     {
       "id": "active-4797b25090719afc8f6dde5fb1d8fbe0",
@@ -31,8 +31,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 1,
-      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 2,
+      "lastAttemptAt": "2026-09-28T08:59:52.451Z",
       "lastRunId": "36398282114",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
@@ -65,8 +65,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 1,
-      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 2,
+      "lastAttemptAt": "2026-09-28T08:59:52.451Z",
       "lastRunId": "36398282114",
       "lastFailure": "the isolated Agent job produced no artifact"
     },
@@ -99,8 +99,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 1,
-      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 2,
+      "lastAttemptAt": "2026-09-28T08:59:52.451Z",
       "lastRunId": "36398282114",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
@@ -133,8 +133,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 1,
-      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 2,
+      "lastAttemptAt": "2026-09-28T08:59:52.451Z",
       "lastRunId": "36398282114",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
@@ -167,8 +167,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 1,
-      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 2,
+      "lastAttemptAt": "2026-09-28T08:59:52.451Z",
       "lastRunId": "36398282114",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
@@ -201,8 +201,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 1,
-      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 2,
+      "lastAttemptAt": "2026-09-28T08:59:52.451Z",
       "lastRunId": "36398282114",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
@@ -235,8 +235,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 1,
-      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 2,
+      "lastAttemptAt": "2026-09-28T08:59:52.451Z",
       "lastRunId": "36398282114",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
@@ -269,8 +269,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 1,
-      "lastAttemptAt": "2026-09-28T08:38:01.329Z",
+      "attempts": 2,
+      "lastAttemptAt": "2026-09-28T08:59:52.451Z",
       "lastRunId": "36398282114",
       "lastFailure": "the isolated Agent artifact is incomplete"
     }
