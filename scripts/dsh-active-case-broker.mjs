@@ -9,7 +9,8 @@ import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import { isDeepStrictEqual } from 'node:util'
 import { createDshActiveCaseBroker } from '../dist/src/dsh-active-case-broker.js'
-import { missingDshAuthorAdapterCoverage } from '../dist/src/dsh-active-agent-supervisor.js'
+import { missingDshAuthorAdapterCoverage,
+  unresolvedFreshDshBuildGateCaseIds } from '../dist/src/dsh-active-agent-supervisor.js'
 import { resolveDshActiveCaseLaunchStatus } from '../dist/src/dsh-active-case-launch-state.js'
 import { dshActiveCaseMonitorCovered, parseDshActiveCaseMonitorState, recordDshActiveCaseMonitorAction } from '../dist/src/dsh-active-case-monitor-state.js'
 import { decideDshActiveBuildReview, prepareDshActiveBuildReview } from '../dist/src/dsh-active-build-review.js'
@@ -686,6 +687,20 @@ async function makeBroker() { return createDshActiveCaseBroker({ candidate,
   },
   launch: async () => {
     if (await batchRunning()) return { started: false, status: 'running' }
+    const previousLaunch = await optionalJson(launchPath, 4096)
+    if (previousLaunch) {
+      const previousResult = await optionalJson(launchResultPath, 4096)
+      const previousSummary = await optionalJson(join(output, 'summary.json'), 2 * 1024 * 1024)
+      if (previousResult?.id !== previousLaunch.id || previousSummary?.activeLaunchId !== previousLaunch.id) {
+        throw new Error('the previous isolated launch has not produced its exact terminal state; watch before relaunch')
+      }
+      const previousState = await readJson(join(output, 'state.json'), ACTIVE_STATE_MAX_BYTES)
+      const unresolvedGates = unresolvedFreshDshBuildGateCaseIds(targetId, previousState,
+        await optionalJson(buildPlansPath, 2 * 1024 * 1024), previousLaunch.requestedAt)
+      if (unresolvedGates.length > 0) {
+        throw new Error(`resolve every fresh native dependency-build gate before relaunch: ${unresolvedGates.join(', ')}; call build-review/build for each exact caseId`)
+      }
+    }
     const replayRequired = await resetUnobservedExecutionBeforeRetry()
     const id = randomUUID().replace(/-/g, '')
     const logName = `agent-batch-${id}.log`

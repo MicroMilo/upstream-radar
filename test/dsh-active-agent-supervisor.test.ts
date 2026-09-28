@@ -5,6 +5,7 @@ import {
   dshActiveAgentCaseClosed,
   dshActiveAgentCaseFormerlyClosedForAdapterRepair,
   runDshActiveAgentSupervisor,
+  unresolvedFreshDshBuildGateCaseIds,
   type DshActiveAgentCaseSnapshot,
 } from '../src/dsh-active-agent-supervisor.js'
 
@@ -128,6 +129,30 @@ describe('proactive agent session supervision', () => {
       observedRequiredBuilds: gate.requiredDependencyBuilds }], pendingTasks: [] } }
     assert.equal(dshActiveAgentCaseClosed(targetId, stopped), true,
       'a graph-bound explicit stop can close as incomplete coverage without pretending compatibility')
+  })
+
+  it('requires a decision for every fresh dependency-build gate before relaunch', () => {
+    const first = { caseId: `${targetId}-node22`, targetId, result: 'build-approval-required',
+      observedAt: '2026-09-28T09:45:48.329Z', requiredDependencyBuilds: ['protobufjs'],
+      artifact: { sha256: 'a'.repeat(64) },
+      resolution: { runtimeGraph: { digest: `sha256:${'b'.repeat(64)}` } } }
+    const second = { ...first, caseId: `${targetId}-node22-dsh-legacy`,
+      artifact: { sha256: 'c'.repeat(64) },
+      resolution: { runtimeGraph: { digest: `sha256:${'d'.repeat(64)}` } } }
+    const state = { nativeLedger: { entries: [first, second,
+      { ...second, caseId: `${targetId}-stale`, observedAt: '2026-09-28T09:39:00.000Z' }] } }
+    const plans = { pendingTasks: [], entries: [{ caseId: first.caseId, targetId,
+      action: 'retry-headless', artifactSha256: first.artifact.sha256,
+      dependencyGraphDigest: first.resolution.runtimeGraph.digest,
+      observedRequiredBuilds: first.requiredDependencyBuilds }] }
+    assert.deepEqual(unresolvedFreshDshBuildGateCaseIds(targetId, state, plans,
+      '2026-09-28T09:42:28.000Z'), [second.caseId],
+    'one approved case may not make a second exact DSH baseline gate stale and unrecoverable')
+    assert.deepEqual(unresolvedFreshDshBuildGateCaseIds(targetId, state, { ...plans,
+      entries: [...plans.entries, { caseId: second.caseId, targetId, action: 'stop-headless',
+        artifactSha256: second.artifact.sha256,
+        dependencyGraphDigest: second.resolution.runtimeGraph.digest,
+        observedRequiredBuilds: second.requiredDependencyBuilds }] }, '2026-09-28T09:42:28.000Z'), [])
   })
 
   it('wakes the same agent session on a fixed cadence during healthy execution', async () => {

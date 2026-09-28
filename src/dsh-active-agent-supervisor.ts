@@ -68,6 +68,38 @@ export function missingDshAuthorAdapterCoverage(targetId: string, summaryInput: 
   return [...missing].slice(0, 32)
 }
 
+/** A relaunch makes the preceding batch ineligible for a new build review.
+ * Require a graph-bound decision for every gate from that batch first, so one
+ * approved Node/DSH cell cannot strand another exact baseline as stale.
+ */
+export function unresolvedFreshDshBuildGateCaseIds(targetId: string, stateInput: unknown,
+  plansInput: unknown, launchRequestedAt: string): string[] {
+  if (!/^[a-z0-9][a-z0-9._-]{0,63}$/.test(targetId)) {
+    throw new Error('fresh dependency-build gates require one bounded target')
+  }
+  const requestedAt = Date.parse(launchRequestedAt)
+  if (!Number.isFinite(requestedAt)) throw new Error('fresh dependency-build gates require the exact launch time')
+  const entries = record(record(stateInput)?.nativeLedger)?.entries
+  if (!Array.isArray(entries)) return []
+  const plans = record(plansInput)
+  const decisions = Array.isArray(plans?.entries) ? plans.entries.map(record) : []
+  const pending = new Set(Array.isArray(plans?.pendingTasks)
+    ? plans.pendingTasks.map(record).map(task => task?.caseId).filter((value): value is string => typeof value === 'string')
+    : [])
+  return entries.map(record).filter((entry): entry is Record<string, unknown> => entry !== undefined
+    && entry.targetId === targetId && entry.result === 'build-approval-required'
+    && typeof entry.caseId === 'string' && Number.isFinite(Date.parse(String(entry.observedAt)))
+    && Date.parse(String(entry.observedAt)) >= requestedAt).filter(entry => {
+      const artifact = record(entry.artifact), graph = record(record(entry.resolution)?.runtimeGraph)
+      return pending.has(entry.caseId as string) || !decisions.some(decision => decision !== undefined
+        && decision.caseId === entry.caseId && decision.targetId === targetId
+        && (decision.action === 'retry-headless' || decision.action === 'stop-headless')
+        && decision.artifactSha256 === artifact?.sha256
+        && decision.dependencyGraphDigest === graph?.digest
+        && JSON.stringify(decision.observedRequiredBuilds) === JSON.stringify(entry.requiredDependencyBuilds))
+    }).map(entry => entry.caseId as string).slice(0, 32)
+}
+
 function unresolvedNativeBuildGate(targetId: string, state: Record<string, unknown> | undefined,
   plansInput: unknown): boolean {
   const entries = record(state?.nativeLedger)?.entries
