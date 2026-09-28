@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-active-task-state/v1alpha1",
-  "updatedAt": "2026-09-28T10:00:46.664Z",
+  "updatedAt": "2026-09-28T10:14:26.481Z",
   "tasks": [
     {
       "id": "active-4797b25090719afc8f6dde5fb1d8fbe0",
@@ -209,12 +209,14 @@
           "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
         }
       },
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 4,
       "lastAttemptAt": "2026-09-28T10:00:46.664Z",
-      "lastRunId": "36405100578",
-      "lastFailure": "the isolated Agent artifact is incomplete"
+      "lastRunId": "36407047049",
+      "completedAt": "2026-09-28T10:14:26.481Z",
+      "reportPath": "examples/dsh/active-agent/reports/active-a9ca2a833a8e0cf69849b599c6d45356.json",
+      "evidenceDigest": "sha256:e8d9b6d607dc8a60a113e86daa05c90201ad1d48b776ea28eb25a6b1dbcf9de4"
     },
     {
       "id": "active-c98cfb6342843b803ef292c53530e427",
