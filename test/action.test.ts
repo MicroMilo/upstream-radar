@@ -34,6 +34,8 @@ describe('reusable GitHub Action', () => {
     assert.ok(rerun)
     assert.match(rerun, /run-dsh-compatibility-batch\.mjs/)
     assert.match(rerun, /active-output\/reuse\/state\.json/)
+    assert.match(rerun, /reuse_exit/)
+    assert.match(rerun, /"\$reuse_exit" -ne 2/)
     assert.doesNotMatch(rerun, /secrets\.|CODEX_ACCESS_TOKEN|CODEX_API_KEY/)
     assert.match(workflow, /reuseSummary\.executed!==0/)
     assert.match(workflow, /reuseState\.executorIdentity!==state\.executorIdentity/)

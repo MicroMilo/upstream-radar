@@ -186,11 +186,20 @@ jobs:
           set -euo pipefail
           mkdir -p active-output/reuse
           cp active-output/batch/state.json active-output/reuse/state.json
+          set +e
           node scripts/run-dsh-compatibility-batch.mjs \
             active-output/batch/scoped-install-targets.json \
             active-output/review active-output/reuse \
             active-output/batch/agent-executor.json --execute \
             > active-output/reuse/run.log
+          reuse_exit=$?
+          set -e
+          # Exit 2 is the batch protocol's honest "closed with an explicit
+          # coverage gap" outcome. The next step still proves zero work was
+          # repeated and that every exact ledger stayed byte-for-byte stable.
+          if [[ "$reuse_exit" -ne 0 && "$reuse_exit" -ne 2 ]]; then
+            exit "$reuse_exit"
+          fi
       - name: Verify the agent reached every intended runnable combination
         env:
           RADAR_TARGET_ID: ${{ matrix.targetId }}
