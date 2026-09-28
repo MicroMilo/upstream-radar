@@ -5,7 +5,7 @@
 import { execFile as callback } from 'node:child_process'
 import { createHash, randomUUID } from 'node:crypto'
 import { constants } from 'node:fs'
-import { lstat, open, rename } from 'node:fs/promises'
+import { lstat, mkdir, open, rename } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
@@ -29,9 +29,17 @@ if (!baseUrl || !apiKey || !model) throw new Error('the configured OpenAI-compat
 
 const control = resolve(controlPath), logs = resolve(logPath), batch = resolve(batchPath)
 const review = resolve(dirname(batch), 'review')
-for (const path of [control, join(control, 'requests'), join(control, 'responses'), logs, batch]) {
+for (const path of [control, logs, batch]) {
   const stat = await lstat(path)
   if (!stat.isDirectory() || stat.isSymbolicLink()) throw new Error('active Agent directory is not a regular operator-owned directory')
+}
+// The provider runner and broker start concurrently in Actions. Create only
+// the two broker protocol mailboxes beneath the already-verified control root
+// so an otherwise healthy case cannot lose a race during process startup.
+for (const path of [join(control, 'requests'), join(control, 'responses')]) {
+  await mkdir(path, { recursive: true, mode: 0o700 })
+  const stat = await lstat(path)
+  if (!stat.isDirectory() || stat.isSymbolicLink()) throw new Error('active Agent mailbox is not a regular operator-owned directory')
 }
 
 function completionEndpoints(value) {
