@@ -12,6 +12,11 @@ on:
         type: string
         required: false
         default: '["cloudflare-browser","context","dsh-tui","feishu-bot","dsh-agy-link","dsh-univer-office","openpencil","better-sidebar"]'
+      dsh_channels_json:
+        description: Exact DSH release channels to observe independently
+        type: string
+        required: false
+        default: '["next"]'
 
 permissions:
   contents: read
@@ -51,18 +56,19 @@ jobs:
       fail-fast: false
       matrix:
         targetId: ${{ fromJSON(inputs.target_ids_json) }}
-        dshChannel: [next, alpha]
+        dshChannel: ${{ fromJSON(inputs.dsh_channels_json) }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - name: Require a credential for the isolated proactive agent
+      - name: Require the provider configuration proven by the tool-loop probe
         env:
-          CODEX_ACCESS_TOKEN: ${{ secrets.CODEX_ACCESS_TOKEN }}
-          CODEX_API_KEY: ${{ secrets.CODEX_API_KEY }}
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
         run: |
-          if [[ -z "${CODEX_ACCESS_TOKEN:-}" && -z "${CODEX_API_KEY:-}" ]]; then
-            echo '::error::Configure CODEX_ACCESS_TOKEN or CODEX_API_KEY in repository Actions Secrets before executing agent jobs.'
+          if [[ -z "${ISSUE_LOCATOR_LLM_BASE_URL:-}" || -z "${ISSUE_LOCATOR_LLM_API_KEY:-}" || -z "${ISSUE_LOCATOR_LLM_MODEL:-}" ]]; then
+            echo '::error::Configure the three ISSUE_LOCATOR_LLM_* Actions Secrets before executing agent jobs.'
             exit 1
           fi
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
@@ -113,11 +119,12 @@ jobs:
         env:
           RADAR_TARGET_ID: ${{ matrix.targetId }}
           GITHUB_TOKEN: ${{ github.token }}
-          CODEX_ACCESS_TOKEN: ${{ secrets.CODEX_ACCESS_TOKEN }}
-          CODEX_API_KEY: ${{ secrets.CODEX_API_KEY }}
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
         run: |
           set -euo pipefail
-          env -u CODEX_ACCESS_TOKEN -u CODEX_API_KEY \
+          env -u ISSUE_LOCATOR_LLM_BASE_URL -u ISSUE_LOCATOR_LLM_API_KEY -u ISSUE_LOCATOR_LLM_MODEL \
             node scripts/dsh-active-case-broker.mjs "$RADAR_TARGET_ID" \
               active-output/review/candidates.json \
               examples/dsh/rebuild-batch/install-targets.json \
@@ -127,8 +134,8 @@ jobs:
               > active-output/broker.log 2>&1 &
           broker_pid=$!
           trap 'kill "$broker_pid" 2>/dev/null || true' EXIT
-          node scripts/run-dsh-active-agent.mjs "$RADAR_TARGET_ID" \
-            active-output/control active-output/executor.json active-output active-output/batch --execute
+          node scripts/run-dsh-active-agent-provider.mjs "$RADAR_TARGET_ID" \
+            active-output/control active-output active-output/batch --execute
       - name: Re-run the same case without changing evidence
         run: |
           set -euo pipefail
@@ -230,6 +237,7 @@ jobs:
             active-output/batch/agent-launch-result.json
             active-output/batch/agent-monitor.json
             active-output/batch/agent-session-supervisor.json
+            active-output/batch/agent-provider.json
             active-output/batch/agent-reasoning-input.json
             active-output/batch/agent-conclusion.json
             active-output/batch/agent-network-route.json
@@ -243,4 +251,5 @@ jobs:
             active-output/reuse/summary.json
             active-output/reuse/state.json
             active-output/reuse/executor-evidence.json
+            active-output/*.provider.jsonl
           if-no-files-found: warn

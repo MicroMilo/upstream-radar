@@ -1,6 +1,6 @@
 {
-  "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha3",
-  "generatedAt": "2026-09-27T12:27:47.399Z",
+  "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha5",
+  "generatedAt": "2026-09-28T08:15:58.072Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -22,25 +22,21 @@
   "boundary": {
     "claim": "exact-cell compatibility evidence; not a security review, endorsement, or timeless compatibility badge",
     "executionPlanes": [
-      "headless",
-      "web",
-      "tui"
+      "headless"
     ],
     "profiles": [
-      "dsh-tui",
-      "headless",
-      "web"
+      "headless"
     ],
     "isolation": "fresh GitHub-hosted VM plus restricted container",
-    "consumptionRule": "A plugin status applies only when a cell exactly matches the selected artifact. Treat update-pending, needs-review and not-observed as neither pass nor fail, and treat a cell as stale after recheckDueAt.",
+    "consumptionRule": "A plugin status applies only when a cell exactly matches the selected artifact and every current repository-recommended Node/profile cell is covered. Treat a missing recommendation, a missing recommended cell, update-pending, needs-review and not-observed as neither pass nor fail, and treat a cell as stale after recheckDueAt.",
     "refreshAfterHours": 168
   },
   "summary": {
     "total": 100,
     "observed-compatible": 0,
     "observed-incompatible": 0,
-    "needs-review": 0,
-    "update-pending": 96,
+    "needs-review": 96,
+    "update-pending": 0,
     "not-observed": 4
   },
   "plugins": [
@@ -58,7 +54,7 @@
         "selectedVersion": "0.4.17",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-plugin-mall-node22",
@@ -86,6 +82,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -102,7 +108,7 @@
         "selectedVersion": "0.9.4",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-verify-node22",
@@ -130,6 +136,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -146,7 +162,7 @@
         "selectedVersion": "0.3.12",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-awiki-node22",
@@ -172,36 +188,19 @@
           "observedAt": "2026-09-21T13:11:09.209Z",
           "recheckDueAt": "2026-09-28T13:11:09.209Z",
           "reason": "the exact artifact installed and loaded, but @agent-network-protocol/dsh-anp-identity@0.1.3 was not resolved by the DSH runtime (runtime-import-observed)"
-        },
-        {
-          "caseId": "dsh-awiki-node22-web",
-          "sourceCaseId": "dsh-awiki-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "@awiki/dsh-plugin@0.3.12",
-            "sha256": "beae75e2f545063fc4522506783ed1eabf4649eda84f1a956bd753d1cfea31ea"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-21T13:16:15.638Z",
-          "recheckDueAt": "2026-09-28T13:16:15.638Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-auto-memory",
@@ -217,7 +216,7 @@
         "selectedVersion": "3.1.7",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-auto-memory-node22",
@@ -250,6 +249,16 @@
           "reason": "the DSH plugin install requires explicit approval for dependency builds: onnxruntime-node, protobufjs, sharp"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -266,7 +275,7 @@
         "selectedVersion": "1.6.3",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-update-checker-node22",
@@ -294,6 +303,16 @@
           "reason": "the exact artifact installed and loaded, but react@^18.2.0 was not resolved by the DSH runtime (runtime-import-observed)"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -310,7 +329,7 @@
         "selectedVersion": "0.4.38",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-agy-link-node24",
@@ -338,6 +357,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -354,7 +383,7 @@
         "selectedVersion": "0.3.8",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-turn-rewind-node22",
@@ -382,6 +411,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -398,7 +437,7 @@
         "selectedVersion": "0.1.45",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-vision-toolkit-node22",
@@ -424,36 +463,19 @@
           "observedAt": "2026-09-21T13:12:10.770Z",
           "recheckDueAt": "2026-09-28T13:12:10.770Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@>=0.1.0-rc.8 <0.2.0 || ^0.1.1-rc.1 || ^0.1.2-alpha.1 || ^0.1.5-rc.1 was not resolved by the DSH runtime (runtime-import-observed)"
-        },
-        {
-          "caseId": "dsh-vision-toolkit-node22-web",
-          "sourceCaseId": "dsh-vision-toolkit-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "@anionex/dsh-vision-toolkit@0.1.45",
-            "sha256": "09b0382d14c9792ee2430eec7793f7c1932de96863c847c6623499f67ba4739e"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:31.762Z",
-          "recheckDueAt": "2026-09-30T12:07:31.762Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "anweat-dsh-browser",
@@ -469,7 +491,7 @@
         "selectedVersion": "0.1.12",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "anweat-dsh-browser-node22",
@@ -500,6 +522,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -516,7 +548,7 @@
         "selectedVersion": "0.4.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-find-plugin-node22",
@@ -544,6 +576,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -560,7 +602,7 @@
         "selectedVersion": "0.7.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-remote-plugin-node22",
@@ -588,6 +630,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -604,7 +656,7 @@
         "selectedVersion": "0.57.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "context-node22",
@@ -632,6 +684,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -648,7 +710,7 @@
         "selectedVersion": "0.11.1",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-tui-node22",
@@ -674,36 +736,19 @@
           "observedAt": "2026-09-21T13:13:08.046Z",
           "recheckDueAt": "2026-09-28T13:13:08.046Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
-        },
-        {
-          "caseId": "dsh-tui-tui",
-          "sourceCaseId": "dsh-tui-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "@deepseek-harness-tui/dsh-tui@0.10.2",
-            "sha256": "d680e6e5704e6724940233cab12045d87c71c30820c9e169727de271ee8c629c"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "tui",
-          "profile": "dsh-tui",
-          "status": "observed-compatible",
-          "radarResult": "compatible",
-          "observedAt": "2026-09-21T13:16:03.024Z",
-          "recheckDueAt": "2026-09-28T13:16:03.024Z",
-          "reason": "the TUI produced a real PTY frame, accepted input, and completed controlled shutdown"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-tavern",
@@ -719,7 +764,7 @@
         "selectedVersion": "2.5.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-tavern-node22",
@@ -745,36 +790,19 @@
           "observedAt": "2026-09-21T13:12:08.621Z",
           "recheckDueAt": "2026-09-28T13:12:08.621Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-runtime@^0.1.0-rc.6 was not resolved by the DSH runtime (no-literal-reference-observed)"
-        },
-        {
-          "caseId": "dsh-tavern-node22-web",
-          "sourceCaseId": "dsh-tavern-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "dsh-tavern@2.4.1",
-            "sha256": "1ee8024e9e53a2a0aa503c6643386fb152e09bc018f275d074a81dfc7f9f50a1"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:24.077Z",
-          "recheckDueAt": "2026-09-30T12:07:24.077Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-history",
@@ -790,7 +818,7 @@
         "selectedVersion": "0.1.25",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-history-node22",
@@ -816,36 +844,19 @@
           "observedAt": "2026-09-21T13:11:04.174Z",
           "recheckDueAt": "2026-09-28T13:11:04.174Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-runtime@>=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0 was not resolved by the DSH runtime (no-literal-reference-observed)"
-        },
-        {
-          "caseId": "dsh-history-node22-web",
-          "sourceCaseId": "dsh-history-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "dsh-history@0.1.25",
-            "sha256": "de1dea5ffd3f1d33e9248268e32b1b60c460fcc0d7d07d843163b158d7529b51"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:31.472Z",
-          "recheckDueAt": "2026-09-30T12:07:31.472Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-vibe-math",
@@ -861,7 +872,7 @@
         "selectedVersion": "2.3.16",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-vibe-math-node22",
@@ -889,6 +900,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -905,7 +926,7 @@
         "selectedVersion": "1.7.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-gateway-node22",
@@ -933,6 +954,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -949,7 +980,7 @@
         "selectedVersion": "0.8.3",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-taskboard-node22",
@@ -977,6 +1008,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -993,7 +1034,7 @@
         "selectedVersion": "3.0.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "whale-on-desk-node22",
@@ -1019,36 +1060,19 @@
           "observedAt": "2026-09-21T13:12:13.217Z",
           "recheckDueAt": "2026-09-28T13:12:13.217Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-runtime@* was not resolved by the DSH runtime (no-literal-reference-observed)"
-        },
-        {
-          "caseId": "whale-on-desk-node22-web",
-          "sourceCaseId": "whale-on-desk-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "whale-on-desk@3.0.0",
-            "sha256": "17e374e5cb56a95457490180ac3cac0fff82b03fa8ef929424edda9ead8d84cb"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:21.998Z",
-          "recheckDueAt": "2026-09-30T12:07:21.998Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-free-search",
@@ -1064,7 +1088,7 @@
         "selectedVersion": "0.4.39",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-free-search-node22",
@@ -1092,6 +1116,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1108,7 +1142,7 @@
         "selectedVersion": "1.6.5",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-imagegen-node22",
@@ -1136,6 +1170,16 @@
           "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 1 required unresolved edge(s)"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1152,7 +1196,7 @@
         "selectedVersion": "0.3.5",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-univer-office-node22",
@@ -1178,36 +1222,19 @@
           "observedAt": "2026-09-21T13:12:11.587Z",
           "recheckDueAt": "2026-09-28T13:12:11.587Z",
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
-        },
-        {
-          "caseId": "dsh-univer-office-web",
-          "sourceCaseId": "dsh-univer-office-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "dsh-univer-office@0.3.2",
-            "sha256": "6e5cbb6fec55535311d1c02e55ecbf933121cf567ad4b319a397d3c6d9d6bf98"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:20.491Z",
-          "recheckDueAt": "2026-09-30T12:07:20.491Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-market",
@@ -1223,7 +1250,7 @@
         "selectedVersion": "1.66.2",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-market-node22",
@@ -1251,6 +1278,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1267,7 +1304,7 @@
         "selectedVersion": "0.6.4",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-auxiliary-node22",
@@ -1295,6 +1332,16 @@
           "reason": "the exact artifact installed and loaded, but @dsh-plugin/dsh-loader@^1.3.0 was not resolved by the DSH runtime (runtime-import-observed)"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1311,7 +1358,7 @@
         "selectedVersion": "1.0.1",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-wallpaper-engine-node22",
@@ -1337,36 +1384,19 @@
           "observedAt": "2026-09-21T13:12:56.259Z",
           "recheckDueAt": "2026-09-28T13:12:56.259Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-runtime@>=0.1.0-rc.6 was not resolved by the DSH runtime (no-literal-reference-observed)"
-        },
-        {
-          "caseId": "dsh-wallpaper-engine-node22-web",
-          "sourceCaseId": "dsh-wallpaper-engine-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "dsh-plugin-wallpaper-engine@0.7.5",
-            "sha256": "0d1720b34d1ea3c17e46874fff9d6a7fc0df31ca491920273aa3730943c6e926"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:25.358Z",
-          "recheckDueAt": "2026-09-30T12:07:25.358Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "deepseek-harness-wallet",
@@ -1382,7 +1412,7 @@
         "selectedVersion": "0.3.13",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "deepseek-harness-wallet-node22",
@@ -1410,6 +1440,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1426,7 +1466,7 @@
         "selectedVersion": "0.5.2",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-thirteen-bg-node22",
@@ -1452,36 +1492,19 @@
           "observedAt": "2026-09-21T13:12:08.501Z",
           "recheckDueAt": "2026-09-28T13:12:08.501Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-runtime@>=0.1.0-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0 was not resolved by the DSH runtime (no-literal-reference-observed)"
-        },
-        {
-          "caseId": "dsh-thirteen-bg-node22-web",
-          "sourceCaseId": "dsh-thirteen-bg-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "dsh-thirteen-bg@0.5.2",
-            "sha256": "ba718513fe41aa604b01ea38220a3ce7ad5f51c0e486bbb319218ac2b7d0eb51"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:22.080Z",
-          "recheckDueAt": "2026-09-30T12:07:22.080Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-remote",
@@ -1497,7 +1520,7 @@
         "selectedVersion": "0.8.22",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-remote-node22",
@@ -1529,6 +1552,16 @@
           "reason": "the DSH plugin install requires explicit approval for dependency builds: cpu-features, ssh2"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1545,7 +1578,7 @@
         "selectedVersion": "0.4.1",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-vision-proxy-node22",
@@ -1577,6 +1610,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1593,7 +1636,7 @@
         "selectedVersion": "0.1.0-alpha.4.50",
         "distTag": "alpha"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-codex-connect-node22",
@@ -1619,36 +1662,19 @@
           "observedAt": "2026-09-21T13:11:55.475Z",
           "recheckDueAt": "2026-09-28T13:11:55.475Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@0.1.2-rc.1 || 0.1.5-alpha.1 || 0.1.5-rc.1 || 0.1.5-rc.2 was not resolved by the DSH runtime (runtime-import-observed)"
-        },
-        {
-          "caseId": "dsh-codex-connect-node22-web",
-          "sourceCaseId": "dsh-codex-connect-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "dsh-codex-connect@0.1.0-alpha.4.39",
-            "sha256": "2dff58e6eaf53d18acc14ac8b094a35b34c1cb9c8e54c51677ce8e2d37fb3aca"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:38.006Z",
-          "recheckDueAt": "2026-09-30T12:07:38.006Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-chatvoice",
@@ -1664,7 +1690,7 @@
         "selectedVersion": "0.1.7",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-chatvoice-node22",
@@ -1692,6 +1718,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1708,7 +1744,7 @@
         "selectedVersion": "1.0.8",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-free-vision-node22",
@@ -1740,6 +1776,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1773,7 +1819,7 @@
         "selectedVersion": "1.7.40",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "cost-meter-node22",
@@ -1801,6 +1847,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1817,7 +1873,7 @@
         "selectedVersion": "0.11.9",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-client-auto-continue-node22",
@@ -1845,6 +1901,16 @@
           "reason": "the exact artifact installed and loaded, but react@^18.2.0 was not resolved by the DSH runtime (runtime-import-observed)"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1861,7 +1927,7 @@
         "selectedVersion": "0.4.4",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-testkit-node22",
@@ -1889,6 +1955,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1905,7 +1981,7 @@
         "selectedVersion": "3.5.7",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "iterate-plugin-node22",
@@ -1933,6 +2009,16 @@
           "reason": "the exact artifact installed and loaded, but the effective DSH runtime graph has 1 required unresolved edge(s)"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1949,7 +2035,7 @@
         "selectedVersion": "0.12.1",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-strata-node22",
@@ -1977,6 +2063,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -1993,7 +2089,7 @@
         "selectedVersion": "0.3.7",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-full-remote-node22",
@@ -2019,36 +2115,19 @@
           "observedAt": "2026-09-21T13:11:13.941Z",
           "recheckDueAt": "2026-09-28T13:11:13.941Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-runtime@>=0.1.0-rc.5 <0.2 was not resolved by the DSH runtime (no-literal-reference-observed)"
-        },
-        {
-          "caseId": "dsh-full-remote-node22-web",
-          "sourceCaseId": "dsh-full-remote-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "dsh-full-remote@0.3.7",
-            "sha256": "f6aef43b8926e2096c0163726ded38066d3b76df3bcd6ba6193d1fe194480f2b"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:20.588Z",
-          "recheckDueAt": "2026-09-30T12:07:20.588Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-xueqiu",
@@ -2064,7 +2143,7 @@
         "selectedVersion": "1.22.13",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-xueqiu-node22",
@@ -2092,6 +2171,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2108,7 +2197,7 @@
         "selectedVersion": "3.26.5",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "modlens-node22",
@@ -2136,6 +2225,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2152,7 +2251,7 @@
         "selectedVersion": "5.10.5",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "modsearch-node22",
@@ -2180,6 +2279,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2196,7 +2305,7 @@
         "selectedVersion": "0.8.5",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-coding-subscription-oauth-node22",
@@ -2224,6 +2333,16 @@
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-atomic-write@0.1.5-rc.2 does not satisfy 0.1.1-rc.2 (runtime-import-observed)"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2256,7 +2375,7 @@
         "selectedVersion": "0.11.17",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-commandcode-provider-node22",
@@ -2284,6 +2403,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2300,7 +2429,7 @@
         "selectedVersion": "1.0.5",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-agency-agents-node22",
@@ -2326,36 +2455,19 @@
           "observedAt": "2026-09-21T13:11:14.543Z",
           "recheckDueAt": "2026-09-28T13:11:14.543Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-slots@0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.1.6-alpha.1 || 0.1.6-alpha.2 was not resolved by the DSH runtime (no-literal-reference-observed)"
-        },
-        {
-          "caseId": "dsh-agency-agents-node22-web",
-          "sourceCaseId": "dsh-agency-agents-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "@michengai/dsh-agency-agents@1.0.1",
-            "sha256": "2bd203dd66fa7f5622992f6ecb02bbfc314d6742455579fc9121f7260819dae7"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:55.051Z",
-          "recheckDueAt": "2026-09-30T12:07:55.051Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-archive-manager",
@@ -2371,7 +2483,7 @@
         "selectedVersion": "1.0.6",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-archive-manager-node22",
@@ -2397,36 +2509,19 @@
           "observedAt": "2026-09-21T13:11:10.750Z",
           "recheckDueAt": "2026-09-28T13:11:10.750Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.1.6-alpha.1 || 0.1.6-alpha.2 was not resolved by the DSH runtime (no-literal-reference-observed)"
-        },
-        {
-          "caseId": "dsh-archive-manager-node22-web",
-          "sourceCaseId": "dsh-archive-manager-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "@michengai/dsh-archive-manager@1.0.2",
-            "sha256": "890ea4f212f791fd8152d685ce3299e9c1898b782e4b7ec3fd5d5b630ff081df"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:23.389Z",
-          "recheckDueAt": "2026-09-30T12:07:23.389Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-im-connect",
@@ -2442,7 +2537,7 @@
         "selectedVersion": "0.1.55",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-im-connect-node22",
@@ -2473,6 +2568,16 @@
           "reason": "the DSH plugin install requires explicit approval for dependency builds: protobufjs"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2489,7 +2594,7 @@
         "selectedVersion": "1.1.4",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-skills-manager-node22",
@@ -2515,36 +2620,19 @@
           "observedAt": "2026-09-21T13:12:49.489Z",
           "recheckDueAt": "2026-09-28T13:12:49.489Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.1.6-alpha.1 || 0.1.6-alpha.2 was not resolved by the DSH runtime (no-literal-reference-observed)"
-        },
-        {
-          "caseId": "dsh-skills-manager-node22-web",
-          "sourceCaseId": "dsh-skills-manager-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "@michengai/dsh-skills-manager@1.0.1",
-            "sha256": "3c7de9e64d99968ee450ccf75bf08e5d3c639f6748d035b1913b55aa607b6b30"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:30.215Z",
-          "recheckDueAt": "2026-09-30T12:07:30.215Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-mneme",
@@ -2560,7 +2648,7 @@
         "selectedVersion": "0.8.4",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-mneme-node22",
@@ -2588,6 +2676,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2604,7 +2702,7 @@
         "selectedVersion": "0.8.5",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-doctor-node22",
@@ -2632,6 +2730,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2648,7 +2756,7 @@
         "selectedVersion": "0.1.21",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "agent-teams-node22",
@@ -2676,6 +2784,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2692,7 +2810,7 @@
         "selectedVersion": "0.5.7",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-catppuccin-node22",
@@ -2720,6 +2838,16 @@
           "reason": "the exact artifact installed and loaded, but react@^18.2.0 was not resolved by the DSH runtime (runtime-import-observed)"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2736,7 +2864,7 @@
         "selectedVersion": "0.6.3",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-spend-node22",
@@ -2764,6 +2892,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2780,7 +2918,7 @@
         "selectedVersion": "0.19.7",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-chat-import-node22",
@@ -2808,6 +2946,16 @@
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh@>=0.1.5-rc.1 was not resolved by the DSH runtime (no-literal-reference-observed)"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -2824,7 +2972,7 @@
         "selectedVersion": "0.21.1",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "better-sidebar-node22",
@@ -2853,39 +3001,19 @@
           "observedAt": "2026-09-21T13:12:38.833Z",
           "recheckDueAt": "2026-09-28T13:12:38.833Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@^0.1.5-rc.1 was not resolved by the DSH runtime (runtime-import-observed)"
-        },
-        {
-          "caseId": "better-sidebar-node22-web",
-          "sourceCaseId": "better-sidebar-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "dsh-better-sidebar@0.19.1",
-            "sha256": "67969b94e96747ad910ce945bafa2b8176af584fb8bc02f87dce5ed132986884"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "approvedDependencyBuilds": [
-            "node-pty"
-          ],
-          "observedAt": "2026-09-23T12:07:36.606Z",
-          "recheckDueAt": "2026-09-30T12:07:36.606Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-mnemon",
@@ -2901,7 +3029,7 @@
         "selectedVersion": "0.5.16",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-mnemon-node22",
@@ -2927,36 +3055,19 @@
           "observedAt": "2026-09-21T13:11:10.548Z",
           "recheckDueAt": "2026-09-28T13:11:10.548Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-ui-primitives@^0.1.5-rc.1 || ^0.1.6-alpha.2 was not resolved by the DSH runtime (runtime-import-observed)"
-        },
-        {
-          "caseId": "dsh-mnemon-node22-web",
-          "sourceCaseId": "dsh-mnemon-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "dsh-mnemon@0.5.12",
-            "sha256": "9691ff6df9da8882328edc48a35cac1b1e6175f9b07909087fca3d70dc31d555"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:26.688Z",
-          "recheckDueAt": "2026-09-30T12:07:26.688Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "deepseek-harness-acp",
@@ -2972,7 +3083,7 @@
         "selectedVersion": "0.4.33",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "deepseek-harness-acp-node22",
@@ -2999,6 +3110,16 @@
           "reason": "the exact npm artifact could not be established before execution"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3015,7 +3136,7 @@
         "selectedVersion": "0.2.39",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "odai-dsh-plugin-node22",
@@ -3043,6 +3164,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3059,7 +3190,7 @@
         "selectedVersion": "0.1.14",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-auto-classifier-node22",
@@ -3087,6 +3218,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3103,7 +3244,7 @@
         "selectedVersion": "0.2.12",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-pet-node22",
@@ -3129,36 +3270,19 @@
           "observedAt": "2026-09-21T13:12:08.787Z",
           "recheckDueAt": "2026-09-28T13:12:08.787Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-runtime@^0.1.1-rc.2 was not resolved by the DSH runtime (no-literal-reference-observed)"
-        },
-        {
-          "caseId": "dsh-pet-node22-web",
-          "sourceCaseId": "dsh-pet-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "dsh-pet@0.2.11",
-            "sha256": "0130ae262fc3f8beeb55ba0a51512b1b1bfc5e5866f35fe46905151baed1e80b"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:36.674Z",
-          "recheckDueAt": "2026-09-30T12:07:36.674Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "ouroboros-dsh-plugin",
@@ -3191,7 +3315,7 @@
         "selectedVersion": "0.2.19",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-extension-hub-node22",
@@ -3219,6 +3343,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3235,7 +3369,7 @@
         "selectedVersion": "2.6.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-easyrewrite-node22",
@@ -3263,6 +3397,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3279,7 +3423,7 @@
         "selectedVersion": "9.27.1",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-dream-skin-node22",
@@ -3307,6 +3451,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3323,7 +3477,7 @@
         "selectedVersion": "0.8.2",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-better-edit-node22",
@@ -3376,6 +3530,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3392,7 +3556,7 @@
         "selectedVersion": "1.26.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "graphflow-node22",
@@ -3427,6 +3591,16 @@
           "reason": "the DSH plugin install requires explicit approval for dependency builds: @roarpeng/graphflow, better-sqlite3, onnxruntime-node, protobufjs, sharp"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3443,7 +3617,7 @@
         "selectedVersion": "0.5.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-mobile-node22",
@@ -3471,6 +3645,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3487,7 +3671,7 @@
         "selectedVersion": "2.10.6",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-pocket-node22",
@@ -3515,6 +3699,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3531,7 +3725,7 @@
         "selectedVersion": "0.5.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dshscan-node22",
@@ -3559,6 +3753,16 @@
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-tools@0.1.5-rc.2 does not satisfy 0.1.0-rc.6 (runtime-import-observed)"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3575,7 +3779,7 @@
         "selectedVersion": "0.1.7",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-deepseek-vision-node22",
@@ -3603,6 +3807,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3619,7 +3833,7 @@
         "selectedVersion": "0.12.2",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-rewind-plugin-node22",
@@ -3647,6 +3861,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3663,7 +3887,7 @@
         "selectedVersion": "0.13.8",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-movein-node22",
@@ -3691,6 +3915,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3707,7 +3941,7 @@
         "selectedVersion": "0.17.14",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-win32-node22",
@@ -3735,6 +3969,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3751,7 +3995,7 @@
         "selectedVersion": "2.7.5",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-passwords-node22",
@@ -3779,6 +4023,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3795,7 +4049,7 @@
         "selectedVersion": "0.14.1",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-email-node22",
@@ -3823,6 +4077,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3839,7 +4103,7 @@
         "selectedVersion": "0.10.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-crew-node22",
@@ -3867,6 +4131,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3883,7 +4157,7 @@
         "selectedVersion": "0.15.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-auth-gate-node22",
@@ -3911,6 +4185,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3927,7 +4211,7 @@
         "selectedVersion": "0.13.1",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-notifier-node22",
@@ -3958,6 +4242,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -3974,7 +4268,7 @@
         "selectedVersion": "0.3.2",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-any-background-node22",
@@ -4002,6 +4296,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4035,7 +4339,7 @@
         "selectedVersion": "2.0.5",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-tool-lens-node22",
@@ -4063,6 +4367,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4079,7 +4393,7 @@
         "selectedVersion": "0.5.6",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-plugin-vetting-node22",
@@ -4107,6 +4421,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4123,7 +4447,7 @@
         "selectedVersion": "0.1.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "archify-dsh-node22",
@@ -4151,6 +4475,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4167,7 +4501,7 @@
         "selectedVersion": "0.9.4",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-plugin-subscriptions-node22",
@@ -4195,6 +4529,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4211,7 +4555,7 @@
         "selectedVersion": "0.7.0",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "hindsight-coding-agents-node22",
@@ -4239,6 +4583,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4255,7 +4609,7 @@
         "selectedVersion": "0.5.8",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-memory-plugin-node22",
@@ -4283,6 +4637,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4299,7 +4663,7 @@
         "selectedVersion": "0.9.3",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-git-worktree-node22",
@@ -4325,36 +4689,19 @@
           "observedAt": "2026-09-21T13:12:03.761Z",
           "recheckDueAt": "2026-09-28T13:12:03.761Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-locale@0.1.5-rc.2 does not satisfy 0.1.2-rc.1 (runtime-import-observed)"
-        },
-        {
-          "caseId": "dsh-git-worktree-node22-web",
-          "sourceCaseId": "dsh-git-worktree-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "dsh-git-worktree@0.9.2",
-            "sha256": "3e1b32416eed6ff3f4de96cf7e8747b9acc082ce0148e74d27b79ee7749fce03"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:23.187Z",
-          "recheckDueAt": "2026-09-30T12:07:23.187Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-builtin-browser",
@@ -4370,7 +4717,7 @@
         "selectedVersion": "0.1.22",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-builtin-browser-node22",
@@ -4398,6 +4745,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4414,7 +4771,7 @@
         "selectedVersion": "2.2.2",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-codex-subscription-node22",
@@ -4440,36 +4797,19 @@
           "observedAt": "2026-09-21T13:11:15.448Z",
           "recheckDueAt": "2026-09-28T13:11:15.448Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-api-remotes@0.1.5-rc.2 does not satisfy 0.1.2-rc.1 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.6-alpha.1 (no-literal-reference-observed)"
-        },
-        {
-          "caseId": "dsh-codex-subscription-node22-web",
-          "sourceCaseId": "dsh-codex-subscription-node22",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "dsh-codex-subscription@2.1.2",
-            "sha256": "cd0f768d043a9824ed8b5f2c8da5de4867cd3ac15d01e50330c8cc4410ddfe0b"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 22,
-            "nodeVersion": "22.23.2",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:25.533Z",
-          "recheckDueAt": "2026-09-30T12:07:25.533Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
       "id": "dsh-plugin-vet",
@@ -4485,7 +4825,7 @@
         "selectedVersion": "0.3.15",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-plugin-vet-node22",
@@ -4513,6 +4853,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4529,7 +4879,7 @@
         "selectedVersion": "0.3.3",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "xgone-dsh-remote-node22",
@@ -4557,6 +4907,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4573,7 +4933,7 @@
         "selectedVersion": "0.1.64",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-config-manager-node22",
@@ -4601,6 +4961,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4617,7 +4987,7 @@
         "selectedVersion": "1.0.1",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-deepread-node22",
@@ -4645,6 +5015,16 @@
           "reason": "the exact artifact installed and loaded, but react@^18.2.0 was not resolved by the DSH runtime (runtime-import-observed)"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4661,7 +5041,7 @@
         "selectedVersion": "4.28.1",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-im-node22",
@@ -4689,6 +5069,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4705,7 +5095,7 @@
         "selectedVersion": "2.0.1",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-plugin-writing-guard-node22",
@@ -4736,6 +5126,16 @@
           "reason": "the DSH plugin install requires explicit approval for dependency builds: dsh-plugin-writing-guard"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4752,7 +5152,7 @@
         "selectedVersion": "2.2.4",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-vision-router-node22",
@@ -4780,6 +5180,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4796,7 +5206,7 @@
         "selectedVersion": "0.1.43",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-meme-node22",
@@ -4824,6 +5234,16 @@
           "reason": "the exact artifact installed, registered, loaded, and satisfied its direct peer contracts under the requested DSH version"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4840,7 +5260,7 @@
         "selectedVersion": "0.4.3",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "dsh-web-ui-all-node22",
@@ -4874,6 +5294,16 @@
           "reason": "the DSH plugin install requires explicit approval for dependency builds: cloudflared, cpu-features, node-pty, ssh2"
         }
       ],
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
       "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     },
     {
@@ -4890,7 +5320,7 @@
         "selectedVersion": "0.1.0-rc.1",
         "distTag": "latest"
       },
-      "status": "update-pending",
+      "status": "needs-review",
       "cells": [
         {
           "caseId": "openpencil-node24",
@@ -4916,36 +5346,19 @@
           "observedAt": "2026-09-21T13:12:07.327Z",
           "recheckDueAt": "2026-09-28T13:12:07.327Z",
           "reason": "the exact artifact installed and loaded, but @deepseek-ai/dsh-client-runtime@^0.1.0-rc.6 was not resolved by the DSH runtime (type-only-reference-observed)"
-        },
-        {
-          "caseId": "openpencil-node24-web",
-          "sourceCaseId": "openpencil-node24",
-          "evidenceSource": "surface-ledger",
-          "artifact": {
-            "spec": "@zseven-w/dsh-openpencil@0.1.0-rc.1",
-            "sha256": "a4563e560e91bcd3a2a9302ee7dbee046b146c1bd0de6b27b7c7524fd52e77ca"
-          },
-          "dsh": {
-            "package": "@deepseek-ai/dsh",
-            "version": "0.1.5-rc.2"
-          },
-          "runtime": {
-            "nodeMajor": 24,
-            "nodeVersion": "24.21.0",
-            "platform": "linux",
-            "architecture": "x64"
-          },
-          "executionPlane": "web",
-          "profile": "web",
-          "status": "needs-review",
-          "radarResult": "unknown",
-          "observedAt": "2026-09-23T12:07:28.195Z",
-          "recheckDueAt": "2026-09-30T12:07:28.195Z",
-          "reason": "the browser driver failed while observing the Web surface: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:30880/\nCall log:\n  - navigating to \"http://127.0.0.1:30880/\", waiting until \"domcontentloaded\"\n"
         }
       ],
-      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json",
-      "surfaceEvidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/surface-ledger.json"
+      "environmentRecommendation": {
+        "status": "missing",
+        "nodeMajors": [],
+        "executionProfiles": [],
+        "expectedCells": [],
+        "missingCells": [
+          "repository-environment-recommendation"
+        ],
+        "coverageGaps": []
+      },
+      "evidenceUrl": "https://github.com/MicroMilo/upstream-radar/blob/main/compatibility-ledger.json"
     }
   ]
 }

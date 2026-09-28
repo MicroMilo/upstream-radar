@@ -44,7 +44,11 @@ describe('reusable GitHub Action', () => {
     const targets = JSON.parse((workflow.match(/target_ids_json:[\s\S]*?default: '(\[[^\n']+\])'/) ?? [])[1] ?? 'null')
     const cohort = JSON.parse(await readFile('examples/dsh/rebuild-batch/install-targets.json', 'utf8'))
     assert.deepEqual([...targets].sort(), cohort.plugins.map((plugin: { id: string }) => plugin.id).sort())
-    assert.match(workflow, /dshChannel: \[next, alpha\]/)
+    assert.match(workflow, /dsh_channels_json:/)
+    assert.match(workflow, /default: '\["next"\]'/)
+    assert.match(workflow, /dshChannel: \$\{\{ fromJSON\(inputs\.dsh_channels_json\) \}\}/)
+    assert.match(workflow, /run-dsh-active-agent-provider\.mjs/)
+    assert.match(workflow, /env -u ISSUE_LOCATOR_LLM_BASE_URL -u ISSUE_LOCATOR_LLM_API_KEY -u ISSUE_LOCATOR_LLM_MODEL/)
   })
   it('reports repository or build review failure after downstream work without hiding a successful partial observation', async () => {
     const workflow = await readFile(new URL('../../.github/workflows/upstream-observer.yml', import.meta.url), 'utf8')
