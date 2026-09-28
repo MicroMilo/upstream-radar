@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-active-task-state/v1alpha1",
-  "updatedAt": "2026-09-28T09:31:37.068Z",
+  "updatedAt": "2026-09-28T09:41:47.057Z",
   "tasks": [
     {
       "id": "active-4797b25090719afc8f6dde5fb1d8fbe0",
@@ -67,8 +67,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 2,
-      "lastAttemptAt": "2026-09-28T08:59:52.451Z",
+      "attempts": 3,
+      "lastAttemptAt": "2026-09-28T09:41:47.057Z",
       "lastRunId": "36400693842",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
@@ -101,8 +101,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 2,
-      "lastAttemptAt": "2026-09-28T08:59:52.451Z",
+      "attempts": 3,
+      "lastAttemptAt": "2026-09-28T09:41:47.057Z",
       "lastRunId": "36400693842",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
@@ -135,8 +135,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 2,
-      "lastAttemptAt": "2026-09-28T08:59:52.451Z",
+      "attempts": 3,
+      "lastAttemptAt": "2026-09-28T09:41:47.057Z",
       "lastRunId": "36400693842",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
@@ -169,8 +169,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 2,
-      "lastAttemptAt": "2026-09-28T08:59:52.451Z",
+      "attempts": 3,
+      "lastAttemptAt": "2026-09-28T09:41:47.057Z",
       "lastRunId": "36400693842",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
@@ -203,8 +203,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 2,
-      "lastAttemptAt": "2026-09-28T08:59:52.451Z",
+      "attempts": 3,
+      "lastAttemptAt": "2026-09-28T09:41:47.057Z",
       "lastRunId": "36400693842",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
@@ -273,8 +273,8 @@
       },
       "status": "pending",
       "createdAt": "2026-09-28T08:38:01.329Z",
-      "attempts": 2,
-      "lastAttemptAt": "2026-09-28T08:59:52.451Z",
+      "attempts": 3,
+      "lastAttemptAt": "2026-09-28T09:41:47.057Z",
       "lastRunId": "36400693842",
       "lastFailure": "the isolated Agent artifact is incomplete"
     }
