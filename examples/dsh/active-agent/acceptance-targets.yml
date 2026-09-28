@@ -1,0 +1,19 @@
+schema: upstream-radar.observer-targets/v1alpha1
+targets:
+  - id: deepseek-harness
+    ecosystem: dsh
+    repository: deepseek-ai/deepseek-harness
+    ref: master
+    package: '@deepseek-ai/dsh'
+    package-tag: next
+    packagePath: apps/cli/package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm
+  - id: dsh-context
+    ecosystem: dsh
+    repository: bowenliang123/dsh-context
+    ref: main
+    package: dsh-context
+    packagePath: package.json
+    lockfile: pnpm-lock.yaml
+    lockfileType: pnpm

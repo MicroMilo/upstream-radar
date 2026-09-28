@@ -12,6 +12,7 @@ on:
           - full
           - agent-retry
           - headless-agent
+          - active-acceptance
   schedule:
     # The observer is intentionally periodic: durable state makes the loop
     # restartable, while the report stays quiet when nothing meaningful changed.
@@ -76,6 +77,17 @@ jobs:
           cp examples/dsh/first-batch/reverse-dependency-index.json \
             "$RUNNER_TEMP/reverse-dependency-index.json"
 
+      # One bounded deployment acceptance path replays the repository's real
+      # 0.56.2 observation point against the live upstream. It never rolls the
+      # production observation point backward; only the resulting exact active
+      # task enters the normal durable dispatch/reconciliation path.
+      - name: Prepare the immutable real-version acceptance baseline
+        if: inputs.mode == 'active-acceptance'
+        run: |
+          git fetch --no-tags --depth=1 origin 2ca6576986c08d5317bab87e641a235ef3b7075c
+          git show 2ca6576986c08d5317bab87e641a235ef3b7075c:observations.json \
+            > "$RUNNER_TEMP/active-acceptance-observations.json"
+
       - name: Observe upstream changes
         if: inputs.mode != 'headless-agent'
         id: observe
@@ -104,8 +116,20 @@ jobs:
             --report "$OBSERVER_REPORT"
             --json
           )
+          if [[ "$OBSERVER_MODE" == 'active-acceptance' ]]; then
+            observe_args=(
+              node dist/src/cli.js observe
+              examples/dsh/active-agent/acceptance-targets.yml
+              --state "$RUNNER_TEMP/active-acceptance-observations.json"
+              --report "$OBSERVER_REPORT"
+              --json
+              --reverse-index "$RUNNER_TEMP/reverse-dependency-index.json"
+            )
+          fi
           if [[ "$OBSERVER_MODE" == 'agent-retry' ]]; then
             observe_args+=(--retry-pending-only)
+          elif [[ "$OBSERVER_MODE" == 'active-acceptance' ]]; then
+            : # Compare the two real immutable versions without replaying legacy read-only Agent tasks.
           else
             observe_args+=(
               --reverse-index "$RUNNER_TEMP/reverse-dependency-index.json"
@@ -203,10 +227,15 @@ jobs:
         id: active-task-plan
         env:
           OBSERVER_JSON: ${{ runner.temp }}/upstream-radar-observer.json
+          OBSERVER_MODE: ${{ inputs.mode }}
         run: |
+          active_observations=observations.json
+          if [[ "$OBSERVER_MODE" == 'active-acceptance' ]]; then
+            active_observations="$RUNNER_TEMP/active-acceptance-observations.json"
+          fi
           node scripts/plan-dsh-active-tasks.mjs \
             examples/dsh/rebuild-batch/install-targets.json \
-            observations.json \
+            "$active_observations" \
             "$OBSERVER_JSON" \
             examples/dsh/active-agent/tasks.json \
             | tee "$RUNNER_TEMP/dsh-active-task-plan.json"

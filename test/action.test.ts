@@ -65,6 +65,9 @@ describe('reusable GitHub Action', () => {
     assert.match(active, /task_matrix_json: \$\{\{ needs\.observe\.outputs\.active_task_matrix \}\}/)
     assert.match(active, /persist_results: true/)
     assert.match(active, /secrets: inherit/)
+    assert.match(observe, /active-acceptance/)
+    assert.match(observe, /2ca6576986c08d5317bab87e641a235ef3b7075c:observations\.json/)
+    assert.match(observe, /active-acceptance-observations\.json/)
   })
   it('reports repository or build review failure after downstream work without hiding a successful partial observation', async () => {
     const workflow = await readFile(new URL('../../.github/workflows/upstream-observer.yml', import.meta.url), 'utf8')
