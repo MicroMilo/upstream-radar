@@ -170,7 +170,10 @@ jobs:
       # majors into the headless/Web/TUI vocabulary. The resulting signal is
       # persisted separately from compatibility evidence.
       - name: Infer repository-recommended Node and execution profiles
-        if: inputs.mode != 'agent-retry'
+        # The proactive per-plugin Agent now owns this reasoning on ordinary
+        # scheduled changes. Retain the legacy bulk planner only behind its
+        # explicit maintenance mode so it cannot delay durable task delivery.
+        if: inputs.mode == 'headless-agent'
         id: environment-recommendations
         continue-on-error: true
         env:
@@ -189,7 +192,7 @@ jobs:
       # target package; it emits only a bounded headless retry contract. The
       # later reusable workflow receives that contract but no model secret.
       - name: Let the Agent plan bounded headless follow-ups
-        if: inputs.mode != 'agent-retry'
+        if: inputs.mode == 'headless-agent'
         id: headless-agent-plan
         continue-on-error: true
         env:
