@@ -863,6 +863,25 @@ describe('DSH repository environment recommendation', () => {
     assert.equal(node20Surfaces.surfaces.find(item => item.sourceCaseId === 'web-plugin-node20')?.profileEnvironment?.pnpmVersion, '10.33.0')
   })
 
+  it('keeps Agent review mandatory while applying an explicit Node/profile execution policy', () => {
+    const configured = { ...targets, plugins: targets.plugins.map(target => ({ ...target,
+      analysisPolicy: {
+        fingerprint: `sha256:${'a'.repeat(64)}`,
+        nodeMajors: [20],
+        executionProfiles: ['headless'],
+      },
+    })) }
+    const applied = applyDshEnvironmentRecommendations(configured, observations, recommendations())
+    assert.deepEqual(applied.plugins[0]?.runtimeProfiles, ['node20'])
+    assert.equal(applied.plugins[0]?.environmentRecommendation?.preferredNodeMajor, 20)
+    assert.deepEqual(applied.plugins[0]?.environmentRecommendation?.nodeMajors, [20])
+    assert.deepEqual(applied.plugins[0]?.environmentRecommendation?.executionProfiles, ['headless'])
+    assert.deepEqual(applied.plugins[0]?.analysisPolicy, configured.plugins[0]?.analysisPolicy)
+
+    const noReview = applyDshEnvironmentRecommendations(configured, observations, emptyDshEnvironmentRecommendations())
+    assert.equal(noReview.plugins[0]?.environmentRecommendation, undefined)
+  })
+
   it('ignores recommendations after the exact source evidence changes', () => {
     const stale = recommendations({ sourceFingerprint: `sha256:${'f'.repeat(64)}` })
     const installTargets = applyDshEnvironmentRecommendations(targets, observations, stale)

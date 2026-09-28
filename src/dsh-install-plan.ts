@@ -10,6 +10,7 @@ import {
 } from './dsh-compatibility-ledger.js'
 import { parseNpmSpec } from './npm.js'
 import { parseDshAuthorEnvironment, type DshAuthorEnvironment } from './dsh-author-environment.js'
+import { parseDshAnalysisPolicy, type DshAnalysisPolicy } from './dsh-analysis-policy.js'
 import { satisfiesSemverRange } from './semver.js'
 import { parseDshProfileEnvironment, selectDshProfileEnvironment, type DshProfileEnvironment } from './dsh-profile-environment.js'
 
@@ -36,6 +37,8 @@ export interface DshInstallTarget {
     platform: string; architecture: string; profileEnvironment: DshProfileEnvironment; packages: string[]
   }>
   runtimeProfiles?: string[]
+  /** Immutable operator policy compiled from the single active-Agent policy file. */
+  analysisPolicy?: DshAnalysisPolicy
   /** Exact pre-execution repository reasoning applied by the recommendation module. */
   environmentRecommendation?: {
     sourceFingerprint: string
@@ -200,6 +203,9 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
     if (selectedRuntimeProfiles !== undefined && new Set(selectedRuntimeProfiles).size !== selectedRuntimeProfiles.length) {
       throw new Error(`plugins[${index}].runtimeProfiles must be unique`)
     }
+    const analysisPolicy = item.analysisPolicy === undefined
+      ? undefined
+      : parseDshAnalysisPolicy(item.analysisPolicy, `plugins[${index}].analysisPolicy`)
     const rawEnvironmentRecommendation = item.environmentRecommendation === undefined
       ? undefined
       : record(item.environmentRecommendation, `plugins[${index}].environmentRecommendation`)
@@ -328,6 +334,7 @@ export function parseDshInstallTargets(input: unknown): DshInstallTargets {
       ...(allowedBuilds.length === 0 ? {} : { allowedBuilds }),
       ...(buildApprovals === undefined ? {} : { buildApprovals }),
       ...(selectedRuntimeProfiles === undefined ? {} : { runtimeProfiles: selectedRuntimeProfiles }),
+      ...(analysisPolicy === undefined ? {} : { analysisPolicy }),
       ...(environmentRecommendation === undefined ? {} : { environmentRecommendation }),
     }
   })

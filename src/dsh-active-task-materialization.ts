@@ -75,8 +75,8 @@ export function planDshActiveTaskMaterialization(stateInput: unknown, targetsInp
   }
 }
 
-function exactPackage(coordinate: DshActiveTaskCoordinate, publishedInput: unknown, distTag: string,
-  label: string): Record<string, unknown> {
+function exactPackage(coordinate: DshActiveTaskCoordinate, publishedInput: unknown,
+  selection: { distTag: string } | { versionSelector: string }, label: string): Record<string, unknown> {
   const published = record(publishedInput, `${label} registry manifest`)
   const name = text(published.name, `${label} registry manifest.name`, 214)
   const version = text(published.version, `${label} registry manifest.version`, 128)
@@ -93,7 +93,7 @@ function exactPackage(coordinate: DshActiveTaskCoordinate, publishedInput: unkno
     : typeof repository === 'object' && repository !== null && !Array.isArray(repository)
       && typeof (repository as Record<string, unknown>).url === 'string'
       ? (repository as Record<string, unknown>).url as string : undefined
-  return { name, version, distTag, integrity, tarball,
+  return { name, version, ...selection, integrity, tarball,
     ...(repositoryUrl === undefined ? {} : { repository: repositoryUrl }),
     manifest: structuredClone(published) }
 }
@@ -127,9 +127,13 @@ export function materializeDshActiveTaskInputs(plan: DshActiveTaskMaterializatio
   const pluginManifest = sourceManifest(evidence.plugin.sourceManifest, 'plugin')
   const dshManifest = sourceManifest(evidence.dsh.sourceManifest, 'DSH')
   const pluginPackage = exactPackage(plan.task.input.plugin, evidence.plugin.publishedManifest,
-    plan.pluginDistTag, 'plugin')
+    plan.task.input.policy?.pluginVersion === plan.task.input.plugin.version
+      ? { versionSelector: plan.task.input.plugin.version }
+      : { distTag: plan.pluginDistTag }, 'plugin')
   const dshPackage = exactPackage(plan.task.input.dsh, evidence.dsh.publishedManifest,
-    plan.task.dshChannel, 'DSH')
+    plan.task.dshChannel === `exact-${plan.task.input.dsh.version}`
+      ? { versionSelector: plan.task.input.dsh.version }
+      : { distTag: plan.task.dshChannel }, 'DSH')
   const observedAt = at.toISOString()
   const observations = {
     schema: 'upstream-radar.observation-state/v1alpha1',
@@ -148,6 +152,7 @@ export function materializeDshActiveTaskInputs(plan: DshActiveTaskMaterializatio
     spec: `${plan.task.input.plugin.name}@${plan.task.input.plugin.version}`,
     reason: plan.pluginTarget.reason,
     observerTargetId: plan.pluginObserverTargetId,
+    ...(plan.task.input.policy === undefined ? {} : { analysisPolicy: structuredClone(plan.task.input.policy) }),
   }
   const targets = parseDshInstallTargets({ ...plan.targets, plugins: [scopedTarget] })
   return { observations, targets }

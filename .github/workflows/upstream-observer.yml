@@ -67,6 +67,25 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm build
 
+      - name: Compile the unified active Agent policy
+        if: inputs.mode != 'headless-agent'
+        env:
+          OBSERVER_MODE: ${{ inputs.mode }}
+        run: |
+          policy_observer_targets=examples/upstream-observer/targets.yml
+          if [[ "$OBSERVER_MODE" == 'active-acceptance' ]]; then
+            policy_observer_targets=examples/dsh/active-agent/acceptance-targets.yml
+          fi
+          node scripts/compile-dsh-active-policy.mjs \
+            examples/dsh/active-agent/policy.json \
+            "$policy_observer_targets" \
+            examples/dsh/rebuild-batch/install-targets.json \
+            "$RUNNER_TEMP/active-policy-observer-targets.json" \
+            "$RUNNER_TEMP/active-policy-install-targets.json" \
+            "$RUNNER_TEMP/active-policy-receipt.json" \
+            | tee "$RUNNER_TEMP/active-policy-summary.json"
+          cat "$RUNNER_TEMP/active-policy-summary.json" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Build downstream reverse dependency index
         if: inputs.mode != 'headless-agent' && inputs.mode != 'agent-retry'
         run: |
@@ -111,7 +130,7 @@ jobs:
           trap 'rm -f "$llm_env_file"' EXIT
           observe_args=(
             node dist/src/cli.js observe
-            examples/upstream-observer/targets.yml
+            "$RUNNER_TEMP/active-policy-observer-targets.json"
             --state observations.json
             --report "$OBSERVER_REPORT"
             --json
@@ -119,7 +138,7 @@ jobs:
           if [[ "$OBSERVER_MODE" == 'active-acceptance' ]]; then
             observe_args=(
               node dist/src/cli.js observe
-              examples/dsh/active-agent/acceptance-targets.yml
+              "$RUNNER_TEMP/active-policy-observer-targets.json"
               --state "$RUNNER_TEMP/active-acceptance-observations.json"
               --report "$OBSERVER_REPORT"
               --json
@@ -237,7 +256,7 @@ jobs:
             active_observations="$RUNNER_TEMP/active-acceptance-observations.json"
           fi
           node scripts/plan-dsh-active-tasks.mjs \
-            examples/dsh/rebuild-batch/install-targets.json \
+            "$RUNNER_TEMP/active-policy-install-targets.json" \
             "$active_observations" \
             "$OBSERVER_JSON" \
             examples/dsh/active-agent/tasks.json \

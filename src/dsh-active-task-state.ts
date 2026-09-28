@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import { parseDshAnalysisPolicy, type DshAnalysisPolicy } from './dsh-analysis-policy.js'
 
 export const DSH_ACTIVE_TASK_STATE_SCHEMA = 'upstream-radar.dsh-active-task-state/v1alpha1' as const
 
@@ -21,7 +22,7 @@ export interface DshActiveTask {
   targetId: string
   dshChannel: string
   trigger: {
-    kind: 'plugin' | 'dsh'
+    kind: 'plugin' | 'dsh' | 'policy'
     observerTargetId: string
     beforeCommit: string
     afterCommit: string
@@ -31,6 +32,7 @@ export interface DshActiveTask {
   input: {
     plugin: DshActiveTaskCoordinate
     dsh: DshActiveTaskCoordinate
+    policy?: DshAnalysisPolicy
   }
   status: 'pending' | 'completed' | 'superseded'
   createdAt: string
@@ -128,7 +130,8 @@ function parseTask(value: unknown, index: number): DshActiveTask {
   const reportPath = optional('reportPath', 512)
   const evidenceDigest = optional('evidenceDigest', 71)
   const kind = trigger.kind
-  if (kind !== 'plugin' && kind !== 'dsh') throw new Error('active task has invalid trigger kind')
+  if (kind !== 'plugin' && kind !== 'dsh' && kind !== 'policy') throw new Error('active task has invalid trigger kind')
+  const policy = input.policy === undefined ? undefined : parseDshAnalysisPolicy(input.policy, `tasks[${index}].input.policy`)
   const parsed: DshActiveTask = {
     id,
     inputFingerprint,
@@ -142,7 +145,7 @@ function parseTask(value: unknown, index: number): DshActiveTask {
       ...(trigger.beforeVersion === undefined ? {} : { beforeVersion: text(trigger.beforeVersion, `tasks[${index}].trigger.beforeVersion`, 128) }),
       ...(trigger.afterVersion === undefined ? {} : { afterVersion: text(trigger.afterVersion, `tasks[${index}].trigger.afterVersion`, 128) }),
     },
-    input: { plugin: parsedPlugin, dsh: parsedDsh },
+    input: { plugin: parsedPlugin, dsh: parsedDsh, ...(policy === undefined ? {} : { policy }) },
     status: item.status as DshActiveTask['status'],
     createdAt: timestamp(item.createdAt, `tasks[${index}].createdAt`),
     attempts: item.attempts as number,
@@ -187,7 +190,9 @@ function currentInputs(targetsInput: unknown, observationsInput: unknown): Array
   const dshObserved = record(observedTargets['deepseek-harness'], 'observations.targets.deepseek-harness')
   const dsh = packageCoordinate(dshObserved.package, dshObserved.source, 'DSH observation')
   const dshPackage = record(dshObserved.package, 'DSH observation.package')
-  const dshChannel = text(dshPackage.distTag, 'DSH observation.package.distTag', 128)
+  const dshChannel = typeof dshPackage.distTag === 'string'
+    ? text(dshPackage.distTag, 'DSH observation.package.distTag', 128)
+    : `exact-${text(dshPackage.versionSelector, 'DSH observation.package.versionSelector', 128)}`
   return targets.plugins.map((raw, index) => {
     const target = record(raw, `active cohort plugins[${index}]`)
     const targetId = text(target.id, `active cohort plugins[${index}].id`, 64)
@@ -195,7 +200,10 @@ function currentInputs(targetsInput: unknown, observationsInput: unknown): Array
     if (!TARGET_ID.test(targetId)) throw new Error('active cohort contains an invalid target id')
     const observed = record(observedTargets[observerTargetId], `observations.targets.${observerTargetId}`)
     const plugin = packageCoordinate(observed.package, observed.source, `${targetId} observation`)
-    const input = { plugin, dsh }
+    const policy = target.analysisPolicy === undefined
+      ? undefined
+      : parseDshAnalysisPolicy(target.analysisPolicy, `active cohort plugins[${index}].analysisPolicy`)
+    const input = { plugin, dsh, ...(policy === undefined ? {} : { policy }) }
     const inputFingerprint = sha(JSON.stringify({ targetId, dshChannel, input }))
     return { targetId, observerTargetId, dshChannel, input, inputFingerprint }
   }).sort((left, right) => left.targetId.localeCompare(right.targetId))
@@ -239,11 +247,42 @@ export function planDshActiveTasks(targetsInput: unknown, observationsInput: unk
   if (!Array.isArray(report.changes) || report.changes.length > 500) throw new Error('observer report must contain bounded changes')
   const tasks = previous.tasks.map(task => ({ ...task, trigger: { ...task.trigger }, input: {
     plugin: { ...task.input.plugin }, dsh: { ...task.input.dsh },
+    ...(task.input.policy === undefined ? {} : { policy: structuredClone(task.input.policy) }),
   } }))
   let changed = false
   const byFingerprint = new Map(tasks.map(task => [task.inputFingerprint, task]))
   let created = 0, deduplicated = 0
   const blocked: string[] = []
+  const persist = (exact: typeof inputs[number], trigger: DshActiveTask['trigger']): void => {
+    const existing = byFingerprint.get(exact.inputFingerprint)
+    if (existing !== undefined) {
+      if (existing.status === 'completed') deduplicated += 1
+      else if (existing.status === 'superseded') {
+        existing.status = 'pending'
+        existing.trigger = trigger
+        changed = true
+      }
+      return
+    }
+    // A pending task is an immutable retry unit. Supersede it only in the
+    // same transaction that durably records the replacement exact input.
+    for (const previousTask of tasks) {
+      if (previousTask.status === 'pending' && previousTask.targetId === exact.targetId
+        && previousTask.dshChannel === exact.dshChannel
+        && previousTask.inputFingerprint !== exact.inputFingerprint) {
+        previousTask.status = 'superseded'
+        changed = true
+      }
+    }
+    const id = `active-${exact.inputFingerprint.slice('sha256:'.length, 'sha256:'.length + 32)}`
+    const task: DshActiveTask = { id, inputFingerprint: exact.inputFingerprint,
+      targetId: exact.targetId, dshChannel: exact.dshChannel, trigger, input: exact.input,
+      status: 'pending', createdAt: at, attempts: 0 }
+    tasks.push(task)
+    byFingerprint.set(task.inputFingerprint, task)
+    created += 1
+    changed = true
+  }
   for (const rawChange of report.changes) {
     const trigger = changeTrigger(rawChange)
     if (trigger === undefined) continue
@@ -253,37 +292,22 @@ export function planDshActiveTasks(targetsInput: unknown, observationsInput: unk
       continue
     }
     for (const exact of affected) {
-      const existing = byFingerprint.get(exact.inputFingerprint)
-      if (existing !== undefined) {
-        if (existing.status === 'completed') deduplicated += 1
-        else if (existing.status === 'superseded') {
-          existing.status = 'pending'
-          existing.trigger = trigger
-          changed = true
-        }
-        continue
-      }
-      // A pending task is an immutable retry unit. Merely noticing that the
-      // live observation point moved cannot discard it: the executor may have
-      // been interrupted after persistence. Supersede it only in the same
-      // transaction that durably records a newer exact task for this target.
-      for (const previousTask of tasks) {
-        if (previousTask.status === 'pending' && previousTask.targetId === exact.targetId
-          && previousTask.dshChannel === exact.dshChannel
-          && previousTask.inputFingerprint !== exact.inputFingerprint) {
-          previousTask.status = 'superseded'
-          changed = true
-        }
-      }
-      const id = `active-${exact.inputFingerprint.slice('sha256:'.length, 'sha256:'.length + 32)}`
-      const task: DshActiveTask = { id, inputFingerprint: exact.inputFingerprint,
-        targetId: exact.targetId, dshChannel: exact.dshChannel, trigger, input: exact.input,
-        status: 'pending', createdAt: at, attempts: 0 }
-      tasks.push(task)
-      byFingerprint.set(task.inputFingerprint, task)
-      created += 1
-      changed = true
+      persist(exact, trigger)
     }
+  }
+  // A Node/profile/version policy change is itself an executable-input change.
+  // It must not wait for an unrelated upstream release before becoming a
+  // durable task, while an unchanged completed fingerprint remains quiet.
+  for (const exact of inputs.filter(item => item.input.policy !== undefined)) {
+    if (byFingerprint.has(exact.inputFingerprint)) continue
+    persist(exact, {
+      kind: 'policy',
+      observerTargetId: exact.observerTargetId,
+      beforeCommit: exact.input.plugin.sourceCommit,
+      afterCommit: exact.input.plugin.sourceCommit,
+      beforeVersion: exact.input.plugin.version,
+      afterVersion: exact.input.plugin.version,
+    })
   }
   const selected = tasks.filter(task => task.status === 'pending')
     .sort((left, right) => left.attempts - right.attempts

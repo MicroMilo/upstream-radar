@@ -72,6 +72,11 @@ describe('reusable GitHub Action', () => {
     const active = workflow.split('\n  active-agent-analysis:')[1]?.split('\n  install-observation:')[0]
     assert.ok(active)
     assert.match(observe, /plan-dsh-active-tasks\.mjs/)
+    assert.match(observe, /compile-dsh-active-policy\.mjs/)
+    assert.match(observe, /examples\/dsh\/active-agent\/policy\.json/)
+    assert.match(observe, /active-policy-observer-targets\.json/)
+    assert.match(observe, /active-policy-install-targets\.json/)
+    assert.ok(observe.indexOf('compile-dsh-active-policy.mjs') < observe.indexOf('plan-dsh-active-tasks.mjs'))
     assert.match(observe, /git add --[\s\S]*examples\/dsh\/active-agent\/tasks\.json/)
     assert.match(active, /needs: observe/)
     assert.match(active, /uses: \.\/\.github\/workflows\/dsh-active-agent-mvp\.yml/)

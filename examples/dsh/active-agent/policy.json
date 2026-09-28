@@ -1,0 +1,17 @@
+{
+  "schema": "upstream-radar.dsh-active-agent-policy/v1alpha1",
+  "dsh": {
+    "channel": "next"
+  },
+  "defaults": {},
+  "plugins": [
+    { "targetId": "better-sidebar" },
+    { "targetId": "cloudflare-browser" },
+    { "targetId": "context" },
+    { "targetId": "dsh-agy-link" },
+    { "targetId": "dsh-tui" },
+    { "targetId": "dsh-univer-office" },
+    { "targetId": "feishu-bot" },
+    { "targetId": "openpencil" }
+  ]
+}

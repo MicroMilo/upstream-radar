@@ -221,7 +221,10 @@ jobs:
             const reasoningInput=JSON.parse(await readFile("active-output/batch/agent-reasoning-input.json","utf8"));
             const observations=JSON.parse(await readFile("active-output/review/observations.json","utf8"));
             const published=observations.targets?.["deepseek-harness"]?.package;
-            if(published?.distTag!==process.env.RADAR_DSH_CHANNEL
+            const selectionMatches=process.env.RADAR_DSH_CHANNEL===`exact-${published?.version}`
+              ? published?.versionSelector===published?.version
+              : published?.distTag===process.env.RADAR_DSH_CHANNEL;
+            if(!selectionMatches
               || !published.version || summary.nextNativePlan.dshVersion!==published.version)
               throw new Error("the exact DSH release channel and isolated result do not match");
             if(!/^[a-f0-9]{32}$/.test(launch.id) || launch.targetId!==process.env.RADAR_TARGET_ID

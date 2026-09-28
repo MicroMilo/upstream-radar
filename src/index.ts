@@ -224,6 +224,18 @@ export {
   type DshInstallTargets,
 } from './dsh-install-plan.js'
 export {
+  DSH_ACTIVE_AGENT_POLICY_SCHEMA,
+  compileDshActiveAgentPolicy,
+  parseDshActiveAgentPolicy,
+  type CompiledDshActiveAgentPolicy,
+  type DshActiveAgentPolicy,
+} from './dsh-active-agent-policy.js'
+export {
+  parseDshAnalysisPolicy,
+  type DshAnalysisExecutionProfile,
+  type DshAnalysisPolicy,
+} from './dsh-analysis-policy.js'
+export {
   DSH_ENVIRONMENT_RECOMMENDATIONS_SCHEMA,
   applyDshEnvironmentRecommendations,
   applyDshEnvironmentRecommendationsToSurfaceTargets,

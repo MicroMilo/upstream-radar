@@ -76,6 +76,22 @@ describe('durable active Agent task state', () => {
     assert.ok(plan.state.tasks.every(task => task.trigger.kind === 'dsh'))
   })
 
+  it('persists a policy-only environment override as an immutable retry input', () => {
+    const configured = structuredClone(cohort)
+    const expectedPolicy = {
+      fingerprint: `sha256:${'f'.repeat(64)}`,
+      nodeMajors: [20, 22],
+      executionProfiles: ['web'],
+    }
+    Object.assign(configured.plugins[0]!, { analysisPolicy: expectedPolicy })
+    const plan = planDshActiveTasks(configured, observations, { changes: [] },
+      emptyDshActiveTaskState(), checkedAt)
+    assert.equal(plan.created, 1)
+    assert.equal(plan.matrix.include[0]?.targetId, 'context')
+    assert.equal(plan.state.tasks[0]?.trigger.kind, 'policy')
+    assert.deepEqual(plan.state.tasks[0]?.input.policy, expectedPolicy)
+  })
+
   it('keeps executor failures pending so the next observer cycle retries the same exact input', () => {
     const first = planDshActiveTasks(cohort, observations, { changes: [change('dsh-context', '0.56.2', '0.57.0')] },
       emptyDshActiveTaskState(), checkedAt)

@@ -70,4 +70,31 @@ describe('active task exact-input materialization', () => {
           dist: { integrity: 'sha512-old-dsh', tarball: 'https://registry.npmjs.org/@deepseek-ai/dsh/-/dsh-0.1.7-rc.2.tgz' } } },
     }), /does not match/)
   })
+
+  it('rehydrates the persisted Node/profile policy instead of mutable global configuration', () => {
+    const configured = structuredClone(targets)
+    const expectedPolicy = {
+      fingerprint: `sha256:${'a'.repeat(64)}`,
+      pluginVersion: '0.57.0',
+      nodeMajors: [22, 24],
+      executionProfiles: ['web'],
+    }
+    Object.assign(configured.plugins[0]!, { analysisPolicy: expectedPolicy })
+    const dispatch = planDshActiveTasks(configured, taskObservations, { changes: [] },
+      emptyDshActiveTaskState(), new Date('2026-09-28T08:00:00.000Z'))
+    const entry = dispatch.matrix.include[0]!
+    const plan = planDshActiveTaskMaterialization(dispatch.state, targets, observations,
+      entry.taskId, entry.inputFingerprint)
+    const output = materializeDshActiveTaskInputs(plan, {
+      plugin: { sourceManifest: { name: 'dsh-context', version: '0.57.0' },
+        publishedManifest: { name: 'dsh-context', version: '0.57.0',
+          dist: { integrity: 'sha512-old-plugin', tarball: 'https://registry.npmjs.org/dsh-context/-/dsh-context-0.57.0.tgz' } } },
+      dsh: { sourceManifest: { name: '@deepseek-ai/dsh', version: '0.1.7-rc.2' },
+        publishedManifest: { name: '@deepseek-ai/dsh', version: '0.1.7-rc.2',
+          dist: { integrity: 'sha512-old-dsh', tarball: 'https://registry.npmjs.org/@deepseek-ai/dsh/-/dsh-0.1.7-rc.2.tgz' } } },
+    })
+    assert.deepEqual(output.targets.plugins[0]?.analysisPolicy, expectedPolicy)
+    const exact = output.observations as typeof observations & { targets: { 'dsh-context': { package: { versionSelector?: string } } } }
+    assert.equal(exact.targets['dsh-context'].package.versionSelector, '0.57.0')
+  })
 })

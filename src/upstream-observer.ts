@@ -63,6 +63,8 @@ export interface ObserverTarget {
   observeNpm?: boolean
   /** npm dist-tag to observe. Defaults to latest. */
   packageTag?: string
+  /** Exact npm version selected by operator policy; mutually exclusive with packageTag. */
+  packageVersion?: string
   packagePath?: string
   lockfile?: string
   lockfileType?: ObserverLockfileType
@@ -81,6 +83,8 @@ export interface ObserverPackageObservation {
   /** Exact manifest selected from the npm packument; no package code is run. */
   manifest?: PackageManifestSnapshot
   distTag?: string
+  /** Present when the package was selected by exact version rather than a mutable dist-tag. */
+  versionSelector?: string
   integrity?: string
   tarball?: string
   repository?: string
@@ -494,6 +498,7 @@ function normalizeTargetKey(key: string): string {
   if (key === 'package') return 'packageName'
   if (key === 'npm') return 'observeNpm'
   if (key === 'package-tag') return 'packageTag'
+  if (key === 'package-version') return 'packageVersion'
   if (key === 'package-path') return 'packagePath'
   if (key === 'lockfile-type') return 'lockfileType'
   if (key === 'dsh-versions') return 'dshVersions'
@@ -613,6 +618,14 @@ function target(value: unknown, index: number): ObserverTarget {
   }
   if (!observeNpm && packageName !== undefined) throw new Error(`targets[${index}].package cannot be set when npm is false`)
   if (!observeNpm && packageTag !== undefined) throw new Error(`targets[${index}].packageTag cannot be set when npm is false`)
+  const packageVersion = optionalBoundedString(source.packageVersion, `targets[${index}].packageVersion`, 128)
+  if (packageVersion !== undefined && !EXACT_DSH_VERSION.test(packageVersion)) {
+    throw new Error(`targets[${index}].packageVersion must be an exact semantic version`)
+  }
+  if (!observeNpm && packageVersion !== undefined) throw new Error(`targets[${index}].packageVersion cannot be set when npm is false`)
+  if (packageTag !== undefined && packageVersion !== undefined) {
+    throw new Error(`targets[${index}] cannot set both packageTag and packageVersion`)
+  }
   const lockfile = source.lockfile === undefined ? undefined : validateRelativePath(source.lockfile, `targets[${index}].lockfile`)
   const rawLockfileType = optionalBoundedString(source.lockfileType, `targets[${index}].lockfileType`, 16)
   const lockfileType = rawLockfileType === undefined
@@ -639,6 +652,7 @@ function target(value: unknown, index: number): ObserverTarget {
     ...(packageName === undefined ? {} : { packageName }),
     ...(observeNpm ? {} : { observeNpm: false }),
     ...(packageTag === undefined ? {} : { packageTag }),
+    ...(packageVersion === undefined ? {} : { packageVersion }),
     ...(packagePath === undefined ? {} : { packagePath }),
     ...(lockfile === undefined ? {} : { lockfile }),
     ...(lockfileType === undefined ? {} : { lockfileType }),
@@ -691,6 +705,11 @@ function parsePackageObservation(value: unknown, label: string): ObserverPackage
   const version = boundedString(source.version, `${label}.version`, 512)
   const distTag = optionalBoundedString(source.distTag, `${label}.distTag`, 128)
   if (distTag !== undefined && !SAFE_NPM_DIST_TAG.test(distTag)) throw new Error(`${label}.distTag is invalid`)
+  const versionSelector = optionalBoundedString(source.versionSelector, `${label}.versionSelector`, 128)
+  if (versionSelector !== undefined && !EXACT_DSH_VERSION.test(versionSelector)) {
+    throw new Error(`${label}.versionSelector must be an exact semantic version`)
+  }
+  if (distTag !== undefined && versionSelector !== undefined) throw new Error(`${label} cannot contain both distTag and versionSelector`)
   const rawMigration = source.migration === undefined ? undefined : asRecord(source.migration)
   if (source.migration !== undefined && rawMigration === undefined) throw new Error(`${label}.migration must be an object`)
   const migrationTo = rawMigration === undefined ? undefined : boundedString(rawMigration.to, `${label}.migration.to`, 214)
@@ -704,6 +723,7 @@ function parsePackageObservation(value: unknown, label: string): ObserverPackage
     version,
     ...(publishedManifest === undefined ? {} : { manifest: publishedManifest }),
     ...(distTag === undefined ? {} : { distTag }),
+    ...(versionSelector === undefined ? {} : { versionSelector }),
     ...(optionalBoundedString(source.integrity, `${label}.integrity`, 512) === undefined ? {} : { integrity: source.integrity as string }),
     ...(optionalBoundedString(source.tarball, `${label}.tarball`, 4_096) === undefined ? {} : { tarball: source.tarball as string }),
     ...(optionalBoundedString(source.repository, `${label}.repository`, 4_096) === undefined ? {} : { repository: source.repository as string }),
@@ -1123,7 +1143,7 @@ export class UpstreamObserverClient implements ObserverSource {
     return undefined
   }
 
-  private async fetchNpmObservation(name: string, distTag = 'latest'): Promise<ObserverPackageObservation | undefined> {
+  private async fetchNpmObservation(name: string, distTag = 'latest', exactVersion?: string): Promise<ObserverPackageObservation | undefined> {
     const url = new URL(encodeURIComponent(name), this.registry)
     const response = await this.fetchWithRetry(url, {
       // The abbreviated install-v1 packument deliberately drops custom DSH
@@ -1137,10 +1157,12 @@ export class UpstreamObserverClient implements ObserverSource {
     const tags = asRecord(root?.['dist-tags'])
     const versions = asRecord(root?.versions)
     const times = asRecord(root?.time)
-    const selectedVersion = typeof tags?.[distTag] === 'string' ? tags[distTag] as string : undefined
+    const selectedVersion = exactVersion ?? (typeof tags?.[distTag] === 'string' ? tags[distTag] as string : undefined)
     const rawManifest = selectedVersion === undefined ? undefined : versions?.[selectedVersion]
     const manifest = asRecord(rawManifest)
-    if (selectedVersion === undefined || manifest === undefined) throw new Error(`npm registry has no ${distTag} manifest for ${name}`)
+    if (selectedVersion === undefined || manifest === undefined) {
+      throw new Error(`npm registry has no ${exactVersion === undefined ? distTag : `version ${exactVersion}`} manifest for ${name}`)
+    }
     const dist = asRecord(manifest.dist)
     const repository = typeof manifest.repository === 'string'
       ? manifest.repository
@@ -1162,7 +1184,7 @@ export class UpstreamObserverClient implements ObserverSource {
     return {
       name,
       version: selectedVersion,
-      distTag,
+      ...(exactVersion === undefined ? { distTag } : { versionSelector: exactVersion }),
       ...(publishedManifest === undefined ? {} : { manifest: publishedManifest }),
       ...(typeof dist?.integrity === 'string' ? { integrity: dist.integrity } : {}),
       ...(typeof dist?.tarball === 'string' ? { tarball: dist.tarball } : {}),
@@ -1199,9 +1221,13 @@ export class UpstreamObserverClient implements ObserverSource {
     }
     const packageObservation = targetValue.observeNpm === false
       ? undefined
-      : await this.fetchNpmObservation(packageName, resolveNpmReleaseTag(rawManifest, targetValue.packageTag))
+      : await this.fetchNpmObservation(packageName, resolveNpmReleaseTag(rawManifest, targetValue.packageTag), targetValue.packageVersion)
     if (targetValue.observeNpm !== false && packageObservation === undefined) {
       warnings.push(`${packageName} was not found on the configured npm registry`)
+    }
+    if (targetValue.packageVersion !== undefined && packageObservation !== undefined
+      && (manifest.name !== packageObservation.name || manifest.version !== packageObservation.version)) {
+      throw new Error(`exact npm version ${packageObservation.name}@${packageObservation.version} does not match source ${manifest.name}@${manifest.version} at ${targetRepository.fullName}@${targetValueRef}`)
     }
     let graph: DependencyGraph | undefined
     let graphError: string | undefined
@@ -2145,7 +2171,7 @@ export function observerExitCode(report: ObserverReport): 0 | 1 {
 function displayPackage(value: ObserverPackageObservation | undefined): string {
   return value === undefined
     ? 'not observed'
-    : `${value.name}@${value.version}${value.distTag === undefined ? '' : ` via npm tag ${value.distTag}`}${value.migration === undefined ? '' : `; migrates to ${value.migration.to}${value.migration.since === undefined ? '' : ` since ${value.migration.since}`}`}`
+    : `${value.name}@${value.version}${value.distTag === undefined ? '' : ` via npm tag ${value.distTag}`}${value.versionSelector === undefined ? '' : ' via exact npm version'}${value.migration === undefined ? '' : `; migrates to ${value.migration.to}${value.migration.since === undefined ? '' : ` since ${value.migration.since}`}`}`
 }
 
 function displayGraph(value: ObserverSnapshotSummary['graph'] | undefined): string {

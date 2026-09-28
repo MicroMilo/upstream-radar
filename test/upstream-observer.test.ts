@@ -354,6 +354,38 @@ targets:
     })
   })
 
+  it('observes one configured exact npm version and binds it to the selected source ref', async () => {
+    const source = new UpstreamObserverClient({
+      fetch: async input => {
+        const url = String(input)
+        if (url.includes(`/commits/${'c'.repeat(40)}`)) return new Response(JSON.stringify({ sha: 'c'.repeat(40) }), { status: 200 })
+        if (url.endsWith(`/${'c'.repeat(40)}/plugin/package.json`)) {
+          return new Response(JSON.stringify({ name: 'dsh-demo', version: '1.4.2' }), { status: 200 })
+        }
+        if (url.startsWith('https://registry.npmjs.org/')) {
+          return new Response(JSON.stringify({
+            'dist-tags': { latest: '2.0.0' },
+            versions: {
+              '1.4.2': { name: 'dsh-demo', version: '1.4.2', dist: { integrity: 'sha512-exact' } },
+              '2.0.0': { name: 'dsh-demo', version: '2.0.0', dist: { integrity: 'sha512-latest' } },
+            },
+          }), { status: 200 })
+        }
+        if (url.endsWith(`/${'c'.repeat(40)}/plugin/pnpm-lock.yaml`)) {
+          return new Response("lockfileVersion: '9.0'\nimporters:\n  plugin: {}\npackages: {}\nsnapshots: {}\n", { status: 200 })
+        }
+        throw new Error(`unexpected request: ${url}`)
+      },
+    })
+    const result = await source.observe({ ...target, ref: 'c'.repeat(40), packageVersion: '1.4.2' },
+      '2026-09-28T00:00:00.000Z')
+    assert.equal(result.source.commit, 'c'.repeat(40))
+    assert.equal(result.package?.version, '1.4.2')
+    assert.equal(result.package?.versionSelector, '1.4.2')
+    assert.equal(result.package?.distTag, undefined)
+    assert.equal(result.package?.integrity, 'sha512-exact')
+  })
+
   it('observes the source-declared npm release channel when no target override exists', async () => {
     const source = new UpstreamObserverClient({
       fetch: async input => {

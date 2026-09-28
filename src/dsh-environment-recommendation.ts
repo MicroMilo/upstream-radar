@@ -1018,17 +1018,24 @@ export function applyDshEnvironmentRecommendations(
     delete target.environmentRecommendation
     const entry = applicableRecommendation(target, candidates.get(target.id), recommendations)
     if (entry !== undefined) {
-      const unavailableNodeMajors = entry.nodeMajors.filter(nodeMajor => !executableNodeMajor(nodeMajor))
-      target.runtimeProfiles = entry.nodeMajors
+      // The Agent must still review the exact repository. Operator policy only
+      // controls which evidenced cells execute after that recommendation.
+      const effectiveNodeMajors = target.analysisPolicy?.nodeMajors ?? entry.nodeMajors
+      const effectiveExecutionProfiles = target.analysisPolicy?.executionProfiles ?? entry.executionProfiles
+      const preferredNodeMajor = effectiveNodeMajors.includes(entry.preferredNodeMajor as number)
+        ? entry.preferredNodeMajor as number
+        : effectiveNodeMajors[0] as number
+      const unavailableNodeMajors = effectiveNodeMajors.filter(nodeMajor => !executableNodeMajor(nodeMajor))
+      target.runtimeProfiles = effectiveNodeMajors
         .filter(executableNodeMajor)
         .map(nodeMajor => ensureRuntimeProfile(targets, nodeMajor).id)
       target.environmentRecommendation = {
         sourceFingerprint: entry.sourceFingerprint,
         inputFingerprint: entry.inputFingerprint,
-        preferredNodeMajor: entry.preferredNodeMajor as number,
-        nodeMajors: [...entry.nodeMajors],
+        preferredNodeMajor,
+        nodeMajors: [...effectiveNodeMajors],
         unavailableNodeMajors,
-        executionProfiles: [...entry.executionProfiles],
+        executionProfiles: [...effectiveExecutionProfiles],
         ...(entry.authorEnvironment === undefined ? {} : { authorEnvironment: entry.authorEnvironment }),
         ...(entry.coverageGaps === undefined ? {} : { coverageGaps: [...entry.coverageGaps] }),
         summary: entry.summary,

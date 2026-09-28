@@ -156,11 +156,15 @@ for (const entry of matrix.include) {
     const dshObserved = observations?.targets?.['deepseek-harness']
     const pluginMatches = Object.values(observations?.targets ?? {})
       .filter(value => coordinateMatches(value, task.input.plugin))
-    if (!coordinateMatches(dshObserved, task.input.dsh) || dshObserved?.package?.distTag !== task.dshChannel
+    const dshSelectionMatches = task.dshChannel === `exact-${task.input.dsh.version}`
+      ? dshObserved?.package?.versionSelector === task.input.dsh.version
+      : dshObserved?.package?.distTag === task.dshChannel
+    if (!coordinateMatches(dshObserved, task.input.dsh) || !dshSelectionMatches
       || pluginMatches.length !== 1) throw new Error('artifact observations do not match the persisted exact task input')
     const recommendation = recommendations?.entries?.find(item => item?.targetId === task.targetId
       && item?.plugin === `${task.input.plugin.name}@${task.input.plugin.version}`
       && item?.dshVersion === task.input.dsh.version)
+    const effectiveRecommendation = summary?.authorScopes?.find(item => item?.id === task.targetId)?.recommendation
     if (!recommendation || reasoningInput?.targetId !== task.targetId
       || recommendation.inputFingerprint !== reasoningInput.inputFingerprint) {
       throw new Error('artifact lacks the exact repository reasoning decision')
@@ -200,6 +204,12 @@ for (const entry of matrix.include) {
       github: { runId, runUrl: `${process.env.GITHUB_SERVER_URL ?? 'https://github.com'}/${process.env.GITHUB_REPOSITORY ?? 'MicroMilo/upstream-radar'}/actions/runs/${runId}`,
         artifact: artifactName },
       recommendation,
+      executionPolicy: {
+        mode: task.input.policy === undefined ? 'agent' : 'configured',
+        ...(task.input.policy === undefined ? {} : { configured: task.input.policy }),
+        nodeMajors: effectiveRecommendation?.nodeMajors ?? recommendation.nodeMajors,
+        executionProfiles: effectiveRecommendation?.executionProfiles ?? recommendation.executionProfiles,
+      },
       execution: { launch, launchResult, monitor, supervisor, provider, toolActions: actions,
         reports: executionReports, unchangedReuse: acceptance },
       outcome: { conclusion, summary,
@@ -237,7 +247,8 @@ const lines = ['# DSH active Agent analysis', '',
   '| --- | --- | --- | --- | --- | --- |']
 for (const report of durableReports.sort((left, right) => left.task.targetId.localeCompare(right.task.targetId))) {
   const recommendation = report.recommendation
-  const environment = `${(recommendation.nodeMajors ?? []).map(value => `Node ${value}`).join(', ') || 'unknown'} / ${(recommendation.executionProfiles ?? []).join(', ') || 'unknown'}`
+  const effective = report.executionPolicy ?? recommendation
+  const environment = `${(effective.nodeMajors ?? []).map(value => `Node ${value}`).join(', ') || 'unknown'} / ${(effective.executionProfiles ?? []).join(', ') || 'unknown'}${effective.mode === 'configured' ? ' (policy override)' : ''}`
   const resultsSummary = [...(report.outcome.native ?? []), ...(report.outcome.surface ?? []), ...(report.outcome.adapter ?? [])]
     .map(item => item.result ?? item.report?.result).filter(Boolean)
   const outcome = [...new Set(resultsSummary)].join(', ') || 'coverage gap recorded'
