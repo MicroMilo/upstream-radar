@@ -18,7 +18,32 @@ permissions:
   actions: read
 
 jobs:
+  agent-provider-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24
+      - name: Prove the configured model can call a tool and read its result
+        env:
+          ISSUE_LOCATOR_LLM_BASE_URL: ${{ secrets.ISSUE_LOCATOR_LLM_BASE_URL }}
+          ISSUE_LOCATOR_LLM_API_KEY: ${{ secrets.ISSUE_LOCATOR_LLM_API_KEY }}
+          ISSUE_LOCATOR_LLM_MODEL: ${{ secrets.ISSUE_LOCATOR_LLM_MODEL }}
+        run: node scripts/probe-dsh-agent-provider.mjs active-provider-probe.json
+      - name: Upload the secret-free provider receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dsh-agent-provider-probe-${{ github.run_id }}
+          path: active-provider-probe.json
+          if-no-files-found: warn
+
   active-case:
+    needs: agent-provider-probe
     if: ${{ inputs.execute_agents }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
