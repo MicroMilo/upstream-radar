@@ -41,14 +41,30 @@ describe('reusable GitHub Action', () => {
   })
   it('offers the full eight-plugin bounded MVP cohort as the manual active-agent default', async () => {
     const workflow = await readFile('.github/workflows/dsh-active-agent-mvp.yml', 'utf8')
-    const targets = JSON.parse((workflow.match(/target_ids_json:[\s\S]*?default: '(\[[^\n']+\])'/) ?? [])[1] ?? 'null')
+    const matrix = JSON.parse((workflow.match(/workflow_dispatch:[\s\S]*?task_matrix_json:[\s\S]*?default: '([^\n']+)'/) ?? [])[1] ?? 'null')
     const cohort = JSON.parse(await readFile('examples/dsh/rebuild-batch/install-targets.json', 'utf8'))
-    assert.deepEqual([...targets].sort(), cohort.plugins.map((plugin: { id: string }) => plugin.id).sort())
-    assert.match(workflow, /dsh_channels_json:/)
-    assert.match(workflow, /default: '\["next"\]'/)
-    assert.match(workflow, /dshChannel: \$\{\{ fromJSON\(inputs\.dsh_channels_json\) \}\}/)
+    assert.deepEqual(matrix.include.map((entry: { targetId: string }) => entry.targetId).sort(),
+      cohort.plugins.map((plugin: { id: string }) => plugin.id).sort())
+    assert.ok(matrix.include.every((entry: { dshChannel: string }) => entry.dshChannel === 'next'))
+    assert.match(workflow, /workflow_call:/)
+    assert.match(workflow, /matrix: \$\{\{ fromJSON\(inputs\.task_matrix_json\) \}\}/)
     assert.match(workflow, /run-dsh-active-agent-provider\.mjs/)
     assert.match(workflow, /env -u ISSUE_LOCATOR_LLM_BASE_URL -u ISSUE_LOCATOR_LLM_API_KEY -u ISSUE_LOCATOR_LLM_MODEL/)
+    assert.match(workflow, /reconcile-dsh-active-tasks\.mjs/)
+    assert.match(workflow, /active-output\/batch\/acceptance\.json/)
+  })
+  it('persists changed exact inputs before the scheduled observer calls the active Agent workflow', async () => {
+    const workflow = await readFile('.github/workflows/upstream-observer.yml', 'utf8')
+    const observe = workflow.split('\n  active-agent-analysis:')[0] ?? ''
+    const active = workflow.split('\n  active-agent-analysis:')[1]?.split('\n  install-observation:')[0]
+    assert.ok(active)
+    assert.match(observe, /plan-dsh-active-tasks\.mjs/)
+    assert.match(observe, /git add --[\s\S]*examples\/dsh\/active-agent\/tasks\.json/)
+    assert.match(active, /needs: observe/)
+    assert.match(active, /uses: \.\/\.github\/workflows\/dsh-active-agent-mvp\.yml/)
+    assert.match(active, /task_matrix_json: \$\{\{ needs\.observe\.outputs\.active_task_matrix \}\}/)
+    assert.match(active, /persist_results: true/)
+    assert.match(active, /secrets: inherit/)
   })
   it('reports repository or build review failure after downstream work without hiding a successful partial observation', async () => {
     const workflow = await readFile(new URL('../../.github/workflows/upstream-observer.yml', import.meta.url), 'utf8')

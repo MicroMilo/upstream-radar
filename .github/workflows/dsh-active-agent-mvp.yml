@@ -1,22 +1,42 @@
 name: DSH active-agent MVP
 
 on:
+  workflow_call:
+    inputs:
+      execute_agents:
+        type: boolean
+        required: false
+        default: true
+      task_matrix_json:
+        type: string
+        required: true
+      persist_results:
+        type: boolean
+        required: false
+        default: true
+    secrets:
+      ISSUE_LOCATOR_LLM_BASE_URL:
+        required: true
+      ISSUE_LOCATOR_LLM_API_KEY:
+        required: true
+      ISSUE_LOCATOR_LLM_MODEL:
+        required: true
   workflow_dispatch:
     inputs:
       execute_agents:
         description: Run disposable YOLO agents from repository review through isolated plugin checks
         type: boolean
         default: true
-      target_ids_json:
-        description: Exact plugin target ids; one isolated agent job per plugin and DSH channel
+      task_matrix_json:
+        description: Exact persisted-task-shaped matrix; manual runs are not written to the durable task ledger
         type: string
         required: false
-        default: '["cloudflare-browser","context","dsh-tui","feishu-bot","dsh-agy-link","dsh-univer-office","openpencil","better-sidebar"]'
-      dsh_channels_json:
-        description: Exact DSH release channels to observe independently
-        type: string
+        default: '{"include":[{"targetId":"cloudflare-browser","dshChannel":"next","taskId":"manual-cloudflare-browser-next","inputFingerprint":"sha256:0000000000000000000000000000000000000000000000000000000000000000"},{"targetId":"context","dshChannel":"next","taskId":"manual-context-next","inputFingerprint":"sha256:0000000000000000000000000000000000000000000000000000000000000000"},{"targetId":"dsh-tui","dshChannel":"next","taskId":"manual-dsh-tui-next","inputFingerprint":"sha256:0000000000000000000000000000000000000000000000000000000000000000"},{"targetId":"feishu-bot","dshChannel":"next","taskId":"manual-feishu-bot-next","inputFingerprint":"sha256:0000000000000000000000000000000000000000000000000000000000000000"},{"targetId":"dsh-agy-link","dshChannel":"next","taskId":"manual-dsh-agy-link-next","inputFingerprint":"sha256:0000000000000000000000000000000000000000000000000000000000000000"},{"targetId":"dsh-univer-office","dshChannel":"next","taskId":"manual-dsh-univer-office-next","inputFingerprint":"sha256:0000000000000000000000000000000000000000000000000000000000000000"},{"targetId":"openpencil","dshChannel":"next","taskId":"manual-openpencil-next","inputFingerprint":"sha256:0000000000000000000000000000000000000000000000000000000000000000"},{"targetId":"better-sidebar","dshChannel":"next","taskId":"manual-better-sidebar-next","inputFingerprint":"sha256:0000000000000000000000000000000000000000000000000000000000000000"}]}'
+      persist_results:
+        description: Reconcile only tasks already persisted by the scheduled observer
+        type: boolean
         required: false
-        default: '["next"]'
+        default: false
 
 permissions:
   contents: read
@@ -54,9 +74,7 @@ jobs:
     timeout-minutes: 120
     strategy:
       fail-fast: false
-      matrix:
-        targetId: ${{ fromJSON(inputs.target_ids_json) }}
-        dshChannel: ${{ fromJSON(inputs.dsh_channels_json) }}
+      matrix: ${{ fromJSON(inputs.task_matrix_json) }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -219,13 +237,15 @@ jobs:
               nativeCells:summary.nativeCells,surfaceCells:summary.surfaceCells,
               adapterCells:summary.adapterCells,blockedNative:summary.nextNativePlan.blocked.length,
               blockedSurface:summary.nextSurfacePlan.blocked.length,
-              blockedAdapter:summary.nextAdapterPlan.blocked.length}));'
+              blockedAdapter:summary.nextAdapterPlan.blocked.length}));' \
+              > active-output/batch/acceptance.json
       - name: Upload bounded case evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: dsh-active-agent-${{ matrix.targetId }}-${{ matrix.dshChannel }}-${{ github.run_id }}
+          name: dsh-active-agent-${{ matrix.targetId }}-${{ matrix.dshChannel }}-${{ matrix.taskId }}-${{ github.run_id }}
           path: |
+            active-output/broker.log
             active-output/review/collection-summary.json
             active-output/review/observations.json
             active-output/review/candidates.json
@@ -238,6 +258,7 @@ jobs:
             active-output/batch/agent-monitor.json
             active-output/batch/agent-session-supervisor.json
             active-output/batch/agent-provider.json
+            active-output/batch/acceptance.json
             active-output/batch/agent-reasoning-input.json
             active-output/batch/agent-conclusion.json
             active-output/batch/agent-network-route.json
@@ -246,10 +267,82 @@ jobs:
             active-output/batch/compatibility-ledger.json
             active-output/batch/surface-ledger.json
             active-output/batch/adapter-ledger.json
-            active-output/batch/reports/**/report.json
-            active-output/batch/reports/**/progress-status.json
+            active-output/batch/reports/**
+            active-output/batch/*.log
             active-output/reuse/summary.json
             active-output/reuse/state.json
             active-output/reuse/executor-evidence.json
             active-output/*.provider.jsonl
           if-no-files-found: warn
+          retention-days: 30
+
+  reconcile-active-tasks:
+    needs: [agent-provider-probe, active-case]
+    if: ${{ always() && inputs.persist_results }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Check out the latest durable task state
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.3.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Build the trusted task reconciler
+        run: |
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm run build
+      - name: Materialize the exact persisted dispatch matrix
+        env:
+          ACTIVE_TASK_MATRIX: ${{ inputs.task_matrix_json }}
+        run: |
+          node --input-type=module -e 'import {writeFile} from "node:fs/promises"; const value=JSON.parse(process.env.ACTIVE_TASK_MATRIX); await writeFile(process.env.RUNNER_TEMP+"/active-task-matrix.json",JSON.stringify(value,null,2)+"\n",{flag:"wx",mode:0o600})'
+      - name: Download this run's isolated Agent evidence
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: dsh-active-agent-*-${{ github.run_id }}
+          path: ${{ runner.temp }}/active-task-artifacts
+      - name: Reconcile completed analyses and retain failures for retry
+        run: |
+          node scripts/reconcile-dsh-active-tasks.mjs \
+            examples/dsh/active-agent/tasks.json \
+            "$RUNNER_TEMP/active-task-matrix.json" \
+            "$RUNNER_TEMP/active-task-artifacts" \
+            examples/dsh/active-agent/reports \
+            "${{ github.run_id }}" | tee "$RUNNER_TEMP/active-task-reconciliation.json"
+          cat examples/dsh/active-agent/reports/README.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Keep the reconciled whole-batch report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dsh-active-agent-reconciliation-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/active-task-reconciliation.json
+            examples/dsh/active-agent/tasks.json
+            examples/dsh/active-agent/reports/**
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Persist task status and bounded compatibility reports
+        run: |
+          set -euo pipefail
+          git config user.name 'upstream-radar[bot]'
+          git config user.email 'upstream-radar[bot]@users.noreply.github.com'
+          git add -- examples/dsh/active-agent/tasks.json examples/dsh/active-agent/reports
+          if git diff --cached --quiet; then
+            echo 'No active Agent task state changed.'
+            exit 0
+          fi
+          git commit -m 'chore: reconcile active Agent compatibility analysis [skip ci]'
+          git pull --rebase origin "${{ github.event.repository.default_branch }}"
+          git push

@@ -37,6 +37,8 @@ jobs:
       observer_exit: ${{ steps.observe.outputs.exit }}
       environment_review_outcome: ${{ steps.environment-recommendations.outcome }}
       build_review_outcome: ${{ steps.headless-agent-plan.outcome }}
+      run_active_agents: ${{ steps.active-task-plan.outputs.run }}
+      active_task_matrix: ${{ steps.active-task-plan.outputs.matrix }}
     steps:
       - name: Check out the observer and its targets
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -193,6 +195,23 @@ jobs:
             examples/dsh/install-observer/agent-plans.json \
             examples/dsh/environment-observer/recommendations.json
 
+      # A meaningful upstream change first becomes a durable exact-input task.
+      # Existing pending tasks are selected again after interruption; a
+      # completed fingerprint is quiet on unchanged future observer cycles.
+      - name: Persist active Agent tasks before delivery
+        if: inputs.mode != 'headless-agent'
+        id: active-task-plan
+        env:
+          OBSERVER_JSON: ${{ runner.temp }}/upstream-radar-observer.json
+        run: |
+          node scripts/plan-dsh-active-tasks.mjs \
+            examples/dsh/rebuild-batch/install-targets.json \
+            observations.json \
+            "$OBSERVER_JSON" \
+            examples/dsh/active-agent/tasks.json \
+            | tee "$RUNNER_TEMP/dsh-active-task-plan.json"
+          cat "$RUNNER_TEMP/dsh-active-task-plan.json" >> "$GITHUB_STEP_SUMMARY"
+
       # State is written even when an upstream source or Agent call fails.
       # Successful plans remain bound to exact bytes/runtime; failed calls have
       # no static fallback and are retried by the next scheduled run.
@@ -233,6 +252,7 @@ jobs:
             examples/dsh/environment-observer/recommendations.md \
             examples/dsh/install-observer/agent-plans.json \
             examples/dsh/install-observer/agent-plans.md \
+            examples/dsh/active-agent/tasks.json \
             feeds/dsh-plugin-compatibility.json \
             feeds/dsh-plugin-compatibility.md
           # Fixed-commit repository bytes survive the next scheduled checkout.
@@ -250,6 +270,22 @@ jobs:
           # branch; a real state conflict still fails instead of being forced.
           git pull --rebase origin "${{ github.event.repository.default_branch }}"
           git push
+
+  # The observer commits the pending task before this reusable workflow can
+  # receive it. Each matrix entry owns one exact plugin/DSH input and its final
+  # reconciler writes completion or leaves it pending for the next schedule.
+  active-agent-analysis:
+    needs: observe
+    if: needs.observe.result == 'success' && needs.observe.outputs.run_active_agents == 'true'
+    permissions:
+      contents: write
+      actions: read
+    uses: ./.github/workflows/dsh-active-agent-mvp.yml
+    with:
+      execute_agents: true
+      task_matrix_json: ${{ needs.observe.outputs.active_task_matrix }}
+      persist_results: true
+    secrets: inherit
 
   # Every selected matrix entry gets a fresh GitHub-hosted VM. The reusable
   # workflow adds a restricted container and never receives the model key.
@@ -814,7 +850,7 @@ jobs:
   # Keep partial source outages and failed repository/build reviews visible without
   # letting it discard successful work from the same observer cycle.
   observer-final-health:
-    needs: [observe, install-observation, reconcile-install-observations, plan-surface-observations, surface-observation, reconcile-surface-observations, plan-adapter-observations, adapter-observation, reconcile-adapter-observations]
+    needs: [observe, active-agent-analysis, install-observation, reconcile-install-observations, plan-surface-observations, surface-observation, reconcile-surface-observations, plan-adapter-observations, adapter-observation, reconcile-adapter-observations]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 2
