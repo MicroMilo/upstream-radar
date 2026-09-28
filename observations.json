@@ -107,7 +107,6 @@
       "package": {
         "name": "dsh-feishu-bot",
         "version": "0.19.16",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-feishu-bot",
           "version": "0.19.16",
@@ -197,6 +196,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-+fFFrE0/mQsxgh0IWUX/XyoTUf9BE8/ApoVAwL2NBpgq12J1nONZkXo6iXrR3O193uEmm5Ow0iSTDaHrhSBgIA==",
         "tarball": "https://registry.npmjs.org/dsh-feishu-bot/-/dsh-feishu-bot-0.19.16.tgz",
         "repository": "git+https://github.com/PlutoKeating/dsh-lark-bot.git",
@@ -6241,7 +6241,6 @@
       "package": {
         "name": "@sanqi-normal/dsh-webui-market-plugin",
         "version": "0.5.5",
-        "distTag": "latest",
         "manifest": {
           "name": "@sanqi-normal/dsh-webui-market-plugin",
           "version": "0.5.5",
@@ -6271,6 +6270,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-pGHgU3YyfX7OatsUh3pgd+iDQEbwCET+/f1xu3QAQAPNarbhWbhCUuBFklzaCbia7HtoEzVn4yStD2tjuWUlMA==",
         "tarball": "https://registry.npmjs.org/@sanqi-normal/dsh-webui-market-plugin/-/dsh-webui-market-plugin-0.5.5.tgz",
         "repository": "git+https://github.com/Sanqi-normal/dsh-webui-market-plugin.git",
@@ -6452,7 +6452,6 @@
       "package": {
         "name": "@deepseek-ai/dsh",
         "version": "0.2.0-rc.1",
-        "distTag": "next",
         "manifest": {
           "name": "@deepseek-ai/dsh",
           "version": "0.2.0-rc.1",
@@ -6550,6 +6549,7 @@
             "@deepseek-ai/dsh-experimental-voice-input-bundle": "0.2.0-rc.1"
           }
         },
+        "distTag": "next",
         "integrity": "sha512-F6hKNVoGgBDIzSiyRaIlobq4UD6cwxUjh+nwXqcDmufDh87TE1izsYzs8L5cZNpF2JmPnFM1mXRNnRJ0cs43ng==",
         "tarball": "https://registry.npmjs.org/@deepseek-ai/dsh/-/dsh-0.2.0-rc.1.tgz",
         "repository": "git+https://github.com/deepseek-ai/deepseek-harness.git",
@@ -7872,7 +7872,6 @@
       "package": {
         "name": "dsh-cloudflare-browser-run",
         "version": "0.2.3",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-cloudflare-browser-run",
           "version": "0.2.3",
@@ -7896,6 +7895,7 @@
             "manifestVersion": 1
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-MFlJ4pA3AnKjDzTzKnkuulkqV8wKTfJQ22/8DrhDqrk5O6xEFHTXIsdxIxn0Uam35doMUqGtbbsCaNWcoVPMjQ==",
         "tarball": "https://registry.npmjs.org/dsh-cloudflare-browser-run/-/dsh-cloudflare-browser-run-0.2.3.tgz",
         "repository": "git+https://github.com/RealAlexandreAI/dsh-cloudflare-browser-run.git",
@@ -8643,7 +8643,6 @@
       "package": {
         "name": "dsh-wsl-workspace",
         "version": "0.7.3",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-wsl-workspace",
           "version": "0.7.3",
@@ -8738,6 +8737,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-nAjTzPxs5fF0KncjmP01pxXY+U9ny0oP/C7KgdRsWNN83seVl7Wwh058yDLc1Z+EpZ7Th8bvF2FclfIdBr1b3A==",
         "tarball": "https://registry.npmjs.org/dsh-wsl-workspace/-/dsh-wsl-workspace-0.7.3.tgz",
         "repository": "git+https://github.com/6Mikao9/dsh-wsl-workspace.git",
@@ -13001,7 +13001,6 @@
       "package": {
         "name": "dsh-better-sidebar",
         "version": "0.22.1",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-better-sidebar",
           "version": "0.22.1",
@@ -13112,6 +13111,7 @@
             "manifestVersion": 1
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-5Gr2LFu8aay74osaDEQ4IZNRGMRDhs5XMyHc6a7q1BF6xGFfuz1s2+XW3hEdDknO9rgi/7Ax2XQ1MvwEBthNEQ==",
         "tarball": "https://registry.npmjs.org/dsh-better-sidebar/-/dsh-better-sidebar-0.22.1.tgz",
         "repository": "https://github.com/omdsh-dev/DSH-better-sidebar",
@@ -23680,7 +23680,6 @@
       "package": {
         "name": "dshmarket",
         "version": "1.66.4",
-        "distTag": "latest",
         "manifest": {
           "name": "dshmarket",
           "version": "1.66.4",
@@ -23731,6 +23730,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-aQU5++DN1mLEORIXBEQ2yDgQE8MPxgVHD44qgAgnsEwC45hDWTwxuJCueN08Qsohpa/lzmFhkyblc+9y3sCTQA==",
         "tarball": "https://registry.npmjs.org/dshmarket/-/dshmarket-1.66.4.tgz",
         "repository": "git+https://github.com/dsh-market/dsh-market.git",
@@ -23873,7 +23873,6 @@
       "package": {
         "name": "@zseven-w/dsh-openpencil",
         "version": "0.1.0-rc.1",
-        "distTag": "latest",
         "manifest": {
           "name": "@zseven-w/dsh-openpencil",
           "version": "0.1.0-rc.1",
@@ -23926,6 +23925,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-0equagOeBdSpaEfgH2UnxykoDDAA1UxRHCzscMVNktha6xWQPT7+NhA7aBaH4HhGPP0MAqXznMrF5g2v4kxQIg==",
         "tarball": "https://registry.npmjs.org/@zseven-w/dsh-openpencil/-/dsh-openpencil-0.1.0-rc.1.tgz",
         "repository": "git+https://github.com/ZSeven-W/dsh-openpencil.git",
@@ -26171,7 +26171,6 @@
       "package": {
         "name": "dsh-context",
         "version": "0.59.2",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-context",
           "version": "0.59.2",
@@ -26235,6 +26234,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-cPl0+73YG4QFYPbjBp0YGUprhI4nSsWGCtnpLYTiA7inNfthOP6o96x22qgUdM940CjMO9ZUnqp1H30RNxGMhg==",
         "tarball": "https://registry.npmjs.org/dsh-context/-/dsh-context-0.59.2.tgz",
         "repository": "git+https://github.com/bowenliang123/dsh-context.git",
@@ -32877,7 +32877,6 @@
       "package": {
         "name": "@nanmicoder/dsh-agent-teams",
         "version": "0.1.22-rc.1",
-        "distTag": "next",
         "manifest": {
           "name": "@nanmicoder/dsh-agent-teams",
           "version": "0.1.22-rc.1",
@@ -33017,6 +33016,7 @@
             }
           }
         },
+        "distTag": "next",
         "integrity": "sha512-bGiAaQW0Awc5e/z5RTeuQFRLyNPKTaszMkm5BksbZIP50av0vlbLiOd2PVIV5AP9vzUD+njmA3omRLOgeEZIhA==",
         "tarball": "https://registry.npmjs.org/@nanmicoder/dsh-agent-teams/-/dsh-agent-teams-0.1.22-rc.1.tgz",
         "repository": "git+https://github.com/NanmiCoder/dsh-agent-teams.git",
@@ -49679,7 +49679,6 @@
       "package": {
         "name": "dsh-cost-meter",
         "version": "1.7.44",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-cost-meter",
           "version": "1.7.44",
@@ -49730,6 +49729,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-ZQ/kPWpgrAIC1ku1V/Gbm+bv8QFxEuvQtwRHpBO971YZGzdmRFs+T9JNld/8uzakVMOmvVUcs+pywGE69GQTvQ==",
         "tarball": "https://registry.npmjs.org/dsh-cost-meter/-/dsh-cost-meter-1.7.44.tgz",
         "repository": "git+https://github.com/Han-1413141/dsh-cost-meter.git",
@@ -50367,7 +50367,6 @@
       "package": {
         "name": "@1e0zj/dsh-plugin-mall",
         "version": "0.4.17",
-        "distTag": "latest",
         "manifest": {
           "name": "@1e0zj/dsh-plugin-mall",
           "version": "0.4.17",
@@ -50401,6 +50400,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-iblSZOwugF02CVBlSSD4sDrb8KUkEoi47s2Rz2yz4v9G6izG0z/ZolIAcH7qn8WGdlGrsSInrS4a4M3SdGguOw==",
         "tarball": "https://registry.npmjs.org/@1e0zj/dsh-plugin-mall/-/dsh-plugin-mall-0.4.17.tgz",
         "repository": "git+https://github.com/1e0zj/dsh-plugin-mall.git",
@@ -50590,7 +50590,6 @@
       "package": {
         "name": "@awiki/dsh-plugin",
         "version": "0.3.12",
-        "distTag": "latest",
         "manifest": {
           "name": "@awiki/dsh-plugin",
           "version": "0.3.12",
@@ -50700,6 +50699,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-r4THdNRP5b3G3dD8SSMxD5GgDyO+bXRCQ0USIqpdN8ZW7WCfcOsq/CyD2sgkYJY8Bfy8UhKmrXU1TVPkj5ocjQ==",
         "tarball": "https://registry.npmjs.org/@awiki/dsh-plugin/-/dsh-plugin-0.3.12.tgz",
         "repository": "git+https://github.com/AgentConnect/dsh-awiki.git",
@@ -68698,7 +68698,6 @@
       "package": {
         "name": "@a9i5k4/dsh-auto-memory",
         "version": "3.2.1",
-        "distTag": "latest",
         "manifest": {
           "name": "@a9i5k4/dsh-auto-memory",
           "version": "3.2.1",
@@ -68732,6 +68731,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-hNZECIwIxDTtH3jFxHyAo6yUogQpHtkJOWgZYGC3E91n4HgH7OzxT35jFNhlifefkGKaLQkgQvwdn//qOmkh8w==",
         "tarball": "https://registry.npmjs.org/@a9i5k4/dsh-auto-memory/-/dsh-auto-memory-3.2.1.tgz",
         "repository": "git+https://github.com/Aik358/dsh-auto-memory.git",
@@ -68841,7 +68841,6 @@
       "package": {
         "name": "dsh-update-checker",
         "version": "1.6.4",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-update-checker",
           "version": "1.6.4",
@@ -68869,6 +68868,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-we49yXUXn4o5c+jIPMdKbiVs1fQxkgIjlYbYRfkXeT81eq3E7eNj77sJ/OdbI5HY9ldu/10JFbuSdTMaxVVnjg==",
         "tarball": "https://registry.npmjs.org/dsh-update-checker/-/dsh-update-checker-1.6.4.tgz",
         "repository": "git+https://github.com/Airmetro/dsh-update-checker.git",
@@ -69014,7 +69014,6 @@
       "package": {
         "name": "dsh-agy-link",
         "version": "0.4.40",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-agy-link",
           "version": "0.4.40",
@@ -69076,6 +69075,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-vUUxZyvh16EsKImO5fDuIRAv3pfyiZrrvxrMiudsZsh+O/VnBnWHIYETqVnJ4QR+eZMG/hjjaPZ1Hq7CjA6Jiw==",
         "tarball": "https://registry.npmjs.org/dsh-agy-link/-/dsh-agy-link-0.4.40.tgz",
         "repository": "git+ssh://git@github.com/amlyczz/dsh-agy-link.git",
@@ -70918,7 +70918,6 @@
       "package": {
         "name": "@anionex/dsh-vision-toolkit",
         "version": "0.1.45",
-        "distTag": "latest",
         "manifest": {
           "name": "@anionex/dsh-vision-toolkit",
           "version": "0.1.45",
@@ -71021,6 +71020,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-C7PyawR3vTD61mDSX10yHlnkQvNhpTkHNETMW5PzgYi3qRviYqGgmOnrt2P5bxrig9s/DGj7WU3FN8Mc8+ZWRQ==",
         "tarball": "https://registry.npmjs.org/@anionex/dsh-vision-toolkit/-/dsh-vision-toolkit-0.1.45.tgz",
         "repository": "git+https://github.com/Anionex/dsh-vision-toolkit.git",
@@ -74496,7 +74496,6 @@
       "package": {
         "name": "dsh-find-plugin",
         "version": "0.4.0",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-find-plugin",
           "version": "0.4.0",
@@ -74520,6 +74519,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-XO0zQb3iHxK7IGGygfiGDxI3t4HUEBNLK4knqYmh8KuT2cbCWzmH+4PViaIgVPsiytC7mXN5p94u5fJc3VNsBw==",
         "tarball": "https://registry.npmjs.org/dsh-find-plugin/-/dsh-find-plugin-0.4.0.tgz",
         "repository": "git+https://github.com/awesome-dsh-plugin/dsh-find-plugin.git",
@@ -75066,7 +75066,6 @@
       "package": {
         "name": "dsh-remote-plugin",
         "version": "0.7.0",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-remote-plugin",
           "version": "0.7.0",
@@ -75094,6 +75093,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-y0NN0Ei0cqpqu3wOJsItuNn7FS/mUKZW2M/8JPk2nyscfNn00QvxKyGKoJ7Hgb1e0MJCz8AaFcQPE0j4Y0XQ9Q==",
         "tarball": "https://registry.npmjs.org/dsh-remote-plugin/-/dsh-remote-plugin-0.7.0.tgz",
         "repository": "git+https://github.com/Blank-not-black/dsh-Remote.git",
@@ -75412,7 +75412,6 @@
       "package": {
         "name": "@deepseek-harness-tui/dsh-tui",
         "version": "0.11.1",
-        "distTag": "latest",
         "manifest": {
           "name": "@deepseek-harness-tui/dsh-tui",
           "version": "0.11.1",
@@ -75653,6 +75652,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-3S95pBDba4mZStHRT9mRT2Nwl233vm3upZkqHKDv3LhMZCpwEamHTgOBrkpcSVwDzL/ySH9WdRHmGNMmGGVgTg==",
         "tarball": "https://registry.npmjs.org/@deepseek-harness-tui/dsh-tui/-/dsh-tui-0.11.1.tgz",
         "repository": "git+https://github.com/ccch1mneyyy/dsh-TUI.git",
@@ -87481,7 +87481,6 @@
       "package": {
         "name": "dsh-vibe-math",
         "version": "2.3.16",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-vibe-math",
           "version": "2.3.16",
@@ -87520,6 +87519,7 @@
             "testedVersion": "0.1.5-rc.2"
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-fbj+6xo/sOYnmvT6GEHx3FRdlmB81+BlE66rQ7+4U3wrPeUCKu0P0H/PoKmmNAoX0YBV4XLgWsMXk77Zh6O32Q==",
         "tarball": "https://registry.npmjs.org/dsh-vibe-math/-/dsh-vibe-math-2.3.16.tgz",
         "repository": "git+https://github.com/ChongCyrus/Vibe-Mathematics.git",
@@ -87678,7 +87678,6 @@
       "package": {
         "name": "dsh-free-search",
         "version": "0.5.0",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-free-search",
           "version": "0.5.0",
@@ -87753,6 +87752,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-dRxttXNCmIVwuYBKrRMUyFGz98nvE+/WnTE9aX8Uu8GNkp0WL43V+u7FPVf4SFkrMrklpWNJ95WHc1yxk+Ot6A==",
         "tarball": "https://registry.npmjs.org/dsh-free-search/-/dsh-free-search-0.5.0.tgz",
         "repository": "git+https://github.com/DDDMUC/dsh-free-search.git",
@@ -89028,7 +89028,6 @@
       "package": {
         "name": "dsh-plugin-wallpaper-engine",
         "version": "1.0.1",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-plugin-wallpaper-engine",
           "version": "1.0.1",
@@ -89075,6 +89074,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-d3xbC02SRF1X29yUr6HLpwpu6wrG4V7/MfSm5KuYdvU01pscbYNMLQpfy5OZCdVsQ5UWM5NI4UMmyCaYYz5UIQ==",
         "tarball": "https://registry.npmjs.org/dsh-plugin-wallpaper-engine/-/dsh-plugin-wallpaper-engine-1.0.1.tgz",
         "repository": "git+https://github.com/elysia395/dsh-wallpaper-engine.git",
@@ -91449,7 +91449,6 @@
       "package": {
         "name": "deepseek-harness-wallet",
         "version": "0.3.13",
-        "distTag": "latest",
         "manifest": {
           "name": "deepseek-harness-wallet",
           "version": "0.3.13",
@@ -91496,6 +91495,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-2NCgZahjjR47p+Ii22jrZiz5azqk16Aisdaa7awCkDTsvhLhHSujSZkUZUxTOvNLrI8wiDJ9f8OiNRHNXYiplw==",
         "tarball": "https://registry.npmjs.org/deepseek-harness-wallet/-/deepseek-harness-wallet-0.3.13.tgz",
         "repository": "git+https://github.com/feibi-mochi/deepseek-harness-control-center.git",
@@ -91641,7 +91641,6 @@
       "package": {
         "name": "dsh-remote",
         "version": "0.8.23",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-remote",
           "version": "0.8.23",
@@ -91689,6 +91688,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-KottottzwFpJUDy4cdHOFvzVcw2qgRU14iI/Qf12nHLBbpkUiJn8zQtkSNI2b0xLG/+J6G4guHd6YmVycskExg==",
         "tarball": "https://registry.npmjs.org/dsh-remote/-/dsh-remote-0.8.23.tgz",
         "repository": "git+https://github.com/flymysql/dsh-remote.git",
@@ -91849,7 +91849,6 @@
       "package": {
         "name": "dsh-codex-connect",
         "version": "0.1.0-alpha.4.52",
-        "distTag": "alpha",
         "manifest": {
           "name": "dsh-codex-connect",
           "version": "0.1.0-alpha.4.52",
@@ -91928,6 +91927,7 @@
             }
           }
         },
+        "distTag": "alpha",
         "integrity": "sha512-0VnuNjBK+3XQEKsNjuBWJ6iq+bKLckThoNhQf7GFIbCo/LNAp34N1RVjtimWaj4/xcHc7ApEQiSihYartWo2mg==",
         "tarball": "https://registry.npmjs.org/dsh-codex-connect/-/dsh-codex-connect-0.1.0-alpha.4.52.tgz",
         "repository": "git+https://github.com/franksong2702/dsh-codex-connect.git",
@@ -103064,7 +103064,6 @@
       "package": {
         "name": "dsh-chatvoice",
         "version": "0.1.7",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-chatvoice",
           "version": "0.1.7",
@@ -103094,6 +103093,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-QUR8biVjKlfJxEhW8J+WnoVq2jSzUB14DxEb9LdiXj50EiL68f4y27oGRF2CVCiBlTHlVpSTtDbjWJCXt5hpaA==",
         "tarball": "https://registry.npmjs.org/dsh-chatvoice/-/dsh-chatvoice-0.1.7.tgz",
         "repository": "git+https://github.com/FuzzySoul/dsh-chatvoice.git",
@@ -103548,7 +103548,6 @@
       "package": {
         "name": "@liustack/modsearch",
         "version": "5.10.5",
-        "distTag": "latest",
         "manifest": {
           "name": "@liustack/modsearch",
           "version": "5.10.5",
@@ -103577,6 +103576,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-SHeZ5pr0BuCEKBJSDN4no008ETwlBl3GNOuOPfDjLTkVkGriNc5NPeAz1kG91CwmG7klLzzGAvnjTrkLrRqyfw==",
         "tarball": "https://registry.npmjs.org/@liustack/modsearch/-/modsearch-5.10.5.tgz",
         "repository": "git+https://github.com/liustack/modsearch.git",
@@ -105706,7 +105706,6 @@
       "package": {
         "name": "@mars-sea/dsh-commandcode-provider",
         "version": "0.11.17",
-        "distTag": "latest",
         "manifest": {
           "name": "@mars-sea/dsh-commandcode-provider",
           "version": "0.11.17",
@@ -105780,6 +105779,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-CRy/3nb+3Hg3NYZtnEWRHppAmFAXB0pQASXoZggaHAnaSZD/OCzv1bAZjo7G5I8ldbgJA53AlzVypq2EybZ07w==",
         "tarball": "https://registry.npmjs.org/@mars-sea/dsh-commandcode-provider/-/dsh-commandcode-provider-0.11.17.tgz",
         "repository": "git+https://github.com/Mars-Sea/dsh-commandcode-provider.git",
@@ -107097,7 +107097,6 @@
       "package": {
         "name": "@michengai/dsh-agency-agents",
         "version": "1.0.6",
-        "distTag": "latest",
         "manifest": {
           "name": "@michengai/dsh-agency-agents",
           "version": "1.0.6",
@@ -107171,6 +107170,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-bqcTNReMa0tc63vuF7NLT3vZBo70Qr+EjQ/VouxRjOjGWI6WJR9UYLjl7PTHiyWhTa6tciHnVSZZG5QzkncLiQ==",
         "tarball": "https://registry.npmjs.org/@michengai/dsh-agency-agents/-/dsh-agency-agents-1.0.6.tgz",
         "repository": "git+https://github.com/MichengAI/dsh-agency-agents.git",
@@ -112019,7 +112019,6 @@
       "package": {
         "name": "@moonquake2004/dsh-doctor",
         "version": "0.8.5",
-        "distTag": "latest",
         "manifest": {
           "name": "@moonquake2004/dsh-doctor",
           "version": "0.8.5",
@@ -112050,6 +112049,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-vMAmgAzR1SRi0tW2ERYEY4kDIRBSLe8BgCSyn5VCd6Ss+DQ9n4vvr8x7fNmhPxfN1PmmFLwC+9SXWXr5t84hNA==",
         "tarball": "https://registry.npmjs.org/@moonquake2004/dsh-doctor/-/dsh-doctor-0.8.5.tgz",
         "repository": "git+https://github.com/moonquake2004/dsh-doctor.git",
@@ -112178,7 +112178,6 @@
       "package": {
         "name": "dsh-chat-import",
         "version": "0.22.2",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-chat-import",
           "version": "0.22.2",
@@ -112223,6 +112222,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-JuegH+aiDkRewenE1om2+L+WvmVgMHR7UInNj44RkzsAZBz10dS6TgHjwHXyT4HXb8zXf8wuuWEafdvrNJ8GNQ==",
         "tarball": "https://registry.npmjs.org/dsh-chat-import/-/dsh-chat-import-0.22.2.tgz",
         "repository": "git+https://github.com/Nwflower/dsh-chat-import.git",
@@ -134314,7 +134314,6 @@
       "package": {
         "name": "@openma/deepseek-harness-acp",
         "version": "0.4.33",
-        "distTag": "latest",
         "manifest": {
           "name": "@openma/deepseek-harness-acp",
           "version": "0.4.33",
@@ -134351,6 +134350,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-FPYPIWRA6oSUz0wNkDldjY6pCZD+eGIT3xGmWk5pi+kKurjO8micMg+ZN2n24zNIIHWQTHnOJj/QNOMPpxbwKg==",
         "tarball": "https://registry.npmjs.org/@openma/deepseek-harness-acp/-/deepseek-harness-acp-0.4.33.tgz",
         "repository": "git+https://github.com/openma-ai/deepseek-harness-acp.git",
@@ -147852,7 +147852,6 @@
       "package": {
         "name": "dsh-pet",
         "version": "0.2.12",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-pet",
           "version": "0.2.12",
@@ -147901,6 +147900,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-PrdP71NrDiNUyYtv2cTKC2kqdmOHzNLVXfmkCosnqXicsmH9aK7EjMGIdK7JGFwUc79ypMX/iDc85f+WESufSw==",
         "tarball": "https://registry.npmjs.org/dsh-pet/-/dsh-pet-0.2.12.tgz",
         "repository": "git+https://github.com/PC2005-cloud/dsh-pet.git",
@@ -148096,7 +148096,6 @@
       "package": {
         "name": "dsh-extension-hub",
         "version": "0.2.19",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-extension-hub",
           "version": "0.2.19",
@@ -148130,6 +148129,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-R0Vo0UAp1xranW8xC5cuBIyZLwB8F8y4NNLbKTQh/hGhkbiYgFiSYYXXaR1NMD8OhfM5XXJ3t+3NSuVKKzCEtA==",
         "tarball": "https://registry.npmjs.org/dsh-extension-hub/-/dsh-extension-hub-0.2.19.tgz",
         "repository": "git+https://github.com/Relistencode/dsh-extension-hub.git",
@@ -148287,7 +148287,6 @@
       "package": {
         "name": "dsh-dream-skin",
         "version": "9.27.1",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-dream-skin",
           "version": "9.27.1",
@@ -148361,6 +148360,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-HXjjy53HxQZwfm+7LNJhjcRtt9zgoQevu/v3xZLn2Kjb5csPQjkdn437e/FIfNE67vAa8ZjuMB86lK/3l9iocw==",
         "tarball": "https://registry.npmjs.org/dsh-dream-skin/-/dsh-dream-skin-9.27.1.tgz",
         "repository": "git+https://github.com/RevolutionLA/dsh-dream-skin.git",
@@ -148576,7 +148576,6 @@
       "package": {
         "name": "dsh-mobile",
         "version": "0.5.0",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-mobile",
           "version": "0.5.0",
@@ -148643,6 +148642,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-SJfm0bg7SBj0iM8ixsGXWVpIFxb7qXwU9YJt1U6bh8Lr1mAlAt7HZG1pj46NDPZ384wU67tPByBzUDnATHA88A==",
         "tarball": "https://registry.npmjs.org/dsh-mobile/-/dsh-mobile-0.5.0.tgz",
         "repository": "git+https://github.com/saya-ch/dsh-mobile.git",
@@ -150350,7 +150350,6 @@
       "package": {
         "name": "dsh-pocket",
         "version": "2.10.6",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-pocket",
           "version": "2.10.6",
@@ -150389,6 +150388,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-yqybeWWutozi1yBLDpSs6ien9SndFPVNK6HlmhJf8q0AOLauzcLntmFyGQ0/v3EzS3V8ftM4yvqcc/o6LcGcGA==",
         "tarball": "https://registry.npmjs.org/dsh-pocket/-/dsh-pocket-2.10.6.tgz",
         "repository": "git+https://github.com/shaobeichen/dsh-pocket.git",
@@ -150901,7 +150901,6 @@
       "package": {
         "name": "dsh-auth-gate",
         "version": "0.15.0",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-auth-gate",
           "version": "0.15.0",
@@ -150945,6 +150944,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-T8d3X9eyjr6tJUEpmimVguU5QmSPePuVAPFtfZIzdrhcTDeZg59SMln7j4OfWl3M4nYAwGrQL6jiLuvmNLXi/A==",
         "tarball": "https://registry.npmjs.org/dsh-auth-gate/-/dsh-auth-gate-0.15.0.tgz",
         "repository": "git+https://github.com/TecFancy/dsh-auth-gate.git",
@@ -151241,7 +151241,6 @@
       "package": {
         "name": "dsh-notifier",
         "version": "0.13.1",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-notifier",
           "version": "0.13.1",
@@ -151291,6 +151290,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-wpw8Y7FWJ5gaODIzrHEXTO9d57eBqRDOPY/oUMVcCk0Wmbp7ItpuDDDIhlgt8WbiZAabUWF3ZwAvxkAigouGYA==",
         "tarball": "https://registry.npmjs.org/dsh-notifier/-/dsh-notifier-0.13.1.tgz",
         "repository": "git+https://github.com/THEWOLFWALKER/dsh-notifier.git",
@@ -151513,7 +151513,6 @@
       "package": {
         "name": "@trench-xinxin/dsh-tool-lens",
         "version": "2.0.5",
-        "distTag": "latest",
         "manifest": {
           "name": "@trench-xinxin/dsh-tool-lens",
           "version": "2.0.5",
@@ -151555,6 +151554,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-emWZvgEbo4+gun1rBY2tF64QktSLIF9d0R5KIsjErTWTWr2lMmbcWmiP6m5CwY7owPksxcqF3rKDeHVR7BQHNQ==",
         "tarball": "https://registry.npmjs.org/@trench-xinxin/dsh-tool-lens/-/dsh-tool-lens-2.0.5.tgz",
         "repository": "git+https://github.com/trench-xinxin/dsh-tool-lens.git",
@@ -153426,7 +153426,6 @@
       "package": {
         "name": "@tt-a1i/archify-dsh",
         "version": "0.1.0",
-        "distTag": "latest",
         "manifest": {
           "name": "@tt-a1i/archify-dsh",
           "version": "0.1.0",
@@ -153445,6 +153444,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-D8fDqV6DV/vo80Gj/3rgidd+hwBbhTVncaVoD5Uhh+DbgYlEoQQOmBVbhU5HW33wE5OqJP/2HkTRPJ0hf7W0tA==",
         "tarball": "https://registry.npmjs.org/@tt-a1i/archify-dsh/-/archify-dsh-0.1.0.tgz",
         "repository": "git+https://github.com/tt-a1i/archify.git",
@@ -153558,7 +153558,6 @@
       "package": {
         "name": "@vectorize-io/hindsight-coding-agents",
         "version": "0.7.0",
-        "distTag": "latest",
         "manifest": {
           "name": "@vectorize-io/hindsight-coding-agents",
           "version": "0.7.0",
@@ -153587,6 +153586,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-SyGnAPm7oYU9WP92RQQvjvyIeGAoEtugZO6nU0REj4x+VvZ8T8LMYveO4ZHRoxoAxL3fdrBVFVz/TvGNPrRlSQ==",
         "tarball": "https://registry.npmjs.org/@vectorize-io/hindsight-coding-agents/-/hindsight-coding-agents-0.7.0.tgz",
         "repository": "git+https://github.com/vectorize-io/hindsight.git",
@@ -153741,7 +153741,6 @@
       "package": {
         "name": "dsh-git-worktree",
         "version": "0.9.3",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-git-worktree",
           "version": "0.9.3",
@@ -153814,6 +153813,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-8BKCkHj/AN9+IwmbpswSr4Vn1PkSWaLxz7jYsL/zY8vXvab/jk+ksvWHXIL4ph4EXiAhl6GcMxX+Ej+ph3piXA==",
         "tarball": "https://registry.npmjs.org/dsh-git-worktree/-/dsh-git-worktree-0.9.3.tgz",
         "repository": "git+https://github.com/wloops/dsh-git-worktree.git",
@@ -160678,7 +160678,6 @@
       "package": {
         "name": "dsh-builtin-browser",
         "version": "0.1.22",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-builtin-browser",
           "version": "0.1.22",
@@ -160738,6 +160737,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-cAknIHWGr/kijICfSBB8GBWf3uwBoC/jK/cA485pFYMiA05Y0HqthHWJc7pj7ABeKvR8wz2oANFAu+8cDcKrfA==",
         "tarball": "https://registry.npmjs.org/dsh-builtin-browser/-/dsh-builtin-browser-0.1.22.tgz",
         "repository": "git+https://github.com/wqty123/dsh-browser.git",
@@ -161555,7 +161555,6 @@
       "package": {
         "name": "dsh-config-manager",
         "version": "0.1.65",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-config-manager",
           "version": "0.1.65",
@@ -161668,6 +161667,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-opL0lPeJWcLChSWJysk30GnFPihetWbZSUfmLoHE0xyqBwMkEQVJWxyoo9V/nAImfdWZHXGuLWXKJBbqMxi53Q==",
         "tarball": "https://registry.npmjs.org/dsh-config-manager/-/dsh-config-manager-0.1.65.tgz",
         "repository": "git+https://github.com/xiajiajun516/dsh-config-manager.git",
@@ -167872,7 +167872,6 @@
       "package": {
         "name": "@xmanrui/dsh-im",
         "version": "4.30.0",
-        "distTag": "latest",
         "manifest": {
           "name": "@xmanrui/dsh-im",
           "version": "4.30.0",
@@ -167927,6 +167926,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-sINgdN6LSR9hfoA4ajatnODAS7a+2vU/DrxHg4uUpDdFdCjvpKBo/AH6n1OwxubFIT90EHlknG9le9v5rIBisg==",
         "tarball": "https://registry.npmjs.org/@xmanrui/dsh-im/-/dsh-im-4.30.0.tgz",
         "repository": "git+https://github.com/xmanrui/dsh-im.git",
@@ -169847,7 +169847,6 @@
       "package": {
         "name": "dsh-plugin-writing-guard",
         "version": "2.0.1",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-plugin-writing-guard",
           "version": "2.0.1",
@@ -169867,6 +169866,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-k71MEGo3i+0HnQPz8kPE21xA5a9lqJCCSmAUee7NaK/IwRHb+F47SjFsH39YR6qMLjtFjNLgqKh/iOFP1Q/w4w==",
         "tarball": "https://registry.npmjs.org/dsh-plugin-writing-guard/-/dsh-plugin-writing-guard-2.0.1.tgz",
         "repository": "git+https://github.com/xmutfyh/dsh-plugin-writing-guard.git",
@@ -170673,7 +170673,6 @@
       "package": {
         "name": "dsh-vision-router",
         "version": "2.2.5",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-vision-router",
           "version": "2.2.5",
@@ -170726,6 +170725,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-L9C/gtdwd9ERXVaxVYXQDphc8RuH5LulHS5u30qj0b5MLGoY6PRbwyLIdKHX5800S1vDgltp16ZblirUwbsrzQ==",
         "tarball": "https://registry.npmjs.org/dsh-vision-router/-/dsh-vision-router-2.2.5.tgz",
         "repository": "git+https://github.com/ysr666/dsh-vision-router.git",
@@ -173234,7 +173234,6 @@
       "package": {
         "name": "@linxin666/dsh-web-all",
         "version": "0.4.3",
-        "distTag": "latest",
         "manifest": {
           "name": "@linxin666/dsh-web-all",
           "version": "0.4.3",
@@ -173304,6 +173303,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-ypEuqyHDamwfbnLopTi6VWjiDj6tmHYTldp/xQtNnRmRoVYVFMYf8TxPQS1nSwXH7N0LtVIAMjo+tzZdXK5aPg==",
         "tarball": "https://registry.npmjs.org/@linxin666/dsh-web-all/-/dsh-web-all-0.4.3.tgz",
         "repository": "https://github.com/zhu1090093659/dsh-web.git",
@@ -176837,7 +176837,6 @@
       "package": {
         "name": "@liustack/modlens",
         "version": "3.26.5",
-        "distTag": "latest",
         "manifest": {
           "name": "@liustack/modlens",
           "version": "3.26.5",
@@ -176866,6 +176865,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-twMLyjFAxp0dEOELDG01a1CmPWwBqPVWbH5wZ5mWL/eUWiwwDihWJ1O14hyAu+lVFH0peNb74Eq3zSWMD0oO2A==",
         "tarball": "https://registry.npmjs.org/@liustack/modlens/-/modlens-3.26.5.tgz",
         "repository": "git+https://github.com/liustack/modlens.git",
@@ -179018,7 +179018,6 @@
       "package": {
         "name": "dsh-mnemon",
         "version": "0.5.18",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-mnemon",
           "version": "0.5.18",
@@ -179115,6 +179114,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-yESMba1bAHlds9MDvcEo1U6+mEBKT7nHOU2GIusJKJHiOPKIdTU1Ua3MQR+AByHPuzQyWf0QPq0mFfCtHqGPMw==",
         "tarball": "https://registry.npmjs.org/dsh-mnemon/-/dsh-mnemon-0.5.18.tgz",
         "repository": "git+https://github.com/omdsh-dev/dsh-mnemon.git",
@@ -201360,7 +201360,6 @@
       "package": {
         "name": "dsh-win32",
         "version": "0.17.14",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-win32",
           "version": "0.17.14",
@@ -201414,6 +201413,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-EmUPQQUSfLwqcjumEJXlKnvD0CNz9LuqU1lTHjG5FYa50Cvh/2uqGzWWRzLWteelELQu/JhPRw5+vIWcwZp/rw==",
         "tarball": "https://registry.npmjs.org/dsh-win32/-/dsh-win32-0.17.14.tgz",
         "repository": "git+https://github.com/sjh9714/dsh-win32.git",
@@ -202257,7 +202257,6 @@
       "package": {
         "name": "whale-on-desk",
         "version": "3.0.0",
-        "distTag": "latest",
         "manifest": {
           "name": "whale-on-desk",
           "version": "3.0.0",
@@ -202289,6 +202288,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-g5KIb8OS7Pc8tn/er0lmba8BVpEeTgwY3qIrnAuyHdFBSfYoxcd8sTHnXgkYy+RaWQrYLRBccoo9K8KB9SEBUA==",
         "tarball": "https://registry.npmjs.org/whale-on-desk/-/whale-on-desk-3.0.0.tgz",
         "repository": "git+https://github.com/cookiesheep/whale-on-desk.git",
@@ -202415,7 +202415,6 @@
       "package": {
         "name": "dsh-client-auto-continue",
         "version": "0.11.9",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-client-auto-continue",
           "version": "0.11.9",
@@ -202458,6 +202457,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-hQAr3Ea9Zj7MXJgEfGFsHc7ZlZbv9JTpIFqTKLK5qDrYeQYKJqdhome0saJOKQVQ6tz7hkdf5x6rxmy7DjBk2A==",
         "tarball": "https://registry.npmjs.org/dsh-client-auto-continue/-/dsh-client-auto-continue-0.11.9.tgz",
         "repository": "git+https://github.com/HsiangNianian/dsh-auto-continue.git",
@@ -202797,7 +202797,6 @@
       "package": {
         "name": "dsh-strata",
         "version": "0.12.1",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-strata",
           "version": "0.12.1",
@@ -202826,6 +202825,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-sI0wwNwELsp7b2mSZSF58QhDAUPAA/vCGz1ifhJ4UKaQAOIlYxZhN9cQ3S0NTg9NqTTXVtzDRMvodw4w58b8xw==",
         "tarball": "https://registry.npmjs.org/dsh-strata/-/dsh-strata-0.12.1.tgz",
         "repository": "git+https://github.com/jsdvjx/dsh-strata.git",
@@ -202941,7 +202941,6 @@
       "package": {
         "name": "dsh-free-vision",
         "version": "1.0.8",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-free-vision",
           "version": "1.0.8",
@@ -202973,6 +202972,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-fLIiTmw5AbCNQyC5GTIaqks73ZHqiVHOWlsAuCc48iNXTqjcIxuDQGCRYWEavBTUxulCRzaSKEp1Z4GEWzOG2Q==",
         "tarball": "https://registry.npmjs.org/dsh-free-vision/-/dsh-free-vision-1.0.8.tgz",
         "repository": "git+https://github.com/FuzzySoul/dsh-free-vision.git",
@@ -203202,7 +203202,6 @@
       "package": {
         "name": "@michengai/dsh-skills-manager",
         "version": "1.1.4",
-        "distTag": "latest",
         "manifest": {
           "name": "@michengai/dsh-skills-manager",
           "version": "1.1.4",
@@ -203244,6 +203243,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-E85oOwdF23uNTS1u8iuvqXfvTskgBAZX0PbUFRYsePJ/qmK0hM9Mwji9BxlNn3OljcY61GBpUFUgynIHfKNChA==",
         "tarball": "https://registry.npmjs.org/@michengai/dsh-skills-manager/-/dsh-skills-manager-1.1.4.tgz",
         "repository": "git+https://github.com/MichengAI/dsh-skills-manager.git",
@@ -213406,7 +213406,6 @@
       "package": {
         "name": "@roarpeng/graphflow",
         "version": "1.26.0",
-        "distTag": "latest",
         "manifest": {
           "name": "@roarpeng/graphflow",
           "version": "1.26.0",
@@ -213454,6 +213453,7 @@
             "plugin": true
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-DmXr+TiTz1CyBfBjE5W9HAqJ+jtRCdYNQ3RUykAQq59gVUwvN3jEQwQcBWCqRbMoFPvlHPQwN6RpZ8ofnp7GfQ==",
         "tarball": "https://registry.npmjs.org/@roarpeng/graphflow/-/graphflow-1.26.0.tgz",
         "repository": "git+https://github.com/Roarpeng/GraphFlow.git",
@@ -216418,7 +216418,6 @@
       "package": {
         "name": "dsh-history",
         "version": "0.1.25",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-history",
           "version": "0.1.25",
@@ -216469,6 +216468,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-GO/ykT+MUxTxI1eQtBZnSV6TsFddCU+gcZqgHNCU3tEVTjSI0I3n1z/eZbBJsVF4CIWzoLgieI53cBt0CqUt7g==",
         "tarball": "https://registry.npmjs.org/dsh-history/-/dsh-history-0.1.25.tgz",
         "repository": "git+https://github.com/chenproton/dsh-history.git",
@@ -222136,7 +222136,6 @@
       "package": {
         "name": "@nonamelego/dsh-catppuccin",
         "version": "0.5.8",
-        "distTag": "latest",
         "manifest": {
           "name": "@nonamelego/dsh-catppuccin",
           "version": "0.5.8",
@@ -222191,6 +222190,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-rtVVwCRNqMekWpV2bhRBMtTfQ5XtxTcjqk2i1viAtRJunnk6g7hoJovaRhdwMNQNUP38E+x1sgb5+LVVNjW4rg==",
         "tarball": "https://registry.npmjs.org/@nonamelego/dsh-catppuccin/-/dsh-catppuccin-0.5.8.tgz",
         "repository": "git+https://github.com/NoNameLeGo/dsh-catppuccin-theme.git",
@@ -226796,7 +226796,6 @@
       "package": {
         "name": "dsh-rewind-plugin",
         "version": "0.14.0",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-rewind-plugin",
           "version": "0.14.0",
@@ -226903,6 +226902,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-Y0Yvu0dMv36u3IuXBAm2rkfGcu/i80z8cO+fwRk9K62+c1mIJjLGhvnC9m9x+QzbIUmbZWSLZth/K65JmA7G5A==",
         "tarball": "https://registry.npmjs.org/dsh-rewind-plugin/-/dsh-rewind-plugin-0.14.0.tgz",
         "repository": "git+https://github.com/SiriLee/dsh-rewind.git",
@@ -227873,7 +227873,6 @@
       "package": {
         "name": "dsh-vision-proxy",
         "version": "0.4.1",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-vision-proxy",
           "version": "0.4.1",
@@ -227895,6 +227894,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-Cky0hONygDEAFxL6Fvi4UA8iF0Kd8SQyOCg+6ZtmuahyL0eyV8jw5Wr2lCipVOgkvsQQLaPM+wk+Emt8Lnyuug==",
         "tarball": "https://registry.npmjs.org/dsh-vision-proxy/-/dsh-vision-proxy-0.4.1.tgz",
         "repository": "git+https://github.com/Flyvhidbwo/dsh-vision-proxy.git",
@@ -228045,7 +228045,6 @@
       "package": {
         "name": "dsh-codex-subscription",
         "version": "2.2.4",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-codex-subscription",
           "version": "2.2.4",
@@ -228112,6 +228111,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-xY54Sfjo+8KaDCk4O9WpOuKlhWgY7TnUeXdk3i2dOoU7aBsWYN6MpGlvDQs35bJODIgXISIpH3jmvMB3MSHVVg==",
         "tarball": "https://registry.npmjs.org/dsh-codex-subscription/-/dsh-codex-subscription-2.2.4.tgz",
         "repository": "git+https://github.com/WSL043/dsh-codex-subscription.git",
@@ -232567,7 +232567,6 @@
       "package": {
         "name": "@anweat/dsh-browser",
         "version": "0.1.15",
-        "distTag": "latest",
         "manifest": {
           "name": "@anweat/dsh-browser",
           "version": "0.1.15",
@@ -232661,6 +232660,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-Wq4y+sBcG/490UwCjAZBo/Fny8dhnOy3wiJhbBjGGrAagIHSiA1KPdd/N8d6B1O26O4Otore5McIG7vVLX6Eig==",
         "tarball": "https://registry.npmjs.org/@anweat/dsh-browser/-/dsh-browser-0.1.15.tgz",
         "repository": "git+https://github.com/anweat/dsh-browser.git",
@@ -235201,7 +235201,6 @@
       "package": {
         "name": "@anionex/dsh-turn-rewind",
         "version": "0.3.8",
-        "distTag": "latest",
         "manifest": {
           "name": "@anionex/dsh-turn-rewind",
           "version": "0.3.8",
@@ -235276,6 +235275,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-TG3Zh7k3QmlvkOv8KHIvV2765Yz6I3Ndceq0AYjYy3QGIOs0FJNZoCoMBYLiF+4dkSCZK87xM1j7B7VDDReDVw==",
         "tarball": "https://registry.npmjs.org/@anionex/dsh-turn-rewind/-/dsh-turn-rewind-0.3.8.tgz",
         "repository": "git+https://github.com/Anionex/dsh-turn-rewind.git",
@@ -235597,7 +235597,6 @@
       "package": {
         "name": "dsh-easyrewrite",
         "version": "2.6.0",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-easyrewrite",
           "version": "2.6.0",
@@ -235622,6 +235621,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-z46bbm23dyiiZ2Dotq/CD06qvx4NXqZmogwguIgsH0nVLTe1TZV8k8S59hndZrSBgDl9WHZyRFMxkuqvbbWjuw==",
         "tarball": "https://registry.npmjs.org/dsh-easyrewrite/-/dsh-easyrewrite-2.6.0.tgz",
         "repository": "git+https://github.com/Renzic-Stone/DSH-EasyRewrite.git",
@@ -235737,7 +235737,6 @@
       "package": {
         "name": "dsh-better-edit",
         "version": "1.0.0",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-better-edit",
           "version": "1.0.0",
@@ -235769,6 +235768,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-SAWoiY/5RACbNY9uxcpXrKoWf7oWU06I7pMwhVxX0BSdJND3dqEloU/LIqGfncadoJPBNphYX80vx1CzFOY4yw==",
         "tarball": "https://registry.npmjs.org/dsh-better-edit/-/dsh-better-edit-1.0.0.tgz",
         "repository": "git+https://github.com/Rianico/dsh-better-edit.git",
@@ -235909,7 +235909,6 @@
       "package": {
         "name": "@dsh-plugin/dsh-auxiliary",
         "version": "0.6.4",
-        "distTag": "latest",
         "manifest": {
           "name": "@dsh-plugin/dsh-auxiliary",
           "version": "0.6.4",
@@ -235949,6 +235948,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-Nlhge/lANTD4qdlNHdSzj1p03ZaAIkiX8ZWMmJO5C6jeBVkSSTOU2g5uuU1adrFpL1C/oZm5yc8/yeclkwz57Q==",
         "tarball": "https://registry.npmjs.org/@dsh-plugin/dsh-auxiliary/-/dsh-auxiliary-0.6.4.tgz",
         "repository": "git+https://github.com/dsh-plugins/dsh-auxiliary.git",
@@ -242101,7 +242101,6 @@
       "package": {
         "name": "dsh-verify",
         "version": "0.9.4",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-verify",
           "version": "0.9.4",
@@ -242125,6 +242124,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-ct2WM+CTjM2RE01S57/qO9QeKgEra1GeD+v6nsuO8XJGBaBS+rDIeFMmQApvg+D/K5YoFn3qgTw2XsBOQhj1yA==",
         "tarball": "https://registry.npmjs.org/dsh-verify/-/dsh-verify-0.9.4.tgz",
         "repository": "git+https://github.com/263311487-ux/dsh-verify.git",
@@ -242237,7 +242237,6 @@
       "package": {
         "name": "dsh-passwords",
         "version": "2.7.5",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-passwords",
           "version": "2.7.5",
@@ -242270,6 +242269,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-e3OGxWIZC/IWk7YgjCxMQZdTjNMsUG0Hk9mL9U8AR4WdH13OZ2e8ABVlUub8xhRq5wOmTKhHWeSTXOjJ2fvdiQ==",
         "tarball": "https://registry.npmjs.org/dsh-passwords/-/dsh-passwords-2.7.5.tgz",
         "repository": "git+https://github.com/slywalker2006/dsh-passwords.git",
@@ -242376,7 +242376,6 @@
       "package": {
         "name": "@openviking/dsh-memory-plugin",
         "version": "0.5.8",
-        "distTag": "latest",
         "manifest": {
           "name": "@openviking/dsh-memory-plugin",
           "version": "0.5.8",
@@ -242401,6 +242400,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-S90WV24K4tdRm0rMa8UHmnvkqCzaqnWck7lGN5aGfg2M45kDv2/mPOgclfSepM9ZWuSxIl3ZrM2y26fMnK//Wg==",
         "tarball": "https://registry.npmjs.org/@openviking/dsh-memory-plugin/-/dsh-memory-plugin-0.5.8.tgz",
         "repository": "git+https://github.com/volcengine/OpenViking.git",
@@ -242535,7 +242535,6 @@
       "package": {
         "name": "dsh-univer-office",
         "version": "0.3.5",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-univer-office",
           "version": "0.3.5",
@@ -242588,6 +242587,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-kMfqAfKJBRUVETqZYLiGg5QVBgoOHkES1O8hhLFTTl9TiHUZEpVnB+1CUFeMjHAArp47QOElGe82iKETgAqDMw==",
         "tarball": "https://registry.npmjs.org/dsh-univer-office/-/dsh-univer-office-0.3.5.tgz",
         "repository": "git+https://github.com/dream-num/dsh-univer-office.git",
@@ -260391,7 +260391,6 @@
       "package": {
         "name": "@jieai/dsh-plugin-vet",
         "version": "0.3.15",
-        "distTag": "latest",
         "manifest": {
           "name": "@jieai/dsh-plugin-vet",
           "version": "0.3.15",
@@ -260442,6 +260441,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-TATikOtzl0MGi8YFYCNkYscm2iNK7QDVy38gUYMccPt5WnjEMYqKE2HFKfscIKYOG3Q9pzDNkWPOiLvGiirJWQ==",
         "tarball": "https://registry.npmjs.org/@jieai/dsh-plugin-vet/-/dsh-plugin-vet-0.3.15.tgz",
         "repository": "git+https://github.com/wulun811/dsh-plugin-vet.git",
@@ -261183,7 +261183,6 @@
       "package": {
         "name": "dsh-full-remote",
         "version": "0.3.7",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-full-remote",
           "version": "0.3.7",
@@ -261224,6 +261223,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-n73mTlkSuuIYY2pLjkbHNsuI8ReTxDMgr0SZ3egtH7L731gnTXV+NFxmuF3NyJpJ51QvBjDwARLxhJ5NiAiikw==",
         "tarball": "https://registry.npmjs.org/dsh-full-remote/-/dsh-full-remote-0.3.7.tgz",
         "repository": "git+https://github.com/JUANWANG-BUAA/dsh-full-remote.git",
@@ -267684,7 +267684,6 @@
       "package": {
         "name": "odai-dsh-plugin",
         "version": "0.2.39",
-        "distTag": "latest",
         "manifest": {
           "name": "odai-dsh-plugin",
           "version": "0.2.39",
@@ -267723,6 +267722,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-KyZ7n1QFVZjESY1pABwR9l0H6gVOSAK53fZqyrK8LBBSxOkb0stMqOUbUhhGX0k+Rd+EIYtXL3gNyD/dYnkDxw==",
         "tarball": "https://registry.npmjs.org/odai-dsh-plugin/-/odai-dsh-plugin-0.2.39.tgz",
         "repository": "git+https://github.com/orziz/odai.git",
@@ -267847,7 +267847,6 @@
       "package": {
         "name": "dsh-deepread",
         "version": "1.0.1",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-deepread",
           "version": "1.0.1",
@@ -267890,6 +267889,7 @@
             ]
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-DOF1Pt5etZaSGnOp5cSJTa6tXHIP/UHiJ1Q0PGW/CZ6wr29XH0jfdzwgFMVcgfAWJwvVRF+C1JB/XDZV4VDeAQ==",
         "tarball": "https://registry.npmjs.org/dsh-deepread/-/dsh-deepread-1.0.1.tgz",
         "repository": "git+https://github.com/xiehuan123/dsh-deepread.git",
@@ -268693,7 +268693,6 @@
       "package": {
         "name": "dsh-deepseek-vision",
         "version": "0.1.7",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-deepseek-vision",
           "version": "0.1.7",
@@ -268806,6 +268805,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-PMSdsAkZTeGNm/MzcNlHEYlUAZJXiFU9Dl2vbTwrYIyxVe6PLDurCehKvuadM8s4ewQVzaGQte1AknVd7Ay5qw==",
         "tarball": "https://registry.npmjs.org/dsh-deepseek-vision/-/dsh-deepseek-vision-0.1.7.tgz",
         "repository": "git+https://github.com/siegfly/dsh-deepseek-vision.git",
@@ -271433,7 +271433,6 @@
       "package": {
         "name": "@michengai/dsh-archive-manager",
         "version": "1.0.7",
-        "distTag": "latest",
         "manifest": {
           "name": "@michengai/dsh-archive-manager",
           "version": "1.0.7",
@@ -271497,6 +271496,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-cjRXtK67F/3ArL1jjtdHTViZXwowmSs/SmS6gis14iP6VK9jiMlQbPLky5Hw+6iepgq3TyEF/rhHjYi2J0EY+A==",
         "tarball": "https://registry.npmjs.org/@michengai/dsh-archive-manager/-/dsh-archive-manager-1.0.7.tgz",
         "repository": "git+https://github.com/MichengAI/dsh-archive-manager.git",
@@ -275336,7 +275336,6 @@
       "package": {
         "name": "dsh-plugin-subscriptions",
         "version": "0.9.6",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-plugin-subscriptions",
           "version": "0.9.6",
@@ -275379,6 +275378,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-wxTjDtaB5dwxqTZLy2tkT/ccvefj3qFKc9il4UMPnKa2XOVgyCoYYBk9/UnI5F5nMnXJgF/OZDGx8tZ1in7eiA==",
         "tarball": "https://registry.npmjs.org/dsh-plugin-subscriptions/-/dsh-plugin-subscriptions-0.9.6.tgz",
         "repository": "git+https://github.com/V1ki/dsh-plugin-subscriptions.git",
@@ -279400,7 +279400,6 @@
       "package": {
         "name": "dsh-crew",
         "version": "0.10.0",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-crew",
           "version": "0.10.0",
@@ -279438,6 +279437,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-9lG7bRaiqAV+JtDS06Y85/W5gfUrcYh5XTnvYTah8Xfe8bGd48+gVyNQ8Wjh/2arxCV747+w14hh55V3+bmK+Q==",
         "tarball": "https://registry.npmjs.org/dsh-crew/-/dsh-crew-0.10.0.tgz",
         "repository": "git+https://github.com/stuarthu/dsh-crew.git",
@@ -279574,7 +279574,6 @@
       "package": {
         "name": "iterate-plugin",
         "version": "3.5.7",
-        "distTag": "latest",
         "manifest": {
           "name": "iterate-plugin",
           "version": "3.5.7",
@@ -279627,6 +279626,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-XdN0VwSuJcyGKJ6hGb7GPLd2PZBEBf+OalN98zMnj1b4CMkk78mdf3ec4dROI5j8UkGCjUW3BRakdNMnh+9BWA==",
         "tarball": "https://registry.npmjs.org/iterate-plugin/-/iterate-plugin-3.5.7.tgz",
         "repository": "git+https://github.com/jingzhao-l/iterate-skill.git",
@@ -280314,7 +280314,6 @@
       "package": {
         "name": "dsh-plugin-vetting",
         "version": "0.5.6",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-plugin-vetting",
           "version": "0.5.6",
@@ -280329,6 +280328,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-SCjCHx0pgNJAtNUHQ4/g3vRcTSUSBoxjRFwgoA2udvW/MOm8WRZsTwWheSGV7CF9eubbHZzM2GRFBr81eQ6uRA==",
         "tarball": "https://registry.npmjs.org/dsh-plugin-vetting/-/dsh-plugin-vetting-0.5.6.tgz",
         "repository": "git+https://github.com/truelove-dreamer/dsh-plugin-vetting.git",
@@ -280510,7 +280510,6 @@
       "package": {
         "name": "dsh-any-background",
         "version": "0.3.2",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-any-background",
           "version": "0.3.2",
@@ -280608,6 +280607,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-HsXJo6Y1EffpvukOiwEtcMRa4DEYmodhCpk6k40iaCNekGzh9pmPF6znvgAGG0QVGokpTddIW6tJhD12L86IDA==",
         "tarball": "https://registry.npmjs.org/dsh-any-background/-/dsh-any-background-0.3.2.tgz",
         "repository": "git+https://github.com/Tkingxiao/dsh-any-background.git",
@@ -282065,7 +282065,6 @@
       "package": {
         "name": "dsh-tavern",
         "version": "2.5.0",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-tavern",
           "version": "2.5.0",
@@ -282098,6 +282097,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-sLmuJWpxFW20lO61YzoJ3j289jlVYuhLfxPcm/VImPa3QHW3X1Did9HbEmgcJAo4MnjgF1Q2f5pGVH2DXVvi3g==",
         "tarball": "https://registry.npmjs.org/dsh-tavern/-/dsh-tavern-2.5.0.tgz",
         "repository": "git+https://github.com/chen731215-dev/dsh-tavern-v2.git",
@@ -282202,7 +282202,6 @@
       "package": {
         "name": "dsh-auto-classifier",
         "version": "0.1.14",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-auto-classifier",
           "version": "0.1.14",
@@ -282224,6 +282223,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-dhrisnFuKeZ/kS71fxsZxKELr0zsBxwXsMunfWsIS7idGVMlJqId69WN1iMmlyojYQTWw0npzbR6fgD3qblXag==",
         "tarball": "https://registry.npmjs.org/dsh-auto-classifier/-/dsh-auto-classifier-0.1.14.tgz",
         "repository": "git+https://github.com/PAKIKNOWLEDGE/dsh-auto-classifier.git",
@@ -282332,7 +282332,6 @@
       "package": {
         "name": "@shaoshi/dshscan",
         "version": "0.5.0",
-        "distTag": "latest",
         "manifest": {
           "name": "@shaoshi/dshscan",
           "version": "0.5.0",
@@ -282357,6 +282356,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-KAfu3M37DCqiUsaUhWh13bHRvPPQ2co5IFkgfM33WEZmWNV1xNcMhcsg86wmEE+m0PZW0d2ghZXPu6UeqvvJGA==",
         "tarball": "https://registry.npmjs.org/@shaoshi/dshscan/-/dshscan-0.5.0.tgz",
         "repository": "git+https://github.com/shaoshi20/dshscan.git",
@@ -282950,7 +282950,6 @@
       "package": {
         "name": "@michengai/dsh-im-connect",
         "version": "0.1.57",
-        "distTag": "latest",
         "manifest": {
           "name": "@michengai/dsh-im-connect",
           "version": "0.1.57",
@@ -283010,6 +283009,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-l42iXS0FXbWFlcVSEYomwpbzOQ9H3TllDTsdkOJXFCCSGgaQvQFsWEFZo7N5y/w9mtlyy27GLLtk2AClGpIO7A==",
         "tarball": "https://registry.npmjs.org/@michengai/dsh-im-connect/-/dsh-im-connect-0.1.57.tgz",
         "repository": "git+https://github.com/MichengAI/dsh-im-connect.git",
@@ -284831,7 +284831,6 @@
       "package": {
         "name": "dsh-gateway",
         "version": "1.7.0",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-gateway",
           "version": "1.7.0",
@@ -284865,6 +284864,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-xF6G/L8rsrBJqpUMyM8uV7iggw736Eh+xQuDwWZcP0NzAuIPHwd9o7OSIiRsptz8kXFvlamZ6GXhddmvUof2Aw==",
         "tarball": "https://registry.npmjs.org/dsh-gateway/-/dsh-gateway-1.7.0.tgz",
         "repository": "git+https://github.com/clarknu/dsh-gateway.git",
@@ -285114,7 +285114,6 @@
       "package": {
         "name": "dsh-spend",
         "version": "0.6.3",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-spend",
           "version": "0.6.3",
@@ -285152,6 +285151,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-VT18s/aY8RlMJpxsJaSfLurQbvqurxIPz6qvYUGZXf4jsUFynTgKwPf3mm0Uv/CnRkWqrqkaKrnWFN8PTQydPw==",
         "tarball": "https://registry.npmjs.org/dsh-spend/-/dsh-spend-0.6.3.tgz",
         "repository": "git+https://github.com/nonewind/dsh-spend.git",
@@ -285267,7 +285267,6 @@
       "package": {
         "name": "dsh-thirteen-bg",
         "version": "0.5.2",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-thirteen-bg",
           "version": "0.5.2",
@@ -285301,6 +285300,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-ByWnQPKVUkaN7DQPSr14FB99o7phAbAV7D0IKStbY1V0YRP9Oqd60k7saCncpbkr21jPhQ5jSC3deIobxDZnsA==",
         "tarball": "https://registry.npmjs.org/dsh-thirteen-bg/-/dsh-thirteen-bg-0.5.2.tgz",
         "repository": "git+https://github.com/feng78-boop/dsh-thirteen-bg.git",
@@ -285491,7 +285491,6 @@
       "package": {
         "name": "dsh-coding-subscription-oauth",
         "version": "0.8.5",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-coding-subscription-oauth",
           "version": "0.8.5",
@@ -285598,6 +285597,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-u2Glrt9uytQd9yNlyHVigw2+WKCzKXMVBlizliKmyVC3omLuszvrTAdW9Tr713mq3IgHk6XIN4fYbvOAqnEB8Q==",
         "tarball": "https://registry.npmjs.org/dsh-coding-subscription-oauth/-/dsh-coding-subscription-oauth-0.8.5.tgz",
         "repository": "git+https://github.com/lninghaha/dsh-coding-subscription-oauth.git",
@@ -292087,7 +292087,6 @@
       "package": {
         "name": "dsh-testkit",
         "version": "0.4.4",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-testkit",
           "version": "0.4.4",
@@ -292136,6 +292135,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-3l+pKNBv9Znxfg3xazo+SZq4nGKKAkDkolFUchOnL/asB3pLXah8L+ErgFZqAruobeKhQNgiywRgC48mcnQIzg==",
         "tarball": "https://registry.npmjs.org/dsh-testkit/-/dsh-testkit-0.4.4.tgz",
         "repository": "git+https://github.com/iiwish/dsh-testkit.git",
@@ -294028,7 +294028,6 @@
       "package": {
         "name": "dsh-movein",
         "version": "0.13.8",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-movein",
           "version": "0.13.8",
@@ -294081,6 +294080,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-BbeGhVWthIJtQ2x83Xr4CGQeNrTS067qCOLyW2EjTNb5YCf+k/hjJboR7taPHpzCf+Z5/RkTnFcXfAfYU5qiVQ==",
         "tarball": "https://registry.npmjs.org/dsh-movein/-/dsh-movein-0.13.8.tgz",
         "repository": "git+https://github.com/sjh9714/dsh-movein.git",
@@ -294254,7 +294254,6 @@
       "package": {
         "name": "@dickpy/dsh-imagegen",
         "version": "1.6.6",
-        "distTag": "latest",
         "manifest": {
           "name": "@dickpy/dsh-imagegen",
           "version": "1.6.6",
@@ -294289,6 +294288,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-1PGq6sR8qMHHSsI0yDMI1flx/FpikeNORdm0oUTOgV2wwlV1MCBb3t7yrdhlLMv58mEJKhKKRz9NNNLwiJCiVg==",
         "tarball": "https://registry.npmjs.org/@dickpy/dsh-imagegen/-/dsh-imagegen-1.6.6.tgz",
         "repository": "git+https://github.com/dickpy/dsh-imagegen.git",
@@ -300349,7 +300349,6 @@
       "package": {
         "name": "dsh-taskboard",
         "version": "0.8.6",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-taskboard",
           "version": "0.8.6",
@@ -300387,6 +300386,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-n94l0UKZswflz1fhztzz15C0q9AWA8+Gk3RygomURKzPBjq6DohEW3KER1bbMVTE25Fcz5Q9ZkscVd0wT8qaeA==",
         "tarball": "https://registry.npmjs.org/dsh-taskboard/-/dsh-taskboard-0.8.6.tgz",
         "repository": "git+https://github.com/cloader/dsh-taskboard.git",
@@ -300522,7 +300522,6 @@
       "package": {
         "name": "dsh-email",
         "version": "0.14.1",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-email",
           "version": "0.14.1",
@@ -300560,6 +300559,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-8ATH4avWILUpoFU6ERplsWxVo0NWSDZqFt9k4snAqL0EWwNpOXHFch4Yygf0fY5Pvwq65eDfxzAwYRsU096Ukg==",
         "tarball": "https://registry.npmjs.org/dsh-email/-/dsh-email-0.14.1.tgz",
         "repository": "git+https://github.com/STARDUSTLC666/dsh-email.git",
@@ -301424,7 +301424,6 @@
       "package": {
         "name": "dsh-meme",
         "version": "0.1.44",
-        "distTag": "latest",
         "manifest": {
           "name": "dsh-meme",
           "version": "0.1.44",
@@ -301455,6 +301454,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-sC2Tm2uouG7/3iV7o6CaakUQ4Ek+cgPzeiiMCwl/dMai9AFCw+S/zshILUmNXRzfJiC/50sglBfJEE7KODnW5g==",
         "tarball": "https://registry.npmjs.org/dsh-meme/-/dsh-meme-0.1.44.tgz",
         "repository": "git+https://github.com/yyh-001/dsh-meme.git",
@@ -301564,7 +301564,6 @@
       "package": {
         "name": "@xgone/dsh-remote",
         "version": "0.3.3",
-        "distTag": "latest",
         "manifest": {
           "name": "@xgone/dsh-remote",
           "version": "0.3.3",
@@ -301592,6 +301591,7 @@
             }
           }
         },
+        "distTag": "latest",
         "integrity": "sha512-1PnesyaVYrzcqjKLmNwVgM7iTtn8gVQTAVyowYJUhDCFZcfjcJjL9VEvOhz0sFEz09AQ9J6y1J/nx6D8OKIlEQ==",
         "tarball": "https://registry.npmjs.org/@xgone/dsh-remote/-/dsh-remote-0.3.3.tgz",
         "repository": "git+https://github.com/xgone/dsh-remote.git",
