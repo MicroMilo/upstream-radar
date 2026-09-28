@@ -1,6 +1,6 @@
 # DSH directory compatibility evidence
 
-Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-09-28T14:23:15.556Z`.
+Generated from catalog commit [`2e19b3c5bd42`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/commit/2e19b3c5bd42f2f688eba9df7933ace9e13e66ea) at `2026-09-28T14:39:59.023Z`.
 Selected host: `@deepseek-ai/dsh@0.2.0-rc.1`.
 
 **0 observed compatible · 0 observed incompatible · 96 needs review · 0 update pending · 4 not observed**
@@ -18,7 +18,7 @@ Selected host: `@deepseek-ai/dsh@0.2.0-rc.1`.
 | [anweat/dsh-browser](https://github.com/anweat/dsh-browser) | `@anweat/dsh-browser@0.1.15` | `missing` | `@anweat/dsh-browser@0.1.12` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:17.233Z |
 | [awesome-dsh-plugin/dsh-find-plugin](https://github.com/awesome-dsh-plugin/dsh-find-plugin) | `dsh-find-plugin@0.4.0` | `missing` | `dsh-find-plugin@0.3.7` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:12:02.609Z |
 | [Blank-not-black/dsh-Remote](https://github.com/Blank-not-black/dsh-Remote/tree/main/packages/plugin) | `dsh-remote-plugin@0.7.0` | `missing` | `dsh-remote-plugin@0.6.26` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:12:07.717Z |
-| [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) | `dsh-context@0.59.1` | `missing` | `dsh-context@0.54.2` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:08.455Z |
+| [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) | `dsh-context@0.59.2` | `missing` | `dsh-context@0.54.2` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:08.455Z |
 | [ccch1mneyyy/dsh-TUI](https://github.com/ccch1mneyyy/dsh-TUI) | `@deepseek-harness-tui/dsh-tui@0.11.1` | `missing` | `@deepseek-harness-tui/dsh-tui@0.10.2` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:13:08.046Z |
 | [chen731215-dev/dsh-tavern](https://github.com/chen731215-dev/dsh-tavern) | `dsh-tavern@2.5.0` | `missing` | `dsh-tavern@2.4.1` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:12:08.621Z |
 | [chenproton/dsh-history](https://github.com/chenproton/dsh-history) | `dsh-history@0.1.25` | `missing` | `dsh-history@0.1.25` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:04.174Z |
@@ -29,7 +29,7 @@ Selected host: `@deepseek-ai/dsh@0.2.0-rc.1`.
 | [DDDMUC/dsh-free-search](https://github.com/DDDMUC/dsh-free-search) | `dsh-free-search@0.5.0` | `missing` | `dsh-free-search@0.4.32` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:21.881Z |
 | [dickpy/dsh-imagegen](https://github.com/dickpy/dsh-imagegen) | `@dickpy/dsh-imagegen@1.6.6` | `missing` | `@dickpy/dsh-imagegen@1.6.1` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:12.826Z |
 | [dream-num/dsh-univer-office](https://github.com/dream-num/dsh-univer-office) | `dsh-univer-office@0.3.5` | `missing` | `dsh-univer-office@0.3.2` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:12:11.587Z |
-| [dsh-market/dsh-market](https://github.com/dsh-market/dsh-market) | `dshmarket@1.66.3` | `missing` | `dshmarket@1.52.0` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:12:01.605Z |
+| [dsh-market/dsh-market](https://github.com/dsh-market/dsh-market) | `dshmarket@1.66.4` | `missing` | `dshmarket@1.52.0` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:12:01.605Z |
 | [dsh-plugins/dsh-auxiliary](https://github.com/dsh-plugins/dsh-auxiliary) | `@dsh-plugin/dsh-auxiliary@0.6.4` | `missing` | `@dsh-plugin/dsh-auxiliary@0.6.4` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:10.801Z |
 | [elysia395/dsh-wallpaper-engine](https://github.com/elysia395/dsh-wallpaper-engine) | `dsh-plugin-wallpaper-engine@1.0.1` | `missing` | `dsh-plugin-wallpaper-engine@0.7.5` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:12:56.259Z |
 | [feibi-mochi/deepseek-harness-control-center](https://github.com/feibi-mochi/deepseek-harness-control-center) | `deepseek-harness-wallet@0.3.13` | `missing` | `deepseek-harness-wallet@0.3.13` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:12:01.621Z |
@@ -40,7 +40,7 @@ Selected host: `@deepseek-ai/dsh@0.2.0-rc.1`.
 | [FuzzySoul/dsh-chatvoice](https://github.com/FuzzySoul/dsh-chatvoice) | `dsh-chatvoice@0.1.7` | `missing` | `dsh-chatvoice@0.1.7` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:56.279Z |
 | [FuzzySoul/dsh-free-vision](https://github.com/FuzzySoul/dsh-free-vision) | `dsh-free-vision@1.0.8` | `missing` | `dsh-free-vision@1.0.8` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:12:06.895Z |
 | [GanyuanRan/Aegis](https://github.com/GanyuanRan/Aegis) | — | not required | — | — | `not-observed` | — |
-| [Han-1413141/dsh-cost-meter](https://github.com/Han-1413141/dsh-cost-meter) | `dsh-cost-meter@1.7.43` | `missing` | `dsh-cost-meter@1.7.30` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:11.047Z |
+| [Han-1413141/dsh-cost-meter](https://github.com/Han-1413141/dsh-cost-meter) | `dsh-cost-meter@1.7.44` | `missing` | `dsh-cost-meter@1.7.30` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:11.047Z |
 | [HsiangNianian/dsh-auto-continue](https://github.com/HsiangNianian/dsh-auto-continue) | `dsh-client-auto-continue@0.11.9` | `missing` | `dsh-client-auto-continue@0.11.7` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:11:09.770Z |
 | [iiwish/dsh-testkit](https://github.com/iiwish/dsh-testkit) | `dsh-testkit@0.4.4` | `missing` | `dsh-testkit@0.4.4` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:12:57.345Z |
 | [jingzhao-l/iterate-plugin](https://github.com/jingzhao-l/iterate-plugin) | `iterate-plugin@3.5.7` | `missing` | `iterate-plugin@3.5.4` | `0.1.5-rc.2` / Node 22 / headless | `needs-review` | 2026-09-21T13:12:52.792Z |

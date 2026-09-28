@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha5",
-  "generatedAt": "2026-09-28T14:23:15.556Z",
+  "generatedAt": "2026-09-28T14:39:59.023Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -653,7 +653,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-context",
-        "selectedVersion": "0.59.1",
+        "selectedVersion": "0.59.2",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1247,7 +1247,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dshmarket",
-        "selectedVersion": "1.66.3",
+        "selectedVersion": "1.66.4",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1816,7 +1816,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-cost-meter",
-        "selectedVersion": "1.7.43",
+        "selectedVersion": "1.7.44",
         "distTag": "latest"
       },
       "status": "needs-review",
