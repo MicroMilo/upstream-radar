@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-active-task-state/v1alpha1",
-  "updatedAt": "2026-09-28T09:41:47.057Z",
+  "updatedAt": "2026-09-28T09:54:52.836Z",
   "tasks": [
     {
       "id": "active-4797b25090719afc8f6dde5fb1d8fbe0",
@@ -65,12 +65,14 @@
           "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
         }
       },
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 3,
       "lastAttemptAt": "2026-09-28T09:41:47.057Z",
-      "lastRunId": "36400693842",
-      "lastFailure": "the isolated Agent artifact is incomplete"
+      "lastRunId": "36405100578",
+      "completedAt": "2026-09-28T09:54:52.836Z",
+      "reportPath": "examples/dsh/active-agent/reports/active-4f1c6e8b2710921435ad4d5fd7356efd.json",
+      "evidenceDigest": "sha256:c5bef4e7cf74cfc7f6c249e9b8faa6489dabf8598aad66faebf5a2bfbae6c5c5"
     },
     {
       "id": "active-59e94d099dcbe2f58cf53cd9ba2d7340",
@@ -99,12 +101,14 @@
           "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
         }
       },
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 3,
       "lastAttemptAt": "2026-09-28T09:41:47.057Z",
-      "lastRunId": "36400693842",
-      "lastFailure": "the isolated Agent artifact is incomplete"
+      "lastRunId": "36405100578",
+      "completedAt": "2026-09-28T09:54:52.836Z",
+      "reportPath": "examples/dsh/active-agent/reports/active-59e94d099dcbe2f58cf53cd9ba2d7340.json",
+      "evidenceDigest": "sha256:07b9f569b9919337dd54fb3b8e1570b9a67e9b5054b8d1d8f4771166961231dc"
     },
     {
       "id": "active-793440543cc91681e3c83e85ab3f529e",
@@ -133,12 +137,14 @@
           "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
         }
       },
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 3,
       "lastAttemptAt": "2026-09-28T09:41:47.057Z",
-      "lastRunId": "36400693842",
-      "lastFailure": "the isolated Agent artifact is incomplete"
+      "lastRunId": "36405100578",
+      "completedAt": "2026-09-28T09:54:52.836Z",
+      "reportPath": "examples/dsh/active-agent/reports/active-793440543cc91681e3c83e85ab3f529e.json",
+      "evidenceDigest": "sha256:75c6848287740cfbe82254a1493dd0c0b67529e67f86f45fec24acfac0df1fd0"
     },
     {
       "id": "active-989d765920d6fb2ac248676adc78b16c",
@@ -167,12 +173,14 @@
           "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
         }
       },
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 3,
       "lastAttemptAt": "2026-09-28T09:41:47.057Z",
-      "lastRunId": "36400693842",
-      "lastFailure": "the isolated Agent artifact is incomplete"
+      "lastRunId": "36405100578",
+      "completedAt": "2026-09-28T09:54:52.836Z",
+      "reportPath": "examples/dsh/active-agent/reports/active-989d765920d6fb2ac248676adc78b16c.json",
+      "evidenceDigest": "sha256:16da8463237189ed352804d4c0269d2dfb5766017b33c9100ee01b9b89b8f3fd"
     },
     {
       "id": "active-a9ca2a833a8e0cf69849b599c6d45356",
@@ -205,7 +213,7 @@
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 3,
       "lastAttemptAt": "2026-09-28T09:41:47.057Z",
-      "lastRunId": "36400693842",
+      "lastRunId": "36405100578",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
     {
@@ -271,12 +279,14 @@
           "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
         }
       },
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-09-28T08:38:01.329Z",
       "attempts": 3,
       "lastAttemptAt": "2026-09-28T09:41:47.057Z",
-      "lastRunId": "36400693842",
-      "lastFailure": "the isolated Agent artifact is incomplete"
+      "lastRunId": "36405100578",
+      "completedAt": "2026-09-28T09:54:52.836Z",
+      "reportPath": "examples/dsh/active-agent/reports/active-fc00c97a52182b00a18c35dc68f6fe52.json",
+      "evidenceDigest": "sha256:8db4df5dc16817a401e9e1a2dd43664f39b99e5b7e7bae5543d573c3222b6ebd"
     }
   ]
 }

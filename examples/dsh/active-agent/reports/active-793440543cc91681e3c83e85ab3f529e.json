@@ -1,0 +1,2686 @@
+{
+  "schema": "upstream-radar.dsh-active-analysis-report/v1alpha1",
+  "generatedAt": "2026-09-28T09:54:52.824Z",
+  "task": {
+    "id": "active-793440543cc91681e3c83e85ab3f529e",
+    "inputFingerprint": "sha256:793440543cc91681e3c83e85ab3f529ee0e2ef60edbaa7d73ed7998481ebc9b6",
+    "trigger": {
+      "kind": "dsh",
+      "observerTargetId": "deepseek-harness",
+      "beforeCommit": "477b4f420553e8a52c2fbccc464d7561b239c443",
+      "afterCommit": "21638c56315ae6a2b552d6091945d3144c9af32e",
+      "beforeVersion": "0.1.7-rc.2",
+      "afterVersion": "0.1.7-rc.2"
+    },
+    "targetId": "dsh-tui",
+    "dshChannel": "next",
+    "input": {
+      "plugin": {
+        "name": "@deepseek-harness-tui/dsh-tui",
+        "version": "0.11.0",
+        "integrity": "sha512-yoH6BQ5mtC3J1V6wxGZCoPFPUT0zARphrBJWz1WMXrl5DZ/5RS6ufr1CA5ELViDJMal+n8vN/8NbCJe5AR/jjA==",
+        "sourceCommit": "cb211f7c1b5ef1cfbf0c3b9873a71683457d9d9a"
+      },
+      "dsh": {
+        "name": "@deepseek-ai/dsh",
+        "version": "0.1.7-rc.2",
+        "integrity": "sha512-SQFhriLvza8GnFApnC5/32AgpcyKxrWnYXhvwDOLJdgWpkCX2EexyR9c8kCkMITJXnFLEN3Qb2CEh0W36vkLyw==",
+        "sourceCommit": "21638c56315ae6a2b552d6091945d3144c9af32e"
+      }
+    },
+    "attempts": 3
+  },
+  "github": {
+    "runId": "36405100578",
+    "runUrl": "https://github.com/MicroMilo/upstream-radar/actions/runs/36405100578",
+    "artifact": "dsh-active-agent-dsh-tui-next-active-793440543cc91681e3c83e85ab3f529e-36405100578"
+  },
+  "recommendation": {
+    "targetId": "dsh-tui",
+    "plugin": "@deepseek-harness-tui/dsh-tui@0.11.0",
+    "reviewContract": "dsh-environment/v14",
+    "dshVersion": "0.1.7-rc.2",
+    "repository": "ccch1mneyyy/dsh-TUI",
+    "sourceCommit": "cb211f7c1b5ef1cfbf0c3b9873a71683457d9d9a",
+    "sourceFingerprint": "sha256:a5f637894c4e57950f09a92b8772ae94e7b2d268cb00c0e640e549d75f0c2d5e",
+    "inputFingerprint": "sha256:ef15205f4115ae63e62f1d1a46cb77b0079d0383715c457422d32e3c9f3be489",
+    "plannedAt": "2026-09-28T09:43:15.100Z",
+    "model": "codex-yolo-active-case",
+    "status": "recommended",
+    "preferredNodeMajor": 24,
+    "nodeMajors": [
+      22,
+      24
+    ],
+    "executionProfiles": [
+      "tui"
+    ],
+    "tuiProfile": "dsh-tui",
+    "nodeEvidence": [
+      {
+        "nodeMajor": 22,
+        "kind": "declared-support",
+        "evidence": [
+          "README.md",
+          "source-manifest"
+        ]
+      },
+      {
+        "nodeMajor": 24,
+        "kind": "ci-tested",
+        "evidence": [
+          ".github/workflows/ci.yml",
+          "README.md"
+        ]
+      }
+    ],
+    "authorEnvironment": {
+      "packageManagers": [
+        {
+          "name": "pnpm",
+          "version": "11.21.0",
+          "scope": "development",
+          "evidence": [
+            {
+              "path": "package.json",
+              "quote": "\"packageManager\": \"pnpm@11.21.0\","
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "workflows": [
+        {
+          "kind": "tui",
+          "profile": "dsh-tui",
+          "role": "primary",
+          "evidence": [
+            {
+              "path": "README.md",
+              "quote": "An interactive terminal UI plugin for DeepSeek Harness."
+            },
+            {
+              "path": "README.md",
+              "quote": "Manual alternative: `dsh plugin --profile dsh-tui add @deepseek-harness-tui/dsh-tui`."
+            },
+            {
+              "path": "README.md",
+              "quote": "| `dsh-tui` / `dst` | Start the TUI; `dst` is a short alias for the same program |"
+            }
+          ]
+        }
+      ],
+      "dshVersions": [
+        {
+          "version": "0.1.7-rc.2",
+          "evidence": [
+            {
+              "path": "README.md",
+              "quote": "The primary compatibility target is DSH `0.1.7-rc.2`."
+            },
+            {
+              "path": "pnpm-workspace.yaml",
+              "quote": "# @deepseek-ai tree to the 0.1.7-rc.2 line locally (the primary\n# validated line; see src/dsh-adapter/contract.ts). Published"
+            }
+          ]
+        }
+      ]
+    },
+    "coverageGaps": [
+      "Collection gaps: docs/getting-started.md, docs/plugins.md, docs/README.md, docs/configuration.md and docs/getting-started.en.md were omitted by the evidence byte budget, so the full install/profile setup steps are unverified.",
+      "pnpm is required for profile installs (install.sh checks only that pnpm exists; `dsh plugin` forwards to pnpm) but no exact pnpm version is pinned for the consumer profile; only the development packageManager field names pnpm@11.21.0.",
+      "A DeepSeek credential (DEEPSEEK_API_KEY) is a documented startup precondition and was not exercised.",
+      "Subscription OAuth sign-in via the bundled dsh-auth plugin (/login, /auth) needs an external account and was not exercised; recorded as an explicit coverage gap, not a compatibility failure.",
+      "pnpm-workspace.yaml dev-tree overrides (including unsupported `@dsh-tui-dev/sqlite-island>...` selectors) are development-only and explicitly never consulted by consumer installs; they were not transferred to the host profile.",
+      "Only the TUI plane is documented; no headless, SDK or ACP workflow is described by plugin-owned docs, so those planes are untested.",
+      "Windows-specific behavior (profile defaults to danger-full-access with approval never, Git Bash discovery for liangshen mode) was not exercised.",
+      "Terminal image previews (Kitty/Sixel), clipboard paste and multiplexer guards are environment-dependent and were not exercised.",
+      "Launcher subcommands (dsh-tui update/doctor/safe, /update network check) and the VS Code / Herdr integrations were not exercised.",
+      "CI configuration is not proof of a successful run; the Node 24 CI-tested major is a configured version, not an observed passing build.",
+      "CI also source-checks a 0.1.5-alpha.2 compat line, but that comment alone does not establish a plugin-repository DSH release baseline, so it is not recorded as an author DSH version.",
+      "Repository evidence collection is incomplete (5 gap records); see the exact bounded candidate input for omitted or unavailable files."
+    ],
+    "summary": "dsh-tui 0.11.0 is an interactive terminal UI plugin for DeepSeek Harness, mounted as a Cordis bundle patch over dsh-base. Plugin-owned docs describe one user-facing workflow: the interactive TUI, installed as profile `dsh-tui` (`dsh plugin --profile dsh-tui add @deepseek-harness-tui/dsh-tui`, then `dsh-tui`/`dst` or `dsh --profile dsh-tui`). No headless, SDK or ACP workflow is documented, so executionProfiles is tui only. Node intent: engines.node is `^22.19 || >=24` in both source and published manifests (declared support for 22 and 24), and the README development section states CI uses Node 24 with pnpm 11, making 24 the strongest author signal (ci-tested) and the preferred major; 22 is retained as declared-support. The development packageManager field pins pnpm@11.21.0; consumer profile installs only require pnpm to be present, which is recorded as a gap. Author DSH baseline: README names DSH 0.1.7-rc.2 as the primary compatibility target and pnpm-workspace.yaml calls the 0.1.7-rc.2 line the primary validated line. Development-only workspace overrides were deliberately not transferred to the host profile. No startup disabling/offline flag of the permitted DSH_<PLUGIN>_DISABLED/OFFLINE/NO_NETWORK form is evidenced, so no limited startup comparison is recorded.",
+    "evidence": [
+      ".github/workflows/ci.yml",
+      "README.md",
+      "README_ZH.md",
+      "cordis.patch.yml",
+      "docs/configuration.en.md",
+      "install.sh",
+      "package.json",
+      "pnpm-workspace.yaml",
+      "published-manifest",
+      "source-manifest"
+    ]
+  },
+  "execution": {
+    "launch": {
+      "id": "0d31ef202fd042479b7cc3e9194d25af",
+      "targetId": "dsh-tui",
+      "requestedAt": "2026-09-28T09:43:16.612Z",
+      "log": "agent-batch-0d31ef202fd042479b7cc3e9194d25af.log"
+    },
+    "launchResult": {
+      "id": "0d31ef202fd042479b7cc3e9194d25af",
+      "exitCode": 0,
+      "finishedAt": "2026-09-28T09:49:14.242Z"
+    },
+    "monitor": {
+      "schema": "upstream-radar.dsh-active-case-monitor/v1alpha1",
+      "targetId": "dsh-tui",
+      "launchId": "0d31ef202fd042479b7cc3e9194d25af",
+      "launchStartedAt": "2026-09-28T09:43:16.617Z",
+      "maxRunningWatchGapMs": 8357,
+      "runningWatches": 183,
+      "runningEvents": 895,
+      "lastRunningWatchAt": "2026-09-28T09:49:10.846Z"
+    },
+    "supervisor": {
+      "schema": "upstream-radar.dsh-active-agent-session/v1alpha1",
+      "targetId": "dsh-tui",
+      "startedAt": "2026-09-28T09:42:39.861Z",
+      "intervalMs": 8000,
+      "turns": 12,
+      "status": "closed",
+      "sessionId": "d1f30c1d-b00a-488a-ac48-39d0ca80a129",
+      "provider": "openai-compatible-native-tools",
+      "lastTurnAt": "2026-09-28T09:49:27.530Z",
+      "runtimeWatches": 52,
+      "lastRuntimeWatchAt": "2026-09-28T09:49:08.700Z",
+      "lastLaunchId": "0d31ef202fd042479b7cc3e9194d25af",
+      "closedAt": "2026-09-28T09:49:27.535Z"
+    },
+    "provider": {
+      "schema": "upstream-radar.dsh-active-agent-provider/v1alpha1",
+      "protocol": "openai-compatible-chat-completions",
+      "modelFingerprint": "sha256:f61ff5cf8e1cc88da6944d6bcd3e2e7da5ff27dd3288a8781908018cb8240cd6",
+      "endpointFingerprints": [
+        "sha256:948f1ecb6b48f91adc4e110d0351cd172b16450e9936d358992e0dfad7b863f3"
+      ],
+      "tool": "case_action",
+      "modelSecretsReachPluginContainers": false
+    },
+    "toolActions": [
+      {
+        "sequence": 2,
+        "at": "2026-09-28T09:42:41.141Z",
+        "action": "review",
+        "ok": true,
+        "status": ""
+      },
+      {
+        "sequence": 5,
+        "at": "2026-09-28T09:43:03.851Z",
+        "action": "recommend",
+        "ok": false,
+        "status": ""
+      },
+      {
+        "sequence": 7,
+        "at": "2026-09-28T09:43:09.537Z",
+        "action": "recommend",
+        "ok": false,
+        "status": ""
+      },
+      {
+        "sequence": 9,
+        "at": "2026-09-28T09:43:15.172Z",
+        "action": "recommend",
+        "ok": true,
+        "status": "recommended"
+      },
+      {
+        "sequence": 11,
+        "at": "2026-09-28T09:43:16.667Z",
+        "action": "launch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 13,
+        "at": "2026-09-28T09:43:18.593Z",
+        "action": "watch",
+        "ok": false,
+        "status": ""
+      },
+      {
+        "sequence": 15,
+        "at": "2026-09-28T09:43:30.265Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 17,
+        "at": "2026-09-28T09:43:40.344Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 19,
+        "at": "2026-09-28T09:43:50.415Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 21,
+        "at": "2026-09-28T09:44:00.465Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 23,
+        "at": "2026-09-28T09:44:11.356Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 25,
+        "at": "2026-09-28T09:44:33.288Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 27,
+        "at": "2026-09-28T09:44:40.407Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 29,
+        "at": "2026-09-28T09:44:50.531Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 31,
+        "at": "2026-09-28T09:45:00.922Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 33,
+        "at": "2026-09-28T09:45:06.468Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 35,
+        "at": "2026-09-28T09:45:08.400Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 37,
+        "at": "2026-09-28T09:45:10.217Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 39,
+        "at": "2026-09-28T09:45:12.298Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 41,
+        "at": "2026-09-28T09:45:13.788Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 43,
+        "at": "2026-09-28T09:45:15.811Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 45,
+        "at": "2026-09-28T09:45:17.423Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 47,
+        "at": "2026-09-28T09:45:19.377Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 49,
+        "at": "2026-09-28T09:45:21.155Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 51,
+        "at": "2026-09-28T09:45:22.924Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 53,
+        "at": "2026-09-28T09:45:24.643Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 55,
+        "at": "2026-09-28T09:45:26.328Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 57,
+        "at": "2026-09-28T09:45:28.744Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 59,
+        "at": "2026-09-28T09:45:31.073Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 61,
+        "at": "2026-09-28T09:45:32.630Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 63,
+        "at": "2026-09-28T09:45:34.652Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 65,
+        "at": "2026-09-28T09:45:36.597Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 67,
+        "at": "2026-09-28T09:45:38.522Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 69,
+        "at": "2026-09-28T09:45:40.419Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 71,
+        "at": "2026-09-28T09:45:42.016Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 73,
+        "at": "2026-09-28T09:45:44.323Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 75,
+        "at": "2026-09-28T09:45:46.246Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 77,
+        "at": "2026-09-28T09:45:48.110Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 79,
+        "at": "2026-09-28T09:45:49.921Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 81,
+        "at": "2026-09-28T09:45:52.045Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 83,
+        "at": "2026-09-28T09:45:53.500Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 85,
+        "at": "2026-09-28T09:45:55.682Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 87,
+        "at": "2026-09-28T09:45:57.573Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 89,
+        "at": "2026-09-28T09:45:59.246Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 91,
+        "at": "2026-09-28T09:46:01.256Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 93,
+        "at": "2026-09-28T09:46:03.433Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 95,
+        "at": "2026-09-28T09:46:05.139Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 97,
+        "at": "2026-09-28T09:46:07.627Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 99,
+        "at": "2026-09-28T09:46:09.410Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 101,
+        "at": "2026-09-28T09:46:11.077Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 103,
+        "at": "2026-09-28T09:46:13.527Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 105,
+        "at": "2026-09-28T09:46:14.994Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 107,
+        "at": "2026-09-28T09:46:16.706Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 109,
+        "at": "2026-09-28T09:46:18.561Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 111,
+        "at": "2026-09-28T09:46:20.636Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 113,
+        "at": "2026-09-28T09:46:22.418Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 115,
+        "at": "2026-09-28T09:46:24.237Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 117,
+        "at": "2026-09-28T09:46:26.672Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 119,
+        "at": "2026-09-28T09:46:28.329Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 121,
+        "at": "2026-09-28T09:46:30.098Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 123,
+        "at": "2026-09-28T09:46:31.649Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 125,
+        "at": "2026-09-28T09:46:33.659Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 127,
+        "at": "2026-09-28T09:46:35.850Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 129,
+        "at": "2026-09-28T09:46:38.239Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 131,
+        "at": "2026-09-28T09:46:39.878Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 133,
+        "at": "2026-09-28T09:46:41.799Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 135,
+        "at": "2026-09-28T09:46:43.439Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 137,
+        "at": "2026-09-28T09:46:45.696Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 139,
+        "at": "2026-09-28T09:46:47.684Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 141,
+        "at": "2026-09-28T09:46:49.940Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 143,
+        "at": "2026-09-28T09:46:51.944Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 145,
+        "at": "2026-09-28T09:46:54.004Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 147,
+        "at": "2026-09-28T09:46:55.918Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 149,
+        "at": "2026-09-28T09:46:57.744Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 151,
+        "at": "2026-09-28T09:46:59.765Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 153,
+        "at": "2026-09-28T09:47:01.954Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 155,
+        "at": "2026-09-28T09:47:04.447Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 157,
+        "at": "2026-09-28T09:47:06.384Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 159,
+        "at": "2026-09-28T09:47:08.504Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 161,
+        "at": "2026-09-28T09:47:10.336Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 163,
+        "at": "2026-09-28T09:47:12.741Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 165,
+        "at": "2026-09-28T09:47:15.108Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 167,
+        "at": "2026-09-28T09:47:17.387Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 169,
+        "at": "2026-09-28T09:47:19.852Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 171,
+        "at": "2026-09-28T09:47:21.601Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 173,
+        "at": "2026-09-28T09:47:23.352Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 175,
+        "at": "2026-09-28T09:47:25.159Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 177,
+        "at": "2026-09-28T09:47:27.141Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 179,
+        "at": "2026-09-28T09:47:28.898Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 181,
+        "at": "2026-09-28T09:47:31.166Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 183,
+        "at": "2026-09-28T09:47:32.938Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 185,
+        "at": "2026-09-28T09:47:34.888Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 187,
+        "at": "2026-09-28T09:47:37.040Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 189,
+        "at": "2026-09-28T09:47:38.641Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 191,
+        "at": "2026-09-28T09:47:40.668Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 193,
+        "at": "2026-09-28T09:47:43.233Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 195,
+        "at": "2026-09-28T09:47:45.211Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 197,
+        "at": "2026-09-28T09:47:47.331Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 199,
+        "at": "2026-09-28T09:47:49.496Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 201,
+        "at": "2026-09-28T09:47:51.393Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 203,
+        "at": "2026-09-28T09:47:53.586Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 205,
+        "at": "2026-09-28T09:47:55.615Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 207,
+        "at": "2026-09-28T09:47:57.860Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 209,
+        "at": "2026-09-28T09:47:59.797Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 211,
+        "at": "2026-09-28T09:48:02.064Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 213,
+        "at": "2026-09-28T09:48:04.277Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 215,
+        "at": "2026-09-28T09:48:06.626Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 217,
+        "at": "2026-09-28T09:48:08.950Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 219,
+        "at": "2026-09-28T09:48:10.999Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 221,
+        "at": "2026-09-28T09:48:12.784Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 223,
+        "at": "2026-09-28T09:48:14.693Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 225,
+        "at": "2026-09-28T09:48:16.320Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 227,
+        "at": "2026-09-28T09:48:18.486Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 229,
+        "at": "2026-09-28T09:48:20.323Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 231,
+        "at": "2026-09-28T09:48:22.283Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 233,
+        "at": "2026-09-28T09:48:24.460Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 235,
+        "at": "2026-09-28T09:48:26.854Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 237,
+        "at": "2026-09-28T09:48:29.122Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 239,
+        "at": "2026-09-28T09:48:31.604Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 241,
+        "at": "2026-09-28T09:48:33.767Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 243,
+        "at": "2026-09-28T09:48:36.059Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 245,
+        "at": "2026-09-28T09:48:38.566Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 247,
+        "at": "2026-09-28T09:48:40.331Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 249,
+        "at": "2026-09-28T09:48:42.882Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 251,
+        "at": "2026-09-28T09:48:45.213Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 253,
+        "at": "2026-09-28T09:48:47.117Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 255,
+        "at": "2026-09-28T09:48:49.153Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 257,
+        "at": "2026-09-28T09:48:51.460Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 259,
+        "at": "2026-09-28T09:48:53.322Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 261,
+        "at": "2026-09-28T09:48:56.099Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 263,
+        "at": "2026-09-28T09:48:58.224Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 265,
+        "at": "2026-09-28T09:49:00.738Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 267,
+        "at": "2026-09-28T09:49:02.900Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 269,
+        "at": "2026-09-28T09:49:04.848Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 271,
+        "at": "2026-09-28T09:49:07.047Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 273,
+        "at": "2026-09-28T09:49:09.059Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 275,
+        "at": "2026-09-28T09:49:10.918Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 277,
+        "at": "2026-09-28T09:49:14.363Z",
+        "action": "watch",
+        "ok": true,
+        "status": "finished"
+      },
+      {
+        "sequence": 279,
+        "at": "2026-09-28T09:49:16.527Z",
+        "action": "inspect",
+        "ok": true,
+        "status": "finished"
+      },
+      {
+        "sequence": 281,
+        "at": "2026-09-28T09:49:23.641Z",
+        "action": "conclude",
+        "ok": true,
+        "status": ""
+      }
+    ],
+    "reports": [
+      {
+        "path": "batch/reports/native/dsh-tui-node22/a0603b8bcd512d1a28ee069004d8b3f4ff43074770124a5c04e6f59226769be0-1/report.json",
+        "probe": "dsh-install",
+        "caseId": "dsh-tui-node22",
+        "plugin": "npm:@deepseek-harness-tui/dsh-tui@0.11.0",
+        "dshVersion": "0.1.7-rc.2",
+        "plane": "headless",
+        "profile": "headless",
+        "runtime": {
+          "platform": "linux",
+          "architecture": "x64",
+          "nodeVersion": "22.23.3",
+          "packageManager": {
+            "name": "pnpm",
+            "version": "11.7.0"
+          }
+        },
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "passed",
+            "code": 0
+          },
+          "profile": {
+            "status": "passed",
+            "code": 0
+          },
+          "install": {
+            "status": "failed",
+            "code": 1,
+            "detail": "command exited with 1: dsh: installation rejected: Plugin @deepseek-harness-tui/dsh-tui@0.11.0 is incompatible with dsh 0.1.7-rc.2: peerDependencies {\"@deepseek-ai/dsh-agent-preset-registry\":\"0.1.7-rc.1\",\"@deepseek-ai/dsh-ptc-runtime-node\":\"0.1.7-rc.1\"}. Running it may cause crashes or data loss. Update the plugin or install a plugin version compatible with this dsh runtime. To accept this risk explicitly, grant the exact-version exemption for @deepseek-harness-tui/dsh-tui@0.11.0 on dsh 0.1.7-rc.2 with `dsh plugin allow-version` or the plugin manager, then retry the installation or restart dsh. Exact-version exemption: not active.\\u000aPlugin @deepseek-harness-tui/dsh-tui@0.11.0 is incompatible with dsh 0.1.7-rc.2: peerDependencies {\"@deepseek-ai/dsh-agent-preset-registry\":\"0.1.7-rc.1\",\"@deepseek-ai/dsh-ptc-runtime-node\":\"0.1.7-rc.1\"}. Running it may cause crashes or data loss. Update the plugin or install a plugin version compatible with this dsh runtime. To accept this risk explicitly, grant the exact-version exemption for @deepseek-harness-tui/dsh-tui@0.11.0 on dsh 0.1.7-rc.2 with `dsh plugin allow-version` or the plugin manager, then retry the installation or restart dsh. Exact-version exemption: not active.\\u000adsh: restored package.json, pnpm-lock.yaml, and node_modules.\\u000adsh: to accept the risk, run: dsh plugin --profile headless allow-version @deepseek-harness-tui/dsh-tui@0.11.0 --dsh-version 0.1.7-rc.2 --accept-risk\\u000adsh: to accept the risk, run: dsh plugin --profile headless allow-version @deepseek-harness-tui/dsh-tui@0.11.0 --dsh-version 0.1.7-rc.2 --accept-risk\\u000adsh: plugin command failed; diagnostics: /sandbox/upstream-radar-dsh-install-uCASW6/dsh-home/profiles/headless/.plugin-manager/logs/operation-Cl3I9T/pnpm.log\\u000a\\u000aProgress: resolved 0, reused 0, downloaded 1, added 0\\u000aProgress: resolved 94, reused 0, downloaded 1, added 0\\u000a[WARN] Issues with peer dependencies found. Run \"pnpm peers check\" to list them.\\u000a\\u000adependencies:\\u000a+ @deepseek-harness-tui/dsh-tui file:/sandbox/upstream-radar-dsh-install-uCASW6/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz\\u000a\\u000aPackages: +75\\u000a+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\\u000aProgress: resolved 100, reused 11, downloaded 28, added 4\\u000aProgress: resolved 100, reused 11, downloaded 63, added 75\\u000aProgress: resolved 100, reused 11, downloaded 63, added 75, done\\u000aDone in 4.4s using pnpm v11.7.0"
+          },
+          "registration": {
+            "status": "skipped"
+          },
+          "load": {
+            "status": "skipped"
+          }
+        },
+        "result": "install-failed",
+        "reason": "the traced DSH plugin install command failed",
+        "commands": [
+          {
+            "phase": "install",
+            "executable": "/usr/local/bin/pnpm",
+            "arguments": [
+              "pnpm",
+              "dlx",
+              "--package=@deepseek-ai/dsh@0.1.7-rc.2",
+              "dsh",
+              "plugin",
+              "--profile",
+              "headless",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/sbin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "dlx",
+              "--package=@deepseek-ai/dsh@0.1.7-rc.2",
+              "dsh",
+              "plugin",
+              "--profile",
+              "headless",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/bin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "dlx",
+              "--package=@deepseek-ai/dsh@0.1.7-rc.2",
+              "dsh",
+              "plugin",
+              "--profile",
+              "headless",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "$SANDBOX/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e7676559-29/node_modules/.bin/dsh",
+            "arguments": [
+              "dsh",
+              "plugin",
+              "--profile",
+              "headless",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/bin/sed",
+            "arguments": [
+              "sed",
+              "-e",
+              "s,\\\\,/,g"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/bin/dirname",
+            "arguments": [
+              "dirname",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e7676559-29/node_modules/.bin/dsh"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/bin/uname",
+            "arguments": [
+              "uname",
+              "-a"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "$SANDBOX/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e7676559-29/node_modules/.bin/node",
+            "arguments": [
+              "node",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e7676559-29/node_modules/.bin/../.pnpm/@deepseek-ai+dsh@0.1.7-rc.2_a9469415dd81c5f35bcaf43e91023545/node_modules/@deepseek-ai/",
+              "plugin",
+              "--profile",
+              "headless",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/sbin/node",
+            "arguments": [
+              "node",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e7676559-29/node_modules/.bin/../.pnpm/@deepseek-ai+dsh@0.1.7-rc.2_a9469415dd81c5f35bcaf43e91023545/node_modules/@deepseek-ai/",
+              "plugin",
+              "--profile",
+              "headless",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/bin/node",
+            "arguments": [
+              "node",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e7676559-29/node_modules/.bin/../.pnpm/@deepseek-ai+dsh@0.1.7-rc.2_a9469415dd81c5f35bcaf43e91023545/node_modules/@deepseek-ai/",
+              "plugin",
+              "--profile",
+              "headless",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "$SANDBOX/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e7676559-29/node_modules/.bin/pnpm",
+            "arguments": [
+              "pnpm",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/sbin/pnpm",
+            "arguments": [
+              "pnpm",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/bin/pnpm",
+            "arguments": [
+              "pnpm",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "$SANDBOX/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e7676559-29/node_modules/.bin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/sbin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/bin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-uCASW6/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "$SANDBOX/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e7676559-29/node_modules/.bin/pnpm",
+            "arguments": [
+              "pnpm",
+              "install",
+              "--config.lockfile=false"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/sbin/pnpm",
+            "arguments": [
+              "pnpm",
+              "install",
+              "--config.lockfile=false"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/bin/pnpm",
+            "arguments": [
+              "pnpm",
+              "install",
+              "--config.lockfile=false"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "$SANDBOX/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e7676559-29/node_modules/.bin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "install",
+              "--config.lockfile=false"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/sbin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "install",
+              "--config.lockfile=false"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/bin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "install",
+              "--config.lockfile=false"
+            ],
+            "succeeded": true,
+            "count": 1
+          }
+        ],
+        "boundary": {
+          "isolationProviderClaim": "other",
+          "isolationVerifiedByRadar": false,
+          "disposableEnvironmentRequired": true,
+          "lifecycleScriptsEnabledForPluginInstall": true,
+          "pluginCodeMayExecuteDuringLoad": true,
+          "inheritedHostSecrets": false,
+          "approvedDependencyBuilds": [],
+          "requiredDependencyBuilds": [],
+          "note": "Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate."
+        }
+      },
+      {
+        "path": "batch/reports/native/dsh-tui-node24/8c5e66aa706924835637088f6f065c3008e43307067624cb6c86647c20c3ed73-1/report.json",
+        "probe": "dsh-install",
+        "caseId": "dsh-tui-node24",
+        "plugin": "npm:@deepseek-harness-tui/dsh-tui@0.11.0",
+        "dshVersion": "0.1.7-rc.2",
+        "plane": "headless",
+        "profile": "headless",
+        "runtime": {
+          "platform": "linux",
+          "architecture": "x64",
+          "nodeVersion": "24.21.0",
+          "packageManager": {
+            "name": "pnpm",
+            "version": "11.7.0"
+          }
+        },
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "passed",
+            "code": 0
+          },
+          "profile": {
+            "status": "passed",
+            "code": 0
+          },
+          "install": {
+            "status": "failed",
+            "code": 1,
+            "detail": "command exited with 1: dsh: installation rejected: Plugin @deepseek-harness-tui/dsh-tui@0.11.0 is incompatible with dsh 0.1.7-rc.2: peerDependencies {\"@deepseek-ai/dsh-agent-preset-registry\":\"0.1.7-rc.1\",\"@deepseek-ai/dsh-ptc-runtime-node\":\"0.1.7-rc.1\"}. Running it may cause crashes or data loss. Update the plugin or install a plugin version compatible with this dsh runtime. To accept this risk explicitly, grant the exact-version exemption for @deepseek-harness-tui/dsh-tui@0.11.0 on dsh 0.1.7-rc.2 with `dsh plugin allow-version` or the plugin manager, then retry the installation or restart dsh. Exact-version exemption: not active.\\u000aPlugin @deepseek-harness-tui/dsh-tui@0.11.0 is incompatible with dsh 0.1.7-rc.2: peerDependencies {\"@deepseek-ai/dsh-agent-preset-registry\":\"0.1.7-rc.1\",\"@deepseek-ai/dsh-ptc-runtime-node\":\"0.1.7-rc.1\"}. Running it may cause crashes or data loss. Update the plugin or install a plugin version compatible with this dsh runtime. To accept this risk explicitly, grant the exact-version exemption for @deepseek-harness-tui/dsh-tui@0.11.0 on dsh 0.1.7-rc.2 with `dsh plugin allow-version` or the plugin manager, then retry the installation or restart dsh. Exact-version exemption: not active.\\u000adsh: restored package.json, pnpm-lock.yaml, and node_modules.\\u000adsh: to accept the risk, run: dsh plugin --profile headless allow-version @deepseek-harness-tui/dsh-tui@0.11.0 --dsh-version 0.1.7-rc.2 --accept-risk\\u000adsh: to accept the risk, run: dsh plugin --profile headless allow-version @deepseek-harness-tui/dsh-tui@0.11.0 --dsh-version 0.1.7-rc.2 --accept-risk\\u000adsh: plugin command failed; diagnostics: /sandbox/upstream-radar-dsh-install-aznvxt/dsh-home/profiles/headless/.plugin-manager/logs/operation-vu6qmy/pnpm.log\\u000a\\u000aProgress: resolved 0, reused 0, downloaded 1, added 0\\u000aProgress: resolved 76, reused 0, downloaded 1, added 0\\u000a[WARN] Issues with peer dependencies found. Run \"pnpm peers check\" to list them.\\u000a\\u000adependencies:\\u000a+ @deepseek-harness-tui/dsh-tui file:/sandbox/upstream-radar-dsh-install-aznvxt/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz\\u000a\\u000aPackages: +75\\u000a+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\\u000aProgress: resolved 100, reused 11, downloaded 24, added 4\\u000aProgress: resolved 100, reused 11, downloaded 63, added 38\\u000aProgress: resolved 100, reused 11, downloaded 63, added 75, done\\u000aDone in 4.5s using pnpm v11.7.0"
+          },
+          "registration": {
+            "status": "skipped"
+          },
+          "load": {
+            "status": "skipped"
+          }
+        },
+        "result": "install-failed",
+        "reason": "the traced DSH plugin install command failed",
+        "commands": [
+          {
+            "phase": "install",
+            "executable": "/usr/local/bin/pnpm",
+            "arguments": [
+              "pnpm",
+              "dlx",
+              "--package=@deepseek-ai/dsh@0.1.7-rc.2",
+              "dsh",
+              "plugin",
+              "--profile",
+              "headless",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/sbin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "dlx",
+              "--package=@deepseek-ai/dsh@0.1.7-rc.2",
+              "dsh",
+              "plugin",
+              "--profile",
+              "headless",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/bin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "dlx",
+              "--package=@deepseek-ai/dsh@0.1.7-rc.2",
+              "dsh",
+              "plugin",
+              "--profile",
+              "headless",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "$SANDBOX/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76a8b47-29/node_modules/.bin/dsh",
+            "arguments": [
+              "dsh",
+              "plugin",
+              "--profile",
+              "headless",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/bin/sed",
+            "arguments": [
+              "sed",
+              "-e",
+              "s,\\\\,/,g"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/bin/dirname",
+            "arguments": [
+              "dirname",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76a8b47-29/node_modules/.bin/dsh"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/bin/uname",
+            "arguments": [
+              "uname",
+              "-a"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "$SANDBOX/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76a8b47-29/node_modules/.bin/node",
+            "arguments": [
+              "node",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76a8b47-29/node_modules/.bin/../.pnpm/@deepseek-ai+dsh@0.1.7-rc.2_a9469415dd81c5f35bcaf43e91023545/node_modules/@deepseek-ai/",
+              "plugin",
+              "--profile",
+              "headless",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/sbin/node",
+            "arguments": [
+              "node",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76a8b47-29/node_modules/.bin/../.pnpm/@deepseek-ai+dsh@0.1.7-rc.2_a9469415dd81c5f35bcaf43e91023545/node_modules/@deepseek-ai/",
+              "plugin",
+              "--profile",
+              "headless",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/bin/node",
+            "arguments": [
+              "node",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76a8b47-29/node_modules/.bin/../.pnpm/@deepseek-ai+dsh@0.1.7-rc.2_a9469415dd81c5f35bcaf43e91023545/node_modules/@deepseek-ai/",
+              "plugin",
+              "--profile",
+              "headless",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "$SANDBOX/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76a8b47-29/node_modules/.bin/pnpm",
+            "arguments": [
+              "pnpm",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/sbin/pnpm",
+            "arguments": [
+              "pnpm",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/bin/pnpm",
+            "arguments": [
+              "pnpm",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "$SANDBOX/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76a8b47-29/node_modules/.bin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/sbin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/bin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "add",
+              "/sandbox/upstream-radar-dsh-install-aznvxt/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "$SANDBOX/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76a8b47-29/node_modules/.bin/pnpm",
+            "arguments": [
+              "pnpm",
+              "install",
+              "--config.lockfile=false"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/sbin/pnpm",
+            "arguments": [
+              "pnpm",
+              "install",
+              "--config.lockfile=false"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/bin/pnpm",
+            "arguments": [
+              "pnpm",
+              "install",
+              "--config.lockfile=false"
+            ],
+            "succeeded": true,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "$SANDBOX/xdg-cache/pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76a8b47-29/node_modules/.bin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "install",
+              "--config.lockfile=false"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/sbin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "install",
+              "--config.lockfile=false"
+            ],
+            "succeeded": false,
+            "count": 1
+          },
+          {
+            "phase": "install",
+            "executable": "/usr/local/bin/node",
+            "arguments": [
+              "node",
+              "/usr/local/bin/pnpm",
+              "install",
+              "--config.lockfile=false"
+            ],
+            "succeeded": true,
+            "count": 1
+          }
+        ],
+        "boundary": {
+          "isolationProviderClaim": "other",
+          "isolationVerifiedByRadar": false,
+          "disposableEnvironmentRequired": true,
+          "lifecycleScriptsEnabledForPluginInstall": true,
+          "pluginCodeMayExecuteDuringLoad": true,
+          "inheritedHostSecrets": false,
+          "approvedDependencyBuilds": [],
+          "requiredDependencyBuilds": [],
+          "note": "Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate."
+        }
+      },
+      {
+        "path": "batch/reports/surface/dsh-tui-node22-tui/423eaffa78c6109718165382d32f904548f27d8f6920537e9aafcf54723d5cf0-1/report.json",
+        "probe": "dsh-surface",
+        "caseId": "dsh-tui-node22-tui",
+        "plugin": "@deepseek-harness-tui/dsh-tui@0.11.0",
+        "dshVersion": "0.1.7-rc.2",
+        "plane": "tui",
+        "profile": "dsh-tui",
+        "runtime": {
+          "nodeMajor": 22,
+          "nodeVersion": "22.23.3",
+          "platform": "linux",
+          "architecture": "x64",
+          "pnpmVersion": "11.7.0"
+        },
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "passed",
+            "code": 0
+          },
+          "profile": {
+            "status": "skipped",
+            "detail": "the custom TUI profile must be created by dsh plugin add"
+          },
+          "install": {
+            "status": "failed",
+            "code": null,
+            "detail": "command timed out: Progress: resolved 1, reused 0, downloaded 0, added 0\nProgress: resolved 206, reused 0, downloaded 80, added 0\nProgress: resolved 359, reused 0, downloaded 244, added 0\nProgress: resolved 472, reused 0, downloaded 326, added 0\nProgress: resolved 568, reused 0, downloaded 356, added 0\n[WARN] 1 deprecated subdependencies found: node-domexception@1.0.0\nPackages: +514\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 587, reused 0, downloaded 360, added 0\nProgress: resolved 587, reused 0, downloaded 401, added 0\nProgress: resolved 587, reused 0, downloaded 516, added 514, done\ndsh: initialized profile dsh-tui at /sandbox/upstream-radar-dsh-surface-z3KVUj/dsh-home/profiles/dsh-tui\n\nProgress: resolved 0, reused 0, downloaded 1, added 0\n[WARN] Issues with peer dependencies found. Run \"pnpm peers check\" to list them.\n\ndependencies:\n+ @deepseek-harness-tui/dsh-tui file:/sandbox/upstream-radar-dsh-surface-z3KVUj/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz\n\nPackages: +75\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 100, reused 11, downloaded 48, added 4\nProgress: resolved 100, reused 11, downloaded 63, added 75, done\nDone in 1.7s using pnpm v11.7.0",
+            "timedOut": true
+          },
+          "registration": {
+            "status": "skipped"
+          },
+          "host": {
+            "status": "skipped"
+          },
+          "surface": {
+            "status": "skipped"
+          },
+          "interaction": {
+            "status": "skipped"
+          },
+          "shutdown": {
+            "status": "skipped"
+          }
+        },
+        "result": "unknown",
+        "reason": "the profile install did not produce a bounded result",
+        "commands": [],
+        "boundary": {
+          "isolationProviderClaim": "other",
+          "isolationVerifiedByRadar": false,
+          "disposableEnvironmentRequired": true,
+          "inheritedHostSecrets": false,
+          "externalBrowserRequestsBlocked": false,
+          "approvedDependencyBuilds": [],
+          "requiredDependencyBuilds": [],
+          "note": "The caller supplies a disposable VM and restricted container. Radar passes no repository or model secrets, binds the run to exact artifact bytes, blocks non-loopback browser requests, and collects bounded smoke evidence. This is compatibility evidence, not a malicious-code safety certificate."
+        }
+      },
+      {
+        "path": "batch/reports/surface/dsh-tui-node24-tui/42a223c7c8ce0ea51062a07b19c056e13d86555e1921f08d066cd36e491fd023-1/report.json",
+        "probe": "dsh-surface",
+        "caseId": "dsh-tui-node24-tui",
+        "plugin": "@deepseek-harness-tui/dsh-tui@0.11.0",
+        "dshVersion": "0.1.7-rc.2",
+        "plane": "tui",
+        "profile": "dsh-tui",
+        "runtime": {
+          "nodeMajor": 24,
+          "nodeVersion": "24.21.0",
+          "platform": "linux",
+          "architecture": "x64",
+          "pnpmVersion": "11.7.0"
+        },
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "passed",
+            "code": 0
+          },
+          "profile": {
+            "status": "skipped",
+            "detail": "the custom TUI profile must be created by dsh plugin add"
+          },
+          "install": {
+            "status": "failed",
+            "code": 1,
+            "detail": "command exited with 1: Progress: resolved 1, reused 0, downloaded 0, added 0\nProgress: resolved 214, reused 0, downloaded 75, added 0\nProgress: resolved 369, reused 0, downloaded 247, added 0\nProgress: resolved 502, reused 0, downloaded 277, added 0\nProgress: resolved 502, reused 0, downloaded 353, added 0\nProgress: resolved 541, reused 0, downloaded 390, added 0\n[WARN] 1 deprecated subdependencies found: node-domexception@1.0.0\nProgress: resolved 587, reused 0, downloaded 412, added 0\nPackages: +514\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 587, reused 0, downloaded 516, added 514, done\ndsh: initialized profile dsh-tui at /sandbox/upstream-radar-dsh-surface-qZ7E0x/dsh-home/profiles/dsh-tui\n\ndsh: installation rejected: Plugin @deepseek-harness-tui/dsh-tui@0.11.0 is incompatible with dsh 0.1.7-rc.2: peerDependencies {\"@deepseek-ai/dsh-agent-preset-registry\":\"0.1.7-rc.1\",\"@deepseek-ai/dsh-ptc-runtime-node\":\"0.1.7-rc.1\"}. Running it may cause crashes or data loss. Update the plugin or install a plugin version compatible with this dsh runtime. To accept this risk explicitly, grant the exact-version exemption for @deepseek-harness-tui/dsh-tui@0.11.0 on dsh 0.1.7-rc.2 with `dsh plugin allow-version` or the plugin manager, then retry the installation or restart dsh. Exact-version exemption: not active.\nPlugin @deepseek-harness-tui/dsh-tui@0.11.0 is incompatible with dsh 0.1.7-rc.2: peerDependencies {\"@deepseek-ai/dsh-agent-preset-registry\":\"0.1.7-rc.1\",\"@deepseek-ai/dsh-ptc-runtime-node\":\"0.1.7-rc.1\"}. Running it may cause crashes or data loss. Update the plugin or install a plugin version compatible with this dsh runtime. To accept this risk explicitly, grant the exact-version exemption for @deepseek-harness-tui/dsh-tui@0.11.0 on dsh 0.1.7-rc.2 with `dsh plugin allow-version` or the plugin manager, then retry the installation or restart dsh. Exact-version exemption: not active.\ndsh: restored package.json, pnpm-lock.yaml, and node_modules.\ndsh: to accept the risk"
+          },
+          "registration": {
+            "status": "skipped"
+          },
+          "host": {
+            "status": "skipped"
+          },
+          "surface": {
+            "status": "skipped"
+          },
+          "interaction": {
+            "status": "skipped"
+          },
+          "shutdown": {
+            "status": "skipped"
+          }
+        },
+        "result": "surface-incompatible",
+        "reason": "the exact plugin could not be installed into the declared tui profile",
+        "commands": [],
+        "boundary": {
+          "isolationProviderClaim": "other",
+          "isolationVerifiedByRadar": false,
+          "disposableEnvironmentRequired": true,
+          "inheritedHostSecrets": false,
+          "externalBrowserRequestsBlocked": false,
+          "approvedDependencyBuilds": [],
+          "requiredDependencyBuilds": [],
+          "note": "The caller supplies a disposable VM and restricted container. Radar passes no repository or model secrets, binds the run to exact artifact bytes, blocks non-loopback browser requests, and collects bounded smoke evidence. This is compatibility evidence, not a malicious-code safety certificate."
+        }
+      }
+    ],
+    "unchangedReuse": {
+      "collectionClosed": true,
+      "compatibilityPass": false,
+      "dshChannel": "next",
+      "dshVersion": "0.1.7-rc.2",
+      "proactiveRunningWatches": 183,
+      "proactiveRunningEvents": 895,
+      "proactiveAgentTurns": 12,
+      "unchangedSecondBatchExecuted": 0,
+      "agentAttributionReceipt": true,
+      "nativeCells": 2,
+      "surfaceCells": 2,
+      "adapterCells": 0,
+      "blockedNative": 0,
+      "blockedSurface": 0,
+      "blockedAdapter": 0
+    }
+  },
+  "outcome": {
+    "conclusion": {
+      "schema": "upstream-radar.dsh-active-case-conclusion/v1alpha1",
+      "targetId": "dsh-tui",
+      "activeLaunchId": "0d31ef202fd042479b7cc3e9194d25af",
+      "evidenceDigest": "sha256:75c6848287740cfbe82254a1493dd0c0b67529e67f86f45fec24acfac0df1fd0",
+      "concludedAt": "2026-09-28T09:49:23.550Z",
+      "modelAuthored": true,
+      "compatibilityPass": false,
+      "statement": "dsh-tui 0.11.0 could not be installed into its declared `dsh-tui` profile on DSH 0.1.7-rc.2 in either tested Node major. The TUI surface case on Node 24 (dsh-tui-node24-tui) is surface-incompatible: `dsh plugin --profile dsh-tui add @deepseek-harness-tui/dsh-tui` exited 1 with `dsh: installation rejected: Plugin @deepseek-harness-tui/dsh-tui@0.11.0 is incompatible with dsh 0.1.7-rc.2: peerDependencies {\"@deepseek-ai/dsh-agent-preset-registry\":\"0.1.7-rc.1\",\"@deepseek-ai/dsh-ptc-runtime-node\":\"0.1.7-rc.1\"}` and `Exact-version exemption: not active`. The Node 22 TUI case (dsh-tui-node22-tui) is unknown: its install stage timed out at 180s after pnpm had already resolved and added the plugin tarball, so no bounded result was produced. Both native cases (dsh-tui-node22, dsh-tui-node24) are install-failed with the same reason, `the traced DSH plugin install command failed`, and the same artifact sha256 6cd8736c87228d91ab237955958f7c4064bff0f695be6e171e53a6ee180bf74d. The failure is therefore not Node-major-specific: it is a declared peer-range mismatch between the plugin's published peerDependencies and the DSH 0.1.7-rc.2 runtime. The plugin's published manifest pins `@deepseek-ai/dsh-agent-preset-registry` and `@deepseek-ai/dsh-ptc-runtime-node` to `0.1.7-rc.1 || 0.1.7-rc.2` in the source manifest, but the installed resolution demanded exactly 0.1.7-rc.1 for both, which the 0.1.7-rc.2 runtime does not satisfy. No plugin code executed: profile, registration, host, surface, interaction and shutdown stages were all skipped, so no TUI rendering, session, or interaction behavior was observed. This is a dependency/peer-range gate failure, not a rendering or runtime defect, and it is not evidence about the plugin's TUI functionality. The author's own README names DSH 0.1.7-rc.2 as the primary compatibility target, so this mismatch is a genuine finding against the author's stated baseline rather than an artifact of testing an unsupported host. No recovery action was taken: the failure is a declared-range rejection that requires either a plugin-side peer-range fix or an explicit exact-version exemption, and granting an exemption is an operator decision that would bypass the very compatibility gate under test, so it was not attempted. No network route change was needed; the batch ran to completion with exitCode 0 and failedTasks 0, meaning all four scheduled cells were executed and reported rather than the batch aborting.",
+      "coverageNotes": [
+        "Native plane: both Node 22 and Node 24 native cells ran and are install-failed with the same reason and artifact hash; the native install gate is the only native result observed.",
+        "Web/TUI plane: the declared tui profile was exercised on Node 24 and rejected at install with an explicit peer-range incompatibility; the Node 22 tui cell timed out during install and is unknown, so the TUI plane has no passing observation on any Node major.",
+        "SDK/ACP plane: not exercised; the plugin documents no SDK or ACP workflow, so no adapter cells were scheduled (adapterCells 0).",
+        "No plugin code executed in any cell: profile, registration, host, surface, interaction and shutdown stages were skipped, so TUI rendering, session management, keybindings, image previews and interaction behavior remain entirely unverified.",
+        "The Node 22 TUI install timeout is unresolved: pnpm had already added the plugin tarball before the 180s bound, so it is unknown whether that cell would have hit the same peer-range rejection or a different install problem.",
+        "Authenticated DeepSeek credential (DEEPSEEK_API_KEY) and subscription OAuth sign-in via the bundled dsh-auth plugin were not exercised; external accounts cannot be completed on the user's behalf and are recorded as coverage gaps, not compatibility failures.",
+        "Collection gaps remain: docs/getting-started.md, docs/plugins.md, docs/README.md, docs/configuration.md and docs/getting-started.en.md were omitted by the evidence byte budget, so full install and profile setup steps are unverified.",
+        "The consumer profile install requires pnpm but no exact pnpm version is pinned by the plugin; the runner used pinned pnpm 11.7.0 for Node 22+ while the development packageManager field names pnpm@11.21.0.",
+        "Windows-specific behavior (danger-full-access default, approval never, Git Bash discovery for liangshen mode) and platform-specific terminal image/clipboard paths were not exercised.",
+        "Launcher subcommands (dsh-tui update/doctor/safe), the /update network check, and the VS Code and Herdr integrations were not exercised.",
+        "No exact-version exemption was granted and no operator preset route was changed; the peer-range rejection was left as the observed result rather than bypassed."
+      ]
+    },
+    "summary": {
+      "activeLaunchId": "0d31ef202fd042479b7cc3e9194d25af",
+      "executed": 4,
+      "nativeCells": 2,
+      "surfaceCells": 2,
+      "adapterCells": 0,
+      "nextNativePlan": {
+        "run": false,
+        "dshVersion": "0.1.7-rc.2",
+        "matrix": {
+          "include": []
+        },
+        "blocked": [],
+        "triggers": [],
+        "reason": "all 2 active DSH compatibility cells have fresh evidence"
+      },
+      "nextSurfacePlan": {
+        "run": false,
+        "matrix": {
+          "include": []
+        },
+        "blocked": [],
+        "reason": "all configured execution planes have fresh exact evidence"
+      },
+      "nextAdapterPlan": {
+        "matrix": {
+          "include": []
+        },
+        "blocked": []
+      },
+      "failedTasks": [],
+      "deferredTaskKeys": [],
+      "orphanedRunningTasks": [],
+      "transitions": [
+        {
+          "caseId": "dsh-tui-node22",
+          "status": "new-incompatibility",
+          "result": "install-failed",
+          "reason": "the traced DSH plugin install command failed"
+        },
+        {
+          "caseId": "dsh-tui-node22-tui",
+          "status": "new-infrastructure-gap",
+          "result": "unknown",
+          "reason": "the profile install did not produce a bounded result"
+        },
+        {
+          "caseId": "dsh-tui-node24",
+          "status": "new-incompatibility",
+          "result": "install-failed",
+          "reason": "the traced DSH plugin install command failed"
+        },
+        {
+          "caseId": "dsh-tui-node24-tui",
+          "status": "new-incompatibility",
+          "result": "surface-incompatible",
+          "reason": "the exact plugin could not be installed into the declared tui profile"
+        }
+      ],
+      "authorScopes": [
+        {
+          "id": "dsh-tui",
+          "recommendation": {
+            "sourceFingerprint": "sha256:a5f637894c4e57950f09a92b8772ae94e7b2d268cb00c0e640e549d75f0c2d5e",
+            "inputFingerprint": "sha256:ef15205f4115ae63e62f1d1a46cb77b0079d0383715c457422d32e3c9f3be489",
+            "preferredNodeMajor": 24,
+            "nodeMajors": [
+              22,
+              24
+            ],
+            "unavailableNodeMajors": [],
+            "executionProfiles": [
+              "tui"
+            ],
+            "authorEnvironment": {
+              "packageManagers": [
+                {
+                  "name": "pnpm",
+                  "version": "11.21.0",
+                  "scope": "development",
+                  "evidence": [
+                    {
+                      "path": "package.json",
+                      "quote": "\"packageManager\": \"pnpm@11.21.0\","
+                    }
+                  ]
+                }
+              ],
+              "overrides": [],
+              "workflows": [
+                {
+                  "kind": "tui",
+                  "profile": "dsh-tui",
+                  "role": "primary",
+                  "evidence": [
+                    {
+                      "path": "README.md",
+                      "quote": "An interactive terminal UI plugin for DeepSeek Harness."
+                    },
+                    {
+                      "path": "README.md",
+                      "quote": "Manual alternative: `dsh plugin --profile dsh-tui add @deepseek-harness-tui/dsh-tui`."
+                    },
+                    {
+                      "path": "README.md",
+                      "quote": "| `dsh-tui` / `dst` | Start the TUI; `dst` is a short alias for the same program |"
+                    }
+                  ]
+                }
+              ],
+              "dshVersions": [
+                {
+                  "version": "0.1.7-rc.2",
+                  "evidence": [
+                    {
+                      "path": "README.md",
+                      "quote": "The primary compatibility target is DSH `0.1.7-rc.2`."
+                    },
+                    {
+                      "path": "pnpm-workspace.yaml",
+                      "quote": "# @deepseek-ai tree to the 0.1.7-rc.2 line locally (the primary\n# validated line; see src/dsh-adapter/contract.ts). Published"
+                    }
+                  ]
+                }
+              ]
+            },
+            "coverageGaps": [
+              "Collection gaps: docs/getting-started.md, docs/plugins.md, docs/README.md, docs/configuration.md and docs/getting-started.en.md were omitted by the evidence byte budget, so the full install/profile setup steps are unverified.",
+              "pnpm is required for profile installs (install.sh checks only that pnpm exists; `dsh plugin` forwards to pnpm) but no exact pnpm version is pinned for the consumer profile; only the development packageManager field names pnpm@11.21.0.",
+              "A DeepSeek credential (DEEPSEEK_API_KEY) is a documented startup precondition and was not exercised.",
+              "Subscription OAuth sign-in via the bundled dsh-auth plugin (/login, /auth) needs an external account and was not exercised; recorded as an explicit coverage gap, not a compatibility failure.",
+              "pnpm-workspace.yaml dev-tree overrides (including unsupported `@dsh-tui-dev/sqlite-island>...` selectors) are development-only and explicitly never consulted by consumer installs; they were not transferred to the host profile.",
+              "Only the TUI plane is documented; no headless, SDK or ACP workflow is described by plugin-owned docs, so those planes are untested.",
+              "Windows-specific behavior (profile defaults to danger-full-access with approval never, Git Bash discovery for liangshen mode) was not exercised.",
+              "Terminal image previews (Kitty/Sixel), clipboard paste and multiplexer guards are environment-dependent and were not exercised.",
+              "Launcher subcommands (dsh-tui update/doctor/safe, /update network check) and the VS Code / Herdr integrations were not exercised.",
+              "CI configuration is not proof of a successful run; the Node 24 CI-tested major is a configured version, not an observed passing build.",
+              "CI also source-checks a 0.1.5-alpha.2 compat line, but that comment alone does not establish a plugin-repository DSH release baseline, so it is not recorded as an author DSH version.",
+              "Repository evidence collection is incomplete (5 gap records); see the exact bounded candidate input for omitted or unavailable files."
+            ],
+            "summary": "dsh-tui 0.11.0 is an interactive terminal UI plugin for DeepSeek Harness, mounted as a Cordis bundle patch over dsh-base. Plugin-owned docs describe one user-facing workflow: the interactive TUI, installed as profile `dsh-tui` (`dsh plugin --profile dsh-tui add @deepseek-harness-tui/dsh-tui`, then `dsh-tui`/`dst` or `dsh --profile dsh-tui`). No headless, SDK or ACP workflow is documented, so executionProfiles is tui only. Node intent: engines.node is `^22.19 || >=24` in both source and published manifests (declared support for 22 and 24), and the README development section states CI uses Node 24 with pnpm 11, making 24 the strongest author signal (ci-tested) and the preferred major; 22 is retained as declared-support. The development packageManager field pins pnpm@11.21.0; consumer profile installs only require pnpm to be present, which is recorded as a gap. Author DSH baseline: README names DSH 0.1.7-rc.2 as the primary compatibility target and pnpm-workspace.yaml calls the 0.1.7-rc.2 line the primary validated line. Development-only workspace overrides were deliberately not transferred to the host profile. No startup disabling/offline flag of the permitted DSH_<PLUGIN>_DISABLED/OFFLINE/NO_NETWORK form is evidenced, so no limited startup comparison is recorded.",
+            "evidence": [
+              ".github/workflows/ci.yml",
+              "README.md",
+              "README_ZH.md",
+              "cordis.patch.yml",
+              "docs/configuration.en.md",
+              "install.sh",
+              "package.json",
+              "pnpm-workspace.yaml",
+              "published-manifest",
+              "source-manifest"
+            ]
+          }
+        }
+      ],
+      "adapterScopes": [],
+      "unimplementedChecks": [
+        "exact browser peer package versions",
+        "authenticated integrations and user tasks beyond bounded profile initialization"
+      ],
+      "note": "Completed collection is not a global compatibility pass; inspect each result and its remaining coverage gaps."
+    },
+    "native": [
+      {
+        "caseId": "dsh-tui-node22",
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "targetId": "dsh-tui",
+        "plugin": "@deepseek-harness-tui/dsh-tui@0.11.0",
+        "dshVersion": "0.1.7-rc.2",
+        "runtime": {
+          "nodeMajor": 22,
+          "nodeVersion": "22.23.3",
+          "platform": "linux",
+          "architecture": "x64",
+          "pnpmVersion": "11.7.0"
+        },
+        "staticFingerprint": "sha256:d727b6319f70ac6bad9223a6c5d6278d24db36a9012514abbec4ddb4c2b1dae1",
+        "contractFingerprint": "sha256:4107707720cf407347343b5f09e107a758648a19cee3ef6ca5311b71dd774cf3",
+        "observedAt": "2026-09-28T09:45:26.901Z",
+        "result": "install-failed",
+        "reason": "the traced DSH plugin install command failed",
+        "artifact": {
+          "lifecycleScripts": [
+            "prepare"
+          ],
+          "sha256": "6cd8736c87228d91ab237955958f7c4064bff0f695be6e171e53a6ee180bf74d",
+          "nodeEngine": "^22.19 || >=24"
+        },
+        "observer": {
+          "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+          "version": "0.45.0"
+        }
+      },
+      {
+        "caseId": "dsh-tui-node24",
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "targetId": "dsh-tui",
+        "plugin": "@deepseek-harness-tui/dsh-tui@0.11.0",
+        "dshVersion": "0.1.7-rc.2",
+        "runtime": {
+          "nodeMajor": 24,
+          "nodeVersion": "24.21.0",
+          "platform": "linux",
+          "architecture": "x64",
+          "pnpmVersion": "11.7.0"
+        },
+        "staticFingerprint": "sha256:d727b6319f70ac6bad9223a6c5d6278d24db36a9012514abbec4ddb4c2b1dae1",
+        "contractFingerprint": "sha256:414faaa2ecd104ae97e98c725830ad773fb998c58fb79e0d461d57ae822599e9",
+        "observedAt": "2026-09-28T09:48:53.862Z",
+        "result": "install-failed",
+        "reason": "the traced DSH plugin install command failed",
+        "artifact": {
+          "lifecycleScripts": [
+            "prepare"
+          ],
+          "sha256": "6cd8736c87228d91ab237955958f7c4064bff0f695be6e171e53a6ee180bf74d",
+          "nodeEngine": "^22.19 || >=24"
+        },
+        "observer": {
+          "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+          "version": "0.45.0"
+        }
+      }
+    ],
+    "surface": [
+      {
+        "caseId": "dsh-tui-node22-tui",
+        "sourceCaseId": "dsh-tui-node22",
+        "plugin": "@deepseek-harness-tui/dsh-tui@0.11.0",
+        "dshVersion": "0.1.7-rc.2",
+        "plane": "tui",
+        "profile": "dsh-tui",
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "runtimeId": "@deepseek-harness-tui/dsh-tui",
+        "sourceFingerprint": "sha256:1b7c240d536b0689339176fec1218a24679545d3b5cb722131ce025e54972e1d",
+        "contractFingerprint": "sha256:e5e6fd9775974aa36e0c6a32a48ec9ef2a85e28db0e50505a2d87f55f718d0fe",
+        "observedAt": "2026-09-28T09:48:30.725Z",
+        "runtime": {
+          "nodeMajor": 22,
+          "nodeVersion": "22.23.3",
+          "platform": "linux",
+          "architecture": "x64",
+          "pnpmVersion": "11.7.0"
+        },
+        "artifact": {
+          "sha256": "6cd8736c87228d91ab237955958f7c4064bff0f695be6e171e53a6ee180bf74d",
+          "bytes": 2369975,
+          "integrity": "sha512-yoH6BQ5mtC3J1V6wxGZCoPFPUT0zARphrBJWz1WMXrl5DZ/5RS6ufr1CA5ELViDJMal+n8vN/8NbCJe5AR/jjA=="
+        },
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "passed",
+            "code": 0
+          },
+          "profile": {
+            "status": "skipped",
+            "detail": "the custom TUI profile must be created by dsh plugin add"
+          },
+          "install": {
+            "status": "failed",
+            "code": null,
+            "detail": "command timed out: Progress: resolved 1, reused 0, downloaded 0, added 0\nProgress: resolved 206, reused 0, downloaded 80, added 0\nProgress: resolved 359, reused 0, downloaded 244, added 0\nProgress: resolved 472, reused 0, downloaded 326, added 0\nProgress: resolved 568, reused 0, downloaded 356, added 0\n[WARN] 1 deprecated subdependencies found: node-domexception@1.0.0\nPackages: +514\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 587, reused 0, downloaded 360, added 0\nProgress: resolved 587, reused 0, downloaded 401, added 0\nProgress: resolved 587, reused 0, downloaded 516, added 514, done\ndsh: initialized profile dsh-tui at /sandbox/upstream-radar-dsh-surface-z3KVUj/dsh-home/profiles/dsh-tui\n\nProgress: resolved 0, reused 0, downloaded 1, added 0\n[WARN] Issues with peer dependencies found. Run \"pnpm peers check\" to list them.\n\ndependencies:\n+ @deepseek-harness-tui/dsh-tui file:/sandbox/upstream-radar-dsh-surface-z3KVUj/artifact/deepseek-harness-tui-dsh-tui-0.11.0.tgz\n\nPackages: +75\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 100, reused 11, downloaded 48, added 4\nProgress: resolved 100, reused 11, downloaded 63, added 75, done\nDone in 1.7s using pnpm v11.7.0",
+            "timedOut": true
+          },
+          "registration": {
+            "status": "skipped"
+          },
+          "host": {
+            "status": "skipped"
+          },
+          "surface": {
+            "status": "skipped"
+          },
+          "interaction": {
+            "status": "skipped"
+          },
+          "shutdown": {
+            "status": "skipped"
+          }
+        },
+        "hostBuildInventory": {
+          "revision": "dsh-host-build-inventory/1",
+          "scope": "dsh-host-build-facts",
+          "dshVersion": "0.1.7-rc.2",
+          "pnpmVersion": "11.7.0",
+          "packages": [
+            {
+              "spec": "@deepseek-ai/dsh-subprocess-local@0.1.7-rc.2",
+              "location": "pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e767bc08-29/node_modules/.pnpm/@deepseek-ai+dsh-subprocess-local@0.1.7-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh_884ec6582983b565e68b22656861f788/node_modules/@deepseek-ai/dsh-subprocess-local",
+              "manifestSha256": "9c033c225ec379db266d5d434a2521e9a5b0ca5ee4c6961a90c2c5b0b1a45ed6",
+              "lifecycleScripts": {
+                "postinstall": "node scripts/ensure-spawn-helper.mjs"
+              },
+              "reportedLocators": [
+                "@deepseek-ai/dsh-subprocess-local@0.1.7-rc.2(@deepseek-ai/cordis@4.0.4)(@deepseek-ai/dsh-subprocess@0.1.7-rc.2(@deepseek-ai/cordis@4.0.4)(@deepseek-ai/dsh-http-proxy@0.1.7-rc.2(@deepseek-ai/cordis@4.0.4)))(@deepseek-ai/dsh-timeout@0.1.7-rc.2(@deepseek-ai/cordis@4.0.4))"
+              ],
+              "metadataSources": [
+                "ignoredBuilds"
+              ]
+            },
+            {
+              "spec": "@google/genai@1.52.0",
+              "location": "pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e767bc08-29/node_modules/.pnpm/@google+genai@1.52.0/node_modules/@google/genai",
+              "manifestSha256": "ec761756421ea5502c23dbebfb4bc2b74c3ff842597199f2f330afc49cbdedc7",
+              "lifecycleScripts": {
+                "preinstall": "echo 'preinstall: no-op'"
+              },
+              "reportedLocators": [
+                "@google/genai@1.52.0"
+              ],
+              "metadataSources": [
+                "ignoredBuilds"
+              ]
+            },
+            {
+              "spec": "koffi@3.3.1",
+              "location": "pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e767bc08-29/node_modules/.pnpm/koffi@3.3.1/node_modules/koffi",
+              "manifestSha256": "799cc9030696dfc275149da6e92bd1b22c13f52cf53ad1f729439aa9039aab27",
+              "lifecycleScripts": {
+                "install": "node ./cnoke.cjs -P . -D src/koffi --prebuild --release"
+              },
+              "reportedLocators": [
+                "koffi@3.3.1"
+              ],
+              "metadataSources": [
+                "ignoredBuilds"
+              ]
+            },
+            {
+              "spec": "node-pty@1.2.0-beta.15",
+              "location": "pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e767bc08-29/node_modules/.pnpm/node-pty@1.2.0-beta.15/node_modules/node-pty",
+              "manifestSha256": "f4a19bbc7cf4c2e35c081e6a18a3d11d21c54c2f3cc25bfe48142742a781b71d",
+              "lifecycleScripts": {
+                "install": "node scripts/prebuild.js || node-gyp rebuild",
+                "postinstall": "node scripts/post-install.js"
+              },
+              "reportedLocators": [
+                "node-pty@1.2.0-beta.15"
+              ],
+              "metadataSources": [
+                "ignoredBuilds"
+              ]
+            },
+            {
+              "spec": "protobufjs@7.6.6",
+              "location": "pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e767bc08-29/node_modules/.pnpm/protobufjs@7.6.6/node_modules/protobufjs",
+              "manifestSha256": "0e56b70de03bffc143e74311b42ae22b557370a4a1f4b5066568fbc77857639a",
+              "lifecycleScripts": {
+                "postinstall": "node scripts/postinstall"
+              },
+              "reportedLocators": [
+                "protobufjs@7.6.6"
+              ],
+              "metadataSources": [
+                "ignoredBuilds"
+              ]
+            }
+          ],
+          "coverageGaps": [],
+          "installation": {
+            "location": "pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e767bc08-29",
+            "manifestSha256": "3446e3119e667e497870705603a4360aecb44b76491006028b11f5989afba7d1",
+            "hostManifestSha256": "b6a8e28158f1bc67862e5d0c671430bfa4867a57be864e6007524877644555aa",
+            "lockfileSha256": "ac209ad903715aeff3583cb84a1fc3080742f709161d5ab51aac976d623b4a2a",
+            "lockGraphDigest": "sha256:3be371be48bf4575aee6752a252b9f969fbf600ae149c4ed872f24b9818f3d83"
+          }
+        },
+        "evidence": {
+          "plane": "tui",
+          "terminal": "xterm-256color",
+          "columns": 100,
+          "rows": 32,
+          "frameObserved": false,
+          "inputSent": false,
+          "exitedAfterShutdown": false,
+          "normalizedFrame": "",
+          "capturedBytes": 0,
+          "truncated": false
+        },
+        "resolution": {
+          "runtimeGraphError": "installed root package is not present in the DSH profile: @deepseek-harness-tui/dsh-tui@0.11.0"
+        },
+        "result": "unknown",
+        "reason": "the profile install did not produce a bounded result",
+        "observer": {
+          "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+          "version": "0.45.0"
+        }
+      },
+      {
+        "caseId": "dsh-tui-node24-tui",
+        "sourceCaseId": "dsh-tui-node24",
+        "plugin": "@deepseek-harness-tui/dsh-tui@0.11.0",
+        "dshVersion": "0.1.7-rc.2",
+        "plane": "tui",
+        "profile": "dsh-tui",
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "runtimeId": "@deepseek-harness-tui/dsh-tui",
+        "sourceFingerprint": "sha256:0e65b6ef7090370c6b4cd617e85edf8310ef1d9db9cb16c479c371c4ee0f9a95",
+        "contractFingerprint": "sha256:7f0a9ed29d1e042380f2f617b65dd6c7453e542f9315b4710920cfb9c906b70b",
+        "observedAt": "2026-09-28T09:49:10.808Z",
+        "runtime": {
+          "nodeMajor": 24,
+          "nodeVersion": "24.21.0",
+          "platform": "linux",
+          "architecture": "x64",
+          "pnpmVersion": "11.7.0"
+        },
+        "artifact": {
+          "sha256": "6cd8736c87228d91ab237955958f7c4064bff0f695be6e171e53a6ee180bf74d",
+          "bytes": 2369975,
+          "integrity": "sha512-yoH6BQ5mtC3J1V6wxGZCoPFPUT0zARphrBJWz1WMXrl5DZ/5RS6ufr1CA5ELViDJMal+n8vN/8NbCJe5AR/jjA=="
+        },
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "passed",
+            "code": 0
+          },
+          "profile": {
+            "status": "skipped",
+            "detail": "the custom TUI profile must be created by dsh plugin add"
+          },
+          "install": {
+            "status": "failed",
+            "code": 1,
+            "detail": "command exited with 1: Progress: resolved 1, reused 0, downloaded 0, added 0\nProgress: resolved 214, reused 0, downloaded 75, added 0\nProgress: resolved 369, reused 0, downloaded 247, added 0\nProgress: resolved 502, reused 0, downloaded 277, added 0\nProgress: resolved 502, reused 0, downloaded 353, added 0\nProgress: resolved 541, reused 0, downloaded 390, added 0\n[WARN] 1 deprecated subdependencies found: node-domexception@1.0.0\nProgress: resolved 587, reused 0, downloaded 412, added 0\nPackages: +514\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 587, reused 0, downloaded 516, added 514, done\ndsh: initialized profile dsh-tui at /sandbox/upstream-radar-dsh-surface-qZ7E0x/dsh-home/profiles/dsh-tui\n\ndsh: installation rejected: Plugin @deepseek-harness-tui/dsh-tui@0.11.0 is incompatible with dsh 0.1.7-rc.2: peerDependencies {\"@deepseek-ai/dsh-agent-preset-registry\":\"0.1.7-rc.1\",\"@deepseek-ai/dsh-ptc-runtime-node\":\"0.1.7-rc.1\"}. Running it may cause crashes or data loss. Update the plugin or install a plugin version compatible with this dsh runtime. To accept this risk explicitly, grant the exact-version exemption for @deepseek-harness-tui/dsh-tui@0.11.0 on dsh 0.1.7-rc.2 with `dsh plugin allow-version` or the plugin manager, then retry the installation or restart dsh. Exact-version exemption: not active.\nPlugin @deepseek-harness-tui/dsh-tui@0.11.0 is incompatible with dsh 0.1.7-rc.2: peerDependencies {\"@deepseek-ai/dsh-agent-preset-registry\":\"0.1.7-rc.1\",\"@deepseek-ai/dsh-ptc-runtime-node\":\"0.1.7-rc.1\"}. Running it may cause crashes or data loss. Update the plugin or install a plugin version compatible with this dsh runtime. To accept this risk explicitly, grant the exact-version exemption for @deepseek-harness-tui/dsh-tui@0.11.0 on dsh 0.1.7-rc.2 with `dsh plugin allow-version` or the plugin manager, then retry the installation or restart dsh. Exact-version exemption: not active.\ndsh: restored package.json, pnpm-lock.yaml, and node_modules.\ndsh: to accept the risk"
+          },
+          "registration": {
+            "status": "skipped"
+          },
+          "host": {
+            "status": "skipped"
+          },
+          "surface": {
+            "status": "skipped"
+          },
+          "interaction": {
+            "status": "skipped"
+          },
+          "shutdown": {
+            "status": "skipped"
+          }
+        },
+        "hostBuildInventory": {
+          "revision": "dsh-host-build-inventory/1",
+          "scope": "dsh-host-build-facts",
+          "dshVersion": "0.1.7-rc.2",
+          "pnpmVersion": "11.7.0",
+          "packages": [
+            {
+              "spec": "@deepseek-ai/dsh-subprocess-local@0.1.7-rc.2",
+              "location": "pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76ae47a-29/node_modules/.pnpm/@deepseek-ai+dsh-subprocess-local@0.1.7-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh_884ec6582983b565e68b22656861f788/node_modules/@deepseek-ai/dsh-subprocess-local",
+              "manifestSha256": "9c033c225ec379db266d5d434a2521e9a5b0ca5ee4c6961a90c2c5b0b1a45ed6",
+              "lifecycleScripts": {
+                "postinstall": "node scripts/ensure-spawn-helper.mjs"
+              },
+              "reportedLocators": [
+                "@deepseek-ai/dsh-subprocess-local@0.1.7-rc.2(@deepseek-ai/cordis@4.0.4)(@deepseek-ai/dsh-subprocess@0.1.7-rc.2(@deepseek-ai/cordis@4.0.4)(@deepseek-ai/dsh-http-proxy@0.1.7-rc.2(@deepseek-ai/cordis@4.0.4)))(@deepseek-ai/dsh-timeout@0.1.7-rc.2(@deepseek-ai/cordis@4.0.4))"
+              ],
+              "metadataSources": [
+                "ignoredBuilds"
+              ]
+            },
+            {
+              "spec": "@google/genai@1.52.0",
+              "location": "pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76ae47a-29/node_modules/.pnpm/@google+genai@1.52.0/node_modules/@google/genai",
+              "manifestSha256": "ec761756421ea5502c23dbebfb4bc2b74c3ff842597199f2f330afc49cbdedc7",
+              "lifecycleScripts": {
+                "preinstall": "echo 'preinstall: no-op'"
+              },
+              "reportedLocators": [
+                "@google/genai@1.52.0"
+              ],
+              "metadataSources": [
+                "ignoredBuilds"
+              ]
+            },
+            {
+              "spec": "koffi@3.3.1",
+              "location": "pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76ae47a-29/node_modules/.pnpm/koffi@3.3.1/node_modules/koffi",
+              "manifestSha256": "799cc9030696dfc275149da6e92bd1b22c13f52cf53ad1f729439aa9039aab27",
+              "lifecycleScripts": {
+                "install": "node ./cnoke.cjs -P . -D src/koffi --prebuild --release"
+              },
+              "reportedLocators": [
+                "koffi@3.3.1"
+              ],
+              "metadataSources": [
+                "ignoredBuilds"
+              ]
+            },
+            {
+              "spec": "node-pty@1.2.0-beta.15",
+              "location": "pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76ae47a-29/node_modules/.pnpm/node-pty@1.2.0-beta.15/node_modules/node-pty",
+              "manifestSha256": "f4a19bbc7cf4c2e35c081e6a18a3d11d21c54c2f3cc25bfe48142742a781b71d",
+              "lifecycleScripts": {
+                "install": "node scripts/prebuild.js || node-gyp rebuild",
+                "postinstall": "node scripts/post-install.js"
+              },
+              "reportedLocators": [
+                "node-pty@1.2.0-beta.15"
+              ],
+              "metadataSources": [
+                "ignoredBuilds"
+              ]
+            },
+            {
+              "spec": "protobufjs@7.6.6",
+              "location": "pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76ae47a-29/node_modules/.pnpm/protobufjs@7.6.6/node_modules/protobufjs",
+              "manifestSha256": "0e56b70de03bffc143e74311b42ae22b557370a4a1f4b5066568fbc77857639a",
+              "lifecycleScripts": {
+                "postinstall": "node scripts/postinstall"
+              },
+              "reportedLocators": [
+                "protobufjs@7.6.6"
+              ],
+              "metadataSources": [
+                "ignoredBuilds"
+              ]
+            }
+          ],
+          "coverageGaps": [],
+          "installation": {
+            "location": "pnpm/dlx/03a71fc9a7cf2caa2a5e5dbb66d5f528d57f607979028b485dbeaa42c87da80f/1a0e76ae47a-29",
+            "manifestSha256": "3446e3119e667e497870705603a4360aecb44b76491006028b11f5989afba7d1",
+            "hostManifestSha256": "b6a8e28158f1bc67862e5d0c671430bfa4867a57be864e6007524877644555aa",
+            "lockfileSha256": "ac209ad903715aeff3583cb84a1fc3080742f709161d5ab51aac976d623b4a2a",
+            "lockGraphDigest": "sha256:3be371be48bf4575aee6752a252b9f969fbf600ae149c4ed872f24b9818f3d83"
+          }
+        },
+        "evidence": {
+          "plane": "tui",
+          "terminal": "xterm-256color",
+          "columns": 100,
+          "rows": 32,
+          "frameObserved": false,
+          "inputSent": false,
+          "exitedAfterShutdown": false,
+          "normalizedFrame": "",
+          "capturedBytes": 0,
+          "truncated": false
+        },
+        "resolution": {
+          "runtimeGraphError": "installed root package is not present in the DSH profile: @deepseek-harness-tui/dsh-tui@0.11.0"
+        },
+        "result": "surface-incompatible",
+        "reason": "the exact plugin could not be installed into the declared tui profile",
+        "observer": {
+          "schema": "upstream-radar.dsh-surface-observation/v1alpha1",
+          "version": "0.45.0"
+        }
+      }
+    ],
+    "adapter": [],
+    "remainingBlocked": {
+      "native": [],
+      "surface": [],
+      "adapter": []
+    }
+  },
+  "artifactFiles": [
+    "agent-dsh-tui-d1f30c1d-b00a-488a-ac48-39d0ca80a129.provider.jsonl",
+    "batch/acceptance.json",
+    "batch/adapter-ledger.json",
+    "batch/agent-batch-0d31ef202fd042479b7cc3e9194d25af.log",
+    "batch/agent-conclusion.json",
+    "batch/agent-launch-result.json",
+    "batch/agent-launch.json",
+    "batch/agent-monitor.json",
+    "batch/agent-network-route.json",
+    "batch/agent-provider.json",
+    "batch/agent-reasoning-input.json",
+    "batch/agent-session-supervisor.json",
+    "batch/build-node22-pnpm11.7.0.log",
+    "batch/build-node24-pnpm11.7.0.log",
+    "batch/compatibility-ledger.json",
+    "batch/reports/native/dsh-tui-node22/a0603b8bcd512d1a28ee069004d8b3f4ff43074770124a5c04e6f59226769be0-1/attachments.json",
+    "batch/reports/native/dsh-tui-node22/a0603b8bcd512d1a28ee069004d8b3f4ff43074770124a5c04e6f59226769be0-1/container.json",
+    "batch/reports/native/dsh-tui-node22/a0603b8bcd512d1a28ee069004d8b3f4ff43074770124a5c04e6f59226769be0-1/progress-status.json",
+    "batch/reports/native/dsh-tui-node22/a0603b8bcd512d1a28ee069004d8b3f4ff43074770124a5c04e6f59226769be0-1/progress.jsonl",
+    "batch/reports/native/dsh-tui-node22/a0603b8bcd512d1a28ee069004d8b3f4ff43074770124a5c04e6f59226769be0-1/report.json",
+    "batch/reports/native/dsh-tui-node22/a0603b8bcd512d1a28ee069004d8b3f4ff43074770124a5c04e6f59226769be0-1/stderr.log",
+    "batch/reports/native/dsh-tui-node24/8c5e66aa706924835637088f6f065c3008e43307067624cb6c86647c20c3ed73-1/attachments.json",
+    "batch/reports/native/dsh-tui-node24/8c5e66aa706924835637088f6f065c3008e43307067624cb6c86647c20c3ed73-1/container.json",
+    "batch/reports/native/dsh-tui-node24/8c5e66aa706924835637088f6f065c3008e43307067624cb6c86647c20c3ed73-1/progress-status.json",
+    "batch/reports/native/dsh-tui-node24/8c5e66aa706924835637088f6f065c3008e43307067624cb6c86647c20c3ed73-1/progress.jsonl",
+    "batch/reports/native/dsh-tui-node24/8c5e66aa706924835637088f6f065c3008e43307067624cb6c86647c20c3ed73-1/report.json",
+    "batch/reports/native/dsh-tui-node24/8c5e66aa706924835637088f6f065c3008e43307067624cb6c86647c20c3ed73-1/stderr.log",
+    "batch/reports/surface/dsh-tui-node22-tui/423eaffa78c6109718165382d32f904548f27d8f6920537e9aafcf54723d5cf0-1/attachments.json",
+    "batch/reports/surface/dsh-tui-node22-tui/423eaffa78c6109718165382d32f904548f27d8f6920537e9aafcf54723d5cf0-1/container.json",
+    "batch/reports/surface/dsh-tui-node22-tui/423eaffa78c6109718165382d32f904548f27d8f6920537e9aafcf54723d5cf0-1/progress-status.json",
+    "batch/reports/surface/dsh-tui-node22-tui/423eaffa78c6109718165382d32f904548f27d8f6920537e9aafcf54723d5cf0-1/progress.jsonl",
+    "batch/reports/surface/dsh-tui-node22-tui/423eaffa78c6109718165382d32f904548f27d8f6920537e9aafcf54723d5cf0-1/report.json",
+    "batch/reports/surface/dsh-tui-node22-tui/423eaffa78c6109718165382d32f904548f27d8f6920537e9aafcf54723d5cf0-1/stderr.log",
+    "batch/reports/surface/dsh-tui-node24-tui/42a223c7c8ce0ea51062a07b19c056e13d86555e1921f08d066cd36e491fd023-1/attachments.json",
+    "batch/reports/surface/dsh-tui-node24-tui/42a223c7c8ce0ea51062a07b19c056e13d86555e1921f08d066cd36e491fd023-1/container.json",
+    "batch/reports/surface/dsh-tui-node24-tui/42a223c7c8ce0ea51062a07b19c056e13d86555e1921f08d066cd36e491fd023-1/progress-status.json",
+    "batch/reports/surface/dsh-tui-node24-tui/42a223c7c8ce0ea51062a07b19c056e13d86555e1921f08d066cd36e491fd023-1/progress.jsonl",
+    "batch/reports/surface/dsh-tui-node24-tui/42a223c7c8ce0ea51062a07b19c056e13d86555e1921f08d066cd36e491fd023-1/report.json",
+    "batch/reports/surface/dsh-tui-node24-tui/42a223c7c8ce0ea51062a07b19c056e13d86555e1921f08d066cd36e491fd023-1/stderr.log",
+    "batch/state.json",
+    "batch/summary.json",
+    "batch/surface-ledger.json",
+    "broker.log",
+    "reuse/executor-evidence.json",
+    "reuse/state.json",
+    "reuse/summary.json",
+    "review/candidates.json",
+    "review/collection-summary.json",
+    "review/exact-task.json",
+    "review/observations.json",
+    "review/recommendations.json",
+    "review/scoped-install-targets.json"
+  ]
+}
