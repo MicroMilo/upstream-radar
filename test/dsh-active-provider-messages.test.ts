@@ -15,6 +15,18 @@ describe('active provider message protocol', () => {
     assert.equal(normalizeDshActiveCaseAction(wrapped), wrapped)
   })
 
+  it('normalizes an omitted or scalar conclusion note without inventing the model statement', () => {
+    const launchId = 'a'.repeat(32)
+    assert.deepEqual(normalizeDshActiveCaseAction({ action: 'conclude', input: {
+      launchId, statement: 'Node 22 Web 检查完成。',
+    } }), { action: 'conclude', input: { launchId, statement: 'Node 22 Web 检查完成。', coverageNotes: [] } })
+    assert.deepEqual(normalizeDshActiveCaseAction({ action: 'conclude', input: {
+      launchId, statement: '外部账号未测试。', coverageNotes: '缺少外部账号。',
+    } }), { action: 'conclude', input: {
+      launchId, statement: '外部账号未测试。', coverageNotes: ['缺少外部账号。'],
+    } })
+  })
+
   it('compacts whole turns without leaving an orphan provider tool response', () => {
     const old = 'x'.repeat(80_000)
     const messages: DshActiveProviderMessage[] = [

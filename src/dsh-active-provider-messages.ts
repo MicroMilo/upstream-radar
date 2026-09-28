@@ -11,8 +11,8 @@ export interface DshActiveProviderMessage {
   tool_call_id?: string
 }
 
-/** Repair only the structurally unambiguous wrapper; the broker still applies
- * every semantic and repository-evidence check to the decision itself. */
+/** Repair only structurally unambiguous provider-shape drift; the broker still
+ * applies every semantic, exact-launch, and repository-evidence check. */
 export function normalizeDshActiveCaseAction(raw: unknown): unknown {
   if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) return raw
   const action = raw as Record<string, unknown>
@@ -21,6 +21,15 @@ export function normalizeDshActiveCaseAction(raw: unknown): unknown {
     const decision = input as Record<string, unknown>
     if (decision.decision === undefined && typeof decision.status === 'string') {
       return { ...action, input: { decision } }
+    }
+  }
+  if (action.action === 'conclude' && typeof input === 'object' && input !== null && !Array.isArray(input)) {
+    const conclusion = input as Record<string, unknown>
+    if (conclusion.coverageNotes === undefined || conclusion.coverageNotes === null) {
+      return { ...action, input: { ...conclusion, coverageNotes: [] } }
+    }
+    if (typeof conclusion.coverageNotes === 'string') {
+      return { ...action, input: { ...conclusion, coverageNotes: [conclusion.coverageNotes] } }
     }
   }
   return raw

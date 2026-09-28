@@ -107,7 +107,7 @@ const systemPrompt = [
   '健康运行期间也持续 watch。停滞前先 inspect 精确容器；只对已确认的本插件句柄 cancel。网络失败只能在批次停止后切换 direct/configured-proxy/recovery-proxy 这三种操作员预设路线。',
   '依赖构建门槛先 build-review 或 surface-build-review，再提交只覆盖实际观察包的 build 决定并重新 launch。accepted 只表示报告落账，不等于 compatible。',
   '外部账号、二维码或一次性登录不能代用户完成，也不能记作插件不兼容；记录为明确覆盖缺口，且不要复述登录信息。',
-  '结束前必须 full inspect（不带 kind），逐条核对 native、Web/TUI、SDK/ACP 的 result，并对最新 launch 调用 conclude({launchId,statement,coverageNotes})。未知不能写成通过。',
+  '结束前必须 full inspect（不带 kind），逐条核对 native、Web/TUI、SDK/ACP 的 result，并对最新 launch 调用 conclude({launchId,statement,coverageNotes})；coverageNotes 必须是字符串数组，没有补充项就传 []。未知不能写成通过。',
   '每轮完成当前观察与必要恢复动作后可交还；可信调度器会在正常运行中继续唤醒同一会话，最终文本本身不会结案。',
 ].join('\n')
 const sessionId = randomUUID()
@@ -193,10 +193,9 @@ async function callTool(raw) {
     const invalid = { ok: false, error: 'case_action requires one supported action and an input object' }
     return { content: JSON.stringify(invalid), action: undefined, ok: false, error: invalid.error }
   }
-  // Some OpenAI-compatible models flatten the decision into input even after
-  // reading the review schema. The broker contract is unambiguous, so repair
-  // only this exact wrapper shape; semantic fields still undergo every
-  // deterministic repository-evidence validation in the broker.
+  // Some OpenAI-compatible models drift on small action-specific wrappers.
+  // Repair only unambiguous representation differences; semantic fields still
+  // undergo every deterministic broker validation.
   const normalized = normalizeDshActiveCaseAction(raw)
   let stdout
   try {
@@ -213,8 +212,13 @@ async function callTool(raw) {
   try { result = JSON.parse(stdout) } catch { result = { ok: false, error: 'broker returned invalid JSON' } }
   const error = typeof result?.error === 'string'
     ? result.error.replace(/[\u0000-\u001f\u007f]/g, ' ').slice(0, 1_024) : undefined
+  const inputShape = typeof normalized.input === 'object' && normalized.input !== null && !Array.isArray(normalized.input)
+    ? Object.fromEntries(Object.entries(normalized.input).slice(0, 16).map(([key, value]) => [
+        key.slice(0, 64), Array.isArray(value) ? 'array' : value === null ? 'null' : typeof value,
+      ])) : {}
   await event({ type: 'tool-result', action: normalized.action, ok: result?.ok === true,
     responseBytes: Buffer.byteLength(JSON.stringify(result)), status: String(result?.value?.status ?? '').slice(0, 64),
+    ...(result?.ok === true ? {} : { inputShape }),
     ...(error === undefined ? {} : { error }) })
   return { content: JSON.stringify(result), action: normalized.action, ok: result?.ok === true, error }
 }
@@ -237,6 +241,7 @@ await save(providerPath, { schema: 'upstream-radar.dsh-active-agent-provider/v1a
 
 let runtimeWatches = 0, lastRuntimeWatchAt
 let recommendationFailures = 0
+let conclusionFailures = 0
 const watchCase = async () => {
   const observed = await performDshActiveAgentSupervisorWatch(control, targetId)
   runtimeWatches += 1; lastRuntimeWatchAt = observed.observedAt
@@ -269,6 +274,7 @@ async function turn(input) {
       const result = await callTool(args)
       messages.push({ role: 'tool', tool_call_id: call.id, content: result.content })
       if (result.action === 'recommend') recommendationFailures = result.ok ? 0 : recommendationFailures + 1
+      if (result.action === 'conclude') conclusionFailures = result.ok ? 0 : conclusionFailures + 1
       turnStart = trimConversation(turnStart)
     }
     if (recommendationFailures === 3) {
@@ -276,6 +282,12 @@ async function turn(input) {
     }
     if (recommendationFailures >= 6) {
       throw new Error('the model repeated six rejected environment recommendations; preserve the task for a corrected retry')
+    }
+    if (conclusionFailures === 3) {
+      messages.push({ role: 'user', content: '连续三次 conclude 被确定性校验拒绝。不要重复旧对象：input 必须且只能包含最新 32 位 launchId、非空 statement、字符串数组 coverageNotes（没有则 []）；重新读取最近 broker error 和 full inspect 后修正。' })
+    }
+    if (conclusionFailures >= 6) {
+      throw new Error('the model repeated six rejected exact-launch conclusions; preserve the task for a corrected retry')
     }
   }
   return { sessionId, interrupted: true }
