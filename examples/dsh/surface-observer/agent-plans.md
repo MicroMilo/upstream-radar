@@ -2,7 +2,7 @@
 
 Updated: 2026-08-25T10:06:43.260Z
 
-DeepSeek reviews only dependency-build package names observed in a disposable Web/TUI VM. An approval is bound to the exact plugin bytes, DSH version, Node major, plane, profile and source evidence; the no-secret runner receives only that package list.
+DeepSeek reviews separate plugin-profile build names and exact DSH-host build coordinates observed in a disposable Web/TUI VM. Host permission additionally binds the full runtime, physical host manifests and lock graph; Radar constructs the permission and the no-secret runner rechecks it before execution.
 
 - Current review set: 0
 - Exact-evidence skips: 0
