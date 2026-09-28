@@ -1,6 +1,6 @@
 <h1 align="center">Upstream Radar</h1>
 
-<p align="center"><strong>持续验证 DeepSeek Harness 插件兼容性——覆盖 headless、Web 和 TUI。</strong></p>
+<p align="center"><strong>在用户踩坑之前，先知道哪些 DeepSeek Harness 插件还能正常工作。</strong></p>
 
 <p align="center">
   <a href="README.md">English</a> ·
@@ -10,64 +10,51 @@
   <a href="LICENSE"><img alt="Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg"></a>
 </p>
 
-Upstream Radar 把精确的插件发布物、DSH 宿主和运行环境绑定在一起，让 Agent 根据仓库说明和
-已有失败证据推导受限环境，再放进一次性 GitHub VM 中实际验证。生态发生变化或证据过期后都会
-重跑，因此它检查的是**当前版本是否仍然可用**，而不只是比较一次 diff。
+Upstream Radar 持续监听精确的 DSH 与插件版本。输入变化后，它先持久化受影响任务，再唤醒
+Agent。Agent 会阅读仓库材料，推理有证据支持的 Node.js、包管理器和运行 profile，在一次性
+CI 环境里安装并运行精确发布物，运行期间持续观察和恢复，最后生成可复核的兼容性报告。
 
-它面向 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai/deepseek-harness) 插件生态。
-静态检查是关于发布包的证据；隔离运行检查是关于某个精确的
-`插件 × DSH × Node/profile` 组合的证据。两者都不会被包装成永久有效的“兼容”徽章或安全证书。
+**不盲猜测试矩阵，不把“安装成功”冒充兼容，也不把未知悄悄写成通过。**
 
-> 已被 DSH 生态目录
-> [awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/main/data/plugins/MicroMilo__upstream-radar.yml)、
-> [awesome-deepseek-harness](https://github.com/0xsline/awesome-deepseek-harness) 和
-> [awesome-deepseek-harness-plugins](https://github.com/imsai-sh/awesome-deepseek-harness-plugins/blob/main/catalog/plugins/micromilo--upstream-radar.json)
-> 收录。
+## 你会得到什么
 
-## 为什么需要它
+- **变化驱动的分析**：DSH 更新时展开到配置的插件批次；插件更新时只分析对应插件。
+- **由 Agent 负责环境取证**：README、manifest、锁文件、CI 和启动脚本共同决定 Node.js、
+  包管理器与 profile。
+- **主动运行监测**：Agent 读取增量日志、检查运行进程、处理可恢复构建门槛并按证据重试。
+- **精确且持久的证据**：报告绑定插件字节、源码 commit、DSH、Node.js、profile、命令与日志。
+- **可重试、会去重**：执行器中断后任务保持待处理；相同的已完成输入不会重复运行。
 
-插件源码仓库看起来正常，但用户真正安装的发布物可能还没有适配当前 DSH 宿主：
-
-- README 宣传的版本根本没有发布；
-- 插件实际导入了比 peer range 更新的 DSH 包；
-- `package.json` 和 lockfile 描述的不是同一个版本；
-- 安装阶段需要构建工具或依赖脚本，而用户环境没有；
-- DSH 宿主依赖没有发布，完整依赖图无法建立。
-
-这些是生态关系问题。分别检查两个仓库，很容易漏掉它们。
-
-## Radar 做什么
-
-1. **绑定精确的执行前证据。** 对齐 npm 发布物、源码 commit、DSH 宿主、manifest 和受限仓库说明。
-2. **先推导作者期望的环境，再检查执行器能力。** Agent 在有界输出协议内报告仓库明确推荐或测试的全部 Node 大版本，并推导 headless/Web/TUI profile；Radar 随后动态生成可执行环境，把暂时无法执行的版本明确记为覆盖缺口。确定性规则会拒绝违反 `engines.node`、引用不存在证据或漏掉已声明 Web 客户端的结论。推荐缺失时阻塞测试格子，不再默认回退。
-3. **建立统一兼容记录（IR）并验证执行平面。** 全新、无密钥的 runner 分别验证 headless 加载、Chromium Web 启动或真实 PTY TUI 交互。
-4. **让结果持续有效。** DSH/插件/依赖变化以及证据过期都会触发复测；确认的问题变成可修报告，干净复测后完成闭环。
+## 完整闭环
 
 ```mermaid
-flowchart TB
-  Trigger["定时运行 / 上游变化 / 证据过期"] --> Intent["受限仓库证据：manifest + 文档 + CI/运行环境文件"]
-  Intent --> Agent["Agent 推导仓库推荐的 Node/profile 测试格子"]
-  Agent --> IR["精确 IR：插件字节 ↔ DSH ↔ Node/profile ↔ 依赖"]
-  IR --> VM{"全新、无密钥的 GitHub VM"}
-  VM --> Headless["Headless：安装 → 注册 → 加载"]
-  VM --> Web["Web：Chromium → 启动交接 → 客户端包"]
-  VM --> TUI["TUI：PTY → 画面 → 输入 → 声明的退出方式"]
-  Headless --> Ledger["版本化证据账本 + 反向影响索引"]
-  Web --> Ledger
-  TUI --> Ledger
-  Ledger --> Decision{"能归责于插件吗？"}
-  Decision -->|"能"| Issue["生成一条可修复的维护者报告"]
-  Decision -->|"不能 / 检测器缺口"| Hold["暂扣报告并校准"]
-  Issue -->|"作者发布修复"| Trigger
-  Hold --> Trigger
+flowchart LR
+  Change["定时任务或上游变化"] --> Task["持久化精确任务"]
+  Task --> Agent["Agent 审阅仓库证据"]
+  Agent --> Run["安装、运行、观察、恢复"]
+  Run --> Report["版本化报告与日志"]
+  Report --> State["去重或重试"]
+  State --> Change
 ```
 
-Agent 可以推荐有证据支持的 Node/profile 测试格子，并选择作者声明的构建包、profile 设置和下一次受限重试。环境推荐始终是独立的兼容性信号，只有隔离执行才能产生结果。精确指纹决定一份报告能填入
-哪个测试格子；真正的结果由一次性虚拟机执行得出，而不是模型判断。缺失证据永远不能变成通过。
+模型只在有边界的工具协议内推荐和操作。确定性代码负责选择精确版本、校验发布物、隔离执行，
+并判断证据是否完整。插件代码拿不到模型密钥或仓库写入凭证。
 
-## 试试一个真实检查
+## 查看真实运行
 
-第一次检查不需要本地 DSH profile，也不会执行插件代码：
+- [实时兼容性报告索引](examples/dsh/active-agent/reports/README.md)：任务完成表示分析已经闭环，
+  **不代表插件一定兼容**。
+- [一次真实的 `context` Agent 运行](https://github.com/MicroMilo/upstream-radar/actions/runs/36435594284/job/108979891718)：
+  在同一个任务里完成仓库审阅、Node/profile 推理、隔离执行和主动观察。
+- [一次全绿的持久任务重试](https://github.com/MicroMilo/upstream-radar/actions/runs/36439763569)：
+  相同输入得到空矩阵，没有制造重复分析。
+
+报告会分别保留 `compatible`、`incompatible`、`unknown` 和外部受阻结果。缺少账号、覆盖不足
+或执行器故障都不能变成通过。
+
+## 30 秒试用
+
+检查一个精确 npm 发布物，不执行插件代码：
 
 ```bash
 npx --yes upstream-radar@0.45.0 inspect \
@@ -75,10 +62,7 @@ npx --yes upstream-radar@0.45.0 inspect \
   --deep --fail-on never
 ```
 
-这个历史 DSH 插件版本会返回 `review / incomplete`，因为它发布的宿主依赖链指向了一个不可用的包。
-这是可复现的发布/宿主契约问题，不是恶意行为指控。查看[完整证据报告](examples/dsh/reports/sanqi-market-plugin-dependency-resolution.md)。
-
-如果要检查自己的公开仓库，而不安装它：
+或者审阅一个公开插件仓库，不安装它：
 
 ```bash
 npx --yes upstream-radar@0.45.0 scan \
@@ -86,53 +70,61 @@ npx --yes upstream-radar@0.45.0 scan \
   --fail-on never
 ```
 
-仓库扫描会读取源码 manifest、DSH 元数据和 lockfile；不会安装依赖、执行 lifecycle script、加载插件、启动 DSH 或调用 LLM。
+这些静态命令只读取有边界的包与仓库证据，不会安装依赖、执行 lifecycle script、启动 DSH
+或调用 LLM。
 
-## 让它持续运行
+## 接入自动兼容性闭环
 
-把下面任意一个维护好的 workflow 复制到你的仓库：
+从一个维护中的 workflow 开始：
 
-- [跨多个 DSH 版本检查一个精确插件](examples/github-actions/dsh-plugin-review-minimal.yml)：手动触发，得到发布物证据和隔离加载矩阵。
-- [每天观察一个插件仓库](examples/github-actions/upstream-observer-minimal.yml)：比较 commit、发布版本、manifest 和依赖图，只有发生重要变化才唤起 Agent。
-- [在 CI 中运行依赖门禁](examples/github-actions/upstream-radar.yml)：在合并前检查 lockfile 或审查过的 Radar 配置。
+- [每天监听一个插件仓库](examples/github-actions/upstream-observer-minimal.yml)
+- [跨 DSH 版本审阅一个精确插件](examples/github-actions/dsh-plugin-review-minimal.yml)
+- [在 CI 中拦截依赖风险](examples/github-actions/upstream-radar.yml)
 
-隔离的 [headless](.github/workflows/observe-dsh-plugin-install.yml) 和
-[Web/TUI](.github/workflows/observe-dsh-plugin-surface.yml) workflow 都使用全新的 GitHub 托管 runner。
-它们不是你的电脑，也不会接收项目或模型密钥。
+本仓库已经部署的入口是
+[`upstream-observer.yml`](.github/workflows/upstream-observer.yml)，唯一的操作配置入口是
+[`examples/dsh/active-agent/policy.json`](examples/dsh/active-agent/policy.json)：
 
-## 来自真实生态的结果
+```json
+{
+  "schema": "upstream-radar.dsh-active-agent-policy/v1alpha1",
+  "dsh": { "channel": "next" },
+  "defaults": {},
+  "plugins": [
+    { "targetId": "context" },
+    { "targetId": "dsh-tui" }
+  ]
+}
+```
 
-当前的[100 插件兼容性 feed](feeds/dsh-plugin-compatibility.md)记录了 **0 个全局已观测兼容、
-96 个待复核、0 个已复现不兼容和 4 个尚未观测**。这是一次有意的迁移状态：原有账本仍
-保留 87 个此前为绿色的汇总结果和 22 个已经通过的精确 Web/TUI 格子，但新的仓库环境推荐
-账本尚未填充。历史绿色证据继续保留；只有推荐的 Node/profile 格子全部补齐后，才会重新
-汇总为全局通过。
+Node.js 和 profile 留空时由 Agent 推理；需要固定实验时，可以在全局或单个插件上覆盖。精确
+DSH 或插件版本必须同时提供匹配的 `sourceRef`，避免仓库证据与实际安装字节漂移。完整字段见
+[策略说明](examples/dsh/active-agent/POLICY.md)。
 
-首批非 headless 测试已经在 GitHub 托管 VM 中跑通：
+## 如何理解结果
 
-| 精确测试格子 | 实际证据 | 结果 |
-| --- | --- | --- |
-| [`dsh-univer-office@0.2.9 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32823035297/job/97726205358) | HTTP 200、DSH 启动完成交接、客户端下载成功、浏览器和页面无错误 | **兼容** |
-| [`@deepseek-harness-tui/dsh-tui@0.9.2 × DSH 0.1.1-rc.2 × TUI`](https://github.com/MicroMilo/upstream-radar/actions/runs/32823035297/job/97726205289) | 真实 PTY 画面、键盘输入、按文档双击 Ctrl-C 后以 code 0 退出 | **兼容** |
-| [`@linxin666/dsh-web-all@0.3.3 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32828788296/job/97742850608) | Agent 批准 4 个依赖构建；聚合客户端包返回 200；启动清单、应用挂载和插件实体相互吻合 | **兼容** |
-| [`dsh-better-sidebar@0.16.1 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32835449819/job/97763410354) | VM 发现 `node-pty` 构建门槛；DeepSeek 只批准这个精确依赖；无密钥重试通过安装、宿主、浏览器交互和关闭阶段 | **兼容** |
-
-`better-sidebar` 展示了完整闭环：动态证据发现 headless 计划没遇到的构建要求；DeepSeek 核对
-精确 manifest、README 和 VM 日志；与指纹绑定的策略只批准 `node-pty`；随后另一台不带模型密钥
-的 runner 给出通过结论。这是 Radar 的环境缺口，因此没有向插件作者提交 Issue。此前 TUI 与 Web
-检测器自身的错误也按同样方式处理：先暂扣、修正并复测，而不是发给作者。
-
-截至 2026-08-25，Radar 共向维护者提交了 13 条报告。比数量更重要的是处理结果：
-
-| 结果 | 报告 |
+| 结果 | 含义 |
 | --- | --- |
-| **已发布修复并复核（5）** | [Sanqi #5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5)（`0.5.5`）、[HDC #3](https://github.com/1na-ko/dsh-hdc-bridge/issues/3)（`0.7.3`）、[Voice #2](https://github.com/3274375092/dsh-voice/issues/2)（`0.2.6`）、[Msg Hub #1](https://github.com/AbcdefgXW/dsh-msg-hub/issues/1)、[Toolbox Web #1](https://github.com/AbcdefgXW/dsh-toolbox-web/issues/1) |
-| **维护者复核或补充契约（3）** | [Msg Hub #3](https://github.com/AbcdefgXW/dsh-msg-hub/issues/3)、[Spotlight #5 / PR #7](https://github.com/0xsline/dsh-spotlight/pull/7)、[WSL Workspace #6](https://github.com/6Mikao9/dsh-wsl-workspace/issues/6)——均已关闭，但不冒充运行时修复 |
-| **仍开放（5）** | [Anan #1](https://github.com/AmeKrance/anan-thermal-monitor/issues/1)、[Verification Receipt #3](https://github.com/030611/dsh-verification-receipt/issues/3)、[dshscan #1](https://github.com/shaoshi20/dshscan/issues/1)、[OAuth #14](https://github.com/lninghaha/dsh-coding-subscription-oauth/issues/14)、[Composer Expand #1](https://github.com/13071301808/dsh-composer-expand/issues/1) |
+| `compatible` | 精确测试格子的安装和所需运行检查均已完成。 |
+| `incompatible` | 可复现证据没有通过必要的兼容边界。 |
+| `unknown` | 已执行，但覆盖或归因不足，不能下通过结论。 |
+| `blocked` | 外部账号、凭证、数据源或执行器阻止了分析完成。 |
 
-“关闭”不自动等于“修复”。[完整的 domain 报告索引](docs/domain-reports.md)逐条保留了证据、
-验证等级、PR 覆盖和剩余边界。
+这些结果是有范围的观察，不是永久兼容徽章或安全证书。发布物、源码 commit、DSH、运行策略
+发生变化，或证据过期后，都会形成新的精确输入。
+
+## 适合谁
+
+- **插件作者**：在用户报告问题之前发现发布兼容故障。
+- **DSH 生态维护者**：获得一份口径一致、可以审计的证据源。
+- **平台团队**：用可重复的升级依据，替代人工翻 README 和日志。
+
+Upstream Radar 已被
+[awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/main/data/plugins/MicroMilo__upstream-radar.yml)、
+[awesome-deepseek-harness](https://github.com/0xsline/awesome-deepseek-harness) 和
+[awesome-deepseek-harness-plugins](https://github.com/imsai-sh/awesome-deepseek-harness-plugins/blob/main/catalog/plugins/micromilo--upstream-radar.json)
+收录。
 
 <p align="center">
-  <strong>如果 Upstream Radar 对 DSH 生态有帮助，欢迎<a href="https://github.com/MicroMilo/upstream-radar">点一个 Star</a> ⭐</strong>
+  <strong>如果这正是你的插件生态需要的兼容闭环，欢迎<a href="https://github.com/MicroMilo/upstream-radar">给 Upstream Radar 一个 Star</a> ⭐</strong>
 </p>

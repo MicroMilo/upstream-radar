@@ -1,6 +1,6 @@
 <h1 align="center">Upstream Radar</h1>
 
-<p align="center"><strong>Always-on compatibility testing for DeepSeek Harness plugins—across headless, Web, and TUI.</strong></p>
+<p align="center"><strong>Know which DeepSeek Harness plugins still work—before users find out they do not.</strong></p>
 
 <p align="center">
   <a href="README-zh-CN.md">简体中文</a> ·
@@ -10,84 +10,62 @@
   <a href="LICENSE"><img alt="Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg"></a>
 </p>
 
-Upstream Radar binds exact plugin bytes to an exact DSH host and runtime, lets an
-Agent derive a bounded environment from repository instructions and prior
-evidence, then proves the relationship in disposable GitHub VMs. It runs again
-when the ecosystem changes **or evidence expires**, so it tests the current
-version—not only the diff.
+Upstream Radar watches exact DSH and plugin releases, persists every affected
+case, and wakes an Agent only when the input changes. The Agent reads the
+repository, chooses evidence-backed Node.js and execution profiles, installs
+and runs the exact artifacts in disposable CI, watches them while they run,
+and publishes a reviewable compatibility report.
 
-It is built for the [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness)
-plugin ecosystem. A static review is evidence about a package; an isolated
-runtime review is evidence about one exact `plugin × DSH × Node/profile` pair.
-Neither is presented as a timeless compatibility badge or a security certificate.
+**No guessed matrix. No “install succeeded, therefore compatible.” No silent
+unknowns.**
 
-> Listed by the DSH ecosystem in
-> [awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/main/data/plugins/MicroMilo__upstream-radar.yml),
-> [awesome-deepseek-harness](https://github.com/0xsline/awesome-deepseek-harness), and
-> [awesome-deepseek-harness-plugins](https://github.com/imsai-sh/awesome-deepseek-harness-plugins/blob/main/catalog/plugins/micromilo--upstream-radar.json).
+## What you get
 
-## The problem
+- **Change-driven analysis** — a DSH release fans out to your plugin cohort; a
+  plugin release analyzes only that plugin.
+- **Agent-owned environment discovery** — README, manifests, lockfiles, CI, and
+  startup scripts determine Node.js, package manager, and profile selection.
+- **Active runtime supervision** — the Agent reads incremental logs, inspects
+  running processes, handles recoverable build gates, adjusts, and retries.
+- **Exact, durable evidence** — every report is bound to plugin bytes, source
+  commit, DSH version, Node.js version, profile, commands, and logs.
+- **Safe retries and deduplication** — interrupted executor work stays pending;
+  an unchanged completed input does not run twice.
 
-A source repository can be green while the package users install is not ready
-for the current DSH host:
-
-- the README advertises a version that was never published;
-- a plugin imports a newer DSH package than its peer range allows;
-- `package.json` and the lockfile describe different releases;
-- an install-time build or dependency script needs tools the user does not have;
-- a DSH host dependency is missing, so the dependency graph cannot be completed.
-
-These are ecosystem relationship problems. They are easy to miss when the two
-repositories are checked separately.
-
-## What Radar does
-
-1. **Bind exact pre-execution evidence.** Align the npm artifact, source commit,
-   DSH host, manifests, and bounded repository guidance.
-2. **Derive the intended environment before checking executor availability.**
-   An Agent reports every repository-evidenced Node major (within the bounded
-   contract) and the evidenced headless/Web/TUI profiles. Radar then
-   materializes supported runtimes and records unsupported recommendations as
-   coverage gaps. Deterministic rules
-   reject engine conflicts, invented evidence, and omission of a declared Web
-   client; a missing recommendation blocks the cell instead of falling back.
-3. **Build the exact compatibility record (IR) and prove each plane.** Fresh,
-   secret-free runners exercise headless
-   load, Chromium Web boot, or a real PTY TUI interaction.
-4. **Keep the result alive.** DSH/plugin/dependency changes and evidence expiry
-   trigger retests; confirmed failures become fixable reports and clean retests
-   close the loop.
+## The loop
 
 ```mermaid
-flowchart TB
-  Trigger["Schedule / upstream change / evidence expiry"] --> Intent["Bounded repository evidence: manifests + docs + CI/runtime files"]
-  Intent --> Agent["Agent infers repository-recommended Node/profile cells"]
-  Agent --> IR["Exact IR: plugin bytes ↔ DSH ↔ runtime/profile ↔ dependencies"]
-  IR --> VM{"Fresh secret-free GitHub VM"}
-  VM --> Headless["Headless: install → register → load"]
-  VM --> Web["Web: Chromium → boot handoff → client bundle"]
-  VM --> TUI["TUI: PTY → frame → input → declared shutdown"]
-  Headless --> Ledger["Versioned evidence ledger + reverse impact index"]
-  Web --> Ledger
-  TUI --> Ledger
-  Ledger --> Decision{"Plugin-attributable failure?"}
-  Decision -->|"yes"| Issue["Produce one fixable maintainer report"]
-  Decision -->|"no / detector gap"| Hold["Hold the report and calibrate"]
-  Issue -->|"author ships a fix"| Trigger
-  Hold --> Trigger
+flowchart LR
+  Change["Schedule or upstream change"] --> Task["Persist exact task"]
+  Task --> Agent["Agent reviews repository evidence"]
+  Agent --> Run["Install, run, watch, recover"]
+  Run --> Report["Versioned report and logs"]
+  Report --> State["Deduplicate or retry"]
+  State --> Change
 ```
 
-The Agent may recommend evidenced runtime/profile cells, choose declared build
-packages, profile setup, and the next bounded retry. Environment recommendations
-remain separate compatibility signals; isolated execution establishes results.
-Exact fingerprints decide which cell a report can satisfy, and the
-disposable runner—not the model—establishes the result. Missing evidence can
-never become a pass.
+The model recommends and operates within a bounded tool contract. Deterministic
+code selects exact versions, verifies artifacts, isolates execution, and decides
+whether evidence is complete. Plugin code never receives model credentials or
+repository write tokens.
 
-## Try a real check
+## See it working
 
-No local DSH profile is needed for this first check. It reviews one exact
-published artifact without executing plugin code:
+- [Live compatibility report index](examples/dsh/active-agent/reports/README.md)
+  — completed means the analysis closed, **not** that the plugin passed.
+- [A real `context` Agent run](https://github.com/MicroMilo/upstream-radar/actions/runs/36435594284/job/108979891718)
+  — repository review, Node/profile reasoning, isolated execution, and active
+  watches in one case.
+- [A green durable retry cycle](https://github.com/MicroMilo/upstream-radar/actions/runs/36439763569)
+  — the same persisted inputs produced an empty matrix instead of duplicate work.
+
+Reports preserve `compatible`, `incompatible`, `unknown`, and externally blocked
+outcomes separately. Missing credentials, missing coverage, and executor faults
+cannot become a pass.
+
+## Try it in 30 seconds
+
+Inspect one exact published artifact without executing plugin code:
 
 ```bash
 npx --yes upstream-radar@0.45.0 inspect \
@@ -95,12 +73,7 @@ npx --yes upstream-radar@0.45.0 inspect \
   --deep --fail-on never
 ```
 
-This historical DSH plugin release returns `review / incomplete` because its
-published host dependency chain reaches an unavailable package. That is a
-useful, reproducible release/host-contract report—not a claim of malicious
-behavior. See the [full evidence report](examples/dsh/reports/sanqi-market-plugin-dependency-resolution.md).
-
-To review your own public repository without installing it:
+Or review a public plugin repository without installing it:
 
 ```bash
 npx --yes upstream-radar@0.45.0 scan \
@@ -108,67 +81,64 @@ npx --yes upstream-radar@0.45.0 scan \
   --fail-on never
 ```
 
-The repository scan reads source manifests, DSH metadata, and lockfiles. It does
-not install dependencies, run lifecycle scripts, load the plugin, start DSH, or
-call an LLM.
+The static commands read bounded package and repository evidence. They do not
+install dependencies, execute lifecycle scripts, start DSH, or call an LLM.
 
-## Run it on every change
+## Automate the compatibility loop
 
-Copy one of the maintained workflows into your repository:
+Start from one maintained workflow:
 
-- [Review one exact plugin across DSH versions](examples/github-actions/dsh-plugin-review-minimal.yml)
-  — a manual check with artifact evidence and an isolated load matrix.
-- [Observe one plugin repository every day](examples/github-actions/upstream-observer-minimal.yml)
-  — compares commits, published versions, manifests, and dependency graphs, then
-  wakes an Agent only when there is a meaningful change.
-- [Run the dependency gate in CI](examples/github-actions/upstream-radar.yml)
-  — checks the lockfile or reviewed Radar configuration before merge.
+- [Watch a plugin repository every day](examples/github-actions/upstream-observer-minimal.yml)
+- [Review an exact plugin across DSH versions](examples/github-actions/dsh-plugin-review-minimal.yml)
+- [Gate dependency changes in CI](examples/github-actions/upstream-radar.yml)
 
-The isolated [headless](.github/workflows/observe-dsh-plugin-install.yml) and
-[Web/TUI](.github/workflows/observe-dsh-plugin-surface.yml) observers use fresh
-GitHub-hosted runners. They are not your workstation and receive no project or
-model secrets.
+This repository's deployed loop runs from
+[`upstream-observer.yml`](.github/workflows/upstream-observer.yml). Its single
+operator entry point is
+[`examples/dsh/active-agent/policy.json`](examples/dsh/active-agent/policy.json):
 
-## Evidence from the ecosystem
+```json
+{
+  "schema": "upstream-radar.dsh-active-agent-policy/v1alpha1",
+  "dsh": { "channel": "next" },
+  "defaults": {},
+  "plugins": [
+    { "targetId": "context" },
+    { "targetId": "dsh-tui" }
+  ]
+}
+```
 
-The current [100-plugin compatibility feed](feeds/dsh-plugin-compatibility.md)
-records **0 globally observed compatible, 96 needs review, 0 reproduced
-incompatible, and 4 not observed**. This is an intentional migration state:
-the existing ledgers still retain 87 previously green aggregate results and 22
-passing exact Web/TUI cells, but the new repository-environment recommendation
-ledger has not been populated yet. Historical green cells remain visible and
-do not become global passes until every recommended Node/profile cell exists.
+Leave Node.js and profiles unset to let the Agent infer them. Override them
+globally or per plugin when you need a fixed experiment. Exact DSH or plugin
+versions require a matching `sourceRef`, so repository evidence cannot drift
+from installed bytes. See the [policy reference](examples/dsh/active-agent/POLICY.md).
 
-The first non-headless cells now run in GitHub-hosted VMs:
+## What a result means
 
-| Exact cell | Observed proof | Result |
-| --- | --- | --- |
-| [`dsh-univer-office@0.2.9 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32823035297/job/97726205358) | HTTP 200, DSH boot handoff, declared client bundle fetched, no browser/page errors | **Compatible** |
-| [`@deepseek-harness-tui/dsh-tui@0.9.2 × DSH 0.1.1-rc.2 × TUI`](https://github.com/MicroMilo/upstream-radar/actions/runs/32823035297/job/97726205289) | Real PTY frame, keyboard input, documented double-Ctrl-C exit, code 0 | **Compatible** |
-| [`@linxin666/dsh-web-all@0.3.3 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32828788296/job/97742850608) | Agent-approved four dependency builds; aggregate client bundle returned 200; boot manifest, app mount, and plugin materialization matched | **Compatible** |
-| [`dsh-better-sidebar@0.16.1 × DSH 0.1.1-rc.2 × Web`](https://github.com/MicroMilo/upstream-radar/actions/runs/32835449819/job/97763410354) | VM observed a `node-pty` build gate; DeepSeek approved only that exact dependency; the secret-free retry passed install, host, browser interaction, and shutdown | **Compatible** |
-
-The `better-sidebar` run demonstrates the closed loop: dynamic evidence found a
-build requirement absent from the headless plan; DeepSeek checked the exact
-manifest, README, and VM log; a fingerprint-bound policy approved only
-`node-pty`; then a separate runner with no model secrets established the pass.
-This was Radar's environment gap, so no plugin issue was filed. Earlier TUI and
-Web detector mistakes were handled the same way: held, corrected, and rerun
-instead of being sent to authors.
-
-As of 2026-08-25, Radar has filed 13 maintainer-facing reports. The outcome is
-more useful than the raw count:
-
-| Outcome | Reports |
+| Result | Meaning |
 | --- | --- |
-| **Fix shipped and rechecked (5)** | [Sanqi #5](https://github.com/Sanqi-normal/dsh-webui-market-plugin/issues/5) (`0.5.5`), [HDC #3](https://github.com/1na-ko/dsh-hdc-bridge/issues/3) (`0.7.3`), [Voice #2](https://github.com/3274375092/dsh-voice/issues/2) (`0.2.6`), [Msg Hub #1](https://github.com/AbcdefgXW/dsh-msg-hub/issues/1), [Toolbox Web #1](https://github.com/AbcdefgXW/dsh-toolbox-web/issues/1) |
-| **Boundary reviewed or documented (3)** | [Msg Hub #3](https://github.com/AbcdefgXW/dsh-msg-hub/issues/3), [Spotlight #5 / PR #7](https://github.com/0xsline/dsh-spotlight/pull/7), [WSL Workspace #6](https://github.com/6Mikao9/dsh-wsl-workspace/issues/6) — closed without claiming a runtime fix |
-| **Still open (5)** | [Anan #1](https://github.com/AmeKrance/anan-thermal-monitor/issues/1), [Verification Receipt #3](https://github.com/030611/dsh-verification-receipt/issues/3), [dshscan #1](https://github.com/shaoshi20/dshscan/issues/1), [OAuth #14](https://github.com/lninghaha/dsh-coding-subscription-oauth/issues/14), [Composer Expand #1](https://github.com/13071301808/dsh-composer-expand/issues/1) |
+| `compatible` | The exact tested cell completed its required install and runtime checks. |
+| `incompatible` | Reproducible evidence failed a required compatibility boundary. |
+| `unknown` | Execution happened, but coverage or attribution was insufficient. |
+| `blocked` | An external account, credential, source, or executor prevented completion. |
 
-“Closed” is not automatically “fixed.” The [full domain report index](docs/domain-reports.md)
-records the evidence, validation level, PR coverage, and remaining boundary for
-every report.
+Results are scoped observations, not permanent compatibility badges or security
+certificates. A new artifact, source commit, DSH release, runtime policy, or
+expired evidence creates a new input.
+
+## Built for
+
+- **Plugin authors** who want release failures caught before users report them.
+- **DSH ecosystem maintainers** who need one comparable, auditable evidence feed.
+- **Platform teams** that need repeatable upgrade decisions instead of a manual
+  README-and-log investigation.
+
+Upstream Radar is listed by
+[awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/main/data/plugins/MicroMilo__upstream-radar.yml),
+[awesome-deepseek-harness](https://github.com/0xsline/awesome-deepseek-harness), and
+[awesome-deepseek-harness-plugins](https://github.com/imsai-sh/awesome-deepseek-harness-plugins/blob/main/catalog/plugins/micromilo--upstream-radar.json).
 
 <p align="center">
-  <strong>If Upstream Radar helps the DSH ecosystem stay compatible, <a href="https://github.com/MicroMilo/upstream-radar">please give it a Star</a> ⭐</strong>
+  <strong>If this is the compatibility loop your plugin ecosystem needs, <a href="https://github.com/MicroMilo/upstream-radar">give Upstream Radar a Star</a> ⭐</strong>
 </p>
