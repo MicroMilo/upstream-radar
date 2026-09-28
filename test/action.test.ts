@@ -55,6 +55,15 @@ describe('reusable GitHub Action', () => {
     assert.match(workflow, /active-output\/review\/scoped-install-targets\.json/)
     assert.match(workflow, /env -u ISSUE_LOCATOR_LLM_BASE_URL -u ISSUE_LOCATOR_LLM_API_KEY -u ISSUE_LOCATOR_LLM_MODEL/)
     assert.match(workflow, /reconcile-dsh-active-tasks\.mjs/)
+    const reconcile = workflow.split('      - name: Reconcile completed analyses and retain failures for retry')[1]
+      ?.split('      - name: Keep the reconciled whole-batch report')[0]
+    assert.ok(reconcile)
+    assert.match(reconcile, /set -o pipefail/,
+      'a report aggregation failure must not be hidden by tee')
+    const reconciler = await readFile('scripts/reconcile-dsh-active-tasks.mjs', 'utf8')
+    assert.match(reconciler,
+      /optionalJson\(join\(roots\.reports, `\$\{task\.id\}\.json`\), MAX_JSON_BYTES\)/,
+      'the whole-batch index must accept every report allowed by the reconciler output bound')
     assert.match(workflow, /active-output\/batch\/acceptance\.json/)
   })
   it('persists changed exact inputs before the scheduled observer calls the active Agent workflow', async () => {

@@ -10,7 +10,8 @@ Every row is bound to exact plugin/DSH source and package identities. Completed 
 | `active-4797b25090719afc8f6dde5fb1d8fbe0` | `dsh-agy-link@0.4.38` | `@deepseek-ai/dsh@0.1.7-rc.2` (`next`) | Node 24 / web | unknown, compatible | [36400693842](https://github.com/MicroMilo/upstream-radar/actions/runs/36400693842) |
 | `active-793440543cc91681e3c83e85ab3f529e` | `@deepseek-harness-tui/dsh-tui@0.11.0` | `@deepseek-ai/dsh@0.1.7-rc.2` (`next`) | Node 22, Node 24 / tui | install-failed, unknown, surface-incompatible | [36405100578](https://github.com/MicroMilo/upstream-radar/actions/runs/36405100578) |
 | `active-fc00c97a52182b00a18c35dc68f6fe52` | `dsh-univer-office@0.3.5` | `@deepseek-ai/dsh@0.1.7-rc.2` (`next`) | Node 22 / web | unknown | [36405100578](https://github.com/MicroMilo/upstream-radar/actions/runs/36405100578) |
+| `active-a9ca2a833a8e0cf69849b599c6d45356` | `dsh-feishu-bot@0.19.16` | `@deepseek-ai/dsh@0.1.7-rc.2` (`next`) | Node 22 / headless, web, sdk, acp | unknown, compatible, surface-incompatible, initialize-compatible | [36407047049](https://github.com/MicroMilo/upstream-radar/actions/runs/36407047049) |
 | `active-989d765920d6fb2ac248676adc78b16c` | `@zseven-w/dsh-openpencil@0.1.0-rc.1` | `@deepseek-ai/dsh@0.1.7-rc.2` (`next`) | Node 24 / web | unknown, peer-contract-incompatible, compatible, surface-incompatible | [36405100578](https://github.com/MicroMilo/upstream-radar/actions/runs/36405100578) |
 
-Pending/retryable: 1; completed: 7.
+Pending/retryable: 0; completed: 8.
 

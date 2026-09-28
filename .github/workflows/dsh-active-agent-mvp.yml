@@ -353,6 +353,7 @@ jobs:
           path: ${{ runner.temp }}/active-task-artifacts
       - name: Reconcile completed analyses and retain failures for retry
         run: |
+          set -o pipefail
           node scripts/reconcile-dsh-active-tasks.mjs \
             examples/dsh/active-agent/tasks.json \
             "$RUNNER_TEMP/active-task-matrix.json" \

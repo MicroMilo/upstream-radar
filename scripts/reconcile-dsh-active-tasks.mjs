@@ -228,7 +228,7 @@ const reconciled = reconcileDshActiveTaskResults(state, matrix, results, new Dat
 await save(statePath, reconciled)
 const durableReports = []
 for (const task of reconciled.tasks.filter(item => item.status === 'completed')) {
-  const report = await optionalJson(join(roots.reports, `${task.id}.json`), 16 * 1024 * 1024)
+  const report = await optionalJson(join(roots.reports, `${task.id}.json`), MAX_JSON_BYTES)
   if (report) durableReports.push(report)
 }
 const lines = ['# DSH active Agent analysis', '',
