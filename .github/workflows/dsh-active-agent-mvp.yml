@@ -89,7 +89,7 @@ jobs:
             echo '::error::Configure the three ISSUE_LOCATOR_LLM_* Actions Secrets before executing agent jobs.'
             exit 1
           fi
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413
         with:
           version: 11.3.0
           run_install: false
@@ -290,7 +290,7 @@ jobs:
         with:
           ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 1
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413
         with:
           version: 11.3.0
           run_install: false
