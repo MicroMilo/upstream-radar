@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-active-task-state/v1alpha1",
-  "updatedAt": "2026-09-29T13:19:03.948Z",
+  "updatedAt": "2026-09-29T13:34:16.245Z",
   "tasks": [
     {
       "id": "active-4797b25090719afc8f6dde5fb1d8fbe0",
@@ -677,10 +677,14 @@
           "sourceCommit": "639ed015397290b3745d163aafe02ffee4aa3f84"
         }
       },
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-09-29T13:19:03.948Z",
       "attempts": 1,
-      "lastAttemptAt": "2026-09-29T13:19:03.948Z"
+      "lastAttemptAt": "2026-09-29T13:19:03.948Z",
+      "completedAt": "2026-09-29T13:34:16.245Z",
+      "lastRunId": "36572834504",
+      "reportPath": "examples/dsh/active-agent/reports/active-55b5919e5ddc073d7583d5aa8f45f3ef.json",
+      "evidenceDigest": "sha256:f04881c2f7d3cca5fba1f2aa3f93c802f20f7e703dbbb8dce5aad6d1ab8bd1cd"
     },
     {
       "id": "active-8323277e8fd306c8b4be3e98b38c914a",
@@ -709,10 +713,14 @@
           "sourceCommit": "639ed015397290b3745d163aafe02ffee4aa3f84"
         }
       },
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-09-29T13:19:03.948Z",
       "attempts": 1,
-      "lastAttemptAt": "2026-09-29T13:19:03.948Z"
+      "lastAttemptAt": "2026-09-29T13:19:03.948Z",
+      "completedAt": "2026-09-29T13:34:16.245Z",
+      "lastRunId": "36572834504",
+      "reportPath": "examples/dsh/active-agent/reports/active-8323277e8fd306c8b4be3e98b38c914a.json",
+      "evidenceDigest": "sha256:581efd19ac6491a233307cb7ecd54d492a3ac3ca84433fce95824ffadd2e4f2d"
     },
     {
       "id": "active-aea614fc8f474fdec67b268134c68764",
@@ -741,10 +749,14 @@
           "sourceCommit": "639ed015397290b3745d163aafe02ffee4aa3f84"
         }
       },
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-09-29T13:19:03.948Z",
       "attempts": 1,
-      "lastAttemptAt": "2026-09-29T13:19:03.948Z"
+      "lastAttemptAt": "2026-09-29T13:19:03.948Z",
+      "completedAt": "2026-09-29T13:34:16.245Z",
+      "lastRunId": "36572834504",
+      "reportPath": "examples/dsh/active-agent/reports/active-aea614fc8f474fdec67b268134c68764.json",
+      "evidenceDigest": "sha256:c316d54d340be65594f4bcfb1f6f3348609007b0dc8452838ade82b1e9e53284"
     },
     {
       "id": "active-b405f975ab65716f511b8de4277c2446",
@@ -773,10 +785,14 @@
           "sourceCommit": "639ed015397290b3745d163aafe02ffee4aa3f84"
         }
       },
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-09-29T13:19:03.948Z",
       "attempts": 1,
-      "lastAttemptAt": "2026-09-29T13:19:03.948Z"
+      "lastAttemptAt": "2026-09-29T13:19:03.948Z",
+      "completedAt": "2026-09-29T13:34:16.245Z",
+      "lastRunId": "36572834504",
+      "reportPath": "examples/dsh/active-agent/reports/active-b405f975ab65716f511b8de4277c2446.json",
+      "evidenceDigest": "sha256:c603bdd0314eaf4136ba7deb702f98cef30fe3429c7e0b526260e5299fe146d8"
     },
     {
       "id": "active-bc16b740db77c96a06b94f8a6aeca72a",
@@ -805,10 +821,14 @@
           "sourceCommit": "639ed015397290b3745d163aafe02ffee4aa3f84"
         }
       },
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-09-29T13:19:03.948Z",
       "attempts": 1,
-      "lastAttemptAt": "2026-09-29T13:19:03.948Z"
+      "lastAttemptAt": "2026-09-29T13:19:03.948Z",
+      "completedAt": "2026-09-29T13:34:16.245Z",
+      "lastRunId": "36572834504",
+      "reportPath": "examples/dsh/active-agent/reports/active-bc16b740db77c96a06b94f8a6aeca72a.json",
+      "evidenceDigest": "sha256:f81fbcb7a1b4219dc1d78830d22bfff7c6c48292984d62feb5e54f62f5dda8bc"
     },
     {
       "id": "active-debf641f8869099b2d0c60d256c2289f",
@@ -837,10 +857,14 @@
           "sourceCommit": "639ed015397290b3745d163aafe02ffee4aa3f84"
         }
       },
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-09-29T13:19:03.948Z",
       "attempts": 1,
-      "lastAttemptAt": "2026-09-29T13:19:03.948Z"
+      "lastAttemptAt": "2026-09-29T13:19:03.948Z",
+      "completedAt": "2026-09-29T13:34:16.245Z",
+      "lastRunId": "36572834504",
+      "reportPath": "examples/dsh/active-agent/reports/active-debf641f8869099b2d0c60d256c2289f.json",
+      "evidenceDigest": "sha256:ec4df439bfa7bffb80c39af1e495db9fdc6969e38f0a110f3f77af174d9a4b65"
     },
     {
       "id": "active-f16ea2c480d8785cb2f02c30b49d3796",
@@ -869,10 +893,14 @@
           "sourceCommit": "639ed015397290b3745d163aafe02ffee4aa3f84"
         }
       },
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-09-29T13:19:03.948Z",
       "attempts": 1,
-      "lastAttemptAt": "2026-09-29T13:19:03.948Z"
+      "lastAttemptAt": "2026-09-29T13:19:03.948Z",
+      "completedAt": "2026-09-29T13:34:16.245Z",
+      "lastRunId": "36572834504",
+      "reportPath": "examples/dsh/active-agent/reports/active-f16ea2c480d8785cb2f02c30b49d3796.json",
+      "evidenceDigest": "sha256:a3748fabdbf643d187137fd03cdb5250d7d78a90f5724dbb88ac9d33d4034dc0"
     },
     {
       "id": "active-f968e6af6d7d9a9c10c8d57ab84e3941",
@@ -901,10 +929,14 @@
           "sourceCommit": "639ed015397290b3745d163aafe02ffee4aa3f84"
         }
       },
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-09-29T13:19:03.948Z",
       "attempts": 1,
-      "lastAttemptAt": "2026-09-29T13:19:03.948Z"
+      "lastAttemptAt": "2026-09-29T13:19:03.948Z",
+      "completedAt": "2026-09-29T13:34:16.245Z",
+      "lastRunId": "36572834504",
+      "reportPath": "examples/dsh/active-agent/reports/active-f968e6af6d7d9a9c10c8d57ab84e3941.json",
+      "evidenceDigest": "sha256:15364cd44478008a5ab26692a235991d390e56eb0dde18c2f64ea80dafe6f111"
     }
   ]
 }

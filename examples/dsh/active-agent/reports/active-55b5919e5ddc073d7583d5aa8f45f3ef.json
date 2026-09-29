@@ -1,0 +1,1610 @@
+{
+  "schema": "upstream-radar.dsh-active-analysis-report/v1alpha1",
+  "generatedAt": "2026-09-29T13:34:15.843Z",
+  "task": {
+    "id": "active-55b5919e5ddc073d7583d5aa8f45f3ef",
+    "inputFingerprint": "sha256:55b5919e5ddc073d7583d5aa8f45f3ef8b5f638a5845d9948c5621290b026ccf",
+    "trigger": {
+      "kind": "dsh",
+      "observerTargetId": "deepseek-harness",
+      "beforeCommit": "4878cdabd87d4041bdaff61d04c966883b9fd07a",
+      "afterCommit": "639ed015397290b3745d163aafe02ffee4aa3f84",
+      "beforeVersion": "0.2.0-rc.1",
+      "afterVersion": "0.2.0-rc.2"
+    },
+    "targetId": "dsh-univer-office",
+    "dshChannel": "next",
+    "input": {
+      "plugin": {
+        "name": "dsh-univer-office",
+        "version": "0.3.5",
+        "integrity": "sha512-kMfqAfKJBRUVETqZYLiGg5QVBgoOHkES1O8hhLFTTl9TiHUZEpVnB+1CUFeMjHAArp47QOElGe82iKETgAqDMw==",
+        "sourceCommit": "5ce30f6eb88cf48e24e731782020c1d811144990"
+      },
+      "dsh": {
+        "name": "@deepseek-ai/dsh",
+        "version": "0.2.0-rc.2",
+        "integrity": "sha512-EAJ3gPNcVt/uv8X19PMm9NkVhWgT7xXNMk0UKCVm+IQ5rpSQOcsMUa0HWlnYYVybKMsccjcRB21vVVsaXQ6IdA==",
+        "sourceCommit": "639ed015397290b3745d163aafe02ffee4aa3f84"
+      }
+    },
+    "attempts": 1
+  },
+  "github": {
+    "runId": "36572834504",
+    "runUrl": "https://github.com/MicroMilo/upstream-radar/actions/runs/36572834504",
+    "artifact": "dsh-active-agent-dsh-univer-office-next-active-55b5919e5ddc073d7583d5aa8f45f3ef-36572834504"
+  },
+  "recommendation": {
+    "targetId": "dsh-univer-office",
+    "plugin": "dsh-univer-office@0.3.5",
+    "reviewContract": "dsh-environment/v14",
+    "dshVersion": "0.2.0-rc.2",
+    "repository": "dream-num/dsh-univer-office",
+    "sourceCommit": "5ce30f6eb88cf48e24e731782020c1d811144990",
+    "sourceFingerprint": "sha256:aaa713753b41c6502a71b9efe690a06df4c2dff8d010de999a151c20efec3195",
+    "inputFingerprint": "sha256:c9fb87ccf43fae67cc795e48a2c373d779048cd62cc460088577ef07a5c4a2f6",
+    "plannedAt": "2026-09-29T13:20:15.713Z",
+    "model": "codex-yolo-active-case",
+    "status": "recommended",
+    "preferredNodeMajor": 22,
+    "nodeMajors": [
+      22,
+      24
+    ],
+    "executionProfiles": [
+      "web"
+    ],
+    "nodeEvidence": [
+      {
+        "nodeMajor": 22,
+        "kind": "ci-tested",
+        "evidence": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/release.yml",
+          "README.md",
+          "package.json"
+        ]
+      },
+      {
+        "nodeMajor": 24,
+        "kind": "dsh-baseline",
+        "evidence": [
+          "dsh-repository/package.json"
+        ]
+      }
+    ],
+    "authorEnvironment": {
+      "startupConfigurations": [],
+      "packageManagers": [
+        {
+          "name": "pnpm",
+          "version": "11.23.0",
+          "scope": "development",
+          "evidence": [
+            {
+              "path": "package.json",
+              "quote": "\"packageManager\": \"pnpm@11.23.0\""
+            },
+            {
+              "path": "README.md",
+              "quote": "The project requires Node.js `>=22.19.0` and `pnpm@11.23.0`."
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "workflows": [
+        {
+          "kind": "web",
+          "profile": "web",
+          "role": "primary",
+          "evidence": [
+            {
+              "path": "README.md",
+              "quote": "dsh plugin --profile web add dsh-univer-office"
+            },
+            {
+              "path": "README.md",
+              "quote": "dsh web"
+            },
+            {
+              "path": "package.json",
+              "quote": "\"platform\": \"web\""
+            }
+          ]
+        }
+      ],
+      "dshVersions": [
+        {
+          "version": "0.1.5-rc.3",
+          "evidence": [
+            {
+              "path": "README.md",
+              "quote": "Supported DSH versions are `0.1.5-rc.3`, `0.1.7-alpha.2`, and `0.1.7-rc.1`."
+            }
+          ]
+        },
+        {
+          "version": "0.1.7-alpha.2",
+          "evidence": [
+            {
+              "path": "README.md",
+              "quote": "Supported DSH versions are `0.1.5-rc.3`, `0.1.7-alpha.2`, and `0.1.7-rc.1`."
+            }
+          ]
+        },
+        {
+          "version": "0.1.7-rc.1",
+          "evidence": [
+            {
+              "path": "README.md",
+              "quote": "Supported DSH versions are `0.1.5-rc.3`, `0.1.7-alpha.2`, and `0.1.7-rc.1`."
+            }
+          ]
+        }
+      ]
+    },
+    "coverageGaps": [
+      "No SDK or ACP workflow is documented; only the Web profile install and launch path is evidenced.",
+      "Radar target DSH 0.2.0-rc.2 is not among the author's supported DSH versions (0.1.5-rc.3, 0.1.7-alpha.2, 0.1.7-rc.1); the declared peer ranges exclude it, so compatibility with the target is unproven.",
+      "Screenshots, PDF printing, Slide layout checks, and SVG text measurement require a local Chromium-family browser (browserExecutablePath or UNIVER_RENDER_BROWSER); not exercised by generic smoke checks.",
+      "The bundled Gateway starts on loopback port 9080 (advancing when occupied) and Viewer/HTTP/WebSocket traffic is served on the DSH WebServer origin behind DSH browser authentication; not exercised.",
+      "Telemetry is enabled by default (DO_NOT_TRACK=1 or telemetry: false disables it); no plugin-documented disabled or offline startup flag exists.",
+      "Optional dsh-better-sidebar (^0.19.0) integration changes how the file-tree preview registers; not exercised.",
+      "The profile install path forwards to pnpm, but no exact profile-scoped pnpm version is evidenced; only the development packageManager pnpm@11.23.0 is pinned.",
+      "Board file export, Slide master/layout pages, and speaker notes are documented as unsupported; not covered by smoke checks.",
+      "Office import/export (.xlsx/.docx/.pptx) and .univer v3 migration behavior are not exercised by generic smoke checks."
+    ],
+    "summary": "dsh-univer-office@0.3.5 is a DSH bundle whose manifest declares dsh.client.platform=web, so the Web plane is the evidenced workflow: the README installs with 'dsh plugin --profile web add dsh-univer-office' and restarts with 'dsh web'. No SDK, ACP, headless, or interactive TUI workflow is documented; the bundled 'headless Unit Content Worker' is an internal component, not a DSH headless run path, so it is not selected. Node: engines.node is '>=22.19.0' in both source and published manifests (declared-support baseline, not a preference), the README badge and Requirements section repeat '>=22.19.0', and both CI and release workflows configure Node 22, making 22 the strongest author-intent signal (preferredNodeMajor). Node 24 is retained only as the DSH repository baseline ('^22.19.0 || >=24.0.0'); it satisfies the plugin engine range. Development tooling is pinned to pnpm@11.23.0 via packageManager and the README development section; no npm overrides are evidenced. The author claims support for DSH 0.1.5-rc.3, 0.1.7-alpha.2, and 0.1.7-rc.1, which do not include the Radar target 0.2.0-rc.2; these are author claims, not Radar results, and no compatibility is asserted here.",
+    "evidence": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/release.yml",
+      "README.md",
+      "README.zh-CN.md",
+      "cordis.patch.yml",
+      "dsh-published-manifest",
+      "dsh-repository/apps/cli/README.md",
+      "dsh-repository/apps/cli/package.json",
+      "dsh-repository/package.json",
+      "dsh-source-manifest",
+      "package.json",
+      "pnpm-workspace.yaml",
+      "published-manifest",
+      "source-manifest"
+    ]
+  },
+  "executionPolicy": {
+    "mode": "agent",
+    "nodeMajors": [
+      22,
+      24
+    ],
+    "executionProfiles": [
+      "web"
+    ]
+  },
+  "execution": {
+    "launch": {
+      "id": "23e71612c24f49dca00e97c8924f82d1",
+      "targetId": "dsh-univer-office",
+      "requestedAt": "2026-09-29T13:20:17.324Z",
+      "log": "agent-batch-23e71612c24f49dca00e97c8924f82d1.log"
+    },
+    "launchResult": {
+      "id": "23e71612c24f49dca00e97c8924f82d1",
+      "exitCode": 2,
+      "finishedAt": "2026-09-29T13:22:17.683Z"
+    },
+    "monitor": {
+      "schema": "upstream-radar.dsh-active-case-monitor/v1alpha1",
+      "targetId": "dsh-univer-office",
+      "launchId": "23e71612c24f49dca00e97c8924f82d1",
+      "launchStartedAt": "2026-09-29T13:20:17.328Z",
+      "maxRunningWatchGapMs": 8155,
+      "runningWatches": 37,
+      "runningEvents": 109,
+      "lastRunningWatchAt": "2026-09-29T13:22:15.299Z"
+    },
+    "supervisor": {
+      "schema": "upstream-radar.dsh-active-agent-session/v1alpha1",
+      "targetId": "dsh-univer-office",
+      "startedAt": "2026-09-29T13:19:52.722Z",
+      "intervalMs": 8000,
+      "turns": 4,
+      "status": "closed",
+      "sessionId": "478b5800-64a7-41a9-b1ac-666421a30f94",
+      "provider": "openai-compatible-native-tools",
+      "lastTurnAt": "2026-09-29T13:22:37.539Z",
+      "runtimeWatches": 14,
+      "lastRuntimeWatchAt": "2026-09-29T13:22:14.534Z",
+      "lastLaunchId": "23e71612c24f49dca00e97c8924f82d1",
+      "closedAt": "2026-09-29T13:22:37.544Z"
+    },
+    "provider": {
+      "schema": "upstream-radar.dsh-active-agent-provider/v1alpha1",
+      "protocol": "openai-compatible-chat-completions",
+      "modelFingerprint": "sha256:f61ff5cf8e1cc88da6944d6bcd3e2e7da5ff27dd3288a8781908018cb8240cd6",
+      "endpointFingerprints": [
+        "sha256:948f1ecb6b48f91adc4e110d0351cd172b16450e9936d358992e0dfad7b863f3"
+      ],
+      "tool": "case_action",
+      "modelSecretsReachPluginContainers": false
+    },
+    "toolActions": [
+      {
+        "sequence": 2,
+        "at": "2026-09-29T13:19:53.956Z",
+        "action": "review",
+        "ok": true,
+        "status": ""
+      },
+      {
+        "sequence": 5,
+        "at": "2026-09-29T13:20:15.746Z",
+        "action": "recommend",
+        "ok": true,
+        "status": "recommended"
+      },
+      {
+        "sequence": 7,
+        "at": "2026-09-29T13:20:17.358Z",
+        "action": "launch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 9,
+        "at": "2026-09-29T13:20:18.742Z",
+        "action": "watch",
+        "ok": false,
+        "status": ""
+      },
+      {
+        "sequence": 11,
+        "at": "2026-09-29T13:20:25.550Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 13,
+        "at": "2026-09-29T13:20:35.615Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 15,
+        "at": "2026-09-29T13:20:40.658Z",
+        "action": "inspect",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 17,
+        "at": "2026-09-29T13:20:47.007Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 19,
+        "at": "2026-09-29T13:20:57.033Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 21,
+        "at": "2026-09-29T13:21:07.188Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 23,
+        "at": "2026-09-29T13:21:17.223Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 25,
+        "at": "2026-09-29T13:21:39.116Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 27,
+        "at": "2026-09-29T13:21:40.495Z",
+        "action": "inspect",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 29,
+        "at": "2026-09-29T13:21:47.056Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 31,
+        "at": "2026-09-29T13:21:51.280Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 33,
+        "at": "2026-09-29T13:21:52.836Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 35,
+        "at": "2026-09-29T13:21:54.519Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 37,
+        "at": "2026-09-29T13:21:56.264Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 39,
+        "at": "2026-09-29T13:21:57.700Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 41,
+        "at": "2026-09-29T13:21:59.180Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 43,
+        "at": "2026-09-29T13:22:00.619Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 45,
+        "at": "2026-09-29T13:22:02.206Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 47,
+        "at": "2026-09-29T13:22:04.082Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 49,
+        "at": "2026-09-29T13:22:06.172Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 51,
+        "at": "2026-09-29T13:22:07.740Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 53,
+        "at": "2026-09-29T13:22:09.589Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 55,
+        "at": "2026-09-29T13:22:11.402Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 57,
+        "at": "2026-09-29T13:22:13.412Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 59,
+        "at": "2026-09-29T13:22:15.410Z",
+        "action": "watch",
+        "ok": true,
+        "status": "running"
+      },
+      {
+        "sequence": 61,
+        "at": "2026-09-29T13:22:17.862Z",
+        "action": "watch",
+        "ok": true,
+        "status": "finished"
+      },
+      {
+        "sequence": 63,
+        "at": "2026-09-29T13:22:19.523Z",
+        "action": "inspect",
+        "ok": true,
+        "status": "finished"
+      },
+      {
+        "sequence": 65,
+        "at": "2026-09-29T13:22:21.260Z",
+        "action": "build-review",
+        "ok": false,
+        "status": ""
+      },
+      {
+        "sequence": 67,
+        "at": "2026-09-29T13:22:23.221Z",
+        "action": "build-review",
+        "ok": false,
+        "status": ""
+      },
+      {
+        "sequence": 69,
+        "at": "2026-09-29T13:22:24.472Z",
+        "action": "surface-build-review",
+        "ok": false,
+        "status": ""
+      },
+      {
+        "sequence": 71,
+        "at": "2026-09-29T13:22:26.193Z",
+        "action": "inspect",
+        "ok": false,
+        "status": ""
+      },
+      {
+        "sequence": 73,
+        "at": "2026-09-29T13:22:27.916Z",
+        "action": "watch",
+        "ok": true,
+        "status": "finished"
+      },
+      {
+        "sequence": 75,
+        "at": "2026-09-29T13:22:29.629Z",
+        "action": "inspect",
+        "ok": true,
+        "status": "finished"
+      },
+      {
+        "sequence": 77,
+        "at": "2026-09-29T13:22:33.895Z",
+        "action": "conclude",
+        "ok": true,
+        "status": ""
+      }
+    ],
+    "reports": [
+      {
+        "path": "batch/reports/native/dsh-univer-office-node22-dsh-45ecd9b63387/905e93a3f994803cc47baa3fbf8d26e7b8824fc796f5020f227c82831c64e035-1/report.json",
+        "probe": "dsh-install",
+        "caseId": "dsh-univer-office-node22-dsh-45ecd9b63387",
+        "plugin": "npm:dsh-univer-office@0.3.5",
+        "dshVersion": "0.1.7-rc.1",
+        "plane": "headless",
+        "profile": "headless",
+        "runtime": {
+          "platform": "linux",
+          "architecture": "x64",
+          "nodeVersion": "22.23.3",
+          "packageManager": {
+            "name": "pnpm",
+            "version": "11.7.0"
+          }
+        },
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "failed",
+            "code": 0,
+            "detail": "unable to decompress npm artifact within budget: Cannot create a Buffer larger than 201328640 bytes"
+          },
+          "profile": {
+            "status": "skipped"
+          },
+          "install": {
+            "status": "skipped"
+          },
+          "registration": {
+            "status": "skipped"
+          },
+          "load": {
+            "status": "skipped"
+          }
+        },
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "commands": [],
+        "boundary": {
+          "isolationProviderClaim": "other",
+          "isolationVerifiedByRadar": false,
+          "disposableEnvironmentRequired": true,
+          "lifecycleScriptsEnabledForPluginInstall": true,
+          "pluginCodeMayExecuteDuringLoad": true,
+          "inheritedHostSecrets": false,
+          "approvedDependencyBuilds": [],
+          "requiredDependencyBuilds": [],
+          "note": "Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate."
+        }
+      },
+      {
+        "path": "batch/reports/native/dsh-univer-office-node22-dsh-6f9e9e68950a/421e1474d3d33383708163543c885c20b1e13049e469658cbcdc7ca2578c6abc-1/report.json",
+        "probe": "dsh-install",
+        "caseId": "dsh-univer-office-node22-dsh-6f9e9e68950a",
+        "plugin": "npm:dsh-univer-office@0.3.5",
+        "dshVersion": "0.1.5-rc.3",
+        "plane": "headless",
+        "profile": "headless",
+        "runtime": {
+          "platform": "linux",
+          "architecture": "x64",
+          "nodeVersion": "22.23.3",
+          "packageManager": {
+            "name": "pnpm",
+            "version": "11.7.0"
+          }
+        },
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "failed",
+            "code": 0,
+            "detail": "unable to decompress npm artifact within budget: Cannot create a Buffer larger than 201328640 bytes"
+          },
+          "profile": {
+            "status": "skipped"
+          },
+          "install": {
+            "status": "skipped"
+          },
+          "registration": {
+            "status": "skipped"
+          },
+          "load": {
+            "status": "skipped"
+          }
+        },
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "commands": [],
+        "boundary": {
+          "isolationProviderClaim": "other",
+          "isolationVerifiedByRadar": false,
+          "disposableEnvironmentRequired": true,
+          "lifecycleScriptsEnabledForPluginInstall": true,
+          "pluginCodeMayExecuteDuringLoad": true,
+          "inheritedHostSecrets": false,
+          "approvedDependencyBuilds": [],
+          "requiredDependencyBuilds": [],
+          "note": "Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate."
+        }
+      },
+      {
+        "path": "batch/reports/native/dsh-univer-office-node22-dsh-dc7699b87fae/c56ab1d33e47cf1c6da2f3027f9592a6651dcc901971dc064d39549717ff5baa-1/report.json",
+        "probe": "dsh-install",
+        "caseId": "dsh-univer-office-node22-dsh-dc7699b87fae",
+        "plugin": "npm:dsh-univer-office@0.3.5",
+        "dshVersion": "0.1.7-alpha.2",
+        "plane": "headless",
+        "profile": "headless",
+        "runtime": {
+          "platform": "linux",
+          "architecture": "x64",
+          "nodeVersion": "22.23.3",
+          "packageManager": {
+            "name": "pnpm",
+            "version": "11.7.0"
+          }
+        },
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "failed",
+            "code": 0,
+            "detail": "unable to decompress npm artifact within budget: Cannot create a Buffer larger than 201328640 bytes"
+          },
+          "profile": {
+            "status": "skipped"
+          },
+          "install": {
+            "status": "skipped"
+          },
+          "registration": {
+            "status": "skipped"
+          },
+          "load": {
+            "status": "skipped"
+          }
+        },
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "commands": [],
+        "boundary": {
+          "isolationProviderClaim": "other",
+          "isolationVerifiedByRadar": false,
+          "disposableEnvironmentRequired": true,
+          "lifecycleScriptsEnabledForPluginInstall": true,
+          "pluginCodeMayExecuteDuringLoad": true,
+          "inheritedHostSecrets": false,
+          "approvedDependencyBuilds": [],
+          "requiredDependencyBuilds": [],
+          "note": "Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate."
+        }
+      },
+      {
+        "path": "batch/reports/native/dsh-univer-office-node22/c2e8b8f5914ca345c787e0befcbf1032280655656a0ea7b4fbf4764a62690357-1/report.json",
+        "probe": "dsh-install",
+        "caseId": "dsh-univer-office-node22",
+        "plugin": "npm:dsh-univer-office@0.3.5",
+        "dshVersion": "0.2.0-rc.2",
+        "plane": "headless",
+        "profile": "headless",
+        "runtime": {
+          "platform": "linux",
+          "architecture": "x64",
+          "nodeVersion": "22.23.3",
+          "packageManager": {
+            "name": "pnpm",
+            "version": "11.7.0"
+          }
+        },
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "failed",
+            "code": 0,
+            "detail": "unable to decompress npm artifact within budget: Cannot create a Buffer larger than 201328640 bytes"
+          },
+          "profile": {
+            "status": "skipped"
+          },
+          "install": {
+            "status": "skipped"
+          },
+          "registration": {
+            "status": "skipped"
+          },
+          "load": {
+            "status": "skipped"
+          }
+        },
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "commands": [],
+        "boundary": {
+          "isolationProviderClaim": "other",
+          "isolationVerifiedByRadar": false,
+          "disposableEnvironmentRequired": true,
+          "lifecycleScriptsEnabledForPluginInstall": true,
+          "pluginCodeMayExecuteDuringLoad": true,
+          "inheritedHostSecrets": false,
+          "approvedDependencyBuilds": [],
+          "requiredDependencyBuilds": [],
+          "note": "Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate."
+        }
+      },
+      {
+        "path": "batch/reports/native/dsh-univer-office-node24-dsh-45ecd9b63387/f104987d0e79a244f9ede52205a53633d7084be4269c5ed7e1d9c2dda6388a18-1/report.json",
+        "probe": "dsh-install",
+        "caseId": "dsh-univer-office-node24-dsh-45ecd9b63387",
+        "plugin": "npm:dsh-univer-office@0.3.5",
+        "dshVersion": "0.1.7-rc.1",
+        "plane": "headless",
+        "profile": "headless",
+        "runtime": {
+          "platform": "linux",
+          "architecture": "x64",
+          "nodeVersion": "24.21.0",
+          "packageManager": {
+            "name": "pnpm",
+            "version": "11.7.0"
+          }
+        },
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "failed",
+            "code": 0,
+            "detail": "unable to decompress npm artifact within budget: Cannot create a Buffer larger than 201328640 bytes"
+          },
+          "profile": {
+            "status": "skipped"
+          },
+          "install": {
+            "status": "skipped"
+          },
+          "registration": {
+            "status": "skipped"
+          },
+          "load": {
+            "status": "skipped"
+          }
+        },
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "commands": [],
+        "boundary": {
+          "isolationProviderClaim": "other",
+          "isolationVerifiedByRadar": false,
+          "disposableEnvironmentRequired": true,
+          "lifecycleScriptsEnabledForPluginInstall": true,
+          "pluginCodeMayExecuteDuringLoad": true,
+          "inheritedHostSecrets": false,
+          "approvedDependencyBuilds": [],
+          "requiredDependencyBuilds": [],
+          "note": "Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate."
+        }
+      },
+      {
+        "path": "batch/reports/native/dsh-univer-office-node24-dsh-6f9e9e68950a/0fca090692498e6e55bb7836984f90c38ad903636e04247c4beeda406de4fe3d-1/report.json",
+        "probe": "dsh-install",
+        "caseId": "dsh-univer-office-node24-dsh-6f9e9e68950a",
+        "plugin": "npm:dsh-univer-office@0.3.5",
+        "dshVersion": "0.1.5-rc.3",
+        "plane": "headless",
+        "profile": "headless",
+        "runtime": {
+          "platform": "linux",
+          "architecture": "x64",
+          "nodeVersion": "24.21.0",
+          "packageManager": {
+            "name": "pnpm",
+            "version": "11.7.0"
+          }
+        },
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "failed",
+            "code": 0,
+            "detail": "unable to decompress npm artifact within budget: Cannot create a Buffer larger than 201328640 bytes"
+          },
+          "profile": {
+            "status": "skipped"
+          },
+          "install": {
+            "status": "skipped"
+          },
+          "registration": {
+            "status": "skipped"
+          },
+          "load": {
+            "status": "skipped"
+          }
+        },
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "commands": [],
+        "boundary": {
+          "isolationProviderClaim": "other",
+          "isolationVerifiedByRadar": false,
+          "disposableEnvironmentRequired": true,
+          "lifecycleScriptsEnabledForPluginInstall": true,
+          "pluginCodeMayExecuteDuringLoad": true,
+          "inheritedHostSecrets": false,
+          "approvedDependencyBuilds": [],
+          "requiredDependencyBuilds": [],
+          "note": "Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate."
+        }
+      },
+      {
+        "path": "batch/reports/native/dsh-univer-office-node24-dsh-dc7699b87fae/5e3a21ada940228deea0b358c7ab69f83d99d5fed49f93e6461fe0dab0b16079-1/report.json",
+        "probe": "dsh-install",
+        "caseId": "dsh-univer-office-node24-dsh-dc7699b87fae",
+        "plugin": "npm:dsh-univer-office@0.3.5",
+        "dshVersion": "0.1.7-alpha.2",
+        "plane": "headless",
+        "profile": "headless",
+        "runtime": {
+          "platform": "linux",
+          "architecture": "x64",
+          "nodeVersion": "24.21.0",
+          "packageManager": {
+            "name": "pnpm",
+            "version": "11.7.0"
+          }
+        },
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "failed",
+            "code": 0,
+            "detail": "unable to decompress npm artifact within budget: Cannot create a Buffer larger than 201328640 bytes"
+          },
+          "profile": {
+            "status": "skipped"
+          },
+          "install": {
+            "status": "skipped"
+          },
+          "registration": {
+            "status": "skipped"
+          },
+          "load": {
+            "status": "skipped"
+          }
+        },
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "commands": [],
+        "boundary": {
+          "isolationProviderClaim": "other",
+          "isolationVerifiedByRadar": false,
+          "disposableEnvironmentRequired": true,
+          "lifecycleScriptsEnabledForPluginInstall": true,
+          "pluginCodeMayExecuteDuringLoad": true,
+          "inheritedHostSecrets": false,
+          "approvedDependencyBuilds": [],
+          "requiredDependencyBuilds": [],
+          "note": "Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate."
+        }
+      },
+      {
+        "path": "batch/reports/native/dsh-univer-office-node24/b1f8c9c373babcc5af0df8f23461413d5b037f8f695dfd5102995dc9bc4a5b64-1/report.json",
+        "probe": "dsh-install",
+        "caseId": "dsh-univer-office-node24",
+        "plugin": "npm:dsh-univer-office@0.3.5",
+        "dshVersion": "0.2.0-rc.2",
+        "plane": "headless",
+        "profile": "headless",
+        "runtime": {
+          "platform": "linux",
+          "architecture": "x64",
+          "nodeVersion": "24.21.0",
+          "packageManager": {
+            "name": "pnpm",
+            "version": "11.7.0"
+          }
+        },
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "stages": {
+          "runtime": {
+            "status": "passed",
+            "code": 0
+          },
+          "artifact": {
+            "status": "failed",
+            "code": 0,
+            "detail": "unable to decompress npm artifact within budget: Cannot create a Buffer larger than 201328640 bytes"
+          },
+          "profile": {
+            "status": "skipped"
+          },
+          "install": {
+            "status": "skipped"
+          },
+          "registration": {
+            "status": "skipped"
+          },
+          "load": {
+            "status": "skipped"
+          }
+        },
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "commands": [],
+        "boundary": {
+          "isolationProviderClaim": "other",
+          "isolationVerifiedByRadar": false,
+          "disposableEnvironmentRequired": true,
+          "lifecycleScriptsEnabledForPluginInstall": true,
+          "pluginCodeMayExecuteDuringLoad": true,
+          "inheritedHostSecrets": false,
+          "approvedDependencyBuilds": [],
+          "requiredDependencyBuilds": [],
+          "note": "Radar scrubs the child environment and records Linux system-call evidence, but the caller provides and must verify the disposable isolation boundary. Same-container traces are best-effort evidence, not a malicious-code safety certificate."
+        }
+      }
+    ],
+    "unchangedReuse": {
+      "collectionClosed": true,
+      "compatibilityPass": false,
+      "dshChannel": "next",
+      "dshVersion": "0.2.0-rc.2",
+      "proactiveRunningWatches": 37,
+      "proactiveRunningEvents": 109,
+      "proactiveAgentTurns": 4,
+      "unchangedSecondBatchExecuted": 0,
+      "agentAttributionReceipt": true,
+      "nativeCells": 8,
+      "surfaceCells": 0,
+      "adapterCells": 0,
+      "blockedNative": 0,
+      "blockedSurface": 8,
+      "blockedAdapter": 0
+    }
+  },
+  "outcome": {
+    "conclusion": {
+      "schema": "upstream-radar.dsh-active-case-conclusion/v1alpha1",
+      "targetId": "dsh-univer-office",
+      "activeLaunchId": "23e71612c24f49dca00e97c8924f82d1",
+      "evidenceDigest": "sha256:f04881c2f7d3cca5fba1f2aa3f93c802f20f7e703dbbb8dce5aad6d1ab8bd1cd",
+      "concludedAt": "2026-09-29T13:22:33.886Z",
+      "modelAuthored": true,
+      "compatibilityPass": false,
+      "statement": "Launch 23e71612c24f49dca00e97c8924f82d1 finished with exitCode 2. All 8 native cells were accepted (0 failed, 0 deferred) across Node 22 and Node 24 for DSH 0.2.0-rc.2 and the three author-claimed baselines (0.1.5-rc.3, 0.1.7-alpha.2, 0.1.7-rc.1). However, every one of the 8 ledger entries reports result=unknown with reason 'the exact npm artifact could not be established before execution', and the summary shows surfaceCells=0 with blockedSurface=8. No Web/TUI, SDK, or ACP result was produced, so no plane is verified. The blocked surface cells could not be unblocked: build-review and surface-build-review both refused because the exact current plugin artifact has no fresh isolated build gate and dependency-graph digest, so no build decision could be submitted. Accepted therefore only means the reports were recorded; it does not establish compatibility. No cancel was issued because no live handles existed and no failure was attributable to a confirmed plugin handle. Coverage gaps: no SDK/ACP workflow documented; Radar target DSH 0.2.0-rc.2 is outside the author's claimed supported versions; Chromium-dependent screenshot/PDF/layout paths, the loopback Gateway on port 9080, DSH browser authentication, telemetry default-on, optional dsh-better-sidebar integration, Office import/export and .univer v3 migration were not exercised; profile-scoped pnpm version is unpinned.",
+      "coverageNotes": [
+        "All 8 native cells accepted but every ledger entry is result=unknown ('the exact npm artifact could not be established before execution'); acceptance is report recording only, not compatibility.",
+        "surfaceCells=0 with blockedSurface=8: no Web/TUI, SDK, or ACP plane was exercised, so the evidenced Web workflow remains unverified.",
+        "build-review and surface-build-review both refused for lack of a fresh isolated build gate and dependency-graph digest, so no dependency-build decision could be submitted.",
+        "Radar target DSH 0.2.0-rc.2 is not among the author's claimed supported versions (0.1.5-rc.3, 0.1.7-alpha.2, 0.1.7-rc.1); compatibility with the target is unproven.",
+        "No SDK or ACP workflow is documented by the plugin; only the Web profile install and launch path is evidenced.",
+        "Chromium-dependent screenshot, PDF printing, Slide layout check, and SVG text measurement paths were not exercised.",
+        "The bundled loopback Gateway (port 9080, advancing when occupied) and Viewer/HTTP/WebSocket traffic behind DSH browser authentication were not exercised.",
+        "Telemetry is enabled by default (DO_NOT_TRACK=1 or telemetry: false); no plugin-documented disabled or offline startup flag exists.",
+        "Optional dsh-better-sidebar (^0.19.0) integration and Office import/export plus .univer v3 migration behavior were not exercised.",
+        "The profile install path forwards to pnpm but no exact profile-scoped pnpm version is evidenced; only development packageManager pnpm@11.23.0 is pinned."
+      ]
+    },
+    "summary": {
+      "activeLaunchId": "23e71612c24f49dca00e97c8924f82d1",
+      "executed": 8,
+      "nativeCells": 8,
+      "surfaceCells": 0,
+      "adapterCells": 0,
+      "nextNativePlan": {
+        "run": false,
+        "dshVersion": "0.2.0-rc.2",
+        "matrix": {
+          "include": []
+        },
+        "blocked": [],
+        "triggers": [],
+        "reason": "all 8 active DSH compatibility cells have fresh evidence"
+      },
+      "nextSurfacePlan": {
+        "run": false,
+        "matrix": {
+          "include": []
+        },
+        "blocked": [
+          {
+            "id": "dsh-univer-office-node22-web",
+            "reason": "source compatibility case dsh-univer-office-node22 has no exact artifact bytes"
+          },
+          {
+            "id": "dsh-univer-office-node22-web-dsh-268e468dc689",
+            "reason": "source compatibility case dsh-univer-office-node22-dsh-6f9e9e68950a has no exact artifact bytes"
+          },
+          {
+            "id": "dsh-univer-office-node22-web-dsh-35bd8d440aa1",
+            "reason": "source compatibility case dsh-univer-office-node22-dsh-dc7699b87fae has no exact artifact bytes"
+          },
+          {
+            "id": "dsh-univer-office-node22-web-dsh-e288143b455d",
+            "reason": "source compatibility case dsh-univer-office-node22-dsh-45ecd9b63387 has no exact artifact bytes"
+          },
+          {
+            "id": "dsh-univer-office-node24-web",
+            "reason": "source compatibility case dsh-univer-office-node24 has no exact artifact bytes"
+          },
+          {
+            "id": "dsh-univer-office-node24-web-dsh-a6d00f790615",
+            "reason": "source compatibility case dsh-univer-office-node24-dsh-45ecd9b63387 has no exact artifact bytes"
+          },
+          {
+            "id": "dsh-univer-office-node24-web-dsh-b4288725c550",
+            "reason": "source compatibility case dsh-univer-office-node24-dsh-6f9e9e68950a has no exact artifact bytes"
+          },
+          {
+            "id": "dsh-univer-office-node24-web-dsh-cfa16a62a280",
+            "reason": "source compatibility case dsh-univer-office-node24-dsh-dc7699b87fae has no exact artifact bytes"
+          }
+        ],
+        "reason": "no runnable execution-plane observations; 8 source evidence gap(s) remain"
+      },
+      "nextAdapterPlan": {
+        "matrix": {
+          "include": []
+        },
+        "blocked": []
+      },
+      "failedTasks": [],
+      "deferredTaskKeys": [],
+      "orphanedRunningTasks": [],
+      "transitions": [
+        {
+          "caseId": "dsh-univer-office-node22",
+          "status": "new-review-signal",
+          "result": "unknown",
+          "reason": "the exact npm artifact could not be established before execution"
+        },
+        {
+          "caseId": "dsh-univer-office-node22-dsh-45ecd9b63387",
+          "status": "new-review-signal",
+          "result": "unknown",
+          "reason": "the exact npm artifact could not be established before execution"
+        },
+        {
+          "caseId": "dsh-univer-office-node22-dsh-6f9e9e68950a",
+          "status": "new-review-signal",
+          "result": "unknown",
+          "reason": "the exact npm artifact could not be established before execution"
+        },
+        {
+          "caseId": "dsh-univer-office-node22-dsh-dc7699b87fae",
+          "status": "new-review-signal",
+          "result": "unknown",
+          "reason": "the exact npm artifact could not be established before execution"
+        },
+        {
+          "caseId": "dsh-univer-office-node24",
+          "status": "new-review-signal",
+          "result": "unknown",
+          "reason": "the exact npm artifact could not be established before execution"
+        },
+        {
+          "caseId": "dsh-univer-office-node24-dsh-45ecd9b63387",
+          "status": "new-review-signal",
+          "result": "unknown",
+          "reason": "the exact npm artifact could not be established before execution"
+        },
+        {
+          "caseId": "dsh-univer-office-node24-dsh-6f9e9e68950a",
+          "status": "new-review-signal",
+          "result": "unknown",
+          "reason": "the exact npm artifact could not be established before execution"
+        },
+        {
+          "caseId": "dsh-univer-office-node24-dsh-dc7699b87fae",
+          "status": "new-review-signal",
+          "result": "unknown",
+          "reason": "the exact npm artifact could not be established before execution"
+        }
+      ],
+      "authorScopes": [
+        {
+          "id": "dsh-univer-office",
+          "recommendation": {
+            "sourceFingerprint": "sha256:aaa713753b41c6502a71b9efe690a06df4c2dff8d010de999a151c20efec3195",
+            "inputFingerprint": "sha256:c9fb87ccf43fae67cc795e48a2c373d779048cd62cc460088577ef07a5c4a2f6",
+            "preferredNodeMajor": 22,
+            "nodeMajors": [
+              22,
+              24
+            ],
+            "unavailableNodeMajors": [],
+            "executionProfiles": [
+              "web"
+            ],
+            "authorEnvironment": {
+              "startupConfigurations": [],
+              "packageManagers": [
+                {
+                  "name": "pnpm",
+                  "version": "11.23.0",
+                  "scope": "development",
+                  "evidence": [
+                    {
+                      "path": "package.json",
+                      "quote": "\"packageManager\": \"pnpm@11.23.0\""
+                    },
+                    {
+                      "path": "README.md",
+                      "quote": "The project requires Node.js `>=22.19.0` and `pnpm@11.23.0`."
+                    }
+                  ]
+                }
+              ],
+              "overrides": [],
+              "workflows": [
+                {
+                  "kind": "web",
+                  "profile": "web",
+                  "role": "primary",
+                  "evidence": [
+                    {
+                      "path": "README.md",
+                      "quote": "dsh plugin --profile web add dsh-univer-office"
+                    },
+                    {
+                      "path": "README.md",
+                      "quote": "dsh web"
+                    },
+                    {
+                      "path": "package.json",
+                      "quote": "\"platform\": \"web\""
+                    }
+                  ]
+                }
+              ],
+              "dshVersions": [
+                {
+                  "version": "0.1.5-rc.3",
+                  "evidence": [
+                    {
+                      "path": "README.md",
+                      "quote": "Supported DSH versions are `0.1.5-rc.3`, `0.1.7-alpha.2`, and `0.1.7-rc.1`."
+                    }
+                  ]
+                },
+                {
+                  "version": "0.1.7-alpha.2",
+                  "evidence": [
+                    {
+                      "path": "README.md",
+                      "quote": "Supported DSH versions are `0.1.5-rc.3`, `0.1.7-alpha.2`, and `0.1.7-rc.1`."
+                    }
+                  ]
+                },
+                {
+                  "version": "0.1.7-rc.1",
+                  "evidence": [
+                    {
+                      "path": "README.md",
+                      "quote": "Supported DSH versions are `0.1.5-rc.3`, `0.1.7-alpha.2`, and `0.1.7-rc.1`."
+                    }
+                  ]
+                }
+              ]
+            },
+            "coverageGaps": [
+              "No SDK or ACP workflow is documented; only the Web profile install and launch path is evidenced.",
+              "Radar target DSH 0.2.0-rc.2 is not among the author's supported DSH versions (0.1.5-rc.3, 0.1.7-alpha.2, 0.1.7-rc.1); the declared peer ranges exclude it, so compatibility with the target is unproven.",
+              "Screenshots, PDF printing, Slide layout checks, and SVG text measurement require a local Chromium-family browser (browserExecutablePath or UNIVER_RENDER_BROWSER); not exercised by generic smoke checks.",
+              "The bundled Gateway starts on loopback port 9080 (advancing when occupied) and Viewer/HTTP/WebSocket traffic is served on the DSH WebServer origin behind DSH browser authentication; not exercised.",
+              "Telemetry is enabled by default (DO_NOT_TRACK=1 or telemetry: false disables it); no plugin-documented disabled or offline startup flag exists.",
+              "Optional dsh-better-sidebar (^0.19.0) integration changes how the file-tree preview registers; not exercised.",
+              "The profile install path forwards to pnpm, but no exact profile-scoped pnpm version is evidenced; only the development packageManager pnpm@11.23.0 is pinned.",
+              "Board file export, Slide master/layout pages, and speaker notes are documented as unsupported; not covered by smoke checks.",
+              "Office import/export (.xlsx/.docx/.pptx) and .univer v3 migration behavior are not exercised by generic smoke checks."
+            ],
+            "summary": "dsh-univer-office@0.3.5 is a DSH bundle whose manifest declares dsh.client.platform=web, so the Web plane is the evidenced workflow: the README installs with 'dsh plugin --profile web add dsh-univer-office' and restarts with 'dsh web'. No SDK, ACP, headless, or interactive TUI workflow is documented; the bundled 'headless Unit Content Worker' is an internal component, not a DSH headless run path, so it is not selected. Node: engines.node is '>=22.19.0' in both source and published manifests (declared-support baseline, not a preference), the README badge and Requirements section repeat '>=22.19.0', and both CI and release workflows configure Node 22, making 22 the strongest author-intent signal (preferredNodeMajor). Node 24 is retained only as the DSH repository baseline ('^22.19.0 || >=24.0.0'); it satisfies the plugin engine range. Development tooling is pinned to pnpm@11.23.0 via packageManager and the README development section; no npm overrides are evidenced. The author claims support for DSH 0.1.5-rc.3, 0.1.7-alpha.2, and 0.1.7-rc.1, which do not include the Radar target 0.2.0-rc.2; these are author claims, not Radar results, and no compatibility is asserted here.",
+            "evidence": [
+              ".github/workflows/ci.yml",
+              ".github/workflows/release.yml",
+              "README.md",
+              "README.zh-CN.md",
+              "cordis.patch.yml",
+              "dsh-published-manifest",
+              "dsh-repository/apps/cli/README.md",
+              "dsh-repository/apps/cli/package.json",
+              "dsh-repository/package.json",
+              "dsh-source-manifest",
+              "package.json",
+              "pnpm-workspace.yaml",
+              "published-manifest",
+              "source-manifest"
+            ]
+          }
+        }
+      ],
+      "adapterScopes": [],
+      "unimplementedChecks": [
+        "exact browser peer package versions",
+        "authenticated integrations and user tasks beyond bounded profile initialization"
+      ],
+      "note": "Completed collection is not a global compatibility pass; inspect each result and its remaining coverage gaps."
+    },
+    "native": [
+      {
+        "caseId": "dsh-univer-office-node22",
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "targetId": "dsh-univer-office",
+        "plugin": "dsh-univer-office@0.3.5",
+        "dshVersion": "0.2.0-rc.2",
+        "runtime": {
+          "nodeMajor": 22,
+          "nodeVersion": "22.23.3",
+          "platform": "linux",
+          "architecture": "x64",
+          "pnpmVersion": "11.7.0"
+        },
+        "staticFingerprint": "sha256:cfe6708c0e5cd34d0c813653dc10db80646a6949ab4df52e0c0791274c2d83ac",
+        "contractFingerprint": "sha256:8b8c400ef97e8345767b7940a4ac94beb8896283b228e55975c1764b36bc5855",
+        "observedAt": "2026-09-29T13:21:53.922Z",
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "artifact": {
+          "lifecycleScripts": []
+        },
+        "observer": {
+          "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+          "version": "0.45.0"
+        }
+      },
+      {
+        "caseId": "dsh-univer-office-node22-dsh-45ecd9b63387",
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "targetId": "dsh-univer-office",
+        "plugin": "dsh-univer-office@0.3.5",
+        "dshVersion": "0.1.7-rc.1",
+        "runtime": {
+          "nodeMajor": 22,
+          "nodeVersion": "22.23.3",
+          "platform": "linux",
+          "architecture": "x64",
+          "pnpmVersion": "11.7.0"
+        },
+        "staticFingerprint": "sha256:ce4474e56ba5d7814d667618248e579327a3eb8add85ab338280cb809f72cbbf",
+        "contractFingerprint": "sha256:b18e4ef892b775eaa9f8b3661a936727b07749470f24efbfab8cabfa3d469154",
+        "observedAt": "2026-09-29T13:21:57.085Z",
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "artifact": {
+          "lifecycleScripts": []
+        },
+        "observer": {
+          "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+          "version": "0.45.0"
+        }
+      },
+      {
+        "caseId": "dsh-univer-office-node22-dsh-6f9e9e68950a",
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "targetId": "dsh-univer-office",
+        "plugin": "dsh-univer-office@0.3.5",
+        "dshVersion": "0.1.5-rc.3",
+        "runtime": {
+          "nodeMajor": 22,
+          "nodeVersion": "22.23.3",
+          "platform": "linux",
+          "architecture": "x64",
+          "pnpmVersion": "11.7.0"
+        },
+        "staticFingerprint": "sha256:5b4ce657e82ca91b50fc9485f001c8d511e479265ac5a7e9facecd2e7f313e18",
+        "contractFingerprint": "sha256:b6a9b280046c74f76e6fe3451aa32ab66c5b61ab508b1995cc44ef85144c47b3",
+        "observedAt": "2026-09-29T13:22:00.203Z",
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "artifact": {
+          "lifecycleScripts": []
+        },
+        "observer": {
+          "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+          "version": "0.45.0"
+        }
+      },
+      {
+        "caseId": "dsh-univer-office-node22-dsh-dc7699b87fae",
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "targetId": "dsh-univer-office",
+        "plugin": "dsh-univer-office@0.3.5",
+        "dshVersion": "0.1.7-alpha.2",
+        "runtime": {
+          "nodeMajor": 22,
+          "nodeVersion": "22.23.3",
+          "platform": "linux",
+          "architecture": "x64",
+          "pnpmVersion": "11.7.0"
+        },
+        "staticFingerprint": "sha256:ba36a669744a1907a665b50416db63047d16f11fe0c9288628105ad15fda300e",
+        "contractFingerprint": "sha256:1ece3b00f41c1b12989ca27f52b49a2e216b5e2a629b98a46f7cfc075b0fa41e",
+        "observedAt": "2026-09-29T13:22:03.366Z",
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "artifact": {
+          "lifecycleScripts": []
+        },
+        "observer": {
+          "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+          "version": "0.45.0"
+        }
+      },
+      {
+        "caseId": "dsh-univer-office-node24",
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "targetId": "dsh-univer-office",
+        "plugin": "dsh-univer-office@0.3.5",
+        "dshVersion": "0.2.0-rc.2",
+        "runtime": {
+          "nodeMajor": 24,
+          "nodeVersion": "24.21.0",
+          "platform": "linux",
+          "architecture": "x64",
+          "pnpmVersion": "11.7.0"
+        },
+        "staticFingerprint": "sha256:cfe6708c0e5cd34d0c813653dc10db80646a6949ab4df52e0c0791274c2d83ac",
+        "contractFingerprint": "sha256:18f9584d9c1ff35d9e161588b46256e6d77e6da77c3f884254a1b642c2495836",
+        "observedAt": "2026-09-29T13:22:06.417Z",
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "artifact": {
+          "lifecycleScripts": []
+        },
+        "observer": {
+          "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+          "version": "0.45.0"
+        }
+      },
+      {
+        "caseId": "dsh-univer-office-node24-dsh-45ecd9b63387",
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "targetId": "dsh-univer-office",
+        "plugin": "dsh-univer-office@0.3.5",
+        "dshVersion": "0.1.7-rc.1",
+        "runtime": {
+          "nodeMajor": 24,
+          "nodeVersion": "24.21.0",
+          "platform": "linux",
+          "architecture": "x64",
+          "pnpmVersion": "11.7.0"
+        },
+        "staticFingerprint": "sha256:ce4474e56ba5d7814d667618248e579327a3eb8add85ab338280cb809f72cbbf",
+        "contractFingerprint": "sha256:2bd6bb7654e1cc9d73477b65dc7420434802d273f6c5be4887ac28ad1048389b",
+        "observedAt": "2026-09-29T13:22:09.471Z",
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "artifact": {
+          "lifecycleScripts": []
+        },
+        "observer": {
+          "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+          "version": "0.45.0"
+        }
+      },
+      {
+        "caseId": "dsh-univer-office-node24-dsh-6f9e9e68950a",
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "targetId": "dsh-univer-office",
+        "plugin": "dsh-univer-office@0.3.5",
+        "dshVersion": "0.1.5-rc.3",
+        "runtime": {
+          "nodeMajor": 24,
+          "nodeVersion": "24.21.0",
+          "platform": "linux",
+          "architecture": "x64",
+          "pnpmVersion": "11.7.0"
+        },
+        "staticFingerprint": "sha256:5b4ce657e82ca91b50fc9485f001c8d511e479265ac5a7e9facecd2e7f313e18",
+        "contractFingerprint": "sha256:2b8e0d1bb8b4ec9f80559601fe846a37159e9f4ebf98b4d7099765922527155c",
+        "observedAt": "2026-09-29T13:22:12.491Z",
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "artifact": {
+          "lifecycleScripts": []
+        },
+        "observer": {
+          "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+          "version": "0.45.0"
+        }
+      },
+      {
+        "caseId": "dsh-univer-office-node24-dsh-dc7699b87fae",
+        "profileEnvironment": {
+          "pnpmVersion": "11.7.0",
+          "overrides": {}
+        },
+        "targetId": "dsh-univer-office",
+        "plugin": "dsh-univer-office@0.3.5",
+        "dshVersion": "0.1.7-alpha.2",
+        "runtime": {
+          "nodeMajor": 24,
+          "nodeVersion": "24.21.0",
+          "platform": "linux",
+          "architecture": "x64",
+          "pnpmVersion": "11.7.0"
+        },
+        "staticFingerprint": "sha256:ba36a669744a1907a665b50416db63047d16f11fe0c9288628105ad15fda300e",
+        "contractFingerprint": "sha256:7d444ca4256f50bcbbcef1b34d217f98da62e999157a53034c7e7446411b9e28",
+        "observedAt": "2026-09-29T13:22:15.572Z",
+        "result": "unknown",
+        "reason": "the exact npm artifact could not be established before execution",
+        "artifact": {
+          "lifecycleScripts": []
+        },
+        "observer": {
+          "schema": "upstream-radar.dsh-install-observation/v1alpha1",
+          "version": "0.45.0"
+        }
+      }
+    ],
+    "surface": [],
+    "adapter": [],
+    "remainingBlocked": {
+      "native": [],
+      "surface": [
+        {
+          "id": "dsh-univer-office-node22-web",
+          "reason": "source compatibility case dsh-univer-office-node22 has no exact artifact bytes"
+        },
+        {
+          "id": "dsh-univer-office-node22-web-dsh-268e468dc689",
+          "reason": "source compatibility case dsh-univer-office-node22-dsh-6f9e9e68950a has no exact artifact bytes"
+        },
+        {
+          "id": "dsh-univer-office-node22-web-dsh-35bd8d440aa1",
+          "reason": "source compatibility case dsh-univer-office-node22-dsh-dc7699b87fae has no exact artifact bytes"
+        },
+        {
+          "id": "dsh-univer-office-node22-web-dsh-e288143b455d",
+          "reason": "source compatibility case dsh-univer-office-node22-dsh-45ecd9b63387 has no exact artifact bytes"
+        },
+        {
+          "id": "dsh-univer-office-node24-web",
+          "reason": "source compatibility case dsh-univer-office-node24 has no exact artifact bytes"
+        },
+        {
+          "id": "dsh-univer-office-node24-web-dsh-a6d00f790615",
+          "reason": "source compatibility case dsh-univer-office-node24-dsh-45ecd9b63387 has no exact artifact bytes"
+        },
+        {
+          "id": "dsh-univer-office-node24-web-dsh-b4288725c550",
+          "reason": "source compatibility case dsh-univer-office-node24-dsh-6f9e9e68950a has no exact artifact bytes"
+        },
+        {
+          "id": "dsh-univer-office-node24-web-dsh-cfa16a62a280",
+          "reason": "source compatibility case dsh-univer-office-node24-dsh-dc7699b87fae has no exact artifact bytes"
+        }
+      ],
+      "adapter": []
+    }
+  },
+  "artifactFiles": [
+    "agent-dsh-univer-office-478b5800-64a7-41a9-b1ac-666421a30f94.provider.jsonl",
+    "batch/acceptance.json",
+    "batch/adapter-ledger.json",
+    "batch/agent-batch-23e71612c24f49dca00e97c8924f82d1.log",
+    "batch/agent-conclusion.json",
+    "batch/agent-launch-result.json",
+    "batch/agent-launch.json",
+    "batch/agent-monitor.json",
+    "batch/agent-network-route.json",
+    "batch/agent-provider.json",
+    "batch/agent-reasoning-input.json",
+    "batch/agent-session-supervisor.json",
+    "batch/build-node22-pnpm11.7.0.log",
+    "batch/build-node24-pnpm11.7.0.log",
+    "batch/compatibility-ledger.json",
+    "batch/reports/native/dsh-univer-office-node22-dsh-45ecd9b63387/905e93a3f994803cc47baa3fbf8d26e7b8824fc796f5020f227c82831c64e035-1/attachments.json",
+    "batch/reports/native/dsh-univer-office-node22-dsh-45ecd9b63387/905e93a3f994803cc47baa3fbf8d26e7b8824fc796f5020f227c82831c64e035-1/container.json",
+    "batch/reports/native/dsh-univer-office-node22-dsh-45ecd9b63387/905e93a3f994803cc47baa3fbf8d26e7b8824fc796f5020f227c82831c64e035-1/progress-status.json",
+    "batch/reports/native/dsh-univer-office-node22-dsh-45ecd9b63387/905e93a3f994803cc47baa3fbf8d26e7b8824fc796f5020f227c82831c64e035-1/progress.jsonl",
+    "batch/reports/native/dsh-univer-office-node22-dsh-45ecd9b63387/905e93a3f994803cc47baa3fbf8d26e7b8824fc796f5020f227c82831c64e035-1/report.json",
+    "batch/reports/native/dsh-univer-office-node22-dsh-45ecd9b63387/905e93a3f994803cc47baa3fbf8d26e7b8824fc796f5020f227c82831c64e035-1/stderr.log",
+    "batch/reports/native/dsh-univer-office-node22-dsh-6f9e9e68950a/421e1474d3d33383708163543c885c20b1e13049e469658cbcdc7ca2578c6abc-1/attachments.json",
+    "batch/reports/native/dsh-univer-office-node22-dsh-6f9e9e68950a/421e1474d3d33383708163543c885c20b1e13049e469658cbcdc7ca2578c6abc-1/container.json",
+    "batch/reports/native/dsh-univer-office-node22-dsh-6f9e9e68950a/421e1474d3d33383708163543c885c20b1e13049e469658cbcdc7ca2578c6abc-1/progress-status.json",
+    "batch/reports/native/dsh-univer-office-node22-dsh-6f9e9e68950a/421e1474d3d33383708163543c885c20b1e13049e469658cbcdc7ca2578c6abc-1/progress.jsonl",
+    "batch/reports/native/dsh-univer-office-node22-dsh-6f9e9e68950a/421e1474d3d33383708163543c885c20b1e13049e469658cbcdc7ca2578c6abc-1/report.json",
+    "batch/reports/native/dsh-univer-office-node22-dsh-6f9e9e68950a/421e1474d3d33383708163543c885c20b1e13049e469658cbcdc7ca2578c6abc-1/stderr.log",
+    "batch/reports/native/dsh-univer-office-node22-dsh-dc7699b87fae/c56ab1d33e47cf1c6da2f3027f9592a6651dcc901971dc064d39549717ff5baa-1/attachments.json",
+    "batch/reports/native/dsh-univer-office-node22-dsh-dc7699b87fae/c56ab1d33e47cf1c6da2f3027f9592a6651dcc901971dc064d39549717ff5baa-1/container.json",
+    "batch/reports/native/dsh-univer-office-node22-dsh-dc7699b87fae/c56ab1d33e47cf1c6da2f3027f9592a6651dcc901971dc064d39549717ff5baa-1/progress-status.json",
+    "batch/reports/native/dsh-univer-office-node22-dsh-dc7699b87fae/c56ab1d33e47cf1c6da2f3027f9592a6651dcc901971dc064d39549717ff5baa-1/progress.jsonl",
+    "batch/reports/native/dsh-univer-office-node22-dsh-dc7699b87fae/c56ab1d33e47cf1c6da2f3027f9592a6651dcc901971dc064d39549717ff5baa-1/report.json",
+    "batch/reports/native/dsh-univer-office-node22-dsh-dc7699b87fae/c56ab1d33e47cf1c6da2f3027f9592a6651dcc901971dc064d39549717ff5baa-1/stderr.log",
+    "batch/reports/native/dsh-univer-office-node22/c2e8b8f5914ca345c787e0befcbf1032280655656a0ea7b4fbf4764a62690357-1/attachments.json",
+    "batch/reports/native/dsh-univer-office-node22/c2e8b8f5914ca345c787e0befcbf1032280655656a0ea7b4fbf4764a62690357-1/container.json",
+    "batch/reports/native/dsh-univer-office-node22/c2e8b8f5914ca345c787e0befcbf1032280655656a0ea7b4fbf4764a62690357-1/progress-status.json",
+    "batch/reports/native/dsh-univer-office-node22/c2e8b8f5914ca345c787e0befcbf1032280655656a0ea7b4fbf4764a62690357-1/progress.jsonl",
+    "batch/reports/native/dsh-univer-office-node22/c2e8b8f5914ca345c787e0befcbf1032280655656a0ea7b4fbf4764a62690357-1/report.json",
+    "batch/reports/native/dsh-univer-office-node22/c2e8b8f5914ca345c787e0befcbf1032280655656a0ea7b4fbf4764a62690357-1/stderr.log",
+    "batch/reports/native/dsh-univer-office-node24-dsh-45ecd9b63387/f104987d0e79a244f9ede52205a53633d7084be4269c5ed7e1d9c2dda6388a18-1/attachments.json",
+    "batch/reports/native/dsh-univer-office-node24-dsh-45ecd9b63387/f104987d0e79a244f9ede52205a53633d7084be4269c5ed7e1d9c2dda6388a18-1/container.json",
+    "batch/reports/native/dsh-univer-office-node24-dsh-45ecd9b63387/f104987d0e79a244f9ede52205a53633d7084be4269c5ed7e1d9c2dda6388a18-1/progress-status.json",
+    "batch/reports/native/dsh-univer-office-node24-dsh-45ecd9b63387/f104987d0e79a244f9ede52205a53633d7084be4269c5ed7e1d9c2dda6388a18-1/progress.jsonl",
+    "batch/reports/native/dsh-univer-office-node24-dsh-45ecd9b63387/f104987d0e79a244f9ede52205a53633d7084be4269c5ed7e1d9c2dda6388a18-1/report.json",
+    "batch/reports/native/dsh-univer-office-node24-dsh-45ecd9b63387/f104987d0e79a244f9ede52205a53633d7084be4269c5ed7e1d9c2dda6388a18-1/stderr.log",
+    "batch/reports/native/dsh-univer-office-node24-dsh-6f9e9e68950a/0fca090692498e6e55bb7836984f90c38ad903636e04247c4beeda406de4fe3d-1/attachments.json",
+    "batch/reports/native/dsh-univer-office-node24-dsh-6f9e9e68950a/0fca090692498e6e55bb7836984f90c38ad903636e04247c4beeda406de4fe3d-1/container.json",
+    "batch/reports/native/dsh-univer-office-node24-dsh-6f9e9e68950a/0fca090692498e6e55bb7836984f90c38ad903636e04247c4beeda406de4fe3d-1/progress-status.json",
+    "batch/reports/native/dsh-univer-office-node24-dsh-6f9e9e68950a/0fca090692498e6e55bb7836984f90c38ad903636e04247c4beeda406de4fe3d-1/progress.jsonl",
+    "batch/reports/native/dsh-univer-office-node24-dsh-6f9e9e68950a/0fca090692498e6e55bb7836984f90c38ad903636e04247c4beeda406de4fe3d-1/report.json",
+    "batch/reports/native/dsh-univer-office-node24-dsh-6f9e9e68950a/0fca090692498e6e55bb7836984f90c38ad903636e04247c4beeda406de4fe3d-1/stderr.log",
+    "batch/reports/native/dsh-univer-office-node24-dsh-dc7699b87fae/5e3a21ada940228deea0b358c7ab69f83d99d5fed49f93e6461fe0dab0b16079-1/attachments.json",
+    "batch/reports/native/dsh-univer-office-node24-dsh-dc7699b87fae/5e3a21ada940228deea0b358c7ab69f83d99d5fed49f93e6461fe0dab0b16079-1/container.json",
+    "batch/reports/native/dsh-univer-office-node24-dsh-dc7699b87fae/5e3a21ada940228deea0b358c7ab69f83d99d5fed49f93e6461fe0dab0b16079-1/progress-status.json",
+    "batch/reports/native/dsh-univer-office-node24-dsh-dc7699b87fae/5e3a21ada940228deea0b358c7ab69f83d99d5fed49f93e6461fe0dab0b16079-1/progress.jsonl",
+    "batch/reports/native/dsh-univer-office-node24-dsh-dc7699b87fae/5e3a21ada940228deea0b358c7ab69f83d99d5fed49f93e6461fe0dab0b16079-1/report.json",
+    "batch/reports/native/dsh-univer-office-node24-dsh-dc7699b87fae/5e3a21ada940228deea0b358c7ab69f83d99d5fed49f93e6461fe0dab0b16079-1/stderr.log",
+    "batch/reports/native/dsh-univer-office-node24/b1f8c9c373babcc5af0df8f23461413d5b037f8f695dfd5102995dc9bc4a5b64-1/attachments.json",
+    "batch/reports/native/dsh-univer-office-node24/b1f8c9c373babcc5af0df8f23461413d5b037f8f695dfd5102995dc9bc4a5b64-1/container.json",
+    "batch/reports/native/dsh-univer-office-node24/b1f8c9c373babcc5af0df8f23461413d5b037f8f695dfd5102995dc9bc4a5b64-1/progress-status.json",
+    "batch/reports/native/dsh-univer-office-node24/b1f8c9c373babcc5af0df8f23461413d5b037f8f695dfd5102995dc9bc4a5b64-1/progress.jsonl",
+    "batch/reports/native/dsh-univer-office-node24/b1f8c9c373babcc5af0df8f23461413d5b037f8f695dfd5102995dc9bc4a5b64-1/report.json",
+    "batch/reports/native/dsh-univer-office-node24/b1f8c9c373babcc5af0df8f23461413d5b037f8f695dfd5102995dc9bc4a5b64-1/stderr.log",
+    "batch/state.json",
+    "batch/summary.json",
+    "batch/surface-ledger.json",
+    "broker.log",
+    "reuse/executor-evidence.json",
+    "reuse/state.json",
+    "reuse/summary.json",
+    "review/candidates.json",
+    "review/collection-summary.json",
+    "review/exact-task.json",
+    "review/observations.json",
+    "review/recommendations.json",
+    "review/scoped-install-targets.json"
+  ]
+}
