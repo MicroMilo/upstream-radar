@@ -1200,8 +1200,8 @@
       ],
       "source": {
         "name": "dsh-wsl-workspace",
-        "version": "0.7.4",
-        "digest": "sha256:973b1d445ecba858c285effb00958d7a25f20f4a69f7dcc9f4a34a429de9f045",
+        "version": "0.7.5",
+        "digest": "sha256:ebff285ab01dc9a03c36402e2f2ada77b3a7b2667698c19a619e68bb3d1e888f",
         "findings": [
           {
             "code": "dependency-graph-unlocked",
@@ -1360,10 +1360,10 @@
         ]
       },
       "artifact": {
-        "spec": "npm:dsh-wsl-workspace@0.7.4",
+        "spec": "npm:dsh-wsl-workspace@0.7.5",
         "name": "dsh-wsl-workspace",
-        "version": "0.7.4",
-        "digest": "sha256:182f78cf2311c53f7e28f0bd61aa48fee190f2011493c0f440b056baddcdd802",
+        "version": "0.7.5",
+        "digest": "sha256:8b125509821dcfd4aed06758b2ac7a5f901f73a90a5cf29161d0a6eee3617311",
         "findings": [
           {
             "code": "floating-dependency-spec",
