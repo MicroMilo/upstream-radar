@@ -1169,7 +1169,7 @@
       "source": {
         "name": "@nn12138/dsh-voice",
         "version": "0.2.6",
-        "digest": "sha256:ee7844a5f0875309625995cff1925ee2ca938341036556bf24c384d33ba61b4c",
+        "digest": "sha256:7bc7850d14c18c81c4a2061e578451d947c3255a6ed7c6b73b1e51baa5afcc4b",
         "findings": []
       },
       "artifact": {
@@ -1201,18 +1201,8 @@
       "source": {
         "name": "dsh-wsl-workspace",
         "version": "0.7.5",
-        "digest": "sha256:ebff285ab01dc9a03c36402e2f2ada77b3a7b2667698c19a619e68bb3d1e888f",
+        "digest": "sha256:4c2b7eabd00ca5fabe7c2808d66a962d76475f29c1bb7e648a8ba83652e3814e",
         "findings": [
-          {
-            "code": "dependency-graph-unlocked",
-            "severity": "medium",
-            "summary": "Runtime dependency graph is not locked in the reviewed source tree",
-            "detail": "A future resolution of the same manifest may select different transitive artifacts.",
-            "evidence": {
-              "runtimeDependencyCount": 12
-            },
-            "fingerprint": "sha256:d78a313cb5af742903ab64e8eb3343264a674d4f5e56a2fd6d2e54c037de10b8"
-          },
           {
             "code": "floating-dependency-spec",
             "severity": "medium",
