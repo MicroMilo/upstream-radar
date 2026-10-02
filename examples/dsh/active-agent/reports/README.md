@@ -36,5 +36,5 @@ Every row is bound to exact plugin/DSH source and package identities. Completed 
 | `active-8aa05a9dd0b37e3641339c29fda43b5f` | `@zseven-w/dsh-openpencil@0.1.0-rc.1` | `@deepseek-ai/dsh@0.2.0-rc.1` (`next`) | Node 24 / web | install-failed, peer-contract-incompatible, surface-incompatible | [36434190938](https://github.com/MicroMilo/upstream-radar/actions/runs/36434190938) |
 | `active-b405f975ab65716f511b8de4277c2446` | `@zseven-w/dsh-openpencil@0.1.0-rc.1` | `@deepseek-ai/dsh@0.2.0-rc.2` (`next`) | Node 24 / web | install-failed, peer-contract-incompatible, surface-incompatible | [36572834504](https://github.com/MicroMilo/upstream-radar/actions/runs/36572834504) |
 
-Pending/retryable: 4; completed: 31.
+Pending/retryable: 5; completed: 31.
 
