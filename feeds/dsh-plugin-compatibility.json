@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha5",
-  "generatedAt": "2026-10-01T13:42:51.045Z",
+  "generatedAt": "2026-10-02T12:59:30.995Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -213,7 +213,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@a9i5k4/dsh-auto-memory",
-        "selectedVersion": "3.2.6",
+        "selectedVersion": "3.2.7",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -869,7 +869,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-vibe-math",
-        "selectedVersion": "2.7.1",
+        "selectedVersion": "2.7.2",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1085,7 +1085,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-free-search",
-        "selectedVersion": "0.6.5",
+        "selectedVersion": "0.6.6",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1247,7 +1247,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dshmarket",
-        "selectedVersion": "1.66.7",
+        "selectedVersion": "1.66.8",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1355,7 +1355,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-plugin-wallpaper-engine",
-        "selectedVersion": "1.1.0",
+        "selectedVersion": "1.2.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1517,7 +1517,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-remote",
-        "selectedVersion": "0.8.34",
+        "selectedVersion": "0.8.35",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1816,7 +1816,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-cost-meter",
-        "selectedVersion": "1.8.5",
+        "selectedVersion": "1.8.6",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2534,7 +2534,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-im-connect",
-        "selectedVersion": "0.1.61",
+        "selectedVersion": "0.1.62",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2915,7 +2915,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-chat-import",
-        "selectedVersion": "0.23.1",
+        "selectedVersion": "0.23.2",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3080,7 +3080,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@openma/deepseek-harness-acp",
-        "selectedVersion": "0.4.35",
+        "selectedVersion": "0.4.36",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3553,7 +3553,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@roarpeng/graphflow",
-        "selectedVersion": "2.0.3",
+        "selectedVersion": "2.2.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4046,7 +4046,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-email",
-        "selectedVersion": "0.14.5",
+        "selectedVersion": "0.14.7",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4498,7 +4498,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-plugin-subscriptions",
-        "selectedVersion": "0.9.6",
+        "selectedVersion": "0.9.7",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4606,7 +4606,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@openviking/dsh-memory-plugin",
-        "selectedVersion": "0.5.12",
+        "selectedVersion": "0.5.13",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4768,7 +4768,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-codex-subscription",
-        "selectedVersion": "2.5.0",
+        "selectedVersion": "2.5.1",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -5038,7 +5038,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@xmanrui/dsh-im",
-        "selectedVersion": "4.34.0",
+        "selectedVersion": "4.34.1",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -5317,7 +5317,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@zseven-w/dsh-openpencil",
-        "selectedVersion": "0.1.0-rc.1",
+        "selectedVersion": "0.1.0-rc.10",
         "distTag": "latest"
       },
       "status": "needs-review",

@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-active-task-state/v1alpha1",
-  "updatedAt": "2026-10-01T13:44:20.357Z",
+  "updatedAt": "2026-10-02T12:59:30.611Z",
   "tasks": [
     {
       "id": "active-4797b25090719afc8f6dde5fb1d8fbe0",
@@ -1147,8 +1147,8 @@
       },
       "status": "pending",
       "createdAt": "2026-10-01T13:42:49.675Z",
-      "attempts": 1,
-      "lastAttemptAt": "2026-10-01T13:42:49.675Z",
+      "attempts": 2,
+      "lastAttemptAt": "2026-10-02T12:59:30.611Z",
       "lastRunId": "36869507922",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
@@ -1181,8 +1181,8 @@
       },
       "status": "pending",
       "createdAt": "2026-10-01T13:42:49.675Z",
-      "attempts": 1,
-      "lastAttemptAt": "2026-10-01T13:42:49.675Z",
+      "attempts": 2,
+      "lastAttemptAt": "2026-10-02T12:59:30.611Z",
       "lastRunId": "36869507922",
       "lastFailure": "the isolated Agent artifact is incomplete"
     },
@@ -1213,7 +1213,7 @@
           "sourceCommit": "639ed015397290b3745d163aafe02ffee4aa3f84"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-10-01T13:42:49.675Z",
       "attempts": 1,
       "lastAttemptAt": "2026-10-01T13:42:49.675Z",
@@ -1249,10 +1249,74 @@
       },
       "status": "pending",
       "createdAt": "2026-10-01T13:42:49.675Z",
-      "attempts": 1,
-      "lastAttemptAt": "2026-10-01T13:42:49.675Z",
+      "attempts": 2,
+      "lastAttemptAt": "2026-10-02T12:59:30.611Z",
       "lastRunId": "36869507922",
       "lastFailure": "the isolated Agent artifact is incomplete"
+    },
+    {
+      "id": "active-537479e8b23c879698b1ffe05337fab3",
+      "inputFingerprint": "sha256:537479e8b23c879698b1ffe05337fab31fc4bc5e38b86de980272e26af787c5a",
+      "targetId": "openpencil",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "plugin",
+        "observerTargetId": "dsh-openpencil",
+        "beforeCommit": "7c2f10504bb9d988d5f80d3fed5ab22ccbd19faf",
+        "afterCommit": "9883643eaf51fb9e73ae1741d8d93bf5a36c651d",
+        "beforeVersion": "0.1.0-rc.10",
+        "afterVersion": "0.1.0-rc.10"
+      },
+      "input": {
+        "plugin": {
+          "name": "@zseven-w/dsh-openpencil",
+          "version": "0.1.0-rc.10",
+          "integrity": "sha512-Os5tC7rwhbltW48ygnYiF4lV+GcdFwr8U7ZfZB0mWrls2Zu0vI1pWIan8hw9OF1xbmFLh7XNc1tAIarLrO0WSw==",
+          "sourceCommit": "9883643eaf51fb9e73ae1741d8d93bf5a36c651d"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.2.0-rc.2",
+          "integrity": "sha512-EAJ3gPNcVt/uv8X19PMm9NkVhWgT7xXNMk0UKCVm+IQ5rpSQOcsMUa0HWlnYYVybKMsccjcRB21vVVsaXQ6IdA==",
+          "sourceCommit": "639ed015397290b3745d163aafe02ffee4aa3f84"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-10-02T12:59:30.611Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-10-02T12:59:30.611Z"
+    },
+    {
+      "id": "active-6208d3969b763589a39dce32cdcfa9db",
+      "inputFingerprint": "sha256:6208d3969b763589a39dce32cdcfa9db6be6e2b694295ade5d1c3e817ac057c7",
+      "targetId": "dsh-tui",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "plugin",
+        "observerTargetId": "dsh-tui",
+        "beforeCommit": "646740f12c34546d6c195f5b7031be0dc67421a5",
+        "afterCommit": "c03e0399ea45ddfc55f7e9a6f111e96ae5ed80ea",
+        "beforeVersion": "0.12.0",
+        "afterVersion": "0.12.0"
+      },
+      "input": {
+        "plugin": {
+          "name": "@deepseek-harness-tui/dsh-tui",
+          "version": "0.12.0",
+          "integrity": "sha512-T6SSLacZL1w8+I0YHUgCI//rfGrWjs12qhesRIXeG849+OSkr6bwzwl6GfMdpWSjWxQLwBpzZWEkYKa5mw2/OQ==",
+          "sourceCommit": "c03e0399ea45ddfc55f7e9a6f111e96ae5ed80ea"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.2.0-rc.2",
+          "integrity": "sha512-EAJ3gPNcVt/uv8X19PMm9NkVhWgT7xXNMk0UKCVm+IQ5rpSQOcsMUa0HWlnYYVybKMsccjcRB21vVVsaXQ6IdA==",
+          "sourceCommit": "639ed015397290b3745d163aafe02ffee4aa3f84"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-10-02T12:59:30.611Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-10-02T12:59:30.611Z"
     }
   ]
 }
