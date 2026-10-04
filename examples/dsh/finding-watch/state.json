@@ -1200,8 +1200,8 @@
       ],
       "source": {
         "name": "dsh-wsl-workspace",
-        "version": "0.7.5",
-        "digest": "sha256:a9a1f464dfebc8187f37c634de34edca1d7b947f29e02a6230b0ce000a9f72e6",
+        "version": "0.7.6",
+        "digest": "sha256:9116fb3771c1ffafde1c2d2ad10dd2dec8f968b6e7dd25e3a7e2ad2beba5a67d",
         "findings": [
           {
             "code": "floating-dependency-spec",
@@ -1310,30 +1310,6 @@
               "spec": "*"
             },
             "fingerprint": "sha256:886a6bbf60fecf14541260fa486768c39fab22f5c1b420176aac2082a33c1dee"
-          },
-          {
-            "code": "floating-dependency-spec",
-            "severity": "medium",
-            "summary": "Dependency js-yaml uses a floating version",
-            "detail": "The same manifest can resolve to a different artifact without a source change.",
-            "evidence": {
-              "dependency": "js-yaml",
-              "scope": "peerDependency",
-              "spec": "*"
-            },
-            "fingerprint": "sha256:9ec66f039d1ade8f713a22c06d6f8f634986844f8ebc09a0e5474dff4771c634"
-          },
-          {
-            "code": "floating-dependency-spec",
-            "severity": "medium",
-            "summary": "Dependency @deepseek-ai/cordis-plugin-include uses a floating version",
-            "detail": "The same manifest can resolve to a different artifact without a source change.",
-            "evidence": {
-              "dependency": "@deepseek-ai/cordis-plugin-include",
-              "scope": "peerDependency",
-              "spec": "*"
-            },
-            "fingerprint": "sha256:ad51389dca7810e837199be5ffca56d1c80e3f86534f962d5f92bfeb504ef391"
           },
           {
             "code": "floating-dependency-spec",
