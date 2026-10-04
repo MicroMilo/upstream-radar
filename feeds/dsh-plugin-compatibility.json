@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha5",
-  "generatedAt": "2026-10-03T11:57:34.487Z",
+  "generatedAt": "2026-10-04T12:42:55.157Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -213,7 +213,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@a9i5k4/dsh-auto-memory",
-        "selectedVersion": "3.2.7",
+        "selectedVersion": "3.2.8",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -488,7 +488,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@anweat/dsh-browser",
-        "selectedVersion": "0.1.17",
+        "selectedVersion": "0.2.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -653,7 +653,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-context",
-        "selectedVersion": "0.62.3",
+        "selectedVersion": "0.63.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -761,7 +761,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-tavern",
-        "selectedVersion": "2.5.1",
+        "selectedVersion": "2.5.5",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -869,7 +869,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-vibe-math",
-        "selectedVersion": "2.7.3",
+        "selectedVersion": "2.8.3",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1085,7 +1085,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-free-search",
-        "selectedVersion": "0.7.1",
+        "selectedVersion": "0.7.4",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1633,7 +1633,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-codex-connect",
-        "selectedVersion": "0.2.0-alpha.1",
+        "selectedVersion": "0.2.0-alpha.2",
         "distTag": "alpha"
       },
       "status": "needs-review",
@@ -1816,7 +1816,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-cost-meter",
-        "selectedVersion": "1.8.8",
+        "selectedVersion": "1.8.10",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2194,7 +2194,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@liustack/modlens",
-        "selectedVersion": "3.26.5",
+        "selectedVersion": "3.26.6",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2248,7 +2248,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@liustack/modsearch",
-        "selectedVersion": "5.10.5",
+        "selectedVersion": "5.10.6",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2372,7 +2372,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@mars-sea/dsh-commandcode-provider",
-        "selectedVersion": "0.12.3",
+        "selectedVersion": "0.12.4",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2534,7 +2534,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-im-connect",
-        "selectedVersion": "0.1.62",
+        "selectedVersion": "0.1.63",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2591,7 +2591,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-skills-manager",
-        "selectedVersion": "1.1.8",
+        "selectedVersion": "1.1.9",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2807,7 +2807,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@nonamelego/dsh-catppuccin",
-        "selectedVersion": "0.5.9",
+        "selectedVersion": "0.6.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2915,7 +2915,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-chat-import",
-        "selectedVersion": "0.23.2",
+        "selectedVersion": "0.24.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3026,7 +3026,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-mnemon",
-        "selectedVersion": "0.5.22",
+        "selectedVersion": "0.5.24",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3241,7 +3241,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-pet",
-        "selectedVersion": "0.3.1",
+        "selectedVersion": "0.3.3",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3614,7 +3614,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-mobile",
-        "selectedVersion": "0.5.4",
+        "selectedVersion": "0.5.5",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3992,7 +3992,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-passwords",
-        "selectedVersion": "2.7.6",
+        "selectedVersion": "2.7.7",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4046,7 +4046,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-email",
-        "selectedVersion": "0.15.2",
+        "selectedVersion": "0.15.3",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4265,7 +4265,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-any-background",
-        "selectedVersion": "0.3.3",
+        "selectedVersion": "0.3.4",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4714,7 +4714,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-builtin-browser",
-        "selectedVersion": "0.4.1",
+        "selectedVersion": "0.4.2",
         "distTag": "latest"
       },
       "status": "needs-review",
