@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-active-task-state/v1alpha1",
-  "updatedAt": "2026-10-08T13:56:08.146Z",
+  "updatedAt": "2026-10-09T13:40:02.080Z",
   "tasks": [
     {
       "id": "active-4797b25090719afc8f6dde5fb1d8fbe0",
@@ -1417,7 +1417,7 @@
           "sourceCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-10-03T11:57:34.162Z",
       "attempts": 6,
       "lastAttemptAt": "2026-10-08T13:54:54.827Z",
@@ -1451,7 +1451,7 @@
           "sourceCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-10-03T11:57:34.162Z",
       "attempts": 6,
       "lastAttemptAt": "2026-10-08T13:54:54.827Z",
@@ -1485,7 +1485,7 @@
           "sourceCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-10-03T11:57:34.162Z",
       "attempts": 6,
       "lastAttemptAt": "2026-10-08T13:54:54.827Z",
@@ -1689,7 +1689,7 @@
           "sourceCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-10-05T15:08:25.583Z",
       "attempts": 4,
       "lastAttemptAt": "2026-10-08T13:54:54.827Z",
@@ -1893,7 +1893,7 @@
           "sourceCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-10-07T13:47:23.870Z",
       "attempts": 2,
       "lastAttemptAt": "2026-10-08T13:54:54.827Z",
@@ -1995,7 +1995,7 @@
           "sourceCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-10-08T13:54:54.827Z",
       "attempts": 1,
       "lastAttemptAt": "2026-10-08T13:54:54.827Z",
@@ -2029,7 +2029,7 @@
           "sourceCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-10-08T13:54:54.827Z",
       "attempts": 1,
       "lastAttemptAt": "2026-10-08T13:54:54.827Z",
@@ -2063,12 +2063,268 @@
           "sourceCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc"
         }
       },
-      "status": "pending",
+      "status": "superseded",
       "createdAt": "2026-10-08T13:54:54.827Z",
       "attempts": 1,
       "lastAttemptAt": "2026-10-08T13:54:54.827Z",
       "lastRunId": "37786751850",
       "lastFailure": "the isolated Agent artifact is incomplete"
+    },
+    {
+      "id": "active-1269a885c8d5b167939e6cc4f7d61da8",
+      "inputFingerprint": "sha256:1269a885c8d5b167939e6cc4f7d61da87dd06f3bde21c2eca26a780fb0d58395",
+      "targetId": "dsh-agy-link",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+        "afterCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c",
+        "beforeVersion": "0.2.1-alpha.1",
+        "afterVersion": "0.2.1-alpha.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "dsh-agy-link",
+          "version": "0.4.44",
+          "integrity": "sha512-CwKKvcbOMz/WdMamdxiYAaBGqDNTS2n/lpVLtKY139WEbB0+/5n0uejsWEJzm6rN9Q0eAQnfGtmqAlN9yK+FnQ==",
+          "sourceCommit": "e745cd797c32ee586f20a9188e072e045e6f90ba"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.2.0-rc.2",
+          "integrity": "sha512-EAJ3gPNcVt/uv8X19PMm9NkVhWgT7xXNMk0UKCVm+IQ5rpSQOcsMUa0HWlnYYVybKMsccjcRB21vVVsaXQ6IdA==",
+          "sourceCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-10-09T13:40:02.080Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-10-09T13:40:02.080Z"
+    },
+    {
+      "id": "active-1c74d7fe0e956e2e703124483379f827",
+      "inputFingerprint": "sha256:1c74d7fe0e956e2e703124483379f827e2638bdadbad293b7361c287766a586b",
+      "targetId": "context",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+        "afterCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c",
+        "beforeVersion": "0.2.1-alpha.1",
+        "afterVersion": "0.2.1-alpha.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "dsh-context",
+          "version": "0.66.1",
+          "integrity": "sha512-Am+CkBN+kHO/rrMWtqlNyfUCcnhFbt9Tz6apzpFUxqU08YwIn7iIPBGadw+ZFI3wGJ3WFPmKWk92HiSZDrAcQA==",
+          "sourceCommit": "e1a66554968bb6ed1c0677e01ea291f612e64ba7"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.2.0-rc.2",
+          "integrity": "sha512-EAJ3gPNcVt/uv8X19PMm9NkVhWgT7xXNMk0UKCVm+IQ5rpSQOcsMUa0HWlnYYVybKMsccjcRB21vVVsaXQ6IdA==",
+          "sourceCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-10-09T13:40:02.080Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-10-09T13:40:02.080Z"
+    },
+    {
+      "id": "active-6cee7a2544bd127d2d7c38dc8c9c78ca",
+      "inputFingerprint": "sha256:6cee7a2544bd127d2d7c38dc8c9c78caba494726f7b36695cb3789655f3307ef",
+      "targetId": "dsh-tui",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+        "afterCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c",
+        "beforeVersion": "0.2.1-alpha.1",
+        "afterVersion": "0.2.1-alpha.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "@deepseek-harness-tui/dsh-tui",
+          "version": "0.14.0",
+          "integrity": "sha512-syU0CLbAoxA97URyhnPFiLbWm3dXrmCR5NCO6mFovRi7mebX2HeEYdhpugEoT9vZ1vpUfE/+uX7xrs6zOGUJ1g==",
+          "sourceCommit": "601cc61fe1409ba55cdc8b854c6f03a9ad20fc53"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.2.0-rc.2",
+          "integrity": "sha512-EAJ3gPNcVt/uv8X19PMm9NkVhWgT7xXNMk0UKCVm+IQ5rpSQOcsMUa0HWlnYYVybKMsccjcRB21vVVsaXQ6IdA==",
+          "sourceCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-10-09T13:40:02.080Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-10-09T13:40:02.080Z"
+    },
+    {
+      "id": "active-6e61a8f4035365087b1a5f197da39e88",
+      "inputFingerprint": "sha256:6e61a8f4035365087b1a5f197da39e88cef6440612041701967a117bdbb8136b",
+      "targetId": "openpencil",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+        "afterCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c",
+        "beforeVersion": "0.2.1-alpha.1",
+        "afterVersion": "0.2.1-alpha.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "@zseven-w/dsh-openpencil",
+          "version": "0.1.0-rc.13",
+          "integrity": "sha512-b5ndQAfVDZW6cwxVXrdq6b01axwPmL2hj+TZQKN2zrAAuyZ2xtLvRk4KxSpZP291DGp5oeEveGMD1RauXdNw7g==",
+          "sourceCommit": "34cf7b45ed10fc7de43c3ccb30406e6c40b449ae"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.2.0-rc.2",
+          "integrity": "sha512-EAJ3gPNcVt/uv8X19PMm9NkVhWgT7xXNMk0UKCVm+IQ5rpSQOcsMUa0HWlnYYVybKMsccjcRB21vVVsaXQ6IdA==",
+          "sourceCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-10-09T13:40:02.080Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-10-09T13:40:02.080Z"
+    },
+    {
+      "id": "active-91820d9dc8c32d402fd14a0df0114da8",
+      "inputFingerprint": "sha256:91820d9dc8c32d402fd14a0df0114da86b8632eedf22ba2884329df7a09f9891",
+      "targetId": "dsh-univer-office",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+        "afterCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c",
+        "beforeVersion": "0.2.1-alpha.1",
+        "afterVersion": "0.2.1-alpha.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "dsh-univer-office",
+          "version": "0.3.7",
+          "integrity": "sha512-2eEi35ZzTOZiFQEEuNiF68MKWGKlXhVJiaOwCO5gdgNj0ZA+VesdoRxmT8hhFspbMtPfRp/0CoSo7PwFwBbBWw==",
+          "sourceCommit": "8f85ce4074fdbe51416b6c337468bb916a302c2a"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.2.0-rc.2",
+          "integrity": "sha512-EAJ3gPNcVt/uv8X19PMm9NkVhWgT7xXNMk0UKCVm+IQ5rpSQOcsMUa0HWlnYYVybKMsccjcRB21vVVsaXQ6IdA==",
+          "sourceCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-10-09T13:40:02.080Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-10-09T13:40:02.080Z"
+    },
+    {
+      "id": "active-993b103784fa2c52fec6654a1d3fa51e",
+      "inputFingerprint": "sha256:993b103784fa2c52fec6654a1d3fa51e70de86cc9d7c251155166558d8f7ab5a",
+      "targetId": "better-sidebar",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+        "afterCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c",
+        "beforeVersion": "0.2.1-alpha.1",
+        "afterVersion": "0.2.1-alpha.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "dsh-better-sidebar",
+          "version": "0.24.1",
+          "integrity": "sha512-X5tdu07Ub0isxruG559o46891F7MjxM+CzR6QoGpHZtN5J8gz6FA8Dq632lLI77c4IjL2GP+N6PuWaDnoKPuPQ==",
+          "sourceCommit": "e35120f1d9b3773062b68decb4f53a526d6c8baa"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.2.0-rc.2",
+          "integrity": "sha512-EAJ3gPNcVt/uv8X19PMm9NkVhWgT7xXNMk0UKCVm+IQ5rpSQOcsMUa0HWlnYYVybKMsccjcRB21vVVsaXQ6IdA==",
+          "sourceCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-10-09T13:40:02.080Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-10-09T13:40:02.080Z"
+    },
+    {
+      "id": "active-e6714f0abf0de29fd77c678ca45be8ea",
+      "inputFingerprint": "sha256:e6714f0abf0de29fd77c678ca45be8eaaf06cd6c62d3396d151a9321b70bc613",
+      "targetId": "feishu-bot",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+        "afterCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c",
+        "beforeVersion": "0.2.1-alpha.1",
+        "afterVersion": "0.2.1-alpha.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "dsh-feishu-bot",
+          "version": "0.19.16",
+          "integrity": "sha512-+fFFrE0/mQsxgh0IWUX/XyoTUf9BE8/ApoVAwL2NBpgq12J1nONZkXo6iXrR3O193uEmm5Ow0iSTDaHrhSBgIA==",
+          "sourceCommit": "6e722e0272f370fa0071715703294490e2f89bf8"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.2.0-rc.2",
+          "integrity": "sha512-EAJ3gPNcVt/uv8X19PMm9NkVhWgT7xXNMk0UKCVm+IQ5rpSQOcsMUa0HWlnYYVybKMsccjcRB21vVVsaXQ6IdA==",
+          "sourceCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-10-09T13:40:02.080Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-10-09T13:40:02.080Z"
+    },
+    {
+      "id": "active-eeab3bf8a9dec4a870a0543a7b9b3c70",
+      "inputFingerprint": "sha256:eeab3bf8a9dec4a870a0543a7b9b3c7001b143fefe2178e56c6f32bd9c326232",
+      "targetId": "cloudflare-browser",
+      "dshChannel": "next",
+      "trigger": {
+        "kind": "dsh",
+        "observerTargetId": "deepseek-harness",
+        "beforeCommit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+        "afterCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c",
+        "beforeVersion": "0.2.1-alpha.1",
+        "afterVersion": "0.2.1-alpha.2"
+      },
+      "input": {
+        "plugin": {
+          "name": "dsh-cloudflare-browser-run",
+          "version": "0.2.5",
+          "integrity": "sha512-T8aP7YgsJFndEEEC53N4lArTDX12cWkR7a6U5oa1Oal946FXl01xqCOZCcE/VlnXBo2cvfmvSagFN222QVvveg==",
+          "sourceCommit": "2104d2b43f301bcddca0cc94a3fbea3f82c44d2b"
+        },
+        "dsh": {
+          "name": "@deepseek-ai/dsh",
+          "version": "0.2.0-rc.2",
+          "integrity": "sha512-EAJ3gPNcVt/uv8X19PMm9NkVhWgT7xXNMk0UKCVm+IQ5rpSQOcsMUa0HWlnYYVybKMsccjcRB21vVVsaXQ6IdA==",
+          "sourceCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c"
+        }
+      },
+      "status": "pending",
+      "createdAt": "2026-10-09T13:40:02.080Z",
+      "attempts": 1,
+      "lastAttemptAt": "2026-10-09T13:40:02.080Z"
     }
   ]
 }
