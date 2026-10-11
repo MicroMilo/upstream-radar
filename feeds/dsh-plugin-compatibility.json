@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha5",
-  "generatedAt": "2026-10-10T12:52:24.722Z",
+  "generatedAt": "2026-10-11T13:13:49.833Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -599,7 +599,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-remote-plugin",
-        "selectedVersion": "0.7.3",
+        "selectedVersion": "0.7.4",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -653,7 +653,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-context",
-        "selectedVersion": "0.67.0",
+        "selectedVersion": "0.68.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1085,7 +1085,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-free-search",
-        "selectedVersion": "0.8.5",
+        "selectedVersion": "0.8.6",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1139,7 +1139,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@dickpy/dsh-imagegen",
-        "selectedVersion": "1.6.7",
+        "selectedVersion": "1.6.8",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2372,7 +2372,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@mars-sea/dsh-commandcode-provider",
-        "selectedVersion": "0.12.9",
+        "selectedVersion": "0.12.10",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2534,7 +2534,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-im-connect",
-        "selectedVersion": "0.1.71",
+        "selectedVersion": "0.1.72",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2753,7 +2753,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@nanmicoder/dsh-agent-teams",
-        "selectedVersion": "0.1.22",
+        "selectedVersion": "0.1.23",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3026,7 +3026,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-mnemon",
-        "selectedVersion": "0.5.27",
+        "selectedVersion": "0.5.28",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3420,7 +3420,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-dream-skin",
-        "selectedVersion": "10.9.3",
+        "selectedVersion": "10.10.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4154,7 +4154,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-auth-gate",
-        "selectedVersion": "0.17.0",
+        "selectedVersion": "0.17.2",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4768,7 +4768,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-codex-subscription",
-        "selectedVersion": "2.5.9",
+        "selectedVersion": "2.6.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -5257,7 +5257,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@linxin666/dsh-web-all",
-        "selectedVersion": "0.4.5",
+        "selectedVersion": "0.4.6",
         "distTag": "latest"
       },
       "status": "needs-review",
