@@ -1201,7 +1201,7 @@
       "source": {
         "name": "dsh-wsl-workspace",
         "version": "0.7.7",
-        "digest": "sha256:a56d6ab317fc5986cee309fab76959fe59c60c86cecc802671c54d79a18cd0cb",
+        "digest": "sha256:e3eb90ee8d9a143f39ac54db600cbc9ca59e8faf7308670e41d96f090028a571",
         "findings": [
           {
             "code": "floating-dependency-spec",
