@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha5",
-  "generatedAt": "2026-10-12T15:55:49.817Z",
+  "generatedAt": "2026-10-13T14:30:58.035Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -213,7 +213,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@a9i5k4/dsh-auto-memory",
-        "selectedVersion": "3.3.1",
+        "selectedVersion": "3.3.2",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -707,7 +707,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@deepseek-harness-tui/dsh-tui",
-        "selectedVersion": "0.14.0",
+        "selectedVersion": "0.15.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1247,7 +1247,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dshmarket",
-        "selectedVersion": "1.66.17",
+        "selectedVersion": "1.66.20",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1816,7 +1816,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-cost-meter",
-        "selectedVersion": "1.8.23",
+        "selectedVersion": "1.8.24",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2426,7 +2426,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-agency-agents",
-        "selectedVersion": "1.0.16",
+        "selectedVersion": "1.0.17",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2591,7 +2591,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-skills-manager",
-        "selectedVersion": "1.1.17",
+        "selectedVersion": "1.1.18",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2807,7 +2807,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@nonamelego/dsh-catppuccin",
-        "selectedVersion": "0.6.1",
+        "selectedVersion": "0.6.2",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3420,7 +3420,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-dream-skin",
-        "selectedVersion": "10.12.1",
+        "selectedVersion": "10.13.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4154,7 +4154,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-auth-gate",
-        "selectedVersion": "0.17.2",
+        "selectedVersion": "0.17.3",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4606,7 +4606,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@openviking/dsh-memory-plugin",
-        "selectedVersion": "0.5.23",
+        "selectedVersion": "0.5.24",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4768,7 +4768,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-codex-subscription",
-        "selectedVersion": "2.6.5",
+        "selectedVersion": "2.6.6",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4930,7 +4930,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-config-manager",
-        "selectedVersion": "0.1.71",
+        "selectedVersion": "0.1.72",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -5038,7 +5038,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@xmanrui/dsh-im",
-        "selectedVersion": "4.38.1",
+        "selectedVersion": "4.39.0",
         "distTag": "latest"
       },
       "status": "needs-review",
