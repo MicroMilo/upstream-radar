@@ -92,7 +92,7 @@ Start from one maintained workflow:
 - [Review an exact plugin across DSH versions](examples/github-actions/dsh-plugin-review-minimal.yml)
 - [Gate dependency changes in CI](examples/github-actions/upstream-radar.yml)
 
-This repository's deployed loop runs from
+This repository's observer can be run manually from
 [`upstream-observer.yml`](.github/workflows/upstream-observer.yml). Its single
 operator entry point is
 [`examples/dsh/active-agent/policy.json`](examples/dsh/active-agent/policy.json):

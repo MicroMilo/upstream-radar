@@ -81,7 +81,7 @@ npx --yes upstream-radar@0.45.0 scan \
 - [跨 DSH 版本审阅一个精确插件](examples/github-actions/dsh-plugin-review-minimal.yml)
 - [在 CI 中拦截依赖风险](examples/github-actions/upstream-radar.yml)
 
-本仓库已经部署的入口是
+本仓库可手动运行的观察入口是
 [`upstream-observer.yml`](.github/workflows/upstream-observer.yml)，唯一的操作配置入口是
 [`examples/dsh/active-agent/policy.json`](examples/dsh/active-agent/policy.json)：
 

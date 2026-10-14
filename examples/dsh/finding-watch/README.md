@@ -1,6 +1,6 @@
 # DSH known finding watch
 
-This is the first always-on loop for the seven supply-chain findings discovered
+This is an on-demand watch for the seven supply-chain findings discovered
 in the real DSH plugin batch. It does not install a plugin, run a lifecycle
 script, load plugin code, or call a model. It repeats the same two bounded
 checks:
@@ -35,6 +35,6 @@ pnpm run monitor:dsh-findings -- \
 ```
 
 The GitHub Actions workflow at `.github/workflows/dsh-finding-watch.yml` runs
-the same command on a schedule and commits `state.json` only when a trusted
-observation changes. Findings are evidence for review, not a claim that every
-install script or native binary is malicious.
+the same command when manually dispatched and commits `state.json` only when a
+trusted observation changes. Findings are evidence for review, not a claim
+that every install script or native binary is malicious.

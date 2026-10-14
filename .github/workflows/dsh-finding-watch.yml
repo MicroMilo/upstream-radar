@@ -2,10 +2,6 @@ name: DSH known finding watch
 
 on:
   workflow_dispatch:
-  schedule:
-    # The watch is deliberately independent from the broader upstream
-    # observer: it checks the seven already-reported findings every day.
-    - cron: '41 6 * * *'
 
 permissions:
   contents: write

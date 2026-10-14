@@ -296,9 +296,9 @@ pnpm run monitor:dsh-findings
 1. 扫描公开 GitHub 源码，不安装依赖、不运行插件；
 2. 按源码当前版本检查精确 npm 发布物，依赖解析使用禁用 lifecycle script 的环境。
 
-它把源码和发布物分开保存，因为维护者可能已经修了 GitHub 仓库，但还没有重新发布 npm 包。每条观察结果只有在检查成功时才会推进；网络失败是 `unknown`，不会被写成“已修复”。状态保存在 [`state.json`](../examples/dsh/finding-watch/state.json)，可读报告在 [`report.md`](../examples/dsh/finding-watch/report.md)，每日 workflow 是 [`dsh-finding-watch.yml`](../.github/workflows/dsh-finding-watch.yml)。
+它把源码和发布物分开保存，因为维护者可能已经修了 GitHub 仓库，但还没有重新发布 npm 包。每条观察结果只有在检查成功时才会推进；网络失败是 `unknown`，不会被写成“已修复”。状态保存在 [`state.json`](../examples/dsh/finding-watch/state.json)，可读报告在 [`report.md`](../examples/dsh/finding-watch/report.md)，可手动触发的 workflow 是 [`dsh-finding-watch.yml`](../.github/workflows/dsh-finding-watch.yml)。
 
-当前真实结果中，`dsh-msg-hub@0.1.8` 的源码侧已经没有旧的 lockfile 图不可用/根版本过期问题，但同版本 npm 发布物仍可达 `protobufjs@7.6.5` 的 `postinstall`；`dsh-wsl-workspace` 由 `koffi@3.1.5` 变成了 `3.1.6`，但安装脚本仍然存在。这个入口的用途是监控这些已知问题的生命周期，不把每次定时运行都伪装成新的漏洞发现。
+当前真实结果中，`dsh-msg-hub@0.1.8` 的源码侧已经没有旧的 lockfile 图不可用/根版本过期问题，但同版本 npm 发布物仍可达 `protobufjs@7.6.5` 的 `postinstall`；`dsh-wsl-workspace` 由 `koffi@3.1.5` 变成了 `3.1.6`，但安装脚本仍然存在。这个入口的用途是监控这些已知问题的生命周期，不把每次运行都伪装成新的漏洞发现。
 
 ```text
 targets.yml
@@ -439,8 +439,8 @@ DSH bundle、入口文件、依赖图、npm 版本或 npm integrity 变化时，
 任务。如果没有配置 Agent，任务会留在 `observations.json`，不会安装或执行被观察的插件。
 即使已配置的模型暂时调用失败，静态观察仍会正常结束；失败信息会写进报告，任务保留在
 pending 状态，下一次可用 `--retry-pending` 重试。只有源码观察本身失败时才返回非零退出码。
-定时 workflow 会使用 `--retry-pending`：如果 Agent 暂时不可用，任务会在下一次运行
-自动重试，不需要上游再次提交新 commit。
+仓库中的手动 workflow 会使用 `--retry-pending`：如果 Agent 暂时不可用，任务会在下一次手动运行时
+重试，不需要上游再次提交新 commit。
 
 只要这次重要变化对应一个已发布的 npm 版本，同一轮 observer 还会自动审查这个精确发布物。
 它在关闭 lifecycle script 的前提下解析发布包的真实依赖图，查询已知漏洞，记录可达依赖中的
