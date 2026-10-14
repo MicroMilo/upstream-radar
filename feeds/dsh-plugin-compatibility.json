@@ -1,6 +1,6 @@
 {
   "schema": "upstream-radar.dsh-directory-compatibility-feed/v1alpha5",
-  "generatedAt": "2026-10-13T14:30:58.035Z",
+  "generatedAt": "2026-10-14T12:16:27.949Z",
   "producer": {
     "name": "upstream-radar",
     "version": "0.45.0",
@@ -159,7 +159,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@awiki/dsh-plugin",
-        "selectedVersion": "0.3.12",
+        "selectedVersion": "0.3.18",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -213,7 +213,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@a9i5k4/dsh-auto-memory",
-        "selectedVersion": "3.3.2",
+        "selectedVersion": "3.3.3",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -326,7 +326,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-agy-link",
-        "selectedVersion": "0.4.46",
+        "selectedVersion": "0.4.50",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -599,7 +599,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-remote-plugin",
-        "selectedVersion": "0.7.4",
+        "selectedVersion": "0.7.5",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -653,7 +653,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-context",
-        "selectedVersion": "0.69.1",
+        "selectedVersion": "0.70.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -977,7 +977,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-taskboard",
-        "selectedVersion": "0.8.8",
+        "selectedVersion": "0.8.10",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1085,7 +1085,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-free-search",
-        "selectedVersion": "0.8.9",
+        "selectedVersion": "0.8.10",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1247,7 +1247,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dshmarket",
-        "selectedVersion": "1.66.20",
+        "selectedVersion": "1.66.21",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1816,7 +1816,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-cost-meter",
-        "selectedVersion": "1.8.24",
+        "selectedVersion": "1.8.25",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -1978,7 +1978,7 @@
       "distribution": {
         "kind": "npm",
         "name": "iterate-plugin",
-        "selectedVersion": "3.6.0",
+        "selectedVersion": "3.7.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2372,7 +2372,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@mars-sea/dsh-commandcode-provider",
-        "selectedVersion": "0.12.10",
+        "selectedVersion": "0.13.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2426,7 +2426,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-agency-agents",
-        "selectedVersion": "1.0.17",
+        "selectedVersion": "1.0.18",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2480,7 +2480,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-archive-manager",
-        "selectedVersion": "1.0.17",
+        "selectedVersion": "1.0.18",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2534,7 +2534,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-im-connect",
-        "selectedVersion": "0.1.74",
+        "selectedVersion": "0.1.75",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2591,7 +2591,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@michengai/dsh-skills-manager",
-        "selectedVersion": "1.1.18",
+        "selectedVersion": "1.1.19",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2699,7 +2699,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@moonquake2004/dsh-doctor",
-        "selectedVersion": "0.8.6",
+        "selectedVersion": "0.8.7",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -2969,7 +2969,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-better-sidebar",
-        "selectedVersion": "0.25.0",
+        "selectedVersion": "0.26.0",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3026,7 +3026,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-mnemon",
-        "selectedVersion": "0.5.28",
+        "selectedVersion": "0.5.29",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3241,7 +3241,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-pet",
-        "selectedVersion": "0.3.6",
+        "selectedVersion": "0.3.7",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3420,7 +3420,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-dream-skin",
-        "selectedVersion": "10.13.0",
+        "selectedVersion": "10.14.2",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -3614,7 +3614,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-mobile",
-        "selectedVersion": "0.6.4",
+        "selectedVersion": "0.6.7",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4606,7 +4606,7 @@
       "distribution": {
         "kind": "npm",
         "name": "@openviking/dsh-memory-plugin",
-        "selectedVersion": "0.5.24",
+        "selectedVersion": "0.5.25",
         "distTag": "latest"
       },
       "status": "needs-review",
@@ -4768,7 +4768,7 @@
       "distribution": {
         "kind": "npm",
         "name": "dsh-codex-subscription",
-        "selectedVersion": "2.6.6",
+        "selectedVersion": "2.6.8",
         "distTag": "latest"
       },
       "status": "needs-review",
