@@ -455,7 +455,7 @@ jobs:
 
       - name: Keep compatibility evidence artifacts
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: upstream-radar-compatibility-ledger-${{ github.run_id }}
           path: |
@@ -703,7 +703,7 @@ jobs:
             examples/dsh/surface-observer/agent-plans.json
       - name: Keep execution-plane evidence artifacts
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: upstream-radar-surface-ledger-${{ github.run_id }}
           path: |
@@ -783,7 +783,7 @@ jobs:
       # Downstream execution cannot start until its complete expected matrix
       # has been uploaded, including when no adapter implementation is available.
       - name: Preserve the adapter plan before dispatch
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: upstream-radar-adapter-plan-${{ github.run_id }}
           path: ${{ runner.temp }}/adapter-plan.json
@@ -866,7 +866,7 @@ jobs:
             examples/dsh/surface-observer/agent-plans.json
       - name: Preserve the reconciled adapter evidence
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: upstream-radar-adapter-ledger-${{ github.run_id }}
           path: |

@@ -359,7 +359,7 @@ jobs:
           node scripts/verify-dsh-input-change.mjs unchanged input-change-after
       - name: Preserve the real batch and its intermediate checkpoints
         if: ${{ always() && inputs.execute_batch }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: dsh-rebuild-system-batch
           path: |
@@ -373,7 +373,7 @@ jobs:
           retention-days: 14
       - name: Preserve evidence even when a stage is incomplete
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: dsh-rebuild-review
           path: validation-output
