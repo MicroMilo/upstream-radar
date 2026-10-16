@@ -65,7 +65,7 @@ jobs:
         run: node scripts/probe-dsh-agent-provider.mjs active-provider-probe.json
       - name: Upload the secret-free provider receipt
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: dsh-agent-provider-probe-${{ github.run_id }}
           path: active-provider-probe.json
@@ -280,7 +280,7 @@ jobs:
               > active-output/batch/acceptance.json
       - name: Upload bounded case evidence
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: dsh-active-agent-${{ matrix.targetId }}-${{ matrix.dshChannel }}-${{ matrix.taskId }}-${{ github.run_id }}
           path: |
@@ -366,7 +366,7 @@ jobs:
           cat examples/dsh/active-agent/reports/README.md >> "$GITHUB_STEP_SUMMARY"
       - name: Keep the reconciled whole-batch report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: dsh-active-agent-reconciliation-${{ github.run_id }}
           path: |
