@@ -350,7 +350,7 @@ jobs:
           node --input-type=module -e 'import {writeFile} from "node:fs/promises"; const value=JSON.parse(process.env.ACTIVE_TASK_MATRIX); await writeFile(process.env.RUNNER_TEMP+"/active-task-matrix.json",JSON.stringify(value,null,2)+"\n",{flag:"wx",mode:0o600})'
       - name: Download this run's isolated Agent evidence
         continue-on-error: true
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           pattern: dsh-active-agent-*-${{ github.run_id }}
           path: ${{ runner.temp }}/active-task-artifacts
